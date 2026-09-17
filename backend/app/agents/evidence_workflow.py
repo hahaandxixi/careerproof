@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
@@ -12,6 +13,7 @@ from app.agents.contracts import (
     EvidenceCandidate,
     ModelUsage,
     RequirementEvidenceContext,
+    RetrievalToolCall,
     validate_grounded_analysis,
 )
 from app.agents.provider import OpenAICompatibleProvider, get_ai_provider
@@ -33,6 +35,7 @@ class EvidenceWorkflowOutcome:
     attempted_usage: ModelUsage | None = None
     failure_stage: str | None = None
     repaired: bool = False
+    tool_calls: tuple[dict, ...] = ()
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -52,7 +55,11 @@ async def _notify(progress: Callable[[str], Awaitable[None]] | None, message: st
         await progress(message)
 
 
-def build_evidence_contexts(result: MatchResult) -> list[RequirementEvidenceContext]:
+def build_evidence_contexts(
+    result: MatchResult, *, max_evidence: int = 3
+) -> list[RequirementEvidenceContext]:
+    if max_evidence < 1 or max_evidence > 3:
+        raise ValueError("max_evidence must be between 1 and 3")
     contexts: list[RequirementEvidenceContext] = []
     for requirement_index, item in enumerate(result.items, 1):
         evidence = [
@@ -67,10 +74,9 @@ def build_evidence_contexts(result: MatchResult) -> list[RequirementEvidenceCont
                 context_complete=source.context_complete,
                 context_note=source.context_note,
             )
-            for evidence_index, source in enumerate(item.evidence_list[:12], 1)
+            for evidence_index, source in enumerate(item.evidence_list[:max_evidence], 1)
             if source.snippet.strip()
         ]
-        evidence = evidence[:3]
         contexts.append(
             RequirementEvidenceContext(
                 requirement_id=str(item.requirement_id),
@@ -102,6 +108,81 @@ def citation_for_source(context: RequirementEvidenceContext | None, source) -> s
         ),
         None,
     )
+
+
+def execute_retrieval_tool(
+    result: MatchResult,
+    contexts: list[RequirementEvidenceContext],
+    call: RetrievalToolCall,
+) -> tuple[list[RequirementEvidenceContext], dict]:
+    """Execute one model-selected lookup over the current upload's bounded candidates."""
+    context_index = next(
+        (
+            index
+            for index, context in enumerate(contexts)
+            if context.requirement_id == call.requirement_id
+        ),
+        None,
+    )
+    if context_index is None:
+        raise ValueError("retrieval tool targeted an unknown requirement")
+    context = contexts[context_index]
+    item = next(
+        (entry for entry in result.items if str(entry.requirement_id) == call.requirement_id),
+        None,
+    )
+    if item is None:
+        raise ValueError("retrieval tool requirement is absent from the match result")
+    existing = {source_key(entry) for entry in context.evidence}
+    candidates = [entry for entry in item.evidence_list if source_key(entry) not in existing]
+    tokens = set(re.findall(r"[A-Za-z0-9_]+|[\u4e00-\u9fff]{2,}", call.query.lower()))
+
+    def relevance(candidate) -> tuple[int, int]:
+        text = " ".join(
+            (candidate.file_path, candidate.evidence_type, candidate.snippet, candidate.explanation)
+        ).lower()
+        return sum(token in text for token in tokens), len(candidate.snippet)
+
+    selected = max(candidates, key=relevance) if candidates else None
+    event = {
+        "tool": "retrieve_more_evidence",
+        "requirementId": call.requirement_id,
+        "query": call.query,
+        "resultCount": 1 if selected else 0,
+        "scope": "current-upload-index",
+    }
+    if selected is None:
+        return contexts, event
+    evidence = [
+        *context.evidence,
+        EvidenceCandidate(
+            citation_id=f"R{context_index + 1}-E{len(context.evidence) + 1}",
+            file_path=selected.file_path,
+            line_start=selected.line_start,
+            line_end=selected.line_end,
+            evidence_type=selected.evidence_type,
+            strength=selected.strength,
+            snippet=selected.snippet,
+            context_complete=selected.context_complete,
+            context_note=selected.context_note,
+        ),
+    ]
+    updated = context.model_copy(
+        update={
+            "evidence": evidence,
+            "rating_ceiling": classify_evidence(
+                {
+                    "skill": context.skill,
+                    "evidenceList": [entry.model_dump() for entry in evidence],
+                },
+                context.verdict,
+            )["evidence_level"],
+        }
+    )
+    copied = list(contexts)
+    copied[context_index] = updated
+    event["citationId"] = evidence[-1].citation_id
+    return copied, event
 
 
 def _fallback_reason(exc: Exception) -> str:
@@ -141,6 +222,8 @@ async def run_evidence_workflow(
     )
     analysis = None
     repaired = False
+    tool_calls: list[dict] = []
+    planning_usage: ModelUsage | None = None
     stage = "context"
     try:
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
@@ -153,9 +236,33 @@ async def run_evidence_workflow(
             provider = get_ai_provider()
             if provider.name == "mock":
                 return EvidenceWorkflowOutcome(contexts, None, "rules", None, False, None)
+            contexts = build_evidence_contexts(result, max_evidence=2)
             stage = "request"
             await _notify(progress, "等待可用的模型调用名额")
             async with _model_semaphore():
+                if isinstance(provider, OpenAICompatibleProvider):
+                    stage = "tool_planning"
+                    await _notify(progress, "模型正在判断是否需要补充检索")
+                    try:
+                        tool_call = await provider.plan_evidence_retrieval(contexts=contexts)
+                    except (ValidationError, ValueError, KeyError, TypeError):
+                        tool_call = None
+                        tool_calls.append(
+                            {
+                                "tool": "retrieve_more_evidence",
+                                "status": "rejected",
+                                "reason": "invalid_tool_call",
+                                "scope": "current-upload-index",
+                            }
+                        )
+                        await _notify(progress, "补检索请求未通过边界校验，继续使用现有证据")
+                    planning_usage = provider.planning_usage
+                    if tool_call:
+                        stage = "tool_execution"
+                        await _notify(progress, "正在按模型请求从当前材料补充一条证据")
+                        contexts, tool_event = execute_retrieval_tool(result, contexts, tool_call)
+                        tool_calls.append(tool_event)
+                stage = "request"
                 await _notify(progress, "正在调用模型分析证据与评级判据")
                 if isinstance(provider, OpenAICompatibleProvider):
                     provider.progress_callback = progress
@@ -192,6 +299,23 @@ async def run_evidence_workflow(
                             )
                         }
                     )
+                if planning_usage:
+                    usage = analysis.usage
+                    analysis = analysis.model_copy(
+                        update={
+                            "usage": usage.model_copy(
+                                update={
+                                    "input_tokens": planning_usage.input_tokens
+                                    + usage.input_tokens,
+                                    "output_tokens": planning_usage.output_tokens
+                                    + usage.output_tokens,
+                                    "cache_hit_tokens": planning_usage.cache_hit_tokens
+                                    + usage.cache_hit_tokens,
+                                    "latency_ms": planning_usage.latency_ms + usage.latency_ms,
+                                }
+                            )
+                        }
+                    )
         return EvidenceWorkflowOutcome(
             contexts=contexts,
             analysis=analysis,
@@ -200,6 +324,7 @@ async def run_evidence_workflow(
             fallback_used=False,
             fallback_reason=None,
             repaired=repaired,
+            tool_calls=tuple(tool_calls),
         )
     except Exception as exc:
         if not settings.ai_local_fallback_enabled:
@@ -211,7 +336,8 @@ async def run_evidence_workflow(
             model=configured_model,
             fallback_used=True,
             fallback_reason=_fallback_reason(exc),
-            attempted_usage=analysis.usage if analysis else None,
+            attempted_usage=analysis.usage if analysis else planning_usage,
             failure_stage=stage,
             repaired=repaired,
+            tool_calls=tuple(tool_calls),
         )

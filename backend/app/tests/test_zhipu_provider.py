@@ -202,8 +202,13 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
 
     async def handler(request):
         nonlocal calls
-        calls += 1
         body = json.loads(request.content)
+        if "tools" in body:
+            return httpx.Response(
+                200,
+                json={"choices": [{"message": {"content": "无需补检索"}}]},
+            )
+        calls += 1
         source = json.loads(body["messages"][1]["content"])
         if calls == 2:
             assert "validationFeedback" in source and "rejectedOutput" in source
@@ -226,6 +231,144 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
     assert outcome.analysis.items[0].rating.level == 1
     assert outcome.analysis.usage.input_tokens == 20
     assert any("定向修正" in message for message in progress)
+
+
+async def test_retrieval_planner_emits_one_validated_function_call():
+    contexts = build_evidence_contexts(evidenced_result(), max_evidence=2)
+
+    async def handler(request):
+        body = json.loads(request.content)
+        assert body["tool_choice"] == "auto"
+        tool = body["tools"][0]["function"]
+        assert tool["name"] == "retrieve_more_evidence"
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "tool_calls": [
+                                {
+                                    "function": {
+                                        "name": "retrieve_more_evidence",
+                                        "arguments": json.dumps(
+                                            {
+                                                "requirement_id": contexts[0].requirement_id,
+                                                "query": "FastAPI 路由函数中的实际返回行为",
+                                            }
+                                        ),
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "usage": {"prompt_tokens": 30, "completion_tokens": 10},
+            },
+        )
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    call = await instance.plan_evidence_retrieval(contexts=contexts)
+    assert call is not None
+    assert call.requirement_id == contexts[0].requirement_id
+    assert instance.planning_usage.input_tokens == 30
+
+
+async def test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis(monkeypatch):
+    progress = []
+
+    async def record(message):
+        progress.append(message)
+
+    async def handler(request):
+        body = json.loads(request.content)
+        if "tools" in body:
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {
+                            "message": {
+                                "tool_calls": [
+                                    {
+                                        "function": {
+                                            "name": "read_arbitrary_file",
+                                            "arguments": '{}',
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 4, "completion_tokens": 2},
+                },
+            )
+        source = json.loads(body["messages"][1]["content"])
+        requirement = source["requirements"][0]
+        citation = requirement["evidence"][0]["citation_id"]
+        answer = {
+            "summary": "材料中存在路由声明，运行情况待核验。",
+            "items": [
+                {
+                    "requirement_id": requirement["requirement_id"],
+                    "explanation": "片段中存在路由声明。",
+                    "citation_ids": [citation],
+                    "information_gap": "运行结果及本人贡献尚未核验。",
+                    "suggestion": "补充运行记录并说明本人贡献。",
+                    "confidence": 0.5,
+                    "rating": {
+                        "level": 1,
+                        "reason": "只确认相关线索。",
+                        "criteria": [
+                            {
+                                "criterion": "relevance",
+                                "supported": True,
+                                "citation_ids": [citation],
+                                "reason": "存在路由声明。",
+                            },
+                            {
+                                "criterion": "operation",
+                                "supported": False,
+                                "citation_ids": [],
+                                "reason": "未显示实质操作。",
+                            },
+                            {
+                                "criterion": "task",
+                                "supported": False,
+                                "citation_ids": [],
+                                "reason": "未显示完整任务。",
+                            },
+                        ],
+                    },
+                }
+            ],
+        }
+        return httpx.Response(
+            200,
+            json={
+                "model": "glm-4.7-flash",
+                "choices": [{"message": {"content": json.dumps(answer)}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            },
+        )
+
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "zhipu")
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
+    outcome = await run_evidence_workflow(evidenced_result(), progress=record)
+
+    assert outcome.analysis is not None and not outcome.fallback_used
+    assert outcome.tool_calls == (
+        {
+            "tool": "retrieve_more_evidence",
+            "status": "rejected",
+            "reason": "invalid_tool_call",
+            "scope": "current-upload-index",
+        },
+    )
+    assert outcome.analysis.usage.input_tokens == 14
+    assert any("未通过边界校验" in message for message in progress)
 
 
 def test_provider_selection_and_disabled_mode(monkeypatch):

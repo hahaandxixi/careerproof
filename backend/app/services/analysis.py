@@ -562,6 +562,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "usage": usage,
                 "evidenceContextVersion": None if result.grounding_error else "source-context-v2",
                 "retrievalSteps": result.retrieval_steps,
+                "modelToolCalls": list(workflow.tool_calls),
             }
             if not await finish_task(session, task_id, token, step="材料支持度报告已生成"):
                 await session.rollback()

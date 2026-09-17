@@ -9,10 +9,15 @@ from app.agents.contracts import (
     AIRequirementAnalysis,
     EvidenceAnalysis,
     ModelUsage,
+    RetrievalToolCall,
     overclaim_flags,
     validate_grounded_analysis,
 )
-from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
+from app.agents.evidence_workflow import (
+    build_evidence_contexts,
+    execute_retrieval_tool,
+    run_evidence_workflow,
+)
 from app.core.config import settings
 from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.matcher import RequirementInput, match_candidate
@@ -40,6 +45,48 @@ def test_contexts_assign_stable_citation_ids() -> None:
 
     assert contexts[0].evidence[0].citation_id == "R1-E1"
     assert contexts[0].evidence[0].line_start >= 1
+
+
+def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None:
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    candidates = [
+        first,
+        replace(
+            first,
+            file_path="service.py",
+            line_start=2,
+            line_end=4,
+            snippet="def service():\n    return {'ok': True}",
+            content_hash="2" * 64,
+        ),
+        replace(
+            first,
+            file_path="routes.py",
+            line_start=8,
+            line_end=10,
+            snippet="@app.get('/items')\ndef items():\n    return []",
+            content_hash="3" * 64,
+        ),
+    ]
+    result = replace(
+        result,
+        items=[replace(result.items[0], evidence_list=candidates)],
+    )
+    contexts = build_evidence_contexts(result, max_evidence=2)
+    updated, event = execute_retrieval_tool(
+        result,
+        contexts,
+        RetrievalToolCall(
+            requirement_id=contexts[0].requirement_id,
+            query="items 路由返回实现",
+        ),
+    )
+    assert len(updated[0].evidence) == 3
+    assert updated[0].evidence[-1].citation_id == "R1-E3"
+    assert updated[0].evidence[-1].file_path == "routes.py"
+    assert event["scope"] == "current-upload-index"
+    assert event["resultCount"] == 1
 
 
 def test_grounding_rejects_unknown_citation() -> None:

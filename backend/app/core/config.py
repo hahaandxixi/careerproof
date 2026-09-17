@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     zhipu_timeout_seconds: float = Field(default=90, gt=0, le=120)
     zhipu_max_attempts: int = Field(default=2, ge=1, le=3)
     ai_model_concurrency: int = Field(default=1, ge=1, le=4)
-    ai_workflow_timeout_seconds: float = Field(default=120, gt=0, le=180)
+    ai_workflow_timeout_seconds: float = Field(default=180, gt=0, le=240)
     ai_max_requirements: int = Field(default=20, ge=1, le=50)
     ai_local_fallback_enabled: bool = True
 

@@ -37,6 +37,11 @@ class RequirementEvidenceContext(StrictModel):
     rating_ceiling: int | None = Field(default=None, ge=1, le=3)
 
 
+class RetrievalToolCall(StrictModel):
+    requirement_id: str = Field(min_length=1, max_length=100)
+    query: str = Field(min_length=2, max_length=200)
+
+
 class CriterionDecision(StrictModel):
     criterion: Literal["relevance", "operation", "task"]
     supported: bool
