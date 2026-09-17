@@ -1,0 +1,19 @@
+{
+  "case": "live-api-local-ocr-upload",
+  "input": "ocr-smoke-20260917.png",
+  "resumeId": "fd4a6f77-7457-4803-99c6-26139b7a2c8e",
+  "versionId": "fd5c1581-07bc-4884-9f2a-173c1943ba96",
+  "taskId": "83a9228c-7956-4bf0-bca4-2b18f9aa905d",
+  "taskStatus": "completed",
+  "previewStatus": "completed",
+  "sections": [
+    {
+      "id": "d7498cf7-1dd3-42f0-9ff3-5d3dfd6ef6e2",
+      "sectionType": "ocr_image",
+      "content": "[OCR识别文本｜平均置信度 99%｜请对照原图复核]\nCareerProof 合成材料\nFastAPI 接口开发与 PostgreSQL 数据库\nOCR 结果必须对照原图复核",
+      "pageNumber": 1
+    }
+  ],
+  "containsExpectedTerms": true,
+  "progress": 100
+}

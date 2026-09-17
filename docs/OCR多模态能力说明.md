@@ -24,3 +24,7 @@ CareerProof 使用本地 RapidOCR 和 ONNX Runtime 将扫描 PDF 与 PNG、JPG�
 ## 多模态声明
 
 该能力是本地图像转文字模型，不是通用视觉大模型。它扩展了材料输入模态，并保持原有的规则检索、引用校验和人工复核流程。
+
+## 运行验收
+
+2026-09-17 使用演示学生账号通过真实本地 HTTP 接口上传合成 PNG：异步解析任务完成，进度 100%，预览保存为 `ocr_image`、页码 1、平均置信度 99%，并包含 CareerProof、FastAPI、PostgreSQL、OCR 四个预期词。原始记录见 `backend/evals/ocr-live-api-20260917.json`；该记录只证明本地上传与 OCR 解析链路，不代表浏览器交互或真实简历识别率。
