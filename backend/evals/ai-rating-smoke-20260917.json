@@ -1,0 +1,64 @@
+{
+  "case": "synthetic-empty-function",
+  "elapsed_seconds": 34.033,
+  "fallback": true,
+  "reason": "invalid_output_or_config",
+  "analysis": null,
+  "attempted_usage": {
+    "input_tokens": 1484,
+    "output_tokens": 510,
+    "cache_hit_tokens": 55,
+    "latency_ms": 34029
+  },
+  "expected": "相关线索最多1级；不能把pass认定为实质操作或完整任务",
+  "passed": false,
+  "context": [
+    {
+      "requirement_id": "681ef1ad-d13c-469e-ac38-e4ac651f1855",
+      "requirement_title": "提供处理数据并返回结果的 FastAPI 接口",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "熟悉 FastAPI，声明仅为测试文本",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "synthetic.py",
+          "line_start": 3,
+          "line_end": 5,
+          "evidence_type": "fastapi_route",
+          "strength": "high",
+          "snippet": "@app.get(\"/items\")\ndef items():\n    pass",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "synthetic.py",
+          "line_start": 1,
+          "line_end": 5,
+          "evidence_type": "fastapi_app",
+          "strength": "medium",
+          "snippet": "from fastapi import FastAPI\napp = FastAPI()\n@app.get(\"/items\")\ndef items():\n    pass",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验"
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v1",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+          "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 3
+    }
+  ]
+}

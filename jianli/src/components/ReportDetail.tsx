@@ -1,0 +1,99 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api, errorMessage } from "@/lib/api/client";
+import type { DeepSeekWebHandoff, MatchReport } from "@/lib/api/domain";
+import { ErrorNotice } from "./AccessGate";
+import { useAuth } from "./AuthProvider";
+import EvidenceSnippet from "./EvidenceSnippet";
+
+const VERDICTS: Record<string, string> = { supported: "有证据支持", partial: "部分证据支持", claimed_only: "仅简历声明", gap: "材料待补充", unsupported: "规则暂未支持", verified: "有证据支持" };
+const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
+const REVIEW_LABELS: Record<string, string> = { pending: "待人工复核", accepted: "人工已采纳", rejected: "人工已驳回", corrected: "人工已修正" };
+export default function ReportDetail({ id }: { id: string }) {
+  const { user } = useAuth();
+  const [report, setReport] = useState<MatchReport | null>(null);
+  const [error, setError] = useState("");
+  const [revision, setRevision] = useState(0);
+  const [reviewing, setReviewing] = useState<string | null>(null);
+  const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
+  const [handoff, setHandoff] = useState<DeepSeekWebHandoff | null>(null);
+  const [deepSeekResponse, setDeepSeekResponse] = useState("");
+  const [deepSeekBusy, setDeepSeekBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    let current = true;
+    setError(""); setReport(null);
+    api.getReport(id).then(value => { if (current) setReport(value); }).catch(reason => { if (current) setError(errorMessage(reason)); });
+    return () => { current = false; };
+  }, [id, revision]);
+  if (error) return <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />;
+  if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
+  const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
+  const aiRatedCount = report.items.filter(item => item.evidenceLevelSource === "ai_preliminary").length;
+  const assessedCount = report.items.filter(item => item.verdict !== "unsupported").length;
+  async function review(requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") {
+    setReviewing(requirementId); setError("");
+    try {
+      const updated = await api.reviewEvidence(id, requirementId, status, reviewNotes[requirementId]);
+      setReport(current => current ? { ...current, items: current.items.map(item => item.requirementId === requirementId ? updated : item) } : current);
+    } catch (reason) { setError(errorMessage(reason)); }
+    finally { setReviewing(null); }
+  }
+  async function prepareDeepSeek() {
+    setDeepSeekBusy(true); setError("");
+    try { setHandoff(await api.getDeepSeekWebHandoff(id)); }
+    catch (reason) { setError(errorMessage(reason)); }
+    finally { setDeepSeekBusy(false); }
+  }
+  async function copyPrompt() {
+    if (!handoff) return;
+    try { await navigator.clipboard.writeText(handoff.prompt); setCopied(true); }
+    catch { setError("浏览器未允许复制，请在提示词文本框中手动全选复制。"); }
+  }
+  async function importDeepSeek() {
+    setDeepSeekBusy(true); setError("");
+    try {
+      const cleaned = deepSeekResponse.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+      const parsed = JSON.parse(cleaned) as Record<string, unknown>;
+      if (!handoff) throw new Error("请先生成当前报告的提示词。");
+      setReport(await api.importDeepSeekWebAnalysis(id, parsed, handoff.contextDigest));
+      setDeepSeekResponse("");
+    } catch (reason) {
+      setError(reason instanceof SyntaxError ? "粘贴内容不是有效 JSON，请只复制 DeepSeek 返回的 JSON 对象。" : errorMessage(reason));
+    } finally { setDeepSeekBusy(false); }
+  }
+  return <div className="space-y-6">
+    <Link className="text-sm text-indigo-600" href="/reports">← 匹配报告</Link>
+    <aside className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-900">
+      规则可评估 {assessedCount}/{report.items.length} 项要求。
+      {assessedCount === 0 ? " 当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? " 未覆盖要求不评级；逐项核对材料，不能据此评价整个岗位或跨岗位排名。" : " 全部要求有对应规则，不代表证据完整或能力已被证实。"}
+    </aside>
+    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-sm text-indigo-600">{aiUsed ? (aiRatedCount ? "AI 证据初评 + 规则校验" : "规则证据 + AI 解释") : report.aiFallbackUsed ? "规则报告 · 模型已降级" : "规则证据报告"}</p><h1 className="mt-2 text-2xl font-bold">{report.candidateName} × {report.jobTitle}</h1><p className="mt-2 text-xs text-slate-500">{new Date(report.createdAt).toLocaleString("zh-CN")}{report.aiModel ? ` · ${report.aiModel}` : ""}</p></div><div className="text-right"><strong className="text-xl text-indigo-600">逐项实践证据等级</strong><p className="mt-2 text-xs text-slate-500">不汇总总分，不对应考试证书级别</p></div></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-700">{report.summary.replace("分数为材料支持度，不是能力或录用结论。", "评级描述材料证据，不是能力或录用结论。").replace("暂不支持评估且不计分", "暂不支持评估且不评级")}</p>{report.aiUsage && <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500"><span className="rounded-full bg-slate-100 px-3 py-1">模型耗时 {Math.round((report.aiUsage.latency_ms ?? 0) / 100) / 10} 秒</span><span className="rounded-full bg-slate-100 px-3 py-1">输入 {report.aiUsage.input_tokens ?? 0} tokens</span><span className="rounded-full bg-slate-100 px-3 py-1">输出 {report.aiUsage.output_tokens ?? 0} tokens</span></div>}<p className="mt-4 rounded-xl bg-amber-50 p-3 text-xs leading-6 text-amber-900">{aiUsed ? (report.evidenceContextVersion === "source-context-v2" ? "引用编号与所展示原文已校验；解释是否充分受证据支持仍需人工核对。代码未执行，运行结果、测试质量和本人贡献均未认证。" : "历史报告仅核验引用编号，未通过本轮完整上下文与过度推断检查，建议重新生成报告。") : report.aiFallbackUsed ? "外部模型调用或校验失败，本报告已自动使用本地规则结果。" : "有证据支持不等于能力认证；没有找到证据不代表没有能力。暂不支持的技能不评级。"}</p>{user?.role !== "enterprise" && <Link className="mt-4 inline-block text-sm text-indigo-600" href={`/tasks/${report.taskId}`}>查看实际处理记录 →</Link>}</section>
+    <section className="panel"><h2 className="font-semibold">本次使用的材料版本</h2><ul className="mt-3 space-y-3">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="rounded-lg bg-slate-50 p-3"><p className="text-sm">{material.kind === "resume" ? "简历" : "项目 / 作品"} · {material.title} · 第 {material.versionNumber} 版{user?.role === "student" && <Link className="ml-3 text-indigo-600" href={`/materials/${material.kind}/${material.id}`}>预览</Link>}</p><details className="mt-2 text-xs text-slate-500"><summary className="cursor-pointer">查看版本校验信息</summary><p className="mt-2 break-all">版本：{material.id}<br />内容摘要：{material.contentHash}</p></details></li>)}</ul></section>
+    <section className="panel">
+      <h2 className="font-semibold">免费 DeepSeek 网页辅助分析</h2>
+      <p className="mt-2 text-sm leading-7 text-slate-600">无需 API Key。项目生成受约束的提示词，你检查后手动发送到 DeepSeek，再把 JSON 回答粘贴回来。导入时会重新校验引用、评级上限和过度结论。</p>
+      {!handoff ? <button className="btn-secondary mt-4" disabled={deepSeekBusy} onClick={prepareDeepSeek}>{deepSeekBusy ? "正在准备…" : "生成脱敏提示词"}</button> : <div className="mt-4 space-y-4">
+        <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-amber-900">{handoff.privacyNotice}</p>
+        <textarea className="min-h-48 w-full rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-xs" readOnly value={handoff.prompt} aria-label="DeepSeek 分析提示词" />
+        <div className="flex flex-wrap gap-3"><button className="btn-secondary" onClick={copyPrompt}>{copied ? "已复制" : "复制提示词"}</button><a className="btn-secondary" href={handoff.providerUrl} target="_blank" rel="noreferrer">打开 DeepSeek 官方网页</a></div>
+        <ol className="list-decimal space-y-1 pl-5 text-xs leading-6 text-slate-500"><li>复制提示词并在 DeepSeek 新对话中发送。</li><li>复制它返回的完整 JSON；不要自行修改引用编号。</li><li>粘贴到下方并执行本地校验。</li></ol>
+        <textarea className="min-h-40 w-full rounded-lg border border-slate-200 bg-white p-3 font-mono text-xs" placeholder="在此粘贴 DeepSeek 返回的 JSON" value={deepSeekResponse} onChange={event => setDeepSeekResponse(event.target.value)} aria-label="DeepSeek JSON 回答" />
+        <button className="btn-primary" disabled={deepSeekBusy || !deepSeekResponse.trim()} onClick={importDeepSeek}>{deepSeekBusy ? "正在校验…" : "校验并写入报告"}</button>
+      </div>}
+    </section>
+    <details className="panel"><summary className="cursor-pointer font-semibold">证据等级如何划分？</summary><p className="mt-3 text-sm leading-7">1 级：基础线索；2 级：局部操作；3 级：任务实现；4 级：验证闭环；5 级：工程验证。当前自动判定至 3 级，4、5 级需可审计的验证与复核流程，尚未开放授予。仅自述、未找到证据和规则不支持均不评级。等级参考考试的知识应用与岗位实践维度设计，不等于软考资格或 NCRE 等级。岗位权重只表示重要性，不参与平均等级。借鉴技能图谱的领域分层，AI 逐项审查相关性、实质操作和完整任务；规则约束最高等级，模型可以降低评级。AI 初评及采纳证据均不等于独立认证。</p><p className="mt-2 text-xs text-slate-500">参考：<a className="underline" href="https://ncre.neea.edu.cn/xhtml1/folder/1507/909-1.htm" target="_blank" rel="noreferrer">全国计算机等级考试介绍</a>、<a className="underline" href="https://gxt.hunan.gov.cn/gxt/rkb/zgjs11/202202/t20220210_22483921.html" target="_blank" rel="noreferrer">软考数据库系统工程师说明</a>。本项目采用自定义证据判据。</p></details>
+    <p className="text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
+    <section className="space-y-3"><h2 className="text-lg font-semibold">逐项证据</h2>{report.items.map(item => <article key={item.requirementId} className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="font-semibold">{item.requirementTitle}</h3><p className="mt-2 text-xs text-slate-500">{item.skill} · 岗位权重 {item.weight} / 5</p></div><div className="text-right"><span className="rounded-full bg-indigo-50 px-3 py-1 text-xs text-indigo-700">{VERDICTS[item.verdict] ?? item.verdict}</span><p className="mt-3 text-sm">{item.evidenceLevel != null ? `实践证据 ${item.evidenceLevel}/5` : (item.evidenceLevelLabel ?? "待评估")}</p></div></div>
+      <p className="mt-4 text-sm leading-6 text-slate-600">{item.explanation}</p><p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm">{item.claimed ? `简历声明：${item.claimText || item.skill}` : "未从简历中识别到该技能声明"}</p>
+      <div className="mt-3 rounded-lg bg-slate-50 p-3 text-sm leading-6"><p className="mb-2 text-xs text-indigo-700">{item.skillPath?.join(" → ")} · {item.evidenceLevelSource === "ai_preliminary" ? "AI 初评 · 待独立核验" : item.evidenceLevelSource === "review_suspended" ? "人工复核已暂停等级" : "规则评级 · 未采用 AI 评级"}</p><p>{item.evidenceLevelLabel}：{item.evidenceLevelReason}</p><p className="mt-1 text-slate-600">仍缺少：{item.evidenceLevelGap}</p><p className="mt-2 text-xs text-slate-400">等级规则 {item.evidenceLevelVersion} · 基于保存材料判定，不代表考试认证</p></div>
+      {!!item.ratingCriteria?.length && <ul className="mt-3 space-y-2 text-sm">{item.ratingCriteria.map(criterion => <li key={criterion.criterion} className="rounded-lg border border-slate-200 p-3"><strong>{CRITERION_LABELS[criterion.criterion] ?? criterion.criterion}：{criterion.supported ? "AI 判断支持" : "尚未支持"}</strong><p className="mt-1 text-slate-600">{criterion.reason}</p><div className="mt-2 flex gap-3">{criterion.citation_ids.map(citation => <a className="text-xs text-indigo-600 underline" key={citation} href={`#citation-${citation}`}>{citation}</a>)}</div></li>)}</ul>}
+      {item.aiStatus === "validated" && <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50/60 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm font-semibold text-indigo-900">{item.aiOrigin === "deepseek_web_manual" ? "DeepSeek 网页导入解释" : "AI 证据解释"}</p>{item.aiConfidence !== null && <span className="text-xs text-indigo-700">解释置信度 {Math.round(item.aiConfidence * 100)}%</span>}</div><p className="mt-3 text-sm leading-6 text-indigo-950">{item.aiExplanation}</p>{item.aiCitationIds.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.aiCitationIds.map(citation => <a key={citation} className="rounded-full bg-white px-3 py-1 text-xs text-indigo-700 shadow-sm" href={`#citation-${citation}`}>引用 {citation}</a>)}</div>}{item.aiInformationGap && <p className="mt-3 text-xs leading-6 text-slate-600"><strong>仍缺少：</strong>{item.aiInformationGap}</p>}{item.aiSuggestion && <p className="mt-1 text-xs leading-6 text-slate-600"><strong>建议补充：</strong>{item.aiSuggestion}</p>}</div>}
+      {item.evidenceList.length ? <details className="mt-4" open={item.aiCitationIds.length > 0}><summary className="cursor-pointer text-sm font-medium text-indigo-600">查看 {item.evidenceList.length} 条来源证据</summary><div className="mt-4 space-y-3">{item.evidenceList.map((evidence, index) => <div id={evidence.citationId ? `citation-${evidence.citationId}` : undefined} key={`${evidence.filePath}-${index}`} className={`scroll-mt-24 rounded-xl border p-4 ${evidence.citationId && item.aiCitationIds.includes(evidence.citationId) ? "border-indigo-300 bg-indigo-50/40" : "border-slate-200"}`}><p className="break-all text-xs font-medium text-slate-700">{evidence.citationId && <span className="mr-2 rounded bg-indigo-100 px-2 py-0.5 text-indigo-700">{evidence.citationId}</span>}{evidence.filePath} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</p><p className="mt-2 text-xs leading-6 text-slate-500">{evidence.explanation}</p><EvidenceSnippet evidence={evidence} /><details className="mt-3 text-xs text-slate-500"><summary className="cursor-pointer">证据定位信息</summary><p className="mt-2 break-all">证据类型：{evidence.evidenceType}<br />材料版本：{evidence.projectVersionId ?? "历史版本未记录"}<br />内容摘要：{evidence.contentHash}</p></details></div>)}</div></details> : <p className="mt-4 text-sm text-slate-500">{item.verdict === "unsupported" ? "该技能超出当前规则覆盖范围，建议人工审阅。" : "本次材料中未找到支持证据，可补充作品、说明或在面试中核实。"}</p>}
+      {item.evidenceList.length > 0 && <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm font-medium">人工复核</p><span className="text-xs text-slate-500">{REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</span></div><textarea className="mt-3 min-h-20 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm" maxLength={1000} placeholder="可选：记录采纳、驳回或修正原因" value={reviewNotes[item.requirementId] ?? item.reviewerNote ?? ""} onChange={event => setReviewNotes(notes => ({ ...notes, [item.requirementId]: event.target.value }))} /><div className="mt-3 flex flex-wrap gap-2"><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "accepted")}>采纳证据</button><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "rejected")}>驳回证据</button><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "corrected")}>标记已修正</button>{item.confirmationStatus !== "pending" && <button className="px-3 py-2 text-xs text-slate-500" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "pending")}>恢复待复核</button>}</div>{item.confirmedAt && <p className="mt-2 text-xs text-slate-400">复核时间：{new Date(item.confirmedAt).toLocaleString("zh-CN")}</p>}</div>}
+      <p className="mt-4 text-xs text-slate-400">评级规则版本：{item.evidenceLevelVersion}</p>
+    </article>)}</section>
+  </div>;
+}

@@ -1,0 +1,9 @@
+合成测试材料，不对应真实个人或组织。代码片段未执行，指标为虚构数据，不证明本人贡献或生产能力。
+作品：任务列表页面设计
+TypeScript：type Task = { id: number; title: string };
+React 组件片段：function List({tasks}: {tasks: Task[]}) { return <ul>{tasks.map(t => <li key={t.id}>{t.title}</li>)}</ul>; }
+接口调用片段：const response = await fetch('/api/tasks'); if (!response.ok) throw new Error('加载失败'); const tasks = await response.json();
+CSS：.tasks { display: grid; grid-template-columns: repeat(3, 1fr); } @media (max-width: 600px) { .tasks { grid-template-columns: 1fr; } }
+前端测试计划：加载中显示提示；接口失败显示错误；空列表显示空状态。未提供测试实现。
+
+材料限制：有组件和样式片段；没有完整可运行工程、交互测试或运行截图。

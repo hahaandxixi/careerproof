@@ -1,0 +1,326 @@
+[
+  {
+    "title": "Python 后端开发实习生（合成演示）",
+    "category": "software",
+    "requirements": [
+      {
+        "skillName": "Python",
+        "weight": 5,
+        "rawText": "Python 业务函数实现",
+        "isRequired": true
+      },
+      {
+        "skillName": "FastAPI",
+        "weight": 5,
+        "rawText": "FastAPI 路由与请求处理",
+        "isRequired": true
+      },
+      {
+        "skillName": "PostgreSQL",
+        "weight": 4,
+        "rawText": "PostgreSQL 数据访问代码",
+        "isRequired": true
+      },
+      {
+        "skillName": "pytest",
+        "weight": 3,
+        "rawText": "pytest 测试和断言",
+        "isRequired": true
+      },
+      {
+        "skillName": "Redis",
+        "weight": 2,
+        "rawText": "Redis 读写或缓存逻辑",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "前端开发工程师（合成演示）",
+    "category": "software",
+    "requirements": [
+      {
+        "skillName": "TypeScript",
+        "weight": 5,
+        "rawText": "TypeScript 类型定义与业务代码",
+        "isRequired": true
+      },
+      {
+        "skillName": "React",
+        "weight": 5,
+        "rawText": "React 组件与状态交互",
+        "isRequired": true
+      },
+      {
+        "skillName": "CSS",
+        "weight": 4,
+        "rawText": "页面布局与响应式样式",
+        "isRequired": true
+      },
+      {
+        "skillName": "接口调用",
+        "weight": 4,
+        "rawText": "请求错误处理与加载状态",
+        "isRequired": true
+      },
+      {
+        "skillName": "前端测试",
+        "weight": 3,
+        "rawText": "交互测试与断言",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "软件测试工程师（合成演示）",
+    "category": "software",
+    "requirements": [
+      {
+        "skillName": "测试用例",
+        "weight": 5,
+        "rawText": "测试前置条件、步骤和预期结果",
+        "isRequired": true
+      },
+      {
+        "skillName": "pytest",
+        "weight": 5,
+        "rawText": "自动化测试实现与断言",
+        "isRequired": true
+      },
+      {
+        "skillName": "接口测试",
+        "weight": 4,
+        "rawText": "接口正常及异常路径测试",
+        "isRequired": true
+      },
+      {
+        "skillName": "缺陷记录",
+        "weight": 4,
+        "rawText": "缺陷复现步骤与验证记录",
+        "isRequired": true
+      },
+      {
+        "skillName": "测试报告",
+        "weight": 3,
+        "rawText": "实际运行结果与覆盖范围",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "数据分析师（合成演示）",
+    "category": "data_analysis",
+    "requirements": [
+      {
+        "skillName": "SQL",
+        "weight": 5,
+        "rawText": "用于分析的数据查询",
+        "isRequired": true
+      },
+      {
+        "skillName": "数据清洗",
+        "weight": 5,
+        "rawText": "缺失值、重复值和异常值处理",
+        "isRequired": true
+      },
+      {
+        "skillName": "统计分析",
+        "weight": 4,
+        "rawText": "统计方法、假设与计算过程",
+        "isRequired": true
+      },
+      {
+        "skillName": "数据可视化",
+        "weight": 4,
+        "rawText": "图表与指标口径",
+        "isRequired": true
+      },
+      {
+        "skillName": "分析报告",
+        "weight": 3,
+        "rawText": "数据支撑的结论和限制",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "产品助理（合成演示）",
+    "category": "other",
+    "requirements": [
+      {
+        "skillName": "需求分析",
+        "weight": 5,
+        "rawText": "需求目标、范围与验收条件",
+        "isRequired": true
+      },
+      {
+        "skillName": "用户调研",
+        "weight": 4,
+        "rawText": "访谈提纲、记录与发现",
+        "isRequired": true
+      },
+      {
+        "skillName": "原型设计",
+        "weight": 4,
+        "rawText": "页面原型和交互流程",
+        "isRequired": true
+      },
+      {
+        "skillName": "需求文档",
+        "weight": 5,
+        "rawText": "功能规则和异常流程",
+        "isRequired": true
+      },
+      {
+        "skillName": "项目管理",
+        "weight": 3,
+        "rawText": "优先级、排期及变更记录",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "用户运营专员（合成演示）",
+    "category": "operations",
+    "requirements": [
+      {
+        "skillName": "活动策划",
+        "weight": 5,
+        "rawText": "活动目标、流程与预算",
+        "isRequired": true
+      },
+      {
+        "skillName": "内容运营",
+        "weight": 4,
+        "rawText": "内容计划与具体样稿",
+        "isRequired": true
+      },
+      {
+        "skillName": "用户调研",
+        "weight": 4,
+        "rawText": "用户反馈记录与归纳",
+        "isRequired": true
+      },
+      {
+        "skillName": "效果分析",
+        "weight": 5,
+        "rawText": "指标定义、数据与复盘",
+        "isRequired": true
+      },
+      {
+        "skillName": "用户分层",
+        "weight": 3,
+        "rawText": "分群依据和触达策略",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "自动化运维工程师（合成演示）",
+    "category": "software",
+    "requirements": [
+      {
+        "skillName": "Linux",
+        "weight": 4,
+        "rawText": "Linux 配置及故障排查记录",
+        "isRequired": true
+      },
+      {
+        "skillName": "Shell",
+        "weight": 5,
+        "rawText": "自动化脚本和错误处理",
+        "isRequired": true
+      },
+      {
+        "skillName": "Docker",
+        "weight": 4,
+        "rawText": "镜像构建及服务配置",
+        "isRequired": true
+      },
+      {
+        "skillName": "CI/CD",
+        "weight": 5,
+        "rawText": "流水线、失败处理和回滚步骤",
+        "isRequired": true
+      },
+      {
+        "skillName": "监控告警",
+        "weight": 4,
+        "rawText": "监控指标、告警规则和处置流程",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "数据库工程师 DBA（合成演示）",
+    "category": "software",
+    "requirements": [
+      {
+        "skillName": "SQL",
+        "weight": 4,
+        "rawText": "数据库查询及事务处理",
+        "isRequired": true
+      },
+      {
+        "skillName": "索引优化",
+        "weight": 5,
+        "rawText": "索引设计、执行计划和优化对比",
+        "isRequired": true
+      },
+      {
+        "skillName": "备份恢复",
+        "weight": 5,
+        "rawText": "备份脚本及恢复演练记录",
+        "isRequired": true
+      },
+      {
+        "skillName": "权限管理",
+        "weight": 4,
+        "rawText": "最小权限角色与授权配置",
+        "isRequired": true
+      },
+      {
+        "skillName": "数据库监控",
+        "weight": 4,
+        "rawText": "数据库指标、慢查询与排查记录",
+        "isRequired": true
+      }
+    ]
+  },
+  {
+    "title": "数据工程师（合成演示）",
+    "category": "data_analysis",
+    "requirements": [
+      {
+        "skillName": "数据采集",
+        "weight": 4,
+        "rawText": "数据源读取及异常处理",
+        "isRequired": true
+      },
+      {
+        "skillName": "ETL",
+        "weight": 5,
+        "rawText": "数据抽取、转换和写入逻辑",
+        "isRequired": true
+      },
+      {
+        "skillName": "任务调度",
+        "weight": 4,
+        "rawText": "调度依赖与运行配置",
+        "isRequired": true
+      },
+      {
+        "skillName": "数据质量",
+        "weight": 5,
+        "rawText": "数据校验规则与异常记录",
+        "isRequired": true
+      },
+      {
+        "skillName": "失败重试",
+        "weight": 4,
+        "rawText": "重试、幂等与断点恢复实现",
+        "isRequired": true
+      }
+    ]
+  }
+]

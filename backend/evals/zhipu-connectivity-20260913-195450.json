@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-09-13T11:54:50.057878+00:00",
+  "provider": "zhipu",
+  "model": "glm-4.7-flash",
+  "attempts": 1,
+  "maxOutputTokens": 64,
+  "httpStatus": 200,
+  "elapsedMs": 54084,
+  "replyReceived": true,
+  "replyIsOK": true,
+  "finishReason": "stop",
+  "usage": {
+    "completion_tokens": 2,
+    "prompt_tokens": 10,
+    "total_tokens": 12
+  },
+  "billingVerified": false,
+  "projectExternalEnabled": false,
+  "note": "Synthetic short-response connectivity only; not an evidence-analysis or semantic-quality evaluation. No credentials recorded."
+}

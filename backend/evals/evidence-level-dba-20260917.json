@@ -1,0 +1,42 @@
+[
+  {
+    "skill": "SQL",
+    "evidenceLevel": 2,
+    "evidenceLevelLabel": "相关线索",
+    "evidenceLevelReason": "存在相关代码、配置、文档或命令，尚不满足完整直接实现的判定。",
+    "evidenceLevelGap": "补充完整实现上下文和实际验证材料；文件存在不等于运行成功。",
+    "weight": 4
+  },
+  {
+    "skill": "索引优化",
+    "evidenceLevel": 2,
+    "evidenceLevelLabel": "相关线索",
+    "evidenceLevelReason": "发现相关定义或命令，但不足以核实完整优化或恢复过程。",
+    "evidenceLevelGap": "索引需执行计划与前后对比；备份恢复需完整恢复步骤和一致性验证记录。",
+    "weight": 5
+  },
+  {
+    "skill": "备份恢复",
+    "evidenceLevel": 2,
+    "evidenceLevelLabel": "相关线索",
+    "evidenceLevelReason": "发现相关定义或命令，但不足以核实完整优化或恢复过程。",
+    "evidenceLevelGap": "索引需执行计划与前后对比；备份恢复需完整恢复步骤和一致性验证记录。",
+    "weight": 5
+  },
+  {
+    "skill": "权限管理",
+    "evidenceLevel": 2,
+    "evidenceLevelLabel": "相关线索",
+    "evidenceLevelReason": "存在相关代码、配置、文档或命令，尚不满足完整直接实现的判定。",
+    "evidenceLevelGap": "补充完整实现上下文和实际验证材料；文件存在不等于运行成功。",
+    "weight": 4
+  },
+  {
+    "skill": "数据库监控",
+    "evidenceLevel": 2,
+    "evidenceLevelLabel": "相关线索",
+    "evidenceLevelReason": "存在相关代码、配置、文档或命令，尚不满足完整直接实现的判定。",
+    "evidenceLevelGap": "补充完整实现上下文和实际验证材料；文件存在不等于运行成功。",
+    "weight": 4
+  }
+]

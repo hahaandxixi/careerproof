@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "frontend",
+    "title": "前端开发",
+    "boundary": "有组件和样式片段；没有完整可运行工程、交互测试或运行截图。"
+  },
+  {
+    "slug": "qa",
+    "title": "软件测试",
+    "boundary": "有用例、断言和虚构缺陷记录；没有实际测试结果。"
+  },
+  {
+    "slug": "analytics",
+    "title": "数据分析",
+    "boundary": "有清洗规则、SQL 和可复算指标；只有图表设计，没有实际图表。"
+  },
+  {
+    "slug": "product",
+    "title": "产品助理",
+    "boundary": "有需求、流程和计划；没有访谈记录、可视原型或交付实绩。"
+  },
+  {
+    "slug": "operations",
+    "title": "用户运营",
+    "boundary": "有方案、样稿和虚构指标；没有实际活动执行或用户反馈。"
+  },
+  {
+    "slug": "devops",
+    "title": "自动化运维",
+    "boundary": "有脚本与容器片段；没有流水线配置、生产部署或回滚演练。"
+  },
+  {
+    "slug": "dba",
+    "title": "数据库 DBA",
+    "boundary": "有 SQL、索引、授权及备份片段；没有执行计划输出、恢复演练或性能提升证据。"
+  },
+  {
+    "slug": "data-engineering",
+    "title": "数据工程",
+    "boundary": "有数据规则及写入片段；没有完整管道、调度器、自动重试或运行记录。"
+  }
+]

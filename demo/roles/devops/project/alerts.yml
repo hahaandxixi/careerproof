@@ -1,0 +1,8 @@
+groups:
+  - name: demo
+    rules:
+      - alert: DemoTargetDown
+        expr: up{job="demo"} == 0
+        for: 2m
+        labels:
+          severity: warning

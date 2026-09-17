@@ -1,0 +1,8 @@
+{
+  "source": "ai-rating-smoke-20260917-run3.json",
+  "offline_replay": true,
+  "validation_passed": true,
+  "level": 1,
+  "semantic_note": "正确识别 pass 不含实质操作；information_gap 又称未核验函数体是否有处理，与已见完整函数的解释不一致，仍需语义评测。",
+  "new_network_requests": 0
+}

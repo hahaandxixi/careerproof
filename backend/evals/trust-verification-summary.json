@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-09-13T00:00:00+08:00",
+  "backend": {
+    "count": 110,
+    "passed": 110
+  },
+  "postgresIsolatedSchema": {
+    "count": 12,
+    "passed": 12
+  },
+  "injectedWorkflowFailures": {
+    "count": 11,
+    "passed": 11
+  },
+  "persistedFallbacks": {
+    "count": 4,
+    "passed": 4,
+    "cases": [
+      "test_model_stage_failure_still_persists_rule_report[context]",
+      "test_model_stage_failure_still_persists_rule_report[configuration]",
+      "test_model_stage_failure_still_persists_rule_report[request]",
+      "test_model_stage_failure_still_persists_rule_report[validation]"
+    ]
+  },
+  "frontend": {
+    "testsPassed": 11,
+    "typecheck": true,
+    "productionBuild": true
+  },
+  "browser": {
+    "taskId": "723e22f4-8d99-4062-ba69-d97ba7a9d687",
+    "reportId": "070c6a4e-9f5f-42c2-8389-e0729407da6a",
+    "mode": "real-provider-failure-rule-fallback",
+    "score": 54,
+    "reviewSurvivesReload": true,
+    "capturedConsoleErrors": 0
+  },
+  "providerDiagnostic": {
+    "httpStatus": 400,
+    "errorCode": "Arrearage",
+    "rawCredentialsStored": false
+  },
+  "semanticReview": {
+    "reviewedCount": 0,
+    "conclusionSupportRate": null,
+    "humanOverclaimRate": null,
+    "reason": "No model response; provider unavailable"
+  },
+  "limitations": [
+    "PostgreSQL tests repeat a subset of the 110 tests; counts are not additive",
+    "No fresh-machine dependency installation",
+    "Lexical guard is not semantic entailment"
+  ],
+  "localShutdown": {
+    "confirmed": false,
+    "reason": "Stop script timestamp conversion fixed, but rerun rejected by automatic approval usage limit"
+  },
+  "providerPolicy": {
+    "externalDisabledForNextStartup": true,
+    "liveCallsPaused": true,
+    "reason": "User confirms no free Bailian token supply; do not assume a paid service restoration"
+  }
+}

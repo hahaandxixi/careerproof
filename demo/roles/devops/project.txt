@@ -1,0 +1,20 @@
+合成测试材料，不对应真实个人或组织。代码片段未执行，指标为虚构数据，不证明本人贡献或生产能力。
+作品：本地服务检查方案
+Linux 排查：记录进程、监听端口和服务日志，保留错误证据后处理。
+Shell 脚本片段：
+set -euo pipefail
+for attempt in 1 2 3; do
+  if curl --fail --max-time 3 http://127.0.0.1:8000/health; then exit 0; fi
+  sleep 2
+done
+exit 1
+Dockerfile 片段：
+FROM python:3.12-slim
+WORKDIR /app
+USER 10001
+CMD ["python", "-m", "http.server", "8000"]
+CI/CD 设计：先检查脚本语法，再构建镜像；未提供流水线配置和部署记录。
+监控告警设计：连续三次检查失败通知值班人；未接实际告警平台。
+回滚方案：记录旧镜像摘要，验收失败恢复旧版本；未演练。
+
+材料限制：有脚本与容器片段；没有流水线配置、生产部署或回滚演练。

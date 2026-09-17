@@ -1,0 +1,106 @@
+[
+  {
+    "job": "Python 后端开发实习生（合成演示）",
+    "supported": [
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "pytest",
+      "Redis"
+    ],
+    "unsupported": []
+  },
+  {
+    "job": "前端开发工程师（合成演示）",
+    "supported": [
+      "TypeScript",
+      "React"
+    ],
+    "unsupported": [
+      "CSS",
+      "接口调用",
+      "前端测试"
+    ]
+  },
+  {
+    "job": "软件测试工程师（合成演示）",
+    "supported": [
+      "pytest"
+    ],
+    "unsupported": [
+      "测试用例",
+      "接口测试",
+      "缺陷记录",
+      "测试报告"
+    ]
+  },
+  {
+    "job": "数据分析师（合成演示）",
+    "supported": [
+      "SQL"
+    ],
+    "unsupported": [
+      "数据清洗",
+      "统计分析",
+      "数据可视化",
+      "分析报告"
+    ]
+  },
+  {
+    "job": "产品助理（合成演示）",
+    "supported": [
+      "用户调研"
+    ],
+    "unsupported": [
+      "需求分析",
+      "原型设计",
+      "需求文档",
+      "项目管理"
+    ]
+  },
+  {
+    "job": "用户运营专员（合成演示）",
+    "supported": [
+      "活动策划",
+      "内容运营",
+      "用户调研"
+    ],
+    "unsupported": [
+      "效果分析",
+      "用户分层"
+    ]
+  },
+  {
+    "job": "自动化运维工程师（合成演示）",
+    "supported": [
+      "Linux",
+      "Shell",
+      "Docker",
+      "CI/CD",
+      "监控告警"
+    ],
+    "unsupported": []
+  },
+  {
+    "job": "数据库工程师 DBA（合成演示）",
+    "supported": [
+      "SQL",
+      "索引优化",
+      "备份恢复",
+      "权限管理",
+      "数据库监控"
+    ],
+    "unsupported": []
+  },
+  {
+    "job": "数据工程师（合成演示）",
+    "supported": [],
+    "unsupported": [
+      "数据采集",
+      "ETL",
+      "任务调度",
+      "数据质量",
+      "失败重试"
+    ]
+  }
+]

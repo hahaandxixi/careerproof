@@ -1,0 +1,117 @@
+{
+  "case": "synthetic-empty-function",
+  "elapsed_seconds": 18.595,
+  "fallback": true,
+  "reason": "invalid_output_or_config",
+  "analysis": null,
+  "attempted_usage": {
+    "input_tokens": 1487,
+    "output_tokens": 464,
+    "cache_hit_tokens": 54,
+    "latency_ms": 18591
+  },
+  "expected": "相关线索最多1级；不能把pass认定为实质操作或完整任务",
+  "passed": false,
+  "context": [
+    {
+      "requirement_id": "29233985-38fe-42f0-876d-8a658d6aacea",
+      "requirement_title": "提供处理数据并返回结果的 FastAPI 接口",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "熟悉 FastAPI，声明仅为测试文本",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "synthetic.py",
+          "line_start": 3,
+          "line_end": 5,
+          "evidence_type": "fastapi_route",
+          "strength": "high",
+          "snippet": "@app.get(\"/items\")\ndef items():\n    pass",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "synthetic.py",
+          "line_start": 1,
+          "line_end": 5,
+          "evidence_type": "fastapi_app",
+          "strength": "medium",
+          "snippet": "from fastapi import FastAPI\napp = FastAPI()\n@app.get(\"/items\")\ndef items():\n    pass",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验"
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v1",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+          "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 3
+    }
+  ],
+  "diagnostics": {
+    "raw_analysis": {
+      "summary": "材料中存在 FastAPI 路由定义，但函数体为空实现，未展示数据处理与返回结果的具体逻辑。上下文不完整，无法验证接口的实际功能与运行状态。",
+      "items": [
+        {
+          "requirement_id": "29233985-38fe-42f0-876d-8a658d6aacea",
+          "explanation": "证据 R1-E1 和 R1-E2 展示了 FastAPI 应用的初始化及一个路由端点 `/items` 的定义。然而，函数体仅为 `pass`，未包含任何数据处理逻辑或返回语句。上下文不完整（R1-E2），无法确认完整的实现范围。",
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "information_gap": "未核验函数体是否包含数据处理逻辑；未核验接口是否实际运行并返回结果；未核验候选人是否实际编写了该代码。",
+          "suggestion": "请提供包含具体数据处理逻辑（如查询、计算、转换）的函数实现代码，以及接口的运行日志或测试结果。",
+          "confidence": 0.9,
+          "rating": {
+            "level": 1,
+            "reason": "存在 FastAPI 路由定义，满足相关性要求。",
+            "criteria": [
+              {
+                "criterion": "relevance",
+                "supported": true,
+                "citation_ids": [
+                  "R1-E1",
+                  "R1-E2"
+                ],
+                "reason": "证据中包含 FastAPI 装饰器与路由路径，与岗位要求直接相关。"
+              },
+              {
+                "criterion": "operation",
+                "supported": false,
+                "citation_ids": [],
+                "reason": "函数体为空实现，未展示实质操作。"
+              },
+              {
+                "criterion": "task",
+                "supported": false,
+                "citation_ids": [],
+                "reason": "上下文不完整且函数体为空，无法确认完整任务实现。"
+              }
+            ]
+          }
+        }
+      ],
+      "model": "glm-4.7-flash",
+      "usage": {
+        "input_tokens": 1487,
+        "output_tokens": 464,
+        "cache_hit_tokens": 54,
+        "latency_ms": 18591
+      }
+    },
+    "validation_error": "AI rating reason overclaims"
+  }
+}

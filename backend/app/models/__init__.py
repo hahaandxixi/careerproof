@@ -1,0 +1,65 @@
+from app.models.analysis import (
+    AgentStep,
+    AiUsageLog,
+    AnalysisTask,
+    EvidenceSource,
+    MatchingFormulaVersion,
+    MatchItem,
+    MatchReport,
+    SkillEvidence,
+)
+from app.models.audit import AuditLog
+from app.models.identity import (
+    Enterprise,
+    EnterpriseMembership,
+    RefreshToken,
+    StudentProfile,
+    User,
+)
+from app.models.portfolio import (
+    InterviewAnswer,
+    InterviewSession,
+    Project,
+    ProjectFile,
+    ProjectVersion,
+    Resume,
+    ResumeSection,
+    ResumeVersion,
+)
+from app.models.recruitment import (
+    Application,
+    Job,
+    JobRequirement,
+    Skill,
+    SkillAlias,
+)
+
+__all__ = [
+    "AgentStep",
+    "AiUsageLog",
+    "AnalysisTask",
+    "Application",
+    "AuditLog",
+    "Enterprise",
+    "EnterpriseMembership",
+    "EvidenceSource",
+    "InterviewAnswer",
+    "InterviewSession",
+    "Job",
+    "JobRequirement",
+    "MatchItem",
+    "MatchReport",
+    "MatchingFormulaVersion",
+    "Project",
+    "ProjectFile",
+    "ProjectVersion",
+    "RefreshToken",
+    "Resume",
+    "ResumeSection",
+    "ResumeVersion",
+    "Skill",
+    "SkillAlias",
+    "SkillEvidence",
+    "StudentProfile",
+    "User",
+]

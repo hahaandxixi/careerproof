@@ -1,0 +1,217 @@
+from __future__ import annotations
+
+import asyncio
+from collections.abc import Awaitable, Callable
+from dataclasses import dataclass
+
+import httpx
+from pydantic import ValidationError
+
+from app.agents.contracts import (
+    EvidenceAnalysis,
+    EvidenceCandidate,
+    ModelUsage,
+    RequirementEvidenceContext,
+    validate_grounded_analysis,
+)
+from app.agents.provider import OpenAICompatibleProvider, get_ai_provider
+from app.core.config import settings
+from app.tools.evidence_context import source_key
+from app.tools.evidence_levels import classify_evidence
+from app.tools.matcher import MatchResult
+from app.tools.skill_rubric import rubric_for
+
+
+@dataclass(frozen=True, slots=True)
+class EvidenceWorkflowOutcome:
+    contexts: list[RequirementEvidenceContext]
+    analysis: EvidenceAnalysis | None
+    provider: str
+    model: str | None
+    fallback_used: bool
+    fallback_reason: str | None
+    attempted_usage: ModelUsage | None = None
+    failure_stage: str | None = None
+    repaired: bool = False
+
+
+_MODEL_SEMAPHORE: asyncio.Semaphore | None = None
+_MODEL_SEMAPHORE_SIZE: int | None = None
+
+
+def _model_semaphore() -> asyncio.Semaphore:
+    global _MODEL_SEMAPHORE, _MODEL_SEMAPHORE_SIZE
+    if _MODEL_SEMAPHORE is None or settings.ai_model_concurrency != _MODEL_SEMAPHORE_SIZE:
+        _MODEL_SEMAPHORE = asyncio.Semaphore(settings.ai_model_concurrency)
+        _MODEL_SEMAPHORE_SIZE = settings.ai_model_concurrency
+    return _MODEL_SEMAPHORE
+
+
+async def _notify(progress: Callable[[str], Awaitable[None]] | None, message: str) -> None:
+    if progress:
+        await progress(message)
+
+
+def build_evidence_contexts(result: MatchResult) -> list[RequirementEvidenceContext]:
+    contexts: list[RequirementEvidenceContext] = []
+    for requirement_index, item in enumerate(result.items, 1):
+        evidence = [
+            EvidenceCandidate(
+                citation_id=f"R{requirement_index}-E{evidence_index}",
+                file_path=source.file_path,
+                line_start=source.line_start,
+                line_end=source.line_end,
+                evidence_type=source.evidence_type,
+                strength=source.strength,
+                snippet=source.snippet,
+                context_complete=source.context_complete,
+                context_note=source.context_note,
+            )
+            for evidence_index, source in enumerate(item.evidence_list[:12], 1)
+            if source.snippet.strip()
+        ]
+        evidence = evidence[:3]
+        contexts.append(
+            RequirementEvidenceContext(
+                requirement_id=str(item.requirement_id),
+                requirement_title=item.requirement_title,
+                skill=item.skill,
+                verdict=item.verdict,
+                rule_score=item.rule_base_score,
+                claimed=item.claimed,
+                claim_text=item.claim_text[:500] if item.claim_text else None,
+                evidence=evidence,
+                rating_rubric=rubric_for(item.skill),
+                rating_ceiling=classify_evidence(
+                    {"skill": item.skill, "evidenceList": [e.model_dump() for e in evidence]},
+                    item.verdict,
+                )["evidence_level"],
+            )
+        )
+    return contexts
+
+
+def citation_for_source(context: RequirementEvidenceContext | None, source) -> str | None:
+    if context is None:
+        return None
+    return next(
+        (
+            e.citation_id
+            for e in context.evidence
+            if source_key(e) == source_key(source) and e.snippet == source.snippet
+        ),
+        None,
+    )
+
+
+def _fallback_reason(exc: Exception) -> str:
+    if isinstance(exc, TimeoutError | httpx.TimeoutException):
+        return "timeout"
+    if isinstance(exc, httpx.HTTPStatusError):
+        status = exc.response.status_code
+        if status in {401, 403}:
+            return "authentication"
+        if status == 429:
+            try:
+                if str(exc.response.json().get("error", {}).get("code")) == "1305":
+                    return "provider_busy"
+            except (ValueError, AttributeError, TypeError):
+                pass
+            return "rate_limit"
+        return "provider_http_error"
+    if isinstance(exc, httpx.NetworkError):
+        return "network"
+    if isinstance(exc, ValidationError | ValueError | KeyError | TypeError):
+        return "invalid_output_or_config"
+    return "provider_error"
+
+
+async def run_evidence_workflow(
+    result: MatchResult,
+    progress: Callable[[str], Awaitable[None]] | None = None,
+) -> EvidenceWorkflowOutcome:
+    contexts: list[RequirementEvidenceContext] = []
+    configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
+    configured_model = (
+        settings.zhipu_model
+        if configured_provider == "zhipu"
+        else settings.bailian_model
+        if configured_provider != "rules"
+        else None
+    )
+    analysis = None
+    repaired = False
+    stage = "context"
+    try:
+        async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
+            if result.grounding_error:
+                raise ValueError("source context validation failed")
+            if len(result.items) > settings.ai_max_requirements:
+                raise ValueError("requirement count exceeds AI_MAX_REQUIREMENTS")
+            contexts = build_evidence_contexts(result)
+            stage = "configuration"
+            provider = get_ai_provider()
+            if provider.name == "mock":
+                return EvidenceWorkflowOutcome(contexts, None, "rules", None, False, None)
+            stage = "request"
+            await _notify(progress, "等待可用的模型调用名额")
+            async with _model_semaphore():
+                await _notify(progress, "正在调用模型分析证据与评级判据")
+                if isinstance(provider, OpenAICompatibleProvider):
+                    provider.progress_callback = progress
+                analysis = await provider.analyze_evidence(contexts=contexts)
+                stage = "validation"
+                try:
+                    validate_grounded_analysis(contexts, analysis)
+                except ValueError as validation_error:
+                    if not isinstance(provider, OpenAICompatibleProvider):
+                        raise
+                    await _notify(progress, "模型输出存在冲突，正在进行一次定向修正")
+                    first_usage = analysis.usage
+                    stage = "repair"
+                    repaired_analysis = await provider.analyze_evidence(
+                        contexts=contexts,
+                        validation_feedback=str(validation_error),
+                        previous_analysis=analysis,
+                    )
+                    validate_grounded_analysis(contexts, repaired_analysis)
+                    repaired = True
+                    analysis = repaired_analysis.model_copy(
+                        update={
+                            "usage": repaired_analysis.usage.model_copy(
+                                update={
+                                    "input_tokens": first_usage.input_tokens
+                                    + repaired_analysis.usage.input_tokens,
+                                    "output_tokens": first_usage.output_tokens
+                                    + repaired_analysis.usage.output_tokens,
+                                    "cache_hit_tokens": first_usage.cache_hit_tokens
+                                    + repaired_analysis.usage.cache_hit_tokens,
+                                    "latency_ms": first_usage.latency_ms
+                                    + repaired_analysis.usage.latency_ms,
+                                }
+                            )
+                        }
+                    )
+        return EvidenceWorkflowOutcome(
+            contexts=contexts,
+            analysis=analysis,
+            provider=provider.name,
+            model=analysis.model,
+            fallback_used=False,
+            fallback_reason=None,
+            repaired=repaired,
+        )
+    except Exception as exc:
+        if not settings.ai_local_fallback_enabled:
+            raise
+        return EvidenceWorkflowOutcome(
+            contexts=contexts,
+            analysis=None,
+            provider=configured_provider,
+            model=configured_model,
+            fallback_used=True,
+            fallback_reason=_fallback_reason(exc),
+            attempted_usage=analysis.usage if analysis else None,
+            failure_stage=stage,
+            repaired=repaired,
+        )

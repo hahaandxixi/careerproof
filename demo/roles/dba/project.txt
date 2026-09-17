@@ -1,0 +1,12 @@
+合成测试材料，不对应真实个人或组织。代码片段未执行，指标为虚构数据，不证明本人贡献或生产能力。
+作品：任务表数据库管理方案
+SQL：CREATE TABLE tasks (id bigint PRIMARY KEY, owner_id bigint NOT NULL, state text NOT NULL);
+索引优化：CREATE INDEX tasks_owner_state ON tasks(owner_id, state);
+执行计划查询：EXPLAIN SELECT id FROM tasks WHERE owner_id = 7 AND state = 'open';
+权限管理：CREATE ROLE report_reader NOLOGIN; GRANT SELECT ON tasks TO report_reader;
+备份脚本片段：pg_dump --format=custom --file="$BACKUP_FILE" "$DATABASE_URL"
+备份检查：pg_restore --list "$BACKUP_FILE"
+备份恢复计划：在隔离测试库恢复，核对对象数、行数和关键查询；未实际执行。
+数据库监控设计：关注连接数、锁等待、慢查询和备份失败，尚无监控采样。
+
+材料限制：有 SQL、索引、授权及备份片段；没有执行计划输出、恢复演练或性能提升证据。

@@ -1,0 +1,5 @@
+.ruff_cache/
+.pytest_cache/
+*.log
+Thumbs.db
+.DS_Store

@@ -1,0 +1,536 @@
+{
+  "generatedAt": "2026-09-16T02:30:22.750951+00:00",
+  "scope": "backend synthetic workflow; not browser or database acceptance",
+  "promptVersion": "evidence-trust-v3",
+  "ruleScore": 49.0,
+  "ruleSummary": "共5项岗位要求，其中4项有项目证据支撑，1项仅有简历声明，0项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。",
+  "rules": [
+    {
+      "requirement_id": "2410c4ce-2148-58d8-a45f-19c2fc017b0a",
+      "requirement_title": "提供Python开发实践材料",
+      "skill": "Python",
+      "claimed": true,
+      "claim_text": "求职方向：Python 后端开发实习生",
+      "evidence": {
+        "skill": "Python",
+        "evidence_type": "python_code",
+        "file_path": "app.py",
+        "line_start": 12,
+        "line_end": 14,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "content_hash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+        "context_complete": true,
+        "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+      },
+      "evidence_list": [
+        {
+          "skill": "Python",
+          "evidence_type": "python_code",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "Python",
+          "evidence_type": "python_code",
+          "file_path": "database.py",
+          "line_start": 4,
+          "line_end": 10,
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "Python",
+          "evidence_type": "python_code",
+          "file_path": "test_app.py",
+          "line_start": 9,
+          "line_end": 12,
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "Python",
+          "evidence_type": "python_dependency",
+          "file_path": "requirements.txt",
+          "line_start": 1,
+          "line_end": 1,
+          "snippet": "fastapi==0.116.1",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "content_hash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ],
+      "verdict": "supported",
+      "ai_confidence": null,
+      "rule_base_score": 0.65,
+      "weight": 5,
+      "final_score": 65.0,
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "formula_version": "evidence-v3"
+    },
+    {
+      "requirement_id": "8a681884-2665-5ef4-97c3-620ef2d36986",
+      "requirement_title": "提供FastAPI开发实践材料",
+      "skill": "FastAPI",
+      "claimed": true,
+      "claim_text": "- 使用 Python 开发 Web 服务，熟悉 FastAPI 路由与 Pydantic 数据校验。",
+      "evidence": {
+        "skill": "FastAPI",
+        "evidence_type": "fastapi_route",
+        "file_path": "app.py",
+        "line_start": 12,
+        "line_end": 14,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+        "content_hash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+        "context_complete": true,
+        "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+      },
+      "evidence_list": [
+        {
+          "skill": "FastAPI",
+          "evidence_type": "fastapi_route",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "FastAPI",
+          "evidence_type": "fastapi_app",
+          "file_path": "app.py",
+          "line_start": 2,
+          "line_end": 10,
+          "snippet": "from pydantic import BaseModel\n\napp = FastAPI(title=\"Course Task API\")\n\n\nclass Course(BaseModel):\n    id: int\n    title: str\n",
+          "strength": "medium",
+          "explanation": "创建了FastAPI应用实例；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验"
+        },
+        {
+          "skill": "FastAPI",
+          "evidence_type": "fastapi_dependency",
+          "file_path": "requirements.txt",
+          "line_start": 1,
+          "line_end": 1,
+          "snippet": "fastapi==0.116.1",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "content_hash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ],
+      "verdict": "supported",
+      "ai_confidence": null,
+      "rule_base_score": 0.65,
+      "weight": 5,
+      "final_score": 65.0,
+      "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "formula_version": "evidence-v3"
+    },
+    {
+      "requirement_id": "39dfe7ad-c8f1-58d0-8e49-49b428523c08",
+      "requirement_title": "提供PostgreSQL开发实践材料",
+      "skill": "PostgreSQL",
+      "claimed": true,
+      "claim_text": "- 使用 PostgreSQL 保存业务数据，了解参数化查询。",
+      "evidence": {
+        "skill": "PostgreSQL",
+        "evidence_type": "postgres_usage",
+        "file_path": "database.py",
+        "line_start": 4,
+        "line_end": 10,
+        "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+        "strength": "medium",
+        "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+        "content_hash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+        "context_complete": true,
+        "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+      },
+      "evidence_list": [
+        {
+          "skill": "PostgreSQL",
+          "evidence_type": "postgres_usage",
+          "file_path": "database.py",
+          "line_start": 4,
+          "line_end": 10,
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "strength": "medium",
+          "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "PostgreSQL",
+          "evidence_type": "postgres_dependency",
+          "file_path": "requirements.txt",
+          "line_start": 3,
+          "line_end": 3,
+          "snippet": "psycopg[binary]==3.2.9",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "content_hash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ],
+      "verdict": "partial",
+      "ai_confidence": null,
+      "rule_base_score": 0.4,
+      "weight": 5,
+      "final_score": 40.0,
+      "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+      "formula_version": "evidence-v3"
+    },
+    {
+      "requirement_id": "6061ea9d-6bc9-5584-9179-69abc9c5490d",
+      "requirement_title": "提供pytest开发实践材料",
+      "skill": "pytest",
+      "claimed": true,
+      "claim_text": "- 使用 pytest 编写接口测试。",
+      "evidence": {
+        "skill": "pytest",
+        "evidence_type": "pytest_test",
+        "file_path": "test_app.py",
+        "line_start": 9,
+        "line_end": 12,
+        "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+        "content_hash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+        "context_complete": true,
+        "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+      },
+      "evidence_list": [
+        {
+          "skill": "pytest",
+          "evidence_type": "pytest_test",
+          "file_path": "test_app.py",
+          "line_start": 9,
+          "line_end": 12,
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+          "content_hash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "skill": "pytest",
+          "evidence_type": "pytest_dependency",
+          "file_path": "requirements.txt",
+          "line_start": 4,
+          "line_end": 4,
+          "snippet": "pytest==8.4.2",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "content_hash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ],
+      "verdict": "supported",
+      "ai_confidence": null,
+      "rule_base_score": 0.65,
+      "weight": 5,
+      "final_score": 65.0,
+      "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+      "formula_version": "evidence-v3"
+    },
+    {
+      "requirement_id": "bdc3b920-660e-5b9f-9302-8269ff81d945",
+      "requirement_title": "提供Redis开发实践材料",
+      "skill": "Redis",
+      "claimed": true,
+      "claim_text": "- 了解 Redis，但本次演示项目未提供 Redis 实现证据。",
+      "evidence": null,
+      "evidence_list": [],
+      "verdict": "claimed_only",
+      "ai_confidence": null,
+      "rule_base_score": 0.1,
+      "weight": 5,
+      "final_score": 10.0,
+      "explanation": "简历中存在该技能声明，但项目文件中暂未找到可验证证据",
+      "formula_version": "evidence-v3"
+    }
+  ],
+  "contexts": [
+    {
+      "requirement_id": "2410c4ce-2148-58d8-a45f-19c2fc017b0a",
+      "requirement_title": "提供Python开发实践材料",
+      "skill": "Python",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "求职方向：Python 后端开发实习生",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "database.py",
+          "line_start": 4,
+          "line_end": 10,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R1-E3",
+          "file_path": "test_app.py",
+          "line_start": 9,
+          "line_end": 12,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        }
+      ]
+    },
+    {
+      "requirement_id": "8a681884-2665-5ef4-97c3-620ef2d36986",
+      "requirement_title": "提供FastAPI开发实践材料",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "- 使用 Python 开发 Web 服务，熟悉 FastAPI 路由与 Pydantic 数据校验。",
+      "evidence": [
+        {
+          "citation_id": "R2-E1",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "evidence_type": "fastapi_route",
+          "strength": "high",
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R2-E2",
+          "file_path": "app.py",
+          "line_start": 2,
+          "line_end": 10,
+          "evidence_type": "fastapi_app",
+          "strength": "medium",
+          "snippet": "from pydantic import BaseModel\n\napp = FastAPI(title=\"Course Task API\")\n\n\nclass Course(BaseModel):\n    id: int\n    title: str\n",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R2-E3",
+          "file_path": "requirements.txt",
+          "line_start": 1,
+          "line_end": 1,
+          "evidence_type": "fastapi_dependency",
+          "strength": "low",
+          "snippet": "fastapi==0.116.1",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ]
+    },
+    {
+      "requirement_id": "39dfe7ad-c8f1-58d0-8e49-49b428523c08",
+      "requirement_title": "提供PostgreSQL开发实践材料",
+      "skill": "PostgreSQL",
+      "verdict": "partial",
+      "rule_score": 0.4,
+      "claimed": true,
+      "claim_text": "- 使用 PostgreSQL 保存业务数据，了解参数化查询。",
+      "evidence": [
+        {
+          "citation_id": "R3-E1",
+          "file_path": "database.py",
+          "line_start": 4,
+          "line_end": 10,
+          "evidence_type": "postgres_usage",
+          "strength": "medium",
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R3-E2",
+          "file_path": "requirements.txt",
+          "line_start": 3,
+          "line_end": 3,
+          "evidence_type": "postgres_dependency",
+          "strength": "low",
+          "snippet": "psycopg[binary]==3.2.9",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ]
+    },
+    {
+      "requirement_id": "6061ea9d-6bc9-5584-9179-69abc9c5490d",
+      "requirement_title": "提供pytest开发实践材料",
+      "skill": "pytest",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "- 使用 pytest 编写接口测试。",
+      "evidence": [
+        {
+          "citation_id": "R4-E1",
+          "file_path": "test_app.py",
+          "line_start": 9,
+          "line_end": 12,
+          "evidence_type": "pytest_test",
+          "strength": "high",
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+        },
+        {
+          "citation_id": "R4-E2",
+          "file_path": "requirements.txt",
+          "line_start": 4,
+          "line_end": 4,
+          "evidence_type": "pytest_dependency",
+          "strength": "low",
+          "snippet": "pytest==8.4.2",
+          "context_complete": true,
+          "context_note": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
+        }
+      ]
+    },
+    {
+      "requirement_id": "bdc3b920-660e-5b9f-9302-8269ff81d945",
+      "requirement_title": "提供Redis开发实践材料",
+      "skill": "Redis",
+      "verdict": "claimed_only",
+      "rule_score": 0.1,
+      "claimed": true,
+      "claim_text": "- 了解 Redis，但本次演示项目未提供 Redis 实现证据。",
+      "evidence": []
+    }
+  ],
+  "provider": "zhipu",
+  "model": "glm-4.7-flash",
+  "fallbackUsed": false,
+  "fallbackReason": null,
+  "failureStage": null,
+  "analysis": {
+    "summary": "提供的材料包含Python、FastAPI、PostgreSQL和pytest的开发实践代码片段，但存在部分证据缺失和上下文不完整的情况。未发现Redis相关的实现证据。",
+    "items": [
+      {
+        "requirement_id": "2410c4ce-2148-58d8-a45f-19c2fc017b0a",
+        "explanation": "材料中存在Python代码，包括FastAPI路由装饰器、数据库查询函数和测试函数。",
+        "citation_ids": [
+          "R1-E1",
+          "R1-E2",
+          "R1-E3"
+        ],
+        "information_gap": "未验证代码的运行结果、测试是否通过以及候选人是否实际编写了这些代码。",
+        "suggestion": "建议运行测试套件以验证代码功能，并提供完整的代码提交记录以确认候选人贡献。",
+        "confidence": 0.65
+      },
+      {
+        "requirement_id": "8a681884-2665-5ef4-97c3-620ef2d36986",
+        "explanation": "材料中包含FastAPI应用初始化代码和Pydantic模型定义，但部分片段不完整。",
+        "citation_ids": [
+          "R2-E1",
+          "R2-E2",
+          "R2-E3"
+        ],
+        "information_gap": "FastAPI应用的其他路由实现、完整的数据校验逻辑以及运行状态未验证。",
+        "suggestion": "建议提供完整的FastAPI应用代码和运行日志，以验证路由与数据校验的实现。",
+        "confidence": 0.65
+      },
+      {
+        "requirement_id": "39dfe7ad-c8f1-58d0-8e49-49b428523c08",
+        "explanation": "材料中存在PostgreSQL数据库连接和参数化查询的代码片段。",
+        "citation_ids": [
+          "R3-E1",
+          "R3-E2"
+        ],
+        "information_gap": "数据库连接的建立过程、查询的实际执行结果以及候选人是否实际操作数据库未验证。",
+        "suggestion": "建议提供数据库连接配置和查询执行日志，以验证PostgreSQL的使用情况。",
+        "confidence": 0.4
+      },
+      {
+        "requirement_id": "6061ea9d-6bc9-5584-9179-69abc9c5490d",
+        "explanation": "材料中存在pytest测试函数和依赖声明。",
+        "citation_ids": [
+          "R4-E1",
+          "R4-E2"
+        ],
+        "information_gap": "测试用例的执行结果、覆盖率以及候选人是否实际编写了测试代码未验证。",
+        "suggestion": "建议运行pytest测试套件并查看测试覆盖率报告，以验证测试实践的有效性。",
+        "confidence": 0.65
+      },
+      {
+        "requirement_id": "bdc3b920-660e-5b9f-9302-8269ff81d945",
+        "explanation": "材料中未提供任何Redis相关的代码或配置。",
+        "citation_ids": [],
+        "information_gap": "未验证候选人是否了解Redis或在实际项目中使用过Redis。",
+        "suggestion": "建议补充Redis相关的代码实现或配置文件，以验证候选人对Redis的掌握情况。",
+        "confidence": 0.1
+      }
+    ],
+    "model": "glm-4.7-flash",
+    "usage": {
+      "input_tokens": 2102,
+      "output_tokens": 753,
+      "cache_hit_tokens": 55,
+      "latency_ms": 13195
+    }
+  },
+  "attemptedUsage": null,
+  "humanReview": "pending",
+  "billingVerified": false,
+  "rawModelContent": "{\"summary\":\"提供的材料包含Python、FastAPI、PostgreSQL和pytest的开发实践代码片段，但存在部分证据缺失和上下文不完整的情况。未发现Redis相关的实现证据。\",\"items\":[{\"requirement_id\":\"2410c4ce-2148-58d8-a45f-19c2fc017b0a\",\"explanation\":\"材料中存在Python代码，包括FastAPI路由装饰器、数据库查询函数和测试函数。\",\"citation_ids\":[\"R1-E1\",\"R1-E2\",\"R1-E3\"],\"information_gap\":\"未验证代码的运行结果、测试是否通过以及候选人是否实际编写了这些代码。\",\"suggestion\":\"建议运行测试套件以验证代码功能，并提供完整的代码提交记录以确认候选人贡献。\",\"confidence\":0.65},{\"requirement_id\":\"8a681884-2665-5ef4-97c3-620ef2d36986\",\"explanation\":\"材料中包含FastAPI应用初始化代码和Pydantic模型定义，但部分片段不完整。\",\"citation_ids\":[\"R2-E1\",\"R2-E2\",\"R2-E3\"],\"information_gap\":\"FastAPI应用的其他路由实现、完整的数据校验逻辑以及运行状态未验证。\",\"suggestion\":\"建议提供完整的FastAPI应用代码和运行日志，以验证路由与数据校验的实现。\",\"confidence\":0.65},{\"requirement_id\":\"39dfe7ad-c8f1-58d0-8e49-49b428523c08\",\"explanation\":\"材料中存在PostgreSQL数据库连接和参数化查询的代码片段。\",\"citation_ids\":[\"R3-E1\",\"R3-E2\"],\"information_gap\":\"数据库连接的建立过程、查询的实际执行结果以及候选人是否实际操作数据库未验证。\",\"suggestion\":\"建议提供数据库连接配置和查询执行日志，以验证PostgreSQL的使用情况。\",\"confidence\":0.4},{\"requirement_id\":\"6061ea9d-6bc9-5584-9179-69abc9c5490d\",\"explanation\":\"材料中存在pytest测试函数和依赖声明。\",\"citation_ids\":[\"R4-E1\",\"R4-E2\"],\"information_gap\":\"测试用例的执行结果、覆盖率以及候选人是否实际编写了测试代码未验证。\",\"suggestion\":\"建议运行pytest测试套件并查看测试覆盖率报告，以验证测试实践的有效性。\",\"confidence\":0.65},{\"requirement_id\":\"bdc3b920-660e-5b9f-9302-8269ff81d945\",\"explanation\":\"材料中未提供任何Redis相关的代码或配置。\",\"citation_ids\":[],\"information_gap\":\"未验证候选人是否了解Redis或在实际项目中使用过Redis。\",\"suggestion\":\"建议补充Redis相关的代码实现或配置文件，以验证候选人对Redis的掌握情况。\",\"confidence\":0.1}]}",
+  "rawUsage": {
+    "completion_tokens": 753,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2102,
+    "prompt_tokens_details": {
+      "cached_tokens": 55
+    },
+    "total_tokens": 2855
+  }
+}

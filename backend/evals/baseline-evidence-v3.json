@@ -1,0 +1,58 @@
+{
+  "formulaVersion": "evidence-v3",
+  "generatedAt": "2026-09-10T05:59:18.374831+00:00",
+  "caseCount": 7,
+  "passed": 7,
+  "passRate": 1.0,
+  "results": [
+    {
+      "id": "python-implementation",
+      "passed": true,
+      "actualVerdict": "supported",
+      "actualEvidenceType": "python_code",
+      "citationValid": true
+    },
+    {
+      "id": "fastapi-route",
+      "passed": true,
+      "actualVerdict": "supported",
+      "actualEvidenceType": "fastapi_route",
+      "citationValid": true
+    },
+    {
+      "id": "postgres-runtime",
+      "passed": true,
+      "actualVerdict": "partial",
+      "actualEvidenceType": "postgres_usage",
+      "citationValid": true
+    },
+    {
+      "id": "pytest-assertion",
+      "passed": true,
+      "actualVerdict": "supported",
+      "actualEvidenceType": "pytest_test",
+      "citationValid": true
+    },
+    {
+      "id": "dependency-only",
+      "passed": true,
+      "actualVerdict": "partial",
+      "actualEvidenceType": "fastapi_dependency",
+      "citationValid": true
+    },
+    {
+      "id": "todo-is-not-proof",
+      "passed": true,
+      "actualVerdict": "gap",
+      "actualEvidenceType": null,
+      "citationValid": true
+    },
+    {
+      "id": "unsupported-excluded",
+      "passed": true,
+      "actualVerdict": "unsupported",
+      "actualEvidenceType": null,
+      "citationValid": true
+    }
+  ]
+}

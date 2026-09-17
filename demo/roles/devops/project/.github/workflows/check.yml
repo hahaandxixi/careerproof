@@ -1,0 +1,8 @@
+name: synthetic-check
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash -n healthcheck.sh

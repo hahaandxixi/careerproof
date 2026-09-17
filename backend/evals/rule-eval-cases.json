@@ -1,0 +1,65 @@
+[
+  {
+    "id": "python-implementation",
+    "skill": "Python",
+    "requirement": "能够使用 Python 完成功能开发",
+    "resume": "我使用 Python 完成课程项目。",
+    "files": [{"path": "app.py", "content": "def health():\n    return {\"status\": \"ok\"}\n"}],
+    "expectedVerdict": "supported",
+    "expectedEvidenceType": "python_code"
+  },
+  {
+    "id": "fastapi-route",
+    "skill": "FastAPI",
+    "requirement": "有 FastAPI 接口开发实践",
+    "resume": "熟悉 FastAPI。",
+    "files": [{"path": "app.py", "content": "from fastapi import FastAPI\napp = FastAPI()\n\n@app.get(\"/health\")\ndef health():\n    return {\"ok\": True}\n"}],
+    "expectedVerdict": "supported",
+    "expectedEvidenceType": "fastapi_route"
+  },
+  {
+    "id": "postgres-runtime",
+    "skill": "PostgreSQL",
+    "requirement": "使用 PostgreSQL 保存业务数据",
+    "resume": "做过 PostgreSQL 项目。",
+    "files": [{"path": "database.py", "content": "import psycopg\nconnection = psycopg.connect(\"postgresql://localhost/demo\")\n"}],
+    "expectedVerdict": "partial",
+    "expectedEvidenceType": "postgres_usage"
+  },
+  {
+    "id": "pytest-assertion",
+    "skill": "pytest",
+    "requirement": "能为接口编写 pytest 自动化测试",
+    "resume": "使用 pytest 做过测试。",
+    "files": [{"path": "test_app.py", "content": "def test_health():\n    response = {\"ok\": True}\n    assert response[\"ok\"] is True\n"}],
+    "expectedVerdict": "supported",
+    "expectedEvidenceType": "pytest_test"
+  },
+  {
+    "id": "dependency-only",
+    "skill": "FastAPI",
+    "requirement": "能独立完成 FastAPI 服务开发",
+    "resume": "简历声明 FastAPI。",
+    "files": [{"path": "requirements.txt", "content": "fastapi==0.116.1\n"}],
+    "expectedVerdict": "partial",
+    "expectedEvidenceType": "fastapi_dependency"
+  },
+  {
+    "id": "todo-is-not-proof",
+    "skill": "Redis",
+    "requirement": "实现 Redis 缓存读写",
+    "resume": "没有 Redis 经历。",
+    "files": [{"path": "cache.py", "content": "# TODO: redis.set(\"key\", \"value\")\n"}],
+    "expectedVerdict": "gap",
+    "expectedEvidenceType": null
+  },
+  {
+    "id": "unsupported-excluded",
+    "skill": "钢琴演奏",
+    "requirement": "具备钢琴演奏能力",
+    "resume": "暂无相关经历。",
+    "files": [],
+    "expectedVerdict": "unsupported",
+    "expectedEvidenceType": null
+  }
+]
