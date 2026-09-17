@@ -1,0 +1,90 @@
+{
+  "suite": "retrieval-comparison-v1",
+  "generatedAt": "2026-09-17T15:30:29.813553+00:00",
+  "provider": "zhipu",
+  "model": "glm-4.7-flash",
+  "promptVersion": "evidence-trust-v6-consistency",
+  "syntheticDataOnly": true,
+  "cases": [
+    {
+      "case": "controlled_function_call",
+      "initialContexts": [
+        {
+          "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+          "requirement_title": "提供包含输入校验、服务调用和响应处理的 FastAPI 接口",
+          "skill": "FastAPI",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": false,
+          "claim_text": null,
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "app/routes.py",
+              "line_start": 3,
+              "line_end": 7,
+              "evidence_type": "fastapi_route",
+              "strength": "high",
+              "snippet": "@router.post('/items')\ndef create_item(payload: dict):\n    if 'name' not in payload:\n        return {'error': 'name required'}\n    return {'item': save_item(payload['name'])}",
+              "context_complete": true,
+              "context_note": "完整函数片段；运行结果和本人贡献仍需核验"
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "app/service.py",
+              "line_start": 1,
+              "line_end": 2,
+              "evidence_type": "python_code",
+              "strength": "medium",
+              "snippet": "def save_item(name: str):\n    return {'name': name}",
+              "context_complete": false,
+              "context_note": "局部函数片段；依赖和异常路径未展示"
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v1",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3
+        }
+      ],
+      "status": "error",
+      "manualSemanticReview": "pending",
+      "toolCall": {
+        "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+        "query": "FastAPI 路由定义、输入校验、服务调用、响应处理"
+      },
+      "toolEvent": {
+        "tool": "retrieve_more_evidence",
+        "requirementId": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+        "query": "FastAPI 路由定义、输入校验、服务调用、响应处理",
+        "resultCount": 1,
+        "scope": "current-upload-index",
+        "citationId": "R1-E3"
+      },
+      "errorType": "HTTPStatusError",
+      "error": "HTTPStatusError",
+      "httpStatus": 429,
+      "providerErrorCode": "1305",
+      "elapsedMs": 34071
+    }
+  ],
+  "summary": {
+    "attempted": 1,
+    "accepted": 0,
+    "citationLegalCount": 0,
+    "overclaimFreeCount": 0,
+    "toolRequested": true,
+    "toolReturnedEvidence": true,
+    "note": "结构校验不等于语义正确；结论支持度仍需人工复核。"
+  }
+}

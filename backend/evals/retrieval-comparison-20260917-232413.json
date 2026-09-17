@@ -1,0 +1,294 @@
+{
+  "suite": "retrieval-comparison-v1",
+  "generatedAt": "2026-09-17T15:24:13.297586+00:00",
+  "provider": "zhipu",
+  "model": "glm-4.7-flash",
+  "promptVersion": "evidence-trust-v6-consistency",
+  "syntheticDataOnly": true,
+  "cases": [
+    {
+      "case": "no_evidence",
+      "contexts": [
+        {
+          "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+          "requirement_title": "提供包含输入校验、服务调用和响应处理的 FastAPI 接口",
+          "skill": "FastAPI",
+          "verdict": "gap",
+          "rule_score": 0.0,
+          "claimed": false,
+          "claim_text": null,
+          "evidence": [],
+          "rating_rubric": {
+            "version": "skill-rubric-v1",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": null
+        }
+      ],
+      "status": "accepted",
+      "manualSemanticReview": "pending",
+      "analysis": {
+        "summary": "材料中未发现与 FastAPI 接口开发相关的代码或文档片段，无法评估输入校验、服务调用及响应处理的具体实现。",
+        "items": [
+          {
+            "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+            "explanation": "当前材料为空，未包含任何 FastAPI 相关的代码、路由定义或接口实现。",
+            "citation_ids": [],
+            "information_gap": "未核验是否存在 FastAPI 路由定义、请求输入校验逻辑、服务调用代码及响应处理实现。",
+            "suggestion": "请提供包含 FastAPI 路由、请求体校验（如 Pydantic 模型）、服务调用及响应处理的代码片段。",
+            "confidence": 1.0,
+            "rating": {
+              "level": null,
+              "reason": "无证据支持任何操作或任务实现。",
+              "criteria": [
+                {
+                  "criterion": "relevance",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "材料中未出现 FastAPI 相关内容。"
+                },
+                {
+                  "criterion": "operation",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "无代码片段展示实质处理逻辑。"
+                },
+                {
+                  "criterion": "task",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "未展示完整的接口实现。"
+                }
+              ]
+            }
+          }
+        ],
+        "model": "glm-4.7-flash",
+        "usage": {
+          "input_tokens": 1383,
+          "output_tokens": 347,
+          "cache_hit_tokens": 2,
+          "latency_ms": 49606
+        }
+      },
+      "metrics": {
+        "citationLegal": true,
+        "ratingCeilingRespected": true,
+        "ratingLevels": [
+          null
+        ],
+        "supportedCriteria": 0,
+        "citationsUsed": 0,
+        "lexicalOverclaimFlags": []
+      },
+      "elapsedMs": 49610
+    },
+    {
+      "case": "three_retrieved_evidence",
+      "contexts": [
+        {
+          "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+          "requirement_title": "提供包含输入校验、服务调用和响应处理的 FastAPI 接口",
+          "skill": "FastAPI",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": false,
+          "claim_text": null,
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "app/routes.py",
+              "line_start": 3,
+              "line_end": 7,
+              "evidence_type": "fastapi_route",
+              "strength": "high",
+              "snippet": "@router.post('/items')\ndef create_item(payload: dict):\n    if 'name' not in payload:\n        return {'error': 'name required'}\n    return {'item': save_item(payload['name'])}",
+              "context_complete": true,
+              "context_note": "完整函数片段；运行结果和本人贡献仍需核验"
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "app/service.py",
+              "line_start": 1,
+              "line_end": 2,
+              "evidence_type": "python_code",
+              "strength": "medium",
+              "snippet": "def save_item(name: str):\n    return {'name': name}",
+              "context_complete": false,
+              "context_note": "局部函数片段；依赖和异常路径未展示"
+            },
+            {
+              "citation_id": "R1-E3",
+              "file_path": "tests/test_routes.py",
+              "line_start": 4,
+              "line_end": 7,
+              "evidence_type": "pytest_test",
+              "strength": "high",
+              "snippet": "def test_missing_name(client):\n    response = client.post('/items', json={})\n    assert response.json() == {'error': 'name required'}\n    assert response.status_code == 200",
+              "context_complete": true,
+              "context_note": "完整测试函数；运行结果和本人贡献仍需核验"
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v1",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3
+        }
+      ],
+      "status": "accepted",
+      "manualSemanticReview": "pending",
+      "analysis": {
+        "summary": "材料展示了 FastAPI 路由、服务函数及对应的输入校验测试，但未展示服务运行、完整依赖及本人贡献。",
+        "items": [
+          {
+            "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+            "explanation": "证据 R1-E1 展示了 FastAPI 路由装饰器及包含输入校验（检查 'name'）和响应处理的函数体。证据 R1-E2 展示了对应的服务函数片段。证据 R1-E3 展示了针对输入校验的测试用例。但材料未展示依赖安装、服务启动、运行结果及候选人实际贡献。",
+            "citation_ids": [
+              "R1-E1",
+              "R1-E2",
+              "R1-E3"
+            ],
+            "information_gap": "未核验 FastAPI 依赖是否安装、服务是否成功启动、测试是否实际运行通过、以及候选人是否编写或实现了上述代码。",
+            "suggestion": "请提供依赖配置文件（如 requirements.txt）、服务启动命令及日志、测试运行报告，以核验运行状态与本人贡献。",
+            "confidence": 0.9,
+            "rating": {
+              "level": 2,
+              "reason": "存在相关路由与输入校验逻辑，但未展示完整任务实现（如服务运行、依赖管理）。",
+              "criteria": [
+                {
+                  "criterion": "relevance",
+                  "supported": true,
+                  "citation_ids": [
+                    "R1-E1"
+                  ],
+                  "reason": "片段包含 FastAPI 路由定义，与岗位要求直接相关。"
+                },
+                {
+                  "criterion": "operation",
+                  "supported": true,
+                  "citation_ids": [
+                    "R1-E1"
+                  ],
+                  "reason": "路由函数包含非空输入校验逻辑（检查 'name'）。"
+                },
+                {
+                  "criterion": "task",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "未展示服务运行、依赖管理或完整项目上下文，无法确认完整任务实现。"
+                }
+              ]
+            }
+          }
+        ],
+        "model": "glm-4.7-flash",
+        "usage": {
+          "input_tokens": 1720,
+          "output_tokens": 481,
+          "cache_hit_tokens": 54,
+          "latency_ms": 57667
+        }
+      },
+      "metrics": {
+        "citationLegal": true,
+        "ratingCeilingRespected": true,
+        "ratingLevels": [
+          2
+        ],
+        "supportedCriteria": 2,
+        "citationsUsed": 3,
+        "lexicalOverclaimFlags": []
+      },
+      "elapsedMs": 57670
+    },
+    {
+      "case": "controlled_function_call",
+      "initialContexts": [
+        {
+          "requirement_id": "d7453ef3-8f86-5337-86aa-1d1d11b52bf2",
+          "requirement_title": "提供包含输入校验、服务调用和响应处理的 FastAPI 接口",
+          "skill": "FastAPI",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": false,
+          "claim_text": null,
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "app/routes.py",
+              "line_start": 3,
+              "line_end": 7,
+              "evidence_type": "fastapi_route",
+              "strength": "high",
+              "snippet": "@router.post('/items')\ndef create_item(payload: dict):\n    if 'name' not in payload:\n        return {'error': 'name required'}\n    return {'item': save_item(payload['name'])}",
+              "context_complete": true,
+              "context_note": "完整函数片段；运行结果和本人贡献仍需核验"
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "app/service.py",
+              "line_start": 1,
+              "line_end": 2,
+              "evidence_type": "python_code",
+              "strength": "medium",
+              "snippet": "def save_item(name: str):\n    return {'name': name}",
+              "context_complete": false,
+              "context_note": "局部函数片段；依赖和异常路径未展示"
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v1",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3
+        }
+      ],
+      "status": "error",
+      "manualSemanticReview": "pending",
+      "toolCall": null,
+      "toolEvent": null,
+      "errorType": "HTTPStatusError",
+      "error": "HTTPStatusError",
+      "httpStatus": 429,
+      "providerErrorCode": "1305",
+      "elapsedMs": 1347
+    }
+  ],
+  "summary": {
+    "attempted": 3,
+    "accepted": 2,
+    "citationLegalCount": 2,
+    "overclaimFreeCount": 2,
+    "toolRequested": false,
+    "toolReturnedEvidence": false,
+    "note": "结构校验不等于语义正确；结论支持度仍需人工复核。"
+  }
+}
