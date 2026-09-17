@@ -1,0 +1,10 @@
+{
+  "case": "synthetic-local-ocr",
+  "input": "ocr-smoke-20260917.png",
+  "engine": "rapidocr-3.9.2+onnxruntime-1.30.0",
+  "text": "CareerProof 合成材料\nFastAPI 接口开发与 PostgreSQL 数据库\nOCR 结果必须对照原图复核",
+  "averageConfidence": 0.9880866666666667,
+  "lineCount": 3,
+  "latencyMs": 1203,
+  "containsExpectedTerms": true
+}

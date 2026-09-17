@@ -7,7 +7,9 @@ import fitz
 from docx import Document
 from docx.oxml.ns import qn
 
+from app.core.config import settings
 from app.core.exceptions import AppError
+from app.tools.ocr import marked_ocr_text, recognize_image
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,13 +56,24 @@ def parse_document(path: Path, mime_type: str) -> list[DocumentSection]:
     if mime_type == "application/pdf" or path.suffix.lower() == ".pdf":
         with fitz.open(path) as document:
             sections = []
+            ocr_pages = 0
             for index, page in enumerate(document):
                 text = page.get_text("text").strip()
                 if text:
                     sections.append(DocumentSection("page", text, index + 1))
+                elif settings.ocr_enabled and ocr_pages < settings.ocr_max_pages:
+                    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+                    if pixmap.width * pixmap.height > settings.ocr_max_image_pixels:
+                        raise AppError("PDF页面像素过大，无法安全进行OCR识别", code=4026)
+                    result = recognize_image(pixmap.tobytes("png"))
+                    ocr_pages += 1
+                    if result.text:
+                        sections.append(
+                            DocumentSection("ocr_page", marked_ocr_text(result), index + 1)
+                        )
             if not sections:
                 raise AppError(
-                    "PDF未提取到文字，可能为空白或扫描件；请先进行OCR识别后重新上传", code=4024
+                    "PDF未提取或识别到可分析文字，请上传清晰扫描件或文字版文档", code=4024
                 )
             return sections
     if (
@@ -77,7 +90,18 @@ def parse_document(path: Path, mime_type: str) -> list[DocumentSection]:
         if not text:
             raise AppError("文档没有可分析文字，请检查内容", code=4024)
         return [DocumentSection("document", text, None)]
-    raise AppError("仅支持PDF、DOCX或TXT简历", code=4020, status_code=415)
+    if mime_type.startswith("image/") or path.suffix.lower() in {
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".webp",
+        ".bmp",
+    }:
+        result = recognize_image(path.read_bytes())
+        if not result.text:
+            raise AppError("图片未识别到可分析文字，请上传清晰原图", code=4024)
+        return [DocumentSection("ocr_image", marked_ocr_text(result), 1)]
+    raise AppError("仅支持PDF、DOCX、TXT或常见图片文件", code=4020, status_code=415)
 
 
 def language_for(path: Path) -> str | None:

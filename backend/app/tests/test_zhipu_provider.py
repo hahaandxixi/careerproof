@@ -293,7 +293,7 @@ async def test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis(m
                                     {
                                         "function": {
                                             "name": "read_arbitrary_file",
-                                            "arguments": '{}',
+                                            "arguments": "{}",
                                         }
                                     }
                                 ]

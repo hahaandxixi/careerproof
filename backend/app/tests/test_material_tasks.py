@@ -25,7 +25,7 @@ from app.tests.test_portfolio_api import app_database, student  # noqa: F401
 from app.tools.document_parser import parse_document
 
 
-def test_docx_tables_are_extracted_and_blank_pdf_requests_ocr(tmp_path):
+def test_docx_tables_are_extracted_and_blank_pdf_without_ocr_fails(tmp_path, monkeypatch):
     document = Document()
     table = document.add_table(rows=2, cols=2)
     table.cell(0, 0).text = "经历"
@@ -40,7 +40,8 @@ def test_docx_tables_are_extracted_and_blank_pdf_requests_ocr(tmp_path):
     with fitz.open() as empty:
         empty.new_page()
         empty.save(pdf)
-    with pytest.raises(AppError, match="OCR"):
+    monkeypatch.setattr("app.tools.document_parser.settings.ocr_enabled", False)
+    with pytest.raises(AppError, match="未提取或识别"):
         parse_document(pdf, "")
 
 

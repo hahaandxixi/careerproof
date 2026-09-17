@@ -44,7 +44,10 @@ def process_project(
         normalized.write_text(text, encoding="utf-8")
         extracted = [normalized]
     if not extracted:
-        raise AppError("没有可分析文件，请上传源代码ZIP或包含文字的PDF、DOCX、TXT作品", code=4029)
+        raise AppError(
+            "没有可分析文件，请上传源代码ZIP或包含文字的PDF、DOCX、TXT、图片作品",
+            code=4029,
+        )
     records = []
     for path in extracted:
         content = path.read_bytes()

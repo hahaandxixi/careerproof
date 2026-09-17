@@ -147,8 +147,12 @@ class PortfolioService:
         if len(content) > RESUME_MAX_BYTES:
             raise AppError("简历文件不得超过10MB", code=4021, status_code=413)
         suffix = Path(filename).suffix.lower()
-        if suffix not in {".pdf", ".docx", ".txt"}:
-            raise AppError("仅支持PDF、DOCX或TXT简历", code=4020, status_code=415)
+        if suffix not in {".pdf", ".docx", ".txt", ".png", ".jpg", ".jpeg", ".webp", ".bmp"}:
+            raise AppError(
+                "仅支持PDF、DOCX、TXT、PNG、JPG、WEBP或BMP简历",
+                code=4020,
+                status_code=415,
+            )
         resume = Resume(student_id=student.id, title=title)
         self.session.add(resume)
         await self.session.flush()
@@ -281,8 +285,22 @@ class PortfolioService:
         if not project:
             raise AppError("项目不存在或无权访问", code=4043, status_code=404)
         suffix = Path(filename).suffix.lower()
-        if suffix not in {".zip", ".pdf", ".docx", ".txt"}:
-            raise AppError("项目支持ZIP源代码或PDF、DOCX、TXT作品文档", code=4022, status_code=415)
+        if suffix not in {
+            ".zip",
+            ".pdf",
+            ".docx",
+            ".txt",
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp",
+            ".bmp",
+        }:
+            raise AppError(
+                "项目支持ZIP源代码或PDF、DOCX、TXT及常见图片作品",
+                code=4022,
+                status_code=415,
+            )
         if len(content) > settings.max_archive_bytes:
             raise AppError("项目文件不得超过30MB", code=4023, status_code=413)
         if suffix != ".zip" and len(content) > RESUME_MAX_BYTES:

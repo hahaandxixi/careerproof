@@ -311,7 +311,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
         <h1 className="mt-1 text-3xl font-bold text-slate-900">上传真实能力证据</h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-          简历由后端解析，项目压缩包会经过安全检查和静态扫描。系统不会执行你上传的代码。
+          简历由后端解析，扫描件和图片使用本地 OCR，项目压缩包会经过安全检查和静态扫描。系统不会执行你上传的代码。
         </p>
       </div>
 
@@ -323,7 +323,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <div className="mb-5">
             <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">步骤 1</span>
             <h2 className="mt-3 text-xl font-bold text-slate-900">上传简历</h2>
-            <p className="mt-1 text-sm text-slate-500">支持 PDF、DOCX、TXT，最大10MB。</p>
+            <p className="mt-1 text-sm text-slate-500">支持 PDF、DOCX、TXT、PNG、JPG、WEBP、BMP，最大10MB。OCR 结果需对照原图复核。</p>
           </div>
           <div className="space-y-4">
             <label className="block">
@@ -341,7 +341,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
               <input
                 id="resume-file"
                 type="file"
-                accept=".pdf,.docx,.txt,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.bmp,application/pdf,text/plain,image/png,image/jpeg,image/webp,image/bmp,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 required
                 onChange={(event) => setResumeFile(event.target.files?.[0] ?? null)}
                 className="mt-1 block w-full rounded-lg border border-dashed border-slate-300 px-3 py-6 text-sm text-slate-500 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:border-indigo-300"
@@ -362,7 +362,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <div className="mb-5">
             <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">步骤 2</span>
             <h2 className="mt-3 text-xl font-bold text-slate-900">{attempt?.project ? "继续上传项目" : "上传项目"}</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-500">代码项目使用 ZIP（最大30MB），打包前删除 node_modules；运营策划、设计说明等作品支持 PDF、DOCX、TXT（最大10MB）。文档需含可提取文字。</p>
+            <p className="mt-1 text-sm leading-6 text-slate-500">代码项目使用 ZIP（最大30MB），打包前删除 node_modules；作品支持 PDF、DOCX、TXT 和常见图片（最大10MB）。扫描件由本地 OCR 识别，结果需人工核对。</p>
           </div>
           {attempt && (
             <div className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
@@ -403,7 +403,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
               <input
                 id="project-file"
                 type="file"
-                accept=".zip,.pdf,.docx,.txt,application/zip,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                accept=".zip,.pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.bmp,application/zip,application/pdf,text/plain,image/png,image/jpeg,image/webp,image/bmp,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 required
                 disabled={projectBusy}
                 onChange={(event) => setProjectFile(event.target.files?.[0] ?? null)}
