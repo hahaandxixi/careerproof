@@ -24,11 +24,13 @@ export default function DemoPage() {
         <h2 className="text-xl font-bold">2. 下载并上传样例</h2>
         <div className="mt-4 flex flex-wrap gap-3 text-sm text-indigo-700">
           <a href="/demo-assets/student-resume.txt" download className="rounded-lg bg-indigo-50 px-4 py-2">下载合成简历 TXT</a>
-          <a href="/demo-assets/evidence-api.zip" download className="rounded-lg bg-indigo-50 px-4 py-2">下载项目 ZIP</a>
+          <a href="/demo-assets/evidence-api.zip" download className="rounded-lg bg-indigo-50 px-4 py-2">下载基础项目 ZIP</a>
+          <a href="/demo-assets/evidence-function-call.zip" download className="rounded-lg bg-indigo-50 px-4 py-2">下载补检索专项 ZIP</a>
           <a href="/demo-assets/software-backend-job.md" download className="rounded-lg bg-indigo-50 px-4 py-2">下载岗位说明</a>
         </div>
         <p className="mt-4 text-sm leading-7 text-slate-600">进入「我的材料」，在简历入口选择 TXT，在项目入口选择 ZIP。填写名称后分别提交，等待解析完成。ZIP 不用解压，最大 30MB。当前使用点击选择文件上传。</p>
         <p className="mt-3 text-sm leading-7 text-slate-600">填写示例：简历名称「合成学生简历」；项目名称「任务管理 API（合成演示）」；项目说明「合成测试项目，包含 Python、FastAPI、PostgreSQL 和 pytest 片段，用于测试证据匹配。运行情况和作者贡献未经核验。」</p>
+        <p className="mt-3 rounded-lg bg-indigo-50 p-3 text-sm leading-6 text-indigo-900">补检索专项 ZIP 用于「Python 受控补检索（合成验收）」岗位：模型只能从当前上传索引补取一条证据。真实重跑会消耗模型额度，普通功能体验优先使用基础项目 ZIP。</p>
         <Link href="/portfolio" className="mt-3 inline-block text-indigo-600 underline">进入我的材料</Link>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6">
