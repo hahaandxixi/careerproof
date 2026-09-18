@@ -214,7 +214,9 @@ async def run_evidence_workflow(
     contexts: list[RequirementEvidenceContext] = []
     configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
     configured_model = (
-        settings.zhipu_model
+        settings.deepseek_model
+        if configured_provider == "deepseek"
+        else settings.zhipu_model
         if configured_provider == "zhipu"
         else settings.bailian_model
         if configured_provider != "rules"

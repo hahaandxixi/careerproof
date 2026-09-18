@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     ocr_max_pages: int = Field(default=10, ge=1, le=50)
     ocr_min_confidence: float = Field(default=0.5, ge=0, le=1)
     ocr_max_image_pixels: int = Field(default=20_000_000, ge=1_000_000, le=50_000_000)
-    ai_provider: Literal["mock", "bailian", "qianwen", "zhipu"] = "mock"
+    ai_provider: Literal["mock", "bailian", "qianwen", "zhipu", "deepseek"] = "mock"
     ai_external_enabled: bool = False
     dashscope_api_key: SecretStr | None = None
     bailian_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     zhipu_model: str = "glm-4.7-flash"
     zhipu_timeout_seconds: float = Field(default=90, gt=0, le=120)
     zhipu_max_attempts: int = Field(default=2, ge=1, le=3)
+    deepseek_api_key: SecretStr | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model: str = "deepseek-flash"
+    deepseek_timeout_seconds: float = Field(default=90, gt=0, le=120)
+    deepseek_max_attempts: int = Field(default=2, ge=1, le=3)
     ai_model_concurrency: int = Field(default=1, ge=1, le=4)
     ai_workflow_timeout_seconds: float = Field(default=180, gt=0, le=240)
     ai_max_requirements: int = Field(default=20, ge=1, le=50)

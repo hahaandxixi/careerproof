@@ -179,17 +179,14 @@ class OpenAICompatibleProvider:
         self.model = model
         self._timeout = timeout_seconds
         self._transport = transport
-        self._max_attempts = (
-            max_attempts
-            if max_attempts is not None
-            else (
-                settings.zhipu_max_attempts
-                if self.name == "zhipu"
-                else settings.bailian_max_attempts
-            )
-        )
+        configured_attempts = {
+            "zhipu": settings.zhipu_max_attempts,
+            "deepseek": settings.deepseek_max_attempts,
+        }.get(self.name, settings.bailian_max_attempts)
+        self._max_attempts = max_attempts if max_attempts is not None else configured_attempts
         self.progress_callback: Callable[[str], Awaitable[None]] | None = None
         self.planning_usage: ModelUsage | None = None
+        self.last_usage: ModelUsage | None = None
 
     async def _notify(self, message: str) -> None:
         if self.progress_callback:
@@ -282,7 +279,16 @@ class OpenAICompatibleProvider:
                 {"role": "user", "content": source},
             ],
         }
-        payload, _latency_ms = await self._completion(request)
+        payload, latency_ms = await self._completion(request)
+        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
+        self.last_usage = ModelUsage(
+            input_tokens=int(usage.get("prompt_tokens") or 0),
+            output_tokens=int(usage.get("completion_tokens") or 0),
+            cache_hit_tokens=int(usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0)
+            if isinstance(usage.get("prompt_tokens_details"), dict)
+            else 0,
+            latency_ms=latency_ms,
+        )
         return MatchSummary.model_validate(self._message_content(payload))
 
     async def analyze_evidence(
@@ -444,6 +450,20 @@ class ZhipuProvider(OpenAICompatibleProvider):
         return await super()._completion({**request, "thinking": {"type": "disabled"}})
 
 
+class DeepSeekProvider(OpenAICompatibleProvider):
+    name = "deepseek"
+
+    def _validate_configuration(self, base_url: str, model: str) -> None:
+        if base_url.rstrip("/") != "https://api.deepseek.com":
+            raise ValueError("DEEPSEEK_BASE_URL must use the official API endpoint")
+        if model != "deepseek-flash":
+            raise ValueError("Only deepseek-flash is enabled by the cost guard")
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        # JSON evidence analysis and the single bounded tool call do not need CoT.
+        return await super()._completion({**request, "thinking": {"type": "disabled"}})
+
+
 def get_ai_provider() -> AIProvider:
     if not settings.ai_external_enabled or settings.ai_provider == "mock":
         return MockAIProvider()
@@ -464,5 +484,14 @@ def get_ai_provider() -> AIProvider:
             base_url=settings.zhipu_base_url,
             model=settings.zhipu_model,
             timeout_seconds=settings.zhipu_timeout_seconds,
+        )
+    if settings.ai_provider == "deepseek":
+        if settings.deepseek_api_key is None:
+            raise ValueError("DEEPSEEK_API_KEY is required when DeepSeek is enabled")
+        return DeepSeekProvider(
+            api_key=settings.deepseek_api_key.get_secret_value(),
+            base_url=settings.deepseek_base_url,
+            model=settings.deepseek_model,
+            timeout_seconds=settings.deepseek_timeout_seconds,
         )
     return MockAIProvider()
