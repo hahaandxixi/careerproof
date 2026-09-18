@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 
 import httpx
 import pytest
@@ -164,6 +165,7 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
     contexts = build_evidence_contexts(evidenced_result())
     calls = 0
     progress = []
+    output_limits = []
 
     async def record(message):
         progress.append(message)
@@ -209,6 +211,7 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
                 json={"choices": [{"message": {"content": "无需补检索"}}]},
             )
         calls += 1
+        output_limits.append(body["max_tokens"])
         source = json.loads(body["messages"][1]["content"])
         if calls == 2:
             assert "validationFeedback" in source and "rejectedOutput" in source
@@ -226,10 +229,43 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
     monkeypatch.setattr(settings, "ai_provider", "zhipu")
     instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
     monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
-    outcome = await run_evidence_workflow(evidenced_result(), progress=record)
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    result = replace(
+        result,
+        items=[
+            replace(
+                result.items[0],
+                evidence_list=[
+                    first,
+                    replace(
+                        first,
+                        file_path="routes.py",
+                        line_start=8,
+                        line_end=10,
+                        snippet="@app.get('/items')\ndef items():\n    return []",
+                        content_hash="3" * 64,
+                    ),
+                    replace(
+                        first,
+                        file_path="service.py",
+                        line_start=2,
+                        line_end=4,
+                        snippet="def service():\n    return {'ok': True}",
+                        content_hash="4" * 64,
+                    ),
+                ],
+            )
+        ],
+    )
+    outcome = await run_evidence_workflow(result, progress=record)
     assert calls == 2 and outcome.repaired is True
     assert outcome.analysis.items[0].rating.level == 1
     assert outcome.analysis.usage.input_tokens == 20
+    assert output_limits == [
+        settings.ai_per_report_output_token_limit,
+        settings.ai_per_report_output_token_limit - 5,
+    ]
     assert any("定向修正" in message for message in progress)
 
 
@@ -356,7 +392,36 @@ async def test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis(m
     monkeypatch.setattr(settings, "ai_provider", "zhipu")
     instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
     monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
-    outcome = await run_evidence_workflow(evidenced_result(), progress=record)
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    result = replace(
+        result,
+        items=[
+            replace(
+                result.items[0],
+                evidence_list=[
+                    first,
+                    replace(
+                        first,
+                        file_path="routes.py",
+                        line_start=8,
+                        line_end=10,
+                        snippet="@app.get('/items')\ndef items():\n    return []",
+                        content_hash="3" * 64,
+                    ),
+                    replace(
+                        first,
+                        file_path="service.py",
+                        line_start=2,
+                        line_end=4,
+                        snippet="def service():\n    return {'ok': True}",
+                        content_hash="4" * 64,
+                    ),
+                ],
+            )
+        ],
+    )
+    outcome = await run_evidence_workflow(result, progress=record)
 
     assert outcome.analysis is not None and not outcome.fallback_used
     assert outcome.tool_calls == (

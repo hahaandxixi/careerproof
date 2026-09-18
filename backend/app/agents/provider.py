@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 from collections.abc import Awaitable, Callable
 from pathlib import Path
 from time import perf_counter
@@ -22,6 +23,38 @@ from app.core.config import settings
 
 EVIDENCE_PROMPT_VERSION = "evidence-trust-v6-consistency"
 
+_EXTERNAL_TEXT_REDACTIONS = (
+    (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
+    (re.compile(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)"), "[已脱敏手机号]"),
+    (re.compile(r"(?<!\d)\d{17}[\dXx](?!\d)"), "[已脱敏证件号]"),
+    (
+        re.compile(r"(?i)(姓名|name)\s*[:：]\s*([^\s,，;；]{2,30})"),
+        r"\1：[已脱敏姓名]",
+    ),
+)
+
+
+def redact_external_text(value: str) -> str:
+    """Remove common direct identifiers before text leaves the application."""
+    for pattern, replacement in _EXTERNAL_TEXT_REDACTIONS:
+        value = pattern.sub(replacement, value)
+    return value
+
+
+def _redact_external_value(value):
+    if isinstance(value, str):
+        return redact_external_text(value)
+    if isinstance(value, list):
+        return [_redact_external_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _redact_external_value(item) for key, item in value.items()}
+    return value
+
+
+def conservative_input_token_estimate(messages: list[dict[str, str]]) -> int:
+    """Return a conservative tokenizer-free estimate used as a hard preflight guard."""
+    return max(1, len(json.dumps(messages, ensure_ascii=False, separators=(",", ":"))))
+
 
 def evidence_policy() -> str:
     policy = Path(__file__).with_name("evidence_policy.md").read_text(encoding="utf-8")
@@ -37,7 +70,11 @@ def evidence_analysis_messages(
     previous_analysis: EvidenceAnalysis | None = None,
 ) -> list[dict[str, str]]:
     """Build the same bounded prompt for API calls and manual web handoff."""
-    source_data: dict = {"requirements": [context.model_dump() for context in contexts]}
+    source_data: dict = {
+        "requirements": _redact_external_value(
+            [context.model_dump() for context in contexts]
+        )
+    }
     if validation_feedback and previous_analysis:
         source_data["rejectedOutput"] = previous_analysis.model_dump()
         source_data["validationFeedback"] = validation_feedback
@@ -104,7 +141,13 @@ class AIProvider(Protocol):
     ) -> MatchSummary: ...
 
     async def analyze_evidence(
-        self, *, contexts: list[RequirementEvidenceContext]
+        self,
+        *,
+        contexts: list[RequirementEvidenceContext],
+        validation_feedback: str | None = None,
+        previous_analysis: EvidenceAnalysis | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> EvidenceAnalysis: ...
 
     async def plan_evidence_retrieval(
@@ -128,8 +171,15 @@ class MockAIProvider:
         )
 
     async def analyze_evidence(
-        self, *, contexts: list[RequirementEvidenceContext]
+        self,
+        *,
+        contexts: list[RequirementEvidenceContext],
+        validation_feedback: str | None = None,
+        previous_analysis: EvidenceAnalysis | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> EvidenceAnalysis:
+        del validation_feedback, previous_analysis, input_token_limit, output_token_limit
         return EvidenceAnalysis(
             summary="规则分析模式",
             model=self.model,
@@ -202,6 +252,18 @@ class OpenAICompatibleProvider:
         return min(8.0, float(2 ** (attempt - 1)))
 
     async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            estimate = conservative_input_token_estimate(messages)
+            if estimate > input_limit:
+                raise ValueError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})"
+                )
         started = perf_counter()
         last_error: Exception | None = None
         async with httpx.AsyncClient(timeout=self._timeout, transport=self._transport) as client:
@@ -297,11 +359,26 @@ class OpenAICompatibleProvider:
         contexts: list[RequirementEvidenceContext],
         validation_feedback: str | None = None,
         previous_analysis: EvidenceAnalysis | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> EvidenceAnalysis:
+        bounded_output = min(
+            settings.ai_per_report_output_token_limit,
+            output_token_limit or settings.ai_per_report_output_token_limit,
+        )
+        if bounded_output < 1:
+            raise ValueError("No output token budget remains for this report")
+        bounded_input = min(
+            settings.ai_per_report_input_token_limit,
+            input_token_limit or settings.ai_per_report_input_token_limit,
+        )
+        if bounded_input < 1:
+            raise ValueError("No input token budget remains for this report")
         request = {
+            "_local_input_token_limit": bounded_input,
             "model": self.model,
             "temperature": 0.1,
-            "max_tokens": 3500,
+            "max_tokens": bounded_output,
             "response_format": {"type": "json_object"},
             "messages": evidence_analysis_messages(
                 contexts,

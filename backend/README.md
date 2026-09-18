@@ -1,10 +1,10 @@
 # CareerProof Backend
 
-已新增独立智谱 Provider：`AI_PROVIDER=zhipu`，Key 使用 `ZHIPU_API_KEY`，仅允许 `glm-4.7-flash`。详见 [智谱接入步骤](../docs/智谱免费模型接入.md)。先执行不联网的 `python -m app.scripts.check_zhipu`；只有明确加 `--live` 才发一次合成请求。普通自动测试不消耗 API 额度。
+当前目标 Provider 为 DeepSeek 官方 API：`AI_PROVIDER=deepseek`，Key 使用 `DEEPSEEK_API_KEY`，成本保护只允许 `deepseek-flash`。详见 [DeepSeek 官方 API 接入](../docs/DeepSeek官方API接入.md) 与 [AI 用量和隐私控制](../docs/AI用量与隐私控制.md)。普通自动测试使用合成响应，不消耗 API 额度。
 
 「职证 CareerProof」的 FastAPI 后端。当前完成真实岗位、学生材料上传与版本历史、
 私有匹配报告、失败重试和岗位分类筛选。匹配分数与证据由规则计算；配置启用时，
-百炼千问逐项解释候选证据、返回引用和材料缺口，调用或校验失败会自动保留规则报告。
+DeepSeek 逐项解释候选证据、返回引用和材料缺口，调用或校验失败会自动保留规则报告。
 
 ## 架构边界
 
@@ -20,24 +20,26 @@ API -> Services -> Repositories -> PostgreSQL
 - Tools 不执行上传的用户代码。
 - 当前评分由确定性规则计算；`aiConfidence` 只表示模型解释置信度，不能替代证据校验。
 
-## 百炼千问证据分析
+## DeepSeek 证据分析
 
-API Key 仅写入本地 `.env`。仓库的 `.env.example` 默认保持 `AI_PROVIDER=mock` 和
+API Key 仅写入本地 `.env`。仓库的 `.env.example` 已选择 DeepSeek，但保持
 `AI_EXTERNAL_ENABLED=false`。连通测试成功后，本机可设置：
 
 ```dotenv
-AI_PROVIDER=qianwen
+AI_PROVIDER=deepseek
 AI_EXTERNAL_ENABLED=true
-DASHSCOPE_API_KEY=仅在本机填写
-BAILIAN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-BAILIAN_MODEL=qwen-plus
+DEEPSEEK_API_KEY=仅在本机填写
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-flash
+AI_PER_REPORT_OUTPUT_TOKEN_LIMIT=2000
+AI_DAILY_REPORT_LIMIT=20
 AI_LOCAL_FALLBACK_ENABLED=true
 ```
 
 用不含真实个人信息的合成请求检查连接：
 
 ```powershell
-.\.venv\Scripts\python.exe -m app.scripts.check_bailian
+.\.venv\Scripts\python.exe -m app.scripts.check_deepseek
 ```
 
 脚本使用合成的岗位要求和证据片段，只输出模型名、要求数、引用数、token 与延迟，不打印

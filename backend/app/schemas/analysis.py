@@ -13,6 +13,7 @@ class MatchCreate(APIModel):
     job_id: UUID
     resume_version_id: UUID
     project_version_ids: list[UUID] = Field(default_factory=list, max_length=10)
+    external_ai_consent: bool = False
 
 
 class TaskAccepted(APIModel):

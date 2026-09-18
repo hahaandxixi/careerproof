@@ -18,6 +18,7 @@ from app.agents.evidence_workflow import (
     execute_retrieval_tool,
     run_evidence_workflow,
 )
+from app.agents.provider import evidence_analysis_messages
 from app.core.config import settings
 from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.matcher import RequirementInput, match_candidate
@@ -45,6 +46,48 @@ def test_contexts_assign_stable_citation_ids() -> None:
 
     assert contexts[0].evidence[0].citation_id == "R1-E1"
     assert contexts[0].evidence[0].line_start >= 1
+
+
+def test_external_prompt_redacts_direct_identifiers() -> None:
+    context = build_evidence_contexts(evidenced_result())[0]
+    context = context.model_copy(
+        update={
+            "claim_text": (
+                "姓名：张三，邮箱 zhangsan@example.com，手机号 13800138000，"
+                "身份证号 440300199901011234"
+            )
+        }
+    )
+
+    source = evidence_analysis_messages([context])[1]["content"]
+
+    assert "zhangsan@example.com" not in source
+    assert "13800138000" not in source
+    assert "440300199901011234" not in source
+    assert "张三" not in source
+    assert "[已脱敏邮箱]" in source and "[已脱敏姓名]" in source
+
+
+@pytest.mark.asyncio
+async def test_no_evidence_skips_external_provider(monkeypatch) -> None:
+    result = match_candidate(
+        [RequirementInput(uuid4(), "具备钢琴演奏实践", "钢琴演奏", 5)],
+        parse_resume("暂无相关经历"),
+        [],
+    )
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    monkeypatch.setattr(
+        "app.agents.evidence_workflow.get_ai_provider",
+        lambda: pytest.fail("No provider should be created without evidence"),
+    )
+
+    outcome = await run_evidence_workflow(result)
+
+    assert outcome.analysis is None
+    assert outcome.fallback_used is False
+    assert outcome.skipped_reason == "no_evidence"
+    assert outcome.request_count == 0
 
 
 def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None:

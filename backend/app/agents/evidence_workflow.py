@@ -32,10 +32,12 @@ class EvidenceWorkflowOutcome:
     model: str | None
     fallback_used: bool
     fallback_reason: str | None
+    skipped_reason: str | None = None
     attempted_usage: ModelUsage | None = None
     failure_stage: str | None = None
     repaired: bool = False
     tool_calls: tuple[dict, ...] = ()
+    request_count: int = 0
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -185,6 +187,21 @@ def execute_retrieval_tool(
     return copied, event
 
 
+def has_retrieval_candidate(
+    result: MatchResult, contexts: list[RequirementEvidenceContext]
+) -> bool:
+    """Avoid paying for a planner call when the local index has nothing new to return."""
+    by_requirement = {context.requirement_id: context for context in contexts}
+    for item in result.items:
+        context = by_requirement.get(str(item.requirement_id))
+        if context is None:
+            continue
+        existing = {source_key(entry) for entry in context.evidence}
+        if any(source_key(entry) not in existing for entry in item.evidence_list):
+            return True
+    return False
+
+
 def _fallback_reason(exc: Exception) -> str:
     if isinstance(exc, TimeoutError | httpx.TimeoutException):
         return "timeout"
@@ -210,6 +227,9 @@ def _fallback_reason(exc: Exception) -> str:
 async def run_evidence_workflow(
     result: MatchResult,
     progress: Callable[[str], Awaitable[None]] | None = None,
+    *,
+    external_allowed: bool = True,
+    external_skip_reason: str | None = None,
 ) -> EvidenceWorkflowOutcome:
     contexts: list[RequirementEvidenceContext] = []
     configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
@@ -226,6 +246,7 @@ async def run_evidence_workflow(
     repaired = False
     tool_calls: list[dict] = []
     planning_usage: ModelUsage | None = None
+    request_count = 0
     stage = "context"
     try:
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
@@ -234,6 +255,28 @@ async def run_evidence_workflow(
             if len(result.items) > settings.ai_max_requirements:
                 raise ValueError("requirement count exceeds AI_MAX_REQUIREMENTS")
             contexts = build_evidence_contexts(result)
+            if not external_allowed:
+                return EvidenceWorkflowOutcome(
+                    contexts,
+                    None,
+                    "rules",
+                    None,
+                    False,
+                    None,
+                    skipped_reason=external_skip_reason or "usage_budget",
+                )
+            if settings.ai_skip_when_no_evidence and not any(
+                context.evidence for context in contexts
+            ):
+                return EvidenceWorkflowOutcome(
+                    contexts,
+                    None,
+                    "rules",
+                    None,
+                    False,
+                    None,
+                    skipped_reason="no_evidence",
+                )
             stage = "configuration"
             provider = get_ai_provider()
             if provider.name == "mock":
@@ -242,10 +285,13 @@ async def run_evidence_workflow(
             stage = "request"
             await _notify(progress, "等待可用的模型调用名额")
             async with _model_semaphore():
-                if isinstance(provider, OpenAICompatibleProvider):
+                if isinstance(provider, OpenAICompatibleProvider) and has_retrieval_candidate(
+                    result, contexts
+                ):
                     stage = "tool_planning"
                     await _notify(progress, "模型正在判断是否需要补充检索")
                     try:
+                        request_count += 1
                         tool_call = await provider.plan_evidence_retrieval(contexts=contexts)
                     except (ValidationError, ValueError, KeyError, TypeError):
                         tool_call = None
@@ -268,7 +314,21 @@ async def run_evidence_workflow(
                 await _notify(progress, "正在调用模型分析证据与评级判据")
                 if isinstance(provider, OpenAICompatibleProvider):
                     provider.progress_callback = progress
-                analysis = await provider.analyze_evidence(contexts=contexts)
+                request_count += 1
+                if isinstance(provider, OpenAICompatibleProvider):
+                    remaining_input = settings.ai_per_report_input_token_limit - (
+                        planning_usage.input_tokens if planning_usage else 0
+                    )
+                    remaining_output = settings.ai_per_report_output_token_limit - (
+                        planning_usage.output_tokens if planning_usage else 0
+                    )
+                    analysis = await provider.analyze_evidence(
+                        contexts=contexts,
+                        input_token_limit=remaining_input,
+                        output_token_limit=remaining_output,
+                    )
+                else:
+                    analysis = await provider.analyze_evidence(contexts=contexts)
                 stage = "validation"
                 try:
                     validate_grounded_analysis(contexts, analysis)
@@ -278,10 +338,21 @@ async def run_evidence_workflow(
                     await _notify(progress, "模型输出存在冲突，正在进行一次定向修正")
                     first_usage = analysis.usage
                     stage = "repair"
+                    request_count += 1
+                    remaining_input = settings.ai_per_report_input_token_limit - (
+                        (planning_usage.input_tokens if planning_usage else 0)
+                        + first_usage.input_tokens
+                    )
+                    remaining_output = settings.ai_per_report_output_token_limit - (
+                        (planning_usage.output_tokens if planning_usage else 0)
+                        + first_usage.output_tokens
+                    )
                     repaired_analysis = await provider.analyze_evidence(
                         contexts=contexts,
                         validation_feedback=str(validation_error),
                         previous_analysis=analysis,
+                        input_token_limit=remaining_input,
+                        output_token_limit=remaining_output,
                     )
                     validate_grounded_analysis(contexts, repaired_analysis)
                     repaired = True
@@ -327,6 +398,7 @@ async def run_evidence_workflow(
             fallback_reason=None,
             repaired=repaired,
             tool_calls=tuple(tool_calls),
+            request_count=request_count,
         )
     except Exception as exc:
         if not settings.ai_local_fallback_enabled:
@@ -342,4 +414,5 @@ async def run_evidence_workflow(
             failure_stage=stage,
             repaired=repaired,
             tool_calls=tuple(tool_calls),
+            request_count=request_count,
         )

@@ -207,7 +207,7 @@ export const api = {
   createEnterprise(payload: { name: string; description: string }) {
     return request<Enterprise>("/enterprises", { method: "POST", ...jsonBody(payload) });
   },
-  createMatch(payload: { jobId: string; resumeVersionId: string; projectVersionIds: string[] }) {
+  createMatch(payload: { jobId: string; resumeVersionId: string; projectVersionIds: string[]; externalAiConsent: boolean }) {
     return request<{ taskId: string; status: TaskStatus }>("/matches", { method: "POST", ...jsonBody(payload) });
   },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },

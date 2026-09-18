@@ -60,7 +60,13 @@ class Settings(BaseSettings):
     deepseek_max_attempts: int = Field(default=2, ge=1, le=3)
     ai_model_concurrency: int = Field(default=1, ge=1, le=4)
     ai_workflow_timeout_seconds: float = Field(default=180, gt=0, le=240)
-    ai_max_requirements: int = Field(default=20, ge=1, le=50)
+    ai_max_requirements: int = Field(default=8, ge=1, le=50)
+    ai_per_report_input_token_limit: int = Field(default=12_000, ge=1000, le=100_000)
+    ai_per_report_output_token_limit: int = Field(default=2000, ge=200, le=10_000)
+    ai_daily_report_limit: int = Field(default=20, ge=1, le=1000)
+    ai_daily_input_token_limit: int = Field(default=200_000, ge=1000, le=10_000_000)
+    ai_daily_output_token_limit: int = Field(default=40_000, ge=1000, le=2_000_000)
+    ai_skip_when_no_evidence: bool = True
     ai_local_fallback_enabled: bool = True
 
     @field_validator("jwt_secret")

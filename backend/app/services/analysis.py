@@ -6,11 +6,11 @@ import json
 import logging
 from contextlib import suppress
 from dataclasses import asdict, replace
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -72,6 +72,76 @@ from app.tools.skill_rubric import rubric_for
 logger = logging.getLogger(__name__)
 
 
+def _configured_ai_identity() -> tuple[str, str | None]:
+    if not settings.ai_external_enabled or settings.ai_provider == "mock":
+        return "rules", None
+    model = (
+        settings.deepseek_model
+        if settings.ai_provider == "deepseek"
+        else settings.zhipu_model
+        if settings.ai_provider == "zhipu"
+        else settings.bailian_model
+    )
+    return settings.ai_provider, model
+
+
+def _analysis_cache_key(snapshot: dict) -> str:
+    provider, model = _configured_ai_identity()
+    payload = {
+        "job": snapshot.get("job"),
+        "materials": snapshot.get("materials"),
+        "provider": provider,
+        "model": model,
+        "promptVersion": EVIDENCE_PROMPT_VERSION,
+        "formulaVersion": FORMULA_VERSION,
+        "externalAiConsent": snapshot.get("externalAiConsent", False),
+        "cacheVersion": "report-context-v1",
+    }
+    serialized = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+
+async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, str | None, dict]:
+    # Serialize external calls for the same account so concurrent tasks cannot
+    # both pass the same daily budget snapshot before either usage row is saved.
+    await session.scalar(select(User.id).where(User.id == user_id).with_for_update())
+    local_now = datetime.now(timezone(timedelta(hours=8)))
+    start_utc = local_now.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(UTC)
+    row = (
+        await session.execute(
+            select(
+                func.count(AiUsageLog.id),
+                func.coalesce(func.sum(AiUsageLog.input_tokens), 0),
+                func.coalesce(func.sum(AiUsageLog.output_tokens), 0),
+            )
+            .join(AnalysisTask, AnalysisTask.id == AiUsageLog.analysis_task_id)
+            .where(
+                AnalysisTask.created_by == user_id,
+                AiUsageLog.created_at >= start_utc,
+            )
+        )
+    ).one()
+    report_count, input_tokens, output_tokens = map(int, row)
+    stats = {
+        "reportCount": report_count,
+        "inputTokens": input_tokens,
+        "outputTokens": output_tokens,
+    }
+    if report_count >= settings.ai_daily_report_limit:
+        return False, "daily_report_limit", stats
+    if (
+        input_tokens + settings.ai_per_report_input_token_limit
+        > settings.ai_daily_input_token_limit
+    ):
+        return False, "daily_input_token_limit", stats
+    if (
+        output_tokens + settings.ai_per_report_output_token_limit
+        > settings.ai_daily_output_token_limit
+    ):
+        return False, "daily_output_token_limit", stats
+    return True, None, stats
+
+
 class AnalysisService:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -131,6 +201,26 @@ class AnalysisService:
                 "materials": materials.snapshots,
             }
         )
+        cache_key = _analysis_cache_key(snapshot)
+        snapshot["analysisCacheKey"] = cache_key
+        cached_rows = await self.session.execute(
+            select(AnalysisTask, MatchReport)
+            .join(MatchReport, MatchReport.analysis_task_id == AnalysisTask.id)
+            .where(
+                AnalysisTask.created_by == current_user.id,
+                AnalysisTask.status == TaskStatus.COMPLETED,
+            )
+            .order_by(MatchReport.created_at.desc())
+            .limit(20)
+        )
+        for cached_task, cached_report in cached_rows.all():
+            metadata = cached_report.analysis_metadata or {}
+            if (
+                metadata.get("analysisCacheKey") == cache_key
+                and metadata.get("mode") == "ai_evidence"
+                and not metadata.get("fallbackUsed")
+            ):
+                return TaskAccepted(task_id=cached_task.id, status=cached_task.status)
         task = AnalysisTask(
             created_by=current_user.id,
             task_type="job_match",
@@ -519,7 +609,23 @@ async def execute_match_task(task_id: UUID) -> None:
                     step=message,
                 )
 
-            workflow = await run_evidence_workflow(result, progress=model_progress)
+            external_allowed = True
+            external_skip_reason = None
+            budget_stats = {"reportCount": 0, "inputTokens": 0, "outputTokens": 0}
+            if settings.ai_external_enabled and settings.ai_provider != "mock":
+                if not snapshot.get("externalAiConsent", False):
+                    external_allowed = False
+                    external_skip_reason = "consent_not_granted"
+                else:
+                    external_allowed, external_skip_reason, budget_stats = await _daily_ai_budget(
+                        session, task.created_by
+                    )
+            workflow = await run_evidence_workflow(
+                result,
+                progress=model_progress,
+                external_allowed=external_allowed,
+                external_skip_reason=external_skip_reason,
+            )
             if workflow.analysis:
                 result = replace(result, summary=workflow.analysis.summary)
             if not await update_task_progress(
@@ -556,13 +662,24 @@ async def execute_match_task(task_id: UUID) -> None:
                 "model": workflow.model,
                 "fallbackUsed": workflow.fallback_used,
                 "fallbackReason": workflow.fallback_reason,
+                "skippedReason": workflow.skipped_reason,
                 "failureStage": workflow.failure_stage,
                 "repairUsed": workflow.repaired,
+                "requestCount": workflow.request_count,
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
                 "evidenceContextVersion": None if result.grounding_error else "source-context-v2",
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),
+                "promptVersion": EVIDENCE_PROMPT_VERSION,
+                "analysisCacheKey": snapshot.get("analysisCacheKey"),
+                "dailyBudgetBeforeRun": budget_stats,
+                "privacy": {
+                    "externalAiConsent": bool(snapshot.get("externalAiConsent", False)),
+                    "directIdentifierRedaction": "email-phone-id-name-label-v1",
+                    "candidateIdentitySent": False,
+                    "rawFilesSent": False,
+                },
             }
             if not await finish_task(session, task_id, token, step="材料支持度报告已生成"):
                 await session.rollback()
@@ -714,6 +831,17 @@ async def execute_match_task(task_id: UUID) -> None:
                     (
                         f"{workflow.model}完成{len(ai_by_requirement)}项解释"
                         if workflow.analysis
+                        else "当前材料没有可引用证据，已跳过外部模型"
+                        if workflow.skipped_reason == "no_evidence"
+                        else "已达到当天 AI 用量上限，已保留本地规则报告"
+                        if workflow.skipped_reason
+                        in {
+                            "daily_report_limit",
+                            "daily_input_token_limit",
+                            "daily_output_token_limit",
+                        }
+                        else "未获得外部 AI 授权，已保留本地规则报告"
+                        if workflow.skipped_reason == "consent_not_granted"
                         else "模型服务繁忙，已保留本地规则报告"
                         if workflow.fallback_reason == "provider_busy"
                         else "外部模型不可用，已回退本地规则"
@@ -726,7 +854,9 @@ async def execute_match_task(task_id: UUID) -> None:
                         "model": workflow.model,
                         "fallbackUsed": workflow.fallback_used,
                         "fallbackReason": workflow.fallback_reason,
+                        "skippedReason": workflow.skipped_reason,
                         "repairUsed": workflow.repaired,
+                        "requestCount": workflow.request_count,
                         "inputTokens": usage["input_tokens"] if usage else 0,
                         "outputTokens": usage["output_tokens"] if usage else 0,
                         "latencyMs": usage["latency_ms"] if usage else 0,

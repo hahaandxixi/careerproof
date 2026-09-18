@@ -278,7 +278,10 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
 ):
     app, factory = matching_db
 
-    async def fake_workflow(result, progress=None):
+    async def fake_workflow(
+        result, progress=None, *, external_allowed=True, external_skip_reason=None
+    ):
+        del external_allowed, external_skip_reason
         del progress
         contexts = build_evidence_contexts(result)
         return EvidenceWorkflowOutcome(
@@ -312,7 +315,9 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         job = await create_job(owner)
         await register(student, "ai-student@example.com", "student")
         resume, _project, version = await upload_materials(student)
-        report = await match_report(student, job, resume, version)
+        report = await match_report(
+            student, job, resume, version, externalAiConsent=True
+        )
 
         assert report["analysisMode"] == "ai_evidence"
         assert report["aiProvider"] == provider_name
@@ -323,6 +328,18 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert item["aiCitationIds"] == ["R1-E1"]
         assert item["evidenceList"][0]["citationId"] == "R1-E1"
         assert item["aiConfidence"] == 0.84
+        cached = await student.post(
+            "/api/v1/matches",
+            json={
+                "jobId": job["id"],
+                "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]],
+                "externalAiConsent": True,
+            },
+        )
+        assert cached.status_code == 202, cached.text
+        assert cached.json()["data"]["taskId"] == report["taskId"]
+        assert cached.json()["data"]["status"] == "completed"
         task = (await student.get(f"/api/v1/analysis-tasks/{report['taskId']}")).json()["data"]
         assert [step["name"] for step in task["steps"]] == [
             "核对材料版本",
@@ -340,6 +357,41 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
             assert len(steps) == 7
         assert "return sum" in item["evidenceList"][0]["snippet"]
         assert item["evidenceList"][0]["contextComplete"] is True
+
+
+async def test_daily_ai_budget_uses_persisted_usage(matching_db, monkeypatch):
+    app, factory = matching_db
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as student:
+        await register(student, "budget-student@example.com", "student")
+
+    async with factory() as session:
+        user = await session.scalar(
+            select(User).where(User.email == "budget-student@example.com")
+        )
+        task = AnalysisTask(
+            created_by=user.id,
+            task_type="job_match",
+            status=TaskStatus.COMPLETED,
+            input_snapshot={},
+        )
+        session.add(task)
+        await session.flush()
+        session.add(
+            AiUsageLog(
+                analysis_task_id=task.id,
+                model="synthetic",
+                input_tokens=120,
+                output_tokens=30,
+            )
+        )
+        await session.commit()
+        monkeypatch.setattr(settings, "ai_daily_report_limit", 1)
+
+        allowed, reason, stats = await analysis_service._daily_ai_budget(session, user.id)
+
+        assert allowed is False and reason == "daily_report_limit"
+        assert stats == {"reportCount": 1, "inputTokens": 120, "outputTokens": 30}
 
 
 @pytest.mark.parametrize("failure", ["context", "configuration", "request", "validation"])
@@ -389,7 +441,9 @@ async def test_model_stage_failure_still_persists_rule_report(matching_db, monke
         job = await create_job(owner)
         await register(student, "fault-student@example.com", "student")
         resume, _, version = await upload_materials(student)
-        report = await match_report(student, job, resume, version)
+        report = await match_report(
+            student, job, resume, version, externalAiConsent=True
+        )
         assert report["analysisMode"] == "rules" and report["aiFallbackUsed"]
         assert report["overallScore"] == 65
         assert "return sum" in report["items"][0]["evidenceList"][0]["snippet"]

@@ -53,6 +53,7 @@ async def test_deepseek_json_evidence_request_uses_non_thinking_mode():
         assert body["model"] == "deepseek-flash"
         assert body["thinking"] == {"type": "disabled"}
         assert body["response_format"] == {"type": "json_object"}
+        assert body["max_tokens"] == settings.ai_per_report_output_token_limit
         assert "JSON" in body["messages"][0]["content"]
         citation = contexts[0].evidence[0].citation_id
         answer = {
@@ -113,6 +114,19 @@ async def test_deepseek_json_evidence_request_uses_non_thinking_mode():
     assert result.usage.input_tokens == 80
     assert result.usage.output_tokens == 40
     assert result.usage.cache_hit_tokens == 8
+
+
+async def test_input_budget_blocks_request_before_network(monkeypatch):
+    contexts = build_evidence_contexts(evidenced_result())
+
+    async def forbidden_request(request):
+        pytest.fail(f"Request must be blocked before network: {request.url}")
+
+    monkeypatch.setattr(settings, "ai_per_report_input_token_limit", 1000)
+    with pytest.raises(ValueError, match="AI_PER_REPORT_INPUT_TOKEN_LIMIT"):
+        await provider(
+            transport=httpx.MockTransport(forbidden_request), max_attempts=1
+        ).analyze_evidence(contexts=contexts)
 
 
 async def test_deepseek_summary_exposes_sanitized_usage():
