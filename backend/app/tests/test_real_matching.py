@@ -303,6 +303,16 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
             model=model_name,
             fallback_used=False,
             fallback_reason=None,
+            tool_calls=(
+                {
+                    "tool": "retrieve_more_evidence",
+                    "requirementId": contexts[0].requirement_id,
+                    "query": "FastAPI route implementation",
+                    "resultCount": 1,
+                    "scope": "current-upload-index",
+                    "citationId": "R1-E2",
+                },
+            ),
         )
 
     monkeypatch.setattr(analysis_service, "run_evidence_workflow", fake_workflow)
@@ -323,6 +333,8 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert report["aiProvider"] == provider_name
         assert report["aiModel"] == model_name
         assert report["summary"].startswith("千问基于规则证据")
+        assert report["aiToolCalls"][0]["scope"] == "current-upload-index"
+        assert report["aiToolCalls"][0]["resultCount"] == 1
         item = report["items"][0]
         assert item["aiStatus"] == "validated"
         assert item["aiCitationIds"] == ["R1-E1"]
@@ -350,6 +362,8 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
             "校验模型引用",
             "保存可追溯报告",
         ]
+        model_step = next(step for step in task["steps"] if step["name"] == "模型证据分析")
+        assert model_step["payload"]["modelToolCalls"][0]["citationId"] == "R1-E2"
         async with factory() as session:
             usage = list(await session.scalars(select(AiUsageLog)))
             steps = list(await session.scalars(select(AgentStep)))

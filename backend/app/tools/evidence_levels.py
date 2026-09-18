@@ -146,6 +146,7 @@ def _rule_classification(snapshot: dict, verdict: str, review_status: str | None
         "restore_command",
         "index_definition",
         "alert_rule",
+        "postgres_usage",
     }
     if any(
         e.get("evidenceType", e.get("evidence_type")) in operation_types for e in usable_evidence

@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from app.agents.contracts import EvidenceAnalysis, overclaim_flags, validate_grounded_analysis
 from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
+from app.agents.provider import evidence_analysis_messages
 from app.core.config import settings
 from app.tests.test_ai_evidence_workflow import evidenced_result
 from app.tools.evidence_levels import classify_evidence
@@ -146,6 +147,28 @@ def test_backup_dependency_alone_is_only_a_clue():
     assert result["evidence_level"] == 1
 
 
+def test_postgres_usage_allows_operation_but_not_complete_task_by_rule():
+    result = classify_evidence(
+        {
+            "skill": "PostgreSQL",
+            "evidenceList": [
+                {
+                    "evidence_type": "postgres_usage",
+                    "context_complete": True,
+                    "snippet": (
+                        "def find(conn, task_id):\n"
+                        "    return conn.execute('SELECT title FROM tasks WHERE id = %s', "
+                        "(task_id,)).fetchone()"
+                    ),
+                }
+            ],
+        },
+        "partial",
+    )
+    assert result["evidence_level"] == 2
+    assert result["evidence_level_label"] == "局部操作"
+
+
 def test_relevance_rubric_wording_is_not_job_fitness():
     assert overclaim_flags("存在 FastAPI 路由定义，满足相关性要求。") == []
     assert overclaim_flags("满足岗位要求")
@@ -164,6 +187,20 @@ def test_complete_function_cannot_be_described_as_unseen_in_gap():
 def test_skill_rubric_defines_specific_task_boundary():
     fastapi = rubric_for("FastAPI")
     backup = rubric_for("备份恢复")
+    postgres = rubric_for("PostgreSQL")
     assert "明确返回" in fastapi["criteria"]["task"]
     assert "一致性核验" in backup["criteria"]["task"]
+    assert "参数化" in postgres["criteria"]["operation"]
+    assert "执行" in postgres["criteria"]["operation"]
+    assert "至少一个" in postgres["criteria"]["operation"]
+    assert "不要求覆盖" in postgres["criteria"]["operation"]
+    assert "逐项覆盖" in postgres["criteria"]["task"]
+    assert "不推断数据库已连接" in postgres["criteria"]["task"]
     assert fastapi["path"] == ["后端开发", "FastAPI"]
+
+
+def test_prompt_keeps_operation_separate_from_task_completeness():
+    contexts, _answer = sample()
+    system = evidence_analysis_messages(contexts)[0]["content"]
+    assert "不能据此把已经明确展示的实质操作判为operation=false" in system
+    assert "避免使用满足岗位要求或不满足岗位要求" in system

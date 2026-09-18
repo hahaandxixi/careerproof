@@ -1,0 +1,148 @@
+{
+  "suite": "evidence-trust-v2",
+  "promptVersion": "evidence-trust-v9-criterion-separation",
+  "provider": "deepseek",
+  "intervalSeconds": 0.0,
+  "generatedAt": "2026-09-18T07:16:21.244339+00:00",
+  "live": true,
+  "syntheticDataOnly": true,
+  "maxTotalTokens": 8000,
+  "results": [
+    {
+      "id": "sql-query",
+      "rubric": "可以确认有参数化查询代码；不能声称提供写入、建表、连接池或真实执行结果。",
+      "ruleScore": 40.0,
+      "ruleVerdict": "partial",
+      "ruleSummary": "共1项岗位要求，其中1项有项目证据支撑，0项仅有简历声明，0项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。",
+      "contexts": [
+        {
+          "requirement_id": "e552b898-a785-5b93-a44a-990d5be1e61b",
+          "requirement_title": "使用 PostgreSQL 保存并查询业务数据",
+          "skill": "PostgreSQL",
+          "verdict": "partial",
+          "rule_score": 0.4,
+          "claimed": true,
+          "claim_text": "使用 PostgreSQL 完成数据持久化",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "db.py",
+              "line_start": 3,
+              "line_end": 6,
+              "evidence_type": "postgres_usage",
+              "strength": "medium",
+              "snippet": "def find_task(conn: psycopg.Connection, task_id):\n    with conn.cursor() as cur:\n        cur.execute(\"SELECT title FROM tasks WHERE id = %s\", (task_id,))\n        return cur.fetchone()",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v2",
+            "path": [
+              "数据库",
+              "PostgreSQL"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在通过数据库 API 执行的参数化 SELECT、INSERT、UPDATE 或 DELETE；本判据只要求至少一个实质数据库操作，不要求覆盖岗位描述中的全部操作；只有驱动依赖、连接类型、SQL 字符串或函数名不满足。",
+              "task": "完整函数展示输入、SQL 执行和结果处理；岗位要求同时列出保存、查询等多个操作时，证据必须逐项覆盖才算完整任务；不推断数据库已连接或语句已成功运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 2
+        }
+      ],
+      "sourceExact": true,
+      "accepted": true,
+      "externalAttempted": true,
+      "skippedReason": null,
+      "rawModelContent": "{\"summary\":\"材料仅含一个函数片段：使用传入连接执行参数化 SELECT 并返回单行结果。可见查询操作，但未展示保存（INSERT/UPDATE）操作，也未展示连接建立与运行结果。简历自述的“数据持久化”未在片段中体现。\",\"items\":[{\"requirement_id\":\"e552b898-a785-5b93-a44a-990d5be1e61b\",\"explanation\":\"片段展示通过传入连接执行参数化 SELECT 查询并返回 fetchone 结果，属于查询操作；未展示 INSERT/UPDATE 等保存操作，也未展示连接建立过程与执行结果。\",\"citation_ids\":[\"R1-E1\"],\"information_gap\":\"未展示保存类操作（INSERT/UPDATE）、连接建立过程、实际执行结果及本人贡献范围。\",\"suggestion\":\"补充包含保存操作的代码片段、连接创建代码及可核验的运行记录或提交记录。\",\"confidence\":0.6,\"rating\":{\"level\":2,\"reason\":\"存在参数化 SELECT 的实质数据库操作，但未覆盖保存操作，完整任务不成立。\",\"criteria\":[{\"criterion\":\"relevance\",\"supported\":true,\"citation_ids\":[\"R1-E1\"],\"reason\":\"片段含 PostgreSQL 参数化查询，与岗位要求直接相关。\"},{\"criterion\":\"operation\",\"supported\":true,\"citation_ids\":[\"R1-E1\"],\"reason\":\"存在通过 cursor.execute 执行的参数化 SELECT 操作。\"},{\"criterion\":\"task\",\"supported\":false,\"citation_ids\":[],\"reason\":\"仅展示查询，未展示保存操作，未覆盖岗位要求的多个操作。\"}]}]}",
+      "validationError": null,
+      "usage": {
+        "prompt_tokens": 1640,
+        "completion_tokens": 345,
+        "total_tokens": 1985,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "prompt_cache_hit_tokens": 1408,
+        "prompt_cache_miss_tokens": 232
+      },
+      "latencyMs": 2457,
+      "citationLegal": true,
+      "overclaimFlags": [],
+      "humanReview": {
+        "status": "pending",
+        "conclusionSupported": null,
+        "overclaimed": null,
+        "reviewer": null,
+        "note": null
+      },
+      "analysis": {
+        "summary": "材料仅含一个函数片段：使用传入连接执行参数化 SELECT 并返回单行结果。可见查询操作，但未展示保存（INSERT/UPDATE）操作，也未展示连接建立与运行结果。简历自述的“数据持久化”未在片段中体现。",
+        "items": [
+          {
+            "requirement_id": "e552b898-a785-5b93-a44a-990d5be1e61b",
+            "explanation": "片段展示通过传入连接执行参数化 SELECT 查询并返回 fetchone 结果，属于查询操作；未展示 INSERT/UPDATE 等保存操作，也未展示连接建立过程与执行结果。",
+            "citation_ids": [
+              "R1-E1"
+            ],
+            "information_gap": "未展示保存类操作（INSERT/UPDATE）、连接建立过程、实际执行结果及本人贡献范围。",
+            "suggestion": "补充包含保存操作的代码片段、连接创建代码及可核验的运行记录或提交记录。",
+            "confidence": 0.6,
+            "rating": {
+              "level": 2,
+              "reason": "存在参数化 SELECT 的实质数据库操作，但未覆盖保存操作，完整任务不成立。",
+              "criteria": [
+                {
+                  "criterion": "relevance",
+                  "supported": true,
+                  "citation_ids": [
+                    "R1-E1"
+                  ],
+                  "reason": "片段含 PostgreSQL 参数化查询，与岗位要求直接相关。"
+                },
+                {
+                  "criterion": "operation",
+                  "supported": true,
+                  "citation_ids": [
+                    "R1-E1"
+                  ],
+                  "reason": "存在通过 cursor.execute 执行的参数化 SELECT 操作。"
+                },
+                {
+                  "criterion": "task",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "仅展示查询，未展示保存操作，未覆盖岗位要求的多个操作。"
+                }
+              ]
+            }
+          }
+        ],
+        "model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 1640,
+          "output_tokens": 345,
+          "cache_hit_tokens": 1408,
+          "latency_ms": 2455
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "caseCount": 1,
+    "attempted": 1,
+    "rulesOnlySkipped": 0,
+    "suiteBudgetSkipped": 0,
+    "reportedTotalTokens": 1985,
+    "sourceExactRate": 1.0,
+    "acceptedRate": 1.0,
+    "citationLegalityRate": 1.0,
+    "lexicalOverclaimRate": 0.0,
+    "conclusionSupportRate": null,
+    "humanOverclaimRate": null,
+    "humanReviewedCount": 0,
+    "note": "Citation legality and lexical guards do not measure semantic correctness."
+  }
+}

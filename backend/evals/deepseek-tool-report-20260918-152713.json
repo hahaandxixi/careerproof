@@ -1,0 +1,297 @@
+{
+  "scope": "Repository-owned synthetic source through local API and real DeepSeek",
+  "generatedAt": "2026-09-18T07:27:19.150383+00:00",
+  "taskId": "8a379166-8ee9-4472-aec8-8a573a505e30",
+  "reportId": "ab652244-1ef0-46e7-92d3-760f5194c18c",
+  "states": [
+    {
+      "status": "pending",
+      "progress": 0,
+      "currentStep": "等待分析真实材料"
+    },
+    {
+      "status": "running",
+      "progress": 25,
+      "currentStep": "正在读取材料并检索候选证据"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "模型正在判断是否需要补充检索"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "正在调用模型分析证据与评级判据"
+    },
+    {
+      "status": "completed",
+      "progress": 100,
+      "currentStep": "材料支持度报告已生成"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "eventType": "tool.completed",
+      "name": "核对材料版本",
+      "detail": "读取2份本人材料，报告固定到所选版本",
+      "payload": {
+        "materialCount": 2
+      }
+    },
+    {
+      "step": 2,
+      "eventType": "tool.completed",
+      "name": "检索候选证据",
+      "detail": "静态检查4个文件，找到3条候选证据",
+      "payload": {
+        "fileCount": 4,
+        "evidenceCount": 3,
+        "contextRetrieval": [
+          {
+            "name": "补取并核对证据上下文",
+            "rounds": 1,
+            "expandedCount": 3,
+            "limitedCount": 1,
+            "sourceExact": true,
+            "maxLines": 40,
+            "maxCharacters": 4000
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "eventType": "tool.completed",
+      "name": "补取并核对证据上下文",
+      "detail": "一次补取，3条多行原文；1条仍为局部上下文；未执行上传代码",
+      "payload": {
+        "name": "补取并核对证据上下文",
+        "rounds": 1,
+        "expandedCount": 3,
+        "limitedCount": 1,
+        "sourceExact": true,
+        "maxLines": 40,
+        "maxCharacters": 4000
+      }
+    },
+    {
+      "step": 4,
+      "eventType": "tool.completed",
+      "name": "计算材料支持度",
+      "detail": "使用evidence-v3规则；未支持的能力不参与评分",
+      "payload": {
+        "engine": "rules",
+        "formulaVersion": "evidence-v3"
+      }
+    },
+    {
+      "step": 5,
+      "eventType": "tool.completed",
+      "name": "模型证据分析",
+      "detail": "deepseek-flash完成1项解释",
+      "payload": {
+        "provider": "deepseek",
+        "promptVersion": "evidence-trust-v10-retrieval-signal",
+        "model": "deepseek-flash",
+        "fallbackUsed": false,
+        "fallbackReason": null,
+        "skippedReason": null,
+        "repairUsed": false,
+        "requestCount": 2,
+        "jsonRepairCount": 1,
+        "modelRequirementCount": 1,
+        "providerFinishReason": "stop",
+        "modelToolCalls": [
+          {
+            "tool": "retrieve_more_evidence",
+            "requirementId": "1c242d45-83ef-4b62-b93e-97dfe287b78d",
+            "query": "业务函数中的输入参数校验逻辑（如参数类型/范围检查、异常抛出）",
+            "resultCount": 1,
+            "scope": "current-upload-index",
+            "citationId": "R1-E3"
+          }
+        ],
+        "inputTokens": 3276,
+        "outputTokens": 482,
+        "latencyMs": 3426
+      }
+    },
+    {
+      "step": 6,
+      "eventType": "tool.completed",
+      "name": "校验模型引用",
+      "detail": "要求编号与引用编号全部通过白名单校验",
+      "payload": {
+        "validation": "passed",
+        "acceptedCitationCount": 3
+      }
+    },
+    {
+      "step": 7,
+      "eventType": "tool.completed",
+      "name": "保存可追溯报告",
+      "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+      "payload": {
+        "mode": "ai_evidence"
+      }
+    }
+  ],
+  "analysisMode": "ai_evidence",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "fallbackUsed": false,
+  "usage": {
+    "input_tokens": 3276,
+    "output_tokens": 482,
+    "cache_hit_tokens": 1920,
+    "latency_ms": 3426
+  },
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "1c242d45-83ef-4b62-b93e-97dfe287b78d",
+      "query": "业务函数中的输入参数校验逻辑（如参数类型/范围检查、异常抛出）",
+      "resultCount": 1,
+      "scope": "current-upload-index",
+      "citationId": "R1-E3"
+    }
+  ],
+  "items": [
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "Python"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "R1-E3为Python业务函数，含校验、调用与响应，与岗位要求直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "R1-E3含条件校验、save_item调用与返回字典，属非空实质操作。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "R1-E3完整展示输入校验、服务调用与响应输出，对应当前要求。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "R1-E3完整展示输入校验、服务调用与响应处理，三项标准均成立。",
+      "evidenceLevelGap": "save_item的实现、实际运行结果及本人贡献未展示或未核验。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "1c242d45-83ef-4b62-b93e-97dfe287b78d",
+      "requirementTitle": "Python 业务函数需包含输入校验、服务调用和响应处理",
+      "skill": "Python",
+      "claimed": true,
+      "claimText": "求职方向：Python 后端开发实习生",
+      "evidence": {
+        "citationId": "R1-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "Python",
+        "evidenceType": "python_code",
+        "filePath": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5/app/00_health.py",
+        "lineStart": 6,
+        "lineEnd": 8,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+        "projectFileId": "38ae12c4-7490-4c1c-a5ad-f527fa1d82a7",
+        "projectVersionId": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5",
+        "sourceId": "f7ec3329-0682-412f-a198-794041ab9255"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R1-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5/app/00_health.py",
+          "lineStart": 6,
+          "lineEnd": 8,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+          "projectFileId": "38ae12c4-7490-4c1c-a5ad-f527fa1d82a7",
+          "projectVersionId": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5",
+          "sourceId": "f7ec3329-0682-412f-a198-794041ab9255"
+        },
+        {
+          "citationId": "R1-E2",
+          "contextComplete": false,
+          "contextNote": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5/app/05_partial_pipeline.py",
+          "lineStart": 1,
+          "lineEnd": 40,
+          "snippet": "def inspect_values(values):\n    value_0 = len(values)\n    value_1 = len(values)\n    value_2 = len(values)\n    value_3 = len(values)\n    value_4 = len(values)\n    value_5 = len(values)\n    value_6 = len(values)\n    value_7 = len(values)\n    value_8 = len(values)\n    value_9 = len(values)\n    value_10 = len(values)\n    value_11 = len(values)\n    value_12 = len(values)\n    value_13 = len(values)\n    value_14 = len(values)\n    value_15 = len(values)\n    value_16 = len(values)\n    value_17 = len(values)\n    value_18 = len(values)\n    value_19 = len(values)\n    value_20 = len(values)\n    value_21 = len(values)\n    value_22 = len(values)\n    value_23 = len(values)\n    value_24 = len(values)\n    value_25 = len(values)\n    value_26 = len(values)\n    value_27 = len(values)\n    value_28 = len(values)\n    value_29 = len(values)\n    value_30 = len(values)\n    value_31 = len(values)\n    value_32 = len(values)\n    value_33 = len(values)\n    value_34 = len(values)\n    value_35 = len(values)\n    value_36 = len(values)\n    value_37 = len(values)\n    value_38 = len(values)",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "cabb2b394b0d53f08f26a3922c2632a167abc89cf4faba7d53cc7353fb7dc56f",
+          "projectFileId": "8fd652ef-b016-4627-bc6e-a5e449525c9f",
+          "projectVersionId": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5",
+          "sourceId": "33a1946b-5daa-4c9b-8bca-c0aaf4edd753"
+        },
+        {
+          "citationId": "R1-E3",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5/app/10_items.py",
+          "lineStart": 6,
+          "lineEnd": 11,
+          "snippet": "@router.post(\"/items\")\ndef create_item(payload: dict) -> dict:\n    if not payload.get(\"name\"):\n        return {\"error\": \"name required\"}\n    item = save_item(payload[\"name\"])\n    return {\"item\": item}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "8998c24d9e05f4fee12dbb59a85585fef08040e2951ece9b772c1d7a19a87214",
+          "projectFileId": "078d2dcd-fe5b-437a-8138-c83280200e6e",
+          "projectVersionId": "0bc4f75e-bddf-4d8f-a64c-8e3a1d3b88c5",
+          "sourceId": "0639fcee-19a8-4487-8167-dc7fb90a62a3"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "1c3acd5a-7e34-4553-8e27-ad9d3f839afa",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "R1-E3展示create_item对payload做name校验、调用save_item并返回响应，符合输入校验、服务调用、响应处理三要素；R1-E1仅返回固定字典，R1-E2仅重复取长度，均不涉及服务调用。",
+      "aiCitationIds": [
+        "R1-E1",
+        "R1-E2",
+        "R1-E3"
+      ],
+      "aiInformationGap": "save_item的实现、实际运行结果及本人贡献未展示或未核验。",
+      "aiSuggestion": "补充save_item实现文件、接口调用记录或运行日志，并核验代码归属。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    }
+  ]
+}

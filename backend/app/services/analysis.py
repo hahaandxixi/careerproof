@@ -323,6 +323,7 @@ class AnalysisService:
             claimed_only=report.claimed_only,
             items=[self._item_view(item, evidence_by_id.get(item.evidence_id)) for item in items],
             ai_usage=(report.analysis_metadata or {}).get("usage"),
+            ai_tool_calls=(report.analysis_metadata or {}).get("modelToolCalls") or [],
         )
 
     async def review_evidence(
@@ -863,6 +864,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         "jsonRepairCount": workflow.json_repair_count,
                         "modelRequirementCount": workflow.model_requirement_count,
                         "providerFinishReason": workflow.provider_finish_reason,
+                        "modelToolCalls": list(workflow.tool_calls),
                         "inputTokens": usage["input_tokens"] if usage else 0,
                         "outputTokens": usage["output_tokens"] if usage else 0,
                         "latencyMs": usage["latency_ms"] if usage else 0,

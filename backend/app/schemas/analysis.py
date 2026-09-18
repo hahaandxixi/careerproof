@@ -148,3 +148,4 @@ class MatchReportView(MatchReportSummary):
     claimed_only: list[str]
     items: list[MatchItemView]
     ai_usage: dict | None = None
+    ai_tool_calls: list[dict] = Field(default_factory=list)

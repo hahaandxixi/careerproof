@@ -45,6 +45,7 @@ export interface MatchReport extends ReportSummary {
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string }[];
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
+  aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
 }
 export interface DeepSeekWebHandoff {
   providerUrl: string; prompt: string; promptVersion: string;

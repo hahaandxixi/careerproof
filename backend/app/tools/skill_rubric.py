@@ -1,6 +1,6 @@
 """Original evidence rubric; skill-map inspired hierarchy, not copied map content."""
 
-VERSION = "skill-rubric-v1"
+VERSION = "skill-rubric-v2"
 CRITERIA = {
     "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
     "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
@@ -15,6 +15,17 @@ SKILL_CRITERIA = {
     "pytest": {
         "operation": "测试函数包含针对行为结果的断言；依赖、测试名或空测试不满足。",
         "task": "完整测试展示准备、执行与有效断言；仍不能从断言存在推断测试通过。",
+    },
+    "PostgreSQL": {
+        "operation": (
+            "存在通过数据库 API 执行的参数化 SELECT、INSERT、UPDATE 或 DELETE；"
+            "本判据只要求至少一个实质数据库操作，不要求覆盖岗位描述中的全部操作；"
+            "只有驱动依赖、连接类型、SQL 字符串或函数名不满足。"
+        ),
+        "task": (
+            "完整函数展示输入、SQL 执行和结果处理；岗位要求同时列出保存、查询等多个操作时，"
+            "证据必须逐项覆盖才算完整任务；不推断数据库已连接或语句已成功运行。"
+        ),
     },
     "索引优化": {
         "operation": "存在索引定义或执行计划分析，且与目标查询直接相关。",

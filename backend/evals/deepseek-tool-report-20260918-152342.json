@@ -1,0 +1,279 @@
+{
+  "scope": "Repository-owned synthetic source through local API and real DeepSeek",
+  "generatedAt": "2026-09-18T07:23:48.128280+00:00",
+  "taskId": "58e3fd47-e3b1-4acb-93f2-1c7ff510e384",
+  "reportId": "d880fa2d-880e-427a-8492-e04519aeb3c9",
+  "states": [
+    {
+      "status": "pending",
+      "progress": 0,
+      "currentStep": "等待分析真实材料"
+    },
+    {
+      "status": "running",
+      "progress": 25,
+      "currentStep": "正在读取材料并检索候选证据"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "模型正在判断是否需要补充检索"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "正在调用模型分析证据与评级判据"
+    },
+    {
+      "status": "completed",
+      "progress": 100,
+      "currentStep": "材料支持度报告已生成"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "eventType": "tool.completed",
+      "name": "核对材料版本",
+      "detail": "读取2份本人材料，报告固定到所选版本",
+      "payload": {
+        "materialCount": 2
+      }
+    },
+    {
+      "step": 2,
+      "eventType": "tool.completed",
+      "name": "检索候选证据",
+      "detail": "静态检查3个文件，找到3条候选证据",
+      "payload": {
+        "fileCount": 3,
+        "evidenceCount": 3,
+        "contextRetrieval": [
+          {
+            "name": "补取并核对证据上下文",
+            "rounds": 1,
+            "expandedCount": 3,
+            "limitedCount": 1,
+            "sourceExact": true,
+            "maxLines": 40,
+            "maxCharacters": 4000
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "eventType": "tool.completed",
+      "name": "补取并核对证据上下文",
+      "detail": "一次补取，3条多行原文；1条仍为局部上下文；未执行上传代码",
+      "payload": {
+        "name": "补取并核对证据上下文",
+        "rounds": 1,
+        "expandedCount": 3,
+        "limitedCount": 1,
+        "sourceExact": true,
+        "maxLines": 40,
+        "maxCharacters": 4000
+      }
+    },
+    {
+      "step": 4,
+      "eventType": "tool.completed",
+      "name": "计算材料支持度",
+      "detail": "使用evidence-v3规则；未支持的能力不参与评分",
+      "payload": {
+        "engine": "rules",
+        "formulaVersion": "evidence-v3"
+      }
+    },
+    {
+      "step": 5,
+      "eventType": "tool.completed",
+      "name": "模型证据分析",
+      "detail": "deepseek-flash完成1项解释",
+      "payload": {
+        "provider": "deepseek",
+        "promptVersion": "evidence-trust-v9-criterion-separation",
+        "model": "deepseek-flash",
+        "fallbackUsed": false,
+        "fallbackReason": null,
+        "skippedReason": null,
+        "repairUsed": false,
+        "requestCount": 2,
+        "jsonRepairCount": 0,
+        "modelRequirementCount": 1,
+        "providerFinishReason": "stop",
+        "modelToolCalls": [],
+        "inputTokens": 2761,
+        "outputTokens": 423,
+        "latencyMs": 3124
+      }
+    },
+    {
+      "step": 6,
+      "eventType": "tool.completed",
+      "name": "校验模型引用",
+      "detail": "要求编号与引用编号全部通过白名单校验",
+      "payload": {
+        "validation": "passed",
+        "acceptedCitationCount": 2
+      }
+    },
+    {
+      "step": 7,
+      "eventType": "tool.completed",
+      "name": "保存可追溯报告",
+      "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+      "payload": {
+        "mode": "ai_evidence"
+      }
+    }
+  ],
+  "analysisMode": "ai_evidence",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "fallbackUsed": false,
+  "usage": {
+    "input_tokens": 2761,
+    "output_tokens": 423,
+    "cache_hit_tokens": 1792,
+    "latency_ms": 3124
+  },
+  "items": [
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "FastAPI"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "reason": "片段含 FastAPI 路由装饰器与请求处理函数，与岗位要求直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R1-E2"
+          ],
+          "reason": "/items 路由函数包含 name 非空判断与错误返回分支，属实质操作逻辑。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "reason": "两个函数均展示请求输入、处理逻辑与明确返回，构成完整任务片段。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "两个路由片段均含非空处理逻辑与明确返回分支，且展示请求输入、处理与返回，连续满足三项标准。",
+      "evidenceLevelGap": "未展示 Pydantic 模型校验、save_item 实现、服务调用结果与本人贡献。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "c72ea066-b682-48d2-bfc3-fe41a3a17ff5",
+      "requirementTitle": "FastAPI 接口需包含输入校验、服务调用和响应处理",
+      "skill": "FastAPI",
+      "claimed": true,
+      "claimText": "- 使用 Python 开发 Web 服务，熟悉 FastAPI 路由与 Pydantic 数据校验。",
+      "evidence": {
+        "citationId": "R1-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "FastAPI",
+        "evidenceType": "fastapi_route",
+        "filePath": "c14597c8-686c-4875-ab65-3bb49ba5ca72/app/00_health.py",
+        "lineStart": 6,
+        "lineEnd": 8,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+        "projectFileId": "ff36593f-7e2c-4388-8e4d-309e2bebf349",
+        "projectVersionId": "c14597c8-686c-4875-ab65-3bb49ba5ca72",
+        "sourceId": "243280bd-55f9-43de-af33-55db65b04293"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R1-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_route",
+          "filePath": "c14597c8-686c-4875-ab65-3bb49ba5ca72/app/00_health.py",
+          "lineStart": 6,
+          "lineEnd": 8,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+          "projectFileId": "ff36593f-7e2c-4388-8e4d-309e2bebf349",
+          "projectVersionId": "c14597c8-686c-4875-ab65-3bb49ba5ca72",
+          "sourceId": "243280bd-55f9-43de-af33-55db65b04293"
+        },
+        {
+          "citationId": "R1-E2",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_route",
+          "filePath": "c14597c8-686c-4875-ab65-3bb49ba5ca72/app/10_items.py",
+          "lineStart": 10,
+          "lineEnd": 15,
+          "snippet": "@router.post(\"/items\")\ndef create_item(payload: dict) -> dict:\n    if not payload.get(\"name\"):\n        return {\"error\": \"name required\"}\n    item = save_item(payload[\"name\"])\n    return {\"item\": item}",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "8ff93e930014c870f63a6d79e91a80133deef37da7c8d9041957d71ed8b5656d",
+          "projectFileId": "924127a6-6174-408d-897a-d31178161a23",
+          "projectVersionId": "c14597c8-686c-4875-ab65-3bb49ba5ca72",
+          "sourceId": "9d3fb83e-cbd4-42e9-bd41-77d12c1ce43a"
+        },
+        {
+          "citationId": null,
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_app",
+          "filePath": "c14597c8-686c-4875-ab65-3bb49ba5ca72/app/00_health.py",
+          "lineStart": 1,
+          "lineEnd": 8,
+          "snippet": "from fastapi import FastAPI\n\napp = FastAPI(title=\"Synthetic Tool Retrieval API\")\n\n\n@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "medium",
+          "explanation": "创建了FastAPI应用实例；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+          "projectFileId": "ff36593f-7e2c-4388-8e4d-309e2bebf349",
+          "projectVersionId": "c14597c8-686c-4875-ab65-3bb49ba5ca72",
+          "sourceId": "0e4d8fb2-902d-4a94-8a47-68797231d770"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "9c36fd49-0fee-46a9-9774-db6bc1d0946b",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "R1-E1 展示 /health 路由返回固定字典；R1-E2 展示 /items 路由读取 payload 的 name，缺失时返回错误，否则调用 save_item 并返回结果。两片段均未展示 Pydantic 模型或字段级校验，也未展示 save_item 实现。",
+      "aiCitationIds": [
+        "R1-E1",
+        "R1-E2"
+      ],
+      "aiInformationGap": "未展示 Pydantic 模型校验、save_item 实现、服务调用结果与本人贡献。",
+      "aiSuggestion": "补充 Pydantic 模型定义、save_item 实现文件及可核验的运行记录或提交记录。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    }
+  ]
+}

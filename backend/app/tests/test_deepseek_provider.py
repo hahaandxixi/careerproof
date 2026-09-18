@@ -229,6 +229,7 @@ async def test_deepseek_retrieval_planner_uses_official_tool_protocol():
         assert body["thinking"] == {"type": "disabled"}
         assert body["tool_choice"] == "auto"
         assert body["tools"][0]["function"]["name"] == "retrieve_more_evidence"
+        assert "当前上传索引仍有未展示候选" in body["messages"][0]["content"]
         return httpx.Response(
             200,
             json={
