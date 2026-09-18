@@ -90,6 +90,7 @@ def main():
                     "jobId": job["id"],
                     "resumeVersionId": resume["versionId"],
                     "projectVersionIds": [version["versionId"]],
+                    "externalAiConsent": True,
                 },
             )
         )
@@ -114,6 +115,14 @@ def main():
             "usage": report["aiUsage"],
         }
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        if result["analysisMode"] != "ai_evidence" or result["fallbackUsed"]:
+            raise SystemExit(
+                f"Full AI report fell back to rules; evidence preserved in {output.name}"
+            )
+        if result["validatedItems"] < 1 or result["aiRatedCount"] != result["validatedItems"]:
+            raise SystemExit(
+                f"Full AI report did not validate all AI-rated items; see {output.name}"
+            )
         print(
             json.dumps(
                 {

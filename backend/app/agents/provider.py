@@ -56,6 +56,37 @@ def conservative_input_token_estimate(messages: list[dict[str, str]]) -> int:
     return max(1, len(json.dumps(messages, ensure_ascii=False, separators=(",", ":"))))
 
 
+def parse_provider_json_object(content: str) -> tuple[dict, bool]:
+    """Parse strict JSON, allowing one unambiguous missing closing brace."""
+    try:
+        parsed = json.loads(content)
+        repaired = False
+    except json.JSONDecodeError as exc:
+        stripped = content.strip()
+        if not stripped.startswith("{"):
+            raise ValueError("Provider message content is not valid JSON") from exc
+        candidates = [stripped + "}"]
+        if stripped.endswith("]}"):
+            candidates.append(stripped[:-2] + "}]}")
+        parsed = None
+        for candidate in candidates:
+            try:
+                parsed = json.loads(candidate)
+                break
+            except json.JSONDecodeError:
+                continue
+        if parsed is None:
+            raise ValueError("Provider message content is not valid JSON") from exc
+        repaired = True
+    if not isinstance(parsed, dict):
+        raise ValueError("Provider message content must be a JSON object")
+    return parsed, repaired
+
+
+class ProviderOutputTruncatedError(ValueError):
+    """The provider stopped at its output limit before returning valid JSON."""
+
+
 def evidence_policy() -> str:
     policy = Path(__file__).with_name("evidence_policy.md").read_text(encoding="utf-8")
     if not policy.strip():
@@ -93,6 +124,8 @@ def evidence_analysis_messages(
         "每项都请填写information_gap说明尚未核实的运行结果、实现范围或本人贡献，"
         "并给出与该项相关的核验建议。只把snippet中可见的行为作为事实；函数名、"
         "类型注解、依赖声明都不能证明函数体的行为。"
+        "保持简洁：summary不超过180字；每项explanation不超过160字，information_gap和"
+        "suggestion各不超过100字，rating.reason不超过120字，每条criterion.reason不超过80字。"
         "每项必须原样返回requirement_id。citation_ids只能从该项evidence的"
         "citation_id选择；没有证据时必须为空。supported和partial至少引用一条证据。"
         "partial、claimed_only、gap、unsupported必须填写information_gap和suggestion。"
@@ -237,6 +270,9 @@ class OpenAICompatibleProvider:
         self.progress_callback: Callable[[str], Awaitable[None]] | None = None
         self.planning_usage: ModelUsage | None = None
         self.last_usage: ModelUsage | None = None
+        self.request_usages: list[ModelUsage] = []
+        self.last_finish_reason: str | None = None
+        self.json_repair_count = 0
 
     async def _notify(self, message: str) -> None:
         if self.progress_callback:
@@ -298,7 +334,39 @@ class OpenAICompatibleProvider:
         raise last_error
 
     @staticmethod
-    def _message_content(payload: dict) -> dict:
+    def _finish_reason(payload: dict) -> str | None:
+        try:
+            value = payload["choices"][0].get("finish_reason")
+        except (KeyError, IndexError, TypeError, AttributeError):
+            return None
+        return str(value) if value is not None else None
+
+    def _capture_usage(self, payload: dict, latency_ms: int) -> ModelUsage:
+        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
+        captured = ModelUsage(
+            input_tokens=int(usage.get("prompt_tokens") or 0),
+            output_tokens=int(usage.get("completion_tokens") or 0),
+            cache_hit_tokens=int(usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0)
+            if isinstance(usage.get("prompt_tokens_details"), dict)
+            else 0,
+            latency_ms=latency_ms,
+        )
+        self.last_usage = captured
+        self.last_finish_reason = self._finish_reason(payload)
+        self.request_usages.append(captured)
+        return captured
+
+    def combined_usage(self) -> ModelUsage | None:
+        if not self.request_usages:
+            return None
+        return ModelUsage(
+            input_tokens=sum(usage.input_tokens for usage in self.request_usages),
+            output_tokens=sum(usage.output_tokens for usage in self.request_usages),
+            cache_hit_tokens=sum(usage.cache_hit_tokens for usage in self.request_usages),
+            latency_ms=sum(usage.latency_ms for usage in self.request_usages),
+        )
+
+    def _message_content(self, payload: dict) -> dict:
         try:
             content = payload["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
@@ -306,11 +374,14 @@ class OpenAICompatibleProvider:
         if not isinstance(content, str):
             raise ValueError("Provider message content must be a JSON string")
         try:
-            parsed = json.loads(content)
-        except json.JSONDecodeError as exc:
-            raise ValueError("Provider message content is not valid JSON") from exc
-        if not isinstance(parsed, dict):
-            raise ValueError("Provider message content must be a JSON object")
+            parsed, repaired = parse_provider_json_object(content)
+        except ValueError as exc:
+            if self._finish_reason(payload) == "length":
+                raise ProviderOutputTruncatedError(
+                    "Provider output reached the report token limit before valid JSON completed"
+                ) from exc
+            raise
+        self.json_repair_count += int(repaired)
         return parsed
 
     async def summarize_match(
@@ -342,15 +413,7 @@ class OpenAICompatibleProvider:
             ],
         }
         payload, latency_ms = await self._completion(request)
-        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
-        self.last_usage = ModelUsage(
-            input_tokens=int(usage.get("prompt_tokens") or 0),
-            output_tokens=int(usage.get("completion_tokens") or 0),
-            cache_hit_tokens=int(usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0)
-            if isinstance(usage.get("prompt_tokens_details"), dict)
-            else 0,
-            latency_ms=latency_ms,
-        )
+        self._capture_usage(payload, latency_ms)
         return MatchSummary.model_validate(self._message_content(payload))
 
     async def analyze_evidence(
@@ -387,21 +450,12 @@ class OpenAICompatibleProvider:
             ),
         }
         payload, latency_ms = await self._completion(request)
+        captured_usage = self._capture_usage(payload, latency_ms)
         parsed = self._message_content(payload)
-        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
         parsed.update(
             {
                 "model": str(payload.get("model") or self.model),
-                "usage": {
-                    "input_tokens": int(usage.get("prompt_tokens") or 0),
-                    "output_tokens": int(usage.get("completion_tokens") or 0),
-                    "cache_hit_tokens": int(
-                        usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0
-                    )
-                    if isinstance(usage.get("prompt_tokens_details"), dict)
-                    else 0,
-                    "latency_ms": latency_ms,
-                },
+                "usage": captured_usage.model_dump(),
             }
         )
         return EvidenceAnalysis.model_validate(parsed)
@@ -466,15 +520,7 @@ class OpenAICompatibleProvider:
             "tool_choice": "auto",
         }
         payload, latency_ms = await self._completion(request)
-        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
-        self.planning_usage = ModelUsage(
-            input_tokens=int(usage.get("prompt_tokens") or 0),
-            output_tokens=int(usage.get("completion_tokens") or 0),
-            cache_hit_tokens=int(usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0)
-            if isinstance(usage.get("prompt_tokens_details"), dict)
-            else 0,
-            latency_ms=latency_ms,
-        )
+        self.planning_usage = self._capture_usage(payload, latency_ms)
         try:
             message = payload["choices"][0]["message"]
             calls = message.get("tool_calls") or []

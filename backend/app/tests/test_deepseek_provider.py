@@ -6,7 +6,7 @@ from pydantic import SecretStr
 
 from app.agents.contracts import validate_grounded_analysis
 from app.agents.evidence_workflow import build_evidence_contexts
-from app.agents.provider import DeepSeekProvider, get_ai_provider
+from app.agents.provider import DeepSeekProvider, ProviderOutputTruncatedError, get_ai_provider
 from app.core.config import settings
 from app.tests.test_ai_evidence_workflow import evidenced_result
 
@@ -127,6 +127,73 @@ async def test_input_budget_blocks_request_before_network(monkeypatch):
         await provider(
             transport=httpx.MockTransport(forbidden_request), max_attempts=1
         ).analyze_evidence(contexts=contexts)
+
+
+async def test_single_missing_item_brace_is_repaired_and_recorded():
+    contexts = build_evidence_contexts(evidenced_result())
+    requirement_id = contexts[0].requirement_id
+    citation = contexts[0].evidence[0].citation_id
+    valid_content = json.dumps(
+        {
+            "summary": "材料中存在路由声明，运行结果待核验。",
+            "items": [
+                {
+                    "requirement_id": requirement_id,
+                    "explanation": "片段中存在路由声明。",
+                    "citation_ids": [citation],
+                    "information_gap": "运行结果和本人贡献待核验。",
+                    "suggestion": "补充运行记录并说明本人贡献。",
+                    "confidence": 0.5,
+                    "rating": None,
+                }
+            ],
+        },
+        ensure_ascii=False,
+    )
+    content = valid_content[:-3] + valid_content[-2:]
+
+    async def handler(request):
+        return httpx.Response(
+            200,
+            json={
+                "model": "deepseek-flash",
+                "choices": [{"message": {"content": content}}],
+                "usage": {"prompt_tokens": 20, "completion_tokens": 10},
+            },
+        )
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    result = await instance.analyze_evidence(contexts=contexts)
+
+    assert result.summary.startswith("材料中存在")
+    assert instance.json_repair_count == 1
+
+
+async def test_truncated_json_keeps_usage_and_reports_token_limit():
+    contexts = build_evidence_contexts(evidenced_result())
+
+    async def handler(request):
+        return httpx.Response(
+            200,
+            json={
+                "model": "deepseek-flash",
+                "choices": [
+                    {
+                        "message": {"content": '{"summary":"未完成","items":['},
+                        "finish_reason": "length",
+                    }
+                ],
+                "usage": {"prompt_tokens": 120, "completion_tokens": 3999},
+            },
+        )
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    with pytest.raises(ProviderOutputTruncatedError, match="token limit"):
+        await instance.analyze_evidence(contexts=contexts)
+
+    assert instance.last_finish_reason == "length"
+    assert instance.combined_usage().input_tokens == 120
+    assert instance.combined_usage().output_tokens == 3999
 
 
 async def test_deepseek_summary_exposes_sanitized_usage():

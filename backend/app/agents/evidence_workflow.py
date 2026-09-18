@@ -16,7 +16,11 @@ from app.agents.contracts import (
     RetrievalToolCall,
     validate_grounded_analysis,
 )
-from app.agents.provider import OpenAICompatibleProvider, get_ai_provider
+from app.agents.provider import (
+    OpenAICompatibleProvider,
+    ProviderOutputTruncatedError,
+    get_ai_provider,
+)
 from app.core.config import settings
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import classify_evidence
@@ -38,6 +42,9 @@ class EvidenceWorkflowOutcome:
     repaired: bool = False
     tool_calls: tuple[dict, ...] = ()
     request_count: int = 0
+    json_repair_count: int = 0
+    model_requirement_count: int = 0
+    provider_finish_reason: str | None = None
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -129,10 +136,15 @@ def execute_retrieval_tool(
     if context_index is None:
         raise ValueError("retrieval tool targeted an unknown requirement")
     context = contexts[context_index]
-    item = next(
-        (entry for entry in result.items if str(entry.requirement_id) == call.requirement_id),
+    result_index = next(
+        (
+            index
+            for index, entry in enumerate(result.items)
+            if str(entry.requirement_id) == call.requirement_id
+        ),
         None,
     )
+    item = result.items[result_index] if result_index is not None else None
     if item is None:
         raise ValueError("retrieval tool requirement is absent from the match result")
     existing = {source_key(entry) for entry in context.evidence}
@@ -158,7 +170,7 @@ def execute_retrieval_tool(
     evidence = [
         *context.evidence,
         EvidenceCandidate(
-            citation_id=f"R{context_index + 1}-E{len(context.evidence) + 1}",
+            citation_id=f"R{result_index + 1}-E{len(context.evidence) + 1}",
             file_path=selected.file_path,
             line_start=selected.line_start,
             line_end=selected.line_end,
@@ -203,6 +215,8 @@ def has_retrieval_candidate(
 
 
 def _fallback_reason(exc: Exception) -> str:
+    if isinstance(exc, ProviderOutputTruncatedError):
+        return "output_token_limit"
     if isinstance(exc, TimeoutError | httpx.TimeoutException):
         return "timeout"
     if isinstance(exc, httpx.HTTPStatusError):
@@ -282,17 +296,18 @@ async def run_evidence_workflow(
             if provider.name == "mock":
                 return EvidenceWorkflowOutcome(contexts, None, "rules", None, False, None)
             contexts = build_evidence_contexts(result, max_evidence=2)
+            model_contexts = [context for context in contexts if context.evidence]
             stage = "request"
             await _notify(progress, "等待可用的模型调用名额")
             async with _model_semaphore():
                 if isinstance(provider, OpenAICompatibleProvider) and has_retrieval_candidate(
-                    result, contexts
+                    result, model_contexts
                 ):
                     stage = "tool_planning"
                     await _notify(progress, "模型正在判断是否需要补充检索")
                     try:
                         request_count += 1
-                        tool_call = await provider.plan_evidence_retrieval(contexts=contexts)
+                        tool_call = await provider.plan_evidence_retrieval(contexts=model_contexts)
                     except (ValidationError, ValueError, KeyError, TypeError):
                         tool_call = None
                         tool_calls.append(
@@ -308,7 +323,13 @@ async def run_evidence_workflow(
                     if tool_call:
                         stage = "tool_execution"
                         await _notify(progress, "正在按模型请求从当前材料补充一条证据")
-                        contexts, tool_event = execute_retrieval_tool(result, contexts, tool_call)
+                        model_contexts, tool_event = execute_retrieval_tool(
+                            result, model_contexts, tool_call
+                        )
+                        updated = {context.requirement_id: context for context in model_contexts}
+                        contexts = [
+                            updated.get(context.requirement_id, context) for context in contexts
+                        ]
                         tool_calls.append(tool_event)
                 stage = "request"
                 await _notify(progress, "正在调用模型分析证据与评级判据")
@@ -323,15 +344,15 @@ async def run_evidence_workflow(
                         planning_usage.output_tokens if planning_usage else 0
                     )
                     analysis = await provider.analyze_evidence(
-                        contexts=contexts,
+                        contexts=model_contexts,
                         input_token_limit=remaining_input,
                         output_token_limit=remaining_output,
                     )
                 else:
-                    analysis = await provider.analyze_evidence(contexts=contexts)
+                    analysis = await provider.analyze_evidence(contexts=model_contexts)
                 stage = "validation"
                 try:
-                    validate_grounded_analysis(contexts, analysis)
+                    validate_grounded_analysis(model_contexts, analysis)
                 except ValueError as validation_error:
                     if not isinstance(provider, OpenAICompatibleProvider):
                         raise
@@ -348,13 +369,13 @@ async def run_evidence_workflow(
                         + first_usage.output_tokens
                     )
                     repaired_analysis = await provider.analyze_evidence(
-                        contexts=contexts,
+                        contexts=model_contexts,
                         validation_feedback=str(validation_error),
                         previous_analysis=analysis,
                         input_token_limit=remaining_input,
                         output_token_limit=remaining_output,
                     )
-                    validate_grounded_analysis(contexts, repaired_analysis)
+                    validate_grounded_analysis(model_contexts, repaired_analysis)
                     repaired = True
                     analysis = repaired_analysis.model_copy(
                         update={
@@ -399,6 +420,17 @@ async def run_evidence_workflow(
             repaired=repaired,
             tool_calls=tuple(tool_calls),
             request_count=request_count,
+            json_repair_count=(
+                provider.json_repair_count
+                if isinstance(provider, OpenAICompatibleProvider)
+                else 0
+            ),
+            model_requirement_count=len(model_contexts),
+            provider_finish_reason=(
+                provider.last_finish_reason
+                if isinstance(provider, OpenAICompatibleProvider)
+                else None
+            ),
         )
     except Exception as exc:
         if not settings.ai_local_fallback_enabled:
@@ -410,9 +442,29 @@ async def run_evidence_workflow(
             model=configured_model,
             fallback_used=True,
             fallback_reason=_fallback_reason(exc),
-            attempted_usage=analysis.usage if analysis else planning_usage,
+            attempted_usage=(
+                provider.combined_usage()
+                if "provider" in locals()
+                and isinstance(provider, OpenAICompatibleProvider)
+                else analysis.usage
+                if analysis
+                else planning_usage
+            ),
             failure_stage=stage,
             repaired=repaired,
             tool_calls=tuple(tool_calls),
             request_count=request_count,
+            json_repair_count=(
+                provider.json_repair_count
+                if "provider" in locals()
+                and isinstance(provider, OpenAICompatibleProvider)
+                else 0
+            ),
+            model_requirement_count=(len(model_contexts) if "model_contexts" in locals() else 0),
+            provider_finish_reason=(
+                provider.last_finish_reason
+                if "provider" in locals()
+                and isinstance(provider, OpenAICompatibleProvider)
+                else None
+            ),
         )

@@ -83,7 +83,22 @@ def overclaim_flags(text: str) -> list[str]:
     """Conservative lexical guard, NOT a semantic entailment metric."""
     # This exact rubric phrase describes relevance, not job fitness or ability.
     # Keep "满足岗位要求" and all other broad fitness claims subject to the guard.
-    text = text.replace("满足相关性要求", "存在相关线索")
+    for source, replacement in (
+        ("不满足相关性要求", "缺少相关线索"),
+        ("满足相关性要求", "存在相关线索"),
+        ("不满足实质操作要求", "缺少实质操作证据"),
+        ("满足实质操作要求", "存在实质操作证据"),
+        ("不满足完整任务要求", "缺少完整任务证据"),
+        ("满足完整任务要求", "存在完整任务证据"),
+    ):
+        text = text.replace(source, replacement)
+    text = re.sub(
+        r"(?:声称|声明|自述).{0,40}(?:测试|用例|代码|服务).{0,12}"
+        r"(?:全部通过|已通过|运行成功).{0,50}"
+        r"(?:不作为事实|不予采纳|不采纳|未核验|待核验)",
+        "已明确拒绝采纳的材料声明",
+        text,
+    )
     patterns = {
         "ability_claim": r"(?:证明|表明|确认|可见).{0,12}(?:具备|拥有|掌握).{0,30}(?:能力|技能)|"
         r"(?:具备|拥有).{0,24}能力|熟练掌握|精通|胜任|满足.{0,25}(?:岗位|要求)",
@@ -107,7 +122,14 @@ def overclaim_flags(text: str) -> list[str]:
                     re.fullmatch(r"材料中仅包含对.+的声明", sentence.strip())
                     or re.fullmatch(r"声明中提到.+", sentence.strip())
                 ) and not re.search(r"证实|确认|验证|确实|事实|证明", sentence)
-                if not uncertain and not attributed:
+                explicitly_rejected_claim = bool(
+                    re.search(r"声称|声明|自述", prefix)
+                    and re.search(
+                        r"不作为事实|不予采纳|不采纳|未核验|待核验",
+                        sentence[match.end() :],
+                    )
+                )
+                if not uncertain and not attributed and not explicitly_rejected_claim:
                     flags.add(label)
     return sorted(flags)
 

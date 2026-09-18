@@ -1,0 +1,707 @@
+{
+  "scope": "Synthetic local API and real configured model; no user resume",
+  "taskId": "eda722c7-2318-4581-84c8-56b8730afb3f",
+  "reportId": "91193623-6262-4968-b7ac-71c02897d852",
+  "states": [
+    {
+      "status": "pending",
+      "progress": 0,
+      "currentStep": "等待分析真实材料"
+    },
+    {
+      "status": "running",
+      "progress": 25,
+      "currentStep": "正在读取材料并检索候选证据"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "模型正在判断是否需要补充检索"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "正在调用模型分析证据与评级判据"
+    },
+    {
+      "status": "running",
+      "progress": 85,
+      "currentStep": "模型引用已校验，正在保存报告"
+    },
+    {
+      "status": "completed",
+      "progress": 100,
+      "currentStep": "材料支持度报告已生成"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "eventType": "tool.completed",
+      "name": "核对材料版本",
+      "detail": "读取2份本人材料，报告固定到所选版本",
+      "payload": {
+        "materialCount": 2
+      }
+    },
+    {
+      "step": 2,
+      "eventType": "tool.completed",
+      "name": "检索候选证据",
+      "detail": "静态检查4个文件，找到11条候选证据",
+      "payload": {
+        "fileCount": 4,
+        "evidenceCount": 11,
+        "contextRetrieval": [
+          {
+            "name": "补取并核对证据上下文",
+            "rounds": 1,
+            "expandedCount": 7,
+            "limitedCount": 1,
+            "sourceExact": true,
+            "maxLines": 40,
+            "maxCharacters": 4000
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "eventType": "tool.completed",
+      "name": "补取并核对证据上下文",
+      "detail": "一次补取，7条多行原文；1条仍为局部上下文；未执行上传代码",
+      "payload": {
+        "name": "补取并核对证据上下文",
+        "rounds": 1,
+        "expandedCount": 7,
+        "limitedCount": 1,
+        "sourceExact": true,
+        "maxLines": 40,
+        "maxCharacters": 4000
+      }
+    },
+    {
+      "step": 4,
+      "eventType": "tool.completed",
+      "name": "计算材料支持度",
+      "detail": "使用evidence-v3规则；未支持的能力不参与评分",
+      "payload": {
+        "engine": "rules",
+        "formulaVersion": "evidence-v3"
+      }
+    },
+    {
+      "step": 5,
+      "eventType": "tool.completed",
+      "name": "模型证据分析",
+      "detail": "deepseek-flash完成4项解释",
+      "payload": {
+        "provider": "deepseek",
+        "promptVersion": "evidence-trust-v6-consistency",
+        "model": "deepseek-flash",
+        "fallbackUsed": false,
+        "fallbackReason": null,
+        "skippedReason": null,
+        "repairUsed": false,
+        "requestCount": 2,
+        "jsonRepairCount": 0,
+        "modelRequirementCount": 4,
+        "providerFinishReason": "stop",
+        "inputTokens": 4450,
+        "outputTokens": 1262,
+        "latencyMs": 6552
+      }
+    },
+    {
+      "step": 6,
+      "eventType": "tool.completed",
+      "name": "校验模型引用",
+      "detail": "要求编号与引用编号全部通过白名单校验",
+      "payload": {
+        "validation": "passed",
+        "acceptedCitationCount": 8
+      }
+    },
+    {
+      "step": 7,
+      "eventType": "tool.completed",
+      "name": "保存可追溯报告",
+      "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+      "payload": {
+        "mode": "ai_evidence"
+      }
+    }
+  ],
+  "analysisMode": "ai_evidence",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "fallbackUsed": false,
+  "aiRatedCount": 4,
+  "validatedItems": 4,
+  "items": [
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "Python"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "reason": "片段为 Python 函数与查询代码，与 Python 后端要求直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "reason": "health 返回字典，find_course 执行参数化查询并返回结果，非空实现。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ],
+          "reason": "两个函数均展示完整函数体、输入与返回，构成完整任务片段。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "片段含与 Python 后端直接相关的函数定义与查询实现，输入输出可见，但未验证运行与贡献。",
+      "evidenceLevelGap": "未展示代码运行结果、测试执行情况，也未展示这些文件由本人编写的证据。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "0a0a943a-1539-4a85-bfef-acdd19d02035",
+      "requirementTitle": "材料包含 Python 实践证据",
+      "skill": "Python",
+      "claimed": true,
+      "claimText": "求职方向：Python 后端开发实习生",
+      "evidence": {
+        "citationId": "R1-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "Python",
+        "evidenceType": "python_code",
+        "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/app.py",
+        "lineStart": 12,
+        "lineEnd": 14,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+        "projectFileId": "b0030e05-65a7-44c5-8df3-f239543f96f8",
+        "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+        "sourceId": "0076c62f-f927-40d4-a4a1-3c73577171dd"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R1-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/app.py",
+          "lineStart": 12,
+          "lineEnd": 14,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "projectFileId": "b0030e05-65a7-44c5-8df3-f239543f96f8",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "0076c62f-f927-40d4-a4a1-3c73577171dd"
+        },
+        {
+          "citationId": "R1-E2",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/database.py",
+          "lineStart": 4,
+          "lineEnd": 10,
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+          "projectFileId": "26a5eff5-19be-4afb-b11a-2f619754c644",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "e7af278e-9b00-4afe-aa73-93a5f8d99bef"
+        },
+        {
+          "citationId": null,
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/test_app.py",
+          "lineStart": 9,
+          "lineEnd": 12,
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+          "projectFileId": "18cb46c0-f057-4145-b0ed-f007064af705",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "603609c8-3f94-48a8-9b98-d50ef806b358"
+        },
+        {
+          "citationId": null,
+          "contextComplete": true,
+          "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+          "skill": "Python",
+          "evidenceType": "python_dependency",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/requirements.txt",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "snippet": "fastapi==0.116.1",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "contentHash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "projectFileId": "f3d67c7a-042e-48aa-b21a-9d99de875783",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "665dcbd1-9cb1-43c3-aaa8-fe3623c25c21"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "120b3d90-b34e-4145-9476-b600575b7421",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "存在 Python 函数定义：health 返回固定字典，find_course 使用传入连接执行参数化查询并返回 fetchone 结果。均为静态片段，未展示运行结果或本人贡献。",
+      "aiCitationIds": [
+        "R1-E1",
+        "R1-E2"
+      ],
+      "aiInformationGap": "未展示代码运行结果、测试执行情况，也未展示这些文件由本人编写的证据。",
+      "aiSuggestion": "补充运行日志或测试输出，并提供提交记录、版本历史等本人贡献材料供人工核验。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    },
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "FastAPI"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R2-E1",
+            "R2-E2"
+          ],
+          "reason": "片段含 FastAPI 应用、Pydantic 模型与路由装饰器，直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R2-E1"
+          ],
+          "reason": "路由函数返回非空字典，非 pass 或空实现。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R2-E1"
+          ],
+          "reason": "完整路由函数展示请求路径与明确返回，构成完整任务片段。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "含 FastAPI 应用、模型与完整路由函数，输入输出可见，但运行与贡献未核验。",
+      "evidenceLevelGap": "未展示应用启动、路由实际响应、Pydantic 校验触发情况，也未展示本人贡献。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "2e69265b-c72f-4bbf-a49b-1b95576944de",
+      "requirementTitle": "材料包含 FastAPI 实践证据",
+      "skill": "FastAPI",
+      "claimed": true,
+      "claimText": "- 使用 Python 开发 Web 服务，熟悉 FastAPI 路由与 Pydantic 数据校验。",
+      "evidence": {
+        "citationId": "R2-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "FastAPI",
+        "evidenceType": "fastapi_route",
+        "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/app.py",
+        "lineStart": 12,
+        "lineEnd": 14,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+        "projectFileId": "b0030e05-65a7-44c5-8df3-f239543f96f8",
+        "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+        "sourceId": "208b56c9-3f5b-47cb-bd88-b8aee1e06749"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R2-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_route",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/app.py",
+          "lineStart": 12,
+          "lineEnd": 14,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "projectFileId": "b0030e05-65a7-44c5-8df3-f239543f96f8",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "208b56c9-3f5b-47cb-bd88-b8aee1e06749"
+        },
+        {
+          "citationId": "R2-E2",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_app",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/app.py",
+          "lineStart": 2,
+          "lineEnd": 10,
+          "snippet": "from pydantic import BaseModel\n\napp = FastAPI(title=\"Course Task API\")\n\n\nclass Course(BaseModel):\n    id: int\n    title: str",
+          "strength": "medium",
+          "explanation": "创建了FastAPI应用实例；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "40386d9e34dec53dd87249df0be084b37eee206308d5fdebd25bb746df7958e7",
+          "projectFileId": "b0030e05-65a7-44c5-8df3-f239543f96f8",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "b3dffbe8-f3c9-4a89-9ae7-d6090c462ff4"
+        },
+        {
+          "citationId": null,
+          "contextComplete": true,
+          "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_dependency",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/requirements.txt",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "snippet": "fastapi==0.116.1",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "contentHash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "projectFileId": "f3d67c7a-042e-48aa-b21a-9d99de875783",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "e0ac8620-934f-405e-8be2-2670c11e2561"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "55d9b9a8-c44f-40d8-a11b-7911fa6eb17d",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "存在 FastAPI 应用实例、Pydantic 模型定义与 @app.get 路由，路由返回固定字典。片段为静态代码，未展示服务启动或请求响应结果。",
+      "aiCitationIds": [
+        "R2-E1",
+        "R2-E2"
+      ],
+      "aiInformationGap": "未展示应用启动、路由实际响应、Pydantic 校验触发情况，也未展示本人贡献。",
+      "aiSuggestion": "补充服务启动与接口调用记录，并提供提交历史等贡献材料供人工核验。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    },
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "数据库",
+        "PostgreSQL"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R3-E1",
+            "R3-E2"
+          ],
+          "reason": "片段含 psycopg 查询与依赖声明，与 PostgreSQL 要求相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": false,
+          "citation_ids": [
+            "R3-E1"
+          ],
+          "reason": "使用传入连接查询，未展示连接创建或数据库实际操作结果。"
+        },
+        {
+          "criterion": "task",
+          "supported": false,
+          "citation_ids": [
+            "R3-E1"
+          ],
+          "reason": "未展示连接建立与执行结果，无法构成完整数据库任务。"
+        }
+      ],
+      "evidenceLevel": 1,
+      "evidenceLevelLabel": "基础线索",
+      "evidenceLevelReason": "存在参数化查询实现，但连接建立与执行结果未展示，仅达相关线索层级。",
+      "evidenceLevelGap": "未展示连接创建、数据库实际执行结果、表结构，也未展示本人贡献。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "efd3ac0c-439e-4b31-9352-68b2ec9131d3",
+      "requirementTitle": "材料包含 PostgreSQL 实践证据",
+      "skill": "PostgreSQL",
+      "claimed": true,
+      "claimText": "- 使用 PostgreSQL 保存业务数据，了解参数化查询。",
+      "evidence": {
+        "citationId": "R3-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "PostgreSQL",
+        "evidenceType": "postgres_usage",
+        "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/database.py",
+        "lineStart": 4,
+        "lineEnd": 10,
+        "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+        "strength": "medium",
+        "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+        "projectFileId": "26a5eff5-19be-4afb-b11a-2f619754c644",
+        "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+        "sourceId": "f8947150-ad47-4f74-b496-d22c4d294787"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R3-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "PostgreSQL",
+          "evidenceType": "postgres_usage",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/database.py",
+          "lineStart": 4,
+          "lineEnd": 10,
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "strength": "medium",
+          "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "acc259221587f224428d3de2ccb0851d1c67409cd8e20d1f5f02addd65966381",
+          "projectFileId": "26a5eff5-19be-4afb-b11a-2f619754c644",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "f8947150-ad47-4f74-b496-d22c4d294787"
+        },
+        {
+          "citationId": "R3-E2",
+          "contextComplete": true,
+          "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+          "skill": "PostgreSQL",
+          "evidenceType": "postgres_dependency",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/requirements.txt",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "snippet": "psycopg[binary]==3.2.9",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "contentHash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "projectFileId": "f3d67c7a-042e-48aa-b21a-9d99de875783",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "544f0fc7-c684-436e-a5fc-384245a7eaed"
+        }
+      ],
+      "verdict": "partial",
+      "aiConfidence": 0.6,
+      "ruleBaseScore": 0.4,
+      "weight": 4,
+      "finalScore": 40.0,
+      "explanation": "存在PostgreSQL驱动或连接的实际使用；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "8090ff3b-3c69-45b6-9b42-f627a9a4a49d",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "片段使用传入连接执行参数化查询并返回 fetchone 结果；依赖声明仅证明声明。连接建立过程与实际执行结果未展示或未核验。",
+      "aiCitationIds": [
+        "R3-E1",
+        "R3-E2"
+      ],
+      "aiInformationGap": "未展示连接创建、数据库实际执行结果、表结构，也未展示本人贡献。",
+      "aiSuggestion": "补充连接建立代码、查询执行记录或数据库环境说明，供人工核验。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    },
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "测试",
+        "pytest"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R4-E1",
+            "R4-E2"
+          ],
+          "reason": "片段含 pytest 测试函数与依赖声明，与 pytest 要求直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R4-E1"
+          ],
+          "reason": "测试函数包含针对状态码与响应体的断言，非空测试。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R4-E1"
+          ],
+          "reason": "完整测试展示请求调用与有效断言，构成完整测试片段。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "含完整测试函数与有效断言，但未展示执行结果与贡献，不能推断通过。",
+      "evidenceLevelGap": "未展示测试执行输出、通过结果、client 夹具定义，也未展示本人贡献。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "9822770c-4b8f-4433-a8dc-596880661a96",
+      "requirementTitle": "材料包含 pytest 实践证据",
+      "skill": "pytest",
+      "claimed": true,
+      "claimText": "- 使用 pytest 编写接口测试。",
+      "evidence": {
+        "citationId": "R4-E1",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "pytest",
+        "evidenceType": "pytest_test",
+        "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/test_app.py",
+        "lineStart": 9,
+        "lineEnd": 12,
+        "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+        "projectFileId": "18cb46c0-f057-4145-b0ed-f007064af705",
+        "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+        "sourceId": "be4ac9e4-fa8c-4fe8-93b4-3283c9dc1ef3"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R4-E1",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "pytest",
+          "evidenceType": "pytest_test",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/test_app.py",
+          "lineStart": 9,
+          "lineEnd": 12,
+          "snippet": "def test_health_endpoint():\n    response = client.get(\"/health\")\n    assert response.status_code == 200\n    assert response.json() == {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "5f775b129116d725b9cd960cd930ef15042fce33f7356091138e1c60a73dba26",
+          "projectFileId": "18cb46c0-f057-4145-b0ed-f007064af705",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "be4ac9e4-fa8c-4fe8-93b4-3283c9dc1ef3"
+        },
+        {
+          "citationId": "R4-E2",
+          "contextComplete": true,
+          "contextNote": "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现",
+          "skill": "pytest",
+          "evidenceType": "pytest_dependency",
+          "filePath": "362c5db0-95eb-45d0-829f-1c5c00a5135b/requirements.txt",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "snippet": "pytest==8.4.2",
+          "strength": "low",
+          "explanation": "仅有依赖或配置声明，未据此确认功能实现。",
+          "contentHash": "bd58e261dfa2352b9f3d75bb9ddb71870e403806e9fa68da6dde95a04faeb3a0",
+          "projectFileId": "f3d67c7a-042e-48aa-b21a-9d99de875783",
+          "projectVersionId": "362c5db0-95eb-45d0-829f-1c5c00a5135b",
+          "sourceId": "7c9c8ee1-254a-44da-9c3e-c8e7241f4064"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 3,
+      "finalScore": 65.0,
+      "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "f6ce2e4a-6123-477e-9bb0-a7cd17145b81",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "存在 pytest 测试函数，调用 client.get 并对状态码与响应体断言；依赖声明仅证明声明。断言存在不能证明测试已执行或通过。",
+      "aiCitationIds": [
+        "R4-E1",
+        "R4-E2"
+      ],
+      "aiInformationGap": "未展示测试执行输出、通过结果、client 夹具定义，也未展示本人贡献。",
+      "aiSuggestion": "补充测试运行日志或报告，并提供提交历史等贡献材料供人工核验。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    },
+    {
+      "evidenceLevelSource": "rules",
+      "skillPath": [
+        "岗位专项",
+        "Redis"
+      ],
+      "ratingCriteria": [],
+      "evidenceLevel": null,
+      "evidenceLevelLabel": "仅有声明，未评级",
+      "evidenceLevelReason": "简历自述不作为实践等级依据。",
+      "evidenceLevelGap": "补充可定位的作品或实现材料。",
+      "evidenceLevelVersion": "practice-evidence-v2",
+      "requirementId": "3be4f691-34ae-4021-8677-fea972a983b8",
+      "requirementTitle": "材料包含 Redis 实践证据",
+      "skill": "Redis",
+      "claimed": true,
+      "claimText": "- 了解 Redis，但本次演示项目未提供 Redis 实现证据。",
+      "evidence": null,
+      "evidenceList": [],
+      "verdict": "claimed_only",
+      "aiConfidence": null,
+      "ruleBaseScore": 0.1,
+      "weight": 2,
+      "finalScore": 10.0,
+      "explanation": "简历中存在该技能声明，但项目文件中暂未找到可验证证据",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": null,
+      "confirmationStatus": null,
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": null,
+      "aiCitationIds": [],
+      "aiInformationGap": null,
+      "aiSuggestion": null,
+      "aiStatus": "not_used",
+      "aiOrigin": null
+    }
+  ],
+  "usage": {
+    "input_tokens": 4450,
+    "output_tokens": 1262,
+    "cache_hit_tokens": 1024,
+    "latency_ms": 6552
+  }
+}

@@ -6,7 +6,9 @@ import httpx
 import pytest
 
 from app.agents.contracts import (
+    AIRating,
     AIRequirementAnalysis,
+    CriterionDecision,
     EvidenceAnalysis,
     ModelUsage,
     RetrievalToolCall,
@@ -88,6 +90,83 @@ async def test_no_evidence_skips_external_provider(monkeypatch) -> None:
     assert outcome.fallback_used is False
     assert outcome.skipped_reason == "no_evidence"
     assert outcome.request_count == 0
+
+
+@pytest.mark.asyncio
+async def test_mixed_report_only_sends_evidenced_requirements(monkeypatch) -> None:
+    result = match_candidate(
+        [
+            RequirementInput(uuid4(), "有 FastAPI 接口开发实践", "FastAPI", 5),
+            RequirementInput(uuid4(), "有 Redis 缓存实践", "Redis", 3),
+        ],
+        parse_resume("熟悉 FastAPI 和 Redis"),
+        [
+            ProjectFileSnapshot(
+                "app.py",
+                "from fastapi import FastAPI\n"
+                "app = FastAPI()\n"
+                '@app.get("/health")\n'
+                "def health(): pass",
+            )
+        ],
+    )
+    seen = []
+
+    class Provider:
+        name = "synthetic"
+
+        async def analyze_evidence(self, *, contexts):
+            seen.extend(contexts)
+            citation = contexts[0].evidence[0].citation_id
+            return EvidenceAnalysis(
+                summary="材料含 FastAPI 路由，运行结果待核验。",
+                model="synthetic",
+                usage=ModelUsage(input_tokens=10, output_tokens=20),
+                items=[
+                    AIRequirementAnalysis(
+                        requirement_id=contexts[0].requirement_id,
+                        explanation="材料含路由声明和空函数。",
+                        citation_ids=[citation],
+                        information_gap="运行结果与本人贡献待核验。",
+                        suggestion="补充运行记录并说明贡献。",
+                        confidence=0.5,
+                        rating=AIRating(
+                            level=1,
+                            reason="只确认相关线索。",
+                            criteria=[
+                                CriterionDecision(
+                                    criterion="relevance",
+                                    supported=True,
+                                    citation_ids=[citation],
+                                    reason="片段含 FastAPI 路由。",
+                                ),
+                                CriterionDecision(
+                                    criterion="operation",
+                                    supported=False,
+                                    citation_ids=[],
+                                    reason="函数体为空实现。",
+                                ),
+                                CriterionDecision(
+                                    criterion="task",
+                                    supported=False,
+                                    citation_ids=[],
+                                    reason="未展示完整任务实现。",
+                                ),
+                            ],
+                        ),
+                    )
+                ],
+            )
+
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", Provider)
+
+    outcome = await run_evidence_workflow(result)
+
+    assert len(outcome.contexts) == 2
+    assert len(seen) == 1 and seen[0].skill == "FastAPI"
+    assert outcome.model_requirement_count == 1
+    assert len(outcome.analysis.items) == 1
 
 
 def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None:
@@ -216,10 +295,18 @@ def test_overclaim_guard_rejects_ability_and_execution_assertions(text):
         "当前材料未找到证据，不代表没有该能力。",
         "未验证服务是否实际运行成功。",
         "无法确认候选人编写了这段代码。",
+        "片段试图声称测试全部通过，该文本不作为事实采纳。",
+        "可见行为是一个断言，满足实质操作要求。",
+        "片段不满足完整任务要求。",
     ],
 )
 def test_guard_allows_cautious_source_description(text):
     assert not overclaim_flags(text)
+
+
+def test_guard_still_rejects_reported_claim_without_explicit_disclaimer():
+    assert overclaim_flags("模型声称测试全部通过。") == ["execution_claim"]
+    assert overclaim_flags("材料满足岗位要求。") == ["ability_claim"]
 
 
 @pytest.mark.asyncio

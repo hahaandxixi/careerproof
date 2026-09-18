@@ -50,6 +50,8 @@ async def evaluate_case(case: dict, live: bool) -> dict:
             for e in context.evidence
         ),
         "accepted": None,
+        "externalAttempted": False,
+        "skippedReason": None,
         "rawModelContent": None,
         "validationError": None,
         "usage": None,
@@ -66,6 +68,10 @@ async def evaluate_case(case: dict, live: bool) -> dict:
     }
     if not live:
         return row
+    if settings.ai_skip_when_no_evidence and not any(context.evidence for context in contexts):
+        row["skippedReason"] = "no_evidence"
+        row["productionOutcome"] = "rules_only"
+        return row
     provider = get_ai_provider()
     if provider.name == "mock":
         raise ValueError("Live evaluation requires an enabled real provider")
@@ -79,6 +85,7 @@ async def evaluate_case(case: dict, live: bool) -> dict:
     provider._message_content = record
     started = perf_counter()
     try:
+        row["externalAttempted"] = True
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
             analysis = await provider.analyze_evidence(contexts=contexts)
             row["analysis"] = analysis.model_dump()
@@ -116,14 +123,30 @@ async def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--interval", type=float, default=30, help="Seconds between live cases")
+    parser.add_argument(
+        "--max-total-tokens",
+        type=int,
+        default=30_000,
+        help="Stop before another case after provider-reported total usage reaches this value",
+    )
+    parser.add_argument("--only", action="append", help="Run only the named case; repeatable")
     parser.add_argument("--cases", type=Path, default=Path("evals/evidence-trust-cases.json"))
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if not 0 <= args.interval <= 300:
         parser.error("interval must be between 0 and 300 seconds")
+    if not 1000 <= args.max_total_tokens <= 200_000:
+        parser.error("max-total-tokens must be between 1000 and 200000")
     if args.output.exists():
         raise SystemExit("Output already exists: use a new run filename to preserve history")
     cases = json.loads(args.cases.read_text(encoding="utf-8"))
+    if args.only:
+        selected = set(args.only)
+        known = {case["id"] for case in cases}
+        unknown = selected - known
+        if unknown:
+            parser.error(f"unknown cases: {', '.join(sorted(unknown))}")
+        cases = [case for case in cases if case["id"] in selected]
     rows = []
     report = {
         "suite": "evidence-trust-v2",
@@ -132,13 +155,28 @@ async def main() -> int:
         "intervalSeconds": args.interval if args.live else 0,
         "generatedAt": datetime.now(UTC).isoformat(),
         "live": args.live,
+        "syntheticDataOnly": True,
+        "maxTotalTokens": args.max_total_tokens if args.live else None,
         "results": rows,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    for index, case in enumerate(cases):
-        if args.live and index:
+    reported_total_tokens = 0
+    previous_external_attempted = False
+    for case in cases:
+        if args.live and reported_total_tokens >= args.max_total_tokens:
+            budget_row = await evaluate_case(case, False)
+            budget_row["skippedReason"] = "suite_token_limit"
+            rows.append(budget_row)
+            continue
+        if args.live and previous_external_attempted:
             await asyncio.sleep(args.interval)
         rows.append(await evaluate_case(case, args.live))
+        previous_external_attempted = bool(rows[-1].get("externalAttempted"))
+        usage = rows[-1].get("usage") or {}
+        reported_total_tokens += int(
+            usage.get("total_tokens")
+            or (usage.get("prompt_tokens") or 0) + (usage.get("completion_tokens") or 0)
+        )
         args.output.write_text(
             json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -151,6 +189,11 @@ async def main() -> int:
     report["metrics"] = {
         "caseCount": len(rows),
         "attempted": len(attempted),
+        "rulesOnlySkipped": sum(r.get("skippedReason") == "no_evidence" for r in rows),
+        "suiteBudgetSkipped": sum(
+            r.get("skippedReason") == "suite_token_limit" for r in rows
+        ),
+        "reportedTotalTokens": reported_total_tokens,
         "sourceExactRate": sum(r["sourceExact"] for r in rows) / len(rows),
         "acceptedRate": (
             sum(r["accepted"] for r in attempted) / len(attempted) if attempted else None
