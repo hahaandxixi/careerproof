@@ -1,6 +1,4 @@
 param(
-    [ValidateSet('Rules', 'AI')]
-    [string]$Mode = 'Rules',
     [string]$NodePath = 'node',
     [switch]$SkipBuild,
     [switch]$SkipSeed,
@@ -41,20 +39,18 @@ if (!(Test-Path -LiteralPath $startScript)) {
     throw 'Start-Local.ps1 is missing.'
 }
 
-if ($Mode -eq 'AI') {
-    $externalEnabled = Get-DotEnvValue $envPath 'AI_EXTERNAL_ENABLED'
-    $provider = Get-DotEnvValue $envPath 'AI_PROVIDER'
-    $apiKey = Get-DotEnvValue $envPath 'DEEPSEEK_API_KEY'
-    if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey)) {
-        throw 'AI mode requires AI_EXTERNAL_ENABLED=true, AI_PROVIDER=deepseek and a local DEEPSEEK_API_KEY in backend/.env.'
-    }
+$externalEnabled = Get-DotEnvValue $envPath 'AI_EXTERNAL_ENABLED'
+$provider = Get-DotEnvValue $envPath 'AI_PROVIDER'
+$apiKey = Get-DotEnvValue $envPath 'DEEPSEEK_API_KEY'
+if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey)) {
+    throw 'CareerProof requires AI_EXTERNAL_ENABLED=true, AI_PROVIDER=deepseek and a local DEEPSEEK_API_KEY in backend/.env. Rules are runtime fallback only.'
 }
 
 if ($CheckOnly) {
     & $startScript -NodePath $NodePath -CheckOnly
     if ($LASTEXITCODE -ne 0) { throw 'Preflight failed.' }
-    if ($Mode -eq 'AI') { Write-Output 'DeepSeek configuration is present; the key was not printed.' }
-    Write-Output "Demo preflight passed for $Mode mode; no services started."
+    Write-Output 'DeepSeek configuration is present; the key was not printed.'
+    Write-Output 'AI-first demo preflight passed; no services started.'
     exit 0
 }
 
@@ -68,11 +64,10 @@ if ($frontendReady -xor $backendReady) {
 if (!$frontendReady -and !$backendReady) {
     $startParameters = @{ NodePath = $NodePath }
     if ($SkipBuild) { $startParameters.SkipBuild = $true }
-    if ($Mode -eq 'Rules') { $startParameters.RulesOnly = $true }
     & $startScript @startParameters
     if ($LASTEXITCODE -ne 0) { throw 'Local services did not start successfully.' }
 } else {
-    Write-Warning 'CareerProof is already running. The requested mode was not reapplied. Stop it first when you need to change modes.'
+    Write-Warning 'CareerProof is already running, so the AI startup configuration was not reapplied. Stop the existing run before restarting.'
 }
 
 if (!(Test-HttpReady $demoUrl) -or !(Test-HttpReady $healthUrl)) {
@@ -90,8 +85,9 @@ if (!$SkipSeed) {
     }
 }
 
-Write-Output "CareerProof demo is ready in $Mode mode: $demoUrl"
+Write-Output "CareerProof AI demo is ready: $demoUrl"
 Write-Output 'Demo accounts and synthetic jobs are ready. No API key was printed or changed.'
+Write-Output 'Local rules run automatically only when AI cannot produce an accepted result.'
 Write-Output 'Stop with .\Stop-Local.ps1 -Database when the demonstration is finished.'
 
 if (!$NoBrowser) {

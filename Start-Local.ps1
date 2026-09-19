@@ -1,7 +1,6 @@
 param(
     [string]$NodePath = 'node',
     [switch]$SkipBuild,
-    [switch]$RulesOnly,
     [switch]$CheckOnly
 )
 $ErrorActionPreference = 'Stop'
@@ -16,7 +15,23 @@ if (!(Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies missing.
 $nodeCommand = Get-Command $NodePath -ErrorAction Stop
 $nodeExecutable = $nodeCommand.Source
 if (!$nodeExecutable) { throw 'NodePath must resolve to a Node executable.' }
-if (!(Test-Path -LiteralPath (Join-Path $backendRoot '.env'))) { throw 'Create backend/.env from .env.example first.' }
+$envPath = Join-Path $backendRoot '.env'
+if (!(Test-Path -LiteralPath $envPath)) { throw 'Create backend/.env from .env.example first.' }
+function Get-DotEnvValue([string]$Path, [string]$Name) {
+    $escapedName = [regex]::Escape($Name)
+    foreach ($line in Get-Content -LiteralPath $Path) {
+        if ($line -match "^\s*$escapedName\s*=\s*(.*)\s*$") {
+            return $Matches[1].Trim().Trim('"').Trim("'")
+        }
+    }
+    return $null
+}
+$externalEnabled = Get-DotEnvValue $envPath 'AI_EXTERNAL_ENABLED'
+$provider = Get-DotEnvValue $envPath 'AI_PROVIDER'
+$apiKey = Get-DotEnvValue $envPath 'DEEPSEEK_API_KEY'
+if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey)) {
+    throw 'Local product startup requires DeepSeek in backend/.env. Rules are automatic fallback, not a selectable mode.'
+}
 if ($CheckOnly) {
     & $pythonPath -c "import fastapi, sqlalchemy, httpx; print('Backend dependencies OK')"
     if ($LASTEXITCODE -ne 0) { throw 'Backend dependencies failed.' }
@@ -34,7 +49,6 @@ New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
 $statePath = Join-Path $stateRoot 'processes.json'
 if (Test-Path -LiteralPath $statePath) { throw 'Existing local run record. Run Stop-Local.ps1 first.' }
 $owned = @()
-$previousExternal = $env:AI_EXTERNAL_ENABLED
 try {
     Push-Location $backendRoot
     try {
@@ -50,7 +64,6 @@ try {
             if ($LASTEXITCODE -ne 0) { throw 'Production build failed.' }
         } finally { Pop-Location }
     }
-    if ($RulesOnly) { $env:AI_EXTERNAL_ENABLED = 'false' }
     $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList '-m uvicorn app.main:app --host 127.0.0.1 --port 8000' -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'backend.out.log') -RedirectStandardError (Join-Path $stateRoot 'backend.err.log')
     $owned += @{ Id = $backendProcess.Id; Started = $backendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $pythonPath }
     $owned | ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $statePath -Encoding utf8
@@ -71,4 +84,4 @@ try {
 } catch {
     if ($owned.Count -gt 0) { & (Join-Path $projectRoot 'Stop-Local.ps1') }
     throw
-} finally { $env:AI_EXTERNAL_ENABLED = $previousExternal }
+}

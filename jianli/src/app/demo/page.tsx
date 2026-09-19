@@ -56,7 +56,7 @@ export default function DemoPage() {
         <p className="mt-3 text-sm leading-7 text-amber-900">当前规则共覆盖 {coverage.reduce((sum, row) => sum + row.supported.length, 0)}/45 项要求。下面展示可评估范围，未覆盖项需要人工审阅；规则覆盖仅代表有静态检测项，不代表能完整验证岗位能力。运维和 DBA 优先上传工程 ZIP，脚本均未执行。</p>
         <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr><th className="p-2">岗位</th><th className="p-2">规则覆盖</th><th className="p-2">暂不支持</th></tr></thead><tbody>{coverage.map(row => <tr key={row.job} className="border-t border-slate-200"><td className="p-2">{row.job}</td><td className="p-2">{row.supported.length}/5</td><td className="p-2 text-slate-600">{row.unsupported.join("、") || "无"}</td></tr>)}</tbody></table></div>
         <p className="mt-3 text-sm leading-7 text-slate-600">在岗位列表搜索「合成演示」，打开「Python 后端开发实习生（合成演示）」，选择刚上传的简历和项目版本，开始匹配。查看任务进度，完成后逐项打开证据引用，保存人工复核，再刷新确认报告仍可找回。</p>
-        <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">样例包含 Python、FastAPI、PostgreSQL 和 pytest 相关片段；Redis 只有简历声明，不应出现虚构的实现证据。代码片段不等于运行成功或本人贡献的证明。是否调用模型以报告实际标记为准；模型关闭或失败时仍可查看规则报告。</p>
+        <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">样例包含 Python、FastAPI、PostgreSQL 和 pytest 相关片段；Redis 只有简历声明，不应出现虚构的实现证据。代码片段不等于运行成功或本人贡献的证明。系统始终按 AI 链路发起分析；模型断链、限流、超时或输出校验失败时才自动生成本地兜底报告。</p>
         <p className="mt-3 text-sm leading-7 text-slate-600">可测试 9 个方向：Python 后端、前端、软件测试、数据分析、产品助理、用户运营、自动化运维、数据库 DBA、数据工程。使用同一份简历和同一个项目版本分别匹配，比较证据与缺口；现有 ZIP 是后端样例，不是所有岗位的合格样例。使用 PostgreSQL 不等于具备备份恢复能力，包含 Dockerfile 也不等于生产运维经验。</p>
         <Link href="/jobs" className="mt-4 inline-block text-indigo-600 underline">进入岗位列表</Link>
       </section>

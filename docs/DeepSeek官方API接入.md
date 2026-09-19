@@ -8,7 +8,7 @@ CareerProof 当前推荐使用 DeepSeek 官方 API，不使用 DeepSeek 网页 C
 
 ```env
 AI_PROVIDER=deepseek
-AI_EXTERNAL_ENABLED=false
+AI_EXTERNAL_ENABLED=true
 DEEPSEEK_API_KEY=只在本机填写
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-flash
@@ -20,7 +20,7 @@ DEEPSEEK_MAX_ATTEMPTS=2
 - 只允许 `deepseek-flash`，阻止误选成本更高的型号。
 - 请求显式使用非思考模式，减少延迟和不可见推理输出。
 - Key 只保存于被 Git 忽略的 `backend/.env`，不能写入前端、聊天、日志或仓库。
-- `AI_EXTERNAL_ENABLED=false` 时完整规则报告仍可运行；完成烟测后才在本机改为 `true`。
+- 本地产品启动要求 `AI_EXTERNAL_ENABLED=true`；如果Key或Provider配置缺失，启动脚本会明确失败，不会主动切换到规则模式。
 
 ## 验证命令
 
@@ -52,4 +52,4 @@ cd backend
 - JSON Output：https://api-docs.deepseek.com/guides/json_mode/
 - 模型与价格：https://api-docs.deepseek.com/quick_start/pricing/
 
-DeepSeek 官方 API 按 Token 计费，不应描述为永久免费服务。比赛演示仍保留规则模式，避免余额、网络或供应商故障导致主链路中断。
+DeepSeek官方API按Token计费，不应描述为永久免费服务。比赛演示始终使用AI链路；余额、网络、限流、超时或输出校验异常时，由服务端自动保存本地兜底报告。

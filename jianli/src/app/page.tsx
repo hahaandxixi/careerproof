@@ -13,7 +13,7 @@ export default function HomePage() {
         <article key={title} className="panel"><h2 className="font-semibold">{title}</h2><p className="mt-3 text-sm leading-6 text-slate-600">{description}</p></article>)}
     </section>
     <aside className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-      规则先检索并评分材料证据，AI 模型只解释候选片段并返回受校验的引用编号；模型不可用时自动保留规则报告。材料有证据支持不等于个人能力认证，未找到证据也不等于没有能力。
+      AI 负责证据解释与逐项初评，本地规则负责检索边界、引用校验和评级上限；模型断链、限流、超时或输出未通过校验时才自动保留本地兜底报告。材料有证据支持不等于个人能力认证，未找到证据也不等于没有能力。
     </aside>
   </div>;
 }

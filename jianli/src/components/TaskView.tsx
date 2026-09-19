@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, errorMessage, type AnalysisTask } from "@/lib/api/client";
+import { taskUsedExternalAI } from "@/lib/analysis-status";
 import { ErrorNotice } from "./AccessGate";
 
 const TERMINAL = new Set(["completed", "failed", "cancelled"]);
@@ -127,7 +128,7 @@ export default function TaskView({ id }: { id: string }) {
     finally { setBusy(false); }
   }
   const aiStep = task?.steps.find(step => ["模型证据分析", "千问证据分析"].includes(step.name));
-  const usedAI = ["bailian", "qianwen", "zhipu"].includes(String(aiStep?.payload.provider)) && aiStep?.payload.fallbackUsed !== true;
+  const usedAI = taskUsedExternalAI(aiStep?.payload.provider, aiStep?.payload.fallbackUsed);
   const fellBack = aiStep?.payload.fallbackUsed === true;
   return <div className="mx-auto max-w-3xl space-y-6">
     <div className="flex gap-4 text-sm text-indigo-600"><Link href="/portfolio">我的材料</Link><Link href="/reports">匹配报告</Link></div>

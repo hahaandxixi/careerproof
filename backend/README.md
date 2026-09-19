@@ -3,8 +3,8 @@
 当前目标 Provider 为 DeepSeek 官方 API：`AI_PROVIDER=deepseek`，Key 使用 `DEEPSEEK_API_KEY`，成本保护只允许 `deepseek-flash`。详见 [DeepSeek 官方 API 接入](../docs/DeepSeek官方API接入.md) 与 [AI 用量和隐私控制](../docs/AI用量与隐私控制.md)。普通自动测试使用合成响应，不消耗 API 额度。
 
 「职证 CareerProof」的 FastAPI 后端。当前完成真实岗位、学生材料上传与版本历史、
-私有匹配报告、失败重试和岗位分类筛选。匹配分数与证据由规则计算；配置启用时，
-DeepSeek 逐项解释候选证据、返回引用和材料缺口，调用或校验失败会自动保留规则报告。
+私有匹配报告、失败重试和岗位分类筛选。产品运行时必须启用DeepSeek；规则负责检索候选证据和限制评级边界，
+DeepSeek逐项解释候选证据、返回引用和材料缺口，调用或校验失败时才自动保留本地兜底报告。
 
 ## 架构边界
 
@@ -22,8 +22,7 @@ API -> Services -> Repositories -> PostgreSQL
 
 ## DeepSeek 证据分析
 
-API Key 仅写入本地 `.env`。仓库的 `.env.example` 已选择 DeepSeek，但保持
-`AI_EXTERNAL_ENABLED=false`。连通测试成功后，本机可设置：
+API Key仅写入本地 `.env`。`.env.example` 不包含Key；完成连通测试后，本地产品启动必须设置：
 
 ```dotenv
 AI_PROVIDER=deepseek
