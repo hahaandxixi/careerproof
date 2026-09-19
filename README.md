@@ -42,6 +42,11 @@ FastAPI / Python 后端，PostgreSQL 数据库，本地文件存储。规则先�
 Node 不在 PATH 时传 `-NodePath '本机node.exe的绝对路径'`。启动脚本会检查端口、等待数据库、执行迁移、
 构建前端并检查两个服务的健康状态；进程记录和日志位于被 Git 忽略的 `backend/.tmp/local-run/`。
 
+比赛演示可直接双击 `Start-Demo.cmd`：默认以规则模式启动、初始化演示账号与九个岗位并打开演示页。
+真实 DeepSeek 模式在命令行运行 `Start-Demo.cmd ai`；该模式会先检查本地 `.env` 已明确启用 DeepSeek，
+但不会打印或修改 Key。PowerShell 用户也可运行 `.\Start-Demo.ps1 -Mode Rules` 或
+`.\Start-Demo.ps1 -Mode AI`，并用 `-CheckOnly` 仅做启动前检查。
+
 ## 本机启动（CMD）
 
 先打开 Docker Desktop，等待引擎运行。下面适用于命令提示符 `cmd.exe`，不是 PowerShell。
