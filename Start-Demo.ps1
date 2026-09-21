@@ -10,8 +10,10 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $backendRoot = Join-Path $projectRoot 'backend'
 $startScript = Join-Path $projectRoot 'Start-Local.ps1'
+$stopScript = Join-Path $projectRoot 'Stop-Local.ps1'
 $pythonPath = Join-Path $backendRoot '.venv\Scripts\python.exe'
 $envPath = Join-Path $backendRoot '.env'
+$statePath = Join-Path $backendRoot '.tmp\local-run\processes.json'
 $demoUrl = 'http://127.0.0.1:3000/demo'
 $healthUrl = 'http://127.0.0.1:8000/api/v1/health'
 
@@ -62,6 +64,13 @@ if ($frontendReady -xor $backendReady) {
 }
 
 if (!$frontendReady -and !$backendReady) {
+    if (Test-Path -LiteralPath $statePath) {
+        Write-Warning 'Found a previous local run record while both services are offline. Cleaning it safely before startup.'
+        & $stopScript
+        if (Test-Path -LiteralPath $statePath) {
+            throw 'The stale local run record could not be cleared. Run Stop-Local.ps1 and inspect the recorded processes.'
+        }
+    }
     $startParameters = @{ NodePath = $NodePath }
     if ($SkipBuild) { $startParameters.SkipBuild = $true }
     & $startScript @startParameters
