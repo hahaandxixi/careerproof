@@ -47,10 +47,6 @@ export interface MatchReport extends ReportSummary {
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
   aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
 }
-export interface DeepSeekWebHandoff {
-  providerUrl: string; prompt: string; promptVersion: string;
-  privacyNotice: string; requirementCount: number; contextDigest: string;
-}
 export const CATEGORY_LABELS: Record<string, string> = {
   software: "软件开发", data_analysis: "数据分析", operations: "运营", design: "设计", other: "其他",
 };

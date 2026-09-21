@@ -1,4 +1,4 @@
-import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, DeepSeekWebHandoff } from "./domain";
+import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 
@@ -212,14 +212,6 @@ export const api = {
   },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
-  getDeepSeekWebHandoff(id: string) {
-    return request<DeepSeekWebHandoff>(`/match-reports/${id}/deepseek-web`);
-  },
-  importDeepSeekWebAnalysis(id: string, response: Record<string, unknown>, contextDigest: string) {
-    return request<MatchReport>(`/match-reports/${id}/deepseek-web`, {
-      method: "POST", ...jsonBody({ response, contextDigest }),
-    });
-  },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
     return request<MatchReport["items"][number]>(`/match-reports/${reportId}/items/${requirementId}/review`, {
       method: "PATCH",

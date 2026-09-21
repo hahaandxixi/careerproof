@@ -14,8 +14,6 @@ from app.models.identity import User
 from app.repositories.analysis import AnalysisRepository
 from app.schemas.analysis import (
     AnalysisTaskView,
-    DeepSeekWebHandoff,
-    DeepSeekWebImport,
     EvidenceReviewUpdate,
     MatchCreate,
     MatchItemView,
@@ -143,36 +141,6 @@ async def get_match_report(
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[MatchReportView]:
     return success(await AnalysisService(session).get_report(report_id, current_user))
-
-
-@router.get(
-    "/match-reports/{report_id}/deepseek-web",
-    response_model=ApiResponse[DeepSeekWebHandoff],
-)
-async def get_deepseek_web_handoff(
-    report_id: UUID,
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-) -> ApiResponse[DeepSeekWebHandoff]:
-    return success(await AnalysisService(session).deepseek_web_handoff(report_id, current_user))
-
-
-@router.post(
-    "/match-reports/{report_id}/deepseek-web",
-    response_model=ApiResponse[MatchReportView],
-)
-async def import_deepseek_web_analysis(
-    report_id: UUID,
-    payload: DeepSeekWebImport,
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-) -> ApiResponse[MatchReportView]:
-    return success(
-        await AnalysisService(session).import_deepseek_web_analysis(
-            report_id, payload, current_user
-        ),
-        message="imported",
-    )
 
 
 @router.patch(

@@ -102,20 +102,6 @@ class EvidenceReviewUpdate(APIModel):
     note: str | None = Field(default=None, max_length=1000)
 
 
-class DeepSeekWebHandoff(APIModel):
-    provider_url: str
-    prompt: str
-    prompt_version: str
-    privacy_notice: str
-    requirement_count: int
-    context_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
-
-
-class DeepSeekWebImport(APIModel):
-    response: dict
-    context_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
-
-
 class ReportMaterial(APIModel):
     kind: str
     id: UUID

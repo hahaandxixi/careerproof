@@ -100,7 +100,7 @@ def evidence_analysis_messages(
     validation_feedback: str | None = None,
     previous_analysis: EvidenceAnalysis | None = None,
 ) -> list[dict[str, str]]:
-    """Build the same bounded prompt for API calls and manual web handoff."""
+    """Build the evidence-bounded prompt used by supported model API calls."""
     source_data: dict = {
         "requirements": _redact_external_value(
             [context.model_dump() for context in contexts]

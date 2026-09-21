@@ -15,17 +15,8 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.agents.contracts import (
-    EvidenceAnalysis,
-    EvidenceCandidate,
-    RequirementEvidenceContext,
-    validate_grounded_analysis,
-)
 from app.agents.evidence_workflow import citation_for_source, run_evidence_workflow
-from app.agents.provider import (
-    EVIDENCE_PROMPT_VERSION,
-    evidence_analysis_messages,
-)
+from app.agents.provider import EVIDENCE_PROMPT_VERSION
 from app.core.config import settings
 from app.core.database import async_session_factory
 from app.core.exceptions import AppError
@@ -46,8 +37,6 @@ from app.schemas.analysis import (
     AgentStepView,
     AnalysisTaskView,
     CodeEvidenceView,
-    DeepSeekWebHandoff,
-    DeepSeekWebImport,
     EvidenceReviewUpdate,
     MatchCreate,
     MatchItemView,
@@ -65,9 +54,7 @@ from app.services.task_lifecycle import (
 )
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
-from app.tools.evidence_levels import classify_evidence
 from app.tools.matcher import FORMULA_VERSION, RequirementInput
-from app.tools.skill_rubric import rubric_for
 
 logger = logging.getLogger(__name__)
 
@@ -361,145 +348,6 @@ class AnalysisService:
         await self.session.commit()
         await self.session.refresh(evidence)
         return self._item_view(item, evidence)
-
-    async def _manual_ai_report(
-        self, report_id: UUID, user: User
-    ) -> tuple[MatchReport, list[MatchItem]]:
-        report = await self.analysis.get_report(report_id)
-        if not report:
-            raise AppError("匹配报告不存在或无权访问", code=4042, status_code=404)
-        await self.get_task(report.analysis_task_id, user)
-        return report, await self.analysis.report_items(report.id)
-
-    @staticmethod
-    def _manual_ai_contexts(items: list[MatchItem]) -> list[RequirementEvidenceContext]:
-        contexts: list[RequirementEvidenceContext] = []
-        for item in items:
-            snapshot = item.evidence_snapshot or {}
-            evidence = []
-            for raw in snapshot.get("evidenceList", [])[:3]:
-                view = CodeEvidenceView.model_validate(raw)
-                if not view.citation_id or not view.snippet.strip():
-                    continue
-                evidence.append(
-                    EvidenceCandidate(
-                        citation_id=view.citation_id,
-                        file_path=view.file_path,
-                        line_start=view.line_start,
-                        line_end=view.line_end,
-                        evidence_type=view.evidence_type,
-                        strength=view.strength,
-                        snippet=view.snippet,
-                        context_complete=view.context_complete,
-                        context_note=view.context_note,
-                    )
-                )
-            contexts.append(
-                RequirementEvidenceContext(
-                    requirement_id=str(item.requirement_id),
-                    requirement_title=snapshot.get("requirementTitle", ""),
-                    skill=snapshot.get("skill", ""),
-                    verdict=item.verdict,
-                    rule_score=item.rule_base_score,
-                    claimed=bool(snapshot.get("claimed", False)),
-                    # Manual handoff deliberately excludes resume prose and identity.
-                    claim_text=None,
-                    evidence=evidence,
-                    rating_rubric=rubric_for(snapshot.get("skill", "")),
-                    rating_ceiling=classify_evidence(
-                        {
-                            "skill": snapshot.get("skill", ""),
-                            "evidenceList": [entry.model_dump() for entry in evidence],
-                        },
-                        item.verdict,
-                    )["evidence_level"],
-                )
-            )
-        return contexts
-
-    @staticmethod
-    def _manual_ai_context_digest(contexts: list[RequirementEvidenceContext]) -> str:
-        payload = json.dumps(
-            [context.model_dump(mode="json") for context in contexts],
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        )
-        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    async def deepseek_web_handoff(self, report_id: UUID, user: User) -> DeepSeekWebHandoff:
-        _report, items = await self._manual_ai_report(report_id, user)
-        contexts = self._manual_ai_contexts(items)
-        messages = evidence_analysis_messages(contexts)
-        prompt = "\n\n".join(f"【{message['role']}】\n{message['content']}" for message in messages)
-        return DeepSeekWebHandoff(
-            provider_url="https://chat.deepseek.com/",
-            prompt=prompt,
-            prompt_version=EVIDENCE_PROMPT_VERSION,
-            privacy_notice=(
-                "提示词不会主动加入账号身份或简历自述，但会包含岗位要求和最多三段项目证据原文；"
-                "代码本身仍可能含有你写入的名称、地址或凭据。请逐段检查并删除敏感内容后再发送。"
-                "发送后，内容将按 DeepSeek 的隐私政策处理。"
-            ),
-            requirement_count=len(contexts),
-            context_digest=self._manual_ai_context_digest(contexts),
-        )
-
-    async def import_deepseek_web_analysis(
-        self, report_id: UUID, payload: DeepSeekWebImport, user: User
-    ) -> MatchReportView:
-        report, items = await self._manual_ai_report(report_id, user)
-        contexts = self._manual_ai_contexts(items)
-        if payload.context_digest != self._manual_ai_context_digest(contexts):
-            raise AppError("报告证据已变化，请重新生成 DeepSeek 提示词", code=4097, status_code=409)
-        try:
-            raw = dict(payload.response)
-            raw["model"] = "deepseek-web-manual"
-            raw["usage"] = {}
-            analysis = EvidenceAnalysis.model_validate(raw)
-            validate_grounded_analysis(contexts, analysis)
-        except (ValueError, TypeError) as exc:
-            raise AppError(
-                f"DeepSeek 返回内容未通过证据校验：{exc}", code=4228, status_code=422
-            ) from exc
-
-        analysis_by_id = {entry.requirement_id: entry for entry in analysis.items}
-        for item in items:
-            result = analysis_by_id[str(item.requirement_id)]
-            snapshot = dict(item.evidence_snapshot or {})
-            snapshot["ai"] = {
-                "status": "validated",
-                "origin": "deepseek_web_manual",
-                "explanation": result.explanation,
-                "citationIds": result.citation_ids,
-                "informationGap": result.information_gap,
-                "suggestion": result.suggestion,
-                "rating": result.rating.level if result.rating else None,
-                "ratingRubric": result.rating.model_dump() if result.rating else None,
-            }
-            item.evidence_snapshot = snapshot
-            item.ai_confidence = result.confidence
-
-        metadata = dict(report.analysis_metadata or {})
-        previous_manual = metadata.get("manualImport") or {}
-        metadata.update(
-            {
-                "mode": "ai_evidence_manual",
-                "provider": "deepseek_web",
-                "model": "deepseek-web-manual",
-                "fallbackUsed": False,
-                "promptVersion": EVIDENCE_PROMPT_VERSION,
-                "manualImport": {
-                    "importedAt": datetime.now(UTC).isoformat(),
-                    "requirementCount": len(contexts),
-                    "ruleSummary": previous_manual.get("ruleSummary", report.summary),
-                },
-            }
-        )
-        report.analysis_metadata = metadata
-        report.summary = analysis.summary
-        await self.session.commit()
-        return await self.get_report(report_id, user)
 
     @staticmethod
     def _item_view(item: MatchItem, evidence: SkillEvidence | None = None) -> MatchItemView:
