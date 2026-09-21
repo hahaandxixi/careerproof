@@ -15,6 +15,8 @@ from app.repositories.analysis import AnalysisRepository
 from app.schemas.analysis import (
     AnalysisTaskView,
     EvidenceReviewUpdate,
+    JobRecommendationRequest,
+    JobRecommendationResult,
     MatchCreate,
     MatchItemView,
     MatchReportSummary,
@@ -24,9 +26,22 @@ from app.schemas.analysis import (
 from app.schemas.common import ApiResponse, success
 from app.services.analysis import AnalysisService, execute_match_task, format_sse_event
 from app.services.portfolio import retry_material_task
+from app.services.recommendations import recommend_jobs
 from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
+
+
+@router.post(
+    "/job-recommendations",
+    response_model=ApiResponse[JobRecommendationResult],
+)
+async def create_job_recommendations(
+    payload: JobRecommendationRequest,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[JobRecommendationResult]:
+    return success(await recommend_jobs(session, payload, current_user))
 
 
 @router.post("/matches", response_model=ApiResponse[TaskAccepted], status_code=202)

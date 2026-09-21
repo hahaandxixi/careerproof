@@ -1,4 +1,4 @@
-import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport } from "./domain";
+import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 
@@ -209,6 +209,9 @@ export const api = {
   },
   createMatch(payload: { jobId: string; resumeVersionId: string; projectVersionIds: string[]; externalAiConsent: boolean }) {
     return request<{ taskId: string; status: TaskStatus }>("/matches", { method: "POST", ...jsonBody(payload) });
+  },
+  recommendJobs(payload: { resumeVersionId: string; projectVersionIds: string[]; limit?: number }) {
+    return request<JobRecommendationResult>("/job-recommendations", { method: "POST", ...jsonBody(payload) });
   },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },

@@ -92,6 +92,7 @@ function UploadProgress({ item }: { item: UploadRecord }) {
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-indigo-600">
         {complete && <Link href={`/materials/${item.kind}/${item.versionId}`}>预览解析内容</Link>}
         {item.taskId && <Link href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
+        {complete && <Link href="/recommendations">获取职业推荐</Link>}
         {complete && <Link href="/jobs">选择岗位匹配</Link>}
       </div>
     </article>

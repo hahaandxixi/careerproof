@@ -19,7 +19,7 @@ from app.models.portfolio import (
     ResumeSection,
     ResumeVersion,
 )
-from app.schemas.analysis import MatchCreate
+from app.schemas.analysis import MaterialSelection
 from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.evidence_context import enrich_evidence
 from app.tools.matcher import RequirementInput, match_candidate
@@ -35,7 +35,7 @@ class MatchMaterials:
 
 
 async def resolve_materials(
-    session: AsyncSession, request: MatchCreate, user: User
+    session: AsyncSession, request: MaterialSelection, user: User
 ) -> MatchMaterials:
     if user.role != UserRole.STUDENT:
         raise AppError("请使用学生账号分析自己的材料", code=4037, status_code=403)

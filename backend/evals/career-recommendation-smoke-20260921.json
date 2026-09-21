@@ -1,0 +1,65 @@
+{
+  "checkedAt": "2026-09-21T13:43:26.0356476Z",
+  "endpoint": "/api/v1/job-recommendations",
+  "materialCount": 11,
+  "primaryDirection": "software",
+  "recommendationCount": 5,
+  "recommendations": [
+    {
+      "jobId": "f66951b1-490a-472b-9d82-c9f3f911d900",
+      "jobTitle": "Python 后端开发实习生（合成演示）",
+      "category": "software",
+      "priority": "high",
+      "supportedCount": 4,
+      "claimedCount": 1,
+      "assessedCount": 5,
+      "requirementCount": 5,
+      "evidenceCount": 3
+    },
+    {
+      "jobId": "80be904d-28a1-42e2-afa6-4d60858c0345",
+      "jobTitle": "Python 后端开发实习生（合成演示）",
+      "category": "software",
+      "priority": "high",
+      "supportedCount": 4,
+      "claimedCount": 1,
+      "assessedCount": 5,
+      "requirementCount": 5,
+      "evidenceCount": 3
+    },
+    {
+      "jobId": "d76773b9-d090-4ee3-ab96-12bff1997262",
+      "jobTitle": "Python 受控补检索（合成验收）",
+      "category": "software",
+      "priority": "medium",
+      "supportedCount": 1,
+      "claimedCount": 0,
+      "assessedCount": 1,
+      "requirementCount": 1,
+      "evidenceCount": 1
+    },
+    {
+      "jobId": "e11be75a-f19c-45cc-94ea-8b4ab20e83a8",
+      "jobTitle": "FastAPI 受控补检索（合成验收）",
+      "category": "software",
+      "priority": "medium",
+      "supportedCount": 1,
+      "claimedCount": 0,
+      "assessedCount": 1,
+      "requirementCount": 1,
+      "evidenceCount": 1
+    },
+    {
+      "jobId": "2428d4c5-cf54-401e-8dc2-b68b956dbbe3",
+      "jobTitle": "软件测试工程师（合成演示）",
+      "category": "software",
+      "priority": "medium",
+      "supportedCount": 1,
+      "claimedCount": 0,
+      "assessedCount": 1,
+      "requirementCount": 5,
+      "evidenceCount": 1
+    }
+  ],
+  "summary": "已用所选材料检索 12 个已发布岗位；前 5 个结果中，5 个岗位找到了项目证据。推荐顺序只表示当前材料与岗位要求的证据贴合度，不代表能力认证或录用概率。"
+}

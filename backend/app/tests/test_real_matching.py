@@ -746,3 +746,38 @@ async def test_evidence_review_is_owner_scoped_and_persisted(matching_db):
         refreshed = (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"]
         assert refreshed["items"][0]["reviewerNote"] == "已核对路由实现与引用行"
         assert refreshed["items"][0]["confirmedAt"] is not None
+
+
+async def test_job_recommendations_rank_owned_material_evidence(matching_db):
+    app, _factory = matching_db
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as owner,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(owner, "recommend-owner@example.com")
+        await create_job(owner, category="operations", skills=("活动策划",))
+        await create_job(owner, category="software", skills=("Python",))
+        await register(student, "recommend-student@example.com", "student")
+        resume, _project, version = await upload_materials(student)
+        payload = {
+            "resumeVersionId": resume["versionId"],
+            "projectVersionIds": [version["versionId"]],
+            "limit": 5,
+        }
+
+        forbidden = await owner.post("/api/v1/job-recommendations", json=payload)
+        assert forbidden.status_code == 403
+
+        response = await student.post("/api/v1/job-recommendations", json=payload)
+        assert response.status_code == 200, response.text
+        result = response.json()["data"]
+        assert result["primaryDirection"] == "software"
+        assert len(result["materials"]) == 2
+        assert len(result["recommendations"]) == 2
+        first = result["recommendations"][0]
+        assert first["category"] == "software"
+        assert first["supportedCount"] == 1
+        assert first["matchedSkills"] == ["Python"]
+        assert first["evidence"][0]["filePath"].endswith("src/report.py")
+        assert "不代表能力认证或录用概率" in result["summary"]

@@ -47,6 +47,17 @@ export interface MatchReport extends ReportSummary {
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
   aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
 }
+export interface JobRecommendation {
+  jobId: string; jobTitle: string; companyName: string; category: string; city: string; employmentType: string;
+  priority: "high" | "medium" | "explore"; assessedCount: number; requirementCount: number;
+  supportedCount: number; claimedCount: number; matchedSkills: string[]; gaps: string[];
+  evidence: { skill: string; filePath: string; lineStart: number; lineEnd: number; strength: string; explanation: string }[];
+}
+export interface JobRecommendationResult {
+  primaryDirection: string | null; summary: string;
+  materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string }[];
+  recommendations: JobRecommendation[];
+}
 export const CATEGORY_LABELS: Record<string, string> = {
   software: "软件开发", data_analysis: "数据分析", operations: "运营", design: "设计", other: "其他",
 };

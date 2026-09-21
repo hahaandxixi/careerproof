@@ -9,11 +9,59 @@ from app.models.enums import ConfirmationStatus, TaskStatus
 from app.schemas.common import APIModel
 
 
-class MatchCreate(APIModel):
-    job_id: UUID
+class MaterialSelection(APIModel):
     resume_version_id: UUID
     project_version_ids: list[UUID] = Field(default_factory=list, max_length=10)
+
+
+class MatchCreate(MaterialSelection):
+    job_id: UUID
     external_ai_consent: bool = False
+
+
+class JobRecommendationRequest(MaterialSelection):
+    limit: int = Field(default=5, ge=1, le=10)
+
+
+class RecommendationEvidence(APIModel):
+    skill: str
+    file_path: str
+    line_start: int
+    line_end: int
+    strength: str
+    explanation: str
+
+
+class JobRecommendationView(APIModel):
+    job_id: UUID
+    job_title: str
+    company_name: str
+    category: str
+    city: str
+    employment_type: str
+    priority: str
+    assessed_count: int
+    requirement_count: int
+    supported_count: int
+    claimed_count: int
+    matched_skills: list[str] = Field(default_factory=list)
+    gaps: list[str] = Field(default_factory=list)
+    evidence: list[RecommendationEvidence] = Field(default_factory=list)
+
+
+class ReportMaterial(APIModel):
+    kind: str
+    id: UUID
+    title: str
+    version_number: int
+    content_hash: str
+
+
+class JobRecommendationResult(APIModel):
+    primary_direction: str | None = None
+    summary: str
+    materials: list[ReportMaterial] = Field(default_factory=list)
+    recommendations: list[JobRecommendationView] = Field(default_factory=list)
 
 
 class TaskAccepted(APIModel):
@@ -100,14 +148,6 @@ class MatchItemView(APIModel):
 class EvidenceReviewUpdate(APIModel):
     status: ConfirmationStatus
     note: str | None = Field(default=None, max_length=1000)
-
-
-class ReportMaterial(APIModel):
-    kind: str
-    id: UUID
-    title: str
-    version_number: int
-    content_hash: str
 
 
 class MatchReportSummary(APIModel):
