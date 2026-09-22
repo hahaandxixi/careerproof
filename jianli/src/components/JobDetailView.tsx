@@ -5,10 +5,19 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { api, errorMessage, type ResumeHistory, type ProjectHistory } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobDetail } from "@/lib/api/domain";
+import { resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
 import { useAuth } from "./AuthProvider";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 
-export default function JobDetailView({ id }: { id: string }) {
+export default function JobDetailView({
+  id,
+  initialResumeVersionId = "",
+  initialProjectVersionIds = [],
+}: {
+  id: string;
+  initialResumeVersionId?: string;
+  initialProjectVersionIds?: string[];
+}) {
   const { user } = useAuth();
   const [job, setJob] = useState<JobDetail | null>(null);
   const [error, setError] = useState("");
@@ -25,13 +34,21 @@ export default function JobDetailView({ id }: { id: string }) {
     <Link className="text-sm text-indigo-600" href="/jobs">← 岗位发现</Link>
     <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="mt-2 text-3xl font-bold">{job.title}</h1><p className="mt-2 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p></div><span className="rounded bg-slate-100 px-3 py-1 text-sm">{job.status === "published" ? "招聘中" : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{job.description || "暂无岗位描述"}</p></section>
     <section className="panel"><h2 className="text-lg font-semibold">岗位要求</h2><ol className="mt-4 space-y-3">{job.requirements.map((requirement, index) => <li key={requirement.id} className="rounded-xl bg-slate-50 p-4"><p className="text-sm font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p></li>)}</ol></section>
-    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} /></AccessGate>}
+    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} /></AccessGate>}
     {user?.role === "enterprise" && <p className="panel text-sm text-slate-500">学生可用自己的材料对照此岗位进行分析。当前匹配报告仅供学生本人查看，尚未开放投递和企业查看候选人报告的功能。</p>}
     {job.status !== "published" && <p className="panel text-sm text-amber-700">该岗位尚未发布或已关闭，目前不能创建新的匹配任务。</p>}
   </div>;
 }
 
-function MatchForm({ job }: { job: JobDetail }) {
+function MatchForm({
+  job,
+  initialResumeVersionId,
+  initialProjectVersionIds,
+}: {
+  job: JobDetail;
+  initialResumeVersionId: string;
+  initialProjectVersionIds: string[];
+}) {
   const router = useRouter();
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
   const [projects, setProjects] = useState<ProjectHistory[]>([]);
@@ -49,11 +66,17 @@ function MatchForm({ job }: { job: JobDetail }) {
     Promise.all([api.listResumes(), api.listProjects()]).then(([r, p]) => {
       if (!current) return;
       setResumes(r); setProjects(p);
-      setResumeVersionId(r.flatMap(value => value.versions).find(version => version.status === "completed")?.id ?? "");
-      setProjectVersionIds([]);
+      const selection = resolveInitialMaterialSelection(
+        r.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
+        p.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
+        initialResumeVersionId,
+        initialProjectVersionIds,
+      );
+      setResumeVersionId(selection.resumeVersionId);
+      setProjectVersionIds(selection.projectVersionIds);
     }).catch(reason => { if (current) setError(errorMessage(reason)); }).finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
-  }, [revision]);
+  }, [initialProjectVersionIds, initialResumeVersionId, revision]);
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current || !resumeVersionId) return;
     submitting.current = true; setBusy(true); setError("");

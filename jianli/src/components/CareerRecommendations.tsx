@@ -8,6 +8,7 @@ import {
   EMPLOYMENT_LABELS,
   type JobRecommendationResult,
 } from "@/lib/api/domain";
+import { jobAnalysisHref } from "@/lib/recommendation-selection";
 import { ErrorNotice } from "./AccessGate";
 
 const PRIORITY_LABELS = {
@@ -90,7 +91,7 @@ export default function CareerRecommendations() {
         {!!item.matchedSkills.length && <div className="mt-4"><p className="text-sm font-medium">匹配线索</p><div className="mt-2 flex flex-wrap gap-2">{item.matchedSkills.map(skill => <span key={skill} className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700">{skill}</span>)}</div></div>}
         {!!item.evidence.length && <details className="mt-4 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-medium">查看推荐依据</summary><ul className="mt-3 space-y-3">{item.evidence.map((evidence, index) => <li className="text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{evidence.filePath} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span></li>)}</ul></details>}
         {!!item.gaps.length && <p className="mt-4 text-sm leading-7 text-amber-800"><strong>主要待补：</strong>{item.gaps.join("；")}</p>}
-        <Link className="btn mt-5 inline-block" href={`/jobs/${item.jobId}`}>查看岗位并生成完整 AI 报告</Link>
+        <Link className="btn mt-5 inline-block" href={jobAnalysisHref(item.jobId, resumeVersionId, projectVersionIds)}>查看岗位并生成完整 AI 报告</Link>
       </article>)}
     </section>}
   </div>;
