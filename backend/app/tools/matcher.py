@@ -59,6 +59,8 @@ def match_candidate(
     requirements: list[RequirementInput],
     claims: list[SkillClaim],
     files: list[ProjectFileSnapshot],
+    *,
+    semantic_candidates: dict[UUID, list[CodeEvidence]] | None = None,
 ) -> MatchResult:
     claims_by_skill = {canonical_skill(claim.skill): claim for claim in claims}
     items: list[MatchItemResult] = []
@@ -74,15 +76,25 @@ def match_candidate(
             (evidence.file_path, evidence.line_start, evidence.line_end)
             for evidence in detected_evidence
         }
+        semantic_evidence = [
+            evidence
+            for evidence in (semantic_candidates or {}).get(requirement.id, [])
+            if (evidence.file_path, evidence.line_start, evidence.line_end) not in detected_keys
+        ]
+        semantic_keys = {
+            (evidence.file_path, evidence.line_start, evidence.line_end)
+            for evidence in semantic_evidence
+        }
         retrieved_evidence = [
             evidence
             for evidence in retrieve_requirement_candidates(
                 requirement.title, requirement.skill, files
             )
-            if (evidence.file_path, evidence.line_start, evidence.line_end) not in detected_keys
+            if (evidence.file_path, evidence.line_start, evidence.line_end)
+            not in detected_keys | semantic_keys
         ]
         retrieved_count += len(retrieved_evidence)
-        evidence_list = [*detected_evidence, *retrieved_evidence]
+        evidence_list = [*detected_evidence, *semantic_evidence, *retrieved_evidence]
         # Retrieved candidates enrich the AI context but never raise the
         # deterministic verdict or score by themselves.
         strongest = detected_evidence[0] if detected_evidence else None

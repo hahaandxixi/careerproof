@@ -78,6 +78,7 @@ async def recommend_jobs(
         ],
         materials,
         settings.storage_base_dir,
+        False,
     )
     analyzed = {item.requirement_id: item for item in result.items}
     by_job: dict = defaultdict(list)

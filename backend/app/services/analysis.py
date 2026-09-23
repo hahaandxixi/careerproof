@@ -55,6 +55,8 @@ from app.services.task_lifecycle import (
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
 from app.tools.matcher import FORMULA_VERSION, RequirementInput
+from app.tools.semantic_retrieval import VERSION as SEMANTIC_VERSION
+from app.tools.semantic_retrieval import model_available
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +84,13 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "promptVersion": EVIDENCE_PROMPT_VERSION,
         "formulaVersion": FORMULA_VERSION,
         "externalAiConsent": snapshot.get("externalAiConsent", False),
-        "cacheVersion": "report-context-v2-hybrid-retrieval",
+        "cacheVersion": "report-context-v3-semantic-documents",
+        "semanticEngine": (
+            SEMANTIC_VERSION
+            if settings.semantic_retrieval_enabled
+            and model_available(settings.semantic_model_cache_dir)
+            else None
+        ),
     }
     serialized = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
@@ -521,7 +529,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
                 "evidenceContextVersion": (
-                    None if result.grounding_error else "source-context-v3-hybrid-retrieval"
+                    None if result.grounding_error else "source-context-v4-semantic-documents"
                 ),
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),
@@ -741,7 +749,14 @@ async def execute_match_task(task_id: UUID) -> None:
                 ),
             ]
             for retrieval in reversed(result.retrieval_steps):
-                if retrieval.get("engine") == "hybrid-lexical-v1":
+                if retrieval.get("engine") == SEMANTIC_VERSION:
+                    retrieval_detail = (
+                        f"本地模型检索{retrieval.get('windowCount', 0)}段项目文档，"
+                        f"返回{retrieval.get('candidateCount', 0)}条低强度线索；不改变规则分数"
+                        if retrieval.get("status") == "active"
+                        else "本地语义模型不可用，已保留词法检索与规则报告"
+                    )
+                elif retrieval.get("engine") == "hybrid-lexical-v1":
                     retrieval_detail = (
                         f"规则检测后补充{retrieval.get('candidateCount', 0)}条低强度候选原文；"
                         "候选不改变规则分数，需经引用校验与模型判断"

@@ -24,6 +24,14 @@ from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.evidence_context import enrich_evidence
 from app.tools.matcher import RequirementInput, match_candidate
 from app.tools.resume_parser import mask_resume_text, parse_resume
+from app.tools.semantic_retrieval import (
+    VERSION as SEMANTIC_VERSION,
+)
+from app.tools.semantic_retrieval import (
+    has_document_windows,
+    load_local_model,
+    retrieve_semantic_candidates,
+)
 from app.tools.storage import LocalStorage
 
 
@@ -120,7 +128,12 @@ async def resolve_materials(
     return MatchMaterials(resume_text, files, snapshots)
 
 
-def analyze_materials(requirements: list[RequirementInput], materials: MatchMaterials, base: Path):
+def analyze_materials(
+    requirements: list[RequirementInput],
+    materials: MatchMaterials,
+    base: Path,
+    enable_semantic: bool = True,
+):
     """Runs trusted static analysis in the killable worker; never runs uploaded code."""
     storage = LocalStorage(base)
     snapshots = []
@@ -132,7 +145,34 @@ def analyze_materials(requirements: list[RequirementInput], materials: MatchMate
             ProjectFileSnapshot(file["path"], content.decode("utf-8", errors="replace"))
         )
     claims = parse_resume(mask_resume_text(materials.resume_text))
-    result = match_candidate(requirements, claims, snapshots)
+    semantic = None
+    semantic_step = None
+    if enable_semantic and settings.semantic_retrieval_enabled and has_document_windows(snapshots):
+        try:
+            model = load_local_model(settings.semantic_model_cache_dir)
+            semantic, window_count = retrieve_semantic_candidates(requirements, snapshots, model)
+            semantic_step = {
+                "name": "本地语义文档检索",
+                "engine": SEMANTIC_VERSION,
+                "status": "active",
+                "windowCount": window_count,
+                "candidateCount": sum(len(hits) for hits in semantic.values()),
+                "changesRuleScore": False,
+                "semanticEmbedding": True,
+            }
+        except Exception:
+            # Model installation or inference cannot prevent the rule report.
+            semantic_step = {
+                "name": "本地语义文档检索",
+                "engine": SEMANTIC_VERSION,
+                "status": "unavailable",
+                "candidateCount": 0,
+                "changesRuleScore": False,
+                "semanticEmbedding": False,
+            }
+    result = match_candidate(requirements, claims, snapshots, semantic_candidates=semantic)
+    if semantic_step is not None:
+        result = replace(result, retrieval_steps=[*result.retrieval_steps, semantic_step])
     try:
         return enrich_evidence(result, snapshots)
     except Exception:

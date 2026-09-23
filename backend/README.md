@@ -163,6 +163,13 @@ PostgreSQL对项目行加锁来串行分配版本号。旧客户端不传编号�
 pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登录学生自己的材料。
 已有材料可用 `python -m app.scripts.reindex_knowledge` 重建派生索引。
 
+真实报告另有可选的本地 ONNX 语义检索，它只给项目文档补充低强度候选，和上述
+`local-hash-v1` 数据库索引是两条不同路径。新环境需显式运行
+`python -m app.scripts.download_semantic_model` 安装约 235 MB 的固定版本权重；
+未安装或推理失败时自动保留词法检索与规则报告。运行
+`python -m app.scripts.evaluate_semantic_retrieval` 可复核四个固定小例。
+详见 [本地语义文档检索验收](../docs/本地语义文档检索验收-20260923.md)。
+
 固定规则评测：`python evals/run_rule_baseline.py --output evals/baseline-evidence-v3.json`。
 
 固定 AI 评测：启用合成数据可用的真实 Provider 后，运行
@@ -175,9 +182,9 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
   解析在独立子进程进行，有限并发、硬超时、运行令牌和心跳；已失去租期的 running 任务
   会安全转为失败并由用户重试，不会接受迟到结果。
   详见 [材料任务说明](docs/material-processing.md)。
-- ZIP 上限 30 MB，PDF/DOCX/TXT 上限 10 MB；纯扫描 PDF 需先做 OCR，暂不内置 OCR。
+- ZIP 上限 30 MB，PDF/DOCX/TXT 上限 10 MB；扫描 PDF 和常见图片可使用本地 RapidOCR，低置信度文字仍需人工核对。
 - 规则覆盖有限，分类入口不代表每个专业都具备完整评价器。
-- 当前是规则检索增强的受控生成闭环，未使用外部 embedding，也不宣称通用向量 RAG；语音
+- 当前是规则、词法与可选本地语义文档候选组成的受控生成闭环，不宣称通用向量 RAG；语音
   面试、多模态理解及企业投递授权尚未实现。
 
 ## 安全策略

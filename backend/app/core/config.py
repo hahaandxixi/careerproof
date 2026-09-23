@@ -68,6 +68,8 @@ class Settings(BaseSettings):
     ai_daily_output_token_limit: int = Field(default=40_000, ge=1000, le=2_000_000)
     ai_skip_when_no_evidence: bool = True
     ai_local_fallback_enabled: bool = True
+    semantic_retrieval_enabled: bool = True
+    semantic_model_cache_dir: Path = Path("./.tmp/models")
 
     @field_validator("jwt_secret")
     @classmethod
@@ -80,6 +82,11 @@ class Settings(BaseSettings):
     @field_validator("storage_base_dir")
     @classmethod
     def resolve_storage_path(cls, value: Path) -> Path:
+        return value.expanduser().resolve()
+
+    @field_validator("semantic_model_cache_dir")
+    @classmethod
+    def resolve_semantic_cache_path(cls, value: Path) -> Path:
         return value.expanduser().resolve()
 
 

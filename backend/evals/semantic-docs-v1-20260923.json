@@ -1,0 +1,36 @@
+{
+  "engine": "multilingual-minilm-docs-v1",
+  "modelRevision": "faf4aa4225822f3bc6376869cb1164e8e3feedd0",
+  "scope": "fixed synthetic retrieval wiring, not general semantic accuracy",
+  "cases": [
+    {
+      "case": "database_paraphrase",
+      "expectedHit": true,
+      "actualHit": true,
+      "windows": 1
+    },
+    {
+      "case": "test_paraphrase",
+      "expectedHit": true,
+      "actualHit": true,
+      "windows": 1
+    },
+    {
+      "case": "deployment_paraphrase",
+      "expectedHit": true,
+      "actualHit": true,
+      "windows": 1
+    },
+    {
+      "case": "unrelated_document",
+      "expectedHit": false,
+      "actualHit": false,
+      "windows": 1
+    },
+    {
+      "case": "isolated_full_retrieval",
+      "expectedHit": true,
+      "actualHit": true
+    }
+  ]
+}
