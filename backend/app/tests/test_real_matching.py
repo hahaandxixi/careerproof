@@ -357,6 +357,7 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
             "核对材料版本",
             "检索候选证据",
             "补取并核对证据上下文",
+            "混合检索补充候选上下文",
             "计算材料支持度",
             "模型证据分析",
             "校验模型引用",
@@ -368,7 +369,7 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
             usage = list(await session.scalars(select(AiUsageLog)))
             steps = list(await session.scalars(select(AgentStep)))
             assert len(usage) == 1 and usage[0].input_tokens == 320
-            assert len(steps) == 7
+            assert len(steps) == 8
         assert "return sum" in item["evidenceList"][0]["snippet"]
         assert item["evidenceList"][0]["contextComplete"] is True
 

@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-09-23T03:31:56.974333+00:00",
+  "engine": "hybrid-lexical-v1",
+  "semanticEmbedding": false,
+  "summary": {
+    "caseCount": 3,
+    "pathExpectationsPassed": 3,
+    "scoreExpectationsPassed": 3
+  },
+  "cases": [
+    {
+      "caseId": "uncovered_retry_identifier",
+      "detectorCount": 0,
+      "retrievedCandidateCount": 2,
+      "allCandidatePaths": [
+        "app/worker.py",
+        "app/worker.py"
+      ],
+      "verdict": "unsupported",
+      "ruleBaseScore": 0.0,
+      "pathExpectationPassed": true,
+      "scoreExpectationPassed": true
+    },
+    {
+      "caseId": "detector_fastapi_preserved",
+      "detectorCount": 2,
+      "retrievedCandidateCount": 1,
+      "allCandidatePaths": [
+        "app/main.py",
+        "app/main.py",
+        "app/main.py"
+      ],
+      "verdict": "supported",
+      "ruleBaseScore": 0.65,
+      "pathExpectationPassed": true,
+      "scoreExpectationPassed": true
+    },
+    {
+      "caseId": "comment_only_redis_rejected",
+      "detectorCount": 0,
+      "retrievedCandidateCount": 0,
+      "allCandidatePaths": [],
+      "verdict": "gap",
+      "ruleBaseScore": 0.0,
+      "pathExpectationPassed": true,
+      "scoreExpectationPassed": true
+    }
+  ],
+  "caseDefinitions": [
+    {
+      "case_id": "uncovered_retry_identifier",
+      "title": "实现订单重试处理",
+      "skill": "retry_order",
+      "files": [
+        {
+          "path": "app/worker.py",
+          "content": "def retry_order(order_id):\n    return order_queue.retry(order_id)\n"
+        },
+        {
+          "path": "app/users.py",
+          "content": "def list_users():\n    return []\n"
+        }
+      ],
+      "expected_path": "app/worker.py",
+      "expected_rule_score": null
+    },
+    {
+      "case_id": "detector_fastapi_preserved",
+      "title": "使用FastAPI开发接口",
+      "skill": "FastAPI",
+      "files": [
+        {
+          "path": "app/main.py",
+          "content": "from fastapi import FastAPI\napp = FastAPI()\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        }
+      ],
+      "expected_path": "app/main.py",
+      "expected_rule_score": 0.65
+    },
+    {
+      "case_id": "comment_only_redis_rejected",
+      "title": "掌握Redis缓存",
+      "skill": "Redis",
+      "files": [
+        {
+          "path": "app/cache.py",
+          "content": "# Redis cache\ndef health():\n    return True\n"
+        }
+      ],
+      "expected_path": null,
+      "expected_rule_score": 0.0
+    }
+  ]
+}

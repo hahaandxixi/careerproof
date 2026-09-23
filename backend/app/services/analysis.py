@@ -82,7 +82,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "promptVersion": EVIDENCE_PROMPT_VERSION,
         "formulaVersion": FORMULA_VERSION,
         "externalAiConsent": snapshot.get("externalAiConsent", False),
-        "cacheVersion": "report-context-v1",
+        "cacheVersion": "report-context-v2-hybrid-retrieval",
     }
     serialized = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
@@ -520,7 +520,9 @@ async def execute_match_task(task_id: UUID) -> None:
                 "providerFinishReason": workflow.provider_finish_reason,
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
-                "evidenceContextVersion": None if result.grounding_error else "source-context-v2",
+                "evidenceContextVersion": (
+                    None if result.grounding_error else "source-context-v3-hybrid-retrieval"
+                ),
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),
                 "promptVersion": EVIDENCE_PROMPT_VERSION,
@@ -739,16 +741,23 @@ async def execute_match_task(task_id: UUID) -> None:
                 ),
             ]
             for retrieval in reversed(result.retrieval_steps):
+                if retrieval.get("engine") == "hybrid-lexical-v1":
+                    retrieval_detail = (
+                        f"规则检测后补充{retrieval.get('candidateCount', 0)}条低强度候选原文；"
+                        "候选不改变规则分数，需经引用校验与模型判断"
+                    )
+                elif retrieval.get("sourceExact"):
+                    retrieval_detail = (
+                        f"一次补取，{retrieval.get('expandedCount', 0)}条多行原文；"
+                        f"{retrieval.get('limitedCount', 0)}条仍为局部上下文；未执行上传代码"
+                    )
+                else:
+                    retrieval_detail = "上下文核验失败，已保留规则报告"
                 step_rows.insert(
                     2,
                     (
                         retrieval["name"],
-                        (
-                            f"一次补取，{retrieval.get('expandedCount', 0)}条多行原文；"
-                            f"{retrieval.get('limitedCount', 0)}条仍为局部上下文；未执行上传代码"
-                            if retrieval.get("sourceExact")
-                            else "上下文核验失败，已保留规则报告"
-                        ),
+                        retrieval_detail,
                         retrieval,
                     ),
                 )

@@ -10,6 +10,8 @@ from app.tools.code_analyzer import (
     canonical_skill,
     find_evidence,
 )
+from app.tools.hybrid_retrieval import VERSION as HYBRID_RETRIEVAL_VERSION
+from app.tools.hybrid_retrieval import retrieve_requirement_candidates
 from app.tools.resume_parser import SkillClaim
 
 STRENGTH_SCORE = {"high": 0.65, "medium": 0.4, "low": 0.15}
@@ -62,12 +64,28 @@ def match_candidate(
     items: list[MatchItemResult] = []
     weighted_total = 0.0
     total_weight = 0
+    retrieved_count = 0
 
     for requirement in requirements:
         skill = canonical_skill(requirement.skill)
         claim = claims_by_skill.get(skill) if skill else None
-        evidence_list = find_evidence(files, requirement.skill)
-        strongest = evidence_list[0] if evidence_list else None
+        detected_evidence = find_evidence(files, requirement.skill)
+        detected_keys = {
+            (evidence.file_path, evidence.line_start, evidence.line_end)
+            for evidence in detected_evidence
+        }
+        retrieved_evidence = [
+            evidence
+            for evidence in retrieve_requirement_candidates(
+                requirement.title, requirement.skill, files
+            )
+            if (evidence.file_path, evidence.line_start, evidence.line_end) not in detected_keys
+        ]
+        retrieved_count += len(retrieved_evidence)
+        evidence_list = [*detected_evidence, *retrieved_evidence]
+        # Retrieved candidates enrich the AI context but never raise the
+        # deterministic verdict or score by themselves.
+        strongest = detected_evidence[0] if detected_evidence else None
         if not skill:
             verdict = "unsupported"
             rule_score = 0.0
@@ -122,4 +140,19 @@ def match_candidate(
         f"{len(claimed_only)}项仅有简历声明，{len(gaps)}项当前无法确认，"
         f"{unsupported_count}项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。"
     )
-    return MatchResult(overall_score, items, gaps, claimed_only, summary)
+    return MatchResult(
+        overall_score,
+        items,
+        gaps,
+        claimed_only,
+        summary,
+        retrieval_steps=[
+            {
+                "name": "混合检索补充候选上下文",
+                "engine": HYBRID_RETRIEVAL_VERSION,
+                "candidateCount": retrieved_count,
+                "changesRuleScore": False,
+                "semanticEmbedding": False,
+            }
+        ],
+    )

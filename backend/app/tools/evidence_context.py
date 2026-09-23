@@ -115,6 +115,7 @@ def enrich_evidence(result: MatchResult, files: list[ProjectFileSnapshot]) -> Ma
                 "sourceExact": True,
                 "maxLines": MAX_LINES,
                 "maxCharacters": MAX_CHARACTERS,
-            }
+            },
+            *result.retrieval_steps,
         ],
     )
