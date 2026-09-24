@@ -104,13 +104,14 @@ async def matching_db(tmp_path, monkeypatch):
         await engine.dispose()
 
 
-def source_archive() -> bytes:
+def source_archive(
+    extra: str = "", body: str = "    return sum(value for value in values if value > 0)\n"
+) -> bytes:
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w") as archive:
         archive.writestr(
             "src/report.py",
-            "def calculate_total(values):\n"
-            "    return sum(value for value in values if value > 0)\n",
+            "def calculate_total(values):\n" + body + extra,
         )
     return buffer.getvalue()
 
@@ -799,6 +800,9 @@ async def test_job_recommendations_rank_owned_material_evidence(matching_db):
         assert first["supportedCount"] == 1
         assert first["matchedSkills"] == ["Python"]
         assert first["evidence"][0]["filePath"].endswith("src/report.py")
+        assert first["evidence"][0]["projectVersionId"] == version["versionId"]
+        assert first["evidence"][0]["projectFileId"]
+        assert first["evidence"][0]["contentHash"]
         assert "不代表能力认证或录用概率" in result["summary"]
 
 
@@ -877,8 +881,32 @@ async def test_career_plan_cites_shortlist_and_tracks_new_material(matching_db, 
         second = second_response.json()["data"]
         assert second["previousPlanId"] == first["planId"]
         assert second["aiStatus"] == "validated"
-        assert second["changes"][0]["evidenceIds"]
-        assert "新增" in second["changes"][0]["detail"]
+        assert second["changes"][0]["evidenceIds"] == []
+        assert "材料版本已变化" in second["changes"][0]["detail"]
+
+        changed = await student.post(
+            f"/api/v1/projects/{project['id']}/versions",
+            data={"requestId": str(uuid4())},
+            files={"file": (
+                "source.zip",
+                source_archive(body="    return sum(values)\n"),
+                "application/zip",
+            )},
+        )
+        assert changed.status_code == 202, changed.text
+        changed_version = changed.json()["data"]
+        changed_task = await student.get(
+            f"/api/v1/analysis-tasks/{changed_version['taskId']}"
+        )
+        assert changed_task.json()["data"]["status"] == "completed"
+        third_response = await student.post("/api/v1/career-plans", json={
+            **payload, "projectVersionIds": [changed_version["versionId"]],
+        })
+        assert third_response.status_code == 200, third_response.text
+        third = third_response.json()["data"]
+        assert third["previousPlanId"] == second["planId"]
+        assert third["changes"][0]["evidenceIds"]
+        assert "新增" in third["changes"][0]["detail"]
 
         def unavailable_provider():
             raise ValueError("synthetic provider outage")

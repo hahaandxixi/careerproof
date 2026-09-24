@@ -30,6 +30,7 @@ async def recommend_jobs(
 ) -> JobRecommendationResult:
     """Rank published jobs from one bounded scan of the student's saved materials."""
     materials = await resolve_materials(session, request, user)
+    files_by_path = {file["path"]: file for file in materials.files}
     job_rows = list(
         await session.scalars(
             select(Job)
@@ -124,6 +125,8 @@ async def recommend_jobs(
         evidence = [
             RecommendationEvidence(
                 citation_id=f"J{len(ranked) + 1}-E{index}",
+                project_file_id=files_by_path[item.evidence.file_path]["id"],
+                project_version_id=files_by_path[item.evidence.file_path]["versionId"],
                 skill=item.skill,
                 file_path=item.evidence.file_path,
                 line_start=item.evidence.line_start,
@@ -131,6 +134,7 @@ async def recommend_jobs(
                 strength=item.evidence.strength,
                 explanation=item.evidence.explanation,
                 snippet=item.evidence.snippet[:900],
+                content_hash=item.evidence.content_hash,
             )
             for index, item in enumerate(supported, 1)
             if item.evidence is not None

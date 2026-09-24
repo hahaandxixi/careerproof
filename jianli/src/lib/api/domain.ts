@@ -66,7 +66,7 @@ export interface JobRecommendation {
   priority: "high" | "medium" | "explore"; assessedCount: number; requirementCount: number;
   supportedCount: number; claimedCount: number; matchedSkills: string[]; gaps: string[];
   requirements?: { text: string; skill: string; weight: number; isRequired: boolean; ruleVerdict: string }[];
-  evidence: { citationId?: string | null; skill: string; filePath: string; lineStart: number; lineEnd: number; strength: string; explanation: string; snippet?: string }[];
+  evidence: { citationId?: string | null; projectFileId?: string | null; projectVersionId?: string | null; skill: string; filePath: string; lineStart: number; lineEnd: number; strength: string; explanation: string; snippet?: string; contentHash?: string }[];
 }
 export interface JobRecommendationResult {
   primaryDirection: string | null; summary: string;

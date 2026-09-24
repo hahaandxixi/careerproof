@@ -30,6 +30,8 @@ class CareerPlanRequest(JobRecommendationRequest):
 
 class RecommendationEvidence(APIModel):
     citation_id: str | None = None
+    project_file_id: UUID | None = None
+    project_version_id: UUID | None = None
     skill: str
     file_path: str
     line_start: int
@@ -37,6 +39,7 @@ class RecommendationEvidence(APIModel):
     strength: str
     explanation: str
     snippet: str = ""
+    content_hash: str = ""
 
 
 class RecommendationRequirement(APIModel):

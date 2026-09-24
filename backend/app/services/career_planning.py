@@ -31,8 +31,11 @@ PLAN_VERSION = "career-plan-v1"
 
 
 def _source_key(evidence) -> tuple[str, int, int, str, str]:
+    # The file path starts with a version UUID. A re-upload of identical code
+    # is a new material version, not new substantive evidence.
+    relative_path = evidence.file_path.partition("/")[2] or evidence.file_path
     return (
-        evidence.file_path,
+        relative_path,
         evidence.line_start,
         evidence.line_end,
         evidence.skill,
@@ -47,6 +50,9 @@ def compare_plans(
     if previous is None:
         return []
     old_jobs = {item.job_id: item for item in previous.recommendations}
+    materials_changed = {
+        (material.kind, material.id) for material in previous.materials
+    } != {(material.kind, material.id) for material in current.materials}
     changes = []
     for item in diverse_shortlist(current.recommendations):
         old = old_jobs.get(item.job_id)
@@ -71,7 +77,12 @@ def compare_plans(
             removed_count = len(old_sources - current_sources)
             if removed_count:
                 parts.append(f"上轮 {removed_count} 处引用不再出现")
-            detail = "；".join(parts) if parts else "与上轮相比，未发现已支持要求或引用来源的变化。"
+            if parts:
+                detail = "；".join(parts)
+            elif materials_changed:
+                detail = "所选材料版本已变化，但可见证据判断未改变。"
+            else:
+                detail = "与上轮相比，未发现已支持要求或引用来源的变化。"
         changes.append(
             CareerPlanChange(
                 job_id=item.job_id,
