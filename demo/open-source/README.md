@@ -28,6 +28,7 @@ ZIP 与简历的对应关系：
 ```powershell
 & '.venv/Scripts/python.exe' 'evals/run_open_source_cases.py' --output 'evals/open-source-local-offline.json'
 & '.venv/Scripts/python.exe' 'evals/run_open_source_cases.py' --ai --output 'evals/open-source-local-ai.json'
+& '.venv/Scripts/python.exe' -m evals.build_open_source_review_packet --input 'evals/open-source-local-ai.json' --output '.tmp/open-source-cases/review-packet-local.md'
 ```
 
-第二条命令会调用当前配置的真实模型并可能产生费用；每次请使用新的输出文件名，保留历史结果。完整输出含检索到的开源代码片段，默认仅留本机；提交给老师时先阅读案例说明和验收摘要。评测脚本不把引用编号合法等同于“结论由证据支持”，语义结论仍需人工核查。
+第二条命令会调用当前配置的真实模型并可能产生费用；每次请使用新的输出文件名，保留历史结果。第三条命令生成不预填正确答案的外部评审任务单，列出模型原句和实际引用的代码片段；同样不能覆盖旧任务单。完整输出含检索到的开源代码片段，默认仅留本机；提交给老师时先阅读案例说明和验收摘要。评测脚本不把引用编号合法等同于“结论由证据支持”，语义结论仍需人工核查。
