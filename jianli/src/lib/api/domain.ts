@@ -2,7 +2,15 @@ export interface Page<T> { items: T[]; total: number; page: number; pageSize: nu
 export interface Option { value: string; label: string }
 export interface JobOptions { categories: Option[]; employmentTypes: Option[]; skills: { name: string; category: string }[] }
 export interface Enterprise { id: string; name: string; description: string; isVerified: boolean; role: string }
-export interface RequirementInput { rawText: string; skillName: string; weight: number; isRequired: boolean }
+export interface RequirementInput { rawText: string; skillName: string; weight: number; isRequired: boolean;
+  sourceQuote?: string | null; sourceStart?: number | null; sourceEnd?: number | null }
+export interface JobDraftRequirement extends RequirementInput {
+  sourceQuote: string; sourceStart: number; sourceEnd: number;
+}
+export interface JobDraftResult {
+  requirements: JobDraftRequirement[]; model: string; usage: { input_tokens?: number; output_tokens?: number } | null;
+  confirmed: boolean;
+}
 export interface JobRequirement extends RequirementInput { id: string; skillId: string | null; normalizedStatus: string }
 export interface JobSummary {
   id: string; title: string; companyName: string; description: string; status: string;
@@ -57,12 +65,25 @@ export interface JobRecommendation {
   jobId: string; jobTitle: string; companyName: string; category: string; city: string; employmentType: string;
   priority: "high" | "medium" | "explore"; assessedCount: number; requirementCount: number;
   supportedCount: number; claimedCount: number; matchedSkills: string[]; gaps: string[];
-  evidence: { skill: string; filePath: string; lineStart: number; lineEnd: number; strength: string; explanation: string }[];
+  requirements?: { text: string; skill: string; weight: number; isRequired: boolean; ruleVerdict: string }[];
+  evidence: { citationId?: string | null; skill: string; filePath: string; lineStart: number; lineEnd: number; strength: string; explanation: string; snippet?: string }[];
 }
 export interface JobRecommendationResult {
   primaryDirection: string | null; summary: string;
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string }[];
   recommendations: JobRecommendation[];
+}
+export interface CareerPlanResult extends JobRecommendationResult {
+  planId: string | null; previousPlanId: string | null;
+  aiPlan: {
+    comparison: string; focusJobId: string | null;
+    advice: { jobId: string; reason: string; keyGap: string; nextTask: string; citationIds: string[] }[];
+  } | null;
+  aiFallbackUsed: boolean; aiStatus: string; aiModel: string | null;
+  aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
+  changes: { jobId: string; jobTitle: string; previousSupportedCount: number | null;
+    currentSupportedCount: number; previousPriority: string | null; currentPriority: string;
+    detail: string; evidenceIds: string[] }[];
 }
 export const CATEGORY_LABELS: Record<string, string> = {
   software: "软件开发", data_analysis: "数据分析", operations: "运营", design: "设计", other: "其他",

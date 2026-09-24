@@ -24,13 +24,27 @@ class JobRecommendationRequest(MaterialSelection):
     limit: int = Field(default=5, ge=1, le=10)
 
 
+class CareerPlanRequest(JobRecommendationRequest):
+    external_ai_consent: bool = False
+
+
 class RecommendationEvidence(APIModel):
+    citation_id: str | None = None
     skill: str
     file_path: str
     line_start: int
     line_end: int
     strength: str
     explanation: str
+    snippet: str = ""
+
+
+class RecommendationRequirement(APIModel):
+    text: str
+    skill: str
+    weight: int
+    is_required: bool
+    rule_verdict: str
 
 
 class JobRecommendationView(APIModel):
@@ -47,6 +61,7 @@ class JobRecommendationView(APIModel):
     claimed_count: int
     matched_skills: list[str] = Field(default_factory=list)
     gaps: list[str] = Field(default_factory=list)
+    requirements: list[RecommendationRequirement] = Field(default_factory=list)
     evidence: list[RecommendationEvidence] = Field(default_factory=list)
 
 
@@ -64,6 +79,42 @@ class JobRecommendationResult(APIModel):
     summary: str
     materials: list[ReportMaterial] = Field(default_factory=list)
     recommendations: list[JobRecommendationView] = Field(default_factory=list)
+
+
+class CareerAdvice(APIModel):
+    job_id: UUID
+    reason: str = Field(min_length=1, max_length=300)
+    key_gap: str = Field(min_length=1, max_length=300)
+    next_task: str = Field(min_length=1, max_length=300)
+    citation_ids: list[str] = Field(default_factory=list, max_length=3)
+
+
+class CareerPlanAnalysis(APIModel):
+    comparison: str = Field(min_length=1, max_length=600)
+    focus_job_id: UUID | None = None
+    advice: list[CareerAdvice] = Field(min_length=1, max_length=3)
+
+
+class CareerPlanChange(APIModel):
+    job_id: UUID
+    job_title: str
+    previous_supported_count: int | None = None
+    current_supported_count: int
+    previous_priority: str | None = None
+    current_priority: str
+    detail: str
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
+class CareerPlanResult(JobRecommendationResult):
+    plan_id: UUID | None = None
+    previous_plan_id: UUID | None = None
+    ai_plan: CareerPlanAnalysis | None = None
+    ai_fallback_used: bool = False
+    ai_status: str = "not_requested"
+    ai_model: str | None = None
+    ai_usage: dict | None = None
+    changes: list[CareerPlanChange] = Field(default_factory=list)
 
 
 class TaskAccepted(APIModel):

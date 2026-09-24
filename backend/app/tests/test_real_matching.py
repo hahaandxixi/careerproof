@@ -7,11 +7,13 @@ execute in their real isolated worker processes; production rows are never used.
 
 import asyncio
 import io
+import json
 import os
 import re
 import zipfile
 from uuid import UUID, uuid4
 
+import httpx
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event, select, text
@@ -19,6 +21,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.agents.contracts import AIRequirementAnalysis, EvidenceAnalysis, ModelUsage
 from app.agents.evidence_workflow import EvidenceWorkflowOutcome, build_evidence_contexts
+from app.agents.provider import DeepSeekProvider
 from app.core.config import settings
 from app.core.database import Base, get_session
 from app.main import create_app
@@ -792,7 +795,97 @@ async def test_job_recommendations_rank_owned_material_evidence(matching_db):
         assert len(result["recommendations"]) == 2
         first = result["recommendations"][0]
         assert first["category"] == "software"
+        assert first["requirements"][0]["text"] == "具备Python相关实践材料"
         assert first["supportedCount"] == 1
         assert first["matchedSkills"] == ["Python"]
         assert first["evidence"][0]["filePath"].endswith("src/report.py")
         assert "不代表能力认证或录用概率" in result["summary"]
+
+
+async def test_career_plan_cites_shortlist_and_tracks_new_material(matching_db, monkeypatch):
+    from app.services import career_planning
+
+    async def handler(request):
+        body = json.loads(request.content)
+        supplied = json.loads(body["messages"][1]["content"])
+        jobs = supplied["jobs"]
+        assert all(job["requirements"] for job in jobs)
+        answer = {
+            "comparison": "软件岗位已有可定位的 Python 代码线索；运营岗位尚待补充材料。",
+            "focusJobId": jobs[0]["jobId"],
+            "advice": [{
+                "jobId": job["jobId"],
+                "reason": (
+                    "材料中有可定位代码片段。"
+                    if job["evidence"] else "当前材料未展示可定位项目证据。"
+                ),
+                "keyGap": "仍需核验运行结果与本人贡献。",
+                "nextTask": "上传带断言的测试代码和运行记录。",
+                "citationIds": [item["citationId"] for item in job["evidence"][:1]],
+            } for job in jobs],
+        }
+        return httpx.Response(200, json={
+            "choices": [{"message": {"content": json.dumps(answer, ensure_ascii=False)}}],
+            "usage": {"prompt_tokens": 90, "completion_tokens": 50},
+        })
+
+    monkeypatch.setattr(career_planning, "get_ai_provider", lambda: DeepSeekProvider(
+        api_key="synthetic-key", base_url="https://api.deepseek.com",
+        model="deepseek-flash", timeout_seconds=5,
+        transport=httpx.MockTransport(handler),
+    ))
+    app, _factory = matching_db
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as owner,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(owner, "career-owner@example.com")
+        await create_job(owner, category="operations", skills=("活动策划",))
+        await create_job(owner, category="software", skills=("Python",))
+        await register(student, "career-student@example.com", "student")
+        resume, project, version = await upload_materials(student)
+        payload = {
+            "resumeVersionId": resume["versionId"],
+            "projectVersionIds": [version["versionId"]],
+            "externalAiConsent": True,
+        }
+        assert (await student.post("/api/v1/career-plans", json={
+            **payload, "externalAiConsent": False,
+        })).status_code == 422
+        first_response = await student.post("/api/v1/career-plans", json=payload)
+        assert first_response.status_code == 200, first_response.text
+        first = first_response.json()["data"]
+        assert first["aiStatus"] == "validated"
+        assert first["aiPlan"] is not None
+        assert first["aiPlan"]["advice"][0]["citationIds"]
+        assert (await student.get("/api/v1/career-plans/latest")).json()["data"] == first
+
+        newer = await student.post(
+            f"/api/v1/projects/{project['id']}/versions",
+            data={"requestId": str(uuid4())},
+            files={"file": ("source.zip", source_archive(), "application/zip")},
+        )
+        assert newer.status_code == 202, newer.text
+        new_version = newer.json()["data"]
+        task = await student.get(f"/api/v1/analysis-tasks/{new_version['taskId']}")
+        assert task.json()["data"]["status"] == "completed"
+        second_response = await student.post("/api/v1/career-plans", json={
+            **payload, "projectVersionIds": [new_version["versionId"]],
+        })
+        assert second_response.status_code == 200, second_response.text
+        second = second_response.json()["data"]
+        assert second["previousPlanId"] == first["planId"]
+        assert second["aiStatus"] == "validated"
+        assert second["changes"][0]["evidenceIds"]
+        assert "新增" in second["changes"][0]["detail"]
+
+        def unavailable_provider():
+            raise ValueError("synthetic provider outage")
+
+        monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+        fallback = await student.post("/api/v1/career-plans", json=payload)
+        assert fallback.status_code == 200, fallback.text
+        assert fallback.json()["data"]["aiFallbackUsed"] is True
+        assert fallback.json()["data"]["aiPlan"] is None
+        assert fallback.json()["data"]["recommendations"]

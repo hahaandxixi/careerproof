@@ -376,6 +376,31 @@ class OpenAICompatibleProvider:
             latency_ms=sum(usage.latency_ms for usage in self.request_usages),
         )
 
+    async def generate_bounded_json(
+        self,
+        *,
+        system: str,
+        data: dict,
+        max_tokens: int = 1400,
+    ) -> dict:
+        """One bounded structured call for auxiliary AI workflows."""
+        request = {
+            "model": self.model,
+            "temperature": 0.1,
+            "max_tokens": min(max_tokens, settings.ai_per_report_output_token_limit),
+            "response_format": {"type": "json_object"},
+            "messages": [
+                {"role": "system", "content": system},
+                {
+                    "role": "user",
+                    "content": json.dumps(_redact_external_value(data), ensure_ascii=False),
+                },
+            ],
+        }
+        payload, latency_ms = await self._completion(request)
+        self._capture_usage(payload, latency_ms)
+        return self._message_content(payload)
+
     def _message_content(self, payload: dict) -> dict:
         try:
             content = payload["choices"][0]["message"]["content"]

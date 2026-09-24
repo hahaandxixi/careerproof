@@ -52,6 +52,9 @@ class JobRequirement(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     weight: Mapped[int] = mapped_column(Integer, default=1)
     is_required: Mapped[bool] = mapped_column(Boolean, default=True)
     normalized_status: Mapped[str] = mapped_column(String(30), default="pending")
+    source_quote: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_start: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    source_end: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):

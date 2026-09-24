@@ -81,6 +81,7 @@ class JobService:
         enterprise = await self.jobs.managed_enterprise(request.enterprise_id, current_user.id)
         if enterprise is None:
             raise AppError("请选择您担任负责人或HR的有效企业组织", code=4034, status_code=403)
+        self._validate_requirement_sources(request.description, request.requirements)
         await self._validate_skills(request.requirements)
         job = Job(
             enterprise_id=request.enterprise_id,
@@ -118,11 +119,19 @@ class JobService:
         if any(value is None for value in values.values()):
             raise AppError("岗位字段不能设为空值", code=4221, status_code=422)
         requirements = await self.jobs.requirements(job.id)
+        effective_description = values.get("description", job.description)
+        self._validate_requirement_sources(
+            effective_description,
+            request.requirements if request.requirements is not None else requirements,
+        )
         if "requirements" in values:
             old = [
                 {
                     key: getattr(item, key)
-                    for key in ("raw_text", "skill_name", "skill_id", "weight", "is_required")
+                    for key in (
+                        "raw_text", "skill_name", "skill_id", "weight", "is_required",
+                        "source_quote", "source_start", "source_end",
+                    )
                 }
                 for item in requirements
             ]
@@ -151,6 +160,24 @@ class JobService:
             raise AppError("技能ID不存在，请使用技能名称或有效ID", code=4222, status_code=422)
 
     @staticmethod
+    def _validate_requirement_sources(description: str, requirements) -> None:
+        for item in requirements:
+            quote = item.source_quote
+            start = item.source_start
+            end = item.source_end
+            if quote is None and start is None and end is None:
+                continue
+            if (
+                quote is None or start is None or end is None or start >= end
+                or description[start:end] != quote
+            ):
+                raise AppError(
+                    "AI要求的原文定位已失效，请重新拆解或清除该条来源后手动确认",
+                    code=4226,
+                    status_code=422,
+                )
+
+    @staticmethod
     def _requirements(job_id: UUID, items) -> list[JobRequirement]:
         return [
             JobRequirement(
@@ -161,6 +188,9 @@ class JobService:
                 weight=item.weight,
                 is_required=item.is_required,
                 normalized_status="normalized" if item.skill_id else "pending",
+                source_quote=item.source_quote,
+                source_start=item.source_start,
+                source_end=item.source_end,
             )
             for item in items
         ]

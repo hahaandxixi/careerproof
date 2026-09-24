@@ -1,17 +1,21 @@
 """HTTP permissions, classification and immutable requirement tests on temporary SQLite."""
 
+import json
 from uuid import UUID, uuid4
 
+import httpx
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from app.agents.provider import DeepSeekProvider
 from app.core.database import Base, get_session
 from app.main import create_app
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import MembershipRole, TaskStatus
 from app.models.identity import EnterpriseMembership
+from app.services.job_drafting import validate_draft
 
 
 @pytest.fixture
@@ -67,6 +71,80 @@ async def organization(client, name="真实组织"):
     response = await client.post("/api/v1/enterprises", json={"name": name})
     assert response.status_code == 201, response.text
     return response.json()["data"]
+
+
+async def test_ai_job_draft_requires_confirmation_and_preserves_exact_source(jobs_db, monkeypatch):
+    from app.services import job_drafting
+
+    description = "岗位要求：熟练使用 Python 编写数据处理脚本；熟悉 SQL 数据查询优先。"
+
+    async def handler(request):
+        body = json.loads(request.content)
+        assert body["response_format"] == {"type": "json_object"}
+        assert description in body["messages"][1]["content"]
+        return httpx.Response(200, json={
+            "choices": [{"message": {"content": json.dumps({"requirements": [{
+                "raw_text": "使用 Python 编写数据处理脚本",
+                "skill_name": "Python", "weight": 5, "is_required": True,
+                "source_quote": "熟练使用 Python 编写数据处理脚本",
+            }]}, ensure_ascii=False)}}],
+            "usage": {"prompt_tokens": 30, "completion_tokens": 20},
+        })
+
+    monkeypatch.setattr(job_drafting, "get_ai_provider", lambda: DeepSeekProvider(
+        api_key="synthetic-key", base_url="https://api.deepseek.com",
+        model="deepseek-flash", timeout_seconds=5,
+        transport=httpx.MockTransport(handler),
+    ))
+    app, _factory = jobs_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner:
+        await register(owner, "draft-owner@example.com")
+        org = await organization(owner)
+        denied = await owner.post("/api/v1/jobs/ai-draft", json={
+            "description": description, "externalAiConsent": False,
+        })
+        assert denied.status_code == 422
+        response = await owner.post("/api/v1/jobs/ai-draft", json={
+            "description": description, "externalAiConsent": True,
+        })
+        assert response.status_code == 200, response.text
+        draft = response.json()["data"]
+        assert draft["confirmed"] is False
+        assert draft["requirements"][0]["sourceQuote"] == description[
+            draft["requirements"][0]["sourceStart"]:draft["requirements"][0]["sourceEnd"]
+        ]
+        assert (await owner.get("/api/v1/jobs/mine")).json()["data"]["total"] == 0
+        requirement = draft["requirements"][0]
+        invalid = await owner.post("/api/v1/jobs", json=job_payload(
+            org, description=description,
+            requirements=[{**requirement, "sourceStart": requirement["sourceStart"] + 1}],
+        ))
+        assert invalid.status_code == 422
+        created = await owner.post("/api/v1/jobs", json=job_payload(
+            org, status="draft", description=description, requirements=[requirement],
+        ))
+        assert created.status_code == 201, created.text
+        job = created.json()["data"]
+        assert job["status"] == "draft"
+        assert job["requirements"][0]["sourceQuote"] == requirement["sourceQuote"]
+        assert (await owner.patch(f"/api/v1/jobs/{job['id']}", json={
+            "description": "全新岗位描述",
+        })).status_code == 422
+        published = await owner.patch(f"/api/v1/jobs/{job['id']}", json={
+            "status": "published",
+        })
+        assert published.status_code == 200, published.text
+        published_source = published.json()["data"]["requirements"][0]["sourceQuote"]
+        assert published_source == requirement["sourceQuote"]
+
+
+def test_ai_job_draft_rejects_invented_source_quote():
+    with pytest.raises(ValueError, match="absent from the original"):
+        validate_draft({"requirements": [{
+            "raw_text": "需要五年经验", "skill_name": "Python",
+            "weight": 5, "is_required": True,
+            "source_quote": "五年经验",
+        }]}, "岗位描述只提到 Python 开发", "synthetic", None)
 
 
 def job_payload(enterprise, **values):

@@ -19,6 +19,31 @@ class JobRequirementCreate(APIModel):
     skill_id: UUID | None = None
     weight: int = Field(default=1, ge=1, le=5)
     is_required: bool = True
+    source_quote: str | None = Field(default=None, min_length=3, max_length=1000)
+    source_start: int | None = Field(default=None, ge=0)
+    source_end: int | None = Field(default=None, gt=0)
+
+
+class JobDraftRequest(APIModel):
+    description: str = Field(min_length=20, max_length=6000)
+    external_ai_consent: bool = False
+
+
+class JobDraftRequirement(APIModel):
+    raw_text: str = Field(min_length=1, max_length=2000)
+    skill_name: str = Field(min_length=1, max_length=100)
+    weight: int = Field(ge=1, le=5)
+    is_required: bool
+    source_quote: str = Field(min_length=3, max_length=1000)
+    source_start: int = Field(ge=0)
+    source_end: int = Field(gt=0)
+
+
+class JobDraftResult(APIModel):
+    requirements: list[JobDraftRequirement] = Field(min_length=1, max_length=12)
+    model: str
+    usage: dict | None = None
+    confirmed: bool = False
 
 
 class JobCreate(APIModel):
@@ -69,6 +94,9 @@ class JobRequirementView(APIModel):
     weight: int
     is_required: bool
     normalized_status: str
+    source_quote: str | None = None
+    source_start: int | None = None
+    source_end: int | None = None
 
 
 class JobView(APIModel):

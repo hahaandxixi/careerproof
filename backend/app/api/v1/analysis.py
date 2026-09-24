@@ -14,6 +14,8 @@ from app.models.identity import User
 from app.repositories.analysis import AnalysisRepository
 from app.schemas.analysis import (
     AnalysisTaskView,
+    CareerPlanRequest,
+    CareerPlanResult,
     EvidenceReviewUpdate,
     JobRecommendationRequest,
     JobRecommendationResult,
@@ -25,11 +27,29 @@ from app.schemas.analysis import (
 )
 from app.schemas.common import ApiResponse, success
 from app.services.analysis import AnalysisService, execute_match_task, format_sse_event
+from app.services.career_planning import create_career_plan, latest_plan
 from app.services.portfolio import retry_material_task
 from app.services.recommendations import recommend_jobs
 from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
+
+
+@router.post("/career-plans", response_model=ApiResponse[CareerPlanResult])
+async def create_career_plan_endpoint(
+    payload: CareerPlanRequest,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[CareerPlanResult]:
+    return success(await create_career_plan(session, payload, current_user))
+
+
+@router.get("/career-plans/latest", response_model=ApiResponse[CareerPlanResult | None])
+async def latest_career_plan_endpoint(
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[CareerPlanResult | None]:
+    return success(await latest_plan(session, current_user))
 
 
 @router.post(

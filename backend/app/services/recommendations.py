@@ -13,6 +13,7 @@ from app.schemas.analysis import (
     JobRecommendationResult,
     JobRecommendationView,
     RecommendationEvidence,
+    RecommendationRequirement,
     ReportMaterial,
 )
 from app.services.matching_materials import analyze_materials, resolve_materials
@@ -112,21 +113,26 @@ async def recommend_jobs(
         matched_skills = list(dict.fromkeys(item.skill for item in [*supported, *claimed]))[:6]
         gaps = list(
             dict.fromkeys(
-                item.requirement_title
+                (
+                    f"{item.skill}：当前仅见简历声明，缺少可定位项目证据"
+                    if item.verdict == "claimed_only" else item.requirement_title
+                )
                 for item in assessed
                 if item.verdict in {"gap", "claimed_only"}
             )
         )[:3]
         evidence = [
             RecommendationEvidence(
+                citation_id=f"J{len(ranked) + 1}-E{index}",
                 skill=item.skill,
                 file_path=item.evidence.file_path,
                 line_start=item.evidence.line_start,
                 line_end=item.evidence.line_end,
                 strength=item.evidence.strength,
                 explanation=item.evidence.explanation,
+                snippet=item.evidence.snippet[:900],
             )
-            for item in supported
+            for index, item in enumerate(supported, 1)
             if item.evidence is not None
         ][:3]
         ranked.append(
@@ -146,6 +152,25 @@ async def recommend_jobs(
                     claimed_count=len(claimed),
                     matched_skills=matched_skills,
                     gaps=gaps,
+                    requirements=[
+                        RecommendationRequirement(
+                            text=requirement.raw_text,
+                            skill=requirement.skill_name,
+                            weight=requirement.weight,
+                            is_required=requirement.is_required,
+                            rule_verdict=(
+                                analyzed[requirement.id].verdict
+                                if requirement.id in analyzed else "not_evaluated"
+                            ),
+                        )
+                        for requirement in sorted(
+                            job_requirements,
+                            key=lambda requirement: (
+                                requirement.is_required, requirement.weight
+                            ),
+                            reverse=True,
+                        )[:12]
+                    ],
                     evidence=evidence,
                 ),
             )

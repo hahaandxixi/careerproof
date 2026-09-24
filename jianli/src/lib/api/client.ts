@@ -1,4 +1,4 @@
-import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult } from "./domain";
+import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 
@@ -201,6 +201,9 @@ export const api = {
   jobOptions() { return request<JobOptions>("/jobs/options"); },
   getJob(id: string) { return request<JobDetail>(`/jobs/${id}`); },
   createJob(payload: JobInput) { return request<JobDetail>("/jobs", { method: "POST", ...jsonBody(payload) }); },
+  draftJobRequirements(payload: { description: string; externalAiConsent: boolean }) {
+    return request<JobDraftResult>("/jobs/ai-draft", { method: "POST", ...jsonBody(payload) });
+  },
   updateJob(id: string, payload: Partial<Omit<JobInput, "enterpriseId" | "companyName">>) {
     return request<JobDetail>(`/jobs/${id}`, { method: "PATCH", ...jsonBody(payload) });
   },
@@ -214,6 +217,10 @@ export const api = {
   recommendJobs(payload: { resumeVersionId: string; projectVersionIds: string[]; limit?: number }) {
     return request<JobRecommendationResult>("/job-recommendations", { method: "POST", ...jsonBody(payload) });
   },
+  createCareerPlan(payload: { resumeVersionId: string; projectVersionIds: string[]; limit?: number; externalAiConsent: boolean }) {
+    return request<CareerPlanResult>("/career-plans", { method: "POST", ...jsonBody(payload) });
+  },
+  latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {

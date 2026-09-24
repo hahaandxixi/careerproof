@@ -13,14 +13,26 @@ from app.schemas.jobs import (
     EmploymentType,
     JobCategory,
     JobCreate,
+    JobDraftRequest,
+    JobDraftResult,
     JobOptions,
     JobSummary,
     JobUpdate,
     JobView,
 )
+from app.services.job_drafting import draft_job_requirements
 from app.services.jobs import JobService
 
 router = APIRouter()
+
+
+@router.post("/ai-draft", response_model=ApiResponse[JobDraftResult])
+async def ai_draft_job_requirements(
+    payload: JobDraftRequest,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[JobDraftResult]:
+    return success(await draft_job_requirements(session, payload, current_user))
 
 
 async def optional_user(
