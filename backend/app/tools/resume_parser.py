@@ -15,7 +15,7 @@ SKILL_KEYWORDS: dict[str, tuple[str, ...]] = {
     "活动策划": ("活动策划", "运营策划"),
     "用户调研": ("用户调研", "用户研究"),
     "内容运营": ("内容运营",),
-    "MySQL": ("mysql", "sql", "数据库", "sql 优化"),
+    "MySQL": ("mysql",),
     "Redis": ("redis", "缓存"),
     "Java": ("java",),
     "Spring Boot": ("spring boot", "springboot", "spring"),

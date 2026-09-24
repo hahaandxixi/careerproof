@@ -16,3 +16,10 @@ def test_resume_parser_ignores_negated_skill_claims() -> None:
     claims = {claim.skill for claim in parse_resume("暂无 Redis 经历，也没有使用过 MySQL。")}
     assert "Redis" not in claims
     assert "MySQL" not in claims
+
+
+def test_generic_sql_and_postgresql_do_not_become_mysql_claims() -> None:
+    claims = {claim.skill for claim in parse_resume("学习过 SQL 和 PostgreSQL 查询。")}
+    assert {"SQL", "PostgreSQL"} <= claims
+    assert "MySQL" not in claims
+    assert "MySQL" in {claim.skill for claim in parse_resume("学习过 MySQL 查询。")}
