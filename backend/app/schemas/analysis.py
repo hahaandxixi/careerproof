@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import Field
@@ -168,6 +169,18 @@ class MatchReportSummary(APIModel):
     created_at: datetime
 
 
+class EvidenceActionView(APIModel):
+    requirement_id: UUID
+    requirement_title: str
+    skill: str
+    weight: int
+    current_level: int | None = None
+    source: Literal["ai_suggestion", "rules", "review"]
+    evidence_gap: str
+    action: str
+    citation_ids: list[str] = Field(default_factory=list)
+
+
 class MatchReportView(MatchReportSummary):
     materials: list[ReportMaterial] = Field(default_factory=list)
     gaps: list[str]
@@ -175,3 +188,4 @@ class MatchReportView(MatchReportSummary):
     items: list[MatchItemView]
     ai_usage: dict | None = None
     ai_tool_calls: list[dict] = Field(default_factory=list)
+    action_plan: list[EvidenceActionView] = Field(default_factory=list)

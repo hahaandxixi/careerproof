@@ -44,6 +44,7 @@ from app.schemas.analysis import (
     MatchReportView,
     TaskAccepted,
 )
+from app.services.action_plan import build_action_plan
 from app.services.matching_materials import analyze_materials, resolve_materials
 from app.services.task_lifecycle import (
     claim_task,
@@ -311,14 +312,16 @@ class AnalysisService:
                 select(SkillEvidence).where(SkillEvidence.id.in_(evidence_ids))
             )
         }
+        item_views = [self._item_view(item, evidence_by_id.get(item.evidence_id)) for item in items]
         return MatchReportView(
             **self.summary(report).model_dump(),
             materials=report.materials_snapshot,
             gaps=report.gaps,
             claimed_only=report.claimed_only,
-            items=[self._item_view(item, evidence_by_id.get(item.evidence_id)) for item in items],
+            items=item_views,
             ai_usage=(report.analysis_metadata or {}).get("usage"),
             ai_tool_calls=(report.analysis_metadata or {}).get("modelToolCalls") or [],
+            action_plan=build_action_plan(item_views),
         )
 
     async def review_evidence(

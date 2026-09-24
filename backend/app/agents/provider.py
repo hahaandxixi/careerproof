@@ -21,7 +21,7 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v10-retrieval-signal"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v11-actionable-gap"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -118,6 +118,8 @@ def evidence_analysis_messages(
         "代码里的断言只证明断言存在，不能证明测试已经执行或通过。"
         "只能说材料中存在代码，不能说候选人编写、实现或完成了代码。"
         "建议仅提出补充材料和核验事项，不生成新代码、启动命令或库API用法。"
+        "每项suggestion应写明一种可提交的具体材料及要核对的事实；"
+        "不要只写笼统的补充项目材料，也不要承诺补充后一定升等级。"
         "先检查已给出的全部片段；已经可见的内容不得被列为缺失。"
         "claim_text是未经验证的简历自述；如与代码矛盾，应指出具体差异，不推断动机。"
         "context_complete=false表示片段不完整，不得说全项目没有某功能。"

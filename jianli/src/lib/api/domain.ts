@@ -46,6 +46,11 @@ export interface MatchReport extends ReportSummary {
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
   aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
+  actionPlan: {
+    requirementId: string; requirementTitle: string; skill: string; weight: number;
+    currentLevel: number | null; source: "ai_suggestion" | "rules" | "review";
+    evidenceGap: string; action: string; citationIds: string[];
+  }[];
 }
 export interface JobRecommendation {
   jobId: string; jobTitle: string; companyName: string; category: string; city: string; employmentType: string;

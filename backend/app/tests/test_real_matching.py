@@ -295,6 +295,8 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
                         requirement_id=contexts[0].requirement_id,
                         explanation="路由实现为岗位要求提供了可定位的支持。",
                         citation_ids=[contexts[0].evidence[0].citation_id],
+                        information_gap="运行结果仍需核验。",
+                        suggestion="提交接口运行记录并核对响应状态。",
                         confidence=0.84,
                     )
                 ],
@@ -340,6 +342,10 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert item["aiCitationIds"] == ["R1-E1"]
         assert item["evidenceList"][0]["citationId"] == "R1-E1"
         assert item["aiConfidence"] == 0.84
+        assert report["actionPlan"][0]["source"] == "ai_suggestion"
+        assert report["actionPlan"][0]["requirementId"] == item["requirementId"]
+        assert report["actionPlan"][0]["citationIds"] == ["R1-E1"]
+        assert "核对响应状态" in report["actionPlan"][0]["action"]
         cached = await student.post(
             "/api/v1/matches",
             json={
@@ -365,6 +371,14 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         ]
         model_step = next(step for step in task["steps"] if step["name"] == "模型证据分析")
         assert model_step["payload"]["modelToolCalls"][0]["citationId"] == "R1-E2"
+        review_url = (
+            f"/api/v1/match-reports/{report['id']}/items/{item['requirementId']}/review"
+        )
+        reviewed = await student.patch(review_url, json={"status": "rejected"})
+        assert reviewed.status_code == 200, reviewed.text
+        refreshed = (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"]
+        assert refreshed["actionPlan"][0]["source"] == "review"
+        assert refreshed["actionPlan"][0]["citationIds"] == []
         async with factory() as session:
             usage = list(await session.scalars(select(AiUsageLog)))
             steps = list(await session.scalars(select(AgentStep)))
