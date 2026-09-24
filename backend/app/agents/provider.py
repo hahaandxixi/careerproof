@@ -21,7 +21,7 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v11-actionable-gap"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v13-reference-language"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -117,6 +117,9 @@ def evidence_analysis_messages(
         "未执行上传代码，不能断言测试通过、服务运行成功或本人完成开发。"
         "代码里的断言只证明断言存在，不能证明测试已经执行或通过。"
         "只能说材料中存在代码，不能说候选人编写、实现或完成了代码。"
+        "provenance=reference表示第三方参考源码，可引用其中可见行为作为学习范例，"
+        "但不能用于证明候选人的实践、满足任何评级判据或提高材料分数。"
+        "对用户只说第三方参考材料，不输出provenance等内部字段名。"
         "建议仅提出补充材料和核验事项，不生成新代码、启动命令或库API用法。"
         "每项suggestion应写明一种可提交的具体材料及要核对的事实；"
         "不要只写笼统的补充项目材料，也不要承诺补充后一定升等级。"
@@ -131,6 +134,8 @@ def evidence_analysis_messages(
         "每项必须原样返回requirement_id。citation_ids只能从该项evidence的"
         "citation_id选择；没有证据时必须为空。supported和partial至少引用一条证据。"
         "partial、claimed_only、gap、unsupported必须填写information_gap和suggestion。"
+        "仅有第三方参考片段时可引用它解释学习方向，但rating.level必须为null，"
+        "三个criterion.supported必须全部为false。"
         "gap只表示当前材料未找到证据，不能写成候选人没有能力。unsupported只表示"
         "当前规则暂不支持评估，必须明确该边界；它仍是明确的岗位要求，不能写成"
         "无关，也不能建议删除或移除，只能建议人工核验或补充对应材料。"

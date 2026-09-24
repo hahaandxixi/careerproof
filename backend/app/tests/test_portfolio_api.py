@@ -253,7 +253,7 @@ async def test_failed_upload_retry_keeps_project_and_replays_version(student, mo
     content = project_zip()
     first = await student.post(
         path,
-        data={"requestId": key},
+        data={"requestId": key, "materialRole": "reference"},
         files={
             "file": ("source.zip", content, "application/zip"),
         },
@@ -262,7 +262,7 @@ async def test_failed_upload_retry_keeps_project_and_replays_version(student, mo
     # Simulate lost response: replay the exact request after it committed.
     second = await student.post(
         path,
-        data={"requestId": key},
+        data={"requestId": key, "materialRole": "reference"},
         files={
             "file": ("source.zip", content, "application/zip"),
         },
@@ -271,10 +271,18 @@ async def test_failed_upload_retry_keeps_project_and_replays_version(student, mo
     assert first.json()["data"]["versionId"] == second.json()["data"]["versionId"]
     assert first.json()["data"]["taskId"] == second.json()["data"]["taskId"]
     assert len(calls) == 1
-    assert len((await student.get(path)).json()["data"]) == 1
+    versions = (await student.get(path)).json()["data"]
+    assert len(versions) == 1
+    assert versions[0]["materialRole"] == "reference"
+    changed_role = await student.post(
+        path,
+        data={"requestId": key, "materialRole": "portfolio"},
+        files={"file": ("source.zip", content, "application/zip")},
+    )
+    assert changed_role.status_code == 409
     conflict = await student.post(
         path,
-        data={"requestId": key},
+        data={"requestId": key, "materialRole": "reference"},
         files={
             "file": ("source.zip", b"different", "application/zip"),
         },

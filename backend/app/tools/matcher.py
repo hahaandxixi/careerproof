@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from uuid import UUID
 
 from app.tools.code_analyzer import (
@@ -61,6 +61,7 @@ def match_candidate(
     files: list[ProjectFileSnapshot],
     *,
     semantic_candidates: dict[UUID, list[CodeEvidence]] | None = None,
+    reference_files: list[ProjectFileSnapshot] | None = None,
 ) -> MatchResult:
     claims_by_skill = {canonical_skill(claim.skill): claim for claim in claims}
     items: list[MatchItemResult] = []
@@ -94,7 +95,28 @@ def match_candidate(
             not in detected_keys | semantic_keys
         ]
         retrieved_count += len(retrieved_evidence)
-        evidence_list = [*detected_evidence, *semantic_evidence, *retrieved_evidence]
+        reference_evidence = [
+            replace(evidence, provenance="reference")
+            for evidence in find_evidence(reference_files or [], requirement.skill)
+        ]
+        reference_keys = {
+            (evidence.file_path, evidence.line_start, evidence.line_end)
+            for evidence in reference_evidence
+        }
+        reference_evidence.extend(
+            replace(evidence, provenance="reference")
+            for evidence in retrieve_requirement_candidates(
+                requirement.title, requirement.skill, reference_files or []
+            )
+            if (evidence.file_path, evidence.line_start, evidence.line_end)
+            not in reference_keys
+        )
+        evidence_list = [
+            *detected_evidence,
+            *semantic_evidence,
+            *retrieved_evidence,
+            *reference_evidence,
+        ]
         # Retrieved candidates enrich the AI context but never raise the
         # deterministic verdict or score by themselves.
         strongest = detected_evidence[0] if detected_evidence else None
@@ -115,11 +137,13 @@ def match_candidate(
         elif claim:
             verdict = "claimed_only"
             rule_score = 0.1
-            explanation = "简历中存在该技能声明，但项目文件中暂未找到可验证证据"
+            explanation = "简历中存在该技能声明，但个人作品中暂未找到可验证证据"
         else:
             verdict = "gap"
             rule_score = 0.0
-            explanation = "简历与项目中均未找到足够信息，当前无法确认该能力"
+            explanation = "简历与个人作品中均未找到足够信息，当前无法确认该能力"
+        if reference_evidence and not strongest:
+            explanation += "；另有第三方参考代码，不计入个人实践评级"
         if skill:
             total_weight += requirement.weight
             weighted_total += rule_score * requirement.weight

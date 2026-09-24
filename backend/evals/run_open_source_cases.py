@@ -16,8 +16,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
-from app.agents.evidence_workflow import run_evidence_workflow
-from app.agents.provider import get_ai_provider
+from app.agents import evidence_workflow
+from app.agents.provider import EVIDENCE_PROMPT_VERSION, get_ai_provider
 from app.core.config import settings
 from app.services.matching_materials import MatchMaterials, analyze_materials
 from app.tools.archive_scanner import ArchiveLimits
@@ -78,6 +78,7 @@ async def evaluate_case(case: dict, sources: dict[str, dict], *, ai: bool) -> di
                     "storageKey": row["storage_key"],
                     "hash": row["content_hash"],
                     "size": row["size_bytes"],
+                    "materialRole": "reference",
                 }
                 for row in records
             ],
@@ -115,7 +116,22 @@ async def evaluate_case(case: dict, sources: dict[str, dict], *, ai: bool) -> di
             "retrievalSteps": result.retrieval_steps,
         }
         if ai:
-            workflow = await run_evidence_workflow(result)
+            validation_errors: list[str] = []
+            original_validator = evidence_workflow.validate_grounded_analysis
+
+            def record_validation(contexts, analysis):
+                try:
+                    return original_validator(contexts, analysis)
+                except ValueError as exc:
+                    # The checked-in validator emits fixed, bounded diagnostics.
+                    validation_errors.append(str(exc)[:200])
+                    raise
+
+            evidence_workflow.validate_grounded_analysis = record_validation
+            try:
+                workflow = await evidence_workflow.run_evidence_workflow(result)
+            finally:
+                evidence_workflow.validate_grounded_analysis = original_validator
             output["ai"] = {
                 "provider": workflow.provider,
                 "model": workflow.model,
@@ -129,6 +145,7 @@ async def evaluate_case(case: dict, sources: dict[str, dict], *, ai: bool) -> di
                 "analysis": workflow.analysis.model_dump() if workflow.analysis else None,
                 "contexts": [context.model_dump() for context in workflow.contexts],
                 "toolCalls": list(workflow.tool_calls),
+                "validationErrors": validation_errors,
             }
         return output
 
@@ -174,6 +191,7 @@ async def main() -> int:
         "generatedAt": datetime.now(UTC).isoformat(),
         "scope": "backend upload parser, matching and optional AI workflow; not browser acceptance",
         "mode": "real-ai" if args.ai else "offline",
+        "promptVersion": EVIDENCE_PROMPT_VERSION,
         "humanSemanticReview": "pending",
         "cases": results,
     }

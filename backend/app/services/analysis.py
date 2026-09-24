@@ -97,6 +97,32 @@ def _analysis_cache_key(snapshot: dict) -> str:
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
+def _retrieval_step_detail(retrieval: dict) -> str:
+    if retrieval.get("status") == "excluded_from_personal_rating":
+        return (
+            f"识别{retrieval.get('referenceFileCount', 0)}个第三方参考文件；"
+            "可用于检索与学习建议，不计入个人实践评级"
+        )
+    if retrieval.get("engine") == SEMANTIC_VERSION:
+        return (
+            f"本地模型检索{retrieval.get('windowCount', 0)}段项目文档，"
+            f"返回{retrieval.get('candidateCount', 0)}条低强度线索；不改变规则分数"
+            if retrieval.get("status") == "active"
+            else "本地语义模型不可用，已保留词法检索与规则报告"
+        )
+    if retrieval.get("engine") == "hybrid-lexical-v1":
+        return (
+            f"规则检测后补充{retrieval.get('candidateCount', 0)}条低强度候选原文；"
+            "候选不改变规则分数，需经引用校验与模型判断"
+        )
+    if retrieval.get("sourceExact"):
+        return (
+            f"一次补取，{retrieval.get('expandedCount', 0)}条多行原文；"
+            f"{retrieval.get('limitedCount', 0)}条仍为局部上下文；未执行上传代码"
+        )
+    return "上下文核验失败，已保留规则报告"
+
+
 async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, str | None, dict]:
     # Serialize external calls for the same account so concurrent tasks cannot
     # both pass the same daily budget snapshot before either usage row is saved.
@@ -612,12 +638,14 @@ async def execute_match_task(task_id: UUID) -> None:
                         analysis_task_id=task_id,
                         skill_id=skill_ids[canonical_skill(item.skill) or item.skill],
                         evidence_source_id=source.id,
-                        confidence=item.rule_base_score,
+                        confidence=(
+                            item.rule_base_score if evidence.provenance == "portfolio" else 0
+                        ),
                         verification_status=VerificationStatus.INFERRED,
                     )
                     session.add(record)
                     await session.flush()
-                    if index == 0:
+                    if index == 0 and evidence.provenance == "portfolio":
                         strongest_id = record.id
                     evidence_list.append(
                         {
@@ -646,7 +674,7 @@ async def execute_match_task(task_id: UUID) -> None:
                             "skill": item.skill,
                             "claimed": item.claimed,
                             "claimText": item.claim_text,
-                            "evidence": evidence_list[0] if evidence_list else None,
+                            "evidence": evidence_list[0] if strongest_id else None,
                             "evidenceList": evidence_list,
                             "ai": {
                                 "status": (
@@ -674,7 +702,7 @@ async def execute_match_task(task_id: UUID) -> None:
             step_rows = [
                 (
                     "核对材料版本",
-                    f"读取{len(materials.snapshots)}份本人材料，报告固定到所选版本",
+                    f"读取{len(materials.snapshots)}份所选材料，报告固定到所选版本",
                     {"materialCount": len(materials.snapshots)},
                 ),
                 (
@@ -752,30 +780,11 @@ async def execute_match_task(task_id: UUID) -> None:
                 ),
             ]
             for retrieval in reversed(result.retrieval_steps):
-                if retrieval.get("engine") == SEMANTIC_VERSION:
-                    retrieval_detail = (
-                        f"本地模型检索{retrieval.get('windowCount', 0)}段项目文档，"
-                        f"返回{retrieval.get('candidateCount', 0)}条低强度线索；不改变规则分数"
-                        if retrieval.get("status") == "active"
-                        else "本地语义模型不可用，已保留词法检索与规则报告"
-                    )
-                elif retrieval.get("engine") == "hybrid-lexical-v1":
-                    retrieval_detail = (
-                        f"规则检测后补充{retrieval.get('candidateCount', 0)}条低强度候选原文；"
-                        "候选不改变规则分数，需经引用校验与模型判断"
-                    )
-                elif retrieval.get("sourceExact"):
-                    retrieval_detail = (
-                        f"一次补取，{retrieval.get('expandedCount', 0)}条多行原文；"
-                        f"{retrieval.get('limitedCount', 0)}条仍为局部上下文；未执行上传代码"
-                    )
-                else:
-                    retrieval_detail = "上下文核验失败，已保留规则报告"
                 step_rows.insert(
                     2,
                     (
                         retrieval["name"],
-                        retrieval_detail,
+                        _retrieval_step_detail(retrieval),
                         retrieval,
                     ),
                 )

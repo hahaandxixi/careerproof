@@ -22,6 +22,7 @@ class EvidenceCandidate(StrictModel):
     )
     context_complete: bool = False
     context_note: str = "局部证据；运行结果和本人贡献仍需核验"
+    provenance: Literal["portfolio", "reference"] = "portfolio"
 
 
 class RequirementEvidenceContext(StrictModel):
@@ -154,11 +155,16 @@ def validate_grounded_analysis(
             raise ValueError("AI analysis contains duplicate citations")
         if not set(item.citation_ids).issubset(allowed):
             raise ValueError("AI analysis contains an unknown or cross-requirement citation")
+        personal_citations = {
+            evidence.citation_id
+            for evidence in context.evidence
+            if evidence.provenance == "portfolio"
+        }
         if context.evidence and context.verdict in {"supported", "partial"}:
-            if not item.citation_ids:
+            if not personal_citations.intersection(item.citation_ids):
                 raise ValueError("AI analysis omitted citations for an evidenced requirement")
-        elif item.citation_ids:
-            raise ValueError("AI analysis cited evidence for a requirement without evidence")
+        elif personal_citations.intersection(item.citation_ids):
+            raise ValueError("AI analysis cited personal evidence for an unevidenced requirement")
         if context.verdict in {"partial", "claimed_only", "gap", "unsupported"} or any(
             not evidence.context_complete for evidence in context.evidence
         ):

@@ -82,6 +82,7 @@ def build_evidence_contexts(
                 snippet=source.snippet,
                 context_complete=source.context_complete,
                 context_note=source.context_note,
+                provenance=source.provenance,
             )
             for evidence_index, source in enumerate(item.evidence_list[:max_evidence], 1)
             if source.snippet.strip()
@@ -179,6 +180,7 @@ def execute_retrieval_tool(
             snippet=selected.snippet,
             context_complete=selected.context_complete,
             context_note=selected.context_note,
+            provenance=selected.provenance,
         ),
     ]
     updated = context.model_copy(

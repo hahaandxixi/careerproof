@@ -55,6 +55,7 @@ class ReportMaterial(APIModel):
     id: UUID
     title: str
     version_number: int
+    material_role: Literal["portfolio", "reference"] | None = None
     content_hash: str
 
 
@@ -95,6 +96,7 @@ class AnalysisTaskView(APIModel):
 
 class CodeEvidenceView(APIModel):
     citation_id: str | None = None
+    provenance: Literal["portfolio", "reference"] = "portfolio"
     context_complete: bool = False
     context_note: str = "历史引用未核验上下文完整性"
     skill: str

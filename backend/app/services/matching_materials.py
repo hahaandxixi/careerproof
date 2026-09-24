@@ -102,6 +102,7 @@ async def resolve_materials(
                 "title": project.name,
                 "versionNumber": project_version.version_number,
                 "contentHash": project_version.content_hash,
+                "materialRole": project_version.material_role,
             }
         )
         records = await session.scalars(
@@ -115,6 +116,7 @@ async def resolve_materials(
                     "id": str(record.id),
                     "versionId": str(version_id),
                     "versionNumber": project_version.version_number,
+                    "materialRole": project_version.material_role,
                     "path": f"{version_id}/{record.relative_path}",
                     "storageKey": record.storage_key,
                     "hash": record.content_hash,
@@ -137,6 +139,12 @@ def analyze_materials(
     """Runs trusted static analysis in the killable worker; never runs uploaded code."""
     storage = LocalStorage(base)
     snapshots = []
+    version_by_path: dict[str, str] = {}
+    declared_reference_versions = {
+        str(file.get("versionId", ""))
+        for file in materials.files
+        if file.get("materialRole") == "reference"
+    }
     for file in materials.files:
         content = storage.resolve(file["storageKey"]).read_bytes()
         if hashlib.sha256(content).hexdigest() != file["hash"]:
@@ -144,13 +152,32 @@ def analyze_materials(
         snapshots.append(
             ProjectFileSnapshot(file["path"], content.decode("utf-8", errors="replace"))
         )
+        version_by_path[file["path"]] = str(file.get("versionId", ""))
+    reference_versions = declared_reference_versions | {
+        version_by_path[file.path]
+        for file in snapshots
+        if Path(file.path).name == "SOURCE.txt"
+        and file.content.startswith("THIRD-PARTY PUBLIC SOURCE / SYNTHETIC TEST FIXTURE\n")
+    }
+    portfolio_snapshots = [
+        file for file in snapshots if version_by_path[file.path] not in reference_versions
+    ]
+    reference_snapshots = [
+        file for file in snapshots if version_by_path[file.path] in reference_versions
+    ]
     claims = parse_resume(mask_resume_text(materials.resume_text))
     semantic = None
     semantic_step = None
-    if enable_semantic and settings.semantic_retrieval_enabled and has_document_windows(snapshots):
+    if (
+        enable_semantic
+        and settings.semantic_retrieval_enabled
+        and has_document_windows(portfolio_snapshots)
+    ):
         try:
             model = load_local_model(settings.semantic_model_cache_dir)
-            semantic, window_count = retrieve_semantic_candidates(requirements, snapshots, model)
+            semantic, window_count = retrieve_semantic_candidates(
+                requirements, portfolio_snapshots, model
+            )
             semantic_step = {
                 "name": "本地语义文档检索",
                 "engine": SEMANTIC_VERSION,
@@ -170,7 +197,26 @@ def analyze_materials(
                 "changesRuleScore": False,
                 "semanticEmbedding": False,
             }
-    result = match_candidate(requirements, claims, snapshots, semantic_candidates=semantic)
+    result = match_candidate(
+        requirements,
+        claims,
+        portfolio_snapshots,
+        semantic_candidates=semantic,
+        reference_files=reference_snapshots,
+    )
+    if reference_snapshots:
+        result = replace(
+            result,
+            retrieval_steps=[
+                *result.retrieval_steps,
+                {
+                    "name": "识别第三方参考材料",
+                    "status": "excluded_from_personal_rating",
+                    "referenceFileCount": len(reference_snapshots),
+                    "changesRuleScore": True,
+                },
+            ],
+        )
     if semantic_step is not None:
         result = replace(result, retrieval_steps=[*result.retrieval_steps, semantic_step])
     try:

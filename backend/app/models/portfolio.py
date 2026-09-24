@@ -70,6 +70,7 @@ class ProjectVersion(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
     project_id: Mapped[UUID] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"))
     version_number: Mapped[int] = mapped_column(Integer)
+    material_role: Mapped[str] = mapped_column(String(20), default="portfolio")
     archive_storage_key: Mapped[str] = mapped_column(String(500))
     content_hash: Mapped[str] = mapped_column(String(64), index=True)
     analysis_status: Mapped[str] = mapped_column(String(30), default="pending")

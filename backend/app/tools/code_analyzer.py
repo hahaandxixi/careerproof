@@ -37,6 +37,7 @@ class CodeEvidence:
     content_hash: str
     context_complete: bool = False
     context_note: str = "仅定位行，尚未补取上下文"
+    provenance: str = "portfolio"
 
 
 def detector(
@@ -301,6 +302,13 @@ DETECTORS.update(
             ),
         ),
         "监控告警": (
+            detector(
+                "metric_exposition",
+                r"^\s*(?:def\s+(?:generate_latest|start_http_server|make_asgi_app)\s*\(|class\s+(?:Counter|Gauge|Histogram)\s*\()",
+                "low",
+                "存在指标定义或暴露实现；不证明告警配置、处置或部署运行",
+                r"\.py$",
+            ),
             detector(
                 "alert_rule",
                 r"^\s*-?\s*alert:\s*\S+",

@@ -25,6 +25,7 @@ interface UploadRecord {
   taskId: string | null;
   status: string;
   versionNumber: number;
+  materialRole?: "portfolio" | "reference" | null;
   createdAt: string;
   progress: number;
   currentStep: string;
@@ -65,6 +66,7 @@ function UploadProgress({ item }: { item: UploadRecord }) {
           </div>
           <p className="mt-1 text-xs text-slate-500">
             {item.filename} · 第 {item.versionNumber} 版 · {new Date(item.createdAt).toLocaleString("zh-CN")}
+            {item.kind === "project" && ` · ${item.materialRole === "reference" ? "第三方参考" : "个人作品"}`}
           </p>
         </div>
         <span
@@ -128,6 +130,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [projectRole, setProjectRole] = useState<"portfolio" | "reference">("portfolio");
   const [projectFile, setProjectFile] = useState<File | null>(null);
   const [resumeBusy, setResumeBusy] = useState(false);
   const [projectBusy, setProjectBusy] = useState(false);
@@ -274,13 +277,14 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     projectSubmitting.current = true;
     setProjectBusy(true);
     try {
-      const current = attemptRef.current ?? newProjectAttempt(projectName.trim(), projectDescription.trim());
+      const current = attemptRef.current ?? newProjectAttempt(projectName.trim(), projectDescription.trim(), null, projectRole);
       rememberAttempt(current);
       await submitProjectAttempt(api, current, projectFile, rememberAttempt);
       rememberAttempt(null);
       setNotice("项目文件已保存，可以在下方查看处理状态。");
       setProjectName("");
       setProjectDescription("");
+      setProjectRole("portfolio");
       setProjectFile(null);
       const input = document.getElementById("project-file") as HTMLInputElement | null;
       if (input) input.value = "";
@@ -297,7 +301,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
   function selectProject(project: ProjectView | null) {
     if (projectSubmitting.current) return;
-    rememberAttempt(project ? newProjectAttempt(project.name, project.description, project) : null);
+    rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, projectRole) : null);
     setProjectName(project?.name ?? "");
     setProjectDescription(project?.description ?? "");
     setProjectFile(null);
@@ -411,6 +415,11 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 className="mt-1 block w-full rounded-lg border border-dashed border-slate-300 px-3 py-4 text-sm text-slate-500 file:mr-3 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:border-emerald-300"
               />
             </label>
+            <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
+              <legend className="px-1 font-medium text-slate-700">材料归属</legend>
+              <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(attempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("portfolio")} /><span>个人作品：可用于实践证据初评，本人贡献仍需核验</span></label>
+              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(attempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("reference")} /><span>第三方参考：可用于检索与学习建议，不计入个人实践评级</span></label>
+            </fieldset>
           </div>
           {projectError && <p className="mt-3 text-sm text-rose-600">{projectError}</p>}
           <button

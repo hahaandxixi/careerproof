@@ -81,3 +81,21 @@ test("explicit new version retains project but gets a new upload key", () => {
   assert.equal(first.project.id, second.project.id);
   assert.notEqual(first.uploadRequestId, second.uploadRequestId);
 });
+
+test("reference role survives upload retry and refresh", async () => {
+  const attempt = newProjectAttempt("开源参考", "学习用", project, "reference");
+  const stored = new Map();
+  const storage = {
+    getItem: key => stored.get(key) ?? null,
+    setItem: (key, value) => stored.set(key, value),
+    removeItem: key => stored.delete(key),
+  };
+  writeAttempt(storage, "alice", attempt);
+  const restored = readAttempt(storage, "alice");
+  let sentRole;
+  await submitProjectAttempt({
+    async createProject() { assert.fail("existing project should be reused"); },
+    async uploadProjectVersion(_id, _file, _key, role) { sentRole = role; return response; },
+  }, restored, file, () => {});
+  assert.equal(sentRole, "reference");
+});

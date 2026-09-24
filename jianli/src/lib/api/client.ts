@@ -48,6 +48,7 @@ export interface ProjectView {
 export interface MaterialVersion {
   id: string;
   versionNumber: number;
+  materialRole?: "portfolio" | "reference" | null;
   originalFilename: string | null;
   sizeBytes: number | null;
   createdAt: string;
@@ -282,10 +283,11 @@ export const api = {
     });
   },
 
-  uploadProjectVersion(projectId: string, file: File, requestId?: string) {
+  uploadProjectVersion(projectId: string, file: File, requestId?: string, materialRole: "portfolio" | "reference" = "portfolio") {
     const form = new FormData();
     form.append("file", file);
     if (requestId) form.append("requestId", requestId);
+    form.append("materialRole", materialRole);
     return request<ProjectVersionUploadData>(`/projects/${projectId}/versions`, {
       method: "POST",
       body: form,

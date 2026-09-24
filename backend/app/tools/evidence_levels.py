@@ -82,10 +82,20 @@ def _rule_classification(snapshot: dict, verdict: str, review_status: str | None
             "证据已被驳回或标记修正，暂停展示自动等级。",
             "需核对修正内容或重新分析材料；不自动沿用原等级。",
         )
-    evidence = snapshot.get("evidenceList") or (
+    all_evidence = snapshot.get("evidenceList") or (
         [snapshot["evidence"]] if snapshot.get("evidence") else []
     )
+    evidence = [
+        item for item in all_evidence if item.get("provenance", "portfolio") != "reference"
+    ]
     if not evidence:
+        if all_evidence:
+            return result(
+                None,
+                "仅有第三方参考",
+                "第三方源码可作学习参考，不能证明本人实践或提高个人评级。",
+                "提交本人实现、可复现验证结果和贡献记录。",
+            )
         if snapshot.get("claimed"):
             return result(
                 None,

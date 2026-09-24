@@ -12,7 +12,7 @@
 
 在仓库根目录运行 `backend/.venv/Scripts/python.exe demo/open-source/build_cases.py` 可核验已下载的固定提交并重新生成这些 ZIP。若换一台机器，先将表中的三个仓库分别克隆到 `backend/.tmp/open-source-cases/sources/flask`、`client_python`、`peewee`，检出表中的确切提交，再运行生成器；脚本会拒绝提交不匹配的源码。已有输出不一致时脚本会报错，不会默默覆盖测试基线。
 
-演示上传步骤：使用 `demo/open-source/resumes/` 中的一份 TXT 上传简历；新建项目，将同名项目 ZIP 上传为项目版本；从岗位列表选择本表对应的合成演示岗位并发起 AI 分析。先查看材料预览，再在报告中核对引用、本人贡献限制、补证建议和人工复核。四个案例的预期边界写在生成的 `manifest.json` 中。
+演示上传步骤：使用 `demo/open-source/resumes/` 中的一份 TXT 上传简历；新建项目，材料归属选择**第三方参考**，将对应项目 ZIP 上传为项目版本；从岗位列表选择本表对应的合成演示岗位并发起 AI 分析。先查看材料预览，再在报告中核对引用、本人贡献限制和补证建议。第三方参考片段不进入个人实践评级，也不能通过人工采纳提升评级。四个案例的预期边界写在生成的 `manifest.json` 中。
 
 ZIP 与简历的对应关系：
 

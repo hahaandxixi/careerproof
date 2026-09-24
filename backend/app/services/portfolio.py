@@ -68,6 +68,7 @@ class PortfolioService:
         return MaterialVersionView(
             id=version.id,
             version_number=version.version_number,
+            material_role=version.material_role if isinstance(version, ProjectVersion) else None,
             original_filename=version.original_filename,
             size_bytes=version.size_bytes,
             created_at=version.created_at,
@@ -278,7 +279,10 @@ class PortfolioService:
         content: bytes,
         current_user: User,
         request_id: UUID | None = None,
+        material_role: str = "portfolio",
     ) -> tuple[ProjectVersionUploadData, bool]:
+        if material_role not in {"portfolio", "reference"}:
+            raise AppError("材料归属只能选择个人作品或第三方参考", code=4220, status_code=422)
         student = await self._student(current_user)
         # PostgreSQL serializes version allocation per project, including different request keys.
         project = await self.portfolios.owned_project(project_id, student.id, lock=True)
@@ -309,8 +313,12 @@ class PortfolioService:
         if request_id:
             existing = await self.portfolios.version_by_request(project_id, request_id)
             if existing:
-                if existing.content_hash != content_hash:
-                    raise AppError("同一上传请求编号不能用于不同文件", code=4092, status_code=409)
+                if existing.content_hash != content_hash or existing.material_role != material_role:
+                    raise AppError(
+                        "同一上传请求编号不能用于不同文件或材料归属",
+                        code=4092,
+                        status_code=409,
+                    )
                 task = await self.session.get(AnalysisTask, existing.analysis_task_id)
                 if not task:
                     raise AppError(
@@ -326,6 +334,7 @@ class PortfolioService:
         version = ProjectVersion(
             project_id=project.id,
             version_number=version_number,
+            material_role=material_role,
             archive_storage_key="",
             content_hash=content_hash,
             analysis_status="pending",

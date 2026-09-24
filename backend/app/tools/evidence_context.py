@@ -100,7 +100,7 @@ def enrich_evidence(result: MatchResult, files: list[ProjectFileSnapshot]) -> Ma
             replace(
                 item,
                 evidence_list=evidence_list,
-                evidence=evidence_list[0] if evidence_list else None,
+                evidence=evidence_list[0] if evidence_list and item.evidence else None,
             )
         )
     return replace(

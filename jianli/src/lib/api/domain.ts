@@ -24,6 +24,7 @@ export interface ReportSummary {
 }
 export interface ReportEvidence {
   citationId: string | null;
+  provenance?: "portfolio" | "reference";
   contextComplete: boolean; contextNote: string;
   skill: string; evidenceType: string; filePath: string; lineStart: number; lineEnd: number;
   snippet: string; strength: string; explanation: string; contentHash: string;
@@ -42,7 +43,7 @@ export interface ReportEvidence {
   aiSuggestion: string | null; aiStatus: string; aiOrigin?: string | null;
 }
 export interface MatchReport extends ReportSummary {
-  materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string }[];
+  materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
   aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];

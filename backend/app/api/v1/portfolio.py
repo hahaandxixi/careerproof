@@ -1,3 +1,4 @@
+from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Query, UploadFile
@@ -155,6 +156,9 @@ async def upload_project_version(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(),
     request_id: UUID | None = Form(default=None, alias="requestId"),
+    material_role: Literal["portfolio", "reference"] = Form(
+        default="portfolio", alias="materialRole"
+    ),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[ProjectVersionUploadData]:
@@ -165,6 +169,7 @@ async def upload_project_version(
         content=content,
         current_user=current_user,
         request_id=request_id,
+        material_role=material_role,
     )
     if created:
         FastAPIBackgroundTaskRunner().submit(

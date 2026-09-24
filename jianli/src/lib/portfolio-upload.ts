@@ -7,15 +7,17 @@ export interface ProjectAttempt {
   uploadRequestId: string;
   name: string;
   description: string;
+  materialRole: "portfolio" | "reference";
   project: ProjectView | null;
 }
 
 export function newProjectAttempt(
-  name: string, description: string, project: ProjectView | null = null
+  name: string, description: string, project: ProjectView | null = null,
+  materialRole: "portfolio" | "reference" = "portfolio"
 ): ProjectAttempt {
   return {
     createRequestId: crypto.randomUUID(), uploadRequestId: crypto.randomUUID(),
-    name, description, project,
+    name, description, materialRole, project,
   };
 }
 
@@ -23,7 +25,7 @@ interface ProjectApi {
   createProject(payload: {
     name: string; description: string; requestId: string;
   }): Promise<ProjectView>;
-  uploadProjectVersion(id: string, file: File, requestId: string): Promise<ProjectVersionUploadData>;
+  uploadProjectVersion(id: string, file: File, requestId: string, materialRole: "portfolio" | "reference"): Promise<ProjectVersionUploadData>;
 }
 
 export async function submitProjectAttempt(
@@ -41,7 +43,7 @@ export async function submitProjectAttempt(
     // Persist immediately, before starting the upload that might fail.
     remember(current);
   }
-  return client.uploadProjectVersion(current.project!.id, file, current.uploadRequestId);
+  return client.uploadProjectVersion(current.project!.id, file, current.uploadRequestId, current.materialRole);
 }
 
 export function readAttempt(storage: Storage, userId: string): ProjectAttempt | null {
@@ -52,6 +54,9 @@ export function readAttempt(storage: Storage, userId: string): ProjectAttempt | 
       || (value.project !== null && (typeof value.project?.id !== "string"
         || typeof value.project?.name !== "string" || typeof value.project?.description !== "string"))) {
       return null;
+    }
+    if (value.materialRole !== "portfolio" && value.materialRole !== "reference") {
+      value.materialRole = "portfolio";
     }
     return value as ProjectAttempt;
   } catch {

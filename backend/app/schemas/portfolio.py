@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import Field
@@ -47,6 +48,7 @@ class ProjectVersionUploadData(APIModel):
 class MaterialVersionView(APIModel):
     id: UUID
     version_number: int
+    material_role: Literal["portfolio", "reference"] | None = None
     original_filename: str | None
     size_bytes: int | None
     created_at: datetime
