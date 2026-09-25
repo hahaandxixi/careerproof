@@ -202,6 +202,22 @@ def validate_grounded_analysis(
             decisions = {d.criterion: d for d in rating.criteria}
             if set(decisions) != {"relevance", "operation", "task"}:
                 raise ValueError("AI rating criteria must be complete and unique")
+            if (
+                context.skill == "FastAPI"
+                and "测试" in context.requirement_title
+                and decisions["task"].supported
+            ):
+                task_sources = [
+                    evidence.snippet
+                    for evidence in context.evidence
+                    if evidence.citation_id in decisions["task"].citation_ids
+                    and evidence.provenance == "portfolio"
+                ]
+                if not any(
+                    re.search(r"(?m)^\s*assert\b|\bpytest\.raises\b|\bself\.assert\w*\b", source)
+                    for source in task_sources
+                ):
+                    raise ValueError("AI FastAPI task rating lacks cited test assertions")
             for decision in rating.criteria:
                 if len(decision.citation_ids) != len(set(decision.citation_ids)):
                     raise ValueError("AI rating contains duplicate citations")

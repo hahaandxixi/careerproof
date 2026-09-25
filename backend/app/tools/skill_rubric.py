@@ -1,6 +1,6 @@
 """Original evidence rubric; skill-map inspired hierarchy, not copied map content."""
 
-VERSION = "skill-rubric-v2"
+VERSION = "skill-rubric-v3"
 CRITERIA = {
     "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
     "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
@@ -10,7 +10,10 @@ CRITERIA = {
 SKILL_CRITERIA = {
     "FastAPI": {
         "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
-        "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。",
+        "task": (
+            "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。"
+            "岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+        ),
     },
     "pytest": {
         "operation": "测试函数包含针对行为结果的断言；依赖、测试名或空测试不满足。",

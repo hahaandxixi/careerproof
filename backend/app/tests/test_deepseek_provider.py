@@ -223,6 +223,16 @@ async def test_deepseek_summary_exposes_sanitized_usage():
 
 async def test_deepseek_retrieval_planner_uses_official_tool_protocol():
     contexts = build_evidence_contexts(evidenced_result(), max_evidence=2)
+    original = contexts[0].evidence[0]
+    contexts[0] = contexts[0].model_copy(
+        update={
+            "evidence": [
+                original.model_copy(
+                    update={"snippet": original.snippet + "\nemail test@example.com"}
+                )
+            ]
+        }
+    )
 
     async def handler(request):
         body = json.loads(request.content)
@@ -230,6 +240,12 @@ async def test_deepseek_retrieval_planner_uses_official_tool_protocol():
         assert body["tool_choice"] == "auto"
         assert body["tools"][0]["function"]["name"] == "retrieve_more_evidence"
         assert "当前上传索引仍有未展示候选" in body["messages"][0]["content"]
+        source = json.loads(body["messages"][1]["content"])
+        assert source["requirements"][0]["evidence"][0]["citation_id"] == "R1-E1"
+        assert "[已脱敏邮箱]" in source["requirements"][0]["evidence"][0]["snippet"]
+        assert "test@example.com" not in body["messages"][1]["content"]
+        assert "13800138000" not in body["messages"][1]["content"]
+        assert source["previous_retrieval"]["new_evidence_snippet"] == "[已脱敏手机号]"
         return httpx.Response(
             200,
             json={
@@ -240,7 +256,10 @@ async def test_deepseek_retrieval_planner_uses_official_tool_protocol():
         )
 
     instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
-    assert await instance.plan_evidence_retrieval(contexts=contexts) is None
+    assert await instance.plan_evidence_retrieval(
+        contexts=contexts,
+        previous_retrieval={"new_evidence_snippet": "13800138000"},
+    ) is None
     assert instance.planning_usage.input_tokens == 20
 
 

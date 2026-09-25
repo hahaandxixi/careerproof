@@ -1,9 +1,16 @@
+import json
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
-from app.agents.contracts import EvidenceAnalysis, overclaim_flags, validate_grounded_analysis
+from app.agents.contracts import (
+    EvidenceAnalysis,
+    RequirementEvidenceContext,
+    overclaim_flags,
+    validate_grounded_analysis,
+)
 from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
 from app.agents.provider import evidence_analysis_messages
 from app.core.config import settings
@@ -189,6 +196,7 @@ def test_skill_rubric_defines_specific_task_boundary():
     backup = rubric_for("备份恢复")
     postgres = rubric_for("PostgreSQL")
     assert "明确返回" in fastapi["criteria"]["task"]
+    assert "测试请求与结果断言" in fastapi["criteria"]["task"]
     assert "一致性核验" in backup["criteria"]["task"]
     assert "参数化" in postgres["criteria"]["operation"]
     assert "执行" in postgres["criteria"]["operation"]
@@ -197,6 +205,19 @@ def test_skill_rubric_defines_specific_task_boundary():
     assert "逐项覆盖" in postgres["criteria"]["task"]
     assert "不推断数据库已连接" in postgres["criteria"]["task"]
     assert fastapi["path"] == ["后端开发", "FastAPI"]
+
+
+def test_real_report_cannot_rate_composite_fastapi_task_without_test_assertions():
+    source = (
+        Path(__file__).resolve().parents[2]
+        / "evals/deepseek-two-rounds-20260925-150929.json"
+    )
+    saved = json.loads(source.read_text(encoding="utf-8"))
+    contexts = [RequirementEvidenceContext.model_validate(item) for item in saved["contexts"]]
+    analysis = EvidenceAnalysis.model_validate(saved["analysis"])
+
+    with pytest.raises(ValueError, match="lacks cited test assertions"):
+        validate_grounded_analysis(contexts, analysis)
 
 
 def test_prompt_keeps_operation_separate_from_task_completeness():

@@ -367,11 +367,10 @@ async def test_retrieval_replans_once_from_previous_result_and_counts_usage(monk
     assert [event["round"] for event in outcome.tool_calls] == [1, 2]
     assert [event["citationId"] for event in outcome.tool_calls] == ["R1-E3", "R2-E3"]
     assert rounds[0][1] is None
-    assert rounds[1][1] == {
-        "requirement_id": str(first.requirement_id),
-        "result_count": 1,
-        "citation_id": "R1-E3",
-    }
+    assert rounds[1][1]["requirement_id"] == str(first.requirement_id)
+    assert rounds[1][1]["result_count"] == 1
+    assert rounds[1][1]["citation_id"] == "R1-E3"
+    assert rounds[1][1]["new_evidence_snippet"] == "def service():\n    return {'ok': True}"
     assert len(rounds[1][0]) == 1
     assert outcome.analysis.usage.input_tokens == 160
     assert outcome.analysis.usage.output_tokens == 70

@@ -398,6 +398,13 @@ async def run_evidence_workflow(
                             "requirement_id": tool_call.requirement_id,
                             "result_count": tool_event["resultCount"],
                             "citation_id": tool_event.get("citationId"),
+                            "new_evidence_snippet": next(
+                                evidence.snippet[:240]
+                                for context in model_contexts
+                                if context.requirement_id == tool_call.requirement_id
+                                for evidence in context.evidence
+                                if evidence.citation_id == tool_event.get("citationId")
+                            ) if tool_event["resultCount"] else None,
                         }
                         if tool_event["resultCount"] == 0:
                             break

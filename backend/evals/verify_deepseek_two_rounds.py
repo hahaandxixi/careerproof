@@ -14,6 +14,7 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 from app.agents.evidence_workflow import run_evidence_workflow
+from app.agents.provider import EVIDENCE_PROMPT_VERSION
 from app.core.config import settings
 from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.evidence_context import enrich_evidence
@@ -106,6 +107,7 @@ async def main() -> int:
         "candidateCounts": counts,
         "provider": outcome.provider,
         "model": outcome.model,
+        "promptVersion": EVIDENCE_PROMPT_VERSION,
         "fallbackUsed": outcome.fallback_used,
         "fallbackReason": outcome.fallback_reason,
         "failureStage": outcome.failure_stage,

@@ -1,0 +1,261 @@
+{
+  "generatedAt": "2026-09-25T07:12:28.106654+00:00",
+  "scope": "Repository-owned synthetic code through backend workflow and real DeepSeek; no browser or database",
+  "candidateCounts": {
+    "FastAPI": 5,
+    "Python": 5
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "promptVersion": "evidence-trust-v14-content-aware-planning",
+  "fallbackUsed": false,
+  "fallbackReason": null,
+  "failureStage": null,
+  "requestCount": 3,
+  "progress": [
+    "等待可用的模型调用名额",
+    "模型正在判断第 1 轮是否需要补充检索",
+    "正在按模型第 1 轮请求补充证据",
+    "模型正在判断第 2 轮是否需要补充检索",
+    "模型判断现有证据足够，停止补检索",
+    "正在调用模型分析证据与评级判据"
+  ],
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "e0b6ef47-616b-5c74-96a9-7945559f9e48",
+      "query": "FastAPI 路由处理函数与测试用例（TestClient / pytest）实现",
+      "resultCount": 1,
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    },
+    {
+      "tool": "retrieve_more_evidence",
+      "round": 2,
+      "status": "not_requested",
+      "reason": "planner_declined",
+      "scope": "current-upload-index"
+    }
+  ],
+  "contexts": [
+    {
+      "requirement_id": "e0b6ef47-616b-5c74-96a9-7945559f9e48",
+      "requirement_title": "提供 FastAPI 路由、处理和测试相关实践材料",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "合成材料：接触过 FastAPI 与 Python，实际贡献和运行结果待核验。",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "evidence_type": "fastapi_route",
+          "strength": "high",
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "provenance": "portfolio"
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "app.py",
+          "line_start": 2,
+          "line_end": 10,
+          "evidence_type": "fastapi_app",
+          "strength": "medium",
+          "snippet": "from pydantic import BaseModel\n\napp = FastAPI(title=\"Course Task API\")\n\n\nclass Course(BaseModel):\n    id: int\n    title: str\n",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "provenance": "portfolio"
+        },
+        {
+          "citation_id": "R1-E3",
+          "file_path": "test_app.py",
+          "line_start": 1,
+          "line_end": 7,
+          "evidence_type": "retrieved_context",
+          "strength": "low",
+          "snippet": "from fastapi.testclient import TestClient\n\nfrom app import app\n\n\nclient = TestClient(app)\n",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "provenance": "portfolio"
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+          "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 3
+    },
+    {
+      "requirement_id": "7b4e6d62-91e8-5d1d-bf2b-02e79b1e2e4c",
+      "requirement_title": "提供 Python 服务函数和数据处理实践材料",
+      "skill": "Python",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "合成材料：接触过 FastAPI 与 Python，实际贡献和运行结果待核验。",
+      "evidence": [
+        {
+          "citation_id": "R2-E1",
+          "file_path": "app.py",
+          "line_start": 12,
+          "line_end": 14,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "provenance": "portfolio"
+        },
+        {
+          "citation_id": "R2-E2",
+          "file_path": "database.py",
+          "line_start": 4,
+          "line_end": 10,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "def find_course(connection: psycopg.Connection, course_id: int):\n    with connection.cursor() as cursor:\n        cursor.execute(\n            \"SELECT id, title FROM courses WHERE id = %s\",\n            (course_id,),\n        )\n        return cursor.fetchone()",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "provenance": "portfolio"
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "Python"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+          "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 3
+    }
+  ],
+  "usage": {
+    "input_tokens": 5286,
+    "output_tokens": 841,
+    "cache_hit_tokens": 4096,
+    "latency_ms": 5423
+  },
+  "attemptedUsage": null,
+  "citedSourcesExact": true,
+  "analysis": {
+    "summary": "材料含 FastAPI 路由与模型片段、TestClient 初始化片段，以及使用传入连接执行参数化查询的 Python 函数。路由返回固定字典，查询函数返回 fetchone 结果。均未展示运行结果、测试断言与本人贡献，测试是否通过无法核验。",
+    "items": [
+      {
+        "requirement_id": "e0b6ef47-616b-5c74-96a9-7945559f9e48",
+        "explanation": "存在 FastAPI 应用与 /health 路由，函数体返回固定字典；另有 TestClient 初始化片段，但未见测试请求与结果断言。",
+        "citation_ids": [
+          "R1-E1",
+          "R1-E2",
+          "R1-E3"
+        ],
+        "information_gap": "未展示测试请求与断言、运行结果，以及候选人对这些文件的具体贡献。",
+        "suggestion": "可提交 test_app.py 完整测试函数原文及运行输出，核对是否包含请求调用与结果断言。",
+        "confidence": 0.6,
+        "rating": {
+          "level": 2,
+          "reason": "路由与模型片段构成相关线索，health 函数有非空返回属实质操作；测试仅初始化客户端，无请求与断言，完整任务不成立。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "存在 FastAPI 应用定义与路由装饰器，与要求直接相关。"
+            },
+            {
+              "criterion": "operation",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1"
+              ],
+              "reason": "health 函数体返回非空字典，属实质操作。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [
+                "R1-E3"
+              ],
+              "reason": "仅见 TestClient 初始化，缺少测试请求与结果断言。"
+            }
+          ]
+        }
+      },
+      {
+        "requirement_id": "7b4e6d62-91e8-5d1d-bf2b-02e79b1e2e4c",
+        "explanation": "存在 health 函数返回固定字典，以及使用传入连接执行参数化查询并返回 fetchone 结果的函数。连接建立与实际执行结果未展示。",
+        "citation_ids": [
+          "R2-E1",
+          "R2-E2"
+        ],
+        "information_gap": "未展示查询函数的调用方、返回数据处理、运行结果及本人贡献。",
+        "suggestion": "可提交调用 find_course 的代码或运行输出，核对传入连接来源与返回结果处理。",
+        "confidence": 0.6,
+        "rating": {
+          "level": 2,
+          "reason": "两个函数均展示非空实现，构成实质操作；但未见输入输出完整链路与运行结果，完整任务不成立。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R2-E1",
+                "R2-E2"
+              ],
+              "reason": "存在 Python 函数定义与查询逻辑，与要求直接相关。"
+            },
+            {
+              "criterion": "operation",
+              "supported": true,
+              "citation_ids": [
+                "R2-E1",
+                "R2-E2"
+              ],
+              "reason": "health 返回字典，find_course 执行参数化查询并返回结果，属实质操作。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [
+                "R2-E2"
+              ],
+              "reason": "仅见函数体，缺少调用方与运行结果，完整任务链路未展示。"
+            }
+          ]
+        }
+      }
+    ],
+    "model": "deepseek-flash",
+    "usage": {
+      "input_tokens": 5286,
+      "output_tokens": 841,
+      "cache_hit_tokens": 4096,
+      "latency_ms": 5423
+    }
+  },
+  "humanSemanticReview": "pending",
+  "billingVerified": false
+}
