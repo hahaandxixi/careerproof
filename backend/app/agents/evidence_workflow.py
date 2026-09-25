@@ -120,6 +120,20 @@ def citation_for_source(context: RequirementEvidenceContext | None, source) -> s
     )
 
 
+def novel_source_lines(candidate, evidence: list[EvidenceCandidate]) -> int:
+    """Count nonblank candidate lines absent from already shown source ranges."""
+    covered = {
+        line
+        for entry in evidence
+        if entry.file_path == candidate.file_path
+        for line in range(entry.line_start, entry.line_end + 1)
+    }
+    return sum(
+        bool(text.strip()) and line not in covered
+        for line, text in enumerate(candidate.snippet.splitlines(), candidate.line_start)
+    )
+
+
 def execute_retrieval_tool(
     result: MatchResult,
     contexts: list[RequirementEvidenceContext],
@@ -151,14 +165,22 @@ def execute_retrieval_tool(
     if item is None:
         raise ValueError("retrieval tool requirement is absent from the match result")
     existing = {source_key(entry) for entry in context.evidence}
-    candidates = [entry for entry in item.evidence_list if source_key(entry) not in existing]
+    candidates = [
+        entry
+        for entry in item.evidence_list
+        if source_key(entry) not in existing and novel_source_lines(entry, context.evidence)
+    ]
     tokens = set(re.findall(r"[A-Za-z0-9_]+|[\u4e00-\u9fff]{2,}", call.query.lower()))
 
-    def relevance(candidate) -> tuple[int, int]:
+    def relevance(candidate) -> tuple[int, int, int]:
         text = " ".join(
             (candidate.file_path, candidate.evidence_type, candidate.snippet, candidate.explanation)
         ).lower()
-        return sum(token in text for token in tokens), len(candidate.snippet)
+        return (
+            sum(token in text for token in tokens),
+            novel_source_lines(candidate, context.evidence),
+            len(candidate.snippet),
+        )
 
     selected = max(candidates, key=relevance) if candidates else None
     event = {
@@ -213,7 +235,10 @@ def has_retrieval_candidate(
         if context is None or len(context.evidence) >= 3:
             continue
         existing = {source_key(entry) for entry in context.evidence}
-        if any(source_key(entry) not in existing for entry in item.evidence_list):
+        if any(
+            source_key(entry) not in existing and novel_source_lines(entry, context.evidence)
+            for entry in item.evidence_list
+        ):
             return True
     return False
 

@@ -26,6 +26,7 @@ from app.core.config import settings
 from app.tools.code_analyzer import ProjectFileSnapshot
 from app.tools.matcher import RequirementInput, match_candidate
 from app.tools.resume_parser import parse_resume
+from evals.verify_deepseek_two_rounds import synthetic_case
 
 
 def evidenced_result():
@@ -217,6 +218,22 @@ def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None
             updated,
             RetrievalToolCall(requirement_id=contexts[0].requirement_id, query="更多实现"),
         )
+
+
+def test_retrieval_prefers_new_source_lines_over_overlapping_context() -> None:
+    result, _sources = synthetic_case()
+    contexts = build_evidence_contexts(result, max_evidence=2)
+    updated, event = execute_retrieval_tool(
+        result,
+        contexts,
+        RetrievalToolCall(
+            requirement_id=contexts[0].requirement_id,
+            query="FastAPI 路由定义、请求处理函数与测试用例实现",
+        ),
+    )
+
+    assert event["citationId"] == "R1-E3"
+    assert updated[0].evidence[-1].file_path == "test_app.py"
 
 
 def test_grounding_rejects_unknown_citation() -> None:

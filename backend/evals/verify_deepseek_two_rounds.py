@@ -112,6 +112,7 @@ async def main() -> int:
         "requestCount": outcome.request_count,
         "progress": progress,
         "toolCalls": list(outcome.tool_calls),
+        "contexts": [context.model_dump() for context in outcome.contexts],
         "usage": outcome.analysis.usage.model_dump() if outcome.analysis else None,
         "attemptedUsage": outcome.attempted_usage.model_dump()
         if outcome.attempted_usage
