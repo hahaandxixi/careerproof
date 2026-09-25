@@ -376,6 +376,26 @@ async def test_retrieval_replans_once_from_previous_result_and_counts_usage(monk
     assert outcome.analysis.usage.input_tokens == 160
     assert outcome.analysis.usage.output_tokens == 70
 
+    async def decline(*, contexts, previous_retrieval=None, **_limits):
+        assert previous_retrieval is None and len(contexts) == 2
+        instance.request_usages.append(ModelUsage(input_tokens=20, output_tokens=3))
+        return None
+
+    instance.request_usages.clear()
+    monkeypatch.setattr(instance, "plan_evidence_retrieval", decline)
+    stopped = await run_evidence_workflow(result)
+    assert not stopped.fallback_used and stopped.analysis is not None
+    assert stopped.request_count == 2
+    assert stopped.tool_calls == (
+        {
+            "tool": "retrieve_more_evidence",
+            "round": 1,
+            "status": "not_requested",
+            "reason": "planner_declined",
+            "scope": "current-upload-index",
+        },
+    )
+
 
 async def test_retrieval_planner_emits_one_validated_function_call():
     contexts = build_evidence_contexts(evidenced_result(), max_evidence=2)

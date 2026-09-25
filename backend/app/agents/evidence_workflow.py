@@ -347,6 +347,16 @@ async def run_evidence_workflow(
                             await _notify(progress, "补检索请求未通过边界校验，继续使用现有证据")
                             break
                         if tool_call is None:
+                            tool_calls.append(
+                                {
+                                    "tool": "retrieve_more_evidence",
+                                    "round": round_number,
+                                    "status": "not_requested",
+                                    "reason": "planner_declined",
+                                    "scope": "current-upload-index",
+                                }
+                            )
+                            await _notify(progress, "模型判断现有证据足够，停止补检索")
                             break
                         stage = "tool_execution"
                         await _notify(progress, f"正在按模型第 {round_number} 轮请求补充证据")

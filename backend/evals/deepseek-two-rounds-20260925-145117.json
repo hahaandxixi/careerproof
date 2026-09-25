@@ -1,0 +1,144 @@
+{
+  "generatedAt": "2026-09-25T06:51:22.111721+00:00",
+  "scope": "Repository-owned synthetic code through backend workflow and real DeepSeek; no browser or database",
+  "candidateCounts": {
+    "FastAPI": 5,
+    "Python": 5
+  },
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "fallbackUsed": false,
+  "fallbackReason": null,
+  "failureStage": null,
+  "requestCount": 3,
+  "progress": [
+    "等待可用的模型调用名额",
+    "模型正在判断第 1 轮是否需要补充检索",
+    "正在按模型第 1 轮请求补充证据",
+    "模型正在判断第 2 轮是否需要补充检索",
+    "模型判断现有证据足够，停止补检索",
+    "正在调用模型分析证据与评级判据"
+  ],
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "e0b6ef47-616b-5c74-96a9-7945559f9e48",
+      "query": "FastAPI 路由定义、请求处理函数与测试用例实现",
+      "resultCount": 1,
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    },
+    {
+      "tool": "retrieve_more_evidence",
+      "round": 2,
+      "status": "not_requested",
+      "reason": "planner_declined",
+      "scope": "current-upload-index"
+    }
+  ],
+  "usage": {
+    "input_tokens": 4741,
+    "output_tokens": 851,
+    "cache_hit_tokens": 4096,
+    "latency_ms": 4926
+  },
+  "attemptedUsage": null,
+  "citedSourcesExact": true,
+  "analysis": {
+    "summary": "材料含 FastAPI 路由与 Python 函数片段：/health 返回固定字典，find_course 使用传入连接执行参数化查询并返回单行。未展示运行结果、测试执行或本人贡献，声明与实现无直接矛盾。",
+    "items": [
+      {
+        "requirement_id": "e0b6ef47-616b-5c74-96a9-7945559f9e48",
+        "explanation": "片段展示 FastAPI 应用创建、Pydantic 模型与 /health 路由函数，函数体返回固定字典，属相关且非空实现；未展示请求输入处理或异常分支。",
+        "citation_ids": [
+          "R1-E1",
+          "R1-E2",
+          "R1-E3"
+        ],
+        "information_gap": "未展示路由的请求输入、异常分支、测试执行结果及本人贡献范围。",
+        "suggestion": "可提交该路由的请求参数定义、异常处理代码及测试运行记录，核对实际响应与贡献归属。",
+        "confidence": 0.7,
+        "rating": {
+          "level": 2,
+          "reason": "存在相关 FastAPI 路由与模型片段，路由函数有非空返回；未展示输入处理与异常分支，完整任务实现证据不足。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "片段含 FastAPI 应用、Pydantic 模型与路由装饰器，与要求直接相关。"
+            },
+            {
+              "criterion": "operation",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1"
+              ],
+              "reason": "health 函数体返回非空字典，属实质操作，非仅装饰器或 pass。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [],
+              "reason": "未展示请求输入、实质处理与异常分支的完整任务实现。"
+            }
+          ]
+        }
+      },
+      {
+        "requirement_id": "7b4e6d62-91e8-5d1d-bf2b-02e79b1e2e4c",
+        "explanation": "片段含 Python 函数：health 返回固定字典；find_course 使用传入连接执行参数化查询并返回单行。均属非空实现，但未展示运行结果或本人贡献。",
+        "citation_ids": [
+          "R2-E1",
+          "R2-E2"
+        ],
+        "information_gap": "未展示函数实际运行结果、数据库连接建立过程及本人贡献范围。",
+        "suggestion": "可提交函数调用与返回样例、连接创建代码及测试记录，核对查询实际输出与贡献归属。",
+        "confidence": 0.7,
+        "rating": {
+          "level": 2,
+          "reason": "存在两个非空 Python 函数片段，含参数化查询；未展示输入输出完整链路与运行结果。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R2-E1",
+                "R2-E2"
+              ],
+              "reason": "片段为 Python 服务函数与数据处理代码，与要求直接相关。"
+            },
+            {
+              "criterion": "operation",
+              "supported": true,
+              "citation_ids": [
+                "R2-E1",
+                "R2-E2"
+              ],
+              "reason": "health 返回字典，find_course 执行参数化查询并取单行，属非空实现。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [],
+              "reason": "未展示完整输入、处理与输出链路及运行结果，任务实现证据不足。"
+            }
+          ]
+        }
+      }
+    ],
+    "model": "deepseek-flash",
+    "usage": {
+      "input_tokens": 4741,
+      "output_tokens": 851,
+      "cache_hit_tokens": 4096,
+      "latency_ms": 4926
+    }
+  },
+  "humanSemanticReview": "pending",
+  "billingVerified": false
+}
