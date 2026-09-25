@@ -1,11 +1,20 @@
 import json
 from dataclasses import replace
+from uuid import uuid4
 
 import httpx
 import pytest
 from pydantic import SecretStr
 
-from app.agents.contracts import validate_grounded_analysis
+from app.agents.contracts import (
+    AIRating,
+    AIRequirementAnalysis,
+    CriterionDecision,
+    EvidenceAnalysis,
+    ModelUsage,
+    RetrievalToolCall,
+    validate_grounded_analysis,
+)
 from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
 from app.agents.provider import ZhipuProvider, get_ai_provider
 from app.core.config import settings
@@ -269,6 +278,105 @@ async def test_invalid_output_is_repaired_once(monkeypatch):
     assert any("定向修正" in message for message in progress)
 
 
+async def test_retrieval_replans_once_from_previous_result_and_counts_usage(monkeypatch):
+    base = evidenced_result()
+    first = base.items[0]
+
+    def with_candidates(item, suffix):
+        original = item.evidence_list[0]
+        return replace(
+            item,
+            evidence_list=[
+                original,
+                replace(
+                    original,
+                    file_path=f"routes_{suffix}.py",
+                    line_start=8,
+                    line_end=10,
+                    snippet="def routes():\n    return []",
+                    content_hash=("3" if suffix == "one" else "5") * 64,
+                ),
+                replace(
+                    original,
+                    file_path=f"service_{suffix}.py",
+                    line_start=2,
+                    line_end=4,
+                    snippet="def service():\n    return {'ok': True}",
+                    content_hash=("4" if suffix == "one" else "6") * 64,
+                ),
+            ],
+        )
+
+    second = replace(first, requirement_id=uuid4(), requirement_title="另一项接口要求")
+    result = replace(base, items=[with_candidates(first, "one"), with_candidates(second, "two")])
+    instance = provider(transport=httpx.MockTransport(lambda _: pytest.fail("No network")))
+    rounds = []
+
+    async def plan(*, contexts, previous_retrieval=None, **_limits):
+        rounds.append((contexts, previous_retrieval))
+        instance.request_usages.append(ModelUsage(input_tokens=30, output_tokens=10))
+        return RetrievalToolCall(
+            requirement_id=contexts[0].requirement_id,
+            query=f"routes_{'one' if len(rounds) == 1 else 'two'} 实现",
+        )
+
+    async def analyze(*, contexts, **_limits):
+        return EvidenceAnalysis(
+            summary="材料包含两项接口线索，运行与本人贡献仍需核验。",
+            model="glm-4.7-flash",
+            usage=ModelUsage(input_tokens=100, output_tokens=50),
+            items=[
+                AIRequirementAnalysis(
+                    requirement_id=context.requirement_id,
+                    explanation="材料展示接口相关片段。",
+                    citation_ids=[context.evidence[0].citation_id],
+                    information_gap="运行结果和本人贡献待核验。",
+                    suggestion="补充运行记录。",
+                    confidence=0.5,
+                    rating=AIRating(
+                        level=1,
+                        reason="存在相关线索。",
+                        criteria=[
+                            CriterionDecision(
+                                criterion=criterion,
+                                supported=criterion == "relevance",
+                                citation_ids=[context.evidence[0].citation_id]
+                                if criterion == "relevance"
+                                else [],
+                                reason="可见相关片段" if criterion == "relevance" else "证据不足",
+                            )
+                            for criterion in ("relevance", "operation", "task")
+                        ],
+                    ),
+                )
+                for context in contexts
+            ],
+        )
+
+    monkeypatch.setattr(instance, "plan_evidence_retrieval", plan)
+    monkeypatch.setattr(instance, "analyze_evidence", analyze)
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "zhipu")
+    monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
+
+    outcome = await run_evidence_workflow(result)
+
+    assert not outcome.fallback_used and outcome.analysis is not None
+    assert outcome.request_count == 3
+    assert [event["round"] for event in outcome.tool_calls] == [1, 2]
+    assert [event["citationId"] for event in outcome.tool_calls] == ["R1-E3", "R2-E3"]
+    assert rounds[0][1] is None
+    assert rounds[1][1] == {
+        "requirement_id": str(first.requirement_id),
+        "result_count": 1,
+        "citation_id": "R1-E3",
+    }
+    assert len(rounds[1][0]) == 1
+    assert outcome.analysis.usage.input_tokens == 160
+    assert outcome.analysis.usage.output_tokens == 70
+
+
 async def test_retrieval_planner_emits_one_validated_function_call():
     contexts = build_evidence_contexts(evidenced_result(), max_evidence=2)
 
@@ -427,6 +535,7 @@ async def test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis(m
     assert outcome.tool_calls == (
         {
             "tool": "retrieve_more_evidence",
+            "round": 1,
             "status": "rejected",
             "reason": "invalid_tool_call",
             "scope": "current-upload-index",

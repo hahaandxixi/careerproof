@@ -194,7 +194,10 @@ class AIProvider(Protocol):
     ) -> EvidenceAnalysis: ...
 
     async def plan_evidence_retrieval(
-        self, *, contexts: list[RequirementEvidenceContext]
+        self, *, contexts: list[RequirementEvidenceContext],
+        previous_retrieval: dict | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> RetrievalToolCall | None: ...
 
 
@@ -240,9 +243,12 @@ class MockAIProvider:
         )
 
     async def plan_evidence_retrieval(
-        self, *, contexts: list[RequirementEvidenceContext]
+        self, *, contexts: list[RequirementEvidenceContext],
+        previous_retrieval: dict | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> RetrievalToolCall | None:
-        del contexts
+        del contexts, previous_retrieval, input_token_limit, output_token_limit
         return None
 
 
@@ -496,10 +502,14 @@ class OpenAICompatibleProvider:
         return EvidenceAnalysis.model_validate(parsed)
 
     async def plan_evidence_retrieval(
-        self, *, contexts: list[RequirementEvidenceContext]
+        self, *, contexts: list[RequirementEvidenceContext],
+        previous_retrieval: dict | None = None,
+        input_token_limit: int | None = None,
+        output_token_limit: int | None = None,
     ) -> RetrievalToolCall | None:
         source = json.dumps(
             {
+                "previous_retrieval": previous_retrieval,
                 "requirements": [
                     {
                         "requirement_id": context.requirement_id,
@@ -517,9 +527,11 @@ class OpenAICompatibleProvider:
             ensure_ascii=False,
         )
         request = {
+            "_local_input_token_limit": input_token_limit
+            or settings.ai_per_report_input_token_limit,
             "model": self.model,
             "temperature": 0,
-            "max_tokens": 200,
+            "max_tokens": min(200, output_token_limit or 200),
             "messages": [
                 {
                     "role": "system",
@@ -528,6 +540,7 @@ class OpenAICompatibleProvider:
                         "上下文不完整，且补充检索可能帮助判断时，调用一次retrieve_more_evidence。"
                         "本规划步骤只会在当前上传索引仍有未展示候选时出现，因此至少一项要求"
                         "可以补取新证据；优先选择证据不足或上下文不完整的要求。"
+                        "若提供previous_retrieval，先参考上轮结果，再决定是否继续。"
                         "一次只能选择一个requirement_id，query应描述要寻找的实现行为。"
                         "不要请求运行代码、访问网络、读取凭据或检索个人身份信息。"
                         "若无需补检索，直接回答无需补检索。"

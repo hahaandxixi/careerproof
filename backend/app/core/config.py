@@ -61,6 +61,7 @@ class Settings(BaseSettings):
     ai_model_concurrency: int = Field(default=1, ge=1, le=4)
     ai_workflow_timeout_seconds: float = Field(default=180, gt=0, le=240)
     ai_max_requirements: int = Field(default=8, ge=1, le=50)
+    ai_max_retrieval_calls: int = Field(default=2, ge=0, le=2)
     ai_per_report_input_token_limit: int = Field(default=12_000, ge=1000, le=100_000)
     ai_per_report_output_token_limit: int = Field(default=4000, ge=200, le=10_000)
     ai_daily_report_limit: int = Field(default=20, ge=1, le=1000)

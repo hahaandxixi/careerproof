@@ -54,7 +54,7 @@ export interface MatchReport extends ReportSummary {
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
-  aiToolCalls: { tool: string; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
+  aiToolCalls: { tool: string; round?: number; requirementId?: string; query?: string; resultCount?: number; scope?: string; citationId?: string; status?: string; reason?: string }[];
   actionPlan: {
     requirementId: string; requirementTitle: string; skill: string; weight: number;
     currentLevel: number | null; source: "ai_suggestion" | "rules" | "review";

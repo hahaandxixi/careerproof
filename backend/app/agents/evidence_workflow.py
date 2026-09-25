@@ -137,6 +137,8 @@ def execute_retrieval_tool(
     if context_index is None:
         raise ValueError("retrieval tool targeted an unknown requirement")
     context = contexts[context_index]
+    if len(context.evidence) >= 3:
+        raise ValueError("retrieval tool cannot exceed three citations per requirement")
     result_index = next(
         (
             index
@@ -208,12 +210,18 @@ def has_retrieval_candidate(
     by_requirement = {context.requirement_id: context for context in contexts}
     for item in result.items:
         context = by_requirement.get(str(item.requirement_id))
-        if context is None:
+        if context is None or len(context.evidence) >= 3:
             continue
         existing = {source_key(entry) for entry in context.evidence}
         if any(source_key(entry) not in existing for entry in item.evidence_list):
             return True
     return False
+
+
+def eligible_retrieval_contexts(
+    result: MatchResult, contexts: list[RequirementEvidenceContext]
+) -> list[RequirementEvidenceContext]:
+    return [context for context in contexts if has_retrieval_candidate(result, [context])]
 
 
 def _fallback_reason(exc: Exception) -> str:
@@ -302,43 +310,69 @@ async def run_evidence_workflow(
             stage = "request"
             await _notify(progress, "等待可用的模型调用名额")
             async with _model_semaphore():
-                if isinstance(provider, OpenAICompatibleProvider) and has_retrieval_candidate(
-                    result, model_contexts
-                ):
-                    stage = "tool_planning"
-                    await _notify(progress, "模型正在判断是否需要补充检索")
-                    try:
-                        request_count += 1
-                        tool_call = await provider.plan_evidence_retrieval(contexts=model_contexts)
-                    except (ValidationError, ValueError, KeyError, TypeError):
-                        tool_call = None
-                        tool_calls.append(
-                            {
-                                "tool": "retrieve_more_evidence",
-                                "status": "rejected",
-                                "reason": "invalid_tool_call",
-                                "scope": "current-upload-index",
-                            }
+                if isinstance(provider, OpenAICompatibleProvider):
+                    previous_retrieval: dict | None = None
+                    for round_number in range(1, settings.ai_max_retrieval_calls + 1):
+                        eligible = eligible_retrieval_contexts(result, model_contexts)
+                        used = provider.combined_usage()
+                        remaining_input = settings.ai_per_report_input_token_limit - (
+                            used.input_tokens if used else 0
                         )
-                        await _notify(progress, "补检索请求未通过边界校验，继续使用现有证据")
-                    planning_usage = provider.planning_usage
-                    if tool_call:
+                        remaining_output = settings.ai_per_report_output_token_limit - (
+                            used.output_tokens if used else 0
+                        )
+                        # Keep room for the final report even if the planner wants another lookup.
+                        if not eligible or remaining_input <= 1500 or remaining_output <= 400:
+                            break
+                        stage = "tool_planning"
+                        await _notify(progress, f"模型正在判断第 {round_number} 轮是否需要补充检索")
+                        try:
+                            request_count += 1
+                            tool_call = await provider.plan_evidence_retrieval(
+                                contexts=eligible,
+                                previous_retrieval=previous_retrieval,
+                                input_token_limit=remaining_input - 1000,
+                                output_token_limit=remaining_output - 200,
+                            )
+                        except (ValidationError, ValueError, KeyError, TypeError):
+                            tool_calls.append(
+                                {
+                                    "tool": "retrieve_more_evidence",
+                                    "round": round_number,
+                                    "status": "rejected",
+                                    "reason": "invalid_tool_call",
+                                    "scope": "current-upload-index",
+                                }
+                            )
+                            await _notify(progress, "补检索请求未通过边界校验，继续使用现有证据")
+                            break
+                        if tool_call is None:
+                            break
                         stage = "tool_execution"
-                        await _notify(progress, "正在按模型请求从当前材料补充一条证据")
+                        await _notify(progress, f"正在按模型第 {round_number} 轮请求补充证据")
                         model_contexts, tool_event = execute_retrieval_tool(
                             result, model_contexts, tool_call
                         )
+                        tool_event["round"] = round_number
+                        tool_calls.append(tool_event)
                         updated = {context.requirement_id: context for context in model_contexts}
                         contexts = [
                             updated.get(context.requirement_id, context) for context in contexts
                         ]
-                        tool_calls.append(tool_event)
+                        previous_retrieval = {
+                            "requirement_id": tool_call.requirement_id,
+                            "result_count": tool_event["resultCount"],
+                            "citation_id": tool_event.get("citationId"),
+                        }
+                        if tool_event["resultCount"] == 0:
+                            break
                 stage = "request"
                 await _notify(progress, "正在调用模型分析证据与评级判据")
                 if isinstance(provider, OpenAICompatibleProvider):
                     provider.progress_callback = progress
                 request_count += 1
                 if isinstance(provider, OpenAICompatibleProvider):
+                    planning_usage = provider.combined_usage()
                     remaining_input = settings.ai_per_report_input_token_limit - (
                         planning_usage.input_tokens if planning_usage else 0
                     )

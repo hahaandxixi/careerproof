@@ -17,6 +17,7 @@ from app.agents.contracts import (
 )
 from app.agents.evidence_workflow import (
     build_evidence_contexts,
+    eligible_retrieval_contexts,
     execute_retrieval_tool,
     run_evidence_workflow,
 )
@@ -209,6 +210,13 @@ def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None
     assert updated[0].evidence[-1].file_path == "routes.py"
     assert event["scope"] == "current-upload-index"
     assert event["resultCount"] == 1
+    assert eligible_retrieval_contexts(result, updated) == []
+    with pytest.raises(ValueError, match="cannot exceed three citations"):
+        execute_retrieval_tool(
+            result,
+            updated,
+            RetrievalToolCall(requirement_id=contexts[0].requirement_id, query="更多实现"),
+        )
 
 
 def test_grounding_rejects_unknown_citation() -> None:
