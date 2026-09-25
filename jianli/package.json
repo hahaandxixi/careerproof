@@ -2,13 +2,14 @@
   "name": "jianli",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:portfolio": "node --test tests/portfolio-upload.test.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test:portfolio": "node --experimental-strip-types --test tests/portfolio-upload.test.mjs",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
