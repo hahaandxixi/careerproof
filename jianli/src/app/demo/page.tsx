@@ -13,11 +13,7 @@ export default function DemoPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="text-xl font-bold">1. 登录演示账号</h2>
         <p className="mt-2 text-sm text-slate-500">账号须由本地初始化脚本创建；仅供合成材料测试，不存放个人资料，不用于公开部署。</p>
-        <dl className="mt-4 space-y-2 break-all text-sm">
-          <div><dt className="font-semibold">学生邮箱</dt><dd>demo.student@example.com</dd></div>
-          <div><dt className="font-semibold">企业邮箱</dt><dd>demo.enterprise@example.com</dd></div>
-          <div><dt className="font-semibold">演示密码（两者相同）</dt><dd>CareerProof-Demo-2026!</dd></div>
-        </dl>
+        <p className="mt-4 text-sm leading-7 text-slate-700">运行 <code>Start-Demo.ps1</code> 后，在本机打开 <code>backend/.tmp/demo-credentials.json</code> 查看学生与企业邮箱及密码。凭据不会写入代码仓库，也不会显示在网页上。若使用自定义的 <code>DEMO_*</code> 环境变量，请使用你配置的账号。</p>
         <Link href="/login" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white">前往登录</Link>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6">

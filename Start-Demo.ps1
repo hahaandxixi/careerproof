@@ -16,6 +16,36 @@ $envPath = Join-Path $backendRoot '.env'
 $statePath = Join-Path $backendRoot '.tmp\local-run\processes.json'
 $demoUrl = 'http://127.0.0.1:3000/demo'
 $healthUrl = 'http://127.0.0.1:8000/api/v1/health'
+$credentialsPath = Join-Path $backendRoot '.tmp\demo-credentials.json'
+
+function New-RandomHex([int]$ByteCount) {
+    $bytes = New-Object byte[] $ByteCount
+    $generator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    try { $generator.GetBytes($bytes) } finally { $generator.Dispose() }
+    return [BitConverter]::ToString($bytes).Replace('-', '').ToLowerInvariant()
+}
+
+function Ensure-DemoCredentials {
+    $configured = @($env:DEMO_STUDENT_EMAIL, $env:DEMO_ENTERPRISE_EMAIL, $env:DEMO_PASSWORD)
+    $provided = @($configured | Where-Object { ![string]::IsNullOrWhiteSpace($_) }).Count
+    if ($provided -gt 0 -and $provided -lt 3) {
+        throw 'Set DEMO_STUDENT_EMAIL, DEMO_ENTERPRISE_EMAIL and DEMO_PASSWORD together.'
+    }
+    if ($provided -eq 3 -or (Test-Path -LiteralPath $credentialsPath)) { return }
+
+    $directory = Split-Path -Parent $credentialsPath
+    New-Item -ItemType Directory -Path $directory -Force | Out-Null
+    $suffix = New-RandomHex 6
+    $credentials = @{
+        studentEmail = "demo-student-$suffix@example.com"
+        enterpriseEmail = "demo-enterprise-$suffix@example.com"
+        password = "Cp!1$(New-RandomHex 20)"
+    } | ConvertTo-Json -Compress
+    [System.IO.File]::WriteAllText(
+        $credentialsPath, $credentials, (New-Object System.Text.UTF8Encoding($false))
+    )
+    Write-Output "Local demo credentials created at $credentialsPath (not committed)."
+}
 
 function Test-HttpReady([string]$Url) {
     try {
@@ -44,6 +74,9 @@ if (!(Test-Path -LiteralPath $startScript)) {
 $externalEnabled = Get-DotEnvValue $envPath 'AI_EXTERNAL_ENABLED'
 $provider = Get-DotEnvValue $envPath 'AI_PROVIDER'
 $apiKey = Get-DotEnvValue $envPath 'DEEPSEEK_API_KEY'
+if ((Get-DotEnvValue $envPath 'APP_ENV') -ne 'development') {
+    throw 'Demo accounts may only be seeded with APP_ENV=development in backend/.env.'
+}
 if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey)) {
     throw 'CareerProof requires AI_EXTERNAL_ENABLED=true, AI_PROVIDER=deepseek and a local DEEPSEEK_API_KEY in backend/.env. Rules are runtime fallback only.'
 }
@@ -85,6 +118,7 @@ if (!(Test-HttpReady $demoUrl) -or !(Test-HttpReady $healthUrl)) {
 
 if (!$SkipSeed) {
     if (!(Test-Path -LiteralPath $pythonPath)) { throw 'Backend virtual environment is missing.' }
+    Ensure-DemoCredentials
     Push-Location $backendRoot
     try {
         & $pythonPath -m evals.seed_demo
@@ -95,7 +129,7 @@ if (!$SkipSeed) {
 }
 
 Write-Output "CareerProof AI demo is ready: $demoUrl"
-Write-Output 'Demo accounts and synthetic jobs are ready. No API key was printed or changed.'
+Write-Output "Demo accounts and synthetic jobs are ready. Read credentials from $credentialsPath or the configured DEMO_* environment variables. No API key was printed or changed."
 Write-Output 'Local rules run automatically only when AI cannot produce an accepted result.'
 Write-Output 'Stop with .\Stop-Local.ps1 -Database when the demonstration is finished.'
 

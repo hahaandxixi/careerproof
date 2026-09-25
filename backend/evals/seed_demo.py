@@ -5,8 +5,9 @@ from pathlib import Path
 
 import httpx
 
+from evals.demo_credentials import get_demo_credentials
+
 BASE = "http://127.0.0.1:8000/api/v1"
-PASSWORD = "CareerProof-Demo-2026!"
 TITLE = "Python 后端开发实习生（合成演示）"
 
 
@@ -18,7 +19,7 @@ def data(response):
 def seed():
     for role, name in (("student", "演示学生"), ("enterprise", "演示企业")):
         with httpx.Client(base_url=BASE, timeout=30, trust_env=False) as client:
-            credentials = {"email": f"demo.{role}@example.com", "password": PASSWORD}
+            credentials = get_demo_credentials(role)
             registered = client.post(
                 "/auth/register", json={**credentials, "displayName": name, "role": role}
             )

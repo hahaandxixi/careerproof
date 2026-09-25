@@ -15,7 +15,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import httpx
 
-from evals.seed_demo import PASSWORD
+from evals.demo_credentials import get_demo_credentials
 
 BASE = "http://127.0.0.1:8000/api/v1"
 JOB_TITLE = "Python 受控补检索（合成验收）"
@@ -50,7 +50,7 @@ def ensure_job(client: httpx.Client) -> dict:
     data(
         client.post(
             "/auth/login",
-            json={"email": "demo.enterprise@example.com", "password": PASSWORD},
+            json=get_demo_credentials("enterprise"),
         )
     )
     organization = next(
@@ -107,7 +107,7 @@ def main() -> None:
         data(
             client.post(
                 "/auth/login",
-                json={"email": "demo.student@example.com", "password": PASSWORD},
+                json=get_demo_credentials("student"),
             )
         )
         resume_path = root / "demo" / "student-resume.txt"

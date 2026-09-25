@@ -7,7 +7,7 @@ from pathlib import Path
 
 import httpx
 
-from evals.seed_demo import PASSWORD
+from evals.demo_credentials import get_demo_credentials
 
 BASE = "http://127.0.0.1:8000/api/v1"
 
@@ -45,7 +45,7 @@ def main():
         data(
             client.post(
                 "/auth/login",
-                json={"email": "demo.student@example.com", "password": PASSWORD},
+                json=get_demo_credentials("student"),
             )
         )
         jobs = data(client.get("/jobs", params={"q": "Python 后端", "pageSize": 100}))[

@@ -7,7 +7,7 @@ from pathlib import Path
 import httpx
 
 from app.core.config import settings
-from evals.seed_demo import PASSWORD
+from evals.demo_credentials import get_demo_credentials
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
             raise TimeoutError("Task not finished within 60 checks")
 
         data(
-            c.post("/auth/login", json={"email": "demo.student@example.com", "password": PASSWORD})
+            c.post("/auth/login", json=get_demo_credentials("student"))
         )
         jobs = data(c.get("/jobs", params={"q": "合成演示", "pageSize": 100}))["items"]
         for slug, title in [("devops", "自动化运维工程师"), ("dba", "数据库工程师 DBA")]:
