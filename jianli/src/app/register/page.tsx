@@ -94,7 +94,7 @@ export default function RegisterPage() {
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-              placeholder={role === "student" ? "如：江博" : "如：校园招聘负责人"}
+              placeholder={role === "student" ? "如：小李" : "如：校园招聘负责人"}
             />
           </label>
 
