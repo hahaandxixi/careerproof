@@ -1,0 +1,406 @@
+{
+  "scope": "Repository-owned synthetic source through local API and real DeepSeek",
+  "generatedAt": "2026-09-25T07:17:36.803821+00:00",
+  "taskId": "11e82c7e-1da6-4ab8-b71e-9fee4cd1d285",
+  "reportId": "59c4a16d-6fab-459c-8391-e95f49b6bb32",
+  "states": [
+    {
+      "status": "running",
+      "progress": 10,
+      "currentStep": "读取已上传的材料版本"
+    },
+    {
+      "status": "running",
+      "progress": 25,
+      "currentStep": "正在读取材料并检索候选证据"
+    },
+    {
+      "status": "running",
+      "progress": 62,
+      "currentStep": "等待可用的模型调用名额"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "模型正在判断第 1 轮是否需要补充检索"
+    },
+    {
+      "status": "running",
+      "progress": 66,
+      "currentStep": "正在调用模型分析证据与评级判据"
+    },
+    {
+      "status": "completed",
+      "progress": 100,
+      "currentStep": "材料支持度报告已生成"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "eventType": "tool.completed",
+      "name": "核对材料版本",
+      "detail": "读取2份所选材料，报告固定到所选版本",
+      "payload": {
+        "materialCount": 2
+      }
+    },
+    {
+      "step": 2,
+      "eventType": "tool.completed",
+      "name": "检索候选证据",
+      "detail": "静态检查4个文件，找到6条候选证据",
+      "payload": {
+        "fileCount": 4,
+        "evidenceCount": 6,
+        "contextRetrieval": [
+          {
+            "name": "补取并核对证据上下文",
+            "rounds": 1,
+            "expandedCount": 6,
+            "limitedCount": 4,
+            "sourceExact": true,
+            "maxLines": 40,
+            "maxCharacters": 4000
+          },
+          {
+            "name": "混合检索补充候选上下文",
+            "engine": "hybrid-lexical-v1",
+            "candidateCount": 1,
+            "changesRuleScore": false,
+            "semanticEmbedding": false
+          },
+          {
+            "name": "本地语义文档检索",
+            "engine": "multilingual-minilm-docs-v1",
+            "status": "active",
+            "windowCount": 3,
+            "candidateCount": 2,
+            "changesRuleScore": false,
+            "semanticEmbedding": true
+          }
+        ]
+      }
+    },
+    {
+      "step": 3,
+      "eventType": "tool.completed",
+      "name": "补取并核对证据上下文",
+      "detail": "一次补取，6条多行原文；4条仍为局部上下文；未执行上传代码",
+      "payload": {
+        "name": "补取并核对证据上下文",
+        "rounds": 1,
+        "expandedCount": 6,
+        "limitedCount": 4,
+        "sourceExact": true,
+        "maxLines": 40,
+        "maxCharacters": 4000
+      }
+    },
+    {
+      "step": 4,
+      "eventType": "tool.completed",
+      "name": "混合检索补充候选上下文",
+      "detail": "规则检测后补充1条低强度候选原文；候选不改变规则分数，需经引用校验与模型判断",
+      "payload": {
+        "name": "混合检索补充候选上下文",
+        "engine": "hybrid-lexical-v1",
+        "candidateCount": 1,
+        "changesRuleScore": false,
+        "semanticEmbedding": false
+      }
+    },
+    {
+      "step": 5,
+      "eventType": "tool.completed",
+      "name": "本地语义文档检索",
+      "detail": "本地模型检索3段项目文档，返回2条低强度线索；不改变规则分数",
+      "payload": {
+        "name": "本地语义文档检索",
+        "engine": "multilingual-minilm-docs-v1",
+        "status": "active",
+        "windowCount": 3,
+        "candidateCount": 2,
+        "changesRuleScore": false,
+        "semanticEmbedding": true
+      }
+    },
+    {
+      "step": 6,
+      "eventType": "tool.completed",
+      "name": "计算材料支持度",
+      "detail": "使用evidence-v3规则；未支持的能力不参与评分",
+      "payload": {
+        "engine": "rules",
+        "formulaVersion": "evidence-v3"
+      }
+    },
+    {
+      "step": 7,
+      "eventType": "tool.completed",
+      "name": "模型证据分析",
+      "detail": "deepseek-flash完成1项解释",
+      "payload": {
+        "provider": "deepseek",
+        "promptVersion": "evidence-trust-v14-content-aware-planning",
+        "model": "deepseek-flash",
+        "fallbackUsed": false,
+        "fallbackReason": null,
+        "skippedReason": null,
+        "repairUsed": false,
+        "requestCount": 2,
+        "jsonRepairCount": 1,
+        "modelRequirementCount": 1,
+        "providerFinishReason": "stop",
+        "modelToolCalls": [
+          {
+            "tool": "retrieve_more_evidence",
+            "requirementId": "c85c2ab9-0921-4b8b-89c6-448ec4543634",
+            "query": "业务函数包含输入校验、调用服务并处理响应返回结果",
+            "resultCount": 1,
+            "scope": "current-upload-index",
+            "citationId": "R1-E3",
+            "round": 1
+          }
+        ],
+        "inputTokens": 3626,
+        "outputTokens": 483,
+        "latencyMs": 3341
+      }
+    },
+    {
+      "step": 8,
+      "eventType": "tool.completed",
+      "name": "校验模型引用",
+      "detail": "要求编号与引用编号全部通过白名单校验",
+      "payload": {
+        "validation": "passed",
+        "acceptedCitationCount": 3
+      }
+    },
+    {
+      "step": 9,
+      "eventType": "tool.completed",
+      "name": "保存可追溯报告",
+      "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+      "payload": {
+        "mode": "ai_evidence"
+      }
+    }
+  ],
+  "analysisMode": "ai_evidence",
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "fallbackUsed": false,
+  "usage": {
+    "input_tokens": 3626,
+    "output_tokens": 483,
+    "cache_hit_tokens": 1920,
+    "latency_ms": 3341
+  },
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "c85c2ab9-0921-4b8b-89c6-448ec4543634",
+      "query": "业务函数包含输入校验、调用服务并处理响应返回结果",
+      "resultCount": 1,
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    }
+  ],
+  "items": [
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "Python"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "create_item为Python业务函数，含校验、调用与返回，与岗位要求直接相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "存在非空实现：条件校验、调用save_item并构造返回字典。"
+        },
+        {
+          "criterion": "task",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "完整函数体展示输入校验、实质处理调用与输出返回，对应当前要求。"
+        }
+      ],
+      "evidenceLevel": 3,
+      "evidenceLevelLabel": "任务实现",
+      "evidenceLevelReason": "create_item完整展示输入校验、调用与响应返回，相关、操作、任务三项均有可见证据支撑。",
+      "evidenceLevelGap": "未展示save_item的实现与返回结构，也未展示任何运行结果或测试执行记录；本人贡献无法由静态片段确认。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "c85c2ab9-0921-4b8b-89c6-448ec4543634",
+      "requirementTitle": "Python 业务函数需包含输入校验、服务调用和响应处理",
+      "skill": "Python",
+      "claimed": true,
+      "claimText": "求职方向：Python 后端开发实习生",
+      "evidence": {
+        "citationId": "R1-E1",
+        "provenance": "portfolio",
+        "contextComplete": true,
+        "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+        "skill": "Python",
+        "evidenceType": "python_code",
+        "filePath": "41ba602f-e847-40c2-a174-e943d5946147/app/00_health.py",
+        "lineStart": 6,
+        "lineEnd": 8,
+        "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+        "strength": "high",
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+        "projectFileId": "5f83974e-5850-4743-8b06-4c2916b67b37",
+        "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+        "sourceId": "5d6fda0a-425a-42d7-8be8-dddad80d34e6"
+      },
+      "evidenceList": [
+        {
+          "citationId": "R1-E1",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/app/00_health.py",
+          "lineStart": 6,
+          "lineEnd": 8,
+          "snippet": "@app.get(\"/health\")\ndef health() -> dict[str, str]:\n    return {\"status\": \"ok\"}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "fa71dea4d6addecda072cd6427ddbc9b9f7ec507309ee3faef381040180ab41f",
+          "projectFileId": "5f83974e-5850-4743-8b06-4c2916b67b37",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "5d6fda0a-425a-42d7-8be8-dddad80d34e6"
+        },
+        {
+          "citationId": "R1-E2",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/app/05_partial_pipeline.py",
+          "lineStart": 1,
+          "lineEnd": 40,
+          "snippet": "def inspect_values(values):\n    value_0 = len(values)\n    value_1 = len(values)\n    value_2 = len(values)\n    value_3 = len(values)\n    value_4 = len(values)\n    value_5 = len(values)\n    value_6 = len(values)\n    value_7 = len(values)\n    value_8 = len(values)\n    value_9 = len(values)\n    value_10 = len(values)\n    value_11 = len(values)\n    value_12 = len(values)\n    value_13 = len(values)\n    value_14 = len(values)\n    value_15 = len(values)\n    value_16 = len(values)\n    value_17 = len(values)\n    value_18 = len(values)\n    value_19 = len(values)\n    value_20 = len(values)\n    value_21 = len(values)\n    value_22 = len(values)\n    value_23 = len(values)\n    value_24 = len(values)\n    value_25 = len(values)\n    value_26 = len(values)\n    value_27 = len(values)\n    value_28 = len(values)\n    value_29 = len(values)\n    value_30 = len(values)\n    value_31 = len(values)\n    value_32 = len(values)\n    value_33 = len(values)\n    value_34 = len(values)\n    value_35 = len(values)\n    value_36 = len(values)\n    value_37 = len(values)\n    value_38 = len(values)",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "cabb2b394b0d53f08f26a3922c2632a167abc89cf4faba7d53cc7353fb7dc56f",
+          "projectFileId": "9e9df1d5-eae8-4c1c-8f2a-6e2ebc1e4d8a",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "0514ad95-524a-4da8-8272-38beb4b770b2"
+        },
+        {
+          "citationId": "R1-E3",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/app/10_items.py",
+          "lineStart": 6,
+          "lineEnd": 11,
+          "snippet": "@router.post(\"/items\")\ndef create_item(payload: dict) -> dict:\n    if not payload.get(\"name\"):\n        return {\"error\": \"name required\"}\n    item = save_item(payload[\"name\"])\n    return {\"item\": item}",
+          "strength": "high",
+          "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "8998c24d9e05f4fee12dbb59a85585fef08040e2951ece9b772c1d7a19a87214",
+          "projectFileId": "29714846-ac02-49a3-8af5-901ef54b3ced",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "6971b3f6-8822-4d0b-bdd8-017311a76e9e"
+        },
+        {
+          "citationId": null,
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "semantic_document_candidate",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/README.md",
+          "lineStart": 1,
+          "lineEnd": 5,
+          "snippet": "# Function Calling 合成证据\n\n本目录只用于本地受控补检索验收。`00_health.py` 提供初始通用路由，\n`10_items.py` 提供补检索后可见的输入校验、服务调用和响应处理证据。\n材料不包含个人信息，也不声明代码已经运行或测试通过。",
+          "strength": "low",
+          "explanation": "本地语义模型找到了与岗位要求相近的项目文档原文；只是待核对线索，不能证明代码实现、运行结果或本人贡献。",
+          "contentHash": "104eb34a6129b25dba01b0fa716eb071a76ab59891c60d7d8dc2bb831a56f461",
+          "projectFileId": "b7583d37-014e-42e7-8ffe-61ad7c8d76ed",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "2a7d0a20-0d3a-4735-bd38-69ab49ab9ee3"
+        },
+        {
+          "citationId": null,
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "semantic_document_candidate",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/README.md",
+          "lineStart": 1,
+          "lineEnd": 5,
+          "snippet": "# Function Calling 合成证据\n\n本目录只用于本地受控补检索验收。`00_health.py` 提供初始通用路由，\n`10_items.py` 提供补检索后可见的输入校验、服务调用和响应处理证据。\n材料不包含个人信息，也不声明代码已经运行或测试通过。",
+          "strength": "low",
+          "explanation": "本地语义模型找到了与岗位要求相近的项目文档原文；只是待核对线索，不能证明代码实现、运行结果或本人贡献。",
+          "contentHash": "104eb34a6129b25dba01b0fa716eb071a76ab59891c60d7d8dc2bb831a56f461",
+          "projectFileId": "b7583d37-014e-42e7-8ffe-61ad7c8d76ed",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "5c617cd8-f438-4c4b-ac69-a65139825e28"
+        },
+        {
+          "citationId": null,
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "skill": "Python",
+          "evidenceType": "retrieved_context",
+          "filePath": "41ba602f-e847-40c2-a174-e943d5946147/README.md",
+          "lineStart": 2,
+          "lineEnd": 5,
+          "snippet": "本目录只用于本地受控补检索验收。`00_health.py` 提供初始通用路由，\n`10_items.py` 提供补检索后可见的输入校验、服务调用和响应处理证据。\n材料不包含个人信息，也不声明代码已经运行或测试通过。",
+          "strength": "low",
+          "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+          "contentHash": "104eb34a6129b25dba01b0fa716eb071a76ab59891c60d7d8dc2bb831a56f461",
+          "projectFileId": "b7583d37-014e-42e7-8ffe-61ad7c8d76ed",
+          "projectVersionId": "41ba602f-e847-40c2-a174-e943d5946147",
+          "sourceId": "86a7374f-e07f-4acf-8734-dc094c8fc421"
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": 0.7,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v3",
+      "evidenceId": "ac4e9039-c0c4-4cf9-b796-d4b5f58f9b56",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "create_item片段展示对payload的name校验、调用save_item并返回item，覆盖输入校验、服务调用与响应处理三环节；health仅返回固定字典；inspect_values片段不完整且仅见重复len调用。",
+      "aiCitationIds": [
+        "R1-E1",
+        "R1-E2",
+        "R1-E3"
+      ],
+      "aiInformationGap": "未展示save_item的实现与返回结构，也未展示任何运行结果或测试执行记录；本人贡献无法由静态片段确认。",
+      "aiSuggestion": "可提交save_item所在文件片段及一次接口调用的请求与响应记录，核对校验分支、调用参数与返回结构。",
+      "aiStatus": "validated",
+      "aiOrigin": null
+    }
+  ]
+}

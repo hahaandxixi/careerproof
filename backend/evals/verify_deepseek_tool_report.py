@@ -7,17 +7,19 @@ headers are never written to the result artifact.
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import time
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlparse
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import httpx
 
 from evals.demo_credentials import get_demo_credentials
 
-BASE = "http://127.0.0.1:8000/api/v1"
+BASE = os.getenv("CAREERPROOF_EVAL_API_BASE", "http://127.0.0.1:8000/api/v1")
 JOB_TITLE = "Python 受控补检索（合成验收）"
 
 
@@ -99,6 +101,13 @@ def build_archive(source: Path, destination: Path) -> None:
 
 
 def main() -> None:
+    endpoint = urlparse(BASE)
+    if (
+        endpoint.scheme != "http"
+        or endpoint.hostname not in {"127.0.0.1", "localhost"}
+        or endpoint.path.rstrip("/") != "/api/v1"
+    ):
+        raise ValueError("Synthetic API evaluation only accepts a local /api/v1 endpoint")
     root = Path(__file__).resolve().parents[2]
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     output = Path(__file__).with_name(f"deepseek-tool-report-{timestamp}.json")
