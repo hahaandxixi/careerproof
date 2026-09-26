@@ -85,7 +85,9 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "promptVersion": EVIDENCE_PROMPT_VERSION,
         "formulaVersion": FORMULA_VERSION,
         "externalAiConsent": snapshot.get("externalAiConsent", False),
-        "cacheVersion": "report-context-v3-semantic-documents",
+        "usePreviousReport": snapshot.get("usePreviousReport", False),
+        "previousReportId": snapshot.get("previousReportId"),
+        "cacheVersion": "report-context-v4-frozen-history",
         "semanticEngine": (
             SEMANTIC_VERSION
             if settings.semantic_retrieval_enabled
@@ -223,6 +225,12 @@ class AnalysisService:
                 "materials": materials.snapshots,
             }
         )
+        if request.external_ai_consent and request.use_previous_report:
+            from app.services.report_history import select_history_report_id
+
+            snapshot["previousReportId"] = await select_history_report_id(
+                self.session, current_user.id, job.id
+            )
         cache_key = _analysis_cache_key(snapshot)
         snapshot["analysisCacheKey"] = cache_key
         cached_rows = await self.session.execute(
@@ -509,7 +517,8 @@ async def execute_match_task(task_id: UUID) -> None:
             from app.services.report_history import prepare_history_tool
 
             history_loader = None
-            if external_allowed and snapshot.get("usePreviousReport", False):
+            if (external_allowed and snapshot.get("externalAiConsent", False)
+                    and snapshot.get("usePreviousReport", False)):
                 history_loader = await prepare_history_tool(
                     session, task, snapshot["job"]["requirements"]
                 )

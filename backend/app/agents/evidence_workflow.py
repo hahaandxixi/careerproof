@@ -357,7 +357,7 @@ async def run_evidence_workflow(
                         ):
                             break
                         stage = "tool_planning"
-                        await _notify(progress, f"模型正在判断第 {round_number} 轮是否需要补充检索")
+                        await _notify(progress, f"模型正在规划第 {round_number} 轮受控工具调用")
                         try:
                             request_count += 1
                             tool_call = await provider.plan_evidence_retrieval(

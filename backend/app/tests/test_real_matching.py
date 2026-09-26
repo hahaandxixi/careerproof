@@ -281,13 +281,17 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
     matching_db, monkeypatch, provider_name, model_name
 ):
     app, factory = matching_db
+    history_reads = []
 
     async def fake_workflow(
-        result, progress=None, *, external_allowed=True, external_skip_reason=None
+        result, progress=None, *, external_allowed=True, external_skip_reason=None,
+        history_loader=None,
     ):
         del external_allowed, external_skip_reason
         del progress
         contexts = build_evidence_contexts(result)
+        if history_loader:
+            history_reads.append(await history_loader(contexts[0].requirement_id))
         return EvidenceWorkflowOutcome(
             contexts=contexts,
             analysis=EvidenceAnalysis(
@@ -362,6 +366,15 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert cached.status_code == 202, cached.text
         assert cached.json()["data"]["taskId"] == report["taskId"]
         assert cached.json()["data"]["status"] == "completed"
+        with_history = await match_report(
+            student, job, resume, version, externalAiConsent=True, usePreviousReport=True
+        )
+        assert with_history["taskId"] != report["taskId"]
+        assert len(history_reads) == 1
+        assert history_reads[0]["previousReportId"] == report["id"]
+        async with factory() as session:
+            history_task = await session.get(AnalysisTask, UUID(with_history["taskId"]))
+            assert history_task.input_snapshot["previousReportId"] == report["id"]
         task = (await student.get(f"/api/v1/analysis-tasks/{report['taskId']}")).json()["data"]
         assert [step["name"] for step in task["steps"]] == [
             "核对材料版本",
@@ -384,8 +397,10 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert refreshed["actionPlan"][0]["source"] == "review"
         assert refreshed["actionPlan"][0]["citationIds"] == []
         async with factory() as session:
-            usage = list(await session.scalars(select(AiUsageLog)))
-            steps = list(await session.scalars(select(AgentStep)))
+            usage = list(await session.scalars(select(AiUsageLog).where(
+                AiUsageLog.analysis_task_id == UUID(report["taskId"]))))
+            steps = list(await session.scalars(select(AgentStep).where(
+                AgentStep.analysis_task_id == UUID(report["taskId"]))))
             assert len(usage) == 1 and usage[0].input_tokens == 320
             assert len(steps) == 8
         assert "return sum" in item["evidenceList"][0]["snippet"]

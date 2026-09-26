@@ -11,6 +11,7 @@ from app.agents.evidence_workflow import run_evidence_workflow
 from app.agents.provider import DeepSeekProvider, evidence_analysis_messages
 from app.core.config import settings
 from app.models.analysis import AnalysisTask, MatchItem, MatchReport
+from app.services.analysis import _analysis_cache_key
 from app.services.report_history import prepare_history_tool
 from app.tests.test_ai_evidence_workflow import evidenced_result
 from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
@@ -26,6 +27,7 @@ async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  #
         other = await register(client, "history-other@example.com", "student")
         now = datetime.now(UTC)
         async with factory() as session:
+            report_ids = []
             for user_id, offset, explanation in (
                 (owner["id"], -2, "旧判断可能错误 R1-E1"),
                 (other["id"], -1, "其他用户私有说明"),
@@ -41,6 +43,7 @@ async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  #
                                                                        "title": "旧要求"}]})
                 session.add(report)
                 await session.flush()
+                report_ids.append(str(report.id))
                 session.add(MatchItem(report_id=report.id, requirement_id=UUID(requirement_id),
                                       rule_base_score=1, weight=3, verdict="supported",
                                       explanation=explanation, formula_version="old",
@@ -60,6 +63,30 @@ async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  #
             assert "旧判断" in result["previousExplanation"]
             assert "R1-E1" not in json.dumps(result)
             assert "其他用户" not in json.dumps(result) and "未来报告" not in json.dumps(result)
+            with pytest.raises(ValueError, match="unknown current requirement"):
+                await read("unknown")
+            # An explicitly frozen empty history cannot drift to a later report.
+            current.input_snapshot["previousReportId"] = None
+            assert await prepare_history_tool(session, current, [{"id": requirement_id}]) is None
+            # Even a forged pinned report must obey owner and before-task constraints.
+            for invalid_id in report_ids[1:]:
+                current.input_snapshot["previousReportId"] = invalid_id
+                denied = await prepare_history_tool(session, current, [{"id": requirement_id}])
+                assert denied is None
+            current.input_snapshot["previousReportId"] = report_ids[0]
+            frozen = await prepare_history_tool(session, current, [{"id": requirement_id}])
+            assert (await frozen(requirement_id))["previousReportId"] == report_ids[0]
+
+
+def test_cache_key_separates_history_consent_and_frozen_source():
+    snapshot = {"job": {}, "materials": [], "externalAiConsent": True}
+    ordinary = _analysis_cache_key(snapshot)
+    opted = _analysis_cache_key({**snapshot, "usePreviousReport": True})
+    pinned = _analysis_cache_key({**snapshot, "usePreviousReport": True,
+                                  "previousReportId": "synthetic-first"})
+    changed = _analysis_cache_key({**snapshot, "usePreviousReport": True,
+                                   "previousReportId": "synthetic-second"})
+    assert len({ordinary, opted, pinned, changed}) == 4
 
 
 @pytest.mark.parametrize("history_fault", [False, True])

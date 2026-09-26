@@ -22,7 +22,7 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v16-owner-history-consent"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v17-frozen-history"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -562,7 +562,7 @@ class OpenAICompatibleProvider:
                         "history_available为true时，可选择get_previous_report_context，"
                         "了解同用户同岗位某项要求上轮的解释与缺口；最多读取一次历史。"
                         "历史仅作参考，不能支持当前评级；无需历史时可选补检索或停止。"
-                        "history_hint是程序计算的背景变化；如果要求变化，历史读取可帮助解释"
+                        "history_hint是程序计算的背景变化；如果要求或材料变化，历史读取可帮助解释"
                         "两次判断为何不可直接比较，请自行决定是否需要查询。"
                         "只有当某项证据少于3条或"
                         "上下文不完整，且补充检索可能帮助判断时，调用一次retrieve_more_evidence。"
