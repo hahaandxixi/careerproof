@@ -50,7 +50,9 @@ def create_token(
     return encoded, jti, expires
 
 
-def decode_token(token: str, expected_type: Literal["access", "refresh"]) -> dict[str, Any]:
+def decode_token(
+    token: str, expected_type: Literal["access", "refresh", "mcp_readonly"]
+) -> dict[str, Any]:
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
     except jwt.PyJWTError as exc:

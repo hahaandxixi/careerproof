@@ -31,6 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+mcp = ["mcp==1.30.0", "sse-starlette==3.0.3", "starlette==0.47.3"]
 dev = [
   "aiosqlite==0.21.0",
   "pytest==8.4.2",

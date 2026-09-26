@@ -193,7 +193,15 @@ function jsonBody(value: unknown): Pick<RequestInit, "body" | "headers"> {
   };
 }
 
+export interface McpGrant {
+  token: string; grantId: string; expiresAt: string; reportIds: string[]; tools: string[];
+}
+
 export const api = {
+  issueMcpGrant(reportIds: string[]) {
+    return request<McpGrant>("/mcp-tools/grants", { method: "POST", ...jsonBody({ report_ids: reportIds, external_client_consent: true }) });
+  },
+  revokeMcpGrant(id: string) { return request<{ revoked: boolean }>(`/mcp-tools/grants/${id}`, { method: "DELETE" }); },
   getVisualReview(id: string) { return request<VisualReview | null>(`/project-versions/${id}/visual-review`); },
   observeImage(id: string) { return request<VisualReview>(`/project-versions/${id}/visual-review`, { method: "POST", body: JSON.stringify({ externalImageConsent: true }) }); },
   reviewVisual(id: string, status: VisualReview["reviewStatus"], note: string) { return request<VisualReview>(`/visual-reviews/${id}`, { method: "PATCH", body: JSON.stringify({ status, note }) }); },
