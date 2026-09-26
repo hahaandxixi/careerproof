@@ -112,8 +112,8 @@ def synthetic_result():
 
 
 def model_provider():
-    settings.ai_external_enabled = True  # current process only; .env remains disabled
-    settings.ai_provider = "zhipu"
+    settings.ai_external_enabled = True  # opt-in CLI process only; .env is not modified
+    settings.ai_provider = "deepseek"
     return get_ai_provider()
 
 
@@ -253,8 +253,8 @@ async def main() -> int:
         parser.error("Explicit --live is required; the suite makes external model requests")
     if not 0 <= args.interval <= 120:
         parser.error("interval must be between 0 and 120 seconds")
-    if settings.zhipu_api_key is None:
-        parser.error("ZHIPU_API_KEY is missing")
+    if settings.deepseek_api_key is None:
+        parser.error("DEEPSEEK_API_KEY is missing")
     output = args.output or Path(
         f"evals/retrieval-comparison-{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
     )
@@ -280,8 +280,8 @@ async def main() -> int:
     report = {
         "suite": "retrieval-comparison-v1",
         "generatedAt": datetime.now(UTC).isoformat(),
-        "provider": "zhipu",
-        "model": settings.zhipu_model,
+        "provider": "deepseek",
+        "model": settings.deepseek_model,
         "promptVersion": EVIDENCE_PROMPT_VERSION,
         "syntheticDataOnly": True,
         "cases": [],

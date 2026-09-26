@@ -172,6 +172,8 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
 
 固定规则评测：`python evals/run_rule_baseline.py --output evals/baseline-evidence-v3.json`。
 
+固定64例合成检索对照：`python -m evals.run_offline_retrieval_comparison --semantic --output evals/retrieval-new-run.json`。不调用外部API、不自动下载权重、不覆盖输出；独立人工标注尚待完成。结果区分文档范围、宏/微Recall@2和无目标时返回候选，召回不表示实现成立。详见[评测边界与复现](../docs/检索64例合成对照评测-20260926.md)。原`run_retrieval_comparison`是真实DeepSeek三组对照入口，需要显式`--live`并产生API费用。
+
 固定 AI 评测：启用合成数据可用的真实 Provider 后，运行
 `python -m evals.run_ai_evidence_baseline --output evals/baseline-ai-evidence-deepseek-YYYY-MM-DD.json`。
 自动化测试由 `app/tests/conftest.py` 强制隔离真实 Provider，不消耗模型额度。
