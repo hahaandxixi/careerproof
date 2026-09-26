@@ -43,6 +43,10 @@ class RetrievalToolCall(StrictModel):
     query: str = Field(min_length=2, max_length=200)
 
 
+class HistoryToolCall(StrictModel):
+    requirement_id: str = Field(min_length=1, max_length=100)
+
+
 class CriterionDecision(StrictModel):
     criterion: Literal["relevance", "operation", "task"]
     supported: bool

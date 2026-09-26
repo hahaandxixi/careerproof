@@ -1,0 +1,129 @@
+import json
+from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
+from uuid import UUID
+
+import httpx
+import pytest
+from httpx import ASGITransport, AsyncClient
+
+from app.agents.evidence_workflow import run_evidence_workflow
+from app.agents.provider import DeepSeekProvider, evidence_analysis_messages
+from app.core.config import settings
+from app.models.analysis import AnalysisTask, MatchItem, MatchReport
+from app.services.report_history import prepare_history_tool
+from app.tests.test_ai_evidence_workflow import evidenced_result
+from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
+
+
+async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  # noqa: F811
+    app, factory = jobs_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        owner = await register(client, "history-owner@example.com")
+        org = await organization(client)
+        job = (await client.post("/api/v1/jobs", json=job_payload(org))).json()["data"]
+        requirement_id = job["requirements"][0]["id"]
+        other = await register(client, "history-other@example.com", "student")
+        now = datetime.now(UTC)
+        async with factory() as session:
+            for user_id, offset, explanation in (
+                (owner["id"], -2, "旧判断可能错误 R1-E1"),
+                (other["id"], -1, "其他用户私有说明"),
+                (owner["id"], 1, "未来报告"),
+            ):
+                task = AnalysisTask(created_by=UUID(user_id), task_type="job_match")
+                session.add(task)
+                await session.flush()
+                report = MatchReport(analysis_task_id=task.id, job_id=UUID(job["id"]),
+                                     candidate_ref=owner["id"], summary="合成历史",
+                                     created_at=now + timedelta(days=offset),
+                                     job_snapshot={"requirements": [{"id": requirement_id,
+                                                                       "title": "旧要求"}]})
+                session.add(report)
+                await session.flush()
+                session.add(MatchItem(report_id=report.id, requirement_id=UUID(requirement_id),
+                                      rule_base_score=1, weight=3, verdict="supported",
+                                      explanation=explanation, formula_version="old",
+                                      evidence_snapshot={"ai": {"explanation": explanation,
+                                                               "rating": {"level": 3}},
+                                                         "evidenceList": [{"citationId": "R1-E1",
+                                                                           "snippet": "old code"}]}
+                                     ))
+            await session.commit()
+            current = SimpleNamespace(created_by=UUID(owner["id"]), created_at=now,
+                                      input_snapshot={"jobId": job["id"]})
+            read = await prepare_history_tool(session, current, [{"id": requirement_id,
+                                                                  "title": "新要求"}])
+            result = await read(requirement_id)
+            assert result["requirementChanged"] is True
+            assert result["savedAiLevel"] == 3
+            assert "旧判断" in result["previousExplanation"]
+            assert "R1-E1" not in json.dumps(result)
+            assert "其他用户" not in json.dumps(result) and "未来报告" not in json.dumps(result)
+
+
+@pytest.mark.parametrize("history_fault", [False, True])
+async def test_model_selects_history_once_without_promoting_old_level(monkeypatch, history_fault):
+    result = evidenced_result()
+    requirement_id = str(result.items[0].requirement_id)
+    seen = []
+    reads = []
+
+    async def read(target):
+        reads.append(target)
+        if history_fault:
+            raise ValueError("Synthetic optional-history failure")
+        return {"savedAiLevel": 3, "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}]}
+
+    def handler(request):
+        body = json.loads(request.content)
+        seen.append(body)
+        if "tools" in body:
+            if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                return httpx.Response(200, json={
+                    "choices": [{"message": {"content": "无需补检索"}}]
+                })
+            message = {"tool_calls": [{"function": {"name": "get_previous_report_context",
+                                                     "arguments": json.dumps(
+                                                         {"requirement_id": requirement_id})}}]}
+        else:
+            assert "old@example.com" not in body["messages"][1]["content"]
+            assert "13800138000" not in body["messages"][1]["content"]
+            answer = {"summary": "当前材料只展示路由线索。", "items": [{
+                "requirement_id": requirement_id, "explanation": "当前片段含路由声明和空函数。",
+                "citation_ids": ["R1-E1"], "information_gap": "运行结果与本人贡献未核验。",
+                "suggestion": "补充处理代码和运行记录。", "confidence": 0.5,
+                "rating": {"level": 1, "reason": "只有相关线索。", "criteria": [
+                    {"criterion": "relevance", "supported": True, "citation_ids": ["R1-E1"],
+                     "reason": "路由声明可见。"},
+                    {"criterion": "operation", "supported": False, "citation_ids": [],
+                     "reason": "函数体为空。"},
+                    {"criterion": "task", "supported": False, "citation_ids": [],
+                     "reason": "没有完整任务实现。"},
+                ]},
+            }]}
+            message = {"content": json.dumps(answer, ensure_ascii=False)}
+        return httpx.Response(200, json={"choices": [{"message": message}],
+                                         "usage": {"prompt_tokens": 100, "completion_tokens": 100}})
+
+    provider = DeepSeekProvider(api_key="synthetic-key", base_url="https://api.deepseek.com",
+                                model="deepseek-flash", timeout_seconds=5,
+                                transport=httpx.MockTransport(handler))
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_local_fallback_enabled", False)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+    outcome = await run_evidence_workflow(result, history_loader=read)
+    assert not outcome.fallback_used
+    assert reads == [requirement_id]
+    assert outcome.analysis.items[0].rating.level == 1
+    assert any(event["tool"] == "get_previous_report_context"
+               and event["status"] == ("unavailable" if history_fault else "completed")
+               for event in outcome.tool_calls)
+    assert len(seen) <= 3
+
+
+def test_historical_context_has_separate_prompt_boundary():
+    messages = evidence_analysis_messages([], history_context={"savedAiLevel": 3})
+    assert "不能支持当前评级" in messages[0]["content"]
+    assert "historicalContext" in messages[1]["content"]

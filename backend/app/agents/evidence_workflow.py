@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from app.agents.contracts import (
     EvidenceAnalysis,
     EvidenceCandidate,
+    HistoryToolCall,
     ModelUsage,
     RequirementEvidenceContext,
     RetrievalToolCall,
@@ -279,6 +280,7 @@ async def run_evidence_workflow(
     *,
     external_allowed: bool = True,
     external_skip_reason: str | None = None,
+    history_loader: Callable[[str], Awaitable[dict]] | None = None,
 ) -> EvidenceWorkflowOutcome:
     contexts: list[RequirementEvidenceContext] = []
     configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
@@ -337,6 +339,7 @@ async def run_evidence_workflow(
             async with _model_semaphore():
                 if isinstance(provider, OpenAICompatibleProvider):
                     previous_retrieval: dict | None = None
+                    history_used = False
                     for round_number in range(1, settings.ai_max_retrieval_calls + 1):
                         eligible = eligible_retrieval_contexts(result, model_contexts)
                         used = provider.combined_usage()
@@ -347,14 +350,23 @@ async def run_evidence_workflow(
                             used.output_tokens if used else 0
                         )
                         # Keep room for the final report even if the planner wants another lookup.
-                        if not eligible or remaining_input <= 1500 or remaining_output <= 400:
+                        history_available = history_loader is not None and not history_used
+                        if (
+                            (not eligible and not history_available)
+                            or remaining_input <= 1500 or remaining_output <= 400
+                        ):
                             break
                         stage = "tool_planning"
                         await _notify(progress, f"模型正在判断第 {round_number} 轮是否需要补充检索")
                         try:
                             request_count += 1
                             tool_call = await provider.plan_evidence_retrieval(
-                                contexts=eligible,
+                                contexts=model_contexts if history_available else eligible,
+                                **({
+                                    "history_available": True,
+                                    "retrieval_available": bool(eligible),
+                                    "history_hint": getattr(history_loader, "planning_hint", None),
+                                } if history_available else {}),
                                 previous_retrieval=previous_retrieval,
                                 input_token_limit=remaining_input - 1000,
                                 output_token_limit=remaining_output - 200,
@@ -377,12 +389,34 @@ async def run_evidence_workflow(
                                     "tool": "retrieve_more_evidence",
                                     "round": round_number,
                                     "status": "not_requested",
+                                    **({"historyAvailable": True} if history_available else {}),
                                     "reason": "planner_declined",
                                     "scope": "current-upload-index",
                                 }
                             )
-                            await _notify(progress, "模型判断现有证据足够，停止补检索")
+                            await _notify(progress, "模型判断本轮无需更多工具，停止工具规划")
                             break
+                        if isinstance(tool_call, HistoryToolCall):
+                            stage = "history_tool"
+                            history_used = True
+                            await _notify(
+                                progress, "正在读取本人同岗位的历史解释，历史不是当前证据"
+                            )
+                            try:
+                                historical = await history_loader(tool_call.requirement_id)
+                                provider.history_context = historical
+                                tool_calls.append({
+                                    "tool": "get_previous_report_context", "round": round_number,
+                                    "requirementId": tool_call.requirement_id,
+                                    "status": "completed", "scope": "same-owner-same-job-history",
+                                    "previousReportId": historical.get("previousReportId"),
+                                })
+                            except Exception:
+                                tool_calls.append({
+                                    "tool": "get_previous_report_context", "round": round_number,
+                                    "status": "unavailable", "scope": "same-owner-same-job-history",
+                                })
+                            continue
                         stage = "tool_execution"
                         await _notify(progress, f"正在按模型第 {round_number} 轮请求补充证据")
                         model_contexts, tool_event = execute_retrieval_tool(

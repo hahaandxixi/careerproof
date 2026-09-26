@@ -18,6 +18,7 @@ class MaterialSelection(APIModel):
 class MatchCreate(MaterialSelection):
     job_id: UUID
     external_ai_consent: bool = False
+    use_previous_report: bool = False
 
 
 class JobRecommendationRequest(MaterialSelection):

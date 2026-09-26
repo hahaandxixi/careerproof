@@ -506,11 +506,19 @@ async def execute_match_task(task_id: UUID) -> None:
                     external_allowed, external_skip_reason, budget_stats = await _daily_ai_budget(
                         session, task.created_by
                     )
+            from app.services.report_history import prepare_history_tool
+
+            history_loader = None
+            if external_allowed and snapshot.get("usePreviousReport", False):
+                history_loader = await prepare_history_tool(
+                    session, task, snapshot["job"]["requirements"]
+                )
             workflow = await run_evidence_workflow(
                 result,
                 progress=model_progress,
                 external_allowed=external_allowed,
                 external_skip_reason=external_skip_reason,
+                **({"history_loader": history_loader} if history_loader else {}),
             )
             if workflow.analysis:
                 result = replace(result, summary=workflow.analysis.summary)

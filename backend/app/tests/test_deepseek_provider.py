@@ -239,7 +239,7 @@ async def test_deepseek_retrieval_planner_uses_official_tool_protocol():
         assert body["thinking"] == {"type": "disabled"}
         assert body["tool_choice"] == "auto"
         assert body["tools"][0]["function"]["name"] == "retrieve_more_evidence"
-        assert "当前上传索引仍有未展示候选" in body["messages"][0]["content"]
+        assert "当前上传索引补检索" in body["messages"][0]["content"]
         source = json.loads(body["messages"][1]["content"])
         assert source["requirements"][0]["evidence"][0]["citation_id"] == "R1-E1"
         assert "[已脱敏邮箱]" in source["requirements"][0]["evidence"][0]["snippet"]

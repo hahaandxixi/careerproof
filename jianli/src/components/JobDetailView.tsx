@@ -55,6 +55,7 @@ function MatchForm({
   const [resumeVersionId, setResumeVersionId] = useState("");
   const [projectVersionIds, setProjectVersionIds] = useState<string[]>([]);
   const [externalAiConsent, setExternalAiConsent] = useState(false);
+  const [usePreviousReport, setUsePreviousReport] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -80,7 +81,7 @@ function MatchForm({
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current || !resumeVersionId) return;
     submitting.current = true; setBusy(true); setError("");
-    try { const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent }); router.push(`/tasks/${task.taskId}`); }
+    try { const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport }); router.push(`/tasks/${task.taskId}`); }
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
@@ -108,6 +109,7 @@ function MatchForm({
             <span>我已查看上述发送范围，同意将脱敏后的必要片段发送给外部 AI 生成带引用解释。</span>
           </label>
         </div>
+        <label className="flex items-start gap-2 text-xs leading-6 text-slate-600"><input className="mt-1" type="checkbox" checked={usePreviousReport} onChange={event => setUsePreviousReport(event.target.checked)} /><span>可选：允许 AI 查询本人同岗位上一份报告的脱敏解释、缺口和最多两条历史片段。历史仅作参考，不作为本轮引用或评级依据；没有历史时只分析当前材料。</span></label>
         <button className="btn" disabled={busy || !resumeVersionId || !externalAiConsent}>{busy ? "创建分析任务…" : "生成我的匹配报告"}</button>
       </fieldset>
     </form>}

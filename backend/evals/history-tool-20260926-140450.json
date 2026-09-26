@@ -1,0 +1,143 @@
+{
+  "generatedAt": "2026-09-26T06:04:50.190318+00:00",
+  "scope": "Synthetic workflow, not browser or database integration",
+  "promptVersion": "evidence-trust-v16-owner-history-consent",
+  "history": {
+    "historicalOnly": true,
+    "savedAiLevel": 3,
+    "requirementChanged": true,
+    "previousRequirement": {
+      "title": "旧要求只关注路由"
+    },
+    "previousExplanation": "合成的错误历史：仅凭空函数就给了3级，该判断待核验。",
+    "previousGap": "没有核验处理逻辑。",
+    "previousEvidence": [
+      {
+        "historicalReference": "history-1",
+        "snippet": "def health(): pass"
+      }
+    ],
+    "boundary": "旧记录可能错误，不是当前证据。"
+  },
+  "historyReadCount": 1,
+  "toolCalls": [
+    {
+      "tool": "get_previous_report_context",
+      "round": 1,
+      "requirementId": "46bbffa1-6e9f-515b-90e2-cd606349e274",
+      "status": "completed",
+      "scope": "same-owner-same-job-history",
+      "previousReportId": null
+    }
+  ],
+  "fallbackUsed": false,
+  "failureStage": null,
+  "contexts": [
+    {
+      "requirement_id": "46bbffa1-6e9f-515b-90e2-cd606349e274",
+      "requirement_title": "提供 FastAPI 路由及实质处理代码",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "接触过FastAPI",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "app.py",
+          "line_start": 3,
+          "line_end": 5,
+          "evidence_type": "fastapi_route",
+          "strength": "high",
+          "snippet": "@app.get(\"/health\")\ndef health():\n    pass",
+          "context_complete": true,
+          "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "provenance": "portfolio"
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "app.py",
+          "line_start": 1,
+          "line_end": 5,
+          "evidence_type": "fastapi_app",
+          "strength": "medium",
+          "snippet": "from fastapi import FastAPI\napp = FastAPI()\n@app.get(\"/health\")\ndef health():\n    pass",
+          "context_complete": false,
+          "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+          "provenance": "portfolio"
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+          "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 1
+    }
+  ],
+  "analysis": {
+    "summary": "材料显示 app.py 中存在 FastAPI 应用实例与 /health 路由装饰器，但路由函数体为 pass，未展示实质处理逻辑或返回内容。简历自述接触过 FastAPI，与片段中空实现形成差异。未执行代码，运行结果与本人贡献均未核验。",
+    "items": [
+      {
+        "requirement_id": "46bbffa1-6e9f-515b-90e2-cd606349e274",
+        "explanation": "片段可见 FastAPI 导入、应用实例与 /health 路由装饰器，属于与岗位要求直接相关的线索；但路由函数体为 pass，未展示任何实质处理逻辑。",
+        "citation_ids": [
+          "R1-E1",
+          "R1-E2"
+        ],
+        "information_gap": "未展示路由函数体的实质处理逻辑、返回内容及实际运行结果，也未核验本人贡献。",
+        "suggestion": "可提交该路由函数的完整源码及运行日志或响应记录，核对实际处理逻辑与返回内容。",
+        "confidence": 0.9,
+        "rating": {
+          "level": 1,
+          "reason": "存在 FastAPI 路由相关线索，但函数体为空实现，未展示实质操作或完整任务。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "片段中存在 FastAPI 导入、应用实例与 /health 路由装饰器，属直接相关线索。"
+            },
+            {
+              "criterion": "operation",
+              "supported": false,
+              "citation_ids": [
+                "R1-E1"
+              ],
+              "reason": "路由函数体为 pass，未展示任何非空处理逻辑。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [
+                "R1-E1"
+              ],
+              "reason": "未展示请求输入、实质处理与明确返回或异常分支。"
+            }
+          ]
+        }
+      }
+    ],
+    "model": "deepseek-flash",
+    "usage": {
+      "input_tokens": 3487,
+      "output_tokens": 440,
+      "cache_hit_tokens": 1152,
+      "latency_ms": 2804
+    }
+  },
+  "citedSourcesExact": true,
+  "humanSemanticReview": "pending",
+  "billingVerified": false
+}
