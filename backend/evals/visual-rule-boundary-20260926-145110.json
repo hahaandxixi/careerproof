@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-09-26T06:51:10.608170+00:00",
+  "scope": "Synthetic OCR image through local API; no external model consent",
+  "noImageGrade": true,
+  "report": {
+    "id": "346e3583-f5c9-4309-ab8c-e4784574aeae",
+    "taskId": "72c679d8-4838-4f1c-8da7-c3270ba673a5",
+    "jobId": "fc344df4-c8c9-4567-8a41-428f649f68f3",
+    "jobTitle": "历史补证合成验收 20260926-142342",
+    "jobCategory": "software",
+    "candidateId": "8a722516-c73e-4eec-b00c-7e586d2a5851",
+    "candidateName": "演示学生",
+    "overallScore": 10.0,
+    "summary": "共1项岗位要求，其中0项有项目证据支撑，1项仅有简历声明，0项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。",
+    "analysisMode": "rules",
+    "aiProvider": null,
+    "aiModel": null,
+    "aiFallbackUsed": false,
+    "evidenceContextVersion": "source-context-v4-semantic-documents",
+    "createdAt": "2026-09-26T06:51:10.354299Z",
+    "visualClaims": [],
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "1584c9d8-6515-4380-be1e-9639ef3956b9",
+        "title": "历史验收简历 20260926-142342",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "fdb3b96bdc4aecd5befb633c3ce0c5e0d735efbb8b41b0f70568471c45c67cda"
+      },
+      {
+        "kind": "project",
+        "id": "f2f2cdda-0ecb-4432-9202-8a8c5049762f",
+        "title": "视觉合成验收 20260926-144240",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "6c018b5456dfc0a0c6fa830c9ee353c313383b95de11765e948b6ac2096b9f71"
+      }
+    ],
+    "gaps": [],
+    "claimedOnly": [
+      "FastAPI"
+    ],
+    "items": [
+      {
+        "evidenceLevelSource": "rules",
+        "skillPath": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "ratingCriteria": [],
+        "evidenceLevel": null,
+        "evidenceLevelLabel": "仅有声明，未评级",
+        "evidenceLevelReason": "简历自述不作为实践等级依据。",
+        "evidenceLevelGap": "补充可定位的作品或实现材料。",
+        "evidenceLevelVersion": "practice-evidence-v2",
+        "requirementId": "5dad8a33-2dde-4440-b116-51c248184c77",
+        "requirementTitle": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+        "skill": "FastAPI",
+        "claimed": true,
+        "claimText": "合成学生：接触过 Python 和 FastAPI。",
+        "evidence": null,
+        "evidenceList": [],
+        "verdict": "claimed_only",
+        "aiConfidence": null,
+        "ruleBaseScore": 0.1,
+        "weight": 5,
+        "finalScore": 10.0,
+        "explanation": "简历中存在该技能声明，但个人作品中暂未找到可验证证据",
+        "formulaVersion": "evidence-v3",
+        "evidenceId": null,
+        "confirmationStatus": null,
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": null,
+        "aiCitationIds": [],
+        "aiInformationGap": null,
+        "aiSuggestion": null,
+        "aiStatus": "not_used",
+        "aiOrigin": null
+      }
+    ],
+    "aiUsage": null,
+    "aiToolCalls": [],
+    "actionPlan": [
+      {
+        "requirementId": "5dad8a33-2dde-4440-b116-51c248184c77",
+        "requirementTitle": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+        "skill": "FastAPI",
+        "weight": 5,
+        "currentLevel": null,
+        "source": "rules",
+        "evidenceGap": "补充可定位的作品或实现材料。",
+        "action": "补充可定位的作品或实现材料。",
+        "citationIds": []
+      }
+    ]
+  },
+  "externalCalls": 0
+}
