@@ -87,6 +87,9 @@ async def test_ai_job_draft_requires_confirmation_and_preserves_exact_source(job
                 "raw_text": "使用 Python 编写数据处理脚本",
                 "skill_name": "Python", "weight": 5, "is_required": True,
                 "source_quote": "熟练使用 Python 编写数据处理脚本",
+                "evidence_request": "提供数据处理脚本和样例输入输出",
+                "verification_question": "如何处理样例中的缺失值？",
+                "weight_reason": "原文将脚本编写列为核心要求",
             }]}, ensure_ascii=False)}}],
             "usage": {"prompt_tokens": 30, "completion_tokens": 20},
         })
@@ -110,6 +113,7 @@ async def test_ai_job_draft_requires_confirmation_and_preserves_exact_source(job
         assert response.status_code == 200, response.text
         draft = response.json()["data"]
         assert draft["confirmed"] is False
+        assert draft["requirements"][0]["verificationQuestion"] == "如何处理样例中的缺失值？"
         assert draft["requirements"][0]["sourceQuote"] == description[
             draft["requirements"][0]["sourceStart"]:draft["requirements"][0]["sourceEnd"]
         ]

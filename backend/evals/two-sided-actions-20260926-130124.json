@@ -1,0 +1,132 @@
+{
+  "generatedAt": "2026-09-26T05:01:24.420125+00:00",
+  "scope": "Synthetic service-level checks, not browser or DB",
+  "humanSemanticReview": "pending",
+  "billingVerified": false,
+  "records": [
+    {
+      "side": "enterprise",
+      "input": {
+        "description": "后端实习岗位：要求使用 Python 和 FastAPI 实现数据查询接口，提供异常处理与接口测试；熟悉 SQL 查询优先。"
+      },
+      "model": "deepseek-flash",
+      "output": {
+        "requirements": [
+          {
+            "raw_text": "要求使用 Python 和 FastAPI 实现数据查询接口",
+            "skill_name": "Python 与 FastAPI 开发",
+            "weight": 5,
+            "is_required": true,
+            "source_quote": "要求使用 Python 和 FastAPI 实现数据查询接口",
+            "evidence_request": "请提供使用 Python 和 FastAPI 实现数据查询接口的代码示例或项目链接。",
+            "verification_question": "请描述你如何使用 Python 和 FastAPI 实现一个数据查询接口，包括路由定义、请求参数处理和响应返回。",
+            "weight_reason": "原文明确要求使用 Python 和 FastAPI 实现数据查询接口，属于核心技能，因此建议权重为5。"
+          },
+          {
+            "raw_text": "提供异常处理与接口测试",
+            "skill_name": "异常处理与接口测试",
+            "weight": 4,
+            "is_required": true,
+            "source_quote": "提供异常处理与接口测试",
+            "evidence_request": "请提供在 FastAPI 项目中实现异常处理和编写接口测试的代码或测试报告。",
+            "verification_question": "在 FastAPI 中，你如何实现全局异常处理？请举例说明如何为数据查询接口编写测试用例。",
+            "weight_reason": "原文明确要求提供异常处理与接口测试，属于必要技能，因此建议权重为4。"
+          },
+          {
+            "raw_text": "熟悉 SQL 查询优先",
+            "skill_name": "SQL 查询",
+            "weight": 3,
+            "is_required": false,
+            "source_quote": "熟悉 SQL 查询优先",
+            "evidence_request": "请提供能够体现 SQL 查询能力的项目或代码片段，例如包含复杂查询的 SQL 语句。",
+            "verification_question": "请写一个 SQL 查询语句，用于从订单表中查询每个用户最近一次订单的详细信息。",
+            "weight_reason": "原文将熟悉 SQL 查询列为优先项，而非硬性要求，因此建议权重为3。"
+          }
+        ]
+      },
+      "validation": "passed",
+      "usage": {
+        "input_tokens": 326,
+        "output_tokens": 464,
+        "cache_hit_tokens": 0,
+        "latency_ms": 1970
+      }
+    },
+    {
+      "side": "student",
+      "input": {
+        "jobs": [
+          {
+            "jobId": "db6315ae-1e39-5f34-9786-bd48a32dc519",
+            "title": "后端实习生",
+            "direction": "software",
+            "rulePriority": "medium",
+            "supportedCount": 1,
+            "claimedCount": 0,
+            "gaps": [
+              "未展示异常处理与接口断言"
+            ],
+            "requirements": [
+              {
+                "text": "使用 Python 实现接口及异常处理与测试",
+                "skill": "Python",
+                "weight": 5,
+                "required": true,
+                "ruleVerdict": "supported"
+              }
+            ],
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "skill": "Python",
+                "file": "app.py",
+                "lines": [
+                  1,
+                  2
+                ],
+                "snippet": "def get_item(item_id):\n    return {'id': item_id}"
+              }
+            ]
+          }
+        ],
+        "changesFromPreviousPlan": []
+      },
+      "model": "deepseek-flash",
+      "output": {
+        "comparison": "本次只提供了一个岗位：后端实习生（software方向）。没有其他岗位可比较，因此无法说明岗位间差别。该岗位要求使用Python实现接口及异常处理与测试，当前材料只展示了一个简单的接口函数，未展示异常处理与接口断言。",
+        "focusJobId": "db6315ae-1e39-5f34-9786-bd48a32dc519",
+        "advice": [
+          {
+            "jobId": "db6315ae-1e39-5f34-9786-bd48a32dc519",
+            "reason": "当前材料展示了一个Python接口函数（app.py第1-2行），能对应岗位要求中的“使用Python实现接口”这一部分。但岗位要求还包含异常处理与测试，当前材料未展示异常处理与接口断言，因此规则对这部分暂不能判断，需要人工核对。",
+            "keyGap": "未展示异常处理与接口断言。",
+            "nextTask": "为现有接口补充异常处理与接口断言测试，并提交可核验的代码与运行记录。",
+            "taskPlan": {
+              "deliverable": "一份包含异常处理与接口断言测试的Python代码文件，以及对应的运行记录。",
+              "steps": [
+                "在现有接口函数中加入异常处理逻辑，例如对无效输入返回错误信息。",
+                "编写接口断言测试，覆盖正常返回和异常返回两种情况。",
+                "运行测试并保存运行记录（如终端输出或测试报告）。"
+              ],
+              "acceptanceChecks": [
+                "提供更新后的代码文件，其中可见异常处理代码。",
+                "提供测试文件，其中包含对接口返回值的断言。",
+                "提供运行测试的记录，显示测试已执行（不宣称通过）。"
+              ]
+            },
+            "citationIds": [
+              "R1-E1"
+            ]
+          }
+        ]
+      },
+      "validation": "passed",
+      "usage": {
+        "input_tokens": 587,
+        "output_tokens": 413,
+        "cache_hit_tokens": 128,
+        "latency_ms": 2092
+      }
+    }
+  ]
+}

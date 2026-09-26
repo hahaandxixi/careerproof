@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agents.contracts import overclaim_flags
 from app.agents.evidence_workflow import _model_semaphore
 from app.agents.provider import OpenAICompatibleProvider, get_ai_provider
 from app.core.config import settings
@@ -28,6 +29,9 @@ class _DraftRequirement(BaseModel):
     weight: int = Field(ge=1, le=5)
     is_required: bool
     source_quote: str = Field(min_length=3, max_length=1000)
+    evidence_request: str = Field(default="", max_length=300)
+    verification_question: str = Field(default="", max_length=300)
+    weight_reason: str = Field(default="", max_length=200)
 
 
 class _DraftResponse(BaseModel):
@@ -42,9 +46,15 @@ DRAFT_PROMPT = (
     "每条source_quote必须逐字复制原文中连续的一小段，且足以支持对应raw_text、技能与必要性。"
     "必要/必须/要求一般设is_required=true，优先/加分一般设false；不明确时保守设false。"
     "权重1-5只是待企业确认的建议，明确必要且核心可给4-5，优先项通常2-3。"
-    "若同一技能在原文中重复，请合并；最多12条。只返回JSON对象："
+    "若同一技能在原文中重复，请合并；skill_name必须是单一技能名称，如Python、FastAPI、SQL、"
+    "接口测试，不使用Python与FastAPI开发这样的组合名称。原文同时要求两种技能时拆成两条，"
+    "可以共享同一原文引用；最多12条。只返回JSON对象："
     "{requirements:[{raw_text:string,skill_name:string,weight:1|2|3|4|5,"
-    "is_required:boolean,source_quote:string}]}。输出不会自动发布，必须由企业逐条确认。"
+    "is_required:boolean,source_quote:string,evidence_request:string,"
+    "verification_question:string,weight_reason:string}]}。输出不会自动发布，必须由企业逐条确认。"
+    "每条补充建议核验的材料、一个针对该任务的面试问题及权重理由。"
+    "建议与原文任务直接关联，不增加原文没有的硬性资格，不假设候选人已完成任务，"
+    "不用年龄、性别等无关属性评价候选人；核验建议只是待确认辅助说明。"
 )
 
 
@@ -61,6 +71,9 @@ def validate_draft(raw: dict, description: str, model: str, usage: dict | None) 
         if key in seen:
             raise ValueError("AI job draft contains duplicate requirements")
         seen.add(key)
+        if any(overclaim_flags(text) for text in
+               (item.evidence_request, item.verification_question, item.weight_reason)):
+            raise ValueError("AI job draft overclaims verification results")
         requirements.append(
             JobDraftRequirement(
                 raw_text=item.raw_text,
@@ -70,6 +83,9 @@ def validate_draft(raw: dict, description: str, model: str, usage: dict | None) 
                 source_quote=quote,
                 source_start=start,
                 source_end=start + len(quote),
+                evidence_request=item.evidence_request,
+                verification_question=item.verification_question,
+                weight_reason=item.weight_reason,
             )
         )
     return JobDraftResult(requirements=requirements, model=model, usage=usage)
@@ -105,6 +121,9 @@ async def draft_job_requirements(
             provider.model,
             usage.model_dump() if usage else None,
         )
+        if any(not all((item.evidence_request, item.verification_question, item.weight_reason))
+               for item in result.requirements):
+            raise ValueError("AI job draft omitted verification guidance")
         status = TaskStatus.COMPLETED
     except Exception as exc:
         result = None

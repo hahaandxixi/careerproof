@@ -6,6 +6,7 @@ export interface RequirementInput { rawText: string; skillName: string; weight: 
   sourceQuote?: string | null; sourceStart?: number | null; sourceEnd?: number | null }
 export interface JobDraftRequirement extends RequirementInput {
   sourceQuote: string; sourceStart: number; sourceEnd: number;
+  evidenceRequest?: string; verificationQuestion?: string; weightReason?: string;
 }
 export interface JobDraftResult {
   requirements: JobDraftRequirement[]; model: string; usage: { input_tokens?: number; output_tokens?: number } | null;
@@ -77,7 +78,7 @@ export interface CareerPlanResult extends JobRecommendationResult {
   planId: string | null; previousPlanId: string | null;
   aiPlan: {
     comparison: string; focusJobId: string | null;
-    advice: { jobId: string; reason: string; keyGap: string; nextTask: string; citationIds: string[] }[];
+    advice: { jobId: string; reason: string; keyGap: string; nextTask: string; taskPlan?: { deliverable: string; steps: string[]; acceptanceChecks: string[] } | null; citationIds: string[] }[];
   } | null;
   aiFallbackUsed: boolean; aiStatus: string; aiModel: string | null;
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;

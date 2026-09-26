@@ -84,11 +84,18 @@ class JobRecommendationResult(APIModel):
     recommendations: list[JobRecommendationView] = Field(default_factory=list)
 
 
+class CareerTaskPlan(APIModel):
+    deliverable: str = Field(min_length=1, max_length=200)
+    steps: list[str] = Field(min_length=1, max_length=4)
+    acceptance_checks: list[str] = Field(min_length=1, max_length=4)
+
+
 class CareerAdvice(APIModel):
     job_id: UUID
     reason: str = Field(min_length=1, max_length=300)
     key_gap: str = Field(min_length=1, max_length=300)
     next_task: str = Field(min_length=1, max_length=300)
+    task_plan: CareerTaskPlan | None = None
     citation_ids: list[str] = Field(default_factory=list, max_length=3)
 
 

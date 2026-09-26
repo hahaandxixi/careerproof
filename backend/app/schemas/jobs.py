@@ -37,6 +37,9 @@ class JobDraftRequirement(APIModel):
     source_quote: str = Field(min_length=3, max_length=1000)
     source_start: int = Field(ge=0)
     source_end: int = Field(gt=0)
+    evidence_request: str = Field(default="", max_length=300)
+    verification_question: str = Field(default="", max_length=300)
+    weight_reason: str = Field(default="", max_length=200)
 
 
 class JobDraftResult(APIModel):
