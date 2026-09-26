@@ -286,3 +286,33 @@ def test_product_factory_refuses_legacy_external_vendors(monkeypatch, legacy):
     monkeypatch.setattr(settings, "ai_external_enabled", True)
     with pytest.raises(ValueError, match="AI_PROVIDER=deepseek"):
         get_ai_provider()
+
+
+def test_source_redaction_preserves_annotations_but_masks_comment_and_string_names():
+    from app.agents.provider import _redact_external_value
+
+    source = ('def health(name: str):\n'
+              '    # name: Alice; 姓名: 张三\n'
+              '    label = "name: Bob"\n'
+              '    return name.strip()  # test@example.com 13800138000\n')
+    redacted = _redact_external_value({"file_path": "app.py", "snippet": source})["snippet"]
+    assert "def health(name: str):" in redacted
+    assert "Alice" not in redacted and "Bob" not in redacted and "张三" not in redacted
+    assert "test@example.com" not in redacted and "13800138000" not in redacted
+    assert "[已脱敏邮箱]" in redacted and "[已脱敏手机号]" in redacted
+    plain = _redact_external_value({"file_path": "resume.txt", "snippet": "name: Alice"})
+    assert "Alice" not in plain["snippet"]
+    custom = _redact_external_value({"filePath": "models.py", "snippet": "name: UserName"})
+    assert custom["snippet"] == "name: UserName"
+    identifiers = "user_name: CustomType\nfilename: str\n"
+    assert _redact_external_value({"file_path": "models.py", "snippet": identifiers})[
+        "snippet"
+    ] == identifiers
+
+
+def test_partial_python_annotation_keeps_masking_quoted_private_names():
+    from app.agents.provider import _redact_external_value
+
+    source = 'def health(name: Annotated[str, "name: Alice"],'
+    masked = _redact_external_value({"file_path": "app.py", "snippet": source})["snippet"]
+    assert "name: Annotated[str" in masked and "Alice" not in masked

@@ -594,7 +594,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "visualClaims": snapshot.get("visualClaims", []),
                 "privacy": {
                     "externalAiConsent": bool(snapshot.get("externalAiConsent", False)),
-                    "directIdentifierRedaction": "email-phone-id-name-label-v1",
+                    "directIdentifierRedaction": "email-phone-id-name-label-v2-python-annotations",
                     "candidateIdentitySent": False,
                     "rawFilesSent": False,
                 },

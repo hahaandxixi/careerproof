@@ -3,7 +3,9 @@ from __future__ import annotations
 import asyncio
 import json
 import re
+import tokenize
 from collections.abc import Awaitable, Callable
+from io import StringIO
 from pathlib import Path
 from time import perf_counter
 from typing import Protocol
@@ -22,7 +24,7 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v17-frozen-history"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v18-source-aware-redaction"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -35,10 +37,34 @@ _EXTERNAL_TEXT_REDACTIONS = (
 )
 
 
-def redact_external_text(value: str) -> str:
+def _python_name_annotation_starts(value: str) -> set[int]:
+    """Recognize name tokens followed by a colon, excluding strings/comments."""
+    tokens = []
+    try:
+        for token in tokenize.generate_tokens(StringIO(value).readline):
+            tokens.append(token)
+    except (tokenize.TokenError, IndentationError):
+        # Evidence can be a partial function. Only recognized prefix tokens count.
+        pass
+    offsets = [0]
+    for line in value.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    return {
+        offsets[token.start[0] - 1] + token.start[1] + len(token.string) - len("name")
+        for token, following in zip(tokens, tokens[1:], strict=False)
+        if token.type == tokenize.NAME and token.string.lower().endswith("name")
+        and following.type == tokenize.OP and following.string == ":"
+    }
+
+
+def redact_external_text(value: str, *, python_source: bool = False) -> str:
     """Remove common direct identifiers before text leaves the application."""
     for pattern, replacement in _EXTERNAL_TEXT_REDACTIONS:
-        value = pattern.sub(replacement, value)
+        annotation_starts = _python_name_annotation_starts(value) if python_source else set()
+        value = pattern.sub(
+            lambda match, starts=annotation_starts, repl=replacement:
+            match.group(0) if match.start() in starts else match.expand(repl), value,
+        )
     return value
 
 
@@ -48,7 +74,14 @@ def _redact_external_value(value):
     if isinstance(value, list):
         return [_redact_external_value(item) for item in value]
     if isinstance(value, dict):
-        return {key: _redact_external_value(item) for key, item in value.items()}
+        path = value.get("file_path", value.get("filePath", ""))
+        return {
+            key: redact_external_text(item, python_source=True)
+            if key == "snippet" and isinstance(item, str)
+            and isinstance(path, str) and path.endswith(".py")
+            else _redact_external_value(item)
+            for key, item in value.items()
+        }
     return value
 
 
