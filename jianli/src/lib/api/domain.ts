@@ -92,3 +92,17 @@ export const CATEGORY_LABELS: Record<string, string> = {
 export const EMPLOYMENT_LABELS: Record<string, string> = {
   internship: "实习", campus: "校园招聘", full_time: "全职",
 };
+
+export interface ReportComparison {
+  baseId: string; targetId: string; contextChanges: string[];
+  baseMaterials: MatchReport["materials"]; targetMaterials: MatchReport["materials"];
+  limitations: string[];
+  items: { requirementId: string; title: string; status: string;
+    baseRequirement: { title?: string; skill?: string; weight?: number } | null;
+    targetRequirement: { title?: string; skill?: string; weight?: number } | null;
+    baseLevel: number | null; targetLevel: number | null;
+    baseAiStatus: string | null; targetAiStatus: string | null;
+    baseReview: string | null; targetReview: string | null;
+    addedEvidence: ReportEvidence[]; removedEvidence: ReportEvidence[]; changes: string[];
+  }[];
+}

@@ -1,4 +1,4 @@
-import type { Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult } from "./domain";
+import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 
@@ -222,6 +222,7 @@ export const api = {
   },
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
+  previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
     return request<MatchReport["items"][number]>(`/match-reports/${reportId}/items/${requirementId}/review`, {

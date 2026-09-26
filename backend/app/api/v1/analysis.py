@@ -26,10 +26,12 @@ from app.schemas.analysis import (
     TaskAccepted,
 )
 from app.schemas.common import ApiResponse, success
+from app.schemas.report_comparison import ReportComparison
 from app.services.analysis import AnalysisService, execute_match_task, format_sse_event
 from app.services.career_planning import create_career_plan, latest_plan
 from app.services.portfolio import retry_material_task
 from app.services.recommendations import recommend_jobs
+from app.services.report_comparison import compare_reports, previous_comparison
 from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
@@ -193,3 +195,23 @@ async def review_match_evidence(
         report_id, requirement_id, payload, current_user
     )
     return success(item, message="reviewed")
+
+
+@router.get("/match-reports/{target_id}/previous-comparison",
+            response_model=ApiResponse[ReportComparison | None])
+async def get_previous_comparison(
+    target_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await previous_comparison(session, target_id, current_user))
+
+
+@router.get("/match-reports/{base_id}/comparison/{target_id}",
+            response_model=ApiResponse[ReportComparison])
+async def get_report_comparison(
+    base_id: UUID, target_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await compare_reports(session, base_id, target_id, current_user))
