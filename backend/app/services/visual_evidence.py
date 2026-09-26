@@ -29,15 +29,17 @@ from app.tools.storage import LocalStorage
 async def owned_image(session, version_id, user):
     if user.role != UserRole.STUDENT:
         raise AppError("图片材料不存在或无权访问", code=4043, status_code=404)
-    row = await session.scalar(select(ProjectVersion).join(Project).join(
-        StudentProfile, StudentProfile.id == Project.student_id).where(
-        ProjectVersion.id == UUID(str(version_id)), StudentProfile.user_id == user.id))
+    row = await session.scalar(
+        select(ProjectVersion)
+        .join(Project)
+        .join(StudentProfile, StudentProfile.id == Project.student_id)
+        .where(ProjectVersion.id == UUID(str(version_id)), StudentProfile.user_id == user.id)
+    )
     if not row:
         raise AppError("图片材料不存在或无权访问", code=4043, status_code=404)
     suffix = Path(row.original_filename or "").suffix.lower()
     if suffix not in {".png", ".jpg", ".jpeg", ".webp", ".bmp"}:
-        raise AppError("视觉观察仅支持单张图片作品；PDF请先使用本地OCR", code=4227,
-                       status_code=422)
+        raise AppError("视觉观察仅支持单张图片作品；PDF请先使用本地OCR", code=4227, status_code=422)
     return row
 
 
@@ -64,24 +66,35 @@ def view(task):
     created = task.created_at
     if created.tzinfo is None:
         created = created.replace(tzinfo=UTC)
-    return VisualReviewView(id=task.id, project_version_id=saved["projectVersionId"],
-                            source_hash=saved["sourceHash"],
-                            status="completed" if task.status == TaskStatus.COMPLETED
-                            else "unavailable", model=saved.get("model"),
-                            failure_kind=saved.get("failureKind"),
-                            prompt_version=saved["promptVersion"],
-                            observations=saved.get("observations"), usage=saved.get("usage"),
-                            review_status=saved.get("reviewStatus", "pending"),
-                            reviewer_note=saved.get("reviewerNote", ""),
-                            reviewed_at=saved.get("reviewedAt"), created_at=created)
+    return VisualReviewView(
+        id=task.id,
+        project_version_id=saved["projectVersionId"],
+        source_hash=saved["sourceHash"],
+        status="completed" if task.status == TaskStatus.COMPLETED else "unavailable",
+        model=saved.get("model"),
+        failure_kind=saved.get("failureKind"),
+        prompt_version=saved["promptVersion"],
+        observations=saved.get("observations"),
+        usage=saved.get("usage"),
+        review_status=saved.get("reviewStatus", "pending"),
+        reviewer_note=saved.get("reviewerNote", ""),
+        reviewed_at=saved.get("reviewedAt"),
+        created_at=created,
+    )
 
 
 async def latest_visual(session, version_id, user):
     await owned_image(session, version_id, user)
-    task = await session.scalar(select(AnalysisTask).where(
-        AnalysisTask.created_by == user.id, AnalysisTask.task_type == "visual_review",
-        AnalysisTask.input_snapshot["projectVersionId"].as_string() == str(version_id)
-    ).order_by(AnalysisTask.created_at.desc()).limit(1))
+    task = await session.scalar(
+        select(AnalysisTask)
+        .where(
+            AnalysisTask.created_by == user.id,
+            AnalysisTask.task_type == "visual_review",
+            AnalysisTask.input_snapshot["projectVersionId"].as_string() == str(version_id),
+        )
+        .order_by(AnalysisTask.created_at.desc())
+        .limit(1)
+    )
     return view(task) if task else None
 
 
@@ -97,11 +110,16 @@ def validate_observations(raw):
 async def observe_image(session, version_id, request, user):
     row = await owned_image(session, version_id, user)
     if not request.external_image_consent:
-        raise AppError("请确认原图已去除敏感信息并允许发送至智谱视觉模型", code=4224,
-                       status_code=422)
+        raise AppError(
+            "请确认原图已去除敏感信息并允许发送至DeepSeek视觉模型", code=4224, status_code=422
+        )
     saved = await latest_visual(session, version_id, user)
-    if (saved and saved.status == "completed" and saved.source_hash == row.content_hash
-            and saved.prompt_version == VISION_PROMPT_VERSION):
+    if (
+        saved
+        and saved.status == "completed"
+        and saved.source_hash == row.content_hash
+        and saved.prompt_version == VISION_PROMPT_VERSION
+    ):
         return saved
     allowed, _, _ = await _daily_ai_budget(session, user.id)
     if not allowed:
@@ -128,39 +146,62 @@ async def observe_image(session, version_id, request, user):
         # Preserve OCR/source; never substitute fabricated vision descriptions.
         failure_kind = "vision_unavailable"
     usage = provider.combined_usage() if provider else None
-    task = AnalysisTask(created_by=user.id, task_type="visual_review", progress=100,
-                        status=TaskStatus.COMPLETED if observations else TaskStatus.FAILED,
-                        completed_at=datetime.now(UTC), current_step="图片观察已保存"
-                        if observations else "视觉模型不可用，保留本地OCR与原图",
-                        input_snapshot={"projectVersionId": str(version_id),
-                                        "sourceHash": row.content_hash,
-                                        "promptVersion": VISION_PROMPT_VERSION,
-                                        "model": provider.model if provider else None,
-                                        "observations": observations.model_dump() if observations
-                                        else None, "usage": usage.model_dump() if usage else None,
-                                        "externalImageConsent": True, "reviewStatus": "pending"})
+    task = AnalysisTask(
+        created_by=user.id,
+        task_type="visual_review",
+        progress=100,
+        status=TaskStatus.COMPLETED if observations else TaskStatus.FAILED,
+        completed_at=datetime.now(UTC),
+        current_step="图片观察已保存" if observations else "视觉模型不可用，保留本地OCR与原图",
+        input_snapshot={
+            "projectVersionId": str(version_id),
+            "sourceHash": row.content_hash,
+            "promptVersion": VISION_PROMPT_VERSION,
+            "model": provider.model if provider else None,
+            "observations": observations.model_dump() if observations else None,
+            "usage": usage.model_dump() if usage else None,
+            "externalImageConsent": True,
+            "reviewStatus": "pending",
+        },
+    )
     task.input_snapshot = {**task.input_snapshot, "failureKind": failure_kind}
     session.add(task)
     await session.flush()
     if usage:
-        session.add(AiUsageLog(analysis_task_id=task.id, model=provider.model,
-                               input_tokens=usage.input_tokens, output_tokens=usage.output_tokens,
-                               cache_hit_tokens=usage.cache_hit_tokens, latency_ms=usage.latency_ms,
-                               unit_price_snapshot={"provider": "zhipu", "priceVerified": False}))
+        session.add(
+            AiUsageLog(
+                analysis_task_id=task.id,
+                model=provider.model,
+                input_tokens=usage.input_tokens,
+                output_tokens=usage.output_tokens,
+                cache_hit_tokens=usage.cache_hit_tokens,
+                latency_ms=usage.latency_ms,
+                unit_price_snapshot={"provider": provider.name, "priceVerified": False},
+            )
+        )
     await session.commit()
     return view(task)
 
 
 async def review_visual(session, review_id, request, user):
-    task = await session.scalar(select(AnalysisTask).where(
-        AnalysisTask.id == review_id, AnalysisTask.created_by == user.id,
-        AnalysisTask.task_type == "visual_review").with_for_update())
+    task = await session.scalar(
+        select(AnalysisTask)
+        .where(
+            AnalysisTask.id == review_id,
+            AnalysisTask.created_by == user.id,
+            AnalysisTask.task_type == "visual_review",
+        )
+        .with_for_update()
+    )
     if not task or task.status != TaskStatus.COMPLETED:
         raise AppError("图片观察不存在或无权复核", code=4043, status_code=404)
     await owned_image(session, task.input_snapshot["projectVersionId"], user)
-    task.input_snapshot = {**task.input_snapshot, "reviewStatus": request.status,
-                           "reviewerNote": request.note, "reviewedAt": datetime.now(UTC).isoformat()
-                           if request.status != "pending" else None}
+    task.input_snapshot = {
+        **task.input_snapshot,
+        "reviewStatus": request.status,
+        "reviewerNote": request.note,
+        "reviewedAt": datetime.now(UTC).isoformat() if request.status != "pending" else None,
+    }
     await session.commit()
     return view(task)
 
@@ -169,11 +210,16 @@ async def visual_attachments(session, version_ids, user):
     selected = set(map(str, version_ids))
     if not selected:
         return []
-    tasks = await session.scalars(select(AnalysisTask).where(
-        AnalysisTask.created_by == user.id, AnalysisTask.task_type == "visual_review",
-        AnalysisTask.status == TaskStatus.COMPLETED,
-        AnalysisTask.input_snapshot["projectVersionId"].as_string().in_(selected)
-    ).order_by(AnalysisTask.created_at.desc()))
+    tasks = await session.scalars(
+        select(AnalysisTask)
+        .where(
+            AnalysisTask.created_by == user.id,
+            AnalysisTask.task_type == "visual_review",
+            AnalysisTask.status == TaskStatus.COMPLETED,
+            AnalysisTask.input_snapshot["projectVersionId"].as_string().in_(selected),
+        )
+        .order_by(AnalysisTask.created_at.desc())
+    )
     seen = set()
     result = []
     for task in tasks:

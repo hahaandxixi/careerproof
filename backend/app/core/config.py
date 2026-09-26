@@ -41,8 +41,10 @@ class Settings(BaseSettings):
     ocr_max_pages: int = Field(default=10, ge=1, le=50)
     ocr_min_confidence: float = Field(default=0.5, ge=0, le=1)
     ocr_max_image_pixels: int = Field(default=20_000_000, ge=1_000_000, le=50_000_000)
+    # Legacy values load old local settings but are refused by the product factory.
     ai_provider: Literal["mock", "bailian", "qianwen", "zhipu", "deepseek"] = "mock"
     ai_external_enabled: bool = False
+    # Retained only for historical offline adapter regressions; not product routing.
     dashscope_api_key: SecretStr | None = None
     bailian_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
     bailian_model: str = "qwen-plus"

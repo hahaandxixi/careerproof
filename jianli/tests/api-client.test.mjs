@@ -72,3 +72,23 @@ test("validation details become an actionable field message", () => {
   assert.match(errorMessage(error), /邮箱格式不正确/);
   assert.match(errorMessage(error), /validation-request/);
 });
+
+test("visual generation and review send JSON content types and keep consent separate", async () => {
+  const original = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, init) => {
+    assert.equal(new Headers(init.headers).get("Content-Type"), "application/json");
+    calls.push({ url, method: init.method, body: JSON.parse(init.body) });
+    return envelope({ id: "observation" });
+  };
+  try {
+    await api.observeImage("owned-version");
+    await api.reviewVisual("observation", "pending", "仅核对描述");
+    assert.deepEqual(calls.map(call => [call.method, call.body]), [
+      ["POST", { externalImageConsent: true }],
+      ["PATCH", { status: "pending", note: "仅核对描述" }],
+    ]);
+    assert.ok(calls[0].url.endsWith("/project-versions/owned-version/visual-review"));
+    assert.ok(calls[1].url.endsWith("/visual-reviews/observation"));
+  } finally { globalThis.fetch = original; }
+});

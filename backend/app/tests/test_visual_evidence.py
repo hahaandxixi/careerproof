@@ -11,7 +11,7 @@ from httpx import ASGITransport, AsyncClient
 from PIL import Image, PngImagePlugin
 from sqlalchemy import select
 
-from app.agents.vision_provider import ZhipuVisionProvider
+from app.agents.vision_provider import DeepSeekVisionProvider, get_vision_provider
 from app.core.config import settings
 from app.models.analysis import AiUsageLog, AnalysisTask
 from app.models.enums import TaskStatus
@@ -34,14 +34,22 @@ def png():
 
 
 def visual_answer():
-    return {"image_kind": "monitoring", "observations": [{
-        "description": "图中可见服务状态面板。", "visible_text": "status: ok",
-        "region": [0.1, 0.1, 0.9, 0.8],
-        "needs_verification": "需要源码和运行记录核验真实服务状态。"}]}
+    return {
+        "image_kind": "monitoring",
+        "observations": [
+            {
+                "description": "图中可见服务状态面板。",
+                "visible_text": "status: ok",
+                "region": [0.1, 0.1, 0.9, 0.8],
+                "needs_verification": "需要源码和运行记录核验真实服务状态。",
+            }
+        ],
+    }
 
 
-@pytest.mark.parametrize("region", [[0, 0, 2, 1], [0.5, 0, 0.2, 1],
-                                    [0, 0, 1, float("nan")], [0, 0, 0, 0]])
+@pytest.mark.parametrize(
+    "region", [[0, 0, 2, 1], [0.5, 0, 0.2, 1], [0, 0, 1, float("nan")], [0, 0, 0, 0]]
+)
 def test_visual_region_rejects_invalid_rectangles(region):
     raw = visual_answer()
     raw["observations"][0]["region"] = region
@@ -65,20 +73,36 @@ async def test_vision_provider_only_sends_one_data_image_and_bounds_request():
         body = json.loads(request.content)
         assert body["max_tokens"] == 1000
         assert body["thinking"] == {"type": "disabled"}
+        assert body["model"] == "deepseek-flash"
+        assert body["response_format"] == {"type": "json_object"}
+        assert str(request.url) == "https://api.deepseek.com/chat/completions"
         content = body["messages"][1]["content"]
         assert len(content) == 2 and "tools" not in body
         assert base64.b64decode(content[0]["image_url"]["url"].split(",")[1]) == png()
-        return httpx.Response(200, json={"choices": [{"message": {
-            "content": json.dumps(visual_answer())}}],
-            "usage": {"prompt_tokens": 300, "completion_tokens": 100}})
-    provider = ZhipuVisionProvider(api_key="synthetic-key", model="glm-4.6v-flash",
-                                  base_url="https://open.bigmodel.cn/api/paas/v4",
-                                  timeout_seconds=2, transport=httpx.MockTransport(handler))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"content": json.dumps(visual_answer())}}],
+                "usage": {"prompt_tokens": 300, "completion_tokens": 100},
+            },
+        )
+
+    provider = DeepSeekVisionProvider(
+        api_key="synthetic-key",
+        model="deepseek-flash",
+        base_url="https://api.deepseek.com",
+        timeout_seconds=2,
+        transport=httpx.MockTransport(handler),
+    )
     assert (await provider.observe(png()))["image_kind"] == "monitoring"
     assert provider.combined_usage().input_tokens == 300
     with pytest.raises(ValueError):
-        ZhipuVisionProvider(api_key="synthetic", model="glm-4.6v",
-                            base_url="https://open.bigmodel.cn/api/paas/v4", timeout_seconds=2)
+        DeepSeekVisionProvider(
+            api_key="synthetic",
+            model="deepseek-pro",
+            base_url="https://api.deepseek.com",
+            timeout_seconds=2,
+        )
 
 
 @pytest.mark.parametrize("failure", [False, True])
@@ -100,23 +124,30 @@ async def test_visual_owner_consent_fallback_review_and_reuse(matching_db, monke
 
     monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", lambda: Provider())
     transport = ASGITransport(app=app)
-    async with (AsyncClient(transport=transport, base_url="http://test") as owner,
-                AsyncClient(transport=transport, base_url="http://test") as stranger):
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as owner,
+        AsyncClient(transport=transport, base_url="http://test") as stranger,
+    ):
         user = await register(owner, "visual-owner@example.com", "student")
         await register(stranger, "visual-stranger@example.com", "student")
         async with factory() as session:
-            profile = await session.scalar(select(StudentProfile).where(
-                StudentProfile.user_id == UUID(user["id"])))
+            profile = await session.scalar(
+                select(StudentProfile).where(StudentProfile.user_id == UUID(user["id"]))
+            )
             project = Project(student_id=profile.id, name="合成图片")
             session.add(project)
             await session.flush()
             raw = png()
             settings.storage_base_dir.mkdir(parents=True, exist_ok=True)
             (settings.storage_base_dir / "synthetic.png").write_bytes(raw)
-            version = ProjectVersion(project_id=project.id, version_number=1,
-                                     archive_storage_key="synthetic.png", original_filename="x.png",
-                                     content_hash=hashlib.sha256(raw).hexdigest(),
-                                     analysis_status="completed")
+            version = ProjectVersion(
+                project_id=project.id,
+                version_number=1,
+                archive_storage_key="synthetic.png",
+                original_filename="x.png",
+                content_hash=hashlib.sha256(raw).hexdigest(),
+                analysis_status="completed",
+            )
             session.add(version)
             await session.commit()
             version_id = str(version.id)
@@ -139,23 +170,33 @@ async def test_visual_owner_consent_fallback_review_and_reuse(matching_db, monke
             # More than 100 newer observations on unrelated versions must not hide
             # the saved result, trigger a paid repeat, or drop report attachments.
             async with factory() as session:
-                session.add_all([AnalysisTask(
-                    created_by=UUID(user["id"]), task_type="visual_review",
-                    status=TaskStatus.COMPLETED,
-                    input_snapshot={"projectVersionId": str(uuid4())}) for _ in range(101)])
+                session.add_all(
+                    [
+                        AnalysisTask(
+                            created_by=UUID(user["id"]),
+                            task_type="visual_review",
+                            status=TaskStatus.COMPLETED,
+                            input_snapshot={"projectVersionId": str(uuid4())},
+                        )
+                        for _ in range(101)
+                    ]
+                )
                 await session.commit()
             assert (await owner.get(endpoint)).json()["data"] == result
-            assert (await owner.post(endpoint, json={"externalImageConsent": True})).json()[
-                "data"]["id"] == result["id"]
+            assert (await owner.post(endpoint, json={"externalImageConsent": True})).json()["data"][
+                "id"
+            ] == result["id"]
             assert len(calls) == 1
             review_url = f"/api/v1/visual-reviews/{result['id']}"
             denied = await stranger.patch(review_url, json={"status": "accepted"})
             assert denied.status_code == 404
-            reviewed = (await owner.patch(review_url, json={"status": "rejected",
-                                                            "note": "区域需要修正"})).json()["data"]
+            reviewed = (
+                await owner.patch(review_url, json={"status": "rejected", "note": "区域需要修正"})
+            ).json()["data"]
             assert reviewed["reviewStatus"] == "rejected"
             async with factory() as session:
                 from app.models.identity import User
+
                 record_user = await session.get(User, UUID(user["id"]))
                 attached = await visual_attachments(session, [version_id], record_user)
                 assert attached[0]["reviewStatus"] == "rejected"
@@ -174,12 +215,55 @@ def test_ocr_screenshot_sql_is_not_rated_as_source_code(tmp_path):
     text = "[OCR识别文本] SELECT id FROM students; status: ok"
     (tmp_path / "document.txt").write_text(text, encoding="utf-8")
     content = text.encode()
-    files = [{"versionId": "synthetic-image", "sourceModality": "image",
-              "path": "synthetic-image/document.txt", "storageKey": "document.txt",
-              "hash": hashlib.sha256(content).hexdigest(), "size": len(content)}]
-    result = analyze_materials([RequirementInput(uuid4(), "实现SQL查询", "SQL", 5)],
-                               MatchMaterials("了解SQL", files, []), tmp_path,
-                               enable_semantic=False)
+    files = [
+        {
+            "versionId": "synthetic-image",
+            "sourceModality": "image",
+            "path": "synthetic-image/document.txt",
+            "storageKey": "document.txt",
+            "hash": hashlib.sha256(content).hexdigest(),
+            "size": len(content),
+        }
+    ]
+    result = analyze_materials(
+        [RequirementInput(uuid4(), "实现SQL查询", "SQL", 5)],
+        MatchMaterials("了解SQL", files, []),
+        tmp_path,
+        enable_semantic=False,
+    )
     assert result.items[0].evidence is None and result.items[0].evidence_list == []
-    assert any(s["status"] == "visual_excluded_from_rating" for s in result.retrieval_steps
-               if "status" in s)
+    assert any(
+        s["status"] == "visual_excluded_from_rating"
+        for s in result.retrieval_steps
+        if "status" in s
+    )
+
+
+def test_vision_reuses_deepseek_key_and_disables_legacy_selection(monkeypatch):
+    from pydantic import SecretStr
+
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    monkeypatch.setattr(settings, "deepseek_api_key", SecretStr("synthetic-deepseek-key"))
+    monkeypatch.setattr(settings, "zhipu_api_key", None)
+    selected = get_vision_provider()
+    assert selected.name == "deepseek" and selected.model == settings.deepseek_model
+    assert selected._max_attempts == 1
+    # Inline Base64 is transport data, and user caption text is included in the guard.
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image_url", "image_url": {"url": "data:image/png;base64," + "A" * 20000}},
+                {"type": "text", "text": "bounded caption"},
+            ],
+        }
+    ]
+    assert 1024 < selected._estimate_input_tokens(messages) < 2000
+    monkeypatch.setattr(settings, "ai_provider", "zhipu")
+    with pytest.raises(ValueError):
+        get_vision_provider()
+    monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    monkeypatch.setattr(settings, "deepseek_api_key", None)
+    with pytest.raises(ValueError):
+        get_vision_provider()

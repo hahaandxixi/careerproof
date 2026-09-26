@@ -173,7 +173,7 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
 固定规则评测：`python evals/run_rule_baseline.py --output evals/baseline-evidence-v3.json`。
 
 固定 AI 评测：启用合成数据可用的真实 Provider 后，运行
-`python -m evals.run_ai_evidence_baseline --output evals/baseline-ai-evidence-qwen-plus-YYYY-MM-DD.json`。
+`python -m evals.run_ai_evidence_baseline --output evals/baseline-ai-evidence-deepseek-YYYY-MM-DD.json`。
 自动化测试由 `app/tests/conftest.py` 强制隔离真实 Provider，不消耗模型额度。
 
 ## 当前限制
@@ -185,7 +185,7 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
 - ZIP 上限 30 MB，PDF/DOCX/TXT 上限 10 MB；扫描 PDF 和常见图片可使用本地 RapidOCR，低置信度文字仍需人工核对。
 - 规则覆盖有限，分类入口不代表每个专业都具备完整评价器。
 - 当前是规则、词法与可选本地语义文档候选组成的受控生成闭环，不宣称通用向量 RAG；语音
-  面试及企业投递授权尚未实现；视觉截图观察v1已实现，但真实成功验收仍受认证失败限制。
+  面试及企业投递授权尚未实现；截图观察已使用同一DeepSeek Key完成一次合成图片真实验收，区域定位及语义准确性仍待独立人工核验。
 
 ## 安全策略
 

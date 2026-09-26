@@ -278,3 +278,11 @@ def test_deepseek_key_is_required_only_when_external_calls_are_enabled(monkeypat
     monkeypatch.setattr(settings, "ai_external_enabled", True)
     with pytest.raises(ValueError, match="DEEPSEEK_API_KEY"):
         get_ai_provider()
+
+
+@pytest.mark.parametrize("legacy", ["bailian", "qianwen", "zhipu"])
+def test_product_factory_refuses_legacy_external_vendors(monkeypatch, legacy):
+    monkeypatch.setattr(settings, "ai_provider", legacy)
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    with pytest.raises(ValueError, match="AI_PROVIDER=deepseek"):
+        get_ai_provider()

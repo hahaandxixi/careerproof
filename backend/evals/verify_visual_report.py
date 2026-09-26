@@ -57,21 +57,42 @@ def main():
         result = data(client.post(f"/project-versions/{version_id}/visual-review",
                                   json={"externalImageConsent": True}))
         reloaded = data(client.get(f"/project-versions/{version_id}/visual-review"))
+        cache_reused = review_stable = None
+        if result["status"] == "completed":
+            cached = data(client.post(f"/project-versions/{version_id}/visual-review",
+                                     json={"externalImageConsent": True}))
+            cache_reused = cached == result
+            reviewed = data(client.patch(f"/visual-reviews/{result['id']}", json={
+                "status": "accepted",
+                "note": "合成验收：仅核对保存流程，不代表独立语义复核或真实运行认证。"}))
+            review_stable = reviewed == data(
+                client.get(f"/project-versions/{version_id}/visual-review"))
         data(enterprise.post("/auth/login", json=get_demo_credentials("enterprise")))
         denied = enterprise.get(f"/project-versions/{version_id}/image").status_code
+        observation_denied = enterprise.get(
+            f"/project-versions/{version_id}/visual-review").status_code
+        review_denied = enterprise.patch(f"/visual-reviews/{result['id']}",
+                                        json={"status": "accepted", "note": ""}).status_code
         record = {"generatedAt": datetime.now(UTC).isoformat(), "projectVersionId": version_id,
                   "scope": "Synthetic image, real official vision API and local PostgreSQL",
                   "fixtureHash": hashlib.sha256(fixture.read_bytes()).hexdigest(),
                   "result": result, "reloadStable": result == reloaded,
+                  "cacheReused": cache_reused, "reviewReloadStable": review_stable,
                   "enterpriseImageReadStatus": denied, "imageResponseMime":
-                  source.headers.get("content-type"), "humanSemanticReview": "pending",
+                  source.headers.get("content-type"),
+                  "enterpriseObservationReadStatus": observation_denied,
+                  "enterpriseReviewStatus": review_denied,
+                  "humanSemanticReview": "pending",
                   "regionAccuracy": "not independently labeled", "billingVerified": False}
         path = Path(__file__).with_name(f"visual-report-{stamp}.json")
         path.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
         print(json.dumps({"output": path.name, "projectVersionId": version_id,
                           "status": result["status"], "usage": result["usage"]},
                          ensure_ascii=False))
-        return 0 if result["status"] == "completed" and result == reloaded and denied == 404 else 1
+        passed = (result["status"] == "completed" and result == reloaded
+                  and cache_reused and review_stable
+                  and denied == observation_denied == review_denied == 404)
+        return 0 if passed else 1
 
 
 if __name__ == "__main__":

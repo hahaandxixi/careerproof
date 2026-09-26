@@ -203,8 +203,8 @@ export const api = {
   },
   revokeMcpGrant(id: string) { return request<{ revoked: boolean }>(`/mcp-tools/grants/${id}`, { method: "DELETE" }); },
   getVisualReview(id: string) { return request<VisualReview | null>(`/project-versions/${id}/visual-review`); },
-  observeImage(id: string) { return request<VisualReview>(`/project-versions/${id}/visual-review`, { method: "POST", body: JSON.stringify({ externalImageConsent: true }) }); },
-  reviewVisual(id: string, status: VisualReview["reviewStatus"], note: string) { return request<VisualReview>(`/visual-reviews/${id}`, { method: "PATCH", body: JSON.stringify({ status, note }) }); },
+  observeImage(id: string) { return request<VisualReview>(`/project-versions/${id}/visual-review`, { method: "POST", ...jsonBody({ externalImageConsent: true }) }); },
+  reviewVisual(id: string, status: VisualReview["reviewStatus"], note: string) { return request<VisualReview>(`/visual-reviews/${id}`, { method: "PATCH", ...jsonBody({ status, note }) }); },
   listJobs(filters: Record<string, string | number> = {}, mine = false) {
     const query = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => { if (value !== "") query.set(key, String(value)); });

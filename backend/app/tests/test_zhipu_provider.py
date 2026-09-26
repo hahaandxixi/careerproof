@@ -569,7 +569,8 @@ def test_provider_selection_and_disabled_mode(monkeypatch):
     monkeypatch.setattr(settings, "zhipu_api_key", SecretStr("synthetic-zhipu-key"))
     assert get_ai_provider().name == "mock"
     monkeypatch.setattr(settings, "ai_external_enabled", True)
-    assert get_ai_provider().name == "zhipu"
+    with pytest.raises(ValueError, match="AI_PROVIDER=deepseek"):
+        get_ai_provider()
 
 
 async def test_missing_policy_falls_back_before_network(monkeypatch):

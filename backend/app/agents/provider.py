@@ -692,24 +692,6 @@ class DeepSeekProvider(OpenAICompatibleProvider):
 def get_ai_provider() -> AIProvider:
     if not settings.ai_external_enabled or settings.ai_provider == "mock":
         return MockAIProvider()
-    if settings.ai_provider in {"bailian", "qianwen"}:
-        if settings.dashscope_api_key is None:
-            raise ValueError("DASHSCOPE_API_KEY is required when Bailian is enabled")
-        return BailianProvider(
-            api_key=settings.dashscope_api_key.get_secret_value(),
-            base_url=settings.bailian_base_url,
-            model=settings.bailian_model,
-            timeout_seconds=settings.bailian_timeout_seconds,
-        )
-    if settings.ai_provider == "zhipu":
-        if settings.zhipu_api_key is None:
-            raise ValueError("ZHIPU_API_KEY is required when Zhipu is enabled")
-        return ZhipuProvider(
-            api_key=settings.zhipu_api_key.get_secret_value(),
-            base_url=settings.zhipu_base_url,
-            model=settings.zhipu_model,
-            timeout_seconds=settings.zhipu_timeout_seconds,
-        )
     if settings.ai_provider == "deepseek":
         if settings.deepseek_api_key is None:
             raise ValueError("DEEPSEEK_API_KEY is required when DeepSeek is enabled")
@@ -719,4 +701,6 @@ def get_ai_provider() -> AIProvider:
             model=settings.deepseek_model,
             timeout_seconds=settings.deepseek_timeout_seconds,
         )
-    return MockAIProvider()
+    raise ValueError(
+        "External product calls require AI_PROVIDER=deepseek; legacy adapters are offline only"
+    )
