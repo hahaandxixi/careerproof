@@ -78,11 +78,10 @@ def view(task):
 
 async def latest_visual(session, version_id, user):
     await owned_image(session, version_id, user)
-    tasks = await session.scalars(select(AnalysisTask).where(
-        AnalysisTask.created_by == user.id, AnalysisTask.task_type == "visual_review"
-    ).order_by(AnalysisTask.created_at.desc()).limit(100))
-    task = next((t for t in tasks if t.input_snapshot.get("projectVersionId") == str(version_id)),
-                None)
+    task = await session.scalar(select(AnalysisTask).where(
+        AnalysisTask.created_by == user.id, AnalysisTask.task_type == "visual_review",
+        AnalysisTask.input_snapshot["projectVersionId"].as_string() == str(version_id)
+    ).order_by(AnalysisTask.created_at.desc()).limit(1))
     return view(task) if task else None
 
 
@@ -167,11 +166,14 @@ async def review_visual(session, review_id, request, user):
 
 
 async def visual_attachments(session, version_ids, user):
+    selected = set(map(str, version_ids))
+    if not selected:
+        return []
     tasks = await session.scalars(select(AnalysisTask).where(
         AnalysisTask.created_by == user.id, AnalysisTask.task_type == "visual_review",
-        AnalysisTask.status == TaskStatus.COMPLETED
-    ).order_by(AnalysisTask.created_at.desc()).limit(100))
-    selected = set(map(str, version_ids))
+        AnalysisTask.status == TaskStatus.COMPLETED,
+        AnalysisTask.input_snapshot["projectVersionId"].as_string().in_(selected)
+    ).order_by(AnalysisTask.created_at.desc()))
     seen = set()
     result = []
     for task in tasks:

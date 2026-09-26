@@ -13,7 +13,8 @@ from sqlalchemy import select
 
 from app.agents.vision_provider import ZhipuVisionProvider
 from app.core.config import settings
-from app.models.analysis import AiUsageLog
+from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.enums import TaskStatus
 from app.models.identity import StudentProfile
 from app.models.portfolio import Project, ProjectVersion
 from app.schemas.visual import VisualResponse
@@ -135,6 +136,15 @@ async def test_visual_owner_consent_fallback_review_and_reuse(matching_db, monke
         assert "level" not in result and len(calls) == 1
         assert (await owner.get(endpoint)).json()["data"] == result
         if not failure:
+            # More than 100 newer observations on unrelated versions must not hide
+            # the saved result, trigger a paid repeat, or drop report attachments.
+            async with factory() as session:
+                session.add_all([AnalysisTask(
+                    created_by=UUID(user["id"]), task_type="visual_review",
+                    status=TaskStatus.COMPLETED,
+                    input_snapshot={"projectVersionId": str(uuid4())}) for _ in range(101)])
+                await session.commit()
+            assert (await owner.get(endpoint)).json()["data"] == result
             assert (await owner.post(endpoint, json={"externalImageConsent": True})).json()[
                 "data"]["id"] == result["id"]
             assert len(calls) == 1
