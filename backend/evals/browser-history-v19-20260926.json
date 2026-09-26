@@ -1,0 +1,390 @@
+{
+  "generatedAt": "2026-09-26T15:43:55.653551+00:00",
+  "scope": "Synthetic materials; browser keyboard submission; readonly API/DB validation",
+  "reportId": "a25eaf92-6fe3-42ba-bff2-65b4a40ed7d1",
+  "serverPromptVersion": "evidence-trust-v19-history-reference-isolation",
+  "frozenPreviousReportId": "7a237772-87c0-4240-bc02-ef2d1a1e5c61",
+  "externalAiConsent": true,
+  "usePreviousReport": true,
+  "report": {
+    "id": "a25eaf92-6fe3-42ba-bff2-65b4a40ed7d1",
+    "taskId": "83082956-af31-419e-a327-d2c48fd05386",
+    "jobId": "f72b6799-7f9a-47ee-a4ef-c438a226b50e",
+    "jobTitle": "历史补证合成验收 20260926-234002",
+    "jobCategory": "software",
+    "candidateId": "8a722516-c73e-4eec-b00c-7e586d2a5851",
+    "candidateName": "演示学生",
+    "overallScore": 65.0,
+    "summary": "当前片段展示 FastAPI 应用与 /health 路由，函数体含 name 空值校验、HTTPException 400 分支与字典返回，属直接相关且含实质处理与完整分支。未展示测试请求与结果断言，也未展示运行结果与本人贡献。",
+    "analysisMode": "ai_evidence",
+    "aiProvider": "deepseek",
+    "aiModel": "deepseek-flash",
+    "aiFallbackUsed": false,
+    "evidenceContextVersion": "source-context-v4-semantic-documents",
+    "createdAt": "2026-09-26T15:42:42.328294Z",
+    "visualClaims": [],
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "290712ef-8813-457f-9e80-c7058a149402",
+        "title": "历史验收简历 20260926-234002",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "fdb3b96bdc4aecd5befb633c3ce0c5e0d735efbb8b41b0f70568471c45c67cda"
+      },
+      {
+        "kind": "project",
+        "id": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+        "title": "历史验收项目 20260926-234002",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "b892a3543606cc61d8af595ef52dd308b1934626721fbe16680baa3d3f17c479"
+      }
+    ],
+    "gaps": [],
+    "claimedOnly": [],
+    "items": [
+      {
+        "evidenceLevelSource": "ai_preliminary",
+        "skillPath": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "ratingCriteria": [
+          {
+            "criterion": "relevance",
+            "supported": true,
+            "citation_ids": [
+              "R1-E1",
+              "R1-E2"
+            ],
+            "reason": "片段含 FastAPI 应用与 /health 路由装饰器，与岗位要求直接相关。"
+          },
+          {
+            "criterion": "operation",
+            "supported": true,
+            "citation_ids": [
+              "R1-E1"
+            ],
+            "reason": "函数体含 name 空值校验与 HTTPException 400 分支，属非空处理逻辑。"
+          },
+          {
+            "criterion": "task",
+            "supported": false,
+            "citation_ids": [],
+            "reason": "未展示测试请求与结果断言，无法确认完整任务实现。"
+          }
+        ],
+        "evidenceLevel": 2,
+        "evidenceLevelLabel": "局部操作",
+        "evidenceLevelReason": "片段展示路由装饰器、输入校验与返回/异常分支，属实质操作；但未展示测试请求与结果断言，完整任务实现证据不足。",
+        "evidenceLevelGap": "未展示该路由的实际运行结果、请求响应记录，以及本人在该文件中的具体贡献范围。",
+        "evidenceLevelVersion": "practice-evidence-v3-ai",
+        "requirementId": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+        "requirementTitle": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+        "skill": "FastAPI",
+        "claimed": true,
+        "claimText": "合成学生：接触过 Python 和 FastAPI。",
+        "evidence": {
+          "citationId": "R1-E1",
+          "provenance": "portfolio",
+          "contextComplete": true,
+          "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+          "skill": "FastAPI",
+          "evidenceType": "fastapi_route",
+          "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+          "lineStart": 3,
+          "lineEnd": 7,
+          "snippet": "@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+          "strength": "high",
+          "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+          "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+          "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+          "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+          "sourceId": "16eb4add-487e-4a5c-ab34-cf7c281e1a54"
+        },
+        "evidenceList": [
+          {
+            "citationId": "R1-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_route",
+            "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "snippet": "@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+            "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+            "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+            "sourceId": "16eb4add-487e-4a5c-ab34-cf7c281e1a54"
+          },
+          {
+            "citationId": "R1-E2",
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_app",
+            "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "snippet": "from fastapi import FastAPI, HTTPException\napp = FastAPI()\n@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "strength": "medium",
+            "explanation": "创建了FastAPI应用实例；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+            "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+            "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+            "sourceId": "956afc7f-da04-43ee-97ba-3217003a2ffa"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "snippet": "from fastapi import FastAPI, HTTPException\napp = FastAPI()\n@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+            "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+            "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+            "sourceId": "a3f6210f-51f9-4c6d-9954-a7d107dac73a"
+          }
+        ],
+        "verdict": "supported",
+        "aiConfidence": 0.85,
+        "ruleBaseScore": 0.65,
+        "weight": 5,
+        "finalScore": 65.0,
+        "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+        "formulaVersion": "evidence-v3",
+        "evidenceId": "45710f05-9e1b-42fd-b2c4-6983ccda9444",
+        "confirmationStatus": "pending",
+        "confirmedAt": null,
+        "reviewerNote": null,
+        "aiExplanation": "片段含 FastAPI 应用与 /health 路由装饰器，函数体对 name 做 strip 空值校验，空值时抛 HTTPException 400，否则返回含 status 与 name 的字典，展示输入校验与响应分支。",
+        "aiCitationIds": [
+          "R1-E1",
+          "R1-E2"
+        ],
+        "aiInformationGap": "未展示该路由的实际运行结果、请求响应记录，以及本人在该文件中的具体贡献范围。",
+        "aiSuggestion": "可提交该路由的完整文件与运行日志或测试记录，核对空值请求返回 400、正常请求返回字典的实际响应。",
+        "aiStatus": "validated",
+        "aiOrigin": null
+      }
+    ],
+    "aiUsage": {
+      "input_tokens": 4455,
+      "output_tokens": 464,
+      "cache_hit_tokens": 2688,
+      "latency_ms": 2595
+    },
+    "aiToolCalls": [
+      {
+        "tool": "get_previous_report_context",
+        "round": 1,
+        "requirementId": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+        "status": "completed",
+        "scope": "same-owner-same-job-history",
+        "previousReportId": "7a237772-87c0-4240-bc02-ef2d1a1e5c61"
+      }
+    ],
+    "actionPlan": [
+      {
+        "requirementId": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+        "requirementTitle": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+        "skill": "FastAPI",
+        "weight": 5,
+        "currentLevel": 2,
+        "source": "ai_suggestion",
+        "evidenceGap": "未展示该路由的实际运行结果、请求响应记录，以及本人在该文件中的具体贡献范围。",
+        "action": "可提交该路由的完整文件与运行日志或测试记录，核对空值请求返回 400、正常请求返回字典的实际响应。",
+        "citationIds": [
+          "R1-E1",
+          "R1-E2"
+        ]
+      }
+    ]
+  },
+  "comparison": {
+    "baseId": "7a237772-87c0-4240-bc02-ef2d1a1e5c61",
+    "targetId": "a25eaf92-6fe3-42ba-bff2-65b4a40ed7d1",
+    "contextChanges": [
+      "materials"
+    ],
+    "baseMaterials": [
+      {
+        "kind": "resume",
+        "id": "290712ef-8813-457f-9e80-c7058a149402",
+        "title": "历史验收简历 20260926-234002",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "fdb3b96bdc4aecd5befb633c3ce0c5e0d735efbb8b41b0f70568471c45c67cda"
+      },
+      {
+        "kind": "project",
+        "id": "5d85268f-ea2b-4daa-ad4e-28a251a03234",
+        "title": "历史验收项目 20260926-234002",
+        "versionNumber": 2,
+        "materialRole": "portfolio",
+        "contentHash": "84be392806c8ae047bbd7bfae9ed42b6edd65a33912a721b4a2e70c8fd5159b8"
+      }
+    ],
+    "targetMaterials": [
+      {
+        "kind": "resume",
+        "id": "290712ef-8813-457f-9e80-c7058a149402",
+        "title": "历史验收简历 20260926-234002",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "fdb3b96bdc4aecd5befb633c3ce0c5e0d735efbb8b41b0f70568471c45c67cda"
+      },
+      {
+        "kind": "project",
+        "id": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+        "title": "历史验收项目 20260926-234002",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "b892a3543606cc61d8af595ef52dd308b1934626721fbe16680baa3d3f17c479"
+      }
+    ],
+    "items": [
+      {
+        "requirementId": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+        "title": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+        "status": "existing",
+        "baseRequirement": {
+          "id": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+          "title": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+          "skill": "FastAPI",
+          "weight": 5
+        },
+        "targetRequirement": {
+          "id": "40d80c8e-9677-447b-bae1-d7539752fb7d",
+          "title": "FastAPI 路由需包含输入校验和响应处理；仅声明或空函数不足。",
+          "skill": "FastAPI",
+          "weight": 5
+        },
+        "baseLevel": 1,
+        "targetLevel": 2,
+        "baseAiStatus": "validated",
+        "targetAiStatus": "validated",
+        "baseReview": "pending",
+        "targetReview": "pending",
+        "addedEvidence": [
+          {
+            "citationId": "R1-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_route",
+            "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "snippet": "@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+            "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+            "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+            "sourceId": "16eb4add-487e-4a5c-ab34-cf7c281e1a54"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a/app.py",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "snippet": "from fastapi import FastAPI, HTTPException\napp = FastAPI()\n@app.get(\"/health\")\ndef health(name: str):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "a4048fa2c6987d1abaa4755ddf75ea5c8601adb51d573db4b4a34d21d421eecb",
+            "projectFileId": "4204ba31-0555-4cee-85e5-9a5ccf23192e",
+            "projectVersionId": "369f2a1c-c88c-4b35-9ea3-b98cc4f85d7a",
+            "sourceId": "a3f6210f-51f9-4c6d-9954-a7d107dac73a"
+          }
+        ],
+        "removedEvidence": [
+          {
+            "citationId": "R1-E1",
+            "provenance": "portfolio",
+            "contextComplete": true,
+            "contextNote": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "fastapi_route",
+            "filePath": "5d85268f-ea2b-4daa-ad4e-28a251a03234/app.py",
+            "lineStart": 3,
+            "lineEnd": 5,
+            "snippet": "@app.get(\"/health\")\ndef health(name: str):\n    pass",
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "contentHash": "77f224754f44f69cd605634b2a41354afe66473e583de89665af6fd028e7377b",
+            "projectFileId": "16bdbb33-2ab8-4467-91a4-3f13f90ea357",
+            "projectVersionId": "5d85268f-ea2b-4daa-ad4e-28a251a03234",
+            "sourceId": "f408ca6f-22e3-4520-be7f-2984ea15b616"
+          },
+          {
+            "citationId": null,
+            "provenance": "portfolio",
+            "contextComplete": false,
+            "contextNote": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+            "skill": "FastAPI",
+            "evidenceType": "retrieved_context",
+            "filePath": "5d85268f-ea2b-4daa-ad4e-28a251a03234/app.py",
+            "lineStart": 1,
+            "lineEnd": 5,
+            "snippet": "from fastapi import FastAPI\napp = FastAPI()\n@app.get(\"/health\")\ndef health(name: str):\n    pass",
+            "strength": "low",
+            "explanation": "混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。",
+            "contentHash": "77f224754f44f69cd605634b2a41354afe66473e583de89665af6fd028e7377b",
+            "projectFileId": "16bdbb33-2ab8-4467-91a4-3f13f90ea357",
+            "projectVersionId": "5d85268f-ea2b-4daa-ad4e-28a251a03234",
+            "sourceId": "1d62a279-449c-48ba-96b0-7fc6099034af"
+          }
+        ],
+        "changes": [
+          "level",
+          "evidence"
+        ]
+      }
+    ],
+    "limitations": [
+      "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",
+      "等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。",
+      "历史岗位快照可能缺少必要性字段；无法还原未保存的属性。",
+      "复核状态是当前状态，不代表报告生成时的状态。",
+      "引用减少仅表示目标报告未再展示，不代表原文件被删除。"
+    ]
+  },
+  "reloadStable": true,
+  "enterpriseReadStatus": 404,
+  "currentSourceExact": true,
+  "independentHumanSemanticReview": "pending",
+  "mouseFullWorkflow": "not_verified",
+  "billingVerified": false,
+  "browserChecks": {
+    "materialSelection": true,
+    "bothConsentsChecked": true,
+    "taskSubmissionAndReportLink": true,
+    "reportReadAndComparison": true,
+    "refreshRestored": true,
+    "citationTargetExistsAndVisible": true,
+    "citationDetailsOpen": true,
+    "viewportWidth": 390,
+    "horizontalOverflow": false,
+    "method": "keyboard; mouse comparison click did not activate, so mouse workflow not verified"
+  }
+}
