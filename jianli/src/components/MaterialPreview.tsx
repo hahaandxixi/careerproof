@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ResumePreview, ProjectFileSummary, ProjectFileContent } from "@/lib/api/domain";
 import { ErrorNotice } from "./AccessGate";
+import VisualEvidencePanel from "./VisualEvidencePanel";
 
 export default function MaterialPreview({ id, kind, initialFileId, initialLineStart, initialLineEnd }: { id: string; kind: "resume" | "project"; initialFileId?: string; initialLineStart?: number; initialLineEnd?: number }) {
   const [resume, setResume] = useState<ResumePreview | null>(null);
@@ -40,7 +41,8 @@ export default function MaterialPreview({ id, kind, initialFileId, initialLineSt
   }, [selected, initialFileId, initialLineStart]);
   return <div className="space-y-6">
     <Link href="/portfolio" className="text-sm text-indigo-600">← 我的材料</Link>
-    <div><h1 className="text-2xl font-bold">{kind === "resume" ? "简历解析预览" : "项目 / 作品文本预览"}</h1><p className="mt-2 text-sm leading-6 text-slate-500">核对系统实际读取到的内容。扫描图片型文档需要先转换为可提取文字的版本。</p></div>
+    <div><h1 className="text-2xl font-bold">{kind === "resume" ? "简历解析预览" : "项目 / 作品文本预览"}</h1><p className="mt-2 text-sm leading-6 text-slate-500">核对系统实际读取到的内容。扫描件与图片由本地 OCR 提取文字，识别结果需对照原图。</p></div>
+    {!loading && !error && kind === "project" && <VisualEvidencePanel key={id} versionId={id} />}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     {loading && <p className="text-sm text-slate-500">加载解析结果…</p>}
     {!loading && !error && kind === "resume" && <div className="space-y-4">{resume?.sections.length ? resume.sections.map((section, index) => <section className="panel" key={section.id}><h2 className="mb-3 text-sm font-medium">内容段落 {index + 1}{section.pageNumber != null ? ` · 第 ${section.pageNumber} 页` : ""}</h2><pre className="overflow-auto whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{section.content}</pre></section>) : <p className="panel text-sm text-slate-500">暂无可预览的文字，请在材料列表确认解析是否完成。</p>}</div>}

@@ -52,6 +52,7 @@ export interface ReportEvidence {
   aiSuggestion: string | null; aiStatus: string; aiOrigin?: string | null;
 }
 export interface MatchReport extends ReportSummary {
+  visualClaims?: VisualReview[];
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
@@ -61,6 +62,17 @@ export interface MatchReport extends ReportSummary {
     currentLevel: number | null; source: "ai_suggestion" | "rules" | "review";
     evidenceGap: string; action: string; citationIds: string[];
   }[];
+}
+
+export interface VisualReview {
+  id: string; projectVersionId: string; sourceHash: string;
+  status: "completed" | "unavailable"; failureKind?: string | null; model: string | null; promptVersion: string;
+  observations: { image_kind: string; observations: {
+    description: string; visible_text: string; region: number[]; needs_verification: string;
+  }[] } | null;
+  reviewStatus: "pending" | "accepted" | "rejected"; reviewerNote: string;
+  reviewedAt: string | null; createdAt: string; boundary: string;
+  usage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
 }
 export interface JobRecommendation {
   jobId: string; jobTitle: string; companyName: string; category: string; city: string; employmentType: string;

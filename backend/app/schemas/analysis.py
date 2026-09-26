@@ -8,6 +8,7 @@ from pydantic import Field
 
 from app.models.enums import ConfirmationStatus, TaskStatus
 from app.schemas.common import APIModel
+from app.schemas.visual import VisualReviewView
 
 
 class MaterialSelection(APIModel):
@@ -246,6 +247,7 @@ class EvidenceActionView(APIModel):
 
 
 class MatchReportView(MatchReportSummary):
+    visual_claims: list[VisualReviewView] = Field(default_factory=list)
     materials: list[ReportMaterial] = Field(default_factory=list)
     gaps: list[str]
     claimed_only: list[str]

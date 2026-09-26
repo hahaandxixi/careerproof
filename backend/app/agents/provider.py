@@ -310,6 +310,9 @@ class OpenAICompatibleProvider:
                 pass
         return min(8.0, float(2 ** (attempt - 1)))
 
+    def _estimate_input_tokens(self, messages: list) -> int:
+        return conservative_input_token_estimate(messages)
+
     async def _completion(self, request: dict) -> tuple[dict, int]:
         request = dict(request)
         input_limit = int(
@@ -317,7 +320,7 @@ class OpenAICompatibleProvider:
         )
         messages = request.get("messages")
         if isinstance(messages, list):
-            estimate = conservative_input_token_estimate(messages)
+            estimate = self._estimate_input_tokens(messages)
             if estimate > input_limit:
                 raise ValueError(
                     "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "

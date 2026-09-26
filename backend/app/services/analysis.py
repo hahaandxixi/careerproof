@@ -87,6 +87,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "externalAiConsent": snapshot.get("externalAiConsent", False),
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
+        "visualClaims": snapshot.get("visualClaims", []),
         "cacheVersion": "report-context-v4-frozen-history",
         "semanticEngine": (
             SEMANTIC_VERSION
@@ -100,6 +101,8 @@ def _analysis_cache_key(snapshot: dict) -> str:
 
 
 def _retrieval_step_detail(retrieval: dict) -> str:
+    if retrieval.get("status") == "visual_excluded_from_rating":
+        return "图片及OCR文字不进入代码实践评级；视觉描述单独保存，需对照原图核对"
     if retrieval.get("status") == "excluded_from_personal_rating":
         return (
             f"识别{retrieval.get('referenceFileCount', 0)}个第三方参考文件；"
@@ -231,6 +234,11 @@ class AnalysisService:
             snapshot["previousReportId"] = await select_history_report_id(
                 self.session, current_user.id, job.id
             )
+        from app.services.visual_evidence import visual_attachments
+
+        snapshot["visualClaims"] = await visual_attachments(
+            self.session, request.project_version_ids, current_user
+        )
         cache_key = _analysis_cache_key(snapshot)
         snapshot["analysisCacheKey"] = cache_key
         cached_rows = await self.session.execute(
@@ -356,6 +364,7 @@ class AnalysisService:
             ai_usage=(report.analysis_metadata or {}).get("usage"),
             ai_tool_calls=(report.analysis_metadata or {}).get("modelToolCalls") or [],
             action_plan=build_action_plan(item_views),
+            visual_claims=(report.analysis_metadata or {}).get("visualClaims", []),
         )
 
     async def review_evidence(
@@ -582,6 +591,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "promptVersion": EVIDENCE_PROMPT_VERSION,
                 "analysisCacheKey": snapshot.get("analysisCacheKey"),
                 "dailyBudgetBeforeRun": budget_stats,
+                "visualClaims": snapshot.get("visualClaims", []),
                 "privacy": {
                     "externalAiConsent": bool(snapshot.get("externalAiConsent", False)),
                     "directIdentifierRedaction": "email-phone-id-name-label-v1",

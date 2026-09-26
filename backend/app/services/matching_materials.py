@@ -117,6 +117,9 @@ async def resolve_materials(
                     "versionId": str(version_id),
                     "versionNumber": project_version.version_number,
                     "materialRole": project_version.material_role,
+                    "sourceModality": "image" if Path(
+                        project_version.original_filename or ""
+                    ).suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".bmp"} else "text",
                     "path": f"{version_id}/{record.relative_path}",
                     "storageKey": record.storage_key,
                     "hash": record.content_hash,
@@ -162,6 +165,12 @@ def analyze_materials(
     portfolio_snapshots = [
         file for file in snapshots if version_by_path[file.path] not in reference_versions
     ]
+    image_versions = {
+        str(file.get("versionId", "")) for file in materials.files
+        if file.get("sourceModality") == "image"
+    }
+    portfolio_snapshots = [file for file in portfolio_snapshots
+                           if version_by_path[file.path] not in image_versions]
     reference_snapshots = [
         file for file in snapshots if version_by_path[file.path] in reference_versions
     ]
@@ -204,6 +213,11 @@ def analyze_materials(
         semantic_candidates=semantic,
         reference_files=reference_snapshots,
     )
+    if image_versions:
+        result = replace(result, retrieval_steps=[*result.retrieval_steps, {
+            "name": "区分图片描述与代码证据", "status": "visual_excluded_from_rating",
+            "imageVersionCount": len(image_versions), "changesRuleScore": False,
+        }])
     if reference_snapshots:
         result = replace(
             result,

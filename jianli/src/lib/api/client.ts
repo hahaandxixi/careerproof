@@ -1,6 +1,7 @@
 import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
+import type { VisualReview } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -193,6 +194,9 @@ function jsonBody(value: unknown): Pick<RequestInit, "body" | "headers"> {
 }
 
 export const api = {
+  getVisualReview(id: string) { return request<VisualReview | null>(`/project-versions/${id}/visual-review`); },
+  observeImage(id: string) { return request<VisualReview>(`/project-versions/${id}/visual-review`, { method: "POST", body: JSON.stringify({ externalImageConsent: true }) }); },
+  reviewVisual(id: string, status: VisualReview["reviewStatus"], note: string) { return request<VisualReview>(`/visual-reviews/${id}`, { method: "PATCH", body: JSON.stringify({ status, note }) }); },
   listJobs(filters: Record<string, string | number> = {}, mine = false) {
     const query = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => { if (value !== "") query.set(key, String(value)); });

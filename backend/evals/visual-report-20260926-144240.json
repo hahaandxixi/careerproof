@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-09-26T06:42:43.039979+00:00",
+  "projectVersionId": "f2f2cdda-0ecb-4432-9202-8a8c5049762f",
+  "scope": "Synthetic image, real official vision API and local PostgreSQL",
+  "fixtureHash": "6c018b5456dfc0a0c6fa830c9ee353c313383b95de11765e948b6ac2096b9f71",
+  "result": {
+    "id": "a0ca25c3-0065-443e-8a70-2536db1f6cf3",
+    "projectVersionId": "f2f2cdda-0ecb-4432-9202-8a8c5049762f",
+    "sourceHash": "6c018b5456dfc0a0c6fa830c9ee353c313383b95de11765e948b6ac2096b9f71",
+    "status": "unavailable",
+    "failureKind": "provider_http_401",
+    "model": "glm-4.6v-flash",
+    "promptVersion": "visual-claim-v1",
+    "observations": null,
+    "usage": null,
+    "reviewStatus": "pending",
+    "reviewerNote": "",
+    "reviewedAt": null,
+    "createdAt": "2026-09-26T06:42:42.946871Z",
+    "boundary": "图片描述不参与评级，不能证明真实部署、持续运行或本人贡献；需对照原图核对。"
+  },
+  "reloadStable": true,
+  "enterpriseImageReadStatus": 404,
+  "imageResponseMime": "image/png",
+  "humanSemanticReview": "pending",
+  "regionAccuracy": "not independently labeled",
+  "billingVerified": false
+}
