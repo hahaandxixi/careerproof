@@ -24,6 +24,10 @@ _LITERAL = (
     r"\x27(?:\\[\s\S]|[^\x27\\])*(?:\x27|\\?\Z))|[^\s,;}\]#]+)"
 )
 _ASSIGNMENT = re.compile(r"\b(" + _KEY + r'["\x27]?\s*[:=]\s*)' + _LITERAL, re.I)
+# Bare uppercase KEY is an environment-assignment convention, not part of _KEY:
+# lower-case kwargs, JSON colon forms, and prefixed names (SECRET_KEY,
+# KEY_BLOCK_SIZE) must stay untouched, so this only matches KEY with "=".
+_ENV_KEY = re.compile(r'((?<![A-Za-z0-9_-])KEY["\x27]?\s*=\s*)' + _LITERAL)
 _PRIVATE_BLOCK = re.compile(
     r"-----BEGIN (?:[A-Z0-9]+ )?PRIVATE KEY-----[\s\S]*?"
     r"(?:-----END (?:[A-Z0-9]+ )?PRIVATE KEY-----|\Z)"
@@ -122,12 +126,13 @@ def redact_credential_text(value, *, python_source=False):
     value = _AUTHORIZATION.sub(MARKER, value)
     value = _USERINFO.sub(lambda match: match.group(1) + MARKER + "@", value)
     annotations = _python_credential_ranges(value)[0] if python_source else set()
-    return _ASSIGNMENT.sub(
+    value = _ASSIGNMENT.sub(
         lambda match: match.group(0)
         if match.start() in annotations
         else match.group(1) + '"' + MARKER + '"',
         value,
     )
+    return _ENV_KEY.sub(lambda match: match.group(1) + '"' + MARKER + '"', value)
 
 
 def redact_credential_values(value):

@@ -74,6 +74,23 @@ def test_python_credential_annotations_and_defaults_are_handled(source):
     assert source.split("=")[0].strip() in safe
 
 
+def test_bare_uppercase_env_key_assignment_is_filtered_without_touching_generic_keys():
+    secret = "synthetic-not-real-credential-tail"
+    for raw in ('KEY="' + secret + '"', "KEY=" + secret):
+        assert secret not in _redact_external_value(raw)
+        assert MARKER in _redact_external_value(raw)
+    unchanged = [
+        "sorted(rows, key=lambda row: row.id)",
+        '{"key": "city"}',
+        "KEY_BLOCK_SIZE=4",
+        'key = "name"',
+        'sort_key="total"',
+        "PRIMARY KEY (order_id)",
+    ]
+    for text in unchanged:
+        assert _redact_external_value(text) == text
+
+
 @pytest.mark.parametrize(
     "entry",
     ["current", "history", "repair", "auxiliary", "summary", "planning", "transport", "multimodal"],
