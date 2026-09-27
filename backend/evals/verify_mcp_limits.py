@@ -122,11 +122,14 @@ async def checks(report_id):
                     )
                 )
                 while datetime.now(UTC).timestamp() < claims["exp"] + 0.2:
+                    # Query text can be stale with reused prepared statements;
+                    # identify the actual blocker instead of matching SQL text.
                     waiting = await session.scalar(
                         text(
                             "SELECT EXISTS(SELECT 1 FROM pg_stat_activity "
                             "WHERE pid <> pg_backend_pid() AND wait_event_type = 'Lock' "
-                            "AND query LIKE '%audit_logs%')"
+                            "AND wait_event = 'transactionid' "
+                            "AND pg_blocking_pids(pid) @> ARRAY[pg_backend_pid()])"
                         )
                     )
                     observed_wait |= bool(waiting)
@@ -144,6 +147,7 @@ async def checks(report_id):
             expired_audit = len(rows) == 1 and rows[0].details.get("status") == "expired"
             result_absent = "result" not in (response.json().get("data") or {})
             outcomes["expiresWhileWaiting"] = {
+                "lockWaitProbe": "transactionid_blocked_by_this_session_v2",
                 "postgresLockWaitObserved": observed_wait,
                 "httpStatus": response.status_code,
                 "expiredAudit": expired_audit,
