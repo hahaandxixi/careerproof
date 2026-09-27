@@ -2,7 +2,6 @@
 
 import hashlib
 import json
-import re
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
@@ -20,6 +19,7 @@ from app.models.enums import UserRole
 from app.schemas.mcp_tools import ComparisonQuery, EvidenceQuery, ReportQuery
 from app.services.analysis import AnalysisService
 from app.services.report_comparison import compare_reports
+from app.tools.credential_redaction import redact_credential_values
 
 TOOLS = {
     "search_evidence": EvidenceQuery,
@@ -45,24 +45,10 @@ def grant_expired(claims, grant):
         return True
 
 
-SECRET_PATTERNS = (
-    re.compile(r"(?i)\bsk-[a-z0-9_.-]{15,}"),
-    re.compile(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b"),
-    re.compile(r"(?im)((?:api[_ -]?key|password|secret|token)\s*[:=]\s*)[^\s,;]+"),
-)
-
-
 def sanitize_export(value):
-    if isinstance(value, str):
-        value = _redact_external_value(value)
-        for pattern in SECRET_PATTERNS:
-            value = pattern.sub("[redacted credential]", value)
-        return value
-    if isinstance(value, list):
-        return [sanitize_export(item) for item in value]
-    if isinstance(value, dict):
-        return {key: sanitize_export(item) for key, item in value.items()}
-    return value
+    # Redact the whole structure first so filePath/snippet pairs retain Python
+    # annotation context. Credential filtering never modifies stored source data.
+    return redact_credential_values(_redact_external_value(value))
 
 
 async def audit(session, user_id, action, grant_id, details):
