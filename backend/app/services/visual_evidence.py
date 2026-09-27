@@ -153,12 +153,24 @@ async def observe_image(session, version_id, request, user):
     saved = await latest_visual(session, version_id, user)
     if current_visual(saved, row):
         return saved
+    previous_attempt_id = saved.id if saved is not None else None
     allowed, _, _ = await _daily_ai_budget(session, user.id)
     # The account lock may have waited for an identical image call to finish.
     # Re-read after acquiring it, before reserving another paid request or denying
     # a reusable result because the other call consumed the remaining daily budget.
     saved = await latest_visual(session, version_id, user)
     if current_visual(saved, row):
+        return saved
+    if (
+        saved is not None
+        and saved.id != previous_attempt_id
+        and saved.source_hash == row.content_hash
+        and saved.prompt_version == VISION_PROMPT_VERSION
+    ):
+        # An attempt finished while this request waited for the account lock.
+        # Share its safe unavailable result too; a waiting request is not an
+        # intentional retry. A later request sees the same ID before the lock
+        # and may explicitly retry within budget without caching failures forever.
         return saved
     if not allowed:
         raise AppError("今日模型用量已达上限", code=4292, status_code=429)

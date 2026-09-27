@@ -641,3 +641,47 @@ async def test_visual_paid_usage_kept_when_output_is_filtered_or_rejected(
             attached = await visual_attachments(session, [version.id], actor)
             assert len(attached) == (0 if invalid else 1)
             assert (settings.storage_base_dir / version.archive_storage_key).read_bytes() == png()
+
+
+@pytest.mark.parametrize(
+    "condition", ["new_failure", "source_changed", "prompt_changed", "old_failure"]
+)
+async def test_waiting_visual_request_shares_only_a_new_matching_failure(monkeypatch, condition):
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock
+
+    from app.agents.vision_provider import VISION_PROMPT_VERSION
+    from app.core.exceptions import AppError
+    from app.services.visual_evidence import observe_image
+
+    row = SimpleNamespace(content_hash="current-hash")
+    unavailable = SimpleNamespace(
+        id="new-attempt",
+        status="unavailable",
+        observations=None,
+        source_hash="other" if condition == "source_changed" else "current-hash",
+        prompt_version="old-prompt" if condition == "prompt_changed" else VISION_PROMPT_VERSION,
+    )
+    before = unavailable if condition == "old_failure" else None
+    monkeypatch.setattr("app.services.visual_evidence.owned_image", AsyncMock(return_value=row))
+    monkeypatch.setattr("app.services.visual_evidence.safe_png", lambda _row: b"synthetic")
+    monkeypatch.setattr(
+        "app.services.visual_evidence.latest_visual", AsyncMock(side_effect=[before, unavailable])
+    )
+    monkeypatch.setattr(
+        "app.services.visual_evidence._daily_ai_budget",
+        AsyncMock(return_value=(False, "daily_report_limit", {})),
+    )
+
+    def forbidden():
+        pytest.fail("A waiting request or a budget rejection must not call the model")
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden)
+    request = SimpleNamespace(external_image_consent=True)
+    user = SimpleNamespace(id="synthetic-owner")
+    if condition == "new_failure":
+        assert await observe_image(object(), "synthetic-version", request, user) is unavailable
+    else:
+        with pytest.raises(AppError) as error:
+            await observe_image(object(), "synthetic-version", request, user)
+        assert error.value.status_code == 429

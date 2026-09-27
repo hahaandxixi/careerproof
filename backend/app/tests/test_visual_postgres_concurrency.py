@@ -25,10 +25,12 @@ from app.tests.test_visual_evidence import image_version, visual_answer
 
 
 @pytest.mark.parametrize("same_version", [True, False])
+@pytest.mark.parametrize("first_failure", [True, False])
 async def test_postgres_visual_cache_recheck_after_observed_account_lock(
     matching_db,  # noqa: F811
     monkeypatch,
     same_version,
+    first_failure,
 ):
     app, factory = matching_db
     if factory.kw["bind"].dialect.name != "postgresql":
@@ -55,6 +57,8 @@ async def test_postgres_visual_cache_recheck_after_observed_account_lock(
             calls.append(1)
             entered.set()
             await asyncio.wait_for(release.wait(), timeout=15)
+            if first_failure and len(calls) == 1:
+                raise ValueError("Synthetic invalid first output")
             return visual_answer()
 
         def combined_usage(self):
@@ -124,7 +128,9 @@ async def test_postgres_visual_cache_recheck_after_observed_account_lock(
         if same_version:
             assert second_result.status_code == 200, second_result.text
             assert first_result.json()["data"]["id"] == second_result.json()["data"]["id"]
-            assert second_result.json()["data"]["status"] == "completed"
+            assert second_result.json()["data"]["status"] == (
+                "unavailable" if first_failure else "completed"
+            )
         else:
             assert second_result.status_code == 429, second_result.text
         async with factory() as session:
@@ -132,3 +138,19 @@ async def test_postgres_visual_cache_recheck_after_observed_account_lock(
             usage = list(await session.scalars(select(AiUsageLog)))
             assert len(tasks) == 1 and tasks[0].task_type == "visual_review"
             assert len(usage) == 1 and usage[0].input_tokens == 17 and usage[0].output_tokens == 13
+
+        if same_version and first_failure:
+            # A new explicit request after the shared failure can retry, within
+            # budget. The coalesced failure must not become a permanent cache.
+            monkeypatch.setattr(settings, "ai_daily_report_limit", 2)
+            retried = await client.post(
+                f"/api/v1/project-versions/{first_version.id}/visual-review",
+                json={"externalImageConsent": True},
+            )
+            assert retried.status_code == 200, retried.text
+            assert retried.json()["data"]["status"] == "completed"
+            assert retried.json()["data"]["id"] != first_result.json()["data"]["id"]
+            assert len(calls) == 2
+            async with factory() as session:
+                assert len(list(await session.scalars(select(AnalysisTask)))) == 2
+                assert len(list(await session.scalars(select(AiUsageLog)))) == 2
