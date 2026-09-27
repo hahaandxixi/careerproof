@@ -5,6 +5,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from app.tools.function_coverage import all_cited_functions_covered, missing_function_context_claim
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
@@ -23,6 +25,17 @@ class EvidenceCandidate(StrictModel):
     context_complete: bool = False
     context_note: str = "局部证据；运行结果和本人贡献仍需核验"
     provenance: Literal["portfolio", "reference"] = "portfolio"
+    function_line_start: int | None = Field(default=None, ge=1)
+    function_line_end: int | None = Field(default=None, ge=1)
+
+
+class FunctionSourceCoverage(StrictModel):
+    file_path: str
+    function_line_start: int = Field(ge=1)
+    function_line_end: int = Field(ge=1)
+    covered_line_count: int = Field(ge=1)
+    fully_covered: bool
+    citation_ids: list[str] = Field(max_length=3)
 
 
 class RequirementEvidenceContext(StrictModel):
@@ -36,6 +49,9 @@ class RequirementEvidenceContext(StrictModel):
     evidence: list[EvidenceCandidate] = Field(default_factory=list, max_length=3)
     rating_rubric: dict = Field(default_factory=dict)
     rating_ceiling: int | None = Field(default=None, ge=1, le=3)
+    function_source_coverage: list[FunctionSourceCoverage] = Field(
+        default_factory=list, max_length=3
+    )
 
 
 class RetrievalToolCall(StrictModel):
@@ -144,6 +160,9 @@ def validate_grounded_analysis(
 ) -> None:
     if overclaim_flags(analysis.summary):
         raise ValueError("AI summary contains an unsupported ability or execution claim")
+    if (contexts and all(all_cited_functions_covered(context.evidence) for context in contexts)
+            and missing_function_context_claim(analysis.summary)):
+        raise ValueError("AI summary contradicts jointly covered function source")
     expected_ids = [context.requirement_id for context in contexts]
     actual_ids = [item.requirement_id for item in analysis.items]
     if len(actual_ids) != len(set(actual_ids)):
@@ -184,6 +203,14 @@ def validate_grounded_analysis(
         cited_evidence = [
             evidence for evidence in context.evidence if evidence.citation_id in item.citation_ids
         ]
+        coverage_text = combined
+        if item.rating:
+            coverage_text += " " + item.rating.reason + " " + " ".join(
+                decision.reason for decision in item.rating.criteria
+            )
+        if (all_cited_functions_covered(cited_evidence)
+                and missing_function_context_claim(coverage_text)):
+            raise ValueError("AI explanation contradicts jointly covered function source")
         if (
             item.information_gap
             and any(evidence.context_complete for evidence in cited_evidence)

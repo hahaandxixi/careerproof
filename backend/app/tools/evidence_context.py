@@ -31,6 +31,7 @@ def retrieve_context(
         raise ValueError("Evidence anchor does not match source")
 
     complete = False
+    function_start = function_end = None
     note = "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验"
     if "dependency" in evidence.evidence_type:
         complete, note = True, "完整依赖声明；仅证明声明，不能证明安装、运行或功能实现"
@@ -44,6 +45,7 @@ def retrieve_context(
                     functions.append((node_end - node_start, node_start, node_end))
         if functions:
             _, start, end = min(functions)
+            function_start, function_end = start, end
             complete = True
             note = "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验"
 
@@ -88,6 +90,8 @@ def retrieve_context(
         snippet=snippet,
         context_complete=complete,
         context_note=note,
+        function_line_start=function_start,
+        function_line_end=function_end,
     )
 
 

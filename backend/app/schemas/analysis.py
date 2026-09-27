@@ -162,6 +162,8 @@ class CodeEvidenceView(APIModel):
     provenance: Literal["portfolio", "reference"] = "portfolio"
     context_complete: bool = False
     context_note: str = "历史引用未核验上下文完整性"
+    function_line_start: int | None = None
+    function_line_end: int | None = None
     skill: str
     evidence_type: str
     file_path: str
@@ -209,6 +211,7 @@ class MatchItemView(APIModel):
     ai_suggestion: str | None = None
     ai_status: str = "not_used"
     ai_origin: str | None = None
+    function_source_coverage: list[dict] = Field(default_factory=list)
 
 
 class EvidenceReviewUpdate(APIModel):

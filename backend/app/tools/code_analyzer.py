@@ -44,6 +44,8 @@ class CodeEvidence:
     context_complete: bool = False
     context_note: str = "仅定位行，尚未补取上下文"
     provenance: str = "portfolio"
+    function_line_start: int | None = None
+    function_line_end: int | None = None
 
 
 def detector(
