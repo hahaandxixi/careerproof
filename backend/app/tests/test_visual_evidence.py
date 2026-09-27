@@ -509,3 +509,135 @@ async def test_new_image_version_does_not_inherit_previous_version_observation(m
             assert await visual_attachments(session, [newer.id], actor) == []
             older = await visual_attachments(session, [version.id], actor)
             assert len(older) == 1 and older[0]["sourceHash"] == version.content_hash
+
+
+@pytest.mark.parametrize("field", ["description", "visible_text", "needs_verification"])
+def test_visual_output_filters_credentials_in_all_model_text_fields(field):
+    raw = visual_answer()
+    raw["observations"][0][field] = '面板文字 PASSWORD="synthetic visual private tail"'
+    safe = validate_observations(raw).model_dump()
+    assert "synthetic visual private tail" not in json.dumps(safe)
+    assert "redacted credential" in safe["observations"][0][field]
+    assert "synthetic visual private tail" in raw["observations"][0][field]
+
+
+def test_visual_verification_field_cannot_assert_ability_but_transcription_is_untrusted():
+    raw = visual_answer()
+    raw["observations"][0]["needs_verification"] = "证明具备部署能力"
+    with pytest.raises(ValueError):
+        validate_observations(raw)
+    raw["observations"][0]["needs_verification"] = "不能证明具备部署能力，需核对源码。"
+    raw["observations"][0]["visible_text"] = "测试全部通过"
+    assert validate_observations(raw).observations[0].visible_text == "测试全部通过"
+
+
+@pytest.mark.parametrize("invalid", [False, True])
+async def test_saved_visual_read_checks_legacy_output_without_modifying_snapshot(
+    matching_db,  # noqa: F811
+    monkeypatch,
+    invalid,
+):
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "legacy-visual-output@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        old = visual_answer()
+        old["observations"][0]["visible_text"] = 'PASSWORD="synthetic cached private tail"'
+        if invalid:
+            old["observations"][0]["needs_verification"] = "证明具备部署能力"
+        async with factory() as session:
+            task = saved_visual(UUID(user["id"]), version, observations=old)
+            session.add(task)
+            await session.commit()
+            task_id = task.id
+        endpoint = f"/api/v1/project-versions/{version.id}/visual-review"
+        response = await client.get(endpoint)
+        assert response.status_code == 200, response.text
+        result = response.json()["data"]
+        assert "synthetic cached private tail" not in response.text
+        assert result["status"] == ("unavailable" if invalid else "completed")
+        if invalid:
+            assert (
+                result["failureKind"] == "saved_invalid_output" and result["observations"] is None
+            )
+            review = await client.patch(
+                f"/api/v1/visual-reviews/{task_id}", json={"status": "accepted"}
+            )
+            assert review.status_code == 409
+        async with factory() as session:
+            saved = await session.get(AnalysisTask, task_id)
+            assert saved.input_snapshot["observations"] == old
+            actor = await session.get(User, UUID(user["id"]))
+            attachments = await visual_attachments(session, [version.id], actor)
+            assert len(attachments) == (0 if invalid else 1)
+            assert "synthetic cached private tail" not in json.dumps(attachments)
+
+        calls = []
+
+        class Provider:
+            model = "synthetic-vision"
+
+            async def observe(self, _bytes):
+                calls.append(1)
+                return visual_answer()
+
+            def combined_usage(self):
+                return None
+
+        monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", lambda: Provider())
+        regenerated = await client.post(endpoint, json={"externalImageConsent": True})
+        assert regenerated.status_code == 200, regenerated.text
+        assert regenerated.json()["data"]["status"] == "completed"
+        assert len(calls) == (1 if invalid else 0)
+        assert "synthetic cached private tail" not in regenerated.text
+
+
+@pytest.mark.parametrize("invalid", [False, True])
+async def test_visual_paid_usage_kept_when_output_is_filtered_or_rejected(
+    matching_db,  # noqa: F811
+    monkeypatch,
+    invalid,
+):
+    from app.agents.contracts import ModelUsage
+    from app.models.identity import User
+
+    app, factory = matching_db
+    raw = visual_answer()
+    raw["observations"][0]["visible_text"] = 'PASSWORD="synthetic returned private tail"'
+    if invalid:
+        raw["observations"][0]["needs_verification"] = "证明具备部署能力"
+
+    class Provider:
+        name = "synthetic"
+        model = "synthetic-vision"
+
+        async def observe(self, _bytes):
+            return raw
+
+        def combined_usage(self):
+            return ModelUsage(input_tokens=17, output_tokens=13, latency_ms=5)
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", lambda: Provider())
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "validated-visual-output@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        response = await client.post(
+            f"/api/v1/project-versions/{version.id}/visual-review",
+            json={"externalImageConsent": True},
+        )
+        assert response.status_code == 200, response.text
+        result = response.json()["data"]
+        assert result["status"] == ("unavailable" if invalid else "completed")
+        assert "synthetic returned private tail" not in response.text
+        async with factory() as session:
+            task = await session.get(AnalysisTask, UUID(result["id"]))
+            assert "synthetic returned private tail" not in json.dumps(task.input_snapshot)
+            usage = list(await session.scalars(select(AiUsageLog)))
+            assert len(usage) == 1
+            assert usage[0].input_tokens == 17 and usage[0].output_tokens == 13
+            actor = await session.get(User, UUID(user["id"]))
+            attached = await visual_attachments(session, [version.id], actor)
+            assert len(attached) == (0 if invalid else 1)
+            assert (settings.storage_base_dir / version.archive_storage_key).read_bytes() == png()

@@ -23,6 +23,7 @@ from app.models.identity import StudentProfile
 from app.models.portfolio import Project, ProjectVersion
 from app.schemas.visual import VisualResponse, VisualReviewView
 from app.services.analysis import _daily_ai_budget
+from app.tools.credential_redaction import redact_credential_values
 from app.tools.storage import LocalStorage
 
 
@@ -75,15 +76,26 @@ def view(task):
     created = task.created_at
     if created.tzinfo is None:
         created = created.replace(tzinfo=UTC)
+    observations = None
+    completed = task.status == TaskStatus.COMPLETED
+    failure_kind = saved.get("failureKind")
+    if completed:
+        try:
+            observations = validate_observations(saved.get("observations"))
+        except (ValueError, KeyError, TypeError):
+            # Validate legacy cache/read paths too; never export rejected model
+            # text or silently rewrite the original persisted observation.
+            completed = False
+            failure_kind = "saved_invalid_output"
     return VisualReviewView(
         id=task.id,
         project_version_id=saved["projectVersionId"],
         source_hash=saved["sourceHash"],
-        status="completed" if task.status == TaskStatus.COMPLETED else "unavailable",
+        status="completed" if completed else "unavailable",
         model=saved.get("model"),
-        failure_kind=saved.get("failureKind"),
+        failure_kind=failure_kind,
         prompt_version=saved["promptVersion"],
-        observations=saved.get("observations"),
+        observations=observations,
         usage=saved.get("usage"),
         review_status=saved.get("reviewStatus", "pending"),
         reviewer_note=saved.get("reviewerNote", ""),
@@ -111,9 +123,12 @@ def validate_observations(raw):
     parsed = VisualResponse.model_validate(raw)
     for item in parsed.observations:
         # Reject capability/verification assertions; a cautious caveat is not evidence.
-        if overclaim_flags(item.description):
-            raise ValueError("Vision description overclaims proof")
-    return VisualResponse.model_validate(_redact_external_value(parsed.model_dump()))
+        if overclaim_flags(item.description) or overclaim_flags(item.needs_verification):
+            raise ValueError("Vision description or verification note overclaims proof")
+    # Visible text is explicitly untrusted transcription, not a factual claim.
+    # Private credentials must not be echoed in any model-generated text field.
+    safe = redact_credential_values(_redact_external_value(parsed.model_dump()))
+    return VisualResponse.model_validate(safe)
 
 
 def current_visual(saved, row):
@@ -218,6 +233,8 @@ async def review_visual(session, review_id, request, user):
     if not task or task.status != TaskStatus.COMPLETED:
         raise AppError("图片观察不存在或无权复核", code=4043, status_code=404)
     await owned_image(session, task.input_snapshot["projectVersionId"], user)
+    if view(task).status != "completed":
+        raise AppError("已保存的图片观察未通过当前校验，请重新分析", code=4097, status_code=409)
     task.input_snapshot = {
         **task.input_snapshot,
         "reviewStatus": request.status,
