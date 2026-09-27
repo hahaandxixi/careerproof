@@ -10,6 +10,7 @@ import {
 } from "@/lib/api/domain";
 import { jobAnalysisHref } from "@/lib/recommendation-selection";
 import { ErrorNotice } from "./AccessGate";
+import ProjectVersionPicker from "./ProjectVersionPicker";
 
 const PRIORITY_LABELS = {
   high: "优先了解",
@@ -79,7 +80,7 @@ export default function CareerRecommendations() {
       {loading ? <p className="text-sm text-slate-500">正在加载材料…</p> : <fieldset disabled={busy} className="space-y-4">
         <label className="block text-sm font-medium">简历版本<select className="field mt-2" required value={resumeVersionId} onChange={event => setResumeVersionId(event.target.value)}><option value="">请选择已完成的简历</option>{availableResumes.map(version => <option key={version.id} value={version.id}>{version.title} · 第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</option>)}</select></label>
         {!availableResumes.length && <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>。</p>}
-        <div><p className="text-sm font-medium">项目或作品版本（最多 10 项）</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{projects.map(project => <div key={project.id} className="rounded-lg bg-slate-50 p-3"><p className="text-sm font-medium">{project.name}</p>{project.versions.filter(version => version.status === "completed").map(version => <label key={version.id} className="mt-2 flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" checked={projectVersionIds.includes(version.id)} disabled={!projectVersionIds.includes(version.id) && projectVersionIds.length >= 10} onChange={event => setProjectVersionIds(value => event.target.checked ? [...value, version.id] : value.filter(id => id !== version.id))} /><span>第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span></label>)}</div>)}</div></div>
+        <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
         <label className="flex items-start gap-3 rounded-xl bg-indigo-50 p-4 text-xs leading-6 text-indigo-900"><input type="checkbox" className="mt-1" checked={externalAiConsent} onChange={event => setExternalAiConsent(event.target.checked)} /><span>同意将规则筛出的最多 3 个岗位要求、缺口和每岗最多 3 条必要证据片段发送给当前配置的模型。模型不可用时仅显示规则候选；结果仅保存在我的账号中。</span></label>
         <button className="btn" disabled={!resumeVersionId || !externalAiConsent || busy}>{busy ? "正在生成 AI 职业规划…" : "生成 AI 职业规划"}</button>
       </fieldset>}
