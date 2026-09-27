@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-09-27T05:27:15.611676+00:00",
+  "promptVersion": "mcp-model-agent-v1",
+  "client": "official-python-sdk-stdio",
+  "agentModel": "deepseek-flash",
+  "paidModelCalls": true,
+  "reports": [
+    "19148e76-c521-4cf7-88a6-6436a356ed21",
+    "8c72d898-175b-48a3-8eb6-2938310aea28"
+  ],
+  "maxRounds": 4,
+  "maxAttemptsPerRound": 1,
+  "grantId": "b88c163c-dc8b-44ad-8d59-46b6cabd96ba",
+  "grantExpiresAt": "2026-09-27T05:37:15.788501+00:00",
+  "toolsOffered": [
+    "search_evidence",
+    "get_report_summary",
+    "compare_reports"
+  ],
+  "failure": {
+    "stage": "agent_loop",
+    "class": "ExceptionGroup",
+    "detail": null
+  },
+  "grantRevoked": true,
+  "events": [],
+  "finalAnswer": "",
+  "totalUsage": {
+    "input_tokens": 3996,
+    "output_tokens": 511,
+    "cache_hit_tokens": 896,
+    "latency_ms": 2568
+  },
+  "requestCount": 2,
+  "autonomousToolCalls": 0,
+  "pass": false,
+  "humanReview": {
+    "status": "pending",
+    "reviewer": null,
+    "note": null
+  },
+  "boundary": "Tool selection was decided by the model alone; the harness only offers tools and executes the model's own choices. Scope, grant expiry, call caps and audit remain server-enforced. Semantic grounding of the final answer still needs human review."
+}
