@@ -33,6 +33,18 @@ BOUNDARY = (
 )
 
 
+def grant_expired(claims, grant):
+    """Recheck deadlines after lock waits and before exporting a result."""
+    try:
+        token_expiry = datetime.fromtimestamp(claims["exp"], UTC)
+        saved_expiry = datetime.fromisoformat(grant.details["expiresAt"])
+        if saved_expiry.tzinfo is None:
+            return True
+        return datetime.now(UTC) >= min(token_expiry, saved_expiry)
+    except (KeyError, TypeError, ValueError, OverflowError, OSError):
+        return True
+
+
 SECRET_PATTERNS = (
     re.compile(r"(?i)\bsk-[a-z0-9_.-]{15,}"),
     re.compile(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b"),
@@ -216,6 +228,9 @@ async def invoke_tool(session, user, claims, request):
     if not grant or revoked:
         await audit(session, user.id, "mcp.call", grant_id, {"status": "revoked_or_missing"})
         raise AppError("只读授权不存在或已撤销", status_code=401)
+    if grant_expired(claims, grant):
+        await audit(session, user.id, "mcp.call", grant_id, {"status": "expired"})
+        raise AppError("只读授权已过期", status_code=401)
     count = await session.scalar(
         select(func.count())
         .select_from(AuditLog)
@@ -240,18 +255,23 @@ async def invoke_tool(session, user, claims, request):
         allowed = set(grant.details["reportIds"]) & set(claims["reports"])
         if any(str(i) not in allowed for i in ids):
             raise AppError("报告不存在或超出本人授权范围", status_code=404)
-        for report_id in ids:
-            await owned_report(session, report_id, user)
-        result = sanitize_export(await dispatch(session, user, request.tool, args))
+        # Roll back only tool work on failure; retain the outer grant lock until
+        # the failed attempt is audited so concurrent calls cannot skip the cap.
+        async with session.begin_nested():
+            for report_id in ids:
+                await owned_report(session, report_id, user)
+            result = sanitize_export(await dispatch(session, user, request.tool, args))
     except (AppError, ValidationError) as exc:
         await audit(session, user.id, "mcp.call", grant_id, {**info, "status": "rejected"})
         if isinstance(exc, ValidationError):
             raise AppError("工具参数无效", status_code=422) from exc
         raise
     except Exception:
-        await session.rollback()
         await audit(session, user.id, "mcp.call", grant_id, {**info, "status": "failed"})
         raise AppError("只读工具暂时不可用", status_code=503) from None
+    if grant_expired(claims, grant):
+        await audit(session, user.id, "mcp.call", grant_id, {**info, "status": "expired"})
+        raise AppError("只读授权已过期，未返回工具结果", status_code=401)
     await audit(
         session,
         user.id,

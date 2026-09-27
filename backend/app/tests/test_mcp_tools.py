@@ -6,14 +6,15 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import jwt
+import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from app.core.config import settings
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.audit import AuditLog
 from app.schemas.mcp_tools import EvidenceQuery
-from app.services.mcp_tools import dispatch, sanitize_export
+from app.services.mcp_tools import dispatch, grant_expired, sanitize_export
 from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
 
 
@@ -176,3 +177,107 @@ def test_export_redacts_identifiers_and_credential_shapes():
         "eyJhbGci",
     ):
         assert secret not in safe
+
+
+def test_grant_deadlines_fail_closed_and_use_the_earlier_expiry():
+    now = datetime.now(UTC)
+    future = now + timedelta(minutes=5)
+    past = now - timedelta(seconds=1)
+    grant = SimpleNamespace(details={"expiresAt": future.isoformat()})
+    assert not grant_expired({"exp": future.timestamp()}, grant)
+    assert grant_expired({"exp": past.timestamp()}, grant)
+    grant.details["expiresAt"] = past.isoformat()
+    assert grant_expired({"exp": future.timestamp()}, grant)
+    for invalid in (None, "invalid", future.replace(tzinfo=None).isoformat()):
+        grant.details["expiresAt"] = invalid
+        assert grant_expired({"exp": future.timestamp()}, grant)
+    assert grant_expired({}, grant)
+
+
+@pytest.mark.parametrize("fault", ["database_failure", "expires_after_dispatch"])
+async def test_failed_or_expired_tool_keeps_audit_and_does_not_export(jobs_db, monkeypatch, fault):  # noqa: F811
+    app, factory = jobs_db
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as hr,
+        AsyncClient(transport=transport, base_url="http://test") as owner,
+    ):
+        await register(hr, f"mcp-fault-hr-{fault}@example.com")
+        org = await organization(hr)
+        job = (await hr.post("/api/v1/jobs", json=job_payload(org))).json()["data"]
+        student = await register(owner, f"mcp-fault-{fault}@example.com", "student")
+        async with factory() as session:
+            task = AnalysisTask(created_by=UUID(student["id"]), task_type="job_match")
+            session.add(task)
+            await session.flush()
+            report = MatchReport(
+                analysis_task_id=task.id,
+                job_id=UUID(job["id"]),
+                candidate_ref=student["id"],
+                summary="synthetic private result",
+            )
+            session.add(report)
+            await session.commit()
+            report_id = str(report.id)
+        grant = (
+            await owner.post(
+                "/api/v1/mcp-tools/grants",
+                json={
+                    "report_ids": [report_id],
+                    "external_client_consent": True,
+                },
+            )
+        ).json()["data"]
+        if fault == "database_failure":
+
+            async def failed_dispatch(session, *_args):
+                await session.execute(text("SELECT nonexistent_synthetic_column FROM audit_logs"))
+
+            monkeypatch.setattr("app.services.mcp_tools.dispatch", failed_dispatch)
+        else:
+            checks = iter((False, True))
+            monkeypatch.setattr("app.services.mcp_tools.grant_expired", lambda *_: next(checks))
+        call = {"tool": "get_report_summary", "arguments": {"report_id": report_id}}
+        response = await owner.post(
+            "/api/v1/mcp-tools/invoke",
+            json=call,
+            headers={"Authorization": f"Bearer {grant['token']}"},
+        )
+        assert response.status_code == (503 if fault == "database_failure" else 401)
+        assert "synthetic private result" not in response.text
+        assert "nonexistent_synthetic_column" not in response.text
+        async with factory() as session:
+            calls = list(
+                await session.scalars(
+                    select(AuditLog).where(
+                        AuditLog.action == "mcp.call",
+                        AuditLog.resource_id == grant["grantId"],
+                    )
+                )
+            )
+            assert len(calls) == 1
+            assert calls[0].details["status"] == (
+                "failed" if fault == "database_failure" else "expired"
+            )
+            assert grant["token"] not in json.dumps(calls[0].details)
+            # A rejected/failed admitted call still consumes one of the forty slots.
+            session.add_all(
+                [
+                    AuditLog(
+                        actor_id=UUID(student["id"]),
+                        action="mcp.call",
+                        resource_type="mcp_grant",
+                        resource_id=grant["grantId"],
+                        details={"status": "completed"},
+                    )
+                    for _ in range(39)
+                ]
+            )
+            await session.commit()
+        monkeypatch.setattr("app.services.mcp_tools.grant_expired", lambda *_: False)
+        capped = await owner.post(
+            "/api/v1/mcp-tools/invoke",
+            json=call,
+            headers={"Authorization": f"Bearer {grant['token']}"},
+        )
+        assert capped.status_code == 429
