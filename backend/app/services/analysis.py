@@ -88,7 +88,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
         "visualClaims": snapshot.get("visualClaims", []),
-        "cacheVersion": "report-context-v5-anchor-preserving",
+        "cacheVersion": "report-context-v6-frozen-directed",
         "semanticEngine": (
             SEMANTIC_VERSION
             if settings.semantic_retrieval_enabled
@@ -538,6 +538,8 @@ async def execute_match_task(task_id: UUID) -> None:
                 external_skip_reason=external_skip_reason,
                 **({"history_loader": history_loader} if history_loader else {}),
             )
+            if workflow.retrieval_result is not None:
+                result = workflow.retrieval_result
             if workflow.analysis:
                 result = replace(result, summary=workflow.analysis.summary)
             if not await update_task_progress(
@@ -584,7 +586,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
                 "evidenceContextVersion": (
-                    None if result.grounding_error else "source-context-v5-anchor-preserving"
+                    None if result.grounding_error else "source-context-v6-frozen-directed"
                 ),
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),

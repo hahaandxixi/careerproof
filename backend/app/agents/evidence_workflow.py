@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import re
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import httpx
 from pydantic import ValidationError
@@ -23,6 +23,7 @@ from app.agents.provider import (
     get_ai_provider,
 )
 from app.core.config import settings
+from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import classify_evidence
 from app.tools.matcher import MatchResult
@@ -46,6 +47,7 @@ class EvidenceWorkflowOutcome:
     json_repair_count: int = 0
     model_requirement_count: int = 0
     provider_finish_reason: str | None = None
+    retrieval_result: MatchResult | None = None
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -236,7 +238,7 @@ def has_retrieval_candidate(
         if context is None or len(context.evidence) >= 3:
             continue
         existing = {source_key(entry) for entry in context.evidence}
-        if any(
+        if can_search_frozen_sources(result.retrieval_sources, context.evidence) or any(
             source_key(entry) not in existing and novel_source_lines(entry, context.evidence)
             for entry in item.evidence_list
         ):
@@ -419,9 +421,66 @@ async def run_evidence_workflow(
                             continue
                         stage = "tool_execution"
                         await _notify(progress, f"正在按模型第 {round_number} 轮请求补充证据")
+                        search_detail = None
+                        if result.retrieval_sources:
+                            requested = next(
+                                (
+                                    context
+                                    for context in model_contexts
+                                    if context.requirement_id == tool_call.requirement_id
+                                ),
+                                None,
+                            )
+                            if requested is None or len(requested.evidence) >= 3:
+                                raise ValueError(
+                                    "Directed retrieval outside allowed requirement scope"
+                                )
+                            try:
+                                candidates, search_detail = await asyncio.to_thread(
+                                    search_frozen_sources,
+                                    result.retrieval_sources,
+                                    tool_call.query,
+                                    requested.skill,
+                                    requested.evidence,
+                                )
+                            except Exception:
+                                tool_calls.append(
+                                    {
+                                        "tool": "retrieve_more_evidence",
+                                        "round": round_number,
+                                        "status": "unavailable",
+                                        "scope": "current-frozen-materials",
+                                    }
+                                )
+                                raise
+                            items = []
+                            for item in result.items:
+                                if str(item.requirement_id) != tool_call.requirement_id:
+                                    items.append(item)
+                                    continue
+                                sources = list(item.evidence_list)
+                                existing = {source_key(source) for source in sources}
+                                protected = {source_key(entry) for entry in requested.evidence}
+                                for candidate in candidates:
+                                    if source_key(candidate) in existing:
+                                        continue
+                                    if len(sources) >= 12:
+                                        removable = next(
+                                            index
+                                            for index in range(len(sources) - 1, -1, -1)
+                                            if source_key(sources[index]) not in protected
+                                        )
+                                        sources.pop(removable)
+                                    sources.append(candidate)
+                                    existing = {source_key(source) for source in sources}
+                                items.append(replace(item, evidence_list=sources))
+                            result = replace(result, items=items)
                         model_contexts, tool_event = execute_retrieval_tool(
                             result, model_contexts, tool_call
                         )
+                        if search_detail is not None:
+                            tool_event.update(search_detail)
+                            tool_event["scope"] = "current-frozen-materials"
                         tool_event["round"] = round_number
                         tool_calls.append(tool_event)
                         updated = {context.requirement_id: context for context in model_contexts}
@@ -524,6 +583,7 @@ async def run_evidence_workflow(
                     )
         return EvidenceWorkflowOutcome(
             contexts=contexts,
+            retrieval_result=result if result.retrieval_sources else None,
             analysis=analysis,
             provider=provider.name,
             model=analysis.model,
@@ -549,6 +609,7 @@ async def run_evidence_workflow(
             raise
         return EvidenceWorkflowOutcome(
             contexts=contexts,
+            retrieval_result=result if result.retrieval_sources else None,
             analysis=None,
             provider=configured_provider,
             model=configured_model,

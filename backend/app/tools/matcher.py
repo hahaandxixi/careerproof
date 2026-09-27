@@ -6,6 +6,7 @@ from uuid import UUID
 
 from app.tools.code_analyzer import (
     CodeEvidence,
+    FrozenRetrievalSource,
     ProjectFileSnapshot,
     canonical_skill,
     find_evidence,
@@ -53,6 +54,7 @@ class MatchResult:
     summary: str
     retrieval_steps: list[dict] = field(default_factory=list)
     grounding_error: bool = False
+    retrieval_sources: tuple[FrozenRetrievalSource, ...] = ()
 
 
 def match_candidate(

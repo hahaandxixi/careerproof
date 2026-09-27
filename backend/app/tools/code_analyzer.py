@@ -16,6 +16,12 @@ class ProjectFileSnapshot:
 
 
 @dataclass(frozen=True, slots=True)
+class FrozenRetrievalSource:
+    file: ProjectFileSnapshot
+    content_hash: str
+
+
+@dataclass(frozen=True, slots=True)
 class Detector:
     evidence_type: str
     content_pattern: re.Pattern[str]

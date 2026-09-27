@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import Field
+from pydantic import Field, StringConstraints
 
 from app.models.enums import ConfirmationStatus, TaskStatus
 from app.schemas.common import APIModel
@@ -40,7 +40,7 @@ class RecommendationEvidence(APIModel):
     line_end: int
     strength: str
     explanation: str
-    snippet: str = ""
+    snippet: Annotated[str, StringConstraints(strip_whitespace=False)] = ""
     content_hash: str = ""
 
 
@@ -167,7 +167,7 @@ class CodeEvidenceView(APIModel):
     file_path: str
     line_start: int
     line_end: int
-    snippet: str
+    snippet: Annotated[str, StringConstraints(strip_whitespace=False)]
     strength: str
     explanation: str
     content_hash: str

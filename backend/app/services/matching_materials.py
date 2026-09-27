@@ -20,7 +20,7 @@ from app.models.portfolio import (
     ResumeVersion,
 )
 from app.schemas.analysis import MaterialSelection
-from app.tools.code_analyzer import ProjectFileSnapshot
+from app.tools.code_analyzer import FrozenRetrievalSource, ProjectFileSnapshot
 from app.tools.evidence_context import enrich_evidence
 from app.tools.matcher import RequirementInput, match_candidate
 from app.tools.resume_parser import mask_resume_text, parse_resume
@@ -234,7 +234,11 @@ def analyze_materials(
     if semantic_step is not None:
         result = replace(result, retrieval_steps=[*result.retrieval_steps, semantic_step])
     try:
-        return enrich_evidence(result, snapshots)
+        verified = enrich_evidence(result, snapshots)
+        return replace(verified, retrieval_sources=tuple(
+            FrozenRetrievalSource(file, hashlib.sha256(file.content.encode("utf-8")).hexdigest())
+            for file in portfolio_snapshots
+        ))
     except Exception:
         # Preserve the deterministic report if optional AI context retrieval
         # fails. Do not send unverified or truncated source to the model.
