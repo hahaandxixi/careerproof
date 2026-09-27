@@ -75,7 +75,7 @@ def visible_code_facts(job):
 
 
 _SUBJECT = r"(?:(?:输入|参数)(?:校验|验证)|(?:错误|异常)(?:响应|处理))"
-_NEGATIVE = r"(?:尚未|未曾|未|没有|缺少|缺乏)(?:展示|显示|提供|包含|出现|实现|可见)?"
+_NEGATIVE = r"(?:尚未|未曾|未|没有|缺少|缺乏|看不到|缺失)(?:展示|显示|提供|包含|出现|实现|可见)?"
 _MISSING = re.compile(
     _SUBJECT
     + r"[^。！？；，,\n]{0,50}?"
@@ -95,7 +95,8 @@ def visible_check_conflict_claim(text, facts):
             # Full coverage and execution are not established by this syntax fact.
             claim = sentence[max(0, match.start() - 8) : match.end() + 20]
             if re.search(
-                r"完整|所有|全部|更多|其他|覆盖|的(?:相关)?(?:测试|运行|执行|记录)", claim
+                r"完整|所有|全部|更多|其他|其余|之外|覆盖|的(?:相关)?(?:测试|运行|执行|记录)",
+                claim,
             ):
                 continue
             prefix = sentence[max(0, match.start() - 12) : match.start()]

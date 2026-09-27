@@ -39,12 +39,22 @@ def test_only_bounded_parameter_error_syntax_is_reported(source, expected):
         ("输入校验与错误响应、接口测试及运行记录在材料中尚未展示。", True),
         ("材料中未展示输入校验。", True),
         ("缺少错误响应代码。", True),
+        ("看不到输入校验。", True),
+        ("代码中输入校验缺失。", True),
         ("尚未展示完整的输入校验与错误响应实现。", False),
         ("输入校验的测试代码和运行记录未展示。", False),
         ("未展示输入校验的运行记录。", False),
+        ("输入校验的测试代码缺失。", False),
+        ("异常处理的运行记录缺失。", False),
         ("参数校验是否覆盖全部边界仍待核验。", False),
+        ("无法确认输入校验覆盖全部边界。", False),
         ("不能说输入校验未展示。", False),
         ("已见参数判断，其他异常覆盖仍待核验。", False),
+        ("其余参数校验未展示。", False),
+        ("本片段之外的输入校验未展示。", False),
+        # Known narrow boundary: bare 无 is ambiguous (无法/无论/并非无) and is
+        # deliberately not treated as a visibility negative.
+        ("该函数无输入校验。", False),
     ],
 )
 def test_missing_wording_distinguishes_code_from_coverage_and_execution(text, conflict):
