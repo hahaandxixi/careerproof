@@ -5,7 +5,7 @@ from pathlib import Path
 
 import httpx
 
-from evals.demo_credentials import get_demo_credentials
+from evals.demo_credentials import get_demo_credentials_pair
 
 BASE = "http://127.0.0.1:8000/api/v1"
 TITLE = "Python 后端开发实习生（合成演示）"
@@ -17,15 +17,23 @@ def data(response):
 
 
 def seed():
+    accounts = get_demo_credentials_pair()
     for role, name in (("student", "演示学生"), ("enterprise", "演示企业")):
         with httpx.Client(base_url=BASE, timeout=30, trust_env=False) as client:
-            credentials = get_demo_credentials(role)
+            credentials = accounts[role]
             registered = client.post(
                 "/auth/register", json={**credentials, "displayName": name, "role": role}
             )
             if registered.status_code != 409:
                 data(registered)
-            user = data(client.post("/auth/login", json=credentials))["user"]
+            login = client.post("/auth/login", json=credentials)
+            if login.status_code == 401:
+                raise RuntimeError(
+                    "Demo login failed; changing local credentials does not reset an existing "
+                    "account password. Restore the original local credentials, or explicitly "
+                    "configure two new demo email addresses. Existing accounts are left unchanged."
+                )
+            user = data(login)["user"]
             if user["role"] != role:
                 raise RuntimeError("Existing demo account has a different role; left unchanged")
             print(f"Verified login: {credentials['email']} ({role})")
