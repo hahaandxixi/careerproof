@@ -1,0 +1,198 @@
+{
+  "startedAt": "2026-09-27T01:31:20.623707+00:00",
+  "finishedAt": "2026-09-27T01:31:24.613077+00:00",
+  "scope": "Synthetic frozen material through real DeepSeek; no database/browser",
+  "localRecordNotApprovedForGit": true,
+  "syntheticLabelsIndependent": false,
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "promptVersion": "evidence-trust-v21-joint-function-coverage",
+  "sourceHashes": {
+    "synthetic-version/order.py": "97693d155b99991a813195d5a07dd55e356422083d9e2ea10cd9a8414ad6fa3a"
+  },
+  "fallbackUsed": false,
+  "fallbackReason": null,
+  "failureStage": null,
+  "requestCount": 2,
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "6649c751-f77d-5bd7-ad80-1056663f526e",
+      "query": "process_order 函数完整实现：输入校验、写入 store、异常清理与返回分支",
+      "resultCount": 1,
+      "scope": "current-frozen-materials",
+      "citationId": "R1-E2",
+      "engine": "frozen-directed-v1",
+      "scannedLines": 45,
+      "scanLimit": 20000,
+      "scanLimitReached": false,
+      "candidateCount": 1,
+      "maxAnchors": 16,
+      "sourceExact": true,
+      "round": 1
+    }
+  ],
+  "checks": {
+    "toolSelectedByRealModel": true,
+    "novelSourceReturned": true,
+    "novelSourceCited": true,
+    "rollbackVisibleAfterLookup": true,
+    "allContextsSourceExact": true,
+    "citedSourcesExact": true,
+    "contextBoundsPreserved": true,
+    "ruleScoreUnchanged": true,
+    "initialRanges": [
+      [
+        1,
+        40
+      ]
+    ],
+    "novelRanges": [
+      [
+        6,
+        45
+      ]
+    ]
+  },
+  "passed": true,
+  "progress": [
+    "等待可用的模型调用名额",
+    "模型正在规划第 1 轮受控工具调用",
+    "正在按模型第 1 轮请求补充证据",
+    "正在调用模型分析证据与评级判据"
+  ],
+  "usage": {
+    "input_tokens": 4736,
+    "output_tokens": 550,
+    "cache_hit_tokens": 768,
+    "latency_ms": 3975
+  },
+  "analysis": {
+    "summary": "材料展示 order.py 中 process_order 函数：对 payload 的 field_0 至 field_17 做非空校验并抛出 ValueError，随后在 try 中调用 store.begin()、store.write(payload)，异常时 rollback 并重新抛出，最后返回含 order_id 的字典。当前引用已覆盖该函数原文，但运行结果、store 实现与本人贡献未核验。",
+    "items": [
+      {
+        "requirement_id": "6649c751-f77d-5bd7-ad80-1056663f526e",
+        "explanation": "片段展示 process_order 对 payload 多个字段做非空校验并抛出 ValueError，try 中调用 store.begin()、store.write(payload)，异常时 rollback 并 raise，最后返回含 order_id 的字典，与输入校验、写入、异常清理和返回分支相关。",
+        "citation_ids": [
+          "R1-E1",
+          "R1-E2"
+        ],
+        "information_gap": "store 的实现、实际运行结果以及该代码是否由本人编写均未展示或核验。",
+        "suggestion": "可提交该函数的完整文件与运行日志，核对 store 接口实现、异常路径实际执行结果及本人贡献说明。",
+        "confidence": 0.7,
+        "rating": {
+          "level": 2,
+          "reason": "片段展示字段校验、写入调用、异常回滚与返回语句等实质操作，但完整任务实现仍受上限限制。",
+          "criteria": [
+            {
+              "criterion": "relevance",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "片段包含 Python 函数中的输入校验、写入调用与异常处理，与岗位要求直接相关。"
+            },
+            {
+              "criterion": "operation",
+              "supported": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "片段展示非空校验、store.begin/write/commit、rollback 与 return 等非空实现。"
+            },
+            {
+              "criterion": "task",
+              "supported": false,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ],
+              "reason": "虽覆盖函数原文，但 store 实现、运行结果与本人贡献未展示，完整任务实现未核验。"
+            }
+          ]
+        }
+      }
+    ],
+    "model": "deepseek-flash",
+    "usage": {
+      "input_tokens": 4736,
+      "output_tokens": 550,
+      "cache_hit_tokens": 768,
+      "latency_ms": 3975
+    }
+  },
+  "contexts": [
+    {
+      "requirement_id": "6649c751-f77d-5bd7-ad80-1056663f526e",
+      "requirement_title": "Python业务函数需核对输入校验、写入、异常清理与返回分支。",
+      "skill": "Python",
+      "verdict": "supported",
+      "rule_score": 0.65,
+      "claimed": true,
+      "claim_text": "合成学生接触过Python；贡献与运行记录待核验。",
+      "evidence": [
+        {
+          "citation_id": "R1-E1",
+          "file_path": "synthetic-version/order.py",
+          "line_start": 1,
+          "line_end": 40,
+          "evidence_type": "python_code",
+          "strength": "high",
+          "snippet": "def process_order(payload, store):\n    if not payload.get('field_0'):\n        raise ValueError('field 0 required')\n    if not payload.get('field_1'):\n        raise ValueError('field 1 required')\n    if not payload.get('field_2'):\n        raise ValueError('field 2 required')\n    if not payload.get('field_3'):\n        raise ValueError('field 3 required')\n    if not payload.get('field_4'):\n        raise ValueError('field 4 required')\n    if not payload.get('field_5'):\n        raise ValueError('field 5 required')\n    if not payload.get('field_6'):\n        raise ValueError('field 6 required')\n    if not payload.get('field_7'):\n        raise ValueError('field 7 required')\n    if not payload.get('field_8'):\n        raise ValueError('field 8 required')\n    if not payload.get('field_9'):\n        raise ValueError('field 9 required')\n    if not payload.get('field_10'):\n        raise ValueError('field 10 required')\n    if not payload.get('field_11'):\n        raise ValueError('field 11 required')\n    if not payload.get('field_12'):\n        raise ValueError('field 12 required')\n    if not payload.get('field_13'):\n        raise ValueError('field 13 required')\n    if not payload.get('field_14'):\n        raise ValueError('field 14 required')\n    if not payload.get('field_15'):\n        raise ValueError('field 15 required')\n    if not payload.get('field_16'):\n        raise ValueError('field 16 required')\n    if not payload.get('field_17'):\n        raise ValueError('field 17 required')\n    try:\n        store.begin()\n        store.write(payload)",
+          "context_complete": false,
+          "context_note": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+          "provenance": "portfolio",
+          "function_line_start": 1,
+          "function_line_end": 45
+        },
+        {
+          "citation_id": "R1-E2",
+          "file_path": "synthetic-version/order.py",
+          "line_start": 6,
+          "line_end": 45,
+          "evidence_type": "retrieved_context",
+          "strength": "low",
+          "snippet": "    if not payload.get('field_2'):\n        raise ValueError('field 2 required')\n    if not payload.get('field_3'):\n        raise ValueError('field 3 required')\n    if not payload.get('field_4'):\n        raise ValueError('field 4 required')\n    if not payload.get('field_5'):\n        raise ValueError('field 5 required')\n    if not payload.get('field_6'):\n        raise ValueError('field 6 required')\n    if not payload.get('field_7'):\n        raise ValueError('field 7 required')\n    if not payload.get('field_8'):\n        raise ValueError('field 8 required')\n    if not payload.get('field_9'):\n        raise ValueError('field 9 required')\n    if not payload.get('field_10'):\n        raise ValueError('field 10 required')\n    if not payload.get('field_11'):\n        raise ValueError('field 11 required')\n    if not payload.get('field_12'):\n        raise ValueError('field 12 required')\n    if not payload.get('field_13'):\n        raise ValueError('field 13 required')\n    if not payload.get('field_14'):\n        raise ValueError('field 14 required')\n    if not payload.get('field_15'):\n        raise ValueError('field 15 required')\n    if not payload.get('field_16'):\n        raise ValueError('field 16 required')\n    if not payload.get('field_17'):\n        raise ValueError('field 17 required')\n    try:\n        store.begin()\n        store.write(payload)\n        store.commit()\n    except Exception:\n        store.rollback()\n        raise\n    return {'order_id': payload['order_id']}",
+          "context_complete": false,
+          "context_note": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+          "provenance": "portfolio",
+          "function_line_start": 1,
+          "function_line_end": 45
+        }
+      ],
+      "rating_rubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "Python"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+          "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "rating_ceiling": 2,
+      "function_source_coverage": [
+        {
+          "file_path": "synthetic-version/order.py",
+          "function_line_start": 1,
+          "function_line_end": 45,
+          "covered_line_count": 45,
+          "fully_covered": true,
+          "citation_ids": [
+            "R1-E1",
+            "R1-E2"
+          ]
+        }
+      ]
+    }
+  ],
+  "humanSemanticReview": "pending",
+  "billingVerified": false,
+  "databasePersistenceVerified": false,
+  "browserVerified": false
+}

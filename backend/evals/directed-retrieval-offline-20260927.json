@@ -1,0 +1,69 @@
+{
+  "version": "directed-retrieval-offline-v1",
+  "syntheticDevelopmentCase": true,
+  "independentLabels": false,
+  "externalApiCalls": 0,
+  "realModelAutonomyVerified": false,
+  "persistenceVerifiedBy": "app/tests/test_directed_retrieval.py::test_directed_source_persists_and_other_owner_cannot_read",
+  "sourceHash": "97693d155b99991a813195d5a07dd55e356422083d9e2ea10cd9a8414ad6fa3a",
+  "query": "rollback",
+  "beforeRanges": [
+    [
+      1,
+      40
+    ]
+  ],
+  "afterEvidence": [
+    {
+      "citation_id": "R1-E1",
+      "file_path": "project/order.py",
+      "line_start": 1,
+      "line_end": 40,
+      "evidence_type": "python_code",
+      "strength": "high",
+      "snippet": "def process_order(payload, store):\n    if not payload.get('field_0'):\n        raise ValueError('field 0 required')\n    if not payload.get('field_1'):\n        raise ValueError('field 1 required')\n    if not payload.get('field_2'):\n        raise ValueError('field 2 required')\n    if not payload.get('field_3'):\n        raise ValueError('field 3 required')\n    if not payload.get('field_4'):\n        raise ValueError('field 4 required')\n    if not payload.get('field_5'):\n        raise ValueError('field 5 required')\n    if not payload.get('field_6'):\n        raise ValueError('field 6 required')\n    if not payload.get('field_7'):\n        raise ValueError('field 7 required')\n    if not payload.get('field_8'):\n        raise ValueError('field 8 required')\n    if not payload.get('field_9'):\n        raise ValueError('field 9 required')\n    if not payload.get('field_10'):\n        raise ValueError('field 10 required')\n    if not payload.get('field_11'):\n        raise ValueError('field 11 required')\n    if not payload.get('field_12'):\n        raise ValueError('field 12 required')\n    if not payload.get('field_13'):\n        raise ValueError('field 13 required')\n    if not payload.get('field_14'):\n        raise ValueError('field 14 required')\n    if not payload.get('field_15'):\n        raise ValueError('field 15 required')\n    if not payload.get('field_16'):\n        raise ValueError('field 16 required')\n    if not payload.get('field_17'):\n        raise ValueError('field 17 required')\n    try:\n        store.begin()\n        store.write(payload)",
+      "context_complete": false,
+      "context_note": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+      "provenance": "portfolio"
+    },
+    {
+      "citation_id": "R1-E2",
+      "file_path": "project/order.py",
+      "line_start": 6,
+      "line_end": 45,
+      "evidence_type": "retrieved_context",
+      "strength": "low",
+      "snippet": "    if not payload.get('field_2'):\n        raise ValueError('field 2 required')\n    if not payload.get('field_3'):\n        raise ValueError('field 3 required')\n    if not payload.get('field_4'):\n        raise ValueError('field 4 required')\n    if not payload.get('field_5'):\n        raise ValueError('field 5 required')\n    if not payload.get('field_6'):\n        raise ValueError('field 6 required')\n    if not payload.get('field_7'):\n        raise ValueError('field 7 required')\n    if not payload.get('field_8'):\n        raise ValueError('field 8 required')\n    if not payload.get('field_9'):\n        raise ValueError('field 9 required')\n    if not payload.get('field_10'):\n        raise ValueError('field 10 required')\n    if not payload.get('field_11'):\n        raise ValueError('field 11 required')\n    if not payload.get('field_12'):\n        raise ValueError('field 12 required')\n    if not payload.get('field_13'):\n        raise ValueError('field 13 required')\n    if not payload.get('field_14'):\n        raise ValueError('field 14 required')\n    if not payload.get('field_15'):\n        raise ValueError('field 15 required')\n    if not payload.get('field_16'):\n        raise ValueError('field 16 required')\n    if not payload.get('field_17'):\n        raise ValueError('field 17 required')\n    try:\n        store.begin()\n        store.write(payload)\n        store.commit()\n    except Exception:\n        store.rollback()\n        raise\n    return {'order_id': payload['order_id']}",
+      "context_complete": false,
+      "context_note": "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验",
+      "provenance": "portfolio"
+    }
+  ],
+  "fullSpanCoverageBefore": false,
+  "fullSpanCoverageAfter": true,
+  "ratingCeiling": 2,
+  "scan": {
+    "engine": "frozen-directed-v1",
+    "scannedLines": 45,
+    "scanLimit": 20000,
+    "scanLimitReached": false,
+    "candidateCount": 1,
+    "maxAnchors": 16,
+    "sourceExact": true
+  },
+  "toolEvent": {
+    "tool": "retrieve_more_evidence",
+    "requirementId": "8bd8f767-ae70-4339-a0b3-f20bb48fda0f",
+    "query": "rollback",
+    "resultCount": 1,
+    "scope": "current-frozen-materials",
+    "citationId": "R1-E2",
+    "engine": "frozen-directed-v1",
+    "scannedLines": 45,
+    "scanLimit": 20000,
+    "scanLimitReached": false,
+    "candidateCount": 1,
+    "maxAnchors": 16,
+    "sourceExact": true
+  }
+}
