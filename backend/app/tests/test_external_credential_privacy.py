@@ -224,3 +224,51 @@ def test_mcp_metadata_restore_never_unmasks_structural_credentials():
     assert safe["reportId"] == report_id
     assert safe["password"] == safe["authorization"] == MARKER
     assert PRIVATE not in json.dumps(safe) and raw == original
+
+
+@pytest.mark.parametrize("path_key", ["file", "file_path", "filePath"])
+def test_all_source_path_aliases_preserve_annotations_and_filter_defaults(path_key):
+    source = 'def login(name: str, password: str = "' + PRIVATE + '"):\n    return name'
+    raw = {path_key: "auth.py", "snippet": source}
+    safe = _redact_external_value(raw)
+    assert PRIVATE not in safe["snippet"]
+    assert "name: str, password: str" in safe["snippet"]
+    assert raw["snippet"] == source and safe[path_key] == "auth.py"
+
+
+def test_career_planning_input_keeps_python_context_for_external_filter():
+    from uuid import uuid4
+
+    from app.schemas.analysis import JobRecommendationView
+    from app.services.career_planning import _planning_input
+
+    job = JobRecommendationView(
+        job_id=uuid4(),
+        job_title="合成岗位",
+        company_name="合成企业",
+        category="software",
+        city="深圳",
+        employment_type="internship",
+        priority="medium",
+        assessed_count=1,
+        requirement_count=1,
+        supported_count=1,
+        claimed_count=0,
+        evidence=[
+            {
+                "citation_id": "R1-E1",
+                "skill": "Python",
+                "file_path": "auth.py",
+                "line_start": 1,
+                "line_end": 2,
+                "strength": "medium",
+                "explanation": "合成代码",
+                "snippet": 'password: str = "' + PRIVATE + '"',
+            }
+        ],
+    )
+    raw = _planning_input([job], [])
+    safe = _redact_external_value(raw)
+    assert PRIVATE not in json.dumps(safe)
+    assert "password: str" in safe["jobs"][0]["evidence"][0]["snippet"]
+    assert PRIVATE in raw["jobs"][0]["evidence"][0]["snippet"]

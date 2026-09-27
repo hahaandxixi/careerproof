@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import overclaim_flags
 from app.agents.evidence_workflow import _model_semaphore
-from app.agents.provider import OpenAICompatibleProvider, get_ai_provider
+from app.agents.provider import OpenAICompatibleProvider, _redact_external_value, get_ai_provider
 from app.core.config import settings
 from app.core.exceptions import AppError
 from app.models.analysis import AiUsageLog, AnalysisTask
@@ -21,13 +21,19 @@ from app.schemas.analysis import (
     CareerPlanChange,
     CareerPlanRequest,
     CareerPlanResult,
+    CareerValidationIssue,
     JobRecommendationResult,
     JobRecommendationView,
 )
 from app.services.analysis import _daily_ai_budget
 from app.services.recommendations import recommend_jobs
+from app.tools.visible_checks import (
+    VisibleCodeFactConflict,
+    conflicts_with_visible_checks,
+    visible_code_facts,
+)
 
-PLAN_VERSION = "career-plan-v2-actionable"
+PLAN_VERSION = "career-plan-v3-visible-checks"
 
 
 def _source_key(evidence) -> tuple[str, int, int, str, str]:
@@ -50,9 +56,9 @@ def compare_plans(
     if previous is None:
         return []
     old_jobs = {item.job_id: item for item in previous.recommendations}
-    materials_changed = {
-        (material.kind, material.id) for material in previous.materials
-    } != {(material.kind, material.id) for material in current.materials}
+    materials_changed = {(material.kind, material.id) for material in previous.materials} != {
+        (material.kind, material.id) for material in current.materials
+    }
     changes = []
     for item in diverse_shortlist(current.recommendations):
         old = old_jobs.get(item.job_id)
@@ -110,11 +116,15 @@ def validate_plan(analysis: CareerPlanAnalysis, shortlist: list[JobRecommendatio
     if overclaim_flags(analysis.comparison):
         raise ValueError("AI plan comparison overclaims candidate ability")
     by_id = {job.job_id: job for job in shortlist}
+    if len(shortlist) == 1 and conflicts_with_visible_checks(
+        analysis.comparison, visible_code_facts(shortlist[0])
+    ):
+        raise VisibleCodeFactConflict(
+            "comparison", analysis.comparison, visible_code_facts(shortlist[0])
+        )
     for item in analysis.advice:
         allowed_citations = {
-            evidence.citation_id
-            for evidence in by_id[item.job_id].evidence
-            if evidence.citation_id
+            evidence.citation_id for evidence in by_id[item.job_id].evidence if evidence.citation_id
         }
         if len(item.citation_ids) != len(set(item.citation_ids)):
             raise ValueError("AI career advice contains duplicate citations")
@@ -122,14 +132,27 @@ def validate_plan(analysis: CareerPlanAnalysis, shortlist: list[JobRecommendatio
             raise ValueError("AI career advice cites an unknown or cross-job source")
         if allowed_citations and not item.citation_ids:
             raise ValueError("AI career advice omitted the available evidence citations")
+        facts = visible_code_facts(by_id[item.job_id])
+        for field in ("reason", "key_gap", "next_task"):
+            text = getattr(item, field)
+            if conflicts_with_visible_checks(text, facts):
+                raise VisibleCodeFactConflict(field, text, facts)
         task_texts = []
         if item.task_plan:
-            task_texts = [item.task_plan.deliverable, *item.task_plan.steps,
-                          *item.task_plan.acceptance_checks]
+            task_texts = [
+                item.task_plan.deliverable,
+                *item.task_plan.steps,
+                *item.task_plan.acceptance_checks,
+            ]
             if any(not text.strip() or len(text) > 200 for text in task_texts):
                 raise ValueError("AI career task contains empty or oversized steps")
-        if any(overclaim_flags(text) for text in
-               (item.reason, item.key_gap, item.next_task, *task_texts)):
+            for text in task_texts:
+                if conflicts_with_visible_checks(text, facts):
+                    raise VisibleCodeFactConflict("task_plan", text, facts)
+        if any(
+            overclaim_flags(text)
+            for text in (item.reason, item.key_gap, item.next_task, *task_texts)
+        ):
             raise ValueError("AI career advice overclaims candidate ability")
 
 
@@ -161,12 +184,13 @@ def _planning_input(
                 "title": job.job_title,
                 "direction": job.category,
                 "rulePriority": job.priority,
+                "visibleCodeFacts": visible_code_facts(job),
                 "supportedCount": job.supported_count,
                 "claimedCount": job.claimed_count,
                 "gaps": job.gaps,
                 "requirements": [
                     {
-                    "text": requirement.text[:160],
+                        "text": requirement.text[:160],
                         "skill": requirement.skill,
                         "weight": requirement.weight,
                         "required": requirement.is_required,
@@ -198,6 +222,9 @@ PLAN_PROMPT = (
     "只比较给出的岗位；如果方向不同，说明差别；如果方向相同，就诚实地比较岗位要求差别。"
     "普通函数定义不能说成已实现HTTP接口；只有路由绑定和对应处理逻辑可支持接口实现描述。"
     "ruleVerdict只是候选检索线索，必须以snippet可见事实解释，不盲从supported标记。"
+    "visibleCodeFacts是程序提取的局部语法事实，所列引用中的参数条件判断和HTTPException"
+    "不能被说成未展示。即使对应规则不能评估，也要区分已见操作与完整覆盖、运行记录、"
+    "实际响应和本人贡献仍待核验。补证任务不要要求重复提交已经可见的相同代码片段。"
     "不修改规则排序、分数或评级。每个岗位说明当前可见的证据、最大缺口和一项"
     "可提交且可核验的补证任务，任务须写出具体产物与验收方式。"
     "如果gaps为空，不得虚构其他岗位要求；可指出运行记录、本人贡献或更完整实现尚未核验。"
@@ -241,8 +268,11 @@ async def create_career_plan(
     shortlist = diverse_shortlist(ranked.recommendations)
     changes = compare_plans(previous, ranked)
     response = CareerPlanResult.model_validate(
-        {**ranked.model_dump(), "previous_plan_id": previous.plan_id if previous else None,
-         "changes": changes}
+        {
+            **ranked.model_dump(),
+            "previous_plan_id": previous.plan_id if previous else None,
+            "changes": changes,
+        }
     )
     provider: OpenAICompatibleProvider | None = None
     if shortlist:
@@ -272,6 +302,16 @@ async def create_career_plan(
                 response.ai_plan = analysis
                 response.ai_model = provider.model
                 response.ai_status = "validated"
+        except VisibleCodeFactConflict as exc:
+            response.ai_fallback_used = True
+            response.ai_status = "visible_code_fact_conflict"
+            response.ai_validation_issues = [
+                CareerValidationIssue(
+                    reason="AI的缺失表述与当前可见代码存在冲突，请结合引用核对。",
+                    rejected_claim=_redact_external_value(exc.claim)[:220],
+                    citation_ids=exc.citation_ids[:3],
+                )
+            ]
         except Exception:  # one bounded model failure cannot erase the rule shortlist
             response.ai_fallback_used = True
             response.ai_status = "model_unavailable_or_invalid"

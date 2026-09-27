@@ -136,7 +136,7 @@ def redact_credential_values(value):
     if isinstance(value, list):
         return [redact_credential_values(item) for item in value]
     if isinstance(value, dict):
-        path = value.get("file_path", value.get("filePath", ""))
+        path = value.get("file_path", value.get("filePath", value.get("file", "")))
         return {
             key: MARKER
             if isinstance(key, str) and _SENSITIVE_KEY.fullmatch(key)

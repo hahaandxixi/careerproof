@@ -107,6 +107,7 @@ export interface CareerPlanResult extends JobRecommendationResult {
   changes: { jobId: string; jobTitle: string; previousSupportedCount: number | null;
     currentSupportedCount: number; previousPriority: string | null; currentPriority: string;
     detail: string; evidenceIds: string[] }[];
+  aiValidationIssues?: { reason: string; rejectedClaim: string; citationIds: string[] }[];
 }
 export const CATEGORY_LABELS: Record<string, string> = {
   software: "软件开发", data_analysis: "数据分析", operations: "运营", design: "设计", other: "其他",

@@ -79,7 +79,7 @@ def _redact_personal_value(value):
     if isinstance(value, list):
         return [_redact_personal_value(item) for item in value]
     if isinstance(value, dict):
-        path = value.get("file_path", value.get("filePath", ""))
+        path = value.get("file_path", value.get("filePath", value.get("file", "")))
         return {
             key: redact_external_text(item, python_source=True)
             if key == "snippet"

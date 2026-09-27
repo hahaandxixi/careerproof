@@ -118,6 +118,12 @@ class CareerPlanChange(APIModel):
     evidence_ids: list[str] = Field(default_factory=list)
 
 
+class CareerValidationIssue(APIModel):
+    reason: str = Field(min_length=1, max_length=200)
+    rejected_claim: str = Field(min_length=1, max_length=220)
+    citation_ids: list[str] = Field(default_factory=list, max_length=3)
+
+
 class CareerPlanResult(JobRecommendationResult):
     plan_id: UUID | None = None
     previous_plan_id: UUID | None = None
@@ -126,6 +132,7 @@ class CareerPlanResult(JobRecommendationResult):
     ai_status: str = "not_requested"
     ai_model: str | None = None
     ai_usage: dict | None = None
+    ai_validation_issues: list[CareerValidationIssue] = Field(default_factory=list, max_length=3)
     changes: list[CareerPlanChange] = Field(default_factory=list)
 
 
