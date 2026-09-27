@@ -129,3 +129,55 @@ def test_live_retrieval_entry_uses_deepseek_without_network(monkeypatch):
 
     monkeypatch.setattr(live, "get_ai_provider", factory)
     assert live.model_provider() is sentinel
+
+
+def test_target_overlap_is_distinct_from_complete_context():
+    gold = [{"path": "a.md", "lineStart": 2, "lineEnd": 5}]
+    partial = measure([hit("a.md", 2, 2)], gold)
+    assert partial["recallAt2"] == 1 and partial["fullCoverageAt2"]
+    assert partial["spanRecallAt2"] == 0 and not partial["fullSpanCoverageAt2"]
+    assert partial["meanTargetLineCoverageAt2"] == 0.25
+    complete = measure([hit("a.md", 1, 10)], gold)
+    assert complete["spanRecallAt2"] == 1 and complete["meanTargetLineCoverageAt2"] == 1
+
+
+def test_full_span_uses_interval_union_and_only_top_two_hits():
+    gold = [{"path": "a.md", "lineStart": 2, "lineEnd": 5}]
+    adjacent = measure([hit("a.md", 2, 3), hit("a.md", 4, 5)], gold)
+    assert adjacent["fullSpanCoverageAt2"]
+    duplicate = measure([hit("a.md", 2, 3), hit("a.md", 2, 3)], gold)
+    assert duplicate["meanTargetLineCoverageAt2"] == 0.5
+    gap = measure([hit("a.md", 2, 2), hit("a.md", 4, 5)], gold)
+    assert gap["meanTargetLineCoverageAt2"] == 0.75 and not gap["fullSpanCoverageAt2"]
+    outside_top_two = measure([hit("a.md", 2, 3), hit("b.md", 4, 5), hit("a.md", 4, 5)], gold)
+    assert outside_top_two["meanTargetLineCoverageAt2"] == 0.5
+    assert measure([hit("b.md", 2, 5)], gold)["meanTargetLineCoverageAt2"] == 0
+
+
+def test_macro_and_micro_full_span_coverage_keep_target_denominators():
+    one = [{"path": "a.md", "lineStart": 1, "lineEnd": 2}]
+    two = [*one, {"path": "b.md", "lineStart": 1, "lineEnd": 2}]
+    rows = [
+        {"metrics": measure([hit("a.md", 1, 2)], one), "hits": [hit("a.md", 1, 2)]},
+        {"metrics": measure([hit("a.md", 1, 1)], two), "hits": [hit("a.md", 1, 1)]},
+    ]
+    result = aggregate(rows)
+    assert result["spanRecallAt2"] == 0.5
+    assert result["microSpanRecallAt2"] == pytest.approx(1 / 3)
+    assert aggregate([])["spanRecallAt2"] is None
+
+
+def test_frozen_multiline_context_set_is_valid_and_explicitly_provisional():
+    import ast
+
+    from evals.retrieval_context_cases import build_span_cases
+
+    corpus, digest = load_corpus(
+        Path(__file__).parents[2] / "evals" / "retrieval-context-span-v1.json"
+    )
+    assert corpus == build_span_cases() and len(corpus["cases"]) == 4 and len(digest) == 64
+    assert "pending" in corpus["annotationStatus"]
+    long_case = next(case for case in corpus["cases"] if case["id"] == "long_python")
+    ast.parse(long_case["documents"][0]["content"])
+    assert long_case["gold"][0]["lineEnd"] > 40
+    assert all(gold["lineEnd"] > 1 for case in corpus["cases"] for gold in case["gold"])

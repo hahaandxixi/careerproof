@@ -147,6 +147,22 @@ def overlaps(hit, gold):
     )
 
 
+def covered_target_lines(hits, target):
+    """Count the union of exact-file intervals, without double-counting overlaps."""
+    intervals = sorted(
+        (max(hit["line_start"], target["lineStart"]), min(hit["line_end"], target["lineEnd"]))
+        for hit in hits
+        if overlaps(hit, target)
+    )
+    covered, next_line = 0, target["lineStart"]
+    for start, end in intervals:
+        start = max(start, next_line)
+        if start <= end:
+            covered += end - start + 1
+            next_line = end + 1
+    return covered
+
+
 def measure(hits, gold):
     if not gold:
         return {"targetCount": 0, "noTargetReturnedCandidate": bool(hits)}
@@ -156,11 +172,22 @@ def measure(hits, gold):
     ]
     first = min((rank for rank in ranks if rank is not None), default=None)
     precision = sum(any(overlaps(hit, target) for target in gold) for hit in hits[:2])
+    target_lengths = [target["lineEnd"] - target["lineStart"] + 1 for target in gold]
+    covered_lines = [covered_target_lines(hits[:2], target) for target in gold]
+    complete_spans = [
+        covered == length for covered, length in zip(covered_lines, target_lengths, strict=True)
+    ]
     return {
         "targetCount": len(gold),
         "recallAt1": sum(rank is not None and rank <= 1 for rank in ranks) / len(gold),
         "recallAt2": sum(rank is not None and rank <= 2 for rank in ranks) / len(gold),
         "fullCoverageAt2": all(rank is not None and rank <= 2 for rank in ranks),
+        "spanRecallAt2": sum(complete_spans) / len(gold),
+        "fullSpanCoverageAt2": all(complete_spans),
+        "meanTargetLineCoverageAt2": sum(
+            covered / length for covered, length in zip(covered_lines, target_lengths, strict=True)
+        )
+        / len(gold),
         "reciprocalRank": 1 / first if first else 0,
         "precisionAt2": precision / min(2, len(hits)) if hits else 0,
     }
@@ -184,12 +211,21 @@ def aggregate(rows):
             if positives
             else None
         ),
+        "microSpanRecallAt2": (
+            sum(item["spanRecallAt2"] * item["targetCount"] for item in positives)
+            / sum(item["targetCount"] for item in positives)
+            if positives
+            else None
+        ),
         **{
             name: average(name)
             for name in (
                 "recallAt1",
                 "recallAt2",
                 "fullCoverageAt2",
+                "spanRecallAt2",
+                "fullSpanCoverageAt2",
+                "meanTargetLineCoverageAt2",
                 "reciprocalRank",
                 "precisionAt2",
             )
@@ -292,6 +328,7 @@ def main():
         "generatedAt": datetime.now(UTC).isoformat(),
         "corpusHash": digest,
         "corpusVersion": corpus["version"],
+        "metricVersion": "overlap-and-full-span-v2",
         "annotationStatus": corpus["annotationStatus"],
         "annotation": annotation,
         "runtime": {"python": python_version()},

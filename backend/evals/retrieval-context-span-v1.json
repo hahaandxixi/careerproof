@@ -1,0 +1,110 @@
+{
+  "version": "synthetic-context-span-v1",
+  "createdBy": "project assistant",
+  "annotationStatus": "provisional; independent human review pending",
+  "scope": "4 context-budget development cases; not a holdout or capability proof",
+  "cases": [
+    {
+      "id": "short_python",
+      "family": "context_budget",
+      "category": "short_python",
+      "skill": "Python",
+      "query": "Python业务函数包含输入校验、写入和完整响应",
+      "semanticScope": false,
+      "labelStatus": "synthetic_provisional",
+      "documents": [
+        {
+          "path": "project/order.py",
+          "content": "def process_order(payload, store):\n    if not payload.get('order_id'):\n        raise ValueError('order id required')\n    store.write(payload)\n    return {'order_id': payload['order_id']}\n"
+        }
+      ],
+      "gold": [
+        {
+          "path": "project/order.py",
+          "lineStart": 1,
+          "lineEnd": 5,
+          "support": "describes_behavior"
+        }
+      ]
+    },
+    {
+      "id": "long_python",
+      "family": "context_budget",
+      "category": "long_python",
+      "skill": "Python",
+      "query": "Python业务处理包含字段校验、提交、异常回滚和返回分支",
+      "semanticScope": false,
+      "labelStatus": "synthetic_provisional",
+      "documents": [
+        {
+          "path": "project/order.py",
+          "content": "def process_order(payload, store):\n    if not payload.get('field_0'):\n        raise ValueError('field 0 required')\n    if not payload.get('field_1'):\n        raise ValueError('field 1 required')\n    if not payload.get('field_2'):\n        raise ValueError('field 2 required')\n    if not payload.get('field_3'):\n        raise ValueError('field 3 required')\n    if not payload.get('field_4'):\n        raise ValueError('field 4 required')\n    if not payload.get('field_5'):\n        raise ValueError('field 5 required')\n    if not payload.get('field_6'):\n        raise ValueError('field 6 required')\n    if not payload.get('field_7'):\n        raise ValueError('field 7 required')\n    if not payload.get('field_8'):\n        raise ValueError('field 8 required')\n    if not payload.get('field_9'):\n        raise ValueError('field 9 required')\n    if not payload.get('field_10'):\n        raise ValueError('field 10 required')\n    if not payload.get('field_11'):\n        raise ValueError('field 11 required')\n    if not payload.get('field_12'):\n        raise ValueError('field 12 required')\n    if not payload.get('field_13'):\n        raise ValueError('field 13 required')\n    if not payload.get('field_14'):\n        raise ValueError('field 14 required')\n    if not payload.get('field_15'):\n        raise ValueError('field 15 required')\n    if not payload.get('field_16'):\n        raise ValueError('field 16 required')\n    if not payload.get('field_17'):\n        raise ValueError('field 17 required')\n    try:\n        store.begin()\n        store.write(payload)\n        store.commit()\n    except Exception:\n        store.rollback()\n        raise\n    return {'order_id': payload['order_id']}\n"
+        }
+      ],
+      "gold": [
+        {
+          "path": "project/order.py",
+          "lineStart": 1,
+          "lineEnd": 45,
+          "support": "describes_behavior"
+        }
+      ]
+    },
+    {
+      "id": "long_runbook",
+      "family": "context_budget",
+      "category": "long_runbook",
+      "skill": "备份恢复",
+      "query": "备份恢复需覆盖执行步骤及失败时的一致性验证",
+      "semanticScope": true,
+      "labelStatus": "synthetic_provisional",
+      "documents": [
+        {
+          "path": "project/recovery.md",
+          "content": "备份恢复完整流程：需核查备份、恢复及一致性验证全部步骤。\n登记演练编号与操作人角色，执行环境使用隔离实例。\n记录数据集版本、记录数量及抽样校验方式。\n确认数据库版本与存储格式兼容。\n建立备份目标目录，记录剩余存储容量。\n检查执行账户仅具有必要的读写权限。\n保存当前 schema 定义及迁移版本。\n对关键表记录业务唯一键及约束。\n暂停目标数据写入，记录开始时间。\n发起一致性快照，等待完成状态。\n写出压缩备份，保存日志文件。\n计算备份文件哈希并核对传输完成。\n在隔离机器验证文件可以正常读取。\n创建空白目标数据库。\n安装对应的扩展与字符集。\n按依赖关系恢复表结构。\n导入数据并记录错误与告警。\n重建索引，校验主键冲突。\n核对外键约束与表间引用。\n比较恢复前后每张表的行数。\n抽样比较关键记录的字段值。\n执行业务只读查询核对订单与库存关联。\n记录演练结束时间及恢复耗时。\n清理演练访问授权并保存审批编号。\n一致性验证发现差异时停止交付，保留日志并重新检查恢复步骤。\n"
+        }
+      ],
+      "gold": [
+        {
+          "path": "project/recovery.md",
+          "lineStart": 1,
+          "lineEnd": 25,
+          "support": "describes_behavior"
+        }
+      ]
+    },
+    {
+      "id": "cross_file_runbook",
+      "family": "context_budget",
+      "category": "cross_file_runbook",
+      "skill": "备份恢复",
+      "query": "备份恢复需覆盖执行步骤及一致性验证记录",
+      "semanticScope": true,
+      "labelStatus": "synthetic_provisional",
+      "documents": [
+        {
+          "path": "project/steps.md",
+          "content": "备份恢复执行步骤。\n记录隔离实例版本。\n暂停写入并保存快照。\n导出备份文件。\n核对文件哈希。\n创建空目标并导入备份。\n保存操作日志。\n"
+        },
+        {
+          "path": "project/checks.md",
+          "content": "备份恢复一致性验证。\n记录目标表清单。\n比较各表行数。\n核对关键唯一键。\n抽样比较字段。\n检查关联查询。\n保存差异处理记录。\n"
+        }
+      ],
+      "gold": [
+        {
+          "path": "project/steps.md",
+          "lineStart": 1,
+          "lineEnd": 7,
+          "support": "describes_behavior"
+        },
+        {
+          "path": "project/checks.md",
+          "lineStart": 1,
+          "lineEnd": 7,
+          "support": "describes_behavior"
+        }
+      ]
+    }
+  ]
+}
