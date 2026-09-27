@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SourceCoverageDemo from "@/components/SourceCoverageDemo";
 import samples from "./samples.json";
 import coverage from "./coverage.json";
 
@@ -26,9 +27,10 @@ export default function DemoPage() {
         </div>
         <p className="mt-4 text-sm leading-7 text-slate-600">进入「我的材料」，在简历入口选择 TXT，在项目入口选择 ZIP。填写名称后分别提交，等待解析完成。ZIP 不用解压，最大 30MB。当前使用点击选择文件上传。</p>
         <p className="mt-3 text-sm leading-7 text-slate-600">填写示例：简历名称「合成学生简历」；项目名称「任务管理 API（合成演示）」；项目说明「合成测试项目，包含 Python、FastAPI、PostgreSQL 和 pytest 片段，用于测试证据匹配。运行情况和作者贡献未经核验。」</p>
-        <p className="mt-3 rounded-lg bg-indigo-50 p-3 text-sm leading-6 text-indigo-900">补检索专项 ZIP 用于「Python 受控补检索（合成验收）」岗位：模型只能从当前上传索引补取一条证据。真实重跑会消耗模型额度，普通功能体验优先使用基础项目 ZIP。</p>
+        <p className="mt-3 rounded-lg bg-indigo-50 p-3 text-sm leading-6 text-indigo-900">补检索专项 ZIP 用于「Python 受控补检索（合成验收）」岗位：模型可在本次选定的材料版本中有限补检索，每次最多新增一条引用；不保证能找到新证据。真实重跑会消耗模型额度，普通功能体验优先使用基础项目 ZIP。</p>
         <Link href="/portfolio" className="mt-3 inline-block text-indigo-600 underline">进入我的材料</Link>
       </section>
+      <SourceCoverageDemo />
       <section className="rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="text-xl font-bold">各职业的对照材料</h2>
         <p className="mt-3 text-sm leading-7 text-slate-600">下列每个方向都有简历 TXT 和作品 TXT。作品文件上传到「项目压缩包或作品文档」入口，不要传到简历入口。它们是含有缺口的文档样例，不是完整工程或满分标准答案。</p>

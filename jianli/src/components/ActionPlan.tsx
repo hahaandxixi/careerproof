@@ -1,3 +1,4 @@
+import EvidenceLink from "./EvidenceLink";
 import type { MatchReport } from "@/lib/api/domain";
 
 const SOURCE_LABELS = {
@@ -27,7 +28,7 @@ export default function ActionPlan({ actions }: { actions: MatchReport["actionPl
         <p className="mt-2 text-xs text-slate-500">{action.skill} · 岗位权重 {action.weight}/5 · 当前证据{action.currentLevel == null ? "未评级" : `${action.currentLevel}/5`}</p>
         <p className="mt-3 text-sm leading-6"><strong>建议行动：</strong>{action.action}</p>
         {action.evidenceGap && <p className="mt-1 text-sm leading-6 text-slate-600"><strong>对应缺口：</strong>{action.evidenceGap}</p>}
-        {action.citationIds.length > 0 && <div className="mt-2 flex flex-wrap gap-2 text-xs text-indigo-700">{action.citationIds.map(citation => <a key={citation} href={`#citation-${citation}`} className="underline">查看引用 {citation}</a>)}</div>}
+        {action.citationIds.length > 0 && <div className="mt-2 flex flex-wrap gap-2 text-xs text-indigo-700">{action.citationIds.map(citation => <EvidenceLink key={citation} citationId={citation} className="underline">查看引用 {citation}</EvidenceLink>)}</div>}
       </li>)}
     </ol>
     <p className="mt-3 text-xs leading-5 text-slate-500">这是一份材料完善顺序，不是能力认证或提级保证；新增材料仍需重新分析与人工核对。</p>

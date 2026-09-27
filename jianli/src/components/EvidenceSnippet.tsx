@@ -3,7 +3,7 @@ import type { ReportEvidence } from "@/lib/api/domain";
 export default function EvidenceSnippet({ evidence }: { evidence: ReportEvidence }) {
   return <div className="min-w-0">
     <p className={`mt-2 text-xs leading-6 ${evidence.contextComplete ? "text-slate-500" : "text-amber-800"}`}>
-      {evidence.contextNote || "历史引用未核验上下文完整性"}
+      单个引用片段：{evidence.contextNote || "历史引用未核验上下文完整性"}
     </p>
     <pre aria-label={`原文 ${evidence.filePath} 第 ${evidence.lineStart} 至 ${evidence.lineEnd} 行`}
       className="mt-3 max-h-80 max-w-full overflow-auto rounded-lg bg-slate-50 p-3 text-xs leading-6">

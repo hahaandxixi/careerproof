@@ -35,11 +35,21 @@ export interface ReportEvidence {
   citationId: string | null;
   provenance?: "portfolio" | "reference";
   contextComplete: boolean; contextNote: string;
+  functionLineStart?: number | null; functionLineEnd?: number | null; sourceLineCount?: number | null;
   skill: string; evidenceType: string; filePath: string; lineStart: number; lineEnd: number;
   snippet: string; strength: string; explanation: string; contentHash: string;
   projectFileId: string | null; projectVersionId: string | null; sourceId: string | null;
 }
-  export interface ReportItem {
+export interface FunctionSourceCoverage {
+  file_path: string; function_line_start: number; function_line_end: number;
+  covered_line_count: number; fully_covered: boolean; citation_ids: string[];
+}
+export interface FileSourceCoverage {
+  file_path: string; source_line_count: number;
+  covered_line_count: number; fully_covered: boolean; citation_ids: string[];
+}
+export interface ReportItem {
+  functionSourceCoverage?: FunctionSourceCoverage[]; fileSourceCoverage?: FileSourceCoverage[];
     evidenceLevelSource?: string; skillPath?: string[];
     ratingCriteria?: { criterion: string; supported: boolean; citation_ids: string[]; reason: string }[];
   requirementId: string; requirementTitle: string; skill: string; claimed: boolean; claimText: string | null;
