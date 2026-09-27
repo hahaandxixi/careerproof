@@ -40,7 +40,7 @@ def retrieve_context(
             if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
                 node_start = min([node.lineno] + [d.lineno for d in node.decorator_list])
                 node_end = node.end_lineno or node.lineno
-                if node_start <= start <= node_end:
+                if node_start <= start <= end <= node_end:
                     functions.append((node_end - node_start, node_start, node_end))
         if functions:
             _, start, end = min(functions)
@@ -51,15 +51,31 @@ def retrieve_context(
     # available, otherwise retain a small contiguous window around the anchor.
     if not complete:
         start, end = max(1, start - 2), min(len(lines), end + 6)
-    wanted_end = end
-    end = min(end, start + MAX_LINES - 1)
-    while end >= start and len("\n".join(lines[start - 1 : end])) > MAX_CHARACTERS:
-        end -= 1
-    if end < evidence.line_start:
-        start = end = evidence.line_start
-        if len(lines[start - 1]) > MAX_CHARACTERS:
-            raise ValueError("Single source line exceeds the context budget")
-    if end < wanted_end:
+    wanted_start, wanted_end = start, end
+    anchor_start, anchor_end = evidence.line_start, evidence.line_end
+    anchor_text = "\n".join(lines[anchor_start - 1 : anchor_end])
+    if anchor_end - anchor_start + 1 > MAX_LINES or len(anchor_text) > MAX_CHARACTERS:
+        raise ValueError("Source anchor exceeds the context budget")
+
+    # Keep the existing head window for early anchors. For late anchors, shift
+    # a bounded continuous window towards them instead of collapsing to one line.
+    end = min(wanted_end, start + MAX_LINES - 1)
+    if anchor_end > end:
+        start = max(
+            wanted_start,
+            anchor_end - MAX_LINES + 1,
+            min(anchor_start - MAX_LINES // 2, wanted_end - MAX_LINES + 1),
+        )
+        end = min(wanted_end, start + MAX_LINES - 1)
+    while len("\n".join(lines[start - 1 : end])) > MAX_CHARACTERS:
+        # Trim the farther side, never any part of the verified anchor. The
+        # anchor budget check guarantees at least one removable side exists.
+        before, after = anchor_start - start, end - anchor_end
+        if before > after:
+            start += 1
+        else:
+            end -= 1
+    if start > wanted_start or end < wanted_end:
         complete = False
         note = "上下文超过40行或4000字符，只展示连续局部原文；其余实现和运行结果需人工核验"
     snippet = "\n".join(lines[start - 1 : end])

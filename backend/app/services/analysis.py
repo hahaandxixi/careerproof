@@ -88,7 +88,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
         "visualClaims": snapshot.get("visualClaims", []),
-        "cacheVersion": "report-context-v4-frozen-history",
+        "cacheVersion": "report-context-v5-anchor-preserving",
         "semanticEngine": (
             SEMANTIC_VERSION
             if settings.semantic_retrieval_enabled
@@ -584,7 +584,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
                 "evidenceContextVersion": (
-                    None if result.grounding_error else "source-context-v4-semantic-documents"
+                    None if result.grounding_error else "source-context-v5-anchor-preserving"
                 ),
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),
