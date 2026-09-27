@@ -104,8 +104,28 @@ def view(task):
     )
 
 
+async def source_checked_view(task, row):
+    """Read projection only: historical snapshots and reviews remain unchanged."""
+    saved = view(task)
+    if saved.status != "completed":
+        return saved
+    try:
+        if saved.source_hash != row.content_hash:
+            raise ValueError("Saved visual source hash differs from its material version")
+        await asyncio.to_thread(verified_image_bytes, row)
+    except (AppError, ValueError):
+        return saved.model_copy(
+            update={
+                "status": "unavailable",
+                "observations": None,
+                "failure_kind": "source_unavailable_or_changed",
+            }
+        )
+    return saved
+
+
 async def latest_visual(session, version_id, user):
-    await owned_image(session, version_id, user)
+    row = await owned_image(session, version_id, user)
     task = await session.scalar(
         select(AnalysisTask)
         .where(
@@ -116,7 +136,7 @@ async def latest_visual(session, version_id, user):
         .order_by(AnalysisTask.created_at.desc(), AnalysisTask.id.desc())
         .limit(1)
     )
-    return view(task) if task else None
+    return await source_checked_view(task, row) if task else None
 
 
 def validate_observations(raw):
@@ -229,7 +249,7 @@ async def observe_image(session, version_id, request, user):
             )
         )
     await session.commit()
-    return view(task)
+    return await source_checked_view(task, row)
 
 
 async def review_visual(session, review_id, request, user):
@@ -244,8 +264,13 @@ async def review_visual(session, review_id, request, user):
     )
     if not task or task.status != TaskStatus.COMPLETED:
         raise AppError("图片观察不存在或无权复核", code=4043, status_code=404)
-    await owned_image(session, task.input_snapshot["projectVersionId"], user)
-    if view(task).status != "completed":
+    row = await owned_image(session, task.input_snapshot["projectVersionId"], user)
+    checked = await source_checked_view(task, row)
+    if checked.failure_kind == "source_unavailable_or_changed":
+        raise AppError(
+            "图片原文件不可读取或与观察来源不一致，请上传新版本后核对", code=4096, status_code=409
+        )
+    if checked.status != "completed":
         raise AppError("已保存的图片观察未通过当前校验，请重新分析", code=4097, status_code=409)
     task.input_snapshot = {
         **task.input_snapshot,
@@ -254,7 +279,7 @@ async def review_visual(session, review_id, request, user):
         "reviewedAt": datetime.now(UTC).isoformat() if request.status != "pending" else None,
     }
     await session.commit()
-    return view(task)
+    return await source_checked_view(task, row)
 
 
 async def visual_attachments(session, version_ids, user):
@@ -303,10 +328,9 @@ async def visual_attachments(session, version_ids, user):
             continue
         row = versions[version_id]
         try:
-            saved = view(task)
+            saved = await source_checked_view(task, row)
             if not current_visual(saved, row):
                 continue
-            await asyncio.to_thread(verified_image_bytes, row)
         except (AppError, ValueError, KeyError, TypeError):
             # Omit unavailable/stale image observations; keep the text analysis.
             continue

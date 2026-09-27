@@ -685,3 +685,94 @@ async def test_waiting_visual_request_shares_only_a_new_matching_failure(monkeyp
         with pytest.raises(AppError) as error:
             await observe_image(object(), "synthetic-version", request, user)
         assert error.value.status_code == 429
+
+
+@pytest.mark.parametrize("fault", [None, "missing_image", "changed_image", "wrong_saved_hash"])
+async def test_visual_read_and_adoption_require_the_same_available_source(
+    matching_db,  # noqa: F811
+    monkeypatch,
+    fault,
+):
+    app, factory = matching_db
+
+    def forbidden_provider():
+        raise AssertionError("Reading or reviewing must never invoke a model")
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden_provider)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner:
+        user = await register(owner, "visual-source-review@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            task = saved_visual(
+                UUID(user["id"]),
+                version,
+                sourceHash="different" if fault == "wrong_saved_hash" else version.content_hash,
+            )
+            session.add(task)
+            await session.commit()
+            task_id, original = task.id, dict(task.input_snapshot)
+        file = settings.storage_base_dir / version.archive_storage_key
+        if fault == "missing_image":
+            file.unlink()
+        elif fault == "changed_image":
+            output = io.BytesIO()
+            Image.new("RGB", (100, 80), "blue").save(output, format="PNG")
+            file.write_bytes(output.getvalue())
+        reviewed = await owner.patch(
+            f"/api/v1/visual-reviews/{task_id}", json={"status": "accepted", "note": "合成来源核对"}
+        )
+        assert reviewed.status_code == (409 if fault else 200), reviewed.text
+        response = await owner.get(f"/api/v1/project-versions/{version.id}/visual-review")
+        assert response.status_code == 200, response.text
+        shown = response.json()["data"]
+        if fault:
+            assert shown["status"] == "unavailable"
+            assert shown["observations"] is None
+            assert shown["failureKind"] == "source_unavailable_or_changed"
+        else:
+            assert shown["status"] == "completed" and shown["observations"]
+        async with factory() as session:
+            stored = await session.get(AnalysisTask, task_id)
+            if fault:
+                assert stored.input_snapshot == original
+            else:
+                assert stored.input_snapshot["reviewStatus"] == "accepted"
+            assert list(await session.scalars(select(AiUsageLog))) == []
+
+
+async def test_visual_return_rechecks_source_changed_while_model_was_answering(
+    matching_db,  # noqa: F811
+    monkeypatch,
+):
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner:
+        user = await register(owner, "visual-during-answer@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        calls = []
+
+        class Provider:
+            model = "synthetic-vision"
+
+            async def observe(self, _bytes):
+                calls.append(1)
+                (settings.storage_base_dir / version.archive_storage_key).write_bytes(b"changed")
+                return visual_answer()
+
+            def combined_usage(self):
+                return None
+
+        monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", lambda: Provider())
+        result = await owner.post(
+            f"/api/v1/project-versions/{version.id}/visual-review",
+            json={"externalImageConsent": True},
+        )
+        assert result.status_code == 200, result.text
+        shown = result.json()["data"]
+        assert shown["status"] == "unavailable" and shown["observations"] is None
+        assert shown["failureKind"] == "source_unavailable_or_changed" and calls == [1]
+        async with factory() as session:
+            saved = await session.get(AnalysisTask, UUID(shown["id"]))
+            # Preserve what was analyzed; read projections don't rewrite evidence.
+            assert saved.status == TaskStatus.COMPLETED
+            assert saved.input_snapshot["sourceHash"] == version.content_hash
+            assert saved.input_snapshot["observations"] == visual_answer()

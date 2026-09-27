@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { VisualReview } from "@/lib/api/domain";
 
@@ -36,16 +37,17 @@ export default function VisualEvidencePanel({ versionId }: { versionId: string }
   }
   if (!supported) return error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null;
   const region = selected == null ? null : result?.observations?.observations[selected]?.region;
+  const sourceUnavailable = result?.failureKind === "source_unavailable_or_changed";
   const historical = Boolean(result?.observations && result.promptVersion !== "visual-claim-v2-deepseek");
   return <section className="panel space-y-4" aria-label="视觉内容观察">
     <div><h2 className="font-semibold">视觉内容观察</h2><p className="mt-2 text-sm leading-6 text-slate-600">本地 OCR 提取文字；视觉模型描述图中元素和位置。图片描述不参与实践评级，不能证明真实部署、持续运行、测试通过或本人贡献。</p></div>
-    <div className="relative mx-auto max-w-3xl overflow-hidden rounded-lg border">
+    {sourceUnavailable ? <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm">原图不可读取或与保存版本不一致，旧描述已停止展示。请<Link href="/portfolio" className="underline">上传新版本</Link>后再分析；原记录保留。</p> : <div className="relative mx-auto max-w-3xl overflow-hidden rounded-lg border">
       {/* Authenticated, same-origin, normalized PNG; no remote image URL is accepted. */}
       <img src={`/backend/api/v1/project-versions/${versionId}/image`} alt="本人上传的图片作品，用于核对视觉描述" className="block h-auto w-full" />
       {region && <div aria-hidden="true" className="pointer-events-none absolute border-2 border-amber-500 bg-amber-200/20" style={{ left: `${region[0] * 100}%`, top: `${region[1] * 100}%`, width: `${(region[2] - region[0]) * 100}%`, height: `${(region[3] - region[1]) * 100}%` }} />}
-    </div>
+    </div>}
     {historical && <p className="rounded-lg bg-amber-50 p-3 text-sm">以下为历史模型保存的观察。可重新授权，使用当前 DeepSeek 配置生成新的观察；历史记录保留。</p>}
-    {(!result?.observations || historical) && <>
+    {!sourceUnavailable && (!result?.observations || historical) && <>
       {result?.status === "unavailable" && <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm">{result.promptVersion !== "visual-claim-v2-deepseek" ? "历史视觉请求未成功，当前已切换 DeepSeek，可重新授权生成。" : result.failureKind === "provider_http_401" ? "DeepSeek 视觉服务认证未通过，请联系管理员。" : "视觉模型不可用或输出未通过校验。"}本地 OCR 和原图仍可核对，未生成视觉结论。</p>}
       <label className="flex items-start gap-2 text-sm leading-6"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-1" />我已检查图片，不含密钥、私人联系方式或未授权资料；允许将原图像素发送至 DeepSeek 分析，图片与文字会计入 API 用量。图片内容不会自动脱敏。</label>
       <button className="btn" disabled={!consent || busy} onClick={() => void observe()}>{busy ? "正在观察图片…" : "生成图片内容观察"}</button>
