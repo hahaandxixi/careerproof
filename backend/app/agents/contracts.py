@@ -5,7 +5,12 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from app.tools.function_coverage import all_cited_functions_covered, missing_function_context_claim
+from app.tools.function_coverage import (
+    all_cited_functions_covered,
+    internal_rating_reason,
+    missing_function_context_claim,
+    redundant_source_request,
+)
 
 
 class StrictModel(BaseModel):
@@ -27,12 +32,21 @@ class EvidenceCandidate(StrictModel):
     provenance: Literal["portfolio", "reference"] = "portfolio"
     function_line_start: int | None = Field(default=None, ge=1)
     function_line_end: int | None = Field(default=None, ge=1)
+    source_line_count: int | None = Field(default=None, ge=1)
 
 
 class FunctionSourceCoverage(StrictModel):
     file_path: str
     function_line_start: int = Field(ge=1)
     function_line_end: int = Field(ge=1)
+    covered_line_count: int = Field(ge=1)
+    fully_covered: bool
+    citation_ids: list[str] = Field(max_length=3)
+
+
+class FileSourceCoverage(StrictModel):
+    file_path: str
+    source_line_count: int = Field(ge=1)
     covered_line_count: int = Field(ge=1)
     fully_covered: bool
     citation_ids: list[str] = Field(max_length=3)
@@ -52,6 +66,7 @@ class RequirementEvidenceContext(StrictModel):
     function_source_coverage: list[FunctionSourceCoverage] = Field(
         default_factory=list, max_length=3
     )
+    file_source_coverage: list[FileSourceCoverage] = Field(default_factory=list, max_length=3)
 
 
 class RetrievalToolCall(StrictModel):
@@ -158,6 +173,8 @@ def overclaim_flags(text: str) -> list[str]:
 def validate_grounded_analysis(
     contexts: list[RequirementEvidenceContext], analysis: EvidenceAnalysis
 ) -> None:
+    if internal_rating_reason(analysis.summary):
+        raise ValueError("AI summary exposes implementation-only rating terminology")
     if overclaim_flags(analysis.summary):
         raise ValueError("AI summary contains an unsupported ability or execution claim")
     if (contexts and all(all_cited_functions_covered(context.evidence) for context in contexts)
@@ -208,6 +225,10 @@ def validate_grounded_analysis(
             coverage_text += " " + item.rating.reason + " " + " ".join(
                 decision.reason for decision in item.rating.criteria
             )
+        if internal_rating_reason(coverage_text):
+            raise ValueError("AI explanation exposes implementation-only rating terminology")
+        if item.suggestion and redundant_source_request(item.suggestion, context.evidence):
+            raise ValueError("AI suggestion requests source already fully shown")
         if (all_cited_functions_covered(cited_evidence)
                 and missing_function_context_claim(coverage_text)):
             raise ValueError("AI explanation contradicts jointly covered function source")

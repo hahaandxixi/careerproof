@@ -46,6 +46,7 @@ class CodeEvidence:
     provenance: str = "portfolio"
     function_line_start: int | None = None
     function_line_end: int | None = None
+    source_line_count: int | None = None
 
 
 def detector(

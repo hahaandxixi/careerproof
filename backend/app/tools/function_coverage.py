@@ -76,3 +76,80 @@ def all_cited_functions_covered(evidence) -> bool:
         return False
     coverage = function_coverage(personal)
     return bool(coverage) and all(entry["fully_covered"] for entry in coverage)
+
+
+def file_coverage(evidence) -> list[dict]:
+    groups = {}
+    for entry in evidence:
+        if entry.provenance == "portfolio":
+            groups.setdefault(entry.file_path, []).append(entry)
+    result = []
+    for path, entries in sorted(groups.items()):
+        counts = {entry.source_line_count for entry in entries}
+        if len(counts) != 1 or None in counts:
+            continue
+        count = counts.pop()
+        if not all(1 <= entry.line_start <= entry.line_end <= count for entry in entries):
+            continue
+        intervals = sorted((entry.line_start, entry.line_end) for entry in entries)
+        covered = 0
+        left, right = intervals[0]
+        for next_left, next_right in intervals[1:]:
+            if next_left <= right + 1:
+                right = max(right, next_right)
+            else:
+                covered += right - left + 1
+                left, right = next_left, next_right
+        covered += right - left + 1
+        result.append(
+            {
+                "file_path": path,
+                "source_line_count": count,
+                "covered_line_count": covered,
+                "fully_covered": covered == count,
+                "citation_ids": list(dict.fromkeys(entry.citation_id for entry in entries)),
+            }
+        )
+    return result
+
+
+_SOURCE_REQUEST = re.compile(
+    r"(?:提交|补充|提供|上传|补交)"
+    r"(?P<subject>(?:该|当前|此|本|对应|这段)?(?:函数的?|文件的?)?)"
+    r"完整(?P<source>函数(?:原文|源码|上下文)|文件|源码|原文|上下文)"
+)
+_INTERNAL_REASON = re.compile(
+    r"rating_ceiling|function_source_coverage|context_complete|provenance"
+    r"|受(?:到)?(?:程序|规则|评级)?上限限制|因(?:程序|规则|评级)?上限(?:限制|约束)"
+)
+
+
+def redundant_source_request(text: str, evidence) -> bool:
+    personal = [entry for entry in evidence if entry.provenance == "portfolio"]
+    coverage = file_coverage(personal)
+    files_complete = bool(personal) and len(coverage) == len({e.file_path for e in personal})
+    files_complete = files_complete and all(row["fully_covered"] for row in coverage)
+    functions_complete = all_cited_functions_covered(evidence)
+    for match in _SOURCE_REQUEST.finditer(text):
+        # Runtime records and contribution history are new evidence, even when
+        # the source file was fully shown. Only reject repeated source requests.
+        if re.match(
+            r"的(?:运行|执行|测试|验证|提交|贡献|历史|新版本|修订|修正|更新)", text[match.end() :]
+        ):
+            continue
+        subject, source = match["subject"], match["source"]
+        if source == "文件" and subject and files_complete:
+            return True
+        if (
+            source != "文件"
+            and ("函数" in subject or source.startswith("函数"))
+            and functions_complete
+        ):
+            return True
+        if "文件" in subject and files_complete:
+            return True
+    return False
+
+
+def internal_rating_reason(text: str) -> bool:
+    return bool(_INTERNAL_REASON.search(text))

@@ -92,6 +92,7 @@ def retrieve_context(
         context_note=note,
         function_line_start=function_start,
         function_line_end=function_end,
+        source_line_count=len(lines),
     )
 
 

@@ -24,7 +24,7 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v21-joint-function-coverage"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v22-actionable-evidence-gaps"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -170,6 +170,11 @@ def evidence_analysis_messages(
         "function_source_coverage是程序按同一来源函数边界和当前引用行区间计算的覆盖事实；"
         "fully_covered=true表示这些引用合起来覆盖该函数原文，不得再写该函数上下文缺失。"
         "描述联合覆盖时应引用覆盖所需的片段；未给的外部依赖、运行结果和贡献仍需核验。"
+        "file_source_coverage单独记录当前引用对整文件的覆盖；函数覆盖完整不等于文件完整。"
+        "已覆盖完整的该函数原文/该文件不要建议重复提交；优先补依赖实现、运行记录或贡献记录。"
+        "缺少文件外围导入、配置等上下文时可以建议补完整文件，不猜测整文件已给。"
+        "评级理由必须说明引用支持的操作及真正未知的任务环节，不能只说受上限限制，"
+        "也不向用户输出rating_ceiling、context_complete、provenance等内部字段。"
         "源码范围完整不等于完整任务实现，不自动提高rating_ceiling或等级。"
         "每项都请填写information_gap说明尚未核实的运行结果、实现范围或本人贡献，"
         "并给出与该项相关的核验建议。只把snippet中可见的行为作为事实；函数名、"
@@ -571,6 +576,9 @@ class OpenAICompatibleProvider:
                         "skill": context.skill,
                         "verdict": context.verdict,
                         "evidence_count": len(context.evidence),
+                        "file_source_coverage": [
+                            coverage.model_dump() for coverage in context.file_source_coverage
+                        ],
                         "function_source_coverage": [
                             coverage.model_dump() for coverage in context.function_source_coverage
                         ],

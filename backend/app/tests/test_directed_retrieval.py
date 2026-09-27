@@ -245,6 +245,8 @@ async def test_directed_source_persists_and_other_owner_cannot_read(directed_db,
         assert report["analysisMode"] == "ai_evidence"
         assert report["aiToolCalls"][0]["scope"] == "current-frozen-materials"
         item = report["items"][0]
+        file_coverage = item["fileSourceCoverage"][0]
+        assert file_coverage["fully_covered"] and file_coverage["source_line_count"] == 45
         coverage = item["functionSourceCoverage"][0]
         assert coverage["fully_covered"] and coverage["covered_line_count"] == 45
         assert coverage["function_line_start"] == 1 and coverage["function_line_end"] == 45

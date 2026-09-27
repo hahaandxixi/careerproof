@@ -88,7 +88,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
         "visualClaims": snapshot.get("visualClaims", []),
-        "cacheVersion": "report-context-v7-joint-function-coverage",
+        "cacheVersion": "report-context-v8-actionable-evidence-gaps",
         "semanticEngine": (
             SEMANTIC_VERSION
             if settings.semantic_retrieval_enabled
@@ -442,6 +442,7 @@ class AnalysisService:
             ai_status=ai.get("status", "not_used"),
             ai_origin=ai.get("origin"),
             function_source_coverage=ai.get("functionSourceCoverage", []),
+            file_source_coverage=ai.get("fileSourceCoverage", []),
         )
 
 
@@ -587,7 +588,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "citationValidation": "passed" if workflow.analysis else "not_run",
                 "usage": usage,
                 "evidenceContextVersion": (
-                    None if result.grounding_error else "source-context-v7-joint-function-coverage"
+                    None if result.grounding_error else "source-context-v8-actionable-evidence-gaps"
                 ),
                 "retrievalSteps": result.retrieval_steps,
                 "modelToolCalls": list(workflow.tool_calls),
@@ -724,6 +725,10 @@ async def execute_match_task(task_id: UUID) -> None:
                                     else None
                                 ),
                                 "ratingRubric": context.rating_rubric if context else None,
+                                "fileSourceCoverage": [
+                                    coverage.model_dump()
+                                    for coverage in context.file_source_coverage
+                                ] if context else [],
                                 "functionSourceCoverage": [
                                     coverage.model_dump()
                                     for coverage in context.function_source_coverage

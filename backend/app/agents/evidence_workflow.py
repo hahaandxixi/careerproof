@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from app.agents.contracts import (
     EvidenceAnalysis,
     EvidenceCandidate,
+    FileSourceCoverage,
     FunctionSourceCoverage,
     HistoryToolCall,
     ModelUsage,
@@ -27,7 +28,7 @@ from app.core.config import settings
 from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import classify_evidence
-from app.tools.function_coverage import function_coverage
+from app.tools.function_coverage import file_coverage, function_coverage
 from app.tools.matcher import MatchResult
 from app.tools.skill_rubric import rubric_for
 
@@ -90,6 +91,7 @@ def build_evidence_contexts(
                 provenance=source.provenance,
                 function_line_start=source.function_line_start,
                 function_line_end=source.function_line_end,
+                source_line_count=source.source_line_count,
             )
             for evidence_index, source in enumerate(item.evidence_list[:max_evidence], 1)
             if source.snippet.strip()
@@ -106,6 +108,7 @@ def build_evidence_contexts(
                 evidence=evidence,
                 rating_rubric=rubric_for(item.skill),
                 function_source_coverage=function_coverage(evidence),
+                file_source_coverage=file_coverage(evidence),
                 rating_ceiling=classify_evidence(
                     {"skill": item.skill, "evidenceList": [e.model_dump() for e in evidence]},
                     item.verdict,
@@ -215,11 +218,15 @@ def execute_retrieval_tool(
             provenance=selected.provenance,
             function_line_start=selected.function_line_start,
             function_line_end=selected.function_line_end,
+            source_line_count=selected.source_line_count,
         ),
     ]
     updated = context.model_copy(
         update={
             "evidence": evidence,
+            "file_source_coverage": [
+                FileSourceCoverage.model_validate(coverage) for coverage in file_coverage(evidence)
+            ],
             "function_source_coverage": [
                 FunctionSourceCoverage.model_validate(coverage)
                 for coverage in function_coverage(evidence)
