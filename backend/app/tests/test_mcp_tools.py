@@ -366,3 +366,39 @@ def test_mcp_export_redacts_structured_credential_values_without_mutating_source
     assert "another private value" not in json.dumps(safe)
     assert safe["contentHash"] == "source-hash" and safe["lineStart"] == 7
     assert raw["headers"]["Authorization"] == "Bearer synthetic-auth-header"
+
+
+def test_mcp_export_keeps_valid_source_hash_and_uuid_without_exempting_text():
+    identifier = "13800138-0000-4000-8000-a13800138000"
+    digest = "821565e542f5768547b98f8489a8f14286353423b68b7022d6ab856a36afdc2e"
+    raw = {
+        "reportId": identifier,
+        "items": [
+            {
+                "requirementId": identifier,
+                "contentHash": digest,
+                "filePath": identifier + "/13800138000-owner@example.com.py",
+                "snippet": "contact: 13800138000 owner@example.com",
+            }
+        ],
+        "summary": identifier,
+    }
+    safe = sanitize_export(raw)
+    item = safe["items"][0]
+    assert safe["reportId"] == identifier and item["requirementId"] == identifier
+    assert item["contentHash"] == digest
+    assert item["filePath"].startswith(identifier + "/")
+    assert "13800138000" not in item["filePath"].split("/", 1)[1]
+    assert "owner@example.com" not in item["filePath"] + item["snippet"]
+    assert "13800138000" not in item["snippet"]
+    assert safe["summary"] != identifier
+    assert raw["items"][0]["contentHash"] == digest
+    assert raw["items"][0]["snippet"] == "contact: 13800138000 owner@example.com"
+
+
+@pytest.mark.parametrize("field", ["contentHash", "reportId", "requirementId", "filePath"])
+def test_mcp_metadata_field_names_do_not_bypass_private_text_filter(field):
+    raw = {field: "13800138000 owner@example.com PASSWORD='synthetic private tail'"}
+    safe = sanitize_export(raw)[field]
+    assert "13800138000" not in safe and "owner@example.com" not in safe
+    assert "synthetic private tail" not in safe

@@ -2,8 +2,9 @@
 
 import hashlib
 import json
+import re
 from datetime import UTC, datetime, timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import jwt
 from pydantic import ValidationError
@@ -45,10 +46,56 @@ def grant_expired(claims, grant):
         return True
 
 
+_UUID_FIELDS = frozenset({"reportId", "jobId", "baseId", "targetId", "requirementId"})
+_SHA256 = re.compile(r"[0-9a-fA-F]{64}")
+
+
+def _canonical_uuid(value):
+    if not isinstance(value, str):
+        return False
+    try:
+        return str(UUID(value)) == value.lower()
+    except ValueError:
+        return False
+
+
+def _restore_export_metadata(original, redacted):
+    """Keep validated source identities; arbitrary text remains privacy filtered."""
+    if isinstance(original, list):
+        return [
+            _restore_export_metadata(raw, safe)
+            for raw, safe in zip(original, redacted, strict=True)
+        ]
+    if not isinstance(original, dict):
+        return redacted
+    result = {}
+    for key, raw in original.items():
+        safe = redacted[key]
+        if (
+            key in _UUID_FIELDS
+            and _canonical_uuid(raw)
+            or key == "contentHash"
+            and isinstance(raw, str)
+            and _SHA256.fullmatch(raw)
+        ):
+            safe = raw
+        elif key == "filePath" and isinstance(raw, str):
+            # Version UUID components locate sources; filenames still need redaction.
+            safe = "/".join(
+                part if _canonical_uuid(part) else _redact_external_value(part)
+                for part in raw.split("/")
+            )
+        else:
+            safe = _restore_export_metadata(raw, safe)
+        result[key] = safe
+    return result
+
+
 def sanitize_export(value):
-    # Redact the whole structure first so filePath/snippet pairs retain Python
-    # annotation context. Credential filtering never modifies stored source data.
-    return redact_credential_values(_redact_external_value(value))
+    # Whole-object redaction retains Python annotation context. Only validated
+    # metadata is restored; credential filtering and stored sources stay separate.
+    redacted = _restore_export_metadata(value, _redact_external_value(value))
+    return redact_credential_values(redacted)
 
 
 async def audit(session, user_id, action, grant_id, details):
