@@ -60,7 +60,8 @@ async def seed_reports(factory, job, student, stranger):
     source = (
         "def label(name: str):\n"
         '    PASSWORD = "synthetic stdio credential with spaces"\n'
-        "    return name.strip()"
+        + "    # synthetic padding\n" * 90
+        + "    return name.strip()"
     )
     ids = []
     snapshots = []
@@ -207,6 +208,20 @@ async def test_official_stdio_client_reads_scoped_routes_filters_and_revokes(job
                         hit = search["result"]["evidence"][0]
                         assert hit["citationId"] == "R1-E1"
                         assert "name: str" in hit["snippet"]
+                        assert len(hit["snippet"]) <= 1000
+                        assert hit["snippetTruncated"] is True
+                        assert hit["snippetRedacted"] is True
+                        assert hit["sourceRangeBasis"] == "saved_original_excerpt"
+                        assert hit["lineEnd"] == original_snapshots[1]["evidence"]["lineEnd"]
+                        assert hit["snippetReturnedChars"] == len(hit["snippet"])
+                        short = structured(
+                            await client.call_tool(
+                                "search_evidence",
+                                {"report_id": ids[0], "query": "Python", "limit": 1},
+                            )
+                        )["result"]["evidence"][0]
+                        assert not short["snippetTruncated"] and not short["snippetRedacted"]
+                        assert short["snippet"] == original_snapshots[0]["evidence"]["snippet"]
                         assert "synthetic stdio credential" not in hit["snippet"]
                         assert (
                             hit["contentHash"] == original_snapshots[1]["evidence"]["contentHash"]
@@ -248,8 +263,8 @@ async def test_official_stdio_client_reads_scoped_routes_filters_and_revokes(job
                 )
             )
             statuses = [row.details["status"] for row in calls]
-            assert statuses.count("completed") == 3 and statuses.count("rejected") == 2
-            assert statuses.count("revoked_or_missing") == 1 and len(calls) == 6
+            assert statuses.count("completed") == 4 and statuses.count("rejected") == 2
+            assert statuses.count("revoked_or_missing") == 1 and len(calls) == 7
             assert grant["token"] not in json.dumps([row.details for row in calls])
             assert "synthetic stdio credential" not in json.dumps([row.details for row in calls])
             items = list(await session.scalars(select(MatchItem)))

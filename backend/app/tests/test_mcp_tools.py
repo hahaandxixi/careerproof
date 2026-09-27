@@ -14,7 +14,12 @@ from app.core.config import settings
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.audit import AuditLog
 from app.schemas.mcp_tools import EvidenceQuery
-from app.services.mcp_tools import dispatch, grant_expired, sanitize_export
+from app.services.mcp_tools import (
+    dispatch,
+    grant_expired,
+    sanitize_export,
+    sanitize_tool_result,
+)
 from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
 
 
@@ -402,3 +407,47 @@ def test_mcp_metadata_field_names_do_not_bypass_private_text_filter(field):
     safe = sanitize_export(raw)[field]
     assert "13800138000" not in safe and "owner@example.com" not in safe
     assert "synthetic private tail" not in safe
+
+
+@pytest.mark.parametrize(
+    "source,truncated,redacted",
+    [
+        ("def label(name: str): return name.strip()", False, False),
+        ("x" * 1000, False, False),
+        ("x" * 1001, True, False),
+        ('def f(api_key: str = "synthetic private tail"):\n    return 1', False, True),
+        (
+            "# " + "x" * 920 + '\nPASSWORD="' + "synthetic private tail " * 70 + '"\nreturn 1',
+            False,
+            True,
+        ),
+    ],
+    ids=["exact", "exact-limit", "cut", "annotated-credential", "credential-crosses-cut"],
+)
+def test_search_export_distinguishes_exact_redacted_and_truncated_text(source, truncated, redacted):
+    import copy
+
+    original = {
+        "evidence": [
+            {
+                "filePath": "version/app.py",
+                "snippet": source,
+                "lineStart": 1,
+                "lineEnd": 20,
+                "contentHash": "original-hash",
+            }
+        ]
+    }
+    snapshot = copy.deepcopy(original)
+    result = sanitize_tool_result("search_evidence", original)
+    hit = result["evidence"][0]
+    assert hit["snippetTruncated"] is truncated
+    assert hit["snippetRedacted"] is redacted
+    assert hit["sourceRangeBasis"] == "saved_original_excerpt"
+    assert hit["contentHashBasis"] == "original_source"
+    assert hit["snippetReturnedChars"] == len(hit["snippet"]) <= 1000
+    assert hit["lineEnd"] == 20 and hit["contentHash"] == "original-hash"
+    assert "synthetic private tail" not in hit["snippet"]
+    if not truncated and not redacted:
+        assert hit["snippet"] == source
+    assert original == snapshot
