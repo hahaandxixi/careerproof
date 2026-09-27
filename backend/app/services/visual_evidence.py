@@ -19,7 +19,7 @@ from app.core.config import settings
 from app.core.exceptions import AppError
 from app.models.analysis import AiUsageLog, AnalysisTask
 from app.models.enums import TaskStatus, UserRole
-from app.models.identity import StudentProfile
+from app.models.identity import StudentProfile, User
 from app.models.portfolio import Project, ProjectVersion
 from app.schemas.visual import VisualResponse, VisualReviewView
 from app.services.analysis import _daily_ai_budget
@@ -34,7 +34,13 @@ async def owned_image(session, version_id, user):
         select(ProjectVersion)
         .join(Project)
         .join(StudentProfile, StudentProfile.id == Project.student_id)
-        .where(ProjectVersion.id == UUID(str(version_id)), StudentProfile.user_id == user.id)
+        .join(User, User.id == StudentProfile.user_id)
+        .where(
+            ProjectVersion.id == UUID(str(version_id)),
+            StudentProfile.user_id == user.id,
+            User.is_active.is_(True),
+            User.role == UserRole.STUDENT,
+        )
     )
     if not row:
         raise AppError("图片材料不存在或无权访问", code=4043, status_code=404)
@@ -169,7 +175,7 @@ async def observe_image(session, version_id, request, user):
         )
     # Verify the frozen source even on a cache hit; never serve old observations
     # against a deleted or changed image. Consent remains checked before this read.
-    png = await asyncio.to_thread(safe_png, row)
+    await asyncio.to_thread(safe_png, row)
     saved = await latest_visual(session, version_id, user)
     if current_visual(saved, row):
         return saved
@@ -198,9 +204,20 @@ async def observe_image(session, version_id, request, user):
     observations = None
     failure_kind = None
     try:
-        async with _model_semaphore(), asyncio.timeout(settings.ai_workflow_timeout_seconds):
+        async with asyncio.timeout(settings.ai_workflow_timeout_seconds), _model_semaphore():
+            # Account-budget and global-model queues can wait after the first
+            # validation. Recheck the actual source before creating a provider;
+            # never spend on bytes from an invalidated queued material version.
+            png = await asyncio.to_thread(safe_png, row)
             provider = get_vision_provider()
             observations = validate_observations(await provider.observe(png))
+    except AppError:
+        if provider is None:
+            # Source rejection precedes provider creation: no paid attempt,
+            # no fabricated observation or usage row. Once a provider exists,
+            # preserve its attempted usage just like other provider failures.
+            raise
+        failure_kind = "vision_unavailable"
     except httpx.HTTPStatusError as exc:
         failure_kind = f"provider_http_{exc.response.status_code}"
     except TimeoutError:
@@ -292,9 +309,12 @@ async def visual_attachments(session, version_ids, user):
         select(ProjectVersion)
         .join(Project)
         .join(StudentProfile, StudentProfile.id == Project.student_id)
+        .join(User, User.id == StudentProfile.user_id)
         .where(
             ProjectVersion.id.in_([UUID(value) for value in selected]),
             StudentProfile.user_id == user.id,
+            User.is_active.is_(True),
+            User.role == UserRole.STUDENT,
         )
     )
     versions = {

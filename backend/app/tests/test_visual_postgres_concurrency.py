@@ -12,16 +12,114 @@ from uuid import UUID
 import pytest
 from httpx import ASGITransport, AsyncClient
 from PIL import Image
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 
 from app.agents.contracts import ModelUsage
 from app.core.config import settings
 from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.enums import UserRole
+from app.models.identity import User
 from app.models.portfolio import ProjectVersion
 from app.services.visual_evidence import _daily_ai_budget
 from app.tests.test_jobs_api import register
 from app.tests.test_real_matching import matching_db  # noqa: F401
 from app.tests.test_visual_evidence import image_version, visual_answer
+
+
+@pytest.mark.parametrize("fault", ["disabled", "role_changed", "missing", "changed"])
+async def test_postgres_visual_wait_rechecks_identity_and_source_before_spending(
+    matching_db,  # noqa: F811
+    monkeypatch,
+    fault,
+):
+    app, factory = matching_db
+    if factory.kw["bind"].dialect.name != "postgresql":
+        pytest.skip("Requires an explicitly configured isolated PostgreSQL schema")
+    at_budget = asyncio.Event()
+    waiter_pid = None
+    calls = []
+
+    async def budget_probe(session, user_id):
+        nonlocal waiter_pid
+        waiter_pid = await session.scalar(text("SELECT pg_backend_pid()"))
+        at_budget.set()
+        return await _daily_ai_budget(session, user_id)
+
+    class Provider:
+        name = "synthetic"
+        model = "synthetic-no-network"
+
+        async def observe(self, _bytes):
+            calls.append("observe")
+            return visual_answer()
+
+        def combined_usage(self):
+            return ModelUsage(input_tokens=17, output_tokens=13, latency_ms=1)
+
+    def provider():
+        calls.append("created")
+        return Provider()
+
+    monkeypatch.setattr("app.services.visual_evidence._daily_ai_budget", budget_probe)
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", provider)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "pg-wait-boundary@example.com", "student")
+        user_id = UUID(user["id"])
+        version = await image_version(factory, user_id, "pg-wait.png")
+        pending = None
+        async with factory() as blocker, blocker.begin():
+            await blocker.scalar(select(User).where(User.id == user_id).with_for_update())
+            blocker_pid = await blocker.scalar(text("SELECT pg_backend_pid()"))
+            pending = asyncio.create_task(
+                client.post(
+                    f"/api/v1/project-versions/{version.id}/visual-review",
+                    json={"externalImageConsent": True},
+                )
+            )
+            try:
+                await asyncio.wait_for(at_budget.wait(), timeout=5)
+                async with factory() as observer, asyncio.timeout(5):
+                    observed = False
+                    while not observed:
+                        await observer.execute(text("SELECT pg_stat_clear_snapshot()"))
+                        observed = bool(
+                            await observer.scalar(
+                                text(
+                                    "SELECT wait_event_type = 'Lock' AND "
+                                    ":blocker = ANY(pg_blocking_pids(pid)) "
+                                    "FROM pg_stat_activity WHERE pid = :waiter"
+                                ),
+                                {"blocker": blocker_pid, "waiter": waiter_pid},
+                            )
+                        )
+                        if not observed:
+                            await asyncio.sleep(0.01)
+                assert not pending.done() and calls == []
+                if fault in {"disabled", "role_changed"}:
+                    values = (
+                        {"is_active": False}
+                        if fault == "disabled"
+                        else {
+                            "role": UserRole.ENTERPRISE,
+                        }
+                    )
+                    await blocker.execute(update(User).where(User.id == user_id).values(**values))
+                else:
+                    source = settings.storage_base_dir / version.archive_storage_key
+                    if fault == "missing":
+                        source.unlink()
+                    else:
+                        Image.new("RGB", (100, 80), "black").save(source, format="PNG")
+            except BaseException:
+                pending.cancel()
+                await asyncio.gather(pending, return_exceptions=True)
+                raise
+        response = await asyncio.wait_for(pending, timeout=5)
+        assert response.status_code == (404 if fault in {"disabled", "role_changed"} else 409)
+        assert calls == []
+        async with factory() as session:
+            assert list(await session.scalars(select(AnalysisTask))) == []
+            assert list(await session.scalars(select(AiUsageLog))) == []
 
 
 @pytest.mark.parametrize("same_version", [True, False])

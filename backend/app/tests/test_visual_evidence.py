@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import hashlib
 import io
@@ -296,6 +297,175 @@ async def image_version(factory, user_id, filename="cache-boundary.png"):
         session.add(version)
         await session.commit()
         return version
+
+
+@pytest.mark.parametrize("fault", [None, "missing", "changed"])
+async def test_visual_queue_rechecks_image_before_provider_is_created(
+    matching_db,  # noqa: F811
+    monkeypatch,
+    fault,
+):
+    app, factory = matching_db
+    waiting = asyncio.Event()
+
+    class ObservedSemaphore(asyncio.Semaphore):
+        async def acquire(self):
+            waiting.set()
+            return await super().acquire()
+
+    gate = ObservedSemaphore(1)
+    await gate.acquire()
+    waiting.clear()
+    calls = []
+    from app.agents.contracts import ModelUsage
+
+    class Provider:
+        name = "synthetic"
+        model = "synthetic-no-network"
+
+        async def observe(self, encoded):
+            calls.append(encoded)
+            return visual_answer()
+
+        def combined_usage(self):
+            return ModelUsage(input_tokens=17, output_tokens=13, latency_ms=1)
+
+    def provider():
+        calls.append("created")
+        return Provider()
+
+    monkeypatch.setattr("app.services.visual_evidence._model_semaphore", lambda: gate)
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", provider)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, uuid4().hex + "@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        pending = asyncio.create_task(
+            client.post(
+                f"/api/v1/project-versions/{version.id}/visual-review",
+                json={"externalImageConsent": True},
+            )
+        )
+        try:
+            await asyncio.wait_for(waiting.wait(), timeout=5)
+            assert not pending.done() and calls == []
+            source = settings.storage_base_dir / version.archive_storage_key
+            if fault == "missing":
+                source.unlink()
+            elif fault == "changed":
+                Image.new("RGB", (100, 80), "black").save(source, format="PNG")
+        finally:
+            gate.release()
+            response = await asyncio.wait_for(pending, timeout=5)
+        assert response.status_code == (200 if fault is None else 409)
+        if fault is None:
+            assert response.json()["data"]["status"] == "completed"
+            assert len(calls) == 2
+        else:
+            assert calls == [], "A stale queued image must not create a paid provider"
+        async with factory() as session:
+            tasks = list(await session.scalars(select(AnalysisTask)))
+            usage = list(await session.scalars(select(AiUsageLog)))
+            assert len(tasks) == len(usage) == (1 if fault is None else 0)
+
+
+async def test_visual_provider_app_error_keeps_attempted_usage(matching_db, monkeypatch):  # noqa: F811
+    from app.agents.contracts import ModelUsage
+    from app.core.exceptions import AppError
+
+    app, factory = matching_db
+
+    class Provider:
+        name = "synthetic"
+        model = "synthetic-no-network"
+
+        async def observe(self, _bytes):
+            raise AppError("synthetic private provider diagnostic", status_code=503)
+
+        def combined_usage(self):
+            return ModelUsage(input_tokens=17, output_tokens=13, latency_ms=1)
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", lambda: Provider())
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, uuid4().hex + "@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        response = await client.post(
+            f"/api/v1/project-versions/{version.id}/visual-review",
+            json={"externalImageConsent": True},
+        )
+        assert response.status_code == 200
+        result = response.json()["data"]
+        assert result["status"] == "unavailable" and result["failureKind"] == "vision_unavailable"
+        assert "synthetic private provider diagnostic" not in response.text
+        async with factory() as session:
+            tasks = list(await session.scalars(select(AnalysisTask)))
+            usage = list(await session.scalars(select(AiUsageLog)))
+            assert len(tasks) == len(usage) == 1
+            assert usage[0].input_tokens == 17 and usage[0].output_tokens == 13
+
+
+async def test_visual_workflow_timeout_includes_global_model_queue(matching_db, monkeypatch):  # noqa: F811
+    app, factory = matching_db
+    gate = asyncio.Semaphore(0)
+    monkeypatch.setattr("app.services.visual_evidence._model_semaphore", lambda: gate)
+    monkeypatch.setattr(settings, "ai_workflow_timeout_seconds", 0.05)
+
+    def forbidden():
+        pytest.fail("Queue timeout must not create a provider or send an image")
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, uuid4().hex + "@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        response = await asyncio.wait_for(
+            client.post(
+                f"/api/v1/project-versions/{version.id}/visual-review",
+                json={"externalImageConsent": True},
+            ),
+            timeout=1,
+        )
+        assert response.status_code == 200
+        result = response.json()["data"]
+        assert result["status"] == "unavailable" and result["failureKind"] == "workflow_timeout"
+        async with factory() as session:
+            tasks = list(await session.scalars(select(AnalysisTask)))
+            assert len(tasks) == 1 and tasks[0].status == TaskStatus.FAILED
+            assert list(await session.scalars(select(AiUsageLog))) == []
+        assert (settings.storage_base_dir / version.archive_storage_key).read_bytes() == png()
+
+
+@pytest.mark.parametrize("fault", ["disabled", "role_changed"])
+async def test_visual_attachment_scope_checks_current_account_not_cached_user(
+    matching_db,  # noqa: F811
+    fault,
+):
+    from sqlalchemy import update
+
+    from app.models.enums import UserRole
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, uuid4().hex + "@example.com", "student")
+        user_id = UUID(user["id"])
+        version = await image_version(factory, user_id)
+        async with factory() as writer:
+            writer.add(saved_visual(user_id, version))
+            await writer.commit()
+        async with factory() as reader:
+            actor = await reader.get(User, user_id)
+            assert len(await visual_attachments(reader, [version.id], actor)) == 1
+            async with factory() as writer:
+                values = (
+                    {"is_active": False}
+                    if fault == "disabled"
+                    else {
+                        "role": UserRole.ENTERPRISE,
+                    }
+                )
+                await writer.execute(update(User).where(User.id == user_id).values(**values))
+                await writer.commit()
+            assert actor.is_active and actor.role == UserRole.STUDENT
+            assert await visual_attachments(reader, [version.id], actor) == []
 
 
 def saved_visual(owner_id, version, *, status=TaskStatus.COMPLETED, age=0, **overrides):
