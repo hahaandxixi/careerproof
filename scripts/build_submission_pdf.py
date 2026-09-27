@@ -166,7 +166,7 @@ story += [p("演示环境", "h2"),
               ["在线演示", "本机一键启动已具备；公网部署属于可选项"],
           ], [38 * mm, 127 * mm]),
           Spacer(1, 5 * mm),
-          p("追溯材料：README.md；docs/AI职业规划与岗位拆解-20260925.md；docs/DeepSeek可信度验收-20260918.md；docs/受控补检索FunctionCalling.md；docs/OCR多模态能力说明.md；docs/赛前验收清单.md。", "small")]
+          p("追溯材料：README.md；docs/AI职业规划与岗位拆解-20260925.md；docs/archive/验收记录/DeepSeek可信度验收-20260918.md；docs/受控补检索FunctionCalling.md；docs/OCR多模态能力说明.md；docs/赛前验收清单.md。", "small")]
 
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 document = SimpleDocTemplate(str(OUTPUT), pagesize=A4, rightMargin=21 * mm,
