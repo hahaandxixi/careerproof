@@ -17,6 +17,7 @@ from app.core.request_context import get_request_id
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.audit import AuditLog
 from app.models.enums import UserRole
+from app.models.identity import User
 from app.schemas.mcp_tools import ComparisonQuery, EvidenceQuery, ReportQuery
 from app.services.analysis import AnalysisService
 from app.services.report_comparison import compare_reports
@@ -131,6 +132,33 @@ async def audit(session, user_id, action, grant_id, details):
         )
     )
     await session.commit()
+
+
+async def current_identity_allowed(session, user_id):
+    # Select scalar fields with current predicates, not a cached ORM identity.
+    # An account can be disabled or change role while a grant call is waiting.
+    return (
+        await session.scalar(
+            select(User.id).where(
+                User.id == user_id,
+                User.is_active.is_(True),
+                User.role == UserRole.STUDENT,
+            )
+        )
+        is not None
+    )
+
+
+async def require_current_identity(session, user, grant_id, info=None):
+    if not await current_identity_allowed(session, user.id):
+        await audit(
+            session,
+            user.id,
+            "mcp.call",
+            grant_id,
+            {**(info or {}), "status": "identity_rejected"},
+        )
+        raise AppError("只读授权账号已停用或角色已变化，未返回工具结果", status_code=401)
 
 
 async def issue_grant(session, user, request):
@@ -282,6 +310,7 @@ async def invoke_tool(session, user, claims, request):
     if not grant or revoked:
         await audit(session, user.id, "mcp.call", grant_id, {"status": "revoked_or_missing"})
         raise AppError("只读授权不存在或已撤销", status_code=401)
+    await require_current_identity(session, user, grant_id)
     if grant_expired(claims, grant):
         await audit(session, user.id, "mcp.call", grant_id, {"status": "expired"})
         raise AppError("只读授权已过期", status_code=401)
@@ -325,6 +354,7 @@ async def invoke_tool(session, user, claims, request):
     except Exception:
         await audit(session, user.id, "mcp.call", grant_id, {**info, "status": "failed"})
         raise AppError("只读工具暂时不可用", status_code=503) from None
+    await require_current_identity(session, user, grant_id, info)
     if grant_expired(claims, grant):
         await audit(session, user.id, "mcp.call", grant_id, {**info, "status": "expired"})
         raise AppError("只读授权已过期，未返回工具结果", status_code=401)

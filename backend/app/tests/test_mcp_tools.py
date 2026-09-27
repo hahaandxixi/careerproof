@@ -8,19 +8,41 @@ from uuid import UUID, uuid4
 import jwt
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select, text
+from sqlalchemy import select, text, update
 
 from app.core.config import settings
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.audit import AuditLog
+from app.models.enums import UserRole
+from app.models.identity import User
 from app.schemas.mcp_tools import EvidenceQuery
 from app.services.mcp_tools import (
+    current_identity_allowed,
     dispatch,
     grant_expired,
     sanitize_export,
     sanitize_tool_result,
 )
 from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
+
+
+@pytest.mark.parametrize("fault", ["disabled", "role_changed"])
+async def test_current_identity_check_ignores_stale_orm_user(jobs_db, fault):  # noqa: F811
+    app, factory = jobs_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://synthetic") as client:
+        owner = await register(client, uuid4().hex + "@example.com", "student")
+    user_id = UUID(owner["id"])
+    async with factory() as reader:
+        cached = await reader.get(User, user_id)
+        assert cached.is_active and cached.role == UserRole.STUDENT
+        assert await current_identity_allowed(reader, user_id)
+        async with factory() as writer:
+            values = {"is_active": False} if fault == "disabled" else {"role": UserRole.ENTERPRISE}
+            await writer.execute(update(User).where(User.id == user_id).values(**values))
+            await writer.commit()
+        assert cached.is_active and cached.role == UserRole.STUDENT
+        assert not await current_identity_allowed(reader, user_id)
+        assert not await current_identity_allowed(reader, uuid4())
 
 
 async def test_scoped_grants_read_only_revoke_and_independent_audit(jobs_db):  # noqa: F811
