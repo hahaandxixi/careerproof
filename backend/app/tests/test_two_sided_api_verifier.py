@@ -8,6 +8,7 @@ import httpx
 import pytest
 
 from app.agents.provider import DeepSeekProvider
+from app.services.job_drafting import validate_draft
 from app.tests.test_real_matching import matching_db  # noqa: F401
 from evals.verify_two_sided_api import CODE, SYNTHETIC_SECRET, main, plan_sources_exact, run_case
 
@@ -82,11 +83,13 @@ def test_plan_source_check_rejects_forged_citations(fault):
     assert not plan_sources_exact(broken, "version")
 
 
+@pytest.mark.parametrize("replay", [False, True])
 @pytest.mark.parametrize("conflict", [False, True])
 async def test_full_two_sided_api_verifier_uses_real_routes_and_synthetic_transport(
     matching_db,  # noqa: F811
     monkeypatch,
     conflict,
+    replay,
 ):
     app, factory = matching_db
 
@@ -173,8 +176,15 @@ async def test_full_two_sided_api_verifier_uses_real_routes_and_synthetic_transp
     monkeypatch.setattr("app.services.job_drafting.get_ai_provider", synthetic_provider)
     monkeypatch.setattr("app.services.career_planning.get_ai_provider", synthetic_provider)
     record = {}
-    await run_case(record)
-    assert calls == ["enterprise", "student"] and len(record["usage"]) == 2
+    reused = (synthetic_reusable_draft(), "synthetic-frozen-digest") if replay else None
+    await run_case(record, reused)
+    assert calls == (["student"] if replay else ["enterprise", "student"])
+    assert len(record["usage"]) == (1 if replay else 2)
+    if replay:
+        assert record["enterpriseGenerationThisRun"] == "not_run"
+        assert record["draft"]["usage"] is None
+        assert "exactlyTwoOfficialUsageRows" not in record["checks"]
+        assert record["checks"]["exactlyOneOfficialStudentUsageRow"]
     if conflict:
         assert record["passed"] is False
         assert record["plan"]["aiFallbackUsed"] is True
@@ -193,3 +203,85 @@ async def test_full_two_sided_api_verifier_uses_real_routes_and_synthetic_transp
         assert record["planReloaded"] == record["plan"]
     else:
         assert record["passed"] and all(record["checks"].values())
+
+
+def synthetic_reusable_draft():
+    from evals.verify_two_sided_api import DESCRIPTION
+
+    quote = "使用 Python 和 FastAPI 编写查询接口"
+    raw = {
+        "requirements": [
+            {
+                "raw_text": "使用" + skill + "编写查询接口",
+                "skill_name": skill,
+                "weight": 4,
+                "is_required": True,
+                "source_quote": quote,
+                "evidence_request": "提供对应源码片段与请求记录",
+                "verification_question": "异常输入如何返回响应？",
+                "weight_reason": "原文明确要求接口实现",
+            }
+            for skill in ("Python", "FastAPI")
+        ]
+    }
+    return validate_draft(raw, DESCRIPTION, "deepseek-flash", None).model_dump(
+        mode="json", by_alias=True
+    )
+
+
+@pytest.mark.parametrize("fault", [None, "unknown_hash", "different_source", "wrong_position"])
+def test_reuse_accepts_only_frozen_synthetic_source_and_current_contract(
+    tmp_path, monkeypatch, fault
+):
+    import hashlib
+
+    from evals import verify_two_sided_api as verifier
+
+    saved = {"draft": synthetic_reusable_draft(), "job": {"description": verifier.DESCRIPTION}}
+    if fault == "different_source":
+        saved["job"]["description"] = "Not the approved synthetic description"
+    if fault == "wrong_position":
+        saved["draft"]["requirements"][0]["sourceStart"] += 1
+    content = json.dumps(saved).encode()
+    digest = hashlib.sha256(content).hexdigest()
+    path = tmp_path / "synthetic.json"
+    path.write_bytes(content)
+    # Synthetic unit fixture; production allowlist is not edited by the test.
+    monkeypatch.setattr(
+        verifier, "_APPROVED_DRAFT_RECORDS", set() if fault == "unknown_hash" else {digest}
+    )
+    if fault:
+        with pytest.raises(ValueError):
+            verifier.load_reusable_draft(path)
+    else:
+        draft, got_hash = verifier.load_reusable_draft(path)
+        assert got_hash == digest and draft["usage"] is None
+        assert draft["requirements"] == saved["draft"]["requirements"]
+
+
+def test_invalid_reuse_record_is_archived_before_any_live_call(tmp_path, monkeypatch):
+    from evals import verify_two_sided_api as verifier
+
+    path = tmp_path / "invalid.json"
+    path.write_text("{}")
+    output = tmp_path / "result.json"
+    calls = []
+
+    async def unexpected(*args):
+        calls.append(args)
+
+    monkeypatch.setattr(verifier, "run_case", unexpected)
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "verify",
+            "--live",
+            "--allow-paid",
+            "--output",
+            str(output),
+            "--reuse-draft-record",
+            str(path),
+        ],
+    )
+    assert verifier.main() == 1 and calls == []
+    assert json.loads(output.read_text())["errorType"] == "ValueError"

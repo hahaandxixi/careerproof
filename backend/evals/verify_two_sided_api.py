@@ -1,4 +1,6 @@
-"""Two explicit one-attempt DeepSeek calls through real routes and isolated PostgreSQL.
+"""Explicit bounded DeepSeek calls through real routes and isolated PostgreSQL.
+
+Default: two calls. Frozen-draft reuse: one student call, no enterprise generation.
 
 Only generated accounts, a synthetic job, resume and code are used. The generated
 schema is dropped after records are collected; no production rows or user service
@@ -30,6 +32,7 @@ from app.main import create_app
 from app.models.analysis import AiUsageLog, AnalysisTask
 from app.schemas.analysis import CareerPlanAnalysis, JobRecommendationView
 from app.services.career_planning import PLAN_VERSION, _planning_input, validate_plan
+from app.services.job_drafting import validate_draft
 from evals.verify_deepseek_tool_report import data
 
 SYNTHETIC_SECRET = "synthetic-not-real-credential-tail"
@@ -44,6 +47,56 @@ CODE = (
     '    if not name.strip():\n        raise HTTPException(400, detail="name required")\n'
     '    return {"status": "ok", "name": name.strip()}\n'
 )
+
+
+# These hashes identify the two preserved, synthetic enterprise acceptance records.
+# Arbitrary resumes or enterprise records cannot be replayed through this helper.
+_APPROVED_DRAFT_RECORDS = {
+    "b9ea0b6aa96113ab22a05bab4988a577b64829f47bf8ede748de7445a9d44fcd",
+    "a5382665c8d8c0b6463b0a3576fbde0eae0b2e1f2e851e65b0d656df7d8ad6d1",
+}
+
+
+def load_reusable_draft(path):
+    content = path.read_bytes()
+    digest = hashlib.sha256(content).hexdigest()
+    if digest not in _APPROVED_DRAFT_RECORDS:
+        raise ValueError("Only a frozen synthetic enterprise record may be reused")
+    saved = json.loads(content)
+    draft = saved["draft"]
+    if saved["job"]["description"] != DESCRIPTION or draft["model"] != "deepseek-flash":
+        raise ValueError("Frozen draft source or model mismatch")
+    if draft["confirmed"] is not False:
+        raise ValueError("A frozen draft must require confirmation")
+    keys = (
+        "raw_text",
+        "skill_name",
+        "weight",
+        "is_required",
+        "source_quote",
+        "evidence_request",
+        "verification_question",
+        "weight_reason",
+    )
+    raw = {
+        "requirements": [
+            {
+                key: item["".join([key.split("_")[0], *[p.title() for p in key.split("_")[1:]]])]
+                for key in keys
+            }
+            for item in draft["requirements"]
+        ]
+    }
+    validated = validate_draft(raw, DESCRIPTION, "deepseek-flash", None)
+    if not all(
+        r.evidence_request and r.verification_question and r.weight_reason
+        for r in validated.requirements
+    ):
+        raise ValueError("Frozen draft lacks verification guidance")
+    checked = validated.model_dump(mode="json", by_alias=True)
+    if checked["requirements"] != draft["requirements"]:
+        raise ValueError("Frozen draft positions no longer match current validation")
+    return checked, digest
 
 
 @asynccontextmanager
@@ -220,10 +273,18 @@ def evaluate_checks(record):
             for a in advice
         ),
         "planReloadStable": record["planReloaded"] == plan,
-        "ownerIsolation": record["foreignTaskStatuses"] == [404, 404]
+        "ownerIsolation": record["foreignTaskStatuses"]
+        == ([404] if record.get("enterpriseDraftReused") else [404, 404])
         and record["enterpriseLatestPlan"] is None,
-        "exactlyTwoOfficialUsageRows": len(logs) == 2
-        and {u["taskType"] for u in logs} == {"career_plan", "job_draft"}
+        (
+            "exactlyOneOfficialStudentUsageRow"
+            if record.get("enterpriseDraftReused")
+            else "exactlyTwoOfficialUsageRows"
+        ): len(logs) == (1 if record.get("enterpriseDraftReused") else 2)
+        and {u["taskType"] for u in logs}
+        == (
+            {"career_plan"} if record.get("enterpriseDraftReused") else {"career_plan", "job_draft"}
+        )
         and all(
             u["model"] == "deepseek-flash"
             and u["provider"] == "deepseek"
@@ -235,7 +296,7 @@ def evaluate_checks(record):
     }
 
 
-async def run_case(record):
+async def run_case(record, reused_draft=None):
     import io
     import zipfile
 
@@ -320,7 +381,13 @@ async def run_case(record):
             ]
             assert record["deniedStatuses"] == [422, 403, 403, 422]
             record["stage"] = "enterprise_draft"
-            draft = data(await employer.post("/api/v1/jobs/ai-draft", json=draft_request))
+            if reused_draft is None:
+                draft = data(await employer.post("/api/v1/jobs/ai-draft", json=draft_request))
+            else:
+                draft, digest = reused_draft
+                record["enterpriseDraftReused"] = True
+                record["reusedDraftRecordSha256"] = digest
+                record["enterpriseGenerationThisRun"] = "not_run"
             record["draft"] = draft
             record["jobsAfterDraft"] = data(await employer.get("/api/v1/jobs/mine"))["total"]
             job = data(
@@ -384,10 +451,14 @@ async def run_case(record):
                         )
                     )
                 )
-                draft_task = next(
-                    t
-                    for t in rows
-                    if t.task_type == "job_draft" and str(t.created_by) == enterprise["id"]
+                draft_task = (
+                    next(
+                        t
+                        for t in rows
+                        if t.task_type == "job_draft" and str(t.created_by) == enterprise["id"]
+                    )
+                    if reused_draft is None
+                    else None
                 )
                 plan_task = next(
                     t
@@ -415,12 +486,18 @@ async def run_case(record):
                     }
                     for u in logs
                 ]
-                record["draftTaskId"] = str(draft_task.id)
+                if draft_task is not None:
+                    record["draftTaskId"] = str(draft_task.id)
                 record["planTaskId"] = str(plan_task.id)
             record["foreignTaskStatuses"] = [
                 (await employer.get("/api/v1/analysis-tasks/" + record["planTaskId"])).status_code,
-                (await student.get("/api/v1/analysis-tasks/" + record["draftTaskId"])).status_code,
             ]
+            if draft_task is not None:
+                record["foreignTaskStatuses"].append(
+                    (
+                        await student.get("/api/v1/analysis-tasks/" + record["draftTaskId"])
+                    ).status_code
+                )
             record["enterpriseLatestPlan"] = data(await employer.get("/api/v1/career-plans/latest"))
             record["checks"] = evaluate_checks(record)
             record["passed"] = all(record["checks"].values())
@@ -433,11 +510,17 @@ def main():
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--allow-paid", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--reuse-draft-record",
+        type=Path,
+        help="Reuse an approved frozen synthetic draft; only student generation runs",
+    )
     args = parser.parse_args()
     if args.live and not args.allow_paid:
         parser.error("Live verification requires --allow-paid")
     if not args.live:
-        print("Plan only; --live --allow-paid makes two one-attempt synthetic model calls.")
+        calls = "one student" if args.reuse_draft_record else "two"
+        print(f"Plan only; --live --allow-paid makes {calls} one-attempt synthetic model calls.")
         return 0
     if args.output.exists():
         parser.error("Use a new output; do not overwrite acceptance evidence")
@@ -452,7 +535,11 @@ def main():
         "humanSemanticReview": "pending",
     }
     try:
-        asyncio.run(run_case(record))
+        if args.reuse_draft_record:
+            reused = load_reusable_draft(args.reuse_draft_record)
+            asyncio.run(run_case(record, reused))
+        else:
+            asyncio.run(run_case(record))
     except Exception as exc:
         record["passed"] = False
         record["errorType"] = type(exc).__name__
