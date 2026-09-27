@@ -62,11 +62,13 @@ def _canonical_uuid(value):
 def _restore_export_metadata(original, redacted):
     """Keep validated source identities; arbitrary text remains privacy filtered."""
     if isinstance(original, list):
+        if not isinstance(redacted, list):
+            return redacted
         return [
             _restore_export_metadata(raw, safe)
             for raw, safe in zip(original, redacted, strict=True)
         ]
-    if not isinstance(original, dict):
+    if not isinstance(original, dict) or not isinstance(redacted, dict):
         return redacted
     result = {}
     for key, raw in original.items():

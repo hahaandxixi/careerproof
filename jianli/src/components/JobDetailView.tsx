@@ -100,10 +100,10 @@ function MatchForm({
           <dl className="mt-3 grid gap-2 text-xs leading-6 sm:grid-cols-2">
             <div><dt className="font-medium">本次材料</dt><dd>{selectedResume ? `${selectedResume.title} · 第 ${selectedResume.versionNumber} 版` : "尚未选择简历"}{selectedProjects.length ? `；${selectedProjects.join("；")}` : "；未选择项目材料"}</dd></div>
             <div><dt className="font-medium">只发送</dt><dd>{job.requirements.length} 项岗位要求、规则结论和每项最多 3 条必要证据片段</dd></div>
-            <div><dt className="font-medium">自动脱敏</dt><dd>邮箱、手机号、身份证号及带“姓名”标签的姓名</dd></div>
+            <div><dt className="font-medium">自动脱敏</dt><dd>邮箱、手机号、身份证号、带“姓名”标签的姓名，以及可识别格式的密码和访问密钥</dd></div>
             <div><dt className="font-medium">不会主动加入</dt><dd>账号身份、个人资料中的姓名、原始文件、完整简历和原始图片</dd></div>
           </dl>
-          <p className="mt-3 text-xs leading-6 text-indigo-800">自由文本中的别名、地址等内容可能无法被格式规则识别，请只选择与岗位分析必要的材料。没有可引用证据或达到用量上限时，系统会自动生成规则报告。报告只保存在你的账号中，不会自动分享给企业。</p>
+          <p className="mt-3 text-xs leading-6 text-indigo-800">自由文本中的别名、地址，以及未经标记或经过编码的密钥可能无法识别，请只选择与岗位分析必要的材料。没有可引用证据或达到用量上限时，系统会自动生成规则报告。报告只保存在你的账号中，不会自动分享给企业。</p>
           <label className="mt-3 flex items-start gap-2 rounded-lg bg-white/70 p-3 font-medium">
             <input className="mt-1" type="checkbox" checked={externalAiConsent} onChange={event => setExternalAiConsent(event.target.checked)} />
             <span>我已查看上述发送范围，同意将脱敏后的必要片段发送给外部 AI 生成带引用解释。</span>
