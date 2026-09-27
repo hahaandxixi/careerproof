@@ -11,7 +11,11 @@ from httpx import ASGITransport, AsyncClient
 from PIL import Image, PngImagePlugin
 from sqlalchemy import select
 
-from app.agents.vision_provider import DeepSeekVisionProvider, get_vision_provider
+from app.agents.vision_provider import (
+    VISION_PROMPT_VERSION,
+    DeepSeekVisionProvider,
+    get_vision_provider,
+)
 from app.core.config import settings
 from app.models.analysis import AiUsageLog, AnalysisTask
 from app.models.enums import TaskStatus
@@ -267,3 +271,241 @@ def test_vision_reuses_deepseek_key_and_disables_legacy_selection(monkeypatch):
     monkeypatch.setattr(settings, "deepseek_api_key", None)
     with pytest.raises(ValueError):
         get_vision_provider()
+
+
+async def image_version(factory, user_id, filename="cache-boundary.png"):
+    """Owned synthetic image with a real immutable-version hash."""
+    async with factory() as session:
+        profile = await session.scalar(
+            select(StudentProfile).where(StudentProfile.user_id == user_id)
+        )
+        project = Project(student_id=profile.id, name="视觉缓存边界合成图片")
+        session.add(project)
+        await session.flush()
+        raw = png()
+        settings.storage_base_dir.mkdir(parents=True, exist_ok=True)
+        (settings.storage_base_dir / filename).write_bytes(raw)
+        version = ProjectVersion(
+            project_id=project.id,
+            version_number=1,
+            archive_storage_key=filename,
+            original_filename=filename,
+            content_hash=hashlib.sha256(raw).hexdigest(),
+            analysis_status="completed",
+        )
+        session.add(version)
+        await session.commit()
+        return version
+
+
+def saved_visual(owner_id, version, *, status=TaskStatus.COMPLETED, age=0, **overrides):
+    from datetime import UTC, datetime, timedelta
+
+    snapshot = {
+        "projectVersionId": str(version.id),
+        "sourceHash": version.content_hash,
+        "promptVersion": VISION_PROMPT_VERSION,
+        "model": "synthetic-vision",
+        "observations": visual_answer() if status == TaskStatus.COMPLETED else None,
+        "externalImageConsent": True,
+        "reviewStatus": "pending",
+    }
+    snapshot.update(overrides)
+    return AnalysisTask(
+        created_by=owner_id,
+        task_type="visual_review",
+        status=status,
+        created_at=datetime.now(UTC) - timedelta(seconds=age),
+        input_snapshot=snapshot,
+    )
+
+
+@pytest.mark.parametrize("missing", [False, True])
+async def test_visual_cache_rechecks_source_before_returning(matching_db, monkeypatch, missing):  # noqa: F811
+    app, factory = matching_db
+
+    def forbidden_provider():
+        raise AssertionError("Cache source checks must not make any model request")
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden_provider)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "cache-source@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add(saved_visual(UUID(user["id"]), version))
+            await session.commit()
+        if missing:
+            (settings.storage_base_dir / version.archive_storage_key).unlink()
+        else:
+            (settings.storage_base_dir / version.archive_storage_key).write_bytes(
+                b"changed synthetic source"
+            )
+        response = await client.post(
+            f"/api/v1/project-versions/{version.id}/visual-review",
+            json={"externalImageConsent": True},
+        )
+        assert response.status_code == 409, response.text
+        async with factory() as session:
+            assert len(list(await session.scalars(select(AnalysisTask)))) == 1
+            assert list(await session.scalars(select(AiUsageLog))) == []
+
+
+@pytest.mark.parametrize(
+    "latest_status", [TaskStatus.FAILED, TaskStatus.PENDING, TaskStatus.RUNNING]
+)
+async def test_new_report_does_not_resurrect_observation_before_latest_failure_or_pending(
+    matching_db,  # noqa: F811
+    latest_status,
+):
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "latest-visual@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add_all(
+                [
+                    saved_visual(UUID(user["id"]), version, age=30),
+                    saved_visual(UUID(user["id"]), version, status=latest_status),
+                ]
+            )
+            await session.commit()
+            actor = await session.get(User, UUID(user["id"]))
+            assert await visual_attachments(session, [version.id], actor) == []
+        response = await client.get(f"/api/v1/project-versions/{version.id}/visual-review")
+        assert response.json()["data"]["status"] == "unavailable"
+
+
+@pytest.mark.parametrize(
+    "overrides", [{"sourceHash": "wrong-source"}, {"promptVersion": "obsolete-visual-prompt"}]
+)
+async def test_new_report_omits_stale_hash_or_prompt_observation(matching_db, overrides):  # noqa: F811
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "stale-visual@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add_all(
+                [
+                    saved_visual(UUID(user["id"]), version, age=30),
+                    saved_visual(UUID(user["id"]), version, **overrides),
+                ]
+            )
+            await session.commit()
+            actor = await session.get(User, UUID(user["id"]))
+            assert await visual_attachments(session, [version.id], actor) == []
+
+
+async def test_visual_attachment_service_enforces_image_ownership_even_with_forged_task_reference(
+    matching_db,  # noqa: F811
+):
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with (
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as stranger,
+    ):
+        first = await register(owner, "attachment-owner@example.com", "student")
+        second = await register(stranger, "attachment-other@example.com", "student")
+        version = await image_version(factory, UUID(first["id"]))
+        async with factory() as session:
+            # Corrupted/imported task metadata must not bypass the source ownership join.
+            session.add(saved_visual(UUID(second["id"]), version))
+            await session.commit()
+            actor = await session.get(User, UUID(second["id"]))
+            assert await visual_attachments(session, [version.id], actor) == []
+
+
+async def test_existing_visual_cache_still_requires_image_consent(matching_db, monkeypatch):  # noqa: F811
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "cached-consent@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add(saved_visual(UUID(user["id"]), version))
+            await session.commit()
+        response = await client.post(
+            f"/api/v1/project-versions/{version.id}/visual-review", json={}
+        )
+        assert response.status_code == 422
+
+
+async def test_visual_cache_is_rechecked_after_account_budget_lock(monkeypatch):
+    from unittest.mock import AsyncMock
+
+    from app.services.visual_evidence import observe_image
+
+    row = SimpleNamespace(content_hash="frozen-source")
+    cached = SimpleNamespace(
+        status="completed",
+        source_hash=row.content_hash,
+        prompt_version=VISION_PROMPT_VERSION,
+        observations=visual_answer(),
+    )
+    latest = AsyncMock(side_effect=[None, cached])
+    budget = AsyncMock(return_value=(False, "daily_report_limit", {}))
+    monkeypatch.setattr("app.services.visual_evidence.owned_image", AsyncMock(return_value=row))
+    monkeypatch.setattr("app.services.visual_evidence.latest_visual", latest)
+    monkeypatch.setattr("app.services.visual_evidence.safe_png", lambda _row: png())
+    monkeypatch.setattr("app.services.visual_evidence._daily_ai_budget", budget)
+
+    def forbidden_provider():
+        raise AssertionError("An observation completed while waiting must not be paid for again")
+
+    monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden_provider)
+    result = await observe_image(
+        object(), uuid4(), SimpleNamespace(external_image_consent=True), SimpleNamespace(id=uuid4())
+    )
+    assert result is cached and latest.await_count == 2 and budget.await_count == 1
+
+
+@pytest.mark.parametrize("missing", [False, True])
+async def test_new_report_omits_missing_or_changed_image_source(matching_db, missing):  # noqa: F811
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "attachment-source@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add(saved_visual(UUID(user["id"]), version))
+            await session.commit()
+            if missing:
+                (settings.storage_base_dir / version.archive_storage_key).unlink()
+            else:
+                (settings.storage_base_dir / version.archive_storage_key).write_bytes(b"changed")
+            actor = await session.get(User, UUID(user["id"]))
+            assert await visual_attachments(session, [version.id], actor) == []
+
+
+async def test_new_image_version_does_not_inherit_previous_version_observation(matching_db):  # noqa: F811
+    from app.models.identity import User
+
+    app, factory = matching_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        user = await register(client, "visual-version@example.com", "student")
+        version = await image_version(factory, UUID(user["id"]))
+        async with factory() as session:
+            session.add(saved_visual(UUID(user["id"]), version))
+            raw = io.BytesIO()
+            Image.new("RGB", (100, 80), "black").save(raw, format="PNG")
+            filename = "cache-version-two.png"
+            (settings.storage_base_dir / filename).write_bytes(raw.getvalue())
+            newer = ProjectVersion(
+                project_id=version.project_id,
+                version_number=2,
+                archive_storage_key=filename,
+                original_filename=filename,
+                content_hash=hashlib.sha256(raw.getvalue()).hexdigest(),
+                analysis_status="completed",
+            )
+            session.add(newer)
+            await session.commit()
+            actor = await session.get(User, UUID(user["id"]))
+            assert await visual_attachments(session, [newer.id], actor) == []
+            older = await visual_attachments(session, [version.id], actor)
+            assert len(older) == 1 and older[0]["sourceHash"] == version.content_hash

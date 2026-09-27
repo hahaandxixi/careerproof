@@ -43,10 +43,19 @@ async def owned_image(session, version_id, user):
     return row
 
 
-def safe_png(row):
-    raw = LocalStorage(settings.storage_base_dir).resolve(row.archive_storage_key).read_bytes()
+def verified_image_bytes(row):
+    """Cached observations must still refer to an available, unchanged original."""
+    try:
+        raw = LocalStorage(settings.storage_base_dir).resolve(row.archive_storage_key).read_bytes()
+    except OSError as exc:
+        raise AppError("图片原文件不可读取，请重新上传", code=4096, status_code=409) from exc
     if len(raw) > 10 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != row.content_hash:
         raise AppError("图片与保存版本不一致，请重新上传", code=4096, status_code=409)
+    return raw
+
+
+def safe_png(row):
+    raw = verified_image_bytes(row)
     try:
         with Image.open(BytesIO(raw)) as image:
             if image.width * image.height > settings.ocr_max_image_pixels:
@@ -92,7 +101,7 @@ async def latest_visual(session, version_id, user):
             AnalysisTask.task_type == "visual_review",
             AnalysisTask.input_snapshot["projectVersionId"].as_string() == str(version_id),
         )
-        .order_by(AnalysisTask.created_at.desc())
+        .order_by(AnalysisTask.created_at.desc(), AnalysisTask.id.desc())
         .limit(1)
     )
     return view(task) if task else None
@@ -107,24 +116,37 @@ def validate_observations(raw):
     return VisualResponse.model_validate(_redact_external_value(parsed.model_dump()))
 
 
+def current_visual(saved, row):
+    return (
+        saved is not None
+        and saved.status == "completed"
+        and saved.observations is not None
+        and saved.source_hash == row.content_hash
+        and saved.prompt_version == VISION_PROMPT_VERSION
+    )
+
+
 async def observe_image(session, version_id, request, user):
     row = await owned_image(session, version_id, user)
     if not request.external_image_consent:
         raise AppError(
             "请确认原图已去除敏感信息并允许发送至DeepSeek视觉模型", code=4224, status_code=422
         )
+    # Verify the frozen source even on a cache hit; never serve old observations
+    # against a deleted or changed image. Consent remains checked before this read.
+    png = await asyncio.to_thread(safe_png, row)
     saved = await latest_visual(session, version_id, user)
-    if (
-        saved
-        and saved.status == "completed"
-        and saved.source_hash == row.content_hash
-        and saved.prompt_version == VISION_PROMPT_VERSION
-    ):
+    if current_visual(saved, row):
         return saved
     allowed, _, _ = await _daily_ai_budget(session, user.id)
+    # The account lock may have waited for an identical image call to finish.
+    # Re-read after acquiring it, before reserving another paid request or denying
+    # a reusable result because the other call consumed the remaining daily budget.
+    saved = await latest_visual(session, version_id, user)
+    if current_visual(saved, row):
+        return saved
     if not allowed:
         raise AppError("今日模型用量已达上限", code=4292, status_code=429)
-    png = await asyncio.to_thread(safe_png, row)
     provider = None
     observations = None
     failure_kind = None
@@ -208,23 +230,56 @@ async def review_visual(session, review_id, request, user):
 
 async def visual_attachments(session, version_ids, user):
     selected = set(map(str, version_ids))
-    if not selected:
+    if not selected or user.role != UserRole.STUDENT:
+        return []
+    # The caller also resolves material permissions, but this service must enforce
+    # the actual image owner independently of any task's JSON version reference.
+    rows = await session.scalars(
+        select(ProjectVersion)
+        .join(Project)
+        .join(StudentProfile, StudentProfile.id == Project.student_id)
+        .where(
+            ProjectVersion.id.in_([UUID(value) for value in selected]),
+            StudentProfile.user_id == user.id,
+        )
+    )
+    versions = {
+        str(row.id): row
+        for row in rows
+        if Path(row.original_filename or "").suffix.lower()
+        in {".png", ".jpg", ".jpeg", ".webp", ".bmp"}
+        and row.analysis_status == "completed"
+    }
+    if not versions:
         return []
     tasks = await session.scalars(
         select(AnalysisTask)
         .where(
             AnalysisTask.created_by == user.id,
             AnalysisTask.task_type == "visual_review",
-            AnalysisTask.status == TaskStatus.COMPLETED,
-            AnalysisTask.input_snapshot["projectVersionId"].as_string().in_(selected),
+            AnalysisTask.input_snapshot["projectVersionId"].as_string().in_(versions),
         )
-        .order_by(AnalysisTask.created_at.desc())
+        .order_by(AnalysisTask.created_at.desc(), AnalysisTask.id.desc())
     )
     seen = set()
     result = []
     for task in tasks:
-        version = task.input_snapshot.get("projectVersionId")
-        if version in selected and version not in seen:
-            seen.add(version)
-            result.append(view(task).model_dump(mode="json", by_alias=True))
+        version_id = task.input_snapshot.get("projectVersionId")
+        if version_id in seen:
+            continue
+        # Mark latest before considering status: a newer failure/pending record
+        # must not resurrect an older completed result in the new report.
+        seen.add(version_id)
+        if task.status != TaskStatus.COMPLETED:
+            continue
+        row = versions[version_id]
+        try:
+            saved = view(task)
+            if not current_visual(saved, row):
+                continue
+            await asyncio.to_thread(verified_image_bytes, row)
+        except (AppError, ValueError, KeyError, TypeError):
+            # Omit unavailable/stale image observations; keep the text analysis.
+            continue
+        result.append(saved.model_dump(mode="json", by_alias=True))
     return result
