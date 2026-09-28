@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { filterMaterialProjects, toggleMaterialVersion } from "../src/lib/material-picker.ts";
+import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "../src/lib/material-picker.ts";
 
 const projects = [
   { id: "p1", name: "后端练习", versions: [
@@ -35,4 +35,23 @@ test("ten-version limit keeps selected versions removable and does not duplicate
   const removed = toggleMaterialVersion(selected, "v0", false);
   assert.equal(toggleMaterialVersion(removed, "extra", true).length, 10);
   assert.equal(removed.includes("v0"), false);
+});
+
+test("project display groups prioritize named pairs without removing discoverable old fixtures", () => {
+  const demoNames = ["CP08｜任务数据库管理｜测试项目"];
+  const rows = [
+    ...projects,
+    { id: "cp", name: demoNames[0], versions: [{ id: "cp1", versionNumber: 1, originalFilename: "CP08.zip", status: "completed" }] },
+    { id: "old", name: "Function Calling 合成项目 20260918-152713", versions: [{ id: "old1", versionNumber: 1, originalFilename: "archive.zip", status: "completed" }] },
+  ];
+  const original = structuredClone(rows);
+  assert.deepEqual(groupMaterialProjects(rows, "", false, demoNames).map(p => p.id), ["p1", "cp"]);
+  assert.equal(groupMaterialProjects(rows, "archive.zip", false, demoNames)[0].category, "history");
+  assert.deepEqual(groupMaterialProjects(rows, "", true, demoNames).map(p => p.id), ["p1", "cp", "old"]);
+  assert.equal(projectDisplayCategory("我的历史任务管理项目", demoNames), "personal");
+  assert.equal(projectDisplayCategory("历史完整报告 injected-history 20260927", demoNames), "history");
+  assert.equal(projectDisplayCategory("浏览器全链路项目-20260918", demoNames), "history");
+  assert.equal(projectDisplayCategory("历史验收项目 20260926-142342", demoNames), "history");
+  assert.equal(projectDisplayCategory("视觉与代码组合合成验收 20260926-230706", demoNames), "history");
+  assert.deepEqual(rows, original);
 });

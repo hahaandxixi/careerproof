@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ProjectHistory } from "@/lib/api/client";
-import { filterMaterialProjects, toggleMaterialVersion } from "@/lib/material-picker";
+import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "@/lib/material-picker";
+import cases from "@/app/demo/samples.json";
+
+const DEMO_NAMES = cases.map(item => item.projectName);
+const GROUPS = [
+  { key: "personal", label: "我的其他项目与作品" },
+  { key: "demo", label: "职业测试项目 · CP01—CP09" },
+  { key: "history", label: "历史验收材料 · 按名称归类" },
+] as const;
 
 export default function ProjectVersionPicker({ projects, selectedIds, onChange }: {
   projects: ProjectHistory[];
@@ -11,8 +19,10 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
   onChange: (ids: string[]) => void;
 }) {
   const [query, setQuery] = useState("");
-  const visibleProjects = filterMaterialProjects(projects, query);
+  const [includeHistory, setIncludeHistory] = useState(false);
+  const visibleProjects = groupMaterialProjects(projects, query, includeHistory, DEMO_NAMES);
   const selectableProjects = filterMaterialProjects(projects, "");
+  const historyCount = selectableProjects.filter(project => projectDisplayCategory(project.name, DEMO_NAMES) === "history").length;
   const selected = selectableProjects.flatMap(project => project.versions
     .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: project.name })));
 
@@ -35,10 +45,19 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
         <label className="block text-xs text-slate-600">搜索项目名称或文件名
           <input className="field mt-1" type="search" value={query} placeholder="如：后端项目、app.zip" onChange={event => setQuery(event.target.value)} />
         </label>
+        {historyCount > 0 && <label className="flex items-start gap-2 text-xs leading-6 text-slate-600">
+          <input className="mt-1 shrink-0" type="checkbox" checked={includeHistory} onChange={event => setIncludeHistory(event.target.checked)} />
+          <span>显示历史验收材料（{historyCount} 个项目）；搜索时也会查找这些材料。</span>
+        </label>}
         <p className="text-xs text-slate-500">展开项目查看已完成解析的版本。可选不同版本做对照；收起或搜索不会取消已选项。</p>
         {selectedIds.length >= 10 && <p role="status" className="text-xs text-amber-700">已选满 10 项，请先移除一项再添加。</p>}
         <div className="max-h-72 space-y-2 overflow-y-auto">
-          {visibleProjects.map(project => <details key={project.id} className="rounded-lg bg-slate-50">
+          {GROUPS.map(group => {
+            const rows = visibleProjects.filter(project => project.category === group.key);
+            if (group.key === "demo") rows.sort((left, right) => left.name.localeCompare(right.name));
+            return rows.length ? <section key={group.key} aria-label={group.label} className="space-y-2">
+              <h3 className="text-xs font-semibold text-slate-500">{group.label} · {rows.length} 个项目</h3>
+              {rows.map(project => <details key={project.id} className="rounded-lg bg-slate-50">
             <summary className="cursor-pointer p-3 text-sm font-medium break-words">{project.name}
               <span className="ml-2 text-xs font-normal text-slate-500">{project.versions.length} 个版本 · 已选 {project.versions.filter(version => selectedIds.includes(version.id)).length}</span>
             </summary>
@@ -49,6 +68,8 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
               </label>)}
             </div>
           </details>)}
+            </section> : null;
+          })}
           {!visibleProjects.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到已解析的匹配项目。可以更换关键词；已选材料仍保留。</p>}
         </div>
       </div>

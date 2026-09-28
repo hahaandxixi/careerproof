@@ -9,6 +9,7 @@ import { resolveInitialMaterialSelection } from "@/lib/recommendation-selection"
 import { useAuth } from "./AuthProvider";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import ProjectVersionPicker from "./ProjectVersionPicker";
+import ResumeVersionPicker from "./ResumeVersionPicker";
 
 export default function JobDetailView({
   id,
@@ -93,8 +94,7 @@ function MatchForm({
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
       <fieldset disabled={busy} className="space-y-4">
-        <label className="block text-sm font-medium">简历版本<select className="field mt-2" required value={resumeVersionId} onChange={e => setResumeVersionId(e.target.value)}><option value="">请选择已完成的简历</option>{availableResumes.map(version => <option key={version.id} value={version.id}>{version.title} · 第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</option>)}</select></label>
-        {!availableResumes.length && <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>。</p>}
+        <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={setResumeVersionId} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
         <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-950">
           <p className="font-semibold">外部 AI 发送范围与脱敏预览</p>

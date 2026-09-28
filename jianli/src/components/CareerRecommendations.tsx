@@ -12,6 +12,7 @@ import { jobAnalysisHref } from "@/lib/recommendation-selection";
 import { careerPlanRecommendations } from "@/lib/career-plan-display";
 import { ErrorNotice } from "./AccessGate";
 import ProjectVersionPicker from "./ProjectVersionPicker";
+import ResumeVersionPicker from "./ResumeVersionPicker";
 
 const PRIORITY_LABELS = {
   high: "优先了解",
@@ -84,9 +85,6 @@ export default function CareerRecommendations() {
     }
   }
 
-  const availableResumes = resumes.flatMap(resume => resume.versions
-    .filter(version => version.status === "completed")
-    .map(version => ({ ...version, title: resume.title })));
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
   const visibleJobIds = new Set(visibleRecommendations.map(item => item.jobId));
 
@@ -99,10 +97,9 @@ export default function CareerRecommendations() {
 
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     <form className="panel space-y-5" onSubmit={submit}>
-      <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">默认选择最近完成解析的简历和一份个人项目；可勾选最多 10 份作品。第三方参考材料不会计入个人评级。</p></div>
+      <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">请选择一份简历，可勾选最多 10 份作品；测试材料请选择同一 CP 编号的一对简历与项目。第三方参考材料不会计入个人评级。</p></div>
       {loading ? <p className="text-sm text-slate-500">正在加载材料…</p> : <fieldset disabled={busy || historyLoading} className="space-y-4">
-        <label className="block text-sm font-medium">简历版本<select className="field mt-2" required value={resumeVersionId} onChange={event => { setResumeVersionId(event.target.value); clearDisplayedResult(); }}><option value="">请选择已完成的简历</option>{availableResumes.map(version => <option key={version.id} value={version.id}>{version.title} · 第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</option>)}</select></label>
-        {!availableResumes.length && <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>。</p>}
+        <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={id => { setResumeVersionId(id); clearDisplayedResult(); }} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={ids => { setProjectVersionIds(ids); clearDisplayedResult(); }} />
         <label className="flex items-start gap-3 rounded-xl bg-indigo-50 p-4 text-xs leading-6 text-indigo-900"><input type="checkbox" className="mt-1" checked={externalAiConsent} onChange={event => setExternalAiConsent(event.target.checked)} /><span>同意将规则筛出的最多 3 个岗位要求、缺口和每岗最多 3 条必要证据片段发送给当前配置的模型。模型不可用时仅显示规则候选；结果仅保存在我的账号中。</span></label>
         <button className="btn" disabled={!resumeVersionId || !externalAiConsent || busy || historyLoading}>{busy ? "正在生成 AI 职业规划…" : "生成 AI 职业规划"}</button>

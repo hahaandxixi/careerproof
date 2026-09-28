@@ -21,7 +21,7 @@ export default function DemoPage() {
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">2. 选职业，下载同编号的三个文件</h2>
       <p className="mt-3 text-sm leading-7 text-slate-600">简历 TXT 上传到简历入口，项目 ZIP 上传到项目入口，步骤 TXT 打开照着操作。项目 ZIP 不用解压，也不需要执行其中的代码。产品、运营的项目包是对应方案文档。</p>
-      <p className="mt-2 text-sm leading-7 text-indigo-700">完成演示初始化后，这九套材料已在学生账号中，可按 CP 编号直接选择。亲自测试重新上传时，在卡片名称末尾加本轮日期，避免创建同名材料。</p>
+      <p className="mt-2 text-sm leading-7 text-indigo-700">完成演示初始化后，这九套材料属于初始化时使用的学生演示账号，其他账号不会自动拥有。选择器中没有 CP01—CP09 时，请登录该演示账号，或下载后上传到自己的账号。亲自测试重新上传时，在卡片名称末尾加本轮日期，避免创建同名材料。</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {samples.map(sample => <article key={sample.caseId} className="min-w-0 rounded-xl border border-slate-200 p-4">
           <p className="text-xs font-semibold text-indigo-600">{sample.caseId} · {sample.version} · 合成测试</p>
