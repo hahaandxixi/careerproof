@@ -1,3 +1,4 @@
+import json
 from dataclasses import replace
 
 import pytest
@@ -147,7 +148,10 @@ def test_real_error_replay_is_rejected_and_corrected_gap_is_allowed():
     validate_grounded_analysis([good_context], good)
     assert context.rating_ceiling == original_ceiling <= 2
     messages = evidence_analysis_messages([context])
-    assert '"fully_covered": true' in messages[1]["content"]
+    payload = json.loads(messages[1]["content"])
+    assert payload["requirements"][0]["function_source_coverage"] == [
+        coverage.model_dump() for coverage in context.function_source_coverage
+    ]
     assert "不自动提高" in messages[0]["content"]
 
 
