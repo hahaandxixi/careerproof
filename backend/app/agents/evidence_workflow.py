@@ -21,6 +21,8 @@ from app.agents.contracts import (
 )
 from app.agents.provider import (
     OpenAICompatibleProvider,
+    ProviderInputBudgetError,
+    ProviderOutputBudgetError,
     ProviderOutputTruncatedError,
     get_ai_provider,
 )
@@ -51,6 +53,7 @@ class EvidenceWorkflowOutcome:
     model_requirement_count: int = 0
     provider_finish_reason: str | None = None
     retrieval_result: MatchResult | None = None
+    planning_skipped_reason: str | None = None
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -271,6 +274,10 @@ def eligible_retrieval_contexts(
 
 
 def _fallback_reason(exc: Exception) -> str:
+    if isinstance(exc, ProviderInputBudgetError):
+        return "input_token_limit"
+    if isinstance(exc, ProviderOutputBudgetError):
+        return "output_token_limit"
     if isinstance(exc, ProviderOutputTruncatedError):
         return "output_token_limit"
     if isinstance(exc, TimeoutError | httpx.TimeoutException):
@@ -318,6 +325,7 @@ async def run_evidence_workflow(
     tool_calls: list[dict] = []
     planning_usage: ModelUsage | None = None
     request_count = 0
+    planning_skipped_reason = None
     stage = "context"
     try:
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
@@ -369,12 +377,16 @@ async def run_evidence_workflow(
                         remaining_output = settings.ai_per_report_output_token_limit - (
                             used.output_tokens if used else 0
                         )
-                        # Keep room for the final report even if the planner wants another lookup.
                         history_available = history_loader is not None and not history_used
-                        if (
-                            (not eligible and not history_available)
-                            or remaining_input <= 1500 or remaining_output <= 400
-                        ):
+                        if not eligible and not history_available:
+                            break
+                        # Reserve the current final prompt, including authorized history,
+                        # rather than assuming every report needs only 1000 input tokens.
+                        final_input_reserve = provider.estimate_evidence_input(model_contexts)
+                        planner_input_budget = remaining_input - final_input_reserve
+                        if planner_input_budget <= 0 or remaining_output <= 400:
+                            planning_skipped_reason = "report_budget_reserved"
+                            await _notify(progress, "已为最终报告预留用量，停止额外工具规划")
                             break
                         stage = "tool_planning"
                         await _notify(progress, f"模型正在规划第 {round_number} 轮受控工具调用")
@@ -388,9 +400,13 @@ async def run_evidence_workflow(
                                     "history_hint": getattr(history_loader, "planning_hint", None),
                                 } if history_available else {}),
                                 previous_retrieval=previous_retrieval,
-                                input_token_limit=remaining_input - 1000,
+                                input_token_limit=planner_input_budget,
                                 output_token_limit=remaining_output - 200,
                             )
+                        except (ProviderInputBudgetError, ProviderOutputBudgetError):
+                            planning_skipped_reason = "report_budget_reserved"
+                            await _notify(progress, "工具规划超出剩余用量，继续分析已有证据")
+                            break
                         except (ValidationError, ValueError, KeyError, TypeError):
                             tool_calls.append(
                                 {
@@ -610,6 +626,7 @@ async def run_evidence_workflow(
             repaired=repaired,
             tool_calls=tuple(tool_calls),
             request_count=request_count,
+            planning_skipped_reason=planning_skipped_reason,
             json_repair_count=(
                 provider.json_repair_count
                 if isinstance(provider, OpenAICompatibleProvider)
@@ -645,6 +662,7 @@ async def run_evidence_workflow(
             repaired=repaired,
             tool_calls=tuple(tool_calls),
             request_count=request_count,
+            planning_skipped_reason=planning_skipped_reason,
             json_repair_count=(
                 provider.json_repair_count
                 if "provider" in locals()

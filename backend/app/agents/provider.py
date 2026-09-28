@@ -176,6 +176,14 @@ def parse_provider_json_object(content: str) -> tuple[dict, bool]:
     return parsed, repaired
 
 
+class ProviderInputBudgetError(ValueError):
+    """A local input guard rejected the request before any provider call."""
+
+
+class ProviderOutputBudgetError(ValueError):
+    """No locally permitted output budget remains."""
+
+
 class ProviderOutputTruncatedError(ValueError):
     """The provider stopped at its output limit before returning valid JSON."""
 
@@ -419,18 +427,29 @@ class OpenAICompatibleProvider:
     def _estimate_input_tokens(self, messages: list) -> int:
         return conservative_input_token_estimate(messages)
 
+    def estimate_evidence_input(self, contexts: list[RequirementEvidenceContext]) -> int:
+        messages = evidence_analysis_messages(
+            contexts, history_context=getattr(self, "history_context", None)
+        )
+        return self._estimate_input_tokens(sanitize_outgoing_messages(messages))
+
     async def _completion(self, request: dict) -> tuple[dict, int]:
         request = dict(request)
         input_limit = int(
             request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
         )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
         messages = request.get("messages")
         if isinstance(messages, list):
             messages = sanitize_outgoing_messages(messages)
             request["messages"] = messages
             estimate = self._estimate_input_tokens(messages)
             if estimate > input_limit:
-                raise ValueError(
+                raise ProviderInputBudgetError(
                     "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
                     f"({estimate}>{input_limit})"
                 )
@@ -584,18 +603,21 @@ class OpenAICompatibleProvider:
         input_token_limit: int | None = None,
         output_token_limit: int | None = None,
     ) -> EvidenceAnalysis:
+        self.last_finish_reason = None
         bounded_output = min(
             settings.ai_per_report_output_token_limit,
-            output_token_limit or settings.ai_per_report_output_token_limit,
+            settings.ai_per_report_output_token_limit
+            if output_token_limit is None else output_token_limit,
         )
         if bounded_output < 1:
-            raise ValueError("No output token budget remains for this report")
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
         bounded_input = min(
             settings.ai_per_report_input_token_limit,
-            input_token_limit or settings.ai_per_report_input_token_limit,
+            settings.ai_per_report_input_token_limit
+            if input_token_limit is None else input_token_limit,
         )
         if bounded_input < 1:
-            raise ValueError("No input token budget remains for this report")
+            raise ProviderInputBudgetError("No input token budget remains for this report")
         request = {
             "_local_input_token_limit": bounded_input,
             "model": self.model,
@@ -672,11 +694,11 @@ class OpenAICompatibleProvider:
             ensure_ascii=False,
         )
         request = {
-            "_local_input_token_limit": input_token_limit
-            or settings.ai_per_report_input_token_limit,
+            "_local_input_token_limit": settings.ai_per_report_input_token_limit
+            if input_token_limit is None else input_token_limit,
             "model": self.model,
             "temperature": 0,
-            "max_tokens": min(200, output_token_limit or 200),
+            "max_tokens": min(200, 200 if output_token_limit is None else output_token_limit),
             "messages": [
                 {
                     "role": "system",

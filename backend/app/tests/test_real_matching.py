@@ -935,3 +935,59 @@ async def test_career_plan_cites_shortlist_and_tracks_new_material(matching_db, 
         assert fallback.json()["data"]["aiFallbackUsed"] is True
         assert fallback.json()["data"]["aiPlan"] is None
         assert fallback.json()["data"]["recommendations"]
+
+
+@pytest.mark.parametrize("reason,label", [
+    ("input_token_limit", "输入用量不足"),
+    ("output_token_limit", "输出用量不足"),
+])
+async def test_local_report_budget_reason_survives_report_and_task_read(
+    matching_db, monkeypatch, reason, label,
+):
+    app, factory = matching_db
+
+    async def budget_workflow(result, progress=None, **kwargs):
+        return EvidenceWorkflowOutcome(
+            contexts=build_evidence_contexts(result),
+            analysis=None,
+            provider="deepseek",
+            model="deepseek-flash",
+            fallback_used=True,
+            fallback_reason=reason,
+            failure_stage="request",
+            request_count=1,
+            planning_skipped_reason="report_budget_reserved",
+        )
+
+    monkeypatch.setattr(analysis_service, "run_evidence_workflow", budget_workflow)
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as employer,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(employer, "budget-owner@example.com")
+        job = await create_job(employer)
+        await register(student, "budget-student@example.com", "student")
+        resume, _project, version = await upload_materials(student)
+        report = await match_report(student, job, resume, version, externalAiConsent=True)
+        assert report["analysisMode"] == "rules"
+        assert report["aiFallbackUsed"] is True
+        assert report["aiToolCalls"] == []
+        task = (await student.get(
+            f"/api/v1/analysis-tasks/{report['taskId']}"
+        )).json()["data"]
+        step = next(entry for entry in task["steps"] if entry["name"] == "模型证据分析")
+        assert label in step["detail"]
+        assert "外部模型不可用" not in step["detail"]
+        assert step["payload"]["fallbackReason"] == reason
+        assert step["payload"]["planningSkippedReason"] == "report_budget_reserved"
+        async with factory() as session:
+            saved = await session.get(MatchReport, UUID(report["id"]))
+            assert saved.analysis_metadata["fallbackReason"] == reason
+            assert saved.analysis_metadata["planningSkippedReason"] == "report_budget_reserved"
+            assert saved.analysis_metadata["providerFinishReason"] is None
+        refreshed = (await student.get(
+            f"/api/v1/match-reports/{report['id']}"
+        )).json()["data"]
+        assert refreshed["id"] == report["id"]
+        assert refreshed["aiFallbackUsed"] is True

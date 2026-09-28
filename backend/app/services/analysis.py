@@ -553,7 +553,11 @@ async def execute_match_task(task_id: UUID) -> None:
                     "模型引用已校验，正在保存报告"
                     if workflow.analysis
                     else (
-                        "外部模型不可用，正在保存规则报告"
+                        "本报告 AI 输入用量不足，正在保存规则报告"
+                        if workflow.fallback_reason == "input_token_limit"
+                        else "本报告 AI 输出用量不足，正在保存规则报告"
+                        if workflow.fallback_reason == "output_token_limit"
+                        else "外部模型不可用，正在保存规则报告"
                         if workflow.fallback_used
                         else "正在保存规则报告"
                     )
@@ -582,6 +586,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "failureStage": workflow.failure_stage,
                 "repairUsed": workflow.repaired,
                 "requestCount": workflow.request_count,
+                "planningSkippedReason": workflow.planning_skipped_reason,
                 "jsonRepairCount": workflow.json_repair_count,
                 "modelRequirementCount": workflow.model_requirement_count,
                 "providerFinishReason": workflow.provider_finish_reason,
@@ -776,6 +781,10 @@ async def execute_match_task(task_id: UUID) -> None:
                         if workflow.skipped_reason == "consent_not_granted"
                         else "模型服务繁忙，已保留本地规则报告"
                         if workflow.fallback_reason == "provider_busy"
+                        else "本报告 AI 输入用量不足，已保留本地规则报告"
+                        if workflow.fallback_reason == "input_token_limit"
+                        else "本报告 AI 输出用量不足，已保留本地规则报告"
+                        if workflow.fallback_reason == "output_token_limit"
                         else "外部模型不可用，已回退本地规则"
                         if workflow.fallback_used
                         else "外部模型未启用"
@@ -789,6 +798,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         "skippedReason": workflow.skipped_reason,
                         "repairUsed": workflow.repaired,
                         "requestCount": workflow.request_count,
+                        "planningSkippedReason": workflow.planning_skipped_reason,
                         "jsonRepairCount": workflow.json_repair_count,
                         "modelRequirementCount": workflow.model_requirement_count,
                         "providerFinishReason": workflow.provider_finish_reason,
