@@ -25,9 +25,16 @@ test("job analysis accepts only completed owned versions and removes duplicates"
   );
 });
 
-test("invalid requested resume falls back to the first completed version", () => {
+test("invalid requested resume stays unselected instead of silently replacing materials", () => {
   assert.deepEqual(
     resolveInitialMaterialSelection(["resume-1"], ["project-1"], "missing", ["missing"]),
-    { resumeVersionId: "resume-1", projectVersionIds: [] },
+    { resumeVersionId: "", projectVersionIds: [] },
+  );
+});
+
+test("direct job entry does not automatically select the newest career case", () => {
+  assert.deepEqual(
+    resolveInitialMaterialSelection(["CP09-resume", "CP08-resume"], ["CP09-project"], "", []),
+    { resumeVersionId: "", projectVersionIds: [] },
   );
 });

@@ -32,6 +32,8 @@ def main():
         )
     ]
     for folder in sorted((demo / "roles").iterdir()):
+        if not folder.is_dir():
+            continue
         samples.append(
             (
                 folder.name,

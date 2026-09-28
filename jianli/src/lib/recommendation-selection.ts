@@ -19,7 +19,7 @@ export function resolveInitialMaterialSelection(
   return {
     resumeVersionId: resumeIds.has(requestedResumeId)
       ? requestedResumeId
-      : completedResumeIds[0] ?? "",
+      : "",
     projectVersionIds: [...new Set(requestedProjectIds)]
       .filter(id => projectIds.has(id))
       .slice(0, 10),

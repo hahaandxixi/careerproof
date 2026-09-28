@@ -123,6 +123,8 @@ if (!$SkipSeed) {
     try {
         & $pythonPath -m evals.seed_demo
         if ($LASTEXITCODE -ne 0) { throw 'Demo account and job initialization failed.' }
+        & $pythonPath -m evals.seed_role_materials --apply
+        if ($LASTEXITCODE -ne 0) { throw 'Named career test material initialization failed. Existing materials were preserved.' }
     } finally {
         Pop-Location
     }

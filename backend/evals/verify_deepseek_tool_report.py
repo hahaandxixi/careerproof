@@ -18,6 +18,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import httpx
 
 from evals.demo_credentials import get_demo_credentials
+from evals.synthetic_jobs import TemporaryEvaluationJobs
 
 BASE = os.getenv("CAREERPROOF_EVAL_API_BASE", "http://127.0.0.1:8000/api/v1")
 JOB_TITLE = "Python 受控补检索（合成验收）"
@@ -36,9 +37,7 @@ def wait(client: httpx.Client, task_id: str, timeout: int = 240):
         task = data(client.get(f"/analysis-tasks/{task_id}"))
         state = (task["status"], task["progress"], task["currentStep"])
         if state != last:
-            states.append(
-                {"status": state[0], "progress": state[1], "currentStep": state[2]}
-            )
+            states.append({"status": state[0], "progress": state[1], "currentStep": state[2]})
             last = state
         if task["status"] == "completed":
             return task, states
@@ -48,7 +47,7 @@ def wait(client: httpx.Client, task_id: str, timeout: int = 240):
     raise TimeoutError(f"Task did not finish; states={states}")
 
 
-def ensure_job(client: httpx.Client) -> dict:
+def ensure_job(client: httpx.Client, jobs_scope: TemporaryEvaluationJobs) -> dict:
     data(
         client.post(
             "/auth/login",
@@ -60,9 +59,7 @@ def ensure_job(client: httpx.Client) -> dict:
         for item in data(client.get("/enterprises/me"))
         if item["name"] == "CareerProof 合成演示企业"
     )
-    jobs = data(client.get("/jobs/mine", params={"q": "受控补检索", "pageSize": 100}))[
-        "items"
-    ]
+    jobs = data(client.get("/jobs/mine", params={"q": "受控补检索", "pageSize": 100}))["items"]
     job = next((item for item in jobs if item["title"] == JOB_TITLE), None)
     if job is None:
         job = data(
@@ -90,8 +87,7 @@ def ensure_job(client: httpx.Client) -> dict:
         )
     elif job["status"] != "published":
         job = data(client.patch(f"/jobs/{job['id']}", json={"status": "published"}))
-    data(client.post("/auth/logout"))
-    return job
+    return jobs_scope.track(data(client.get(f"/jobs/{job['id']}")))
 
 
 def build_archive(source: Path, destination: Path) -> None:
@@ -111,8 +107,13 @@ def main() -> None:
     root = Path(__file__).resolve().parents[2]
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     output = Path(__file__).with_name(f"deepseek-tool-report-{timestamp}.json")
-    with httpx.Client(base_url=BASE, timeout=30, trust_env=False) as client:
-        job = ensure_job(client)
+    cleanup = {}
+    with (
+        httpx.Client(base_url=BASE, timeout=30, trust_env=False) as enterprise,
+        httpx.Client(base_url=BASE, timeout=30, trust_env=False) as client,
+        TemporaryEvaluationJobs(enterprise, cleanup) as jobs_scope,
+    ):
+        job = ensure_job(enterprise, jobs_scope)
         data(
             client.post(
                 "/auth/login",
@@ -183,34 +184,33 @@ def main() -> None:
             "toolCalls": calls,
             "items": report["items"],
         }
-        output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-        if report["analysisMode"] != "ai_evidence" or report["aiFallbackUsed"]:
-            raise SystemExit(f"AI report fell back to rules; see {output.name}")
-        if not successful_calls:
-            raise SystemExit(
-                f"Model did not execute a successful retrieval tool; see {output.name}"
-            )
-        if not all(item["aiStatus"] == "validated" for item in report["items"]):
-            raise SystemExit(f"Report contains an unvalidated AI item; see {output.name}")
-        if not any(
-            item.get("evidenceLevel") == 3
-            and successful_calls[0].get("citationId") in item.get("aiCitationIds", [])
-            for item in report["items"]
-        ):
-            raise SystemExit(
-                f"Retrieved evidence did not support the expected level-3 item; see {output.name}"
-            )
-        print(
-            json.dumps(
-                {
-                    "output": output.name,
-                    "reportId": task["reportId"],
-                    "toolCall": successful_calls[0],
-                    "usage": report["aiUsage"],
-                },
-                ensure_ascii=False,
-            )
+    result.update(cleanup)
+    output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    if report["analysisMode"] != "ai_evidence" or report["aiFallbackUsed"]:
+        raise SystemExit(f"AI report fell back to rules; see {output.name}")
+    if not successful_calls:
+        raise SystemExit(f"Model did not execute a successful retrieval tool; see {output.name}")
+    if not all(item["aiStatus"] == "validated" for item in report["items"]):
+        raise SystemExit(f"Report contains an unvalidated AI item; see {output.name}")
+    if not any(
+        item.get("evidenceLevel") == 3
+        and successful_calls[0].get("citationId") in item.get("aiCitationIds", [])
+        for item in report["items"]
+    ):
+        raise SystemExit(
+            f"Retrieved evidence did not support the expected level-3 item; see {output.name}"
         )
+    print(
+        json.dumps(
+            {
+                "output": output.name,
+                "reportId": task["reportId"],
+                "toolCall": successful_calls[0],
+                "usage": report["aiUsage"],
+            },
+            ensure_ascii=False,
+        )
+    )
 
 
 if __name__ == "__main__":

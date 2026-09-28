@@ -3,61 +3,59 @@ import SourceCoverageDemo from "@/components/SourceCoverageDemo";
 import samples from "./samples.json";
 import coverage from "./coverage.json";
 
+const asset = (filename: string) => `/demo-assets/cases/${encodeURIComponent(filename)}`;
+
 export default function DemoPage() {
-  return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <header>
-        <p className="text-sm font-medium text-indigo-600">合成材料 · 本地演示</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-900">从样例到证据报告</h1>
-        <p className="mt-3 text-slate-600">先使用学生账号完成上传与分析。企业账号用于查看和管理预置岗位。</p>
-      </header>
-      <section className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-xl font-bold">1. 登录演示账号</h2>
-        <p className="mt-2 text-sm text-slate-500">账号须由本地初始化脚本创建；仅供合成材料测试，不存放个人资料，不用于公开部署。</p>
-        <p className="mt-4 text-sm leading-7 text-slate-700">运行 <code>Start-Demo.ps1</code> 后，在本机打开 <code>backend/.tmp/demo-credentials.json</code> 查看学生与企业邮箱及密码。凭据不会写入代码仓库，也不会显示在网页上。若使用自定义的 <code>DEMO_*</code> 环境变量，请使用你配置的账号。</p>
-        <Link href="/login" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white">前往登录</Link>
-      </section>
-      <section className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-xl font-bold">2. 下载并上传样例</h2>
-        <div className="mt-4 flex flex-wrap gap-3 text-sm text-indigo-700">
-          <a href="/demo-assets/student-resume.txt" download className="rounded-lg bg-indigo-50 px-4 py-2">下载合成简历 TXT</a>
-          <a href="/demo-assets/evidence-api.zip" download className="rounded-lg bg-indigo-50 px-4 py-2">下载基础项目 ZIP</a>
-          <a href="/demo-assets/evidence-function-call.zip" download className="rounded-lg bg-indigo-50 px-4 py-2">下载补检索专项 ZIP</a>
-          <a href="/demo-assets/software-backend-job.md" download className="rounded-lg bg-indigo-50 px-4 py-2">下载岗位说明</a>
-        </div>
-        <p className="mt-4 text-sm leading-7 text-slate-600">进入「我的材料」，在简历入口选择 TXT，在项目入口选择 ZIP。填写名称后分别提交，等待解析完成。ZIP 不用解压，最大 30MB。当前使用点击选择文件上传。</p>
-        <p className="mt-3 text-sm leading-7 text-slate-600">填写示例：简历名称「合成学生简历」；项目名称「任务管理 API（合成演示）」；项目说明「合成测试项目，包含 Python、FastAPI、PostgreSQL 和 pytest 片段，用于测试证据匹配。运行情况和作者贡献未经核验。」</p>
-        <p className="mt-3 rounded-lg bg-indigo-50 p-3 text-sm leading-6 text-indigo-900">补检索专项 ZIP 用于「Python 受控补检索（合成验收）」岗位：模型可在本次选定的材料版本中有限补检索，每次最多新增一条引用；不保证能找到新证据。真实重跑会消耗模型额度，普通功能体验优先使用基础项目 ZIP。</p>
-        <Link href="/portfolio" className="mt-3 inline-block text-indigo-600 underline">进入我的材料</Link>
-      </section>
-      <SourceCoverageDemo />
-      <section className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-xl font-bold">各职业的对照材料</h2>
-        <p className="mt-3 text-sm leading-7 text-slate-600">下列每个方向都有简历 TXT 和作品 TXT。作品文件上传到「项目压缩包或作品文档」入口，不要传到简历入口。它们是含有缺口的文档样例，不是完整工程或满分标准答案。</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {samples.map(sample => (
-            <article key={sample.slug} className="rounded-xl border border-slate-200 p-4">
-              <h3 className="font-semibold text-slate-900">{sample.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{sample.boundary}</p>
-              <p className="mt-2 text-xs leading-6 text-slate-500">简历名称：{sample.title}合成简历<br />项目名称：{sample.title}合成练习<br />项目说明：合成测试作品，内容及未完成项见文档，不代表真实经历。</p>
-              <div className="mt-3 flex flex-wrap gap-4 text-sm text-indigo-700">
-                <a download href={`/demo-assets/roles/${sample.slug}-resume.txt`}>下载简历 TXT</a>
-                <a download href={`/demo-assets/roles/${sample.slug}-project.txt`}>下载作品 TXT</a>
-                {["devops", "dba"].includes(sample.slug) && <a download href={`/demo-assets/roles/${sample.slug}-project.zip`}>下载工程 ZIP（优先测试）</a>}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-xl font-bold">3. 选择岗位并核对报告</h2>
-        <p className="mt-3 text-sm leading-7 text-amber-900">当前规则共覆盖 {coverage.reduce((sum, row) => sum + row.supported.length, 0)}/45 项要求。下面展示可评估范围，未覆盖项需要人工审阅；规则覆盖仅代表有静态检测项，不代表能完整验证岗位能力。运维和 DBA 优先上传工程 ZIP，脚本均未执行。</p>
-        <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr><th className="p-2">岗位</th><th className="p-2">规则覆盖</th><th className="p-2">暂不支持</th></tr></thead><tbody>{coverage.map(row => <tr key={row.job} className="border-t border-slate-200"><td className="p-2">{row.job}</td><td className="p-2">{row.supported.length}/5</td><td className="p-2 text-slate-600">{row.unsupported.join("、") || "无"}</td></tr>)}</tbody></table></div>
-        <p className="mt-3 text-sm leading-7 text-slate-600">在岗位列表搜索「合成演示」，打开「Python 后端开发实习生（合成演示）」，选择刚上传的简历和项目版本，开始匹配。查看任务进度，完成后逐项打开证据引用，保存人工复核，再刷新确认报告仍可找回。</p>
-        <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">样例包含 Python、FastAPI、PostgreSQL 和 pytest 相关片段；Redis 只有简历声明，不应出现虚构的实现证据。代码片段不等于运行成功或本人贡献的证明。系统始终按 AI 链路发起分析；模型断链、限流、超时或输出校验失败时才自动生成本地兜底报告。</p>
-        <p className="mt-3 text-sm leading-7 text-slate-600">可测试 9 个方向：Python 后端、前端、软件测试、数据分析、产品助理、用户运营、自动化运维、数据库 DBA、数据工程。使用同一份简历和同一个项目版本分别匹配，比较证据与缺口；现有 ZIP 是后端样例，不是所有岗位的合格样例。使用 PostgreSQL 不等于具备备份恢复能力，包含 Dockerfile 也不等于生产运维经验。</p>
-        <Link href="/jobs" className="mt-4 inline-block text-indigo-600 underline">进入岗位列表</Link>
-      </section>
-    </div>
-  );
+  return <div className="mx-auto max-w-4xl space-y-6">
+    <header>
+      <p className="text-sm font-medium text-indigo-600">合成材料 · 按职业成套测试</p>
+      <h1 className="mt-2 text-3xl font-bold text-slate-900">选一个职业，用一套对应材料</h1>
+      <p className="mt-3 leading-7 text-slate-600">每套都有独立编号、简历、项目或作品、人工测试步骤。先测一套；请勿将不同编号的材料混选。所有人物、经历和指标均为虚构。</p>
+    </header>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6">
+      <h2 className="text-xl font-bold">1. 登录学生演示账号</h2>
+      <p className="mt-3 text-sm leading-7 text-slate-600">请向项目负责人索取本机演示账号。企业账号用于岗位管理，学生账号用于材料上传与报告测试。账号凭据不会显示在网页上。</p>
+      <details className="mt-3 text-sm text-slate-600"><summary className="cursor-pointer">负责人：账号在哪里？</summary><p className="mt-2 leading-7">启动演示后，在本机 <code>backend/.tmp/demo-credentials.json</code> 查看学生与企业邮箱及密码；使用自定义演示账号时，以负责人配置为准。凭据不要截图分享或提交。</p></details>
+      <Link href="/login" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white">前往登录</Link>
+    </section>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6">
+      <h2 className="text-xl font-bold">2. 选职业，下载同编号的三个文件</h2>
+      <p className="mt-3 text-sm leading-7 text-slate-600">简历 TXT 上传到简历入口，项目 ZIP 上传到项目入口，步骤 TXT 打开照着操作。项目 ZIP 不用解压，也不需要执行其中的代码。产品、运营的项目包是对应方案文档。</p>
+      <p className="mt-2 text-sm leading-7 text-indigo-700">完成演示初始化后，这九套材料已在学生账号中，可按 CP 编号直接选择。亲自测试重新上传时，在卡片名称末尾加本轮日期，避免创建同名材料。</p>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        {samples.map(sample => <article key={sample.caseId} className="min-w-0 rounded-xl border border-slate-200 p-4">
+          <p className="text-xs font-semibold text-indigo-600">{sample.caseId} · {sample.version} · 合成测试</p>
+          <h3 className="mt-1 text-lg font-semibold text-slate-900">{sample.title}</h3>
+          <p className="mt-2 text-sm text-slate-700">对应作品：{sample.projectTitle}</p>
+          <p className="mt-1 text-xs text-slate-500">测试企业：CareerProof 合成演示企业</p>
+          <p className="mt-2 break-words text-xs leading-6 text-slate-500">简历名称：{sample.resumeName}<br />项目名称：{sample.projectName}<br />测试岗位：{sample.jobTitle}</p>
+          <div className="mt-3 flex flex-wrap gap-3 text-sm text-indigo-700">
+            <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.resumeFilename)} download={sample.resumeFilename}>下载对应简历</a>
+            <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.projectFilename)} download={sample.projectFilename}>下载对应项目</a>
+            <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.scriptFilename)} download={sample.scriptFilename}>下载测试步骤</a>
+          </div>
+          <p className="mt-3 text-xs leading-6 text-amber-800">应识别的边界：{sample.boundary}</p>
+          <Link className="mt-3 inline-block text-sm text-indigo-600 underline" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
+        </article>)}
+      </div>
+    </section>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6">
+      <h2 className="text-xl font-bold">3. 上传并选择同一套版本</h2>
+      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-600">
+        <li>进入“我的材料”，照卡片填写简历名称和项目名称，分别上传同编号 TXT、ZIP。</li>
+        <li>项目说明填写“合成静态测试作品，未执行，不代表本人贡献。”等待两份材料均解析完成。</li>
+        <li>在岗位发现打开对应岗位；简历和项目都选择同编号、同版本的文件，例如 CP08 的简历只配 CP08 的数据库项目。</li>
+        <li>阅读发送范围，取得负责人对本次费用的同意后，点一次生成报告。职业规划和视觉观察会另外调用模型。</li>
+        <li>打开引用核对源码或文档，记录缺口，保存本人复核备注，再刷新找回。无需追求固定分数；本人采纳不是独立认证。</li>
+      </ol>
+      <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">代码和方案不等于执行成功；材料缺失不代表没有能力。AI 不可用时自动生成本地兜底报告，并明确显示降级。</p>
+      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入我的材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
+    </section>
+    <details className="rounded-2xl border border-slate-200 bg-white p-6">
+      <summary className="cursor-pointer font-semibold">查看规则覆盖范围与源码引用演示</summary>
+      <p className="mt-3 text-sm leading-7 text-slate-600">当前静态规则覆盖 {coverage.reduce((sum, row) => sum + row.supported.length, 0)}/45 项要求。未覆盖项需人工核对，不能把静态覆盖当作完整岗位能力验证。</p>
+      <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr><th className="p-2">岗位</th><th className="p-2">规则覆盖</th><th className="p-2">暂不支持</th></tr></thead><tbody>{coverage.map(row => <tr key={row.job} className="border-t border-slate-200"><td className="p-2">{row.job}</td><td className="p-2">{row.supported.length}/5</td><td className="p-2 text-slate-600">{row.unsupported.join("、") || "无"}</td></tr>)}</tbody></table></div>
+      <div className="mt-5"><SourceCoverageDemo /></div>
+    </details>
+  </div>;
 }

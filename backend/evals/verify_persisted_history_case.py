@@ -21,6 +21,7 @@ from app.core.database import async_session_factory, engine
 from app.models.analysis import AnalysisTask
 from app.services.report_history import prepare_history_tool
 from evals.demo_credentials import get_demo_credentials
+from evals.synthetic_jobs import TemporaryEvaluationJobs
 from evals.verify_deepseek_tool_report import BASE, data, wait
 from evals.verify_persisted_history import CURRENT_CODE, OLD_CODE, upload_code
 
@@ -157,6 +158,7 @@ def run_case(scenario, record):
     with (
         httpx.Client(base_url=BASE, timeout=30, trust_env=False) as enterprise,
         httpx.Client(base_url=BASE, timeout=30, trust_env=False) as student,
+        TemporaryEvaluationJobs(enterprise, record) as jobs,
     ):
         data(enterprise.post("/auth/login", json=get_demo_credentials("enterprise")))
         org = next(
@@ -167,26 +169,23 @@ def run_case(scenario, record):
         owner = data(student.post("/auth/login", json=get_demo_credentials("student")))["user"]
 
         def create_job(title, requirement):
-            return data(
-                enterprise.post(
-                    "/jobs",
-                    json={
-                        "enterpriseId": org["id"],
-                        "title": title,
-                        "companyName": org["name"],
-                        "description": "本机合成验收，不用于真实招聘。",
-                        "status": "published",
-                        "category": "software",
-                        "requirements": [
-                            {
-                                "skillName": "FastAPI",
-                                "weight": 5,
-                                "isRequired": True,
-                                "rawText": requirement,
-                            }
-                        ],
-                    },
-                )
+            return jobs.create(
+                {
+                    "enterpriseId": org["id"],
+                    "title": title,
+                    "companyName": org["name"],
+                    "description": "本机合成验收，不用于真实招聘。",
+                    "status": "published",
+                    "category": "software",
+                    "requirements": [
+                        {
+                            "skillName": "FastAPI",
+                            "weight": 5,
+                            "isRequired": True,
+                            "rawText": requirement,
+                        }
+                    ],
+                }
             )
 
         record["stage"] = "create_materials"

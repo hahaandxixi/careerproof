@@ -41,14 +41,8 @@ export default function CareerRecommendations() {
     Promise.all([api.listResumes(), api.listProjects()]).then(([resumeRows, projectRows]) => {
       if (!current) return;
       setResumes(resumeRows); setProjects(projectRows);
-      setResumeVersionId(
-        resumeRows.flatMap(item => item.versions).find(version => version.status === "completed")?.id ?? "",
-      );
-      setProjectVersionIds(
-        projectRows.flatMap(project => project.versions.filter(version =>
-          version.status === "completed" && version.materialRole !== "reference",
-        ).slice(0, 1)).slice(0, 1).map(version => version.id),
-      );
+      setResumeVersionId("");
+      setProjectVersionIds([]);
     }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
