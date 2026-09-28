@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -64,3 +65,23 @@ class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     job_id: Mapped[UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
     student_id: Mapped[UUID] = mapped_column(ForeignKey("student_profiles.id", ondelete="CASCADE"))
     status: Mapped[str] = mapped_column(String(30), default="submitted", index=True)
+    report_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("match_reports.id", ondelete="RESTRICT"), nullable=True
+    )
+    report_snapshot: Mapped[dict] = mapped_column(JSON, default=dict)
+    consent_version: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reply_kind: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    reply_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ApplicationEvent(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+    __tablename__ = "application_events"
+    __table_args__ = (UniqueConstraint("application_id", "event_type"),)
+
+    application_id: Mapped[UUID] = mapped_column(
+        ForeignKey("applications.id", ondelete="CASCADE"), index=True
+    )
+    actor_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
+    event_type: Mapped[str] = mapped_column(String(30))
+    detail: Mapped[str] = mapped_column(Text, default="")

@@ -65,11 +65,13 @@ export interface ResumeHistory {
   title: string;
   createdAt: string;
   versions: MaterialVersion[];
+  isArchived?: boolean;
 }
 
 export interface ProjectHistory extends ProjectView {
   createdAt: string;
   versions: MaterialVersion[];
+  isArchived?: boolean;
 }
 
 export interface ProjectVersionUploadData {
@@ -156,7 +158,8 @@ function refreshSession(): Promise<boolean> {
 export async function request<T>(
   path: string,
   init: RequestInit = {},
-  allowRefresh = true
+  allowRefresh = true,
+  responseKind: "json" | "file" = "json",
 ): Promise<T> {
   let response: Response;
   try {
@@ -167,7 +170,14 @@ export async function request<T>(
   }
 
   if (response.status === 401 && allowRefresh && !path.startsWith("/auth/")) {
-    if (await refreshSession()) return request<T>(path, init, false);
+    if (await refreshSession()) return request<T>(path, init, false, responseKind);
+  }
+
+  if (response.ok && responseKind === "file") {
+    const disposition = response.headers.get("Content-Disposition") ?? "";
+    let filename = "resume.txt";
+    try { filename = decodeURIComponent(disposition.match(/filename\*=UTF-8''(.+)$/i)?.[1] ?? filename).replace(/[\\/]/g, "_"); } catch { /* Keep a safe download name. */ }
+    return { blob: await response.blob(), filename } as T;
   }
 
   const envelope = await readEnvelope<T>(response);
@@ -197,7 +207,25 @@ export interface McpGrant {
   token: string; grantId: string; expiresAt: string; reportIds: string[]; tools: string[];
 }
 
+export interface ApplicationView {
+  id: string; jobId: string; jobTitle: string; companyName: string; candidateName: string;
+  reportId: string; status: string; createdAt: string; overallScore: number | null;
+  consentVersion: string; replyKind: string | null; replyText: string | null;
+  comparisonBasis: string;
+  events: { type: string; at: string; detail: string }[];
+  dimensions: { requirementId: string; title: string; skill: string; score: number | null; verdict: string; weight: number; evidenceLevel: number | null; evidenceLevelSource: string | null; evidenceLevelVersion: string | null; formulaVersion: string | null }[];
+  report?: MatchReport;
+}
+
 export const api = {
+  createApplication(reportId: string) { return request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true }) }); },
+  myApplications() { return request<ApplicationView[]>("/applications/mine"); },
+  jobApplications(jobId: string) { return request<ApplicationView[]>(`/jobs/${jobId}/applications`); },
+  openApplication(id: string) { return request<ApplicationView>(`/applications/${id}/view`, { method: "POST" }); },
+  replyApplication(id: string, kind: string, text: string) { return request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text }) }); },
+  withdrawApplication(id: string) { return request<ApplicationView>(`/applications/${id}/withdraw`, { method: "POST" }); },
+  downloadApplicationResume(id: string) { return request<{blob: Blob; filename: string}>(`/applications/${id}/resume-download`, { method: "POST" }, true, "file"); },
+  archiveMaterial(kind: "resume" | "project", id: string, archived: boolean) { return request<{archived:boolean}>(`/materials/${kind}/${id}/archive`, { method: "PATCH", ...jsonBody({ archived }) }); },
   issueMcpGrant(reportIds: string[]) {
     return request<McpGrant>("/mcp-tools/grants", { method: "POST", ...jsonBody({ report_ids: reportIds, external_client_consent: true }) });
   },
@@ -280,12 +308,12 @@ export const api = {
     return request<ResumeUploadData>("/resumes", { method: "POST", body: form });
   },
 
-  listResumes() {
-    return request<ResumeHistory[]>("/resumes");
+  listResumes(includeArchived = false) {
+    return request<ResumeHistory[]>(`/resumes${includeArchived ? "?includeArchived=true" : ""}`);
   },
 
-  listProjects() {
-    return request<ProjectHistory[]>("/projects");
+  listProjects(includeArchived = false) {
+    return request<ProjectHistory[]>(`/projects${includeArchived ? "?includeArchived=true" : ""}`);
   },
 
   listResumeVersions(id: string) {

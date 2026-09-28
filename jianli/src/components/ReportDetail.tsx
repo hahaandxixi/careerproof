@@ -14,6 +14,7 @@ import EvidenceAnchorRestore from "./EvidenceAnchorRestore";
 import ActionPlan from "./ActionPlan";
 import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
+import ApplicationSubmit from "./ApplicationSubmit";
 
 const VERDICTS: Record<string, string> = { supported: "有证据支持", partial: "部分证据支持", claimed_only: "仅简历声明", gap: "材料待补充", unsupported: "规则暂未支持", verified: "有证据支持" };
 const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
@@ -54,6 +55,7 @@ export default function ReportDetail({ id }: { id: string }) {
     finally { setReviewing(null); }
   }
   return <div className="space-y-6">
+    {user?.role === "student" && <ApplicationSubmit reportId={report.id} />}
     <EvidenceAnchorRestore revision={report.id} />
     <Link className="text-sm text-indigo-600" href="/reports">← 匹配报告</Link>
     <aside className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-7 text-amber-900">

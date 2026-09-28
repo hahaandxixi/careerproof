@@ -22,7 +22,7 @@ export default function SiteHeader() {
       <Link href="/" className="font-semibold text-indigo-700">职证 CareerProof</Link>
       <nav aria-label="主导航" className="flex flex-wrap items-center gap-4 text-sm">
         <Link href="/jobs">岗位发现</Link>
-        {user?.role === "student" && <><Link href="/portfolio">我的材料</Link><Link href="/recommendations">职业推荐</Link></>}
+        {user?.role === "student" && <><Link href="/portfolio">我的材料</Link><Link href="/recommendations">职业推荐</Link><Link href="/applications">我的投递</Link></>}
         {(user?.role === "student" || user?.role === "admin") && <Link href="/reports">我的匹配报告</Link>}
         {(user?.role === "enterprise" || user?.role === "admin") && <>
           <Link href="/jobs/mine">岗位管理</Link><Link href="/jobs/new" className="text-indigo-600">发布岗位</Link>

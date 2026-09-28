@@ -63,12 +63,18 @@ class ResumeHistoryView(APIModel):
     id: UUID
     title: str
     created_at: datetime
+    is_archived: bool = False
     versions: list[MaterialVersionView] = Field(default_factory=list)
 
 
 class ProjectHistoryView(ProjectView):
     created_at: datetime
+    is_archived: bool = False
     versions: list[MaterialVersionView] = Field(default_factory=list)
+
+
+class MaterialArchiveUpdate(APIModel):
+    archived: bool
 
 
 class ResumeSectionView(APIModel):

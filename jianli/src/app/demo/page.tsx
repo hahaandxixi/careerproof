@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SourceCoverageDemo from "@/components/SourceCoverageDemo";
+import DemoCaseImport from "@/components/DemoCaseImport";
 import samples from "./samples.json";
 import coverage from "./coverage.json";
 
@@ -21,7 +22,7 @@ export default function DemoPage() {
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">2. 选职业，下载同编号的三个文件</h2>
       <p className="mt-3 text-sm leading-7 text-slate-600">简历 TXT 上传到简历入口，项目 ZIP 上传到项目入口，步骤 TXT 打开照着操作。项目 ZIP 不用解压，也不需要执行其中的代码。产品、运营的项目包是对应方案文档。</p>
-      <p className="mt-2 text-sm leading-7 text-indigo-700">完成演示初始化后，这九套材料属于初始化时使用的学生演示账号，其他账号不会自动拥有。选择器中没有 CP01—CP09 时，请登录该演示账号，或下载后上传到自己的账号。亲自测试重新上传时，在卡片名称末尾加本轮日期，避免创建同名材料。</p>
+      <p className="mt-2 text-sm leading-7 text-indigo-700">完成演示初始化后，这九套材料属于初始化时使用的学生演示账号。其他学生账号可点“导入这套材料到我的账号”，只上传本地合成文件并解析，不调用 AI；同名且完成的版本会复用。亲自测试重新上传时，在卡片名称末尾加本轮日期，避免创建同名材料。</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {samples.map(sample => <article key={sample.caseId} className="min-w-0 rounded-xl border border-slate-200 p-4">
           <p className="text-xs font-semibold text-indigo-600">{sample.caseId} · {sample.version} · 合成测试</p>
@@ -34,6 +35,7 @@ export default function DemoPage() {
             <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.projectFilename)} download={sample.projectFilename}>下载对应项目</a>
             <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.scriptFilename)} download={sample.scriptFilename}>下载测试步骤</a>
           </div>
+          <DemoCaseImport sample={sample}/>
           <p className="mt-3 text-xs leading-6 text-amber-800">应识别的边界：{sample.boundary}</p>
           <Link className="mt-3 inline-block text-sm text-indigo-600 underline" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
         </article>)}

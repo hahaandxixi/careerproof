@@ -11,6 +11,7 @@ from app.models.identity import User
 from app.schemas.common import ApiResponse, success
 from app.schemas.portfolio import (
     KnowledgeSearchResult,
+    MaterialArchiveUpdate,
     MaterialVersionView,
     ProjectCreate,
     ProjectFilePreview,
@@ -75,10 +76,11 @@ async def preview_project_file(
 
 @router.get("/resumes", response_model=ApiResponse[list[ResumeHistoryView]])
 async def list_resumes(
+    include_archived: bool = Query(default=False, alias="includeArchived"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[list[ResumeHistoryView]]:
-    return success(await PortfolioService(session).list_resumes(current_user))
+    return success(await PortfolioService(session).list_resumes(current_user, include_archived))
 
 
 @router.get("/resumes/{resume_id}/versions", response_model=ApiResponse[list[MaterialVersionView]])
@@ -92,10 +94,26 @@ async def list_resume_versions(
 
 @router.get("/projects", response_model=ApiResponse[list[ProjectHistoryView]])
 async def list_projects(
+    include_archived: bool = Query(default=False, alias="includeArchived"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[list[ProjectHistoryView]]:
-    return success(await PortfolioService(session).list_projects(current_user))
+    return success(await PortfolioService(session).list_projects(current_user, include_archived))
+
+
+@router.patch("/materials/{kind}/{material_id}/archive", response_model=ApiResponse[dict])
+async def archive_material(
+    kind: Literal["resume", "project"],
+    material_id: UUID,
+    payload: MaterialArchiveUpdate,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[dict]:
+    return success(
+        await PortfolioService(session).archive_material(
+            kind, material_id, payload.archived, current_user
+        )
+    )
 
 
 @router.get(

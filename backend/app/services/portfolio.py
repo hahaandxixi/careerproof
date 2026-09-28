@@ -79,9 +79,11 @@ class PortfolioService:
             error_message=task.error_message if task else None,
         )
 
-    async def list_resumes(self, current_user: User) -> list[ResumeHistoryView]:
+    async def list_resumes(
+        self, current_user: User, include_archived: bool = False
+    ) -> list[ResumeHistoryView]:
         student = await self._student(current_user)
-        resumes = await self.portfolios.list_resumes(student.id)
+        resumes = await self.portfolios.list_resumes(student.id, include_archived)
         versions: dict[UUID, list[MaterialVersionView]] = {}
         for version, task in await self.portfolios.resume_versions(student.id):
             versions.setdefault(version.resume_id, []).append(self._version_view(version, task))
@@ -90,14 +92,17 @@ class PortfolioService:
                 id=item.id,
                 title=item.title,
                 created_at=item.created_at,
+                is_archived=item.is_archived,
                 versions=versions.get(item.id, []),
             )
             for item in resumes
         ]
 
-    async def list_projects(self, current_user: User) -> list[ProjectHistoryView]:
+    async def list_projects(
+        self, current_user: User, include_archived: bool = False
+    ) -> list[ProjectHistoryView]:
         student = await self._student(current_user)
-        projects = await self.portfolios.list_projects(student.id)
+        projects = await self.portfolios.list_projects(student.id, include_archived)
         versions: dict[UUID, list[MaterialVersionView]] = {}
         for version, task in await self.portfolios.project_versions(student.id):
             versions.setdefault(version.project_id, []).append(self._version_view(version, task))
@@ -107,11 +112,42 @@ class PortfolioService:
                 name=item.name,
                 description=item.description,
                 version=item.version,
+                is_archived=item.is_archived,
                 created_at=item.created_at,
                 versions=versions.get(item.id, []),
             )
             for item in projects
         ]
+
+    async def archive_material(self, kind: str, material_id: UUID, archived: bool, user: User):
+        from app.models.audit import AuditLog
+
+        student = await self._student(user)
+        model = Resume if kind == "resume" else Project
+        item = await self.session.scalar(
+            select(model)
+            .where(
+                model.id == material_id,
+                model.student_id == student.id,
+            )
+            .with_for_update()
+        )
+        if not item:
+            raise AppError("材料不存在或无权访问", code=4045, status_code=404)
+        if item.is_archived != archived:
+            item.is_archived = archived
+            item.version += 1
+            self.session.add(
+                AuditLog(
+                    actor_id=user.id,
+                    action="material.archive" if archived else "material.restore",
+                    resource_type=kind,
+                    resource_id=str(material_id),
+                    details={"archived": archived},
+                )
+            )
+            await self.session.commit()
+        return {"id": str(item.id), "archived": item.is_archived}
 
     async def list_resume_versions(
         self, resume_id: UUID, current_user: User

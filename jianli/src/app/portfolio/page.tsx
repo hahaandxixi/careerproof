@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import ArchivedMaterials from "@/components/ArchivedMaterials";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ErrorNotice } from "@/components/AccessGate";
@@ -474,6 +475,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           </div>
         )}
       </section>
+      <ArchivedMaterials onRestore={()=>void loadHistory()} />
     </div>
   );
 }

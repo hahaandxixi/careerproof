@@ -28,6 +28,7 @@ from app.models.portfolio import (
 )
 from app.models.recruitment import (
     Application,
+    ApplicationEvent,
     Job,
     JobRequirement,
     Skill,
@@ -39,6 +40,7 @@ __all__ = [
     "AiUsageLog",
     "AnalysisTask",
     "Application",
+    "ApplicationEvent",
     "AuditLog",
     "Enterprise",
     "EnterpriseMembership",

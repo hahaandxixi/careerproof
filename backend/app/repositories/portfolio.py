@@ -59,23 +59,27 @@ class PortfolioRepository:
             )
         )
 
-    async def list_resumes(self, student_id: UUID) -> list[Resume]:
+    async def list_resumes(self, student_id: UUID, include_archived: bool = False) -> list[Resume]:
         return list(
             await self.session.scalars(
                 select(Resume)
                 .where(
                     Resume.student_id == student_id,
+                    True if include_archived else Resume.is_archived.is_(False),
                 )
                 .order_by(Resume.created_at.desc(), Resume.id)
             )
         )
 
-    async def list_projects(self, student_id: UUID) -> list[Project]:
+    async def list_projects(
+        self, student_id: UUID, include_archived: bool = False
+    ) -> list[Project]:
         return list(
             await self.session.scalars(
                 select(Project)
                 .where(
                     Project.student_id == student_id,
+                    True if include_archived else Project.is_archived.is_(False),
                 )
                 .order_by(Project.created_at.desc(), Project.id)
             )

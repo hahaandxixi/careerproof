@@ -122,13 +122,13 @@ async def search_owned_chunks(
         select(ResumeSection.id)
         .join(ResumeVersion)
         .join(Resume)
-        .where(Resume.student_id == student_id)
+        .where(Resume.student_id == student_id, Resume.is_archived.is_(False))
     )
     project_ids = (
         select(ProjectFile.id)
         .join(ProjectVersion)
         .join(Project)
-        .where(Project.student_id == student_id)
+        .where(Project.student_id == student_id, Project.is_archived.is_(False))
     )
     allowed_ids = list(await session.scalars(resume_ids)) + list(await session.scalars(project_ids))
     if not allowed_ids:

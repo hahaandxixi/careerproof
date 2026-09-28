@@ -4,6 +4,17 @@ import { api, ApiError, errorMessage, request } from "../src/lib/api/client.ts";
 
 const envelope = (data, status = 200, message = "success") => new Response(JSON.stringify({ code: status === 200 ? 0 : status, message, data, requestId: "test-request" }), { status, headers: { "Content-Type": "application/json" } });
 
+test("authorized resume download preserves binary bytes and filename after session refresh", async()=>{
+  const original=globalThis.fetch;let calls=0;
+  globalThis.fetch=async(url,init)=>{
+    assert.equal(init.credentials,"include");
+    if(url.endsWith("/auth/refresh"))return envelope({});
+    assert.equal(init.method,"POST");calls++;
+    return calls===1?envelope(null,401):new Response(new Uint8Array([0,255,13,10]),{headers:{"Content-Disposition":"attachment; filename*=UTF-8''%E7%AE%80%E5%8E%86.pdf","Content-Type":"application/pdf"}});
+  };
+  try{const result=await api.downloadApplicationResume("synthetic");assert.equal(result.filename,"简历.pdf");assert.deepEqual([...new Uint8Array(await result.blob.arrayBuffer())],[0,255,13,10]);assert.equal(calls,2);}finally{globalThis.fetch=original;}
+});
+
 test("refresh server failure is not classified as an expired session", async () => {
   const original = globalThis.fetch;
   globalThis.fetch = async url => url.endsWith("/auth/refresh") ? envelope(null, 503, "服务暂不可用") : envelope(null, 401);
