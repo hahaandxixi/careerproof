@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
@@ -21,9 +22,130 @@ from app.models.recruitment import Application, ApplicationEvent, Job
 from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.services.analysis import AnalysisService
 from app.services.jobs import JobService
+from app.services.notifications import notify_application_event
 from app.tools.storage import LocalStorage
 
 CONSENT_VERSION = "application-report-v1"
+
+
+def _reply_has_citation(text: str, citation_id: str) -> bool:
+    # A saved R1-E1 link must not survive when the text only says R1-E10.
+    return bool(re.search(rf"(?<![A-Za-z0-9_-]){re.escape(citation_id)}(?![A-Za-z0-9_-])", text))
+
+
+_REPLY_MARKER = re.compile(r"【第[1-9]\d*项：[^【】]+】")
+
+
+def _reply_blocks(text: str, marker: str) -> list[str]:
+    markers = list(_REPLY_MARKER.finditer(text))
+    return [
+        text[match.end() : markers[index + 1].start() if index + 1 < len(markers) else len(text)]
+        for index, match in enumerate(markers)
+        if match.group() == marker
+    ]
+
+
+def _reply_references(snapshot: dict, text: str, references: list[dict]) -> list[dict]:
+    """Accept only links named in the human reply and its frozen requirement."""
+    if not isinstance(references, list):
+        raise ValueError("Invalid reply references")
+    rows = snapshot.get("items", [])
+    items = {
+        str(row.get("requirementId")): (index, row)
+        for index, row in enumerate(rows)
+        if isinstance(row, dict) and row.get("requirementId")
+    }
+    safe = []
+    seen = set()
+    for reference in references:
+        if not isinstance(reference, dict):
+            raise ValueError("Invalid reply reference")
+        requirement_id = str(reference.get("requirementId", ""))
+        indexed_row = items.get(requirement_id)
+        if not indexed_row or requirement_id in seen:
+            raise ValueError("Reply requirement is outside the frozen report")
+        seen.add(requirement_id)
+        index, row = indexed_row
+        title = row.get("requirementTitle") or row.get("skill") or "岗位要求"
+        marker = f"【第{index + 1}项：{title}】"
+        blocks = _reply_blocks(text, marker)
+        legacy_unique = (
+            f"【{title}】" in text
+            and sum(
+                (other.get("requirementTitle") or other.get("skill") or "岗位要求") == title
+                for other in rows
+                if isinstance(other, dict)
+            ) == 1
+        )
+        if not blocks and not legacy_unique:
+            raise ValueError("Reply no longer contains the linked requirement")
+        citation_ids = reference.get("citationIds", [])
+        if not isinstance(citation_ids, list) or len(citation_ids) > 6:
+            raise ValueError("Invalid reply citations")
+        evidence = row.get("evidenceList") or ([row["evidence"]] if row.get("evidence") else [])
+        allowed = {
+            entry.get("citationId") for entry in evidence if isinstance(entry, dict)
+        }
+        if (
+            len(citation_ids) != len(set(citation_ids))
+            or any(
+                not isinstance(cid, str)
+                or cid not in allowed
+                or not any(_reply_has_citation(block, cid) for block in blocks or [text])
+                for cid in citation_ids
+            )
+        ):
+            raise ValueError("Reply citation is outside its frozen requirement")
+        safe.append({"requirementId": requirement_id, "citationIds": citation_ids})
+    return safe
+
+
+def _read_reply_references(item: Application) -> list[dict]:
+    try:
+        return _reply_references(
+            item.report_snapshot or {}, item.reply_text or "", item.reply_references or []
+        )
+    except (KeyError, TypeError, ValueError):
+        return []
+
+
+def reply_context_for_requirement(item: Application, requirement_id: UUID) -> dict | None:
+    """Extract only the student's own linked human-reply block from a frozen application."""
+    reference = next(
+        (
+            value
+            for value in _read_reply_references(item)
+            if value["requirementId"] == str(requirement_id)
+        ),
+        None,
+    )
+    if reference is None:
+        return None
+    rows = item.report_snapshot.get("items", [])
+    indexed = next(
+        (
+            (index, row)
+            for index, row in enumerate(rows)
+            if isinstance(row, dict) and row.get("requirementId") == str(requirement_id)
+        ),
+        None,
+    )
+    if indexed is None:
+        return None
+    index, row = indexed
+    title = row.get("requirementTitle") or row.get("skill") or "岗位要求"
+    blocks = _reply_blocks(item.reply_text or "", f"【第{index + 1}项：{title}】")
+    excerpt = "\n\n".join(block.strip() for block in blocks if block.strip())
+    if not excerpt:
+        return None
+    return {
+        "applicationId": str(item.id),
+        "reportId": str(item.report_id),
+        "requirementId": str(requirement_id),
+        "replyKind": item.reply_kind,
+        "text": excerpt,
+        "citationIds": reference["citationIds"],
+    }
 
 
 class ApplicationService:
@@ -70,11 +192,12 @@ class ApplicationService:
         )
         if existing:
             return
-        self.session.add(
-            ApplicationEvent(
-                application_id=item.id, actor_id=user.id, event_type=event_type, detail=detail
-            )
+        event = ApplicationEvent(
+            application_id=item.id, actor_id=user.id, event_type=event_type, detail=detail
         )
+        self.session.add(event)
+        await self.session.flush()
+        await notify_application_event(self.session, item, event)
         self.session.add(
             AuditLog(
                 actor_id=user.id,
@@ -165,6 +288,7 @@ class ApplicationService:
             "consentVersion": item.consent_version,
             "replyKind": item.reply_kind,
             "replyText": item.reply_text,
+            "replyReferences": _read_reply_references(item),
             "overallScore": item.report_snapshot.get("overallScore"),
             "events": [
                 {"type": e.event_type, "at": e.created_at.isoformat(), "detail": e.detail}
@@ -245,6 +369,13 @@ class ApplicationService:
         # The report is not exported in list responses: opening it is an explicit audited action.
         return [await self.view(item, job) for item in items]
 
+    async def detail(self, application_id, user):
+        # A notification may reference an application older than the recent list.
+        item, job = await self._access(
+            application_id, user, enterprise=user.role == UserRole.ENTERPRISE
+        )
+        return await self.view(item, job)
+
     async def open(self, application_id, user):
         item, job = await self._access(application_id, user, enterprise=True, lock=True)
         await self._event(item, user, "viewed", "企业请求查看已授权报告；不代表进入面试或录用")
@@ -257,7 +388,25 @@ class ApplicationService:
         item, job = await self._access(application_id, user, enterprise=True, lock=True)
         if item.status not in {"viewed", "downloaded"}:
             raise AppError("请先查看报告；已发送的回复本期不可覆盖", status_code=409, code=4098)
-        item.reply_kind, item.reply_text = request.kind, redact_external_text(request.text)
+        reply_text = redact_external_text(request.text)
+        try:
+            references = _reply_references(
+                item.report_snapshot,
+                reply_text,
+                [
+                    reference.model_dump(mode="json", by_alias=True)
+                    for reference in request.references
+                ],
+            )
+        except (KeyError, TypeError, ValueError) as exc:
+            raise AppError(
+                "回复引用必须对应本次投递固定报告中的要求与片段",
+                status_code=422,
+                code=4224,
+            ) from exc
+        item.reply_kind, item.reply_text, item.reply_references = (
+            request.kind, reply_text, references
+        )
         item.status = "replied"
         await self._event(item, user, "replied", f"企业已回复：{request.kind}；以回复正文为准")
         await self.session.commit()

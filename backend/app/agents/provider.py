@@ -21,11 +21,12 @@ from app.agents.contracts import (
     ModelUsage,
     RequirementEvidenceContext,
     RetrievalToolCall,
+    allowed_personal_citation_ids,
 )
 from app.core.config import settings
 from app.tools.credential_redaction import redact_credential_values
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v24-compact-repair-context"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v29-implementation-first-plan"
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -179,6 +180,14 @@ def parse_provider_json_object(content: str) -> tuple[dict, bool]:
 class ProviderInputBudgetError(ValueError):
     """A local input guard rejected the request before any provider call."""
 
+    def __init__(
+        self, message: str, *, estimated_input_bound: int | None = None,
+        remaining_input_budget: int | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.estimated_input_bound = estimated_input_bound
+        self.remaining_input_budget = remaining_input_budget
+
 
 class ProviderOutputBudgetError(ValueError):
     """No locally permitted output budget remains."""
@@ -203,9 +212,21 @@ def evidence_analysis_messages(
     history_context: dict | None = None,
 ) -> list[dict[str, str]]:
     """Build the evidence-bounded prompt used by supported model API calls."""
-    source_data: dict = {
-        "requirements": _redact_external_value([context.model_dump() for context in contexts])
-    }
+    requirement_payloads = []
+    for context in contexts:
+        personal_allowed = allowed_personal_citation_ids(context)
+        payload = context.model_dump()
+        payload["citation_policy"] = {
+            "allowed_ids": [
+                evidence.citation_id for evidence in context.evidence
+                if evidence.citation_id in personal_allowed or evidence.provenance == "reference"
+            ],
+            "personal_citation_required": (
+                bool(personal_allowed) and context.verdict in {"supported", "partial"}
+            ),
+        }
+        requirement_payloads.append(payload)
+    source_data: dict = {"requirements": _redact_external_value(requirement_payloads)}
     if history_context:
         source_data["historicalContext"] = _redact_external_value(history_context)
     if validation_feedback and previous_analysis:
@@ -224,6 +245,13 @@ def evidence_analysis_messages(
         "密钥有效性，也不能仅据此否定可见操作。"
         "historicalContext仅是上轮记录，可能错误或已过时；只能解释历史差异，不能支持当前评级。"
         "旧片段和history编号不是本轮引用。所有当前结论与判据必须由当前evidence支撑。"
+        "citation_policy.allowed_ids是该项解释与评级可引用的唯一编号集合；"
+        "不得引用其他编号，即使它出现在evidence中。集合为空时citation_ids必须为[]，"
+        "只能谨慎描述材料缺口；personal_citation_required=true时必须引用当前个人证据。"
+        "semantic_document_candidate与retrieved_context是待核对检索线索，"
+        "claimed_only或gap下白名单允许的候选仍可用于核对相关性，不修改规则判定。"
+        "候选引用最多支持relevance和1级，不能支持operation或task；"
+        "不相关时relevance=false且level=null。unsupported仍保留不支持评估的边界。"
         "previousItemAvailable=false仅表示旧报告未保存此项，不代表历史等级为零或能力缺失。"
         "岗位要求变化或当前证据撤回时，不沿用旧等级、不宣称能力下降或成长。"
         "不得修改规则分数或判定，不得推断身份、能力等级或录用概率。"
@@ -245,6 +273,12 @@ def evidence_analysis_messages(
         "描述联合覆盖时应引用覆盖所需的片段；未给的外部依赖、运行结果和贡献仍需核验。"
         "file_source_coverage单独记录当前引用对整文件的覆盖；函数覆盖完整不等于文件完整。"
         "已覆盖完整的该函数原文/该文件不要建议重复提交；优先补依赖实现、运行记录或贡献记录。"
+        "不得把同一源码改写成再次、重新或重复上传；修改后新版本应明确写出修改内容。"
+        "可为每项输出task_plan草稿：一项具体交付物、1至3步执行动作、1至3条可观察核验条件；"
+        "无法针对当前缺口具体化时填null。草稿不得声称测试已通过或本人贡献已证实，"
+        "不得要求重复提交已完整展示的当前源码，学生仍须人工核对后保存。"
+        "当前材料明确写明某项技能未实现时，草稿应先要求可定位的实现材料，"
+        "再安排运行或测试记录；不能只要求运行日志、输出或响应。"
         "缺少文件外围导入、配置等上下文时可以建议补完整文件，不猜测整文件已给。"
         "评级理由必须说明引用支持的操作及真正未知的任务环节，不能只说受上限限制，"
         "也不向用户输出rating_ceiling、context_complete、provenance等内部字段。"
@@ -264,7 +298,8 @@ def evidence_analysis_messages(
         "无关，也不能建议删除或移除，只能建议人工核验或补充对应材料。"
         "只返回JSON对象，不要Markdown代码围栏：{summary:string,items:[{requirement_id:string,"
         "explanation:string,citation_ids:string[],information_gap:string|null,"
-        "suggestion:string|null,confidence:number,rating:{level:1|2|3|null,"
+        "suggestion:string|null,task_plan:{deliverable:string,steps:string[],"
+        "acceptance_checks:string[]}|null,confidence:number,rating:{level:1|2|3|null,"
         "reason:string,criteria:[{criterion:relevance|operation|task,"
         "supported:boolean,citation_ids:string[],reason:string}]}}]}。"
         "rating是实践材料证据初评，不是人的能力等级。按rating_rubric逐项判断，"
@@ -414,6 +449,7 @@ class OpenAICompatibleProvider:
         self.planning_usage: ModelUsage | None = None
         self.last_usage: ModelUsage | None = None
         self.request_usages: list[ModelUsage] = []
+        self.input_preflights: list[dict] = []
         self.last_finish_reason: str | None = None
         self.json_repair_count = 0
 
@@ -454,10 +490,19 @@ class OpenAICompatibleProvider:
             messages = sanitize_outgoing_messages(messages)
             request["messages"] = messages
             estimate = self._estimate_input_tokens(messages)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "json-character-upper-bound",
+                "allowed": estimate <= input_limit,
+            })
             if estimate > input_limit:
                 raise ProviderInputBudgetError(
                     "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
-                    f"({estimate}>{input_limit})"
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
                 )
         started = perf_counter()
         last_error: Exception | None = None

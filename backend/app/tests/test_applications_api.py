@@ -1,8 +1,9 @@
 """Synthetic persistence and consent tests; never call a paid model."""
 
 import hashlib
+from copy import deepcopy
 from datetime import UTC, datetime
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
@@ -14,6 +15,7 @@ from app.models.enums import TaskStatus
 from app.models.identity import EnterpriseMembership, StudentProfile
 from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
+from app.services.applications import _reply_references
 from app.tests.test_jobs_api import job_payload, organization, register
 
 pytest_plugins = ["app.tests.test_jobs_api"]
@@ -97,6 +99,17 @@ async def setup(jobs_db, tmp_path, monkeypatch):
 async def close(*clients):
     for client in clients:
         await client.aclose()
+
+
+def test_legacy_unique_title_reply_reference_remains_readable():
+    requirement_id = str(uuid4())
+    snapshot = {"items": [{
+        "requirementId": requirement_id,
+        "requirementTitle": "唯一要求",
+        "evidenceList": [{"citationId": "R1-E1"}],
+    }]}
+    reference = [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}]
+    assert _reply_references(snapshot, "【唯一要求】\n报告引用编号：R1-E1", reference) == reference
 
 
 async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
@@ -214,6 +227,98 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
                 "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
             )
         ).status_code == 409
+    finally:
+        await close(hr, student, other)
+
+
+async def test_reply_links_only_to_its_frozen_requirement_and_citations(
+    jobs_db, tmp_path, monkeypatch
+):
+    hr, student, other, job, rid, _resume_id, _raw, factory = await setup(
+        jobs_db, tmp_path, monkeypatch
+    )
+    try:
+        created = await student.post(
+            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+        )
+        aid = created.json()["data"]["id"]
+        async with factory() as session:
+            application = await session.get(Application, UUID(aid))
+            snapshot = deepcopy(application.report_snapshot)
+            first = snapshot["items"][0]
+            first["evidenceList"] = [{"citationId": "R1-E1"}]
+            second = deepcopy(first)
+            second["requirementId"] = str(uuid4())
+            second["evidenceList"] = [{"citationId": "R2-E1"}]
+            snapshot["items"].append(second)
+            application.report_snapshot = snapshot
+            await session.commit()
+        await hr.post(f"/api/v1/applications/{aid}/view")
+        requirement_id = snapshot["items"][0]["requirementId"]
+        title = first.get("requirementTitle") or first.get("skill") or "岗位要求"
+        text_body = f"【第1项：{title}】\n请解释你负责的部分。\n报告引用编号：R1-E1"
+        path = f"/api/v1/applications/{aid}/reply"
+        for reference, text_value in (
+            ({"requirementId": str(uuid4()), "citationIds": []}, text_body),
+            ({"requirementId": requirement_id, "citationIds": ["R2-E1"]}, text_body),
+            ({"requirementId": requirement_id, "citationIds": ["R1-E1"]}, "没有要求标题"),
+            (
+                {"requirementId": requirement_id, "citationIds": ["R1-E1"]},
+                f"【{title}】\n报告引用编号：R1-E1",
+            ),
+            (
+                {"requirementId": requirement_id, "citationIds": ["R1-E1"]},
+                f"【第2项：{title}】\n报告引用编号：R1-E1",
+            ),
+            (
+                {"requirementId": second["requirementId"], "citationIds": ["R2-E1"]},
+                f"【第1项：{title}】\nR2-E1\n【第2项：{title}】\n没有引用",
+            ),
+            (
+                {"requirementId": requirement_id, "citationIds": ["R1-E1"]},
+                f"【第1项：{title}】\n请核对报告引用编号：R1-E10",
+            ),
+        ):
+            rejected = await hr.post(path, json={
+                "kind": "continue", "text": text_value, "references": [reference]
+            })
+            assert rejected.status_code == 422
+        sent = await hr.post(path, json={
+            "kind": "continue", "text": text_body,
+            "references": [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}],
+        })
+        assert sent.status_code == 200, sent.text
+        expected = [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}]
+        assert sent.json()["data"]["replyReferences"] == expected
+        mine = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        assert mine["reportId"] == str(rid) and mine["replyReferences"] == expected
+        detail = (await student.get(f"/api/v1/applications/{aid}")).json()["data"]
+        assert detail["replyReferences"] == expected
+        async with factory() as session:
+            application = await session.get(Application, UUID(aid))
+            assert application.report_snapshot == snapshot
+            assert application.reply_references == expected
+            application.reply_references = [
+                {"requirementId": str(uuid4()), "citationIds": ["R1-E1"]}
+            ]
+            await session.commit()
+        reread = (await student.get(f"/api/v1/applications/{aid}")).json()["data"]
+        assert reread["replyReferences"] == []
+        async with factory() as session:
+            application = await session.get(Application, UUID(aid))
+            application.reply_references = expected
+            application.reply_text = f"【第1项：{title}】\n请核对报告引用编号：R1-E10"
+            await session.commit()
+        stale = (await student.get(f"/api/v1/applications/{aid}")).json()["data"]
+        assert stale["replyReferences"] == []
+        async with factory() as session:
+            application = await session.get(Application, UUID(aid))
+            application.reply_text = text_body
+            await session.commit()
+        await student.post(f"/api/v1/applications/{aid}/withdraw")
+        withdrawn = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        assert withdrawn["replyReferences"] == expected
+        assert (await hr.get(f"/api/v1/applications/{aid}")).status_code == 404
     finally:
         await close(hr, student, other)
 

@@ -73,6 +73,7 @@ class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     reply_kind: Mapped[str | None] = mapped_column(String(30), nullable=True)
     reply_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reply_references: Mapped[list] = mapped_column(JSON, default=list)
 
 
 class ApplicationEvent(Base, UUIDPrimaryKeyMixin, TimestampMixin):

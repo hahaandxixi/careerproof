@@ -4,7 +4,8 @@ import ast
 import re
 import textwrap
 
-VERSION = "practice-evidence-v2"
+VERSION = "practice-evidence-v4-candidate-boundary"
+CANDIDATE_TYPES = {"semantic_document_candidate", "retrieved_context"}
 
 
 def is_empty_implementation(evidence: dict) -> bool:
@@ -63,7 +64,10 @@ def is_empty_implementation(evidence: dict) -> bool:
     return bool(re.search(r"(?:=>|function\b[^{}]*|\([^)]*\))\s*\{\s*\}", compact))
 
 
-def _rule_classification(snapshot: dict, verdict: str, review_status: str | None = None) -> dict:
+def _rule_classification(
+    snapshot: dict, verdict: str, review_status: str | None = None,
+    *, include_candidates: bool = False,
+) -> dict:
     def result(level, label, reason, gap):
         return dict(
             evidence_level=level,
@@ -88,6 +92,18 @@ def _rule_classification(snapshot: dict, verdict: str, review_status: str | None
     evidence = [
         item for item in all_evidence if item.get("provenance", "portfolio") != "reference"
     ]
+    if not include_candidates:
+        direct_evidence = [
+            item for item in evidence
+            if item.get("evidenceType", item.get("evidence_type")) not in CANDIDATE_TYPES
+        ]
+        if evidence and not direct_evidence:
+            return result(
+                None, "待核对检索候选",
+                "仅有检索候选，尚未确认与该要求相关，不据此展示实践等级。",
+                "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+            )
+        evidence = direct_evidence
     if not evidence:
         if all_evidence:
             return result(
@@ -205,7 +221,9 @@ def classify_evidence(snapshot: dict, verdict: str, review_status: str | None = 
     except ValueError:
         return result
     # Recheck the structural ceiling when reading saved reports as defense in depth.
-    ceiling = result["evidence_level"]
+    ceiling = _rule_classification(
+        snapshot, verdict, review_status, include_candidates=True
+    )["evidence_level"]
     if rating.level is not None and (ceiling is None or rating.level > ceiling):
         return result
     labels = {1: "基础线索", 2: "局部操作", 3: "任务实现", None: "AI 未确认相关实践证据"}

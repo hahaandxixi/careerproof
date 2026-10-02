@@ -16,6 +16,7 @@ from app.models.analysis import AnalysisTask
 from app.models.enums import TaskStatus
 from app.models.portfolio import ProjectVersion, ResumeVersion
 from app.services.analysis import execute_match_task
+from app.services.application_verification import execute_application_verification_task
 from app.services.portfolio import execute_project_scan_task, execute_resume_parse_task
 from app.services.task_runner import run_bounded
 
@@ -39,6 +40,8 @@ async def _pending_jobs(
         for task in tasks:
             if task.task_type == "job_match":
                 jobs.append((task.id, execute_match_task, (task.id,)))
+            elif task.task_type == "application_verification":
+                jobs.append((task.id, execute_application_verification_task, (task.id,)))
             elif task.task_type == "resume_parse":
                 version_id = await session.scalar(
                     select(ResumeVersion.id).where(ResumeVersion.analysis_task_id == task.id)

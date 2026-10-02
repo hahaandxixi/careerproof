@@ -161,6 +161,49 @@ async def test_final_input_limit_is_not_a_provider_fault_and_never_sends(monkeyp
     assert outcome.attempted_usage is None
     assert outcome.provider_finish_reason is None
     assert instance.request_usages == []
+    assert outcome.input_budget_stop == {
+        "estimatedInputBound": required,
+        "remainingInputBudget": required - 1,
+        "estimateMethod": "json-character-upper-bound",
+    }
+
+
+@pytest.mark.asyncio
+async def test_repair_budget_diagnostics_keep_first_response_usage(monkeypatch):
+    result = evidenced_result()
+    context = build_evidence_contexts(result, max_evidence=2)[0]
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        payload = response(context).json()
+        rejected = answer(context)
+        rejected["items"][0]["citation_ids"] = ["R1-E99"]
+        payload["choices"][0]["message"]["content"] = json.dumps(rejected, ensure_ascii=False)
+        return httpx.Response(200, json=payload)
+
+    instance = provider(transport=httpx.MockTransport(handler))
+    required = instance.estimate_evidence_input([context])
+    limit = required + 100
+    enable(monkeypatch, instance, limit)
+    monkeypatch.setattr(settings, "ai_max_retrieval_calls", 0)
+    outcome = await run_evidence_workflow(result)
+    assert outcome.fallback_used and outcome.analysis is None
+    assert outcome.fallback_reason == "input_token_limit"
+    assert outcome.failure_stage == "repair"
+    assert len(calls) == 1
+    assert outcome.request_count == 2
+    assert outcome.attempted_usage.input_tokens == 80
+    assert outcome.attempted_usage.output_tokens == 40
+    assert outcome.input_budget_stop["remainingInputBudget"] == limit - 80
+    assert outcome.input_budget_stop["estimatedInputBound"] > limit - 80
+    assert outcome.input_budget_stop["estimateMethod"] == "json-character-upper-bound"
+    assert len(outcome.input_preflights) == 2
+    assert outcome.input_preflights[0]["allowed"] is True
+    assert outcome.input_preflights[1]["allowed"] is False
+    assert set(outcome.input_preflights[1]) == {
+        "requestKind", "estimatedInputBound", "remainingInputBudget", "estimateMethod", "allowed",
+    }
 
 
 @pytest.mark.asyncio

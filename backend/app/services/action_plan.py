@@ -25,7 +25,11 @@ def build_action_plan(items: list[MatchItemView], *, limit: int = 3) -> list[Evi
             source = "review"
             action = "核对复核意见，上传修正后的材料版本，再重新发起分析。"
             citations: list[str] = []
-        elif item.ai_status == "validated" and item.ai_suggestion:
+        elif (
+            item.ai_status == "validated"
+            and item.ai_suggestion
+            and not item.ai_suggestion_redundant
+        ):
             source = "ai_suggestion"
             action = item.ai_suggestion
             allowed = {evidence.citation_id for evidence in item.evidence_list}

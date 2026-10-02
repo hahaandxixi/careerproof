@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import get_current_user
 from app.core.database import async_session_factory, get_session
+from app.core.exceptions import AppError
 from app.models.enums import TaskStatus
 from app.models.identity import User
 from app.repositories.analysis import AnalysisRepository
@@ -126,7 +127,11 @@ async def task_events(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> StreamingResponse:
-    await AnalysisService(session).get_task(task_id, current_user)
+    initial = await AnalysisService(session).get_task(task_id, current_user)
+    if initial.task_type == "application_verification":
+        # The access check holds a short application read lock. A streaming
+        # response must never retain that lock while waiting for the model.
+        await session.commit()
 
     async def stream():
         last_state: tuple[str, int, str | None] | None = None
@@ -136,6 +141,15 @@ async def task_events(
                 if not task:
                     yield format_sse_event("task.failed", {"message": "任务不存在"})
                     return
+                if task.task_type == "application_verification":
+                    try:
+                        await AnalysisService(polling_session).get_task(task_id, current_user)
+                        await polling_session.commit()
+                    except AppError:
+                        yield format_sse_event(
+                            "task.failed", {"message": "投递授权已失效或依据已变化"}
+                        )
+                        return
                 state = (task.status.value, task.progress, task.current_step)
                 if state != last_state:
                     event = (

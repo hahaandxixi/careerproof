@@ -1,16 +1,22 @@
 from urllib.parse import quote
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import get_current_user
 from app.core.database import get_session
 from app.models.identity import User
+from app.schemas.application_verification import ApplicationVerificationRequest
 from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.schemas.common import ApiResponse, success
+from app.services.application_verification import (
+    ApplicationVerificationService,
+    execute_application_verification_task,
+)
 from app.services.applications import ApplicationService
+from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
 
@@ -40,6 +46,17 @@ async def candidates(
     return success(await ApplicationService(session).candidates(job_id, user))
 
 
+@router.get("/applications/{application_id}", response_model=ApiResponse[dict])
+async def detail(
+    application_id: UUID,
+    response: Response,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    response.headers["Cache-Control"] = "private, no-store"
+    return success(await ApplicationService(session).detail(application_id, user))
+
+
 @router.post("/applications/{application_id}/view", response_model=ApiResponse[dict])
 async def view(
     application_id: UUID,
@@ -47,6 +64,45 @@ async def view(
     session: AsyncSession = Depends(get_session),
 ):
     return success(await ApplicationService(session).open(application_id, user))
+
+
+@router.post(
+    "/applications/{application_id}/verification", response_model=ApiResponse[dict], status_code=202
+)
+async def create_verification(
+    application_id: UUID,
+    payload: ApplicationVerificationRequest,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    result = await ApplicationVerificationService(session).create(application_id, payload, user)
+    if result["status"] == "pending" and not result["reused"]:
+        FastAPIBackgroundTaskRunner().submit(
+            background_tasks, execute_application_verification_task, UUID(result["taskId"])
+        )
+    return success(result, message="accepted")
+
+
+@router.get("/applications/{application_id}/verification", response_model=ApiResponse[dict | None])
+async def latest_verification(
+    application_id: UUID,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await ApplicationVerificationService(session).latest(application_id, user))
+
+
+@router.get(
+    "/applications/{application_id}/verification/{task_id}", response_model=ApiResponse[dict]
+)
+async def get_verification(
+    application_id: UUID,
+    task_id: UUID,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await ApplicationVerificationService(session).get(application_id, task_id, user))
 
 
 @router.post("/applications/{application_id}/reply", response_model=ApiResponse[dict])

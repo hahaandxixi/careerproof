@@ -2,7 +2,7 @@ from uuid import UUID
 
 from pydantic import Field
 
-from app.schemas.analysis import CodeEvidenceView
+from app.schemas.analysis import CareerTaskPlan, CodeEvidenceView
 from app.schemas.common import APIModel
 
 
@@ -18,6 +18,16 @@ class ComparisonItem(APIModel):
     target_ai_status: str | None = None
     base_review: str | None = None
     target_review: str | None = None
+    base_explanation: str | None = None
+    target_explanation: str | None = None
+    base_information_gap: str | None = None
+    target_information_gap: str | None = None
+    base_suggestion: str | None = None
+    target_suggestion: str | None = None
+    base_task_plan_warning: str | None = None
+    target_task_plan_warning: str | None = None
+    base_task_plan: CareerTaskPlan | None = None
+    target_task_plan: CareerTaskPlan | None = None
     added_evidence: list[CodeEvidenceView] = Field(default_factory=list)
     removed_evidence: list[CodeEvidenceView] = Field(default_factory=list)
     changes: list[str] = Field(default_factory=list)

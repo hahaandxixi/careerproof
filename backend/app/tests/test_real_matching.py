@@ -19,7 +19,12 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.agents.contracts import AIRequirementAnalysis, EvidenceAnalysis, ModelUsage
+from app.agents.contracts import (
+    AIRequirementAnalysis,
+    EvidenceAnalysis,
+    EvidenceTaskPlan,
+    ModelUsage,
+)
 from app.agents.evidence_workflow import EvidenceWorkflowOutcome, build_evidence_contexts
 from app.agents.provider import DeepSeekProvider
 from app.core.config import settings
@@ -35,6 +40,7 @@ from app.models.analysis import (
     SkillEvidence,
 )
 from app.models.enums import TaskStatus
+from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import User
 from app.models.portfolio import ProjectFile, ProjectVersion, ResumeVersion
 from app.services import analysis as analysis_service
@@ -305,6 +311,11 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
                         citation_ids=[contexts[0].evidence[0].citation_id],
                         information_gap="运行结果仍需核验。",
                         suggestion="提交接口运行记录并核对响应状态。",
+                        task_plan=EvidenceTaskPlan(
+                            deliverable="具名接口运行记录",
+                            steps=["运行合成接口并保存请求与响应"],
+                            acceptance_checks=["响应状态与来源可定位"],
+                        ),
                         confidence=0.84,
                     )
                 ],
@@ -350,10 +361,38 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert item["aiCitationIds"] == ["R1-E1"]
         assert item["evidenceList"][0]["citationId"] == "R1-E1"
         assert item["aiConfidence"] == 0.84
+        assert item["aiTaskPlan"] == {
+            "deliverable": "具名接口运行记录",
+            "steps": ["运行合成接口并保存请求与响应"],
+            "acceptanceChecks": ["响应状态与来源可定位"],
+        }
         assert report["actionPlan"][0]["source"] == "ai_suggestion"
         assert report["actionPlan"][0]["requirementId"] == item["requirementId"]
         assert report["actionPlan"][0]["citationIds"] == ["R1-E1"]
         assert "核对响应状态" in report["actionPlan"][0]["action"]
+        adopted_plan = {
+            **item["aiTaskPlan"],
+            "requirementId": item["requirementId"],
+            "gapKind": "execution",
+            "steps": ["学生确认后手动补充请求参数，再保存响应"],
+        }
+        growth = await student.post(
+            f"/api/v1/match-reports/{report['id']}/growth-tasks",
+            json=adopted_plan,
+        )
+        assert growth.status_code == 201, growth.text
+        growth_id = growth.json()["data"]["id"]
+        assert growth.json()["data"]["actionSource"] == "ai_suggestion"
+        assert growth.json()["data"]["actionCitationIds"] == ["R1-E1"]
+        assert growth.json()["data"]["plan"] == adopted_plan
+        growth_reload = (await student.get(f"/api/v1/growth-tasks/{growth_id}")).json()["data"]
+        assert growth_reload["plan"] == adopted_plan
+        async with factory() as session:
+            saved_growth = await session.get(EvidenceGrowthTask, UUID(growth_id))
+            assert (
+                saved_growth.base_snapshot["report"]["items"][0]["aiTaskPlan"]
+                == item["aiTaskPlan"]
+            )
         cached = await student.post(
             "/api/v1/matches",
             json={
@@ -372,6 +411,14 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         assert with_history["taskId"] != report["taskId"]
         assert len(history_reads) == 1
         assert history_reads[0]["previousReportId"] == report["id"]
+        comparison_response = await student.get(
+            f"/api/v1/match-reports/{report['id']}/comparison/{with_history['id']}"
+        )
+        assert comparison_response.status_code == 200, comparison_response.text
+        comparison_item = comparison_response.json()["data"]["items"][0]
+        assert comparison_item["baseTaskPlan"] == item["aiTaskPlan"]
+        assert comparison_item["targetTaskPlan"] == item["aiTaskPlan"]
+        assert comparison_item["baseSuggestion"] == item["aiSuggestion"]
         async with factory() as session:
             history_task = await session.get(AnalysisTask, UUID(with_history["taskId"]))
             assert history_task.input_snapshot["previousReportId"] == report["id"]
@@ -388,6 +435,30 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         ]
         model_step = next(step for step in task["steps"] if step["name"] == "模型证据分析")
         assert model_step["payload"]["modelToolCalls"][0]["citationId"] == "R1-E2"
+        # Simulate a legacy report saved before the stricter suggestion guard.
+        # The original answer stays visible, but read-time action advice must stop using it.
+        async with factory() as session:
+            saved_item = await session.scalar(
+                select(MatchItem).where(MatchItem.report_id == UUID(report["id"]))
+            )
+            snapshot = dict(saved_item.evidence_snapshot)
+            old_ai = dict(snapshot["ai"])
+            old_ai["suggestion"] = "请再次提交该函数源码。"
+            old_ai["taskPlan"] = {
+                "deliverable": "具名运行记录",
+                "steps": ["再次提交该函数源码"],
+                "acceptanceChecks": ["输出可定位"],
+            }
+            snapshot["ai"] = old_ai
+            saved_item.evidence_snapshot = snapshot
+            await session.commit()
+        legacy = (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"]
+        assert legacy["items"][0]["aiSuggestion"] == "请再次提交该函数源码。"
+        assert legacy["items"][0]["aiSuggestionRedundant"] is True
+        assert legacy["items"][0]["aiTaskPlanWarning"] == (
+            "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+        )
+        assert legacy["actionPlan"][0]["source"] == "rules"
         review_url = (
             f"/api/v1/match-reports/{report['id']}/items/{item['requirementId']}/review"
         )
@@ -396,6 +467,54 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
         refreshed = (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"]
         assert refreshed["actionPlan"][0]["source"] == "review"
         assert refreshed["actionPlan"][0]["citationIds"] == []
+        frozen_growth = (await student.get(f"/api/v1/growth-tasks/{growth_id}")).json()["data"]
+        assert frozen_growth["actionSource"] == "ai_suggestion"
+        assert frozen_growth["actionCitationIds"] == ["R1-E1"]
+        assert frozen_growth["actionNeedsRecheck"] is False
+        # A pre-v26 task may have frozen an old repeated-source answer. Keep its
+        # provenance while warning on read; never silently rewrite the plan.
+        async with factory() as session:
+            growth_row = await session.get(EvidenceGrowthTask, UUID(growth_id))
+            growth_snapshot = dict(growth_row.base_snapshot)
+            base_report = dict(growth_snapshot["report"])
+            old_items = [dict(value) for value in base_report["items"]]
+            old_items[0]["aiSuggestion"] = "请再次提交该函数源码。"
+            old_items[0]["aiSuggestionRedundant"] = False
+            old_items[0]["aiTaskPlan"] = {
+                "deliverable": "具名运行记录",
+                "steps": ["再次提交该函数源码"],
+                "acceptanceChecks": ["输出可定位"],
+            }
+            old_items[0].pop("aiTaskPlanWarning", None)
+            base_report["items"] = old_items
+            growth_snapshot["report"] = base_report
+            growth_row.base_snapshot = growth_snapshot
+            await session.commit()
+        old_growth = (await student.get(f"/api/v1/growth-tasks/{growth_id}")).json()["data"]
+        assert old_growth["actionSource"] == "ai_suggestion"
+        assert old_growth["actionNeedsRecheck"] is True
+        assert old_growth["taskPlanNeedsRecheck"] is True
+        assert old_growth["taskPlanWarning"] == (
+            "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+        )
+        assert old_growth["plan"] == frozen_growth["plan"]
+        async with factory() as session:
+            saved_item = await session.scalar(
+                select(MatchItem).where(MatchItem.report_id == UUID(report["id"]))
+            )
+            snapshot = dict(saved_item.evidence_snapshot)
+            old_ai = dict(snapshot["ai"])
+            old_ai["taskPlan"] = {"deliverable": "", "steps": [], "acceptanceChecks": []}
+            snapshot["ai"] = old_ai
+            saved_item.evidence_snapshot = snapshot
+            await session.commit()
+        malformed = await student.get(f"/api/v1/match-reports/{report['id']}")
+        assert malformed.status_code == 200, malformed.text
+        malformed_item = malformed.json()["data"]["items"][0]
+        assert malformed_item["aiTaskPlan"] is None
+        assert malformed_item["aiTaskPlanWarning"] == (
+            "AI任务草稿格式无效，请重新核对原建议。"
+        )
         async with factory() as session:
             usage = list(await session.scalars(select(AiUsageLog).where(
                 AiUsageLog.analysis_task_id == UUID(report["taskId"]))))
@@ -957,6 +1076,10 @@ async def test_local_report_budget_reason_survives_report_and_task_read(
             failure_stage="request",
             request_count=1,
             planning_skipped_reason="report_budget_reserved",
+            input_budget_stop={
+                "estimatedInputBound": 20000, "remainingInputBudget": 10000,
+                "estimateMethod": "json-character-upper-bound",
+            } if reason == "input_token_limit" else None,
         )
 
     monkeypatch.setattr(analysis_service, "run_evidence_workflow", budget_workflow)
@@ -980,10 +1103,17 @@ async def test_local_report_budget_reason_survives_report_and_task_read(
         assert label in step["detail"]
         assert "外部模型不可用" not in step["detail"]
         assert step["payload"]["fallbackReason"] == reason
+        assert step["payload"]["failureStage"] == "request"
+        expected_budget_stop = {
+            "estimatedInputBound": 20000, "remainingInputBudget": 10000,
+            "estimateMethod": "json-character-upper-bound",
+        } if reason == "input_token_limit" else None
+        assert step["payload"]["inputBudgetStop"] == expected_budget_stop
         assert step["payload"]["planningSkippedReason"] == "report_budget_reserved"
         async with factory() as session:
             saved = await session.get(MatchReport, UUID(report["id"]))
             assert saved.analysis_metadata["fallbackReason"] == reason
+            assert saved.analysis_metadata["inputBudgetStop"] == expected_budget_stop
             assert saved.analysis_metadata["planningSkippedReason"] == "report_budget_reserved"
             assert saved.analysis_metadata["providerFinishReason"] is None
         refreshed = (await student.get(

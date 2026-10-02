@@ -49,7 +49,14 @@ def test_compact_prompt_preserves_all_evidence_and_history_fields(context):
     messages = evidence_analysis_messages([context], history_context=history)
     payload = json.loads(messages[1]["content"])
 
-    assert payload == {"requirements": [context.model_dump()], "historicalContext": history}
+    requirement = dict(payload["requirements"][0])
+    policy = requirement.pop("citation_policy")
+    assert requirement == context.model_dump()
+    assert payload["historicalContext"] == history
+    assert policy == {
+        "allowed_ids": [entry.citation_id for entry in context.evidence],
+        "personal_citation_required": True,
+    }
     assert payload["requirements"][0]["evidence"][0]["snippet"] == snippet
     assert messages[1]["content"] == json.dumps(
         payload, ensure_ascii=False, separators=(",", ":")
@@ -61,7 +68,9 @@ def test_compact_prompt_preserves_all_evidence_and_history_fields(context):
 def test_repair_omits_only_transport_metadata(context, previous):
     messages = repair_messages(context, previous)
     payload = json.loads(messages[1]["content"])
-    assert payload["requirements"] == [context.model_dump()]
+    requirement = dict(payload["requirements"][0])
+    requirement.pop("citation_policy")
+    assert requirement == context.model_dump()
     assert payload["rejectedOutput"] == previous.model_dump(exclude={"model", "usage"})
     assert payload["rejectedOutput"]["items"] == previous.model_dump()["items"]
     assert payload["validationFeedback"] == "Synthetic criterion conflict"
@@ -83,7 +92,31 @@ def test_compact_repair_keeps_personal_data_filtering(context, previous):
     serialized = json.dumps(outgoing)
     assert raw_email not in serialized and raw_phone not in serialized
     assert unsafe.summary == f"Contact {raw_email} {raw_phone}"
-    assert json.loads(outgoing[1]["content"])["requirements"] == [context.model_dump()]
+    requirement = dict(json.loads(outgoing[1]["content"])["requirements"][0])
+    requirement.pop("citation_policy")
+    assert requirement == context.model_dump()
+
+
+def test_unevidenced_policy_allows_only_current_reference_citations(context):
+    portfolio = context.evidence[0]
+    reference = portfolio.model_copy(update={"citation_id": "R1-E2", "provenance": "reference"})
+    context = context.model_copy(update={
+        "verdict": "claimed_only", "evidence": [portfolio, reference],
+    })
+    payload = json.loads(evidence_analysis_messages([context])[1]["content"])
+    assert payload["requirements"][0]["citation_policy"] == {
+        "allowed_ids": ["R1-E2"], "personal_citation_required": False,
+    }
+    assert len(payload["requirements"][0]["evidence"]) == 2
+
+
+def test_correction_feedback_names_requirement_without_relaxing_guard(context, previous):
+    context = context.model_copy(update={"verdict": "gap"})
+    with pytest.raises(ValueError, match="personal evidence for an unevidenced") as error:
+        validate_grounded_analysis([context], previous)
+    assert f"requirement_id={context.requirement_id}" in str(error.value)
+    assert "permitted citation_ids=[]" in str(error.value)
+    assert "Do not increase the rating" in str(error.value)
 
 
 @pytest.mark.asyncio

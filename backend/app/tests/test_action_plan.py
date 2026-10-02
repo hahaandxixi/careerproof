@@ -52,3 +52,16 @@ def test_reviewed_evidence_never_reuses_old_ai_advice_or_citations() -> None:
     assert plan[0].citation_ids == []
     assert "重新发起分析" in plan[0].action
     assert build_action_plan([reviewed], limit=0) == []
+
+
+def test_old_redundant_ai_suggestion_falls_back_without_rewriting_report() -> None:
+    old = item(weight=5, level=2, ai=True)
+    old.ai_suggestion = "请再次提交该函数源码。"
+    old.ai_suggestion_redundant = True
+
+    plan = build_action_plan([old])
+
+    assert plan[0].source == "rules"
+    assert plan[0].citation_ids == []
+    assert plan[0].action == old.evidence_level_gap
+    assert old.ai_suggestion == "请再次提交该函数源码。"

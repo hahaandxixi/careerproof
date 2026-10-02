@@ -9,6 +9,7 @@ from app.models.analysis import (
     SkillEvidence,
 )
 from app.models.audit import AuditLog
+from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import (
     Enterprise,
     EnterpriseMembership,
@@ -16,6 +17,7 @@ from app.models.identity import (
     StudentProfile,
     User,
 )
+from app.models.notification import Notification
 from app.models.portfolio import (
     InterviewAnswer,
     InterviewSession,
@@ -45,6 +47,7 @@ __all__ = [
     "Enterprise",
     "EnterpriseMembership",
     "EvidenceSource",
+    "EvidenceGrowthTask",
     "InterviewAnswer",
     "InterviewSession",
     "Job",
@@ -52,6 +55,7 @@ __all__ = [
     "MatchItem",
     "MatchReport",
     "MatchingFormulaVersion",
+    "Notification",
     "Project",
     "ProjectFile",
     "ProjectVersion",

@@ -36,6 +36,7 @@ from app.repositories.analysis import AnalysisRepository
 from app.schemas.analysis import (
     AgentStepView,
     AnalysisTaskView,
+    CareerTaskPlan,
     CodeEvidenceView,
     EvidenceReviewUpdate,
     MatchCreate,
@@ -55,6 +56,10 @@ from app.services.task_lifecycle import (
 )
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
+from app.tools.function_coverage import (
+    redundant_source_request,
+    task_plan_redundant_source_request,
+)
 from app.tools.matcher import FORMULA_VERSION, RequirementInput
 from app.tools.semantic_retrieval import VERSION as SEMANTIC_VERSION
 from app.tools.semantic_retrieval import model_available
@@ -131,7 +136,9 @@ def _retrieval_step_detail(retrieval: dict) -> str:
 async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, str | None, dict]:
     # Serialize external calls for the same account so concurrent tasks cannot
     # both pass the same daily budget snapshot before either usage row is saved.
-    await session.scalar(select(User.id).where(User.id == user_id).with_for_update())
+    # Serialize this user's model budget without blocking notification FK checks
+    # for the same recipient while a provider request is in flight.
+    await session.scalar(select(User.id).where(User.id == user_id).with_for_update(key_share=True))
     local_now = datetime.now(timezone(timedelta(hours=8)))
     start_utc = local_now.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(UTC)
     row = (
@@ -174,7 +181,9 @@ class AnalysisService:
         self.session = session
         self.analysis = AnalysisRepository(session)
 
-    async def create_match_task(self, request: MatchCreate, current_user: User) -> TaskAccepted:
+    async def create_match_task(
+        self, request: MatchCreate, current_user: User, *, commit: bool = True
+    ) -> TaskAccepted:
         await self.session.scalar(select(User).where(User.id == current_user.id).with_for_update())
         materials = await resolve_materials(self.session, request, current_user)
         job = await self.session.scalar(
@@ -268,7 +277,10 @@ class AnalysisService:
             current_step="等待分析真实材料",
         )
         self.session.add(task)
-        await self.session.commit()
+        if commit:
+            await self.session.commit()
+        else:
+            await self.session.flush()
         return TaskAccepted(task_id=task.id, status=task.status)
 
     async def retry_match(self, task_id: UUID, user: User) -> TaskAccepted:
@@ -283,6 +295,10 @@ class AnalysisService:
         task = await self.analysis.get_task(task_id)
         if not task or (task.created_by != user.id and user.role.value != "admin"):
             raise AppError("分析任务不存在或无权访问", code=4041, status_code=404)
+        if task.task_type == "application_verification":
+            from app.services.application_verification import ensure_verification_task_access
+
+            await ensure_verification_task_access(self.session, task, user)
         steps = await self.analysis.steps(task_id)
         report = await self.analysis.report_by_task(task_id)
         return AnalysisTaskView(
@@ -409,6 +425,21 @@ class AnalysisService:
 
         snapshot = item.evidence_snapshot or {}
         ai = snapshot.get("ai") or {}
+        evidence_list = [
+            CodeEvidenceView.model_validate(e) for e in snapshot.get("evidenceList", [])
+        ]
+        raw_task_plan = ai.get("taskPlan")
+        task_plan = None
+        task_plan_warning = None
+        if raw_task_plan is not None:
+            try:
+                task_plan = CareerTaskPlan.model_validate(raw_task_plan)
+                if task_plan_redundant_source_request(
+                    task_plan.model_dump(mode="json", by_alias=True), evidence_list
+                ):
+                    task_plan_warning = "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+            except (TypeError, ValueError):
+                task_plan_warning = "AI任务草稿格式无效，请重新核对原建议。"
         return MatchItemView(
             **classify_evidence(
                 snapshot, item.verdict, evidence.confirmation_status.value if evidence else None
@@ -421,9 +452,7 @@ class AnalysisService:
             evidence=CodeEvidenceView.model_validate(snapshot["evidence"])
             if snapshot.get("evidence")
             else None,
-            evidence_list=[
-                CodeEvidenceView.model_validate(e) for e in snapshot.get("evidenceList", [])
-            ],
+            evidence_list=evidence_list,
             verdict=item.verdict,
             ai_confidence=item.ai_confidence,
             rule_base_score=item.rule_base_score,
@@ -439,6 +468,11 @@ class AnalysisService:
             ai_citation_ids=ai.get("citationIds", []),
             ai_information_gap=ai.get("informationGap"),
             ai_suggestion=ai.get("suggestion"),
+            ai_task_plan=task_plan,
+            ai_task_plan_warning=task_plan_warning,
+            ai_suggestion_redundant=bool(
+                ai.get("suggestion") and redundant_source_request(ai["suggestion"], evidence_list)
+            ),
             ai_status=ai.get("status", "not_used"),
             ai_origin=ai.get("origin"),
             function_source_coverage=ai.get("functionSourceCoverage", []),
@@ -584,6 +618,8 @@ async def execute_match_task(task_id: UUID) -> None:
                 "fallbackReason": workflow.fallback_reason,
                 "skippedReason": workflow.skipped_reason,
                 "failureStage": workflow.failure_stage,
+                "inputBudgetStop": workflow.input_budget_stop,
+                "inputPreflights": list(workflow.input_preflights),
                 "repairUsed": workflow.repaired,
                 "requestCount": workflow.request_count,
                 "planningSkippedReason": workflow.planning_skipped_reason,
@@ -724,6 +760,14 @@ async def execute_match_task(task_id: UUID) -> None:
                                 "citationIds": ai_item.citation_ids if ai_item else [],
                                 "informationGap": (ai_item.information_gap if ai_item else None),
                                 "suggestion": ai_item.suggestion if ai_item else None,
+                                "taskPlan": (
+                                    {
+                                        "deliverable": ai_item.task_plan.deliverable,
+                                        "steps": ai_item.task_plan.steps,
+                                        "acceptanceChecks": ai_item.task_plan.acceptance_checks,
+                                    }
+                                    if ai_item and ai_item.task_plan else None
+                                ),
                                 "rating": (
                                     ai_item.rating.model_dump()
                                     if ai_item and ai_item.rating
@@ -795,6 +839,9 @@ async def execute_match_task(task_id: UUID) -> None:
                         "model": workflow.model,
                         "fallbackUsed": workflow.fallback_used,
                         "fallbackReason": workflow.fallback_reason,
+                        "failureStage": workflow.failure_stage,
+                        "inputBudgetStop": workflow.input_budget_stop,
+                        "inputPreflights": list(workflow.input_preflights),
                         "skippedReason": workflow.skipped_reason,
                         "repairUsed": workflow.repaired,
                         "requestCount": workflow.request_count,

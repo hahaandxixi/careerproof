@@ -118,6 +118,14 @@ _SOURCE_REQUEST = re.compile(
     r"(?P<subject>(?:该|当前|此|本|对应|这段)?(?:函数的?|文件的?)?)"
     r"完整(?P<source>函数(?:原文|源码|上下文)|文件|源码|原文|上下文)"
 )
+_EXPLICIT_REPEAT_REQUEST = re.compile(
+    r"(?:再次|重新|重复)(?:提交|补充|提供|上传|补交)"
+    r"(?:该|当前|此|本|对应|这段)(?P<kind>函数|文件)(?:的)?"
+    r"(?:完整)?(?:实现代码|源码|代码|原文|函数体|文件内容)"
+)
+_NEW_MATERIAL_SUFFIX = re.compile(
+    r"(?:的)?(?:运行|执行|测试|验证|提交|贡献|历史|新版本|修订|修正|更新|修改|补全|新增)"
+)
 _INTERNAL_REASON = re.compile(
     r"rating_ceiling|function_source_coverage|context_complete|provenance"
     r"|受(?:到)?(?:程序|规则|评级)?上限限制|因(?:程序|规则|评级)?上限(?:限制|约束)"
@@ -130,12 +138,17 @@ def redundant_source_request(text: str, evidence) -> bool:
     files_complete = bool(personal) and len(coverage) == len({e.file_path for e in personal})
     files_complete = files_complete and all(row["fully_covered"] for row in coverage)
     functions_complete = all_cited_functions_covered(evidence)
+    for match in _EXPLICIT_REPEAT_REQUEST.finditer(text):
+        if _NEW_MATERIAL_SUFFIX.match(text[match.end() :]):
+            continue
+        if match["kind"] == "函数" and functions_complete:
+            return True
+        if match["kind"] == "文件" and files_complete:
+            return True
     for match in _SOURCE_REQUEST.finditer(text):
         # Runtime records and contribution history are new evidence, even when
         # the source file was fully shown. Only reject repeated source requests.
-        if re.match(
-            r"的(?:运行|执行|测试|验证|提交|贡献|历史|新版本|修订|修正|更新)", text[match.end() :]
-        ):
+        if _NEW_MATERIAL_SUFFIX.match(text[match.end() :]):
             continue
         subject, source = match["subject"], match["source"]
         if source == "文件" and subject and files_complete:
@@ -149,6 +162,26 @@ def redundant_source_request(text: str, evidence) -> bool:
         if "文件" in subject and files_complete:
             return True
     return False
+
+
+def task_plan_redundant_source_request(plan, evidence) -> bool:
+    """Apply the saved-plan source guard to every human-readable plan field.
+
+    Task plans are persisted with reports and can outlive the validator version
+    that created them.  Rechecking the deliverable, steps, and acceptance
+    criteria at read time prevents an old plan from quietly reintroducing a
+    request for source that is already fully visible.
+    """
+    if not isinstance(plan, dict):
+        return False
+    texts: list[str] = []
+    for key in ("deliverable", "steps", "acceptanceChecks", "acceptance_checks"):
+        value = plan.get(key)
+        if isinstance(value, str):
+            texts.append(value)
+        elif isinstance(value, list):
+            texts.extend(text for text in value if isinstance(text, str))
+    return any(redundant_source_request(text, evidence) for text in texts)
 
 
 def internal_rating_reason(text: str) -> bool:

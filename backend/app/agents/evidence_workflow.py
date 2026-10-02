@@ -29,7 +29,7 @@ from app.agents.provider import (
 from app.core.config import settings
 from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
-from app.tools.evidence_levels import classify_evidence
+from app.tools.evidence_levels import _rule_classification
 from app.tools.function_coverage import file_coverage, function_coverage
 from app.tools.matcher import MatchResult
 from app.tools.skill_rubric import rubric_for
@@ -54,6 +54,8 @@ class EvidenceWorkflowOutcome:
     provider_finish_reason: str | None = None
     retrieval_result: MatchResult | None = None
     planning_skipped_reason: str | None = None
+    input_budget_stop: dict | None = None
+    input_preflights: tuple[dict, ...] = ()
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -112,9 +114,10 @@ def build_evidence_contexts(
                 rating_rubric=rubric_for(item.skill),
                 function_source_coverage=function_coverage(evidence),
                 file_source_coverage=file_coverage(evidence),
-                rating_ceiling=classify_evidence(
+                rating_ceiling=_rule_classification(
                     {"skill": item.skill, "evidenceList": [e.model_dump() for e in evidence]},
                     item.verdict,
+                    include_candidates=True,
                 )["evidence_level"],
             )
         )
@@ -234,12 +237,13 @@ def execute_retrieval_tool(
                 FunctionSourceCoverage.model_validate(coverage)
                 for coverage in function_coverage(evidence)
             ],
-            "rating_ceiling": classify_evidence(
+            "rating_ceiling": _rule_classification(
                 {
                     "skill": context.skill,
                     "evidenceList": [entry.model_dump() for entry in evidence],
                 },
                 context.verdict,
+                include_candidates=True,
             )["evidence_level"],
         }
     )
@@ -624,6 +628,10 @@ async def run_evidence_workflow(
             fallback_used=False,
             fallback_reason=None,
             repaired=repaired,
+            input_preflights=(
+                tuple(provider.input_preflights)
+                if isinstance(provider, OpenAICompatibleProvider) else ()
+            ),
             tool_calls=tuple(tool_calls),
             request_count=request_count,
             planning_skipped_reason=planning_skipped_reason,
@@ -642,6 +650,13 @@ async def run_evidence_workflow(
     except Exception as exc:
         if not settings.ai_local_fallback_enabled:
             raise
+        input_budget_stop = None
+        if isinstance(exc, ProviderInputBudgetError) and exc.estimated_input_bound is not None:
+            input_budget_stop = {
+                "estimatedInputBound": exc.estimated_input_bound,
+                "remainingInputBudget": exc.remaining_input_budget,
+                "estimateMethod": "json-character-upper-bound",
+            }
         return EvidenceWorkflowOutcome(
             contexts=contexts,
             retrieval_result=result if result.retrieval_sources else None,
@@ -659,6 +674,12 @@ async def run_evidence_workflow(
                 else planning_usage
             ),
             failure_stage=stage,
+            input_budget_stop=input_budget_stop,
+            input_preflights=(
+                tuple(provider.input_preflights)
+                if "provider" in locals() and isinstance(provider, OpenAICompatibleProvider)
+                else ()
+            ),
             repaired=repaired,
             tool_calls=tuple(tool_calls),
             request_count=request_count,

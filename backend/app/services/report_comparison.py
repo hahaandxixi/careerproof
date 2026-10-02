@@ -8,6 +8,10 @@ from app.core.exceptions import AppError
 from app.models.analysis import AnalysisTask, MatchReport
 from app.schemas.report_comparison import ComparisonItem, ReportComparison
 from app.services.analysis import AnalysisService
+from app.tools.function_coverage import (
+    redundant_source_request,
+    task_plan_redundant_source_request,
+)
 
 
 def evidence_key(evidence):
@@ -22,6 +26,48 @@ def evidence_key(evidence):
     # Citation numbers and material-version UUIDs are report-local identities.
     return (evidence.content_hash, path, evidence.line_start, evidence.line_end,
             evidence.snippet, evidence.provenance)
+
+
+def interpretation(item):
+    if not item:
+        return None, None
+    validated = item.ai_status == "validated"
+    return (
+        (getattr(item, "ai_explanation", None) if validated else None)
+        or getattr(item, "explanation", None),
+        (getattr(item, "ai_information_gap", None) if validated else None)
+        or getattr(item, "evidence_level_gap", None),
+    )
+
+
+def task_plan_warning(item):
+    if not item:
+        return None
+    warning = getattr(item, "ai_task_plan_warning", None)
+    if warning:
+        return warning
+    plan = getattr(item, "ai_task_plan", None)
+    if plan and task_plan_redundant_source_request(
+        plan.model_dump(mode="json", by_alias=True), item.evidence_list
+    ):
+        return "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+    return None
+
+
+def usable_advice(item):
+    if (not item or item.ai_status != "validated"
+            or getattr(item, "ai_suggestion_redundant", False)
+            or item.confirmation_status in {"rejected", "corrected"}):
+        return None, None
+    suggestion = getattr(item, "ai_suggestion", None)
+    if suggestion and redundant_source_request(suggestion, item.evidence_list):
+        return None, None
+    plan = (
+        getattr(item, "ai_task_plan", None)
+        if suggestion and not task_plan_warning(item)
+        else None
+    )
+    return suggestion, plan
 
 
 def compare_views(base, target, base_snapshot, target_snapshot):
@@ -55,6 +101,10 @@ def compare_views(base, target, base_snapshot, target_snapshot):
         new = new_items.get(requirement_id)
         before = {evidence_key(e): e for e in old.evidence_list} if old else {}
         after = {evidence_key(e): e for e in new.evidence_list} if new else {}
+        old_explanation, old_gap = interpretation(old)
+        new_explanation, new_gap = interpretation(new)
+        old_suggestion, old_plan = usable_advice(old)
+        new_suggestion, new_plan = usable_advice(new)
         changes = []
         if old_req.get(str(requirement_id)) != new_req.get(str(requirement_id)):
             changes.append("requirement")
@@ -75,6 +125,10 @@ def compare_views(base, target, base_snapshot, target_snapshot):
                 changes.append("ai_status")
             if old.evidence_level != new.evidence_level:
                 changes.append("level")
+            if (old_explanation, old_gap) != (new_explanation, new_gap):
+                changes.append("interpretation")
+            if (old_suggestion, old_plan) != (new_suggestion, new_plan):
+                changes.append("advice")
         if before.keys() != after.keys():
             changes.append("evidence")
         result.append(ComparisonItem(
@@ -88,6 +142,12 @@ def compare_views(base, target, base_snapshot, target_snapshot):
             target_ai_status=new.ai_status if new else None,
             base_review=old.confirmation_status if old else None,
             target_review=new.confirmation_status if new else None,
+            base_explanation=old_explanation, target_explanation=new_explanation,
+            base_information_gap=old_gap, target_information_gap=new_gap,
+            base_suggestion=old_suggestion, target_suggestion=new_suggestion,
+            base_task_plan_warning=task_plan_warning(old),
+            target_task_plan_warning=task_plan_warning(new),
+            base_task_plan=old_plan, target_task_plan=new_plan,
             added_evidence=[e for key, e in after.items() if key not in before],
             removed_evidence=[e for key, e in before.items() if key not in after],
             changes=changes,

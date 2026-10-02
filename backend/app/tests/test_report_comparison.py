@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.core.exceptions import AppError
 from app.models.analysis import AnalysisTask, MatchReport
-from app.schemas.analysis import CodeEvidenceView, ReportMaterial
+from app.schemas.analysis import CareerTaskPlan, CodeEvidenceView, ReportMaterial
 from app.services.report_comparison import compare_views, evidence_key
 from app.tests.test_jobs_api import job_payload, jobs_db, organization, register  # noqa: F401
 
@@ -92,6 +92,122 @@ def test_cross_job_or_candidate_rejected():
     target.candidate_id = "another"
     with pytest.raises(AppError):
         compare_views(base, target, {}, {})
+
+
+def test_changed_explanation_and_gap_are_preserved_without_inventing_evidence():
+    base, target = pair()
+    base.items[0].ai_explanation = "可见源码，但未运行"
+    base.items[0].ai_information_gap = "缺少运行记录"
+    target.items[0].ai_explanation = "相同源码，另需核对实际输入输出"
+    target.items[0].ai_information_gap = "结果记录未展示"
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.base_explanation == "可见源码，但未运行"
+    assert result.target_information_gap == "结果记录未展示"
+    assert result.changes == ["interpretation"]
+    assert result.added_evidence == result.removed_evidence == []
+
+
+def test_changed_advice_is_distinct_from_new_evidence_or_level_change():
+    base, target = pair()
+    base.items[0].ai_suggestion = "补充运行输出"
+    target.items[0].ai_suggestion = "核对异常输入并保存响应"
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.changes == ["advice"]
+    assert result.base_suggestion == "补充运行输出"
+    assert result.target_suggestion == "核对异常输入并保存响应"
+    assert result.added_evidence == result.removed_evidence == []
+    assert result.base_level == result.target_level
+
+
+def test_structured_plan_change_is_visible_when_suggestion_stays_the_same():
+    base, target = pair()
+    for item in (base.items[0], target.items[0]):
+        item.ai_suggestion = "补充运行记录"
+    target.items[0].ai_task_plan = CareerTaskPlan(
+        deliverable="具名请求与响应", steps=["保存异常请求样例"],
+        acceptance_checks=["输入和输出可定位"],
+    )
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.changes == ["advice"]
+    assert result.base_task_plan is None
+    assert result.target_task_plan == target.items[0].ai_task_plan
+    assert result.added_evidence == result.removed_evidence == []
+
+
+@pytest.mark.parametrize("reason", ["failed", "redundant", "rejected", "corrected"])
+def test_unusable_advice_and_plan_are_not_reintroduced_by_comparison(reason):
+    base, target = pair()
+    for item in (base.items[0], target.items[0]):
+        item.ai_suggestion = "补充运行记录"
+        item.ai_task_plan = CareerTaskPlan(
+            deliverable="运行记录", steps=["记录请求"], acceptance_checks=["输出可定位"],
+        )
+    if reason == "failed":
+        target.items[0].ai_status = "invalid_output"
+    elif reason == "redundant":
+        target.items[0].ai_suggestion_redundant = True
+    else:
+        target.items[0].confirmation_status = reason
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.base_suggestion and result.base_task_plan
+    assert result.target_suggestion is None and result.target_task_plan is None
+    assert "advice" in result.changes
+
+
+@pytest.mark.parametrize("side", ["base", "target"])
+def test_old_snapshot_repeated_source_advice_is_rechecked_without_mutation(side):
+    base, target = pair()
+    old = (base if side == "base" else target).items[0]
+    old.evidence_list = [evidence(
+        snippet="def total(values):\n    return sum(values)", context_complete=True,
+        function_line_start=1, function_line_end=2,
+    )]
+    old.ai_suggestion = "请再次提交该函数源码。"
+    old.ai_suggestion_redundant = False
+    old.ai_task_plan = CareerTaskPlan(
+        deliverable="函数源码", steps=["再次提交源码"], acceptance_checks=["代码可定位"],
+    )
+    result = compare_views(base, target, {}, {}).items[0]
+    assert getattr(result, f"{side}_suggestion") is None
+    assert getattr(result, f"{side}_task_plan") is None
+    assert old.ai_suggestion == "请再次提交该函数源码。"
+    assert old.ai_task_plan.deliverable == "函数源码"
+    assert old.ai_suggestion_redundant is False
+
+
+def test_saved_task_plan_warning_hides_only_the_unsafe_plan():
+    base, target = pair()
+    old = base.items[0]
+    old.ai_suggestion = "补充运行记录"
+    old.ai_task_plan = CareerTaskPlan(
+        deliverable="具名运行记录", steps=["再次提交该函数源码"],
+        acceptance_checks=["输出可定位"],
+    )
+    old.ai_task_plan_warning = "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.base_suggestion == old.ai_suggestion
+    assert result.base_task_plan is None
+    assert result.base_task_plan_warning == old.ai_task_plan_warning
+
+
+def test_legacy_snapshot_without_warning_rechecks_task_plan_in_comparison():
+    base, target = pair()
+    old = base.items[0]
+    old.evidence_list = [evidence(
+        snippet="def total(values):\n    return sum(values)", context_complete=True,
+        function_line_start=1, function_line_end=2,
+    )]
+    old.ai_suggestion = "补充运行记录"
+    old.ai_task_plan = CareerTaskPlan(
+        deliverable="具名运行记录", steps=["再次提交该函数源码"],
+        acceptance_checks=["输出可定位"],
+    )
+    result = compare_views(base, target, {}, {}).items[0]
+    assert result.base_suggestion == "补充运行记录"
+    assert result.base_task_plan is None
+    assert result.base_task_plan_warning == (
+        "AI任务草稿重复要求提交已完整展示的源码，请重新核对。"
+    )
 
 
 async def test_comparison_http_permissions_and_previous_selection(jobs_db):  # noqa: F811

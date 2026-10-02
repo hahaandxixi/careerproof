@@ -5,6 +5,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from app.tools.evidence_levels import CANDIDATE_TYPES
 from app.tools.function_coverage import (
     all_cited_functions_covered,
     internal_rating_reason,
@@ -69,6 +70,20 @@ class RequirementEvidenceContext(StrictModel):
     file_source_coverage: list[FileSourceCoverage] = Field(default_factory=list, max_length=3)
 
 
+def allowed_personal_citation_ids(context: RequirementEvidenceContext) -> set[str]:
+    """Candidates may support AI relevance while leaving the rule verdict intact."""
+    return {
+        evidence.citation_id for evidence in context.evidence
+        if evidence.provenance == "portfolio" and (
+            context.verdict in {"supported", "partial"}
+            or (
+                context.verdict in {"claimed_only", "gap"}
+                and evidence.evidence_type in CANDIDATE_TYPES
+            )
+        )
+    }
+
+
 class RetrievalToolCall(StrictModel):
     requirement_id: str = Field(min_length=1, max_length=100)
     query: str = Field(min_length=2, max_length=200)
@@ -91,12 +106,70 @@ class AIRating(StrictModel):
     criteria: list[CriterionDecision] = Field(min_length=3, max_length=3)
 
 
+ActionText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200)]
+
+
+class EvidenceTaskPlan(StrictModel):
+    deliverable: ActionText
+    steps: list[ActionText] = Field(min_length=1, max_length=3)
+    acceptance_checks: list[ActionText] = Field(min_length=1, max_length=3)
+
+
+def runtime_plan_without_implementation_step(deliverable: str, steps: list[str]) -> bool:
+    """A requested runtime artifact needs a corresponding implementation step."""
+    work = " ".join([deliverable, *steps])
+    runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果", work))
+    implementation_step = bool(re.search(
+        r"(?:补充|编写|实现|提供|提交|上传|完善|修复|修改|展示)"
+        r".{0,30}(?:客户端调用|读写|缓存逻辑|实现|代码|源码|脚本|配置|查询语句|SQL\s*文件)",
+        work,
+        re.I,
+    ))
+    return runtime_requested and not implementation_step
+
+
+def execution_plan_skips_explicitly_missing_implementation(
+    context: RequirementEvidenceContext, plan: EvidenceTaskPlan
+) -> bool:
+    """Catch the narrow case where a source says this skill is unimplemented.
+
+    This is a lexical consistency guard, not a general assessment of whether
+    the student's work is executable. Candidate text cannot prove an
+    implementation, but an explicit current "not implemented" statement can
+    rule out a plan consisting only of execution artifacts.
+    """
+    personal = [source for source in context.evidence if source.provenance == "portfolio"]
+    if any(
+        source.evidence_type not in CANDIDATE_TYPES
+        and "dependency" not in source.evidence_type
+        for source in personal
+    ):
+        return False
+    explicit_gap = False
+    skill = re.escape(context.skill)
+    for source in personal:
+        for clause in re.split(r"[。！？；;\n]", source.snippet):
+            if re.search(r"旧版|历史|此前|曾经", clause):
+                continue
+            if re.search(
+                rf"{skill}.{{0,12}}(?:未实现|尚未实现|没有实现|未接入|尚未接入)",
+                clause,
+                re.I,
+            ):
+                explicit_gap = True
+                break
+    if not explicit_gap:
+        return False
+    return runtime_plan_without_implementation_step(plan.deliverable, plan.steps)
+
+
 class AIRequirementAnalysis(StrictModel):
     requirement_id: str = Field(min_length=1, max_length=100)
     explanation: str = Field(min_length=1, max_length=1000)
     citation_ids: list[str] = Field(default_factory=list, max_length=3)
     information_gap: str | None = Field(default=None, max_length=500)
     suggestion: str | None = Field(default=None, max_length=500)
+    task_plan: EvidenceTaskPlan | None = None
     confidence: float = Field(ge=0, le=1)
     rating: AIRating | None = None
 
@@ -200,11 +273,19 @@ def validate_grounded_analysis(
             for evidence in context.evidence
             if evidence.provenance == "portfolio"
         }
+        forbidden_personal = personal_citations - allowed_personal_citation_ids(context)
         if context.evidence and context.verdict in {"supported", "partial"}:
             if not personal_citations.intersection(item.citation_ids):
                 raise ValueError("AI analysis omitted citations for an evidenced requirement")
-        elif personal_citations.intersection(item.citation_ids):
-            raise ValueError("AI analysis cited personal evidence for an unevidenced requirement")
+        elif forbidden_personal.intersection(item.citation_ids):
+            rejected_ids = sorted(forbidden_personal.intersection(item.citation_ids))
+            raise ValueError(
+                "AI analysis cited personal evidence for an unevidenced requirement: "
+                f"requirement_id={context.requirement_id}, verdict={context.verdict}; "
+                f"remove personal citations {rejected_ids}; "
+                f"permitted citation_ids={sorted(allowed - forbidden_personal)}. "
+                "Do not increase the rating."
+            )
         if context.verdict in {"partial", "claimed_only", "gap", "unsupported"} or any(
             not evidence.context_complete for evidence in context.evidence
         ):
@@ -212,9 +293,14 @@ def validate_grounded_analysis(
                 raise ValueError("AI analysis omitted the information gap")
             if not item.suggestion:
                 raise ValueError("AI analysis omitted the evidence suggestion")
-        combined = " ".join(
-            value for value in (item.explanation, item.information_gap, item.suggestion) if value
+        plan_texts = (
+            [item.task_plan.deliverable, *item.task_plan.steps, *item.task_plan.acceptance_checks]
+            if item.task_plan else []
         )
+        if item.task_plan and (not item.suggestion or not item.information_gap):
+            raise ValueError("AI task plan lacks its evidence suggestion or gap")
+        answer_texts = (item.explanation, item.information_gap, item.suggestion, *plan_texts)
+        combined = " ".join(value for value in answer_texts if value)
         if overclaim_flags(combined):
             raise ValueError("AI analysis contains an unsupported ability or execution claim")
         cited_evidence = [
@@ -227,8 +313,15 @@ def validate_grounded_analysis(
             )
         if internal_rating_reason(coverage_text):
             raise ValueError("AI explanation exposes implementation-only rating terminology")
-        if item.suggestion and redundant_source_request(item.suggestion, context.evidence):
+        if any(
+            redundant_source_request(value, context.evidence)
+            for value in ([item.suggestion] if item.suggestion else []) + plan_texts
+        ):
             raise ValueError("AI suggestion requests source already fully shown")
+        if item.task_plan and execution_plan_skips_explicitly_missing_implementation(
+            context, item.task_plan
+        ):
+            raise ValueError("AI task plan requests execution before missing implementation")
         if (all_cited_functions_covered(cited_evidence)
                 and missing_function_context_claim(coverage_text)):
             raise ValueError("AI explanation contradicts jointly covered function source")
@@ -286,7 +379,8 @@ def validate_grounded_analysis(
                         if e.citation_id in decision.citation_ids
                     ]
                     cap = _rule_classification(
-                        {"skill": context.skill, "evidenceList": cited}, context.verdict
+                        {"skill": context.skill, "evidenceList": cited}, context.verdict,
+                        include_candidates=True,
                     )["evidence_level"]
                     required = {"relevance": 1, "operation": 2, "task": 3}[decision.criterion]
                     if cap is None or cap < required:

@@ -110,11 +110,15 @@ class CareerPlanAnalysis(APIModel):
 class CareerPlanChange(APIModel):
     job_id: UUID
     job_title: str
+    status: Literal["current", "not_in_current"] = "current"
     previous_supported_count: int | None = None
-    current_supported_count: int
+    current_supported_count: int | None = None
     previous_priority: str | None = None
-    current_priority: str
+    current_priority: str | None = None
     detail: str
+    materials_changed: bool = False
+    requirements_changed: bool = False
+    job_details_changed: bool = False
     evidence_ids: list[str] = Field(default_factory=list)
 
 
@@ -217,6 +221,9 @@ class MatchItemView(APIModel):
     ai_citation_ids: list[str] = Field(default_factory=list)
     ai_information_gap: str | None = None
     ai_suggestion: str | None = None
+    ai_task_plan: CareerTaskPlan | None = None
+    ai_task_plan_warning: str | None = None
+    ai_suggestion_redundant: bool = False
     ai_status: str = "not_used"
     ai_origin: str | None = None
     function_source_coverage: list[dict] = Field(default_factory=list)
