@@ -6,3 +6,6 @@ Thumbs.db
 .DS_Store
 tmp/pdfs/
 backend/evals/open-source-*.json
+
+# IDE share artifacts
+.trae-html-share-packages/
