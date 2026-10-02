@@ -1,0 +1,1317 @@
+{
+  "generatedAt": "2026-09-27T10:30:33.786371+00:00",
+  "promptVersion": "evidence-trust-v23-private-text-context",
+  "planVersion": "career-plan-v3-visible-checks",
+  "scope": "Real ASGI routes, isolated PostgreSQL, synthetic material, official DeepSeek",
+  "directions": [
+    {
+      "key": "backend-fastapi",
+      "category": "software",
+      "title": "合成多方向后端实习岗位",
+      "description": "合成后端实习岗位：要求使用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；提供异常请求的处理代码。\n演示注记，不是岗位要求：PASSWORD=\"synthetic-not-real-credential-tail\"",
+      "draft": {
+        "requirements": [
+          {
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37,
+            "evidenceRequest": "请提供使用 Python 编写的后端代码示例或项目仓库链接。",
+            "verificationQuestion": "请描述一个你用 Python 实现的后端功能，包括关键代码逻辑。",
+            "weightReason": "原文明确要求使用 Python，属于核心技能，建议权重 4。"
+          },
+          {
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "FastAPI",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37,
+            "evidenceRequest": "请提供使用 FastAPI 编写的接口代码或项目文档。",
+            "verificationQuestion": "请解释 FastAPI 中如何定义路由和处理请求参数。",
+            "weightReason": "原文明确要求使用 FastAPI，属于核心技能，建议权重 4。"
+          },
+          {
+            "rawText": "编写查询接口，包含输入校验与错误响应",
+            "skillName": "接口开发",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "编写查询接口，包含输入校验与错误响应",
+            "sourceStart": 31,
+            "sourceEnd": 49,
+            "evidenceRequest": "请提供你编写的查询接口代码，展示输入校验和错误响应处理。",
+            "verificationQuestion": "你如何设计一个查询接口的输入校验和错误响应？请举例说明。",
+            "weightReason": "原文明确要求编写查询接口，属于核心任务，建议权重 4。"
+          },
+          {
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "输入校验",
+            "weight": 3,
+            "isRequired": true,
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49,
+            "evidenceRequest": "请提供代码示例，展示如何对接口输入进行校验。",
+            "verificationQuestion": "在接口开发中，你通常如何实现输入校验？请举例。",
+            "weightReason": "原文明确要求输入校验，属于重要技能，建议权重 3。"
+          },
+          {
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "错误响应处理",
+            "weight": 3,
+            "isRequired": true,
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49,
+            "evidenceRequest": "请提供代码示例，展示如何设计错误响应。",
+            "verificationQuestion": "你如何设计接口的错误响应？请举例说明。",
+            "weightReason": "原文明确要求错误响应，属于重要技能，建议权重 3。"
+          },
+          {
+            "rawText": "提供异常请求的处理代码",
+            "skillName": "异常处理",
+            "weight": 3,
+            "isRequired": true,
+            "sourceQuote": "提供异常请求的处理代码",
+            "sourceStart": 50,
+            "sourceEnd": 61,
+            "evidenceRequest": "请提供处理异常请求的代码片段或项目示例。",
+            "verificationQuestion": "请描述你如何处理接口中的异常请求，并给出代码示例。",
+            "weightReason": "原文明确要求提供异常请求处理代码，属于重要技能，建议权重 3。"
+          }
+        ],
+        "model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 393,
+          "output_tokens": 769,
+          "cache_hit_tokens": 128,
+          "latency_ms": 3425
+        },
+        "confirmed": false
+      },
+      "createdStatus": "draft",
+      "job": {
+        "id": "fc37115b-e47c-4efc-9cc3-91962367c440",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向后端实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成后端实习岗位：要求使用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；提供异常请求的处理代码。\n演示注记，不是岗位要求：PASSWORD=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.567615Z",
+        "requirements": [
+          {
+            "id": "fdd6df21-27eb-40ed-9b17-fea449c6a8ea",
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "Python",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37
+          },
+          {
+            "id": "0578c95a-52fb-473d-9fc4-020a23af8d69",
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "FastAPI",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37
+          },
+          {
+            "id": "5bd4d3dd-850c-4ef3-9de1-e3767b0087f6",
+            "rawText": "编写查询接口，包含输入校验与错误响应",
+            "skillName": "接口开发",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "编写查询接口，包含输入校验与错误响应",
+            "sourceStart": 31,
+            "sourceEnd": 49
+          },
+          {
+            "id": "5a7e96fd-735b-48ab-80c0-d71158106e3b",
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "输入校验",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49
+          },
+          {
+            "id": "27ec23d6-98a7-40af-881a-7bfeb09385fe",
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "错误响应处理",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49
+          },
+          {
+            "id": "72d1d1fb-2a9c-429e-bc14-9ceba119018c",
+            "rawText": "提供异常请求的处理代码",
+            "skillName": "异常处理",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "提供异常请求的处理代码",
+            "sourceStart": 50,
+            "sourceEnd": 61
+          }
+        ]
+      },
+      "jobReloaded": {
+        "id": "fc37115b-e47c-4efc-9cc3-91962367c440",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向后端实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成后端实习岗位：要求使用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；提供异常请求的处理代码。\n演示注记，不是岗位要求：PASSWORD=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.567615Z",
+        "requirements": [
+          {
+            "id": "fdd6df21-27eb-40ed-9b17-fea449c6a8ea",
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "Python",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37
+          },
+          {
+            "id": "0578c95a-52fb-473d-9fc4-020a23af8d69",
+            "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skillName": "FastAPI",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+            "sourceStart": 9,
+            "sourceEnd": 37
+          },
+          {
+            "id": "5bd4d3dd-850c-4ef3-9de1-e3767b0087f6",
+            "rawText": "编写查询接口，包含输入校验与错误响应",
+            "skillName": "接口开发",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "编写查询接口，包含输入校验与错误响应",
+            "sourceStart": 31,
+            "sourceEnd": 49
+          },
+          {
+            "id": "5a7e96fd-735b-48ab-80c0-d71158106e3b",
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "输入校验",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49
+          },
+          {
+            "id": "27ec23d6-98a7-40af-881a-7bfeb09385fe",
+            "rawText": "包含输入校验与错误响应",
+            "skillName": "错误响应处理",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "包含输入校验与错误响应",
+            "sourceStart": 38,
+            "sourceEnd": 49
+          },
+          {
+            "id": "72d1d1fb-2a9c-429e-bc14-9ceba119018c",
+            "rawText": "提供异常请求的处理代码",
+            "skillName": "异常处理",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "提供异常请求的处理代码",
+            "sourceStart": 50,
+            "sourceEnd": 61
+          }
+        ]
+      }
+    },
+    {
+      "key": "sql-analysis",
+      "category": "data_analysis",
+      "title": "合成多方向数据分析实习岗位",
+      "description": "合成数据分析实习岗位：要求使用 SQL 编写订单数据的分组统计查询；提供订单表结构定义并汇总各城市金额。\n演示注记，不是岗位要求：TOKEN=\"synthetic-not-real-credential-tail\"",
+      "draft": {
+        "requirements": [
+          {
+            "rawText": "要求使用 SQL 编写订单数据的分组统计查询",
+            "skillName": "SQL",
+            "weight": 5,
+            "isRequired": true,
+            "sourceQuote": "要求使用 SQL 编写订单数据的分组统计查询",
+            "sourceStart": 11,
+            "sourceEnd": 33,
+            "evidenceRequest": "请提供候选人使用 SQL 编写分组统计查询的代码示例或项目说明。",
+            "verificationQuestion": "请描述一次你使用 SQL 进行分组统计查询的经历，包括查询目的、使用的分组字段和聚合函数。",
+            "weightReason": "原文明确要求使用 SQL 编写分组统计查询，属于核心技能，建议权重 5。"
+          },
+          {
+            "rawText": "提供订单表结构定义并汇总各城市金额",
+            "skillName": "数据汇总",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "提供订单表结构定义并汇总各城市金额",
+            "sourceStart": 34,
+            "sourceEnd": 51,
+            "evidenceRequest": "请提供候选人根据表结构汇总各城市金额的 SQL 查询或结果示例。",
+            "verificationQuestion": "给定订单表结构，你如何编写 SQL 查询来汇总各城市的订单总金额？请说明思路。",
+            "weightReason": "原文要求汇总各城市金额，是数据分析的核心任务，建议权重 4。"
+          }
+        ],
+        "model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 391,
+          "output_tokens": 303,
+          "cache_hit_tokens": 128,
+          "latency_ms": 1573
+        },
+        "confirmed": false
+      },
+      "createdStatus": "draft",
+      "job": {
+        "id": "f787eb8e-8244-4de6-8335-3f24a454f399",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向数据分析实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成数据分析实习岗位：要求使用 SQL 编写订单数据的分组统计查询；提供订单表结构定义并汇总各城市金额。\n演示注记，不是岗位要求：TOKEN=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "data_analysis",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.601656Z",
+        "requirements": [
+          {
+            "id": "6e6d3dcf-72ff-4c4c-886c-98200beb9eaa",
+            "rawText": "要求使用 SQL 编写订单数据的分组统计查询",
+            "skillName": "SQL",
+            "skillId": null,
+            "weight": 5,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 SQL 编写订单数据的分组统计查询",
+            "sourceStart": 11,
+            "sourceEnd": 33
+          },
+          {
+            "id": "acb7de04-520e-4021-957a-b90dfb29b702",
+            "rawText": "提供订单表结构定义并汇总各城市金额",
+            "skillName": "数据汇总",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "提供订单表结构定义并汇总各城市金额",
+            "sourceStart": 34,
+            "sourceEnd": 51
+          }
+        ]
+      },
+      "jobReloaded": {
+        "id": "f787eb8e-8244-4de6-8335-3f24a454f399",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向数据分析实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成数据分析实习岗位：要求使用 SQL 编写订单数据的分组统计查询；提供订单表结构定义并汇总各城市金额。\n演示注记，不是岗位要求：TOKEN=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "data_analysis",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.601656Z",
+        "requirements": [
+          {
+            "id": "6e6d3dcf-72ff-4c4c-886c-98200beb9eaa",
+            "rawText": "要求使用 SQL 编写订单数据的分组统计查询",
+            "skillName": "SQL",
+            "skillId": null,
+            "weight": 5,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 SQL 编写订单数据的分组统计查询",
+            "sourceStart": 11,
+            "sourceEnd": 33
+          },
+          {
+            "id": "acb7de04-520e-4021-957a-b90dfb29b702",
+            "rawText": "提供订单表结构定义并汇总各城市金额",
+            "skillName": "数据汇总",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "提供订单表结构定义并汇总各城市金额",
+            "sourceStart": 34,
+            "sourceEnd": 51
+          }
+        ]
+      }
+    },
+    {
+      "key": "test-ops",
+      "category": "operations",
+      "title": "合成多方向测试实习岗位",
+      "description": "合成测试实习岗位：要求使用 Python 和 pytest 为查询接口编写自动化测试与断言；覆盖参数校验的异常用例。\n演示注记，不是岗位要求：KEY=\"synthetic-not-real-credential-tail\"",
+      "draft": {
+        "requirements": [
+          {
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45,
+            "evidenceRequest": "请提供使用 Python 编写的自动化测试代码片段或项目说明，以证明 Python 编程能力。",
+            "verificationQuestion": "请描述一个你用 Python 编写自动化测试的场景，包括如何组织测试代码和运行测试。",
+            "weightReason": "原文明确要求使用 Python，属于核心技能，建议权重 4。"
+          },
+          {
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "pytest",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45,
+            "evidenceRequest": "请提供使用 pytest 编写的测试用例或测试报告，以证明 pytest 框架使用能力。",
+            "verificationQuestion": "请说明你如何使用 pytest 组织测试用例、使用断言以及运行测试。",
+            "weightReason": "原文明确要求使用 pytest，属于核心技能，建议权重 4。"
+          },
+          {
+            "rawText": "为查询接口编写自动化测试与断言",
+            "skillName": "接口测试",
+            "weight": 4,
+            "isRequired": true,
+            "sourceQuote": "为查询接口编写自动化测试与断言",
+            "sourceStart": 30,
+            "sourceEnd": 45,
+            "evidenceRequest": "请提供针对查询接口的自动化测试代码或测试用例设计文档。",
+            "verificationQuestion": "请描述你如何为查询接口设计自动化测试用例，包括正常和异常场景。",
+            "weightReason": "原文明确要求为查询接口编写自动化测试，属于核心任务，建议权重 4。"
+          },
+          {
+            "rawText": "覆盖参数校验的异常用例",
+            "skillName": "参数校验",
+            "weight": 3,
+            "isRequired": true,
+            "sourceQuote": "覆盖参数校验的异常用例",
+            "sourceStart": 46,
+            "sourceEnd": 57,
+            "evidenceRequest": "请提供包含参数校验异常用例的测试代码或测试用例列表。",
+            "verificationQuestion": "请举例说明你如何设计参数校验的异常用例，并验证接口的错误处理。",
+            "weightReason": "原文明确要求覆盖参数校验的异常用例，属于具体任务要求，建议权重 3。"
+          }
+        ],
+        "model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 394,
+          "output_tokens": 576,
+          "cache_hit_tokens": 128,
+          "latency_ms": 2247
+        },
+        "confirmed": false
+      },
+      "createdStatus": "draft",
+      "job": {
+        "id": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向测试实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成测试实习岗位：要求使用 Python 和 pytest 为查询接口编写自动化测试与断言；覆盖参数校验的异常用例。\n演示注记，不是岗位要求：KEY=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "operations",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.626038Z",
+        "requirements": [
+          {
+            "id": "fc5d8193-a6d2-4a3f-9d9f-da6362cefbe1",
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "Python",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45
+          },
+          {
+            "id": "f553311c-3d24-478b-8b76-5c9ab17eca68",
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "pytest",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45
+          },
+          {
+            "id": "133905b1-0fbb-472d-92fd-dcc6721d524b",
+            "rawText": "为查询接口编写自动化测试与断言",
+            "skillName": "接口测试",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "为查询接口编写自动化测试与断言",
+            "sourceStart": 30,
+            "sourceEnd": 45
+          },
+          {
+            "id": "94e60982-17f1-438f-bee6-8dfed3967b17",
+            "rawText": "覆盖参数校验的异常用例",
+            "skillName": "参数校验",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "覆盖参数校验的异常用例",
+            "sourceStart": 46,
+            "sourceEnd": 57
+          }
+        ]
+      },
+      "jobReloaded": {
+        "id": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+        "enterpriseId": "82cb16f4-de73-4900-b955-505b0b949b09",
+        "createdBy": "53d11e3e-1e67-42a6-9140-f2333ec524ac",
+        "title": "合成多方向测试实习岗位",
+        "companyName": "合成多方向验收企业",
+        "description": "合成测试实习岗位：要求使用 Python 和 pytest 为查询接口编写自动化测试与断言；覆盖参数校验的异常用例。\n演示注记，不是岗位要求：KEY=\"synthetic-not-real-credential-tail\"",
+        "status": "published",
+        "category": "operations",
+        "city": "深圳",
+        "employmentType": "internship",
+        "createdAt": "2026-09-27T10:30:42.626038Z",
+        "requirements": [
+          {
+            "id": "fc5d8193-a6d2-4a3f-9d9f-da6362cefbe1",
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "Python",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45
+          },
+          {
+            "id": "f553311c-3d24-478b-8b76-5c9ab17eca68",
+            "rawText": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skillName": "pytest",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "sourceStart": 9,
+            "sourceEnd": 45
+          },
+          {
+            "id": "133905b1-0fbb-472d-92fd-dcc6721d524b",
+            "rawText": "为查询接口编写自动化测试与断言",
+            "skillName": "接口测试",
+            "skillId": null,
+            "weight": 4,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "为查询接口编写自动化测试与断言",
+            "sourceStart": 30,
+            "sourceEnd": 45
+          },
+          {
+            "id": "94e60982-17f1-438f-bee6-8dfed3967b17",
+            "rawText": "覆盖参数校验的异常用例",
+            "skillName": "参数校验",
+            "skillId": null,
+            "weight": 3,
+            "isRequired": true,
+            "normalizedStatus": "pending",
+            "sourceQuote": "覆盖参数校验的异常用例",
+            "sourceStart": 46,
+            "sourceEnd": 57
+          }
+        ]
+      }
+    }
+  ],
+  "browserClicks": "not_run",
+  "billingVerified": false,
+  "humanSemanticReview": "pending",
+  "passed": false,
+  "stage": "database_verification",
+  "isolationSchema": "cp_eval_a356f6b1cc66465e98eaaa284406e30a",
+  "resumeVersionId": "6a8ec8e1-43dd-4f00-b18a-d035e3c8a5af",
+  "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+  "deniedStatuses": [
+    422,
+    403,
+    403,
+    422
+  ],
+  "jobsAfterDrafts": 0,
+  "plan": {
+    "primaryDirection": "operations",
+    "summary": "已用所选材料检索 3 个已发布岗位；前 3 个结果中，3 个岗位找到了项目证据。推荐顺序只表示当前材料与岗位要求的证据贴合度，不代表能力认证或录用概率。",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "6a8ec8e1-43dd-4f00-b18a-d035e3c8a5af",
+        "title": "合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "d79b5d6586639be5f54a337a03a0fa1974e4378e1b4f99431bc32c4a6eba102e"
+      },
+      {
+        "kind": "project",
+        "id": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+        "title": "合成多方向代码作品",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "5fd76161e792d3e1bc940bc547c2c7e88406f98a334851e38f21818acdc07284"
+      }
+    ],
+    "recommendations": [
+      {
+        "jobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+        "jobTitle": "合成多方向测试实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "operations",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 4,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "pytest",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "为查询接口编写自动化测试与断言",
+            "skill": "接口测试",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skill": "pytest",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skill": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "覆盖参数校验的异常用例",
+            "skill": "参数校验",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J1-E1",
+            "projectFileId": "0d811850-040c-4d8b-8745-00d3bdbc0b8e",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "pytest",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/test_api.py",
+            "lineStart": 4,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@pytest.mark.parametrize(\"raw_name,expected_status\", [(\"\", 400), (\"ada\", 200)])\ndef test_health_status(raw_name, expected_status):\n    response = call_health(raw_name)\n    assert response[\"status\"] == expected_status",
+            "contentHash": "eb0f5c534e516865ab2630e465910c6eab22d232a0e9907b6591f915d9b0d82e"
+          },
+          {
+            "citationId": "J1-E2",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "Python",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          }
+        ]
+      },
+      {
+        "jobId": "fc37115b-e47c-4efc-9cc3-91962367c440",
+        "jobTitle": "合成多方向后端实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 6,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "FastAPI",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "FastAPI",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "编写查询接口，包含输入校验与错误响应",
+            "skill": "接口开发",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "错误响应处理",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "输入校验",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "提供异常请求的处理代码",
+            "skill": "异常处理",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J3-E1",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "FastAPI",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          },
+          {
+            "citationId": "J3-E2",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "Python",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          }
+        ]
+      },
+      {
+        "jobId": "f787eb8e-8244-4de6-8335-3f24a454f399",
+        "jobTitle": "合成多方向数据分析实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "data_analysis",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "medium",
+        "assessedCount": 1,
+        "requirementCount": 2,
+        "supportedCount": 1,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "SQL"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 SQL 编写订单数据的分组统计查询",
+            "skill": "SQL",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "提供订单表结构定义并汇总各城市金额",
+            "skill": "数据汇总",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J2-E1",
+            "projectFileId": "708570d0-029a-4b49-89b2-7ad93f378201",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "SQL",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/orders.sql",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "CREATE TABLE orders (\n    order_id INTEGER PRIMARY KEY,\n    city VARCHAR(64) NOT NULL,\n    amount NUMERIC(12, 2) NOT NULL,\n    created_at TIMESTAMP NOT NULL\n);\n",
+            "contentHash": "2108ca5a719ca636050a044fde1a7093e0c7b528de7777be46c5fab96aaa7d19"
+          }
+        ]
+      }
+    ],
+    "planId": "082b0972-2f41-41e2-9de4-a8a0a7e2ead5",
+    "previousPlanId": null,
+    "aiPlan": {
+      "comparison": "三个岗位方向不同：一个是测试实习（operations），一个是后端实习（software），一个是数据分析实习（data_analysis）。测试岗要求用 Python 和 pytest 为查询接口写自动化测试与断言，并覆盖参数校验异常用例；后端岗要求用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；数据分析岗要求用 SQL 编写订单分组统计查询，并提供订单表结构定义并汇总各城市金额。当前材料中，测试岗可见 pytest 参数化测试片段和 FastAPI 路由中的参数校验分支；后端岗可见 FastAPI 路由和参数校验分支；数据分析岗可见订单表结构定义。三个岗位的规则判断中，部分要求暂不能判断，需要人工核对，不能据此说申请者缺乏能力。",
+      "focusJobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+      "advice": [
+        {
+          "jobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+          "reason": "当前材料展示了 pytest 参数化测试片段，对健康检查接口用空字符串和正常名字分别断言 400 和 200；同时展示了 FastAPI 路由中针对 name 参数的条件判断和 400 错误抛出。这些只能说明源码可见，不能证明实际响应、全部边界覆盖或测试通过。接口测试和参数校验异常用例的规则暂不能判断，需要人工核对。",
+          "keyGap": "缺少针对查询接口的完整自动化测试与断言，以及参数校验异常用例的覆盖记录；现有片段只覆盖健康检查接口的两个参数取值，未展示查询接口测试、异常边界和运行结果。",
+          "nextTask": "为查询接口补充一份 pytest 测试文件，覆盖参数校验异常用例，并保留可核验的运行记录。",
+          "taskPlan": {
+            "deliverable": "一份针对查询接口的 pytest 测试文件，包含参数校验异常用例和正常用例的断言。",
+            "steps": [
+              "确认查询接口的路径、参数和预期错误码。",
+              "编写 pytest 测试函数，用参数化覆盖空值、缺失、非法格式等异常输入。",
+              "为每个用例添加状态码和响应内容的断言。",
+              "在本地运行 pytest 并保存输出记录。"
+            ],
+            "acceptanceChecks": [
+              "提交测试文件，能看出覆盖了查询接口的参数校验异常用例。",
+              "提供 pytest 运行输出记录，显示用例执行结果。",
+              "断言中明确写出预期状态码和响应字段。"
+            ]
+          },
+          "citationIds": [
+            "J1-E1",
+            "J1-E2"
+          ]
+        },
+        {
+          "jobId": "fc37115b-e47c-4efc-9cc3-91962367c440",
+          "reason": "当前材料展示了 FastAPI 路由绑定和对应处理逻辑，其中包含对 name 参数的条件判断和 400 错误抛出，这支持接口实现描述；但接口开发、错误响应处理和输入校验的规则暂不能判断，需要人工核对。现有片段只展示了一个健康检查接口，未展示查询接口的完整实现、更多输入校验分支和错误响应覆盖。",
+          "keyGap": "缺少查询接口的完整实现，包括输入校验与错误响应的更多分支；现有片段只展示健康检查接口的参数校验，未展示查询接口本身。",
+          "nextTask": "补充一个查询接口的 FastAPI 实现文件，包含输入校验和错误响应，并保留可核验的接口调用记录。",
+          "taskPlan": {
+            "deliverable": "一份包含查询接口的 FastAPI 实现文件，展示路由绑定、输入校验和错误响应。",
+            "steps": [
+              "定义查询接口的路由和请求参数。",
+              "在函数内添加参数校验条件，对非法输入抛出带状态码的 HTTPException。",
+              "为正常输入返回结构化响应。",
+              "用本地请求或测试客户端调用接口并保存响应记录。"
+            ],
+            "acceptanceChecks": [
+              "提交实现文件，能看出查询接口的路由绑定和对应处理逻辑。",
+              "提供接口调用记录，显示正常和异常输入的响应状态码与内容。",
+              "错误响应中包含明确的状态码和错误信息。"
+            ]
+          },
+          "citationIds": [
+            "J3-E1",
+            "J3-E2"
+          ]
+        },
+        {
+          "jobId": "f787eb8e-8244-4de6-8335-3f24a454f399",
+          "reason": "当前材料展示了订单表结构定义，包含订单号、城市、金额和创建时间字段，这支持 SQL 表结构相关描述；但数据汇总的规则暂不能判断，需要人工核对。现有片段只有建表语句，未展示按城市分组汇总金额的查询语句和查询结果。",
+          "keyGap": "缺少按城市分组汇总订单金额的 SQL 查询，以及对应的查询结果记录；现有片段只展示表结构，未展示分组统计逻辑。",
+          "nextTask": "补充一条按城市分组汇总订单金额的 SQL 查询，并保留可核验的查询结果记录。",
+          "taskPlan": {
+            "deliverable": "一条按城市分组汇总订单金额的 SQL 查询语句，以及对应的查询结果记录。",
+            "steps": [
+              "基于订单表结构，写出按城市分组并汇总金额的查询。",
+              "在本地数据库或样例数据上执行查询。",
+              "保存查询语句和返回结果。"
+            ],
+            "acceptanceChecks": [
+              "提交 SQL 查询语句，能看出按城市分组并汇总金额。",
+              "提供查询结果记录，显示每个城市对应的汇总金额。",
+              "查询语句中引用的字段与订单表结构一致。"
+            ]
+          },
+          "citationIds": [
+            "J2-E1"
+          ]
+        }
+      ]
+    },
+    "aiFallbackUsed": false,
+    "aiStatus": "validated",
+    "aiModel": "deepseek-flash",
+    "aiUsage": {
+      "input_tokens": 1997,
+      "output_tokens": 1309,
+      "cache_hit_tokens": 384,
+      "latency_ms": 5959
+    },
+    "aiValidationIssues": [],
+    "changes": []
+  },
+  "planReloaded": {
+    "primaryDirection": "operations",
+    "summary": "已用所选材料检索 3 个已发布岗位；前 3 个结果中，3 个岗位找到了项目证据。推荐顺序只表示当前材料与岗位要求的证据贴合度，不代表能力认证或录用概率。",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "6a8ec8e1-43dd-4f00-b18a-d035e3c8a5af",
+        "title": "合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "d79b5d6586639be5f54a337a03a0fa1974e4378e1b4f99431bc32c4a6eba102e"
+      },
+      {
+        "kind": "project",
+        "id": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+        "title": "合成多方向代码作品",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "5fd76161e792d3e1bc940bc547c2c7e88406f98a334851e38f21818acdc07284"
+      }
+    ],
+    "recommendations": [
+      {
+        "jobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+        "jobTitle": "合成多方向测试实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "operations",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 4,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "pytest",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "为查询接口编写自动化测试与断言",
+            "skill": "接口测试",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skill": "pytest",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "要求使用 Python 和 pytest 为查询接口编写自动化测试与断言",
+            "skill": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "覆盖参数校验的异常用例",
+            "skill": "参数校验",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J1-E1",
+            "projectFileId": "0d811850-040c-4d8b-8745-00d3bdbc0b8e",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "pytest",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/test_api.py",
+            "lineStart": 4,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@pytest.mark.parametrize(\"raw_name,expected_status\", [(\"\", 400), (\"ada\", 200)])\ndef test_health_status(raw_name, expected_status):\n    response = call_health(raw_name)\n    assert response[\"status\"] == expected_status",
+            "contentHash": "eb0f5c534e516865ab2630e465910c6eab22d232a0e9907b6591f915d9b0d82e"
+          },
+          {
+            "citationId": "J1-E2",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "Python",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          }
+        ]
+      },
+      {
+        "jobId": "fc37115b-e47c-4efc-9cc3-91962367c440",
+        "jobTitle": "合成多方向后端实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 6,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "FastAPI",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "FastAPI",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "编写查询接口，包含输入校验与错误响应",
+            "skill": "接口开发",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "Python",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "错误响应处理",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "输入校验",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "提供异常请求的处理代码",
+            "skill": "异常处理",
+            "weight": 3,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J3-E1",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "FastAPI",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          },
+          {
+            "citationId": "J3-E2",
+            "projectFileId": "a6486ab0-26b3-41c9-bd6e-519e19eb940d",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "Python",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/app.py",
+            "lineStart": 6,
+            "lineEnd": 10,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(status_code=400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "993079867dfea26bcfb907e0d742aa7d694d74a3f36f6dbb2b716c4baedbc033"
+          }
+        ]
+      },
+      {
+        "jobId": "f787eb8e-8244-4de6-8335-3f24a454f399",
+        "jobTitle": "合成多方向数据分析实习岗位",
+        "companyName": "合成多方向验收企业",
+        "category": "data_analysis",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "medium",
+        "assessedCount": 1,
+        "requirementCount": 2,
+        "supportedCount": 1,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "SQL"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 SQL 编写订单数据的分组统计查询",
+            "skill": "SQL",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "提供订单表结构定义并汇总各城市金额",
+            "skill": "数据汇总",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J2-E1",
+            "projectFileId": "708570d0-029a-4b49-89b2-7ad93f378201",
+            "projectVersionId": "d987c3b0-1395-473e-bb80-d70fb2deab54",
+            "skill": "SQL",
+            "filePath": "d987c3b0-1395-473e-bb80-d70fb2deab54/orders.sql",
+            "lineStart": 1,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "CREATE TABLE orders (\n    order_id INTEGER PRIMARY KEY,\n    city VARCHAR(64) NOT NULL,\n    amount NUMERIC(12, 2) NOT NULL,\n    created_at TIMESTAMP NOT NULL\n);\n",
+            "contentHash": "2108ca5a719ca636050a044fde1a7093e0c7b528de7777be46c5fab96aaa7d19"
+          }
+        ]
+      }
+    ],
+    "planId": "082b0972-2f41-41e2-9de4-a8a0a7e2ead5",
+    "previousPlanId": null,
+    "aiPlan": {
+      "comparison": "三个岗位方向不同：一个是测试实习（operations），一个是后端实习（software），一个是数据分析实习（data_analysis）。测试岗要求用 Python 和 pytest 为查询接口写自动化测试与断言，并覆盖参数校验异常用例；后端岗要求用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；数据分析岗要求用 SQL 编写订单分组统计查询，并提供订单表结构定义并汇总各城市金额。当前材料中，测试岗可见 pytest 参数化测试片段和 FastAPI 路由中的参数校验分支；后端岗可见 FastAPI 路由和参数校验分支；数据分析岗可见订单表结构定义。三个岗位的规则判断中，部分要求暂不能判断，需要人工核对，不能据此说申请者缺乏能力。",
+      "focusJobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+      "advice": [
+        {
+          "jobId": "1738c46d-6c3b-4fd3-a315-f0a2a2f3e4b8",
+          "reason": "当前材料展示了 pytest 参数化测试片段，对健康检查接口用空字符串和正常名字分别断言 400 和 200；同时展示了 FastAPI 路由中针对 name 参数的条件判断和 400 错误抛出。这些只能说明源码可见，不能证明实际响应、全部边界覆盖或测试通过。接口测试和参数校验异常用例的规则暂不能判断，需要人工核对。",
+          "keyGap": "缺少针对查询接口的完整自动化测试与断言，以及参数校验异常用例的覆盖记录；现有片段只覆盖健康检查接口的两个参数取值，未展示查询接口测试、异常边界和运行结果。",
+          "nextTask": "为查询接口补充一份 pytest 测试文件，覆盖参数校验异常用例，并保留可核验的运行记录。",
+          "taskPlan": {
+            "deliverable": "一份针对查询接口的 pytest 测试文件，包含参数校验异常用例和正常用例的断言。",
+            "steps": [
+              "确认查询接口的路径、参数和预期错误码。",
+              "编写 pytest 测试函数，用参数化覆盖空值、缺失、非法格式等异常输入。",
+              "为每个用例添加状态码和响应内容的断言。",
+              "在本地运行 pytest 并保存输出记录。"
+            ],
+            "acceptanceChecks": [
+              "提交测试文件，能看出覆盖了查询接口的参数校验异常用例。",
+              "提供 pytest 运行输出记录，显示用例执行结果。",
+              "断言中明确写出预期状态码和响应字段。"
+            ]
+          },
+          "citationIds": [
+            "J1-E1",
+            "J1-E2"
+          ]
+        },
+        {
+          "jobId": "fc37115b-e47c-4efc-9cc3-91962367c440",
+          "reason": "当前材料展示了 FastAPI 路由绑定和对应处理逻辑，其中包含对 name 参数的条件判断和 400 错误抛出，这支持接口实现描述；但接口开发、错误响应处理和输入校验的规则暂不能判断，需要人工核对。现有片段只展示了一个健康检查接口，未展示查询接口的完整实现、更多输入校验分支和错误响应覆盖。",
+          "keyGap": "缺少查询接口的完整实现，包括输入校验与错误响应的更多分支；现有片段只展示健康检查接口的参数校验，未展示查询接口本身。",
+          "nextTask": "补充一个查询接口的 FastAPI 实现文件，包含输入校验和错误响应，并保留可核验的接口调用记录。",
+          "taskPlan": {
+            "deliverable": "一份包含查询接口的 FastAPI 实现文件，展示路由绑定、输入校验和错误响应。",
+            "steps": [
+              "定义查询接口的路由和请求参数。",
+              "在函数内添加参数校验条件，对非法输入抛出带状态码的 HTTPException。",
+              "为正常输入返回结构化响应。",
+              "用本地请求或测试客户端调用接口并保存响应记录。"
+            ],
+            "acceptanceChecks": [
+              "提交实现文件，能看出查询接口的路由绑定和对应处理逻辑。",
+              "提供接口调用记录，显示正常和异常输入的响应状态码与内容。",
+              "错误响应中包含明确的状态码和错误信息。"
+            ]
+          },
+          "citationIds": [
+            "J3-E1",
+            "J3-E2"
+          ]
+        },
+        {
+          "jobId": "f787eb8e-8244-4de6-8335-3f24a454f399",
+          "reason": "当前材料展示了订单表结构定义，包含订单号、城市、金额和创建时间字段，这支持 SQL 表结构相关描述；但数据汇总的规则暂不能判断，需要人工核对。现有片段只有建表语句，未展示按城市分组汇总金额的查询语句和查询结果。",
+          "keyGap": "缺少按城市分组汇总订单金额的 SQL 查询，以及对应的查询结果记录；现有片段只展示表结构，未展示分组统计逻辑。",
+          "nextTask": "补充一条按城市分组汇总订单金额的 SQL 查询，并保留可核验的查询结果记录。",
+          "taskPlan": {
+            "deliverable": "一条按城市分组汇总订单金额的 SQL 查询语句，以及对应的查询结果记录。",
+            "steps": [
+              "基于订单表结构，写出按城市分组并汇总金额的查询。",
+              "在本地数据库或样例数据上执行查询。",
+              "保存查询语句和返回结果。"
+            ],
+            "acceptanceChecks": [
+              "提交 SQL 查询语句，能看出按城市分组并汇总金额。",
+              "提供查询结果记录，显示每个城市对应的汇总金额。",
+              "查询语句中引用的字段与订单表结构一致。"
+            ]
+          },
+          "citationIds": [
+            "J2-E1"
+          ]
+        }
+      ]
+    },
+    "aiFallbackUsed": false,
+    "aiStatus": "validated",
+    "aiModel": "deepseek-flash",
+    "aiUsage": {
+      "input_tokens": 1997,
+      "output_tokens": 1309,
+      "cache_hit_tokens": 384,
+      "latency_ms": 5959
+    },
+    "aiValidationIssues": [],
+    "changes": []
+  },
+  "planEvidenceExact": true,
+  "directionEvidenceCounts": {
+    "software": 2,
+    "data_analysis": 1,
+    "operations": 2
+  },
+  "preparedContextsSafe": false,
+  "rawPreparedContextContainsCredential": {
+    "enterpriseDrafts": [
+      true,
+      true,
+      true
+    ],
+    "student": true
+  },
+  "planTaskId": "082b0972-2f41-41e2-9de4-a8a0a7e2ead5",
+  "draftTaskIds": [
+    "85edd875-0e1d-49a2-a300-c5c7afb965db",
+    "77404499-37c5-4d3a-8865-053665d30d2c",
+    "fb85f550-ac98-43d7-9eff-31c7d1b5ed8c"
+  ],
+  "usage": [
+    {
+      "taskType": "job_draft",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 393,
+      "outputTokens": 769,
+      "cacheHitTokens": 128,
+      "latencyMs": 3425
+    },
+    {
+      "taskType": "job_draft",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 391,
+      "outputTokens": 303,
+      "cacheHitTokens": 128,
+      "latencyMs": 1573
+    },
+    {
+      "taskType": "job_draft",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 394,
+      "outputTokens": 576,
+      "cacheHitTokens": 128,
+      "latencyMs": 2247
+    },
+    {
+      "taskType": "career_plan",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 1997,
+      "outputTokens": 1309,
+      "cacheHitTokens": 384,
+      "latencyMs": 5959
+    }
+  ],
+  "temporarySchemaRemoved": true,
+  "errorType": "TypeError"
+}

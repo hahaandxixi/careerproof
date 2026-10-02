@@ -1,0 +1,293 @@
+[
+  {
+    "id": "fastapi-health-execution",
+    "direction": "后端接口",
+    "requirement": "实现 FastAPI 健康检查接口并说明响应",
+    "skill": "FastAPI",
+    "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+    "files": [
+      {
+        "path": "app.py",
+        "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+      }
+    ],
+    "gapKind": "execution",
+    "qualityRubric": "产物必须能定位路由、请求方式、响应样例和运行环境；不能把源码当作运行结果。",
+    "referenceDraft": {
+      "deliverable": "具名健康检查请求与响应记录",
+      "steps": [
+        "启动本地服务并请求 /health",
+        "保存脱敏请求、响应状态和响应体"
+      ],
+      "acceptanceChecks": [
+        "记录能对应 app.py 的路由",
+        "响应状态与来源版本可定位"
+      ]
+    },
+    "knownBadDrafts": [
+      {
+        "id": "repeat-source",
+        "defect": "把完整函数源码再次当作补证材料",
+        "draft": {
+          "deliverable": "具名运行记录",
+          "steps": ["再次提交该文件原文"],
+          "acceptanceChecks": ["代码可定位"]
+        },
+        "expectedContractRejection": true
+      }
+    ]
+  },
+  {
+    "id": "python-sum-runtime",
+    "direction": "后端运行",
+    "requirement": "实现 Python 数值汇总函数并保存输入输出记录",
+    "skill": "Python",
+    "resume": "熟悉 Python 数据处理和接口开发。",
+    "files": [
+      {
+        "path": "metrics.py",
+        "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+      }
+    ],
+    "gapKind": "execution",
+    "qualityRubric": "先证明输入约束和函数边界，再补充可复现运行记录；执行结果必须与版本绑定。",
+    "referenceDraft": {
+      "deliverable": "total 函数的脱敏输入输出记录",
+      "steps": [
+        "使用正常数字和非法输入各运行一次",
+        "保存异常类型、输出和代码版本"
+      ],
+      "acceptanceChecks": [
+        "正常输入的输出可复算",
+        "非法输入的异常与源码校验一致"
+      ]
+    },
+    "knownBadDrafts": [
+      {
+        "id": "repeat-source",
+        "defect": "重复上传已经完整展示的函数",
+        "draft": {
+          "deliverable": "函数源码",
+          "steps": ["再次提交该函数源码"],
+          "acceptanceChecks": ["代码可定位"]
+        },
+        "expectedContractRejection": true
+      }
+    ]
+  },
+  {
+    "id": "postgres-query-execution",
+    "direction": "数据访问",
+    "requirement": "使用 PostgreSQL 查询订单并记录边界输入结果",
+    "skill": "PostgreSQL",
+    "resume": "使用 Python 和 PostgreSQL 完成过数据服务。",
+    "files": [
+      {
+        "path": "orders.py",
+        "content": "import psycopg\n\ndef list_orders(connection, user_id):\n    with connection.cursor() as cursor:\n        cursor.execute('SELECT id FROM orders WHERE user_id = %s', (user_id,))\n        return cursor.fetchall()\n"
+      }
+    ],
+    "gapKind": "execution",
+    "qualityRubric": "补证应包含查询条件、参数化方式、空结果和异常处理记录；不能只凭 SQL 文本声称查询成功。",
+    "referenceDraft": {
+      "deliverable": "订单查询的脱敏执行记录",
+      "steps": [
+        "准备有数据和无数据的测试用户",
+        "保存查询参数、返回行数和异常处理结果"
+      ],
+      "acceptanceChecks": [
+        "参数化占位符和输入值可对应",
+        "空结果与异常路径都有记录"
+      ]
+    },
+    "knownBadDrafts": []
+  },
+  {
+    "id": "pytest-regression",
+    "direction": "测试验证",
+    "requirement": "使用 pytest 覆盖汇总函数的正常和异常输入",
+    "skill": "pytest",
+    "resume": "使用 Python 和 pytest 编写过回归测试。",
+    "files": [
+      {
+        "path": "test_metrics.py",
+        "content": "import pytest\nfrom metrics import total\n\ndef test_total_numbers():\n    assert total([1, 2, 3]) == 6\n\ndef test_total_rejects_text():\n    with pytest.raises(TypeError):\n        total([1, 'x'])\n"
+      }
+    ],
+    "gapKind": "execution",
+    "qualityRubric": "测试补证需要报告命令、通过数量、失败输出和测试文件版本；源码本身不等于运行通过。",
+    "referenceDraft": {
+      "deliverable": "pytest 回归命令与结果摘要",
+      "steps": [
+        "在固定依赖环境执行 pytest -q test_metrics.py",
+        "保存通过数量和失败时的最小输出"
+      ],
+      "acceptanceChecks": [
+        "命令能定位到测试文件",
+        "通过结果与提交版本可对应"
+      ]
+    },
+    "knownBadDrafts": []
+  },
+  {
+    "id": "content-operations-review",
+    "direction": "内容运营",
+    "requirement": "制定内容运营发布计划并用数据复盘",
+    "skill": "内容运营",
+    "resume": "参与过内容运营和活动宣传。",
+    "files": [
+      {
+        "path": "content_plan.md",
+        "content": "# 内容运营计划\n\n目标用户：校园求职者\n选题：简历证据核验\n渠道：公众号和社群\n指标：阅读、点击、转化\n复盘：按周记录数据并调整选题\n"
+      }
+    ],
+    "gapKind": "review",
+    "qualityRubric": "需要把目标、选题、渠道、指标和复盘动作连成可检查闭环；计划文本不能代替真实数据。",
+    "referenceDraft": {
+      "deliverable": "一周内容发布与数据复盘表",
+      "steps": [
+        "按计划发布一篇内容并标记渠道",
+        "记录阅读、点击和转化数据",
+        "根据结果写出下一周调整项"
+      ],
+      "acceptanceChecks": [
+        "每项数据都有统计口径",
+        "调整项能引用本周数据"
+      ]
+    },
+    "knownBadDrafts": []
+  },
+  {
+    "id": "event-planning-budget",
+    "direction": "活动策划",
+    "requirement": "完成活动策划、预算排期和现场复盘",
+    "skill": "活动策划",
+    "resume": "做过校园活动策划和运营策划。",
+    "files": [
+      {
+        "path": "event.md",
+        "content": "# 活动策划\n\n目标：帮助学生完成简历核验\n流程：报名、分享、答疑、回收反馈\n预算：场地、物料、奖品\n排期：预热、执行、复盘\n复盘指标：到场率、完成率、满意度\n"
+      }
+    ],
+    "gapKind": "contribution",
+    "qualityRubric": "交付物应能核对预算、排期、风险和实际复盘；策划案只说明方案，不直接证明活动已执行。",
+    "referenceDraft": {
+      "deliverable": "活动执行清单和复盘记录",
+      "steps": [
+        "按排期完成报名和现场流程",
+        "保存预算使用与风险处理记录",
+        "收集到场率和满意度并复盘"
+      ],
+      "acceptanceChecks": [
+        "预算项目与实际票据可对应",
+        "复盘指标含统计范围和时间"
+      ]
+    },
+    "knownBadDrafts": []
+  },
+  {
+    "id": "docker-service-start",
+    "direction": "部署运维",
+    "requirement": "使用 Docker 启动服务并记录健康检查",
+    "skill": "Docker",
+    "resume": "了解 Docker 容器化部署。",
+    "files": [
+      {
+        "path": "Dockerfile",
+        "content": "FROM python:3.12-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD ['python', 'app.py']\n"
+      }
+    ],
+    "gapKind": "execution",
+    "qualityRubric": "需要记录镜像构建、容器启动、端口和健康检查；Dockerfile 文本不能单独证明服务运行。",
+    "referenceDraft": {
+      "deliverable": "容器构建与健康检查记录",
+      "steps": [
+        "构建具名镜像并记录版本",
+        "启动容器并保存端口映射",
+        "请求健康检查并保存响应"
+      ],
+      "acceptanceChecks": [
+        "容器日志与镜像版本可对应",
+        "健康检查响应含时间和环境"
+      ]
+    },
+    "knownBadDrafts": []
+  },
+  {
+    "id": "redis-unimplemented-first",
+    "direction": "缓存实现",
+    "requirement": "实现 Redis 缓存读写并记录运行结果",
+    "skill": "Redis",
+    "resume": "了解 Redis 缓存。",
+    "files": [
+      {
+        "path": "README.md",
+        "content": "# 合成项目边界\n\nRedis 未实现，当前只有缓存需求说明。\n尚无客户端调用、缓存读写代码或运行记录。\n"
+      }
+    ],
+    "gapKind": "implementation",
+    "qualityRubric": "材料明确说明未实现缓存；任务须先给出可定位的读写实现，再要求运行记录。",
+    "referenceDraft": {
+      "deliverable": "Redis 读写实现片段及后续运行记录",
+      "steps": [
+        "补充 Redis 客户端调用和读写处理代码",
+        "在受控环境执行读写并保存脱敏输出"
+      ],
+      "acceptanceChecks": [
+        "代码展示键的写入、读取和异常处理",
+        "运行记录与实现版本可对应"
+      ]
+    },
+    "knownBadDrafts": [
+      {
+        "id": "runtime-without-implementation",
+        "defect": "材料明确未实现，却只要求运行输出",
+        "draft": {
+          "deliverable": "Redis 运行日志",
+          "steps": ["执行缓存读写并保存输出"],
+          "acceptanceChecks": ["日志显示返回状态"]
+        },
+        "expectedContractRejection": true
+      }
+    ]
+  },
+  {
+    "id": "python-claim-review",
+    "direction": "能力复核",
+    "requirement": "复核 Python 函数的输入边界并提出可验证修订",
+    "skill": "Python",
+    "resume": "熟悉 Python，能够处理输入校验和异常分支。",
+    "files": [
+      {
+        "path": "normalize.py",
+        "content": "def normalize(value):\n    if value is None:\n        return ''\n    return value.strip()\n"
+      }
+    ],
+    "gapKind": "review",
+    "qualityRubric": "复核要区分可见实现、未覆盖边界和拟议修订；不能把简历声明或计划文本当成已完成结果。",
+    "referenceDraft": {
+      "deliverable": "输入边界复核表与修订后测试计划",
+      "steps": [
+        "列出 None、空字符串和非字符串输入",
+        "保存当前行为和待修订行为的差异",
+        "补充对应测试用例并标记执行状态"
+      ],
+      "acceptanceChecks": [
+        "每个边界都有预期行为",
+        "测试状态明确区分已执行和待执行"
+      ]
+    },
+    "knownBadDrafts": [
+      {
+        "id": "repeat-source",
+        "defect": "将完整函数再次提交作为复核结果",
+        "draft": {
+          "deliverable": "输入边界复核表",
+          "steps": ["重新上传当前函数实现代码"],
+          "acceptanceChecks": ["代码可定位"]
+        },
+        "expectedContractRejection": true
+      }
+    ]
+  }
+]

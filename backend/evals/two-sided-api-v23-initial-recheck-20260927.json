@@ -1,0 +1,21 @@
+{
+  "originalSha256": "b9ea0b6aa96113ab22a05bab4988a577b64829f47bf8ede748de7445a9d44fcd",
+  "checksWithVisibleFacts": {
+    "consentAndRoleRejected": true,
+    "noAutomaticPublication": true,
+    "draftQuotesExact": true,
+    "enterpriseVerificationGuidance": true,
+    "confirmedPublishedSourcePreserved": true,
+    "exactSyntheticSources": true,
+    "visibleChecksConsistent": false,
+    "studentAiValidated": true,
+    "onlySyntheticJobAndMaterials": true,
+    "citedActionableTasks": true,
+    "planReloadStable": true,
+    "ownerIsolation": true,
+    "exactlyTwoOfficialUsageRows": true,
+    "textCredentialAbsentFromPreparedContexts": true
+  },
+  "passed": false,
+  "boundary": "Bounded syntax conflict check; no human entailment score or new calls."
+}

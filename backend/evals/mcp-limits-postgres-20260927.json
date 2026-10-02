@@ -1,0 +1,37 @@
+{
+  "externalModelCalls": 0,
+  "reportId": "19148e76-c521-4cf7-88a6-6436a356ed21",
+  "grants": [
+    {
+      "id": "078e3473-699f-493c-afd3-a3823a14b9bb",
+      "revoked": true
+    },
+    {
+      "id": "10513092-9d39-483f-b3da-e63762ae3887",
+      "revoked": true
+    }
+  ],
+  "concurrency": {
+    "requests": 48,
+    "concurrency": 8,
+    "httpStatuses": {
+      "200": 40,
+      "429": 8
+    },
+    "auditStatuses": {
+      "completed": 40,
+      "limit_rejected": 8
+    },
+    "elapsedMs": 1438,
+    "passed": true
+  },
+  "expiresWhileWaiting": {
+    "postgresLockWaitObserved": false,
+    "httpStatus": 401,
+    "expiredAudit": true,
+    "resultAbsent": true,
+    "passed": false
+  },
+  "passed": false,
+  "generatedAt": "2026-09-27T05:49:15.232691+00:00"
+}

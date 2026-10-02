@@ -1,0 +1,584 @@
+{
+  "generatedAt": "2026-09-27T08:46:00.604040+00:00",
+  "promptVersion": "evidence-trust-v23-private-text-context",
+  "planVersion": "career-plan-v3-visible-checks",
+  "scope": "Real ASGI routes, isolated PostgreSQL, synthetic material, official DeepSeek",
+  "passed": false,
+  "browserClicks": "not_run",
+  "billingVerified": false,
+  "humanSemanticReview": "pending",
+  "stage": "complete",
+  "isolationSchema": "cp_eval_9a558de885b94ac485f67b05de3528b1",
+  "resumeVersionId": "15a93a01-f4cb-46a0-b59c-5a074e8db973",
+  "projectVersionId": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+  "deniedStatuses": [
+    422,
+    403,
+    403,
+    422
+  ],
+  "draft": {
+    "requirements": [
+      {
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "Python",
+        "weight": 5,
+        "isRequired": true,
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37,
+        "evidenceRequest": "请提供使用 Python 编写的后端代码片段或项目仓库链接，以证明 Python 编程能力。",
+        "verificationQuestion": "请描述一个你用 Python 实现的后端功能，并说明关键实现思路。",
+        "weightReason": "原文明确要求使用 Python，属于核心必备技能，建议权重 5。"
+      },
+      {
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "FastAPI",
+        "weight": 5,
+        "isRequired": true,
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37,
+        "evidenceRequest": "请提供使用 FastAPI 编写的接口代码或项目仓库链接，以证明 FastAPI 使用经验。",
+        "verificationQuestion": "请说明你在 FastAPI 中如何定义路由和处理请求参数。",
+        "weightReason": "原文明确要求使用 FastAPI，属于核心必备技能，建议权重 5。"
+      },
+      {
+        "rawText": "编写查询接口",
+        "skillName": "查询接口开发",
+        "weight": 4,
+        "isRequired": true,
+        "sourceQuote": "编写查询接口",
+        "sourceStart": 31,
+        "sourceEnd": 37,
+        "evidenceRequest": "请提供你开发过的查询接口代码或接口文档示例。",
+        "verificationQuestion": "请描述一个你设计的查询接口，包括请求参数、返回结构和业务逻辑。",
+        "weightReason": "原文明确要求编写查询接口，属于核心任务，建议权重 4。"
+      },
+      {
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "输入校验",
+        "weight": 4,
+        "isRequired": true,
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49,
+        "evidenceRequest": "请提供包含输入校验逻辑的代码片段或测试用例。",
+        "verificationQuestion": "在接口开发中，你如何实现输入校验？请举例说明。",
+        "weightReason": "原文明确要求输入校验，属于接口开发的重要环节，建议权重 4。"
+      },
+      {
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "错误响应处理",
+        "weight": 4,
+        "isRequired": true,
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49,
+        "evidenceRequest": "请提供错误响应处理的代码示例或接口返回错误信息的截图。",
+        "verificationQuestion": "请说明你如何设计接口的错误响应，包括状态码和错误信息格式。",
+        "weightReason": "原文明确要求错误响应，属于接口开发的重要环节，建议权重 4。"
+      },
+      {
+        "rawText": "提供正常和异常请求的接口测试代码及运行记录",
+        "skillName": "接口测试",
+        "weight": 4,
+        "isRequired": true,
+        "sourceQuote": "提供正常和异常请求的接口测试代码及运行记录",
+        "sourceStart": 50,
+        "sourceEnd": 71,
+        "evidenceRequest": "请提供接口测试代码（如 pytest 测试文件）及测试运行记录（如日志或截图）。",
+        "verificationQuestion": "请描述你如何为接口编写正常和异常请求的测试用例，并如何记录测试结果。",
+        "weightReason": "原文明确要求提供接口测试代码及运行记录，属于核心任务，建议权重 4。"
+      }
+    ],
+    "model": "deepseek-flash",
+    "usage": {
+      "input_tokens": 400,
+      "output_tokens": 819,
+      "cache_hit_tokens": 256,
+      "latency_ms": 3296
+    },
+    "confirmed": false
+  },
+  "jobsAfterDraft": 0,
+  "createdStatus": "draft",
+  "job": {
+    "id": "37d94fea-a9e3-4a1c-b54e-a8a8f413817e",
+    "enterpriseId": "51f8d8c7-fb5f-4e37-a0c4-49d27c352f71",
+    "createdBy": "d4b76417-0dbe-49b0-a41b-47da5b1a9159",
+    "title": "合成后端实习岗位",
+    "companyName": "合成API验收企业",
+    "description": "合成后端实习岗位：要求使用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；提供正常和异常请求的接口测试代码及运行记录。\n演示注记，不是岗位要求：PASSWORD=\"synthetic-not-real-credential-tail\"",
+    "status": "published",
+    "category": "software",
+    "city": "深圳",
+    "employmentType": "internship",
+    "createdAt": "2026-09-27T08:46:05.252650Z",
+    "requirements": [
+      {
+        "id": "ce817b71-488f-486c-9b6f-0d9042249c83",
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "Python",
+        "skillId": null,
+        "weight": 5,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37
+      },
+      {
+        "id": "26671308-82a3-489e-bf86-bcbd467305d9",
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "FastAPI",
+        "skillId": null,
+        "weight": 5,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37
+      },
+      {
+        "id": "8ccc8994-db25-4075-aa4e-5ef8144707a2",
+        "rawText": "编写查询接口",
+        "skillName": "查询接口开发",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "编写查询接口",
+        "sourceStart": 31,
+        "sourceEnd": 37
+      },
+      {
+        "id": "2e71cf5d-09f7-4fdf-8e08-e0a30c9ad34d",
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "输入校验",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49
+      },
+      {
+        "id": "aa750e4c-cd7e-42a5-afa2-7efabdc936aa",
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "错误响应处理",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49
+      },
+      {
+        "id": "c9ea3b7c-92e9-4836-8a29-779b1f80c388",
+        "rawText": "提供正常和异常请求的接口测试代码及运行记录",
+        "skillName": "接口测试",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "提供正常和异常请求的接口测试代码及运行记录",
+        "sourceStart": 50,
+        "sourceEnd": 71
+      }
+    ]
+  },
+  "jobReloaded": {
+    "id": "37d94fea-a9e3-4a1c-b54e-a8a8f413817e",
+    "enterpriseId": "51f8d8c7-fb5f-4e37-a0c4-49d27c352f71",
+    "createdBy": "d4b76417-0dbe-49b0-a41b-47da5b1a9159",
+    "title": "合成后端实习岗位",
+    "companyName": "合成API验收企业",
+    "description": "合成后端实习岗位：要求使用 Python 和 FastAPI 编写查询接口，包含输入校验与错误响应；提供正常和异常请求的接口测试代码及运行记录。\n演示注记，不是岗位要求：PASSWORD=\"synthetic-not-real-credential-tail\"",
+    "status": "published",
+    "category": "software",
+    "city": "深圳",
+    "employmentType": "internship",
+    "createdAt": "2026-09-27T08:46:05.252650Z",
+    "requirements": [
+      {
+        "id": "ce817b71-488f-486c-9b6f-0d9042249c83",
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "Python",
+        "skillId": null,
+        "weight": 5,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37
+      },
+      {
+        "id": "26671308-82a3-489e-bf86-bcbd467305d9",
+        "rawText": "要求使用 Python 和 FastAPI 编写查询接口",
+        "skillName": "FastAPI",
+        "skillId": null,
+        "weight": 5,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "要求使用 Python 和 FastAPI 编写查询接口",
+        "sourceStart": 9,
+        "sourceEnd": 37
+      },
+      {
+        "id": "8ccc8994-db25-4075-aa4e-5ef8144707a2",
+        "rawText": "编写查询接口",
+        "skillName": "查询接口开发",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "编写查询接口",
+        "sourceStart": 31,
+        "sourceEnd": 37
+      },
+      {
+        "id": "2e71cf5d-09f7-4fdf-8e08-e0a30c9ad34d",
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "输入校验",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49
+      },
+      {
+        "id": "aa750e4c-cd7e-42a5-afa2-7efabdc936aa",
+        "rawText": "包含输入校验与错误响应",
+        "skillName": "错误响应处理",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "包含输入校验与错误响应",
+        "sourceStart": 38,
+        "sourceEnd": 49
+      },
+      {
+        "id": "c9ea3b7c-92e9-4836-8a29-779b1f80c388",
+        "rawText": "提供正常和异常请求的接口测试代码及运行记录",
+        "skillName": "接口测试",
+        "skillId": null,
+        "weight": 4,
+        "isRequired": true,
+        "normalizedStatus": "pending",
+        "sourceQuote": "提供正常和异常请求的接口测试代码及运行记录",
+        "sourceStart": 50,
+        "sourceEnd": 71
+      }
+    ]
+  },
+  "plan": {
+    "primaryDirection": "software",
+    "summary": "已用所选材料检索 1 个已发布岗位；前 1 个结果中，1 个岗位找到了项目证据。推荐顺序只表示当前材料与岗位要求的证据贴合度，不代表能力认证或录用概率。",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "15a93a01-f4cb-46a0-b59c-5a074e8db973",
+        "title": "合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "d79b5d6586639be5f54a337a03a0fa1974e4378e1b4f99431bc32c4a6eba102e"
+      },
+      {
+        "kind": "project",
+        "id": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+        "title": "合成代码作品",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "d62f01fc1f148824c31d0f87df83c85690c81dcf9c83c4b360fba9ea674f935e"
+      }
+    ],
+    "recommendations": [
+      {
+        "jobId": "37d94fea-a9e3-4a1c-b54e-a8a8f413817e",
+        "jobTitle": "合成后端实习岗位",
+        "companyName": "合成API验收企业",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 6,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "FastAPI",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "FastAPI",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "Python",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "输入校验",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "编写查询接口",
+            "skill": "查询接口开发",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "错误响应处理",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "提供正常和异常请求的接口测试代码及运行记录",
+            "skill": "接口测试",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J1-E1",
+            "projectFileId": "cd09ed17-e8bf-4df4-85f6-04b8df352257",
+            "projectVersionId": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+            "skill": "FastAPI",
+            "filePath": "e38fd03a-d630-4ea6-b78a-07cc62df8e54/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "2924ca79c8ee5aa5821d8b8bb97da5502a9c814a14a726c77cab6d964716bfdc"
+          },
+          {
+            "citationId": "J1-E2",
+            "projectFileId": "cd09ed17-e8bf-4df4-85f6-04b8df352257",
+            "projectVersionId": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+            "skill": "Python",
+            "filePath": "e38fd03a-d630-4ea6-b78a-07cc62df8e54/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "2924ca79c8ee5aa5821d8b8bb97da5502a9c814a14a726c77cab6d964716bfdc"
+          }
+        ]
+      }
+    ],
+    "planId": "017e9673-1879-4bd7-912d-509e465fe66a",
+    "previousPlanId": null,
+    "aiPlan": null,
+    "aiFallbackUsed": true,
+    "aiStatus": "visible_code_fact_conflict",
+    "aiModel": null,
+    "aiUsage": {
+      "input_tokens": 1126,
+      "output_tokens": 524,
+      "cache_hit_tokens": 0,
+      "latency_ms": 3171
+    },
+    "changes": []
+  },
+  "planReloaded": {
+    "primaryDirection": "software",
+    "summary": "已用所选材料检索 1 个已发布岗位；前 1 个结果中，1 个岗位找到了项目证据。推荐顺序只表示当前材料与岗位要求的证据贴合度，不代表能力认证或录用概率。",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "15a93a01-f4cb-46a0-b59c-5a074e8db973",
+        "title": "合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "d79b5d6586639be5f54a337a03a0fa1974e4378e1b4f99431bc32c4a6eba102e"
+      },
+      {
+        "kind": "project",
+        "id": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+        "title": "合成代码作品",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "d62f01fc1f148824c31d0f87df83c85690c81dcf9c83c4b360fba9ea674f935e"
+      }
+    ],
+    "recommendations": [
+      {
+        "jobId": "37d94fea-a9e3-4a1c-b54e-a8a8f413817e",
+        "jobTitle": "合成后端实习岗位",
+        "companyName": "合成API验收企业",
+        "category": "software",
+        "city": "深圳",
+        "employmentType": "internship",
+        "priority": "high",
+        "assessedCount": 2,
+        "requirementCount": 6,
+        "supportedCount": 2,
+        "claimedCount": 0,
+        "matchedSkills": [
+          "FastAPI",
+          "Python"
+        ],
+        "gaps": [],
+        "requirements": [
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "FastAPI",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "要求使用 Python 和 FastAPI 编写查询接口",
+            "skill": "Python",
+            "weight": 5,
+            "isRequired": true,
+            "ruleVerdict": "supported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "输入校验",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "编写查询接口",
+            "skill": "查询接口开发",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "包含输入校验与错误响应",
+            "skill": "错误响应处理",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          },
+          {
+            "text": "提供正常和异常请求的接口测试代码及运行记录",
+            "skill": "接口测试",
+            "weight": 4,
+            "isRequired": true,
+            "ruleVerdict": "unsupported"
+          }
+        ],
+        "evidence": [
+          {
+            "citationId": "J1-E1",
+            "projectFileId": "cd09ed17-e8bf-4df4-85f6-04b8df352257",
+            "projectVersionId": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+            "skill": "FastAPI",
+            "filePath": "e38fd03a-d630-4ea6-b78a-07cc62df8e54/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "2924ca79c8ee5aa5821d8b8bb97da5502a9c814a14a726c77cab6d964716bfdc"
+          },
+          {
+            "citationId": "J1-E2",
+            "projectFileId": "cd09ed17-e8bf-4df4-85f6-04b8df352257",
+            "projectVersionId": "e38fd03a-d630-4ea6-b78a-07cc62df8e54",
+            "skill": "Python",
+            "filePath": "e38fd03a-d630-4ea6-b78a-07cc62df8e54/app.py",
+            "lineStart": 3,
+            "lineEnd": 7,
+            "strength": "high",
+            "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+            "snippet": "@app.get(\"/health\")\ndef health(name: str, api_key: str = \"synthetic-not-real-credential-tail\"):\n    if not name.strip():\n        raise HTTPException(400, detail=\"name required\")\n    return {\"status\": \"ok\", \"name\": name.strip()}",
+            "contentHash": "2924ca79c8ee5aa5821d8b8bb97da5502a9c814a14a726c77cab6d964716bfdc"
+          }
+        ]
+      }
+    ],
+    "planId": "017e9673-1879-4bd7-912d-509e465fe66a",
+    "previousPlanId": null,
+    "aiPlan": null,
+    "aiFallbackUsed": true,
+    "aiStatus": "visible_code_fact_conflict",
+    "aiModel": null,
+    "aiUsage": {
+      "input_tokens": 1126,
+      "output_tokens": 524,
+      "cache_hit_tokens": 0,
+      "latency_ms": 3171
+    },
+    "changes": []
+  },
+  "planSourcesExact": true,
+  "preparedContextsSafe": true,
+  "rawPreparedContextContainsCredential": {
+    "enterprise": true,
+    "student": true
+  },
+  "usage": [
+    {
+      "taskType": "job_draft",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 400,
+      "outputTokens": 819,
+      "cacheHitTokens": 256,
+      "latencyMs": 3296
+    },
+    {
+      "taskType": "career_plan",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "inputTokens": 1126,
+      "outputTokens": 524,
+      "cacheHitTokens": 0,
+      "latencyMs": 3171
+    }
+  ],
+  "draftTaskId": "fb903efb-874a-4871-8058-14b3f5475c8a",
+  "planTaskId": "017e9673-1879-4bd7-912d-509e465fe66a",
+  "foreignTaskStatuses": [
+    404,
+    404
+  ],
+  "enterpriseLatestPlan": null,
+  "checks": {
+    "consentAndRoleRejected": true,
+    "noAutomaticPublication": true,
+    "draftQuotesExact": true,
+    "enterpriseVerificationGuidance": true,
+    "confirmedPublishedSourcePreserved": true,
+    "exactSyntheticSources": true,
+    "visibleChecksConsistent": false,
+    "studentAiValidated": false,
+    "onlySyntheticJobAndMaterials": true,
+    "citedActionableTasks": false,
+    "planReloadStable": true,
+    "ownerIsolation": true,
+    "exactlyTwoOfficialUsageRows": true,
+    "textCredentialAbsentFromPreparedContexts": true
+  },
+  "temporarySchemaRemoved": true
+}
