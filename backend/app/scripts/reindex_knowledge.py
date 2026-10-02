@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 
 from sqlalchemy import delete, select
+from sqlalchemy import text as sql_text
 
 from app.core.config import settings
 from app.core.database import async_session_factory
@@ -12,7 +13,7 @@ from app.services.retrieval import ChunkSource, index_sources
 from app.tools.storage import LocalStorage
 
 
-async def rebuild() -> int:
+async def rebuild() -> tuple[int, dict[str, int]]:
     storage = LocalStorage(settings.storage_base_dir)
     async with async_session_factory() as session:
         sections = list(await session.scalars(select(ResumeSection)))
@@ -57,8 +58,15 @@ async def rebuild() -> int:
         await session.execute(delete(KnowledgeChunk))
         count = await index_sources(session, sources)
         await session.commit()
-        return count
+        engines = await session.execute(
+            sql_text(
+                "SELECT chunk_metadata->>'embeddingEngine' AS engine, COUNT(*) "
+                "FROM knowledge_chunks GROUP BY 1"
+            )
+        )
+        return count, {engine: number for engine, number in engines}
 
 
 if __name__ == "__main__":
-    print(f"indexed_chunks={asyncio.run(rebuild())}")
+    count, engines = asyncio.run(rebuild())
+    print(f"indexed_chunks={count} engines={engines}")

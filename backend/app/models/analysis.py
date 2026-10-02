@@ -192,4 +192,4 @@ class KnowledgeChunk(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     source_id: Mapped[UUID] = mapped_column(index=True)
     content: Mapped[str] = mapped_column(Text)
     chunk_metadata: Mapped[dict] = mapped_column(JSON, default=dict)
-    embedding: Mapped[list[float]] = mapped_column(Vector(1024))
+    embedding: Mapped[list[float]] = mapped_column(Vector(384))
