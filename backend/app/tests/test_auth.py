@@ -114,7 +114,8 @@ def test_decode_token_rejects_foreign_signature():
 
 
 def test_decode_token_rejects_expired_token(monkeypatch):
-    monkeypatch.setattr(security, "datetime", type("FakeDateTime", (), {"now": staticmethod(_expired_now)}))
+    fake_datetime = type("FakeDateTime", (), {"now": staticmethod(_expired_now)})
+    monkeypatch.setattr(security, "datetime", fake_datetime)
     encoded, _jti, _expires = security.create_token(security.uuid4(), "student", "access")
     monkeypatch.undo()
     with pytest.raises(AppError) as error:
