@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { api, errorMessage } from "@/lib/api/client";
-import { applicationAnchorId, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
+import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 // 雷达图只在打开对照详情时渲染，按需加载，减小首屏包体。
@@ -30,9 +30,10 @@ export default function ApplicationBoard({jobId}:{jobId:string}){
 }
 function Workspace({jobId}:{jobId:string}){
   const [state,setState]=useState(initialApplicationBoardState);
+  const [anchorNotice,setAnchorNotice]=useState("");
   const {items,selected,error,notice,loading:busy}=state;
   const session=useMemo(()=>createApplicationBoardSession({
-    list:async()=>includeApplicationTarget(await api.jobApplications(jobId), api.applicationDetail, applicationAnchorId(), jobId), open:api.openApplication,
+    list:async()=>{const id=applicationAnchorId();return includeApplicationTarget(await api.jobApplications(jobId), api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});}, open:api.openApplication,
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
   },setState),[jobId]);
   useEffect(()=>{revealApplicationAnchor();},[items]);
@@ -78,6 +79,7 @@ function Workspace({jobId}:{jobId:string}){
     <p className="text-xs leading-5 text-slate-500">刷新或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p>
     {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
+    {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
     {error&&replyText.trim()&&<div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认。以下保留了本页草稿，请先复制，再刷新授权投递并核对该投递的回复状态。</p><textarea className="field" readOnly value={replyText} aria-label="未确认发送的回复草稿"/></div>}
     <div className="panel grid gap-3 sm:grid-cols-3"><label className="text-sm">关键词（姓名、技能或要求）<input type="search" className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label></div>

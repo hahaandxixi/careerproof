@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { notificationHref, applicationAnchorId, includeApplicationTarget } from "../src/lib/notification-session.ts";
+import { notificationHref, applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "../src/lib/notification-session.ts";
 test("notification destinations permit only authorized application pages", () => {
   const id = "b7095e9d-b1d7-4dc5-bb74-a9961eec999f";
   assert.ok(notificationHref(`/applications#application-${id}`));
@@ -18,7 +18,29 @@ test("notification target outside recent 100 is fetched with a scoped read", asy
   assert.equal(await includeApplicationTarget(result,()=>{throw new Error("unexpected duplicate read");},id,"job"),result);
 });
 test("revoked or wrong-job notification target cannot enter an authorized board", async()=>{
-  await assert.rejects(includeApplicationTarget([],async()=>{throw new Error("404 revoked");},"a","job"),/revoked/);
-  await assert.rejects(includeApplicationTarget([],async()=>({id:"a",jobId:"other"}),"a","job"),/不一致/);
-  await assert.rejects(includeApplicationTarget([],async()=>({id:"other",jobId:"job"}),"a","job"),/不一致/);
+  const items=[{id:"authorized",jobId:"job"}];let unavailable=0;
+  const dismissed=()=>{unavailable++;};
+  assert.equal(await includeApplicationTarget(items,async()=>{throw {status:404};},"a","job",dismissed),items);
+  assert.equal(await includeApplicationTarget(items,async()=>({id:"a",jobId:"other"}),"a","job",dismissed),items);
+  assert.equal(await includeApplicationTarget(items,async()=>({id:"other",jobId:"job"}),"a","job",dismissed),items);
+  assert.equal(unavailable,3);
+  await assert.rejects(includeApplicationTarget(items,async()=>{throw new Error("network down");},"a","job",dismissed),/network down/);
+  assert.equal(unavailable,3);
+});
+
+test("only the stale application anchor is removed without dropping query parameters",()=>{
+  const id="b7095e9d-b1d7-4dc5-bb74-a9961eec999f";
+  const previousLocation=globalThis.location, previousHistory=globalThis.history;
+  const calls=[];
+  try {
+    globalThis.location={hash:`#application-${id}`,pathname:"/applications",search:"?page=2"};
+    globalThis.history={state:{tab:1},replaceState:(...args)=>calls.push(args)};
+    clearApplicationAnchor("other");
+    assert.equal(calls.length,0);
+    clearApplicationAnchor(id);
+    assert.deepEqual(calls,[[{tab:1},"","/applications?page=2"]]);
+  } finally {
+    if(previousLocation===undefined)delete globalThis.location;else globalThis.location=previousLocation;
+    if(previousHistory===undefined)delete globalThis.history;else globalThis.history=previousHistory;
+  }
 });

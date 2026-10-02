@@ -127,11 +127,10 @@ async def task_events(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> StreamingResponse:
-    initial = await AnalysisService(session).get_task(task_id, current_user)
-    if initial.task_type == "application_verification":
-        # The access check holds a short application read lock. A streaming
-        # response must never retain that lock while waiting for the model.
-        await session.commit()
+    await AnalysisService(session).get_task(task_id, current_user)
+    # Every authorization read starts a transaction. Release its connection
+    # before the long-lived stream, including for non-verification tasks.
+    await session.commit()
 
     async def stream():
         last_state: tuple[str, int, str | None] | None = None

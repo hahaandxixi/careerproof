@@ -490,6 +490,12 @@ async def _execute_claimed_verification(session, task_id, token):
             elif not allowed:
                 failure = reason or "daily_budget"
             else:
+                # Budget checking locks the creator row. Keep the authorized
+                # request bytes in memory, then release that transaction before
+                # the potentially long external call. Finalization rechecks
+                # current authorization under its own short lock below.
+                request_data = _verification_input(item.report_snapshot, context)
+                await session.commit()
                 candidate = get_ai_provider()
                 if not isinstance(candidate, OpenAICompatibleProvider):
                     raise ValueError("External provider unavailable")
@@ -500,7 +506,7 @@ async def _execute_claimed_verification(session, task_id, token):
                 provider._max_attempts = 1
                 raw = await provider.generate_bounded_json(
                     system=VERIFICATION_PROMPT,
-                    data=_verification_input(item.report_snapshot, context),
+                    data=request_data,
                     max_tokens=3000,
                 )
                 analysis = validate_verification(raw, item.report_snapshot)

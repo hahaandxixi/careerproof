@@ -16,11 +16,27 @@ export function applicationAnchorId(hash = typeof location === "undefined" ? "" 
   return /^#application-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(hash)
     ? hash.slice("#application-".length) : null;
 }
+export function clearApplicationAnchor(id: string) {
+  if (typeof location !== "undefined" && applicationAnchorId() === id) {
+    history.replaceState(history.state, "", location.pathname + location.search);
+  }
+}
 export async function includeApplicationTarget<T extends { id: string; jobId: string }>(
   items: T[], lookup: (id: string) => Promise<T>, id: string | null, jobId?: string,
+  onUnavailable?: () => void,
 ) {
   if (!id || items.some(item => item.id === id)) return items;
-  const target = await lookup(id);
-  if (target.id !== id || (jobId && target.jobId !== jobId)) throw new Error("通知对应投递与当前岗位不一致，请返回通知中心。");
+  let target: T;
+  try {
+    target = await lookup(id);
+  } catch (error) {
+    if (typeof error !== "object" || error === null || !("status" in error) || error.status !== 404) throw error;
+    onUnavailable?.();
+    return items;
+  }
+  if (target.id !== id || (jobId && target.jobId !== jobId)) {
+    onUnavailable?.();
+    return items;
+  }
   return [...items, target];
 }

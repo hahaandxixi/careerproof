@@ -710,6 +710,44 @@ async def test_withdrawal_waiting_for_model_semaphore_blocks_presend(case, monke
         assert task.input_snapshot["failureKind"] == "authorization_revoked"
 
 
+async def test_model_wait_does_not_hold_creator_lock_and_withdrawal_cancels_result(
+    case, monkeypatch
+):
+    if case.factory.kw["bind"].dialect.name != "postgresql":
+        pytest.skip("Requires an explicitly configured isolated PostgreSQL schema")
+    entered, release = asyncio.Event(), asyncio.Event()
+
+    async def handler(_request):
+        entered.set()
+        await release.wait()
+        return completion(model_answer(case.snapshot))
+
+    inject_provider(monkeypatch, handler)
+    started = await case.start()
+    work = asyncio.create_task(case.execute(started))
+    try:
+        await asyncio.wait_for(entered.wait(), 5)
+        async with case.factory() as observer:
+            creator = await observer.scalar(
+                select(AnalysisTask.created_by).where(AnalysisTask.id == UUID(started["taskId"]))
+            )
+            # NOWAIT would fail if the budget transaction still held this row.
+            assert await observer.scalar(
+                select(User.id).where(User.id == creator).with_for_update(nowait=True)
+            ) == creator
+            await observer.rollback()
+        assert (await case.student.post(
+            f"/api/v1/applications/{case.application_id}/withdraw"
+        )).status_code == 200
+    finally:
+        release.set()
+        await asyncio.wait_for(work, 5)
+    async with case.factory() as session:
+        task = await session.get(AnalysisTask, UUID(started["taskId"]))
+        assert task.status == TaskStatus.CANCELLED
+        assert task.input_snapshot["analysis"] is None
+
+
 async def test_postgres_observed_account_lock_wait_rechecks_withdrawal_before_model(
     case, monkeypatch
 ):
