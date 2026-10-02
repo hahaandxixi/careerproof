@@ -1,6 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { api, errorMessage, type ApplicationView } from "@/lib/api/client";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { api, errorMessage } from "@/lib/api/client";
+import { applicationAnchorId, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
+import { createApplicationListSession, type ApplicationListState } from "@/lib/application-list-session";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 
@@ -9,14 +12,28 @@ const REPLY:Record<string,string>={interview:"面试邀请",continue:"继续沟�
 
 export default function ApplicationList(){const {user}=useAuth();return <AccessGate roles={["student"]}><Workspace key={user?.id}/></AccessGate>;}
 function Workspace(){
-  const [items,setItems]=useState<ApplicationView[]>([]), [error,setError]=useState(""), [busy,setBusy]=useState(false);
+  const [state,setState]=useState<ApplicationListState>({items:[],loading:true,error:""});
+  const {items,error,loading:busy}=state;
   const [revokeId,setRevokeId]=useState<string|null>(null);
-  async function load(){setBusy(true);setError("");try{setItems(await api.myApplications());}catch(e){setError(errorMessage(e));}finally{setBusy(false);}}
-  useEffect(()=>{void load();},[]);
-  return <div className="space-y-5"><h1 className="text-3xl font-bold">我的投递</h1><p className="text-sm leading-6 text-slate-600">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>void load()}>刷新投递状态</button>
-    {error&&<p role="alert" className="text-rose-700">{error}</p>}{!items.length&&!busy&&<p className="panel">暂无投递。先生成匹配报告，再确认分享授权。</p>}
-    {items.map(item=><article key={item.id} className="panel space-y-3"><h2 className="text-xl font-semibold">{item.jobTitle}</h2><p className="text-sm">{item.companyName} · {STATUS[item.status]??item.status}</p>{item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap">{REPLY[item.replyKind??""]}：{item.replyText}</blockquote>}<ol className="space-y-2 text-xs text-slate-600">{item.events.map(e=><li key={e.type}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
-      {item.status!=="withdrawn"&&(revokeId===item.id?<div className="space-y-2"><p className="text-sm text-amber-800">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，本期撤回后不能重新投递同岗位。</p><button type="button" className="btn" disabled={busy} onClick={async()=>{setBusy(true);try{await api.withdrawApplication(item.id);setRevokeId(null);await load();}catch(e){setError(errorMessage(e));}finally{setBusy(false);}}}>确认撤回授权</button><button type="button" className="ml-3 text-sm underline" onClick={()=>setRevokeId(null)}>取消</button></div>:<button type="button" className="text-sm text-amber-700 underline" onClick={()=>setRevokeId(item.id)}>撤回投递授权</button>)}
+  const session=useMemo(()=>createApplicationListSession({
+    list:async()=>includeApplicationTarget(await api.myApplications(),api.applicationDetail,applicationAnchorId()),
+    withdraw:api.withdrawApplication,errorMessage,
+  },setState),[]);
+  useEffect(()=>{
+    session.activate();
+    const refresh=()=>{if(document.visibilityState!=="hidden"){setRevokeId(null);void session.refresh();}};
+    const visibility=()=>{setRevokeId(null);if(document.visibilityState==="hidden")session.clear();else refresh();};
+    if(document.visibilityState!=="hidden")refresh();else session.clear();
+    document.addEventListener("visibilitychange",visibility);window.addEventListener("focus",refresh);window.addEventListener("hashchange",refresh);
+    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",refresh);window.removeEventListener("hashchange",refresh);};
+  },[session]);
+  useEffect(()=>{revealApplicationAnchor();},[items]);
+  return <div className="space-y-5"><h1 className="text-3xl font-bold">我的投递</h1><p className="text-sm leading-6 text-slate-600">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>
+    {error&&<p role="alert" className="text-rose-700">{error}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&<p className="panel">暂无投递。先生成匹配报告，再确认分享授权。</p>}
+    {items.map(item=><article id={`application-${item.id}`} key={item.id} className="panel space-y-3"><h2 className="text-xl font-semibold">{item.jobTitle}</h2><p className="text-sm">{item.companyName} · {STATUS[item.status]??item.status}</p>{item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap">{REPLY[item.replyKind??""]}：{item.replyText}</blockquote>}<p className="text-sm"><Link className="text-indigo-700 underline" href={`/reports/${encodeURIComponent(item.reportId)}`}>查看本次投递的原报告</Link>{item.replyText&&<span className="ml-2 text-xs text-slate-500">后续新报告不会替换本次投递。</span>}</p>
+      {!!item.replyReferences?.length&&<div className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-medium">企业回复对应的原报告位置</p><ul className="mt-2 space-y-2">{item.replyReferences.map(reference=><li key={reference.requirementId} className="break-words"><Link className="text-indigo-700 underline" href={`/reports/${encodeURIComponent(item.reportId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>{`第${item.dimensions.findIndex(d=>d.requirementId===reference.requirementId)+1}项：`}{item.dimensions.find(d=>d.requirementId===reference.requirementId)?.title || "查看岗位要求"}</Link><Link className="ml-2 text-xs text-indigo-700 underline" href={`/reports/${encodeURIComponent(item.reportId)}?enterpriseReply=${encodeURIComponent(reference.requirementId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>带着这项问题补证 →</Link>{reference.citationIds.length>0&&<span className="ml-2 text-xs">引用：{reference.citationIds.map((id,index)=><span key={id}>{index>0?"、":""}<Link className="text-indigo-700 underline" href={`/reports/${encodeURIComponent(item.reportId)}#citation-${encodeURIComponent(id)}`}>{id}</Link></span>)}</span>}</li>)}</ul><p className="mt-2 text-xs text-slate-500">这些链接定位本次投递的原报告；引用不自动证明能力或本人贡献。</p></div>}
+      <ol className="space-y-2 text-xs text-slate-600">{item.events.map(e=><li key={e.type}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
+      {item.status!=="withdrawn"&&(revokeId===item.id?<div className="space-y-2"><p className="text-sm text-amber-800">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，本期撤回后不能重新投递同岗位。</p><button type="button" className="btn" disabled={busy} onClick={()=>{setRevokeId(null);void session.withdraw(item.id);}}>确认撤回授权</button><button type="button" className="ml-3 text-sm underline" onClick={()=>setRevokeId(null)}>取消</button></div>:<button type="button" className="text-sm text-amber-700 underline" onClick={()=>setRevokeId(item.id)}>撤回投递授权</button>)}
     </article>)}
   </div>;
 }

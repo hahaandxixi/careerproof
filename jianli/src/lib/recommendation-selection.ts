@@ -8,6 +8,12 @@ export function jobAnalysisHref(
   return `/jobs/${encodeURIComponent(jobId)}?${query.toString()}`;
 }
 
+export function careerPlanHref(resumeVersionId: string, projectVersionIds: string[]) {
+  const query = new URLSearchParams({ resumeVersionId });
+  projectVersionIds.slice(0, 10).forEach(id => query.append("projectVersionId", id));
+  return `/recommendations?${query.toString()}`;
+}
+
 export function resolveInitialMaterialSelection(
   completedResumeIds: string[],
   completedProjectIds: string[],

@@ -1,9 +1,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  careerPlanHref,
   jobAnalysisHref,
   resolveInitialMaterialSelection,
 } from "../src/lib/recommendation-selection.ts";
+
+test("growth continuation carries its exact material versions without starting AI", () => {
+  const url = new URL(careerPlanHref("resume-v2", ["project-v2", "project-v3"]), "http://careerproof.local");
+  assert.equal(url.pathname, "/recommendations");
+  assert.equal(url.searchParams.get("resumeVersionId"), "resume-v2");
+  assert.deepEqual(url.searchParams.getAll("projectVersionId"), ["project-v2", "project-v3"]);
+  assert.deepEqual(resolveInitialMaterialSelection(["resume-v1"], ["project-v2"],
+    url.searchParams.get("resumeVersionId"), url.searchParams.getAll("projectVersionId")),
+    { resumeVersionId: "", projectVersionIds: ["project-v2"] });
+});
 
 test("career recommendation carries the exact selected material versions to the job", () => {
   const href = jobAnalysisHref("job 1", "resume-2", ["project-3", "project-4"]);

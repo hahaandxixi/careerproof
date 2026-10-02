@@ -59,6 +59,32 @@ test("a response started before a newer refresh cannot restore revoked content",
   assert.deepEqual(h.state().items, []);
 });
 
+test("switching between two applications keeps the selected report and reply target aligned", async () => {
+  const first = deferred();
+  const calls = [];
+  const h = setup({
+    list: async () => [{ id: "a" }, { id: "b" }],
+    open: async id => id === "a" ? first.promise : {
+      id: "b", status: "viewed", report: { summary: "合成 B 报告" },
+    },
+    reply: async (id, kind, text, references) => {
+      calls.push({ id, kind, text, references });
+      return { id, status: "replied" };
+    },
+  });
+  const oldOpen = h.session.open("a");
+  assert.equal(await h.session.open("b"), true);
+  first.resolve(candidate);
+  assert.equal(await oldOpen, false);
+  assert.equal(h.state().selected.id, "b");
+  assert.equal(h.state().selected.report.summary, "合成 B 报告");
+  const references = [{ requirementId: "b-requirement", citationIds: ["B-E1"] }];
+  assert.equal(await h.session.reply("continue", "合成 B 的人工核验问题", references), true);
+  assert.deepEqual(calls, [{
+    id: "b", kind: "continue", text: "合成 B 的人工核验问题", references,
+  }]);
+});
+
 test("window hiding and effect disposal invalidate requests, including across reactivation", async () => {
   for (const action of ["clear", "dispose"]) {
     const open = deferred();
@@ -103,7 +129,7 @@ test("failed read, download, or reply leaves no stale report and remains retryab
     fail = true;
     if (operation === "open") await h.session.open("a");
     else if (operation === "download") await h.session.download(() => assert.fail("must not deliver"));
-    else await h.session.reply("continue", "合成测试回复，不是招聘决定");
+    else assert.equal(await h.session.reply("continue", "合成测试回复，不是招聘决定"), false);
     assert.equal(h.state().selected, null);
     assert.deepEqual(h.state().items, []);
     assert.equal(h.state().loading, false);
@@ -112,6 +138,13 @@ test("failed read, download, or reply leaves no stale report and remains retryab
     await h.session.open("a");
     assert.equal(h.state().selected.id, "a");
   }
+});
+
+test("reply only reports confirmed delivery after detail and authorization reread", async () => {
+  const h = setup();
+  await h.session.open("a");
+  assert.equal(await h.session.reply("continue", "合成测试回复", []), true);
+  assert.equal(h.state().selected.id, "a");
 });
 
 test("a successful download reports browser delivery without claiming disk persistence", async () => {

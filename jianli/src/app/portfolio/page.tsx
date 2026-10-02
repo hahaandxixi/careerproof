@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import ArchivedMaterials from "@/components/ArchivedMaterials";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import GrowthUploadReturn from "@/components/GrowthUploadReturn";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ErrorNotice } from "@/components/AccessGate";
 import {
@@ -313,6 +314,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-8">
+      <Suspense fallback={null}><GrowthUploadReturn /></Suspense>
       <div>
         <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
         <h1 className="mt-1 text-3xl font-bold text-slate-900">上传真实能力证据</h1>

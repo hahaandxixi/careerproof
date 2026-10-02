@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { careerPlanRecommendations } from "../src/lib/career-plan-display.ts";
+import { careerPlanRecommendations, visibleCareerChanges } from "../src/lib/career-plan-display.ts";
 
 const recommendations = Array.from({ length: 10 }, (_, index) => ({
   jobId: `job-${index}`, jobTitle: "相同岗位名称", companyName: `企业${index}`,
@@ -38,4 +38,14 @@ test("empty or older saved results with unmatched advice do not invent or discar
   assert.deepEqual(careerPlanRecommendations({ recommendations: recommendations.slice(0, 2),
     aiPlan: { focusJobId: "absent", advice: [{ jobId: "absent" }] },
   }, false), recommendations.slice(0, 2));
+});
+
+test("a previous focus job absent from current candidates remains visible in changes", () => {
+  const changes = [
+    { jobId: "job-0", status: "current", detail: "本轮仍在" },
+    { jobId: "job-old", status: "not_in_current", detail: "本轮列表未见" },
+    { jobId: "job-8", status: "current", detail: "本轮收起" },
+  ];
+  assert.deepEqual(visibleCareerChanges(changes, recommendations.slice(0, 1)), changes.slice(0, 2));
+  assert.deepEqual(visibleCareerChanges(changes, []), [changes[1]]);
 });

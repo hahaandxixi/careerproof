@@ -59,7 +59,9 @@ export interface ReportItem {
   evidenceId: string | null; confirmationStatus: "pending" | "accepted" | "rejected" | "corrected" | null;
   confirmedAt: string | null; reviewerNote: string | null;
   aiExplanation: string | null; aiCitationIds: string[]; aiInformationGap: string | null;
-  aiSuggestion: string | null; aiStatus: string; aiOrigin?: string | null;
+  aiSuggestion: string | null; aiTaskPlan?: { deliverable: string; steps: string[]; acceptanceChecks: string[] } | null;
+  aiTaskPlanWarning?: string | null;
+  aiSuggestionRedundant?: boolean; aiStatus: string; aiOrigin?: string | null;
 }
 export interface MatchReport extends ReportSummary {
   visualClaims?: VisualReview[];
@@ -72,6 +74,58 @@ export interface MatchReport extends ReportSummary {
     currentLevel: number | null; source: "ai_suggestion" | "rules" | "review";
     evidenceGap: string; action: string; citationIds: string[];
   }[];
+}
+
+export interface ApplicationVerificationItem {
+  requirementId: string;
+  visibleSupport: string | null;
+  informationGap: string;
+  verificationQuestions: string[];
+  nextStep: "review_materials" | "request_evidence" | "discuss_implementation" | null;
+  nextStepReason: string | null;
+  citationIds: string[];
+}
+
+export interface GrowthPlan {
+  requirementId: string;
+  gapKind: "implementation" | "execution" | "contribution" | "review";
+  deliverable: string;
+  steps: string[];
+  acceptanceChecks: string[];
+}
+export interface EnterpriseReplyContext {
+  applicationId: string; reportId: string; requirementId: string;
+  replyKind: string | null; text: string; citationIds: string[];
+}
+export interface GrowthTask {
+  id: string; baseReportId: string; jobId: string; jobTitle: string;
+  requirementId: string; requirementTitle: string; gap: string; originalAction: string;
+  actionSource?: "ai_suggestion" | "rules" | "review"; actionCitationIds?: string[];
+  actionNeedsRecheck?: boolean; taskPlanNeedsRecheck?: boolean; taskPlanWarning?: string | null;
+  enterpriseReply?: EnterpriseReplyContext | null;
+  plan: GrowthPlan; baseMaterials: MatchReport["materials"]; materials: MatchReport["materials"];
+  status: "planned" | "materials_selected" | "analyzing" | "analysis_failed" | "compared";
+  analysisTaskId: string | null; analysisStatus: string | null; analysisError: string | null;
+  targetReportId: string | null; comparison: ReportComparison | null;
+  createdAt: string; boundary: string;
+}
+
+export interface ApplicationVerificationTask {
+  taskId: string;
+  status: "pending" | "running" | "completed" | "failed" | "cancelled";
+  aiStatus: string;
+  aiModel: string | null;
+  promptVersion: string;
+  snapshotHash: string;
+  analysis: { items: ApplicationVerificationItem[] } | null;
+  usage: { inputTokens?: number; outputTokens?: number; cacheHitTokens?: number; latencyMs?: number } | null;
+  inputPreflights: Record<string, unknown>[];
+  failureKind: string | null;
+  currentStep: string | null;
+  createdAt: string;
+  errorMessage: string | null;
+  boundary: string;
+  reused?: boolean;
 }
 
 export interface VisualReview {
@@ -104,9 +158,10 @@ export interface CareerPlanResult extends JobRecommendationResult {
   } | null;
   aiFallbackUsed: boolean; aiStatus: string; aiModel: string | null;
   aiUsage: { input_tokens?: number; output_tokens?: number; latency_ms?: number } | null;
-  changes: { jobId: string; jobTitle: string; previousSupportedCount: number | null;
-    currentSupportedCount: number; previousPriority: string | null; currentPriority: string;
-    detail: string; evidenceIds: string[] }[];
+  changes: { jobId: string; jobTitle: string; status?: "current" | "not_in_current";
+    previousSupportedCount: number | null; currentSupportedCount: number | null;
+    previousPriority: string | null; currentPriority: string | null;
+    detail: string; materialsChanged?: boolean; requirementsChanged?: boolean; jobDetailsChanged?: boolean; evidenceIds: string[] }[];
   aiValidationIssues?: { reason: string; rejectedClaim: string; citationIds: string[] }[];
 }
 export const CATEGORY_LABELS: Record<string, string> = {
@@ -126,6 +181,19 @@ export interface ReportComparison {
     baseLevel: number | null; targetLevel: number | null;
     baseAiStatus: string | null; targetAiStatus: string | null;
     baseReview: string | null; targetReview: string | null;
+    baseExplanation?: string | null; targetExplanation?: string | null;
+    baseSuggestion?: string | null; targetSuggestion?: string | null;
+    baseTaskPlanWarning?: string | null; targetTaskPlanWarning?: string | null;
+    baseTaskPlan?: ReportItem["aiTaskPlan"]; targetTaskPlan?: ReportItem["aiTaskPlan"];
+    baseInformationGap?: string | null; targetInformationGap?: string | null;
     addedEvidence: ReportEvidence[]; removedEvidence: ReportEvidence[]; changes: string[];
   }[];
+}
+
+export interface NotificationItem {
+  id: string; type: string; title: string; createdAt: string;
+  readAt: string | null; accessible: boolean;
+}
+export interface NotificationPage {
+  items: NotificationItem[]; total: number; page: number; pageSize: number; unreadCount: number;
 }

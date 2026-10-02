@@ -4,13 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ReportComparison } from "@/lib/api/domain";
-
-const LABELS: Record<string, string> = {
-  materials: "材料版本变化", requirements: "岗位要求变化", requirement: "该要求变化",
-  retrieval_version: "检索版本变化", rule_version: "规则版本变化",
-  model_or_mode: "模型或分析模式变化", review: "复核状态变化", ai_status: "AI 状态变化",
-  level: "等级变化", evidence: "展示证据变化", item_added: "新增要求", item_removed: "移除要求",
-};
+import { GROWTH_CHANGES as LABELS } from "@/lib/growth-workflow";
+import ReportItemExplanation from "./ReportItemExplanation";
 
 export default function ReportComparisonPanel({ reportId, revision }: { reportId: string; revision: string }) {
   const generation = useRef(0);
@@ -40,6 +35,7 @@ export default function ReportComparisonPanel({ reportId, revision }: { reportId
         <strong>{item.title}</strong>{item.changes.includes("requirement") && <div className="text-xs leading-6 text-slate-600"><p>原要求：{item.baseRequirement?.title ?? "无已保存要求"} · 权重 {item.baseRequirement?.weight ?? "未记录"}</p><p>当前要求：{item.targetRequirement?.title ?? "无已保存要求"} · 权重 {item.targetRequirement?.weight ?? "未记录"}</p></div>}<p>实践证据等级：{item.baseLevel == null ? "未评级" : `${item.baseLevel}/5`} → {item.targetLevel == null ? "未评级" : `${item.targetLevel}/5`}</p>
         <p className="text-xs text-slate-600">{item.changes.map(key => LABELS[key] ?? key).join("、") || "未发现已记录的变化"}</p>
         <p className="text-xs text-slate-500">AI 状态：{item.baseAiStatus ?? "无此项"} → {item.targetAiStatus ?? "无此项"}；复核状态：{item.baseReview ?? "无复核"} → {item.targetReview ?? "无复核"}</p>
+        <ReportItemExplanation item={item} targetLabel="当前报告" />
         {[["新增展示", item.addedEvidence, reportId], ["不再展示", item.removedEvidence, value.baseId]].map(([label, entries, id]) => <div key={String(label)}><p>{String(label)}：{(entries as typeof item.addedEvidence).length} 条</p><ul>{(entries as typeof item.addedEvidence).map((e, i) => <li key={i} className="break-all"><Link className="text-indigo-700 underline" href={`/reports/${id}${e.citationId ? `#citation-${e.citationId}` : `#requirement-${item.requirementId}`}`}>{e.filePath} · 第 {e.lineStart}–{e.lineEnd} 行</Link></li>)}</ul></div>)}
       </article>)}
       <ul className="space-y-1 rounded-lg bg-amber-50 p-3 text-xs leading-6 text-amber-900">{value.limitations.map(note => <li key={note}>{note}</li>)}</ul>

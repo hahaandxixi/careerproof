@@ -19,3 +19,10 @@ export function careerPlanRecommendations(
   );
   return relevant;
 }
+
+export function visibleCareerChanges(
+  changes: CareerPlanResult["changes"], visibleRecommendations: JobRecommendation[],
+): CareerPlanResult["changes"] {
+  const visibleJobIds = new Set(visibleRecommendations.map(item => item.jobId));
+  return changes.filter(change => change.status === "not_in_current" || visibleJobIds.has(change.jobId));
+}

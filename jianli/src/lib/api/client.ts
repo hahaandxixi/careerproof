@@ -1,7 +1,9 @@
-import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult } from "./domain";
+import type { NotificationPage } from "./domain";
+import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult, ApplicationVerificationTask } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 import type { VisualReview } from "./domain";
+import type { EnterpriseReplyContext, GrowthPlan, GrowthTask } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -211,20 +213,38 @@ export interface ApplicationView {
   id: string; jobId: string; jobTitle: string; companyName: string; candidateName: string;
   reportId: string; status: string; createdAt: string; overallScore: number | null;
   consentVersion: string; replyKind: string | null; replyText: string | null;
+  replyReferences: { requirementId: string; citationIds: string[] }[];
   comparisonBasis: string;
   events: { type: string; at: string; detail: string }[];
   dimensions: { requirementId: string; title: string; skill: string; score: number | null; verdict: string; weight: number; evidenceLevel: number | null; evidenceLevelSource: string | null; evidenceLevelVersion: string | null; formulaVersion: string | null }[];
   report?: MatchReport;
 }
 
+function applicationEvent<T>(result: Promise<T>) {
+  return result.then(value => { if (typeof window !== "undefined") window.dispatchEvent(new Event("notifications-changed")); return value; });
+}
+
 export const api = {
-  createApplication(reportId: string) { return request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true }) }); },
+  notifications(page = 1, unreadOnly = false) { return request<NotificationPage>(`/notifications?page=${page}&unread_only=${unreadOnly}`); },
+  notificationCount() { return request<{ unreadCount: number }>("/notifications/unread-count"); },
+  readNotification(id: string) { return request<{ unreadCount: number }>(`/notifications/${id}/read`, { method: "POST" }); },
+  readAllNotifications() { return request<{ unreadCount: number }>("/notifications/read-all", { method: "POST" }); },
+  notificationTarget(id: string) { return request<{ href: string }>(`/notifications/${id}/target`); },
+  createApplication(reportId: string) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true }) })); },
+  applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}`); },
   myApplications() { return request<ApplicationView[]>("/applications/mine"); },
   jobApplications(jobId: string) { return request<ApplicationView[]>(`/jobs/${jobId}/applications`); },
-  openApplication(id: string) { return request<ApplicationView>(`/applications/${id}/view`, { method: "POST" }); },
-  replyApplication(id: string, kind: string, text: string) { return request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text }) }); },
-  withdrawApplication(id: string) { return request<ApplicationView>(`/applications/${id}/withdraw`, { method: "POST" }); },
-  downloadApplicationResume(id: string) { return request<{blob: Blob; filename: string}>(`/applications/${id}/resume-download`, { method: "POST" }, true, "file"); },
+  openApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/view`, { method: "POST" })); },
+  replyApplication(id: string, kind: string, text: string, references: ApplicationView["replyReferences"] = []) { return applicationEvent(request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text, references }) })); },
+  withdrawApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/withdraw`, { method: "POST" })); },
+  downloadApplicationResume(id: string) { return applicationEvent(request<{blob: Blob; filename: string}>(`/applications/${id}/resume-download`, { method: "POST" }, true, "file")); },
+  createApplicationVerification(id: string, signal?: AbortSignal) {
+    return request<ApplicationVerificationTask>(`/applications/${encodeURIComponent(id)}/verification`, { method: "POST", signal, ...jsonBody({ externalAiConsent: true }) });
+  },
+  applicationVerification(id: string, taskId?: string, signal?: AbortSignal) {
+    const suffix = taskId ? `/${encodeURIComponent(taskId)}` : "";
+    return request<ApplicationVerificationTask | null>(`/applications/${encodeURIComponent(id)}/verification${suffix}`, { signal });
+  },
   archiveMaterial(kind: "resume" | "project", id: string, archived: boolean) { return request<{archived:boolean}>(`/materials/${kind}/${id}/archive`, { method: "PATCH", ...jsonBody({ archived }) }); },
   issueMcpGrant(reportIds: string[]) {
     return request<McpGrant>("/mcp-tools/grants", { method: "POST", ...jsonBody({ report_ids: reportIds, external_client_consent: true }) });
@@ -263,6 +283,13 @@ export const api = {
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
   listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
   previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
+  existingGrowthTask(reportId: string, requirementId: string) { return request<GrowthTask | null>(`/match-reports/${reportId}/growth-tasks/${requirementId}`); },
+  enterpriseReplyContext(reportId: string, requirementId: string) { return request<EnterpriseReplyContext | null>(`/match-reports/${reportId}/enterprise-replies/${requirementId}`); },
+  createGrowthTask(reportId: string, plan: GrowthPlan) { return request<GrowthTask>(`/match-reports/${reportId}/growth-tasks`, { method: "POST", ...jsonBody(plan) }); },
+  listGrowthTasks() { return request<GrowthTask[]>("/growth-tasks"); },
+  growthTask(id: string) { return request<GrowthTask>(`/growth-tasks/${id}`); },
+  growthMaterials(id: string, payload: { resumeVersionId: string; projectVersionIds: string[] }) { return request<GrowthTask>(`/growth-tasks/${id}/materials`, { method: "PUT", ...jsonBody(payload) }); },
+  analyzeGrowth(id: string, externalAiConsent: boolean) { return request<GrowthTask>(`/growth-tasks/${id}/analyze`, { method: "POST", ...jsonBody({ externalAiConsent }) }); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
     return request<MatchReport["items"][number]>(`/match-reports/${reportId}/items/${requirementId}/review`, {

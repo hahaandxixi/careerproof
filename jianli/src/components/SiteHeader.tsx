@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "./AuthProvider";
+import NotificationLink from "./NotificationLink";
 import { errorMessage } from "@/lib/api/client";
 
 export default function SiteHeader() {
@@ -27,6 +28,7 @@ export default function SiteHeader() {
         {(user?.role === "enterprise" || user?.role === "admin") && <>
           <Link href="/jobs/mine">岗位管理</Link><Link href="/jobs/new" className="text-indigo-600">发布岗位</Link>
         </>}
+        <NotificationLink />
         {status === "loading" ? <span className="text-slate-400">确认会话中…</span> :
           status === "error" ? <button onClick={() => void reload()} className="text-amber-700">服务连接异常 · 重试</button> :
           user ? <><span className="max-w-28 truncate text-slate-500">{user.displayName}</span><button disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :

@@ -8,9 +8,10 @@ import {
   EMPLOYMENT_LABELS,
   type CareerPlanResult,
 } from "@/lib/api/domain";
-import { jobAnalysisHref } from "@/lib/recommendation-selection";
-import { careerPlanRecommendations } from "@/lib/career-plan-display";
+import { jobAnalysisHref, resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
+import { careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
 import { ErrorNotice } from "./AccessGate";
+import { useAuth } from "./AuthProvider";
 import ProjectVersionPicker from "./ProjectVersionPicker";
 import ResumeVersionPicker from "./ResumeVersionPicker";
 
@@ -19,8 +20,20 @@ const PRIORITY_LABELS = {
   medium: "值得比较",
   explore: "探索方向",
 };
+const validationHint = (status: string) => status === "change_attribution_conflict"
+  ? "对比只能确认变化同时发生，不能证明补证导致推荐档位变化。"
+  : status === "change_fact_conflict"
+    ? "这段 AI 说明与已保存的材料或岗位变化冲突，请以下方逐项变化为准。"
+    : status === "saved_plan_needs_recheck"
+      ? "请核对下方规则候选、逐项变化和可定位引用；历史 AI 建议不会自动恢复。"
+      : "这是有限的表述检查；请核对已展示的操作与尚未核验的运行、覆盖范围。";
+const EMPTY_PROJECT_IDS: string[] = [];
 
-export default function CareerRecommendations() {
+export default function CareerRecommendations({ initialResumeVersionId = "", initialProjectVersionIds = EMPTY_PROJECT_IDS }: {
+  initialResumeVersionId?: string;
+  initialProjectVersionIds?: string[];
+}) {
+  const { user } = useAuth();
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
   const [projects, setProjects] = useState<ProjectHistory[]>([]);
   const [resumeVersionId, setResumeVersionId] = useState("");
@@ -34,20 +47,30 @@ export default function CareerRecommendations() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [selectionNotice, setSelectionNotice] = useState("");
   const [revision, setRevision] = useState(0);
 
   useEffect(() => {
     let current = true;
-    setLoading(true); setError(""); setResult(null); setHistoryNotice("");
+    setLoading(true); setError(""); setResult(null); setHistoryNotice(""); setSelectionNotice("");
     Promise.all([api.listResumes(), api.listProjects()]).then(([resumeRows, projectRows]) => {
       if (!current) return;
       setResumes(resumeRows); setProjects(projectRows);
-      setResumeVersionId("");
-      setProjectVersionIds([]);
+      const selection = resolveInitialMaterialSelection(
+        resumeRows.flatMap(row => row.versions).filter(version => version.status === "completed").map(version => version.id),
+        projectRows.flatMap(row => row.versions).filter(version => version.status === "completed").map(version => version.id),
+        initialResumeVersionId, initialProjectVersionIds,
+      );
+      setResumeVersionId(selection.resumeVersionId);
+      setProjectVersionIds(selection.projectVersionIds);
+      if ((initialResumeVersionId && selection.resumeVersionId !== initialResumeVersionId)
+        || initialProjectVersionIds.some(id => !selection.projectVersionIds.includes(id))) {
+        setSelectionNotice("链接中的部分材料版本不可用或不属于当前账号，请重新选择并核对版本。");
+      }
     }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
-  }, [revision]);
+  }, [revision, user?.id, initialResumeVersionId, initialProjectVersionIds]);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -86,7 +109,7 @@ export default function CareerRecommendations() {
   }
 
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
-  const visibleJobIds = new Set(visibleRecommendations.map(item => item.jobId));
+  const visibleChanges = result ? visibleCareerChanges(result.changes, visibleRecommendations) : [];
 
   return <div className="space-y-6">
     <section>
@@ -96,6 +119,7 @@ export default function CareerRecommendations() {
     </section>
 
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
+    {selectionNotice && <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{selectionNotice}</p>}
     <form className="panel space-y-5" onSubmit={submit}>
       <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">请选择一份简历，可勾选最多 10 份作品；测试材料请选择同一 CP 编号的一对简历与项目。第三方参考材料不会计入个人评级。</p></div>
       {loading ? <p className="text-sm text-slate-500">正在加载材料…</p> : <fieldset disabled={busy || historyLoading} className="space-y-4">
@@ -115,8 +139,8 @@ export default function CareerRecommendations() {
 
     {result && <section className="space-y-4">
       <div className="panel"><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm text-indigo-600">{resultKind === "history" ? "上次保存的规划 · 历史结果" : "本次生成的规划"}</p>{resultKind === "history" && <button type="button" className="text-xs text-indigo-700 underline" onClick={clearDisplayedResult}>收起历史结果</button>}</div>{resultKind === "history" && <p className="mt-2 text-xs text-amber-800">这是上次保存材料的结果，不是当前材料的新分析。下方依据以该规划保存的版本为准。</p>}<p className="mt-3 text-xs text-slate-500">主要推荐方向</p><h2 className="mt-1 text-2xl font-bold">{result.primaryDirection ? CATEGORY_LABELS[result.primaryDirection] ?? result.primaryDirection : "当前材料不足以确定方向"}</h2><p className="mt-3 text-sm leading-7 text-slate-600">{result.summary}</p><p className="mt-2 text-xs text-slate-500">结果依据：{result.materials.map(material => `${material.title} 第 ${material.versionNumber} 版`).join("；")}</p></div>
-      {result.aiPlan ? <section className="panel space-y-3"><p className="text-sm text-indigo-600">AI 候选岗位比较 · {result.aiModel}</p><h2 className="text-lg font-semibold">值得优先补证的方向</h2><p className="text-sm leading-7 text-slate-700">{result.aiPlan.comparison}</p><div className="flex flex-wrap gap-3">{result.aiPlan.advice.map(advice => <a key={advice.jobId} className="text-xs text-indigo-700 underline" href={`#plan-job-${advice.jobId}`}>{result.recommendations.find(item => item.jobId === advice.jobId)?.jobTitle ?? "查看候选岗位"}</a>)}</div><p className="text-xs text-slate-500">AI 选择的补证重点：{result.recommendations.find(item => item.jobId === result.aiPlan?.focusJobId)?.jobTitle ?? "暂无"}。岗位顺序仍由本地证据规则确定。</p></section> : result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800"><p>模型本次未能生成通过校验的规划，已保留候选岗位。</p>{(result.aiValidationIssues ?? []).map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`}>核对引用 {id}</a>)}</div><p className="text-xs">这是有限的表述检查；请核对已展示的操作与尚未核验的运行、覆盖范围。</p></div>)}</section> : null}
-      {!!result.previousPlanId && result.changes.some(change => visibleJobIds.has(change.jobId)) && <details className="panel"><summary className="cursor-pointer font-semibold">查看这些岗位与上次规划的变化</summary><p className="mt-1 text-xs text-slate-500">只比较保存材料中的可定位证据与规则档位；新增材料不保证提级。</p><ul className="mt-3 space-y-2">{result.changes.filter(change => visibleJobIds.has(change.jobId)).map(change => <li key={change.jobId} className="rounded-lg bg-slate-50 p-3 text-sm"><strong>{change.jobTitle}</strong><p className="mt-1 text-slate-600">{change.detail}</p>{change.evidenceIds.map(id => <a key={id} href={`#plan-citation-${id}`} className="mr-3 text-xs text-indigo-600 underline">查看新证据 {id}</a>)}</li>)}</ul></details>}
+      {result.aiPlan ? <section className="panel space-y-3"><p className="text-sm text-indigo-600">AI 候选岗位比较 · {result.aiModel}</p><h2 className="text-lg font-semibold">值得优先补证的方向</h2><p className="text-sm leading-7 text-slate-700">{result.aiPlan.comparison}</p><div className="flex flex-wrap gap-3">{result.aiPlan.advice.map(advice => <a key={advice.jobId} className="text-xs text-indigo-700 underline" href={`#plan-job-${advice.jobId}`}>{result.recommendations.find(item => item.jobId === advice.jobId)?.jobTitle ?? "查看候选岗位"}</a>)}</div><p className="text-xs text-slate-500">AI 选择的补证重点：{result.recommendations.find(item => item.jobId === result.aiPlan?.focusJobId)?.jobTitle ?? "暂无"}。岗位顺序仍由本地证据规则确定。</p></section> : result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800"><p>{result.aiStatus === "saved_plan_needs_recheck" ? "历史 AI 规划未通过当前引用或表述校验，建议已隐藏；规则候选与原规划快照仍保留。" : "模型本次未能生成通过校验的规划，已保留候选岗位。"}</p>{(result.aiValidationIssues ?? []).map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</section> : null}
+      {!!result.previousPlanId && visibleChanges.length > 0 && <details className="panel"><summary className="cursor-pointer font-semibold">查看这些岗位与上次规划的变化</summary><p className="mt-1 text-xs text-slate-500">分别核对材料版本、岗位基本信息、岗位要求、可定位证据和规则档位；同时变化不证明因果或能力提升。</p><ul className="mt-3 space-y-2">{visibleChanges.map(change => <li key={change.jobId} className="rounded-lg bg-slate-50 p-3 text-sm"><strong>{change.jobTitle}</strong>{change.status === "not_in_current" && <span className="ml-2 rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800">本轮列表未见</span>}<p className="mt-1 text-slate-600">{change.detail}</p>{change.jobDetailsChanged && <p className="mt-1 text-amber-800">岗位基本信息已变，请与材料变化分开核对。</p>}{change.requirementsChanged && <p className="mt-1 text-amber-800">岗位要求已变，本次档位不能归因于补证。</p>}{change.evidenceIds.map(id => <a key={id} href={`#plan-citation-${id}`} className="mr-3 text-xs text-indigo-600 underline">查看新证据 {id}</a>)}</li>)}</ul></details>}
       {!result.recommendations.length && <div className="panel text-sm text-slate-500">当前没有可推荐的已发布岗位。</div>}
       {result.recommendations.length > visibleRecommendations.length && <p className="text-sm text-slate-600">仅展示本次重点岗位；其他规则候选已收起，不影响完整结果保存。</p>}
       {visibleRecommendations.map(item => <article id={`plan-job-${item.jobId}`} className="panel scroll-mt-24" key={item.jobId}>
