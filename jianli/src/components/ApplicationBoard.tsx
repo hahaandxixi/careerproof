@@ -1,10 +1,15 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { api, errorMessage } from "@/lib/api/client";
 import { applicationAnchorId, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
-import SkillRadar from "./SkillRadar";
+// 雷达图只在打开对照详情时渲染，按需加载，减小首屏包体。
+const SkillRadar = dynamic(() => import("./SkillRadar"), {
+  ssr: false,
+  loading: () => <div className="h-56 w-56 animate-pulse rounded-full bg-slate-100" role="status" aria-label="正在加载雷达图" />,
+});
 import { filterApplications, mixedComparisonBasis } from "@/lib/application-comparison";
 import { createApplicationBoardSession, initialApplicationBoardState } from "@/lib/application-board-session";
 import ApplicationVerification from "./ApplicationVerification";
