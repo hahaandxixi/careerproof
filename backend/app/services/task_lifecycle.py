@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 from sqlalchemy import and_, or_, update
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -15,6 +17,8 @@ from app.models.analysis import AnalysisTask
 from app.models.enums import TaskStatus
 from app.models.identity import User
 from app.models.portfolio import ProjectVersion, ResumeVersion
+
+logger = logging.getLogger(__name__)
 
 
 async def claim_task(session: AsyncSession, task_id: UUID, *, step: str) -> UUID | None:
@@ -94,21 +98,33 @@ async def update_task_progress(
 
 
 async def heartbeat_task(task_id: UUID, token: UUID, session_factory) -> None:
+    consecutive_failures = 0
     while True:
         await asyncio.sleep(min(10, settings.task_lease_seconds / 3))
-        async with session_factory() as session:
-            result = await session.execute(
-                update(AnalysisTask)
-                .where(
-                    AnalysisTask.id == task_id,
-                    AnalysisTask.status == TaskStatus.RUNNING,
-                    AnalysisTask.run_token == token,
+        try:
+            async with session_factory() as session:
+                result = await session.execute(
+                    update(AnalysisTask)
+                    .where(
+                        AnalysisTask.id == task_id,
+                        AnalysisTask.status == TaskStatus.RUNNING,
+                        AnalysisTask.run_token == token,
+                    )
+                    .values(heartbeat_at=datetime.now(UTC))
                 )
-                .values(heartbeat_at=datetime.now(UTC))
-            )
-            await session.commit()
-            if result.rowcount != 1:
-                return
+                await session.commit()
+                if result.rowcount != 1:
+                    return
+            consecutive_failures = 0
+        except (SQLAlchemyError, OSError, TimeoutError):
+            consecutive_failures += 1
+            if consecutive_failures == 1 or consecutive_failures % 12 == 0:
+                logger.warning(
+                    "Task heartbeat failed for %s (%s consecutive attempts); retrying",
+                    task_id,
+                    consecutive_failures,
+                    exc_info=True,
+                )
 
 
 async def reset_failed_task(

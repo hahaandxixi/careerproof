@@ -54,6 +54,16 @@ test("equal requirement titles remain distinct when one edited block is removed"
   ]);
 });
 
+test("bracketed requirement titles retain their own report references", () => {
+  const first = { ...question, requirementTitle: "【核心】Java后端", citationIds: ["R1-E1"] };
+  const second = { ...question, requirementId: "requirement-2", requirementIndex: 1, requirementTitle: "测试", citationIds: ["R2-E1"] };
+  const draft = `${verificationReplyBlock(first)}\n\n${verificationReplyBlock(second)}`;
+  assert.deepEqual(activeVerificationReplyReferences(draft, [first, second]), [
+    { requirementId: "requirement-1", citationIds: ["R1-E1"] },
+    { requirementId: "requirement-2", citationIds: ["R2-E1"] },
+  ]);
+});
+
 test("an edited longer citation identifier cannot keep a shorter direct link", () => {
   const input = { ...question, citationIds: ["R1-E1"] };
   const draft = verificationReplyBlock(input);

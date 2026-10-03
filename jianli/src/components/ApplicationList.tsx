@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
 import { createApplicationListSession, type ApplicationListState } from "@/lib/application-list-session";
+import { createRefreshGate } from "@/lib/refresh-gate";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 
@@ -23,10 +24,15 @@ function Workspace(){
   useEffect(()=>{
     session.activate();
     const refresh=()=>{if(document.visibilityState!=="hidden"){setRevokeId(null);void session.refresh();}};
-    const visibility=()=>{setRevokeId(null);if(document.visibilityState==="hidden")session.clear();else refresh();};
-    if(document.visibilityState!=="hidden")refresh();else session.clear();
-    document.addEventListener("visibilitychange",visibility);window.addEventListener("focus",refresh);window.addEventListener("hashchange",refresh);
-    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",refresh);window.removeEventListener("hashchange",refresh);};
+    // B-06：返回页面时 visibilitychange、focus 紧邻触发，合并为一次刷新；hashchange 是锚点导航，保持直连。
+    const gate=createRefreshGate(refresh);
+    const visibility=()=>{setRevokeId(null);if(document.visibilityState==="hidden"){session.clear();gate.reset();}else gate.trigger();};
+    const focusWindow=()=>{if(document.visibilityState!=="hidden")gate.trigger();};
+    // 真正离开窗口后返回应重新读取，去重只合并同一次返回的事件串。
+    const blurWindow=()=>gate.reset();
+    if(document.visibilityState!=="hidden")gate.trigger();else session.clear();
+    document.addEventListener("visibilitychange",visibility);window.addEventListener("focus",focusWindow);window.addEventListener("blur",blurWindow);window.addEventListener("hashchange",refresh);
+    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("hashchange",refresh);};
   },[session]);
   useEffect(()=>{revealApplicationAnchor();},[items]);
   return <div className="space-y-5"><h1 className="text-3xl font-bold">我的投递</h1><p className="text-sm leading-6 text-slate-600">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>

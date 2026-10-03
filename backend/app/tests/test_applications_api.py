@@ -3,6 +3,7 @@
 import hashlib
 from copy import deepcopy
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 from httpx import ASGITransport, AsyncClient
@@ -15,7 +16,7 @@ from app.models.enums import TaskStatus
 from app.models.identity import EnterpriseMembership, StudentProfile
 from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
-from app.services.applications import _reply_references
+from app.services.applications import _reply_references, reply_context_for_requirement
 from app.tests.test_jobs_api import job_payload, organization, register
 
 pytest_plugins = ["app.tests.test_jobs_api"]
@@ -110,6 +111,33 @@ def test_legacy_unique_title_reply_reference_remains_readable():
     }]}
     reference = [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}]
     assert _reply_references(snapshot, "【唯一要求】\n报告引用编号：R1-E1", reference) == reference
+
+
+def test_bracketed_requirement_title_keeps_reply_reference_and_block_boundary():
+    first_id, second_id = uuid4(), uuid4()
+    snapshot = {"items": [
+        {"requirementId": str(first_id), "requirementTitle": "【核心】Java后端",
+         "evidenceList": [{"citationId": "R1-E1"}]},
+        {"requirementId": str(second_id), "requirementTitle": "测试",
+         "evidenceList": [{"citationId": "R2-E1"}]},
+    ]}
+    text = (
+        "【第1项：【核心】Java后端】\n请解释本人贡献。\n报告引用编号：R1-E1\n\n"
+        "【第2项：测试】\n请补充运行记录。\n报告引用编号：R2-E1"
+    )
+    references = [
+        {"requirementId": str(first_id), "citationIds": ["R1-E1"]},
+        {"requirementId": str(second_id), "citationIds": ["R2-E1"]},
+    ]
+    assert _reply_references(snapshot, text, references) == references
+    item = SimpleNamespace(
+        id=uuid4(), report_id=uuid4(), report_snapshot=snapshot,
+        reply_text=text, reply_references=references, reply_kind="continue",
+    )
+    context = reply_context_for_requirement(item, first_id)
+    assert context is not None
+    assert "本人贡献" in context["text"]
+    assert "运行记录" not in context["text"]
 
 
 async def test_explicit_consent_owner_scope_idempotency_and_snapshot(

@@ -2,21 +2,24 @@ import asyncio
 import subprocess
 import time
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import fitz
 import pytest
 from docx import Document
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.exceptions import AppError
 from app.models.analysis import AnalysisTask
 from app.models.enums import TaskStatus
 from app.models.identity import User
-from app.services import portfolio, task_dispatcher
+from app.services import portfolio, task_dispatcher, task_lifecycle
 from app.services.task_lifecycle import (
     claim_task,
     finish_task,
+    heartbeat_task,
     recover_interrupted_tasks,
     reset_failed_task,
 )
@@ -119,6 +122,37 @@ async def test_recovery_expires_stale_pending_and_running_but_not_live_tasks(stu
     async with portfolio.async_session_factory() as session:
         statuses = [(await session.get(AnalysisTask, task_id)).status for task_id in ids]
         assert statuses == [TaskStatus.FAILED, TaskStatus.FAILED, TaskStatus.RUNNING]
+
+
+@pytest.mark.parametrize("failure_stage", ["execute", "commit"])
+async def test_heartbeat_retries_after_transient_database_failure(monkeypatch, failure_stage):
+    attempts = 0
+    commits = 0
+
+    class Session:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, _type, _value, _traceback):
+            return None
+
+        async def execute(self, _statement):
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1 and failure_stage == "execute":
+                raise SQLAlchemyError("temporary database outage")
+            return SimpleNamespace(rowcount=1 if attempts <= 2 else 0)
+
+        async def commit(self):
+            nonlocal commits
+            commits += 1
+            if commits == 1 and failure_stage == "commit":
+                raise SQLAlchemyError("temporary database outage")
+
+    monkeypatch.setattr(task_lifecycle.settings, "task_lease_seconds", 0)
+    await heartbeat_task(uuid4(), uuid4(), Session)
+    assert attempts == 3
+    assert commits == (2 if failure_stage == "execute" else 3)
 
 
 async def test_failed_material_retry_preserves_version_and_replay(student):  # noqa: F811

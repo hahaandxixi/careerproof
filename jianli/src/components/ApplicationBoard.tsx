@@ -12,6 +12,7 @@ const SkillRadar = dynamic(() => import("./SkillRadar"), {
 });
 import { filterApplications, mixedComparisonBasis } from "@/lib/application-comparison";
 import { createApplicationBoardSession, initialApplicationBoardState } from "@/lib/application-board-session";
+import { createRefreshGate } from "@/lib/refresh-gate";
 import ApplicationVerification from "./ApplicationVerification";
 import { activeVerificationReplyReferences, appendVerificationReplyQuestion, type VerificationReplyQuestion } from "@/lib/verification-reply-draft";
 
@@ -58,16 +59,21 @@ function Workspace({jobId}:{jobId:string}){
   useEffect(()=>{
     session.activate();
     const refresh=()=>{resetReply();void session.refresh();};
+    // B-06：返回页面时 visibilitychange、focus、pageshow 紧邻触发，合并为一次刷新。
+    const gate=createRefreshGate(refresh);
     const visibility=()=>{
       resetReply();
-      if(document.visibilityState==="hidden")session.clear();else refresh();
+      if(document.visibilityState==="hidden"){session.clear();gate.reset();}else gate.trigger();
     };
-    const focusWindow=()=>{if(document.visibilityState==="visible")refresh();};
-    refresh();
+    const focusWindow=()=>{if(document.visibilityState==="visible"){resetReply();gate.trigger();}};
+    // 离开窗口后即使 3 秒内返回，也必须重新核对投递授权。
+    const blurWindow=()=>gate.reset();
+    gate.trigger();
     document.addEventListener("visibilitychange",visibility);
     window.addEventListener("focus",focusWindow);
-    window.addEventListener("pageshow",refresh);
-    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("pageshow",refresh);};
+    window.addEventListener("blur",blurWindow);
+    window.addEventListener("pageshow",gate.trigger);
+    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);};
   },[session]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   const mixedBasis=mixedComparisonBasis(items);

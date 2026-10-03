@@ -39,8 +39,8 @@ function hasCitationId(text: string, citationId: string): boolean {
 }
 
 function replyBlocks(text: string, marker: string): string[] {
-  const markers = [...text.matchAll(/【第[1-9]\d*项：[^【】]+】/g)];
-  return markers.flatMap((match, index) => match[0] === marker
+  const markers = [...text.matchAll(/^(【第[1-9]\d*项：[^\r\n]+】)[ \t]*\r?$/gm)];
+  return markers.flatMap((match, index) => match[1] === marker
     ? [text.slice((match.index ?? 0) + match[0].length, markers[index + 1]?.index ?? text.length)]
     : []);
 }

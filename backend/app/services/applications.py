@@ -33,7 +33,7 @@ def _reply_has_citation(text: str, citation_id: str) -> bool:
     return bool(re.search(rf"(?<![A-Za-z0-9_-]){re.escape(citation_id)}(?![A-Za-z0-9_-])", text))
 
 
-_REPLY_MARKER = re.compile(r"【第[1-9]\d*项：[^【】]+】")
+_REPLY_MARKER = re.compile(r"(?m)^(【第[1-9]\d*项：[^\r\n]+】)[ \t]*\r?$")
 
 
 def _reply_blocks(text: str, marker: str) -> list[str]:
@@ -41,7 +41,7 @@ def _reply_blocks(text: str, marker: str) -> list[str]:
     return [
         text[match.end() : markers[index + 1].start() if index + 1 < len(markers) else len(text)]
         for index, match in enumerate(markers)
-        if match.group() == marker
+        if match.group(1) == marker
     ]
 
 
