@@ -531,6 +531,12 @@ async def _execute_claimed_verification(session, task_id, token):
     except AppError:
         failure = "authorization_revoked"
         analysis = None
+    except (KeyError, TypeError, ValueError) as exc:
+        # A task payload without a usable applicationId cannot pass the final
+        # authorization recheck. Classify it like the pre-send check instead of
+        # letting the parse error strand the claimed task RUNNING.
+        failure = failure or _failure_kind(exc)
+        analysis = None
     usage = provider.combined_usage() if provider else None
     usage_view = (
         {

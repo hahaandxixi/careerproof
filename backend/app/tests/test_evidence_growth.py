@@ -3,6 +3,7 @@
 import asyncio
 import io
 import zipfile
+from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
@@ -11,7 +12,9 @@ from sqlalchemy import func, select
 
 from app.models.analysis import AiUsageLog, AnalysisTask, MatchItem
 from app.models.evidence_growth import EvidenceGrowthTask
+from app.models.identity import User
 from app.models.recruitment import Application, JobRequirement
+from app.services.evidence_growth import EvidenceGrowthService
 from app.tests.test_real_matching import (
     create_job,
     match_report,
@@ -386,3 +389,95 @@ async def test_postgres_concurrent_create_and_analysis_share_one_bound_task(
                 )
                 == 2
             )
+
+
+@pytest.mark.parametrize("corruption", ["snapshot", "requirement_drift"])
+async def test_list_survives_one_corrupted_persisted_row(matching_db, corruption):  # noqa: F811
+    app, factory = matching_db
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as hr,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(hr, "growth-corrupt-hr@example.com")
+        job = await create_job(hr)
+        await register(student, "growth-corrupt-owner@example.com", "student")
+        resume, project, version = await upload_materials(student)
+        base = await match_report(student, job, resume, version)
+        healthy = (
+            await student.post(f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base))
+        ).json()["data"]
+        broken_id = uuid4()
+        async with factory() as session:
+            student_id = await session.scalar(
+                select(User.id).where(User.email == "growth-corrupt-owner@example.com")
+            )
+            healthy_row = await session.get(EvidenceGrowthTask, UUID(healthy["id"]))
+            snapshot = deepcopy(healthy_row.base_snapshot)
+            if corruption == "snapshot":
+                # Legacy rows can hold a snapshot that no longer validates.
+                snapshot["report"]["items"][0]["requirementId"] = "corrupted-not-a-uuid"
+            # A second stored task for the same report under a requirement id that
+            # drifted away from every item frozen in the snapshot.
+            session.add(
+                EvidenceGrowthTask(
+                    id=broken_id,
+                    created_by=student_id,
+                    base_report_id=UUID(base["id"]),
+                    requirement_id=uuid4(),
+                    base_snapshot=snapshot,
+                    plan=plan(base),
+                    materials=[],
+                    status="planned",
+                )
+            )
+            await session.commit()
+        listed = await student.get("/api/v1/growth-tasks")
+        assert listed.status_code == 200, listed.text
+        items = listed.json()["data"]
+        # The healthy task stays readable; the corrupted row is skipped, never
+        # rendered with fabricated evidence.
+        assert [i["id"] for i in items] == [healthy["id"]]
+        assert items[0]["requirementId"] == healthy["requirementId"]
+        assert items[0]["status"] == "planned"
+        if corruption == "requirement_drift":
+            # Single-task access stays strict and names the drift explicitly.
+            drifted = await student.get(f"/api/v1/growth-tasks/{broken_id}")
+            assert drifted.status_code == 409, drifted.text
+        async with factory() as session:
+            assert await session.get(EvidenceGrowthTask, broken_id) is not None
+            assert await session.scalar(select(func.count(EvidenceGrowthTask.id))) == 2
+            assert await session.scalar(select(func.count(AiUsageLog.id))) == 0
+
+
+async def test_list_does_not_swallow_unexpected_view_errors(matching_db, monkeypatch):  # noqa: F811
+    app, factory = matching_db
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as hr,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(hr, "growth-strict-hr@example.com")
+        job = await create_job(hr)
+        await register(student, "growth-strict-owner@example.com", "student")
+        resume, project, version = await upload_materials(student)
+        base = await match_report(student, job, resume, version)
+        created = (
+            await student.post(f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base))
+        ).json()["data"]
+        strict_view = EvidenceGrowthService.view
+
+        async def defect_view(self, row, user):
+            if str(row.id) == created["id"]:
+                raise RuntimeError("unexpected defect while rendering one row")
+            return await strict_view(self, row, user)
+
+        monkeypatch.setattr(EvidenceGrowthService, "view", defect_view)
+        # A defect outside the expected drift shapes must fail the request
+        # loudly instead of silently shrinking the list.
+        with pytest.raises(RuntimeError):
+            await student.get("/api/v1/growth-tasks")
+        monkeypatch.setattr(EvidenceGrowthService, "view", strict_view)
+        listed = await student.get("/api/v1/growth-tasks")
+        assert listed.status_code == 200, listed.text
+        assert [i["id"] for i in listed.json()["data"]] == [created["id"]]

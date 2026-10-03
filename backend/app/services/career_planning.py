@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 from collections import Counter
 from datetime import UTC, datetime
@@ -10,6 +11,7 @@ from uuid import UUID
 
 from pydantic import ValidationError
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import overclaim_flags, runtime_plan_without_implementation_step
@@ -77,6 +79,8 @@ _JOB_DETAILS_UNCHANGED = re.compile(
 _REQUIREMENTS_UNCHANGED = re.compile(
     r"(?:岗位)?要求(?:没有变化|未变化|没变|未变|不变|保持不变)"
 )
+
+logger = logging.getLogger(__name__)
 
 
 class CareerChangeAttributionConflict(ValueError):
@@ -601,6 +605,16 @@ async def create_career_plan(
                     citation_ids=exc.citation_ids[:3],
                 )
             ]
+        except SQLAlchemyError as exc:
+            # A database fault (budget check) is not a bounded model failure:
+            # swallowing it would fake a successful rule-only plan and hide the
+            # outage. Log only safe category context; messages can embed SQL
+            # bound parameters, so never log the exception text.
+            logger.warning(
+                "career_plan.ai_stage_database_fault",
+                extra={"stage": "ai_budget_check", "db_error": type(exc).__name__},
+            )
+            raise
         except Exception:  # one bounded model failure cannot erase the rule shortlist
             response.ai_fallback_used = True
             response.ai_status = "model_unavailable_or_invalid"

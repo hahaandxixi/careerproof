@@ -45,6 +45,12 @@ function replyBlocks(text: string, marker: string): string[] {
     : []);
 }
 
+// Only the "报告引用编号：" declaration line authoritatively claims a citation;
+// the same literal quoted in the question or reply body does not.
+function citationDeclarationLines(block: string): string[] {
+  return [...block.matchAll(/^报告引用编号：[^\r\n]*/gm)].map(match => match[0]);
+}
+
 // A removed requirement marker or citation must not leave behind a misleading
 // direct link after the enterprise edits its message.
 export function activeVerificationReplyReferences(text: string, questions: VerificationReplyQuestion[]): ReplyReference[] {
@@ -53,7 +59,9 @@ export function activeVerificationReplyReferences(text: string, questions: Verif
     const blocks = replyBlocks(text, verificationReplyMarker(question));
     if (!blocks.length) continue;
     const citations = grouped.get(question.requirementId) ?? new Set<string>();
-    for (const id of question.citationIds) if (blocks.some(block => hasCitationId(block, id))) citations.add(id);
+    for (const id of question.citationIds) {
+      if (blocks.some(block => citationDeclarationLines(block).some(line => hasCitationId(line, id)))) citations.add(id);
+    }
     grouped.set(question.requirementId, citations);
   }
   return [...grouped].map(([requirementId, citationIds]) => ({ requirementId, citationIds: [...citationIds] }));

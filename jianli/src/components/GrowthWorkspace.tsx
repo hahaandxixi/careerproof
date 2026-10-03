@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { api, errorMessage, type ResumeHistory, type ProjectHistory } from "@/lib/api/client";
 import type { GrowthTask } from "@/lib/api/domain";
-import { createGrowthRequestGuard, growthCanSelect, GROWTH_STATUS } from "@/lib/growth-workflow";
+import { createGrowthRequestGuard, growthCanSelect, growthAutoQueryStep, GROWTH_STATUS } from "@/lib/growth-workflow";
 import { useAuth } from "./AuthProvider";
 import ResumeVersionPicker from "./ResumeVersionPicker";
 import ProjectVersionPicker from "./ProjectVersionPicker";
@@ -52,8 +52,10 @@ function GrowthContent({ id }: { id?: string }) {
   }, [id, revision, guard]);
 
   useEffect(() => {
-    if (!id || !task || task.status !== "analyzing" || busy || error) return;
-    if (polls.current >= 60) { setNotice("已停止自动查询。任务继续在服务器处理，可点击读取已保存任务；不会新增模型调用。"); return; }
+    if (!id || !task) return;
+    const plan = growthAutoQueryStep({ polls: polls.current, analyzing: task.status === "analyzing", busy, error });
+    if (plan.notice !== null) setNotice(plan.notice);
+    if (!plan.poll) return;
     const timer = setTimeout(() => {
       const ticket = guard.start(); ++polls.current;
       void api.growthTask(id).then(value => { if (guard.accepts(ticket)) setTask(value); }).catch(reason => {

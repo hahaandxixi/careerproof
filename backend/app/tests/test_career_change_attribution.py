@@ -1,12 +1,14 @@
 """Career changes distinguish source evidence from changing job criteria."""
 
 import json
+import logging
 from uuid import UUID, uuid4
 
 import httpx
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
+from sqlalchemy import select, text
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.agents.provider import DeepSeekProvider
 from app.models.analysis import AiUsageLog, AnalysisTask
@@ -728,3 +730,84 @@ async def test_api_keeps_rule_candidates_when_ai_task_only_asks_for_runtime(
         assert saved["recommendations"]
         assert "SQL 运行日志" in saved["aiValidationIssues"][0]["rejectedClaim"]
         assert (await student.get("/api/v1/career-plans/latest")).json()["data"] == saved
+
+
+async def test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback(
+    matching_db, monkeypatch, caplog  # noqa: F811
+):
+    """B-10: a real database fault inside the AI stage must surface, not fake success."""
+    from app.services import career_planning
+
+    async def broken_budget(session, _user_id):
+        # Use a failing SQL statement instead of dropping the fixture's table:
+        # PostgreSQL's search_path can fall back to a public table of that name.
+        await session.execute(text("SELECT * FROM cp_missing_budget_fault_probe"))
+        raise AssertionError("unreachable")
+
+    monkeypatch.setattr(career_planning, "_daily_ai_budget", broken_budget)
+    app, _factory = matching_db
+    async with (
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+    ):
+        await register(owner, "db-fault-owner@example.com")
+        await create_job(owner)
+        await register(student, "db-fault-student@example.com", "student")
+        resume, _project, version = await upload_materials(student)
+        payload = {
+            "resumeVersionId": resume["versionId"],
+            "projectVersionIds": [version["versionId"]],
+            "externalAiConsent": True,
+        }
+        with (
+            caplog.at_level(logging.WARNING, logger="app.services.career_planning"),
+            pytest.raises(SQLAlchemyError) as fault,
+        ):
+            await student.post("/api/v1/career-plans", json=payload)
+        records = [
+            record for record in caplog.records
+            if record.name == "app.services.career_planning"
+        ]
+        assert len(records) == 1
+        assert records[0].getMessage() == "career_plan.ai_stage_database_fault"
+        assert records[0].db_error == type(fault.value).__name__
+        assert records[0].stage == "ai_budget_check"
+        flat = f"{records[0].getMessage()} {records[0].db_error} {records[0].stage}"
+        assert "本人完成Python课程项目" not in flat
+        assert "synthetic provider outage" not in flat
+        assert "synthetic-key" not in flat
+        assert "ai_usage_logs" not in flat
+
+
+async def test_model_stage_failure_still_degrades_to_rule_candidates(
+    matching_db, monkeypatch  # noqa: F811
+):
+    """B-10 regression: bounded model failures keep the designed rule fallback."""
+    from app.services import career_planning
+
+    def unavailable_provider():
+        raise ValueError("synthetic provider outage")
+
+    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    app, _factory = matching_db
+    async with (
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+    ):
+        await register(owner, "degrade-owner@example.com")
+        job = await create_job(owner)
+        await register(student, "degrade-student@example.com", "student")
+        resume, _project, version = await upload_materials(student)
+        response = await student.post("/api/v1/career-plans", json={
+            "resumeVersionId": resume["versionId"],
+            "projectVersionIds": [version["versionId"]],
+            "externalAiConsent": True,
+        })
+        assert response.status_code == 200, response.text
+        saved = response.json()["data"]
+        assert saved["aiStatus"] == "model_unavailable_or_invalid"
+        assert saved["aiFallbackUsed"] is True
+        assert saved["aiPlan"] is None
+        assert [item["jobId"] for item in saved["recommendations"]] == [job["id"]]
+        latest = await student.get("/api/v1/career-plans/latest")
+        assert latest.json()["data"]["planId"] == saved["planId"]

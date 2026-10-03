@@ -27,3 +27,23 @@ export const GROWTH_CHANGES: Record<string, string> = {
   interpretation: "解释或缺口变化",
   advice: "补证建议或执行草稿变化",
 };
+
+export const GROWTH_POLL_LIMIT = 60;
+export const GROWTH_AUTO_QUERY_STOPPED = "已停止自动查询。任务继续在服务器处理，可点击读取已保存任务；不会新增模型调用。";
+
+export interface GrowthAutoQueryInput {
+  polls: number;
+  analyzing: boolean;
+  busy?: boolean;
+  error?: string;
+}
+
+// One step of the analyzing auto-query effect. A null notice leaves the
+// current notice untouched; a string replaces it. Leaving the analyzing
+// state clears a stale stop notice, and a fresh poll budget queries normally.
+export function growthAutoQueryStep(input: GrowthAutoQueryInput): { poll: boolean; notice: string | null } {
+  if (input.busy || input.error) return { poll: false, notice: null };
+  if (!input.analyzing) return { poll: false, notice: "" };
+  if (input.polls >= GROWTH_POLL_LIMIT) return { poll: false, notice: GROWTH_AUTO_QUERY_STOPPED };
+  return { poll: true, notice: "" };
+}

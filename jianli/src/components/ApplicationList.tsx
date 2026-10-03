@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
-import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
+import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
+import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
 import { createApplicationListSession, type ApplicationListState } from "@/lib/application-list-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
 import AccessGate from "./AccessGate";
@@ -34,7 +35,9 @@ function Workspace(){
     document.addEventListener("visibilitychange",visibility);window.addEventListener("focus",focusWindow);window.addEventListener("blur",blurWindow);window.addEventListener("hashchange",refresh);
     return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("hashchange",refresh);};
   },[session]);
-  useEffect(()=>{revealApplicationAnchor();},[items]);
+  // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；刷新、撤回造成的 items 变化不再劫持视口。目标不可访问的提示仍由 includeApplicationTarget 的回调负责。
+  const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
+  useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
   return <div className="space-y-5"><h1 className="text-3xl font-bold">我的投递</h1><p className="text-sm leading-6 text-slate-600">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>
     {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&<p className="panel">暂无投递。先生成匹配报告，再确认分享授权。</p>}
     {items.map(item=><article id={`application-${item.id}`} key={item.id} className="panel space-y-3"><h2 className="text-xl font-semibold">{item.jobTitle}</h2><p className="text-sm">{item.companyName} · {STATUS[item.status]??item.status}</p>{item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap">{REPLY[item.replyKind??""]}：{item.replyText}</blockquote>}<p className="text-sm"><Link className="text-indigo-700 underline" href={`/reports/${encodeURIComponent(item.reportId)}`}>查看本次投递的原报告</Link>{item.replyText&&<span className="ml-2 text-xs text-slate-500">后续新报告不会替换本次投递。</span>}</p>

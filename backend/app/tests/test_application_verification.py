@@ -13,7 +13,7 @@ from sqlalchemy import select, text
 
 from app.agents.provider import DeepSeekProvider
 from app.core.config import settings
-from app.models.analysis import AiUsageLog, AnalysisTask, MatchItem, MatchReport
+from app.models.analysis import AgentStep, AiUsageLog, AnalysisTask, MatchItem, MatchReport
 from app.models.enums import MembershipRole, TaskStatus
 from app.models.identity import EnterpriseMembership, StudentProfile, User
 from app.models.recruitment import Application, JobRequirement
@@ -890,6 +890,40 @@ async def test_transient_provider_failure_never_resends_the_snapshot(case, monke
     result = await case.result(started)
     assert result["status"] == "failed" and result["failureKind"] == "provider_http_503"
     assert len(requests) == 1 and result["analysis"] is None
+
+
+@pytest.mark.parametrize("corruption", ["missing", "not-a-uuid", None])
+async def test_unusable_application_reference_ends_claimed_task_with_explicit_failure(
+    case, corruption
+):
+    started = await case.start()
+    async with case.factory() as session:
+        task = await session.get(AnalysisTask, UUID(started["taskId"]))
+        saved = dict(task.input_snapshot)
+        if corruption == "missing":
+            saved.pop("applicationId")
+        else:
+            saved["applicationId"] = corruption
+        task.input_snapshot = saved
+        await session.commit()
+
+    await case.execute(started)
+
+    async with case.factory() as session:
+        task = await session.get(AnalysisTask, UUID(started["taskId"]))
+        assert task.status == TaskStatus.FAILED
+        assert task.error_message
+        saved = task.input_snapshot
+        assert saved["failureKind"] == "configuration_or_invalid_output"
+        assert saved["aiStatus"] == "configuration_or_invalid_output"
+        assert saved["analysis"] is None and saved["usage"] is None
+        assert list(await session.scalars(select(AiUsageLog).where(
+            AiUsageLog.analysis_task_id == task.id
+        ))) == []
+        steps = list(await session.scalars(select(AgentStep).where(
+            AgentStep.analysis_task_id == task.id
+        )))
+        assert [step.event_type for step in steps] == ["verification.unavailable"]
 
 
 @pytest.mark.parametrize("read_path", ["latest", "result", "task"])

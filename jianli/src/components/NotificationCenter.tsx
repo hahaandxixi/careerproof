@@ -46,7 +46,7 @@ function Workspace() {
         await operation(); if (ticket !== generation.current) return;
         notificationsChanged(); setRevision(value => value + 1);
       }
-    } catch (reason) { if (ticket === generation.current) { setData(null); setError(errorMessage(reason)); } }
+    } catch (reason) { if (ticket === generation.current) setError(errorMessage(reason)); }
     finally { locked.current = false; if (ticket === generation.current) setBusy(false); }
   }
   return <div className="space-y-5"><h1 className="text-3xl font-bold">通知中心</h1>

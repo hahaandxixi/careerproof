@@ -1,5 +1,8 @@
 """Student-owned evidence workflow; never updates a submitted application."""
 
+import logging
+
+from pydantic import ValidationError
 from sqlalchemy import select
 
 from app.agents.provider import redact_external_text
@@ -16,6 +19,8 @@ from app.services.applications import reply_context_for_requirement
 from app.services.matching_materials import resolve_materials
 from app.services.report_comparison import compare_views, task_plan_warning
 from app.tools.function_coverage import redundant_source_request
+
+logger = logging.getLogger(__name__)
 
 
 def material_key(rows):
@@ -122,13 +127,30 @@ class EvidenceGrowthService:
 
     async def list(self, user):
         await self._student(user)
-        rows = await self.session.scalars(
-            select(EvidenceGrowthTask)
-            .where(EvidenceGrowthTask.created_by == user.id)
-            .order_by(EvidenceGrowthTask.created_at.desc(), EvidenceGrowthTask.id.desc())
-            .limit(100)
-        )
-        return [await self.view(row, user) for row in rows]
+        rows = (
+            await self.session.scalars(
+                select(EvidenceGrowthTask)
+                .where(EvidenceGrowthTask.created_by == user.id)
+                .order_by(EvidenceGrowthTask.created_at.desc(), EvidenceGrowthTask.id.desc())
+                .limit(100)
+            )
+        ).all()
+        views = []
+        for row in rows:
+            try:
+                views.append(await self.view(row, user))
+            except (AppError, ValidationError, KeyError) as error:
+                # Skip only the expected shapes of historical drift: a snapshot
+                # that no longer validates (ValidationError), a requirement id
+                # absent from the frozen report or a vanished analysis task
+                # (AppError), a missing snapshot field (KeyError). Anything else
+                # — storage outages, new defects — must still fail the request.
+                logger.warning(
+                    "Skipped unreadable evidence growth task %s: %s",
+                    row.id,
+                    type(error).__name__,
+                )
+        return views
 
     async def attach(self, task_id, payload, user):
         row = await self._owned(task_id, user, True)
@@ -187,7 +209,11 @@ class EvidenceGrowthService:
 
     async def view(self, row, user):
         base = MatchReportView.model_validate(row.base_snapshot["report"])
-        requirement = next(i for i in base.items if i.requirement_id == row.requirement_id)
+        requirement = next(
+            (i for i in base.items if i.requirement_id == row.requirement_id), None
+        )
+        if requirement is None:
+            raise AppError("补证任务引用的要求已不在基准报告快照中", code=4099, status_code=409)
         action = build_action_plan([requirement], limit=1)[0]
         action_needs_recheck = bool(
             action.source == "ai_suggestion"

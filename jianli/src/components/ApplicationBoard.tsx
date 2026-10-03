@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { api, errorMessage } from "@/lib/api/client";
-import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget, revealApplicationAnchor } from "@/lib/notification-session";
+import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
+import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 // 雷达图只在打开对照详情时渲染，按需加载，减小首屏包体。
@@ -37,7 +38,15 @@ function Workspace({jobId}:{jobId:string}){
     list:async()=>{const id=applicationAnchorId();return includeApplicationTarget(await api.jobApplications(jobId), api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});}, open:api.openApplication,
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
   },setState),[jobId]);
-  useEffect(()=>{revealApplicationAnchor();},[items]);
+  // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；目标被筛选条件排除时给出可执行提示，不静默失败。
+  // 提示存为 string（""=无提示）：filtered-out 期间每次渲染都会重放同一 outcome，依赖 Object.is 去重，避免对象身份引发循环渲染。
+  const [anchorFilterTarget,setAnchorFilterTarget]=useState("");
+  const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
+  const applyAnchor=useCallback((itemIds:string[],visibleIds:string[])=>{
+    const outcome=anchor.attempt(itemIds,visibleIds);
+    setAnchorFilterTarget(outcome==="filtered-out"?applicationAnchorId()??"":"");
+    return outcome;
+  },[anchor]);
   const [query,setQuery]=useState(""),[focus,setFocus]=useState("");
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
@@ -73,11 +82,16 @@ function Workspace({jobId}:{jobId:string}){
     window.addEventListener("focus",focusWindow);
     window.addEventListener("blur",blurWindow);
     window.addEventListener("pageshow",gate.trigger);
-    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);};
+    // B-15：hashchange 是新的显式锚点导航（同页锚点链接或前进/后退），不走合并闸门；重新核对授权后由列表 effect 定位一次。
+    window.addEventListener("hashchange",refresh);
+    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
   },[session]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   const mixedBasis=mixedComparisonBasis(items);
   const visible=filterApplications(items,query,focus,verdict);
+  // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
+  // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
+  useEffect(()=>{applyAnchor(items.map(i=>i.id),visible.map(i=>i.id));},[applyAnchor,items,visible]);
   async function open(id:string){resetReply();await session.open(id);}
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
   return <div className="space-y-5"><h1 className="text-3xl font-bold">已授权投递 · 岗位匹配对照</h1><p className="text-sm leading-6 text-slate-600">只包含向本岗位明确投递的报告。分数来自投递时固定报告，不重新评分；排序仅辅助核验，不代表录用顺序。未投递或已撤回的学生不可见，默认展示最近100份；通知指定的更早投递会单独核对授权后补入。</p>
@@ -86,6 +100,7 @@ function Workspace({jobId}:{jobId:string}){
     {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
+    {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="text-indigo-700 underline" onClick={()=>{setQuery("");setFocus("");setVerdict("");}}>清除筛选并定位</button><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="text-sm underline" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
     {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
     {error&&replyText.trim()&&<div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认。以下保留了本页草稿，请先复制，再刷新授权投递并核对该投递的回复状态。</p><textarea className="field" readOnly value={replyText} aria-label="未确认发送的回复草稿"/></div>}
     <div className="panel grid gap-3 sm:grid-cols-3"><label className="text-sm">关键词（姓名、技能或要求）<input type="search" className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label></div>

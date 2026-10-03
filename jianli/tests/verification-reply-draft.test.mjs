@@ -64,6 +64,22 @@ test("bracketed requirement titles retain their own report references", () => {
   ]);
 });
 
+test("only the citation declaration line keeps a direct link, not mentions in the reply body", () => {
+  const input = { ...question, question: "请核对 R1-E1 所述重试逻辑是否由你实现，并提供可复现步骤。", citationIds: ["R1-E1"] };
+  const draft = verificationReplyBlock(input);
+  assert.deepEqual(activeVerificationReplyReferences(draft, [input]), [
+    { requirementId: "requirement-1", citationIds: ["R1-E1"] },
+  ]);
+  // 声明行删除 R1-E1，但 AI 原文正文仍含该字面值：不得保留定位
+  assert.deepEqual(activeVerificationReplyReferences(draft.replace("报告引用编号：R1-E1（", "报告引用编号：（"), [input]), [
+    { requirementId: "requirement-1", citationIds: [] },
+  ]);
+  // 声明行改成不同编号：R1-E1 不得保留定位
+  assert.deepEqual(activeVerificationReplyReferences(draft.replace("报告引用编号：R1-E1（", "报告引用编号：R1-E9（"), [input]), [
+    { requirementId: "requirement-1", citationIds: [] },
+  ]);
+});
+
 test("an edited longer citation identifier cannot keep a shorter direct link", () => {
   const input = { ...question, citationIds: ["R1-E1"] };
   const draft = verificationReplyBlock(input);
