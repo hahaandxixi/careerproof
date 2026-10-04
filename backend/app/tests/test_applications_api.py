@@ -1,11 +1,14 @@
 """Synthetic persistence and consent tests; never call a paid model."""
 
+import asyncio
 import hashlib
+import threading
 from copy import deepcopy
 from datetime import UTC, datetime
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
+import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 
@@ -18,6 +21,7 @@ from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.services.applications import _reply_references, reply_context_for_requirement
 from app.tests.test_jobs_api import job_payload, organization, register
+from app.tests.test_real_matching import matching_db  # noqa: F401
 
 pytest_plugins = ["app.tests.test_jobs_api"]
 
@@ -368,6 +372,75 @@ async def test_missing_or_tampered_download_does_not_record_success(jobs_db, tmp
         assert mine["status"] == "viewed" and "downloaded" not in [
             e["type"] for e in mine["events"]
         ]
+    finally:
+        await close(hr, student, other)
+
+
+async def test_postgres_withdraw_wins_while_slow_resume_read_is_blocked(
+    matching_db,  # noqa: F811
+    tmp_path,
+    monkeypatch,
+):
+    """While the resume read blocks, the delivery row lock must already be released.
+
+    On PostgreSQL a withdraw that has to wait for the download's row lock cannot commit
+    while the read is in progress; on the old lock-spanning implementation this withdraw
+    times out, and after the read the download would still return the file.
+    """
+    hr, student, other, job, rid, resume_id, raw, factory = await setup(
+        matching_db, tmp_path, monkeypatch
+    )
+    try:
+        if factory.kw["bind"].dialect.name != "postgresql":
+            pytest.skip("Requires an explicitly configured isolated PostgreSQL schema")
+        aid = (
+            await student.post(
+                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            )
+        ).json()["data"]["id"]
+        await hr.post(f"/api/v1/applications/{aid}/view")
+        entered = threading.Event()
+        release = threading.Event()
+
+        def slow_read(path):
+            entered.set()
+            assert release.wait(timeout=15), "slow read was never released"
+            return path.read_bytes()
+
+        monkeypatch.setattr("app.services.applications._read_resume_bytes", slow_read)
+        download = asyncio.create_task(hr.post(f"/api/v1/applications/{aid}/resume-download"))
+        try:
+            async def wait_for_file_read():
+                while not entered.is_set():
+                    assert not download.done(), "download never entered the file read"
+                    await asyncio.sleep(0.01)
+
+            await asyncio.wait_for(wait_for_file_read(), timeout=5)
+            withdraw = asyncio.create_task(student.post(f"/api/v1/applications/{aid}/withdraw"))
+            withdrawn = await asyncio.wait_for(withdraw, timeout=5)
+            assert withdrawn.status_code == 200, withdrawn.text
+            release.set()
+            # The student withdrew while the file was still being read: the enterprise gets
+            # no file, and no downloaded event or status may survive the denied delivery.
+            response = await asyncio.wait_for(download, timeout=5)
+        finally:
+            release.set()
+            if not download.done():
+                download.cancel()
+            await asyncio.gather(download, return_exceptions=True)
+        assert response.status_code == 404, response.text
+        assert raw not in response.content
+        async with factory() as session:
+            application = await session.get(Application, UUID(aid))
+            assert application.status == "withdrawn"
+            assert "downloaded" not in list(
+                await session.scalars(
+                    select(ApplicationEvent.event_type).where(
+                        ApplicationEvent.application_id == UUID(aid)
+                    )
+                )
+            )
+        assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 404
     finally:
         await close(hr, student, other)
 

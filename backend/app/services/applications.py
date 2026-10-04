@@ -1,9 +1,11 @@
 """Read only the submitted report snapshot; never impersonate its student owner."""
 
+import asyncio
 import hashlib
 import json
 import re
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -17,7 +19,7 @@ from app.models.analysis import MatchReport
 from app.models.audit import AuditLog
 from app.models.enums import UserRole
 from app.models.identity import StudentProfile, User
-from app.models.portfolio import ResumeVersion
+from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.services.analysis import AnalysisService
@@ -34,6 +36,10 @@ def _reply_has_citation(text: str, citation_id: str) -> bool:
 
 
 _REPLY_MARKER = re.compile(r"(?m)^(【第[1-9]\d*项：[^\r\n]+】)[ \t]*\r?$")
+
+
+def _read_resume_bytes(path: Path) -> bytes:
+    return path.read_bytes()
 
 
 def _reply_blocks(text: str, marker: str) -> list[str]:
@@ -165,7 +171,9 @@ class ApplicationService:
     async def _access(self, application_id, user, *, enterprise=False, lock=False):
         query = select(Application).where(Application.id == application_id)
         if lock:
-            query = query.with_for_update()
+            # A locked read must observe the row as of the lock, not a copy left in this
+            # session's identity map by an earlier transaction (e.g. a download recheck).
+            query = query.with_for_update().execution_options(populate_existing=True)
         item = await self.session.scalar(query)
         if not item or not item.consent_at or not item.report_snapshot:
             raise AppError("投递不存在或无权访问", status_code=404, code=4049)
@@ -422,18 +430,13 @@ class ApplicationService:
             await self.session.commit()
         return await self.view(item, job)
 
-    async def download(self, application_id, user):
-        item, _job = await self._access(application_id, user, enterprise=True, lock=True)
-        if item.status == "submitted":
-            raise AppError("请先查看报告再下载简历", status_code=409, code=4098)
+    async def _resume_version(self, item: Application) -> ResumeVersion:
         material = next(
             (m for m in item.report_snapshot.get("materials", []) if m.get("kind") == "resume"),
             None,
         )
         if not material:
             raise AppError("本次报告没有简历文件", status_code=404, code=4045)
-        from app.models.portfolio import Resume
-
         version = await self.session.scalar(
             select(ResumeVersion)
             .join(Resume)
@@ -441,12 +444,31 @@ class ApplicationService:
         )
         if not version or version.content_hash != material.get("contentHash"):
             raise AppError("简历版本校验失败", status_code=409, code=4096)
+        return version
+
+    async def download(self, application_id, user):
+        # Phase 1 holds the row lock only for authorization and version validation; it
+        # must not span the file read, or a slow disk keeps a student withdraw waiting.
+        item, _job = await self._access(application_id, user, enterprise=True, lock=True)
+        if item.status == "submitted":
+            raise AppError("请先查看报告再下载简历", status_code=409, code=4098)
+        version = await self._resume_version(item)
+        storage_key, expected_hash = version.storage_key, version.content_hash
+        mime, filename = version.mime_type, version.original_filename or "resume.txt"
+        # Nothing is written yet; committing releases the row lock before any file I/O.
+        await self.session.commit()
+        # Phase 2 reads in a worker thread: neither the event loop nor any row lock waits.
         try:
-            content = (
-                LocalStorage(settings.storage_base_dir).resolve(version.storage_key).read_bytes()
-            )
+            storage = LocalStorage(settings.storage_base_dir).resolve(storage_key)
+            content = await asyncio.to_thread(_read_resume_bytes, storage)
         except (OSError, ValueError) as exc:
             raise AppError("简历文件暂不可用", status_code=404, code=4046) from exc
+        # Phase 3 re-locks: a withdrawal during the read must deny the file and leave no
+        # downloaded event, no status change and no version bump behind.
+        item, _job = await self._access(application_id, user, enterprise=True, lock=True)
+        version = await self._resume_version(item)
+        if (version.storage_key, version.content_hash) != (storage_key, expected_hash):
+            raise AppError("简历版本校验失败", status_code=409, code=4096)
         if hashlib.sha256(content).hexdigest() != version.content_hash:
             raise AppError("简历文件内容校验失败", status_code=409, code=4096)
         await self._event(
@@ -455,4 +477,4 @@ class ApplicationService:
         if item.status == "viewed":
             item.status = "downloaded"
         await self.session.commit()
-        return content, version.mime_type, version.original_filename or "resume.txt"
+        return content, mime, filename
