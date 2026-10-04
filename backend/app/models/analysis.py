@@ -18,6 +18,8 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    Uuid,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -164,6 +166,18 @@ class MatchItem(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
 
 class AiUsageLog(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "ai_usage_logs"
+    __table_args__ = (
+        # Idempotency key for one real model request within one claim of a task:
+        # legacy rows have NULL run_token and stay exempt from the constraint.
+        Index(
+            "uq_ai_usage_logs_run_token_request_seq",
+            "run_token",
+            "request_seq",
+            unique=True,
+            sqlite_where=text("run_token IS NOT NULL"),
+            postgresql_where=text("run_token IS NOT NULL"),
+        ),
+    )
 
     analysis_task_id: Mapped[UUID] = mapped_column(
         ForeignKey("analysis_tasks.id", ondelete="CASCADE"), index=True
@@ -175,6 +189,8 @@ class AiUsageLog(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     unit_price_snapshot: Mapped[dict] = mapped_column(JSON, default=dict)
     cost_rmb: Mapped[Decimal] = mapped_column(Numeric(12, 6), default=Decimal("0"))
     latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    run_token: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    request_seq: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class KnowledgeChunk(Base, UUIDPrimaryKeyMixin, TimestampMixin):

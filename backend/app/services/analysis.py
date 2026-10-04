@@ -144,7 +144,9 @@ async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, 
     row = (
         await session.execute(
             select(
-                func.count(AiUsageLog.id),
+                # One ledger row per real model request since B-08; a task with
+                # several requests still counts as exactly one report.
+                func.count(func.distinct(AiUsageLog.analysis_task_id)),
                 func.coalesce(func.sum(AiUsageLog.input_tokens), 0),
                 func.coalesce(func.sum(AiUsageLog.output_tokens), 0),
             )

@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable
 from io import StringIO
 from pathlib import Path
 from time import perf_counter
-from typing import Protocol
+from typing import NamedTuple, Protocol
 from urllib.parse import urlparse
 
 import httpx
@@ -25,6 +25,19 @@ from app.agents.contracts import (
 )
 from app.core.config import settings
 from app.tools.credential_redaction import redact_credential_values
+
+
+class UsageRecord(NamedTuple):
+    """One processed model response: per-request sequence and usage trustworthiness.
+
+    usage_present is False when the payload carried no parsable usage object; the
+    zero-valued ModelUsage in that case is display-only and never ledger material.
+    """
+
+    seq: int
+    usage_present: bool
+    usage: ModelUsage
+
 
 EVIDENCE_PROMPT_VERSION = "evidence-trust-v29-implementation-first-plan"
 
@@ -449,6 +462,9 @@ class OpenAICompatibleProvider:
         self.planning_usage: ModelUsage | None = None
         self.last_usage: ModelUsage | None = None
         self.request_usages: list[ModelUsage] = []
+        self.request_seq = 0
+        self.usage_records: list[UsageRecord] = []
+        self.usage_persisted_seq = 0
         self.input_preflights: list[dict] = []
         self.last_finish_reason: str | None = None
         self.json_repair_count = 0
@@ -545,19 +561,41 @@ class OpenAICompatibleProvider:
             return None
         return str(value) if value is not None else None
 
+    @staticmethod
+    def _non_negative_int(value: object) -> int | None:
+        """Only an actual non-negative JSON integer is a billable token count."""
+        if isinstance(value, bool) or not isinstance(value, int):
+            return None
+        return value if value >= 0 else None
+
     def _capture_usage(self, payload: dict, latency_ms: int) -> ModelUsage:
-        usage = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
+        raw = payload.get("usage") if isinstance(payload.get("usage"), dict) else {}
+        # Trustworthy usage requires the response to actually carry parsable
+        # non-negative prompt_tokens AND completion_tokens; a missing or invalid
+        # object collapses to a display-only zero value, never a ledger fact.
+        input_tokens = self._non_negative_int(raw.get("prompt_tokens"))
+        output_tokens = self._non_negative_int(raw.get("completion_tokens"))
+        details = raw.get("prompt_tokens_details")
+        cache_hit_tokens = (
+            self._non_negative_int(details.get("cached_tokens"))
+            if isinstance(details, dict)
+            else None
+        )
+        usage_present = input_tokens is not None and output_tokens is not None
+        input_tokens = input_tokens or 0
+        output_tokens = output_tokens or 0
+        cache_hit_tokens = cache_hit_tokens or 0
         captured = ModelUsage(
-            input_tokens=int(usage.get("prompt_tokens") or 0),
-            output_tokens=int(usage.get("completion_tokens") or 0),
-            cache_hit_tokens=int(usage.get("prompt_tokens_details", {}).get("cached_tokens") or 0)
-            if isinstance(usage.get("prompt_tokens_details"), dict)
-            else 0,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            cache_hit_tokens=cache_hit_tokens,
             latency_ms=latency_ms,
         )
+        self.request_seq += 1
         self.last_usage = captured
         self.last_finish_reason = self._finish_reason(payload)
         self.request_usages.append(captured)
+        self.usage_records.append(UsageRecord(self.request_seq, usage_present, captured))
         return captured
 
     def combined_usage(self) -> ModelUsage | None:

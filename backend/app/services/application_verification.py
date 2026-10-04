@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import logging
 import re
 from contextlib import suppress
 from datetime import UTC, datetime, timedelta
@@ -17,6 +18,8 @@ from uuid import UUID
 
 import httpx
 from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import overclaim_flags
@@ -53,6 +56,10 @@ from app.tools.visible_checks import (
 
 VERIFICATION_PROMPT_VERSION = "application-verification-v1-fixed-snapshot"
 TASK_TYPE = "application_verification"
+USAGE_LEDGER_TIMEOUT_SECONDS = 5
+
+logger = logging.getLogger(__name__)
+
 BOUNDARY = (
     "仅依据本岗位已授权的固定报告片段；问题和下一步需企业核对，"
     "不证明本人贡献或运行结果，不改变等级，不自动作招聘决定。"
@@ -423,6 +430,10 @@ class ApplicationVerificationService:
             "snapshotHash": saved.get("snapshotHash"),
             "analysis": analysis,
             "usage": saved.get("usage"),
+            # Legacy snapshots booked usage in the finalize transaction with no
+            # trustworthiness flag; keep their previous "usage shown = known"
+            # display instead of retroactively marking them unknown.
+            "usageKnown": saved.get("usageKnown", saved.get("usage") is not None),
             "inputPreflights": saved.get("inputPreflights", []),
             "failureKind": invalid or saved.get("failureKind"),
             "boundary": BOUNDARY,
@@ -463,14 +474,93 @@ async def execute_application_verification_task(task_id: UUID, session_factory=N
             return
         heartbeat = asyncio.create_task(heartbeat_task(task_id, token, factory))
         try:
-            await _execute_claimed_verification(session, task_id, token)
+            await _execute_claimed_verification(session, task_id, token, factory)
         finally:
             heartbeat.cancel()
             with suppress(asyncio.CancelledError):
                 await heartbeat
 
 
-async def _execute_claimed_verification(session, task_id, token):
+async def persist_verification_usage(session_factory, task_id: UUID, run_token: UUID, provider):
+    """Book trustworthy per-request usage in its own short transaction.
+
+    Keyed by (run_token, request_seq): re-running this for the same claim hits
+    the partial unique index and writes nothing further (ON CONFLICT DO NOTHING
+    is the only duplicate guard; a SELECT-then-INSERT would race). Responses
+    without a parsable prompt/completion token pair stay display-only facts
+    and never become ledger rows.
+    """
+    pending = [
+        record
+        for record in provider.usage_records
+        if record.usage_present and record.seq > provider.usage_persisted_seq
+    ]
+    if not pending:
+        return 0
+    written = 0
+    async with session_factory() as session:
+        statement = (
+            pg_insert(AiUsageLog)
+            if session.bind.dialect.name == "postgresql"
+            else sqlite_insert(AiUsageLog)
+        )
+        for record in pending:
+            result = await session.execute(
+                statement
+                .values(
+                    analysis_task_id=task_id,
+                    model=provider.model,
+                    input_tokens=record.usage.input_tokens,
+                    output_tokens=record.usage.output_tokens,
+                    cache_hit_tokens=record.usage.cache_hit_tokens,
+                    latency_ms=record.usage.latency_ms,
+                    unit_price_snapshot={"provider": provider.name, "priceVerified": False},
+                    run_token=run_token,
+                    request_seq=record.seq,
+                )
+                .on_conflict_do_nothing(
+                    index_elements=["run_token", "request_seq"],
+                    index_where=AiUsageLog.run_token.isnot(None),
+                )
+            )
+            written += result.rowcount or 0
+        await session.commit()
+    provider.usage_persisted_seq = max(
+        (record.seq for record in provider.usage_records), default=0
+    )
+    return written
+
+
+def _log_ledger_outcome(booking: asyncio.Task) -> None:
+    if not booking.cancelled() and booking.exception():
+        logger.error(
+            "Usage ledger booking failed after decoupling: %s",
+            booking.exception(),
+            exc_info=booking.exception(),
+        )
+
+
+async def _book_usage_decoupled(session_factory, task_id: UUID, run_token: UUID, provider) -> None:
+    """Ledger write shielded from outer cancellation and bounded in time.
+
+    A cancellation arriving mid-booking must not abort an already-started
+    commit (the row lands in the detached task), and a hung database must not
+    turn the cancel path into an unbounded wait. Either failure mode leaves a
+    known-unbooked gap that only external reconciliation can close.
+    """
+
+    async def bounded_booking() -> int:
+        return await asyncio.wait_for(
+            persist_verification_usage(session_factory, task_id, run_token, provider),
+            timeout=USAGE_LEDGER_TIMEOUT_SECONDS,
+        )
+
+    booking = asyncio.create_task(bounded_booking())
+    booking.add_done_callback(_log_ledger_outcome)
+    await asyncio.shield(booking)
+
+
+async def _execute_claimed_verification(session, task_id, token, session_factory):
     task = await session.get(AnalysisTask, task_id)
     saved = dict(task.input_snapshot)
     provider = None
@@ -518,6 +608,20 @@ async def _execute_claimed_verification(session, task_id, token):
                 "remainingInputBudget": exc.remaining_input_budget,
                 "estimateMethod": "json-character-upper-bound",
             }
+
+    # Book trustworthy usage before any finalization step: the ledger fact must
+    # survive lease loss, withdrawal/cancellation and finalize commit failures.
+    # A booking failure is a logged reconciliation gap, never a task failure.
+    if provider:
+        try:
+            await _book_usage_decoupled(session_factory, task_id, token, provider)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            logger.exception(
+                "Usage ledger booking failed for task %s; known usage may be unbooked",
+                task_id,
+            )
 
     # Fresh read and a short finalization lock serialize the saved result
     # against withdrawal, never block withdrawal during the model call.
@@ -571,6 +675,12 @@ async def _execute_claimed_verification(session, task_id, token):
             "failureKind": failure,
             "analysis": analysis.model_dump(mode="json", by_alias=True) if successful else None,
             "usage": usage_view,
+            # A partial response sequence has an unknown total even when some
+            # responses carried valid usage. This describes provider data, not
+            # whether the independent ledger transaction committed.
+            "usageKnown": provider is not None
+            and bool(provider.usage_records)
+            and all(record.usage_present for record in provider.usage_records),
             "inputPreflights": list(provider.input_preflights) if provider else [],
             "providerFinishReason": provider.last_finish_reason
             if provider
@@ -595,16 +705,6 @@ async def _execute_claimed_verification(session, task_id, token):
                 },
             )
         )
-        if usage:
-            session.add(
-                AiUsageLog(
-                    analysis_task_id=task_id,
-                    model=provider.model,
-                    input_tokens=usage.input_tokens,
-                    output_tokens=usage.output_tokens,
-                    cache_hit_tokens=usage.cache_hit_tokens,
-                    latency_ms=usage.latency_ms,
-                    unit_price_snapshot={"provider": provider.name, "priceVerified": False},
-                )
-            )
+        # Usage rows are booked right after the model response in their own
+        # short transaction; finalization only records display facts here.
         await session.commit()
