@@ -1,0 +1,6 @@
+# Ruff（B-08 全部改动/新增文件）
+# 命令: ./.venv/Scripts/python.exe -m ruff check app/agents/provider.py app/models/analysis.py app/services/analysis.py app/services/application_verification.py app/tests/test_b08_usage_accounting.py alembic/versions/0013_ai_usage_idempotency.py
+# 退出码: 0
+All checks passed!
+
+EXIT=0

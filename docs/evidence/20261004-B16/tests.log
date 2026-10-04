@@ -1,0 +1,58 @@
+# B-16 测试执行记录（tests.log 汇总）
+
+运行环境：Windows 11 / Git Bash；node v22.23.1；嵌套仓库 D:\jbcode\web ai\jianli（HEAD 1cdb506）。
+本任务未修改任何前端代码（结论见 summary.md），以下为改动前基线证据；无新增回归测试可运行。
+完整原始输出见同目录 tests-baseline-full.log / typecheck-baseline.log / build-baseline.log。
+
+## 1) 前端全量测试（基线）
+
+- 命令：`cd "D:\jbcode\web ai\jianli\jianli" && npm test`
+- 退出码：0
+- 结果摘要：`# tests 123`、`# pass 123`、`# fail 0`、`# skipped 0`
+- 关键既有用例（与 B-16 下载不变量直接相关，均在 tests-baseline-full.log 中可见）：
+  - tests/application-board-session.test.mjs:104 `download bytes are not delivered after a withdrawal or an intervening window clear`
+  - :120 `failed read, download, or reply leaves no stale report and remains retryable`
+  - :150 `a successful download reports browser delivery without claiming disk persistence`
+  - :160 `window cleanup triggered by browser download cannot restore the old report`
+
+## 2) 类型检查（基线）
+
+- 命令：`cd "D:\jbcode\web ai\jianli\jianli" && npm run typecheck`
+- 退出码：0
+- 结果摘要：tsc --noEmit 无输出（无类型错误）。
+
+## 3) 生产构建（基线）
+
+- 命令：`cd "D:\jbcode\web ai\jianli\jianli" && npm run build`
+- 退出码：0
+- 结果摘要：Next.js 生产构建成功（路由预渲染清单见 build-baseline.log）。
+
+## 4) 浏览器级复现尝试（v2 勘误：初版把首败误归因 CDP，实为 harness MIME 缺陷；详见 repro-attempt.log §0/§3）
+
+- 尝试 1：ZCode In-app Browser 打开 `http://127.0.0.1:8931/` 与 `http://localhost:8931/`
+  - 结果：两次均 `ERR_FAILED (-2)`，IAB 无法加载本机回环地址（外网可达性未另行验证）。
+- 尝试 2（首败，已勘误）：本机 Chrome `--headless=new --remote-debugging-port=9333` + Node 22
+  内置 WebSocket 直连 CDP。页面被当下载落盘（`download` 文件 3930 字节，SHA-256
+  `703ecfe0781ef178ccf0b0aa761e6e3674508235fa33f65c81211c27ac89096d` = index.html）。
+  **真实原因：harness/server.mjs MIME 键错误（`".html"` 键 vs 无点查询）使页面以
+  `application/octet-stream` 返回**，初版误归因为 CDP 限制。01:09 按当时停止条件终止并清理
+  （b16-chrome 特征过滤 + 复现服务器 PID 238884 taskkill；8931 释放、无残留 chrome）。
+
+## 5) 修正 harness 后的合成复现运行（2026-10-04 01:25；详见 repro-attempt.log §4–§5 与 rerun-success.log）
+
+- 命令：`node driver.mjs "D:\jbcode\tmp\b16-repro\dl"`（MIME 修正经 curl 核对
+  `content-type: text/html; charset=utf-8` 后执行）→ **退出码 0**。
+- 结果：A 64KB / B 256MB / C 双击两文件 / D 300ms 卸载 / E 撤销机制验证，五场景全部
+  `completed`，**六项落盘大小 + SHA-256 与源哈希全部 match:true**；撤销后 fetch 被拒。
+- ⚠️ 限制：该运行复用了前次崩溃遗留的 Chrome 实例（9333 端口冲突）；全新单实例重验仅完成
+  场景 A（哈希经 `sha256sum` 独立复核一致）、B 完整写盘未及比对即按限时取消，未再重试。
+  输出为人工誊录摘录（guid 行被过滤命令移除），非完整原始 stdout。
+- 性质：合成复现页，**不是真实产品页面验收**。
+
+## 未验证项
+
+- 真实产品页面的企业下载首验（含桌面与 390px 截图、下载列表、文件大小/哈希）：未验证
+  （IAB 工具限制；合成 harness 不替代页面验收，screenshots/ 未创建）。
+- Firefox/Safari 等非 Chromium 内核行为：未验证。
+- 全新单实例下的 B–E 场景：未验证（仅 A 完成且哈希一致，见 §5 限制）。
+- 新增回归测试：未运行（无代码修改，无新增被测对象；既有 123 用例为基线证据）。

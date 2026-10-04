@@ -1,0 +1,27 @@
+# 0013 迁移验证（PG 实库升级 + SQLite 0013 DDL 单独验证）
+# 说明: alembic 迁移链自 0001 起即 PG 专用（0001_initial 含 CREATE EXTENSION vector），SQLite 不支持全链升级，属既有约束非 B-08 范围。
+
+## 1) PG（本机 docker backend-postgres-1, careerproof 库）alembic upgrade head
+# 命令: ./.venv/Scripts/python.exe -m alembic upgrade head
+# 退出码: 0
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+
+## 2) PG 状态与旧行无损核查
+# 命令: asyncpg 查询 ai_usage_logs 行数/新列/索引/alembic_version
+# 退出码: 0
+ai_usage_logs rows: 48 | new cols: ['request_seq', 'run_token'] | index: uq_ai_usage_logs_run_token_request_seq | alembic: 0013_ai_usage_idempotency
+
+## 3) SQLite 上 0013 单独验证（stamp 0012 后 upgrade，旧行无损/部分唯一索引/幂等拒绝/NULL 豁免）
+# 命令: DATABASE_URL='sqlite+aiosqlite:///.tmp-b08-mig/mig2.db' alembic stamp 0012 && alembic upgrade 0013 + sqlite3 断言
+# 退出码: 0
+legacy row intact: ('legacy-1', 'old-model', 7, None, None)
+partial index sql: CREATE UNIQUE INDEX uq_ai_usage_logs_run_token_request_seq ON ai_usage_logs (run_token, request_seq) WHERE run_token IS NOT NULL
+duplicate rejected: UNIQUE constraint failed: ai_usage_logs.run_token, ai_usage_logs.request_seq
+null run_token rows exempt: ok
+
+## 披露
+本任务曾误用环境变量名 CAREERPROOF_DATABASE_URL（settings 无 env_prefix，正确为 DATABASE_URL），
+导致第一次 alembic upgrade head 打到默认 PG（本机 docker backend-postgres-1 的 careerproof 库）而非一次性 SQLite。
+该迁移为加 2 个可空列 + 部分唯一索引的无损变更，事后核查 48 行旧数据完好、alembic 已在 0013 head，
+与任务卡要求的升级目标一致；未发生数据损坏。后续 SQLite/PG 验证均使用正确变量名重跑。

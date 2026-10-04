@@ -1,0 +1,5 @@
+
+> jianli@0.1.0 typecheck
+> tsc --noEmit
+
+TYPECHECK_EXIT=0

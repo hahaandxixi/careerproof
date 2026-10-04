@@ -1,0 +1,77 @@
+# B-16 合成 harness 成功运行的输出记录（人工誊录摘录；A–E 场景；非完整原始 stdout）
+
+- 命令：`node driver.mjs "D:\jbcode\tmp\b16-repro\dl"`（工作目录 /d/jbcode/tmp/b16-repro，
+  复现服务器 `node server.mjs` 已先行启动并经 curl 核对 `content-type: text/html; charset=utf-8`）
+- 退出码：**0**（ALL_DONE 正常到达）
+- 运行环境：Windows 11 / node v22.23.1 / 本机 Chrome（headless=new + CDP，本机安装版 154.0.8037.93）
+- 时间：2026-10-04 01:25 前后（单次运行约 1 分钟；逐场景超时上限 60s，事件等待上限 120s）
+- ⚠️ **实例限制**：本次运行复用了前一次崩溃尝试遗留的 Chrome 实例（9333 调试端口被其占用，
+  新启动的 Chrome 因端口冲突退出，驱动实际连到旧实例；场景页面为新开的受控标签页）。
+  此后两次"全新单实例捕获"均未完成（chrome --version 为 GUI 程序挂起 >5 分钟；第二次
+  完成 A 并写盘 B，但未走完全部场景），按限时指示停止、不再重试。故本日志是唯一一次完整成功运行。
+- ⚠️ **性质限制**：这是合成复现页（逐字复刻 ApplicationBoard.tsx:96 交付模式的独立页面），
+  **不是真实产品页面的验收**。
+- 落盘目录当时内容：六个场景文件 + 一个浏览器内部残留 `downloads.htm (1).crdownload`
+  （21,651,340 字节，文件头 `Cr24`（CRX 魔术数），不属于任何场景产物，未增长，已排除出证据并删除）。
+- blob 内容为 crypto.getRandomValues 随机生成，故哈希为当次运行的源-落盘配对比较（非跨运行固定值）。
+
+## 输出（人工誊录摘录，非完整原始 stdout）
+
+- **为什么不是完整原始输出**：本次运行经前台管道 `node driver.mjs … 2>&1 | grep -v '"guid"'`
+  执行，未落盘；工作 scratch 目录事后已清理。因此：各场景 JSON 块中的 `guid` 行已被过滤
+  **无法补全**；除此之外的内容（含六项 match 比对行与 ALL_DONE——这些行不含 "guid" 字段，
+  未被过滤）为逐字誊录，数字未改动。独立复核可按 harness/README.md 重跑。
+- 本文件性质：整理后的誊录摘录；核心证据为六项 match 行（逐字完整）。
+
+```
+=== A-64KB ===
+{
+  "downloads": [
+    { "guid": "…", "suggested": "合成简历-A-64KB.txt", "state": "completed" }
+  ],
+  "pageState": { "generated": [ { "name": "合成简历-A-64KB.txt", "size": 65536,
+    "hash": "f5fda766f9a8ee712d4cb3851865d688e6045e6132eb6a99cecf8d560d48d7d7" } ] }
+}
+
+=== B-256MB ===
+{ "downloads": [ { "suggested": "合成简历-B-256MB.txt", "state": "completed" } ],
+  "pageState": { "generated": [ …,
+    { "name": "合成简历-B-256MB.txt", "size": 268435456,
+      "hash": "12947e4c36fdf6ebf0c98bee5b560f186f242d8162517af6d82824cb9214c897" } ] } }
+
+=== C-double ===
+{ "downloads": [ { "suggested": "合成简历-C1-1MB.txt", "state": "completed" },
+                 { "suggested": "合成简历-C2-2MB.txt", "state": "completed" } ],
+  "pageState": { "generated": [ …,
+    { "name": "合成简历-C1-1MB.txt", "size": 1048576,
+      "hash": "d62bc7c8a8965ae9917348e3c2fe25dd40fb6fdc637a449c063019402af848ad" },
+    { "name": "合成简历-C2-2MB.txt", "size": 2097152,
+      "hash": "5f6dc71a80a1e3d0243495e70290d95ddbdc7e4721b1e5c2eb0b860af9d343ad" } ] } }
+
+=== D-unload-300ms ===
+{ "downloads": [ { "suggested": "合成简历-D-1MB.txt", "state": "completed" } ],
+  "pageState": { "generated": [ …,
+    { "name": "合成简历-D-1MB.txt", "size": 1048576,
+      "hash": "90c6a7e1a0c8ce29909bbc28ff7fddb8b1fe393076bd21eaba1cb75dbeae57a9" } ] } }
+
+=== E-revoke-sanity ===
+{ "downloads": [ { "suggested": "合成简历-E-1KB.txt", "state": "completed" } ],
+  "pageState": { "generated": [ { "name": "合成简历-E-1KB.txt", "size": 1024,
+    "hash": "51c3a4784977e084fefff464fef251272a7e2e65bfbf929244393f019d2f39fb" } ],
+    "fetchAfterRevoke": { "rejected": "Failed to fetch" } } }
+
+=== 落盘文件与哈希比对 ===
+{"scenario":"A-64KB","sizeOnDisk":65536,"expectedSize":65536,"expectedSha256":"f5fda766f9a8ee712d4cb3851865d688e6045e6132eb6a99cecf8d560d48d7d7","actualSha256":"f5fda766f9a8ee712d4cb3851865d688e6045e6132eb6a99cecf8d560d48d7d7","match":true}
+{"scenario":"B-256MB","sizeOnDisk":268435456,"expectedSize":268435456,"expectedSha256":"12947e4c36fdf6ebf0c98bee5b560f186f242d8162517af6d82824cb9214c897","actualSha256":"12947e4c36fdf6ebf0c98bee5b560f186f242d8162517af6d82824cb9214c897","match":true}
+{"scenario":"C-double","sizeOnDisk":1048576,"expectedSize":1048576,"expectedSha256":"d62bc7c8a8965ae9917348e3c2fe25dd40fb6fdc637a449c063019402af848ad","actualSha256":"d62bc7c8a8965ae9917348e3c2fe25dd40fb6fdc637a449c063019402af848ad","match":true}
+{"scenario":"C-double","sizeOnDisk":2097152,"expectedSize":2097152,"expectedSha256":"5f6dc71a80a1e3d0243495e70290d95ddbdc7e4721b1e5c2eb0b860af9d343ad","actualSha256":"5f6dc71a80a1e3d0243495e70290d95ddbdc7e4721b1e5c2eb0b860af9d343ad","match":true}
+{"scenario":"D-unload-300ms","sizeOnDisk":1048576,"expectedSize":1048576,"expectedSha256":"90c6a7e1a0c8ce29909bbc28ff7fddb8b1fe393076bd21eaba1cb75dbeae57a9","actualSha256":"90c6a7e1a0c8ce29909bbc28ff7fddb8b1fe393076bd21eaba1cb75dbeae57a9","match":true}
+{"scenario":"E-revoke-sanity","sizeOnDisk":1024,"expectedSize":1024,"expectedSha256":"51c3a4784977e084fefff464fef251272a7e2e65bfbf929244393f019d2f39fb","actualSha256":"51c3a4784977e084fefff464fef251272a7e2e65bfbf929244393f019d2f39fb","match":true}
+
+ALL_DONE
+```
+
+说明：guid 字段（每场景每次运行不同的浏览器内部 UUID）已被过滤命令移除，以 `…` 缩略；
+`===` 段中 `pageState.generated` 数组随场景累积，`…` 代表前序场景的既有条目（完整条目均列于
+其首次出现的场景段）。除上述两类省略外（guid 行与数组省略不涉及任何测试数字或结论），
+六项 match 行与 ALL_DONE 为逐字未动。本文件不声称是完整原始输出。

@@ -1,0 +1,20 @@
+
+=== A-64KB ===
+{
+  "downloads": [
+    {
+      "guid": "1ec712a7-0194-4b79-b29d-fccd5ecca0c6",
+      "suggested": "合成简历-A-64KB.txt",
+      "state": "completed"
+    }
+  ],
+  "pageState": {
+    "generated": [
+      {
+        "name": "合成简历-A-64KB.txt",
+        "size": 65536,
+        "hash": "a29852c511f150298d577bf73015c0e7c92902ac82b30088bf67f8efcb952a73"
+      }
+    ]
+  }
+}

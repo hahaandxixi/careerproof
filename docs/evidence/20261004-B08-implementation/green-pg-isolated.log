@@ -1,0 +1,20 @@
+# B-08 定向测试（PostgreSQL 隔离 schema cp_test_*）
+# 命令: CAREERPROOF_TEST_DATABASE_URL='postgresql+asyncpg://careerproof:<redacted>@127.0.0.1:5432/careerproof' ./.venv/Scripts/python.exe -m pytest app/tests/test_b08_usage_accounting.py -q --basetemp=./.tmp-b08-ev3 -p no:cacheprovider
+# 退出码: 0
+.......                                                                  [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+7 passed, 5 warnings in 6.06s
+
+EXIT=0

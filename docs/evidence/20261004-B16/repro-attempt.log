@@ -1,0 +1,78 @@
+# B-16 浏览器级复现尝试记录（含 Codex 审计后的勘误与重跑）
+
+时间线：2026-10-04 01:01 – 01:41（本地时间）。全部合成数据；服务器仅监听 127.0.0.1:8931；
+无外部网络；复现工具副本在 harness/。本日志替代 01:14 的初版记录（初版存在误归因，见 §0）。
+
+## 0. 勘误（Codex 证据审计结论，属实）
+
+初版记录把首次 CDP 尝试的失败归因于"setDownloadBehavior(allow) 下页面导航被拦截为下载的 CDP 限制"。
+**归因错误**。真实原因：harness/server.mjs 的 MIME 映射缺陷——`types` 键写作 `".html"`，
+查询却用 `join(name).split(".").pop()` 得到的 `"html"`（无点），永不命中而回落
+`application/octet-stream`；Chrome 收到该 Content-Type 后把复现页本身当作文件下载（落盘
+`download`，3930 字节，SHA-256 `703ecfe0781ef178ccf0b0aa761e6e3674508235fa33f65c81211c27ac89096d`，
+与 index.html 逐字节相同），驱动自然无法进入页面状态。这是工具缺陷，不是 CDP 限制，也不是产品缺陷。
+
+## 1. 尝试 1（01:01–01:02）：ZCode In-app Browser
+
+- `agent.browsers.list()` → 仅 `iab` 后端。
+- `tab.goto("http://127.0.0.1:8931/")` 与 `http://localhost:8931/` 均 `ERR_FAILED (-2)`：
+  IAB 无法加载本机回环地址。此条与勘误无关，仍然成立。工具不可用，未再尝试。
+
+## 2. 尝试 2（01:03–01:09）：Chrome headless + CDP——因 MIME 缺陷失败
+
+- 启动 `chrome.exe --headless=new --remote-debugging-port=9333 --user-data-dir=<b16-chrome-*>`，
+  Node 22 内置 WebSocket 直连 CDP；`Browser.setDownloadBehavior{allow, eventsEnabled}`。
+- 因 §0 的 MIME 缺陷，页面导航被当作下载；驱动等待的事件无从发生。01:09 按当时停止条件终止。
+- 终止时 driver 进程被杀但 Chrome 未随之退出（cdp.close 未执行），实例泄漏并继续占用 9333。
+
+## 3. Codex 审计后的修正（01:22–01:24）
+
+1. **MIME 映射修正**（Codex 指出的唯一确定缺陷）：查询改为 `"." + join(name).split(".").pop()`。
+   验证：`curl -D - http://127.0.0.1:8931/` → `content-type: text/html; charset=utf-8`；
+   `/after-unload.html` 同样 text/html；不存在路径返回 404。
+2. 重跑准备中另发现并修正三处 harness 驱动缺陷（修正前无法产出有效结果）：
+   - cdp.mjs `withDownloads`：同一事件既注册为实时回调又在轮询中反复扫描累积数组 → 重复计数。
+     改为扫描指针，每事件恰处理一次；
+   - driver.mjs 对已解析的 pageState 再次 `JSON.parse`（TypeError 隐患）；
+   - driver.mjs 哈希比对使用不存在的 `file.name`（实际返回字段为 `suggested`）；
+     场景 D 需在 300ms 卸载前捕获页面侧源哈希（preCaptureMs=250）；场景 E 需先回到复现页
+     （D 的导航已把标签页带到落点页）。
+
+## 4. 成功运行（01:25，输出记录见 rerun-success.log：人工誊录摘录，非完整原始 stdout）
+
+- 命令：`node driver.mjs "D:\jbcode\tmp\b16-repro\dl"` → 退出码 **0**，A–E 五场景全部
+  `state: "completed"`，**六项落盘文件大小 + SHA-256 与页面侧源哈希全部一致（match:true）**：
+  A 64KB、B 256MB、C1 1MB、C2 2MB（双击连下）、D 1MB（点击后 300ms 页面卸载，撤销定时器不触发）、
+  E 1KB；场景 E 附加机制验证：撤销 1.5s 后 `fetch(同URL)` → `"Failed to fetch"`（撤销生效）。
+- **实例限制（必须标注）**：本次运行复用了 §2 泄漏的 Chrome 实例（9333 被其占用，新实例因端口
+  冲突退出，驱动实际连到旧实例；场景页面为该实例上新开的受控标签页）。
+- 运行中出现的 `downloads.htm (1).crdownload`（21,651,340 字节，文件头 `Cr24` CRX 魔术数）为浏览器
+  内部残留，不属于任何场景产物，未增长，已从证据中排除并删除。
+
+## 5. 全新单实例验证（01:31–01:40，未完成）
+
+- 第一次：命令在 `chrome.exe --version` 处挂起——Windows 上 chrome.exe 为 GUI 子系统程序，
+  `--version` 不输出且不退出；等待 >5 分钟后按停止条件终止，进程清理，改用文件属性取版本
+  （154.0.8037.93）。node 驱动未启动。
+- 第二次（去掉 --version）：正常推进——场景 A 完成且哈希匹配（页面源与落盘均为
+  `a29852c511f150298d577bf73015c0e7c92902ac82b30088bf67f8efcb952a73`，65536 字节，另经
+  `sha256sum dl/合成简历-A-64KB.txt` 独立复核一致），场景 B 文件完整写盘 268,435,456 字节
+  （等于预期大小）但驱动未及比对即被取消（冷启动实例显著慢于复用实例，约 8 分钟仅完成两场景；
+  用户按限时指示取消）。原始部分输出：rerun-fresh-partial.raw。
+- 按用户指示**不再重试**；全新实例下 B–E 未验证。
+
+## 6. 清理记录（01:41）
+
+- `Get-CimInstance` 按 `b16-chrome-*` 命令行特征过滤 → 无残留 chrome 进程（绝不触碰用户其他 Chrome）；
+- 8931 复现服务器（node server.mjs，PID 244588）taskkill 终止，确认无监听（仅余 TIME_WAIT 客户端套接字）；
+- ZCode IAB 中本次创建的 about:blank 空白页已关闭；
+- 临时 profile（b16-chrome-*，系统临时目录）随进程退出释放；tmp 工作副本随后删除。
+
+## 7. 结论与未验证项
+
+- **合成 harness 结论**：Chromium（Chrome 154，headless）中，ApplicationBoard.tsx:96 的
+  "点击后 1 秒撤销 blob URL"模式在 64KB/256MB/双击/300ms 卸载四种场景下均完整交付且哈希一致；
+  撤销机制本身生效（撤销后 fetch 被拒）。**未复现 0 字节/失败下载**。
+- **未验证**：真实产品页面的企业下载首验（含桌面 + 390px、下载列表与截图）；非 Chromium 内核
+  （Firefox 另存为对话框推迟 blob fetch 的历史行为、Safari）；全新单实例下的 B–E 场景。
+- 合成 harness 证据不能替代真实页面验收（见 summary.md 结论分层）。

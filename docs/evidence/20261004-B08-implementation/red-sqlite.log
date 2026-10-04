@@ -1,0 +1,412 @@
+FFFFFFF                                                                  [100%]
+================================== FAILURES ===================================
+___________________ test_usage_survives_lease_invalidation ____________________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028DEA3DD0>, student=<httpx.AsyncClient object at 0x000002028DF01BE0>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('59f763e8-25d1-4cbe-82a9-23529cb330ec'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028DC72FC0>
+
+    async def test_usage_survives_lease_invalidation(case, monkeypatch):
+        entered = asyncio.Event()
+        release = asyncio.Event()
+    
+        async def handler(_request):
+            entered.set()
+            await release.wait()
+            return completion(model_answer(case.snapshot))
+    
+        inject_provider(monkeypatch, handler)
+        started = await case.start()
+        execute_task = asyncio.create_task(case.execute(started))
+        claim_token = None
+        try:
+            deadline = asyncio.get_running_loop().time() + 10
+            while True:
+                async with case.factory() as session:
+                    task = await session.get(AnalysisTask, UUID(started["taskId"]))
+                    if task.status == TaskStatus.RUNNING and task.run_token:
+                        claim_token = task.run_token
+                        break
+                assert asyncio.get_running_loop().time() < deadline, "task never claimed"
+                await asyncio.sleep(0.01)
+            await asyncio.wait_for(entered.wait(), timeout=5)
+            await reap(case.factory, started["taskId"])
+        finally:
+            release.set()
+        await asyncio.wait_for(execute_task, timeout=10)
+        rows = await usage_rows(case.factory, started["taskId"])
+>       assert len(rows) == 1, f"expected exactly one usage row, got {len(rows)}"
+E       AssertionError: expected exactly one usage row, got 0
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_b08_usage_accounting.py:74: AssertionError
+_________________ test_usage_survives_finalize_commit_failure _________________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028E2EACF0>, student=<httpx.AsyncClient object at 0x000002028E310620>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('04a4956a-9990-422d-923a-e3b2d83b15b7'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028DF01250>
+
+    async def test_usage_survives_finalize_commit_failure(case, monkeypatch):
+        async def handler(_request):
+            return completion(model_answer(case.snapshot))
+    
+        inject_provider(monkeypatch, handler)
+        real_factory = case.factory
+    
+        @asynccontextmanager
+        async def instrumented():
+            async with real_factory() as session:
+                real_commit = session.commit
+    
+                async def commit():
+                    if any(isinstance(obj, AgentStep) for obj in session.new):
+                        raise RuntimeError("synthetic finalize commit failure")
+                    await real_commit()
+    
+                session.commit = commit
+                yield session
+    
+        case.factory = instrumented
+        started = await case.start()
+        with pytest.raises(RuntimeError, match="synthetic finalize commit failure"):
+            await case.execute(started)
+        rows = await usage_rows(real_factory, started["taskId"])
+>       assert len(rows) == 1 and rows[0].input_tokens == 123
+E       assert (0 == 1)
+E        +  where 0 = len([])
+
+app\tests\test_b08_usage_accounting.py:109: AssertionError
+___________________ test_duplicate_accounting_is_idempotent ___________________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028E4FEF30>, student=<httpx.AsyncClient object at 0x000002028E524770>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('9c2486be-fadb-49ab-b8df-0ca3aaddf4aa'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028E386A20>
+
+    async def test_duplicate_accounting_is_idempotent(case, monkeypatch):
+        async def handler(_request):
+            return completion(model_answer(case.snapshot))
+    
+        provider = inject_provider(monkeypatch, handler)
+        started = await case.start()
+        await case.execute(started)
+        rows = await usage_rows(case.factory, started["taskId"])
+        assert len(rows) == 1
+>       written = await verification.persist_verification_usage(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            case.factory, UUID(started["taskId"]), rows[0].run_token, provider
+        )
+E       AttributeError: module 'app.services.application_verification' has no attribute 'persist_verification_usage'
+
+app\tests\test_b08_usage_accounting.py:124: AttributeError
+_______________ test_usage_survives_cancellation_after_response _______________
+
+fut = <coroutine object Event.wait at 0x000002028E2C99A0>, timeout = 15
+
+    async def wait_for(fut, timeout):
+        """Wait for the single Future or coroutine to complete, with timeout.
+    
+        Coroutine will be wrapped in Task.
+    
+        Returns result of the Future or coroutine.  When a timeout occurs,
+        it cancels the task and raises TimeoutError.  To avoid the task
+        cancellation, wrap it in shield().
+    
+        If the wait is cancelled, the task is also cancelled.
+    
+        If the task suppresses the cancellation and returns a value instead,
+        that value is returned.
+    
+        This function is a coroutine.
+        """
+        # The special case for timeout <= 0 is for the following case:
+        #
+        # async def test_waitfor():
+        #     func_started = False
+        #
+        #     async def func():
+        #         nonlocal func_started
+        #         func_started = True
+        #
+        #     try:
+        #         await asyncio.wait_for(func(), 0)
+        #     except asyncio.TimeoutError:
+        #         assert not func_started
+        #     else:
+        #         assert False
+        #
+        # asyncio.run(test_waitfor())
+    
+    
+        if timeout is not None and timeout <= 0:
+            fut = ensure_future(fut)
+    
+            if fut.done():
+                return fut.result()
+    
+            await _cancel_and_wait(fut)
+            try:
+                return fut.result()
+            except exceptions.CancelledError as exc:
+                raise TimeoutError from exc
+    
+        async with timeouts.timeout(timeout):
+>           return await fut
+                   ^^^^^^^^^
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.locks.Event object at 0x000002028E3DB8C0 [unset]>
+
+    async def wait(self):
+        """Block until the internal flag is true.
+    
+        If the internal flag is true on entry, return True
+        immediately.  Otherwise, block until another coroutine calls
+        set() to set the flag to true, then return True.
+        """
+        if self._value:
+            return True
+    
+        fut = self._get_loop().create_future()
+        self._waiters.append(fut)
+        try:
+>           await fut
+E           asyncio.exceptions.CancelledError
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\locks.py:212: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028E545160>, student=<httpx.AsyncClient object at 0x000002028E739430>, ou...autoflush=True, expire_on_commit=False), app=<fastapi.applications.FastAPI object at 0x000002028E4FF6E0>, submitted=[])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028E4FF260>
+
+    async def test_usage_survives_cancellation_after_response(case, monkeypatch):
+        final_recheck = asyncio.Event()
+        release = asyncio.Event()
+        handler_calls = 0
+        real_authorized = verification._authorized
+    
+        async def stalled_authorized(*args, **kwargs):
+            # Only the post-response lock=True recheck may stall: the pre-send
+            # authorization check must pass so the model call actually happens.
+            if kwargs.get("lock"):
+                final_recheck.set()
+                await asyncio.wait_for(release.wait(), timeout=15)
+            return await real_authorized(*args, **kwargs)
+    
+        async def handler(_request):
+            nonlocal handler_calls
+            handler_calls += 1
+            return completion(model_answer(case.snapshot))
+    
+        provider = inject_provider(monkeypatch, handler)
+        monkeypatch.setattr(verification, "_authorized", stalled_authorized)
+>       started = await case.start()
+                  ^^^^^^^^^^^^^^^^^^
+
+app\tests\test_b08_usage_accounting.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_application_verification.py:133: in start
+    response = await (client or self.hr).post(
+.venv\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:113: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\cors.py:85: in __call__
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\base.py:182: in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:85: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:184: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\core\request_context.py:20: in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\starlette\middleware\base.py:159: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:144: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\starlette\routing.py:716: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:736: in app
+    await route.handle(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:290: in handle
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\starlette\routing.py:78: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv\Lib\site-packages\starlette\routing.py:75: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\fastapi\routing.py:302: in app
+    raw_response = await run_endpoint_function(
+.venv\Lib\site-packages\fastapi\routing.py:213: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\v1\applications.py:79: in create_verification
+    result = await ApplicationVerificationService(session).create(application_id, payload, user)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\application_verification.py:322: in create
+    item, context = await _authorized(self.session, application_id, user.id, lock=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_b08_usage_accounting.py:142: in stalled_authorized
+    await asyncio.wait_for(release.wait(), timeout=15)
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Timeout [expired]>
+exc_type = <class 'asyncio.exceptions.CancelledError'>
+exc_val = CancelledError(), exc_tb = <traceback object at 0x000002028E39A000>
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() <= self._cancelling and exc_type is exceptions.CancelledError:
+                # Since there are no new cancel requests, we're
+                # handling this.
+>               raise TimeoutError from exc_val
+E               TimeoutError
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\timeouts.py:115: TimeoutError
+___________________ test_missing_usage_writes_no_ledger_row ___________________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028DCA26F0>, student=<httpx.AsyncClient object at 0x000002028E157CE0>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('d3c4bd65-499a-4830-ae18-163760e58cf1'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028E72BF80>
+
+    async def test_missing_usage_writes_no_ledger_row(case, monkeypatch):
+        async def handler(_request):
+            body = json.loads(completion(model_answer(case.snapshot)).content)
+            body.pop("usage")
+            return httpx.Response(200, json=body)
+    
+        inject_provider(monkeypatch, handler)
+        started = await case.start()
+        await case.execute(started)
+        result = await case.result(started)
+        assert result["status"] == "completed"
+>       assert await usage_rows(case.factory, started["taskId"]) == []
+E       assert [<app.models....02028E23EE40>] == []
+E         
+E         Left contains one more item: <app.models.analysis.AiUsageLog object at 0x000002028E23EE40>
+E         Use -v to get more diff
+
+app\tests\test_b08_usage_accounting.py:182: AssertionError
+_____________________ test_valid_usage_marks_usage_known ______________________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028E6F9AC0>, student=<httpx.AsyncClient object at 0x000002028E7F4620>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('5d96e494-2d85-4f6f-9054-dd7ba8869168'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028E182150>
+
+    async def test_valid_usage_marks_usage_known(case, monkeypatch):
+        async def handler(_request):
+            return completion(model_answer(case.snapshot))
+    
+        inject_provider(monkeypatch, handler)
+        started = await case.start()
+        await case.execute(started)
+        result = await case.result(started)
+>       assert result["usageKnown"] is True
+               ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'usageKnown'
+
+app\tests\test_b08_usage_accounting.py:195: KeyError
+____________ test_daily_budget_counts_distinct_tasks_and_sums_rows ____________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000002028E7F4500>, student=<httpx.AsyncClient object at 0x000002028FDF11F0>, ou...nction execute_application_verification_task at 0x00000202FF439080>, (UUID('70aa683f-769b-4bb7-af39-c13ab4078517'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002028E157650>
+
+    async def test_daily_budget_counts_distinct_tasks_and_sums_rows(case, monkeypatch):
+        async def handler(_request):
+            return completion(model_answer(case.snapshot))
+    
+        inject_provider(monkeypatch, handler)
+        started = await case.start()
+        await case.execute(started)
+        async with case.factory() as session:
+            session.add(AiUsageLog(
+                analysis_task_id=UUID(started["taskId"]),
+                model="deepseek-flash", input_tokens=10, output_tokens=5,
+                cache_hit_tokens=0, latency_ms=1,
+                unit_price_snapshot={"provider": "deepseek", "priceVerified": False},
+            ))
+            user = await session.scalar(select(User).where(User.email == "hr@example.com"))
+            await session.commit()
+        async with case.factory() as session:
+            allowed, reason, stats = await _daily_ai_budget(session, user.id)
+            await session.commit()
+        assert allowed and reason is None
+>       assert stats["reportCount"] == 1, "two usage rows of one task must count as one report"
+E       AssertionError: two usage rows of one task must count as one report
+E       assert 2 == 1
+
+app\tests\test_b08_usage_accounting.py:219: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_b08_usage_accounting.py::test_usage_survives_lease_invalidation
+FAILED app/tests/test_b08_usage_accounting.py::test_usage_survives_finalize_commit_failure
+FAILED app/tests/test_b08_usage_accounting.py::test_duplicate_accounting_is_idempotent
+FAILED app/tests/test_b08_usage_accounting.py::test_usage_survives_cancellation_after_response
+FAILED app/tests/test_b08_usage_accounting.py::test_missing_usage_writes_no_ledger_row
+FAILED app/tests/test_b08_usage_accounting.py::test_valid_usage_marks_usage_known
+FAILED app/tests/test_b08_usage_accounting.py::test_daily_budget_counts_distinct_tasks_and_sums_rows
+7 failed, 5 warnings in 19.10s
+EXIT=1

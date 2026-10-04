@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-16 复现：blob URL 1 秒撤销</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;color:#1e293b}
+  button{margin:4px 8px 4px 0;padding:8px 14px}
+  pre{background:#f1f5f9;padding:8px;white-space:pre-wrap;word-break:break-all;font-size:12px}
+  section{border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<h1>B-16 复现页（合成数据）</h1>
+<p>精确复刻 <code>ApplicationBoard.tsx</code> 第96行的交付回调：</p>
+<pre>const url=URL.createObjectURL(file.blob);
+const anchor=document.createElement('a');
+anchor.href=url;anchor.download=file.filename;anchor.click();
+setTimeout(()=>URL.revokeObjectURL(url),1000);</pre>
+<section>
+  <h2>场景</h2>
+  <button id="a">A：64KB + 1秒撤销</button>
+  <button id="b">B：256MB + 1秒撤销</button>
+  <button id="c">C：双击连下两个（各1秒撤销）</button>
+  <button id="d">D：点击后300ms页面卸载（撤销定时器不会触发）</button>
+  <button id="e">E：撤销后 fetch 同一 URL（应失败，证明撤销生效）</button>
+</section>
+<section><h2>页面侧结果</h2><pre id="log">就绪。</pre></section>
+<script>
+const log = (m)=>{document.getElementById("log").textContent += "\n" + m;};
+function blobOf(size){
+  // 合成确定性内容；SHA-256 由页面计算并展示，作为与落盘文件比对的基准。
+  const data = new Uint8Array(size);
+  for (let offset = 0; offset < size; offset += 65536) {
+    crypto.getRandomValues(data.subarray(offset, Math.min(offset + 65536, size)));
+  }
+  return data;
+}
+async function sha256(data){
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+// —— 与组件一致的交付回调（唯一来源：jianli/src/components/ApplicationBoard.tsx:96）——
+function deliver(file){
+  const url=URL.createObjectURL(file.blob);
+  const anchor=document.createElement('a');
+  anchor.href=url;anchor.download=file.filename;anchor.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  return url;
+}
+async function makeFile(size, name){
+  const data = blobOf(size);
+  const hash = await sha256(data);
+  window.REPRO_RESULTS.generated = window.REPRO_RESULTS.generated || [];
+  window.REPRO_RESULTS.generated.push({name, size, hash});
+  log(`生成 ${name}：${size} 字节，SHA-256=${hash}`);
+  return {blob: new Blob([data]), filename: name, bytes: data, hash};
+}
+window.REPRO_RESULTS = {};
+const A=document.getElementById("a"),B=document.getElementById("b"),C=document.getElementById("c"),D=document.getElementById("d"),E=document.getElementById("e");
+A.onclick = async () => { const f = await makeFile(64*1024, "合成简历-A-64KB.txt"); deliver(f); };
+B.onclick = async () => { const f = await makeFile(256*1024*1024, "合成简历-B-256MB.txt"); deliver(f); };
+C.onclick = async () => {
+  const f1 = await makeFile(1024*1024, "合成简历-C1-1MB.txt");
+  deliver(f1);
+  setTimeout(async ()=>{ const f2 = await makeFile(2*1024*1024, "合成简历-C2-2MB.txt"); deliver(f2); }, 200);
+};
+D.onclick = async () => {
+  const f = await makeFile(1024*1024, "合成简历-D-1MB.txt");
+  deliver(f);
+  setTimeout(()=>{ location.href = "/after-unload.html"; }, 300);
+};
+E.onclick = async () => {
+  const f = await makeFile(1024, "合成简历-E-1KB.txt");
+  const url = deliver(f);
+  setTimeout(async ()=>{
+    try { const r = await fetch(url); window.REPRO_RESULTS.fetchAfterRevoke = {status: r.status, ok: r.ok}; }
+    catch (e) { window.REPRO_RESULTS.fetchAfterRevoke = {rejected: String(e && e.message || e)}; }
+    log(`撤销后 fetch 结果：${JSON.stringify(window.REPRO_RESULTS.fetchAfterRevoke)}`);
+  }, 1500);
+};
+</script>
+</body>
+</html>
