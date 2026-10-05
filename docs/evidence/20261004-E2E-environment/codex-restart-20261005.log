@@ -1,0 +1,48 @@
+database cp_e2e_audit-20261005: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "audit-20261005",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "e215c9e2-5d0b-4fdd-9dc2-1963a0cf1acb",
+    "B": "df0b9602-8d34-4832-b6c2-84f937d3aa6c"
+  },
+  "reports": {
+    "A": "73fe7225-d925-4543-afc9-39853adb1f44",
+    "B": "5af9c8c5-d0de-4465-995b-4a4bbf3ab689",
+    "A2": "ebff72b0-86a6-4b43-b932-e3fada204f54"
+  },
+  "materials": {
+    "student": "c56d8f84-83a7-46b9-99c7-ae639e431941",
+    "studentA2": "a48690f7-a1f4-44c1-a4d1-5bf63b6ed383"
+  },
+  "applications": {
+    "A": {
+      "id": "dfff7065-80ac-447e-95fb-0838e1bf3789",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "96d1cfb4333e12a392927ffb1da4e32b3c4c3043457b177a1eb34705f0784adf"
+    },
+    "B": {
+      "id": "d9c64113-203c-4f83-ba79-907f28c782c1",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "ce8b0ef5499f807e39f892213252f29d6f8c4ef7523581b80b2021246423e379"
+    },
+    "A2": {
+      "id": "8032fdb1-37fc-4cbd-84fd-d32f5c893ebd",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "73222f78ec3e1dee738c56b2f69d622fc4152ee1d9db8c223dda0d62086213f9"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+CareerProof E2E run 'audit-20261005' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_audit-20261005 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\audit-20261005, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\audit-20261005.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId audit-20261005.
+
