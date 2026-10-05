@@ -1,0 +1,1785 @@
+{
+  "suite": "task-plan-quality-v2",
+  "promptVersionNow": "evidence-trust-v29-implementation-first-plan",
+  "generatedAt": "2026-10-05T04:50:39.740041+00:00",
+  "syntheticDataOnly": true,
+  "externalCalls": 0,
+  "mode": "authored-probes",
+  "scope": "Contract probes are authored fixtures, not model quality or independent review.",
+  "results": [
+    {
+      "id": "fastapi-health-execution",
+      "direction": "后端接口",
+      "gapKind": "execution",
+      "requirement": "实现 FastAPI 健康检查接口并说明响应",
+      "qualityRubric": "产物必须能定位路由、请求方式、响应样例和运行环境；不能把源码当作运行结果。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 3,
+      "evidenceCount": 3,
+      "contexts": [
+        {
+          "requirement_id": "3a3986bd-5fa2-5772-ada2-074b90a76b61",
+          "requirement_title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "使用 Python 和 FastAPI 完成过接口开发。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "app.py",
+              "line_start": 5,
+              "line_end": 7,
+              "evidence_type": "fastapi_route",
+              "strength": "high",
+              "snippet": "@app.get('/health')\ndef health():\n    return {'ok': True}",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 5,
+              "function_line_end": 7,
+              "source_line_count": 7
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "app.py",
+              "line_start": 1,
+              "line_end": 7,
+              "evidence_type": "fastapi_app",
+              "strength": "medium",
+              "snippet": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 7
+            },
+            {
+              "citation_id": "R1-E3",
+              "file_path": "app.py",
+              "line_start": 1,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 7
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "app.py",
+              "function_line_start": 5,
+              "function_line_end": 7,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "app.py",
+              "source_line_count": 7,
+              "covered_line_count": 7,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2",
+                "R1-E3"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "具名健康检查请求与响应记录",
+            "steps": [
+              "启动本地服务并请求 /health",
+              "保存脱敏请求、响应状态和响应体"
+            ],
+            "acceptanceChecks": [
+              "记录能对应 app.py 的路由",
+              "响应状态与来源版本可定位"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "repeat-source",
+          "defect": "把完整函数源码再次当作补证材料",
+          "draft": {
+            "deliverable": "具名运行记录",
+            "steps": [
+              "再次提交该文件原文"
+            ],
+            "acceptanceChecks": [
+              "代码可定位"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI suggestion requests source already fully shown",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "python-sum-runtime",
+      "direction": "后端运行",
+      "gapKind": "execution",
+      "requirement": "实现 Python 数值汇总函数并保存输入输出记录",
+      "qualityRubric": "先证明输入约束和函数边界，再补充可复现运行记录；执行结果必须与版本绑定。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "7985b8ba-0957-5e12-9bd2-2000ba4b0db6",
+          "requirement_title": "实现 Python 数值汇总函数并保存输入输出记录",
+          "skill": "Python",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "熟悉 Python 数据处理和接口开发。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "metrics.py",
+              "line_start": 1,
+              "line_end": 4,
+              "evidence_type": "python_code",
+              "strength": "high",
+              "snippet": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 1,
+              "function_line_end": 4,
+              "source_line_count": 4
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "Python"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "metrics.py",
+              "function_line_start": 1,
+              "function_line_end": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "metrics.py",
+              "source_line_count": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "total 函数的脱敏输入输出记录",
+            "steps": [
+              "使用正常数字和非法输入各运行一次",
+              "保存异常类型、输出和代码版本"
+            ],
+            "acceptanceChecks": [
+              "正常输入的输出可复算",
+              "非法输入的异常与源码校验一致"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "repeat-source",
+          "defect": "重复上传已经完整展示的函数",
+          "draft": {
+            "deliverable": "函数源码",
+            "steps": [
+              "再次提交该函数源码"
+            ],
+            "acceptanceChecks": [
+              "代码可定位"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI suggestion requests source already fully shown",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "postgres-query-execution",
+      "direction": "数据访问",
+      "gapKind": "execution",
+      "requirement": "使用 PostgreSQL 查询订单并记录边界输入结果",
+      "qualityRubric": "补证应包含查询条件、参数化方式、空结果和异常处理记录；不能只凭 SQL 文本声称查询成功。",
+      "sourceExact": false,
+      "sourceCheck": "no-sources",
+      "sourceCount": 0,
+      "evidenceCount": 0,
+      "contexts": [
+        {
+          "requirement_id": "3a2919c7-fed5-5abb-8986-e7edfaba6381",
+          "requirement_title": "使用 PostgreSQL 查询订单并记录边界输入结果",
+          "skill": "PostgreSQL",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "使用 Python 和 PostgreSQL 完成过数据服务。",
+          "evidence": [],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "数据库",
+              "PostgreSQL"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在通过数据库 API 执行的参数化 SELECT、INSERT、UPDATE 或 DELETE；本判据只要求至少一个实质数据库操作，不要求覆盖岗位描述中的全部操作；只有驱动依赖、连接类型、SQL 字符串或函数名不满足。",
+              "task": "完整函数展示输入、SQL 执行和结果处理；岗位要求同时列出保存、查询等多个操作时，证据必须逐项覆盖才算完整任务；不推断数据库已连接或语句已成功运行。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": null,
+          "function_source_coverage": [],
+          "file_source_coverage": []
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "订单查询的脱敏执行记录",
+            "steps": [
+              "准备有数据和无数据的测试用户",
+              "保存查询参数、返回行数和异常处理结果"
+            ],
+            "acceptanceChecks": [
+              "参数化占位符和输入值可对应",
+              "空结果与异常路径都有记录"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "pytest-regression",
+      "direction": "测试验证",
+      "gapKind": "execution",
+      "requirement": "使用 pytest 覆盖汇总函数的正常和异常输入",
+      "qualityRubric": "测试补证需要报告命令、通过数量、失败输出和测试文件版本；源码本身不等于运行通过。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 3,
+      "evidenceCount": 3,
+      "contexts": [
+        {
+          "requirement_id": "d246bca3-50bc-5c33-ace8-6feb0f3348af",
+          "requirement_title": "使用 pytest 覆盖汇总函数的正常和异常输入",
+          "skill": "pytest",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "使用 Python 和 pytest 编写过回归测试。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "test_metrics.py",
+              "line_start": 4,
+              "line_end": 5,
+              "evidence_type": "pytest_test",
+              "strength": "high",
+              "snippet": "def test_total_numbers():\n    assert total([1, 2, 3]) == 6",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 4,
+              "function_line_end": 5,
+              "source_line_count": 9
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "test_metrics.py",
+              "line_start": 7,
+              "line_end": 9,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "def test_total_rejects_text():\n    with pytest.raises(TypeError):\n        total([1, 'x'])",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 7,
+              "function_line_end": 9,
+              "source_line_count": 9
+            },
+            {
+              "citation_id": "R1-E3",
+              "file_path": "test_metrics.py",
+              "line_start": 1,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "import pytest\nfrom metrics import total\n\ndef test_total_numbers():\n    assert total([1, 2, 3]) == 6\n\ndef test_total_rejects_text():",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 9
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "测试",
+              "pytest"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "测试函数包含针对行为结果的断言；依赖、测试名或空测试不满足。",
+              "task": "完整测试展示准备、执行与有效断言；仍不能从断言存在推断测试通过。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "test_metrics.py",
+              "function_line_start": 4,
+              "function_line_end": 5,
+              "covered_line_count": 2,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            },
+            {
+              "file_path": "test_metrics.py",
+              "function_line_start": 7,
+              "function_line_end": 9,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E2"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "test_metrics.py",
+              "source_line_count": 9,
+              "covered_line_count": 9,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2",
+                "R1-E3"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "pytest 回归命令与结果摘要",
+            "steps": [
+              "在固定依赖环境执行 pytest -q test_metrics.py",
+              "保存通过数量和失败时的最小输出"
+            ],
+            "acceptanceChecks": [
+              "命令能定位到测试文件",
+              "通过结果与提交版本可对应"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "content-operations-review",
+      "direction": "内容运营",
+      "gapKind": "review",
+      "requirement": "制定内容运营发布计划并用数据复盘",
+      "qualityRubric": "需要把目标、选题、渠道、指标和复盘动作连成可检查闭环；计划文本不能代替真实数据。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "1f3a9fa6-d5d4-5092-bf9f-e74247d783bb",
+          "requirement_title": "制定内容运营发布计划并用数据复盘",
+          "skill": "内容运营",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "参与过内容运营和活动宣传。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "content_plan.md",
+              "line_start": 5,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "渠道：公众号和社群\n指标：阅读、点击、转化\n复盘：按周记录数据并调整选题",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 7
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "岗位专项",
+              "内容运营"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "content_plan.md",
+              "source_line_count": 7,
+              "covered_line_count": 3,
+              "fully_covered": false,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "一周内容发布与数据复盘表",
+            "steps": [
+              "按计划发布一篇内容并标记渠道",
+              "记录阅读、点击和转化数据",
+              "根据结果写出下一周调整项"
+            ],
+            "acceptanceChecks": [
+              "每项数据都有统计口径",
+              "调整项能引用本周数据"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "event-planning-budget",
+      "direction": "活动策划",
+      "gapKind": "contribution",
+      "requirement": "完成活动策划、预算排期和现场复盘",
+      "qualityRubric": "交付物应能核对预算、排期、风险和实际复盘；策划案只说明方案，不直接证明活动已执行。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 2,
+      "evidenceCount": 2,
+      "contexts": [
+        {
+          "requirement_id": "181f24fa-b9ba-5aeb-a927-5c7347f7e9cc",
+          "requirement_title": "完成活动策划、预算排期和现场复盘",
+          "skill": "活动策划",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "做过校园活动策划和运营策划。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "event.md",
+              "line_start": 4,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "流程：报名、分享、答疑、回收反馈\n预算：场地、物料、奖品\n排期：预热、执行、复盘\n复盘指标：到场率、完成率、满意度",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 7
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "event.md",
+              "line_start": 5,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "预算：场地、物料、奖品\n排期：预热、执行、复盘\n复盘指标：到场率、完成率、满意度",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 7
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "岗位专项",
+              "活动策划"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "event.md",
+              "source_line_count": 7,
+              "covered_line_count": 4,
+              "fully_covered": false,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "活动执行清单和复盘记录",
+            "steps": [
+              "按排期完成报名和现场流程",
+              "保存预算使用与风险处理记录",
+              "收集到场率和满意度并复盘"
+            ],
+            "acceptanceChecks": [
+              "预算项目与实际票据可对应",
+              "复盘指标含统计范围和时间"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "docker-service-start",
+      "direction": "部署运维",
+      "gapKind": "execution",
+      "requirement": "使用 Docker 启动服务并记录健康检查",
+      "qualityRubric": "需要记录镜像构建、容器启动、端口和健康检查；Dockerfile 文本不能单独证明服务运行。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "94f83c77-f101-5a70-aaa9-c97f2b5db3b5",
+          "requirement_title": "使用 Docker 启动服务并记录健康检查",
+          "skill": "Docker",
+          "verdict": "partial",
+          "rule_score": 0.15,
+          "claimed": true,
+          "claim_text": "了解 Docker 容器化部署。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "Dockerfile",
+              "line_start": 1,
+              "line_end": 5,
+              "evidence_type": "dockerfile",
+              "strength": "low",
+              "snippet": "FROM python:3.12-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD ['python', 'app.py']",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 5
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "运维与交付",
+              "Docker"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在有效镜像构建或服务编排配置；只有镜像名称不满足。",
+              "task": "配置展示构建、运行所需依赖及服务关系；不推断镜像已成功构建。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "Dockerfile",
+              "source_line_count": 5,
+              "covered_line_count": 5,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "容器构建与健康检查记录",
+            "steps": [
+              "构建具名镜像并记录版本",
+              "启动容器并保存端口映射",
+              "请求健康检查并保存响应"
+            ],
+            "acceptanceChecks": [
+              "容器日志与镜像版本可对应",
+              "健康检查响应含时间和环境"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "redis-unimplemented-first",
+      "direction": "缓存实现",
+      "gapKind": "implementation",
+      "requirement": "实现 Redis 缓存读写并记录运行结果",
+      "qualityRubric": "材料明确说明未实现缓存；任务须先给出可定位的读写实现，再要求运行记录。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 2,
+      "evidenceCount": 2,
+      "contexts": [
+        {
+          "requirement_id": "5b7ec084-b8c6-5b3d-a391-23c9aff955aa",
+          "requirement_title": "实现 Redis 缓存读写并记录运行结果",
+          "skill": "Redis",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "了解 Redis 缓存。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "README.md",
+              "line_start": 2,
+              "line_end": 4,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "\nRedis 未实现，当前只有缓存需求说明。\n尚无客户端调用、缓存读写代码或运行记录。",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 4
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "README.md",
+              "line_start": 1,
+              "line_end": 4,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "# 合成项目边界\n\nRedis 未实现，当前只有缓存需求说明。\n尚无客户端调用、缓存读写代码或运行记录。",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 4
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "岗位专项",
+              "Redis"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "README.md",
+              "source_line_count": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "Redis 读写实现片段及后续运行记录",
+            "steps": [
+              "补充 Redis 客户端调用和读写处理代码",
+              "在受控环境执行读写并保存脱敏输出"
+            ],
+            "acceptanceChecks": [
+              "代码展示键的写入、读取和异常处理",
+              "运行记录与实现版本可对应"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "runtime-without-implementation",
+          "defect": "材料明确未实现，却只要求运行输出",
+          "draft": {
+            "deliverable": "Redis 运行日志",
+            "steps": [
+              "执行缓存读写并保存输出"
+            ],
+            "acceptanceChecks": [
+              "日志显示返回状态"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI task plan requests execution before missing implementation",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "python-claim-review",
+      "direction": "能力复核",
+      "gapKind": "review",
+      "requirement": "复核 Python 函数的输入边界并提出可验证修订",
+      "qualityRubric": "复核要区分可见实现、未覆盖边界和拟议修订；不能把简历声明或计划文本当成已完成结果。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "5987006f-aae9-561b-a469-af306892e0ec",
+          "requirement_title": "复核 Python 函数的输入边界并提出可验证修订",
+          "skill": "Python",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "熟悉 Python，能够处理输入校验和异常分支。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "normalize.py",
+              "line_start": 1,
+              "line_end": 4,
+              "evidence_type": "python_code",
+              "strength": "high",
+              "snippet": "def normalize(value):\n    if value is None:\n        return ''\n    return value.strip()",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 1,
+              "function_line_end": 4,
+              "source_line_count": 4
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "Python"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "normalize.py",
+              "function_line_start": 1,
+              "function_line_end": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "normalize.py",
+              "source_line_count": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "输入边界复核表与修订后测试计划",
+            "steps": [
+              "列出 None、空字符串和非字符串输入",
+              "保存当前行为和待修订行为的差异",
+              "补充对应测试用例并标记执行状态"
+            ],
+            "acceptanceChecks": [
+              "每个边界都有预期行为",
+              "测试状态明确区分已执行和待执行"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "repeat-source",
+          "defect": "将完整函数再次提交作为复核结果",
+          "draft": {
+            "deliverable": "输入边界复核表",
+            "steps": [
+              "重新上传当前函数实现代码"
+            ],
+            "acceptanceChecks": [
+              "代码可定位"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI suggestion requests source already fully shown",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "python-cache-partial",
+      "direction": "部分实现",
+      "gapKind": "partial-implementation",
+      "requirement": "实现缓存读写与过期处理并说明边界",
+      "qualityRubric": "部分实现必须区分已实现读路径与缺失写路径及过期分支；不得把部分实现当作完整交付验收。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "d3e1c8ab-00e2-5b96-b38f-eec5eec25aa5",
+          "requirement_title": "实现缓存读写与过期处理并说明边界",
+          "skill": "Python",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "熟悉 Python，写过缓存读取逻辑。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "cache.py",
+              "line_start": 4,
+              "line_end": 6,
+              "evidence_type": "python_code",
+              "strength": "high",
+              "snippet": "@lru_cache(maxsize=128)\ndef cache_get(key):\n    return lookup(key)",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 4,
+              "function_line_end": 6,
+              "source_line_count": 6
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "Python"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "cache.py",
+              "function_line_start": 4,
+              "function_line_end": 6,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "cache.py",
+              "source_line_count": 6,
+              "covered_line_count": 3,
+              "fully_covered": false,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "缓存读路径说明与写路径实现补全",
+            "steps": [
+              "标注已实现的读路径片段与行号",
+              "补充写路径与过期策略的实现步骤及测试计划"
+            ],
+            "acceptanceChecks": [
+              "已实现部分与缺失分支分别列出",
+              "写路径实现前不标记缓存完整可用"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "partial-as-complete",
+          "defect": "把仅有读路径的部分实现当作完整缓存验收",
+          "draft": {
+            "deliverable": "缓存完整功能验收记录",
+            "steps": [
+              "对完整缓存读写与过期链路执行验收"
+            ],
+            "acceptanceChecks": [
+              "读写与过期行为全部有验收结论"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI task plan assumes complete functionality without a scope check",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "api-run-record-missing",
+      "direction": "运行记录",
+      "gapKind": "missing-run",
+      "requirement": "提供 FastAPI 接口的运行记录与响应样例",
+      "qualityRubric": "运行记录需含命令、状态码、响应体与环境版本；源码本身不等于运行通过。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 2,
+      "evidenceCount": 2,
+      "contexts": [
+        {
+          "requirement_id": "877cab7d-85dd-5711-addc-e72be4bcb19b",
+          "requirement_title": "提供 FastAPI 接口的运行记录与响应样例",
+          "skill": "FastAPI",
+          "verdict": "supported",
+          "rule_score": 0.65,
+          "claimed": true,
+          "claim_text": "使用 FastAPI 开发过接口。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "routes.py",
+              "line_start": 6,
+              "line_end": 8,
+              "evidence_type": "fastapi_route",
+              "strength": "high",
+              "snippet": "@router.get('/orders')\ndef list_orders():\n    return {'orders': []}",
+              "context_complete": true,
+              "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": 6,
+              "function_line_end": 8,
+              "source_line_count": 8
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "routes.py",
+              "line_start": 1,
+              "line_end": 7,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "from fastapi import APIRouter\n\nrouter = APIRouter()\n\n\n@router.get('/orders')\ndef list_orders():",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 8
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "FastAPI"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+              "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 3,
+          "function_source_coverage": [
+            {
+              "file_path": "routes.py",
+              "function_line_start": 6,
+              "function_line_end": 8,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ],
+          "file_source_coverage": [
+            {
+              "file_path": "routes.py",
+              "source_line_count": 8,
+              "covered_line_count": 8,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1",
+                "R1-E2"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "脱敏运行记录",
+            "steps": [
+              "本地启动服务并请求 /orders",
+              "保存状态码、响应体与依赖版本"
+            ],
+            "acceptanceChecks": [
+              "响应样例与路由代码对应",
+              "记录含执行时间与环境"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "source-as-runtime-proof",
+          "defect": "把测试文件源码当作已通过的运行证明",
+          "draft": {
+            "deliverable": "回归通过证明",
+            "steps": [
+              "提交测试文件源码作为通过证据"
+            ],
+            "acceptanceChecks": [
+              "测试文件已提交即视为已通过"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI analysis contains an unsupported ability or execution claim",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "group-project-boundary",
+      "direction": "个人贡献",
+      "gapKind": "unclear-contribution",
+      "requirement": "说明本人在小组项目中的后端职责与提交边界",
+      "qualityRubric": "小组或第三方产物不证明本人贡献；需补具名提交、负责模块与可核对边界，不能虚构成果。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 1,
+      "evidenceCount": 1,
+      "contexts": [
+        {
+          "requirement_id": "23432f63-5811-5f11-a4c7-334c39f1e447",
+          "requirement_title": "说明本人在小组项目中的后端职责与提交边界",
+          "skill": "Python",
+          "verdict": "gap",
+          "rule_score": 0.0,
+          "claimed": false,
+          "claim_text": null,
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "group_report.md",
+              "line_start": 2,
+              "line_end": 5,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "\n项目：求职材料核验平台\n后端：由小组协作完成，具体分工见附件\n仓库提交：全组共用账号，未区分作者",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 5
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "Python"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "group_report.md",
+              "source_line_count": 5,
+              "covered_line_count": 4,
+              "fully_covered": false,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "个人负责模块的提交与边界说明",
+            "steps": [
+              "列出本人提交的模块文件与对应提交记录",
+              "标注与他人协作部分的接口边界"
+            ],
+            "acceptanceChecks": [
+              "每项职责可对应到具名提交",
+              "协作边界有双方确认记录"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "group-artifact-as-personal",
+          "defect": "用小组成果直接证明个人负责范围",
+          "draft": {
+            "deliverable": "小组报告个人贡献证明",
+            "steps": [
+              "直接提交小组项目报告作为个人贡献"
+            ],
+            "acceptanceChecks": [
+              "小组报告可证明本人负责后端模块"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI task plan substitutes group or reference material for personal evidence",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "conflicting-export-materials",
+      "direction": "矛盾材料",
+      "gapKind": "contradictory-materials",
+      "requirement": "核实导出功能的实现状态并说明依据",
+      "qualityRubric": "相互冲突的材料必须并列陈述并标记待核验，不能静默采信其中之一。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 2,
+      "evidenceCount": 2,
+      "contexts": [
+        {
+          "requirement_id": "fa91f62a-ec4b-5183-bac7-7ba9d7070923",
+          "requirement_title": "核实导出功能的实现状态并说明依据",
+          "skill": "Python",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "负责 Python 后端的导出模块。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "docs/known-issues.md",
+              "line_start": 1,
+              "line_end": 4,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "# 已知问题\n\n导出功能尚未实现，页面按钮为占位。\n等待下一版本处理。",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 4
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "docs/export.md",
+              "line_start": 1,
+              "line_end": 3,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "# 导出功能说明\n\n导出功能已实现，支持 CSV 格式。",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 3
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "后端开发",
+              "Python"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "docs/export.md",
+              "source_line_count": 3,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E2"
+              ]
+            },
+            {
+              "file_path": "docs/known-issues.md",
+              "source_line_count": 4,
+              "covered_line_count": 4,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "冲突材料核验记录",
+            "steps": [
+              "并列两处陈述的出处与行号",
+              "将结论状态标记为待核验",
+              "分别核实来源后再更新结论"
+            ],
+            "acceptanceChecks": [
+              "结论前保留冲突待核验标记",
+              "不单独采信任一来源"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "silent-pick-one-side",
+          "defect": "冲突材料未标记，静默采信已实现一侧",
+          "draft": {
+            "deliverable": "导出功能验收说明",
+            "steps": [
+              "按导出功能说明归档结论"
+            ],
+            "acceptanceChecks": [
+              "导出功能按已实现归档"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI task plan omits unresolved implementation-source conflict",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    },
+    {
+      "id": "reference-only-sql",
+      "direction": "仅参考材料",
+      "gapKind": "reference-only",
+      "requirement": "使用 SQL 完成订单统计查询并说明查询条件",
+      "qualityRubric": "第三方参考代码只说明外部实现样例，provenance 为 reference 且不提升个人评级；个人结论需另有本人证据。",
+      "sourceExact": true,
+      "sourceCheck": "verified",
+      "sourceCount": 3,
+      "evidenceCount": 3,
+      "contexts": [
+        {
+          "requirement_id": "ea9a60ff-8fc8-5ca2-9491-7b292f6e695d",
+          "requirement_title": "使用 SQL 完成订单统计查询并说明查询条件",
+          "skill": "SQL",
+          "verdict": "claimed_only",
+          "rule_score": 0.1,
+          "claimed": true,
+          "claim_text": "熟悉 SQL 数据查询。",
+          "evidence": [
+            {
+              "citation_id": "R1-E1",
+              "file_path": "notes.md",
+              "line_start": 1,
+              "line_end": 3,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "# 项目笔记\n\n计划为订单模块补充统计查询，当前只有需求说明。",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "portfolio",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 3
+            },
+            {
+              "citation_id": "R1-E2",
+              "file_path": "reference/vendor_report.sql",
+              "line_start": 1,
+              "line_end": 7,
+              "evidence_type": "sql_schema",
+              "strength": "high",
+              "snippet": "CREATE TABLE vendor_orders (\n    id BIGINT PRIMARY KEY,\n    user_id BIGINT NOT NULL,\n    amount NUMERIC(10, 2)\n);\n\nSELECT user_id, SUM(amount) AS total",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "reference",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 9
+            },
+            {
+              "citation_id": "R1-E3",
+              "file_path": "reference/vendor_report.sql",
+              "line_start": 2,
+              "line_end": 9,
+              "evidence_type": "retrieved_context",
+              "strength": "low",
+              "snippet": "    id BIGINT PRIMARY KEY,\n    user_id BIGINT NOT NULL,\n    amount NUMERIC(10, 2)\n);\n\nSELECT user_id, SUM(amount) AS total\nFROM vendor_orders\nGROUP BY user_id;",
+              "context_complete": false,
+              "context_note": "局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验",
+              "provenance": "reference",
+              "function_line_start": null,
+              "function_line_end": null,
+              "source_line_count": 9
+            }
+          ],
+          "rating_rubric": {
+            "version": "skill-rubric-v3",
+            "path": [
+              "数据库",
+              "SQL"
+            ],
+            "criteria": {
+              "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+              "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+              "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+            },
+            "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+          },
+          "rating_ceiling": 1,
+          "function_source_coverage": [],
+          "file_source_coverage": [
+            {
+              "file_path": "notes.md",
+              "source_line_count": 3,
+              "covered_line_count": 3,
+              "fully_covered": true,
+              "citation_ids": [
+                "R1-E1"
+              ]
+            }
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "authored-reference",
+          "defect": null,
+          "expectedContractRejection": false,
+          "draft": {
+            "deliverable": "参考样例定位与个人实践差距说明",
+            "steps": [
+              "标注参考 SQL 的来源与作用",
+              "对比说明本人当前缺少的实践记录"
+            ],
+            "acceptanceChecks": [
+              "参考材料标注为第三方来源",
+              "不将参考实现计入个人证据"
+            ]
+          },
+          "accepted": true,
+          "error": null,
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        },
+        {
+          "id": "reference-as-personal-practice",
+          "defect": "把第三方参考 SQL 当作本人实践证明",
+          "draft": {
+            "deliverable": "本人 SQL 实践证明",
+            "steps": [
+              "引用参考仓库的统计查询作为个人实践"
+            ],
+            "acceptanceChecks": [
+              "参考实现可作为本人 SQL 能力证明"
+            ]
+          },
+          "expectedContractRejection": true,
+          "accepted": false,
+          "error": "AI task plan substitutes group or reference material for personal evidence",
+          "contractExpectationMatched": true,
+          "source": "authored-fixture",
+          "semanticReview": "pending"
+        }
+      ],
+      "modelReplay": null,
+      "rawModelOutput": null,
+      "independentSemanticReview": {
+        "status": "pending",
+        "reviewer": null,
+        "executable": null,
+        "verifiable": null,
+        "supportedBySources": null
+      }
+    }
+  ],
+  "metrics": {
+    "caseCount": 14,
+    "sourceExactCount": 13,
+    "sourceMismatchCount": 0,
+    "noSourceCount": 1,
+    "gapKindCoverage": {
+      "contradictory-materials": 1,
+      "contribution": 1,
+      "execution": 5,
+      "implementation": 1,
+      "missing-run": 1,
+      "partial-implementation": 1,
+      "reference-only": 1,
+      "review": 2,
+      "unclear-contribution": 1
+    },
+    "referenceContractAccepted": 14,
+    "contractExpectationMatches": 23,
+    "contractProbeCount": 23,
+    "contractExpectationMismatches": [],
+    "replayedModelOutputs": 0,
+    "independentSemanticReviews": 0,
+    "semanticQualityPassRate": null
+  }
+}

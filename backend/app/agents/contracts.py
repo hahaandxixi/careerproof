@@ -12,6 +12,7 @@ from app.tools.function_coverage import (
     missing_function_context_claim,
     redundant_source_request,
 )
+from app.tools.task_boundaries import task_boundary_error
 
 
 class StrictModel(BaseModel):
@@ -120,12 +121,23 @@ def runtime_plan_without_implementation_step(deliverable: str, steps: list[str])
     work = " ".join([deliverable, *steps])
     runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果", work))
     implementation_step = bool(re.search(
-        r"(?:补充|编写|实现|提供|提交|上传|完善|修复|修改|展示)"
+        r"(?:补充|补全|补齐|编写|实现|提供|提交|上传|完善|修复|修改|展示)"
         r".{0,30}(?:客户端调用|读写|缓存逻辑|实现|代码|源码|脚本|配置|查询语句|SQL\s*文件)",
         work,
         re.I,
     ))
     return runtime_requested and not implementation_step
+
+
+def missing_cited_function_body_claim(text: str) -> bool:
+    """An explicitly different function is outside the cited function context."""
+    for match in re.finditer(
+        r"(?:未核验|无法确认|不能确认|不清楚)(?P<subject>.{0,10}?)"
+        r"函数体(?:是否|有无|有没有|包含)", text,
+    ):
+        if not re.search(r"相邻|其他|另一个|未引用", match["subject"]):
+            return True
+    return False
 
 
 def execution_plan_skips_explicitly_missing_implementation(
@@ -299,6 +311,18 @@ def validate_grounded_analysis(
         )
         if item.task_plan and (not item.suggestion or not item.information_gap):
             raise ValueError("AI task plan lacks its evidence suggestion or gap")
+        if item.task_plan:
+            boundary_error = task_boundary_error(
+                deliverable=item.task_plan.deliverable,
+                steps=item.task_plan.steps,
+                acceptance_checks=item.task_plan.acceptance_checks,
+                personal_source_texts=[
+                    source.snippet for source in context.evidence
+                    if source.provenance == "portfolio"
+                ],
+            )
+            if boundary_error:
+                raise ValueError(boundary_error)
         answer_texts = (item.explanation, item.information_gap, item.suggestion, *plan_texts)
         combined = " ".join(value for value in answer_texts if value)
         if overclaim_flags(combined):
@@ -328,10 +352,7 @@ def validate_grounded_analysis(
         if (
             item.information_gap
             and any(evidence.context_complete for evidence in cited_evidence)
-            and re.search(
-                r"(?:未核验|无法确认|不能确认|不清楚).{0,10}函数体(?:是否|有无|有没有|包含)",
-                item.information_gap,
-            )
+            and missing_cited_function_body_claim(item.information_gap)
         ):
             raise ValueError("AI information gap contradicts the complete function context")
         if context.verdict == "unsupported":

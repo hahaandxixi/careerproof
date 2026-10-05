@@ -1,0 +1,42 @@
+{
+  "sourceHashesBefore": {
+    "backend/evals/run_task_plan_quality.py": "cbe4e95abff3e7b713afe2be09274b0188f4ebd0d6b8cad8aaa414645d0b3571",
+    "backend/evals/task-plan-quality-cases.json": "90e066d35df9eca1960d41455fbd1d4b9bb011e42a8a43f75d4c665099389061",
+    "backend/app/agents/contracts.py": "c848c7a1bcfca79f227cbdbe7ab452bf0a095aa86671a22474f081826a1c17e0",
+    "backend/app/tools/task_boundaries.py": "908a701a346349fee01bd6da4677790c3af188fb3ab67dc15ee20c81993b755e"
+  },
+  "sourceHashesAfter": {
+    "backend/evals/run_task_plan_quality.py": "cbe4e95abff3e7b713afe2be09274b0188f4ebd0d6b8cad8aaa414645d0b3571",
+    "backend/evals/task-plan-quality-cases.json": "90e066d35df9eca1960d41455fbd1d4b9bb011e42a8a43f75d4c665099389061",
+    "backend/app/agents/contracts.py": "c848c7a1bcfca79f227cbdbe7ab452bf0a095aa86671a22474f081826a1c17e0",
+    "backend/app/tools/task_boundaries.py": "908a701a346349fee01bd6da4677790c3af188fb3ab67dc15ee20c81993b755e"
+  },
+  "sourcesUnchangedDuringCheck": true,
+  "externalCalls": 0,
+  "metrics": {
+    "caseCount": 14,
+    "sourceExactCount": 13,
+    "sourceMismatchCount": 0,
+    "noSourceCount": 1,
+    "gapKindCoverage": {
+      "contradictory-materials": 1,
+      "contribution": 1,
+      "execution": 5,
+      "implementation": 1,
+      "missing-run": 1,
+      "partial-implementation": 1,
+      "reference-only": 1,
+      "review": 2,
+      "unclear-contribution": 1
+    },
+    "referenceContractAccepted": 14,
+    "contractExpectationMatches": 23,
+    "contractProbeCount": 23,
+    "contractExpectationMismatches": [],
+    "replayedModelOutputs": 0,
+    "independentSemanticReviews": 0,
+    "semanticQualityPassRate": null
+  },
+  "suitePassed": true,
+  "unmatched": []
+}

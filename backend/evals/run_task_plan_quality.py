@@ -2,12 +2,20 @@
 
 Reference drafts are authored fixtures, never model results or independent labels.
 No provider is created, no network is used, and uploaded sample code is not executed.
+
+Cases may declare optional third-party ``referenceFiles``; they go through the
+matcher's keyword-only ``reference_files`` interface and the enrichment plus
+snippet checks use the merged personal+reference file set, after rejecting
+normalized duplicate paths so a reference file can never shadow a personal one.
+Empty evidence is never counted as source-exact; it is reported separately so a
+correct no-implementation downgrade is not failed for lacking citations.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
@@ -24,27 +32,64 @@ SUITE = "task-plan-quality-v2"
 DEFAULT_CASES = Path(__file__).with_name("task-plan-quality-cases.json")
 
 
-def case_context(case: dict):
+def _normalized_path(path: str) -> str:
+    return path.replace("\\", "/")
+
+
+def load_cases(path: Path = DEFAULT_CASES) -> list[dict]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def case_files(case: dict) -> tuple[list[ProjectFileSnapshot], list[ProjectFileSnapshot]]:
     files = [ProjectFileSnapshot(**row) for row in case["files"]]
+    reference_files = [ProjectFileSnapshot(**row) for row in case.get("referenceFiles", [])]
+    personal_paths = {_normalized_path(file.path) for file in files}
+    reference_paths = {_normalized_path(file.path) for file in reference_files}
+    if len(files) != len(personal_paths) or len(reference_files) != len(reference_paths):
+        raise ValueError(f"case {case['id']}: duplicate normalized file paths")
+    collision = sorted(personal_paths & reference_paths)
+    if collision:
+        raise ValueError(
+            f"case {case['id']}: personal/reference path collision would confuse "
+            f"provenance lookup: {collision}"
+        )
+    return files, reference_files
+
+
+def case_context(case: dict):
+    files, reference_files = case_files(case)
     requirement = RequirementInput(
         uuid5(NAMESPACE_URL, f"{SUITE}:{case['id']}"),
         case["requirement"], case["skill"], 5,
     )
     result = enrich_evidence(
-        match_candidate([requirement], parse_resume(case["resume"]), files), files,
+        match_candidate(
+            [requirement], parse_resume(case["resume"]), files,
+            reference_files=reference_files or None,
+        ),
+        [*files, *reference_files],
     )
     contexts = build_evidence_contexts(result)
-    exact = all(
-        source.snippet.strip()
-        == "\n".join(
-            next(file.content for file in files if file.path == source.file_path).splitlines()[
-                source.line_start - 1:source.line_end
-            ]
-        ).strip()
-        for context in contexts
-        for source in context.evidence
-    )
-    return contexts, exact
+    content_by_path = {
+        _normalized_path(file.path): file.content for file in [*files, *reference_files]
+    }
+    source_count = 0
+    exact = True
+    for context in contexts:
+        for source in context.evidence:
+            source_count += 1
+            content = content_by_path.get(_normalized_path(source.file_path))
+            if content is None:
+                exact = False
+                continue
+            expected = "\n".join(
+                content.splitlines()[source.line_start - 1:source.line_end]
+            ).strip()
+            if source.snippet.strip() != expected:
+                exact = False
+    if not source_count:
+        exact = False
+    return contexts, exact, source_count
 
 
 def draft_probe(context, draft: dict) -> dict:
@@ -89,7 +134,8 @@ def validate_output(contexts, value: dict) -> dict:
 
 
 def evaluate_case(case: dict, model_output: dict | None = None) -> dict:
-    contexts, exact = case_context(case)
+    contexts, exact, source_count = case_context(case)
+    source_check = "no-sources" if not source_count else ("verified" if exact else "mismatch")
     probes = [{
         "id": "authored-reference", "defect": None,
         "expectedContractRejection": False, "draft": case["referenceDraft"],
@@ -108,7 +154,8 @@ def evaluate_case(case: dict, model_output: dict | None = None) -> dict:
     return {
         "id": case["id"], "direction": case["direction"], "gapKind": case["gapKind"],
         "requirement": case["requirement"], "qualityRubric": case["qualityRubric"],
-        "sourceExact": exact, "evidenceCount": len(contexts[0].evidence),
+        "sourceExact": exact, "sourceCheck": source_check, "sourceCount": source_count,
+        "evidenceCount": len(contexts[0].evidence),
         "contexts": [context.model_dump() for context in contexts], "probes": rows,
         "modelReplay": validate_output(contexts, model_output) if model_output else None,
         "rawModelOutput": model_output,
@@ -140,6 +187,15 @@ def evaluate(cases: list[dict], model_outputs: dict | None = None) -> dict:
         raise ValueError("Model output does not belong to a selected case")
     rows = [evaluate_case(case, (model_outputs or {}).get(case["id"])) for case in cases]
     probes = [probe for row in rows for probe in row["probes"]]
+    mismatches = [
+        {
+            "caseId": row["id"], "probeId": probe["id"],
+            "expectedContractRejection": probe["expectedContractRejection"],
+            "accepted": probe["accepted"],
+        }
+        for row in rows for probe in row["probes"]
+        if not probe["contractExpectationMatched"]
+    ]
     return {
         "suite": SUITE, "promptVersionNow": EVIDENCE_PROMPT_VERSION,
         "generatedAt": datetime.now(UTC).isoformat(), "syntheticDataOnly": True,
@@ -148,12 +204,33 @@ def evaluate(cases: list[dict], model_outputs: dict | None = None) -> dict:
         "results": rows,
         "metrics": {
             "caseCount": len(rows), "sourceExactCount": sum(row["sourceExact"] for row in rows),
+            "sourceMismatchCount": sum(row["sourceCheck"] == "mismatch" for row in rows),
+            "noSourceCount": sum(row["sourceCheck"] == "no-sources" for row in rows),
+            "gapKindCoverage": dict(sorted(Counter(
+                row["gapKind"] for row in rows).items())),
             "referenceContractAccepted": sum(row["probes"][0]["accepted"] for row in rows),
             "contractExpectationMatches": sum(p["contractExpectationMatched"] for p in probes),
-            "contractProbeCount": len(probes), "replayedModelOutputs": len(model_outputs or {}),
+            "contractProbeCount": len(probes),
+            "contractExpectationMismatches": mismatches,
+            "replayedModelOutputs": len(model_outputs or {}),
             "independentSemanticReviews": 0, "semanticQualityPassRate": None,
         },
     }
+
+
+def suite_exit_ok(report: dict) -> bool:
+    # Source verification and contract assertions stay separate: empty-evidence
+    # cases count as no-sources, never as exact, and never fail the suite by
+    # themselves — a correct no-implementation downgrade has zero citations.
+    metrics = report["metrics"]
+    return (
+        metrics["sourceMismatchCount"] == 0
+        and metrics["contractExpectationMatches"] == metrics["contractProbeCount"]
+        and all(
+            row["modelReplay"]["accepted"]
+            for row in report["results"] if row["modelReplay"]
+        )
+    )
 
 
 def main() -> int:
@@ -169,24 +246,14 @@ def main() -> int:
         parser.error(
             "Output already exists; choose a new filename to preserve failures and baselines"
         )
-    cases = json.loads(args.cases.read_text(encoding="utf-8"))
+    cases = load_cases(args.cases)
     outputs = load_model_outputs(args.responses, {case["id"] for case in cases})
     report = evaluate(cases, outputs)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("x", encoding="utf-8") as stream:
         stream.write(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(report["metrics"], ensure_ascii=True))
-    return 0 if (
-        all(row["sourceExact"] for row in report["results"])
-        and (
-            report["metrics"]["contractExpectationMatches"]
-            == report["metrics"]["contractProbeCount"]
-        )
-        and all(
-            row["modelReplay"]["accepted"]
-            for row in report["results"] if row["modelReplay"]
-        )
-    ) else 1
+    return 0 if suite_exit_ok(report) else 1
 
 
 if __name__ == "__main__":

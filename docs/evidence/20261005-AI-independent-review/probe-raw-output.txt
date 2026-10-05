@@ -1,0 +1,151 @@
+[MATCH  ] CTL-1 (控制)
+  输入: unsupported_attribution('直接提交小组项目报告作为个人贡献')
+  预期: True
+  实际: True
+  说明: 既有红灯行为仍应拒绝肯定替代归属
+
+[MATCH  ] CTL-2 (控制)
+  输入: unsupported_attribution('核对小组报告是否证明本人负责模块')
+  预期: False
+  实际: False
+  说明: 既有允许例：是否 型核验计划
+
+[COUNTEREXAMPLE] A1 (误拒合法否定)
+  输入: unsupported_attribution('核对小组报告能否证明本人负责模块')
+  预期: False
+  实际: True
+  说明: 能否 与既有允许词 是否 仅一字之差；能否 未列入 _UNCERTAIN，核验计划被误拒
+
+[COUNTEREXAMPLE] A2 (误拒待核验)
+  输入: unsupported_attribution('声称小组报告可证明本人贡献。此声明不作为事实，仅保留待核验。')
+  预期: False
+  实际: True
+  说明: 拒绝采纳声明放在下一句（句号分句）时 声称+拒绝 豁免失效；逗号版（既有允许例）通过
+
+[MATCH  ] A2c (控制)
+  输入: unsupported_attribution('声称小组报告可证明本人贡献，此声明待核验，不作为事实')
+  预期: False
+  实际: False
+  说明: 逗号版允许例（回归测试同款）
+
+[COUNTEREXAMPLE] A3 (误拒本人具名小组提交记录)
+  输入: task_boundary_error(deliverable='个人贡献证据补充说明', steps=['补充小组仓库中本人具名的提交记录作为个人贡献证明'], acceptance_checks=['每项职责对应到具名提交'])
+  预期: None
+  实际: 'AI task plan substitutes group or reference material for personal evidence'
+  说明: 前次审计明示不拦‘小组项目中本人具名提交记录’；小组仓库 措辞被当作群体产物误拒
+
+[MATCH  ] A3c (控制)
+  输入: task_boundary_error(steps=['列出小组项目中本人具名的提交记录'], ...)
+  预期: None
+  实际: None
+  说明: 小组项目 措辞按审计意图放行；与 A3 对比显示同类合法输入仅因词形不同结果相反
+
+[COUNTEREXAMPLE] A4 (误拒合法否定（长距离否定）)
+  输入: unsupported_attribution('写明小组项目成果不能在缺少本人具名提交记录、模块分工表、时间戳与代码评审意见的验收流程中证明本人负责后端模块')
+  预期: False
+  实际: True
+  说明: 否定词距动词超过25字且无逗号重置窗口时，不能 前缀保护失效
+
+[COUNTEREXAMPLE] A5 (待讨论边界（待核验无声称）)
+  输入: unsupported_attribution('小组报告可作为本人贡献，此说法待核验')
+  预期: 待讨论
+  实际: True
+  说明: 待核验 但无 声称 框架：设计可能有意要求声称框架，不判缺陷，仅记录
+
+[COUNTEREXAMPLE] A6 (待讨论边界（未来验收措辞）)
+  输入: overclaim_flags('确认测试结果全部通过后归档运行记录')
+  预期: 待讨论（设计可能要求区分未然/已然）
+  实际: ['execution_claim']
+  说明: 验收检查里的未来验证意图命中 execution_claim；不判确定缺陷，记录词法局限
+
+[COUNTEREXAMPLE] B1 (漏接（动词缺口）)
+  输入: unsupported_attribution('将小组项目成果当作本人实践成果提交')
+  预期: True
+  实际: False
+  说明: 当作 不在动词枚举 作为|证明|证实|等同|归为|计入 内
+
+[COUNTEREXAMPLE] B2 (漏接（动词缺口）)
+  输入: unsupported_attribution('将参考实现视为本人实践成果')
+  预期: True
+  实际: False
+  说明: 视为 不在动词枚举内
+
+[COUNTEREXAMPLE] B3 (漏接（来源词缺口）)
+  输入: unsupported_attribution('将他人完成的导出模块计入个人实践成果')
+  预期: True
+  实际: False
+  说明: 他人 不在来源枚举 参考|第三方|小组|团队 内
+
+[COUNTEREXAMPLE] B4 (漏接（来源词缺口）)
+  输入: unsupported_attribution('将同学整理的接口文档视为本人接口能力证明')
+  预期: True
+  实际: False
+  说明: 同学/课程设计等同类来源词均未覆盖
+
+[COUNTEREXAMPLE] C1 (误当冲突（本人旧日志演进）)
+  输入: conflicting_implementation_sources(['FastAPI未实现的部分已由本人补全，含过期分支。', 'FastAPI已实现，支持过期与并发。'])
+  预期: False（未实现的部分已补全=演进，非冲突）
+  实际: True
+  说明: 行首最左解析只取 未实现，丢掉 已由本人补全；同一来源历史与现状被判冲突
+
+[COUNTEREXAMPLE] C1b (误当冲突导致的误拒)
+  输入: task_boundary_error(..., personal_source_texts=['FastAPI未实现的部分已由本人补全，含过期分支。', 'FastAPI已实现，支持过期与并发。'], 普通验收计划)
+  预期: None
+  实际: 'AI task plan omits unresolved implementation-source conflict'
+  说明: 合法计划被要求三组冲突标记词，否则拒绝
+
+[COUNTEREXAMPLE] C2 (误当冲突（带日期旧记录）)
+  输入: task_boundary_error(..., personal_source_texts=['导出功能已实现，支持CSV。', '导出功能尚未实现，2025年1月旧记录。'], 普通验收计划)
+  预期: None（旧记录=版本化演进，不得误当冲突）
+  实际: 'AI task plan omits unresolved implementation-source conflict'
+  说明: 旧版 跳过仅存在于 contracts 的旧日志守卫；冲突检查无任何时间/版本限定词豁免
+
+[COUNTEREXAMPLE] C3 (漏接（静默选边可带齐标记词）)
+  输入: task_boundary_error(冲突来源, deliverable='导出功能冲突背景与归档说明', steps=['按已实现一侧归档导出结论，分别注明其余来源位置'], acceptance_checks=['版本差异后续待核验'])
+  预期: 非None（归档选边结论违反‘不静默选边’）
+  实际: None
+  说明: 三组标记词（冲突/待核验/分别）凑齐即放行，实际仍采信一侧；词法守卫可绕过
+
+[COUNTEREXAMPLE] C4 (待讨论边界（语序变体漏接）)
+  输入: conflicting_implementation_sources(['未实现导出功能。', '导出功能已实现。'])
+  预期: 待讨论（设计声明仅同一主语前缀形态）
+  实际: False
+  说明: 否定前置的行无法匹配 ^主语+状态+实现；设计文档已声明窄范围，不判缺陷
+
+[COUNTEREXAMPLE] D1 (contracts既有守卫（补全动词缺口）)
+  输入: validate_grounded_analysis(gap上下文, 计划=补全实现后运行记录输出)
+  预期: None（设计要求‘补全实现，再进入验收’，该计划先补全后运行应放行）
+  实际: ValueError: AI task plan requests execution before missing implementation
+  说明: runtime守卫动词表 缺 补全/补齐（而 _SCOPE_CHECK 含 补全/补齐），先补全后运行的合法未来计划被误拒；HEAD 已存在
+
+[MATCH  ] D1c (控制)
+  输入: 同D1但步骤动词改为 编写...实现代码
+  预期: None
+  实际: None
+  说明: 编写 在动词表内故放行；与 D1 对比确认缺口仅因 补全 一词
+
+[COUNTEREXAMPLE] D2 (contracts既有守卫（相邻函数体误判）)
+  输入: validate_grounded_analysis(supported上下文, information_gap 提到未引用的相邻工具函数体)
+  预期: None（完整上下文只覆盖被引用函数；相邻未引用函数的不确定陈述合法）
+  实际: ValueError: AI information gap contradicts the complete function context
+  说明: 函数体是否 模式不区分是否指被引用函数；指向其他函数的合法缺口被误拒；HEAD 已存在
+
+========================================================================
+探针总数: 22  匹配: 5  反例/待讨论记录: 17
+  - A1 [误拒合法否定] 预期=False 实际=True
+  - A2 [误拒待核验] 预期=False 实际=True
+  - A3 [误拒本人具名小组提交记录] 预期=None 实际='AI task plan substitutes group or reference material for personal evidence'
+  - A4 [误拒合法否定（长距离否定）] 预期=False 实际=True
+  - A5 [待讨论边界（待核验无声称）] 预期=待讨论 实际=True
+  - A6 [待讨论边界（未来验收措辞）] 预期=待讨论（设计可能要求区分未然/已然） 实际=['execution_claim']
+  - B1 [漏接（动词缺口）] 预期=True 实际=False
+  - B2 [漏接（动词缺口）] 预期=True 实际=False
+  - B3 [漏接（来源词缺口）] 预期=True 实际=False
+  - B4 [漏接（来源词缺口）] 预期=True 实际=False
+  - C1 [误当冲突（本人旧日志演进）] 预期=False（未实现的部分已补全=演进，非冲突） 实际=True
+  - C1b [误当冲突导致的误拒] 预期=None 实际='AI task plan omits unresolved implementation-source conflict'
+  - C2 [误当冲突（带日期旧记录）] 预期=None（旧记录=版本化演进，不得误当冲突） 实际='AI task plan omits unresolved implementation-source conflict'
+  - C3 [漏接（静默选边可带齐标记词）] 预期=非None（归档选边结论违反‘不静默选边’） 实际=None
+  - C4 [待讨论边界（语序变体漏接）] 预期=待讨论（设计声明仅同一主语前缀形态） 实际=False
+  - D1 [contracts既有守卫（补全动词缺口）] 预期=None（设计要求‘补全实现，再进入验收’，该计划先补全后运行应放行） 实际=ValueError: AI task plan requests execution before missing implementation
+  - D2 [contracts既有守卫（相邻函数体误判）] 预期=None（完整上下文只覆盖被引用函数；相邻未引用函数的不确定陈述合法） 实际=ValueError: AI information gap contradicts the complete function context

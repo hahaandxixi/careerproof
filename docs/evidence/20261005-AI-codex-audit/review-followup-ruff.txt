@@ -1,0 +1,3 @@
+COMMAND: .venv/Scripts/python.exe -m ruff check app/tools/task_boundaries.py app/agents/contracts.py app/tests/test_task_boundary_review_regressions.py app/tests/test_task_boundaries.py app/tests/test_task_plan_quality_coverage.py app/tests/test_task_plan_boundary_fallback.py evals/run_task_plan_quality.py --no-cache
+All checks passed!
+EXIT_CODE=0

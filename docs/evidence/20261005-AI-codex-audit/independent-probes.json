@@ -1,0 +1,94 @@
+{
+  "sourceHashesBefore": {
+    "backend/evals/run_task_plan_quality.py": "cbe4e95abff3e7b713afe2be09274b0188f4ebd0d6b8cad8aaa414645d0b3571",
+    "backend/evals/task-plan-quality-cases.json": "90e066d35df9eca1960d41455fbd1d4b9bb011e42a8a43f75d4c665099389061",
+    "backend/app/agents/contracts.py": "94f70443aa7516e09a0fcbccff7dee97ff2b4f7ef7f20337965180c125c51731"
+  },
+  "sourceHashesAfter": {
+    "backend/evals/run_task_plan_quality.py": "cbe4e95abff3e7b713afe2be09274b0188f4ebd0d6b8cad8aaa414645d0b3571",
+    "backend/evals/task-plan-quality-cases.json": "90e066d35df9eca1960d41455fbd1d4b9bb011e42a8a43f75d4c665099389061",
+    "backend/app/agents/contracts.py": "94f70443aa7516e09a0fcbccff7dee97ff2b4f7ef7f20337965180c125c51731"
+  },
+  "sourcesUnchangedDuringCheck": true,
+  "externalCalls": 0,
+  "metrics": {
+    "caseCount": 14,
+    "sourceExactCount": 13,
+    "sourceMismatchCount": 0,
+    "noSourceCount": 1,
+    "gapKindCoverage": {
+      "contradictory-materials": 1,
+      "contribution": 1,
+      "execution": 5,
+      "implementation": 1,
+      "missing-run": 1,
+      "partial-implementation": 1,
+      "reference-only": 1,
+      "review": 2,
+      "unclear-contribution": 1
+    },
+    "referenceContractAccepted": 14,
+    "contractExpectationMatches": 19,
+    "contractProbeCount": 23,
+    "contractExpectationMismatches": [
+      {
+        "caseId": "python-cache-partial",
+        "probeId": "partial-as-complete",
+        "expectedContractRejection": true,
+        "accepted": true
+      },
+      {
+        "caseId": "group-project-boundary",
+        "probeId": "group-artifact-as-personal",
+        "expectedContractRejection": true,
+        "accepted": true
+      },
+      {
+        "caseId": "conflicting-export-materials",
+        "probeId": "silent-pick-one-side",
+        "expectedContractRejection": true,
+        "accepted": true
+      },
+      {
+        "caseId": "reference-only-sql",
+        "probeId": "reference-as-personal-practice",
+        "expectedContractRejection": true,
+        "accepted": true
+      }
+    ],
+    "replayedModelOutputs": 0,
+    "independentSemanticReviews": 0,
+    "semanticQualityPassRate": null
+  },
+  "suitePassed": false,
+  "unmatched": [
+    {
+      "caseId": "python-cache-partial",
+      "probeId": "partial-as-complete",
+      "accepted": true,
+      "expectedRejection": true,
+      "error": null
+    },
+    {
+      "caseId": "group-project-boundary",
+      "probeId": "group-artifact-as-personal",
+      "accepted": true,
+      "expectedRejection": true,
+      "error": null
+    },
+    {
+      "caseId": "conflicting-export-materials",
+      "probeId": "silent-pick-one-side",
+      "accepted": true,
+      "expectedRejection": true,
+      "error": null
+    },
+    {
+      "caseId": "reference-only-sql",
+      "probeId": "reference-as-personal-practice",
+      "accepted": true,
+      "expectedRejection": true,
+      "error": null
+    }
+  ]
+}

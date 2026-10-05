@@ -1,0 +1,58 @@
+{
+  "syntheticDataOnly": true,
+  "note": "具名合成输出回放输入：由运行器draft_probe包装authored参考草稿生成，不是模型输出。",
+  "outputs": [
+    {
+      "caseId": "reference-only-sql",
+      "analysis": {
+        "summary": "离线合成草稿契约检查，不是模型生成或独立质量评定。",
+        "model": "authored-replay-fixture",
+        "items": [
+          {
+            "requirement_id": "ea9a60ff-8fc8-5ca2-9491-7b292f6e695d",
+            "explanation": "当前规则提供材料线索，执行结果、本人贡献及其他范围仍需人工核验。",
+            "citation_ids": [],
+            "information_gap": "执行结果、本人贡献及未展示材料仍需核对。",
+            "suggestion": "针对本项要求补充具名材料并人工核对。",
+            "task_plan": {
+              "deliverable": "参考样例定位与个人实践差距说明",
+              "steps": [
+                "标注参考 SQL 的来源与作用",
+                "对比说明本人当前缺少的实践记录"
+              ],
+              "acceptance_checks": [
+                "参考材料标注为第三方来源",
+                "不将参考实现计入个人证据"
+              ]
+            },
+            "confidence": 0,
+            "rating": {
+              "level": null,
+              "reason": "仅为草稿契约检查，不作语义评级。",
+              "criteria": [
+                {
+                  "criterion": "relevance",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "草稿契约检查未作语义评级。"
+                },
+                {
+                  "criterion": "operation",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "草稿契约检查未作语义评级。"
+                },
+                {
+                  "criterion": "task",
+                  "supported": false,
+                  "citation_ids": [],
+                  "reason": "草稿契约检查未作语义评级。"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
