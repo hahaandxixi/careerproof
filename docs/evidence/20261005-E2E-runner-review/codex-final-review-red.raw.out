@@ -1,0 +1,26 @@
+file:///D:/jbcode/web%20ai/jianli/scripts/e2e/runner-input.test.mjs:8
+  withdrawnNotificationStatus, prepareEvidenceRecord, withdrawnOpenCardsStatus } from "./runner-input.mjs";
+                               ^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module './runner-input.mjs' does not provide an export named 'prepareEvidenceRecord'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ scripts\e2e\runner-input.test.mjs (51.3604ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 56.6788
+
+✖ failing tests:
+
+test at scripts\e2e\runner-input.test.mjs:1:1
+✖ scripts\e2e\runner-input.test.mjs (51.3604ms)
+  'test failed'
+EXIT=1
