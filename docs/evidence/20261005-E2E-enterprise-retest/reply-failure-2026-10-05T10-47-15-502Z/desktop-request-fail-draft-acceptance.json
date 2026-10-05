@@ -1,0 +1,13 @@
+{
+  "variant": "desktop-request-fail",
+  "preserved": true,
+  "readOnly": false,
+  "editedOk": true,
+  "stillExists": true,
+  "clearedOk": true,
+  "retypedOk": true,
+  "sendButtonGone": true,
+  "checkboxGone": true,
+  "oldReportGone": true,
+  "originalText": "E2E复测desktop请求失败变体closure-20261005：具名正文，服务器不应收到此条。"
+}

@@ -1,0 +1,14 @@
+[1] info scenario-start :: scenario=late-response runId=closure-20261005
+[2] info chrome-launched :: enterprise dynamic port 49674 profile=profile-enterprise
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261005-E2E-enterprise-retest\late-response-2026-10-05T11-22-15-479Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] info a-view-held :: A /view response paused; busy indicator=true
+[6] pass hash-navigation-accepted :: hashchange consumed; stale session cleared via page refresh path; A2 clickable
+[7] evidence screenshot:a2-report-open-while-a-held :: docs\evidence\20261005-E2E-enterprise-retest\late-response-2026-10-05T11-22-15-479Z\07-a2-report-open-while-a-held.png
+[8] pass same-page-late-a-race :: release=continued responseObserved=true a2ReportStillOpen=true aDataOverwroteA2=false error=false draft=false hashStillA2=true bothColumns=true
+[9] evidence screenshot:after-late-a-release-same-page :: docs\evidence\20261005-E2E-enterprise-retest\late-response-2026-10-05T11-22-15-479Z\09-after-late-a-release-same-page.png
+[10] pass cross-page-late-a :: release=already-cancelled (page destroyed → cancellation is the expected browser behavior) bBoardIntact=true aColumnOnB=false error=false
+[11] evidence screenshot:cross-page-after-release :: docs\evidence\20261005-E2E-enterprise-retest\late-response-2026-10-05T11-22-15-479Z\11-cross-page-after-release.png
+[12] info chrome-stopped :: enterprise exitCode=0
+[13] pass scenario-complete
+EXIT=0

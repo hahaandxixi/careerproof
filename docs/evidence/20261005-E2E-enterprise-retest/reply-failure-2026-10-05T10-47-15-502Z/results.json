@@ -1,0 +1,270 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "reply-failure",
+  "startedAt": "2026-10-05T10:47:15.502Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T10:47:15.502Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=reply-failure runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T10:47:15.755Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-desktop dynamic port 50943 profile=profile-enterprise-desktop"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T10:47:16.004Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T10:47:17.919Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T10:47:20.057Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\05-reply-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T10:47:22.031Z",
+      "name": "desktop-request-fail-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T10:47:22.078Z",
+      "name": "screenshot:desktop-request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\07-desktop-request-fail-failure-draft.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T10:47:22.078Z",
+      "name": "desktop-request-fail-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=1 (expect 1, no auto-retry)"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T10:47:23.504Z",
+      "name": "desktop-request-fail-server-state",
+      "status": "pass",
+      "detail": "serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T10:47:23.576Z",
+      "name": "screenshot:desktop-request-fail-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\10-desktop-request-fail-after-refresh.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T10:47:24.474Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\11-reply-filled.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T10:47:26.447Z",
+      "name": "desktop-response-loss-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T10:47:26.492Z",
+      "name": "screenshot:desktop-response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\13-desktop-response-loss-failure-draft.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T10:47:28.496Z",
+      "name": "desktop-response-loss-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T10:47:29.915Z",
+      "name": "desktop-response-loss-server-state",
+      "status": "pass",
+      "detail": "serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T10:47:29.986Z",
+      "name": "screenshot:desktop-response-loss-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\16-desktop-response-loss-after-refresh.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-05T10:47:30.114Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-desktop exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-05T10:47:30.369Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 62231 profile=profile-enterprise-390"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-05T10:47:30.448Z",
+      "name": "390-viewport",
+      "status": "info",
+      "detail": "viewport=980 (device metrics after first load)"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-05T10:47:30.649Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\20-login-page-empty.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-05T10:47:32.565Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-05T10:47:34.774Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\22-reply-filled.png"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-05T10:47:36.714Z",
+      "name": "390-request-fail-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-05T10:47:36.798Z",
+      "name": "screenshot:390-request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\24-390-request-fail-failure-draft.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-05T10:47:36.798Z",
+      "name": "390-request-fail-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=1 (expect 1, no auto-retry)"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-05T10:47:38.221Z",
+      "name": "390-request-fail-server-state",
+      "status": "pass",
+      "detail": "serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-05T10:47:38.324Z",
+      "name": "screenshot:390-request-fail-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\27-390-request-fail-after-refresh.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-05T10:47:39.255Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\28-reply-filled.png"
+    },
+    {
+      "n": 29,
+      "at": "2026-10-05T10:47:41.229Z",
+      "name": "390-response-loss-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 30,
+      "at": "2026-10-05T10:47:41.316Z",
+      "name": "screenshot:390-response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\30-390-response-loss-failure-draft.png"
+    },
+    {
+      "n": 31,
+      "at": "2026-10-05T10:47:43.326Z",
+      "name": "390-response-loss-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)"
+    },
+    {
+      "n": 32,
+      "at": "2026-10-05T10:47:44.743Z",
+      "name": "390-response-loss-server-state",
+      "status": "pass",
+      "detail": "serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)"
+    },
+    {
+      "n": 33,
+      "at": "2026-10-05T10:47:44.854Z",
+      "name": "screenshot:390-response-loss-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\33-390-response-loss-after-refresh.png"
+    },
+    {
+      "n": 34,
+      "at": "2026-10-05T10:47:44.966Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=0"
+    },
+    {
+      "n": 35,
+      "at": "2026-10-05T10:47:44.967Z",
+      "name": "delivered-replies",
+      "status": "pass",
+      "detail": "2 replies delivered (desktop→A, 390→B); bodies + timestamps in delivered-replies-for-student.json"
+    },
+    {
+      "n": 36,
+      "at": "2026-10-05T10:47:44.967Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\desktop-request-fail-draft-acceptance.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\desktop-request-fail-refresh-dom.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\desktop-response-loss-draft-acceptance.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\desktop-response-loss-refresh-dom.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\390-request-fail-draft-acceptance.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\390-request-fail-refresh-dom.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\390-response-loss-draft-acceptance.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\390-response-loss-refresh-dom.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\reply-failure-2026-10-05T10-47-15-502Z\\delivered-replies-for-student.json"
+  ],
+  "finishedAt": "2026-10-05T10:47:44.967Z"
+}

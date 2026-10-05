@@ -1,0 +1,30 @@
+{
+  "hashEvents": [
+    {
+      "at": "2026-10-05T11:22:18.729Z",
+      "hash": "#application-b4da6fb3-ff69-4712-ad0f-2013be40b6a9"
+    }
+  ],
+  "releaseOutcomes": [
+    {
+      "url": "http://127.0.0.1:3001/applications/35af0501-f0a3-4350-8bdb-87db12b68a81/view",
+      "result": "continued"
+    }
+  ],
+  "blockquoteBefore": false,
+  "injectorLog": [
+    {
+      "at": "2026-10-05T11:22:18.587Z",
+      "url": "http://127.0.0.1:3001/applications/35af0501-f0a3-4350-8bdb-87db12b68a81/view",
+      "method": "POST",
+      "stage": "response",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T11:22:19.333Z",
+      "url": "http://127.0.0.1:3001/applications/35af0501-f0a3-4350-8bdb-87db12b68a81/view",
+      "method": "POST",
+      "stage": "released"
+    }
+  ]
+}

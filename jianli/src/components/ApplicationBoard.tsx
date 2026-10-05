@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { api, errorMessage } from "@/lib/api/client";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
@@ -50,11 +50,16 @@ function Workspace({jobId}:{jobId:string}){
   const [query,setQuery]=useState(""),[focus,setFocus]=useState("");
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
+  // 未确认草稿状态：发送失败时置位，只由 resetReply（刷新/离窗/换投递）清除；与正文是否为空无关，
+  // 删空后仍可编辑重输。清理代际 replyDraftGeneration 由各清理路径递增：发送前捕获本次代际，
+  // await 返回后仅当代际一致才更新草稿状态，迟到的旧回调不得把清理后产生的新草稿标为未确认。
+  const [unconfirmedReply,setUnconfirmedReply]=useState(false);
+  const replyDraftGeneration=useRef(0);
   const [replyDraftNotice,setReplyDraftNotice]=useState("");
   const [replyQuestions,setReplyQuestions]=useState<VerificationReplyQuestion[]>([]);
   const replyReferences=activeVerificationReplyReferences(replyText,replyQuestions);
-  const verificationUnavailable=useCallback(()=>{setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");void session.refresh();},[session]);
-  function resetReply(){setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");}
+  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);void session.refresh();},[session]);
+  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);}
   function useVerificationQuestion(question: VerificationReplyQuestion){
     const result=appendVerificationReplyQuestion(replyText,question);
     if(result.status==="too_long"){setReplyDraftNotice("回复已接近 2000 字上限，请缩短正文后重试。");return;}
@@ -102,7 +107,7 @@ function Workspace({jobId}:{jobId:string}){
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="text-indigo-700 underline" onClick={()=>{setQuery("");setFocus("");setVerdict("");}}>清除筛选并定位</button><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="text-sm underline" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
     {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
-    {error&&replyText.trim()&&<div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认。以下保留了本页草稿，请先复制，再刷新授权投递并核对该投递的回复状态。</p><textarea className="field" readOnly value={replyText} aria-label="未确认发送的回复草稿"/></div>}
+    {unconfirmedReply&&<UnconfirmedReplyDraft text={replyText} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
     <div className="panel grid gap-3 sm:grid-cols-3"><label className="text-sm">关键词（姓名、技能或要求）<input type="search" className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label></div>
     {mixedBasis&&<p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">投递报告的岗位要求、权重或规则版本不同，当前按投递时间排列，不按分数排名。请打开每份报告核对其原始要求；表格行名仅作定位，格子中的说明来自各自快照。</p>}
     {!items.length&&!busy&&!error&&<p className="panel">暂无已授权投递，请由学生从该岗位的完整报告中确认投递。平台不会从学生库导出未经授权的简历。</p>}
@@ -116,12 +121,31 @@ function Workspace({jobId}:{jobId:string}){
         <p className="text-xs text-slate-500">此回复将直接显示给学生；不会发送邮件，不由 AI 自动做决定。发送后本期不可覆盖。</p>
         {replyDraftNotice&&<p role="status" className="text-sm text-indigo-800">{replyDraftNotice}</p>}
         <label className="block text-sm">回应类型<select className="field mt-1" disabled={busy} value={replyKind} onChange={e=>{setReplyKind(e.target.value);setConfirmReply(false);}}><option value="continue">继续沟通</option><option value="interview">面试邀请</option><option value="declined">暂不推进</option></select></label>
-        <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>{setReplyText(e.target.value);setConfirmReply(false);}}/></label>
+        <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="text-indigo-700 underline" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
-        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const sent=await session.reply(replyKind,text,references);if(sent)resetReply();}}>确认发送站内回复</button>
+        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const sent=await session.reply(replyKind,text,references);const outcome=replySendOutcome(sent,replyDraftGeneration.current===generation);if(outcome==="reset")resetReply();else if(outcome==="mark-unconfirmed")setUnconfirmedReply(true);}}>确认发送站内回复</button>
       </div>}
       {selected.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap">已发送回复：{selected.replyText}</blockquote>}
     </section>}
   </div>;
+}
+
+// 回复失败（请求失败或响应丢失）后的唯一编辑规则：正文可继续修改，任何编辑都撤销人工发送确认，
+// 使已勾选的确认不会被带进下一次核对。正常编辑与失败草稿共用，避免两处行为漂移。
+export function applyReplyDraftEdit(text:string,edit:(text:string)=>void,confirm:(on:boolean)=>void){
+  edit(text);confirm(false);
+}
+// 发送完成后的失败草稿归属规则：清理代际在发送期间未变，成功才重置、失败才标记未确认；
+// 迟到的旧回调（等待期间发生过清理，新草稿可能已产生）一律忽略，不得改变新状态。
+export type ReplySendOutcome="reset"|"mark-unconfirmed"|"ignore";
+export function replySendOutcome(sent:boolean,generationUnchanged:boolean):ReplySendOutcome{
+  if(!generationUnchanged)return "ignore";
+  return sent?"reset":"mark-unconfirmed";
+}
+// 会话失败清空列表与旧报告后，草稿只保留在本页组件状态：可编辑、可复制、仍限2000字；
+// 面板由未确认草稿状态（发送失败置位、resetReply 生命周期清除）控制，与正文是否为空无关，
+// 删空后仍可重新输入；不提供发送入口，不显示已送达，也不自动重发——重新发送必须先刷新并重新核对授权。
+export function UnconfirmedReplyDraft({text,onEdit}:{text:string;onEdit:(nextText:string)=>void}){
+  return <div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认，平台不会自动重发。以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p><textarea className="field" maxLength={2000} value={text} onChange={e=>onEdit(e.target.value)} aria-label="未确认发送的回复草稿"/></div>;
 }
