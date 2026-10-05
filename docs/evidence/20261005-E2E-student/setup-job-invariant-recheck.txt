@@ -1,0 +1,7 @@
+jobs A/B identical: true
+reqs A/B identical: true
+apps identical: true
+exactly one new job: true
+new job row: aecc6a82-98c2-4fff-a81f-8f97d5af7371|published|E2E 岗位C（合成·补证目标）
+new job requirements: 2 (expect 2: Python w3 + SQL w2)
+new reqs: ["a40b5bbc-2629-4242-b2bb-a0876a3ba3e8|aecc6a82-98c2-4fff-a81f-8f97d5af7371|Python|3|true|岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试","b7d91c19-8950-474a-8656-b77c3635ad63|aecc6a82-98c2-4fff-a81f-8f97d5af7371|SQL|2|true|岗位C要求：能够编写 SQL 查询完成业务数据核对"]

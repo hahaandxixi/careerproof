@@ -1,0 +1,532 @@
+{
+  "network": [
+    {
+      "at": "2026-10-05T13:22:25.109Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/css/d4095837f7943589.css",
+      "type": "Stylesheet"
+    },
+    {
+      "at": "2026-10-05T13:22:25.109Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.109Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.109Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.109Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/layout-f8dfdc36bd467782.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6402-73056533b5150b37.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.110Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6402-73056533b5150b37.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.111Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/%5Bid%5D/page-e5d95e9822c13a7c.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.119Z",
+      "phase": "response",
+      "url": "/_next/static/css/d4095837f7943589.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.120Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.120Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.121Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.122Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.122Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/layout-f8dfdc36bd467782.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.122Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.124Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/%5Bid%5D/page-e5d95e9822c13a7c.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.127Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.132Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.145Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/users/me",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.149Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.149Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/jobs?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.154Z",
+      "phase": "response",
+      "url": "/?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.155Z",
+      "phase": "response",
+      "url": "/jobs?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.157Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.160Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.167Z",
+      "phase": "response",
+      "url": "/api/v1/users/me",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.169Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/notifications/unread-count",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.169Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.180Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.180Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/recommendations?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.180Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/applications?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.181Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.181Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/notifications?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.186Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.194Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.195Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.196Z",
+      "phase": "response",
+      "url": "/recommendations?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.196Z",
+      "phase": "response",
+      "url": "/api/v1/notifications/unread-count",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.197Z",
+      "phase": "response",
+      "url": "/applications?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.197Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.198Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.198Z",
+      "phase": "response",
+      "url": "/reports?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.199Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.199Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.199Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.199Z",
+      "phase": "response",
+      "url": "/notifications?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.203Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:25.203Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.235Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/tasks/35c8bd02-fd5f-4f7d-8b08-481b21a210cf?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.235Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/materials/resume/c7dfb109-6234-49cc-9d65-a06b8a9729bc?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.235Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/materials/project/d52c3620-91b7-49c6-9d23-a50a87abfb45?_rsc=_hFgQu3AdgIrNCbe",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.241Z",
+      "phase": "response",
+      "url": "/tasks/35c8bd02-fd5f-4f7d-8b08-481b21a210cf?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.243Z",
+      "phase": "response",
+      "url": "/materials/resume/c7dfb109-6234-49cc-9d65-a06b8a9729bc?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.245Z",
+      "phase": "response",
+      "url": "/materials/project/d52c3620-91b7-49c6-9d23-a50a87abfb45?_rsc=_hFgQu3AdgIrNCbe",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.612Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/growth-tasks/87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.613Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/enterprise-replies/87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:25.637Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/growth-tasks/87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:25.638Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/enterprise-replies/87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:27.909Z",
+      "phase": "request",
+      "method": "POST",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/growth-tasks",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:27.944Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/growth-tasks",
+      "status": 201
+    },
+    {
+      "at": "2026-10-05T13:22:27.945Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/growth/5d91c362-b2cd-4c7f-88ad-fdcf6515a078?_rsc=M5UoHJ4d8bNq5GkM",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:27.951Z",
+      "phase": "response",
+      "url": "/growth/5d91c362-b2cd-4c7f-88ad-fdcf6515a078?_rsc=M5UoHJ4d8bNq5GkM",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:27.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2576-18c344349f736ec5.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:27.952Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/3030-f227ad6f0dc3896f.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:27.952Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/growth/%5Bid%5D/page-4c97a41c5cb25fe6.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-05T13:22:27.960Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2576-18c344349f736ec5.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:27.960Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/3030-f227ad6f0dc3896f.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:27.961Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/growth/%5Bid%5D/page-4c97a41c5cb25fe6.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:28.263Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/5d91c362-b2cd-4c7f-88ad-fdcf6515a078",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:28.264Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/resumes",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:28.264Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/projects",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:28.282Z",
+      "phase": "response",
+      "url": "/api/v1/projects",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:28.282Z",
+      "phase": "response",
+      "url": "/api/v1/growth-tasks/5d91c362-b2cd-4c7f-88ad-fdcf6515a078",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:28.283Z",
+      "phase": "response",
+      "url": "/api/v1/resumes",
+      "status": 200
+    },
+    {
+      "at": "2026-10-05T13:22:29.104Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/jobs?page=1&pageSize=10",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-05T13:22:29.120Z",
+      "phase": "response",
+      "url": "/api/v1/jobs?page=1&pageSize=10",
+      "status": 200
+    }
+  ],
+  "bodies": [
+    {
+      "at": "2026-10-05T13:22:27.908Z",
+      "method": "POST",
+      "url": "/api/v1/match-reports/d65c7585-3a5b-4d25-ae01-f3f70488a0e2/growth-tasks",
+      "body": "{\"requirementId\":\"87278d08-e1ed-4fa9-b90b-b75791504b57\",\"gapKind\":\"implementation\",\"deliverable\":\"同一材料只改目标岗位：把目标岗位改选为已发布的新岗位（E2E 合成）\",\"steps\":[\"材料版本保持与基准报告一致\",\"在目标岗位选择器改选新岗位并保存\",\"保存后刷新重读，再生成新报告\"],\"acceptanceChecks\":[\"背景变化含目标岗位变化且不含材料版本变化\",\"跨岗位按 requirementId 逐条列出新增/移除\",\"同名技能 Python 不与旧要求合并\"]}"
+    }
+  ]
+}

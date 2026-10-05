@@ -1,0 +1,114 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-05T13:25:36.458Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:25:36.485Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=viewport390 head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:25:36.744Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student-390 port 62331"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:25:37.336Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\viewport390-2026-10-05T13-25-36-458Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:25:39.593Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:25:41.034Z",
+      "name": "screenshot:v390-growth-list",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\viewport390-2026-10-05T13-25-36-458Z\\05-v390-growth-list.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:25:42.488Z",
+      "name": "screenshot:v390-growth-task",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\viewport390-2026-10-05T13-25-36-458Z\\06-v390-growth-task.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:25:42.748Z",
+      "name": "v390-job-picker",
+      "status": "warn",
+      "detail": "picker not available in this task state"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:25:43.456Z",
+      "name": "screenshot:v390-job-picker",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\viewport390-2026-10-05T13-25-36-458Z\\08-v390-job-picker.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:25:44.906Z",
+      "name": "screenshot:v390-report",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\viewport390-2026-10-05T13-25-36-458Z\\09-v390-report.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:25:44.907Z",
+      "name": "v390-page:growth-list",
+      "status": "fail",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h1 viewH=844)"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:25:44.907Z",
+      "name": "v390-page:growth-task",
+      "status": "fail",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h2 viewH=844)"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T13:25:44.907Z",
+      "name": "v390-page:report",
+      "status": "fail",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h3 viewH=844)"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T13:25:44.907Z",
+      "name": "viewport390",
+      "status": "fail",
+      "detail": "growth-list: overflow=no visible=true ; growth-task: overflow=no visible=true ; report: overflow=no visible=true"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T13:25:45.009Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student-390 exitCode=0"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T13:25:45.009Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T13:25:45.010Z"
+}

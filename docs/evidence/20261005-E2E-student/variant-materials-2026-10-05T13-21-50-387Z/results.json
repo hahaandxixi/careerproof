@@ -1,0 +1,137 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "variant-materials",
+  "startedAt": "2026-10-05T13:21:50.388Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:21:50.415Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=variant-materials head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:21:50.693Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 58828"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:21:50.951Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:21:53.200Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:21:55.860Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\05-task-form-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:21:57.239Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task 225fa32f-9a21-4fd6-83a7-0af8b0815702 from report 1c421762-226c-4895-8949-2752c1482b17"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:21:57.240Z",
+      "name": "v-materials-task-saved",
+      "status": "pass",
+      "detail": "task 225fa32f-9a21-4fd6-83a7-0af8b0815702 persisted to state immediately after UI creation"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:22:01.324Z",
+      "name": "materials-only-saved",
+      "status": "pass",
+      "detail": "unsaved-target notice=\"(none)\" (expected none — target untouched)"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:22:01.392Z",
+      "name": "screenshot:v-materials-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\09-v-materials-saved.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:22:01.392Z",
+      "name": "v-materials-put-bodies",
+      "status": "pass",
+      "detail": "[\"{\\\"resumeVersionId\\\":\\\"c7dfb109-6234-49cc-9d65-a06b8a9729bc\\\",\\\"projectVersionIds\\\":[\\\"d52c3620-91b7-49c6-9d23-a50a87abfb45\\\"],\\\"targetJobId\\\":\\\"536f5d56-bfd3-4c45-a104-73ab79475e09\\\"}\"]"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:22:02.461Z",
+      "name": "v-materials-refresh-reread",
+      "status": "pass",
+      "detail": "after reload projects=[已保存：E2E学生补证项目（合成） · 第2版 · 个人作品 | 版本 d52c3620-91b7-49c6-9d23-a50a87abfb45 · 摘要 06399fb3e95be902d5ea4bf07906b717890ac4d49c4eda51978f537c6fd2d1b7]"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T13:22:02.541Z",
+      "name": "screenshot:v-materials-after-reload",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\12-v-materials-after-reload.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T13:22:06.957Z",
+      "name": "v-materials-analyze",
+      "status": "pass",
+      "detail": "compared"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T13:22:07.871Z",
+      "name": "screenshot:variant-materials-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\14-variant-materials-comparison.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T13:22:07.872Z",
+      "name": "comparison:variant-materials",
+      "status": "pass",
+      "detail": "context=[变化背景：材料版本变化] items=1 citations=5 reportLinks=[\"d65c7585-3a5b-4d25-ae01-f3f70488a0e2\",\"1c421762-226c-4895-8949-2752c1482b17\"] banner=(same-job)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T13:22:07.872Z",
+      "name": "v-materials-attribution",
+      "status": "pass",
+      "detail": "context=\"变化背景：材料版本变化\" materialsOnly=true citationsIntoNewReport=true focusAddedCount=6 newReportResolved=true"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-05T13:22:07.995Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-05T13:22:07.995Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\variant-materials-2026-10-05T13-21-50-387Z\\variant-materials-comparison.json"
+  ],
+  "finishedAt": "2026-10-05T13:22:07.995Z"
+}

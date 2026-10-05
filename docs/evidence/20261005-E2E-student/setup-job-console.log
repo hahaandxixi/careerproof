@@ -1,0 +1,15 @@
+[1] info scenario-start :: run=closure-20261005 scenario=setup-job head=76dfd59
+[2] info chrome-launched :: enterprise port 63937
+[3] evidence screenshot:login-empty :: docs\evidence\20261005-E2E-student\setup-job-2026-10-05T12-07-20-575Z\03-login-empty.png
+[4] pass login-ok :: /jobs
+[5] evidence screenshot:job-form-empty :: docs\evidence\20261005-E2E-student\setup-job-2026-10-05T12-07-20-575Z\05-job-form-empty.png
+[6] info keyselect-step :: req2 weight iter=0 v=3 -> target 2
+[7] info keyselect-step :: job status iter=0 v=draft -> target published
+[8] evidence screenshot:job-form-filled :: docs\evidence\20261005-E2E-student\setup-job-2026-10-05T12-07-20-575Z\08-job-form-filled.png
+[9] evidence screenshot:job-c-detail :: docs\evidence\20261005-E2E-student\setup-job-2026-10-05T12-07-20-575Z\09-job-c-detail.png
+[10] pass job-c-published :: jobIdC=aecc6a82-98c2-4fff-a81f-8f97d5af7371 title/Python/SQL visible=true
+[11] fail original-jobs-applications-unchanged :: jobsSame=false appsSame=true grewByOne=true
+[12] pass state-saved :: jobIdC persisted
+[13] info chrome-stopped :: enterprise exitCode=0
+[14] fail scenario-end :: exit=1
+exit=1

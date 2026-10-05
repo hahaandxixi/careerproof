@@ -1,0 +1,20 @@
+{
+  "jobIdC": "aecc6a82-98c2-4fff-a81f-8f97d5af7371",
+  "updatedAt": "2026-10-05T13:33:06.334Z",
+  "baseReportId": "1c421762-226c-4895-8949-2752c1482b17",
+  "baselineItems": [
+    {
+      "id": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "title": "岗位B要求：能够使用 Python 编写数据处理脚本",
+      "badge": "仅简历声明",
+      "text": "岗位B要求：能够使用 Python 编写数据处理脚本 | Python · 岗位权重 1 / 5 | 仅简历声明 | 待核对检索候选 | 简历中存在该技能声明，但个人作品中暂未找到可验证证据 | 简历声明：技能声明：能够使用 Python 编写数据处理脚本 | 后端开发 → Python · 规则评级 · 未采用 AI 评级 | 待核对检索候选：仅有检索候选，尚未确认与该要求相关，不据此展示实践等级。 | 仍缺少：核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。 | 等级规则 practice-evidence-v4-candidate-boundary · 基于保存材料判定，不代表考试认证 | 源码联合覆盖 | 单个引用可能被截取；以下按同一材料版本的多个引用合并行范围，重叠行只计一次。 | a4e1b6f3-65a7-48ec-9812-70372ae2bf3f/README.md | 整文件原文 · 第 1–7 行 · 已展示 7/7 行 | 这些引用已覆盖该范围的全部原文 | 查看引用 R1-E1 | 查看引用 R1-E2 | 源码展示完整不等于任务实现、运行成功或本人贡献已获证明；覆盖信息不自动提高评级。 | 从这条缺口创建或打开补证任务 | 查看 2 条来源证据 | 人工复核 | 待人工复核 | 采纳证据 | 驳回证据 | 标记已修正 | 评级规则版本：practice-evidence-v4-candidate-boundary"
+    }
+  ],
+  "baselineAnalysisTaskId": "11ed97d3-4c87-407d-b1b3-97dec0ddd4a5",
+  "variantMaterialsTaskId": "225fa32f-9a21-4fd6-83a7-0af8b0815702",
+  "reportR1": "d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+  "variantJobTaskId": "5d91c362-b2cd-4c7f-88ad-fdcf6515a078",
+  "reportR2": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+  "variantBothTaskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+  "reportR3": "835e6897-5033-4013-81f6-bb281287ac86"
+}

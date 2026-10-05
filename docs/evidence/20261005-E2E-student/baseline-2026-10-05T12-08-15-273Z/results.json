@@ -1,0 +1,110 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "baseline",
+  "startedAt": "2026-10-05T12:08:15.274Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T12:08:15.296Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=baseline head=76dfd59"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T12:08:15.538Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 55736"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T12:08:15.775Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T12:08:18.037Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T12:08:21.520Z",
+      "name": "upload-complete:resume-v2.txt",
+      "status": "pass",
+      "detail": "简历 | E2E学生补证简历（合成v2） | resume-v2.txt · 第 1 版 · 2026/10/5 20:08:19 | 分析完成 | 简历解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T12:08:21.594Z",
+      "name": "screenshot:resume-v2-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\06-resume-v2-uploaded.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T12:08:25.422Z",
+      "name": "upload-complete:claims-only-project.zip",
+      "status": "pass",
+      "detail": "项目 | E2E学生补证项目（合成） | claims-only-project.zip · 第 1 版 · 2026/10/5 20:08:23 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T12:08:25.510Z",
+      "name": "screenshot:claims-only-v1-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\08-claims-only-v1-uploaded.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T12:08:29.085Z",
+      "name": "upload-complete:new-version-project.zip",
+      "status": "pass",
+      "detail": "项目 | E2E学生补证项目（合成） | new-version-project.zip · 第 2 版 · 2026/10/5 20:08:26 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T12:08:29.162Z",
+      "name": "screenshot:new-version-v2-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\10-new-version-v2-uploaded.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T12:08:29.164Z",
+      "name": "materials-uploaded",
+      "status": "pass",
+      "detail": "resume-v2 + claims-only v1 + new-version v2 via UI (source never executed)"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T12:08:30.510Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T12:08:30.511Z",
+      "name": "scenario-error",
+      "status": "fail",
+      "detail": "Error: clickStored: no clickable rect for project picker open: {\"x\":205,\"y\":445,\"hitIsEl\":false}\n    at Tab.clickStored (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:430:73)\n    at async pickProjects (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:637:3)\n    at async Object.scenarioBaseline [as baseline] (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:916:5)\n    at async file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1316:3"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T12:08:30.512Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\error-network-log.json",
+    "docs\\evidence\\20261005-E2E-student\\baseline-2026-10-05T12-08-15-273Z\\error-page-text.json"
+  ],
+  "finishedAt": "2026-10-05T12:08:30.512Z"
+}

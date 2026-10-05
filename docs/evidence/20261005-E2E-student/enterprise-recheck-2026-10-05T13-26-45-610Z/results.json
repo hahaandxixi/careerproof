@@ -1,0 +1,123 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "enterprise-recheck",
+  "startedAt": "2026-10-05T13:26:45.611Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:26:45.638Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=enterprise-recheck head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:26:45.914Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-recheck port 58647"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:26:46.172Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:26:48.424Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:26:49.243Z",
+      "name": "screenshot:recheck-board-jobA",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\05-recheck-board-jobA.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:26:50.315Z",
+      "name": "screenshot:recheck-app-b4da6fb3",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\06-recheck-app-b4da6fb3.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:26:50.315Z",
+      "name": "recheck-app-b4da6fb3",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:26:51.755Z",
+      "name": "screenshot:recheck-app-35af0501",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\08-recheck-app-35af0501.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:26:51.755Z",
+      "name": "recheck-app-35af0501",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:26:52.942Z",
+      "name": "screenshot:recheck-board-jobB",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\10-recheck-board-jobB.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:26:53.988Z",
+      "name": "screenshot:recheck-app-263a9227",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\11-recheck-app-263a9227.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T13:26:53.988Z",
+      "name": "recheck-app-263a9227",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T13:26:54.467Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-recheck exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T13:26:55.674Z",
+      "name": "snapshots-invariant",
+      "status": "pass",
+      "detail": "apps=3 unchanged=true jobsABreqsUnchanged=true mismatches=none"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T13:26:55.675Z",
+      "name": "chain-summary",
+      "status": "info",
+      "detail": "jobIdC=aecc6a82-98c2-4fff-a81f-8f97d5af7371 base=1c421762-226c-4895-8949-2752c1482b17 R1=d65c7585-3a5b-4d25-ae01-f3f70488a0e2 R2=1ce37c54-c148-469b-ab2d-2ac756d87cf6 R3=835e6897-5033-4013-81f6-bb281287ac86 replyTask=-"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T13:26:55.675Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\enterprise-recheck-2026-10-05T13-26-45-610Z\\enterprise-recheck-after-readonly-db.json"
+  ],
+  "finishedAt": "2026-10-05T13:26:55.675Z"
+}

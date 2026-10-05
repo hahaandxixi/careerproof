@@ -1,0 +1,130 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "variant-both",
+  "startedAt": "2026-10-05T13:25:06.720Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:25:06.745Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=variant-both head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:25:07.021Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 62258"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:25:07.292Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:25:09.556Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:25:12.206Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\05-task-form-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:25:13.604Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task 15c7f81f-5789-48cf-908f-5429728becf1 from report 1ce37c54-c148-469b-ab2d-2ac756d87cf6"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:25:13.605Z",
+      "name": "v-both-task-saved",
+      "status": "pass",
+      "detail": "task 15c7f81f-5789-48cf-908f-5429728becf1 persisted to state immediately after UI creation"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:25:19.053Z",
+      "name": "screenshot:v-both-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\08-v-both-saved.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:25:19.054Z",
+      "name": "v-both-put-bodies",
+      "status": "pass",
+      "detail": "[\"{\\\"resumeVersionId\\\":\\\"c7dfb109-6234-49cc-9d65-a06b8a9729bc\\\",\\\"projectVersionIds\\\":[\\\"a4e1b6f3-65a7-48ec-9812-70372ae2bf3f\\\"],\\\"targetJobId\\\":\\\"536f5d56-bfd3-4c45-a104-73ab79475e09\\\"}\"]"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:25:20.113Z",
+      "name": "v-both-refresh-reread",
+      "status": "pass",
+      "detail": "after reload projects=[已保存：E2E学生补证项目（合成） · 第1版 · 个人作品 | 版本 a4e1b6f3-65a7-48ec-9812-70372ae2bf3f · 摘要 38d3ff76bd3cccc26254239d17f3c09ffdc3ae4d44c7ff3ddd6fb57c9ad675b3] target=\"已保存目标岗位：E2E 岗位B（合成）（与任务原岗位不同；企业问题与基准引用仍关联原岗位要求） || 已保存目标：E2E 岗位B（合成）（≠ 任务原岗位）。生成新报告只使用已保存目标；改选岗位必须重新保存材料选择才会生效。 || 使用已保存版本和已保存目标岗位「E2E 岗位B（合成）」的当前要求，生成本人私有报告，不自动更新或再次投递给企业。AI解释需要单独确认；未授权时仅依据本地规则生成，不外发\""
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:25:20.183Z",
+      "name": "screenshot:v-both-after-reload",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\11-v-both-after-reload.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T13:25:24.569Z",
+      "name": "v-both-analyze",
+      "status": "pass",
+      "detail": "compared"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T13:25:25.491Z",
+      "name": "screenshot:variant-both-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\13-variant-both-comparison.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T13:25:25.491Z",
+      "name": "comparison:variant-both",
+      "status": "pass",
+      "detail": "context=[变化背景：目标岗位变化、材料版本变化、岗位要求变化] items=3 citations=5 reportLinks=[\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"835e6897-5033-4013-81f6-bb281287ac86\"] banner=对比岗位：E2E 岗位C（合成·补证目标）（基准） → E2E 岗位B（合成）（目标）。不同岗位的 requirementId 不同，本对比按“原要求不再展示 / 新要求新增展示”逐条列出，不按技能名合并。\n\n原企业问题、缺口与基准引用仍关"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T13:25:25.492Z",
+      "name": "v-both-attribution",
+      "status": "pass",
+      "detail": "context=\"变化背景：目标岗位变化、材料版本变化、岗位要求变化\" both=true bannerOk=true items=3 everyItemExplained=true newReportResolved=true"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T13:25:25.594Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-05T13:25:25.594Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\variant-both-2026-10-05T13-25-06-719Z\\variant-both-comparison.json"
+  ],
+  "finishedAt": "2026-10-05T13:25:25.594Z"
+}

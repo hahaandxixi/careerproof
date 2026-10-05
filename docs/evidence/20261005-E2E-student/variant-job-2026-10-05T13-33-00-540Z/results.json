@@ -1,0 +1,102 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "variant-job",
+  "startedAt": "2026-10-05T13:33:00.541Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:33:00.600Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=variant-job head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:33:01.043Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 49694"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:33:01.261Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-33-00-540Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:33:03.531Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:33:04.996Z",
+      "name": "v-job-task-reused",
+      "status": "info",
+      "detail": "task 5d91c362-b2cd-4c7f-88ad-fdcf6515a078 reopened from state (failure reuse — no duplicate task created)"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:33:04.997Z",
+      "name": "v-job-already-compared",
+      "status": "info",
+      "detail": "task already compared (state R2=1ce37c54-c148-469b-ab2d-2ac756d87cf6)"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:33:05.245Z",
+      "name": "v-job-refresh-reread",
+      "status": "pass",
+      "detail": "after reload: \"已保存目标岗位：E2E 岗位C（合成·补证目标）（与任务原岗位不同；企业问题与基准引用仍关联原岗位要求） || 已保存目标：E2E 岗位C（合成·补证目标）（≠ 任务原岗位）。生成新报告只使用已保存目标；改选岗位必须重新保存材料选择才会生效。\""
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:33:05.385Z",
+      "name": "screenshot:v-job-after-reload",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-33-00-540Z\\08-v-job-after-reload.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:33:06.332Z",
+      "name": "screenshot:variant-job-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-33-00-540Z\\09-variant-job-comparison.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:33:06.333Z",
+      "name": "comparison:variant-job",
+      "status": "pass",
+      "detail": "context=[变化背景：目标岗位变化、岗位要求变化] items=3 citations=6 reportLinks=[\"d65c7585-3a5b-4d25-ae01-f3f70488a0e2\",\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\"] banner=对比岗位：E2E 岗位B（合成）（基准） → E2E 岗位C（合成·补证目标）（目标）。不同岗位的 requirementId 不同，本对比按“原要求不再展示 / 新要求新增展示”逐条列出，不按技能名合并。\n\n原企业问题、缺口与基准引用仍关"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:33:06.333Z",
+      "name": "v-job-attribution",
+      "status": "pass",
+      "detail": "context=\"变化背景：目标岗位变化、岗位要求变化\" jobOnly=true bannerOk=true removed=1 added=2 pythonRemoved=1 pythonAdded=1 pythonSeparate=true newReportResolved=true"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T13:33:06.479Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T13:33:06.479Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-33-00-540Z\\variant-job-comparison.json"
+  ],
+  "finishedAt": "2026-10-05T13:33:06.480Z"
+}

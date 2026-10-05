@@ -1,0 +1,89 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "variant-job",
+  "startedAt": "2026-10-05T13:22:22.276Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T13:22:22.303Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=variant-job head=f96bca2"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T13:22:22.587Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 60359"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T13:22:22.833Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-22-22-275Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T13:22:25.082Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T13:22:27.714Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-22-22-275Z\\05-task-form-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T13:22:29.097Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task 5d91c362-b2cd-4c7f-88ad-fdcf6515a078 from report d65c7585-3a5b-4d25-ae01-f3f70488a0e2"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T13:22:29.098Z",
+      "name": "v-job-task-saved",
+      "status": "pass",
+      "detail": "task 5d91c362-b2cd-4c7f-88ad-fdcf6515a078 persisted to state immediately after UI creation"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T13:22:29.408Z",
+      "name": "screenshot:error-page",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-22-22-275Z\\08-error-page.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T13:22:29.529Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T13:22:29.529Z",
+      "name": "scenario-error",
+      "status": "fail",
+      "detail": "Error: clickStored: no clickable rect for open job picker: null\n    at Tab.clickStored (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:444:73)\n    at async pickTargetJob (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:730:3)\n    at async Object.scenarioVariantJob [as variant-job] (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1270:7)\n    at async file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1587:3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T13:22:29.530Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-22-22-275Z\\error-network-log.json",
+    "docs\\evidence\\20261005-E2E-student\\variant-job-2026-10-05T13-22-22-275Z\\error-page-text.json"
+  ],
+  "finishedAt": "2026-10-05T13:22:29.530Z"
+}

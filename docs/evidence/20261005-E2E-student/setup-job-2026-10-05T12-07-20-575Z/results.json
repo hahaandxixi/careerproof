@@ -1,0 +1,110 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "setup-job",
+  "startedAt": "2026-10-05T12:07:20.576Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T12:07:20.597Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=setup-job head=76dfd59"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T12:07:21.960Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise port 63937"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T12:07:22.198Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T12:07:24.462Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T12:07:24.779Z",
+      "name": "screenshot:job-form-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\05-job-form-empty.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T12:07:29.904Z",
+      "name": "keyselect-step",
+      "status": "info",
+      "detail": "req2 weight iter=0 v=3 -> target 2"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T12:07:30.815Z",
+      "name": "keyselect-step",
+      "status": "info",
+      "detail": "job status iter=0 v=draft -> target published"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T12:07:31.115Z",
+      "name": "screenshot:job-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\08-job-form-filled.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T12:07:34.049Z",
+      "name": "screenshot:job-c-detail",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\09-job-c-detail.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T12:07:34.049Z",
+      "name": "job-c-published",
+      "status": "pass",
+      "detail": "jobIdC=aecc6a82-98c2-4fff-a81f-8f97d5af7371 title/Python/SQL visible=true"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T12:07:35.093Z",
+      "name": "original-jobs-applications-unchanged",
+      "status": "fail",
+      "detail": "jobsSame=false appsSame=true grewByOne=true"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T12:07:35.094Z",
+      "name": "state-saved",
+      "status": "pass",
+      "detail": "jobIdC persisted"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T12:07:35.220Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T12:07:35.220Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\setup-job-before-readonly-db.json",
+    "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-07-20-575Z\\setup-job-after-readonly-db.json"
+  ],
+  "finishedAt": "2026-10-05T12:07:35.221Z"
+}

@@ -1,0 +1,69 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "setup-job",
+  "startedAt": "2026-10-05T12:04:57.583Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T12:04:57.606Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=closure-20261005 scenario=setup-job head=76dfd59"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T12:04:58.892Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise port 58985"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T12:04:59.135Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-04-57-582Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T12:05:01.392Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T12:05:01.712Z",
+      "name": "screenshot:job-form-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-04-57-582Z\\05-job-form-empty.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T12:05:09.250Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T12:05:09.250Z",
+      "name": "scenario-error",
+      "status": "fail",
+      "detail": "Error: keyboardSelectValue: settled on 1 not 2 (req2 weight)\n    at Tab.keyboardSelectValue (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:487:51)\n    at async Object.scenarioSetupJob [as setup-job] (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:813:5)\n    at async file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1310:3"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T12:05:09.251Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-04-57-582Z\\setup-job-before-readonly-db.json",
+    "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-04-57-582Z\\error-network-log.json",
+    "docs\\evidence\\20261005-E2E-student\\setup-job-2026-10-05T12-04-57-582Z\\error-page-text.json"
+  ],
+  "finishedAt": "2026-10-05T12:05:09.252Z"
+}
