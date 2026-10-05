@@ -200,7 +200,7 @@ class EvidenceAnalysis(StrictModel):
     usage: ModelUsage = Field(default_factory=ModelUsage)
 
 
-def overclaim_flags(text: str) -> list[str]:
+def overclaim_flags(text: str, *, planned_execution: bool = False) -> list[str]:
     """Conservative lexical guard, NOT a semantic entailment metric."""
     # This exact rubric phrase describes relevance, not job fitness or ability.
     # Keep "满足岗位要求" and all other broad fitness claims subject to the guard.
@@ -250,7 +250,21 @@ def overclaim_flags(text: str) -> list[str]:
                         sentence[match.end() :],
                     )
                 )
-                if not uncertain and not attributed and not explicitly_rejected_claim:
+                # Only structured plans may describe a future prerequisite for
+                # recording evidence. This never relaxes summary/rating claims,
+                # or another execution/ability assertion in the same plan.
+                future_condition = bool(
+                    planned_execution and label == "execution_claim"
+                    and re.fullmatch(
+                        r"\s*(?:待|在|仅在|只有|(?:需|先)?(?:确认|核验|检查|验证|确保))\s*",
+                        sentence[:match.start()],
+                    )
+                    and re.match(
+                        r"后(?:再|才|方可)?(?:归档|保存|记录|提交)",
+                        sentence[match.end():].strip(),
+                    )
+                )
+                if not (uncertain or attributed or explicitly_rejected_claim or future_condition):
                     flags.add(label)
     return sorted(flags)
 
@@ -325,7 +339,12 @@ def validate_grounded_analysis(
                 raise ValueError(boundary_error)
         answer_texts = (item.explanation, item.information_gap, item.suggestion, *plan_texts)
         combined = " ".join(value for value in answer_texts if value)
-        if overclaim_flags(combined):
+        narrative = " ".join(value for value in (
+            item.explanation, item.information_gap, item.suggestion,
+        ) if value)
+        if overclaim_flags(narrative) or any(
+            overclaim_flags(value, planned_execution=True) for value in plan_texts
+        ):
             raise ValueError("AI analysis contains an unsupported ability or execution claim")
         cited_evidence = [
             evidence for evidence in context.evidence if evidence.citation_id in item.citation_ids
