@@ -1,0 +1,64 @@
+{
+  "runId": "audit-20261005",
+  "transactionReadOnly": true,
+  "applications": {
+    "A": {
+      "id": "dfff7065-80ac-447e-95fb-0838e1bf3789",
+      "status": "withdrawn",
+      "snapshotSha256": "96d1cfb4333e12a392927ffb1da4e32b3c4c3043457b177a1eb34705f0784adf",
+      "matchesOriginal": true
+    },
+    "B": {
+      "id": "d9c64113-203c-4f83-ba79-907f28c782c1",
+      "status": "downloaded",
+      "snapshotSha256": "ce8b0ef5499f807e39f892213252f29d6f8c4ef7523581b80b2021246423e379",
+      "matchesOriginal": true
+    },
+    "A2": {
+      "id": "8032fdb1-37fc-4cbd-84fd-d32f5c893ebd",
+      "status": "viewed",
+      "snapshotSha256": "73222f78ec3e1dee738c56b2f69d622fc4152ee1d9db8c223dda0d62086213f9",
+      "matchesOriginal": true
+    }
+  },
+  "notifications": [
+    {
+      "notificationId": "987d8fd6-3d3d-4932-b32a-94aaf710ad1f",
+      "eventId": "d409dbf4-3d17-4077-b131-9d9703790ea9",
+      "eventType": "submitted",
+      "applicationId": "dfff7065-80ac-447e-95fb-0838e1bf3789",
+      "slot": "A",
+      "status": 404,
+      "targetMatchesApplication": false
+    },
+    {
+      "notificationId": "b057e4fb-d211-4e83-907d-082bd7177534",
+      "eventId": "9a51e7f3-ce79-42c1-b14b-2b715a4722b5",
+      "eventType": "withdrawn",
+      "applicationId": "dfff7065-80ac-447e-95fb-0838e1bf3789",
+      "slot": "A",
+      "status": 404,
+      "targetMatchesApplication": false
+    },
+    {
+      "notificationId": "026d65cb-5dac-4020-9a0e-368182711172",
+      "eventId": "df7e42af-dd58-4008-bf06-c58b14324075",
+      "eventType": "submitted",
+      "applicationId": "d9c64113-203c-4f83-ba79-907f28c782c1",
+      "slot": "B",
+      "status": 200,
+      "targetMatchesApplication": true
+    },
+    {
+      "notificationId": "740a59dd-6d4b-450c-96b7-534371107cfc",
+      "eventId": "0bbefe88-6852-47bf-88d8-022befc22ae1",
+      "eventType": "submitted",
+      "applicationId": "8032fdb1-37fc-4cbd-84fd-d32f5c893ebd",
+      "slot": "A2",
+      "status": 200,
+      "targetMatchesApplication": true
+    }
+  ],
+  "writes": 0
+}
+EXIT=0

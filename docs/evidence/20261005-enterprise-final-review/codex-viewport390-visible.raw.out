@@ -1,0 +1,12 @@
+[1] info scenario-start :: scenario=viewport390 runId=closure-20261005
+[2] info chrome-launched :: enterprise-390 dynamic port 56732 profile=profile-enterprise-390
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261005-E2E-enterprise-retest\viewport390-2026-10-05T12-56-16-532Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass viewport :: innerWidth=390 innerHeight=844 (measured on loaded page)
+[6] evidence screenshot:board-390 :: docs\evidence\20261005-E2E-enterprise-retest\viewport390-2026-10-05T12-56-16-532Z\06-board-390.png
+[7] evidence screenshot:report-390 :: docs\evidence\20261005-E2E-enterprise-retest\viewport390-2026-10-05T12-56-16-532Z\07-report-390.png
+[8] evidence screenshot:report-390-visible-viewport :: docs\evidence\20261005-E2E-enterprise-retest\viewport390-2026-10-05T12-56-16-532Z\08-report-390-visible-viewport.png
+[9] pass key-chain-390 :: login+board+report at 390px; reportVisible=true; pageWidth=390 vs viewport=390
+[10] info chrome-stopped :: enterprise-390 exitCode=0
+[11] pass scenario-complete
+EXIT=0

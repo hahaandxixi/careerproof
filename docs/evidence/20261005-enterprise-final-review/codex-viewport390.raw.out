@@ -1,0 +1,5 @@
+[1] info scenario-start :: scenario=viewport390 runId=closure-20261005
+[2] info chrome-launched :: enterprise-390 dynamic port 63702 profile=profile-enterprise-390
+[3] info chrome-stopped :: enterprise-390 exitCode=2147483651
+[4] fail scenario-aborted :: Error: cdp connection closed |     at WebSocket.<anonymous> (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:183:83) |     at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+EXIT=1

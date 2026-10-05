@@ -1,0 +1,85 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-05T12:56:16.533Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T12:56:16.533Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=viewport390 runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T12:56:16.816Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 56732 profile=profile-enterprise-390"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T12:56:17.044Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T12-56-16-532Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T12:56:18.989Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T12:56:18.990Z",
+      "name": "viewport",
+      "status": "pass",
+      "detail": "innerWidth=390 innerHeight=844 (measured on loaded page)"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T12:56:19.594Z",
+      "name": "screenshot:board-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T12-56-16-532Z\\06-board-390.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T12:56:20.453Z",
+      "name": "screenshot:report-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T12-56-16-532Z\\07-report-390.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T12:56:20.544Z",
+      "name": "screenshot:report-390-visible-viewport",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\viewport390-2026-10-05T12-56-16-532Z\\08-report-390-visible-viewport.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T12:56:20.545Z",
+      "name": "key-chain-390",
+      "status": "pass",
+      "detail": "login+board+report at 390px; reportVisible=true; pageWidth=390 vs viewport=390"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T12:56:20.651Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=0"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T12:56:20.652Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T12:56:20.652Z"
+}

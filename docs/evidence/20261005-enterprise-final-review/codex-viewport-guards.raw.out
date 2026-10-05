@@ -1,0 +1,26 @@
+✔ documented defaults and existing scenario names remain usable (1.44ms)
+✔ reject unsafe or ambiguous CLI ["--run",".."] (0.3525ms)
+✔ reject unsafe or ambiguous CLI ["--run","."] (0.0648ms)
+✔ reject unsafe or ambiguous CLI ["--run","a..b"] (0.0609ms)
+✔ reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"] (0.065ms)
+✔ reject unsafe or ambiguous CLI ["--run"] (0.0523ms)
+✔ reject unsafe or ambiguous CLI ["--run","valid","--run","other"] (0.0699ms)
+✔ reject unsafe or ambiguous CLI ["--other","valid"] (0.0534ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","../../outside"] (0.0672ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","..\\..\\outside"] (0.1026ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"] (0.0569ms)
+✔ reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] (0.0652ms)
+✔ actual CLI refuses a scenario traversal before creating runtime/evidence directories (57.939ms)
+✔ malformed synthetic credentials never expose JSON source fragments (0.5872ms)
+✔ withdrawn notification needs positive unavailable evidence, missing evidence is blocked (0.0864ms)
+✔ unexpected secret-bearing detail is redacted in both console and JSON evidence (0.2431ms)
+✔ withdrawn-card verification requires every open card to land, and rejects the withdrawn target (0.2248ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.0312
+EXIT=0

@@ -1330,9 +1330,20 @@ async function scenarioViewport390(creds) {
     await saveShot(tab, "board-390");
     await openApplication(tab, appA2.id);
     await saveShot(tab, "report-390");
-    const reportOk = await tab.evalJs(`Array.from(document.querySelectorAll('h2')).some(h => (h.textContent || '').includes('投递时固定报告'))`);
+    await tab.evalJs(`(() => {
+      const heading = Array.from(document.querySelectorAll('h2')).find(h => (h.textContent || '').includes('投递时固定报告'));
+      heading?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    })()`);
+    const reportVisible = await tab.waitFor(`() => {
+      const heading = Array.from(document.querySelectorAll('h2')).find(h => (h.textContent || '').includes('投递时固定报告'));
+      if (!heading) return false;
+      const rect = heading.getBoundingClientRect();
+      const coveringHeader = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0;
+      return rect.width > 0 && rect.height > 0 && rect.top >= Math.max(0, coveringHeader) && rect.bottom <= innerHeight;
+    }`, { timeoutMs: 10000, label: '390px report heading visible in viewport' }).then(() => true, () => false);
+    await saveShot(tab, "report-390-visible-viewport", false);
     const overflow = await tab.evalJs(`({ pageW: document.documentElement.scrollWidth, winW: window.innerWidth })`);
-    record({ name: "key-chain-390", status: reportOk ? "pass" : "fail", detail: `login+board+report at 390px; reportOpen=${reportOk}; pageWidth=${overflow.pageW} vs viewport=${overflow.winW}` });
+    record({ name: "key-chain-390", status: reportVisible && overflow.pageW <= overflow.winW ? "pass" : "fail", detail: `login+board+report at 390px; reportVisible=${reportVisible}; pageWidth=${overflow.pageW} vs viewport=${overflow.winW}` });
   } finally {
     await browser.stop();
   }
