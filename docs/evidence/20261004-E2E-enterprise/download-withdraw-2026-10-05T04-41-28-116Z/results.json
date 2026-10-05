@@ -1,0 +1,157 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "download-withdraw",
+  "startedAt": "2026-10-05T04:41:28.116Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:41:28.117Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=download-withdraw runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:41:28.374Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 50206 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:41:28.550Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:41:30.473Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:41:32.258Z",
+      "name": "download-A",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt bytes=203 sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b matchesAuthorizedFile=true"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:41:32.320Z",
+      "name": "screenshot:download-A-done",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\06-download-A-done.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:41:33.934Z",
+      "name": "download-B-baseline",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:41:34.189Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student dynamic port 64034 profile=profile-student"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:41:34.416Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\09-login-page-empty.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T04:41:36.334Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /portfolio"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T04:41:37.324Z",
+      "name": "student-withdrew-A",
+      "status": "pass",
+      "detail": "application dfff7065 now shows 已撤回授权 in student list"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T04:41:37.377Z",
+      "name": "screenshot:student-withdrew-A",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\12-student-withdrew-A.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T04:41:38.050Z",
+      "name": "board-A-unreadable",
+      "status": "fail",
+      "detail": "aColumnGone=true otherCandidateKept=false"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T04:41:38.103Z",
+      "name": "screenshot:board-A-after-withdraw",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\14-board-A-after-withdraw.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T04:42:08.311Z",
+      "name": "old-notification-A",
+      "status": "warn",
+      "detail": "probed cards for A anchor; outcome=null"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T04:42:08.369Z",
+      "name": "screenshot:old-notification-A-outcome",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\16-old-notification-A-outcome.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-05T04:42:09.988Z",
+      "name": "download-B-after-withdraw",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b unchanged=true"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-05T04:42:10.055Z",
+      "name": "screenshot:download-B-after-withdraw",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\18-download-B-after-withdraw.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-05T04:42:10.147Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-05T04:42:10.252Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-05T04:42:10.253Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-41-28-116Z\\snapshot-reference.json"
+  ],
+  "finishedAt": "2026-10-05T04:42:10.253Z"
+}

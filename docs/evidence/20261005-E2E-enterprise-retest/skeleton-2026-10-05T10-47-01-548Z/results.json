@@ -1,0 +1,88 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "skeleton",
+  "startedAt": "2026-10-05T10:47:01.549Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T10:47:01.549Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=skeleton runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T10:47:01.853Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 56829 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T10:47:02.105Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T10:47:03.997Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T10:47:04.593Z",
+      "name": "screenshot:board-jobA",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\05-board-jobA.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T10:47:05.411Z",
+      "name": "screenshot:report-A-open",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\06-report-A-open.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T10:47:05.414Z",
+      "name": "skeleton-report-open",
+      "status": "pass",
+      "detail": "report header rendered=true; network events=132"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T10:47:05.967Z",
+      "name": "skeleton-download-A",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt bytes=203 sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b matchesAuthorizedFile=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T10:47:06.045Z",
+      "name": "screenshot:download-A-done",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\09-download-A-done.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T10:47:06.165Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T10:47:06.166Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\skeleton-dom.json",
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\skeleton-2026-10-05T10-47-01-548Z\\skeleton-api-log.json"
+  ],
+  "finishedAt": "2026-10-05T10:47:06.166Z"
+}
