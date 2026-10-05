@@ -466,7 +466,9 @@ async def _insert_student_report(
     report = MatchReport(
         analysis_task_id=task.id,
         job_id=UUID(job["id"]),
-        candidate_ref=str(profile.id),
+        # Formal AnalysisService freezes candidateId as the account User.id; the
+        # profile id above is a different identity and must never stand in for it.
+        candidate_ref=str(student_user_id),
         candidate_name=display_name,
         summary=f"E2E 固定报告 {slot}（合成夹具）",
         overall_score=55,

@@ -1,0 +1,49 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______ test_seeded_reports_freeze_account_user_id_as_candidate_identity _______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000022D265CAE10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000022D26490050>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/pytest-seed02/test_seeded_reports_freeze_acc0')
+
+    async def test_seeded_reports_freeze_account_user_id_as_candidate_identity(
+        e2e_app, tmp_path
+    ):
+        """SEED-02 (2026-10-05): the formal AnalysisService freezes candidateId as the
+        account User.id, so every seeded A/B/A2 report and its frozen delivery snapshot
+        must carry that same User.id; the StudentProfile.id is a different identity and
+        must never stand in for the candidate user identity."""
+        app, factory = e2e_app
+        await run_seed(app, factory, tmp_path)
+        state = await load_state(tmp_path)
+        async with factory() as session:
+            for slot, student_key in (("A", "student"), ("B", "student"), ("A2", "studentA2")):
+                user_id = UUID(state["accounts"][student_key]["userId"])
+                profile_id = await session.scalar(
+                    select(StudentProfile.id).where(StudentProfile.user_id == user_id)
+                )
+                # The profile identity is what a wrong seed would wrongly freeze instead.
+                assert profile_id is not None and profile_id != user_id
+                report = await session.get(MatchReport, UUID(state["reports"][slot]))
+>               assert report.candidate_ref == str(user_id)
+E               AssertionError: assert 'a3823dbf-752...-ab09ebaf325b' == 'bdc348aa-94d...-1d346b8a2efe'
+E                 
+E                 - bdc348aa-94d2-4d78-9761-1d346b8a2efe
+E                 + a3823dbf-7521-4c58-a539-ab09ebaf325b
+
+app\tests\test_e2e_fixture_safety.py:427: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_e2e_fixture_safety.py::test_seeded_reports_freeze_account_user_id_as_candidate_identity
+1 failed, 5 warnings in 1.70s

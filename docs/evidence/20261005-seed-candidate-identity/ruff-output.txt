@@ -1,0 +1,3 @@
+$ .venv/Scripts/python.exe -m ruff check app/tests/test_e2e_fixture_safety.py evals/seed_e2e.py
+All checks passed!
+EXIT=0

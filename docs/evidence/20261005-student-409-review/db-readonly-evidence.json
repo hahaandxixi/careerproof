@@ -1,0 +1,47 @@
+{
+  "note": "只读查询证据（SET default_transaction_read_only=on，无任何SQL修改/撤回/快照变更）。库：cp_e2e_closure-20261005（容器 backend-postgres-1）。凭据/cookie未包含。",
+  "queriedAt": "2026-10-05",
+  "evidence_growth_task_e3e3f88f": {
+    "id": "e3e3f88f-8d2e-491c-9353-2287cad54599",
+    "created_by": "d5e3f5be-4104-462f-ad93-74df5b38a6dc",
+    "created_by_matches": "student user（credential 文件 accounts/student/userId）",
+    "base_report_id": "73047c10-1f0b-44dc-9254-2a78115cd778",
+    "base_report_matches": "seed_e2e.py 合成报告 reports/B",
+    "requirement_id": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+    "analysis_task_id": "a0ef7a5a-deca-44ff-87f2-5a9d4a5da98e",
+    "analysis_task_status": "COMPLETED",
+    "task_status": "analyzing",
+    "target_job_id": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+    "target_job_matches_base_job": true,
+    "frozen_base_snapshot": {
+      "report.id": "73047c10-1f0b-44dc-9254-2a78115cd778",
+      "report.jobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "report.candidateId": "5613ac7e-e7c2-469c-84b5-c86499796164"
+    },
+    "created_at": "2026-10-05 12:11:27.526924+00"
+  },
+  "match_reports": [
+    { "id": "c0bef449-4d61-4c88-858d-13130b65d249", "job": "A (abd0af9e)", "candidate_ref": "5613ac7e (=student_profiles.id)", "origin": "seed 合成 A", "analysis_task": "c0072cb6", "created_at": "2026-10-05 10:31:22.927" },
+    { "id": "73047c10-1f0b-44dc-9254-2a78115cd778", "job": "B (536f5d56)", "candidate_ref": "5613ac7e (=student_profiles.id)", "origin": "seed 合成 B（任务 e3e3f88f 的 base）", "analysis_task": "9cdfd603", "created_at": "2026-10-05 10:31:22.935" },
+    { "id": "17f40400-414b-4fd6-b05c-5c34cdf5acc9", "job": "A (abd0af9e)", "candidate_ref": "aac2abfa (=studentA2 profiles.id)", "origin": "seed 合成 A2", "analysis_task": "ea866f4d", "created_at": "2026-10-05 10:31:22.939" },
+    { "id": "1c421762-226c-4895-8949-2752c1482b17", "job": "B (536f5d56)", "candidate_ref": "d5e3f5be (=student user.id)", "origin": "真实 UI baseline（state.json baseReportId）", "analysis_task": "11ed97d3 COMPLETED", "created_at": "2026-10-05 12:11:00.713" },
+    { "id": "3a78c342-3652-4584-b25a-307d7291e226", "job": "B (536f5d56)", "candidate_ref": "d5e3f5be (=student user.id)", "origin": "growth 任务 e3e3f88f 的分析 a0ef7a5a 产生（view() 的 compare target）", "analysis_task": "a0ef7a5a COMPLETED", "created_at": "2026-10-05 12:11:39.525" }
+  ],
+  "student_profiles": [
+    { "id": "5613ac7e-e7c2-469c-84b5-c86499796164", "user_id": "d5e3f5be-4104-462f-ad93-74df5b38a6dc", "owner": "student" },
+    { "id": "aac2abfa-ba0f-4ad4-a260-dca7bd195c8d", "user_id": "dbd2037d-3cde-43eb-baea-a5160adea079", "owner": "studentA2" }
+  ],
+  "comparison_inputs_at_view_time": {
+    "base.candidate_id（来自冻结快照）": "5613ac7e-e7c2-469c-84b5-c86499796164 (profiles.id)",
+    "target.candidate_id（报告 3a78c342 的 candidate_ref）": "d5e3f5be-4104-462f-ad93-74df5b38a6dc (users.id)",
+    "base.job_id": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+    "target.job_id": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+    "jobs_equal": true,
+    "candidates_equal": false,
+    "verdict": "compare_views 的同一候选人校验（report_comparison.py:74-77）因口径不一致触发 409/4097“只能对比同一用户同一岗位的报告”；岗位一致、任务归属同一 student 用户，无真实跨用户访问。"
+  },
+  "observed_409_calls": [
+    "GET /api/v1/match-reports/73047c10-.../growth-tasks/87278d08-... -> 409（chain-reply 2026-10-05T12-18-43.727Z，error-network-log.json）",
+    "GET /api/v1/growth-tasks/{task_id} -> 409/4097（任务卡所述，view() 同一 compare_views 路径）"
+  ]
+}

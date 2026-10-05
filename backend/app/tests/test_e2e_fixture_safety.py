@@ -22,7 +22,8 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.core.database import Base, get_session
 from app.main import create_app
-from app.models.identity import User
+from app.models.analysis import MatchReport
+from app.models.identity import StudentProfile, User
 from app.models.notification import Notification
 from app.models.recruitment import Application, ApplicationEvent
 from evals.seed_e2e import (
@@ -402,6 +403,28 @@ async def test_seed_creates_two_students_three_frozen_deliveries_and_notificatio
     assert replay["mode"] == "verified"
     assert replay["withdrawnRestored"] is False
     assert await fixture_counts(factory) == before
+
+
+async def test_seeded_reports_freeze_account_user_id_as_candidate_identity(e2e_app, tmp_path):
+    """SEED-02 (2026-10-05): the formal AnalysisService freezes candidateId as the
+    account User.id, so every seeded A/B/A2 report and its frozen delivery snapshot
+    must carry that same User.id; the StudentProfile.id is a different identity and
+    must never stand in for the candidate user identity."""
+    app, factory = e2e_app
+    await run_seed(app, factory, tmp_path)
+    state = await load_state(tmp_path)
+    async with factory() as session:
+        for slot, student_key in (("A", "student"), ("B", "student"), ("A2", "studentA2")):
+            user_id = UUID(state["accounts"][student_key]["userId"])
+            profile_id = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == user_id)
+            )
+            # The profile identity is what a wrong seed would wrongly freeze instead.
+            assert profile_id is not None and profile_id != user_id
+            report = await session.get(MatchReport, UUID(state["reports"][slot]))
+            assert report.candidate_ref == str(user_id)
+            delivery = await session.get(Application, UUID(state["applications"][slot]["id"]))
+            assert delivery.report_snapshot["candidateId"] == str(user_id)
 
 
 async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tmp_path):
