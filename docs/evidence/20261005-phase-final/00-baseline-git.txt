@@ -1,0 +1,77 @@
+== HEAD ==
+f96bca2bbcc875154b7bff8362f81cb4aacc247c
+f96bca2 docs(e2e): sign off enterprise closure and relay student variants
+edf4bd5 fix(e2e): align seeded report candidate identity with account user
+b8534ee test(e2e): verify exact notification targets and visible mobile report
+
+== status (porcelain, full) ==
+ M backend/app/models/evidence_growth.py
+ M backend/app/schemas/evidence_growth.py
+ M backend/app/schemas/report_comparison.py
+ M backend/app/services/analysis.py
+ M backend/app/services/evidence_growth.py
+ M backend/app/services/report_comparison.py
+ M docs/task-cards/20261004-E2E-enterprise-browser.md
+ M jianli/src/components/GrowthComparison.tsx
+ M jianli/src/components/GrowthWorkspace.tsx
+ M jianli/src/lib/api/client.ts
+ M jianli/src/lib/api/domain.ts
+ M jianli/src/lib/growth-workflow.ts
+?? backend/alembic/versions/0014_growth_target_job.py
+?? backend/app/tests/test_growth_target_job.py
+?? backend/app/tests/test_growth_target_migration.py
+?? backend/app/tests/test_growth_target_postgres.py
+?? docs/evidence/20261004-E2E-enterprise/SCENARIO-SUMMARY.md
+?? docs/evidence/20261004-E2E-enterprise/codex-audit.md
+?? docs/evidence/20261004-E2E-enterprise/codex-closure-startup-approved.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-closure-startup.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification-complete.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification.txt
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-37-06-778Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-38-08-476Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-39-09-138Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-40-31-640Z/
+?? docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-35-26-992Z/
+?? docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-47-32-809Z/
+?? docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-33-52-755Z/
+?? docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-46-24-040Z/
+?? docs/evidence/20261004-E2E-enterprise/reply-failure-2026-10-05T04-26-18-917Z/
+?? docs/evidence/20261004-E2E-enterprise/skeleton-2026-10-05T04-25-36-108Z/
+?? docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-10-983Z/
+?? docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-39-049Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T04-44-03-901Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-01-22-716Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-02-47-389Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-04-55-671Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-07-02-808Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/RETEST-SUMMARY.md
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-48-51-153Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-49-31-566Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T11-21-36-586Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-19-466Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-40-032Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-04-402Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-27-907Z/
+?? docs/evidence/20261005-E2E-runner-review/codex-input-guards-final.raw.out
+?? docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes-output.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes.mjs
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-original.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-v3.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership.mjs
+?? docs/evidence/20261005-E2E-runner-review/report.md
+?? docs/evidence/20261005-E2E-student-preflight/
+?? docs/evidence/20261005-E2E-student/
+?? docs/evidence/20261005-growth-job-selection-ui/
+?? docs/evidence/20261005-growth-protocol-review/
+?? docs/evidence/20261005-growth-target-job/
+?? docs/evidence/20261005-phase-final/
+?? docs/evidence/20261005-phase-sqlite/
+?? docs/task-cards/20261005-E2E-requirement-change-design.md
+?? docs/task-cards/20261005-phase-final.md
+?? jianli/tests/growth-job-selection.test.mjs
+?? scripts/e2e/student-browser-runner.mjs
+?? scripts/e2e/student-debug-jobform.mjs
+?? scripts/e2e/student-keyprobe.mjs
+?? scripts/e2e/student-runner-static.test.mjs
+?? scripts/e2e/student-task-probe.mjs

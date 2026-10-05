@@ -20,6 +20,7 @@ class GrowthCreate(APIModel):
 
 class GrowthMaterials(MaterialSelection):
     model_config = ConfigDict(extra="forbid")
+    target_job_id: UUID | None = None
 
 
 class GrowthAnalyze(APIModel):

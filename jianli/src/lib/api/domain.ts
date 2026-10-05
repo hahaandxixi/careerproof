@@ -99,6 +99,8 @@ export interface EnterpriseReplyContext {
 }
 export interface GrowthTask {
   id: string; baseReportId: string; jobId: string; jobTitle: string;
+  // 有效已保存的目标岗位；旧任务后端回填原岗位。后端未升级前字段可能缺失。
+  targetJobId?: string | null; targetJobTitle?: string | null;
   requirementId: string; requirementTitle: string; gap: string; originalAction: string;
   actionSource?: "ai_suggestion" | "rules" | "review"; actionCitationIds?: string[];
   actionNeedsRecheck?: boolean; taskPlanNeedsRecheck?: boolean; taskPlanWarning?: string | null;
@@ -173,6 +175,9 @@ export const EMPLOYMENT_LABELS: Record<string, string> = {
 
 export interface ReportComparison {
   baseId: string; targetId: string; contextChanges: string[];
+  // 跨岗位补证对比携带的原/目标岗位身份；旧同岗位比较后端可能不下发。
+  baseJobId?: string | null; targetJobId?: string | null;
+  baseJobTitle?: string | null; targetJobTitle?: string | null;
   baseMaterials: MatchReport["materials"]; targetMaterials: MatchReport["materials"];
   limitations: string[];
   items: { requirementId: string; title: string; status: string;

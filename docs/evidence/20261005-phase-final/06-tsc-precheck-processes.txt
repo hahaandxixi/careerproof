@@ -1,0 +1,23 @@
+node.exe                     49796 Console                    1     25,104 K
+node_repl.exe                25024 Console                    1     15,424 K
+node.exe                     47080 Console                    1     29,824 K
+node.exe                     34928 Console                    1     25,564 K
+node_repl.exe                48696 Console                    1      9,432 K
+node.exe                     11696 Console                    1     69,792 K
+node.exe                     25768 Console                    1     49,524 K
+node_repl.exe               152596 Console                    1     10,248 K
+node.exe                    152616 Console                    1     33,748 K
+node.exe                    153160 Console                    1     33,584 K
+node.exe                    153200 Console                    1     33,580 K
+node_repl.exe               153460 Console                    1     10,252 K
+node.exe                    192980 Console                    1     81,328 K
+node_repl.exe               220668 Console                    1     10,328 K
+node.exe                    224328 Console                    1     33,980 K
+node.exe                    219724 Console                    1     35,820 K
+node.exe                    221596 Console                    1     39,656 K
+node_repl.exe               219324 Console                    1     10,276 K
+CMD: npx tsc --noEmit --incremental false
+precheck 2026-10-05T21:37:11+08:00: no next build/dev process; PID 192980 = 'next start -H 127.0.0.1 -p 3001' (serving existing build, not a build; untouched, student closure server). Codex CUA runtime + MCP server.mjs nodes otherwise.
+
+CMD: npx tsc --noEmit --incremental false
+START: 2026-10-05T21:37:11+08:00

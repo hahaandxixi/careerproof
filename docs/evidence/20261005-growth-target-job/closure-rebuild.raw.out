@@ -1,0 +1,106 @@
+database cp_e2e_closure-20261005: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 0013_ai_usage_idempotency -> 0014_growth_target_job, Persist the student's explicitly selected private comparison target.
+{
+  "runId": "closure-20261005",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "abd0af9e-378a-411b-b043-a0956c7282ea",
+    "B": "536f5d56-bfd3-4c45-a104-73ab79475e09"
+  },
+  "reports": {
+    "A": "c0bef449-4d61-4c88-858d-13130b65d249",
+    "B": "73047c10-1f0b-44dc-9254-2a78115cd778",
+    "A2": "17f40400-414b-4fd6-b05c-5c34cdf5acc9"
+  },
+  "materials": {
+    "student": "0be31389-8849-458e-9d2a-3bec8c725ba4",
+    "studentA2": "f42c5ae6-8968-491b-86ce-928587cf3e72"
+  },
+  "applications": {
+    "A": {
+      "id": "35af0501-f0a3-4350-8bdb-87db12b68a81",
+      "student": "student",
+      "status": "replied",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "a80d735ed472f062bda0a9359e82a280bc87160fadf1ce1b951c4043c39a6003"
+    },
+    "B": {
+      "id": "263a9227-c37a-4b60-a00d-183cdd0e2201",
+      "student": "student",
+      "status": "replied",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "c85d4dabb86865155431c6ac0733f648f6a549eb0bcd0547ee12e0cd6c9dc77e"
+    },
+    "A2": {
+      "id": "b4da6fb3-ff69-4712-ad0f-2013be40b6a9",
+      "student": "studentA2",
+      "status": "viewed",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "1bcbed78bc7721a391f9fbd2230063114429014e464d5ef7b4f81ac5c78e9c98"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+   ▲ Next.js 15.5.25
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.6s
+   Linting and checking validity of types ...
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add '.next-e2e/types/**/*.ts'
+
+   Collecting page data ...
+   Generating static pages (0/18) ...
+   Generating static pages (4/18) 
+   Generating static pages (8/18) 
+   Generating static pages (13/18) 
+ ✓ Generating static pages (18/18)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      173 B         106 kB
+├ ○ /_not-found                            989 B         103 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                        3.44 kB         113 kB
+├ ƒ /candidates/[id]                       173 B         106 kB
+├ ○ /demo                                4.97 kB         111 kB
+├ ○ /growth                                135 B         123 kB
+├ ƒ /growth/[id]                           134 B         123 kB
+├ ƒ /jobs                                 2.3 kB         112 kB
+├ ƒ /jobs/[id]                           3.55 kB         118 kB
+├ ƒ /jobs/[id]/applications              11.9 kB         122 kB
+├ ƒ /jobs/[id]/edit                        132 B         114 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                           2.31 kB         112 kB
+├ ○ /jobs/new                              131 B         114 kB
+├ ○ /login                               4.49 kB         110 kB
+├ ƒ /match/[jobId]/[candidateId]           173 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.26 kB         114 kB
+├ ○ /notifications                       2.36 kB         112 kB
+├ ○ /portfolio                           6.68 kB         116 kB
+├ ƒ /recommendations                     6.01 kB         121 kB
+├ ○ /register                            4.95 kB         111 kB
+├ ○ /reports                             1.46 kB         111 kB
+├ ƒ /reports/[id]                        15.1 kB         125 kB
+└ ƒ /tasks/[id]                          3.49 kB         113 kB
++ First Load JS shared by all             102 kB
+  ├ chunks/2657-aede25d89c436562.js      46.1 kB
+  ├ chunks/447a7f04-4fcec6a144a2b5f1.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+CareerProof E2E run 'closure-20261005' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_closure-20261005 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\closure-20261005, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\closure-20261005.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId closure-20261005.
+next-env.d.ts was changed by the isolated build; the original bytes were restored.
+tsconfig.json was changed by the isolated build; the original bytes were restored.
+SUCCESS=True EXIT=0

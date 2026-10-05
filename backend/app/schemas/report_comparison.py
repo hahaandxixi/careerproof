@@ -36,6 +36,10 @@ class ComparisonItem(APIModel):
 class ReportComparison(APIModel):
     base_id: UUID
     target_id: UUID
+    base_job_id: UUID | None = None
+    target_job_id: UUID | None = None
+    base_job_title: str | None = None
+    target_job_title: str | None = None
     context_changes: list[str]
     base_materials: list[dict]
     target_materials: list[dict]

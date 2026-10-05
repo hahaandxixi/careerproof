@@ -1,0 +1,46 @@
+{
+  "sourceChecks": [
+    {
+      "path": "backend/evals/run_task_plan_quality.py",
+      "matches": true
+    },
+    {
+      "path": "backend/evals/task-plan-quality-cases.json",
+      "matches": true
+    },
+    {
+      "path": "backend/app/agents/contracts.py",
+      "matches": true
+    },
+    {
+      "path": "backend/app/tools/task_boundaries.py",
+      "matches": true
+    }
+  ],
+  "allMatch": true,
+  "metrics": {
+    "caseCount": 14,
+    "sourceExactCount": 13,
+    "sourceMismatchCount": 0,
+    "noSourceCount": 1,
+    "gapKindCoverage": {
+      "contradictory-materials": 1,
+      "contribution": 1,
+      "execution": 5,
+      "implementation": 1,
+      "missing-run": 1,
+      "partial-implementation": 1,
+      "reference-only": 1,
+      "review": 2,
+      "unclear-contribution": 1
+    },
+    "referenceContractAccepted": 14,
+    "contractExpectationMatches": 23,
+    "contractProbeCount": 23,
+    "contractExpectationMismatches": [],
+    "replayedModelOutputs": 0,
+    "independentSemanticReviews": 0,
+    "semanticQualityPassRate": null
+  },
+  "externalCalls": 0
+}

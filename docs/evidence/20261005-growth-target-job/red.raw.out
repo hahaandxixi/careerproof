@@ -1,0 +1,166 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_explicit_target_change_real_reports_and_original_application[materials] _
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000024E9685E540>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000024E96639950>, autoflush=True, expire_on_commit=False))
+change = 'materials'
+
+    @pytest.mark.parametrize("change", ["materials", "job", "both"])
+    async def test_explicit_target_change_real_reports_and_original_application(matching_db, change):  # noqa: F811
+        app, factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as hr,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(hr, "target-job-hr@example.com")
+            original_job = await create_job(hr)
+            target_job = (
+                await create_job(hr, skills=("SQL",)) if change != "materials" else original_job
+            )
+            await register(student, "target-job-student@example.com", "student")
+            resume, project, version = await upload_materials(student)
+            base = await match_report(student, original_job, resume, version)
+            application = await student.post(
+                "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            )
+            assert application.status_code == 201, application.text
+            application_url = f"/api/v1/applications/{application.json()['data']['id']}/view"
+            original = deepcopy((await hr.post(application_url)).json()["data"]["report"])
+            created = await student.post(
+                f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base)
+            )
+            assert created.status_code == 201, created.text
+            task = created.json()["data"]
+>           assert task["targetJobId"] == original_job["id"]
+                   ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'targetJobId'
+
+app\tests\test_growth_target_job.py:49: KeyError
+___ test_explicit_target_change_real_reports_and_original_application[job] ____
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000024E96EB7EC0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000024E9699BD90>, autoflush=True, expire_on_commit=False))
+change = 'job'
+
+    @pytest.mark.parametrize("change", ["materials", "job", "both"])
+    async def test_explicit_target_change_real_reports_and_original_application(matching_db, change):  # noqa: F811
+        app, factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as hr,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(hr, "target-job-hr@example.com")
+            original_job = await create_job(hr)
+            target_job = (
+                await create_job(hr, skills=("SQL",)) if change != "materials" else original_job
+            )
+            await register(student, "target-job-student@example.com", "student")
+            resume, project, version = await upload_materials(student)
+            base = await match_report(student, original_job, resume, version)
+            application = await student.post(
+                "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            )
+            assert application.status_code == 201, application.text
+            application_url = f"/api/v1/applications/{application.json()['data']['id']}/view"
+            original = deepcopy((await hr.post(application_url)).json()["data"]["report"])
+            created = await student.post(
+                f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base)
+            )
+            assert created.status_code == 201, created.text
+            task = created.json()["data"]
+>           assert task["targetJobId"] == original_job["id"]
+                   ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'targetJobId'
+
+app\tests\test_growth_target_job.py:49: KeyError
+___ test_explicit_target_change_real_reports_and_original_application[both] ___
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000024E97176600>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000024E970D2090>, autoflush=True, expire_on_commit=False))
+change = 'both'
+
+    @pytest.mark.parametrize("change", ["materials", "job", "both"])
+    async def test_explicit_target_change_real_reports_and_original_application(matching_db, change):  # noqa: F811
+        app, factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as hr,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(hr, "target-job-hr@example.com")
+            original_job = await create_job(hr)
+            target_job = (
+                await create_job(hr, skills=("SQL",)) if change != "materials" else original_job
+            )
+            await register(student, "target-job-student@example.com", "student")
+            resume, project, version = await upload_materials(student)
+            base = await match_report(student, original_job, resume, version)
+            application = await student.post(
+                "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            )
+            assert application.status_code == 201, application.text
+            application_url = f"/api/v1/applications/{application.json()['data']['id']}/view"
+            original = deepcopy((await hr.post(application_url)).json()["data"]["report"])
+            created = await student.post(
+                f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base)
+            )
+            assert created.status_code == 201, created.text
+            task = created.json()["data"]
+>           assert task["targetJobId"] == original_job["id"]
+                   ^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'targetJobId'
+
+app\tests\test_growth_target_job.py:49: KeyError
+_______ test_invalid_or_unchanged_target_leaves_saved_selection_intact ________
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000024E971945F0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000024E97144C10>, autoflush=True, expire_on_commit=False))
+
+    async def test_invalid_or_unchanged_target_leaves_saved_selection_intact(matching_db):  # noqa: F811
+        app, factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as hr,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+            AsyncClient(transport=transport, base_url="http://test") as other,
+        ):
+            await register(hr, "target-invalid-hr@example.com")
+            job = await create_job(hr)
+            draft = await create_job(hr, skills=("SQL",))
+            assert (await hr.patch(f"/api/v1/jobs/{draft['id']}", json={"status": "draft"})).status_code == 200
+            await register(student, "target-invalid-owner@example.com", "student")
+            await register(other, "target-invalid-other@example.com", "student")
+            resume, _, version = await upload_materials(student)
+            base = await match_report(student, job, resume, version)
+            task = (await student.post(
+                f"/api/v1/match-reports/{base['id']}/growth-tasks", json=plan(base)
+            )).json()["data"]
+            url = f"/api/v1/growth-tasks/{task['id']}"
+            material = {"resumeVersionId": resume["versionId"], "projectVersionIds": [version["versionId"]]}
+            for target, expected in [(job["id"], 409), (draft["id"], 404), (str(uuid4()), 404)]:
+                response = await student.put(url + "/materials", json={**material, "targetJobId": target})
+>               assert response.status_code == expected, response.text
+E               AssertionError: {"code":4220,"message":"请求参数校验失败","data":{"details":[{"loc":["body","targetJobId"],"msg":"Extra inputs are not permitted","type":"extra_forbidden"}]},"requestId":"fe823fef-d93c-4355-9a88-1c493ac9af06"}
+E               assert 422 == 409
+E                +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+app\tests\test_growth_target_job.py:116: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_growth_target_job.py::test_explicit_target_change_real_reports_and_original_application[materials]
+FAILED app/tests/test_growth_target_job.py::test_explicit_target_change_real_reports_and_original_application[job]
+FAILED app/tests/test_growth_target_job.py::test_explicit_target_change_real_reports_and_original_application[both]
+FAILED app/tests/test_growth_target_job.py::test_invalid_or_unchanged_target_leaves_saved_selection_intact
+4 failed, 5 warnings in 10.25s
+EXIT=1

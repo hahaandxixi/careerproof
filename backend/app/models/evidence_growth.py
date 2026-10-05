@@ -19,6 +19,10 @@ class EvidenceGrowthTask(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     base_snapshot: Mapped[dict] = mapped_column(JSON)
     plan: Mapped[dict] = mapped_column(JSON)
     materials: Mapped[list] = mapped_column(JSON, default=list)
+    target_job_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("jobs.id", name="fk_evidence_growth_target_job", ondelete="RESTRICT"),
+        nullable=True,
+    )
     analysis_task_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("analysis_tasks.id", ondelete="RESTRICT"), nullable=True
     )

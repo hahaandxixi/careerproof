@@ -30,6 +30,7 @@ from app.models.analysis import (
     SkillEvidence,
 )
 from app.models.enums import ConfirmationStatus, TaskStatus, VerificationStatus
+from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import User
 from app.models.recruitment import Job, JobRequirement, Skill
 from app.repositories.analysis import AnalysisRepository
@@ -286,6 +287,25 @@ class AnalysisService:
         return TaskAccepted(task_id=task.id, status=task.status)
 
     async def retry_match(self, task_id: UUID, user: User) -> TaskAccepted:
+        # Growth attaches/analyzes under the same user lock. Do not let the
+        # generic retry endpoint bypass its explicit reselect-and-save workflow.
+        await self.session.scalar(select(User.id).where(User.id == user.id).with_for_update())
+        original = await self.session.scalar(
+            select(AnalysisTask)
+            .where(AnalysisTask.id == task_id, AnalysisTask.created_by == user.id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        if not original:
+            raise AppError("分析任务不存在或无权访问", code=4041, status_code=404)
+        growth = await self.session.scalar(
+            select(EvidenceGrowthTask.id).where(EvidenceGrowthTask.analysis_task_id == task_id)
+        )
+        if original.input_snapshot.get("growthRequiresReselect") or growth:
+            raise AppError(
+                "补证分析失败记录需保留；请回到补证任务重新核对并保存材料与目标岗位后发起分析",
+                code=4099, status_code=409,
+            )
         task = await reset_failed_task(self.session, task_id, user)
         if task.task_type != "job_match" or not task.input_snapshot:
             raise AppError("旧任务未保存输入，请重新发起匹配", code=4094, status_code=409)

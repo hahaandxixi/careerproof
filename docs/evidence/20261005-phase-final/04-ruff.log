@@ -1,0 +1,4 @@
+CMD: ./.venv/Scripts/python.exe -m ruff check app evals
+START: 2026-10-05T21:36:40+08:00
+All checks passed!
+EXIT: 0

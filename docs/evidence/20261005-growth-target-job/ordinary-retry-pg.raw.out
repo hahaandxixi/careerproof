@@ -1,0 +1,21 @@
+.                                                                        [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+app/tests/test_real_matching.py::test_failed_match_retry_is_owner_only_atomic_and_not_duplicated
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 17 deselected, 6 warnings in 5.05s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+EXIT=0

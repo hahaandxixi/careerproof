@@ -70,12 +70,16 @@ def usable_advice(item):
     return suggestion, plan
 
 
-def compare_views(base, target, base_snapshot, target_snapshot):
-    if base.job_id != target.job_id or base.candidate_id != target.candidate_id:
+def compare_views(base, target, base_snapshot, target_snapshot, *, allow_job_change=False):
+    if base.candidate_id != target.candidate_id or (
+        base.job_id != target.job_id and not allow_job_change
+    ):
         raise AppError("只能对比同一用户同一岗位的报告", code=4097, status_code=409)
     if base.id == target.id:
         raise AppError("请选择两份不同的报告", code=4097, status_code=409)
     context = []
+    if base.job_id != target.job_id:
+        context.append("job")
     old_materials = [m.model_dump(mode="json", by_alias=True) for m in base.materials]
     new_materials = [m.model_dump(mode="json", by_alias=True) for m in target.materials]
     material_key = lambda rows: sorted(  # noqa: E731
@@ -154,6 +158,9 @@ def compare_views(base, target, base_snapshot, target_snapshot):
         ))
     return ReportComparison(
         base_id=base.id, target_id=target.id, context_changes=context,
+        base_job_id=base.job_id, target_job_id=target.job_id,
+        base_job_title=getattr(base, "job_title", None),
+        target_job_title=getattr(target, "job_title", None),
         base_materials=old_materials, target_materials=new_materials, items=result,
         limitations=[
             "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",

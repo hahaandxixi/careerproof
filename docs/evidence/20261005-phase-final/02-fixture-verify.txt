@@ -1,0 +1,42 @@
+== fixture verification (read-only grep), 2026-10-05T21:32:12+08:00 ==
+
+[conftest autouse Mock]
+import pytest
+
+from app.core.config import settings
+
+
+@pytest.fixture(autouse=True)
+def disable_external_ai_for_tests(monkeypatch):
+    """Automated tests never consume a developer's real model quota from .env."""
+    monkeypatch.setattr(settings, "ai_external_enabled", False)
+    monkeypatch.setattr(settings, "ai_provider", "mock")
+
+[pg tests consume CAREERPROOF_TEST_DATABASE_URL]
+app/tests/test_knowledge_semantic_postgres.py
+app/tests/test_real_matching.py
+app/tests/test_mcp_postgres_isolation.py
+app/tests/test_visual_postgres_concurrency.py
+
+[schema pattern enforcement sample]
+        pytest.skip("Requires explicit PostgreSQL cp_test schema")
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as hr,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        task, material = await setup(student, hr)
+        module = migration("0014_growth_target_job.py")
+        query = text(
+            "SELECT id,created_by,base_report_id,requirement_id,base_snapshot,plan,materials,"
+            "analysis_task_id,status,created_at,updated_at FROM evidence_growth_tasks"
+        )
+        async with engine.begin() as connection:
+            schema = await connection.scalar(text("SELECT current_schema()"))
+            assert schema.startswith("cp_test_") and len(schema) == 40
+            original = deepcopy((await connection.execute(query)).one()._mapping)
+
+            def run(sync, direction):
+                with Operations.context(MigrationContext.configure(sync)):
+                    getattr(module, direction)()
+

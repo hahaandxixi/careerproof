@@ -1,6 +1,7 @@
 """Student-owned evidence workflow; never updates a submitted application."""
 
 import logging
+from uuid import UUID
 
 from pydantic import ValidationError
 from sqlalchemy import select
@@ -11,7 +12,7 @@ from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import TaskStatus, UserRole
 from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import StudentProfile, User
-from app.models.recruitment import Application
+from app.models.recruitment import Application, Job
 from app.schemas.analysis import MatchCreate, MatchReportView, ReportMaterial
 from app.services.action_plan import build_action_plan
 from app.services.analysis import AnalysisService
@@ -156,20 +157,28 @@ class EvidenceGrowthService:
         row = await self._owned(task_id, user, True)
         if row.analysis_task_id:
             analysis = await self.session.get(AnalysisTask, row.analysis_task_id)
-            if analysis.status not in {TaskStatus.FAILED, TaskStatus.CANCELLED}:
+            if not analysis or analysis.status not in {TaskStatus.FAILED, TaskStatus.CANCELLED}:
                 raise AppError(
-                    "分析已开始，材料选择已固定；请保留结果并从新报告创建后续任务",
+                    "分析已开始，材料与目标岗位已固定；请保留结果并从新报告创建后续任务",
                     code=4099,
                     status_code=409,
                 )
         materials = await resolve_materials(self.session, payload, user)
+        base_job_id = UUID(row.base_snapshot["report"]["jobId"])
+        target_job_id = payload.target_job_id or base_job_id
+        target_job = await self.session.scalar(
+            select(Job).where(Job.id == target_job_id, Job.status == "published").with_for_update()
+        )
+        if not target_job:
+            raise AppError("岗位不存在或尚未发布", code=4040, status_code=404)
         if material_key(materials.snapshots) == material_key(
             row.base_snapshot["report"]["materials"]
-        ):
+        ) and target_job_id == base_job_id:
             raise AppError(
                 "所选材料与基准内容相同，请补充新版或明确调整证据范围", code=4099, status_code=409
             )
         row.materials = materials.snapshots
+        row.target_job_id = target_job_id
         row.analysis_task_id = None
         row.status = "materials_selected"
         await self.session.commit()
@@ -190,7 +199,7 @@ class EvidenceGrowthService:
             raise AppError("请先保存已解析完成的补证材料版本", code=4099, status_code=409)
         resume = next(m for m in row.materials if m["kind"] == "resume")
         request = MatchCreate(
-            job_id=row.base_snapshot["report"]["jobId"],
+            job_id=row.target_job_id or row.base_snapshot["report"]["jobId"],
             resume_version_id=resume["id"],
             project_version_ids=[m["id"] for m in row.materials if m["kind"] == "project"],
             external_ai_consent=payload.external_ai_consent,
@@ -202,6 +211,11 @@ class EvidenceGrowthService:
         accepted = await AnalysisService(self.session).create_match_task(
             request, user, commit=False
         )
+        bound = await self.session.get(AnalysisTask, accepted.task_id)
+        if bound.status in {TaskStatus.PENDING, TaskStatus.RUNNING}:
+            # Keep provenance after a failed task is detached by reselection;
+            # fixed job/material inputs remain unchanged and old failures stay readable.
+            bound.input_snapshot = {**bound.input_snapshot, "growthRequiresReselect": True}
         row.analysis_task_id = accepted.task_id
         row.status = "analyzing"
         await self.session.commit()
@@ -209,6 +223,11 @@ class EvidenceGrowthService:
 
     async def view(self, row, user):
         base = MatchReportView.model_validate(row.base_snapshot["report"])
+        target_job_id = row.target_job_id or base.job_id
+        target_job_title = base.job_title
+        if target_job_id != base.job_id:
+            target_job = await self.session.get(Job, target_job_id)
+            target_job_title = target_job.title if target_job else "目标岗位已不可用"
         requirement = next(
             (i for i in base.items if i.requirement_id == row.requirement_id), None
         )
@@ -232,6 +251,12 @@ class EvidenceGrowthService:
         )
         if row.analysis_task_id:
             task = await AnalysisService(self.session).get_task(row.analysis_task_id, user)
+            task_row = await self.session.get(AnalysisTask, row.analysis_task_id)
+            if task_row.input_snapshot.get("jobId") != str(target_job_id):
+                raise AppError("分析与已保存目标岗位不一致", code=4099, status_code=409)
+            target_job_title = (
+                task_row.input_snapshot.get("job", {}).get("title") or target_job_title
+            )
             analysis_status = task.status.value
             if task.status in {TaskStatus.FAILED, TaskStatus.CANCELLED}:
                 status = "analysis_failed"
@@ -242,12 +267,13 @@ class EvidenceGrowthService:
                 )
                 if target:
                     view = await AnalysisService(self.session).get_report(target.id, user)
-                    if view.id == base.id or view.materials != [
+                    if view.id == base.id or view.job_id != target_job_id or view.materials != [
                         ReportMaterial.model_validate(m) for m in row.materials
                     ]:
                         raise AppError("新报告与本次补证版本不一致", code=4099, status_code=409)
                     comparison = compare_views(
-                        base, view, row.base_snapshot["job"], target.job_snapshot or {}
+                        base, view, row.base_snapshot["job"], target.job_snapshot or {},
+                        allow_job_change=target_job_id != base.job_id,
                     )
                     comparison.limitations[3] = (
                         "基准是创建补证任务时固定的复核状态；目标报告采用当前复核状态。"
@@ -258,6 +284,8 @@ class EvidenceGrowthService:
             "baseReportId": str(row.base_report_id),
             "jobId": str(base.job_id),
             "jobTitle": base.job_title,
+            "targetJobId": str(target_job_id),
+            "targetJobTitle": target_job_title,
             "requirementId": str(row.requirement_id),
             "requirementTitle": requirement.requirement_title,
             "gap": action.evidence_gap,

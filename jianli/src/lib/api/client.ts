@@ -288,7 +288,11 @@ export const api = {
   createGrowthTask(reportId: string, plan: GrowthPlan) { return request<GrowthTask>(`/match-reports/${reportId}/growth-tasks`, { method: "POST", ...jsonBody(plan) }); },
   listGrowthTasks() { return request<GrowthTask[]>("/growth-tasks"); },
   growthTask(id: string) { return request<GrowthTask>(`/growth-tasks/${id}`); },
-  growthMaterials(id: string, payload: { resumeVersionId: string; projectVersionIds: string[] }) { return request<GrowthTask>(`/growth-tasks/${id}/materials`, { method: "PUT", ...jsonBody(payload) }); },
+  growthMaterials(id: string, payload: { resumeVersionId: string; projectVersionIds: string[]; targetJobId?: string }) {
+    // 可省略 targetJobId=沿用原岗位；undefined 不会被 JSON 序列化。
+    const { targetJobId, ...materials } = payload;
+    return request<GrowthTask>(`/growth-tasks/${id}/materials`, { method: "PUT", ...jsonBody(targetJobId ? { ...materials, targetJobId } : materials) });
+  },
   analyzeGrowth(id: string, externalAiConsent: boolean) { return request<GrowthTask>(`/growth-tasks/${id}/analyze`, { method: "POST", ...jsonBody({ externalAiConsent }) }); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
