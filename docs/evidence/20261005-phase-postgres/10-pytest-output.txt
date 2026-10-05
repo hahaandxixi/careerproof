@@ -1,0 +1,37 @@
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 23%]
+........................................................................ [ 30%]
+........................................................................ [ 38%]
+........................................................................ [ 46%]
+........................................................................ [ 53%]
+........................................................................ [ 61%]
+........................................................................ [ 69%]
+........................................................................ [ 76%]
+........................................................................ [ 84%]
+........................................................................ [ 92%]
+........................................................................ [ 99%]
+...                                                                      [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv\Lib\site-packages\starlette\testclient.py:51
+  D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\starlette\testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_career_change_attribution.py::test_saved_plan_explains_closed_job_without_rewriting_first_snapshot
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+939 passed, 7 warnings in 245.33s (0:04:05)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
