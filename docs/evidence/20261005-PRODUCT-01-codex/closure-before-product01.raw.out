@@ -1,0 +1,119 @@
+{
+  "runId": "closure-20261005",
+  "readOnly": true,
+  "applications": {
+    "A": {
+      "id": "35af0501-f0a3-4350-8bdb-87db12b68a81",
+      "status": "replied",
+      "snapshotSha256": "a80d735ed472f062bda0a9359e82a280bc87160fadf1ce1b951c4043c39a6003",
+      "matchesOriginal": true
+    },
+    "B": {
+      "id": "263a9227-c37a-4b60-a00d-183cdd0e2201",
+      "status": "replied",
+      "snapshotSha256": "c85d4dabb86865155431c6ac0733f648f6a549eb0bcd0547ee12e0cd6c9dc77e",
+      "matchesOriginal": true
+    },
+    "A2": {
+      "id": "b4da6fb3-ff69-4712-ad0f-2013be40b6a9",
+      "status": "viewed",
+      "snapshotSha256": "1bcbed78bc7721a391f9fbd2230063114429014e464d5ef7b4f81ac5c78e9c98",
+      "matchesOriginal": true
+    }
+  },
+  "reports": {
+    "baseline": {
+      "id": "1c421762-226c-4895-8949-2752c1482b17",
+      "jobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "candidateMatchesOwner": true,
+      "taskStatus": "completed",
+      "materials": [
+        [
+          "project",
+          "a4e1b6f3-65a7-48ec-9812-70372ae2bf3f"
+        ],
+        [
+          "resume",
+          "c7dfb109-6234-49cc-9d65-a06b8a9729bc"
+        ]
+      ],
+      "requirementIds": [
+        "87278d08-e1ed-4fa9-b90b-b75791504b57"
+      ]
+    },
+    "R1": {
+      "id": "d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+      "jobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "candidateMatchesOwner": true,
+      "taskStatus": "completed",
+      "materials": [
+        [
+          "project",
+          "d52c3620-91b7-49c6-9d23-a50a87abfb45"
+        ],
+        [
+          "resume",
+          "c7dfb109-6234-49cc-9d65-a06b8a9729bc"
+        ]
+      ],
+      "requirementIds": [
+        "87278d08-e1ed-4fa9-b90b-b75791504b57"
+      ]
+    },
+    "R2": {
+      "id": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+      "jobId": "aecc6a82-98c2-4fff-a81f-8f97d5af7371",
+      "candidateMatchesOwner": true,
+      "taskStatus": "completed",
+      "materials": [
+        [
+          "project",
+          "d52c3620-91b7-49c6-9d23-a50a87abfb45"
+        ],
+        [
+          "resume",
+          "c7dfb109-6234-49cc-9d65-a06b8a9729bc"
+        ]
+      ],
+      "requirementIds": [
+        "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "b7d91c19-8950-474a-8656-b77c3635ad63"
+      ]
+    },
+    "R3": {
+      "id": "835e6897-5033-4013-81f6-bb281287ac86",
+      "jobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "candidateMatchesOwner": true,
+      "taskStatus": "completed",
+      "materials": [
+        [
+          "project",
+          "a4e1b6f3-65a7-48ec-9812-70372ae2bf3f"
+        ],
+        [
+          "resume",
+          "c7dfb109-6234-49cc-9d65-a06b8a9729bc"
+        ]
+      ],
+      "requirementIds": [
+        "87278d08-e1ed-4fa9-b90b-b75791504b57"
+      ]
+    }
+  },
+  "changes": {
+    "baseline->R1": {
+      "materialsChanged": true,
+      "jobChanged": false
+    },
+    "R1->R2": {
+      "materialsChanged": false,
+      "jobChanged": true
+    },
+    "R2->R3": {
+      "materialsChanged": true,
+      "jobChanged": true
+    }
+  },
+  "writes": 0,
+  "completeReportChain": true
+}
