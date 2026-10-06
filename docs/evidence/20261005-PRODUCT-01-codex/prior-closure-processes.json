@@ -1,0 +1,28 @@
+{
+  "runId": "closure-20261005",
+  "createdAt": "2026-10-05T11:31:38.9708339Z",
+  "backendPort": 8001,
+  "frontendPort": 3001,
+  "databaseName": "cp_e2e_closure-20261005",
+  "storageDir": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\e2e-storage\\closure-20261005",
+  "distDir": ".next-e2e",
+  "aiExternalEnabled": "false",
+  "aiProvider": "mock",
+  "backend": {
+    "id": 188716,
+    "needle": "D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe",
+    "startedAt": "2026-10-05T11:31:38.9633353Z"
+  },
+  "processes": [
+    {
+      "id": 188716,
+      "needle": "D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe",
+      "startedAt": "2026-10-05T11:31:38.9633353Z"
+    },
+    {
+      "id": 192980,
+      "needle": "D:\\jbcode\\web ai\\jianli\\jianli\\node_modules\\next\\dist\\bin\\next",
+      "startedAt": "2026-10-05T11:31:59.4512649Z"
+    }
+  ]
+}
