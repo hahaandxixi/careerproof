@@ -1,0 +1,139 @@
+# OPS-01A raw read-only command log
+# 2026-10-06; no tests or service actions
+
+> git rev-parse --show-toplevel
+D:/jbcode/web ai/jianli
+
+
+> git rev-parse --short HEAD
+c31d557
+
+
+> git status --short
+warning: could not open directory 'backend/.tmp-product01-codex-independent/': Permission denied
+warning: could not open directory 'backend/.tmp-product01-codex-independent-config/': Permission denied
+warning: could not open directory 'backend/.tmp-product01-codex-pg/': Permission denied
+ M backend/app/api/v1/evidence_growth.py
+ M backend/app/models/__init__.py
+ M docs/task-cards/20261005-PRODUCT-01-frontend-plan.md
+?? backend/alembic/versions/0015_growth_answer_drafts.py
+?? backend/app/models/growth_answer.py
+?? backend/app/schemas/growth_answer.py
+?? backend/app/services/growth_answer.py
+?? backend/app/tests/test_growth_answer.py
+?? backend/app/tests/test_growth_answer_migration.py
+?? backend/app/tests/test_growth_answer_postgres.py
+?? docs/evidence/20261004-E2E-enterprise/SCENARIO-SUMMARY.md
+?? docs/evidence/20261004-E2E-enterprise/codex-audit.md
+?? docs/evidence/20261004-E2E-enterprise/codex-closure-startup-approved.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-closure-startup.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification-complete.txt
+?? docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification.txt
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-37-06-778Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-38-08-476Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-39-09-138Z/
+?? docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-40-31-640Z/
+?? docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-35-26-992Z/
+?? docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-47-32-809Z/
+?? docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-33-52-755Z/
+?? docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-46-24-040Z/
+?? docs/evidence/20261004-E2E-enterprise/reply-failure-2026-10-05T04-26-18-917Z/
+?? docs/evidence/20261004-E2E-enterprise/skeleton-2026-10-05T04-25-36-108Z/
+?? docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-10-983Z/
+?? docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-39-049Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T04-44-03-901Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-01-22-716Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-02-47-389Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-04-55-671Z/
+?? docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-07-02-808Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/RETEST-SUMMARY.md
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-48-51-153Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-49-31-566Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T11-21-36-586Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-19-466Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-40-032Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-04-402Z/
+?? docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-27-907Z/
+?? docs/evidence/20261005-E2E-runner-review/codex-input-guards-final.raw.out
+?? docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes-output.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes.mjs
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-original.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-v3.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output.txt
+?? docs/evidence/20261005-E2E-runner-review/probe-pid-ownership.mjs
+?? docs/evidence/20261005-E2E-runner-review/report.md
+?? docs/evidence/20261005-PRODUCT-01-backend/
+?? docs/evidence/20261005-PRODUCT-01-codex/alembic-full-chain.raw.out
+?? docs/evidence/20261005-PRODUCT-01-codex/independent-pg.raw.out
+?? docs/evidence/20261005-PRODUCT-01-codex/independent-sqlite-config.raw.out
+?? docs/evidence/20261005-PRODUCT-01-codex/independent-sqlite.raw.out
+?? docs/evidence/20261005-growth-job-selection-ui/
+?? docs/evidence/20261005-growth-protocol-review/
+?? docs/evidence/20261005-phase-sqlite/
+?? docs/evidence/20261006-OPS-01-investigation/
+?? scripts/e2e/student-debug-jobform.mjs
+?? scripts/e2e/student-keyprobe.mjs
+?? scripts/e2e/student-task-probe.mjs
+
+
+> git stash list
+stash@{0}: On main: P2 RRF fusion draft - paused by user 20261002
+
+
+> rg -n "persist_verification_usage|usage_records|_daily_ai_budget|AiUsageLog|request_seq|run_token" backend/app/services/analysis.py backend/app/services/application_verification.py backend/app/agents/provider.py backend/app/models/analysis.py
+backend/app/models/analysis.py:46:    run_token: Mapped[UUID | None] = mapped_column(nullable=True)
+backend/app/models/analysis.py:167:class AiUsageLog(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+backend/app/models/analysis.py:171:        # legacy rows have NULL run_token and stay exempt from the constraint.
+backend/app/models/analysis.py:173:            "uq_ai_usage_logs_run_token_request_seq",
+backend/app/models/analysis.py:174:            "run_token",
+backend/app/models/analysis.py:175:            "request_seq",
+backend/app/models/analysis.py:177:            sqlite_where=text("run_token IS NOT NULL"),
+backend/app/models/analysis.py:178:            postgresql_where=text("run_token IS NOT NULL"),
+backend/app/models/analysis.py:192:    run_token: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+backend/app/models/analysis.py:193:    request_seq: Mapped[int | None] = mapped_column(Integer, nullable=True)
+backend/app/agents/provider.py:465:        self.request_seq = 0
+backend/app/agents/provider.py:466:        self.usage_records: list[UsageRecord] = []
+backend/app/agents/provider.py:594:        self.request_seq += 1
+backend/app/agents/provider.py:598:        self.usage_records.append(UsageRecord(self.request_seq, usage_present, captured))
+backend/app/services/application_verification.py:38:from app.models.analysis import AgentStep, AiUsageLog, AnalysisTask
+backend/app/services/application_verification.py:47:from app.services.analysis import _daily_ai_budget
+backend/app/services/application_verification.py:484:async def persist_verification_usage(session_factory, task_id: UUID, run_token: UUID, provider):
+backend/app/services/application_verification.py:487:    Keyed by (run_token, request_seq): re-running this for the same claim hits
+backend/app/services/application_verification.py:495:        for record in provider.usage_records
+backend/app/services/application_verification.py:503:            pg_insert(AiUsageLog)
+backend/app/services/application_verification.py:505:            else sqlite_insert(AiUsageLog)
+backend/app/services/application_verification.py:518:                    run_token=run_token,
+backend/app/services/application_verification.py:519:                    request_seq=record.seq,
+backend/app/services/application_verification.py:522:                    index_elements=["run_token", "request_seq"],
+backend/app/services/application_verification.py:523:                    index_where=AiUsageLog.run_token.isnot(None),
+backend/app/services/application_verification.py:529:        (record.seq for record in provider.usage_records), default=0
+backend/app/services/application_verification.py:543:async def _book_usage_decoupled(session_factory, task_id: UUID, run_token: UUID, provider) -> None:
+backend/app/services/application_verification.py:554:            persist_verification_usage(session_factory, task_id, run_token, provider),
+backend/app/services/application_verification.py:573:            allowed, reason, budget = await _daily_ai_budget(session, task.created_by)
+backend/app/services/application_verification.py:682:            and bool(provider.usage_records)
+backend/app/services/application_verification.py:683:            and all(record.usage_present for record in provider.usage_records),
+backend/app/services/analysis.py:25:    AiUsageLog,
+backend/app/services/analysis.py:137:async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, str | None, dict]:
+backend/app/services/analysis.py:150:                func.count(func.distinct(AiUsageLog.analysis_task_id)),
+backend/app/services/analysis.py:151:                func.coalesce(func.sum(AiUsageLog.input_tokens), 0),
+backend/app/services/analysis.py:152:                func.coalesce(func.sum(AiUsageLog.output_tokens), 0),
+backend/app/services/analysis.py:154:            .join(AnalysisTask, AnalysisTask.id == AiUsageLog.analysis_task_id)
+backend/app/services/analysis.py:157:                AiUsageLog.created_at >= start_utc,
+backend/app/services/analysis.py:581:                    external_allowed, external_skip_reason, budget_stats = await _daily_ai_budget(
+backend/app/services/analysis.py:689:                    AiUsageLog(
+
+
+> rg --files -g "*lock*" -g "!backend/storage/**" -g "!frontend/node_modules/**"
+jianli\package-lock.json
+
+
+> local importlib.metadata versions
+fastapi==0.116.1
+pydantic==2.11.7
+SQLAlchemy==2.0.43
+alembic==1.16.5
+asyncpg==0.30.0
+httpx==0.28.1
+pytest==8.4.2
+aiosqlite==0.21.0
+

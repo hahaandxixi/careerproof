@@ -12,3 +12,7 @@
 
 Docker Desktop错误窗口实际显示启动终态错误：initializing Inference manager无法访问本机dockerInference监听文件，filename/directory/volume syntax incorrect。进程出现不等于引擎就绪；无reset/删卷/发送诊断。已请求用户退出并重启恢复。
 独立SQLite完整Alembic链停在既有CREATE EXTENSION vector（SQLite不支持），不归因0015；该日志保留alembic-full-chain.raw.out。0015模块roundtrip有执行方SQLite/PG证据，完整链应在独立PG环境另验。
+
+## 当前源码专项复跑
+
+2026-10-06：原session62694持续无输出，主动Ctrl+C后工具确认终态EXIT1，无结论伪报。以同断言/专属临时SQLite/-c pyproject.toml/-v/-o faulthandler_timeout=30诊断复跑session80345，真实11 passed/EXIT0，32.31s，见target-sqlite-diagnostic-20261006.raw.out。未降低业务断言，未设置真实模型。前端已新Start Plan免费GLM-5.3任务，仅局部实现与本地测试；生产和功能签收仍保留PG/页面门禁。

@@ -1,6 +1,6 @@
-# PRODUCT-01前端与页面验收准备（尚未下发）
+# PRODUCT-01前端实现与页面验收卡
 
-本卡只在后端任务终态交棒、Codex完成授权/引用/并发审查后下发。当前后端是单写入者；前端不并行改API/types，不改学生runner或运行服务。
+后端已终态交棒，Codex已完成授权/引用/锁序审查及两项独立SQLite验证。允许先进行前端有界实现和本地测试；当前PG独立门禁待Docker恢复，生产接入、页面及功能签收仍必须PG并发验证，不以本地通过替代。前端独占下列文件，不改学生runner或运行服务。
 
 ## 用户操作
 
@@ -23,7 +23,7 @@
 
 ## 已核对API契约与拟定文件所有权（2026-10-06）
 
-后端已交棒，Codex独立SQLite两项通过、Ruff通过；PG独立复跑暂因Docker未运行失败，仍待恢复，不是完整签收。本卡仍未下发。
+后端已交棒，Codex独立SQLite两项通过、Ruff通过；PG独立复跑暂因Docker未运行失败，仍待恢复，不是完整签收。本卡允许有界前端实现；发送状态以正式接力为准。
 
 后端：GET answer-draft返回data=null或{taskId,requirementId,text,references,revision,updatedAt,boundary}；references每项包含reportId/requirementId/citationId/available/snippet/filePath/lineStart/lineEnd/provenance。GET answer-draft/references返回data数组，除三重引用ID外含reportKind(base|target)/filePath/lineStart/lineEnd/provenance，不含snippet。PUT完整替换{text,references:[三重ID],expectedRevision}，首建0，409(code4240)冲突、422(code4241)来源不可用；最多6000字符/20引用，禁止额外字段。不存在草稿按revision0初始化。预览只展示保存响应的可用snippet，不伪造可选列表原文。
 

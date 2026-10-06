@@ -1,0 +1,35 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0 -- D:\jbcode\web ai\jianli\backend\.venv\Scripts\python.exe
+rootdir: D:\jbcode\web ai\jianli\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.1.0
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 11 items
+
+app/tests/test_growth_answer.py::test_answer_draft_create_update_clear_and_refresh_read PASSED [  9%]
+app/tests/test_growth_answer.py::test_answer_draft_revision_guards_reject_conflicting_saves PASSED [ 18%]
+app/tests/test_growth_answer.py::test_answer_draft_is_private_to_its_owner PASSED [ 27%]
+app/tests/test_growth_answer.py::test_answer_draft_accepts_real_base_and_target_citations PASSED [ 36%]
+app/tests/test_growth_answer.py::test_answer_draft_reference_options_track_completed_target PASSED [ 45%]
+app/tests/test_growth_answer.py::test_answer_draft_rejects_forged_or_mismatched_references PASSED [ 54%]
+app/tests/test_growth_answer.py::test_answer_draft_rejects_invalid_payload_shapes PASSED [ 63%]
+app/tests/test_growth_answer.py::test_answer_draft_marks_references_unavailable_after_target_change PASSED [ 72%]
+app/tests/test_growth_answer.py::test_answer_draft_treats_drifted_completed_target_as_unavailable PASSED [ 81%]
+app/tests/test_growth_answer.py::test_answer_draft_saves_leave_downstream_state_untouched PASSED [ 90%]
+app/tests/test_growth_answer_migration.py::test_growth_answer_draft_migration_roundtrip_preserves_legacy_rows PASSED [100%]
+
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 11 passed, 5 warnings in 32.31s =======================
+EXIT=0
