@@ -1,0 +1,7 @@
+# sha256（修复交付物与未改动的Codex探针/红证据）
+c82debc31fdcd2cf98a535bf436943be4e8505e971cb75d30f10f5d8f2795d5c *jianli/src/lib/private-answer-workflow.ts
+6e319da15eac4def8f481adee8e36665e33457734af3f912ebe2a3ef3ba78fc0 *jianli/tests/private-answer-workflow.test.mjs
+e11e7424ca63262caa6574b574b66e6298cc404f953f8784ac01d4d3df8d28fe *docs/evidence/20261005-PRODUCT-01-codex/independent-source-ordering.test.mjs
+6129029882380d71edba9a95762324603de25803f0bb3dd54b179a112bd8400a *docs/evidence/20261005-PRODUCT-01-codex/source-ordering-red.raw.out
+ac7b0b2be00a7de7551bb1d653ba1638c21279abd34be476e93e4eae722b5ee7 *docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-20261006/independent-races.test.mjs
+91a591ee555431166a139d2c61da59a46bd811913ed42631e8b419116e139d7f *docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-binding-20261006/independent-binding.test.mjs

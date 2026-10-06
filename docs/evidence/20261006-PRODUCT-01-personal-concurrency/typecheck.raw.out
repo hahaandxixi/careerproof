@@ -1,0 +1,6 @@
+$ npm run typecheck
+
+> jianli@0.1.0 typecheck
+> tsc --noEmit
+
+EXIT=0

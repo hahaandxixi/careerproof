@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+ok 1 - 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+  ---
+  duration_ms: 2.2569
+  type: 'test'
+  ...
+# Subtest: 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+ok 2 - 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+  ---
+  duration_ms: 0.4015
+  type: 'test'
+  ...
+# Subtest: 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+ok 3 - 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+  ---
+  duration_ms: 3.8373
+  type: 'test'
+  ...
+# Subtest: 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+ok 4 - 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+  ---
+  duration_ms: 0.8352
+  type: 'test'
+  ...
+# Subtest: 网络失败：保留文字与选择，不自动重试
+ok 5 - 网络失败：保留文字与选择，不自动重试
+  ---
+  duration_ms: 0.6585
+  type: 'test'
+  ...
+# Subtest: 重复点击：保存进行中再次保存不发出第二个 PUT
+ok 6 - 重复点击：保存进行中再次保存不发出第二个 PUT
+  ---
+  duration_ms: 0.3235
+  type: 'test'
+  ...
+# Subtest: 刷新重读已保存内容：显式读取替换本地编辑
+ok 7 - 刷新重读已保存内容：显式读取替换本地编辑
+  ---
+  duration_ms: 0.308
+  type: 'test'
+  ...
+# Subtest: 清空内容也需明确保存；仅清空不删除服务端记录
+ok 8 - 清空内容也需明确保存；仅清空不删除服务端记录
+  ---
+  duration_ms: 0.216
+  type: 'test'
+  ...
+# Subtest: 引用键为三元组：两个报告同 citationId 不合并
+ok 9 - 引用键为三元组：两个报告同 citationId 不合并
+  ---
+  duration_ms: 0.4868
+  type: 'test'
+  ...
+# Subtest: 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+ok 10 - 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+  ---
+  duration_ms: 0.3913
+  type: 'test'
+  ...
+# Subtest: 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+ok 11 - 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+  ---
+  duration_ms: 0.3208
+  type: 'test'
+  ...
+# Subtest: 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+ok 12 - 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+  ---
+  duration_ms: 3.4022
+  type: 'test'
+  ...
+# Subtest: 重复点击复制：上一次写入未完成时拒绝第二次
+ok 13 - 重复点击复制：上一次写入未完成时拒绝第二次
+  ---
+  duration_ms: 0.2585
+  type: 'test'
+  ...
+# Subtest: 422 来源不可用：保留编辑并提示，不进入冲突态
+ok 14 - 422 来源不可用：保留编辑并提示，不进入冲突态
+  ---
+  duration_ms: 0.1749
+  type: 'test'
+  ...
+# Subtest: 读取失败：错误可见且不清空已有本地输入
+ok 15 - 读取失败：错误可见且不清空已有本地输入
+  ---
+  duration_ms: 0.1922
+  type: 'test'
+  ...
+# Subtest: 本地限制：6000 字与 20 条引用在保存前被拦截
+ok 16 - 本地限制：6000 字与 20 条引用在保存前被拦截
+  ---
+  duration_ms: 0.0923
+  type: 'test'
+  ...
+# Subtest: api client：三个调用的路径、方法与载荷完全匹配协议
+ok 17 - api client：三个调用的路径、方法与载荷完全匹配协议
+  ---
+  duration_ms: 14.2159
+  type: 'test'
+  ...
+# Subtest: 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+ok 18 - 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+  ---
+  duration_ms: 0.1734
+  type: 'test'
+  ...
+# Subtest: 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+ok 19 - 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+  ---
+  duration_ms: 0.1224
+  type: 'test'
+  ...
+# Subtest: 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+ok 20 - 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+  ---
+  duration_ms: 0.1562
+  type: 'test'
+  ...
+# Subtest: 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+ok 21 - 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+  ---
+  duration_ms: 0.2158
+  type: 'test'
+  ...
+# Subtest: 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+ok 22 - 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+  ---
+  duration_ms: 0.1907
+  type: 'test'
+  ...
+# Subtest: 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+ok 23 - 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+  ---
+  duration_ms: 0.1069
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+ok 24 - 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+  ---
+  duration_ms: 0.2005
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+ok 25 - 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+  ---
+  duration_ms: 0.1702
+  type: 'test'
+  ...
+# Subtest: 目标绑定刷新失败：错误可见且不清空已有options与编辑
+ok 26 - 目标绑定刷新失败：错误可见且不清空已有options与编辑
+  ---
+  duration_ms: 0.1698
+  type: 'test'
+  ...
+# Subtest: 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+ok 27 - 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+  ---
+  duration_ms: 5.6992
+  type: 'test'
+  ...
+# Subtest: 面板：引用列表区分基准/目标与第三方参考，选中可切换
+ok 28 - 面板：引用列表区分基准/目标与第三方参考，选中可切换
+  ---
+  duration_ms: 0.8616
+  type: 'test'
+  ...
+# Subtest: 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+ok 29 - 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+  ---
+  duration_ms: 0.4611
+  type: 'test'
+  ...
+# Subtest: 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+ok 30 - 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+  ---
+  duration_ms: 0.9679
+  type: 'test'
+  ...
+# Subtest: 面板：正文输入与失效引用移除走真实回调
+ok 31 - 面板：正文输入与失效引用移除走真实回调
+  ---
+  duration_ms: 0.6954
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 218.0485

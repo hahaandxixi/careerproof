@@ -93,6 +93,28 @@ export interface GrowthPlan {
   steps: string[];
   acceptanceChecks: string[];
 }
+// PRODUCT-01 私人回答草稿：保存回执里的引用（含服务端验证的可用性与原文片段）。
+export interface PrivateAnswerDraftReference {
+  reportId: string; requirementId: string; citationId: string;
+  available: boolean; snippet: string | null;
+  filePath: string | null; lineStart: number | null; lineEnd: number | null;
+  provenance?: "portfolio" | "reference" | null;
+}
+export interface PrivateAnswerDraft {
+  taskId: string; requirementId: string; text: string;
+  references: PrivateAnswerDraftReference[];
+  revision: number; updatedAt: string; boundary: string;
+}
+// 可选引用列表条目：三重引用ID + 报告来源；按协议不含 snippet。
+export interface PrivateAnswerReferenceOption {
+  reportId: string; requirementId: string; citationId: string;
+  reportKind: "base" | "target";
+  filePath: string; lineStart: number; lineEnd: number;
+  provenance?: "portfolio" | "reference" | null;
+}
+// PUT 为完整替换；后端 extra=forbid，载荷不得携带任何额外字段。
+export interface PrivateAnswerSaveReference { reportId: string; requirementId: string; citationId: string }
+export interface PrivateAnswerSave { text: string; references: PrivateAnswerSaveReference[]; expectedRevision: number }
 export interface EnterpriseReplyContext {
   applicationId: string; reportId: string; requirementId: string;
   replyKind: string | null; text: string; citationIds: string[];

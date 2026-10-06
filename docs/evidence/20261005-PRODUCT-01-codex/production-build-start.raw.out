@@ -1,0 +1,57 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\jbcode\web ai\jianli\backend\evals\seed_e2e.py", line 968, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\evals\seed_e2e.py", line 961, in main
+    return asyncio.run(_async_main(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\evals\seed_e2e.py", line 911, in _async_main
+    created = await create_database(database_url, run_id)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\evals\seed_e2e.py", line 856, in create_database
+    connection = await asyncpg.connect(
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 886, in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\asyncpg\connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 1132, in create_connection
+    raise exceptions[0]
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 1107, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 1010, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\proactor_events.py", line 729, in sock_connect
+    return await self._proactor.connect(sock, address)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\windows_events.py", line 803, in _poll
+    value = callback(transferred, key, ov)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\windows_events.py", line 599, in finish_connect
+    ov.getresult()
+ConnectionRefusedError: [WinError 1225] Զ�̼�����ܾ��������ӡ�

@@ -3,7 +3,7 @@ import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDet
 
 const API_PREFIX = "/backend/api/v1";
 import type { VisualReview } from "./domain";
-import type { EnterpriseReplyContext, GrowthPlan, GrowthTask } from "./domain";
+import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -294,6 +294,10 @@ export const api = {
     return request<GrowthTask>(`/growth-tasks/${id}/materials`, { method: "PUT", ...jsonBody(targetJobId ? { ...materials, targetJobId } : materials) });
   },
   analyzeGrowth(id: string, externalAiConsent: boolean) { return request<GrowthTask>(`/growth-tasks/${id}/analyze`, { method: "POST", ...jsonBody({ externalAiConsent }) }); },
+  // PRODUCT-01 私人回答草稿：只读写本人草稿与可选引用，不触发分析、通知或任何外发。
+  getAnswerDraft(taskId: string) { return request<PrivateAnswerDraft | null>(`/growth-tasks/${taskId}/answer-draft`); },
+  saveAnswerDraft(taskId: string, payload: PrivateAnswerSave) { return request<PrivateAnswerDraft>(`/growth-tasks/${taskId}/answer-draft`, { method: "PUT", ...jsonBody(payload) }); },
+  listAnswerDraftReferences(taskId: string) { return request<PrivateAnswerReferenceOption[]>(`/growth-tasks/${taskId}/answer-draft/references`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
     return request<MatchReport["items"][number]>(`/match-reports/${reportId}/items/${requirementId}/review`, {
