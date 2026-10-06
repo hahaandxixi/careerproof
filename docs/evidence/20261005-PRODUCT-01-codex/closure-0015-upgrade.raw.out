@@ -1,0 +1,140 @@
+BEFORE: confirmed closure 0014, all existing public table row hashes captured
+
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 0014_growth_target_job -> 0015_growth_answer_drafts, Store the student's private answer draft for one evidence growth task.
+
+ALEMBIC_EXIT=0
+{
+  "database": "cp_e2e_closure-20261005",
+  "from": "0014_growth_target_job",
+  "to": "0015_growth_answer_drafts",
+  "legacyTables": {
+    "agent_steps": {
+      "rows": 45,
+      "sha256": "250d242657435e11bf7b309a7f12ada49fa426312c87d1d291b9d6f38ce6e14b"
+    },
+    "ai_usage_logs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "analysis_tasks": {
+      "rows": 11,
+      "sha256": "034205332e82e80da70047fa756370e4fca8f090ffe6f34692e46f036dcb3797"
+    },
+    "application_events": {
+      "rows": 9,
+      "sha256": "f91215fe173b911ef6861cde0f6e885723209d9405d497f35b0ad9b5da81066e"
+    },
+    "applications": {
+      "rows": 3,
+      "sha256": "e756055103ceebec78b3b75c0afbeedb9a449505f8fdcc2ca414aaae429cca96"
+    },
+    "audit_logs": {
+      "rows": 9,
+      "sha256": "4797638a1c9f2831ae9439a98b73f7ea67fda89d23de756bd8edd3425ecd2551"
+    },
+    "enterprise_memberships": {
+      "rows": 1,
+      "sha256": "dbadf3f37ecc69acc69091b239e7d75698517bc7f705e52a81180a67f2782845"
+    },
+    "enterprises": {
+      "rows": 1,
+      "sha256": "a82ca7edcd4e9981b83113c6d0601f03983de245d45f025e0cde3363e776c599"
+    },
+    "evidence_growth_tasks": {
+      "rows": 4,
+      "sha256": "8dbaf84528e1d52088713244d550bc1143d29612176e0b928dfd1b0e7894c7a0"
+    },
+    "evidence_sources": {
+      "rows": 23,
+      "sha256": "9a8f0b6bd0fd21eb869739f3f76c9bb06cc1f63aa0ee1956a68a623ef5111269"
+    },
+    "interview_answers": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "interview_sessions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "job_requirements": {
+      "rows": 4,
+      "sha256": "6a37b0e1829cb881804757dfb4a5303473038668146c38d0eebad5f50c4908e6"
+    },
+    "jobs": {
+      "rows": 3,
+      "sha256": "d163e96486f46df69656ec17f59ad7bbccc7d1bf8de72fe3e33b8735a55c1877"
+    },
+    "knowledge_chunks": {
+      "rows": 7,
+      "sha256": "b384a2a8a660ee7492e11850bc8271080f6a2d357107cdc115a372d3dc6af602"
+    },
+    "match_items": {
+      "rows": 9,
+      "sha256": "cc801fc8d25257c34e7104d377f2a2805c52c6e8e64783c2cc43d421f304eac2"
+    },
+    "match_reports": {
+      "rows": 8,
+      "sha256": "6324c8177920b25994d405424046c9939f046afe6d13ec99266a8b080c30691d"
+    },
+    "matching_formula_versions": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "notifications": {
+      "rows": 12,
+      "sha256": "a99e8cd3e77dc6569fcd7366c205422e40b203057e0bd3b50317e3b450ae6a16"
+    },
+    "project_files": {
+      "rows": 6,
+      "sha256": "093487438b6c039e23f96db9bd51cf58b618c9413c1616449859460647ca7290"
+    },
+    "project_versions": {
+      "rows": 2,
+      "sha256": "f9ffc705e951abd5d7f8bba3d759a760fc881b7a498b9262f75034df0c83136d"
+    },
+    "projects": {
+      "rows": 1,
+      "sha256": "36aea24678191e5b7b0449a395e3c8485218b6aff43dd642644ec02e0e554045"
+    },
+    "refresh_tokens": {
+      "rows": 48,
+      "sha256": "5816c88e96ee2934f0982ad44d836a3638d846740617880f0ad37cdcaefbe24f"
+    },
+    "resume_sections": {
+      "rows": 1,
+      "sha256": "b00b1237c9ea22b48f6d8644e2502716b19fed34eaa84cb86621e17edac6b023"
+    },
+    "resume_versions": {
+      "rows": 3,
+      "sha256": "9906840ba98f0bed206d5f906df5f7e2fd6ba8a8b925aa37d655efb2ce23d328"
+    },
+    "resumes": {
+      "rows": 3,
+      "sha256": "58dc1d82019c5b707425c09318810c9e4d632aaa37da8e675466af69de8d3670"
+    },
+    "skill_aliases": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "skill_evidence": {
+      "rows": 23,
+      "sha256": "4b1405a490be42d44bbb6c2e32d949db2d45e60a23ad46c86f9a19de930236a5"
+    },
+    "skills": {
+      "rows": 1,
+      "sha256": "c21aca7262a012dc0a3ae55559679930721e290f3d3b4cb1eb38dbcd57b2df0d"
+    },
+    "student_profiles": {
+      "rows": 2,
+      "sha256": "bc19e3c35ba9a7e4777bd805cade194154450a57f306394aa5b8e6148d137670"
+    },
+    "users": {
+      "rows": 3,
+      "sha256": "dffb6fac680329ce5912c8e8356507b968562cfb8365c28922d253436caad94c"
+    }
+  },
+  "allLegacyRowsUnchanged": true,
+  "newDraftRows": 0
+}

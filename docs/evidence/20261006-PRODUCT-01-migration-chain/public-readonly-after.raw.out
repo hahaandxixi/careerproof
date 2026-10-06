@@ -1,0 +1,6 @@
+database careerproof
+public_revision 0013_ai_usage_idempotency
+public_target_job_column False
+public_draft_table False
+cp_test_9de577083ebb4d80be9a8beaf67a11f2_exists False
+cp_test_7f54eab143d94c80b7847e28a4006093_exists False

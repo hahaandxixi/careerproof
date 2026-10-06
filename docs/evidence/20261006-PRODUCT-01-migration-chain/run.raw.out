@@ -1,0 +1,24 @@
+PREFLIGHT PASS database=careerproof schema=cp_test_9de577083ebb4d80be9a8beaf67a11f2 empty=1 vector=public
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade 0013_ai_usage_idempotency -> 0014_growth_target_job, Persist the student's explicitly selected private comparison target.
+MIGRATION upgrade 0014_growth_target_job: PASS; guarded env.py engine calls=1
+CLEANUP PASS schema=cp_test_9de577083ebb4d80be9a8beaf67a11f2
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261006-PRODUCT-01-migration-chain\verify_chain.py", line 245, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261006-PRODUCT-01-migration-chain\verify_chain.py", line 217, in main
+    asyncio.run(stage(REV14))
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261006-PRODUCT-01-migration-chain\verify_chain.py", line 118, in stage
+    assert actual == revision, f"Expected {revision}, found {actual}"
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: Expected 0014_growth_target_job, found 0013_ai_usage_idempotency
