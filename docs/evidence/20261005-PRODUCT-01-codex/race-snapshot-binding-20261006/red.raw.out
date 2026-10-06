@@ -1,0 +1,98 @@
+TAP version 13
+# Subtest: successful source revalidation prevents old target original from being copied as valid evidence
+not ok 1 - successful source revalidation prevents old target original from being copied as valid evidence
+  ---
+  duration_ms: 2.6918
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261005-PRODUCT-01-codex\\race-snapshot-binding-20261006\\independent-binding.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-binding-20261006/independent-binding.test.mjs:33:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: source revalidation pending rejects confirmation based on the old preview
+not ok 2 - source revalidation pending rejects confirmation based on the old preview
+  ---
+  duration_ms: 0.4771
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261005-PRODUCT-01-codex\\race-snapshot-binding-20261006\\independent-binding.test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-binding-20261006/independent-binding.test.mjs:44:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: failed source revalidation rejects confirmation based on the old preview
+not ok 3 - failed source revalidation rejects confirmation based on the old preview
+  ---
+  duration_ms: 0.2927
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261005-PRODUCT-01-codex\\race-snapshot-binding-20261006\\independent-binding.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-binding-20261006/independent-binding.test.mjs:53:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: late save receipt cannot downgrade a newer baseline read from the server
+not ok 4 - late save receipt cannot downgrade a newer baseline read from the server
+  ---
+  duration_ms: 0.3766
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261005-PRODUCT-01-codex\\race-snapshot-binding-20261006\\independent-binding.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    2 !== 3
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 3
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/docs/evidence/20261005-PRODUCT-01-codex/race-snapshot-binding-20261006/independent-binding.test.mjs:63:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 137.4812
