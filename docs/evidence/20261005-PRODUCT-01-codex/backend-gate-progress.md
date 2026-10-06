@@ -16,3 +16,7 @@ Docker Desktop错误窗口实际显示启动终态错误：initializing Inferenc
 ## 当前源码专项复跑
 
 2026-10-06：原session62694持续无输出，主动Ctrl+C后工具确认终态EXIT1，无结论伪报。以同断言/专属临时SQLite/-c pyproject.toml/-v/-o faulthandler_timeout=30诊断复跑session80345，真实11 passed/EXIT0，32.31s，见target-sqlite-diagnostic-20261006.raw.out。未降低业务断言，未设置真实模型。前端已新Start Plan免费GLM-5.3任务，仅局部实现与本地测试；生产和功能签收仍保留PG/页面门禁。
+
+## Docker运行文件只读核对
+
+2026-10-06：报错路径dockerInference只读Get-Item显示Length=0、Archive/ReparsePoint、LinkType/Target未识别；fsutil reparsepoint query返回1920（系统无法访问文件），不能据此保证它可安全删除或正常重命名。未修改AppData运行文件、设置或卷；保留用户恢复请求。此故障不代表业务测试失败。

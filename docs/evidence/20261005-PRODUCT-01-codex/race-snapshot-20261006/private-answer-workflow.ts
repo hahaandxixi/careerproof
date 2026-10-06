@@ -1,0 +1,338 @@
+import { ApiError } from "./api/client";
+import type { PrivateAnswerDraft, PrivateAnswerDraftReference, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./api/domain";
+
+export const PRIVATE_ANSWER_MAX_TEXT = 6000;
+export const PRIVATE_ANSWER_MAX_REFERENCES = 20;
+
+export type PrivateAnswerProvenance = "portfolio" | "reference" | null;
+
+/** 选中引用条目：可来自服务端可选列表，也可来自已保存回执（可能已失效）。 */
+export interface PrivateAnswerSelectionEntry {
+  reportId: string;
+  requirementId: string;
+  citationId: string;
+  reportKind: "base" | "target" | "saved";
+  available: boolean;
+  filePath: string | null;
+  lineStart: number | null;
+  lineEnd: number | null;
+  provenance: PrivateAnswerProvenance;
+  snippet: string | null;
+}
+
+/** 最近一次成功保存（或显式刷新读取）得到的基线。 */
+export interface PrivateAnswerSavedBaseline {
+  text: string;
+  revision: number;
+  updatedAt: string | null;
+  references: PrivateAnswerDraftReference[];
+}
+
+export interface PrivateAnswerState {
+  phase: "loading" | "ready";
+  reading: boolean;
+  text: string;
+  selected: PrivateAnswerSelectionEntry[];
+  saved: PrivateAnswerSavedBaseline | null;
+  options: PrivateAnswerReferenceOption[];
+  optionsNotice: string;
+  saving: boolean;
+  comparing: boolean;
+  copying: boolean;
+  serverCopy: PrivateAnswerDraft | null;
+  conflict: boolean;
+  error: string;
+  notice: string;
+}
+
+export const initialPrivateAnswerState: PrivateAnswerState = {
+  phase: "loading", reading: false, text: "", selected: [], saved: null,
+  options: [], optionsNotice: "", saving: false, comparing: false, copying: false,
+  serverCopy: null, conflict: false, error: "", notice: "",
+};
+
+/** 引用键是三元组：两个报告出现相同 citationId 也不能合并。 */
+export function privateAnswerReferenceKey(reportId: string, requirementId: string, citationId: string): string {
+  return JSON.stringify([reportId, requirementId, citationId]);
+}
+
+export function privateAnswerIsDirty(state: PrivateAnswerState): boolean {
+  if (!state.saved) return state.text !== "" || state.selected.length > 0;
+  if (state.text !== state.saved.text) return true;
+  const savedKeys = state.saved.references.map(r => privateAnswerReferenceKey(r.reportId, r.requirementId, r.citationId));
+  const selectedKeys = state.selected.map(e => privateAnswerReferenceKey(e.reportId, e.requirementId, e.citationId));
+  return savedKeys.length !== selectedKeys.length || savedKeys.some((key, i) => key !== selectedKeys[i]);
+}
+
+export function privateAnswerSaveProblem(text: string, referenceCount: number): string {
+  if (text.length > PRIVATE_ANSWER_MAX_TEXT) return `草稿文字超过上限（${PRIVATE_ANSWER_MAX_TEXT}字），请删减后再保存。`;
+  if (referenceCount > PRIVATE_ANSWER_MAX_REFERENCES) return `引用数量超过上限（${PRIVATE_ANSWER_MAX_REFERENCES}条），请先移除部分引用。`;
+  return "";
+}
+
+/** 跨岗位目标报告没有原要求时，解释为何不能用其新要求回答原问题。 */
+export function privateAnswerReferenceScopeNotice(input: {
+  options: PrivateAnswerReferenceOption[]; crossJob: boolean; hasTargetReport: boolean;
+}): string {
+  if (input.crossJob && input.hasTargetReport && !input.options.some(option => option.reportKind === "target")) {
+    return "当前目标岗位报告没有本任务的原要求条目：跨岗位的新要求不能用来回答原问题，因此目标报告没有可选引用。";
+  }
+  return "";
+}
+
+function selectionFromSaved(saved: PrivateAnswerDraft, options: PrivateAnswerReferenceOption[]): PrivateAnswerSelectionEntry[] {
+  const kindByKey = new Map(options.map(option => [
+    privateAnswerReferenceKey(option.reportId, option.requirementId, option.citationId), option.reportKind,
+  ] as const));
+  return saved.references.map(ref => ({
+    reportId: ref.reportId,
+    requirementId: ref.requirementId,
+    citationId: ref.citationId,
+    reportKind: kindByKey.get(privateAnswerReferenceKey(ref.reportId, ref.requirementId, ref.citationId)) ?? "saved",
+    available: ref.available,
+    filePath: ref.filePath ?? null,
+    lineStart: ref.lineStart ?? null,
+    lineEnd: ref.lineEnd ?? null,
+    provenance: ref.provenance ?? null,
+    snippet: ref.snippet ?? null,
+  }));
+}
+
+/** 预览/复制文本只来自已保存回执（含服务端验证的可用 snippet），不伪造可选列表原文。 */
+export function buildPrivateAnswerPreviewDocument(input: {
+  saved: PrivateAnswerSavedBaseline;
+  requirementTitle: string;
+  jobTitle: string;
+  baseReportId: string;
+  targetReportId: string | null;
+}): string {
+  const { saved, requirementTitle, jobTitle, baseReportId, targetReportId } = input;
+  const lines: string[] = [];
+  lines.push("【私人回答草稿 · 仅供本人核对】");
+  lines.push(`对应原要求：${requirementTitle}（${jobTitle}）`);
+  lines.push("——草稿正文——");
+  lines.push(saved.text === "" ? "（空）" : saved.text);
+  const usable = saved.references.filter(ref => ref.available);
+  lines.push("——引用来源（服务端验证）——");
+  if (!usable.length) {
+    lines.push("暂无有效引用。");
+  } else {
+    for (const ref of usable) {
+      const kind = ref.reportId === targetReportId ? "目标报告" : ref.reportId === baseReportId ? "基准报告" : "报告";
+      const location = ref.filePath ? ` ${ref.filePath} 第${ref.lineStart}-${ref.lineEnd}行` : "";
+      const referenceMark = ref.provenance === "reference" ? "（第三方参考，不计入评级）" : "";
+      lines.push(`- ${kind} ${ref.citationId}${location}${referenceMark}`);
+      if (ref.snippet) lines.push(`  原文片段：${ref.snippet}`);
+    }
+  }
+  const unavailable = saved.references.filter(ref => !ref.available);
+  if (unavailable.length) {
+    lines.push("——已失效引用（未作为有效来源复制）——");
+    lines.push(`${unavailable.map(ref => ref.citationId).join("、")}：来源关联已变化，请重新核对后再选择。`);
+  }
+  lines.push("——保存信息——");
+  lines.push(`保存版本：${saved.revision} · 保存时间：${saved.updatedAt ?? "未知"}`);
+  lines.push("说明：本草稿仅保存在本人账号下，未发送给企业，也不代表企业回复或任何通过结论。");
+  return lines.join("\n");
+}
+
+interface PrivateAnswerDependencies {
+  getDraft(taskId: string): Promise<PrivateAnswerDraft | null>;
+  saveDraft(taskId: string, payload: PrivateAnswerSave): Promise<PrivateAnswerDraft>;
+  listReferences(taskId: string): Promise<PrivateAnswerReferenceOption[]>;
+  errorMessage(error: unknown): string;
+}
+
+// 独立于分析轮询的草稿会话：读写共用一个代际（guard）废弃迟到回执，
+// 编辑序号保证保存期间可以继续编辑——旧回执只更新已存基线，绝不覆盖后来文字。
+export function createPrivateAnswerSession(
+  apiDeps: PrivateAnswerDependencies,
+  publish: (state: PrivateAnswerState) => void,
+) {
+  let active = false;
+  let generation = 0;
+  let state = initialPrivateAnswerState;
+  const set = (patch: Partial<PrivateAnswerState>) => { state = { ...state, ...patch }; publish(state); };
+  const accepts = (ticket: number) => active && ticket === generation;
+
+  function scopeOf(scope?: { crossJob: boolean; hasTargetReport: boolean }) {
+    return scope ?? { crossJob: false, hasTargetReport: false };
+  }
+
+  async function load(taskId: string, scope?: { crossJob: boolean; hasTargetReport: boolean }): Promise<boolean> {
+    if (!active || state.reading) return false;
+    const ticket = ++generation;
+    set({ reading: true, error: "", notice: "", conflict: false, serverCopy: null });
+    try {
+      const [draft, options] = await Promise.all([apiDeps.getDraft(taskId), apiDeps.listReferences(taskId)]);
+      if (!accepts(ticket)) return false;
+      state = {
+        ...state,
+        phase: "ready",
+        reading: false,
+        text: draft?.text ?? "",
+        selected: draft ? selectionFromSaved(draft, options) : [],
+        saved: draft
+          ? { text: draft.text, revision: draft.revision, updatedAt: draft.updatedAt, references: draft.references }
+          : null,
+        options,
+        optionsNotice: privateAnswerReferenceScopeNotice({ options, ...scopeOf(scope) }),
+      };
+      publish(state);
+      return true;
+    } catch (error) {
+      if (accepts(ticket)) set({ phase: "ready", reading: false, error: apiDeps.errorMessage(error) });
+      return false;
+    }
+  }
+
+  function setText(text: string) {
+    if (!active) return;
+    set({ text });
+  }
+
+  function toggleReference(option: PrivateAnswerReferenceOption) {
+    if (!active) return;
+    const key = privateAnswerReferenceKey(option.reportId, option.requirementId, option.citationId);
+    const selected = state.selected.filter(
+      entry => privateAnswerReferenceKey(entry.reportId, entry.requirementId, entry.citationId) !== key,
+    );
+    if (selected.length === state.selected.length) {
+      selected.push({
+        reportId: option.reportId, requirementId: option.requirementId, citationId: option.citationId,
+        reportKind: option.reportKind, available: true,
+        filePath: option.filePath ?? null, lineStart: option.lineStart ?? null, lineEnd: option.lineEnd ?? null,
+        provenance: option.provenance ?? null, snippet: null,
+      });
+    }
+    set({ selected });
+  }
+
+  function removeSelection(key: string) {
+    if (!active) return;
+    set({
+      selected: state.selected.filter(
+        entry => privateAnswerReferenceKey(entry.reportId, entry.requirementId, entry.citationId) !== key,
+      ),
+    });
+  }
+
+  async function persist(taskId: string, expectedRevision: number, overServer: boolean): Promise<boolean> {
+    if (!active || state.saving) return false;
+    const problem = privateAnswerSaveProblem(state.text, state.selected.length);
+    if (problem) { set({ error: problem }); return false; }
+    const payload: PrivateAnswerSave = {
+      text: state.text,
+      references: state.selected.map(entry => ({
+        reportId: entry.reportId, requirementId: entry.requirementId, citationId: entry.citationId,
+      })),
+      expectedRevision,
+    };
+    const ticket = ++generation;
+    set({ saving: true, error: "", notice: "" });
+    try {
+      const saved = await apiDeps.saveDraft(taskId, payload);
+      if (!accepts(ticket)) return false;
+      set({
+        saving: false,
+        saved: { text: saved.text, revision: saved.revision, updatedAt: saved.updatedAt, references: saved.references },
+        conflict: false,
+        serverCopy: null,
+        notice: overServer
+          ? "已以本人编辑重新保存（使用服务器版本号）。"
+          : `已保存版本 ${saved.revision} · ${saved.updatedAt}。`,
+      });
+      return true;
+    } catch (error) {
+      if (!accepts(ticket)) return false;
+      if (error instanceof ApiError && error.status === 409) {
+        set({
+          saving: false,
+          conflict: true,
+          error: "",
+          notice: `${apiDeps.errorMessage(error)} 已保留你的编辑，未被覆盖。可读取服务器版本作对照；如确定以本人编辑为准，请再明确选择“以本人编辑重新保存”。`,
+        });
+      } else {
+        set({ saving: false, error: apiDeps.errorMessage(error) });
+      }
+      return false;
+    }
+  }
+
+  function save(taskId: string) {
+    return persist(taskId, state.saved?.revision ?? 0, false);
+  }
+
+  // 仅在用户明确选择“以本人编辑重新保存”后才使用对照读到的服务器 revision。
+  function saveOverServer(taskId: string) {
+    if (!state.conflict || !state.serverCopy) return Promise.resolve(false);
+    return persist(taskId, state.serverCopy.revision, true);
+  }
+
+  async function compareWithServer(taskId: string): Promise<boolean> {
+    if (!active || state.comparing) return false;
+    const ticket = ++generation;
+    set({ comparing: true, error: "" });
+    try {
+      const draft = await apiDeps.getDraft(taskId);
+      if (!accepts(ticket)) return false;
+      if (draft === null) {
+        set({ comparing: false, notice: "服务器上尚无已保存草稿；你的编辑仍保留，未被覆盖。" });
+        return true;
+      }
+      set({
+        comparing: false,
+        serverCopy: draft,
+        notice: "已读取服务器版本作对照；未覆盖你的编辑。要以服务器为准请点“重读已保存草稿”，要以本人编辑为准请明确选择重新保存。",
+      });
+      return true;
+    } catch (error) {
+      if (accepts(ticket)) set({ comparing: false, error: apiDeps.errorMessage(error) });
+      return false;
+    }
+  }
+
+  async function copy(documentText: string, write: (text: string) => Promise<void>): Promise<boolean> {
+    if (!active || state.copying) return false;
+    if (!state.saved) { set({ notice: "尚无已保存草稿可复制；请先保存。" }); return false; }
+    if (privateAnswerIsDirty(state)) {
+      set({ notice: "有未保存编辑：预览与复制只包含已保存内容；请先保存草稿，再复制。" });
+      return false;
+    }
+    // 剪贴板写入不递增代际：不得让一次本地复制废弃仍在途的保存/读取回执。
+    const ticket = generation;
+    set({ copying: true, error: "", notice: "" });
+    try {
+      await write(documentText);
+      if (!accepts(ticket)) return false;
+      set({ copying: false, notice: "已复制到本机剪贴板；本草稿没有发送给企业。" });
+      return true;
+    } catch (error) {
+      if (!accepts(ticket)) return false;
+      set({ copying: false, error: `复制失败：${apiDeps.errorMessage(error)}；可重试或手动选择文本复制。` });
+      return false;
+    }
+  }
+
+  return {
+    activate() { active = true; },
+    clear() {
+      ++generation;
+      state = {
+        ...initialPrivateAnswerState,
+        phase: "ready",
+        notice: "页面已隐藏或切换身份：私人草稿状态已清除，未保存的修改已丢弃；恢复可见后将重新读取。",
+      };
+      if (active) publish(state);
+    },
+    dispose() { active = false; ++generation; },
+    load,
+    setText,
+    toggleReference,
+    removeSelection,
+    save,
+    saveOverServer,
+    compareWithServer,
+    copy,
+  };
+}
