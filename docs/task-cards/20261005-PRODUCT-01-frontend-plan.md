@@ -20,3 +20,13 @@
 - 后端最终协议字段确定后，任务卡另列允许的组件/helper/client/domain/tests及证据目录；服务0015迁移/生产重建须由Codex验证独立目标后执行，ZCode不自行迁移运行库。
 
 交付：前端/受影响回归、类型与生产构建（构建目录顺序使用）、原始页面步骤/截图/结果与未验项。Codex审查私有状态与复制边界、独立抽验后提交，不以单元测试替代页面。
+
+## 已核对API契约与拟定文件所有权（2026-10-06）
+
+后端已交棒，Codex独立SQLite两项通过、Ruff通过；PG独立复跑暂因Docker未运行失败，仍待恢复，不是完整签收。本卡仍未下发。
+
+后端：GET answer-draft返回data=null或{taskId,requirementId,text,references,revision,updatedAt,boundary}；references每项包含reportId/requirementId/citationId/available/snippet/filePath/lineStart/lineEnd/provenance。GET answer-draft/references返回data数组，除三重引用ID外含reportKind(base|target)/filePath/lineStart/lineEnd/provenance，不含snippet。PUT完整替换{text,references:[三重ID],expectedRevision}，首建0，409(code4240)冲突、422(code4241)来源不可用；最多6000字符/20引用，禁止额外字段。不存在草稿按revision0初始化。预览只展示保存响应的可用snippet，不伪造可选列表原文。
+
+允许新建jianli/src/components/PrivateAnswerDraft.tsx、jianli/src/lib/private-answer-workflow.ts、jianli/tests/private-answer-workflow.test.mjs；只在jianli/src/components/GrowthWorkspace.tsx接入独立组件，jianli/src/lib/api/client.ts增加三调用，jianli/src/lib/api/domain.ts增加新类型；新证据docs/evidence/20261006-PRODUCT-01-frontend/。不重写growth guard/分析/材料/岗位协议，不改后端、runner、认证、通知、企业回复、旧测试预期或正式清单。前端实装阶段不自行生产构建/重启/迁移共享环境；类型与测试可跑，生产构建和页面运行等Codex安排独占目录时再执行。
+
+设计提示：GrowthWorkspace身份key已有user.id:id重建，但分析轮询setTask不能不断重建草稿。私有组件使用独立读写代际+编辑序号，保存期间允许继续编辑，旧回执只更新已存基线且不覆盖后来文字。隐藏时按本项目约定清私有状态，明确告知未保存内容会丢弃；恢复可见重新读取。冲突时读取服务端对照不等于授权覆盖，用户另点击明确保存才用新revision。引用key为reportId+requirementId+citationId，避免两个报告同citationId误合并。
