@@ -8,8 +8,10 @@ from app.core.database import get_session
 from app.models.identity import User
 from app.schemas.common import ApiResponse, success
 from app.schemas.evidence_growth import GrowthAnalyze, GrowthCreate, GrowthMaterials
+from app.schemas.growth_answer import AnswerDraftSave
 from app.services.analysis import execute_match_task
 from app.services.evidence_growth import EvidenceGrowthService
+from app.services.growth_answer import GrowthAnswerService
 from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
@@ -67,6 +69,37 @@ async def analyze(
             background_tasks, execute_match_task, UUID(result["analysisTaskId"])
         )
     return success(result)
+
+
+@router.get("/growth-tasks/{task_id}/answer-draft", response_model=ApiResponse[dict | None])
+async def get_answer_draft(
+    task_id: UUID,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await GrowthAnswerService(session).get(task_id, user))
+
+
+@router.put("/growth-tasks/{task_id}/answer-draft", response_model=ApiResponse[dict])
+async def save_answer_draft(
+    task_id: UUID,
+    payload: AnswerDraftSave,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await GrowthAnswerService(session).save(task_id, payload, user))
+
+
+@router.get(
+    "/growth-tasks/{task_id}/answer-draft/references",
+    response_model=ApiResponse[list[dict]],
+)
+async def list_answer_draft_references(
+    task_id: UUID,
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await GrowthAnswerService(session).selectable_references(task_id, user))
 
 
 @router.get(

@@ -10,6 +10,7 @@ from app.models.analysis import (
 )
 from app.models.audit import AuditLog
 from app.models.evidence_growth import EvidenceGrowthTask
+from app.models.growth_answer import GrowthAnswerDraft
 from app.models.identity import (
     Enterprise,
     EnterpriseMembership,
@@ -48,6 +49,7 @@ __all__ = [
     "EnterpriseMembership",
     "EvidenceSource",
     "EvidenceGrowthTask",
+    "GrowthAnswerDraft",
     "InterviewAnswer",
     "InterviewSession",
     "Job",

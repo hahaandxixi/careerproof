@@ -1,0 +1,2 @@
+31a99446089a37eca18d38b1a37e8b386a5737fc0cf10126df45d22400caa7d8 *app/services/growth_answer.py
+c9199669bad8d8f9a42a98720cf249111d0f388c3745f360c99a8849860f8132 *app/tests/test_growth_answer.py
