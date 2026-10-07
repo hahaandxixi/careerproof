@@ -29,3 +29,9 @@ ZCode是下列实现/测试及专属cp_test夹具唯一写入者；Codex只读�
 必须真实独立子进程+mock提供商+专属PG四窗口硬停（不是仅抛异常/取消协程）：发送意图commit后至HTTP前；HTTP返回后至收据commit前；收据commit后至账目commit前；账目commit后至任务终结前。父进程持有child句柄，PID/创建时间/随机nonce/专属fixture全核对后才能Stop/kill；禁止杀服务或其他进程。每窗记录已发送HTTP计数、持久行/状态、恢复前后ledger数/可信值、任务结果不复活。unknown窗口保持unknown，可信窗口恢复一次，恢复不重发HTTP。若实现限制使某窗口无法可靠控制，报告具体缺口而不是换成更容易的mock断言。
 
 源码hash、命令/完整原始输出/退出码、PG schema身份及清理仅专属schema、四窗安全身份和数据断言、自审发现进入证据文件；一屏交棒。工具可用时用review-agent只读自审。失败原文保留，不改预期掩盖产品错误。完成后停止写入，Codex独立复跑最高风险1–2项及安全diff审查、验证后本地提交。此阶段未签收前不让另一任务改同源码或共享数据库。
+
+## Codex追加边界复核（同日，仍同一实现范围）
+
+- usageKnown在durable模式必须来自持久attempt的可信收据覆盖情况，不继续仅all(provider.usage_records.usage_present)。例如cache>prompt的新严格收据判未知，而旧_capture_usage只校验prompt/completion，会误显示已知；物理失败重试也不能因成功响应列表缺失该次而冒充全数已知。known partial与booked不同，查询/展示如实区分，新增针对此差异的回归。
+- test_b08_usage_accounting原stalled_authorized把任何lock=True当响应后检查。新增发送前短锁复查会使这个注入错误地卡住第一次HTTP。按真实阶段（如handler已确实应答的事实）适配测试，不为了旧fixture把发送前授权锁或终结复查删除。
+- 本进程明确观察到某次物理HTTP尝试异常结束后，可按该attempt身份持久unknown原因；另一对账进程只看到慢活任务的in_flight不能据TTL抢判未知。区分物理attempt结束与整个父task仍活跃，后续重试独立身份，不共用未知收据。
