@@ -23,4 +23,4 @@
 - 受影响目标：新durable_matching、real_matching、ai_evidence_workflow、report_input_budget、report_history/persisted_history；先目标/受影响，阶段再全后端。PG仅随机自有cp_test schema，create_all(checkfirst=False)，写入前核对current_schema和每张被使用表namespace，结束仅清理自有schema。
 - 每次失败单独.raw.out不覆盖；保存命令/退出码/完整输出/hash/自审/未验证项，一屏终态交棒后停止写入。Codex随后全文风险审查并独立复跑最高风险项。
 
-默认Start Plan免费Flash/高。只读本卡与所需源码，直接落测试，避免全仓重复调研。不得自行切个人套餐；禁止真实模型/外发/.env/业务库/closure/public服务重启/Git提交推送/依赖安装/历史清理。共用预算预留尚未实施，不能把本批通过称为两链统一日预算已完成。
+本卡使用现场可用的Start Plan免费Flash/最高；用户2026-10-07明确允许免费模型在有助效率时开最高，本批属于复杂实现。默认模型顺序仍为免费GLM-5.3→免费Flash→个人GLM-5.3，发送前核对组别，不能把最高等同于个人套餐或效率必然提升。只读本卡与所需源码，直接落测试，避免全仓重复调研。不得自行切个人套餐；禁止真实模型/外发/.env/业务库/closure/public服务重启/Git提交推送/依赖安装/历史清理。共用预算预留尚未实施，不能把本批通过称为两链统一日预算已完成。
