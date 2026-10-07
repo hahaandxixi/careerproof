@@ -1,0 +1,8 @@
+{
+  "run": "s8-invalid-reference-2026-10-07T01-59-17-325Z",
+  "onlyAvailableAndSnippetModified": true,
+  "referenceIdentityUnchanged": true,
+  "textAndRevisionUnchanged": true,
+  "serverWasAvailable": true,
+  "injectionIsNotServerDrift": true
+}

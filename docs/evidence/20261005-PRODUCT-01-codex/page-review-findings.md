@@ -37,3 +37,8 @@
 - S6b `14-45-35` 同浏览器实际退出/登录A2后旧拦截已失效（interception-invalid-after-context-destroyed）。证明导航销毁旧回执且未泄漏，不证明旧回执已交付新组件；两账号显示名相同，传智杯15补真实/auth/me ID。
 - S7 runner变量名sameJob/crossJob反了且按可选结果选案例，不能单靠名字作边界证明。Codex另跑 [reference-scope-readonly.py](reference-scope-readonly.py)，REPEATABLE READ/READ ONLY，实际报告jobId、原requirementId、目标条目与服务端选项逐项核对：[原始输出](reference-scope-readonly.raw.json)。材料任务225fa32f为同岗位，基准2/目标3引用都关联87278d08；同时换任务15c7f81f为跨岗位，目标无原要求a40b5bbc、可选目标0而基准3。与页面S7实际原要求图/解释一致，后续runner自审应纠正误导命名。
 - S8旧14在修正checkbox/断言后尚未运行就因额度停止，S9未实施；新传智杯15已工作中且为唯一夹具写入者。独立页面抽验及最终不变量仍等待交棒。
+
+### S8接续实测与免费套餐现场变化
+
+- 传智杯15新run `s8-invalid-reference-2026-10-07T01-59-17-325Z` 实际11项断言通过、Chrome退出0。Codex比较原始与注入两份完整GET回执：[比较结果](s8-receipt-comparison.raw.json)，仅首条引用available改false/snippet改null，三元身份、正文和revision保持，服务端原文仍有效。已实际查看降级预览下半图：单列“已失效引用”，不含失效原文；模拟clipboard内容等于预览。实际取消该checkbox并显式保存后目标三元组移除，正文保留。此run真实409核对用既有已完成任务，未创建专用失效任务；拒绝前后冻结绑定相同。网络注入不是服务端真实漂移，独立重跑仍待交棒。
+- 2026-10-07用户提供新额度截图后，Codex实际打开模型菜单：Start Plan“免费”组GLM-5.3-Flash已勾选，个人BigModel组另列；本任务仍工作中，S9继续，标题旧“个人GLM-5.3”不代表现行组别。截图额度100%/10月8日，上下文7.6万/100万与额度是不同指标；上午“暂无体验套餐”的旧现场已失效，不据此继续耗个人计划。当前免费组无GLM-5.3菜单项，仅Flash。
