@@ -1,0 +1,100 @@
+{
+  "database": "cp_e2e_closure-20261005",
+  "readOnly": true,
+  "tables": {
+    "applications": {
+      "rows": 3,
+      "sha256": "e756055103ceebec78b3b75c0afbeedb9a449505f8fdcc2ca414aaae429cca96"
+    },
+    "application_events": {
+      "rows": 9,
+      "sha256": "f91215fe173b911ef6861cde0f6e885723209d9405d497f35b0ad9b5da81066e"
+    },
+    "notifications": {
+      "rows": 12,
+      "sha256": "a99e8cd3e77dc6569fcd7366c205422e40b203057e0bd3b50317e3b450ae6a16"
+    },
+    "ai_usage_logs": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "analysis_tasks": {
+      "rows": 13,
+      "sha256": "f08c02d79306ef0109f186d63d0a07cf4518e63925bbc420184ce8aa0f597570"
+    },
+    "match_reports": {
+      "rows": 9,
+      "sha256": "08cb2090d9b16919cab846ac3a05d9052486ad06f6219fd9bb4609d6bd661bfd"
+    }
+  },
+  "fixedGrowth": {
+    "variantMaterialsTaskId": {
+      "sha256": "476a132c18950409dbcd1f83ab7037cb85aada8e5c77466d1f44f78cb22845d0"
+    },
+    "variantJobTaskId": {
+      "sha256": "7a1e6186ad7fa1e783c7f298dc5f7258f7ff2f28b028032fa3837d3d1cf79d56"
+    },
+    "variantBothTaskId": {
+      "sha256": "693805918003b9b3412b8304b4391af6ce6f7cbe400dddd080df1f0c15199362"
+    }
+  },
+  "fixedReports": {
+    "baseReportId": {
+      "report": {
+        "rows": 1,
+        "sha256": "4bc6b838592705e14c3f405b25cd78e355d95fd54d0992a5460cc8620ea02071"
+      },
+      "analysis": {
+        "rows": 1,
+        "sha256": "ca9fb4b32d4653775133ba60be7ca14d440cf120ec733e9f3f6bda57c732d96e"
+      },
+      "items": {
+        "rows": 1,
+        "sha256": "41bf09f811afc3abdbb800279a0a71201bee04e92e921497565cbf26c8eede02"
+      }
+    },
+    "reportR1": {
+      "report": {
+        "rows": 1,
+        "sha256": "1e24e7e6a9a2b36757e8f3760f6d4fd6c09e12ee28ea9ceeba544d744e9bded5"
+      },
+      "analysis": {
+        "rows": 1,
+        "sha256": "e7ec72d6bf9f787594fde933592f63a9e59ed96f33164ed66c0e0a34db770e3a"
+      },
+      "items": {
+        "rows": 1,
+        "sha256": "bdb7cee0e3c98214ffe960cf88a5741c72c48987a70cbfbc16b6ecfd2d95c5b2"
+      }
+    },
+    "reportR2": {
+      "report": {
+        "rows": 1,
+        "sha256": "9bfdf119632e89a3c079d03491e49240c671ec806e682d8bdfb365036231d333"
+      },
+      "analysis": {
+        "rows": 1,
+        "sha256": "7a4ce7acad8fa3923da1833955aae86bcb8a4fe4a13758ee9b230bbbd1819489"
+      },
+      "items": {
+        "rows": 2,
+        "sha256": "2702e936e56663ae9e645d1d99eb5d41b59958541caec6082329f0234304af37"
+      }
+    },
+    "reportR3": {
+      "report": {
+        "rows": 1,
+        "sha256": "f4db8215cf302d8c46ffa704b8c75e00ff4c663c4d8ef7782a621550146537be"
+      },
+      "analysis": {
+        "rows": 1,
+        "sha256": "c675295c556beb5af12afb2f3fd3e7f60f4dfcb87180d3ef45dfde8260b6a90f"
+      },
+      "items": {
+        "rows": 1,
+        "sha256": "ba2ef808854280a77becfd807312057a4211aa373170f3ea26495a60a43aa3ed"
+      }
+    }
+  },
+  "migration": "0015_growth_answer_drafts"
+}
