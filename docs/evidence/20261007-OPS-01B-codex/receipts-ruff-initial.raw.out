@@ -1,0 +1,10 @@
+E501 Line too long (119 > 100)
+  --> backend\app\tests\test_attempt_receipts.py:89:101
+   |
+87 |     changed = parse_usage_receipt(payload(prompt_tokens=12, completion_tokens=6))
+88 |     assert first.response_digest != changed.response_digest
+89 |     assert first.response_digest == parse_usage_receipt(payload(prompt_tokens=12, completion_tokens=5)).response_digest
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+   |
+
+Found 1 error.
