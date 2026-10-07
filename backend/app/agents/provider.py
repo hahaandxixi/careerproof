@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import re
 import tokenize
 from collections.abc import Awaitable, Callable
@@ -40,6 +41,7 @@ class UsageRecord(NamedTuple):
 
 
 EVIDENCE_PROMPT_VERSION = "evidence-trust-v29-implementation-first-plan"
+logger = logging.getLogger(__name__)
 
 _EXTERNAL_TEXT_REDACTIONS = (
     (re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"), "[已脱敏邮箱]"),
@@ -208,6 +210,10 @@ class ProviderOutputBudgetError(ValueError):
 
 class ProviderOutputTruncatedError(ValueError):
     """The provider stopped at its output limit before returning valid JSON."""
+
+
+class ProviderReceiptPersistenceError(RuntimeError):
+    """A received response cannot be exposed before its receipt is durable."""
 
 
 def evidence_policy() -> str:
@@ -468,6 +474,20 @@ class OpenAICompatibleProvider:
         self.input_preflights: list[dict] = []
         self.last_finish_reason: str | None = None
         self.json_repair_count = 0
+        # Optional durable observer is server-bound to one task and claim.
+        # Legacy/offline callers keep the original API and do not write facts.
+        self.durable_observer = None
+
+    @staticmethod
+    async def _durable_failure(observer, attempt_id, reason):
+        if observer is None or attempt_id is None:
+            return
+        try:
+            await observer.on_failure(attempt_id, reason)
+        except Exception as exc:
+            # Keep the original HTTP/cancel failure; an in-flight durable row
+            # remains available for reconciliation if this write fails.
+            logger.warning("Attempt failure persistence failed (%s)", type(exc).__name__)
 
     async def _notify(self, message: str) -> None:
         if self.progress_callback:
@@ -525,6 +545,11 @@ class OpenAICompatibleProvider:
         async with httpx.AsyncClient(timeout=self._timeout, transport=self._transport) as client:
             for attempt in range(1, self._max_attempts + 1):
                 response = None
+                observer = self.durable_observer
+                # This stays outside the retry catch: failed durable admission
+                # cannot fall through to HTTP or trigger an automatic resend.
+                attempt_id = await observer.before_send(request) if observer else None
+                physical_started = perf_counter()
                 try:
                     response = await client.post(
                         self._endpoint,
@@ -534,6 +559,24 @@ class OpenAICompatibleProvider:
                         },
                         json=request,
                     )
+                    if observer:
+                        try:
+                            receipt_payload = response.json()
+                        except (ValueError, TypeError):
+                            receipt_payload = {}
+                        # Persist receipt facts even for an HTTP error, before
+                        # raise_for_status or business message validation.
+                        try:
+                            await observer.after_response(
+                                attempt_id, receipt_payload,
+                                round((perf_counter() - physical_started) * 1000),
+                            )
+                        except Exception as exc:
+                            # A database/network failure here is not a failed
+                            # provider send and must never trigger another POST.
+                            raise ProviderReceiptPersistenceError(
+                                "Provider receipt persistence failed"
+                            ) from exc
                     if response.status_code not in {429, 500, 502, 503, 504}:
                         response.raise_for_status()
                         return response.json(), round((perf_counter() - started) * 1000)
@@ -542,8 +585,17 @@ class OpenAICompatibleProvider:
                         request=response.request,
                         response=response,
                     )
+                    await self._durable_failure(observer, attempt_id, "provider_http_error")
+                except asyncio.CancelledError:
+                    await self._durable_failure(observer, attempt_id, "cancelled")
+                    raise
                 except (httpx.TimeoutException, httpx.NetworkError) as exc:
                     last_error = exc
+                    await self._durable_failure(
+                        observer, attempt_id,
+                        "provider_timeout" if isinstance(exc, httpx.TimeoutException)
+                        else "provider_network",
+                    )
                 if attempt < self._max_attempts:
                     delay = self._retry_delay(response, attempt)
                     await self._notify(
