@@ -1,3 +1,9 @@
+from app.models.ai_budget import (
+    AiBudgetAdjustment,
+    AiBudgetCutover,
+    AiBudgetReservation,
+    AiDailyBudget,
+)
 from app.models.ai_request_attempt import AiRequestAttempt
 from app.models.analysis import (
     AgentStep,
@@ -41,6 +47,10 @@ from app.models.recruitment import (
 
 __all__ = [
     "AgentStep",
+    "AiBudgetAdjustment",
+    "AiBudgetCutover",
+    "AiBudgetReservation",
+    "AiDailyBudget",
     "AiRequestAttempt",
     "AiUsageLog",
     "AnalysisTask",
