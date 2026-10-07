@@ -6,7 +6,11 @@
 2. **完整规划链路必须实际发生。** 首次handler写“Planning (if reached)”并只要求`len(calls)>=3`，允许仅analysis(429→成功)+repair就通过，不能证明规划→分析→repair各自的物理请求均接入。需通过确实可补取的材料或授权历史fixture触发规划，明确断言planning实际发送的step/顺序/次数、503 unknown仍留存及该错误没有ledger；分析429的可信usage必须照实记入。另加多轮规划场景或明确独立测试，不能只从calls推导expected再和自身比。
 3. **准确验证消费事实。** 首次ledger断言最后一个input_tokens>=0较弱；应按已知固定usage逐个核对seq的input/output/cache、partial总量，明确没有旧聚合行及不重复记账。known-only与混入unknown两个场景分别断言usageKnown/usageBooked，真实零usage与缺失usage不得混为一谈。
 4. **隔离guard覆盖所有实际使用表。** 首次fixture虽create_all(checkfirst=False)已避免public旧表遮蔽，但逐表namespace断言只列7张表；注册、组织/岗位、材料上传还使用其他表。按创建/实际使用的表集合检查namespace，并先于任何seed/注册/上传；knowledge_chunks仍排除且不得调用其查询。失败finally清理只删除自身随机schema。
+5. **新鲜材料检查不得比原resolve_materials弱。** 22:45后analysis.py新增`_materials_still_frozen`只比较owner/id/version/hash；原resolve_materials还要求ResumeVersion.parse_status和ProjectVersion.analysis_status为completed。补完成状态、明确只允许resume/project kind，并冻结实际选择字段resumeVersionId/projectVersionIds及授权历史来源previousReportId/usePreviousReport；不能只对job/materials列表相等就忽略固定选择/历史来源字段已被替换。单独失效测试证明下一次实际发送为0，已有费用仍结清。
+6. **等待HTTP期间授权失效不得发布新报告。** 当前进行中实现只有每次发送前authorize，回包后仍直接finish_task CAS；要用新鲜owner/材料/固定绑定校验再进入报告终结短事务，保留CAS。故障注入停用owner或改变材料归属/完成状态：已实际发送的可信消费照实book，但不能凭发送前一次授权发布新报告；已有企业固定投递仍不变。纯Task旧run CAS测试不能替代这个授权失效场景。
 
 其余任务卡要求仍完整有效：解析/引用降级、取消/租约/报告保存失败费用独立结清；book失败0额外HTTP；owner/材料/固定snapshot新鲜授权0发送；旧run无报告复活；legacy兼容及旧账目hash；历史loader HTTP期间主session无借用事务的专属PG探针。一次happy-path+重试测试不能替代这些门槛。交棒时提供实际红灯/修复/受影响PG与SQLite输出、退出码、自审及停止写入声明，Codex随后独立复验。
 
 当前UI工具连续人工输入保护，尚未确认将本审查消息发送给ZCode；不能把文件落盘当作对方已读取。恢复UI后只发送此文件路径与要点，不另起重复写入任务。后续以最终diff和新证据重新审核这些发现。
+
+后续只读证据：`red-sqlite-first.raw.out`真实3个HTTP/0attempt，说明首次用例没有规划请求；`green-sqlite-attempt1.raw.out`保留测试误用attempt.request_seq的失败，已改physical_sequence；`green-sqlite-attempt2.raw.out`1通过，但仍不能证明规划/unknown/剩余故障门槛。模型/工具元数据22:45和22:49均有新Edit/调用记录，19仍推进，不将旧索引running标志单独当活执行证明。只读观察器见`docs/evidence/20261007-OPS-01C-codex/observe_zcode.py`，不写ZCode数据库或发送消息。
