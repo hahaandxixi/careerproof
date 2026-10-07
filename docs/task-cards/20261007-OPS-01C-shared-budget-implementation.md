@@ -4,7 +4,7 @@
 
 ## 2026-10-08 已验证接续基线
 
-主匹配9b9080b已签收；Codex已实现并提交预算数据层66321f8，四模型/注册、0017、迁移测试与真实完整链证据见[检查点](../evidence/20261007-OPS-01C-codex/budget-schema-checkpoint.md)。0017是现行代码head，业务库未升级。不存在活动预算写入任务；传智杯20尚未成功发送。委派时接续现有模型/迁移，不重建或覆盖已验证成果；发现必要结构调整须附新增约束测试与迁移证据。下文服务/准入/恢复/授权/切换/硬停要求仍全部待实现。Codex独立反例见20261008-OPS-01C-budget-codex-review.md。
+主匹配9b9080b已签收；Codex已实现并提交预算数据层66321f8，四模型/注册、0017、迁移测试与真实完整链证据见[检查点](../evidence/20261007-OPS-01C-codex/budget-schema-checkpoint.md)。0017是现行代码head，业务库未升级。不存在活动预算写入任务；传智杯20尚未成功发送。委派时接续现有模型/迁移，不重建或覆盖已验证成果；发现必要结构调整须附新增约束测试与迁移证据。容量服务c270e57及SQLite13+1PG跳过/PG14已验证，见[服务检查点](../evidence/20261007-OPS-01C-codex/budget-service-checkpoint.md)。reserve/原日capacity/严格旧attempt接续/午夜transfer已有内核，不等于两链已接入；准入HTTP集成、恢复锁序、旧聚合审计/管理员激活/调整授权和真实硬停仍待实现。Codex独立反例见20261008-OPS-01C-budget-codex-review.md。
 
 ## Codex确定的容量模型
 
