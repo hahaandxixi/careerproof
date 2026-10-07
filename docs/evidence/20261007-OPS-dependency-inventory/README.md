@@ -9,7 +9,7 @@
 & './backend/.venv/Scripts/ruff.exe' check 'docs/evidence/20261007-OPS-dependency-inventory/collect_inventory.py'
 ```
 
-本次两个命令退出码0；采集108项Python安装分发元数据，Ruff通过。完整内容见[local-inventory.json](local-inventory.json)，重采前保留原快照/另存新批次，不把不同HEAD的结果混成同一现场。采集器只读取三份manifest和安装包元数据，不导入被检查依赖，不读取.env、存储业务文件或数据库。
+首次两个命令退出码0；采集108项Python安装分发元数据，Ruff通过。完整内容见[local-inventory.json](local-inventory.json)。采集器随后补入拒绝覆盖保护；已有快照时指定`--output local-inventory-下一批次.json`另存，默认文件存在会拒绝，不把不同HEAD的结果混成同一现场。采集器只读取三份manifest和安装包元数据，不导入被检查依赖，不读取.env、存储业务文件或数据库。
 
 | 本地依赖 | 安装版本 | 结论范围 |
 | --- | --- | --- |

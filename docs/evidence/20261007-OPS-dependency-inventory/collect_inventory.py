@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import importlib.metadata
 import json
@@ -12,7 +13,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-OUTPUT = Path(__file__).with_name("local-inventory.json")
 
 
 def sha256(path: Path) -> str:
@@ -90,8 +90,17 @@ def collect() -> dict:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", default="local-inventory.json", help="new JSON filename in this evidence directory")
+    arguments = parser.parse_args()
+    if Path(arguments.output).name != arguments.output or not arguments.output.endswith(".json"):
+        parser.error("output must be a JSON filename without directories")
+    output = Path(__file__).with_name(arguments.output)
+    if output.exists():
+        parser.error("snapshot already exists; choose a new --output filename to preserve evidence")
     inventory = collect()
-    OUTPUT.write_text(json.dumps(inventory, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {OUTPUT.relative_to(ROOT)}")
+    with output.open("x", encoding="utf-8") as destination:
+        destination.write(json.dumps(inventory, ensure_ascii=False, indent=2) + "\n")
+    print(f"Wrote {output.relative_to(ROOT)}")
     print(f"HEAD {inventory['head']}; {len(inventory['installedPythonDistributions'])} Python distributions")
     print("LOCAL INVENTORY ONLY; advisories, Docker and upgrade compatibility unverified")

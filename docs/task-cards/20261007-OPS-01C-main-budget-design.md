@@ -2,6 +2,8 @@
 
 2026-10-07。OPS-01B核验链已阶段签收37133e5；主匹配批准接口与文件范围见[主匹配实施卡](20261007-OPS-01C-main-implementation.md)。共用日预留/跨午夜仍为设计门槛，未实施。传智杯16/17/18已终态，本卡旧16所有权声明已失效；新的单写入者按当轮卡核对，不用准备卡代替完成。
 
+下一批具体容量模型、grant、锁序、旧0016 attempt接续和验收矩阵见[共用预算实施协议](20261007-OPS-01C-shared-budget-implementation.md)。先签收主匹配再发送该批；协议落盘不等于已启用预算。依赖公告审计的[本地版本盘点](../evidence/20261007-OPS-dependency-inventory/README.md)已准备，仅安装元数据与manifest/lock哈希，尚无当前漏洞/升级排序结论。
+
 ## 当前源码证据
 
 services/analysis.py:137的_daily_ai_budget用User FOR NO KEY UPDATE（SQLAlchemy的key_share=True、read=False）与已入账统计，会串行保护当前检查事务，但在事务释放后没有持久在途预留，不能阻止后续两任务同时进入HTTP；按AiUsageLog.created_at划日，硬停恢复后日期可能不同。execute_match_task在run_evidence_workflow后、终结报告事务才写聚合AiUsageLog；工作流自行get_ai_provider，调用规划/分析/定向修正及provider物理重试。task_lifecycle.finish_task按RUNNING+run_token CAS，旧run不能保存结果，此边界须保留。以上为本轮实际读码，未跑新的并发预算试验。
