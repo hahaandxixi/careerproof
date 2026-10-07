@@ -37,3 +37,7 @@ ZCode是下列实现/测试及专属cp_test夹具唯一写入者；Codex只读�
 - 本进程明确观察到某次物理HTTP尝试异常结束后，可按该attempt身份持久unknown原因；另一对账进程只看到慢活任务的in_flight不能据TTL抢判未知。区分物理attempt结束与整个父task仍活跃，后续重试独立身份，不共用未知收据。
 
 - 锁语义勘误：本机with_for_update(key_share=True)、read=False实际渲染FOR NO KEY UPDATE，见Codex lock-clause-compile.raw.json，不是共享KEY SHARE。发送前User短锁保留NO KEY UPDATE，避免用更强FOR UPDATE与撤回→通知User FK KEY SHARE形成循环；AnalysisTask身份短锁也优先NO KEY UPDATE，与新账目FK检查兼容，仍对claim状态更新互斥。Application授权锁仍新鲜串行且在HTTP前提交释放。必须实际PG验证撤回与准入/账目并发，不靠参数名或文档断言冒充通过。
+
+## 2026-10-07 当前执行归属覆盖
+
+原传智杯16已停止且未写源码。原整体范围与四硬停门槛继续有效；文件所有权以[模型迁移交接卡](20261007-OPS-01B-schema-handoff.md)为准：ZCode17仅模型、0016、两schema/迁移测试及证据；Codex持有receipts/provider/attempt service/核验接入及各自测试。数据库fixture当前仅17写，正式交棒后再独立复验。provider相关74项离线Mock已通过c8286ab；这不等于数据库事务或硬停验收通过。
