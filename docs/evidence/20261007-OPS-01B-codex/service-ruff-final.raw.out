@@ -1,0 +1,12 @@
+E501 Line too long (103 > 100)
+  --> app\tests\test_durable_attempt_service.py:55:101
+   |
+53 |                 for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+54 |                     assert await connection.scalar(text(
+55 |                         "SELECT n.nspname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace "
+   |                                                                                                     ^^^
+56 |                         "WHERE c.oid=to_regclass(:table)"
+57 |                     ), {"table": table}) == schema
+   |
+
+Found 1 error.

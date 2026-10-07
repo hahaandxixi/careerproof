@@ -1,0 +1,16 @@
+
+=================================== ERRORS ====================================
+________ ERROR collecting app/tests/test_ai_request_attempt_schema.py _________
+ImportError while importing test module 'D:\jbcode\web ai\jianli\backend\app\tests\test_ai_request_attempt_schema.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_ai_request_attempt_schema.py:13: in <module>
+    from app.models.analysis import AiRequestAttempt, AiUsageLog, AnalysisTask
+E   ImportError: cannot import name 'AiRequestAttempt' from 'app.models.analysis' (D:\jbcode\web ai\jianli\backend\app\models\analysis.py)
+=========================== short test summary info ===========================
+ERROR app/tests/test_ai_request_attempt_schema.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.59s

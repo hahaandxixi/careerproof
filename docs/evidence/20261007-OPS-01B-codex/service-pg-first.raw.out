@@ -1,0 +1,689 @@
+FFFFFFF.......................................................           [100%]
+================================== FAILURES ===================================
+________ test_recovery_books_receipt_once_without_restoring_old_result ________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:89: in test_recovery_books_receipt_once_without_restoring_old_result
+    attempt_id = await sent(service)
+                 ^^^^^^^^^^^^^^^^^^^
+app\tests\test_durable_attempt_service.py:75: in sent
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('ad3f7e25-ae18-4390-b993-55de85c1037d'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+_______________ test_late_receipt_can_settle_unknown_old_claim ________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:107: in test_late_receipt_can_settle_unknown_old_claim
+    attempt_id = await sent(service)
+                 ^^^^^^^^^^^^^^^^^^^
+app\tests\test_durable_attempt_service.py:75: in sent
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('783966e9-907d-477e-8855-e1246d8f6790'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+_____________ test_no_receipt_is_unknown_and_never_a_zero_ledger ______________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:118: in test_no_receipt_is_unknown_and_never_a_zero_ledger
+    await sent(service)
+app\tests\test_durable_attempt_service.py:75: in sent
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('c62df8e8-010f-4a69-a991-e5956e9bb008'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+_______ test_prepared_unsent_is_closed_without_billing_after_claim_loss _______
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:130: in test_prepared_unsent_is_closed_without_billing_after_claim_loss
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('8cba4341-d558-4da5-8491-a173c2888727'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+________ test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts ________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:142: in test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts
+    attempt_id = await sent(service)
+                 ^^^^^^^^^^^^^^^^^^^
+app\tests\test_durable_attempt_service.py:75: in sent
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('14bfe0b5-81c0-4232-ad5d-11d3f16d8a0d'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+____________ test_legacy_claim_cannot_switch_to_attempt_accounting ____________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column "attempt_id" of relation "ai_usage_logs" does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column "attempt_id" of relation "ai_usage_logs" does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:165: in test_legacy_claim_cannot_switch_to_attempt_accounting
+    await session.commit()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:1014: in commit
+    await greenlet_spawn(self.sync_session.commit)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2032: in commit
+    trans.commit(_to_root=True)
+<string>:2: in commit
+    ???
+.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:1313: in commit
+    self._prepare_impl()
+<string>:2: in _prepare_impl
+    ???
+.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:1288: in _prepare_impl
+    self.session.flush()
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4345: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4480: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4441: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column "attempt_id" of relation "ai_usage_logs" does not exist
+E   [SQL: INSERT INTO ai_usage_logs (analysis_task_id, model, input_tokens, output_tokens, cache_hit_tokens, unit_price_snapshot, cost_rmb, latency_ms, run_token, request_seq, attempt_id, id, created_at, updated_at) VALUES ($1::UUID, $2::VARCHAR, $3::INTEGER, $4::INTEGER, $5::INTEGER, $6::JSON, $7::NUMERIC(12, 6), $8::INTEGER, $9::UUID, $10::INTEGER, $11::UUID, $12::UUID, $13::TIMESTAMP WITH TIME ZONE, $14::TIMESTAMP WITH TIME ZONE)]
+E   [parameters: (UUID('bfd7151a-982c-433a-9bbf-f030602d9be8'), 'deepseek-flash', 7, 2, 0, '{}', Decimal('0'), 3, UUID('eeaa4ed3-7ad8-4279-8d51-925e55e40b07'), 1, None, UUID('f74e4ffe-0f77-448e-918e-ce1382a8a39b'), datetime.datetime(2026, 10, 7, 9, 21, 8, 874818, tzinfo=datetime.timezone.utc), datetime.datetime(2026, 10, 7, 9, 21, 8, 874818, tzinfo=datetime.timezone.utc))]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+________________ test_invalid_persisted_receipt_is_not_booked _________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:521: in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:768: in _prepare
+    prepared_stmt = await self._connection.prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:635: in prepare
+    return await self._prepare(
+.venv\Lib\site-packages\asyncpg\connection.py:653: in _prepare
+    stmt = await self._get_statement(
+.venv\Lib\site-packages\asyncpg\connection.py:432: in _get_statement
+    statement = await self._protocol.prepare(
+asyncpg\\protocol\\protocol.pyx:165: in prepare
+    ???
+E   asyncpg.exceptions.UndefinedColumnError: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+
+The above exception was the direct cause of the following exception:
+app\tests\test_durable_attempt_service.py:172: in test_invalid_persisted_receipt_is_not_booked
+    attempt_id = await sent(service)
+                 ^^^^^^^^^^^^^^^^^^^
+app\tests\test_durable_attempt_service.py:75: in sent
+    attempt_id = await service.prepare(estimated_input_tokens=100, max_output_tokens=20)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:90: in prepare
+    legacy = await session.scalar(select(AiUsageLog.id).where(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:519: in scalar
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2413: in scalar
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2251: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:306: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1419: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:526: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1641: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2355: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:951: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:580: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:558: in _prepare_and_execute
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _handle_exception
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:792: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column ai_usage_logs.attempt_id does not exist
+E   [SQL: SELECT ai_usage_logs.id 
+E   FROM ai_usage_logs 
+E   WHERE ai_usage_logs.run_token = $1::UUID AND ai_usage_logs.attempt_id IS NULL 
+E    LIMIT $2::INTEGER]
+E   [parameters: (UUID('4979df8d-b1bc-4b31-b8a4-9d698cf84f5c'), 1)]
+E   (Background on this error at: https://sqlalche.me/e/20/f405)
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_durable_attempt_service.py::test_recovery_books_receipt_once_without_restoring_old_result
+FAILED app/tests/test_durable_attempt_service.py::test_late_receipt_can_settle_unknown_old_claim
+FAILED app/tests/test_durable_attempt_service.py::test_no_receipt_is_unknown_and_never_a_zero_ledger
+FAILED app/tests/test_durable_attempt_service.py::test_prepared_unsent_is_closed_without_billing_after_claim_loss
+FAILED app/tests/test_durable_attempt_service.py::test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts
+FAILED app/tests/test_durable_attempt_service.py::test_legacy_claim_cannot_switch_to_attempt_accounting
+FAILED app/tests/test_durable_attempt_service.py::test_invalid_persisted_receipt_is_not_booked
+7 failed, 55 passed, 5 warnings in 46.01s

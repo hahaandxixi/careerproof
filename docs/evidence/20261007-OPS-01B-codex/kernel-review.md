@@ -1,0 +1,17 @@
+# OPS-01B kernel integration checkpoint — 2026-10-07
+
+This is a verified implementation checkpoint, not four-window hard-stop signoff.
+
+Commands: backend `.venv/Scripts/python.exe -u -m pytest`, `-q --tb=short -p no:cacheprovider`, own basetemp, files `test_durable_attempt_service.py`, `test_application_verification.py`, `test_b08_usage_accounting.py`. PG runs explicitly set CAREERPROOF_TEST_DATABASE_URL to local synthetic development PostgreSQL. All provider calls use httpx.MockTransport; no real DeepSeek.
+
+- Offline receipt/provider regression: 74 passed; c8286ab, full output provider-hooks-unsandboxed.raw.out. Windows sandbox initially hung in asyncio local socketpair initialization; approved unsandboxed execution passed. This is separate from model HTTP behavior.
+- ZCode17 schema/migration independently rerun: 17 passed, schema-independent-pg.raw.out; 3be0247. Original ZCode evidence logs are retained separately; ZCode disclosed overwritten intermediate failures in its summary.
+- Kernel first SQLite: 7 failed/50 passed/5 skipped, service-sqlite-first.raw.out. Cancellation injection incorrectly treated every lock=True as post-response; changed to require the mock HTTP handler having answered. Six old assertions expected fake zero display for missing/invalid usage; durable mode now uses None/usageKnown=False. Fresh pre-send authorization was preserved.
+- Kernel final SQLite: 57 passed/5 PG-only skipped, service-sqlite-final.raw.out. Final isolated fixture with FK enforcement: 7 passed, service-sqlite-guard.raw.out.
+- Kernel first PG: 7 failed/55 passed, service-pg-first.raw.out. Root's new fixture used create_all(checkfirst=True), which found public legacy tables through search_path despite creating a dedicated schema. Root discovered this, inventoried exactly its seven synthetic users/tasks, and removed only those exact records in one transaction after checking all other referencing rows were zero. Evidence: fixture-public-inventory.raw.json and fixture-public-cleanup.raw.out. No claim that the first run was isolated; this incident is explicitly preserved.
+- Fixture fix: create_all(checkfirst=False), assert current_schema and every resolved table namespace before inserting any seed rows, enforce SQLite FKs, finally cleanup only owned cp_test UUID schema including setup failures.
+- Kernel final PG: 62 passed/zero skipped, service-pg-final.raw.out; includes stale claims, withdrawal and authorization, legacy/duplicate booking, late credible receipt, tampered receipt rejection and unknown totals. Final Ruff: service-ruff-final.raw.out.
+
+Durable receipt storage precedes business parsing. Receipt persistence failure is not a retryable provider send. Booking atomically links an attempt to a single ledger fact and marks it booked; reconciliation never sends HTTP or restores a business result. Existing legacy accounting remains for legacy callers; the new verification observer takes the durable branch only. Snapshot/claim and fresh authorization checks remain active, including after HTTP.
+
+Still required: actual four real child-process hard stops, repeat recovery and no extra HTTP proof, independent highest-risk replay; main matching all physical steps/retries and shared daily reservations/midnight admission; current official dependency advisory audit. No production migration, deployment, push, external model or paused P2 stash operation was performed.

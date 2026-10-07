@@ -29,6 +29,7 @@ from app.agents.provider import (
     ProviderInputBudgetError,
     ProviderOutputBudgetError,
     ProviderOutputTruncatedError,
+    ProviderReceiptPersistenceError,
     _redact_external_value,
     get_ai_provider,
 )
@@ -43,6 +44,12 @@ from app.models.recruitment import Application, Job, JobRequirement
 from app.schemas.application_verification import (
     ApplicationVerificationRequest,
     VerificationAnalysis,
+)
+from app.services.ai_request_attempts import (
+    MODE,
+    AttemptContext,
+    AttemptService,
+    DurableRequestObserver,
 )
 from app.services.analysis import _daily_ai_budget
 from app.services.jobs import JobService
@@ -445,6 +452,8 @@ class ApplicationVerificationService:
 
 
 def _failure_kind(exc):
+    if isinstance(exc, ProviderReceiptPersistenceError):
+        return "receipt_persistence_failed"
     if isinstance(exc, AppError):
         return "authorization_revoked"
     if isinstance(exc, ProviderInputBudgetError):
@@ -490,6 +499,11 @@ async def persist_verification_usage(session_factory, task_id: UUID, run_token: 
     without a parsable prompt/completion token pair stay display-only facts
     and never become ledger rows.
     """
+    observer = getattr(provider, "durable_observer", None)
+    if observer is not None:
+        # Physical attempt facts replace, rather than supplement, the legacy
+        # in-memory response sequence for this server-bound claim.
+        return await observer.service.reconcile()
     pending = [
         record
         for record in provider.usage_records
@@ -590,6 +604,21 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 if not isinstance(candidate, OpenAICompatibleProvider):
                     raise ValueError("External provider unavailable")
                 provider = candidate
+                async def authorize_attempt(attempt_session):
+                    current_item, current_context = await _authorized(
+                        attempt_session, UUID(saved["applicationId"]), task.created_by, lock=True
+                    )
+                    current = _binding(current_item, current_context, task.created_by)
+                    if current["cacheKey"] != saved["cacheKey"]:
+                        raise AppError("固定投递快照已变化", code=4096, status_code=409)
+
+                provider.durable_observer = DurableRequestObserver(AttemptService(
+                    session_factory,
+                    AttemptContext(task_id, task.created_by, token, "verification",
+                                   provider.name, provider.model),
+                    authorize=authorize_attempt,
+                ))
+                saved["usageAccountingMode"] = MODE
                 # Each new verification task makes at most one HTTP request.
                 # Built-in retries would otherwise resend withdrawn snippets
                 # after backoff without a new authorization check.
@@ -642,6 +671,9 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
         failure = failure or _failure_kind(exc)
         analysis = None
     usage = provider.combined_usage() if provider else None
+    durable_summary = None
+    if provider and provider.durable_observer is not None:
+        durable_summary = await provider.durable_observer.service.summary()
     usage_view = (
         {
             "inputTokens": usage.input_tokens,
@@ -652,6 +684,12 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
         if usage
         else None
     )
+    if durable_summary is not None:
+        # These are known partial sums when usageKnown=False, never a claimed
+        # zero total for an ambiguous physical request.
+        usage_view = {key: durable_summary[key] for key in (
+            "inputTokens", "outputTokens", "cacheHitTokens", "latencyMs",
+        )} if durable_summary["trustedReceiptCount"] else None
     status = (
         TaskStatus.CANCELLED
         if failure in {"authorization_revoked", "snapshot_changed"}
@@ -678,9 +716,12 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
             # A partial response sequence has an unknown total even when some
             # responses carried valid usage. This describes provider data, not
             # whether the independent ledger transaction committed.
-            "usageKnown": provider is not None
-            and bool(provider.usage_records)
-            and all(record.usage_present for record in provider.usage_records),
+            "usageKnown": durable_summary["usageKnown"] if durable_summary is not None else (
+                provider is not None and bool(provider.usage_records)
+                and all(record.usage_present for record in provider.usage_records)
+            ),
+            "usageBooked": durable_summary["usageBooked"] if durable_summary is not None else None,
+            "attemptSummary": durable_summary,
             "inputPreflights": list(provider.input_preflights) if provider else [],
             "providerFinishReason": provider.last_finish_reason
             if provider

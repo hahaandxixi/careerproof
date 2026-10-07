@@ -137,9 +137,9 @@ async def test_usage_survives_cancellation_after_response(case, monkeypatch):  #
     real_authorized = verification._authorized
 
     async def stalled_authorized(*args, **kwargs):
-        # Only the post-response lock=True recheck may stall: the pre-send
-        # authorization check must pass so the model call actually happens.
-        if kwargs.get("lock"):
+        # Durable admission also takes a fresh lock. Inject cancellation only
+        # after the synthetic HTTP handler actually returned a response.
+        if kwargs.get("lock") and handler_calls:
             final_recheck.set()
             await asyncio.wait_for(release.wait(), timeout=15)
         return await real_authorized(*args, **kwargs)
@@ -243,7 +243,9 @@ async def test_untrustworthy_usage_writes_no_ledger_row(case, monkeypatch, usage
     result = await case.result(started)
     assert result["status"] == "completed"
     assert await usage_rows(case.factory, started["taskId"]) == []
-    assert result["usage"] is not None
+    # Durable mode keeps missing/invalid receipt totals unknown rather than
+    # exposing a display-only zero as if it were a trustworthy response fact.
+    assert result["usage"] is None
     assert result["usageKnown"] is False
 
 
