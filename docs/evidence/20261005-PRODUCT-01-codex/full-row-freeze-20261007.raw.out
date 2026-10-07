@@ -1,0 +1,13 @@
+[1] info manifest :: db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e
+[2] pass manifest-mock-check
+[3] pass frontend-health :: GET /login -> 200
+[4] pass backend-health :: GET /api/v1/health -> 200 {"code":0,"message":"success","data":{"status":"ok","service":"CareerProof API","timestamp":"2026-10-07T02:35:19.746034Z"},"requestId":"8c2345b5-3608-45b6-b09f-11d056892b97"}
+[5] info port-owners :: {"3001":156840,"8001":147076}
+[6] pass process-identity :: live=[156840,147076] manifest=[143380,156840] matched=1
+[7] pass api-login :: userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student
+[8] pass backend-db-identity :: api own tasks=4 db own tasks=5 apiIdsInDb=true
+[9] pass completed-task-real-409 :: {"status":409,"code":4099}
+[10] pass full-task-row-unchanged
+[11] pass full-analysis-row-unchanged
+[12] pass full-report-row-unchanged
+overall: pass (D:\jbcode\web ai\jianli\docs\evidence\20261007-PRODUCT-01-pages\s9b-frozen-full-row-2026-10-07T02-35-19-717Z)

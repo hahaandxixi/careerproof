@@ -1,0 +1,77 @@
+{
+  "readOnlyInvariantComparison": {
+    "applications": true,
+    "application_events": true,
+    "notifications": true,
+    "ai_usage_logs": true,
+    "fixedGrowth": true,
+    "fixedReports": true,
+    "migration0015": true
+  },
+  "analysisRows": 14,
+  "reportRows": 10,
+  "validatedPageReceipts": {
+    "S1": {
+      "path": "20261006-PRODUCT-01-pages/s1-save-refresh-2026-10-06T14-15-57-271Z/results.json",
+      "overall": "pass"
+    },
+    "S2": {
+      "path": "20261006-PRODUCT-01-pages/s2-clear-explicit-save-2026-10-06T14-20-43-372Z/results.json",
+      "overall": "pass"
+    },
+    "S3": {
+      "path": "20261007-PRODUCT-01-pages/s3-save-inflight-edit-2026-10-07T02-36-34-723Z/results.json",
+      "overall": "pass"
+    },
+    "S4": {
+      "path": "20261007-PRODUCT-01-pages/s4-dual-window-409-2026-10-07T02-26-05-596Z/results.json",
+      "overall": "pass"
+    },
+    "S5": {
+      "path": "20261006-PRODUCT-01-pages/s5-network-error-2026-10-06T14-43-02-077Z/results.json",
+      "overall": "pass"
+    },
+    "S6": {
+      "path": "20261006-PRODUCT-01-pages/s6-identity-late-response-2026-10-06T14-35-35-925Z/results.json",
+      "overall": "pass"
+    },
+    "S6b": {
+      "path": "20261007-PRODUCT-01-pages/s6b-identity-switch-race-2026-10-07T02-22-45-376Z/results.json",
+      "overall": "pass"
+    },
+    "S7": {
+      "path": "20261007-PRODUCT-01-pages/s7-requirement-crossjob-2026-10-07T02-27-45-459Z/results.json",
+      "overall": "pass"
+    },
+    "S8": {
+      "path": "20261007-PRODUCT-01-pages/s8-invalid-reference-2026-10-07T01-59-17-325Z/results.json",
+      "overall": "pass"
+    },
+    "S9": {
+      "path": "20261007-PRODUCT-01-pages/s9-third-party-reference-2026-10-07T02-19-26-230Z/results.json",
+      "overall": "pass"
+    },
+    "S9b": {
+      "path": "20261007-PRODUCT-01-pages/s9b-frozen-full-row-2026-10-07T02-35-19-717Z/results.json",
+      "overall": "pass"
+    },
+    "S10": {
+      "path": "20261006-PRODUCT-01-pages/s10-preview-confirm-copy-2026-10-06T14-42-39-147Z/results.json",
+      "overall": "pass"
+    },
+    "S10native": {
+      "path": "20261007-PRODUCT-01-pages/s10-native-clipboard-2026-10-07T02-33-27-746Z/results.json",
+      "overall": "pass"
+    },
+    "S11": {
+      "path": "20261006-PRODUCT-01-pages/s11-viewport390-2026-10-06T14-25-10-129Z/results.json",
+      "overall": "pass"
+    },
+    "S12": {
+      "path": "20261006-PRODUCT-01-pages/s12-old-state-unchanged-2026-10-06T14-25-47-167Z/results.json",
+      "overall": "pass"
+    }
+  },
+  "productSourceMatchesSigned027069d": true,
+  "runnerSHA256": "ec42023a2d84073bb4932a244e527b908a9fcf4227564fe44a3159e77bd8bec5"
+}

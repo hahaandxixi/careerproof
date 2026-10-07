@@ -17,6 +17,7 @@
 // own ignored runtime under backend/.tmp/e2e-browser/<run>-private-answer.
 
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -35,8 +36,8 @@ const SCENARIOS = Object.freeze([
   "s1-save-refresh", "s2-clear-explicit-save", "s3-save-inflight-edit",
   "s3b-request-stage-delay", "s4-dual-window-409", "s5-network-error",
   "s6-identity-late-response", "s6b-identity-switch-race", "s7-requirement-crossjob",
-  "s8-invalid-reference", "s9-third-party-reference",
-  "s10-preview-confirm-copy", "s11-viewport390", "s12-old-state-unchanged",
+  "s8-invalid-reference", "s9-third-party-reference", "s9b-frozen-full-row",
+  "s10-preview-confirm-copy", "s10-native-clipboard", "s11-viewport390", "s12-old-state-unchanged",
 ]);
 
 // ---------------------------------------------------------------------------
@@ -286,11 +287,11 @@ async function processFact(pid, field) {
 }
 
 class Chrome {
-  constructor(label, { width = 1440, height = 900 } = {}) {
+  constructor(label, { width = 1440, height = 900, headless = true } = {}) {
     this.label = label;
     this.profileDir = path.join(RUNTIME_DIR, `profile-${label}-${RUN_STAMP}`);
     fs.mkdirSync(this.profileDir, { recursive: true });
-    this.width = width; this.height = height;
+    this.width = width; this.height = height; this.headless = headless;
     this.child = null; this.ws = null; this.port = null;
     this.nextId = 1; this.pending = new Map(); this.eventHandlers = [];
     this.closed = false;
@@ -299,12 +300,12 @@ class Chrome {
     const portFile = path.join(this.profileDir, "DevToolsActivePort");
     if (fs.existsSync(portFile)) fs.rmSync(portFile);
     this.child = spawn(CHROME, [
-      "--headless=new", "--remote-debugging-port=0",
+      ...(this.headless ? ["--headless=new"] : []), "--remote-debugging-port=0",
       `--user-data-dir=${this.profileDir}`,
       "--no-first-run", "--no-default-browser-check", "--disable-extensions",
       "--disable-sync", "--disable-gpu", "--disable-search-engine-choice-screen",
       "--remote-allow-origins=*", `--window-size=${this.width},${this.height}`, "about:blank",
-    ], { stdio: "ignore" });
+    ], { stdio: "ignore", windowsHide: this.headless });
     // Capture the OS-level creation time right after spawn: the force-kill
     // guard later requires PID + CreationDate + executable + unique profile to
     // all still match this run's own process.
@@ -2728,6 +2729,86 @@ async function scenarioThirdPartyReference(preflighted) {
     await browser.stop().catch(() => {});
   }
 }
+// Codex post-handoff smoke: use the unmodified Clipboard API and inspect
+// only a digest AFTER explicitly copying our own synthetic preview. No
+// permissions are granted, no prior clipboard contents/digests are recorded.
+async function scenarioNativeClipboard(preflighted) {
+  const { auth, tasks } = preflighted;
+  const target = await selectDraftTarget(auth, tasks);
+  const browser = new Chrome("native-clipboard", { headless: false });
+  await browser.launch();
+  try {
+    const tab = await browser.openTab();
+    await tab.enable();
+    await login(tab, CREDS.accounts.student);
+    const { baseline } = await openDraftWithBaseline(tab, target.task.id);
+    const marker = `PRODUCT01-NATIVE-CLIPBOARD-合成人工复制 ${new Date().toISOString()}`;
+    await tab.fillText({ tag: "textarea", attr: "id", attrValue: "private-answer-text" }, marker, { expectValue: marker });
+    await saveDraftAndAwait(tab, { expectRevision: baseline + 1 });
+    const nativeFacts = await tab.evalJs(`({ secureContext: window.isSecureContext, hasWriteText: typeof navigator.clipboard?.writeText === 'function', shimAbsent: !window.__e2eClipboard })`);
+    record({ name: "native-api-not-injected", status: nativeFacts.secureContext && nativeFacts.hasWriteText && nativeFacts.shimAbsent ? "pass" : "fail", detail: JSON.stringify(nativeFacts) });
+    await tab.click({ tag: "summary", text: "预览已保存草稿" }, { label: "open native-copy preview" });
+    const preview = await tab.evalJs(`(() => {
+      const section = Array.from(document.querySelectorAll('section')).find(s => s.querySelector('h2')?.textContent.includes('私人回答草稿'));
+      return section?.querySelector('details pre')?.textContent ?? null;
+    })()`);
+    if (!preview?.includes(marker)) throw new Error("native clipboard preview does not contain own synthetic marker");
+    await saveDraftPanelShots(tab, "native-preview-before-copy");
+    await tab.click({ tag: "button", text: "复制草稿（仅写入本机剪贴板）" }, { label: "explicit native copy" });
+    await tab.waitFor(`() => document.body.innerText.includes('已复制到本机剪贴板') || document.body.innerText.includes('复制失败')`, { timeoutMs: 15000, label: "native copy settles" });
+    const copied = await tab.evalJs(`document.body.innerText.includes('已复制到本机剪贴板') && !document.body.innerText.includes('复制失败')`);
+    record({ name: "native-copy-click-succeeds", status: copied ? "pass" : "fail" });
+    await saveDraftPanelShots(tab, "native-copy-outcome");
+    if (!copied) return;
+    const expectedHash = createHash("sha256").update(preview.replace(/\r\n/g, "\n"), "utf8").digest("hex");
+    const command = '$ErrorActionPreference="Stop"; $value=[string](Get-Clipboard -Raw); $value=$value.Replace("`r`n","`n"); $h=[Security.Cryptography.SHA256]::Create(); try { ($h.ComputeHash([Text.Encoding]::UTF8.GetBytes($value)) | ForEach-Object { $_.ToString("x2") }) -join "" } finally { $h.Dispose() }';
+    const actualHash = await new Promise((resolve, reject) => {
+      const child = spawn("powershell.exe", ["-STA", "-NoProfile", "-NonInteractive", "-Command", command], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
+      let output = "";
+      child.stdout.on("data", chunk => { output += chunk; });
+      child.stderr.resume();
+      child.on("error", reject);
+      child.on("close", code => code === 0 && /^[a-f0-9]{64}$/.test(output.trim()) ? resolve(output.trim()) : reject(new Error("OS clipboard digest check unavailable")));
+    });
+    const matches = actualHash === expectedHash;
+    record({ name: "os-clipboard-matches-own-preview", status: matches ? "pass" : "fail", detail: `matches=${matches}; unknown clipboard text/digest not emitted` });
+    saveJson("native-clipboard-summary", { nativeFacts, explicitClickSucceeded: copied, osClipboardMatchesPreview: matches, expectedSyntheticPreviewSHA256: expectedHash, simulatedClipboard: false, permissionsChanged: false });
+  } finally {
+    await browser.stop().catch(() => {});
+  }
+}
+
+async function scenarioFrozenFullRow(preflighted) {
+  const state = JSON.parse(fs.readFileSync(path.join(EVIDENCE_DIR, "s9-state.json"), "utf8"));
+  const taskId = state.s9TaskId;
+  if (!/^[a-f0-9-]{36}$/.test(taskId)) throw new Error("invalid dedicated synthetic task identity");
+  const { auth } = preflighted;
+  const detail = await auth.getJson(`/growth-tasks/${taskId}`);
+  if (!/^[a-f0-9-]{36}$/.test(detail.analysisTaskId)) throw new Error("dedicated task has no fixed analysis");
+  const status = await dbQuery(`SELECT status::text FROM analysis_tasks WHERE id='${detail.analysisTaskId}';`);
+  if (status.trim() !== "COMPLETED") throw new Error("full-row freeze check requires COMPLETED analysis");
+  const readRows = async () => ({
+    task: await dbQuery(`SELECT row_to_json(t)::text FROM evidence_growth_tasks t WHERE id='${taskId}';`),
+    analysis: await dbQuery(`SELECT row_to_json(t)::text FROM analysis_tasks t WHERE id='${detail.analysisTaskId}';`),
+    report: await dbQuery(`SELECT row_to_json(t)::text FROM match_reports t WHERE analysis_task_id='${detail.analysisTaskId}';`),
+  });
+  const before = await readRows();
+  const receipt = await auth.putStatus(`/growth-tasks/${taskId}/materials`, {
+    resumeVersionId: detail.materials.find(m => m.kind === "resume")?.id,
+    projectVersionIds: detail.materials.filter(m => m.kind === "project").map(m => m.id),
+    targetJobId: detail.targetJobId,
+  });
+  const after = await readRows();
+  record({ name: "completed-task-real-409", status: receipt.status === 409 && receipt.code === 4099 ? "pass" : "fail", detail: JSON.stringify(receipt) });
+  const hashes = {};
+  for (const key of ["task", "analysis", "report"]) {
+    const unchanged = before[key].length > 0 && before[key] === after[key];
+    record({ name: `full-${key}-row-unchanged`, status: unchanged ? "pass" : "fail" });
+    hashes[key] = { before: createHash("sha256").update(before[key]).digest("hex"), after: createHash("sha256").update(after[key]).digest("hex"), unchanged };
+  }
+  saveJson("full-row-freeze-summary", { taskId, analysisTaskId: detail.analysisTaskId, status, receipt, hashes, sqlWrites: 0 });
+}
+
 try {
   const preflighted = await preflight();
   if (SCENARIO === "s1-save-refresh") await scenarioSaveRefresh(preflighted);
@@ -2740,7 +2821,9 @@ try {
   else if (SCENARIO === "s7-requirement-crossjob") await scenarioRequirementCrossJob(preflighted);
   else if (SCENARIO === "s8-invalid-reference") await scenarioInvalidReference(preflighted);
   else if (SCENARIO === "s9-third-party-reference") await scenarioThirdPartyReference(preflighted);
+  else if (SCENARIO === "s9b-frozen-full-row") await scenarioFrozenFullRow(preflighted);
   else if (SCENARIO === "s10-preview-confirm-copy") await scenarioPreviewCopy(preflighted);
+  else if (SCENARIO === "s10-native-clipboard") await scenarioNativeClipboard(preflighted);
   else if (SCENARIO === "s4-dual-window-409") await scenarioDualWindow409(preflighted);
   else if (SCENARIO === "s11-viewport390") await scenarioViewport390(preflighted);
   else if (SCENARIO === "s12-old-state-unchanged") await scenarioOldStateUnchanged(preflighted);

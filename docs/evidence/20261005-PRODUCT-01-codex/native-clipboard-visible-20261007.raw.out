@@ -1,0 +1,27 @@
+[1] info manifest :: db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e
+[2] pass manifest-mock-check
+[3] pass frontend-health :: GET /login -> 200
+[4] pass backend-health :: GET /api/v1/health -> 200 {"code":0,"message":"success","data":{"status":"ok","service":"CareerProof API","timestamp":"2026-10-07T02:33:27.775341Z"},"requestId":"c055fb9f-cae2-46eb-ac05-88a8e903f7c6"}
+[5] info port-owners :: {"3001":156840,"8001":147076}
+[6] pass process-identity :: live=[156840,147076] manifest=[143380,156840] matched=1
+[7] pass api-login :: userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student
+[8] pass backend-db-identity :: api own tasks=4 db own tasks=5 apiIdsInDb=true
+[9] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4
+[10] info task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试 :: taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3
+[11] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3
+[12] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5
+[13] info chrome-launched :: native-clipboard port 58828
+[14] evidence screenshot:login-empty :: docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z\14-login-empty.png
+[15] pass login-ok :: /portfolio
+[16] pass draft-initial-get :: GET status=200 hasDraft=true baselineRevision=10
+[17] pass native-api-not-injected :: {"secureContext":true,"hasWriteText":true,"shimAbsent":true}
+[18] evidence screenshot:panel-native-preview-before-copy :: docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z\18-panel-native-preview-before-copy.png
+[19] info panel-visible:native-preview-before-copy :: viewport=1426x806 sectionTop=0 sectionHeight=1104
+[20] evidence screenshot:panel-native-preview-before-copy-lower :: docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z\20-panel-native-preview-before-copy-lower.png
+[21] pass native-copy-click-succeeds
+[22] evidence screenshot:panel-native-copy-outcome :: docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z\22-panel-native-copy-outcome.png
+[23] info panel-visible:native-copy-outcome :: viewport=1426x806 sectionTop=0 sectionHeight=1104
+[24] evidence screenshot:panel-native-copy-outcome-lower :: docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z\24-panel-native-copy-outcome-lower.png
+[25] pass os-clipboard-matches-own-preview :: matches=true; unknown clipboard text/digest not emitted
+[26] info chrome-stopped :: native-clipboard exitCode=0
+overall: pass (D:\jbcode\web ai\jianli\docs\evidence\20261007-PRODUCT-01-pages\s10-native-clipboard-2026-10-07T02-33-27-746Z)

@@ -1,0 +1,192 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s10-native-clipboard",
+  "startedAt": "2026-10-07T02:33:27.746Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:33:27.747Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:33:27.747Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:33:27.772Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:33:27.777Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:33:27.775341Z\"},\"requestId\":\"c055fb9f-cae2-46eb-ac05-88a8e903f7c6\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:33:27.802Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:33:27.802Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:33:27.869Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:33:28.424Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:33:28.452Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:33:28.467Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:33:28.497Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:33:28.511Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:33:29.336Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "native-clipboard port 58828"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:33:29.544Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\14-login-empty.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:33:31.816Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:33:32.589Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=10"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:33:34.094Z",
+      "name": "native-api-not-injected",
+      "status": "pass",
+      "detail": "{\"secureContext\":true,\"hasWriteText\":true,\"shimAbsent\":true}"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:33:34.891Z",
+      "name": "screenshot:panel-native-preview-before-copy",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\18-panel-native-preview-before-copy.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:33:34.891Z",
+      "name": "panel-visible:native-preview-before-copy",
+      "status": "info",
+      "detail": "viewport=1426x806 sectionTop=0 sectionHeight=1104"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:33:35.315Z",
+      "name": "screenshot:panel-native-preview-before-copy-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\20-panel-native-preview-before-copy-lower.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:33:35.699Z",
+      "name": "native-copy-click-succeeds",
+      "status": "pass"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:33:36.121Z",
+      "name": "screenshot:panel-native-copy-outcome",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\22-panel-native-copy-outcome.png"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:33:36.121Z",
+      "name": "panel-visible:native-copy-outcome",
+      "status": "info",
+      "detail": "viewport=1426x806 sectionTop=0 sectionHeight=1104"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:33:36.554Z",
+      "name": "screenshot:panel-native-copy-outcome-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\24-panel-native-copy-outcome-lower.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:33:36.812Z",
+      "name": "os-clipboard-matches-own-preview",
+      "status": "pass",
+      "detail": "matches=true; unknown clipboard text/digest not emitted"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:33:36.952Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "native-clipboard exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s10-native-clipboard-2026-10-07T02-33-27-746Z\\native-clipboard-summary.json"
+  ],
+  "finishedAt": "2026-10-07T02:33:36.952Z",
+  "overall": "pass"
+}

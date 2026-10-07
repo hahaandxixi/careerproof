@@ -1,0 +1,12 @@
+{
+  "nativeFacts": {
+    "secureContext": true,
+    "hasWriteText": true,
+    "shimAbsent": true
+  },
+  "explicitClickSucceeded": true,
+  "osClipboardMatchesPreview": true,
+  "expectedSyntheticPreviewSHA256": "0356ce329b7ad73c5a8b10a8692402d8f0327c328cf758bb6a5a1f41c3a4c154",
+  "simulatedClipboard": false,
+  "permissionsChanged": false
+}
