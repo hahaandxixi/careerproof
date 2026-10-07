@@ -4,7 +4,7 @@
 
 ## 当前源码证据
 
-services/analysis.py:137的_daily_ai_budget用User FOR KEY SHARE与已入账统计，并不能串行阻止两任务同时准入；按AiUsageLog.created_at划日，硬停恢复后日期可能不同。execute_match_task在run_evidence_workflow后、终结报告事务才写聚合AiUsageLog；工作流自行get_ai_provider，调用规划/分析/定向修正及provider物理重试。task_lifecycle.finish_task按RUNNING+run_token CAS，旧run不能保存结果，此边界须保留。以上为本轮实际读码，未跑新的并发预算试验。
+services/analysis.py:137的_daily_ai_budget用User FOR NO KEY UPDATE（SQLAlchemy的key_share=True、read=False）与已入账统计，会串行保护当前检查事务，但在事务释放后没有持久在途预留，不能阻止后续两任务同时进入HTTP；按AiUsageLog.created_at划日，硬停恢复后日期可能不同。execute_match_task在run_evidence_workflow后、终结报告事务才写聚合AiUsageLog；工作流自行get_ai_provider，调用规划/分析/定向修正及provider物理重试。task_lifecycle.finish_task按RUNNING+run_token CAS，旧run不能保存结果，此边界须保留。以上为本轮实际读码，未跑新的并发预算试验。
 
 ## 主匹配集成门槛
 
@@ -15,7 +15,7 @@ services/analysis.py:137的_daily_ai_budget用User FOR KEY SHARE与已入账统�
 
 ## 两链共用日容量协议
 
-1. 建user+Asia/Shanghai day唯一容量/准入记录，短事务用排他行锁和CAS，而不是仅key_share。首次物理发送前同时锁定日容量、稳定attempt，核对实际已知消费+尚未结清上界；所有核验和匹配入口用同一准入服务。未获准必须0HTTP。
+1. 建user+Asia/Shanghai day唯一容量/准入记录，短事务用排他行锁和CAS，明确区分NO KEY UPDATE与KEY SHARE，不把参数名直接当SQL锁模式。首次物理发送前同时锁定日容量、稳定attempt，核对实际已知消费+尚未结清上界；所有核验和匹配入口用同一准入服务。未获准必须0HTTP。
 2. 每个物理attempt预留sanitized messages保守input上界与max_tokens输出上界。report/task同一天的报告次数槽只占一次，不按重试增加次数；同任务多次规划/修正/重试的报告总上限同时计可信用量与未知预留，不能只看provider.combined_usage成功响应。
 3. 可信收据持久、账目幂等提交和容量结清统一锁序：user授权（若需要）→按日期升序的day容量→attempt→ledger。恢复先只读取得归属，再按此锁序复读；不能先锁attempt再反向锁day造成死锁。所有网络在事务外。
 4. 收据到达结算真实值、释放差额；超过保守预留的可信消费仍照实入账并标预算偏差、停止后续准入，不能为了保持预算数字拒记实际消费。重复恢复不能多退额、多扣账；received_unbooked不同时按实际和原上界双计。

@@ -9,3 +9,9 @@
 - 调查报告与命令日志已落盘；真实硬停/DB恢复/PG并发均仅设计。无实施授权下发，不动当前PRODUCT-01文件和数据库。
 
 下一门：先完成PRODUCT-01私人草稿验收；以本报告及原任务卡定有界OPS状态机/迁移卡，批准后才实现。当前Docker恢复仍影响PG实验。
+
+## 2026-10-07 锁语义勘误（实际编译验证）
+
+先前“User key_share”用词只引用了SQLAlchemy参数名，不能理解为FOR KEY SHARE。当前安装库实际把with_for_update(key_share=True)、read=False编译为FOR NO KEY UPDATE：[只读编译原始结果](../20261007-OPS-01B-codex/lock-clause-compile.raw.json)。当前检查事务确实串行用户行；预算缺口来自检查事务释放后没有持久在途预留，原修复方向不变。
+
+[PostgreSQL官方行锁文档](https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-ROWS)说明NO KEY UPDATE与KEY SHARE兼容。撤回持Application锁后可能插入企业通知而取User外键KEY SHARE；新发送前若先取User FOR UPDATE再等Application，可能形成反向等待。应保留与FK KEY SHARE兼容的User短锁，任务身份锁也避免不必要FOR UPDATE，具体并发路径仍须PG实测，本文不代替测试。

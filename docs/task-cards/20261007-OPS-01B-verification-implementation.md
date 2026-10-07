@@ -35,3 +35,5 @@ ZCode是下列实现/测试及专属cp_test夹具唯一写入者；Codex只读�
 - usageKnown在durable模式必须来自持久attempt的可信收据覆盖情况，不继续仅all(provider.usage_records.usage_present)。例如cache>prompt的新严格收据判未知，而旧_capture_usage只校验prompt/completion，会误显示已知；物理失败重试也不能因成功响应列表缺失该次而冒充全数已知。known partial与booked不同，查询/展示如实区分，新增针对此差异的回归。
 - test_b08_usage_accounting原stalled_authorized把任何lock=True当响应后检查。新增发送前短锁复查会使这个注入错误地卡住第一次HTTP。按真实阶段（如handler已确实应答的事实）适配测试，不为了旧fixture把发送前授权锁或终结复查删除。
 - 本进程明确观察到某次物理HTTP尝试异常结束后，可按该attempt身份持久unknown原因；另一对账进程只看到慢活任务的in_flight不能据TTL抢判未知。区分物理attempt结束与整个父task仍活跃，后续重试独立身份，不共用未知收据。
+
+- 锁语义勘误：本机with_for_update(key_share=True)、read=False实际渲染FOR NO KEY UPDATE，见Codex lock-clause-compile.raw.json，不是共享KEY SHARE。发送前User短锁保留NO KEY UPDATE，避免用更强FOR UPDATE与撤回→通知User FK KEY SHARE形成循环；AnalysisTask身份短锁也优先NO KEY UPDATE，与新账目FK检查兼容，仍对claim状态更新互斥。Application授权锁仍新鲜串行且在HTTP前提交释放。必须实际PG验证撤回与准入/账目并发，不靠参数名或文档断言冒充通过。

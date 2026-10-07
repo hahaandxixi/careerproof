@@ -1,0 +1,5 @@
+{
+  "query": "SELECT users.id \nFROM users \nWHERE users.id = %(id_1)s::UUID FOR NO KEY UPDATE",
+  "empiricalRenderedLock": "FOR NO KEY UPDATE",
+  "databaseConnectionsOrWrites": 0
+}
