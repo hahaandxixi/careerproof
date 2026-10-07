@@ -1,0 +1,26 @@
+{
+  "readOnly": true,
+  "database": "cp_e2e_closure-20261005",
+  "cases": {
+    "sameJob": {
+      "taskId": "225fa32f-9a21-4fd6-83a7-0af8b0815702",
+      "originalRequirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "baseJobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "targetJobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "targetHasOriginalRequirement": true,
+      "baseOptionCount": 2,
+      "targetOptionCount": 3,
+      "allOptionsUseOriginalRequirement": true
+    },
+    "crossJob": {
+      "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+      "originalRequirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+      "baseJobId": "aecc6a82-98c2-4fff-a81f-8f97d5af7371",
+      "targetJobId": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+      "targetHasOriginalRequirement": false,
+      "baseOptionCount": 3,
+      "targetOptionCount": 0,
+      "allOptionsUseOriginalRequirement": true
+    }
+  }
+}

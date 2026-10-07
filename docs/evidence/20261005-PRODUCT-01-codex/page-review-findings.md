@@ -29,3 +29,11 @@
 - S10尚未实现复制失败后恢复实现并再次人工点击成功；S8/S9仍待完成。ZCode“10/12场景已过”只是执行者报告，Codex未按此数字签收。
 
 所有失败原文保留；正在编辑的runner不由Codex同时修改。代码和证据在交棒后审查提交；当前正式手册空白行有用户修改，保持原样，不混入本审查提交。
+
+## 2026-10-07当前证据补充
+
+- S5 `14-43-02` 原始证据已核对三元引用身份失败前/人工重试后保持、一次失败PUT且无自动重试。
+- S10 `14-42-39` 已改为仅页面模拟clipboard。预览write次数0；明确点击才写，失败未增加写入，保留正文/预览，恢复实现再人工点击成功；390确认按钮实际可见可点，Codex已查看下半截图。此证据覆盖产品手动确认/失败恢复，不替代真实系统剪贴板测试。后续源码无grantPermissions实际调用。
+- S6b `14-45-35` 同浏览器实际退出/登录A2后旧拦截已失效（interception-invalid-after-context-destroyed）。证明导航销毁旧回执且未泄漏，不证明旧回执已交付新组件；两账号显示名相同，传智杯15补真实/auth/me ID。
+- S7 runner变量名sameJob/crossJob反了且按可选结果选案例，不能单靠名字作边界证明。Codex另跑 [reference-scope-readonly.py](reference-scope-readonly.py)，REPEATABLE READ/READ ONLY，实际报告jobId、原requirementId、目标条目与服务端选项逐项核对：[原始输出](reference-scope-readonly.raw.json)。材料任务225fa32f为同岗位，基准2/目标3引用都关联87278d08；同时换任务15c7f81f为跨岗位，目标无原要求a40b5bbc、可选目标0而基准3。与页面S7实际原要求图/解释一致，后续runner自审应纠正误导命名。
+- S8旧14在修正checkbox/断言后尚未运行就因额度停止，S9未实施；新传智杯15已工作中且为唯一夹具写入者。独立页面抽验及最终不变量仍等待交棒。
