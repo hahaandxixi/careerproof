@@ -1,0 +1,55 @@
+{
+  "partA": {
+    "attach": {
+      "status": 409,
+      "code": 4099
+    },
+    "rowBefore": "[{\"kind\": \"resume\", \"id\": \"c7dfb109-6234-49cc-9d65-a06b8a9729bc\", \"title\": \"E2E\\u5b66\\u751f\\u8865\\u8bc1\\u7b80\\u5386\\uff08\\u5408\\u6210v2\\uff09\", \"versionNumber\": 1, \"contentHash\": \"cdd09b29545ab84e3e1a9aeb8e11f124d5bbc8eff4e4a5934fdcb408be2ea066\"}, {\"kind\": \"project\", \"id\": \"a4e1b6f3-65a7-48ec-9812-70372ae2bf3f\", \"title\": \"E2E\\u5b66\\u751f\\u8865\\u8bc1\\u9879\\u76ee\\uff08\\u5408\\u6210\\uff09\", \"versionNumber\": 1, \"contentHash\": \"38d3ff76bd3cccc26254239d17f3c09ffdc3ae4d44c7ff3ddd6fb57c9ad675b3\", \"materialRole\": \"portfolio\"}]|536f5d56-bfd3-4c45-a104-73ab79475e09|c6d3d560-b17f-4de6-b990-e4d1603eca6d|analyzing",
+    "rowAfter": "[{\"kind\": \"resume\", \"id\": \"c7dfb109-6234-49cc-9d65-a06b8a9729bc\", \"title\": \"E2E\\u5b66\\u751f\\u8865\\u8bc1\\u7b80\\u5386\\uff08\\u5408\\u6210v2\\uff09\", \"versionNumber\": 1, \"contentHash\": \"cdd09b29545ab84e3e1a9aeb8e11f124d5bbc8eff4e4a5934fdcb408be2ea066\"}, {\"kind\": \"project\", \"id\": \"a4e1b6f3-65a7-48ec-9812-70372ae2bf3f\", \"title\": \"E2E\\u5b66\\u751f\\u8865\\u8bc1\\u9879\\u76ee\\uff08\\u5408\\u6210\\uff09\", \"versionNumber\": 1, \"contentHash\": \"38d3ff76bd3cccc26254239d17f3c09ffdc3ae4d44c7ff3ddd6fb57c9ad675b3\", \"materialRole\": \"portfolio\"}]|536f5d56-bfd3-4c45-a104-73ab79475e09|c6d3d560-b17f-4de6-b990-e4d1603eca6d|analyzing",
+    "analysisStatus": "COMPLETED",
+    "draftRevision": 31
+  },
+  "partB": {
+    "degradedCitationId": "R1-E1",
+    "targetTriple": "1ce37c54-c148-469b-ab2d-2ac756d87cf6|a40b5bbc-2629-4242-b2bb-a0876a3ba3e8|R1-E1",
+    "faultLog": [
+      {
+        "at": "2026-10-07T01:59:25.145Z",
+        "kind": "modify-response",
+        "method": "GET",
+        "stage": "response",
+        "status": 200,
+        "fulfilled": true,
+        "originalBodyLen": 981
+      }
+    ],
+    "degraded": {
+      "text": "PRODUCT01-S8-引用失效降级 2026-10-07T015923494Z",
+      "orphanBlock": false,
+      "hasRemoveButton": false,
+      "targetOptionFound": true,
+      "targetChecked": true,
+      "targetLabel": "基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行"
+    },
+    "previewHasInvalidSection": true,
+    "snippetExcluded": true,
+    "copiedEqualsPreview": true,
+    "afterRemove": {
+      "targetUnchecked": true,
+      "checkedLabels": [],
+      "textKept": "PRODUCT01-S8-引用失效降级 2026-10-07T015923494Z"
+    },
+    "beforeTriples": [
+      "1ce37c54-c148-469b-ab2d-2ac756d87cf6|a40b5bbc-2629-4242-b2bb-a0876a3ba3e8|R1-E1"
+    ],
+    "afterTriples": [],
+    "targetRemovedByIdentity": true,
+    "othersKeptByIdentity": true,
+    "serverDuringDegradation": {
+      "revision": 32,
+      "firstTriple": "1ce37c54-c148-469b-ab2d-2ac756d87cf6|a40b5bbc-2629-4242-b2bb-a0876a3ba3e8|R1-E1",
+      "firstAvailableFalse": false,
+      "snippetIntact": true
+    }
+  }
+}

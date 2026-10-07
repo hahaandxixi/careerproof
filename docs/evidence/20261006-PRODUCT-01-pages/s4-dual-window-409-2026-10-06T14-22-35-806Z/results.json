@@ -1,0 +1,142 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s4-dual-window-409",
+  "startedAt": "2026-10-06T14:22:35.806Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:22:35.807Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:22:35.808Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:22:35.838Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:22:35.844Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:22:35.842438Z\"},\"requestId\":\"3b7fb1af-01d3-4301-b976-f9c2e9236dc1\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:22:35.870Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:22:35.870Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:22:35.932Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:22:36.236Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:22:36.264Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:22:36.293Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:22:36.323Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:22:37.037Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 65216"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:22:37.223Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s4-dual-window-409-2026-10-06T14-22-35-806Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:22:39.491Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:22:40.253Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=9"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:22:41.047Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=9"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:22:41.048Z",
+      "name": "both-windows-baseline",
+      "status": "pass",
+      "detail": "A rev=9 B rev=9"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:22:41.180Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:22:41.181Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "findUnique(window A text): 0 matches: []"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:22:41.181Z",
+  "overall": "fail"
+}

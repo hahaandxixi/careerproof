@@ -1,0 +1,265 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s1-save-refresh",
+  "startedAt": "2026-10-06T14:11:59.794Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:11:59.794Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:11:59.795Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:11:59.824Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:11:59.829Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:11:59.829826Z\"},\"requestId\":\"177f3a62-e474-433a-a1b0-7c87dbf07558\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:11:59.850Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:11:59.851Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:11:59.915Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:12:00.256Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:12:00.283Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:12:00.300Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:12:00.338Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:12:00.583Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 55929"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:12:00.844Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:12:03.125Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:12:03.390Z",
+      "name": "draft-initial-state",
+      "status": "info",
+      "detail": "{\"path\":\"/growth/15c7f81f-5789-48cf-908f-5429728becf1\",\"savedLine\":null,\"text\":\"\",\"checkedReferences\":[],\"alerts\":[]}"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:12:03.534Z",
+      "name": "screenshot:draft-initial",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\16-draft-initial.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:12:04.820Z",
+      "name": "reference-selected",
+      "status": "pass",
+      "detail": "基准报告 R1-E1"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:12:04.821Z",
+      "name": "before-save-state",
+      "status": "info",
+      "detail": "{\"savedLine\":null,\"checked\":[\"基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行\"],\"textLength\":63}"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:12:04.955Z",
+      "name": "screenshot:before-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\19-before-save.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:12:05.933Z",
+      "name": "save-put-captured",
+      "status": "pass",
+      "detail": "[{\"at\":\"2026-10-06T14:12:05.143Z\",\"method\":\"PUT\",\"url\":\"/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft\",\"requestBody\":\"{\\\"text\\\":\\\"PRODUCT01-S1-私人草稿保存刷新验证 2026-10-06T141203534Z\\\\n第二行：换行与标点，原样保存检查。\\\",\\\"references\\\":[{\\\"reportId\\\":\\\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\\\",\\\"requirementId\\\":\\\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\\\",\\\"citationId\\\":\\\"R1-E1\\\"}],\\\"expectedRevision\\\":0}\",\"status\":200,\"responseBody\":\"{\\\"code\\\":0,\\\"message\\\":\\\"success\\\",\\\"data\\\":{\\\"taskId\\\":\\\"15c7f81f-5789-48cf-908f-5429728becf1\\\",\\\"requirementId\\\":\\\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\\\",\\\"text\\\":\\\"PRODUCT01-S1-私人草稿保存刷新验证 2026-10-06T141203534Z\\\\n第二行：换行与标点，原样保存检查。\\\",\\\"references\\\":[{\\\"reportId\\\":\\\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\\\",\\\"requirementId\\\":\\\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\\\",\\\"citationId\\\":\\\"R1-E1\\\",\\\"available\\\":true,\\\"snippet\\\":\\\"def process_records(records):\\\\n    \\\\\\\"\\\\\\\"\\\\\\\"按类目汇总金额，返回 {类目: 合计}。\\\\n\\\\n    具名实现：process_records —— 与补证任务交付物同名。\\\\n    \\\\\\\"\\\\\\\"\\\\\\\"\\\\n    totals = {}\\\\n    for record in records:\\\\n        key = record.get(\\\\\\\"category\\\\\\\", \\\\\\\"未分类\\\\\\\")\\\\n        totals[key] = totals.get(key, 0) + float(record.get(\\\\\\\"amount\\\\\\\", 0))\\\\n    return totals\\\",\\\"filePath\\\":\\\"d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py\\\",\\\"lineStart\\\":4,\\\"lineEnd\\\":13,\\\"provenance\\\":\\\"portfolio\\\"}],\\\"revision\\\":1,\\\"updatedAt\\\":\\\"2026-10-06T14:12:05.179184+00:00\\\",\\\"boundary\\\":\\\"私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。\\\"},\\\"requestId\\\":\\\"d21d2549-2808-49c8-8e55-eba5cb66c246\\\"}\"}]"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:12:05.934Z",
+      "name": "after-save-state",
+      "status": "info",
+      "detail": "{\"savedLine\":\"已保存：版本 1 · 2026-10-06T14:12:05.179184+00:00 · 与已保存内容一致\",\"checked\":[\"基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行\"],\"textLength\":63}"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:12:06.070Z",
+      "name": "screenshot:after-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\22-after-save.png"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:12:06.918Z",
+      "name": "refresh-get-captured",
+      "status": "pass",
+      "detail": "[{\"method\":\"GET\",\"url\":\"/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft\",\"status\":200}]"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:12:06.919Z",
+      "name": "after-refresh-state",
+      "status": "info",
+      "detail": "{\"savedLine\":\"已保存：版本 1 · 2026-10-06T14:12:05.179184+00:00 · 与已保存内容一致\",\"checked\":[\"基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行\"],\"textLength\":63,\"textMatches\":true}"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:12:07.034Z",
+      "name": "screenshot:after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\25-after-refresh.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:12:07.306Z",
+      "name": "put-response-200",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:12:07.306Z",
+      "name": "ui-text-verbatim",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:12:07.306Z",
+      "name": "saved-line-consistent",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-06T14:12:07.306Z",
+      "name": "get-after-refresh-matches-put",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-06T14:12:07.306Z",
+      "name": "page-get-matches-put",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 31,
+      "at": "2026-10-06T14:12:07.307Z",
+      "name": "db-row-matches-put",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-06T14:12:07.307Z",
+      "name": "reference-selected-and-persisted",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-06T14:12:07.307Z",
+      "name": "ui-checked-labels-show-citation",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 34,
+      "at": "2026-10-06T14:12:07.307Z",
+      "name": "no-alerts-after-refresh",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-06T14:12:07.307Z",
+      "name": "revision-integer-bumped-from-baseline",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 36,
+      "at": "2026-10-06T14:12:07.422Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\s1-target-task.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\s1-server-truth.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s1-save-refresh-2026-10-06T14-11-59-793Z\\s1-network-log.json"
+  ],
+  "finishedAt": "2026-10-06T14:12:07.423Z",
+  "overall": "pass"
+}

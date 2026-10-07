@@ -1,0 +1,193 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s6b-identity-switch-race",
+  "startedAt": "2026-10-07T02:22:45.377Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:22:45.377Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:22:45.378Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:22:45.407Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:22:45.413Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:22:45.410987Z\"},\"requestId\":\"624240c5-4aee-4b29-8f55-3ab21c722989\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:22:45.439Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:22:45.440Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:22:45.502Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:22:45.883Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:22:45.913Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:22:45.942Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:22:45.973Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:22:46.004Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:22:46.901Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 55277"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:22:47.063Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s6b-identity-switch-race-2026-10-07T02-22-45-376Z\\14-login-empty.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:22:49.328Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:22:50.086Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=4"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:22:51.829Z",
+      "name": "s6b-get-hold-confirmed",
+      "status": "pass",
+      "detail": "{\"at\":\"2026-10-07T02:22:51.711Z\",\"kind\":\"hold-response\",\"method\":\"GET\",\"stage\":\"response\",\"status\":200,\"released\":false,\"releasedAt\":null}"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:22:52.895Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s6b-identity-switch-race-2026-10-07T02-22-45-376Z\\18-login-empty.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:22:55.147Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:22:55.148Z",
+      "name": "s6b-identity-switched",
+      "status": "info",
+      "detail": "{\"path\":\"/portfolio\",\"displayName\":\"E2E 合成学生\",\"hasStudentNav\":true}"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:22:55.160Z",
+      "name": "s6b-authme-userid-is-a2",
+      "status": "pass",
+      "detail": "authMeUserIdMatchesA2=true role=student (两个账号显示名相同，不以显示名作身份证明；displayed=\"E2E 合成学生\")"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:22:55.161Z",
+      "name": "s6b-release-outcome",
+      "status": "evidence",
+      "detail": "outcome=invalid-after-navigation entry={\"at\":\"2026-10-07T02:22:51.711Z\",\"kind\":\"hold-response\",\"method\":\"GET\",\"stage\":\"response\",\"status\":200,\"released\":true,\"releasedAt\":\"2026-10-07T02:22:55.161Z\",\"releaseOutcome\":\"interception-invalid-after-context-destroyed\"}"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:22:56.670Z",
+      "name": "s6b-old-receipt-no-leak",
+      "status": "pass",
+      "detail": "released=invalid-after-navigation {\"bodyHasMarker\":false,\"displayName\":\"E2E 合成学生\"}"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:22:57.912Z",
+      "name": "s6b-a2-growth-page",
+      "status": "pass",
+      "detail": "{\"hasDraftSection\":false,\"hasPreviewSection\":false,\"bodyHasMarker\":false,\"emptyList\":true}"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:22:57.944Z",
+      "name": "screenshot:a2-growth-after-release",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s6b-identity-switch-race-2026-10-07T02-22-45-376Z\\25-a2-growth-after-release.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:22:58.065Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s6b-identity-switch-race-2026-10-07T02-22-45-376Z\\s6b-summary.json"
+  ],
+  "finishedAt": "2026-10-07T02:22:58.065Z",
+  "overall": "pass"
+}

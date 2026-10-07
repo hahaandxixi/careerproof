@@ -1,0 +1,19 @@
+{
+  "simulatedClipboard": true,
+  "previewLen": 606,
+  "writesTimeline": {
+    "atPreview": 0,
+    "afterCopy": 1,
+    "atFail": 1,
+    "afterRetry": 2,
+    "after390": 3
+  },
+  "failState": {
+    "previewStillPresent": true,
+    "alertTexts": [
+      "复制失败：denied；可重试或手动选择文本复制。"
+    ],
+    "retryHint": true
+  },
+  "nonLocal": []
+}

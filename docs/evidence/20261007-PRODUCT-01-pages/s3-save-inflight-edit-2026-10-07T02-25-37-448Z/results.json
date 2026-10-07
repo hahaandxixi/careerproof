@@ -1,0 +1,271 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s3-save-inflight-edit",
+  "startedAt": "2026-10-07T02:25:37.448Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:25:37.449Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:25:37.449Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:25:37.477Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:25:37.482Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:25:37.480547Z\"},\"requestId\":\"3f02f265-0e80-46a0-833c-a72532e81a66\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:25:37.509Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:25:37.510Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:25:37.571Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:25:38.143Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:25:38.170Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:25:38.201Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:25:38.233Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:25:38.263Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:25:39.140Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 52510"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:25:39.320Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\14-login-empty.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:25:41.563Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:25:42.337Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=5"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:25:43.238Z",
+      "name": "hold-confirmed",
+      "status": "pass",
+      "detail": "{\"at\":\"2026-10-07T02:25:43.084Z\",\"kind\":\"hold-response\",\"method\":\"PUT\",\"stage\":\"response\",\"status\":200,\"released\":false,\"releasedAt\":null}"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:25:43.757Z",
+      "name": "persisted-while-held",
+      "status": "pass",
+      "detail": "GET rev=6 db rev=6 textMatch=true"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:25:44.354Z",
+      "name": "edited-while-held",
+      "status": "info",
+      "detail": "{\"textIsV1PlusAppend\":true,\"savedLine\":\"已保存：版本 5 · 2026-10-07T02:22:50.827040+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:25:44.744Z",
+      "name": "screenshot:panel-receipt-held",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\20-panel-receipt-held.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:25:44.745Z",
+      "name": "panel-visible:receipt-held",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:25:45.567Z",
+      "name": "after-receipt-state",
+      "status": "info",
+      "detail": "{\"textKeepsAppend\":true,\"savedLine\":\"已保存：版本 6 · 2026-10-07T02:25:43.079138+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:25:45.965Z",
+      "name": "screenshot:panel-after-receipt",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\23-panel-after-receipt.png"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:25:45.965Z",
+      "name": "panel-visible:after-receipt",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:25:47.345Z",
+      "name": "screenshot:panel-after-second-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\25-panel-after-second-save.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:25:47.345Z",
+      "name": "panel-visible:after-second-save",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-07T02:25:48.684Z",
+      "name": "hold-was-response-stage-200",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 28,
+      "at": "2026-10-07T02:25:48.684Z",
+      "name": "server-persisted-before-release",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-07T02:25:48.684Z",
+      "name": "inflight-append-persisted-in-ui",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-07T02:25:48.684Z",
+      "name": "receipt-did-not-overwrite-later-typing",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 31,
+      "at": "2026-10-07T02:25:48.685Z",
+      "name": "dirty-shown-after-receipt",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-07T02:25:48.685Z",
+      "name": "first-put-used-baseline-revision",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-07T02:25:48.685Z",
+      "name": "first-receipt-revision-baseline-plus-one",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 34,
+      "at": "2026-10-07T02:25:48.685Z",
+      "name": "second-save-used-server-revision",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-07T02:25:48.686Z",
+      "name": "second-receipt-persisted-appended",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 36,
+      "at": "2026-10-07T02:25:48.686Z",
+      "name": "db-final-row-matches",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 37,
+      "at": "2026-10-07T02:25:48.798Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\s3-server-truth.json",
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\\s3-network-log.json"
+  ],
+  "finishedAt": "2026-10-07T02:25:48.799Z",
+  "overall": "pass"
+}

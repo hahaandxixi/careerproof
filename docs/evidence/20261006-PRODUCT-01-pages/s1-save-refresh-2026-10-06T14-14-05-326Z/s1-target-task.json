@@ -1,0 +1,37 @@
+{
+  "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+  "requirementTitle": "岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+  "jobTitle": "E2E 岗位C（合成·补证目标）",
+  "options": [
+    {
+      "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+      "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+      "citationId": "R1-E1",
+      "reportKind": "base",
+      "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+      "lineStart": 4,
+      "lineEnd": 13,
+      "provenance": "portfolio"
+    },
+    {
+      "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+      "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+      "citationId": "R1-E2",
+      "reportKind": "base",
+      "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/tests/test_pipeline.py",
+      "lineStart": 5,
+      "lineEnd": 13,
+      "provenance": "portfolio"
+    },
+    {
+      "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+      "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+      "citationId": "R1-E3",
+      "reportKind": "base",
+      "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/requirements.txt",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "provenance": "portfolio"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "previewLen": 606,
+  "clipAfterPreview": "SENTINEL-BEFORE-PREVIEW",
+  "clipAfterCopyLen": 624,
+  "failState": {
+    "previewStillPresent": true,
+    "alertTexts": [
+      "复制失败：denied；可重试或手动选择文本复制。"
+    ],
+    "retryHint": true
+  },
+  "externalUrls": []
+}

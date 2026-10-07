@@ -1,0 +1,29 @@
+[1] info manifest :: db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e
+[2] pass manifest-mock-check
+[3] pass frontend-health :: GET /login -> 200
+[4] pass backend-health :: GET /api/v1/health -> 200 {"code":0,"message":"success","data":{"status":"ok","service":"CareerProof API","timestamp":"2026-10-07T02:27:45.491479Z"},"requestId":"0f208288-b2c6-426c-89fb-cd08088143a9"}
+[5] info port-owners :: {"3001":156840,"8001":147076}
+[6] pass process-identity :: live=[156840,147076] manifest=[143380,156840] matched=1
+[7] pass api-login :: userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student
+[8] pass backend-db-identity :: api own tasks=4 db own tasks=5 apiIdsInDb=true
+[9] pass same-job-task-available :: taskId=5a23eb45-31fe-464d-aff0-d137c820246a targetOptions=3
+[10] info chrome-launched :: student port 50236
+[11] evidence screenshot:login-empty :: docs\evidence\20261007-PRODUCT-01-pages\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\11-login-empty.png
+[12] pass login-ok :: /portfolio
+[13] info page-facts:crossJob :: {"taskId":"15c7f81f-5789-48cf-908f-5429728becf1","legend":"从服务端可选引用中选择证据（原要求：岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试）","baseOptions":3,"targetOptions":0,"crossJobNote":true,"referenceScopeNotice":true}
+[14] evidence screenshot:panel-s7-crossJob :: docs\evidence\20261007-PRODUCT-01-pages\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\14-panel-s7-crossJob.png
+[15] info panel-visible:s7-crossJob :: viewport=1418x802 sectionTop=0 sectionHeight=729
+[16] info page-facts:sameJob :: {"taskId":"5a23eb45-31fe-464d-aff0-d137c820246a","legend":"从服务端可选引用中选择证据（原要求：岗位B要求：能够使用 Python 编写数据处理脚本）","baseOptions":1,"targetOptions":3,"crossJobNote":false,"referenceScopeNotice":false}
+[17] evidence screenshot:panel-s7-sameJob :: docs\evidence\20261007-PRODUCT-01-pages\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\17-panel-s7-sameJob.png
+[18] info panel-visible:s7-sameJob :: viewport=1418x802 sectionTop=0 sectionHeight=689
+[19] info chrome-stopped :: student exitCode=0
+[20] pass crossjob-base-options-from-frozen-snapshot
+[21] pass crossjob-legend-shows-original-requirement
+[22] pass crossjob-no-target-options-without-original-requirement
+[23] pass crossjob-scope-explanation-shown
+[24] pass crossjob-note-shown
+[25] pass samejob-completed-target-has-original-requirement-options
+[26] pass samejob-target-options-use-original-requirement
+[27] pass samejob-legend-still-original-requirement
+[28] pass samejob-not-marked-crossjob
+overall: pass (D:\jbcode\web ai\jianli\docs\evidence\20261007-PRODUCT-01-pages\s7-requirement-crossjob-2026-10-07T02-27-45-459Z)

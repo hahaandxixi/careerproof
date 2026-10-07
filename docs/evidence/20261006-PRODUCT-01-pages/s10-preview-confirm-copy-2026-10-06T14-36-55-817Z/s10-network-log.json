@@ -1,0 +1,930 @@
+{
+  "network": [
+    {
+      "at": "2026-10-06T14:36:57.118Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/login"
+    },
+    {
+      "at": "2026-10-06T14:36:57.124Z",
+      "phase": "response",
+      "url": "/login",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.131Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/css/d34cf6f78b54befc.css"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/layout-4ffbcef209f92783.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.132Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.133Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/login/page-5d18509d7e3ab71e.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.133Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.141Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.141Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.143Z",
+      "phase": "response",
+      "url": "/_next/static/css/d34cf6f78b54befc.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.143Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.167Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/layout-4ffbcef209f92783.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.168Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.168Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.169Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.170Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/login/page-5d18509d7e3ab71e.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.170Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.198Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/users/me"
+    },
+    {
+      "at": "2026-10-06T14:36:57.198Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/favicon.ico"
+    },
+    {
+      "at": "2026-10-06T14:36:57.203Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:57.204Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/jobs?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:57.204Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/demo?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:57.204Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/register?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:57.205Z",
+      "phase": "response",
+      "url": "/favicon.ico",
+      "status": 404
+    },
+    {
+      "at": "2026-10-06T14:36:57.206Z",
+      "phase": "response",
+      "url": "/api/v1/users/me",
+      "status": 401
+    },
+    {
+      "at": "2026-10-06T14:36:57.206Z",
+      "phase": "request",
+      "method": "POST",
+      "url": "/api/v1/auth/refresh"
+    },
+    {
+      "at": "2026-10-06T14:36:57.209Z",
+      "phase": "response",
+      "url": "/?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.210Z",
+      "phase": "response",
+      "url": "/jobs?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.211Z",
+      "phase": "response",
+      "url": "/demo?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.212Z",
+      "phase": "response",
+      "url": "/register?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.214Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.215Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/register/page-4139e801d4602127.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.216Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/demo/page-327ab452bccf9804.js"
+    },
+    {
+      "at": "2026-10-06T14:36:57.217Z",
+      "phase": "response",
+      "url": "/api/v1/auth/refresh",
+      "status": 401
+    },
+    {
+      "at": "2026-10-06T14:36:57.219Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.220Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/register/page-4139e801d4602127.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:57.221Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/demo/page-327ab452bccf9804.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.524Z",
+      "phase": "request",
+      "method": "POST",
+      "url": "/api/v1/auth/login"
+    },
+    {
+      "at": "2026-10-06T14:36:58.578Z",
+      "phase": "response",
+      "url": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.579Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=utQopaZyVbfSG9h2"
+    },
+    {
+      "at": "2026-10-06T14:36:58.583Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/notifications/unread-count"
+    },
+    {
+      "at": "2026-10-06T14:36:58.583Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:58.583Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/recommendations?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:58.583Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/applications?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:58.583Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:58.584Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=utQopaZyVbfSG9h2",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.586Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6402-d53b8ea7bbaa88b2.js"
+    },
+    {
+      "at": "2026-10-06T14:36:58.586Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js"
+    },
+    {
+      "at": "2026-10-06T14:36:58.586Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/notifications?_rsc=j7s84HGI7papZ6oY"
+    },
+    {
+      "at": "2026-10-06T14:36:58.587Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=Y89-iDncGRHPxzgu"
+    },
+    {
+      "at": "2026-10-06T14:36:58.588Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.589Z",
+      "phase": "response",
+      "url": "/recommendations?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.590Z",
+      "phase": "response",
+      "url": "/applications?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.592Z",
+      "phase": "response",
+      "url": "/reports?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.592Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js"
+    },
+    {
+      "at": "2026-10-06T14:36:58.592Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js"
+    },
+    {
+      "at": "2026-10-06T14:36:58.595Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=Y89-iDncGRHPxzgu",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.596Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6402-d53b8ea7bbaa88b2.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.597Z",
+      "phase": "response",
+      "url": "/notifications?_rsc=j7s84HGI7papZ6oY",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.616Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js"
+    },
+    {
+      "at": "2026-10-06T14:36:58.616Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.617Z",
+      "phase": "response",
+      "url": "/api/v1/notifications/unread-count",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.617Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.618Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/resumes"
+    },
+    {
+      "at": "2026-10-06T14:36:58.618Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/projects"
+    },
+    {
+      "at": "2026-10-06T14:36:58.633Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.633Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.634Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/demo?_rsc=c4mLfVWrmqAJA1Hf"
+    },
+    {
+      "at": "2026-10-06T14:36:58.638Z",
+      "phase": "response",
+      "url": "/demo?_rsc=c4mLfVWrmqAJA1Hf",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.639Z",
+      "phase": "response",
+      "url": "/api/v1/resumes",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:58.640Z",
+      "phase": "response",
+      "url": "/api/v1/projects",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.521Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/growth/15c7f81f-5789-48cf-908f-5429728becf1"
+    },
+    {
+      "at": "2026-10-06T14:36:59.530Z",
+      "phase": "response",
+      "url": "/growth/15c7f81f-5789-48cf-908f-5429728becf1",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.539Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/css/d34cf6f78b54befc.css"
+    },
+    {
+      "at": "2026-10-06T14:36:59.539Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.539Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/layout-4ffbcef209f92783.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.540Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/6402-d53b8ea7bbaa88b2.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.541Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6402-d53b8ea7bbaa88b2.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.541Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2576-18c344349f736ec5.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.541Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/3030-6b7c319244d8ddb8.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.541Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/growth/%5Bid%5D/page-4c97a41c5cb25fe6.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.549Z",
+      "phase": "response",
+      "url": "/_next/static/css/d34cf6f78b54befc.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.552Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/webpack-b2fc689c7c580280.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.553Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/main-app-5647789b3d3ea46f.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.553Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/error-b1a6d6b994525861.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.554Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/layout-4ffbcef209f92783.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.554Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/6781-002e4ccbb62b1bbd.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.554Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/global-error-a78619582d4c0603.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.555Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2576-18c344349f736ec5.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.555Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/growth/%5Bid%5D/page-4c97a41c5cb25fe6.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.556Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/3030-6b7c319244d8ddb8.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.556Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/447a7f04-4fcec6a144a2b5f1.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.558Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2657-aede25d89c436562.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.569Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/users/me"
+    },
+    {
+      "at": "2026-10-06T14:36:59.569Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.570Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/jobs?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.577Z",
+      "phase": "response",
+      "url": "/?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.578Z",
+      "phase": "response",
+      "url": "/jobs?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.579Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.581Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/page-16eb13c70bd7eefc.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.587Z",
+      "phase": "response",
+      "url": "/api/v1/users/me",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.590Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/notifications/unread-count"
+    },
+    {
+      "at": "2026-10-06T14:36:59.591Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1"
+    },
+    {
+      "at": "2026-10-06T14:36:59.592Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/resumes"
+    },
+    {
+      "at": "2026-10-06T14:36:59.592Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/projects"
+    },
+    {
+      "at": "2026-10-06T14:36:59.604Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.605Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/recommendations?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.605Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/applications?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.605Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.605Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/notifications?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.610Z",
+      "phase": "response",
+      "url": "/api/v1/notifications/unread-count",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.612Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.613Z",
+      "phase": "response",
+      "url": "/recommendations?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.614Z",
+      "phase": "response",
+      "url": "/api/v1/resumes",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.615Z",
+      "phase": "response",
+      "url": "/applications?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.618Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.619Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/portfolio/page-0ab31cbf9c295011.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.620Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.621Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/applications/page-5ad8aeaafa746037.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.622Z",
+      "phase": "response",
+      "url": "/api/v1/projects",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.622Z",
+      "phase": "response",
+      "url": "/reports?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.623Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.623Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/page-f7612bb449fa1cac.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.624Z",
+      "phase": "response",
+      "url": "/notifications?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.624Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js"
+    },
+    {
+      "at": "2026-10-06T14:36:59.624Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/notifications/page-e6e65bb300812a8e.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.625Z",
+      "phase": "response",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.633Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft"
+    },
+    {
+      "at": "2026-10-06T14:36:59.634Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft/references"
+    },
+    {
+      "at": "2026-10-06T14:36:59.699Z",
+      "phase": "response",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft/references",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.700Z",
+      "phase": "response",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:36:59.700Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports/1ce37c54-c148-469b-ab2d-2ac756d87cf6?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:36:59.706Z",
+      "phase": "response",
+      "url": "/reports/1ce37c54-c148-469b-ab2d-2ac756d87cf6?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:37:00.293Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/tasks/c6d3d560-b17f-4de6-b990-e4d1603eca6d?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:37:00.294Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports/835e6897-5033-4013-81f6-bb281287ac86?_rsc=60fOGWZ_MYpAN3mH"
+    },
+    {
+      "at": "2026-10-06T14:37:00.297Z",
+      "phase": "response",
+      "url": "/tasks/c6d3d560-b17f-4de6-b990-e4d1603eca6d?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:37:00.300Z",
+      "phase": "response",
+      "url": "/reports/835e6897-5033-4013-81f6-bb281287ac86?_rsc=60fOGWZ_MYpAN3mH",
+      "status": 200
+    },
+    {
+      "at": "2026-10-06T14:37:01.012Z",
+      "phase": "request",
+      "method": "PUT",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft"
+    },
+    {
+      "at": "2026-10-06T14:37:01.035Z",
+      "phase": "response",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+      "status": 200
+    }
+  ],
+  "answerDraft": [
+    {
+      "at": "2026-10-06T14:36:59.633Z",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+      "requestBody": null,
+      "status": 200,
+      "responseBody": "{\"code\":0,\"message\":\"success\",\"data\":{\"taskId\":\"15c7f81f-5789-48cf-908f-5429728becf1\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"text\":\"PRODUCT01-S10-预览确认复制 2026-10-06T143607045Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\",\"available\":true,\"snippet\":\"def process_records(records):\\n    \\\"\\\"\\\"按类目汇总金额，返回 {类目: 合计}。\\n\\n    具名实现：process_records —— 与补证任务交付物同名。\\n    \\\"\\\"\\\"\\n    totals = {}\\n    for record in records:\\n        key = record.get(\\\"category\\\", \\\"未分类\\\")\\n        totals[key] = totals.get(key, 0) + float(record.get(\\\"amount\\\", 0))\\n    return totals\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py\",\"lineStart\":4,\"lineEnd\":13,\"provenance\":\"portfolio\"}],\"revision\":22,\"updatedAt\":\"2026-10-06T14:36:07.810844+00:00\",\"boundary\":\"私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。\"},\"requestId\":\"2f18b4e6-b311-42b4-9bbc-1cc8d46b30f5\"}"
+    },
+    {
+      "at": "2026-10-06T14:36:59.634Z",
+      "method": "GET",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft/references",
+      "requestBody": null,
+      "status": 200,
+      "responseBody": "{\"code\":0,\"message\":\"success\",\"data\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\",\"reportKind\":\"base\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py\",\"lineStart\":4,\"lineEnd\":13,\"provenance\":\"portfolio\"},{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E2\",\"reportKind\":\"base\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/tests/test_pipeline.py\",\"lineStart\":5,\"lineEnd\":13,\"provenance\":\"portfolio\"},{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E3\",\"reportKind\":\"base\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/requirements.txt\",\"lineStart\":2,\"lineEnd\":2,\"provenance\":\"portfolio\"}],\"requestId\":\"05a368bb-4214-4cfd-801d-15c092bfcd4c\"}"
+    },
+    {
+      "at": "2026-10-06T14:37:01.012Z",
+      "method": "PUT",
+      "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+      "requestBody": "{\"text\":\"PRODUCT01-S10-预览确认复制 2026-10-06T143700289Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\"}],\"expectedRevision\":22}",
+      "status": 200,
+      "responseBody": "{\"code\":0,\"message\":\"success\",\"data\":{\"taskId\":\"15c7f81f-5789-48cf-908f-5429728becf1\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"text\":\"PRODUCT01-S10-预览确认复制 2026-10-06T143700289Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\",\"available\":true,\"snippet\":\"def process_records(records):\\n    \\\"\\\"\\\"按类目汇总金额，返回 {类目: 合计}。\\n\\n    具名实现：process_records —— 与补证任务交付物同名。\\n    \\\"\\\"\\\"\\n    totals = {}\\n    for record in records:\\n        key = record.get(\\\"category\\\", \\\"未分类\\\")\\n        totals[key] = totals.get(key, 0) + float(record.get(\\\"amount\\\", 0))\\n    return totals\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py\",\"lineStart\":4,\"lineEnd\":13,\"provenance\":\"portfolio\"}],\"revision\":23,\"updatedAt\":\"2026-10-06T14:37:01.029261+00:00\",\"boundary\":\"私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。\"},\"requestId\":\"d24d85cb-eb3a-4d6f-aff7-5235d55b4e46\"}"
+    }
+  ]
+}

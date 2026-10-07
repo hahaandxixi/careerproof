@@ -1,0 +1,72 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s1-save-refresh",
+  "startedAt": "2026-10-06T14:10:26.810Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:10:26.811Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:10:26.811Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:10:26.840Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:10:26.846Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:10:26.843861Z\"},\"requestId\":\"7488ac1a-29b4-44d5-8223-a9644ee48a09\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:10:26.868Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:10:26.869Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:10:26.938Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:10:27.356Z",
+      "name": "backend-db-identity",
+      "status": "blocked",
+      "detail": "api tasks=3 db tasks=4 identical=false"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:10:27.357Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "preflight: backend on 8001 does not serve the closure database"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:10:27.357Z",
+  "overall": "fail"
+}

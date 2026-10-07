@@ -1,0 +1,207 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s7-requirement-crossjob",
+  "startedAt": "2026-10-07T02:27:45.459Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:27:45.460Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:27:45.460Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:27:45.488Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:27:45.493Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:27:45.491479Z\"},\"requestId\":\"0f208288-b2c6-426c-89fb-cd08088143a9\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:27:45.521Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:27:45.522Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:27:45.576Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:27:46.120Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:27:46.230Z",
+      "name": "same-job-task-available",
+      "status": "pass",
+      "detail": "taskId=5a23eb45-31fe-464d-aff0-d137c820246a targetOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:27:47.090Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 50236"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:27:47.265Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\\11-login-empty.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:27:49.511Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:27:50.177Z",
+      "name": "page-facts:crossJob",
+      "status": "info",
+      "detail": "{\"taskId\":\"15c7f81f-5789-48cf-908f-5429728becf1\",\"legend\":\"从服务端可选引用中选择证据（原要求：岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试）\",\"baseOptions\":3,\"targetOptions\":0,\"crossJobNote\":true,\"referenceScopeNotice\":true}"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:27:50.573Z",
+      "name": "screenshot:panel-s7-crossJob",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\\14-panel-s7-crossJob.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:27:50.573Z",
+      "name": "panel-visible:s7-crossJob",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:27:51.220Z",
+      "name": "page-facts:sameJob",
+      "status": "info",
+      "detail": "{\"taskId\":\"5a23eb45-31fe-464d-aff0-d137c820246a\",\"legend\":\"从服务端可选引用中选择证据（原要求：岗位B要求：能够使用 Python 编写数据处理脚本）\",\"baseOptions\":1,\"targetOptions\":3,\"crossJobNote\":false,\"referenceScopeNotice\":false}"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:27:51.608Z",
+      "name": "screenshot:panel-s7-sameJob",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\\17-panel-s7-sameJob.png"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:27:51.608Z",
+      "name": "panel-visible:s7-sameJob",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=689"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:27:51.731Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:27:51.778Z",
+      "name": "crossjob-base-options-from-frozen-snapshot",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:27:51.778Z",
+      "name": "crossjob-legend-shows-original-requirement",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:27:51.778Z",
+      "name": "crossjob-no-target-options-without-original-requirement",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:27:51.779Z",
+      "name": "crossjob-scope-explanation-shown",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:27:51.779Z",
+      "name": "crossjob-note-shown",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:27:51.780Z",
+      "name": "samejob-completed-target-has-original-requirement-options",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:27:51.780Z",
+      "name": "samejob-target-options-use-original-requirement",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 27,
+      "at": "2026-10-07T02:27:51.780Z",
+      "name": "samejob-legend-still-original-requirement",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 28,
+      "at": "2026-10-07T02:27:51.780Z",
+      "name": "samejob-not-marked-crossjob",
+      "status": "pass",
+      "detail": ""
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s7-requirement-crossjob-2026-10-07T02-27-45-459Z\\s7-options.json"
+  ],
+  "finishedAt": "2026-10-07T02:27:51.781Z",
+  "overall": "pass"
+}

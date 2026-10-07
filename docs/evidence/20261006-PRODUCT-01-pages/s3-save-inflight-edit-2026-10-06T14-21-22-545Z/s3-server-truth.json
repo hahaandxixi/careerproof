@@ -1,0 +1,112 @@
+{
+  "baseline": 6,
+  "textV1": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z",
+  "appended": "；保存中追加的文字，回执到达后不得覆盖。",
+  "put1Request": {
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1"
+      }
+    ],
+    "expectedRevision": 6
+  },
+  "put1Receipt": {
+    "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+    "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      }
+    ],
+    "revision": 7,
+    "updatedAt": "2026-10-06T14:21:32.173636+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "put2Request": {
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1"
+      }
+    ],
+    "expectedRevision": 7
+  },
+  "put2Receipt": {
+    "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+    "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      }
+    ],
+    "revision": 8,
+    "updatedAt": "2026-10-06T14:21:33.527260+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "refresh": {
+    "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+    "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      }
+    ],
+    "revision": 8,
+    "updatedAt": "2026-10-06T14:21:33.527260+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "dbRow": {
+    "revision": 8,
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。"
+  },
+  "uiAfterReceipt": {
+    "path": "/growth/15c7f81f-5789-48cf-908f-5429728becf1",
+    "savedLine": "已保存：版本 7 · 2026-10-06T14:21:32.173636+00:00 · 有未保存修改",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。",
+    "checkedReferences": [
+      "基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行"
+    ],
+    "alerts": []
+  },
+  "uiAfterRefresh": {
+    "path": "/growth/15c7f81f-5789-48cf-908f-5429728becf1",
+    "savedLine": "已保存：版本 8 · 2026-10-06T14:21:33.527260+00:00 · 与已保存内容一致",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-06T142126925Z；保存中追加的文字，回执到达后不得覆盖。",
+    "checkedReferences": [
+      "基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行"
+    ],
+    "alerts": []
+  }
+}

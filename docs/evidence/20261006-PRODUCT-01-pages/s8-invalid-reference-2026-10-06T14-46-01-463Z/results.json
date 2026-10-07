@@ -1,0 +1,156 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s8-invalid-reference",
+  "startedAt": "2026-10-06T14:46:01.464Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:46:01.464Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:46:01.465Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:46:01.494Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:46:01.499Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:46:01.495953Z\"},\"requestId\":\"8be8479f-8dd9-4717-8617-c903eb34c4a1\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:46:01.523Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:46:01.524Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:46:01.585Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:46:01.909Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:46:01.933Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:46:01.962Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:46:01.992Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:46:02.547Z",
+      "name": "s8-analysis-status",
+      "status": "info",
+      "detail": "analysisTask=c6d3d560-b17f-4de6-b990-e4d1603eca6d status=COMPLETED"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:46:02.869Z",
+      "name": "s8-reselect-409",
+      "status": "pass",
+      "detail": "PUT materials -> 409 code=4099"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:46:02.870Z",
+      "name": "s8-frozen-state-unchanged",
+      "status": "pass",
+      "detail": "taskRowEqual=true draftRev=28"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:46:03.622Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 58425"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:46:03.799Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-46-01-463Z\\16-login-empty.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:46:06.043Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:46:06.805Z",
+      "name": "s8-ui-reselect-locked",
+      "status": "pass",
+      "detail": "{\"found\":true,\"disabled\":true}"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:46:06.853Z",
+      "name": "screenshot:s8-ui-locked",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-46-01-463Z\\19-s8-ui-locked.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:46:24.260Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:46:24.261Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "waitFor timeout 15000ms: textarea enabled after injected GET"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:46:24.261Z",
+  "overall": "fail"
+}

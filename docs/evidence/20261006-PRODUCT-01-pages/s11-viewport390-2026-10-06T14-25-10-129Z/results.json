@@ -1,0 +1,271 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s11-viewport390",
+  "startedAt": "2026-10-06T14:25:10.129Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:25:10.130Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:25:10.130Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:25:10.161Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:25:10.166Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:25:10.164654Z\"},\"requestId\":\"751d9b32-6f93-4a12-b966-e409f04faa7f\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:25:10.190Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:25:10.191Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:25:10.241Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:25:10.535Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:25:10.558Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:25:10.577Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:25:10.605Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:25:11.322Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "studentDesk port 63445"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:25:12.018Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student390 port 52558"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:25:12.218Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\14-login-empty.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:25:14.499Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:25:15.269Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=11"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:25:15.796Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\17-login-empty.png"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:25:18.081Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:25:18.843Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=11"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:25:18.844Z",
+      "name": "390-baselines",
+      "status": "pass",
+      "detail": "desk rev=11 390 rev=11"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:25:21.712Z",
+      "name": "390-metrics",
+      "status": "info",
+      "detail": "{\"viewport\":{\"w\":390,\"h\":844},\"docNoHorizontalOverflow\":true,\"sectionNoHorizontalOverflow\":true,\"longReferenceLabelsContained\":true,\"textareaVisible\":true,\"buttons\":{\"保存草稿\":true,\"重读已保存草稿\":true,\"读取服务器版本作对照\":true,\"以本人编辑重新保存（使用服务器版本号）\":true}}"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:25:22.179Z",
+      "name": "screenshot:panel-390-conflict",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\22-panel-390-conflict.png"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:25:22.179Z",
+      "name": "panel-visible:390-conflict",
+      "status": "info",
+      "detail": "viewport=390x844 sectionTop=0 sectionHeight=1403"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:25:22.634Z",
+      "name": "screenshot:panel-390-conflict-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\24-panel-390-conflict-lower.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:25:23.862Z",
+      "name": "screenshot:panel-390-after-overwrite",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\25-panel-390-after-overwrite.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:25:23.862Z",
+      "name": "panel-visible:390-after-overwrite",
+      "status": "info",
+      "detail": "viewport=390x844 sectionTop=0 sectionHeight=1073"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:25:24.320Z",
+      "name": "screenshot:panel-390-after-overwrite-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\27-panel-390-after-overwrite-lower.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:25:24.601Z",
+      "name": "viewport-really-390",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-06T14:25:24.602Z",
+      "name": "no-document-horizontal-overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-06T14:25:24.602Z",
+      "name": "no-section-horizontal-overflow",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 31,
+      "at": "2026-10-06T14:25:24.602Z",
+      "name": "long-reference-labels-contained",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-06T14:25:24.603Z",
+      "name": "textarea-visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-06T14:25:24.603Z",
+      "name": "save-reload-preview-controls-visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 34,
+      "at": "2026-10-06T14:25:24.603Z",
+      "name": "conflict-controls-visible",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-06T14:25:24.603Z",
+      "name": "390-overwrite-persisted",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 36,
+      "at": "2026-10-06T14:25:24.732Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "studentDesk exitCode=0"
+    },
+    {
+      "n": 37,
+      "at": "2026-10-06T14:25:24.868Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student390 exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\s11-viewport-metrics.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s11-viewport390-2026-10-06T14-25-10-129Z\\s11-network-log.json"
+  ],
+  "finishedAt": "2026-10-06T14:25:24.869Z",
+  "overall": "pass"
+}

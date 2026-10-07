@@ -1,0 +1,38 @@
+[1] info manifest :: db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e
+[2] pass manifest-mock-check
+[3] pass frontend-health :: GET /login -> 200
+[4] pass backend-health :: GET /api/v1/health -> 200 {"code":0,"message":"success","data":{"status":"ok","service":"CareerProof API","timestamp":"2026-10-07T02:25:37.480547Z"},"requestId":"3f02f265-0e80-46a0-833c-a72532e81a66"}
+[5] info port-owners :: {"3001":156840,"8001":147076}
+[6] pass process-identity :: live=[156840,147076] manifest=[143380,156840] matched=1
+[7] pass api-login :: userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student
+[8] pass backend-db-identity :: api own tasks=4 db own tasks=5 apiIdsInDb=true
+[9] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4
+[10] info task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试 :: taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3
+[11] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3
+[12] info task-options:岗位B要求：能够使用 Python 编写数据处理脚本 :: taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5
+[13] info chrome-launched :: student port 52510
+[14] evidence screenshot:login-empty :: docs\evidence\20261007-PRODUCT-01-pages\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\14-login-empty.png
+[15] pass login-ok :: /portfolio
+[16] pass draft-initial-get :: GET status=200 hasDraft=true baselineRevision=5
+[17] pass hold-confirmed :: {"at":"2026-10-07T02:25:43.084Z","kind":"hold-response","method":"PUT","stage":"response","status":200,"released":false,"releasedAt":null}
+[18] pass persisted-while-held :: GET rev=6 db rev=6 textMatch=true
+[19] info edited-while-held :: {"textIsV1PlusAppend":true,"savedLine":"已保存：版本 5 · 2026-10-07T02:22:50.827040+00:00 · 有未保存修改"}
+[20] evidence screenshot:panel-receipt-held :: docs\evidence\20261007-PRODUCT-01-pages\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\20-panel-receipt-held.png
+[21] info panel-visible:receipt-held :: viewport=1418x802 sectionTop=0 sectionHeight=729
+[22] info after-receipt-state :: {"textKeepsAppend":true,"savedLine":"已保存：版本 6 · 2026-10-07T02:25:43.079138+00:00 · 有未保存修改"}
+[23] evidence screenshot:panel-after-receipt :: docs\evidence\20261007-PRODUCT-01-pages\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\23-panel-after-receipt.png
+[24] info panel-visible:after-receipt :: viewport=1418x802 sectionTop=0 sectionHeight=729
+[25] evidence screenshot:panel-after-second-save :: docs\evidence\20261007-PRODUCT-01-pages\s3-save-inflight-edit-2026-10-07T02-25-37-448Z\25-panel-after-second-save.png
+[26] info panel-visible:after-second-save :: viewport=1418x802 sectionTop=0 sectionHeight=729
+[27] pass hold-was-response-stage-200
+[28] pass server-persisted-before-release
+[29] pass inflight-append-persisted-in-ui
+[30] pass receipt-did-not-overwrite-later-typing
+[31] pass dirty-shown-after-receipt
+[32] pass first-put-used-baseline-revision
+[33] pass first-receipt-revision-baseline-plus-one
+[34] pass second-save-used-server-revision
+[35] pass second-receipt-persisted-appended
+[36] pass db-final-row-matches
+[37] info chrome-stopped :: student exitCode=0
+overall: pass (D:\jbcode\web ai\jianli\docs\evidence\20261007-PRODUCT-01-pages\s3-save-inflight-edit-2026-10-07T02-25-37-448Z)

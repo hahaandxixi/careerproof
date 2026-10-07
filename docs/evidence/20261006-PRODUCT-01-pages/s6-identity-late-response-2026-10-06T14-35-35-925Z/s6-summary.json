@@ -1,0 +1,37 @@
+{
+  "heldEntry": [
+    {
+      "at": "2026-10-06T14:35:41.999Z",
+      "kind": "hold-response",
+      "method": "GET",
+      "stage": "response",
+      "status": 200,
+      "released": true,
+      "releasedAt": "2026-10-06T14:35:42.985Z"
+    }
+  ],
+  "hiddenState": {
+    "href": "http://127.0.0.1:3001/growth/15c7f81f-5789-48cf-908f-5429728becf1",
+    "visibility": "hidden",
+    "sectionCount": 0,
+    "h2Texts": [],
+    "text": null,
+    "hasSavedLine": false,
+    "bodyHasMarker": false
+  },
+  "lateState": {
+    "visibility": "hidden",
+    "sectionCount": 0,
+    "bodyHasMarker": false
+  },
+  "restoredTextLen": 42,
+  "a2State": {
+    "hasDraftSection": false,
+    "bodyHasMarker": false,
+    "errorText": [
+      "补证任务不存在或无权访问（请求编号：ad99609a-edde-4683-94ed-29596350da93）"
+    ]
+  },
+  "a2Status": 404,
+  "entStatus": 403
+}

@@ -1,0 +1,215 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s5-network-error",
+  "startedAt": "2026-10-06T14:21:45.881Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:21:45.881Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:21:45.882Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:21:45.909Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:21:45.913Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:21:45.911436Z\"},\"requestId\":\"cced42c7-4f06-426c-a63c-0268f5395500\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:21:45.937Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:21:45.938Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:21:45.994Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:21:46.315Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:21:46.334Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:21:46.364Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:21:46.387Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:21:47.075Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 59132"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:21:47.259Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s5-network-error-2026-10-06T14-21-45-880Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:21:49.527Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:21:50.282Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=8"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:21:51.800Z",
+      "name": "failed-put-captured",
+      "status": "pass",
+      "detail": "[{\"status\":null,\"bodyLen\":217}]"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:21:51.801Z",
+      "name": "after-fail-state",
+      "status": "info",
+      "detail": "{\"textKept\":true,\"checkedKept\":1,\"savedLine\":\"已保存：版本 8 · 2026-10-06T14:21:33.527260+00:00 · 有未保存修改\",\"alerts\":[\"无法连接服务，请确认网络和后端运行状态后重试。\"]}"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:21:52.197Z",
+      "name": "screenshot:panel-failed-save-retains",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s5-network-error-2026-10-06T14-21-45-880Z\\18-panel-failed-save-retains.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:21:52.198Z",
+      "name": "panel-visible:failed-save-retains",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=765"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:21:54.701Z",
+      "name": "no-auto-retry",
+      "status": "pass",
+      "detail": "PUT count 1 (expected 1)"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:21:56.079Z",
+      "name": "screenshot:panel-after-retry-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s5-network-error-2026-10-06T14-21-45-880Z\\21-panel-after-retry-save.png"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:21:56.079Z",
+      "name": "panel-visible:after-retry-save",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=769"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:21:56.938Z",
+      "name": "failure-alert-shown",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:21:56.938Z",
+      "name": "content-and-selection-retained",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:21:56.938Z",
+      "name": "exactly-one-failed-put",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:21:56.938Z",
+      "name": "no-retry-without-user-click",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:21:56.939Z",
+      "name": "manual-second-click-single-put",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:21:56.939Z",
+      "name": "retry-saved-revision-bump",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-06T14:21:57.039Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s5-network-error-2026-10-06T14-21-45-880Z\\s5-server-truth.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s5-network-error-2026-10-06T14-21-45-880Z\\s5-network-log.json"
+  ],
+  "finishedAt": "2026-10-06T14:21:57.039Z",
+  "overall": "pass"
+}

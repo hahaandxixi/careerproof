@@ -1,0 +1,52 @@
+{
+  "baseline": 25,
+  "textV5": "PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z",
+  "failedPut": {
+    "at": "2026-10-06T14:43:07.289Z",
+    "method": "PUT",
+    "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+    "requestBody": "{\"text\":\"PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\"}],\"expectedRevision\":25}",
+    "status": null,
+    "responseBody": null
+  },
+  "retryPut": {
+    "at": "2026-10-06T14:43:11.174Z",
+    "method": "PUT",
+    "url": "/api/v1/growth-tasks/15c7f81f-5789-48cf-908f-5429728becf1/answer-draft",
+    "requestBody": "{\"text\":\"PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\"}],\"expectedRevision\":25}",
+    "status": 200,
+    "responseBody": "{\"code\":0,\"message\":\"success\",\"data\":{\"taskId\":\"15c7f81f-5789-48cf-908f-5429728becf1\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"text\":\"PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z\",\"references\":[{\"reportId\":\"1ce37c54-c148-469b-ab2d-2ac756d87cf6\",\"requirementId\":\"a40b5bbc-2629-4242-b2bb-a0876a3ba3e8\",\"citationId\":\"R1-E1\",\"available\":true,\"snippet\":\"def process_records(records):\\n    \\\"\\\"\\\"按类目汇总金额，返回 {类目: 合计}。\\n\\n    具名实现：process_records —— 与补证任务交付物同名。\\n    \\\"\\\"\\\"\\n    totals = {}\\n    for record in records:\\n        key = record.get(\\\"category\\\", \\\"未分类\\\")\\n        totals[key] = totals.get(key, 0) + float(record.get(\\\"amount\\\", 0))\\n    return totals\",\"filePath\":\"d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py\",\"lineStart\":4,\"lineEnd\":13,\"provenance\":\"portfolio\"}],\"revision\":26,\"updatedAt\":\"2026-10-06T14:43:11.193176+00:00\",\"boundary\":\"私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。\"},\"requestId\":\"06615083-b8e7-47bd-97e1-8ac9852bcb2a\"}"
+  },
+  "refresh": {
+    "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+    "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+    "text": "PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z",
+    "references": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      }
+    ],
+    "revision": 26,
+    "updatedAt": "2026-10-06T14:43:11.193176+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "uiAfterFail": {
+    "path": "/growth/15c7f81f-5789-48cf-908f-5429728becf1",
+    "savedLine": "已保存：版本 25 · 2026-10-06T14:42:44.274793+00:00 · 有未保存修改",
+    "text": "PRODUCT01-S5-网络失败保内容 2026-10-06T144306569Z",
+    "checkedReferences": [
+      "基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行"
+    ],
+    "alerts": [
+      "无法连接服务，请确认网络和后端运行状态后重试。"
+    ]
+  }
+}

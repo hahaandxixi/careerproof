@@ -1,0 +1,243 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s2-clear-explicit-save",
+  "startedAt": "2026-10-06T14:20:43.372Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:20:43.373Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:20:43.373Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:20:43.401Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:20:43.406Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:20:43.405458Z\"},\"requestId\":\"7ae3a4c7-82ae-43c7-8889-38b6d44fc272\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:20:43.430Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:20:43.431Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:20:43.498Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:20:43.836Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:20:43.862Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:20:43.885Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:20:43.911Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:20:44.632Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 57659"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:20:44.843Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:20:47.131Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:20:47.893Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=3"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:20:48.484Z",
+      "name": "cleared-unsaved-state",
+      "status": "info",
+      "detail": "{\"savedLine\":\"已保存：版本 3 · 2026-10-06T14:16:04.489289+00:00 · 有未保存修改\",\"textLength\":0,\"checked\":1}"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:20:48.883Z",
+      "name": "screenshot:panel-cleared-unsaved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\17-panel-cleared-unsaved.png"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:20:48.883Z",
+      "name": "panel-visible:cleared-unsaved",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:20:49.743Z",
+      "name": "refresh-keeps-old-content",
+      "status": "info",
+      "detail": "{\"textMatchesSaved\":true,\"savedLine\":\"已保存：版本 3 · 2026-10-06T14:16:04.489289+00:00 · 与已保存内容一致\"}"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:20:50.134Z",
+      "name": "screenshot:panel-refresh-restores-old",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\20-panel-refresh-restores-old.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:20:50.134Z",
+      "name": "panel-visible:refresh-restores-old",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:20:51.723Z",
+      "name": "explicit-clear-save",
+      "status": "pass",
+      "detail": "PUT status=200 requestTextEmpty=true"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:20:52.115Z",
+      "name": "screenshot:panel-after-clear-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\23-panel-after-clear-save.png"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:20:52.115Z",
+      "name": "panel-visible:after-clear-save",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=769"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:20:52.973Z",
+      "name": "refresh-after-clear-save",
+      "status": "info",
+      "detail": "{\"textEmpty\":true,\"savedLine\":\"已保存：版本 4 · 2026-10-06T14:20:50.949831+00:00 · 与已保存内容一致\",\"checked\":[\"基准报告 R1-E1 · d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py 第4-13行\"]}"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:20:53.368Z",
+      "name": "screenshot:panel-refresh-empty-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\26-panel-refresh-empty-saved.png"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:20:53.368Z",
+      "name": "panel-visible:refresh-empty-saved",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:20:53.634Z",
+      "name": "clear-without-save-keeps-old-on-refresh",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-06T14:20:53.634Z",
+      "name": "explicit-clear-save-versions-bump",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-06T14:20:53.634Z",
+      "name": "empty-text-after-explicit-save",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 31,
+      "at": "2026-10-06T14:20:53.634Z",
+      "name": "db-row-empty-and-bumped",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-06T14:20:53.635Z",
+      "name": "refs-preserved-through-clear-save",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-06T14:20:53.747Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\s2-server-truth.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s2-clear-explicit-save-2026-10-06T14-20-43-372Z\\s2-network-log.json"
+  ],
+  "finishedAt": "2026-10-06T14:20:53.747Z",
+  "overall": "pass"
+}

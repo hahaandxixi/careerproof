@@ -1,0 +1,23 @@
+{
+  "metrics390": {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "docNoHorizontalOverflow": true,
+    "sectionNoHorizontalOverflow": true,
+    "longReferenceLabelsContained": true,
+    "textareaVisible": true,
+    "buttons": {
+      "保存草稿": true,
+      "重读已保存草稿": true,
+      "读取服务器版本作对照": true,
+      "以本人编辑重新保存（使用服务器版本号）": true
+    }
+  },
+  "deskBaseline": 11,
+  "dbRow": {
+    "revision": 13,
+    "text": "PRODUCT01-S11-390窗口旧版本编辑 2026-10-06T142518844Z"
+  }
+}

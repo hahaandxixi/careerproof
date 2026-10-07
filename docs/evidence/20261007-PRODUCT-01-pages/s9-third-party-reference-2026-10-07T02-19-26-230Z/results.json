@@ -1,0 +1,363 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s9-third-party-reference",
+  "startedAt": "2026-10-07T02:19:26.231Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:19:26.231Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:19:26.232Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:19:26.262Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:19:26.268Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:19:26.265591Z\"},\"requestId\":\"0b9dfe97-2f90-4807-a3d8-876c9b70b8e3\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:19:26.299Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:19:26.299Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:19:26.361Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:19:26.721Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:19:27.661Z",
+      "name": "s9-accounting-before",
+      "status": "info",
+      "detail": "{\"label\":\"before\",\"analysisTasks\":13,\"aiUsageLogs\":0,\"notifications\":12}"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:19:28.637Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 59318"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:19:28.822Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\11-login-empty.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:19:31.090Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:19:31.352Z",
+      "name": "s9-upload-skipped",
+      "status": "info",
+      "detail": "reference material card already parsed from an earlier s9 run"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:19:31.353Z",
+      "name": "s9-card-shows-reference-role",
+      "status": "pass",
+      "detail": "项目 | E2E第三方参考材料（合成） | reference-project.zip · 第 1 版 · 2026/10/7 10:12:27 · 第三方参考 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:19:31.394Z",
+      "name": "screenshot:s9-reference-card",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\15-s9-reference-card.png"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:19:32.434Z",
+      "name": "s9-upload-accounting",
+      "status": "info",
+      "detail": "uploadAnalysis=/tasks/0f5c0d9e-cfb1-49f3-a695-4e7adcb3d6ed {\"label\":\"after-upload\",\"analysisTasks\":13,\"aiUsageLogs\":0,\"notifications\":12} (delta vs before: analysis +0)"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:19:32.446Z",
+      "name": "s9-job-b",
+      "status": "info",
+      "detail": "jobId=536f5d56-bfd3-4c45-a104-73ab79475e09 title=E2E 岗位B（合成）"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:19:32.464Z",
+      "name": "s9-report-reused",
+      "status": "info",
+      "detail": "report 9f198a94-a202-4c68-b643-8941a0ce5966 from s9-state (earlier run; no new analysis expected)"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:19:33.358Z",
+      "name": "screenshot:s9-report-page",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\19-s9-report-page.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:19:34.308Z",
+      "name": "s9-report-accounting",
+      "status": "pass",
+      "detail": "afterUpload={\"label\":\"after-upload\",\"analysisTasks\":13,\"aiUsageLogs\":0,\"notifications\":12} afterReport={\"label\":\"after-report\",\"analysisTasks\":13,\"aiUsageLogs\":0,\"notifications\":12} 报告阶段分析delta=+0（复用已有报告，预期+0；usage delta=+0，notifications delta=+0）"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:19:36.358Z",
+      "name": "s9-task-existing-opened",
+      "status": "info",
+      "detail": "task 5a23eb45-31fe-464d-aff0-d137c820246a (dedup: same report+requirement returns the original task)"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:19:36.382Z",
+      "name": "s9-reference-options-with-provenance",
+      "status": "pass",
+      "detail": "total=1 reference=1 first={\"reportId\":\"9f198a94-a202-4c68-b643-8941a0ce5966\",\"requirementId\":\"87278d08-e1ed-4fa9-b90b-b75791504b57\",\"citationId\":\"R1-E1\",\"reportKind\":\"base\",\"filePath\":\"c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py\",\"l"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:19:37.161Z",
+      "name": "s9-option-label-marks-third-party",
+      "status": "pass",
+      "detail": "基准报告 R1-E1 · c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行 · 第三方参考，不计入评级"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:19:38.245Z",
+      "name": "s9-reference-checkbox-checked",
+      "status": "pass",
+      "detail": "R1-E1"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:19:41.993Z",
+      "name": "screenshot:panel-s9-preview-copy",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\25-panel-s9-preview-copy.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:19:41.993Z",
+      "name": "panel-visible:s9-preview-copy",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=1035"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-07T02:19:42.392Z",
+      "name": "screenshot:panel-s9-preview-copy-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\27-panel-s9-preview-copy-lower.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-07T02:19:43.379Z",
+      "name": "upload-card-marks-reference",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-07T02:19:43.380Z",
+      "name": "mock-report-created",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-07T02:19:43.380Z",
+      "name": "report-accounting-one-new-analysis",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 31,
+      "at": "2026-10-07T02:19:43.380Z",
+      "name": "reference-options-carry-provenance",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-07T02:19:43.381Z",
+      "name": "option-label-marks-third-party",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-07T02:19:43.381Z",
+      "name": "draft-saves-reference-triple",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 34,
+      "at": "2026-10-07T02:19:43.381Z",
+      "name": "draft-reference-provenance-and-snippet",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-07T02:19:43.381Z",
+      "name": "refresh-keeps-text-and-reference",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 36,
+      "at": "2026-10-07T02:19:43.381Z",
+      "name": "refresh-server-revision-matches-page",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 37,
+      "at": "2026-10-07T02:19:43.382Z",
+      "name": "preview-marks-third-party-and-keeps-snippet",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 38,
+      "at": "2026-10-07T02:19:43.382Z",
+      "name": "copy-equals-preview-simulated-clipboard",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 39,
+      "at": "2026-10-07T02:19:43.382Z",
+      "name": "draft-ops-no-analysis-usage-notifications",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 40,
+      "at": "2026-10-07T02:19:44.108Z",
+      "name": "s9-task-resume-selected",
+      "status": "pass",
+      "detail": "resume-v2.txt"
+    },
+    {
+      "n": 41,
+      "at": "2026-10-07T02:19:45.557Z",
+      "name": "s9-task-project-selected:reference-project.zip",
+      "status": "pass",
+      "detail": "reference-project.zip"
+    },
+    {
+      "n": 42,
+      "at": "2026-10-07T02:19:46.271Z",
+      "name": "s9-task-project-selected:new-version-project.zip",
+      "status": "pass",
+      "detail": "new-version-project.zip"
+    },
+    {
+      "n": 43,
+      "at": "2026-10-07T02:19:46.308Z",
+      "name": "screenshot:s9-task-materials-form",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\43-s9-task-materials-form.png"
+    },
+    {
+      "n": 44,
+      "at": "2026-10-07T02:19:47.504Z",
+      "name": "s9-task-materials-saved",
+      "status": "pass",
+      "detail": "materials=[\"resume:c7dfb109\",\"project:c80cacf1:reference\",\"project:d52c3620\"]"
+    },
+    {
+      "n": 45,
+      "at": "2026-10-07T02:19:51.977Z",
+      "name": "s9-analysis-generated-on-task",
+      "status": "pass",
+      "detail": "生成新报告 completed via UI (Mock); 计入新报告记账"
+    },
+    {
+      "n": 46,
+      "at": "2026-10-07T02:19:52.869Z",
+      "name": "s9-task-analysis-accounting",
+      "status": "info",
+      "detail": "afterDrafts={\"label\":\"after-draft-ops\",\"analysisTasks\":13,\"aiUsageLogs\":0,\"notifications\":12} afterAnalyze={\"label\":\"after-task-analysis\",\"analysisTasks\":14,\"aiUsageLogs\":0,\"notifications\":12} (delta analysis +1)"
+    },
+    {
+      "n": 47,
+      "at": "2026-10-07T02:19:53.204Z",
+      "name": "s9-task-analysis-status",
+      "status": "info",
+      "detail": "analysisTask=1598b021-c8b0-4763-bc87-010bb4e75297 status=COMPLETED"
+    },
+    {
+      "n": 48,
+      "at": "2026-10-07T02:19:53.824Z",
+      "name": "s9-reselect-409",
+      "status": "pass",
+      "detail": "PUT materials -> 409 code=4099"
+    },
+    {
+      "n": 49,
+      "at": "2026-10-07T02:19:53.825Z",
+      "name": "s9-frozen-row-unchanged",
+      "status": "pass",
+      "detail": "taskRowEqual=true"
+    },
+    {
+      "n": 50,
+      "at": "2026-10-07T02:19:53.953Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\s9-summary.json",
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\s9-part-c.json",
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-19-26-230Z\\s9-network-log.json"
+  ],
+  "finishedAt": "2026-10-07T02:19:53.954Z",
+  "overall": "pass"
+}

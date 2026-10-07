@@ -1,0 +1,28 @@
+{
+  "heldEntry": [
+    {
+      "at": "2026-10-06T14:45:41.497Z",
+      "kind": "hold-response",
+      "method": "GET",
+      "stage": "response",
+      "status": 200,
+      "released": true,
+      "releasedAt": "2026-10-06T14:45:44.935Z",
+      "releaseOutcome": "interception-invalid-after-context-destroyed"
+    }
+  ],
+  "identity": {
+    "path": "/portfolio",
+    "displayName": "E2E 合成学生",
+    "hasStudentNav": true
+  },
+  "leak": {
+    "bodyHasMarker": false,
+    "displayName": "E2E 合成学生"
+  },
+  "growthA2": {
+    "hasDraftSection": false,
+    "bodyHasMarker": false,
+    "emptyList": true
+  }
+}

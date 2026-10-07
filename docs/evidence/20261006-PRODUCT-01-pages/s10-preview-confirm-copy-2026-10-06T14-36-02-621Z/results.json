@@ -1,0 +1,257 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s10-preview-confirm-copy",
+  "startedAt": "2026-10-06T14:36:02.622Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:36:02.623Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:36:02.623Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:36:02.652Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:36:02.657Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:36:02.655544Z\"},\"requestId\":\"8e789a60-67c9-402a-96bf-ad1a929c2c82\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:36:02.680Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:36:02.680Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:36:02.733Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:36:03.074Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:36:03.095Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:36:03.114Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:36:03.141Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:36:03.854Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 59415"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:36:04.040Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:36:06.286Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:36:07.044Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=21"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:36:09.397Z",
+      "name": "preview-opened",
+      "status": "info",
+      "detail": "clipboardAfterPreview=\"SENTINEL-BEFORE-PREVIEW\" previewLen=606"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:36:09.809Z",
+      "name": "screenshot:panel-preview-open",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\17-panel-preview-open.png"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:36:09.809Z",
+      "name": "panel-visible:preview-open",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=1147"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:36:10.217Z",
+      "name": "screenshot:panel-preview-open-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\19-panel-preview-open-lower.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:36:10.925Z",
+      "name": "copy-success",
+      "status": "fail",
+      "detail": "clipboardLen=624 previewLen=606"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:36:11.320Z",
+      "name": "screenshot:panel-after-copy",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\21-panel-after-copy.png"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:36:11.321Z",
+      "name": "panel-visible:after-copy",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=1147"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:36:11.719Z",
+      "name": "screenshot:panel-after-copy-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\23-panel-after-copy-lower.png"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:36:12.415Z",
+      "name": "copy-failure-state",
+      "status": "info",
+      "detail": "{\"previewStillPresent\":true,\"alertTexts\":[\"复制失败：denied；可重试或手动选择文本复制。\"],\"retryHint\":true,\"textKept\":true}"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:36:12.818Z",
+      "name": "screenshot:panel-copy-failed",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\25-panel-copy-failed.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:36:12.819Z",
+      "name": "panel-visible:copy-failed",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=1143"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:36:13.218Z",
+      "name": "screenshot:panel-copy-failed-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\27-panel-copy-failed-lower.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:36:13.220Z",
+      "name": "preview-open-does-not-write-clipboard",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 29,
+      "at": "2026-10-06T14:36:13.220Z",
+      "name": "preview-contains-required-parts",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 30,
+      "at": "2026-10-06T14:36:13.220Z",
+      "name": "copy-only-on-explicit-confirm",
+      "status": "fail",
+      "detail": "clipPreview=\"SENTINEL-BEFORE-PREVIEW\" clipCopy=624 preview=606 fail={\"previewStillPresent\":true,\"alertTexts\":[\"复制失败：denied；可重试或手动选择文本复制。\"],\"retryHint\":true} nonLocal=[]"
+    },
+    {
+      "n": 31,
+      "at": "2026-10-06T14:36:13.220Z",
+      "name": "failure-keeps-content",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 32,
+      "at": "2026-10-06T14:36:13.221Z",
+      "name": "failure-keeps-preview",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 33,
+      "at": "2026-10-06T14:36:13.221Z",
+      "name": "failure-shows-retry-hint",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 34,
+      "at": "2026-10-06T14:36:13.221Z",
+      "name": "zero-external-network-sends",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-06T14:36:13.364Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\s10-summary.json",
+    "docs\\evidence\\20261006-PRODUCT-01-pages\\s10-preview-confirm-copy-2026-10-06T14-36-02-621Z\\s10-network-log.json"
+  ],
+  "finishedAt": "2026-10-06T14:36:13.364Z",
+  "overall": "fail"
+}

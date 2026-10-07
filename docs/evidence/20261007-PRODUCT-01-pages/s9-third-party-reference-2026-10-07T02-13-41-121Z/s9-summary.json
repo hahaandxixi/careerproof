@@ -1,0 +1,76 @@
+{
+  "partA": {
+    "refFile": "reference-project.zip",
+    "jobB": "536f5d56-bfd3-4c45-a104-73ab79475e09",
+    "s9AnalysisId": "a460e012-d9b0-472b-9544-9e18a65233a0",
+    "s9ReportId": "9f198a94-a202-4c68-b643-8941a0ce5966"
+  },
+  "partB": {
+    "s9TaskId": "5a23eb45-31fe-464d-aff0-d137c820246a",
+    "refOption": {
+      "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+      "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "citationId": "R1-E1",
+      "reportKind": "base",
+      "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+      "lineStart": 7,
+      "lineEnd": 13,
+      "provenance": "reference"
+    },
+    "optionLabel": "基准报告 R1-E1 · c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行 · 第三方参考，不计入评级",
+    "savedRef": {
+      "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+      "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "citationId": "R1-E1",
+      "available": true,
+      "snippet": "def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[category] = totals.get(category, 0) + 1\n    return dict(sorted(totals.items()))",
+      "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+      "lineStart": 7,
+      "lineEnd": 13,
+      "provenance": "reference"
+    },
+    "refreshedRef": {
+      "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+      "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+      "citationId": "R1-E1",
+      "available": true,
+      "snippet": "def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[category] = totals.get(category, 0) + 1\n    return dict(sorted(totals.items()))",
+      "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+      "lineStart": 7,
+      "lineEnd": 13,
+      "provenance": "reference"
+    },
+    "refreshed": {
+      "text": "PRODUCT01-S9-第三方参考草稿 2026-10-07T021359180Z",
+      "checkedReferences": [
+        "基准报告 R1-E1 · c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行 · 第三方参考，不计入评级"
+      ],
+      "savedLine": "已保存：版本 1 · 2026-10-07T02:14:00.672908+00:00 · 与已保存内容一致"
+    },
+    "previewHead": "【私人回答草稿 · 仅供本人核对】\n对应原要求：岗位B要求：能够使用 Python 编写数据处理脚本（E2E 岗位B（合成））\n——草稿正文——\nPRODUCT01-S9-第三方参考草稿 2026-10-07T021359180Z\n——引用来源（服务端验证）——\n- 基准报告 R1-E1 c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行（第三方参考，不计入评级）\n  原文片段：def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[cate",
+    "copiedEqualsPreview": true,
+    "putsB": [
+      200
+    ],
+    "accounting": {
+      "beforeAny": {
+        "label": "before",
+        "analysisTasks": 12,
+        "aiUsageLogs": 0,
+        "notifications": 12
+      },
+      "afterReport": {
+        "label": "after-report",
+        "analysisTasks": 13,
+        "aiUsageLogs": 0,
+        "notifications": 12
+      },
+      "afterDrafts": {
+        "label": "after-draft-ops",
+        "analysisTasks": 13,
+        "aiUsageLogs": 0,
+        "notifications": 12
+      }
+    }
+  }
+}

@@ -1,0 +1,313 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s4-dual-window-409",
+  "startedAt": "2026-10-07T02:26:05.597Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:26:05.597Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:26:05.598Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:26:05.624Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:26:05.628Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:26:05.625728Z\"},\"requestId\":\"e1d4d4f9-d2fb-4ad6-9457-28e958e11960\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:26:05.652Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:26:05.652Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:26:05.717Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:26:06.273Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=4 db own tasks=5 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:26:06.304Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5a23eb45-31fe-464d-aff0-d137c820246a job=E2E 岗位B（合成） baseOptions=1 totalOptions=4"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:26:06.320Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:26:06.349Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:26:06.379Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:26:07.259Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "studentA port 61282"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:26:08.095Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "studentB port 63985"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:26:08.269Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\15-login-empty.png"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:26:10.515Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:26:11.274Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=7"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:26:11.473Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\18-login-empty.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:26:13.733Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-07T02:26:14.505Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=7"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-07T02:26:14.506Z",
+      "name": "both-windows-baseline",
+      "status": "pass",
+      "detail": "A rev=7 B rev=7"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-07T02:26:16.039Z",
+      "name": "window-a-saved",
+      "status": "pass",
+      "detail": "PUT status=200 rev=8"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-07T02:26:17.563Z",
+      "name": "window-b-409",
+      "status": "pass",
+      "detail": "PUT status=409 code=4240 expectedRevision=7"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-07T02:26:17.565Z",
+      "name": "after-409-state",
+      "status": "info",
+      "detail": "{\"textKept\":true,\"savedLine\":\"已保存：版本 7 · 2026-10-07T02:25:46.180356+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-07T02:26:17.967Z",
+      "name": "screenshot:panel-after-409",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\25-panel-after-409.png"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-07T02:26:17.968Z",
+      "name": "panel-visible:after-409",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=869"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-07T02:26:18.359Z",
+      "name": "screenshot:panel-after-409-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\27-panel-after-409-lower.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-07T02:26:19.145Z",
+      "name": "after-compare-state",
+      "status": "info",
+      "detail": "{\"textStillB\":true,\"savedLine\":\"已保存：版本 7 · 2026-10-07T02:25:46.180356+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 29,
+      "at": "2026-10-07T02:26:19.551Z",
+      "name": "screenshot:panel-after-compare",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\29-panel-after-compare.png"
+    },
+    {
+      "n": 30,
+      "at": "2026-10-07T02:26:19.553Z",
+      "name": "panel-visible:after-compare",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=933"
+    },
+    {
+      "n": 31,
+      "at": "2026-10-07T02:26:19.964Z",
+      "name": "screenshot:panel-after-compare-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\31-panel-after-compare-lower.png"
+    },
+    {
+      "n": 32,
+      "at": "2026-10-07T02:26:21.362Z",
+      "name": "screenshot:panel-after-overwrite-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\32-panel-after-overwrite-save.png"
+    },
+    {
+      "n": 33,
+      "at": "2026-10-07T02:26:21.363Z",
+      "name": "panel-visible:after-overwrite-save",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 34,
+      "at": "2026-10-07T02:26:22.745Z",
+      "name": "windows-read-same-revision",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 35,
+      "at": "2026-10-07T02:26:22.746Z",
+      "name": "window-a-save-ok",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 36,
+      "at": "2026-10-07T02:26:22.746Z",
+      "name": "window-b-real-409",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 37,
+      "at": "2026-10-07T02:26:22.746Z",
+      "name": "b-edits-preserved-after-409",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 38,
+      "at": "2026-10-07T02:26:22.746Z",
+      "name": "compare-does-not-replace-edits",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 39,
+      "at": "2026-10-07T02:26:22.746Z",
+      "name": "explicit-overwrite-saves-b-text",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 40,
+      "at": "2026-10-07T02:26:22.747Z",
+      "name": "overwrite-used-server-revision",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 41,
+      "at": "2026-10-07T02:26:22.747Z",
+      "name": "final-refresh-and-db-match",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "n": 42,
+      "at": "2026-10-07T02:26:22.883Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "studentA exitCode=0"
+    },
+    {
+      "n": 43,
+      "at": "2026-10-07T02:26:23.008Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "studentB exitCode=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\s4-server-truth.json",
+    "docs\\evidence\\20261007-PRODUCT-01-pages\\s4-dual-window-409-2026-10-07T02-26-05-596Z\\s4-network-log.json"
+  ],
+  "finishedAt": "2026-10-07T02:26:23.009Z",
+  "overall": "pass"
+}

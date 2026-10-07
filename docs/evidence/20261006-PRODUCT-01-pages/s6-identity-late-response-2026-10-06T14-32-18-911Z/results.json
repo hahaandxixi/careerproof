@@ -1,0 +1,198 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s6-identity-late-response",
+  "startedAt": "2026-10-06T14:32:18.911Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:32:18.912Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:32:18.912Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:32:18.941Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:32:18.947Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:32:18.945553Z\"},\"requestId\":\"6eb6f705-cc37-4ef2-b10c-1e9a1a7402f4\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:32:18.970Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:32:18.971Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:32:19.047Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:32:19.414Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:32:19.444Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:32:19.461Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:32:19.488Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:32:20.266Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 64427"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:32:20.465Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s6-identity-late-response-2026-10-06T14-32-18-911Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:32:22.702Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:32:23.476Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=18"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:32:25.229Z",
+      "name": "get-hold-confirmed",
+      "status": "pass",
+      "detail": "{\"at\":\"2026-10-06T14:32:25.090Z\",\"kind\":\"hold-response\",\"method\":\"GET\",\"stage\":\"response\",\"status\":200,\"released\":false,\"releasedAt\":null}"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:32:26.053Z",
+      "name": "hidden-state-cleared",
+      "status": "info",
+      "detail": "null"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:32:27.062Z",
+      "name": "late-receipt-discarded",
+      "status": "fail",
+      "detail": "null"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:32:27.788Z",
+      "name": "restored-from-server",
+      "status": "pass",
+      "detail": "textLen=42 wantLen=42 savedLine=已保存：版本 19 · 2026-10-06T14:32:24.212671+00:00 · 与已保存内容一致"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:32:28.188Z",
+      "name": "screenshot:panel-restored",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s6-identity-late-response-2026-10-06T14-32-18-911Z\\20-panel-restored.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:32:28.188Z",
+      "name": "panel-visible:restored",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:32:28.320Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:32:29.024Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "studentA2 port 57751"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:32:29.197Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s6-identity-late-response-2026-10-06T14-32-18-911Z\\24-login-empty.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:32:31.456Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:32:32.829Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "studentA2 exitCode=0"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:32:32.829Z",
+      "name": "runner-error",
+      "status": "fail",
+      "detail": "marker is not defined"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:32:32.830Z",
+  "overall": "fail"
+}

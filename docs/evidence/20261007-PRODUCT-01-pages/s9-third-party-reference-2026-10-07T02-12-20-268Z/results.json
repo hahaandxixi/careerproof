@@ -1,0 +1,142 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s9-third-party-reference",
+  "startedAt": "2026-10-07T02:12:20.269Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-07T02:12:20.270Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-07T02:12:20.270Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-07T02:12:20.300Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-07T02:12:20.306Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-07T02:12:20.303580Z\"},\"requestId\":\"c61ded2c-645f-4112-8337-a411660099a0\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-07T02:12:20.332Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":156840,\"8001\":147076}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-07T02:12:20.332Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[156840,147076] manifest=[143380,156840] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-07T02:12:20.393Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-07T02:12:20.760Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-07T02:12:21.658Z",
+      "name": "s9-accounting-before",
+      "status": "info",
+      "detail": "{\"label\":\"before\",\"analysisTasks\":11,\"aiUsageLogs\":0,\"notifications\":12}"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-07T02:12:22.573Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 63622"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-07T02:12:22.754Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-12-20-268Z\\11-login-empty.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-07T02:12:25.005Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-07T02:12:27.317Z",
+      "name": "s9-material-role-reference-checked",
+      "status": "pass",
+      "detail": "radio checked=true"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-07T02:12:27.357Z",
+      "name": "screenshot:s9-reference-form",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-12-20-268Z\\14-s9-reference-form.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-07T02:12:31.783Z",
+      "name": "s9-card-shows-reference-role",
+      "status": "pass",
+      "detail": "项目 | E2E第三方参考材料（合成） | reference-project.zip · 第 1 版 · 2026/10/7 10:12:27 · 第三方参考 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-07T02:12:31.843Z",
+      "name": "screenshot:s9-reference-card",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261007-PRODUCT-01-pages\\s9-third-party-reference-2026-10-07T02-12-20-268Z\\16-s9-reference-card.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-07T02:12:31.856Z",
+      "name": "s9-job-b",
+      "status": "info",
+      "detail": "jobId=536f5d56-bfd3-4c45-a104-73ab79475e09 title=E2E 岗位B（合成）"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-07T02:12:33.209Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-07T02:12:33.209Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "clickStored: no clickable rect for project picker open: {\"x\":205,\"y\":419,\"hitIsEl\":false}"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-07T02:12:33.210Z",
+  "overall": "fail"
+}

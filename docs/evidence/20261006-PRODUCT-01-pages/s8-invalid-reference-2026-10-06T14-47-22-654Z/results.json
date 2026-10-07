@@ -1,0 +1,205 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s8-invalid-reference",
+  "startedAt": "2026-10-06T14:47:22.655Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:47:22.656Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:47:22.656Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:47:22.684Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:47:22.689Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:47:22.686943Z\"},\"requestId\":\"7a8a55a3-df0e-409b-8101-f8fc00860422\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:47:22.714Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:47:22.715Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:47:22.784Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:47:23.116Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:47:23.148Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:47:23.166Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:47:23.193Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:47:23.752Z",
+      "name": "s8-analysis-status",
+      "status": "info",
+      "detail": "analysisTask=c6d3d560-b17f-4de6-b990-e4d1603eca6d status=COMPLETED"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:47:24.053Z",
+      "name": "s8-reselect-409",
+      "status": "pass",
+      "detail": "PUT materials -> 409 code=4099"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:47:24.053Z",
+      "name": "s8-frozen-state-unchanged",
+      "status": "pass",
+      "detail": "taskRowEqual=true draftRev=30"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:47:24.773Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 56768"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:47:24.945Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-47-22-654Z\\16-login-empty.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:47:27.212Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:47:27.972Z",
+      "name": "s8-ui-reselect-locked",
+      "status": "pass",
+      "detail": "{\"found\":true,\"disabled\":true}"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:47:28.006Z",
+      "name": "screenshot:s8-ui-locked",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-47-22-654Z\\19-s8-ui-locked.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:47:30.390Z",
+      "name": "s8-injected-degradation",
+      "status": "evidence",
+      "detail": "fault=[{\"at\":\"2026-10-06T14:47:29.643Z\",\"kind\":\"modify-response\",\"method\":\"GET\",\"stage\":\"response\",\"status\":200,\"fulfilled\":true,\"originalBodyLen\":981}] page={\"text\":\"PRODUCT01-S8-引用失效降级 2026-10-06T144728007Z\",\"orphan\":false,\"orphanText\":null,\"hasRemoveButton\":false}"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:47:30.786Z",
+      "name": "screenshot:panel-injected-degraded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-47-22-654Z\\21-panel-injected-degraded.png"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:47:30.787Z",
+      "name": "panel-visible:injected-degraded",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=729"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:47:32.256Z",
+      "name": "s8-preview-copy-exclude-invalid",
+      "status": "evidence",
+      "detail": "previewHasInvalidSection=true previewHasSnippet=false copiedEqualsPreview=true"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:47:32.651Z",
+      "name": "screenshot:panel-degraded-preview-copy",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-47-22-654Z\\24-panel-degraded-preview-copy.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:47:32.652Z",
+      "name": "panel-visible:degraded-preview-copy",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=1139"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:47:33.051Z",
+      "name": "screenshot:panel-degraded-preview-copy-lower",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s8-invalid-reference-2026-10-06T14-47-22-654Z\\26-panel-degraded-preview-copy-lower.png"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-06T14:47:33.162Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-06T14:47:33.163Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "移除 button not found in degraded state"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:47:33.163Z",
+  "overall": "fail"
+}

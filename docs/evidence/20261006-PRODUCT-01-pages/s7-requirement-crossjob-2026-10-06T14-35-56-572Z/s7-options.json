@@ -1,0 +1,109 @@
+{
+  "sameJob": {
+    "taskId": "15c7f81f-5789-48cf-908f-5429728becf1",
+    "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+    "refs": [
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E1",
+        "reportKind": "base",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E2",
+        "reportKind": "base",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/tests/test_pipeline.py",
+        "lineStart": 5,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "1ce37c54-c148-469b-ab2d-2ac756d87cf6",
+        "requirementId": "a40b5bbc-2629-4242-b2bb-a0876a3ba3e8",
+        "citationId": "R1-E3",
+        "reportKind": "base",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/requirements.txt",
+        "lineStart": 2,
+        "lineEnd": 2,
+        "provenance": "portfolio"
+      }
+    ]
+  },
+  "crossJob": {
+    "taskId": "225fa32f-9a21-4fd6-83a7-0af8b0815702",
+    "refs": [
+      {
+        "reportId": "1c421762-226c-4895-8949-2752c1482b17",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1",
+        "reportKind": "base",
+        "filePath": "a4e1b6f3-65a7-48ec-9812-70372ae2bf3f/README.md",
+        "lineStart": 3,
+        "lineEnd": 7,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "1c421762-226c-4895-8949-2752c1482b17",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E2",
+        "reportKind": "base",
+        "filePath": "a4e1b6f3-65a7-48ec-9812-70372ae2bf3f/README.md",
+        "lineStart": 1,
+        "lineEnd": 7,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1",
+        "reportKind": "target",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/pipeline.py",
+        "lineStart": 4,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E2",
+        "reportKind": "target",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/tests/test_pipeline.py",
+        "lineStart": 5,
+        "lineEnd": 13,
+        "provenance": "portfolio"
+      },
+      {
+        "reportId": "d65c7585-3a5b-4d25-ae01-f3f70488a0e2",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E3",
+        "reportKind": "target",
+        "filePath": "d52c3620-91b7-49c6-9d23-a50a87abfb45/requirements.txt",
+        "lineStart": 2,
+        "lineEnd": 2,
+        "provenance": "portfolio"
+      }
+    ]
+  },
+  "pageFacts": {
+    "sameJob": {
+      "legend": "从服务端可选引用中选择证据（原要求：岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试）",
+      "baseOptions": 3,
+      "targetOptions": 0,
+      "crossJobNote": true,
+      "referenceScopeNotice": true
+    },
+    "crossJob": {
+      "legend": "从服务端可选引用中选择证据（原要求：岗位B要求：能够使用 Python 编写数据处理脚本）",
+      "baseOptions": 2,
+      "targetOptions": 3,
+      "crossJobNote": false,
+      "referenceScopeNotice": false
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "baseline": 5,
+  "textV1": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z",
+  "appended": "；保存中追加的文字，回执到达后不得覆盖。",
+  "put1Request": {
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z",
+    "references": [
+      {
+        "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1"
+      }
+    ],
+    "expectedRevision": 5
+  },
+  "put1Receipt": {
+    "taskId": "5a23eb45-31fe-464d-aff0-d137c820246a",
+    "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z",
+    "references": [
+      {
+        "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[category] = totals.get(category, 0) + 1\n    return dict(sorted(totals.items()))",
+        "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+        "lineStart": 7,
+        "lineEnd": 13,
+        "provenance": "reference"
+      }
+    ],
+    "revision": 6,
+    "updatedAt": "2026-10-07T02:25:43.079138+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "put2Request": {
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1"
+      }
+    ],
+    "expectedRevision": 6
+  },
+  "put2Receipt": {
+    "taskId": "5a23eb45-31fe-464d-aff0-d137c820246a",
+    "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[category] = totals.get(category, 0) + 1\n    return dict(sorted(totals.items()))",
+        "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+        "lineStart": 7,
+        "lineEnd": 13,
+        "provenance": "reference"
+      }
+    ],
+    "revision": 7,
+    "updatedAt": "2026-10-07T02:25:46.180356+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "refresh": {
+    "taskId": "5a23eb45-31fe-464d-aff0-d137c820246a",
+    "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。",
+    "references": [
+      {
+        "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+        "requirementId": "87278d08-e1ed-4fa9-b90b-b75791504b57",
+        "citationId": "R1-E1",
+        "available": true,
+        "snippet": "def fetch_category_totals(rows):\n    \"\"\"按类目汇总数量的示例实现（具名函数，合成编写）。\"\"\"\n    totals = {}\n    for row in rows:\n        category = row.get(\"category\", \"未分类\")\n        totals[category] = totals.get(category, 0) + 1\n    return dict(sorted(totals.items()))",
+        "filePath": "c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py",
+        "lineStart": 7,
+        "lineEnd": 13,
+        "provenance": "reference"
+      }
+    ],
+    "revision": 7,
+    "updatedAt": "2026-10-07T02:25:46.180356+00:00",
+    "boundary": "私人草稿仅本人可见；不会发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入。引用只是你核对过的原文线索，复制使用前请先预览确认。"
+  },
+  "dbRow": {
+    "revision": 7,
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。"
+  },
+  "uiAfterReceipt": {
+    "path": "/growth/5a23eb45-31fe-464d-aff0-d137c820246a",
+    "savedLine": "已保存：版本 6 · 2026-10-07T02:25:43.079138+00:00 · 有未保存修改",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。",
+    "checkedReferences": [
+      "基准报告 R1-E1 · c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行 · 第三方参考，不计入评级"
+    ],
+    "alerts": []
+  },
+  "uiAfterRefresh": {
+    "path": "/growth/5a23eb45-31fe-464d-aff0-d137c820246a",
+    "savedLine": "已保存：版本 7 · 2026-10-07T02:25:46.180356+00:00 · 与已保存内容一致",
+    "text": "PRODUCT01-S3-保存中继续编辑基线 2026-10-07T022542338Z；保存中追加的文字，回执到达后不得覆盖。",
+    "checkedReferences": [
+      "基准报告 R1-E1 · c80cacf1-a087-47cf-afce-2d8677b86a45/thirdparty_reflib.py 第7-13行 · 第三方参考，不计入评级"
+    ],
+    "alerts": []
+  },
+  "heldEntry": {
+    "at": "2026-10-07T02:25:43.084Z",
+    "kind": "hold-response",
+    "method": "PUT",
+    "stage": "response",
+    "status": 200,
+    "released": true,
+    "releasedAt": "2026-10-07T02:25:44.746Z"
+  }
+}

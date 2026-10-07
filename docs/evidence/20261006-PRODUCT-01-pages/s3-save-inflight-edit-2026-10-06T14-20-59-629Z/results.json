@@ -1,0 +1,191 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "s3-save-inflight-edit",
+  "startedAt": "2026-10-06T14:20:59.630Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-06T14:20:59.630Z",
+      "name": "manifest",
+      "status": "info",
+      "detail": "db=cp_e2e_closure-20261005 provider=mock external=false distDir=.next-e2e"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-06T14:20:59.631Z",
+      "name": "manifest-mock-check",
+      "status": "pass"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-06T14:20:59.661Z",
+      "name": "frontend-health",
+      "status": "pass",
+      "detail": "GET /login -> 200"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-06T14:20:59.665Z",
+      "name": "backend-health",
+      "status": "pass",
+      "detail": "GET /api/v1/health -> 200 {\"code\":0,\"message\":\"success\",\"data\":{\"status\":\"ok\",\"service\":\"CareerProof API\",\"timestamp\":\"2026-10-06T14:20:59.664995Z\"},\"requestId\":\"dc8974d3-0160-48b7-b6d2-6554e616c871\"}"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-06T14:20:59.694Z",
+      "name": "port-owners",
+      "status": "info",
+      "detail": "{\"3001\":53292,\"8001\":55380}"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-06T14:20:59.694Z",
+      "name": "process-identity",
+      "status": "pass",
+      "detail": "live=[53292,55380] manifest=[57440,53292] matched=1"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-06T14:20:59.745Z",
+      "name": "api-login",
+      "status": "pass",
+      "detail": "userId=d5e3f5be-4104-462f-ad93-74df5b38a6dc role=student"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-06T14:21:00.070Z",
+      "name": "backend-db-identity",
+      "status": "pass",
+      "detail": "api own tasks=3 db own tasks=4 apiIdsInDb=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-06T14:21:00.095Z",
+      "name": "task-options:岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+      "status": "info",
+      "detail": "taskId=15c7f81f-5789-48cf-908f-5429728becf1 job=E2E 岗位C（合成·补证目标） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-06T14:21:00.126Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=5d91c362-b2cd-4c7f-88ad-fdcf6515a078 job=E2E 岗位B（合成） baseOptions=3 totalOptions=3"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-06T14:21:00.155Z",
+      "name": "task-options:岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "info",
+      "detail": "taskId=225fa32f-9a21-4fd6-83a7-0af8b0815702 job=E2E 岗位B（合成） baseOptions=2 totalOptions=5"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-06T14:21:00.843Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 56655"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-06T14:21:01.026Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-06T14-20-59-629Z\\13-login-empty.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-06T14:21:03.303Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-06T14:21:04.072Z",
+      "name": "draft-initial-get",
+      "status": "pass",
+      "detail": "GET status=200 hasDraft=true baselineRevision=4"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-06T14:21:05.017Z",
+      "name": "delay-injected",
+      "status": "pass",
+      "detail": "[{\"at\":\"2026-10-06T14:21:04.825Z\",\"kind\":\"delay\",\"method\":\"PUT\",\"ms\":4500}]"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-06T14:21:05.620Z",
+      "name": "inflight-edit-state",
+      "status": "info",
+      "detail": "{\"textIsV1PlusAppend\":true,\"savedLine\":\"已保存：版本 4 · 2026-10-06T14:20:50.949831+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-06T14:21:06.030Z",
+      "name": "screenshot:panel-inflight-hold",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-06T14-20-59-629Z\\18-panel-inflight-hold.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-06T14:21:06.031Z",
+      "name": "panel-visible:inflight-hold",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=769"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-06T14:21:10.114Z",
+      "name": "after-receipt-state",
+      "status": "info",
+      "detail": "{\"textKeepsAppend\":true,\"savedLine\":\"已保存：版本 5 · 2026-10-06T14:21:09.357237+00:00 · 有未保存修改\"}"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-06T14:21:10.515Z",
+      "name": "screenshot:panel-after-receipt",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-06T14-20-59-629Z\\21-panel-after-receipt.png"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-06T14:21:10.515Z",
+      "name": "panel-visible:after-receipt",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=769"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-06T14:21:11.899Z",
+      "name": "screenshot:panel-after-second-save",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261006-PRODUCT-01-pages\\s3-save-inflight-edit-2026-10-06T14-20-59-629Z\\23-panel-after-second-save.png"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-06T14:21:11.899Z",
+      "name": "panel-visible:after-second-save",
+      "status": "info",
+      "detail": "viewport=1418x802 sectionTop=0 sectionHeight=769"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-06T14:21:13.102Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-06T14:21:13.103Z",
+      "name": "runner-error",
+      "status": "blocked",
+      "detail": "psql exit 1: ERROR:  syntax error at or near \"FROM\"\nLINE 1: ...', d.revision, 'text', d.text), '[]'::json)::text FROM growt...\n                                                             ^\n"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-06T14:21:13.103Z",
+  "overall": "fail"
+}
