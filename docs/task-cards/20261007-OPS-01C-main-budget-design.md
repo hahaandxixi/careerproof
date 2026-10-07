@@ -1,6 +1,6 @@
 # OPS-01C 主匹配与共用预算设计准备
 
-2026-10-07。状态：Codex独立只读设计，尚未委派或实施；等待OPS-01B核验链实际签收后定最终接口与文件范围。ZCode16仍是其源码与cp_test夹具唯一写入者。本卡覆盖完整目标第二阶段，不用准备卡代替完成。
+2026-10-07。OPS-01B核验链已阶段签收37133e5；主匹配批准接口与文件范围见[主匹配实施卡](20261007-OPS-01C-main-implementation.md)。共用日预留/跨午夜仍为设计门槛，未实施。传智杯16/17/18已终态，本卡旧16所有权声明已失效；新的单写入者按当轮卡核对，不用准备卡代替完成。
 
 ## 当前源码证据
 
@@ -28,3 +28,7 @@ services/analysis.py:137的_daily_ai_budget用User FOR NO KEY UPDATE（SQLAlchem
 ZCode负责批准后的单写入者实现/原始回归/PG并发与四窗口硬停；Codex复核主链接入完整性、预算/事务/未知边界，独立最高风险并发及跨午夜探针。必须覆盖核验+匹配同时发送仅一个获准、重复预留/恢复、无效usage未知保留、规划/修正/HTTP重试都计入、午夜延迟收据归原日、未知人工审计、账目提交失败不额外HTTP、旧run入账不发布、legacy旧账目hash与多次迁移往返。
 
 未知窗口继续unknown，不以一般异常测试替代真实进程硬停。阶段签收后才当前依赖版本/权威公告审计并确定升级次序；career_planning/visual_evidence/job_drafting未接入者独立列出，不称全站预算统一。保持Mock/专属PG，无真实外发、业务迁移、部署、安装或推送授权。
+
+## 主链事务实测读码补充
+
+update_task_progress实际内部commit，不能一概视为HTTP期间持锁。report_history.prepare_history_tool与返回read函数借用主session；每次历史MatchItem查询会开事务，应明确短会话释放。持久hook须在工作流规划/分析/修正各调用前设置，provider内部物理retry共用run序号。此段为现行源码核对，不是新增测试或实现通过。
