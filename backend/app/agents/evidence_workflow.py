@@ -312,6 +312,7 @@ async def run_evidence_workflow(
     external_allowed: bool = True,
     external_skip_reason: str | None = None,
     history_loader: Callable[[str], Awaitable[dict]] | None = None,
+    durable_observer_factory: Callable[[OpenAICompatibleProvider, str], object] | None = None,
 ) -> EvidenceWorkflowOutcome:
     contexts: list[RequirementEvidenceContext] = []
     configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
@@ -331,6 +332,14 @@ async def run_evidence_workflow(
     request_count = 0
     planning_skipped_reason = None
     stage = "context"
+
+    def install_durable_observer(target: OpenAICompatibleProvider, step: str) -> None:
+        # Durable mode exists only when an observer is actually installed on the
+        # external provider right before a call; rules/mock and compat paths
+        # that never reach the provider must not fabricate attempts by config.
+        if durable_observer_factory is not None:
+            target.durable_observer = durable_observer_factory(target, step)
+
     try:
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
             if result.grounding_error:
@@ -394,6 +403,7 @@ async def run_evidence_workflow(
                             break
                         stage = "tool_planning"
                         await _notify(progress, f"模型正在规划第 {round_number} 轮受控工具调用")
+                        install_durable_observer(provider, f"planning_{round_number}")
                         try:
                             request_count += 1
                             tool_call = await provider.plan_evidence_retrieval(
@@ -545,6 +555,7 @@ async def run_evidence_workflow(
                     provider.progress_callback = progress
                 request_count += 1
                 if isinstance(provider, OpenAICompatibleProvider):
+                    install_durable_observer(provider, "analysis")
                     planning_usage = provider.combined_usage()
                     remaining_input = settings.ai_per_report_input_token_limit - (
                         planning_usage.input_tokens if planning_usage else 0
@@ -569,6 +580,7 @@ async def run_evidence_workflow(
                     first_usage = analysis.usage
                     stage = "repair"
                     request_count += 1
+                    install_durable_observer(provider, "repair")
                     remaining_input = settings.ai_per_report_input_token_limit - (
                         (planning_usage.input_tokens if planning_usage else 0)
                         + first_usage.input_tokens

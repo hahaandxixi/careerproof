@@ -40,7 +40,13 @@ async def select_history_report_id(session, owner_id, job_id):
     return str(report.id) if report else None
 
 
-async def prepare_history_tool(session, task, current_requirements):
+async def prepare_history_tool(
+    session,
+    task,
+    current_requirements,
+    *,
+    session_factory,
+):
     query = _owner_history_query(task.created_by, task.input_snapshot["jobId"]).where(
         MatchReport.created_at < task.created_at
     )
@@ -63,6 +69,11 @@ async def prepare_history_tool(session, task, current_requirements):
         {key: material.get(key) for key in ("kind", "id", "versionNumber", "contentHash")}
         for material in (report.materials_snapshot or [])[:11]
     ]
+    # Plain values only: the closure must not depend on the borrowing session
+    # or on ORM instances staying alive after the caller's transaction ends.
+    report_id = report.id
+    created_at_iso = report.created_at.isoformat()
+    metadata_snapshot = report.analysis_metadata or {}
 
     def historical_text(text, limit):
         return _historical_value(text or "")[:limit]
@@ -70,12 +81,15 @@ async def prepare_history_tool(session, task, current_requirements):
     async def read(requirement_id):
         if requirement_id not in current:
             raise ValueError("History tool targeted an unknown current requirement")
-        row = await session.scalar(
-            select(MatchItem).where(
-                MatchItem.report_id == report.id,
-                MatchItem.requirement_id == UUID(requirement_id),
+        # A short independent session: the read transaction is released on
+        # return, never carried into the model HTTP call on a borrowed session.
+        async with session_factory() as read_session:
+            row = await read_session.scalar(
+                select(MatchItem).where(
+                    MatchItem.report_id == report_id,
+                    MatchItem.requirement_id == UUID(requirement_id),
+                )
             )
-        )
         snapshot = (row.evidence_snapshot or {}) if row else {}
         ai = snapshot.get("ai") or {}
         # Historical citation IDs are deliberately excluded, including rating criteria.
@@ -83,8 +97,8 @@ async def prepare_history_tool(session, task, current_requirements):
             {
                 "scope": "same-owner-same-job-before-current-task",
                 "historicalOnly": True,
-                "previousReportId": str(report.id),
-                "previousCreatedAt": report.created_at.isoformat(),
+                "previousReportId": str(report_id),
+                "previousCreatedAt": created_at_iso,
                 "requirementId": requirement_id,
                 "requirementChanged": old_requirements.get(requirement_id)
                 != current[requirement_id],
@@ -98,7 +112,7 @@ async def prepare_history_tool(session, task, current_requirements):
                 "savedAiLevel": (ai.get("rating") or {}).get("level"),
                 "previousAiStatus": ai.get("status"),
                 "formulaVersion": row.formula_version if row else None,
-                "retrievalVersion": (report.analysis_metadata or {}).get("evidenceContextVersion"),
+                "retrievalVersion": metadata_snapshot.get("evidenceContextVersion"),
                 "previousMaterials": previous_materials,
                 "previousEvidence": [
                     {

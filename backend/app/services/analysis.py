@@ -29,9 +29,10 @@ from app.models.analysis import (
     MatchReport,
     SkillEvidence,
 )
-from app.models.enums import ConfirmationStatus, TaskStatus, VerificationStatus
+from app.models.enums import ConfirmationStatus, TaskStatus, UserRole, VerificationStatus
 from app.models.evidence_growth import EvidenceGrowthTask
-from app.models.identity import User
+from app.models.identity import StudentProfile, User
+from app.models.portfolio import Project, ProjectVersion, Resume, ResumeVersion
 from app.models.recruitment import Job, JobRequirement, Skill
 from app.repositories.analysis import AnalysisRepository
 from app.schemas.analysis import (
@@ -47,6 +48,11 @@ from app.schemas.analysis import (
     TaskAccepted,
 )
 from app.services.action_plan import build_action_plan
+from app.services.ai_request_attempts import (
+    AttemptContext,
+    AttemptService,
+    DurableRequestObserver,
+)
 from app.services.matching_materials import analyze_materials, resolve_materials
 from app.services.task_lifecycle import (
     claim_task,
@@ -66,6 +72,165 @@ from app.tools.semantic_retrieval import VERSION as SEMANTIC_VERSION
 from app.tools.semantic_retrieval import model_available
 
 logger = logging.getLogger(__name__)
+
+USAGE_LEDGER_TIMEOUT_SECONDS = 5
+
+
+def _log_ledger_outcome(booking: asyncio.Task) -> None:
+    if not booking.cancelled() and booking.exception():
+        logger.error(
+            "Usage ledger booking failed after decoupling: %s",
+            booking.exception(),
+            exc_info=booking.exception(),
+        )
+
+
+async def _materials_still_frozen(
+    session: AsyncSession, owner_id: UUID, frozen_materials: list
+) -> bool:
+    """Every frozen material version must still exist, still belong to the
+    owner, and still carry its frozen version number and content hash."""
+    if not frozen_materials:
+        return False
+    for material in frozen_materials:
+        try:
+            version_id = UUID(str(material.get("id")))
+        except (TypeError, ValueError, AttributeError):
+            return False
+        scope = (
+            select(ResumeVersion.id)
+            .join(Resume, Resume.id == ResumeVersion.resume_id)
+            .join(StudentProfile, StudentProfile.id == Resume.student_id)
+            .where(
+                ResumeVersion.id == version_id,
+                ResumeVersion.version_number == material.get("versionNumber"),
+                ResumeVersion.content_hash == material.get("contentHash"),
+                ResumeVersion.parse_status == "completed",
+                StudentProfile.user_id == owner_id,
+            )
+            if material.get("kind") == "resume"
+            else select(ProjectVersion.id)
+            .join(Project, Project.id == ProjectVersion.project_id)
+            .join(StudentProfile, StudentProfile.id == Project.student_id)
+            .where(
+                ProjectVersion.id == version_id,
+                ProjectVersion.version_number == material.get("versionNumber"),
+                ProjectVersion.content_hash == material.get("contentHash"),
+                ProjectVersion.analysis_status == "completed",
+                StudentProfile.user_id == owner_id,
+            )
+        )
+        if material.get("kind") not in {"resume", "project"}:
+            return False
+        # Stable for this short transaction; released before any HTTP.
+        if await session.scalar(scope.with_for_update(key_share=True)) is None:
+            return False
+    return True
+
+
+async def _authorize_matching_snapshot(
+    session: AsyncSession,
+    task_id: UUID,
+    owner_id: UUID,
+    run_token: UUID,
+    frozen_snapshot: dict,
+) -> None:
+    # User -> Task -> materials, both before sending and before publication.
+    # Neither transaction contains network calls.
+    owner = await session.scalar(
+        select(User).where(User.id == owner_id).with_for_update(key_share=True)
+        .execution_options(populate_existing=True)
+    )
+    if not owner or not owner.is_active or owner.role != UserRole.STUDENT:
+        raise AppError("账号不可用", code=4032, status_code=403)
+    task_row = await session.scalar(
+        select(AnalysisTask).where(AnalysisTask.id == task_id)
+        .with_for_update(key_share=True).execution_options(populate_existing=True)
+    )
+    if (not task_row or task_row.created_by != owner_id
+            or task_row.task_type != "job_match" or task_row.status != TaskStatus.RUNNING
+            or task_row.run_token != run_token):
+        raise AppError("任务执行授权已失效", code=4096, status_code=409)
+    current = task_row.input_snapshot or {}
+    if any(current.get(key) != frozen_snapshot.get(key) for key in (
+        "job", "materials", "externalAiConsent", "jobId", "candidateId",
+        "resumeVersionId", "projectVersionIds", "usePreviousReport", "previousReportId",
+    )):
+        raise AppError("任务固定输入已被替换，禁止发送或保存AI结果", code=4096, status_code=409)
+    if not await _materials_still_frozen(
+        session, owner_id, frozen_snapshot.get("materials") or [],
+    ):
+        raise AppError("任务固定材料版本已失效", code=4096, status_code=409)
+
+
+class _DurableMatchingLedger:
+    """Attempt services created for one claimed match run.
+
+    Facts are keyed by (task_id, run_token), so settlement and summary work
+    through whichever service was created last; steps only label the rows.
+    """
+
+    def __init__(self) -> None:
+        self.services: list[AttemptService] = []
+
+    @property
+    def installed(self) -> bool:
+        return bool(self.services)
+
+    @property
+    def active_service(self) -> AttemptService:
+        return self.services[-1]
+
+
+def _matching_observer_factory(
+    session_factory,
+    task_id: UUID,
+    owner_id: UUID,
+    run_token: UUID,
+    frozen_snapshot: dict,
+    ledger: _DurableMatchingLedger,
+):
+    """Server-side binding of task/owner/run_token/provider/model per step.
+
+    The authorize callback re-checks, fresh before every physical send, that
+    the owner is an active student, the frozen material versions still belong
+    to them unchanged, and the task's fixed job/materials/consent fields were
+    not replaced. Routing authorization is never treated as permanent.
+    """
+
+    async def authorize_attempt(attempt_session: AsyncSession) -> None:
+        await _authorize_matching_snapshot(
+            attempt_session, task_id, owner_id, run_token, frozen_snapshot,
+        )
+
+    def factory(provider, step):
+        service = AttemptService(
+            session_factory,
+            AttemptContext(task_id, owner_id, run_token, step, provider.name, provider.model),
+            authorize=authorize_attempt,
+        )
+        ledger.services.append(service)
+        return DurableRequestObserver(service)
+
+    return factory
+
+
+async def _settle_durable_receipts(ledger: _DurableMatchingLedger) -> int:
+    """Book trustworthy durable receipts in their own short transactions.
+
+    Bounded and shielded like the verification chain: the write never shares
+    the business finish/report transaction, and a failure leaves
+    received_unbooked rows for reconciliation without resending any HTTP.
+    """
+
+    async def bounded_booking() -> int:
+        return await asyncio.wait_for(
+            ledger.active_service.reconcile(), timeout=USAGE_LEDGER_TIMEOUT_SECONDS
+        )
+
+    booking = asyncio.create_task(bounded_booking())
+    booking.add_done_callback(_log_ledger_outcome)
+    return await asyncio.shield(booking)
 
 
 def _configured_ai_identity() -> tuple[str, str | None]:
@@ -517,6 +682,7 @@ async def execute_match_task(task_id: UUID) -> None:
         if not token:
             return
         heartbeat = asyncio.create_task(heartbeat_task(task_id, token, async_session_factory))
+        ledger = _DurableMatchingLedger()
         try:
             task = await session.get(AnalysisTask, task_id)
             snapshot = task.input_snapshot
@@ -587,15 +753,40 @@ async def execute_match_task(task_id: UUID) -> None:
             if (external_allowed and snapshot.get("externalAiConsent", False)
                     and snapshot.get("usePreviousReport", False)):
                 history_loader = await prepare_history_tool(
-                    session, task, snapshot["job"]["requirements"]
+                    session,
+                    task,
+                    snapshot["job"]["requirements"],
+                    session_factory=async_session_factory,
                 )
+            # The budget check locks the creator row inside this session.
+            # Release the main session and its authorization transaction before
+            # any external HTTP: the model call must never run while this
+            # worker holds a borrowed database transaction open.
+            await session.commit()
+            observer_factory = _matching_observer_factory(
+                async_session_factory, task_id, task.created_by, token, snapshot, ledger
+            )
             workflow = await run_evidence_workflow(
                 result,
                 progress=model_progress,
                 external_allowed=external_allowed,
                 external_skip_reason=external_skip_reason,
                 **({"history_loader": history_loader} if history_loader else {}),
+                durable_observer_factory=observer_factory,
             )
+            durable_summary = None
+            if ledger.installed:
+                try:
+                    await _settle_durable_receipts(ledger)
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    logger.exception(
+                        "Durable receipt settlement failed for task %s; "
+                        "known usage may stay unbooked for reconciliation",
+                        task_id,
+                    )
+                durable_summary = await ledger.active_service.summary()
             if workflow.retrieval_result is not None:
                 result = workflow.retrieval_result
             if workflow.analysis:
@@ -632,6 +823,20 @@ async def execute_match_task(task_id: UUID) -> None:
                 workflow.analysis.usage if workflow.analysis else workflow.attempted_usage
             )
             usage = usage_record.model_dump() if usage_record else None
+            if durable_summary is not None:
+                # Durable receipts replace in-memory sums for display. With no
+                # trusted receipt there is no usage view at all — never a
+                # fabricated zero total for an ambiguous physical request.
+                usage = (
+                    {
+                        "input_tokens": durable_summary["inputTokens"],
+                        "output_tokens": durable_summary["outputTokens"],
+                        "cache_hit_tokens": durable_summary["cacheHitTokens"],
+                        "latency_ms": durable_summary["latencyMs"],
+                    }
+                    if durable_summary["trustedReceiptCount"]
+                    else None
+                )
             analysis_metadata = {
                 "mode": "ai_evidence" if workflow.analysis else "rules",
                 "provider": workflow.provider if workflow.provider != "rules" else None,
@@ -666,6 +871,18 @@ async def execute_match_task(task_id: UUID) -> None:
                     "rawFilesSent": False,
                 },
             }
+            if durable_summary is not None:
+                # Durable accounting mode: report usage facts come from the
+                # persisted attempt summary, and the legacy aggregate write
+                # below stays off so the ledger stays the single source.
+                analysis_metadata["usageKnown"] = durable_summary["usageKnown"]
+                analysis_metadata["usageBooked"] = durable_summary["usageBooked"]
+                analysis_metadata["attemptSummary"] = durable_summary
+                # Fees are already settled independently. Fresh authorization
+                # can prevent publication without erasing a physical receipt.
+                await _authorize_matching_snapshot(
+                    session, task_id, task.created_by, token, snapshot,
+                )
             if not await finish_task(session, task_id, token, step="材料支持度报告已生成"):
                 await session.rollback()
                 return
@@ -684,7 +901,9 @@ async def execute_match_task(task_id: UUID) -> None:
             )
             session.add(report)
             await session.flush()
-            if usage_record:
+            if usage_record and durable_summary is None:
+                # Legacy accounting path only. Durable mode books each trusted
+                # physical request through its attempt service instead.
                 session.add(
                     AiUsageLog(
                         analysis_task_id=task_id,
@@ -809,6 +1028,8 @@ async def execute_match_task(task_id: UUID) -> None:
                     )
                 )
             evidence_count = sum(len(item.evidence_list) for item in result.items)
+            # An unknown durable request displays no total instead of a fake zero.
+            absent_usage = None if durable_summary is not None else 0
             step_rows = [
                 (
                     "核对材料版本",
@@ -872,9 +1093,9 @@ async def execute_match_task(task_id: UUID) -> None:
                         "modelRequirementCount": workflow.model_requirement_count,
                         "providerFinishReason": workflow.provider_finish_reason,
                         "modelToolCalls": list(workflow.tool_calls),
-                        "inputTokens": usage["input_tokens"] if usage else 0,
-                        "outputTokens": usage["output_tokens"] if usage else 0,
-                        "latencyMs": usage["latency_ms"] if usage else 0,
+                        "inputTokens": usage["input_tokens"] if usage else absent_usage,
+                        "outputTokens": usage["output_tokens"] if usage else absent_usage,
+                        "latencyMs": usage["latency_ms"] if usage else absent_usage,
                     },
                 ),
                 (
@@ -918,9 +1139,34 @@ async def execute_match_task(task_id: UUID) -> None:
                     )
                 )
             await session.commit()
+        except asyncio.CancelledError:
+            # Cancellation still settles what the durable receipts already saw.
+            # If teardown races the bounded booking, it keeps running detached
+            # and its outcome is logged by the done callback.
+            await session.rollback()
+            if ledger.installed:
+                try:
+                    with suppress(asyncio.CancelledError):
+                        await _settle_durable_receipts(ledger)
+                except Exception:
+                    logger.exception(
+                        "Durable receipt settlement failed after cancellation for task %s; "
+                        "preserving cancellation and recoverable receipt facts",
+                        task_id,
+                    )
+            raise
         except Exception as exc:
             await session.rollback()
             logger.exception("Match task failed: %s", task_id)
+            if ledger.installed:
+                try:
+                    await _settle_durable_receipts(ledger)
+                except Exception:
+                    logger.exception(
+                        "Durable receipt settlement failed for failed task %s; "
+                        "known usage may stay unbooked for reconciliation",
+                        task_id,
+                    )
             message = (
                 exc.message if isinstance(exc, AppError) else "分析失败，请稍后重试或重新上传材料"
             )

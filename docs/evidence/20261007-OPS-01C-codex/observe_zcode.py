@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 import sys
 from contextlib import closing
@@ -18,13 +19,15 @@ def read_connection(path: Path):
     return connection
 
 
-def observe(number: int) -> dict:
+def observe(number: int, session_id: str | None = None) -> dict:
     local = Path.home() / ".zcode"
     with closing(read_connection(local / "v2/tasks-index.sqlite")) as connection:
+        columns = "workspace_path,task_id,task_status,provider,model,created_at,updated_at,deleted,archived"
         tasks = list(connection.execute(
-            "SELECT workspace_path,task_id,task_status,provider,model,created_at,updated_at "
-            "FROM tasks WHERE deleted=0 AND (title LIKE ? OR title LIKE ?)",
-            (f"传智杯{number}：%", f"传智杯{number}:%"),
+            f"SELECT {columns} FROM tasks WHERE task_id=?" if session_id else
+            f"SELECT {columns} FROM tasks WHERE deleted=0 AND (title LIKE ? OR title LIKE ? OR title LIKE ?)",
+            (session_id,) if session_id else
+            (f"传智杯{number}：%", f"传智杯{number}:%", f"传智杯{number} %"),
         ))
     if len(tasks) != 1:
         raise RuntimeError(f"Expected one matching numbered task; observed {len(tasks)}")
@@ -67,10 +70,16 @@ if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--number", type=int, default=19)
+    parser.add_argument("--session-id", help="previously verified exact session ID; survives title changes")
     parser.add_argument("--output", help="new JSON filename in this evidence directory")
     arguments = parser.parse_args()
     if not 1 <= arguments.number <= 9999:
         parser.error("number must be between 1 and 9999")
+    if arguments.session_id and not re.fullmatch(
+        r"sess_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+        arguments.session_id,
+    ):
+        parser.error("session ID must be a previously verified sess_UUID")
     output = None
     if arguments.output:
         if Path(arguments.output).name != arguments.output or not arguments.output.endswith(".json"):
@@ -78,7 +87,7 @@ if __name__ == "__main__":
         output = Path(__file__).with_name(arguments.output)
         if output.exists():
             parser.error("snapshot already exists; choose a new output filename")
-    serialized = json.dumps(observe(arguments.number), ensure_ascii=False, indent=2) + "\n"
+    serialized = json.dumps(observe(arguments.number, arguments.session_id), ensure_ascii=False, indent=2) + "\n"
     if output:
         with output.open("x", encoding="utf-8") as destination:
             destination.write(serialized)

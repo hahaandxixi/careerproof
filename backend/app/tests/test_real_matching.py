@@ -291,7 +291,7 @@ async def test_validated_ai_explanations_and_citations_are_persisted(
 
     async def fake_workflow(
         result, progress=None, *, external_allowed=True, external_skip_reason=None,
-        history_loader=None,
+        history_loader=None, durable_observer_factory=None,
     ):
         del external_allowed, external_skip_reason
         del progress

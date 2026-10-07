@@ -78,7 +78,8 @@ async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  #
                 created_by=UUID(owner["id"]), created_at=now, input_snapshot={"jobId": job["id"]}
             )
             read = await prepare_history_tool(
-                session, current, [{"id": requirement_id, "title": "新要求"}]
+                session, current, [{"id": requirement_id, "title": "新要求"}],
+                session_factory=factory,
             )
             result = await read(requirement_id)
             assert result["requirementChanged"] is True
@@ -94,17 +95,25 @@ async def test_history_query_excludes_other_owner_and_future_report(jobs_db):  #
                 await read("unknown")
             # An explicitly frozen empty history cannot drift to a later report.
             current.input_snapshot["previousReportId"] = None
-            assert await prepare_history_tool(session, current, [{"id": requirement_id}]) is None
+            assert await prepare_history_tool(
+                session, current, [{"id": requirement_id}], session_factory=factory
+            ) is None
             # Even a forged pinned report must obey owner and before-task constraints.
             for invalid_id in report_ids[1:]:
                 current.input_snapshot["previousReportId"] = invalid_id
-                denied = await prepare_history_tool(session, current, [{"id": requirement_id}])
+                denied = await prepare_history_tool(
+                    session, current, [{"id": requirement_id}], session_factory=factory
+                )
                 assert denied is None
             current.input_snapshot["previousReportId"] = report_ids[0]
-            frozen = await prepare_history_tool(session, current, [{"id": requirement_id}])
+            frozen = await prepare_history_tool(
+                session, current, [{"id": requirement_id}], session_factory=factory
+            )
             assert (await frozen(requirement_id))["previousReportId"] == report_ids[0]
             new_requirement_id = str(uuid4())
-            added = await prepare_history_tool(session, current, [{"id": new_requirement_id}])
+            added = await prepare_history_tool(
+                session, current, [{"id": new_requirement_id}], session_factory=factory
+            )
             missing_item = await added(new_requirement_id)
             assert missing_item["previousItemAvailable"] is False
             assert missing_item["requirementChanged"] is True

@@ -1,0 +1,93 @@
+..FFF.s                                                                  [100%]
+================================== FAILURES ===================================
+______________ test_booking_failure_recovers_without_extra_http _______________
+app\tests\test_durable_matching.py:485: in test_booking_failure_recovers_without_extra_http
+    assert await service.reconcile() == len(attempts)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:250: in reconcile
+    written = sum([await self.book_one(attempt_id) for attempt_id in ids])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:206: in book_one
+    row = await self._locked_attempt(session, attempt_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\ai_request_attempts.py:80: in _locked_attempt
+    self._check_identity(row)
+app\services\ai_request_attempts.py:74: in _check_identity
+    raise ReceiptConflictError("attempt_identity_mismatch")
+E   app.services.ai_request_attempts.ReceiptConflictError: attempt_identity_mismatch
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:81 Usage ledger booking failed after decoupling: synthetic ledger outage
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 208, in bounded_booking
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\app\tests\test_durable_matching.py", line 445, in broken_reconcile
+    raise RuntimeError("synthetic ledger outage")
+RuntimeError: synthetic ledger outage
+ERROR    app.services.analysis:analysis.py:765 Durable receipt settlement failed for task 6941f97e-85f3-4473-84f8-515483ad970f; known usage may stay unbooked for reconciliation
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 761, in execute_match_task
+    await _settle_durable_receipts(ledger)
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 214, in _settle_durable_receipts
+    return await asyncio.shield(booking)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 208, in bounded_booking
+    return await asyncio.wait_for(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\app\tests\test_durable_matching.py", line 445, in broken_reconcile
+    raise RuntimeError("synthetic ledger outage")
+RuntimeError: synthetic ledger outage
+_______________ test_report_save_failure_keeps_booked_receipts ________________
+app\tests\test_durable_matching.py:521: in test_report_save_failure_keeps_booked_receipts
+    assert task.status == TaskStatus.FAILED
+E   AssertionError: assert <TaskStatus.C...: 'completed'> == <TaskStatus.FAILED: 'failed'>
+E     
+E     - failed
+E     + completed
+------------------------------ Captured log call ------------------------------
+ERROR    app.services.analysis:analysis.py:1128 Match task failed: 152b3d21-2e9c-47e8-903c-944fb96ac8c9
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 940, in execute_match_task
+    {
+TypeError: 'coroutine' object is not a mapping
+________ test_owner_deactivation_and_material_replacement_send_nothing ________
+app\tests\test_durable_matching.py:580: in test_owner_deactivation_and_material_replacement_send_nothing
+    report, _owner = await run_durable_match(
+app\tests\test_durable_matching.py:387: in run_durable_match
+    report = await match_report(
+app\tests\test_real_matching.py:195: in match_report
+    assert task.status_code == 200, task.text
+E   AssertionError: {"code":4017,"message":"账号不存在或已停用","data":{},"requestId":"eb68bf70-b437-4620-a4be-70db581aaf1a"}
+E   assert 401 == 200
+E    +  where 401 = <Response [401 Unauthorized]>.status_code
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+app/tests/test_durable_matching.py::test_report_save_failure_keeps_booked_receipts
+  D:\jbcode\web ai\jianli\backend\app\services\analysis.py:940: RuntimeWarning: coroutine 'test_report_save_failure_keeps_booked_receipts.<locals>.broken_asdict' was never awaited
+    {
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_durable_matching.py::test_booking_failure_recovers_without_extra_http
+FAILED app/tests/test_durable_matching.py::test_report_save_failure_keeps_booked_receipts
+FAILED app/tests/test_durable_matching.py::test_owner_deactivation_and_material_replacement_send_nothing
+3 failed, 3 passed, 1 skipped, 6 warnings in 13.87s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
