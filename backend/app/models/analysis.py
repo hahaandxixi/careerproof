@@ -177,6 +177,9 @@ class AiUsageLog(Base, UUIDPrimaryKeyMixin, TimestampMixin):
             sqlite_where=text("run_token IS NOT NULL"),
             postgresql_where=text("run_token IS NOT NULL"),
         ),
+        # One ledger row per model request attempt; NULL keeps legacy rows exempt,
+        # and both SQLite and PostgreSQL allow duplicated NULLs in a unique index.
+        Index("uq_ai_usage_logs_attempt_id", "attempt_id", unique=True),
     )
 
     analysis_task_id: Mapped[UUID] = mapped_column(
@@ -191,6 +194,12 @@ class AiUsageLog(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     latency_ms: Mapped[int] = mapped_column(Integer, default=0)
     run_token: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
     request_seq: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    attempt_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey(
+            "ai_request_attempts.id", ondelete="RESTRICT", name="fk_ai_usage_logs_attempt_id"
+        ),
+        nullable=True,
+    )
 
 
 class KnowledgeChunk(Base, UUIDPrimaryKeyMixin, TimestampMixin):

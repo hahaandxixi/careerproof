@@ -1,3 +1,4 @@
+from app.models.ai_request_attempt import AiRequestAttempt
 from app.models.analysis import (
     AgentStep,
     AiUsageLog,
@@ -40,6 +41,7 @@ from app.models.recruitment import (
 
 __all__ = [
     "AgentStep",
+    "AiRequestAttempt",
     "AiUsageLog",
     "AnalysisTask",
     "Application",
