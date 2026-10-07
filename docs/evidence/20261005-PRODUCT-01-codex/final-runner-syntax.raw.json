@@ -1,0 +1,4 @@
+{
+  "command": "node --check scripts/e2e/private-answer-page-runner.mjs",
+  "exitCode": 0
+}
