@@ -11,7 +11,7 @@
 - 新模型`AiBudgetAdjustment`：人工处理未知预留的不可覆盖记录，包含操作id（幂等键）、真实操作者、owner/attempt、原因、处理前后占额、时间。调整只改变容量政策，不生成usage收据、不把usage_unknown改booked。没有调整许可的自动恢复器不能执行它。
 - 新迁移预计0017，最终revision以现场Alembic head为准。注册模型、约束/索引及SQLite兼容；不改0016、不重写`AiUsageLog`历史列或旧业务行。downgrade有新增预算数据时必须有显式保护，不静默丢失未知占额或审计记录；隔离空数据往返与保留数据拒绝均须测试。
 
-容量统计优先查询持久行而不是维护易漂移的重复累计计数。持有day锁时聚合同owner/day预留；现代attempt已有reservation只计它，不再加相同attempt的ledger。旧ledger仅`attempt_id IS NULL`，按既有created_at换算本地日，记录旧归属政策，不能追改旧行。报告次数按task/day的集合并集去重（有效预留或已经发送/结清 + 当日legacy账目），同任务的规划/修正/retry不各算一份报告；确定全未发送并释放后可归还该日槽。同任务跨run累计已知和未知占用也计入报告token上限，不能重试重置报告预算。
+容量统计优先查询持久行而不是维护易漂移的重复累计计数。持有day锁时聚合同owner/day预留；现代attempt已有reservation只计它，不再加相同attempt的ledger。旧聚合ledger为`attempt_id IS NULL`，按既有created_at换算本地日，记录旧归属政策，不能追改旧行。0016已经存在、但尚无reservation的现代attempt不可被这条过滤遗漏：启用前按下文建立有来源的预留接续；接续不完整时闸门关闭，不能用空表统计放行。报告次数按task/day的集合并集去重（有效预留或已经发送/结清 + 当日legacy账目），同任务的规划/修正/retry不各算一份报告；确定全未发送并释放后可归还该日槽。同任务跨run累计已知和未知占用也计入报告token上限，不能重试重置报告预算。
 
 ## 准入、发送与结清接口
 
@@ -27,7 +27,9 @@
 
 统一锁序：需要授权时User/Task/对应业务授权行 → 日期升序的day容量 → attempt → reservation → ledger。收据/恢复不锁活跃User也须遵守day在attempt之前。不能先调用当前`_locked_attempt`再倒过来锁day。跨日变动先读不加锁的归属，取得全部相关日期锁后复读身份和日期；若已变，释放并重试有限次数，不在错误day锁下写事实。核验`authorize`可能锁Application，应在day/attempt之前；业务终结不能持Task锁再等待一个反向持day锁并需Task的恢复器。
 
-启用闸门不得假定新表空等于已消费0。保留旧账目实际统计；对启用前没有持久attempt的活跃外部run先禁止新外部准入，排空并人工核对。终态旧run仍可能没有可信账目，不能仅凭FAILED/COMPLETED或run_token清空就认定无消费。隔离验收须建立切换清单与审计决议；未知旧run保守占额或保持闸门关闭，绝不伪造物理attempt/收据。只在专属夹具模拟闸门启用；业务库现场闸门保持未切换，不自行迁移或处理既有用户记录。
+启用闸门不得假定新表空等于已消费0。保留旧账目实际统计；对启用前没有持久attempt的活跃外部run先禁止新外部准入，排空并人工核对。终态旧run仍可能没有可信账目，不能仅凭FAILED/COMPLETED或run_token清空就认定无消费。隔离验收须建立切换清单与审计决议；未知旧run保守占额或保持闸门关闭，绝不伪造物理attempt/收据。
+
+已有0016现代attempt另作严格接续：reservation记录来源`pre_budget_attempt`，身份从原attempt读取，原attempt/ledger哈希不变。可信received_unbooked/booked重新严格校验原持久usage_raw与计数字段，以原sending_day建立settled，不因尚无ledger漏算，也不因已有ledger重复计费；in_flight/usage_unknown按原sending_day和原input/max_output上界建立held，不能按恢复日或TTL退掉。没有意图且确定未发送的not_sent按创建日保守接续held，终态无意图可由现有关闭逻辑释放，活claim不能擅自关闭。缺失意图日期、身份不一致或收据校验失败须阻止启用并留审计缺口，不能悄悄跳过。先完成全范围清单和接续，再在短锁下切换启用标志；每个worker/send检查同一持久闸门，不用进程内bool。一旦启用，发现任何应接续而缺预留的attempt即拒绝新发送并交恢复器核对，不将漏行解释成0消费。只在专属夹具模拟闸门启用；业务库现场闸门保持未切换，不自行迁移或处理既有用户记录。
 
 ## 下一批文件所有权
 
@@ -50,6 +52,7 @@ Codex负责本卡协议、最终安全diff全文审查、跨链并发/午夜/unk
 | 撤回/owner停用/材料失效/旧run | 未发送0HTTP并释放；已发送费用独立保留，旧run无报告复活 |
 | unknown人工调整、重复操作、无权操作者 | ADMIN活跃身份新鲜复核+审计理由；幂等操作一次，未授权无修改，usage事实仍unknown |
 | 切换旧账目/活跃与终态未知旧run | 原hash不变、已用容量不归零；未完成审计闸门不放行；不捏造旧attempt |
+| 已有0016 attempt但没有预算行 | 可信有/无ledger均按原日实际计一次，unknown按原日保守held；接续失败闸门拒绝，原attempt/ledger hash不变 |
 | 两链真实子进程四窗口硬停 | 发送意图/响应未持久/收据已持久/账目已提交：保留/结清与恢复次数正确，HTTP计数不增长 |
 | Alembic完整链与往返 | base到当前head、空预算回退再升级；存在未知或审计数据拒绝破坏性回退，旧原列和业务行hash不变 |
 
