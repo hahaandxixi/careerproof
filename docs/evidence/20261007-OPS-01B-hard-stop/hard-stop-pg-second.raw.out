@@ -1,0 +1,41 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_real_child_hard_stop_then_database_only_recovery[send_intent_committed] _
+app\tests\test_attempt_hard_stop.py:179: in test_real_child_hard_stop_then_database_only_recovery
+    assert child.pid == state["pid"]
+E   AssertionError: assert 248712 == 248808
+E    +  where 248712 = <Popen: returncode: None args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv\...>.pid
+__ test_real_child_hard_stop_then_database_only_recovery[response_observed] ___
+app\tests\test_attempt_hard_stop.py:179: in test_real_child_hard_stop_then_database_only_recovery
+    assert child.pid == state["pid"]
+E   AssertionError: assert 243368 == 236140
+E    +  where 243368 = <Popen: returncode: None args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv\...>.pid
+__ test_real_child_hard_stop_then_database_only_recovery[receipt_committed] ___
+app\tests\test_attempt_hard_stop.py:179: in test_real_child_hard_stop_then_database_only_recovery
+    assert child.pid == state["pid"]
+E   AssertionError: assert 246364 == 246696
+E    +  where 246364 = <Popen: returncode: None args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv\...>.pid
+___ test_real_child_hard_stop_then_database_only_recovery[ledger_committed] ___
+app\tests\test_attempt_hard_stop.py:179: in test_real_child_hard_stop_then_database_only_recovery
+    assert child.pid == state["pid"]
+E   AssertionError: assert 247608 == 246980
+E    +  where 247608 = <Popen: returncode: None args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv\...>.pid
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[send_intent_committed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[response_observed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[receipt_committed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[ledger_committed]
+4 failed, 5 warnings in 8.60s

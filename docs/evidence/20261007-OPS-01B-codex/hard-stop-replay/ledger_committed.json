@@ -1,0 +1,166 @@
+{
+  "phase": "ledger_committed",
+  "recovery": [
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "05cfe0ea-b567-4a9a-9ee1-753e172198be",
+            "attemptId": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "05cfe0ea-b567-4a9a-9ee1-753e172198be",
+            "attemptId": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    },
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "05cfe0ea-b567-4a9a-9ee1-753e172198be",
+            "attemptId": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "05cfe0ea-b567-4a9a-9ee1-753e172198be",
+            "attemptId": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+            "runToken": "6bf25201-e0f2-45f6-a6b2-b3ef7254fbea",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    }
+  ],
+  "killIdentity": {
+    "pid": 270256,
+    "parentPid": 274036,
+    "creationSeconds": 1791381252.9628906,
+    "marker": {
+      "event": "hanging",
+      "phase": "ledger_committed",
+      "pid": 270256,
+      "nonce": "90f45214a3094bdd8299ede53982d325",
+      "schema": "cp_test_c8057055b3034384bc294d20003a3d48",
+      "task_id": "e134f6e3-f57d-4054-9ee5-1c30db94bc39",
+      "attempt_id": "3ad10ed6-98d7-45f7-81e8-22fe902ace03",
+      "http_count": 1
+    }
+  },
+  "killExitCode": 1,
+  "assertionsPassed": true
+}

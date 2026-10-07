@@ -1,0 +1,156 @@
+{
+  "phase": "receipt_committed",
+  "recovery": [
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "state": "received_unbooked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05"
+          }
+        ],
+        "ledger": []
+      },
+      "written": 1,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "acd72d01-a77a-4d7f-ac8a-e3b22092a28a",
+            "attemptId": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    },
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "acd72d01-a77a-4d7f-ac8a-e3b22092a28a",
+            "attemptId": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "attempts": [
+          {
+            "id": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "acd72d01-a77a-4d7f-ac8a-e3b22092a28a",
+            "attemptId": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+            "runToken": "1a685458-731a-4857-9cdc-9f074a9ced05",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    }
+  ],
+  "killIdentity": {
+    "pid": 260744,
+    "parentPid": 267132,
+    "creationSeconds": 1791381250.7044315,
+    "marker": {
+      "event": "hanging",
+      "phase": "receipt_committed",
+      "pid": 260744,
+      "nonce": "eb3d91db3046462cac1b3ffb8d841dd6",
+      "schema": "cp_test_23a71332941a48b99a4d6310f60590cf",
+      "task_id": "b772ec24-d5b1-46c5-b2e9-30b480f0d8b5",
+      "attempt_id": "888f10c3-3175-4c00-878e-4ba35b8458f1",
+      "http_count": 1
+    }
+  },
+  "killExitCode": 1,
+  "assertionsPassed": true
+}

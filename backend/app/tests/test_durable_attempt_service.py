@@ -1,12 +1,16 @@
+import asyncio
 import os
 import re
+from contextlib import asynccontextmanager
 from dataclasses import replace
 from uuid import uuid4
 
+import httpx
 import pytest
 from sqlalchemy import event, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from app.agents.provider import DeepSeekProvider
 from app.core.database import Base
 from app.models.ai_request_attempt import AiRequestAttempt
 from app.models.analysis import AiUsageLog, AnalysisTask
@@ -16,6 +20,7 @@ from app.services.ai_request_attempts import (
     AttemptAdmissionError,
     AttemptContext,
     AttemptService,
+    DurableRequestObserver,
     ReceiptConflictError,
 )
 
@@ -185,4 +190,121 @@ async def test_invalid_persisted_receipt_is_not_booked(durable_case):
     with pytest.raises(ReceiptConflictError, match="not_trustworthy"):
         await service.book_one(attempt_id)
     async with factory() as session:
+        assert list(await session.scalars(select(AiUsageLog))) == []
+
+
+async def test_live_claim_reconciliation_does_not_steal_slow_request(durable_case):
+    factory, context, service = durable_case
+    attempt_id = await sent(service)
+    assert await service.reconcile() == 0
+    async with factory() as session:
+        row = await session.get(AiRequestAttempt, attempt_id)
+        assert row.state == "in_flight" and row.reason is None
+    await end_claim(factory, context)
+    await service.reconcile()
+    async with factory() as session:
+        assert (await session.get(AiRequestAttempt, attempt_id)).state == "usage_unknown"
+
+
+async def test_concurrent_pg_booking_records_one_fact(durable_case):
+    factory, context, service = durable_case
+    if factory.kw["bind"].dialect.name != "postgresql":
+        pytest.skip("Row-lock concurrent booking requires dedicated PostgreSQL")
+    attempt_id = await sent(service)
+    await service.receive(attempt_id, {"usage": {"prompt_tokens": 7, "completion_tokens": 2}}, 3)
+    assert sum(await asyncio.gather(*(service.book_one(attempt_id) for _ in range(6)))) == 1
+    async with factory() as session:
+        rows = list(await session.scalars(select(AiUsageLog)))
+        assert len(rows) == 1 and rows[0].attempt_id == attempt_id
+    assert (await service.summary())["usageBooked"]
+
+
+async def test_concurrent_pg_preparation_allocates_distinct_physical_numbers(durable_case):
+    factory, context, service = durable_case
+    if factory.kw["bind"].dialect.name != "postgresql":
+        pytest.skip("Serialized identity allocation requires dedicated PostgreSQL")
+    ids = await asyncio.gather(*(service.prepare(
+        estimated_input_tokens=100, max_output_tokens=20,
+    ) for _ in range(3)))
+    async with factory() as session:
+        rows = list(await session.scalars(select(AiRequestAttempt)))
+        assert {row.id for row in rows} == set(ids)
+        assert sorted(row.physical_sequence for row in rows) == [1, 2, 3]
+        assert all(row.state == "not_sent" for row in rows)
+
+
+async def test_ledger_commit_failure_is_recoverable_without_more_http(durable_case):
+    factory, context, service = durable_case
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        return httpx.Response(200, json={"usage": {"prompt_tokens": 7, "completion_tokens": 2}})
+
+    provider = DeepSeekProvider(
+        api_key="synthetic-only", base_url="https://api.deepseek.com", model="deepseek-flash",
+        timeout_seconds=1, max_attempts=3, transport=httpx.MockTransport(handler),
+    )
+    provider.durable_observer = DurableRequestObserver(service)
+    await provider._completion({"max_tokens": 20})
+    async with factory() as session:
+        attempt_id = await session.scalar(select(AiRequestAttempt.id))
+
+    @asynccontextmanager
+    async def failed_factory():
+        async with factory() as session:
+            real_commit = session.commit
+
+            async def commit():
+                if any(isinstance(row, AiRequestAttempt) and row.state == "booked"
+                       for row in session.dirty):
+                    raise RuntimeError("synthetic ledger commit failure")
+                await real_commit()
+
+            session.commit = commit
+            yield session
+
+    broken = AttemptService(failed_factory, context)
+    with pytest.raises(RuntimeError, match="ledger commit failure"):
+        await broken.book_one(attempt_id)
+    async with factory() as session:
+        assert list(await session.scalars(select(AiUsageLog))) == []
+        assert (await session.get(AiRequestAttempt, attempt_id)).state == "received_unbooked"
+    assert await service.reconcile() == 1
+    assert await service.reconcile() == 0
+    assert len(calls) == 1
+
+
+async def test_send_intent_commit_failure_prevents_any_http(durable_case):
+    factory, context, _service = durable_case
+    calls = []
+
+    @asynccontextmanager
+    async def failed_factory():
+        async with factory() as session:
+            real_commit = session.commit
+
+            async def commit():
+                if any(isinstance(row, AiRequestAttempt) and row.state == "in_flight"
+                       for row in session.dirty):
+                    raise RuntimeError("synthetic intent commit failure")
+                await real_commit()
+
+            session.commit = commit
+            yield session
+
+    service = AttemptService(failed_factory, context)
+    provider = DeepSeekProvider(
+        api_key="synthetic-only", base_url="https://api.deepseek.com", model="deepseek-flash",
+        timeout_seconds=1, max_attempts=3,
+        transport=httpx.MockTransport(lambda request: calls.append(request)),
+    )
+    provider.durable_observer = DurableRequestObserver(service)
+    with pytest.raises(RuntimeError, match="intent commit failure"):
+        await provider._completion({"max_tokens": 20})
+    assert calls == []
+    async with factory() as session:
+        row = await session.scalar(select(AiRequestAttempt))
+        assert row.state == "not_sent" and row.ended_at is not None
+        assert row.reason == "send_admission_failed"
         assert list(await session.scalars(select(AiUsageLog))) == []
