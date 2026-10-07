@@ -1,0 +1,15 @@
+{
+  "readOnly": true,
+  "reportId": "9f198a94-a202-4c68-b643-8941a0ce5966",
+  "taskId": "5a23eb45-31fe-464d-aff0-d137c820246a",
+  "analysisStatus": "completed",
+  "ownerMatches": true,
+  "referenceMaterialCount": 1,
+  "referenceEvidenceCount": 1,
+  "verdict": "claimed_only",
+  "evidenceLevel": null,
+  "evidenceLevelLabel": "仅有第三方参考",
+  "savedDraftReferenceCount": 1,
+  "draftReferencesMatchReportAndOriginalRequirement": true,
+  "referenceDidNotPromotePersonalPractice": true
+}

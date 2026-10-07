@@ -1,0 +1,11 @@
+{
+  "inspectionBeforeFinalAssertions": true,
+  "verdict": "claimed_only",
+  "evidenceLevel": null,
+  "evidenceLevelLabel": "仅有第三方参考",
+  "claimed": true,
+  "reason": "第三方源码可作学习参考，不能证明本人实践或提高个人评级。",
+  "evidenceProvenances": [
+    "reference"
+  ]
+}

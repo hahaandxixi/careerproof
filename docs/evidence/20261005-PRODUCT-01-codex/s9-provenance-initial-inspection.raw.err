@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261005-PRODUCT-01-codex\s9-provenance-readonly.py", line 65, in <module>
+    asyncio.run(main())
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261005-PRODUCT-01-codex\s9-provenance-readonly.py", line 52, in main
+    assert item.verdict == "claimed_only" and item.evidence_level == 1
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
