@@ -4,7 +4,7 @@
 
 ## 2026-10-08 已验证接续基线
 
-主匹配9b9080b已签收；Codex已实现并提交预算数据层66321f8，四模型/注册、0017、迁移测试与真实完整链证据见[检查点](../evidence/20261007-OPS-01C-codex/budget-schema-checkpoint.md)。0017是现行代码head，业务库未升级。不存在活动预算写入任务；传智杯20尚未成功发送。委派时接续现有模型/迁移，不重建或覆盖已验证成果；发现必要结构调整须附新增约束测试与迁移证据。容量服务c270e57及SQLite13+1PG跳过/PG14已验证，见[服务检查点](../evidence/20261007-OPS-01C-codex/budget-service-checkpoint.md)。reserve/原日capacity/严格旧attempt接续/午夜transfer已有内核，不等于两链已接入；14e19b9内部attempt/observer HTTP接入、恢复日期锁序、管理员激活/调整审计已实现并通过SQLite36+3PG跳过，见管理员检查点；旧无物理来源外部run仍保守关闭闸门。两条外部业务workflow绑定、专属PG复验与真实硬停仍待完成，Docker残留IPC启动故障待恢复。Codex独立反例见20261008-OPS-01C-budget-codex-review.md。
+主匹配9b9080b已签收；Codex已实现并提交预算数据层66321f8，四模型/注册、0017、迁移测试与真实完整链证据见[检查点](../evidence/20261007-OPS-01C-codex/budget-schema-checkpoint.md)。0017是现行代码head，业务库未升级。不存在活动预算写入任务；传智杯20尚未成功发送。委派时接续现有模型/迁移，不重建或覆盖已验证成果；发现必要结构调整须附新增约束测试与迁移证据。容量服务c270e57及SQLite13+1PG跳过/PG14已验证，见[服务检查点](../evidence/20261007-OPS-01C-codex/budget-service-checkpoint.md)。reserve/原日capacity/严格旧attempt接续/午夜transfer已有内核，不等于两链已接入；14e19b9内部attempt/observer HTTP接入、恢复日期锁序、管理员激活/调整审计已实现并通过SQLite36+3PG跳过，见管理员检查点；旧无物理来源外部run仍保守关闭闸门。f14af62已完成两条外部业务workflow绑定及SQLite受影响142通过6PG跳过；新增容量分项后的定向17通过1PG跳过。专属PG复验与两链真实硬停仍待完成，Docker残留IPC启动故障待恢复。Codex独立反例见20261008-OPS-01C-budget-codex-review.md。
 
 ## Codex确定的容量模型
 
