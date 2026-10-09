@@ -1,0 +1,6 @@
+{
+  "phase": "receipt_committed",
+  "chain": "matching",
+  "recovery": [],
+  "assertionsPassed": false
+}

@@ -60,6 +60,15 @@ def validate_config(config):
     maximum = config.get("input_limit", 40000)
     if type(maximum) is not int or not 1000 <= maximum <= 100000:
         raise ValueError("Invalid hard-stop input bound")
+    if chain == "matching":
+        storage = Path(config.get("storage_base_dir", "")).resolve()
+        test_root = Path(config["state_file"]).resolve().parent
+        if not storage.is_relative_to(BACKEND_ROOT):
+            raise ValueError("Matching storage must stay in this repository's test directory")
+        relative = storage.relative_to(BACKEND_ROOT)
+        if (not relative.parts or not relative.parts[0].startswith(".tmp-")
+                or storage not in {test_root, test_root / "materials"}):
+            raise ValueError("Matching storage must belong to this hard-stop test's materials")
     UUID(config["task_id"])
     return chain
 
@@ -80,6 +89,8 @@ async def run(config: dict) -> None:
     settings.ai_external_enabled = False
     settings.deepseek_api_key = None
     settings.ai_per_report_input_token_limit = config.get("input_limit", 40000)
+    if chain == "matching":
+        settings.storage_base_dir = Path(config["storage_base_dir"]).resolve()
     settings.semantic_retrieval_enabled = False
     settings.ai_max_retrieval_calls = 0
 

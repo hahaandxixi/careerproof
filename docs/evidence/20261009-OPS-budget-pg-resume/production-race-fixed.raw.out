@@ -1,0 +1,24 @@
+RACE-EVIDENCE matching-loser {"taskId": "0d808cbb-84d0-4a32-9889-eaf50e2e2e93", "fallbackReason": "provider_error", "failureStage": "request", "skippedReason": null}
+RACE-EVIDENCE matching {"httpCalls": 1, "httpSteps": ["analysis"], "taskIds": ["0476fd7e-9363-4b21-9f03-31317117b356", "0d808cbb-84d0-4a32-9889-eaf50e2e2e93"], "identityBackends": {"0476fd7e-9363-4b21-9f03-31317117b356": 223, "0d808cbb-84d0-4a32-9889-eaf50e2e2e93": 224}, "timeline": [{"loop": 403.906, "utc": "2026-10-09T14:46:41.191+00:00", "event": "prepare_arrived", "task": "0476fd7e-9363-4b21-9f03-31317117b356"}, {"loop": 403.984, "utc": "2026-10-09T14:46:41.267+00:00", "event": "prepare_arrived", "task": "0d808cbb-84d0-4a32-9889-eaf50e2e2e93"}, {"loop": 403.984, "utc": "2026-10-09T14:46:41.267+00:00", "event": "prepare_entered_original", "task": "0d808cbb-84d0-4a32-9889-eaf50e2e2e93"}, {"loop": 403.984, "utc": "2026-10-09T14:46:41.267+00:00", "event": "prepare_entered_original", "task": "0476fd7e-9363-4b21-9f03-31317117b356"}, {"loop": 403.984, "utc": "2026-10-09T14:46:41.269+00:00", "event": "identity_session_registered_before_lock", "task": "0476fd7e-9363-4b21-9f03-31317117b356", "backend": 223}, {"loop": 403.984, "utc": "2026-10-09T14:46:41.270+00:00", "event": "identity_session_registered_before_lock", "task": "0d808cbb-84d0-4a32-9889-eaf50e2e2e93", "backend": 224}, {"loop": 404.0, "utc": "2026-10-09T14:46:41.282+00:00", "event": "real_owner_lock_wait_proven", "holder": 223, "waiter": 224, "blocked_by": [223]}]}
+.RACE-EVIDENCE verification {"httpCalls": 1, "httpSteps": ["analysis"], "taskIds": ["0e5a426c-081c-4a78-9e03-ab87a326cb5a", "fab4f938-01a1-43b6-a457-be2636cdc9b5"], "identityBackends": {"0e5a426c-081c-4a78-9e03-ab87a326cb5a": 233, "fab4f938-01a1-43b6-a457-be2636cdc9b5": 234}, "timeline": [{"loop": 405.187, "utc": "2026-10-09T14:46:42.481+00:00", "event": "prepare_arrived", "task": "fab4f938-01a1-43b6-a457-be2636cdc9b5"}, {"loop": 405.203, "utc": "2026-10-09T14:46:42.486+00:00", "event": "prepare_arrived", "task": "0e5a426c-081c-4a78-9e03-ab87a326cb5a"}, {"loop": 405.203, "utc": "2026-10-09T14:46:42.486+00:00", "event": "prepare_entered_original", "task": "0e5a426c-081c-4a78-9e03-ab87a326cb5a"}, {"loop": 405.203, "utc": "2026-10-09T14:46:42.486+00:00", "event": "prepare_entered_original", "task": "fab4f938-01a1-43b6-a457-be2636cdc9b5"}, {"loop": 405.203, "utc": "2026-10-09T14:46:42.488+00:00", "event": "identity_session_registered_before_lock", "task": "0e5a426c-081c-4a78-9e03-ab87a326cb5a", "backend": 233}, {"loop": 405.203, "utc": "2026-10-09T14:46:42.488+00:00", "event": "identity_session_registered_before_lock", "task": "fab4f938-01a1-43b6-a457-be2636cdc9b5", "backend": 234}, {"loop": 405.218, "utc": "2026-10-09T14:46:42.498+00:00", "event": "real_owner_lock_wait_proven", "holder": 233, "waiter": 234, "blocked_by": [233]}]}
+..RACE-EVIDENCE offline-single-chain {"httpCalls": 1, "httpSteps": ["analysis"]}
+.
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+app/tests/test_ai_budget_production_race.py::test_offline_fixture_contract_dual_pending_and_single_chain_booking
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 6 warnings in 11.97s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

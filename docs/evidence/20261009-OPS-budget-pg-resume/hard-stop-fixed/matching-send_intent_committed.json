@@ -1,0 +1,6 @@
+{
+  "phase": "send_intent_committed",
+  "chain": "matching",
+  "recovery": [],
+  "assertionsPassed": false
+}

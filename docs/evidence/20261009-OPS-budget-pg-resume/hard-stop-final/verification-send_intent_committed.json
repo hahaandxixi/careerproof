@@ -1,0 +1,179 @@
+{
+  "phase": "send_intent_committed",
+  "chain": "verification",
+  "recovery": [
+    {
+      "before": {
+        "httpCount": 0,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "11c7cee0d1c1041a05e854c418e9b9cb62d7ea8c2f4f04ab40df86ad56a5911e",
+        "reservations": [
+          {
+            "attemptId": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "held",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": null,
+            "actualOutput": null
+          }
+        ],
+        "attempts": [
+          {
+            "id": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "in_flight",
+            "reason": null,
+            "input": null,
+            "output": null,
+            "cache": null,
+            "runToken": "7bb8c0d1-7067-438c-8d6c-9b5ad91183e8"
+          }
+        ],
+        "ledger": []
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 0,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "11c7cee0d1c1041a05e854c418e9b9cb62d7ea8c2f4f04ab40df86ad56a5911e",
+        "reservations": [
+          {
+            "attemptId": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "held",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": null,
+            "actualOutput": null
+          }
+        ],
+        "attempts": [
+          {
+            "id": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "usage_unknown",
+            "reason": "worker_ended_without_receipt",
+            "input": null,
+            "output": null,
+            "cache": null,
+            "runToken": "7bb8c0d1-7067-438c-8d6c-9b5ad91183e8"
+          }
+        ],
+        "ledger": []
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 0,
+        "unknownAttemptCount": 1,
+        "usageKnown": false,
+        "usageBooked": false,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cacheHitTokens": 0,
+        "latencyMs": 0
+      }
+    },
+    {
+      "before": {
+        "httpCount": 0,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "11c7cee0d1c1041a05e854c418e9b9cb62d7ea8c2f4f04ab40df86ad56a5911e",
+        "reservations": [
+          {
+            "attemptId": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "held",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": null,
+            "actualOutput": null
+          }
+        ],
+        "attempts": [
+          {
+            "id": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "usage_unknown",
+            "reason": "worker_ended_without_receipt",
+            "input": null,
+            "output": null,
+            "cache": null,
+            "runToken": "7bb8c0d1-7067-438c-8d6c-9b5ad91183e8"
+          }
+        ],
+        "ledger": []
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 0,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "11c7cee0d1c1041a05e854c418e9b9cb62d7ea8c2f4f04ab40df86ad56a5911e",
+        "reservations": [
+          {
+            "attemptId": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "held",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": null,
+            "actualOutput": null
+          }
+        ],
+        "attempts": [
+          {
+            "id": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+            "state": "usage_unknown",
+            "reason": "worker_ended_without_receipt",
+            "input": null,
+            "output": null,
+            "cache": null,
+            "runToken": "7bb8c0d1-7067-438c-8d6c-9b5ad91183e8"
+          }
+        ],
+        "ledger": []
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 0,
+        "unknownAttemptCount": 1,
+        "usageKnown": false,
+        "usageBooked": false,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "cacheHitTokens": 0,
+        "latencyMs": 0
+      }
+    }
+  ],
+  "killIdentity": {
+    "pid": 57796,
+    "parentPid": 21024,
+    "creationSeconds": 1791557631.5742836,
+    "marker": {
+      "event": "hanging",
+      "phase": "send_intent_committed",
+      "pid": 57796,
+      "nonce": "ddfde2965253487e9dbb1c7c710eb5b5",
+      "schema": "cp_test_7f846647315f4467a82d873740f3fa47",
+      "task_id": "b8d8f4ea-4406-4fe7-9a98-fee24a83f21f",
+      "attempt_id": "0e341235-029f-4717-9b8f-ae2ea0b6acc0",
+      "http_count": 0
+    }
+  },
+  "killExitCode": 1,
+  "assertionsPassed": true
+}

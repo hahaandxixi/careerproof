@@ -1,0 +1,194 @@
+[
+  {
+    "run": "hard-stop-final",
+    "chain": "matching",
+    "phase": "ledger_committed",
+    "pid": 60444,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "b4df11fb3c558f58603e844c255458007f211200a263797e241fb0e1ecd2e1e7"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "matching",
+    "phase": "receipt_committed",
+    "pid": 25648,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      1,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "6c06add2be07fcdadacc127b9571a037bb0b34f7a4a7e7dfaea52b01acdcfe5d"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "matching",
+    "phase": "response_observed",
+    "pid": 57392,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "88a6cb5c273f43cd89166a5f409b706bbf97f90011a5c8096809275868307c21"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "matching",
+    "phase": "send_intent_committed",
+    "pid": 53176,
+    "killExitCode": 1,
+    "httpCount": 0,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "b6a92a8dd1ecab199d5ba18a50a566020582828c7b8f850b274731a1be7a81f7"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "verification",
+    "phase": "ledger_committed",
+    "pid": 59700,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "20547251551fcd91569a45ef6aba57385501ea9aff48b43448e241aa6d94916d"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "verification",
+    "phase": "receipt_committed",
+    "pid": 57720,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      1,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "720cd1988c46d077a877b5c2cab97bcf70d13a183b56ae36b624fde64edda7d6"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "verification",
+    "phase": "response_observed",
+    "pid": 22104,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "e424f2a88dd6bf76a8748d129537d29a0d6985c731de9a773efa36710905abb6"
+  },
+  {
+    "run": "hard-stop-final",
+    "chain": "verification",
+    "phase": "send_intent_committed",
+    "pid": 57796,
+    "killExitCode": 1,
+    "httpCount": 0,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "11c7cee0d1c1041a05e854c418e9b9cb62d7ea8c2f4f04ab40df86ad56a5911e"
+  },
+  {
+    "run": "hard-stop-independent",
+    "chain": "matching",
+    "phase": "receipt_committed",
+    "pid": 61916,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      1,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "14b1f5561d028ba9d67ef8b063aaa062a7ac63a55ca3c00d246c128f2bc405c5"
+  },
+  {
+    "run": "hard-stop-independent",
+    "chain": "matching",
+    "phase": "response_observed",
+    "pid": 62332,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "d600e7dca189f64327e743feb16ea3457138a005f97037102e97d34fc4292a52"
+  },
+  {
+    "run": "hard-stop-independent",
+    "chain": "verification",
+    "phase": "receipt_committed",
+    "pid": 62368,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      1,
+      0
+    ],
+    "attemptState": "booked",
+    "reservationState": "settled",
+    "ledgerRows": 1,
+    "snapshotDigest": "ca4f09f89c18f50b130d342a94a4b09b1e925f06cae931e5b2b145b2c62f8d72"
+  },
+  {
+    "run": "hard-stop-independent",
+    "chain": "verification",
+    "phase": "response_observed",
+    "pid": 60832,
+    "killExitCode": 1,
+    "httpCount": 1,
+    "recoveryWrites": [
+      0,
+      0
+    ],
+    "attemptState": "usage_unknown",
+    "reservationState": "held",
+    "ledgerRows": 0,
+    "snapshotDigest": "42ae0dc52b19b2fd3993ee593fb2cf373710a102b8347f5f2a45c4560a82ab85"
+  }
+]

@@ -1,0 +1,71 @@
+FRACE-EVIDENCE verification {"httpCalls": 1, "httpSteps": ["analysis"], "taskIds": ["3ae313ed-23bf-4957-b6f6-d08f0c286372", "c8cde969-dfc6-48c8-9afe-f6ae8841ec3c"], "identityBackends": {"c8cde969-dfc6-48c8-9afe-f6ae8841ec3c": 77, "3ae313ed-23bf-4957-b6f6-d08f0c286372": 78}, "timeline": [{"loop": 316.218, "utc": "2026-10-09T14:45:13.511+00:00", "event": "prepare_arrived", "task": "3ae313ed-23bf-4957-b6f6-d08f0c286372"}, {"loop": 316.234, "utc": "2026-10-09T14:45:13.519+00:00", "event": "prepare_arrived", "task": "c8cde969-dfc6-48c8-9afe-f6ae8841ec3c"}, {"loop": 316.234, "utc": "2026-10-09T14:45:13.519+00:00", "event": "prepare_entered_original", "task": "c8cde969-dfc6-48c8-9afe-f6ae8841ec3c"}, {"loop": 316.234, "utc": "2026-10-09T14:45:13.519+00:00", "event": "prepare_entered_original", "task": "3ae313ed-23bf-4957-b6f6-d08f0c286372"}, {"loop": 316.234, "utc": "2026-10-09T14:45:13.521+00:00", "event": "identity_session_registered_before_lock", "task": "c8cde969-dfc6-48c8-9afe-f6ae8841ec3c", "backend": 77}, {"loop": 316.234, "utc": "2026-10-09T14:45:13.522+00:00", "event": "identity_session_registered_before_lock", "task": "3ae313ed-23bf-4957-b6f6-d08f0c286372", "backend": 78}, {"loop": 316.25, "utc": "2026-10-09T14:45:13.531+00:00", "event": "real_owner_lock_wait_proven", "holder": 77, "waiter": 78, "blocked_by": [77]}]}
+..RACE-EVIDENCE offline-single-chain {"httpCalls": 1, "httpSteps": ["analysis"]}
+.
+================================== FAILURES ===================================
+___________ test_matching_entry_same_owner_dual_task_last_slot_race ___________
+
+case = Case(hr=<httpx.AsyncClient object at 0x000001DECC8F7290>, student=<httpx.AsyncClient object at 0x000001DECCA32420>, ou...3141d436'),)), (<function execute_match_task at 0x000001DEC9E5B240>, (UUID('5d6157da-a466-4694-9c39-eebde3ed7712'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001DECC32A780>
+
+    async def test_matching_entry_same_owner_dual_task_last_slot_race(
+        case, monkeypatch,  # noqa: F811
+    ):
+        await require_postgres(case)
+        configure_race_settings(monkeypatch)
+        task_ids, student_id = await prepare_two_matching_tasks(case, monkeypatch)
+        async with case.factory() as session:
+            digest_before = verification._digest((await session.get(
+                Application, UUID(case.application_id)
+            )).report_snapshot)
+    
+        gate = HttpGate(lambda request: valid_response(request, inputs=123, outputs=45))
+        monkeypatch.setattr(
+            "app.agents.evidence_workflow.get_ai_provider", lambda: gate.provider()
+        )
+        harness = LastSlotRace(task_ids)
+        harness.install(monkeypatch)
+        chains = [
+            asyncio.create_task(analysis_service.execute_match_task(task_id))
+            for task_id in task_ids
+        ]
+        try:
+            await asyncio.wait_for(harness.overlap.wait(), CHAIN_TIMEOUT_SECONDS)
+            await asyncio.wait_for(gate.entered.wait(), CHAIN_TIMEOUT_SECONDS)
+            await wait_for_loser_rejection(chains)
+            winner_task, loser_task = await assert_mid_block_invariants(
+                case, student_id, task_ids, label="matching",
+            )
+            winner_chain = chains[task_ids.index(winner_task)]
+            assert not winner_chain.done()
+            async with case.factory() as session:
+                stored = await session.get(AnalysisTask, loser_task)
+                assert stored.status == TaskStatus.COMPLETED
+                report = await session.scalar(select(MatchReport).where(
+                    MatchReport.analysis_task_id == loser_task,
+                ))
+                assert report is not None, "rejected chain degrades to a rule report"
+                metadata = report.analysis_metadata
+                assert metadata["mode"] == "rules" and metadata["fallbackUsed"] is True
+>               assert metadata["requestCount"] == 0
+E               assert 1 == 0
+
+app\tests\test_ai_budget_production_race.py:601: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+app/tests/test_ai_budget_production_race.py::test_offline_fixture_contract_dual_pending_and_single_chain_booking
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 failed, 3 passed, 6 warnings in 12.35s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,209 @@
+{
+  "phase": "receipt_committed",
+  "chain": "verification",
+  "recovery": [
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "720cd1988c46d077a877b5c2cab97bcf70d13a183b56ae36b624fde64edda7d6",
+        "reservations": [
+          {
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "received_unbooked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c"
+          }
+        ],
+        "ledger": []
+      },
+      "written": 1,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "720cd1988c46d077a877b5c2cab97bcf70d13a183b56ae36b624fde64edda7d6",
+        "reservations": [
+          {
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "9cb38a45-4d77-487a-b52e-8fe5f648a275",
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    },
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "720cd1988c46d077a877b5c2cab97bcf70d13a183b56ae36b624fde64edda7d6",
+        "reservations": [
+          {
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "9cb38a45-4d77-487a-b52e-8fe5f648a275",
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "720cd1988c46d077a877b5c2cab97bcf70d13a183b56ae36b624fde64edda7d6",
+        "reservations": [
+          {
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 5502,
+            "outputBound": 3000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 17,
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "9cb38a45-4d77-487a-b52e-8fe5f648a275",
+            "attemptId": "7ab36351-44ec-4545-ace2-a82df742547b",
+            "runToken": "06341aaa-d1bf-4abd-a36d-85c8e5c85e4c",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 17
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 17,
+        "latencyMs": 1
+      }
+    }
+  ],
+  "killIdentity": {
+    "pid": 57720,
+    "parentPid": 56884,
+    "creationSeconds": 1791557635.643486,
+    "marker": {
+      "event": "hanging",
+      "phase": "receipt_committed",
+      "pid": 57720,
+      "nonce": "48fbc293e4db4e25a4113609df2d8fe0",
+      "schema": "cp_test_1c11d0ad028f4c6bb7a2056fe95f00d5",
+      "task_id": "1c5e5caf-4dcc-48b2-8ece-43724e4f3637",
+      "attempt_id": "7ab36351-44ec-4545-ace2-a82df742547b",
+      "http_count": 1
+    }
+  },
+  "killExitCode": 1,
+  "assertionsPassed": true
+}

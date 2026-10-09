@@ -1,0 +1,8 @@
+Match task failed: caf2c9f1-e8d1-4c83-940c-ec0617867aa8
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\app\services\analysis.py", line 721, in execute_match_task
+    result = await run_isolated(
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\app\services\task_runner.py", line 63, in run_isolated
+    raise AppError(result["message"], code=result["code"])
+app.core.exceptions.AppError: 文件处理失败，请检查文件格式、编码或是否损坏

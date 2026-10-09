@@ -1,0 +1,24 @@
+{
+  "select1": 1,
+  "ownedHardStopSchemasChecked": [
+    "cp_test_0accddc178204e1181f049eb8c1eda0d",
+    "cp_test_0d6e113d54d34290bc33f6bf14a81359",
+    "cp_test_1c11d0ad028f4c6bb7a2056fe95f00d5",
+    "cp_test_5d498cc24f6e47f68afd02018af999f6",
+    "cp_test_5e5cb864b0924ba3ac276e8aa0cd28bc",
+    "cp_test_60da9c1f66824c759b49d05a044c7c25",
+    "cp_test_733964237fc547c0a3f41788c9ea60b3",
+    "cp_test_7e98e4d0f73546f7a922e6c2ac7db549",
+    "cp_test_7f846647315f4467a82d873740f3fa47",
+    "cp_test_abc94537fe2e4b30a3570d665bb47ed0",
+    "cp_test_b934b38b2f56400787f68ab106722c15",
+    "cp_test_f05f3cf2d09d4992ab1af5d6abf46a5b"
+  ],
+  "ownedHardStopSchemasRemaining": [],
+  "otherTestSchemasNotDeleted": [
+    "cp_test_df81fcf17d3b410e9296ed3e729fd664",
+    "cp_test_debug_84796f8b",
+    "cp_test_97d401ff4eb1481ebf5623343f2e2411"
+  ],
+  "note": "Other namespaces have no established ownership in this turn; no broad cleanup performed."
+}

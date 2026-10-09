@@ -892,6 +892,10 @@ async def execute_match_task(task_id: UUID) -> None:
                 analysis_metadata["usageKnown"] = durable_summary["usageKnown"]
                 analysis_metadata["usageBooked"] = durable_summary["usageBooked"]
                 analysis_metadata["attemptSummary"] = durable_summary
+                # Logical workflow calls include rejected admission and omit
+                # physical retries. Durable reports count persisted send intents;
+                # an intent without a receipt remains ambiguous, never known zero.
+                analysis_metadata["requestCount"] = durable_summary["intentCount"]
                 # Fees are already settled independently. Fresh authorization
                 # can prevent publication without erasing a physical receipt.
                 await _authorize_matching_snapshot(
@@ -1101,7 +1105,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         "inputPreflights": list(workflow.input_preflights),
                         "skippedReason": workflow.skipped_reason,
                         "repairUsed": workflow.repaired,
-                        "requestCount": workflow.request_count,
+                        "requestCount": analysis_metadata["requestCount"],
                         "planningSkippedReason": workflow.planning_skipped_reason,
                         "jsonRepairCount": workflow.json_repair_count,
                         "modelRequirementCount": workflow.model_requirement_count,

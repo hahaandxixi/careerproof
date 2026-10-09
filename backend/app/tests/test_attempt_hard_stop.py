@@ -289,6 +289,7 @@ async def test_real_child_hard_stop_then_database_only_recovery(
         "counter_file": str(counter_file),
         "state_file": str(state_file),
         "input_limit": 40000,
+        "storage_base_dir": str(settings.storage_base_dir.resolve()),
     }), encoding="utf-8")
     spawn_time = time.time()
     with log_file.open("wb") as log_handle:

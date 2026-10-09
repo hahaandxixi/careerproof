@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import pytest
 
-from app.tests.ops_hard_stop_worker import record_state, validate_config
+from app.tests.ops_hard_stop_worker import BACKEND_ROOT, record_state, validate_config
 
 
 def config(**changes):
@@ -17,6 +17,8 @@ def config(**changes):
         "chain": "matching",
         "phase": "receipt_committed",
         "input_limit": 40000,
+        "state_file": str(BACKEND_ROOT / ".tmp-hard-stop-guards" / "state.json"),
+        "storage_base_dir": str(BACKEND_ROOT / ".tmp-hard-stop-guards" / "materials"),
         **changes,
     }
 
@@ -33,6 +35,9 @@ def config(**changes):
         {"database_url": "sqlite+aiosqlite:///synthetic.sqlite"},
         {"input_limit": True},
         {"input_limit": 100001},
+        {"storage_base_dir": str(BACKEND_ROOT / "storage")},
+        {"storage_base_dir": str(BACKEND_ROOT.parent / "foreign-materials")},
+        {"storage_base_dir": str(BACKEND_ROOT / ".tmp-another-test" / "materials")},
     ],
 )
 def test_invalid_worker_config_rejected_before_database_or_http(changes):

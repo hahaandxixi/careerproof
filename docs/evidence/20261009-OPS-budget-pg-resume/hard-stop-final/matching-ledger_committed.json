@@ -1,0 +1,219 @@
+{
+  "phase": "ledger_committed",
+  "chain": "matching",
+  "recovery": [
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "b4df11fb3c558f58603e844c255458007f211200a263797e241fb0e1ecd2e1e7",
+        "reservations": [
+          {
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 15348,
+            "outputBound": 4000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 0,
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "ebb8ccf2-3166-42dd-99fc-fd321107f89a",
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 0
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "b4df11fb3c558f58603e844c255458007f211200a263797e241fb0e1ecd2e1e7",
+        "reservations": [
+          {
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 15348,
+            "outputBound": 4000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 0,
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "ebb8ccf2-3166-42dd-99fc-fd321107f89a",
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 0
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 0,
+        "latencyMs": 2
+      }
+    },
+    {
+      "before": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "b4df11fb3c558f58603e844c255458007f211200a263797e241fb0e1ecd2e1e7",
+        "reservations": [
+          {
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 15348,
+            "outputBound": 4000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 0,
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "ebb8ccf2-3166-42dd-99fc-fd321107f89a",
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 0
+          }
+        ]
+      },
+      "written": 0,
+      "after": {
+        "httpCount": 1,
+        "taskStatus": "failed",
+        "taskRunToken": null,
+        "businessAnalysisPresent": false,
+        "businessReportPresent": false,
+        "applicationSnapshotDigest": "b4df11fb3c558f58603e844c255458007f211200a263797e241fb0e1ecd2e1e7",
+        "reservations": [
+          {
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "settled",
+            "day": "2026-10-09",
+            "inputBound": 15348,
+            "outputBound": 4000,
+            "actualInput": 123,
+            "actualOutput": 45
+          }
+        ],
+        "attempts": [
+          {
+            "id": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "state": "booked",
+            "reason": null,
+            "input": 123,
+            "output": 45,
+            "cache": 0,
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630"
+          }
+        ],
+        "ledger": [
+          {
+            "id": "ebb8ccf2-3166-42dd-99fc-fd321107f89a",
+            "attemptId": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+            "runToken": "f2885460-3595-4d84-86ce-3d674371b630",
+            "sequence": 1,
+            "input": 123,
+            "output": 45,
+            "cache": 0
+          }
+        ]
+      },
+      "summary": {
+        "accountingMode": "attempt_v1",
+        "attemptCount": 1,
+        "intentCount": 1,
+        "trustedReceiptCount": 1,
+        "unknownAttemptCount": 0,
+        "usageKnown": true,
+        "usageBooked": true,
+        "inputTokens": 123,
+        "outputTokens": 45,
+        "cacheHitTokens": 0,
+        "latencyMs": 2
+      }
+    }
+  ],
+  "killIdentity": {
+    "pid": 60444,
+    "parentPid": 60500,
+    "creationSeconds": 1791557653.1558285,
+    "marker": {
+      "event": "hanging",
+      "phase": "ledger_committed",
+      "pid": 60444,
+      "nonce": "182c084a449849d5b74f0dda06f99cce",
+      "schema": "cp_test_0d6e113d54d34290bc33f6bf14a81359",
+      "task_id": "f90b4482-8464-448b-94e0-789347fd5786",
+      "attempt_id": "bb386da4-8401-46e2-ae03-a53e54b08a22",
+      "http_count": 1
+    }
+  },
+  "killExitCode": 1,
+  "assertionsPassed": true
+}

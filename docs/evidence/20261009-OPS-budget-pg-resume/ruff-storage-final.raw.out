@@ -1,0 +1,12 @@
+E501 Line too long (130 > 100)
+  --> app\tests\ops_hard_stop_worker.py:69:101
+   |
+67 |             raise ValueError("Matching storage must stay in this repository's test directory")
+68 |         relative = storage.relative_to(BACKEND_ROOT)
+69 |         if not relative.parts or not relative.parts[0].startswith(".tmp-") or storage not in {test_root, test_root / "materials"}:
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+70 |             raise ValueError("Matching storage must belong to this hard-stop test's materials")
+71 |     UUID(config["task_id"])
+   |
+
+Found 1 error.
