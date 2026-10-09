@@ -1,0 +1,434 @@
+[
+  {
+    "name": "aiosqlite",
+    "version": "0.21.0"
+  },
+  {
+    "name": "alembic",
+    "version": "1.16.5"
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0"
+  },
+  {
+    "name": "antlr4-python3-runtime",
+    "version": "4.9.3"
+  },
+  {
+    "name": "anyio",
+    "version": "4.15.0"
+  },
+  {
+    "name": "argon2-cffi",
+    "version": "23.1.0"
+  },
+  {
+    "name": "argon2-cffi-bindings",
+    "version": "26.1.0"
+  },
+  {
+    "name": "asyncpg",
+    "version": "0.30.0"
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0"
+  },
+  {
+    "name": "boolean.py",
+    "version": "5.0"
+  },
+  {
+    "name": "CacheControl",
+    "version": "0.14.4"
+  },
+  {
+    "name": "careerproof-backend",
+    "version": "0.1.0"
+  },
+  {
+    "name": "certifi",
+    "version": "2026.7.22"
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1"
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.1"
+  },
+  {
+    "name": "click",
+    "version": "8.5.0"
+  },
+  {
+    "name": "colorama",
+    "version": "0.4.6"
+  },
+  {
+    "name": "colorlog",
+    "version": "6.12.0"
+  },
+  {
+    "name": "cryptography",
+    "version": "50.0.1"
+  },
+  {
+    "name": "cyclonedx-python-lib",
+    "version": "11.12.0"
+  },
+  {
+    "name": "defusedxml",
+    "version": "0.7.1"
+  },
+  {
+    "name": "dnspython",
+    "version": "2.8.0"
+  },
+  {
+    "name": "email_validator",
+    "version": "2.2.0"
+  },
+  {
+    "name": "fastapi",
+    "version": "0.116.1"
+  },
+  {
+    "name": "fastembed",
+    "version": "0.7.4"
+  },
+  {
+    "name": "filelock",
+    "version": "4.0.1"
+  },
+  {
+    "name": "flatbuffers",
+    "version": "25.12.19"
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.9.0"
+  },
+  {
+    "name": "greenlet",
+    "version": "3.5.5"
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0"
+  },
+  {
+    "name": "hf-xet",
+    "version": "1.6.0"
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9"
+  },
+  {
+    "name": "httptools",
+    "version": "0.8.0"
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1"
+  },
+  {
+    "name": "httpx-sse",
+    "version": "0.4.3"
+  },
+  {
+    "name": "huggingface_hub",
+    "version": "1.32.0"
+  },
+  {
+    "name": "idna",
+    "version": "3.19"
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.0"
+  },
+  {
+    "name": "jsonschema",
+    "version": "4.26.0"
+  },
+  {
+    "name": "jsonschema-specifications",
+    "version": "2025.9.1"
+  },
+  {
+    "name": "license-expression",
+    "version": "30.4.4"
+  },
+  {
+    "name": "loguru",
+    "version": "0.7.3"
+  },
+  {
+    "name": "lxml",
+    "version": "6.1.3"
+  },
+  {
+    "name": "Mako",
+    "version": "1.4.1"
+  },
+  {
+    "name": "markdown-it-py",
+    "version": "4.2.0"
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.3"
+  },
+  {
+    "name": "mcp",
+    "version": "1.30.0"
+  },
+  {
+    "name": "mdurl",
+    "version": "0.1.2"
+  },
+  {
+    "name": "mmh3",
+    "version": "5.3.0"
+  },
+  {
+    "name": "msgpack",
+    "version": "1.2.3"
+  },
+  {
+    "name": "numpy",
+    "version": "2.5.2"
+  },
+  {
+    "name": "omegaconf",
+    "version": "2.3.1"
+  },
+  {
+    "name": "onnxruntime",
+    "version": "1.30.0"
+  },
+  {
+    "name": "opencv-python",
+    "version": "5.0.0.93"
+  },
+  {
+    "name": "packageurl-python",
+    "version": "0.17.6"
+  },
+  {
+    "name": "packaging",
+    "version": "26.3"
+  },
+  {
+    "name": "pgvector",
+    "version": "0.4.1"
+  },
+  {
+    "name": "pillow",
+    "version": "11.3.0"
+  },
+  {
+    "name": "pip",
+    "version": "25.0.1"
+  },
+  {
+    "name": "pip-requirements-parser",
+    "version": "32.0.1"
+  },
+  {
+    "name": "pip_api",
+    "version": "0.0.35"
+  },
+  {
+    "name": "pip_audit",
+    "version": "2.10.1"
+  },
+  {
+    "name": "platformdirs",
+    "version": "4.12.2"
+  },
+  {
+    "name": "pluggy",
+    "version": "1.6.0"
+  },
+  {
+    "name": "protobuf",
+    "version": "7.36.1"
+  },
+  {
+    "name": "pwdlib",
+    "version": "0.2.1"
+  },
+  {
+    "name": "py-serializable",
+    "version": "2.1.0"
+  },
+  {
+    "name": "py_rust_stemmers",
+    "version": "0.1.8"
+  },
+  {
+    "name": "pyclipper",
+    "version": "1.4.0"
+  },
+  {
+    "name": "pycparser",
+    "version": "3.0"
+  },
+  {
+    "name": "pydantic",
+    "version": "2.11.7"
+  },
+  {
+    "name": "pydantic-settings",
+    "version": "2.10.1"
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.33.2"
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0"
+  },
+  {
+    "name": "PyJWT",
+    "version": "2.10.1"
+  },
+  {
+    "name": "PyMuPDF",
+    "version": "1.26.4"
+  },
+  {
+    "name": "pyparsing",
+    "version": "3.3.3"
+  },
+  {
+    "name": "pytest",
+    "version": "8.4.2"
+  },
+  {
+    "name": "pytest-asyncio",
+    "version": "1.1.0"
+  },
+  {
+    "name": "python-docx",
+    "version": "1.2.0"
+  },
+  {
+    "name": "python-dotenv",
+    "version": "1.2.3"
+  },
+  {
+    "name": "python-multipart",
+    "version": "0.0.20"
+  },
+  {
+    "name": "pywin32",
+    "version": "312"
+  },
+  {
+    "name": "PyYAML",
+    "version": "6.0.3"
+  },
+  {
+    "name": "rapidocr",
+    "version": "3.9.2"
+  },
+  {
+    "name": "referencing",
+    "version": "0.37.0"
+  },
+  {
+    "name": "reportlab",
+    "version": "5.0.1"
+  },
+  {
+    "name": "requests",
+    "version": "2.34.2"
+  },
+  {
+    "name": "rich",
+    "version": "15.0.0"
+  },
+  {
+    "name": "rpds-py",
+    "version": "2026.6.3"
+  },
+  {
+    "name": "ruff",
+    "version": "0.12.12"
+  },
+  {
+    "name": "shapely",
+    "version": "2.1.2"
+  },
+  {
+    "name": "six",
+    "version": "1.17.0"
+  },
+  {
+    "name": "sortedcontainers",
+    "version": "2.4.0"
+  },
+  {
+    "name": "SQLAlchemy",
+    "version": "2.0.43"
+  },
+  {
+    "name": "sse-starlette",
+    "version": "3.0.3"
+  },
+  {
+    "name": "starlette",
+    "version": "0.47.3"
+  },
+  {
+    "name": "tokenizers",
+    "version": "0.23.2"
+  },
+  {
+    "name": "tomli",
+    "version": "2.4.1"
+  },
+  {
+    "name": "tomli_w",
+    "version": "1.2.0"
+  },
+  {
+    "name": "tqdm",
+    "version": "4.70.1"
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4"
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0"
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0"
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.35.0"
+  },
+  {
+    "name": "watchfiles",
+    "version": "1.2.0"
+  },
+  {
+    "name": "websockets",
+    "version": "17.1"
+  },
+  {
+    "name": "win32_setctime",
+    "version": "1.2.0"
+  }
+]
