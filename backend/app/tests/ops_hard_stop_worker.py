@@ -1,4 +1,4 @@
-"""OPS-01B hard-stop child worker: runs the real verification entry, then blocks.
+"""Budgeted hard-stop child: runs a real verification or matching entry, then blocks.
 
 Invoked by test_attempt_hard_stop.py as a separate Python process with a JSON config
 file. The phase hook is patched in memory only (production source is untouched); after
@@ -22,6 +22,7 @@ if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
 from sqlalchemy import text  # noqa: E402
+from sqlalchemy.engine import make_url  # noqa: E402
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine  # noqa: E402
 
 from app.agents.provider import DeepSeekProvider  # noqa: E402
@@ -34,10 +35,37 @@ SYNTHETIC_KEY = "sk-synthetic-hard-stop-key-000003"
 
 
 def record_state(state_file: Path, payload: dict) -> None:
-    state_file.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    # Publish a complete marker: the parent polls concurrently while this worker
+    # moves from preflight to the requested phase. Never expose truncated JSON.
+    pending = state_file.with_suffix(state_file.suffix + ".pending")
+    pending.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    pending.replace(state_file)
+
+
+def validate_config(config):
+    """Reject foreign destinations and invalid windows before DB/model access."""
+    chain = config.get("chain", "verification")
+    if chain not in {"verification", "matching"}:
+        raise ValueError("Unsupported owned hard-stop chain")
+    if config.get("phase") not in {
+        "send_intent_committed", "response_observed", "receipt_committed", "ledger_committed",
+    }:
+        raise ValueError("Unsupported owned hard-stop phase")
+    if not re.fullmatch(r"cp_test_[0-9a-f]{32}", config.get("schema", "")):
+        raise ValueError("The hard-stop worker requires a dedicated cp_test schema")
+    url = make_url(config["database_url"])
+    if (url.drivername != "postgresql+asyncpg" or url.host not in {"localhost", "127.0.0.1"}
+            or url.database != "careerproof"):
+        raise ValueError("The hard-stop worker only accepts the local careerproof test database")
+    maximum = config.get("input_limit", 40000)
+    if type(maximum) is not int or not 1000 <= maximum <= 100000:
+        raise ValueError("Invalid hard-stop input bound")
+    UUID(config["task_id"])
+    return chain
 
 
 async def run(config: dict) -> None:
+    chain = validate_config(config)
     schema = config["schema"]
     database_url = config["database_url"]
     state_file = Path(config["state_file"])
@@ -51,6 +79,9 @@ async def run(config: dict) -> None:
     # external AI settings, the child must never be able to reach a real provider.
     settings.ai_external_enabled = False
     settings.deepseek_api_key = None
+    settings.ai_per_report_input_token_limit = config.get("input_limit", 40000)
+    settings.semantic_retrieval_enabled = False
+    settings.ai_max_retrieval_calls = 0
 
     engine = create_async_engine(database_url, connect_args={
         "server_settings": {"search_path": f"{schema},public"},
@@ -77,16 +108,19 @@ async def run(config: dict) -> None:
         "schema": schema, "task_id": config["task_id"],
     })
 
+    from app.agents import evidence_workflow
+    from app.services import analysis as matching
     from app.services import application_verification as verification
     from app.services.ai_request_attempts import AttemptService
     from app.tests.test_application_verification import completion, model_answer
 
     async with factory() as session:
         task = await session.get(AnalysisTask, UUID(config["task_id"]))
-        application = await session.get(
-            Application, UUID(task.input_snapshot["applicationId"])
-        )
-        snapshot = application.report_snapshot
+        if chain == "verification":
+            application = await session.get(
+                Application, UUID(task.input_snapshot["applicationId"])
+            )
+            snapshot = application.report_snapshot
 
     http_count = {"value": 0}
 
@@ -99,6 +133,9 @@ async def run(config: dict) -> None:
 
     async def handler(request):
         count_http()
+        if chain == "matching":
+            from app.tests.test_durable_matching_review import valid_response
+            return valid_response(request, inputs=123, outputs=45)
         return completion(model_answer(snapshot))
 
     provider = DeepSeekProvider(
@@ -110,9 +147,15 @@ async def run(config: dict) -> None:
         transport=httpx.MockTransport(handler),
     )
     verification.get_ai_provider = lambda: provider
+    evidence_workflow.get_ai_provider = lambda: provider
+    matching.async_session_factory = factory
     # The parent created the task under a DeepSeek identity; keep the binding
     # cacheKey continuous while the external interlock above stays off.
     verification._identity = lambda: ("deepseek", "deepseek-flash")
+    if chain == "matching":
+        # Only after both factories are fixed to this MockTransport provider.
+        settings.ai_external_enabled = True
+        settings.ai_provider = "deepseek"
 
     original_phase = AttemptService._phase
 
@@ -129,9 +172,12 @@ async def run(config: dict) -> None:
 
     AttemptService._phase = hanging_phase
     try:
-        await verification.execute_application_verification_task(
-            UUID(config["task_id"]), session_factory=factory
-        )
+        if chain == "verification":
+            await verification.execute_application_verification_task(
+                UUID(config["task_id"]), session_factory=factory,
+            )
+        else:
+            await matching.execute_match_task(UUID(config["task_id"]))
     finally:
         AttemptService._phase = original_phase
     record_state(state_file, {

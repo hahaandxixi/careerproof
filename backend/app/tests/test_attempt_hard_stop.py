@@ -1,7 +1,7 @@
-"""OPS-01B: four real child-process hard stops with database-only recovery.
+"""Two budgeted chains, four real hard-stop windows, database-only recovery.
 
 Each parametrised window spawns a real child worker executing the production
-verification entry, blocks it inside one committed durable phase, and kills that
+verification or matching entry, blocks it inside one durable phase, and kills that
 exact process (never a coroutine cancellation). Recovery reads only database
 facts: no HTTP, no business analysis, no revival of the old task.
 
@@ -27,16 +27,26 @@ import pytest
 from sqlalchemy import select, text
 from sqlalchemy.exc import OperationalError
 
+from app.core.config import settings
+from app.models.ai_budget import AiBudgetReservation, AiDailyBudget
 from app.models.ai_request_attempt import AiRequestAttempt
-from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.analysis import AiUsageLog, AnalysisTask, MatchReport
 from app.models.enums import TaskStatus
 from app.models.identity import User
 from app.models.recruitment import Application
 from app.services import application_verification as verification
+from app.services.ai_budget import SharedBudgetService
 from app.services.ai_request_attempts import AttemptContext, AttemptService
+from app.services.task_runner import FastAPIBackgroundTaskRunner
 from app.tests.test_application_verification import case  # noqa: F401
 from app.tests.test_b08_usage_accounting import reap
-from app.tests.test_real_matching import matching_db  # noqa: F401
+from app.tests.test_real_matching import (
+    create_job,
+    matching_db,  # noqa: F401
+    upload_materials,
+)
+
+ORIGINAL_BACKGROUND_SUBMIT = FastAPIBackgroundTaskRunner.submit
 
 WORKER = Path(__file__).with_name("ops_hard_stop_worker.py")
 PHASES = [
@@ -203,6 +213,9 @@ async def wait_for_locks_released(factory, user_id, task_id, attempt_id):
                     User.id == user_id).with_for_update(nowait=True, key_share=True))
                 await session.scalar(select(AnalysisTask.id).where(
                     AnalysisTask.id == task_id).with_for_update(nowait=True, key_share=True))
+                await session.scalars(select(AiDailyBudget.id).where(
+                    AiDailyBudget.created_by == user_id,
+                ).order_by(AiDailyBudget.budget_day).with_for_update(nowait=True))
                 await session.scalar(select(AiRequestAttempt.id).where(
                     AiRequestAttempt.id == attempt_id).with_for_update(
                         nowait=True, key_share=True))
@@ -216,8 +229,9 @@ async def wait_for_locks_released(factory, user_id, task_id, attempt_id):
 
 
 @pytest.mark.parametrize("phase", PHASES)
+@pytest.mark.parametrize("chain", ["verification", "matching"])
 async def test_real_child_hard_stop_then_database_only_recovery(
-    phase, case, tmp_path  # noqa: F811
+    phase, chain, case, tmp_path, monkeypatch  # noqa: F811
 ):
     database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
     if not database_url:
@@ -228,8 +242,24 @@ async def test_real_child_hard_stop_then_database_only_recovery(
     async with case.factory() as session:
         schema = await session.scalar(text("SELECT current_schema()"))
     assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+    expected_usage = (123, 45, 17 if chain == "verification" else 0)
 
-    task_id = UUID((await case.start())["taskId"])
+    if chain == "verification":
+        task_id = UUID((await case.start())["taskId"])
+    else:
+        # Same student as the existing application, new explicit materials/job.
+        # Execute only synthetic parsers while keeping model transport disabled.
+        with monkeypatch.context() as parsing:
+            parsing.setattr(FastAPIBackgroundTaskRunner, "submit", ORIGINAL_BACKGROUND_SUBMIT)
+            parsing.setattr(settings, "ai_external_enabled", False)
+            resume, version = await upload_materials(case.student, tmp_path)
+        job = await create_job(case.hr)
+        accepted = await case.student.post("/api/v1/matches", json={
+            "jobId": job["id"], "resumeVersionId": resume["currentVersionId"],
+            "projectVersionIds": [version["id"]], "externalAiConsent": True,
+        })
+        assert accepted.status_code == 202, accepted.text
+        task_id = UUID(accepted.json()["data"]["taskId"])
     async with case.factory() as session:
         for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
             assert await session.scalar(text(
@@ -250,9 +280,11 @@ async def test_real_child_hard_stop_then_database_only_recovery(
         "schema": schema,
         "task_id": str(task_id),
         "phase": phase,
+        "chain": chain,
         "nonce": nonce,
         "counter_file": str(counter_file),
         "state_file": str(state_file),
+        "input_limit": 40000,
     }), encoding="utf-8")
     spawn_time = time.time()
     with log_file.open("wb") as log_handle:
@@ -287,6 +319,12 @@ async def test_real_child_hard_stop_then_database_only_recovery(
                 assert attempt is not None and str(attempt.id) == state["attempt_id"]
                 ledger_at_hang = list(await session.scalars(select(AiUsageLog).where(
                     AiUsageLog.analysis_task_id == task_id)))
+                hold = await session.scalar(select(AiBudgetReservation).where(
+                    AiBudgetReservation.attempt_id == attempt.id,
+                ))
+                assert hold is not None
+                assert hold.output_bound == attempt.max_output_tokens
+                assert hold.reservation_day == attempt.sending_day
             if phase in ("send_intent_committed", "response_observed"):
                 assert attempt.state == "in_flight" and attempt.response_digest is None
                 assert attempt.usage_input_tokens is None and ledger_at_hang == []
@@ -296,10 +334,15 @@ async def test_real_child_hard_stop_then_database_only_recovery(
                 assert attempt.state == "booked"
             if phase in ("receipt_committed", "ledger_committed"):
                 assert (attempt.usage_input_tokens, attempt.usage_output_tokens,
-                        attempt.usage_cache_hit_tokens) == (123, 45, 17)
+                        attempt.usage_cache_hit_tokens) == expected_usage
+                assert hold.state == "settled"
+                assert (hold.actual_input_tokens, hold.actual_output_tokens) == (123, 45)
+            else:
+                assert hold.state == "held"
+                assert hold.actual_input_tokens is None
             if phase == "ledger_committed":
                 assert [(row.input_tokens, row.output_tokens, row.cache_hit_tokens)
-                        for row in ledger_at_hang] == [(123, 45, 17)]
+                        for row in ledger_at_hang] == [expected_usage]
             pre_kill = {
                 "attempt_state": attempt.state,
                 "ledger": [(row.input_tokens, row.output_tokens, row.cache_hit_tokens)
@@ -330,7 +373,7 @@ async def test_real_child_hard_stop_then_database_only_recovery(
         await reap(case.factory, str(task_id))
         context = AttemptContext(task_id, owner_id, claim_token, row.step,
                                  row.provider, row.model)
-        service = AttemptService(case.factory, context)
+        service = AttemptService(case.factory, context, budget=SharedBudgetService())
         written_first = await service.reconcile()
         assert http_count(counter_file) == HTTP_AT_HANG[phase]
         written_second = await service.reconcile()
@@ -345,8 +388,14 @@ async def test_real_child_hard_stop_then_database_only_recovery(
             ledger = list(await session.scalars(select(AiUsageLog).where(
                 AiUsageLog.analysis_task_id == task_id)))
             tasks = list(await session.scalars(select(AnalysisTask).where(
-                AnalysisTask.task_type == "application_verification")))
+                AnalysisTask.id == task_id)))
             application = await session.get(Application, UUID(case.application_id))
+            hold = await session.scalar(select(AiBudgetReservation).where(
+                AiBudgetReservation.attempt_id == attempt.id,
+            ))
+            assert await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task_id,
+            )) is None
         assert len(tasks) == 1, "recovery must never revive or recreate the old task"
         assert verification._digest(application.report_snapshot) == snapshot_digest
 
@@ -359,21 +408,25 @@ async def test_real_child_hard_stop_then_database_only_recovery(
             assert summary["usageKnown"] is False
             assert summary["trustedReceiptCount"] == 0
             assert summary["unknownAttemptCount"] == 1 and summary["intentCount"] == 1
+            assert hold.state == "held" and hold.actual_input_tokens is None
         elif phase == "receipt_committed":
             assert (written_first, written_second) == (1, 0)
             assert row.state == "booked"
             assert [(item.input_tokens, item.output_tokens, item.cache_hit_tokens)
-                    for item in ledger] == [(123, 45, 17)]
+                    for item in ledger] == [expected_usage]
             assert all(item.run_token == claim_token and item.request_seq == 1
                        and item.attempt_id == attempt.id for item in ledger)
             assert summary["usageKnown"] and summary["usageBooked"]
             assert (summary["inputTokens"], summary["outputTokens"],
-                    summary["cacheHitTokens"]) == (123, 45, 17)
+                    summary["cacheHitTokens"]) == expected_usage
         else:
             assert (written_first, written_second) == (0, 0)
             assert row.state == "booked" and len(ledger) == 1
             assert summary["usageKnown"] and summary["usageBooked"]
             assert summary["trustedReceiptCount"] == 1
+        if phase in ("receipt_committed", "ledger_committed"):
+            assert hold.state == "settled"
+            assert (hold.actual_input_tokens, hold.actual_output_tokens) == (123, 45)
     finally:
         if child.poll() is None:
             child.kill()

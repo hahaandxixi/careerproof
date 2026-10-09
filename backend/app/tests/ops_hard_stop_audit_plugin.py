@@ -3,13 +3,17 @@
 import json
 import os
 from pathlib import Path
+from uuid import UUID
 
 import pytest
 from sqlalchemy import select
 
+from app.models.ai_budget import AiBudgetReservation
 from app.models.ai_request_attempt import AiRequestAttempt
-from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.analysis import AiUsageLog, AnalysisTask, MatchReport
+from app.models.recruitment import Application
 from app.services.ai_request_attempts import AttemptService
+from app.services.application_verification import _digest
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -18,10 +22,16 @@ def pytest_runtest_call(item):
         yield
         return
     destination = Path(os.environ["OPS_HARD_STOP_AUDIT_DIR"]).resolve()
+    allowed = Path(__file__).resolve().parents[3] / "docs" / "evidence"
+    if not destination.is_relative_to(allowed):
+        raise AssertionError("Hard-stop audit must be inside this repository's evidence directory")
     destination.mkdir(parents=True, exist_ok=True)
     phase = item.callspec.params["phase"]
-    proof = {"phase": phase, "recovery": []}
-    target = destination / f"{phase}.json"
+    chain = item.callspec.params["chain"]
+    proof = {"phase": phase, "chain": chain, "recovery": []}
+    target = destination / f"{chain}-{phase}.json"
+    if target.exists():
+        raise AssertionError("Preserve previous hard-stop evidence; choose a fresh audit directory")
     case = item.funcargs["case"]
     temporary = item.funcargs["tmp_path"]
     worker_class = item.module.WorkerProcess
@@ -53,11 +63,27 @@ def pytest_runtest_call(item):
             ledger = list(await session.scalars(select(AiUsageLog).where(
                 AiUsageLog.analysis_task_id == task.id,
             )))
+            reservations = list(await session.scalars(select(AiBudgetReservation).where(
+                AiBudgetReservation.analysis_task_id == task.id,
+            )))
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = _digest(application.report_snapshot)
+            business_report = await session.scalar(select(MatchReport.id).where(
+                MatchReport.analysis_task_id == task.id,
+            ))
         counter = temporary / f"http-count-{phase}.txt"
         return {
             "httpCount": int(counter.read_text()) if counter.exists() else 0,
             "taskStatus": task.status.value, "taskRunToken": task.run_token,
             "businessAnalysisPresent": bool((task.input_snapshot or {}).get("analysis")),
+            "businessReportPresent": business_report is not None,
+            "applicationSnapshotDigest": snapshot_digest,
+            "reservations": [{
+                "attemptId": row.attempt_id, "state": row.state,
+                "day": row.reservation_day, "inputBound": row.input_bound,
+                "outputBound": row.output_bound, "actualInput": row.actual_input_tokens,
+                "actualOutput": row.actual_output_tokens,
+            } for row in reservations],
             "attempts": [{
                 "id": row.id, "state": row.state, "reason": row.reason,
                 "input": row.usage_input_tokens, "output": row.usage_output_tokens,
