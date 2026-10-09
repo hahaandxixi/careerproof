@@ -1,0 +1,4 @@
+# Preserve raw tool evidence exactly, including progress-line trailing spaces.
+# These files are evidence, not source formatting; do not normalize their bytes.
+docs/evidence/**/*.raw.out -text -whitespace
+docs/evidence/**/*.raw.err -text -whitespace
