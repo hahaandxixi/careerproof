@@ -6,6 +6,8 @@ authorization and before its attempt lock. No method performs HTTP or commits.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, time, timedelta, timezone
 from uuid import UUID, uuid4
@@ -16,9 +18,16 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
 from app.agents.attempt_receipts import parse_usage_receipt
 from app.core.config import settings
-from app.models.ai_budget import AiBudgetCutover, AiBudgetReservation, AiDailyBudget
+from app.models.ai_budget import (
+    AiBudgetAdjustment,
+    AiBudgetCutover,
+    AiBudgetReservation,
+    AiDailyBudget,
+)
 from app.models.ai_request_attempt import AiRequestAttempt
 from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.enums import TaskStatus, UserRole
+from app.models.identity import User
 
 SHANGHAI = timezone(timedelta(hours=8))
 GATE_ID = "shared_daily_v1"
@@ -100,6 +109,204 @@ class SharedBudgetService:
 
     def today(self):
         return self.now().astimezone(SHANGHAI).date()
+
+    async def _administrator(self, session, actor_id):
+        actor = await session.scalar(
+            select(User)
+            .where(
+                User.id == actor_id,
+                User.role == UserRole.ADMIN,
+                User.is_active.is_(True),
+            )
+            .with_for_update(key_share=True)
+            .execution_options(populate_existing=True)
+        )
+        if actor is None:
+            raise BudgetAdmissionError("active_administrator_required")
+
+    async def activate(self, session, *, actor_id, reason):
+        """Audit/drain/backfill before activation; never infer unknown legacy fees.
+
+        Old external runs without physical provenance keep the gate closed.
+        Caller must commit this transaction or roll back on any exception.
+        """
+        if not isinstance(reason, str) or not reason.strip() or len(reason) > 1000:
+            raise BudgetAdmissionError("activation_audit_reason_required")
+        await self._administrator(session, actor_id)
+        insertion = pg_insert if session.get_bind().dialect.name == "postgresql" else sqlite_insert
+        now = self.now()
+        await session.execute(
+            insertion(AiBudgetCutover)
+            .values(
+                id=GATE_ID,
+                enabled=False,
+                reason="",
+                created_at=now,
+                updated_at=now,
+            )
+            .on_conflict_do_nothing(index_elements=["id"])
+        )
+        gate = await session.scalar(
+            select(AiBudgetCutover)
+            .where(
+                AiBudgetCutover.id == GATE_ID,
+            )
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        if gate.enabled:
+            # Activation evidence cannot be overwritten by another caller.
+            await self.assert_gate(session)
+            return gate.inventory_digest
+        tasks = list(await session.scalars(select(AnalysisTask)))
+        modern_ids = set(await session.scalars(select(AiRequestAttempt.analysis_task_id)))
+        for task in tasks:
+            snapshot = task.input_snapshot or {}
+            if snapshot.get("externalAiConsent") is not True:
+                continue
+            if task.status in {TaskStatus.PENDING, TaskStatus.RUNNING}:
+                raise BudgetAdmissionError("external_claims_must_drain_before_cutover")
+            if task.id not in modern_ids or snapshot.get("usageAccountingMode") != "attempt_v1":
+                # COMPLETED/FAILED and even a partial old aggregate ledger do
+                # not prove the physical request inventory is complete.
+                raise BudgetAdmissionError("legacy_external_run_requires_audit_gate_remains_closed")
+        await self.backfill_pre_budget_attempts(session)
+        attempts = list(
+            await session.scalars(select(AiRequestAttempt).order_by(AiRequestAttempt.id))
+        )
+        reservations = list(await session.scalars(select(AiBudgetReservation)))
+        holds = {row.attempt_id: row for row in reservations}
+        inventory = []
+        for attempt in attempts:
+            hold = holds.get(attempt.id)
+            if (
+                hold is None
+                or hold.created_by != attempt.created_by
+                or hold.analysis_task_id != attempt.analysis_task_id
+                or hold.run_token != attempt.run_token
+            ):
+                raise BudgetAdmissionError("cutover_inventory_identity_incomplete")
+            if (
+                hold.input_bound != attempt.estimated_input_tokens
+                or hold.output_bound != attempt.max_output_tokens
+            ):
+                raise BudgetAdmissionError("cutover_capacity_bounds_conflict")
+            if attempt.state != "not_sent" and (
+                attempt.send_intent_at is None
+                or attempt.sending_day is None
+                or hold.reservation_day != attempt.sending_day
+            ):
+                raise BudgetAdmissionError("cutover_original_sending_day_missing")
+            if attempt.state in {"received_unbooked", "booked"}:
+                parsed = parse_usage_receipt({"usage": attempt.usage_raw})
+                if (
+                    not parsed.trusted
+                    or hold.state != "settled"
+                    or (
+                        attempt.usage_input_tokens,
+                        attempt.usage_output_tokens,
+                        attempt.usage_cache_hit_tokens,
+                    )
+                    != (parsed.input_tokens, parsed.output_tokens, parsed.cache_hit_tokens)
+                    or (hold.actual_input_tokens, hold.actual_output_tokens)
+                    != (parsed.input_tokens, parsed.output_tokens)
+                ):
+                    raise BudgetAdmissionError("cutover_receipt_capacity_conflict")
+            elif attempt.state in {"in_flight", "usage_unknown"}:
+                if hold.state not in {"held", "adjusted"}:
+                    raise BudgetAdmissionError("cutover_unknown_capacity_lost")
+            elif attempt.state == "not_sent":
+                if attempt.send_intent_at is not None or hold.state not in {"held", "released"}:
+                    raise BudgetAdmissionError("cutover_unsent_capacity_invalid")
+                if hold.state == "released" and attempt.ended_at is None:
+                    raise BudgetAdmissionError("cutover_unsent_release_unproven")
+            inventory.append(
+                {
+                    "id": str(attempt.id),
+                    "owner": str(attempt.created_by),
+                    "task": str(attempt.analysis_task_id),
+                    "run": str(attempt.run_token),
+                    "state": attempt.state,
+                    "day": str(hold.reservation_day),
+                    "source": hold.source,
+                    "capacity": reservation_cost(hold),
+                    "receiptDigest": attempt.response_digest,
+                }
+            )
+        # Legacy ledgers remain immutable; including their identity in the audit
+        # avoids treating a new empty budget table as an empty spending history.
+        legacy = list(
+            await session.execute(
+                select(
+                    AiUsageLog.id,
+                    AiUsageLog.analysis_task_id,
+                    AiUsageLog.created_at,
+                    AiUsageLog.input_tokens,
+                    AiUsageLog.output_tokens,
+                )
+                .where(AiUsageLog.attempt_id.is_(None))
+                .order_by(AiUsageLog.id)
+            )
+        )
+        payload = {"attempts": inventory, "legacy": [tuple(row) for row in legacy]}
+        digest = hashlib.sha256(
+            json.dumps(payload, sort_keys=True, default=str).encode()
+        ).hexdigest()
+        gate.enabled, gate.inventory_digest = True, digest
+        gate.activated_by, gate.activated_at, gate.reason = actor_id, now, reason.strip()
+        await session.flush()
+        return digest
+
+    async def adjust_unknown(
+        self, session, *, actor_id, attempt_id, operation_id, reason, input_tokens, output_tokens
+    ):
+        """Append-only administrative capacity decision, never a usage receipt."""
+        if (
+            not isinstance(operation_id, str)
+            or not operation_id.strip()
+            or len(operation_id) > 100
+            or not isinstance(reason, str)
+            or not reason.strip()
+            or len(reason) > 1000
+            or any(type(v) is not int or v < 0 for v in (input_tokens, output_tokens))
+        ):
+            raise BudgetAdmissionError("invalid_capacity_adjustment")
+        await self._administrator(session, actor_id)
+        attempt, hold = await self.lock_attempt(session, attempt_id)
+        existing = await session.scalar(
+            select(AiBudgetAdjustment).where(
+                AiBudgetAdjustment.operation_id == operation_id,
+            )
+        )
+        if existing:
+            if (
+                existing.reservation_id != hold.id
+                or existing.actor_id != actor_id
+                or existing.reason != reason.strip()
+                or (existing.after_input_tokens, existing.after_output_tokens)
+                != (input_tokens, output_tokens)
+            ):
+                raise BudgetAdmissionError("adjustment_operation_conflict")
+            return existing.id
+        if attempt.state != "usage_unknown" or hold.state not in {"held", "adjusted"}:
+            raise BudgetAdmissionError("only_unknown_capacity_may_be_adjusted")
+        before_input, before_output = reservation_cost(hold)
+        audit = AiBudgetAdjustment(
+            operation_id=operation_id,
+            reservation_id=hold.id,
+            created_by=attempt.created_by,
+            actor_id=actor_id,
+            reason=reason.strip(),
+            before_input_tokens=before_input,
+            before_output_tokens=before_output,
+            after_input_tokens=input_tokens,
+            after_output_tokens=output_tokens,
+        )
+        session.add(audit)
+        hold.state = "adjusted"
+        hold.adjusted_input_tokens, hold.adjusted_output_tokens = input_tokens, output_tokens
+        await session.flush()
+        return audit.id
 
     async def assert_gate(self, session, *, exclude_attempt=None):
         gate = await session.scalar(
