@@ -1,0 +1,5 @@
+{
+  "backend\\evals\\run_task_plan_quality.py": "cbe4e95abff3e7b713afe2be09274b0188f4ebd0d6b8cad8aaa414645d0b3571",
+  "backend\\evals\\task-plan-quality-cases.json": "90e066d35df9eca1960d41455fbd1d4b9bb011e42a8a43f75d4c665099389061",
+  "backend\\app\\services\\report_history.py": "5e9b1ea2fee4d7ea720c828d9a8832975544de07985c58da3a8a3fbc8238175c"
+}
