@@ -7,6 +7,7 @@
 param(
     [Parameter(Mandatory = $true)][string]$RunId,
     [ValidatePattern('^\.venv(?:-[a-z0-9-]+)?$')][string]$BackendVenv = '.venv',
+    [ValidatePattern('^$|^[a-z0-9][a-z0-9-]{0,63}$')][string]$FrontendStage = '',
     [switch]$SkipBuild,
     [switch]$SkipSeed,
     [switch]$CheckOnly
@@ -15,6 +16,12 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $backendRoot = Join-Path $repoRoot 'backend'
 $frontendRoot = Join-Path $repoRoot 'jianli'
+if ($FrontendStage) {
+    $frontendRoot = Join-Path $backendRoot ".tmp\$FrontendStage"
+    if (!(Test-Path -LiteralPath $frontendRoot) -or ((Get-Item -LiteralPath $frontendRoot).Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
+        throw 'The selected frontend stage must be a local existing backend/.tmp directory, not a reparse point.'
+    }
+}
 $venvRoot = Join-Path $backendRoot $BackendVenv
 if ((Test-Path -LiteralPath $venvRoot) -and ((Get-Item -LiteralPath $venvRoot).Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
     throw 'The selected E2E virtual environment must be a local backend directory, not a reparse point.'
@@ -39,6 +46,9 @@ try {
 if ($RunId -notmatch '^[a-z0-9][a-z0-9-]{0,31}$') { throw 'RunId must match [a-z0-9][a-z0-9-]{0,31}.' }
 $nodeExecutable = (Get-Command 'node' -ErrorAction Stop).Source
 if (!$nodeExecutable) { throw 'Node is unavailable.' }
+$frontendRuntimeJson = & $nodeExecutable (Join-Path $PSScriptRoot 'dependencies\verify-frontend-runtime.mjs') --project-root $frontendRoot --expected-root (Join-Path $repoRoot 'jianli')
+if ($LASTEXITCODE -ne 0) { throw 'Selected frontend runtime or source does not match the current manifest/lock/source.' }
+$frontendRuntime = $frontendRuntimeJson | ConvertFrom-Json
 
 # E2E_DATABASE_URL is read from the environment only; it is validated here and never
 # printed. The Python seeder enforces the same guard independently.
@@ -129,7 +139,7 @@ New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
 # Start-Process children inherit this session's environment; every override is
 # restored in the finally block after the children have captured their copy.
 $previousEnv = @{}
-foreach ($name in @('DATABASE_URL', 'STORAGE_BASE_DIR', 'AI_EXTERNAL_ENABLED', 'AI_PROVIDER', 'FRONTEND_ORIGINS', 'BACKEND_ORIGIN', 'NEXT_DIST_DIR', 'E2E_STORAGE_DIR')) {
+foreach ($name in @('DATABASE_URL', 'STORAGE_BASE_DIR', 'AI_EXTERNAL_ENABLED', 'AI_PROVIDER', 'FRONTEND_ORIGINS', 'BACKEND_ORIGIN', 'NEXT_DIST_DIR', 'E2E_STORAGE_DIR', 'NEXT_TELEMETRY_DISABLED')) {
     $previousEnv[$name] = [Environment]::GetEnvironmentVariable($name)
 }
 # next-env.d.ts is tracked and rewritten by every Next build; tsconfig.json is
@@ -149,6 +159,7 @@ try {
     $env:STORAGE_BASE_DIR = $storageDir
     $env:AI_EXTERNAL_ENABLED = 'false'
     $env:AI_PROVIDER = 'mock'
+    $env:NEXT_TELEMETRY_DISABLED = '1'
     $env:FRONTEND_ORIGINS = "[`"http://127.0.0.1:$frontendPort`"]"
     $env:E2E_STORAGE_DIR = $storageDir
     if ($env:AI_EXTERNAL_ENABLED -ne 'false' -or $env:AI_PROVIDER -ne 'mock') { throw 'AI isolation environment could not be enforced.' }
@@ -184,6 +195,8 @@ try {
         distDir           = '.next-e2e'
         backendVenv       = $BackendVenv
         backendRuntime    = $backendRuntime
+        frontendStage     = $FrontendStage
+        frontendRuntime   = $frontendRuntime
         aiExternalEnabled = 'false'
         aiProvider        = 'mock'
         backend           = @{ id = $backendProcess.Id; startedAt = $backendProcess.StartTime.ToUniversalTime().ToString('o'); needle = $pythonPath }
