@@ -1,0 +1,18 @@
+# 2026-10-09 两条业务预算入口检查点（非最终签收）
+
+主匹配的规划/分析/repair/retry和企业投递核验的生产入口都显式构造SharedBudgetService。外部模型不再静默使用无预算的AttemptService；standalone内核测试仍可以显式保留budget=None。已有_daily_ai_budget兼容函数未改动，但这两条链只读_shared_budget_display作为建议快照，实际发送由每个物理请求持久准入决定，不因旧“再预留整个报告”的估算而拒绝可用的小剩额。
+
+matching_db在合成seed前新增current_schema及全部创建表namespace检查，避免public回退。新预算fixture helper在自有schema/SQLite创建合成管理员并调用实际activate，空清单审计完成后才启用；不用测试猴补强行绕过准入。durable_db的容量/admin专属case自己构造其测试闸门，其余业务case使用实际激活。企业PG账户锁等待测试观察位置从旧_daily_ai_budget移动到实际AttemptService._live_identity，必须继续实际证明撤回后0HTTP；该PG探针本轮尚未运行。
+
+## 实际测试范围
+
+- 新test_ai_budget_workflows四项通过（budget-workflow-target2.raw.out）：学生/企业两条生产入口闸门关闭时0HTTP、0attempt/预留，学生规则降级usageKnown=false且usage=None，企业明确budget_cutover_not_enabled失败；已有800可信旧聚合输出占额、日上限1000时实际请求max_tokens=200，与attempt/reservation的批准值相同，成功可信用量分别120/20、123/45并booked。
+- 新四项首轮2失败/2通过是学生测试错用会新建匹配的match_report辅助函数；修正为直接读取已执行的POST任务与持久报告，未弱化业务断言，首轮budget-workflow-target.raw.out保留。
+- 原有durable_matching/review/application_verification首验57通过、6真实PG跳过（budget-workflow-sqlite.raw.out）。扩大到新四项与real_matching/report_input_budget/report_history/ai_evidence_workflow，共142通过、6PG跳过（budget-workflow-affected.raw.out），退出0。均仅合成MockTransport，未调用真实模型。
+- 随后仅新增容量显示字段：已知实际、held未知上界、人工adjusted容量和unknownReservationCount分开，input/output总字段明确tokenBasis=capacity_actual_plus_unknown_bounds。生产入口+容量服务受影响复验17通过、1PG跳过（budget-workflow-display.raw.out）；142计数属于字段拆分前快照，不能冒称后来新增全量。Ruff本批源码/fixture/新增测试全部通过。
+
+闸门和模型表仅在测试自有库创建启用，业务库/closure无迁移和切换，固定投递快照无改写；本轮未做页面生产验收，不以ASGI合成测试冒称实际网站已发布。Docker仍因本地Inference套接字故障未恢复，不能用旧PG绿灯替代当前两链预算PG验证。
+
+## 必须继续的门槛
+
+专属PG真实两链同owner最后槽与HTTP/日锁探针、收据及账目commit失败的预算状态、午夜拒绝和迟到费用、管理员并发幂等/旧聚合切换、两链真实子进程四窗口及Codex独立复跑。核验旧硬停worker/parent现在需同步预算恢复与预留断言，主匹配还需新增实际入口worker分支，不能复用原核验四个案例冒充两链完成。最后再做现行依赖与权威公告审计、升级排序。完整OPS仍进行中，未安装、升级、推送或部署。

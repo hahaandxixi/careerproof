@@ -48,6 +48,7 @@ from app.schemas.analysis import (
     TaskAccepted,
 )
 from app.services.action_plan import build_action_plan
+from app.services.ai_budget import SharedBudgetService
 from app.services.ai_request_attempts import (
     AttemptContext,
     AttemptService,
@@ -208,6 +209,7 @@ def _matching_observer_factory(
             session_factory,
             AttemptContext(task_id, owner_id, run_token, step, provider.name, provider.model),
             authorize=authorize_attempt,
+            budget=SharedBudgetService(),
         )
         ledger.services.append(service)
         return DurableRequestObserver(service)
@@ -342,6 +344,20 @@ async def _daily_ai_budget(session: AsyncSession, user_id: UUID) -> tuple[bool, 
     ):
         return False, "daily_output_token_limit", stats
     return True, None, stats
+
+
+async def _shared_budget_display(session: AsyncSession, user_id: UUID) -> dict:
+    """Advisory snapshot; atomic physical-request admission makes the decision."""
+    budget = SharedBudgetService()
+    capacity = await budget.capacity(session, user_id, day=budget.today())
+    return {"reportCount": len(capacity.task_ids), "inputTokens": capacity.inputs,
+            "outputTokens": capacity.outputs, "admissionMode": "shared_daily_v1",
+            "tokenBasis": "capacity_actual_plus_unknown_bounds",
+            "knownInputTokens": capacity.known_inputs, "knownOutputTokens": capacity.known_outputs,
+            "heldInputBound": capacity.held_inputs, "heldOutputBound": capacity.held_outputs,
+            "adjustedInputCapacity": capacity.adjusted_inputs,
+            "adjustedOutputCapacity": capacity.adjusted_outputs,
+            "unknownReservationCount": capacity.unknown_count}
 
 
 class AnalysisService:
@@ -744,9 +760,7 @@ async def execute_match_task(task_id: UUID) -> None:
                     external_allowed = False
                     external_skip_reason = "consent_not_granted"
                 else:
-                    external_allowed, external_skip_reason, budget_stats = await _daily_ai_budget(
-                        session, task.created_by
-                    )
+                    budget_stats = await _shared_budget_display(session, task.created_by)
             from app.services.report_history import prepare_history_tool
 
             history_loader = None

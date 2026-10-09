@@ -138,6 +138,8 @@ async def test_hold_and_cross_run_grant_do_not_reset_report_capacity(budget_data
     async with factory() as session:
         usage = await service.capacity(session, owner, day=date(2026, 10, 7))
         assert (usage.inputs, usage.outputs, usage.task_ids) == (200, 500, frozenset([task]))
+        assert (usage.known_inputs, usage.known_outputs) == (0, 0)
+        assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (200, 500, 2)
 
 
 async def test_disabled_gate_or_unreserved_old_attempt_cannot_admit(budget_data):

@@ -45,13 +45,14 @@ from app.schemas.application_verification import (
     ApplicationVerificationRequest,
     VerificationAnalysis,
 )
+from app.services.ai_budget import BudgetAdmissionError, SharedBudgetService
 from app.services.ai_request_attempts import (
     MODE,
     AttemptContext,
     AttemptService,
     DurableRequestObserver,
 )
-from app.services.analysis import _daily_ai_budget
+from app.services.analysis import _shared_budget_display
 from app.services.jobs import JobService
 from app.services.task_lifecycle import claim_task, finish_task, heartbeat_task
 from app.tools.function_coverage import redundant_source_request
@@ -584,15 +585,13 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
         if task.task_type != TASK_TYPE or not saved.get("externalAiConsent"):
             raise ValueError("Invalid verification task")
         async with asyncio.timeout(settings.ai_workflow_timeout_seconds), _model_semaphore():
-            allowed, reason, budget = await _daily_ai_budget(session, task.created_by)
+            budget = await _shared_budget_display(session, task.created_by)
             saved["dailyBudget"] = budget
             item, context = await _authorized(
                 session, UUID(saved["applicationId"]), task.created_by
             )
             if _binding(item, context, task.created_by)["cacheKey"] != saved["cacheKey"]:
                 failure = "snapshot_changed"
-            elif not allowed:
-                failure = reason or "daily_budget"
             else:
                 # Budget checking locks the creator row. Keep the authorized
                 # request bytes in memory, then release that transaction before
@@ -617,6 +616,7 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                     AttemptContext(task_id, task.created_by, token, "verification",
                                    provider.name, provider.model),
                     authorize=authorize_attempt,
+                    budget=SharedBudgetService(),
                 ))
                 saved["usageAccountingMode"] = MODE
                 # Each new verification task makes at most one HTTP request.
@@ -631,6 +631,8 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 analysis = validate_verification(raw, item.report_snapshot)
     except Exception as exc:
         failure = _failure_kind(exc)
+        if isinstance(exc, BudgetAdmissionError):
+            failure = str(exc)
         if isinstance(exc, ProviderInputBudgetError):
             saved["inputBudgetStop"] = {
                 "estimatedInputBound": exc.estimated_input_bound,

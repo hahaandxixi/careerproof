@@ -754,21 +754,22 @@ async def test_postgres_observed_account_lock_wait_rechecks_withdrawal_before_mo
     if case.factory.kw["bind"].dialect.name != "postgresql":
         pytest.skip("Requires an explicitly configured isolated PostgreSQL schema")
     at_budget = asyncio.Event()
-    original_budget = verification._daily_ai_budget
+    from app.services.ai_request_attempts import AttemptService
+    original_identity = AttemptService._live_identity
     waiter_pid = None
     calls = []
 
-    async def budget_probe(session, user_id):
+    async def budget_probe(self, session):
         nonlocal waiter_pid
         waiter_pid = await session.scalar(text("SELECT pg_backend_pid()"))
         at_budget.set()
-        return await original_budget(session, user_id)
+        return await original_identity(self, session)
 
     async def handler(request):
         calls.append(request)
         return completion(model_answer(case.snapshot))
 
-    monkeypatch.setattr(verification, "_daily_ai_budget", budget_probe)
+    monkeypatch.setattr(AttemptService, "_live_identity", budget_probe)
     inject_provider(monkeypatch, handler)
     started = await case.start()
     work = None

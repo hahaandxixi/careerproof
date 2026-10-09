@@ -61,6 +61,13 @@ class Capacity:
     inputs: int
     outputs: int
     task_ids: frozenset[UUID]
+    known_inputs: int = 0
+    known_outputs: int = 0
+    held_inputs: int = 0
+    held_outputs: int = 0
+    adjusted_inputs: int = 0
+    adjusted_outputs: int = 0
+    unknown_count: int = 0
 
 
 def reservation_cost(row):
@@ -389,11 +396,24 @@ class SharedBudgetService:
             query = query.where(AiBudgetReservation.attempt_id != exclude)
         rows = list(await session.scalars(query))
         inputs = outputs = 0
+        known_inputs = known_outputs = held_inputs = held_outputs = 0
+        adjusted_inputs = adjusted_outputs = unknown_count = 0
         tasks = set()
         for row in rows:
             cost_in, cost_out = reservation_cost(row)
             inputs += cost_in
             outputs += cost_out
+            if row.state == "settled":
+                known_inputs += cost_in
+                known_outputs += cost_out
+            elif row.state == "held":
+                held_inputs += cost_in
+                held_outputs += cost_out
+                unknown_count += 1
+            elif row.state == "adjusted":
+                adjusted_inputs += cost_in
+                adjusted_outputs += cost_out
+                unknown_count += 1
             if row.state != "released":
                 tasks.add(row.analysis_task_id)
         legacy = (
@@ -416,8 +436,11 @@ class SharedBudgetService:
                 raise BudgetAdmissionError("legacy_usage_requires_audit")
             inputs += row.input_tokens
             outputs += row.output_tokens
+            known_inputs += row.input_tokens
+            known_outputs += row.output_tokens
             tasks.add(row.analysis_task_id)
-        return Capacity(inputs, outputs, frozenset(tasks))
+        return Capacity(inputs, outputs, frozenset(tasks), known_inputs, known_outputs,
+                        held_inputs, held_outputs, adjusted_inputs, adjusted_outputs, unknown_count)
 
     async def reserve(self, session, attempt):
         """Create one hold atomically with the attempt; return the exact wire grant."""

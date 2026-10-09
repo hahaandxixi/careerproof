@@ -30,6 +30,7 @@ from app.models.identity import User
 from app.services import analysis as analysis_service
 from app.services import portfolio as portfolio_service
 from app.services.ai_request_attempts import AttemptContext, AttemptService
+from app.tests.budget_fixture_helpers import activate_owned_test_budget
 from app.tests.test_jobs_api import register
 from app.tests.test_real_matching import (  # noqa: F401
     create_job,
@@ -39,7 +40,7 @@ from app.tests.test_real_matching import (  # noqa: F401
 
 
 @pytest.fixture
-async def durable_db(tmp_path, monkeypatch):
+async def durable_db(tmp_path, monkeypatch, request):
     """Own cp_test schema with pre-write namespace verification, or temp SQLite."""
     database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
     schema_name = None
@@ -99,6 +100,10 @@ async def durable_db(tmp_path, monkeypatch):
                         {"table": table},
                     ) == schema_name, table
         factory = async_sessionmaker(engine, expire_on_commit=False)
+        # Capacity/admin unit cases explicitly construct their own gate. Other
+        # workflow cases exercise actual audited activation before model calls.
+        if "budget_data" not in request.fixturenames:
+            await activate_owned_test_budget(factory, schema=schema_name)
 
         async def session_override():
             async with factory() as session:

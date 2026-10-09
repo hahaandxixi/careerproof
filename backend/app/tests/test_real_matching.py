@@ -45,6 +45,7 @@ from app.models.identity import User
 from app.models.portfolio import ProjectFile, ProjectVersion, ResumeVersion
 from app.services import analysis as analysis_service
 from app.services import portfolio as portfolio_service
+from app.tests.budget_fixture_helpers import activate_owned_test_budget
 from app.tests.test_jobs_api import organization, register
 
 
@@ -81,6 +82,8 @@ async def matching_db(tmp_path, monkeypatch):
                 await connection.execute(text(f'CREATE SCHEMA "{schema_name}"'))
             schema_created = True
         async with engine.begin() as connection:
+            if schema_name:
+                assert await connection.scalar(text("SELECT current_schema()")) == schema_name
             await connection.run_sync(
                 lambda sync: Base.metadata.create_all(
                     sync,
@@ -88,7 +91,16 @@ async def matching_db(tmp_path, monkeypatch):
                     checkfirst=False,
                 )
             )
+            if schema_name:
+                for name in (t.name for t in Base.metadata.sorted_tables
+                             if t.name != "knowledge_chunks"):
+                    assert await connection.scalar(text(
+                        "SELECT n.nspname FROM pg_class c "
+                        "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                        "WHERE c.oid=to_regclass(:name)",
+                    ), {"name": name}) == schema_name
         factory = async_sessionmaker(engine, expire_on_commit=False)
+        await activate_owned_test_budget(factory, schema=schema_name)
 
         async def session_override():
             async with factory() as session:

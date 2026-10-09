@@ -1,0 +1,29 @@
+FF..                                                                     [100%]
+================================== FAILURES ===================================
+_________ test_matching_disabled_gate_cannot_send_or_fabricate_usage __________
+app\tests\test_ai_budget_workflows.py:66: in test_matching_disabled_gate_cannot_send_or_fabricate_usage
+    await match_report(candidate.student, str(task_id))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: match_report() missing 2 required positional arguments: 'resume' and 'version'
+________ test_matching_small_daily_remainder_is_granted_on_actual_wire ________
+app\tests\test_ai_budget_workflows.py:92: in test_matching_small_daily_remainder_is_granted_on_actual_wire
+    await match_report(candidate.student, str(task_id))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: match_report() missing 2 required positional arguments: 'resume' and 'version'
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_ai_budget_workflows.py::test_matching_disabled_gate_cannot_send_or_fabricate_usage
+FAILED app/tests/test_ai_budget_workflows.py::test_matching_small_daily_remainder_is_granted_on_actual_wire
+2 failed, 2 passed, 5 warnings in 6.64s
