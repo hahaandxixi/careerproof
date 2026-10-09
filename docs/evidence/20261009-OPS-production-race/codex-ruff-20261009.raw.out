@@ -1,0 +1,57 @@
+E501 Line too long (104 > 100)
+   --> app\tests\test_ai_budget_production_race.py:470:101
+    |
+470 | async def assert_settled_exactly_once(fixture_case, owner_id, winner_task, *, cache_tokens, http_calls):
+    |                                                                                                     ^^^^
+471 |     """Per physical receipt: settled once, one ledger row, no duplicates.
+    |
+
+E501 Line too long (107 > 100)
+   --> app\tests\test_ai_budget_production_race.py:633:101
+    |
+631 |             Application, UUID(case.application_id)
+632 |         )).report_snapshot)
+633 |     await assert_settled_exactly_once(case, student_id, winner_task, cache_tokens=0, http_calls=gate.calls)
+    |                                                                                                     ^^^^^^^
+634 |     assert digest_after == digest_before
+635 |     _reservations, attempts, ledger, _tasks = await race_state(
+    |
+
+E501 Line too long (103 > 100)
+   --> app\tests\test_ai_budget_production_race.py:730:101
+    |
+728 |         }
+729 |     assert digests_after == digests_before
+730 |     await assert_settled_exactly_once(case, hr_id, winner_task, cache_tokens=17, http_calls=gate.calls)
+    |                                                                                                     ^^^
+    |
+
+E501 Line too long (107 > 100)
+   --> app\tests\test_ai_budget_production_race.py:807:101
+    |
+805 |     assert len(daily_rows) == 2
+806 |     assert {row.created_by for row in daily_rows} == {student_id, hr_id}
+807 |     await assert_settled_exactly_once(case, student_id, task_ids[0], cache_tokens=0, http_calls=len(calls))
+    |                                                                                                     ^^^^^^^
+808 |     await assert_settled_exactly_once(case, hr_id, hr_task, cache_tokens=17, http_calls=len(verification_calls))
+    |
+
+E501 Line too long (112 > 100)
+   --> app\tests\test_ai_budget_production_race.py:808:101
+    |
+806 |     assert {row.created_by for row in daily_rows} == {student_id, hr_id}
+807 |     await assert_settled_exactly_once(case, student_id, task_ids[0], cache_tokens=0, http_calls=len(calls))
+808 |     await assert_settled_exactly_once(case, hr_id, hr_task, cache_tokens=17, http_calls=len(verification_calls))
+    |                                                                                                     ^^^^^^^^^^^^
+    |
+
+E501 Line too long (107 > 100)
+   --> app\tests\test_ai_budget_production_race.py:858:101
+    |
+856 |         assert all(row.state == "booked" for row in attempts)
+857 |         assert {row.analysis_task_id for row in reservations} == {task_ids[0]}
+858 |     await assert_settled_exactly_once(case, student_id, task_ids[0], cache_tokens=0, http_calls=len(calls))
+    |                                                                                                     ^^^^^^^
+    |
+
+Found 6 errors.

@@ -1,0 +1,20 @@
+app/tests/test_ai_budget_production_race.py::test_matching_entry_same_owner_dual_task_last_slot_race
+app/tests/test_ai_budget_production_race.py::test_verification_entry_same_owner_dual_task_last_slot_race
+app/tests/test_ai_budget_production_race.py::test_cross_role_owner_isolation_and_entry_role_walls
+app/tests/test_ai_budget_production_race.py::test_offline_fixture_contract_dual_pending_and_single_chain_booking
+
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 tests collected in 1.12s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

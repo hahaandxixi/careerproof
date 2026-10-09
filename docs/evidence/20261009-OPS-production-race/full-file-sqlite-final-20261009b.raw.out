@@ -1,0 +1,53 @@
+sssF                                                                     [100%]
+================================== FAILURES ===================================
+_____ test_offline_fixture_contract_dual_pending_and_single_chain_booking _____
+
+case = Case(hr=<httpx.AsyncClient object at 0x0000027BB80C67E0>, student=<httpx.AsyncClient object at 0x0000027BB7BB0290>, ou...3c6d6d0a'),)), (<function execute_match_task at 0x0000027BB54F8AE0>, (UUID('825663ee-cfd8-4176-b56f-82411a4f8f92'),))])
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000027BB816E480>
+
+    async def test_offline_fixture_contract_dual_pending_and_single_chain_booking(
+        case, monkeypatch,  # noqa: F811
+    ):
+        """SQLite scope: fixture construction and one chain's booking contract only.
+    
+        SQLite cannot prove PostgreSQL row-lock concurrency (the race tests above
+        skip without CAREERPROOF_TEST_DATABASE_URL); this contract keeps the
+        preparation honest on any database.
+        """
+        task_ids, student_id = await prepare_two_matching_tasks(case, monkeypatch)
+        assert len(task_ids) == 2 and task_ids[0] != task_ids[1]
+    
+        calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return valid_response(request, inputs=123, outputs=45)
+    
+        provider = synthetic_provider(httpx.MockTransport(handler))
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr(settings, "semantic_retrieval_enabled", False)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        await asyncio.wait_for(
+            analysis_service.execute_match_task(task_ids[0]), CHAIN_TIMEOUT_SECONDS
+        )
+>       assert len(calls) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([<Request('POST', 'https://api.deepseek.com/chat/completions')>, <Request('POST', 'https://api.deepseek.com/chat/completions')>])
+
+app\tests\test_ai_budget_production_race.py:809: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [3] app\tests\test_ai_budget_production_race.py:97: The production-entry last-slot race needs real PostgreSQL row locks; set CAREERPROOF_TEST_DATABASE_URL to an isolated cp_test schema
+1 failed, 3 skipped, 5 warnings in 5.38s
