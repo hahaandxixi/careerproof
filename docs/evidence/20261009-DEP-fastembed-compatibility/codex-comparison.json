@@ -1,0 +1,7 @@
+{
+  "sameWeightHashes": true,
+  "sameQueryRanking": true,
+  "maxAbsoluteVectorDifference": 0.0,
+  "baselineBatchWithinTolerance": true,
+  "candidateBatchWithinTolerance": true
+}

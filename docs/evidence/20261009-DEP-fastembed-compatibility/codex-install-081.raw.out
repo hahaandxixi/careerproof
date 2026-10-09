@@ -1,0 +1,12 @@
+Collecting fastembed==0.8.1
+  Downloading fastembed-0.8.1-py3-none-any.whl.metadata (11 kB)
+Downloading fastembed-0.8.1-py3-none-any.whl (129 kB)
+Installing collected packages: fastembed
+  Attempting uninstall: fastembed
+    Found existing installation: fastembed 0.7.4
+    Uninstalling fastembed-0.7.4:
+      Successfully uninstalled fastembed-0.7.4
+Successfully installed fastembed-0.8.1
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip

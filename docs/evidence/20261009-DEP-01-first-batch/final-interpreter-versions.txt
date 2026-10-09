@@ -1,0 +1,2 @@
+3.12.14 | exe: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe
+multipart 0.0.31 | PIL 12.3.0 | PyJWT 2.15.0

@@ -1,0 +1,83 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> app\tests\test_dependency_upgrade_regression.py:11:1
+   |
+ 9 |   """
+10 |
+11 | / from __future__ import annotations
+12 | |
+13 | | import hashlib
+14 | | import io
+15 | | from types import SimpleNamespace
+16 | | from uuid import uuid4
+17 | |
+18 | | import httpx
+19 | | import pytest
+20 | | from PIL import Image
+21 | |
+22 | | from app.agents.vision_provider import DeepSeekVisionProvider
+23 | | from app.core import security
+24 | | from app.core.config import settings
+25 | | from app.core.exceptions import AppError
+26 | | from app.services.visual_evidence import safe_png
+27 | | from app.tests.test_portfolio_api import app_database, project_zip, student  # noqa: F401
+28 | | from app.tools import ocr
+   | |_________________________^
+   |
+help: Organize imports
+
+F811 Redefinition of unused `student` from line 27
+  --> app\tests\test_dependency_upgrade_regression.py:34:64
+   |
+34 | async def test_multipart_boundary_mismatch_is_rejected_cleanly(student):
+   |                                                                ^^^^^^^ `student` redefined here
+35 |     """Body separator differs from the boundary declared in the header."""
+36 |     project = (
+   |
+  ::: app\tests\test_dependency_upgrade_regression.py:27:69
+   |
+25 | from app.core.exceptions import AppError
+26 | from app.services.visual_evidence import safe_png
+27 | from app.tests.test_portfolio_api import app_database, project_zip, student  # noqa: F401
+   |                                                                     ------- previous definition of `student` here
+28 | from app.tools import ocr
+   |
+help: Remove definition: `student`
+
+F811 Redefinition of unused `student` from line 27
+  --> app\tests\test_dependency_upgrade_regression.py:49:61
+   |
+49 | async def test_multipart_truncated_body_is_rejected_cleanly(student):
+   |                                                             ^^^^^^^ `student` redefined here
+50 |     """Cut-off body must not crash the parser or the upload endpoint."""
+51 |     project = (
+   |
+  ::: app\tests\test_dependency_upgrade_regression.py:27:69
+   |
+25 | from app.core.exceptions import AppError
+26 | from app.services.visual_evidence import safe_png
+27 | from app.tests.test_portfolio_api import app_database, project_zip, student  # noqa: F401
+   |                                                                     ------- previous definition of `student` here
+28 | from app.tools import ocr
+   |
+help: Remove definition: `student`
+
+F811 Redefinition of unused `student` from line 27
+  --> app\tests\test_dependency_upgrade_regression.py:69:60
+   |
+69 | async def test_multipart_filename_traversal_is_neutralized(student, tmp_path, monkeypatch):
+   |                                                            ^^^^^^^ `student` redefined here
+70 |     storage_dir = tmp_path / "storage"
+71 |     monkeypatch.setattr(settings, "storage_base_dir", storage_dir)
+   |
+  ::: app\tests\test_dependency_upgrade_regression.py:27:69
+   |
+25 | from app.core.exceptions import AppError
+26 | from app.services.visual_evidence import safe_png
+27 | from app.tests.test_portfolio_api import app_database, project_zip, student  # noqa: F401
+   |                                                                     ------- previous definition of `student` here
+28 | from app.tools import ocr
+   |
+help: Remove definition: `student`
+
+Found 4 errors.
+[*] 1 fixable with the `--fix` option.

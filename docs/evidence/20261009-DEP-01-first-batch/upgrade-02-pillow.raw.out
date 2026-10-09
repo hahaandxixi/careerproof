@@ -1,0 +1,41 @@
+Collecting Pillow==12.3.0
+  Using cached pillow-12.3.0-cp312-cp312-win_amd64.whl.metadata (9.3 kB)
+Using cached pillow-12.3.0-cp312-cp312-win_amd64.whl (7.2 MB)
+Installing collected packages: Pillow
+  Attempting uninstall: Pillow
+    Found existing installation: pillow 11.3.0
+    Uninstalling pillow-11.3.0:
+      Successfully uninstalled pillow-11.3.0
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+careerproof-backend 0.1.0 requires pillow==11.3.0, but you have pillow 12.3.0 which is incompatible.
+fastembed 0.7.4 requires pillow<12.0,>=10.3.0; python_version >= "3.10" and python_version < "3.13", but you have pillow 12.3.0 which is incompatible.
+Successfully installed Pillow-12.3.0
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip
+Obtaining file:///D:/jbcode/web%20ai/jianli/backend
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: careerproof-backend
+  Building editable for careerproof-backend (pyproject.toml): started
+  Building editable for careerproof-backend (pyproject.toml): finished with status 'done'
+  Created wheel for careerproof-backend: filename=careerproof_backend-0.1.0-py3-none-any.whl size=7411 sha256=c86ae667fcdc36483593f6066bfa2edde68968961877732c573c641229d64328
+  Stored in directory: C:\Users\江博\AppData\Local\Temp\pip-ephem-wheel-cache-cu_1sau9\wheels\61\2b\6d\83e9e69202551ad04217546f1d6da433b4524d802f45a27fd4
+Successfully built careerproof-backend
+Installing collected packages: careerproof-backend
+  Attempting uninstall: careerproof-backend
+    Found existing installation: careerproof-backend 0.1.0
+    Uninstalling careerproof-backend-0.1.0:
+      Successfully uninstalled careerproof-backend-0.1.0
+Successfully installed careerproof-backend-0.1.0
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip

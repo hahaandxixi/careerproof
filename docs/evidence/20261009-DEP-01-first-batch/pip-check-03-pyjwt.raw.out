@@ -1,0 +1,1 @@
+fastembed 0.7.4 has requirement pillow<12.0,>=10.3.0; python_version >= "3.10" and python_version < "3.13", but you have pillow 12.3.0.

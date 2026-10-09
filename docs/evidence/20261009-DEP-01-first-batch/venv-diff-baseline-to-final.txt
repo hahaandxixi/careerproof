@@ -1,0 +1,14 @@
+57c57
+< pillow==11.3.0
+---
+> pillow==12.3.0
+59d58
+< pip==25.0.1
+73c72
+< PyJWT==2.10.1
+---
+> PyJWT==2.15.0
+80c79
+< python-multipart==0.0.20
+---
+> python-multipart==0.0.31

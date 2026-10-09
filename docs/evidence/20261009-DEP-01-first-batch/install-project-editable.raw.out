@@ -1,0 +1,22 @@
+Obtaining file:///D:/jbcode/web%20ai/jianli/backend
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: careerproof-backend
+  Building editable for careerproof-backend (pyproject.toml): started
+  Building editable for careerproof-backend (pyproject.toml): finished with status 'done'
+  Created wheel for careerproof-backend: filename=careerproof_backend-0.1.0-py3-none-any.whl size=7410 sha256=80437ca36021b2e1568a933b4f7dfcb932f599da0f44d1141c180eab35c2d888
+  Stored in directory: C:\Users\江博\AppData\Local\Temp\pip-ephem-wheel-cache-s50n5z8w\wheels\61\2b\6d\83e9e69202551ad04217546f1d6da433b4524d802f45a27fd4
+Successfully built careerproof-backend
+Installing collected packages: careerproof-backend
+Successfully installed careerproof-backend-0.1.0
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip

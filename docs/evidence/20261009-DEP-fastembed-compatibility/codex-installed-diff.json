@@ -1,0 +1,18 @@
+{
+  "fastembed": {
+    "before": "0.7.4",
+    "after": "0.8.1"
+  },
+  "pillow": {
+    "before": "11.3.0",
+    "after": "12.3.0"
+  },
+  "pyjwt": {
+    "before": "2.10.1",
+    "after": "2.15.0"
+  },
+  "python-multipart": {
+    "before": "0.0.20",
+    "after": "0.0.31"
+  }
+}

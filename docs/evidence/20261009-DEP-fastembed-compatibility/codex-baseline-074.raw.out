@@ -1,0 +1,11 @@
+D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+  return TextEmbedding(
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\jbcode\web ai\jianli\backend\evals\probe_fastembed_compatibility.py", line 75, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\backend\evals\probe_fastembed_compatibility.py", line 41, in main
+    assert np.allclose(norms, 1.0, atol=1e-5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
