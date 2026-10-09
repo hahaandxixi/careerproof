@@ -1,0 +1,10 @@
+# 传智杯22只读风险审查（交棒前，非签收）
+
+2026-10-09。ZCode仍拥有test_ai_budget_production_race.py，本文件仅Codex持有，不并写或并跑数据库测试。以下基于18:50左右草稿，必须对最终diff再确认。
+
+1. configure_race_settings只替换_MODEL_SEMAPHORE为Semaphore(2)，却未改settings.ai_model_concurrency及_MODEL_SEMAPHORE_SIZE。_model_semaphore会在实际调用时按配置重新创建，不能保证双任务到达准入屏障。应改测试settings为2并验证实际gate容量，不替换预算判断。
+2. task_row_unlocked_except_heartbeat在NOWAIT异常后rollback，再查pg_blocking_pids；NOWAIT并不保留等待，rollback又结束事务，列表可能为空。当前空列表会放行重试，非心跳长锁若5秒内释放也可能被误接受。不明阻塞者须失败，或真实保持等待并独立证明确为心跳才允许短暂重试；不得把“后来能锁”当作“没有跨HTTP持锁”。
+3. confirm_overlap在首方拿锁后即assert others，另一方backend注册还未完成时存在调度竞态。应在原身份锁调用前确保两方backend已登记（此时未持User/Task锁），或有界等待注册，再确认真实pg_blocking_pids证据；不等胜方commit后才放行另一方。
+4. 首轮sqlite-contract.raw.out曾为临时目录PermissionError，后同名路径变为通过输出，首轮完整原始日志未留独立文件。Codex已经看到的错误摘要是WinError5临时pytest目录与cache路径，不能宣称全部首轮失败原文留存。后续每次运行必须独立日志，或说明原文件已覆盖的限制，不伪造原始证据。
+
+离线1通过/3PG跳过只证明准备路径及跳过规则。待ZCode自审交棒再决定最终修正，当前PG并发和两链8硬停未执行。
