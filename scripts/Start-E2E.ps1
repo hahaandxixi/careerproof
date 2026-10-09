@@ -6,6 +6,7 @@
 # never touched; connection strings and passwords are never printed.
 param(
     [Parameter(Mandatory = $true)][string]$RunId,
+    [ValidatePattern('^\.venv(?:-[a-z0-9-]+)?$')][string]$BackendVenv = '.venv',
     [switch]$SkipBuild,
     [switch]$SkipSeed,
     [switch]$CheckOnly
@@ -14,7 +15,11 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $backendRoot = Join-Path $repoRoot 'backend'
 $frontendRoot = Join-Path $repoRoot 'jianli'
-$pythonPath = Join-Path $backendRoot '.venv\Scripts\python.exe'
+$venvRoot = Join-Path $backendRoot $BackendVenv
+if ((Test-Path -LiteralPath $venvRoot) -and ((Get-Item -LiteralPath $venvRoot).Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
+    throw 'The selected E2E virtual environment must be a local backend directory, not a reparse point.'
+}
+$pythonPath = Join-Path $venvRoot 'Scripts\python.exe'
 $nextPath = Join-Path $frontendRoot 'node_modules\next\dist\bin\next'
 $stateRoot = Join-Path $backendRoot '.tmp\e2e-run'
 $statePath = Join-Path $stateRoot "processes-$RunId.json"
@@ -23,6 +28,13 @@ $frontendPort = 3001
 
 if (!(Test-Path -LiteralPath $pythonPath)) { throw 'Backend dependencies missing. Follow backend/README.md first.' }
 if (!(Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies missing. Run npm ci in jianli/ first.' }
+# Run before any database connection, migration, process or fixture creation.
+Push-Location $backendRoot
+try {
+    $runtimeJson = & $pythonPath -m evals.verify_dependency_environment
+    if ($LASTEXITCODE -ne 0) { throw 'Selected backend interpreter does not match current production dependency pins.' }
+    $backendRuntime = $runtimeJson | ConvertFrom-Json
+} finally { Pop-Location }
 # Validate the run id before it is ever concatenated into a path.
 if ($RunId -notmatch '^[a-z0-9][a-z0-9-]{0,31}$') { throw 'RunId must match [a-z0-9][a-z0-9-]{0,31}.' }
 $nodeExecutable = (Get-Command 'node' -ErrorAction Stop).Source
@@ -170,6 +182,8 @@ try {
         databaseName      = $databaseName
         storageDir        = $storageDir
         distDir           = '.next-e2e'
+        backendVenv       = $BackendVenv
+        backendRuntime    = $backendRuntime
         aiExternalEnabled = 'false'
         aiProvider        = 'mock'
         backend           = @{ id = $backendProcess.Id; startedAt = $backendProcess.StartTime.ToUniversalTime().ToString('o'); needle = $pythonPath }

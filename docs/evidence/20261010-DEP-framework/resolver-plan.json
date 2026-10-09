@@ -1,0 +1,299 @@
+{
+  "version": "1",
+  "pip_version": "25.0.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/bd/f4/27e386913417ad32aae42bba48b0c0cce40e9ff2fba1a871ca2702c37324/fastapi-0.143.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=3e9395fd35276425b61b516a31fdd7c77fe2af83e41b4da22e30696fb1304c5d",
+          "hashes": {
+            "sha256": "3e9395fd35276425b61b516a31fdd7c77fe2af83e41b4da22e30696fb1304c5d"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "fastapi",
+        "version": "0.143.0",
+        "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+        "description": "<p align=\"center\">\n  <a href=\"https://fastapi.tiangolo.com\"><img src=\"https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png\" alt=\"FastAPI\"></a>\n</p>\n<p align=\"center\">\n    <em>FastAPI framework, high performance, easy to learn, fast to code, ready for production</em>\n</p>\n<p align=\"center\">\n<a href=\"https://github.com/fastapi/fastapi/actions?query=workflow%3ATest+event%3Apush+branch%3Amaster\">\n    <img src=\"https://github.com/fastapi/fastapi/actions/workflows/test.yml/badge.svg?event=push&branch=master\" alt=\"Test\">\n</a>\n<a href=\"https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/fastapi\">\n    <img src=\"https://coverage-badge.samuelcolvin.workers.dev/fastapi/fastapi.svg\" alt=\"Coverage\">\n</a>\n<a href=\"https://pypi.org/project/fastapi\">\n    <img src=\"https://img.shields.io/pypi/v/fastapi?color=%2334D058&label=pypi%20package\" alt=\"Package version\">\n</a>\n<a href=\"https://pypi.org/project/fastapi\">\n    <img src=\"https://img.shields.io/pypi/pyversions/fastapi.svg?color=%2334D058\" alt=\"Supported Python versions\">\n</a>\n</p>\n\n---\n\n**Documentation**: [https://fastapi.tiangolo.com](https://fastapi.tiangolo.com)\n\n**Source Code**: [https://github.com/fastapi/fastapi](https://github.com/fastapi/fastapi)\n\n---\n\nFastAPI is a modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.\n\nThe key features are:\n\n* **Fast**: Very high performance, on par with **NodeJS** and **Go** (thanks to Starlette and Pydantic). [One of the fastest Python frameworks available](#performance).\n* **Fast to code**: Increase the speed to develop features by about 200% to 300%. *\n* **Fewer bugs**: Reduce about 40% of human (developer) induced errors. *\n* **Intuitive**: Great editor support. <dfn title=\"also known as auto-complete, autocompletion, IntelliSense\">Completion</dfn> everywhere. Less time debugging.\n* **Easy**: Designed to be easy to use and learn. Less time reading docs.\n* **Short**: Minimize code duplication. Multiple features from each parameter declaration. Fewer bugs.\n* **Robust**: Get production-ready code. With automatic interactive documentation.\n* **Standards-based**: Based on (and fully compatible with) the open standards for APIs: [OpenAPI](https://github.com/OAI/OpenAPI-Specification) (previously known as Swagger) and [JSON Schema](https://json-schema.org/).\n\n<small>* estimation based on tests conducted by an internal development team, building production applications.</small>\n\n## Sponsors\n\n<!-- sponsors -->\n### Keystone Sponsor\n\n<a href=\"https://fastapicloud.com\" target=\"_blank\" title=\"FastAPI Cloud. By the same team behind FastAPI. You code. We Cloud.\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/fastapicloud.png\"></a>\n\n### Gold Sponsors\n\n<a href=\"https://blockbee.io?ref=fastapi\" target=\"_blank\" title=\"BlockBee Cryptocurrency Payment Gateway\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/blockbee.png\"></a>\n<a href=\"https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&utm_medium=mainbadge\" target=\"_blank\" title=\"Auth, user management and more for your B2B product\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/propelauth.png\"></a>\n<a href=\"https://www.coderabbit.ai/?utm_source=fastapi&utm_medium=badge&utm_campaign=fastapi\" target=\"_blank\" title=\"Cut Code Review Time & Bugs in Half with CodeRabbit\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/coderabbit.png\"></a>\n<a href=\"https://subtotal.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=open-source\" target=\"_blank\" title=\"The Gold Standard in Retail Account Linking\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/subtotal.svg\"></a>\n<a href=\"https://docs.railway.com/guides/fastapi?utm_medium=integration&utm_source=docs&utm_campaign=fastapi\" target=\"_blank\" title=\"Deploy enterprise applications at startup speed\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/railway.png\"></a>\n<a href=\"https://serpapi.com/?utm_source=fastapi_website\" target=\"_blank\" title=\"SerpApi: Web Search API\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/serpapi.png\"></a>\n<a href=\"https://www.greptile.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=fastapi_sponsor_page\" target=\"_blank\" title=\"Greptile: The AI Code Reviewer\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/greptile.png\"></a>\n\n### Silver Sponsors\n\n<a href=\"https://databento.com/?utm_source=fastapi&utm_medium=sponsor&utm_content=display\" target=\"_blank\" title=\"Pay as you go for market data\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/databento.svg\"></a>\n<a href=\"https://www.svix.com/\" target=\"_blank\" title=\"Svix - Webhooks as a service\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/svix.svg\"></a>\n<a href=\"https://dribia.com/en/\" target=\"_blank\" title=\"Dribia - Data Science within your reach\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/dribia.png\"></a>\n<a href=\"https://www.bairesdev.com/\" target=\"_blank\" title=\"BairesDev | Nearshore Software Development & Staff Augmentation Company\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/bairesdev.svg\"></a>\n<a href=\"https://tutorcruncher.com/?utm_source=fastapi\" target=\"_blank\" title=\"TutorCruncher\"><img src=\"https://fastapi.tiangolo.com/img/sponsors/tutorcruncher.png\"></a>\n\n<!-- /sponsors -->\n\n[Other sponsors](https://fastapi.tiangolo.com/fastapi-people/#sponsors)\n\n## Opinions\n\n\n\n<div class=\"only-github\" markdown=\"1\">\n\n\"_[...] I'm using **FastAPI** a ton these days. [...] I'm actually planning to use it for all of my team's **ML services at Microsoft**. Some of them are getting integrated into the core **Windows** product and some **Office** products._\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Kabir Khan - <strong>Microsoft</strong> <a href=\"https://github.com/fastapi/fastapi/pull/26\"><small>(ref)</small></a></div>\n\n---\n\n\"_We adopted the **FastAPI** library to spawn a **REST** server that can be queried to obtain **predictions**. [for Ludwig]_\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Piero Molino, Yaroslav Dudin, and Sai Sumanth Miryala - <strong>Uber</strong> <a href=\"https://www.uber.com/us/en/blog/ludwig-v0-2/\"><small>(ref)</small></a></div>\n\n---\n\n\"_**Netflix** is pleased to announce the open-source release of our **crisis management** orchestration framework: **Dispatch**! [built with **FastAPI**]_\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Kevin Glisson, Marc Vilanova, Forest Monsen - <strong>Netflix</strong> <a href=\"https://netflixtechblog.com/introducing-dispatch-da4b8a2a8072\"><small>(ref)</small></a></div>\n\n---\n\n\"_If anyone is looking to build a production Python API, I would highly recommend **FastAPI**. It is **beautifully designed**, **simple to use** and **highly scalable**, it has become a **key component** in our API first development strategy and is driving many automations and services such as our Virtual TAC Engineer._\"\n\n<div style=\"text-align: right; margin-right: 10%;\">Deon Pillsbury - <strong>Cisco</strong> <a href=\"https://www.linkedin.com/posts/deonpillsbury_cisco-cx-python-activity-6963242628536487936-trAp/\"><small>(ref)</small></a></div>\n\n---\n\n</div>\n\n## FastAPI mini documentary\n\nThere's a [FastAPI mini documentary](https://www.youtube.com/watch?v=mpR8ngthqiE) released at the end of 2025, you can watch it online:\n\n<a class=\"fastapi-feature-banner\" href=\"https://www.youtube.com/watch?v=mpR8ngthqiE\"><img src=\"https://fastapi.tiangolo.com/img/fastapi-documentary.jpg\" alt=\"FastAPI Mini Documentary\"></a>\n\n## **Typer**, the FastAPI of CLIs\n\n<a href=\"https://typer.tiangolo.com\"><img src=\"https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg\" style=\"width: 20%;\"></a>\n\nIf you are building a <abbr title=\"Command Line Interface\">CLI</abbr> app to be used in the terminal instead of a web API, check out [**Typer**](https://typer.tiangolo.com/).\n\n**Typer** is FastAPI's little sibling. And it's intended to be the **FastAPI of CLIs**. ⌨️ 🚀\n\n## Requirements\n\nFastAPI stands on the shoulders of giants:\n\n* [Starlette](https://starlette.dev/) for the web parts.\n* [Pydantic](https://pydantic.dev/docs/) for the data parts.\n\n## Installation\n\nFirst, [install `uv`](https://docs.astral.sh/uv/getting-started/installation/), and then add FastAPI to your project:\n\n<div class=\"termy\">\n\n```console\n$ uv add \"fastapi[standard]\"\n\n---> 100%\n```\n\n</div>\n\n**Note**: Make sure you put `\"fastapi[standard]\"` in quotes to ensure it works in all terminals.\n\nIf you prefer to use `pip`, install `fastapi[standard]` inside a virtual environment. See the [installation guide](tutorial/#install-fastapi) for the alternative steps.\n\n## Example\n\n### Create it\n\nCreate a file `main.py` with:\n\n```Python\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/\")\ndef read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\ndef read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n```\n\n<details markdown=\"1\">\n<summary>Or use <code>async def</code>...</summary>\n\nIf your code uses `async` / `await`, use `async def`:\n\n```Python hl_lines=\"7  12\"\nfrom fastapi import FastAPI\n\napp = FastAPI()\n\n\n@app.get(\"/\")\nasync def read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\nasync def read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n```\n\n**Note**:\n\nIf you don't know, check the _\"In a hurry?\"_ section about [`async` and `await` in the docs](https://fastapi.tiangolo.com/async/#in-a-hurry).\n\n</details>\n\n### Run it\n\nRun the server with:\n\n<div class=\"termy\">\n\n```console\n$ uv run fastapi dev\n\n ╭────────── FastAPI CLI - Development mode ───────────╮\n │                                                     │\n │  Serving at: http://127.0.0.1:8000                  │\n │                                                     │\n │  API docs: http://127.0.0.1:8000/docs               │\n │                                                     │\n │  Running in development mode, for production use:   │\n │                                                     │\n │  fastapi run                                        │\n │                                                     │\n ╰─────────────────────────────────────────────────────╯\n\nINFO:     Will watch for changes in these directories: ['/home/user/code/awesomeapp']\nINFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)\nINFO:     Started reloader process [2248755] using WatchFiles\nINFO:     Started server process [2248757]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\n```\n\n</div>\n\n<details markdown=\"1\">\n<summary>About the command <code>fastapi dev</code>...</summary>\n\nThe command `fastapi dev` reads your `main.py` file automatically, detects the **FastAPI** app in it, and starts a server using [Uvicorn](https://uvicorn.dev).\n\nBy default, `fastapi dev` will start with auto-reload enabled for local development.\n\nYou can read more about it in the [FastAPI CLI docs](https://fastapi.tiangolo.com/fastapi-cli/).\n\n</details>\n\n### Check it\n\nOpen your browser at [http://127.0.0.1:8000/items/5?q=somequery](http://127.0.0.1:8000/items/5?q=somequery).\n\nYou will see the JSON response as:\n\n```JSON\n{\"item_id\": 5, \"q\": \"somequery\"}\n```\n\nYou already created an API that:\n\n* Receives HTTP requests in the _paths_ `/` and `/items/{item_id}`.\n* Both _paths_ take `GET` <em>operations</em> (also known as HTTP _methods_).\n* The _path_ `/items/{item_id}` has a _path parameter_ `item_id` that should be an `int`.\n* The _path_ `/items/{item_id}` has an optional `str` _query parameter_ `q`.\n\n### Interactive API docs\n\nNow go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).\n\nYou will see the automatic interactive API documentation (provided by [Swagger UI](https://github.com/swagger-api/swagger-ui)):\n\n![Swagger UI](https://fastapi.tiangolo.com/img/index/index-01-swagger-ui-simple.png)\n\n### Alternative API docs\n\nAnd now, go to [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).\n\nYou will see the alternative automatic documentation (provided by [ReDoc](https://github.com/Redocly/redoc)):\n\n![ReDoc](https://fastapi.tiangolo.com/img/index/index-02-redoc-simple.png)\n\n## Example upgrade\n\nNow modify the file `main.py` to receive a body from a `PUT` request.\n\nDeclare the body using standard Python types, thanks to Pydantic.\n\n```Python hl_lines=\"2  7-10 23-25\"\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\n\nclass Item(BaseModel):\n    name: str\n    price: float\n    is_offer: bool | None = None\n\n\n@app.get(\"/\")\ndef read_root():\n    return {\"Hello\": \"World\"}\n\n\n@app.get(\"/items/{item_id}\")\ndef read_item(item_id: int, q: str | None = None):\n    return {\"item_id\": item_id, \"q\": q}\n\n\n@app.put(\"/items/{item_id}\")\ndef update_item(item_id: int, item: Item):\n    return {\"item_name\": item.name, \"item_id\": item_id}\n```\n\nThe `fastapi dev` server should reload automatically.\n\n### Interactive API docs upgrade\n\nNow go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).\n\n* The interactive API documentation will be automatically updated, including the new body:\n\n![Swagger UI](https://fastapi.tiangolo.com/img/index/index-03-swagger-02.png)\n\n* Click on the button \"Try it out\", it allows you to fill the parameters and directly interact with the API:\n\n![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-04-swagger-03.png)\n\n* Then click on the \"Execute\" button, the user interface will communicate with your API, send the parameters, get the results and show them on the screen:\n\n![Swagger UI interaction](https://fastapi.tiangolo.com/img/index/index-05-swagger-04.png)\n\n### Alternative API docs upgrade\n\nAnd now, go to [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).\n\n* The alternative documentation will also reflect the new query parameter and body:\n\n![ReDoc](https://fastapi.tiangolo.com/img/index/index-06-redoc-02.png)\n\n### Recap\n\nIn summary, you declare **once** the types of parameters, body, etc. as function parameters.\n\nYou do that with standard modern Python types.\n\nYou don't have to learn a new syntax, the methods or classes of a specific library, etc.\n\nJust standard **Python**.\n\nFor example, for an `int`:\n\n```Python\nitem_id: int\n```\n\nor for a more complex `Item` model:\n\n```Python\nitem: Item\n```\n\n...and with that single declaration you get:\n\n* Editor support, including:\n    * Completion.\n    * Type checks.\n* Validation of data:\n    * Automatic and clear errors when the data is invalid.\n    * Validation even for deeply nested JSON objects.\n* <dfn title=\"also known as: serialization, parsing, marshalling\">Conversion</dfn> of input data: coming from the network to Python data and types. Reading from:\n    * JSON.\n    * Path parameters.\n    * Query parameters.\n    * Cookies.\n    * Headers.\n    * Forms.\n    * Files.\n* <dfn title=\"also known as: serialization, parsing, marshalling\">Conversion</dfn> of output data: converting from Python data and types to network data (as JSON):\n    * Convert Python types (`str`, `int`, `float`, `bool`, `list`, etc).\n    * `datetime` objects.\n    * `UUID` objects.\n    * Database models.\n    * ...and many more.\n* Automatic interactive API documentation, including 2 alternative user interfaces:\n    * Swagger UI.\n    * ReDoc.\n\n---\n\nComing back to the previous code example, **FastAPI** will:\n\n* Validate that there is an `item_id` in the path for `GET` and `PUT` requests.\n* Validate that the `item_id` is of type `int` for `GET` and `PUT` requests.\n    * If it is not, the client will see a useful, clear error.\n* Check if there is an optional query parameter named `q` (as in `http://127.0.0.1:8000/items/foo?q=somequery`) for `GET` requests.\n    * As the `q` parameter is declared with `= None`, it is optional.\n    * Without the `None` it would be required (as is the body in the case with `PUT`).\n* For `PUT` requests to `/items/{item_id}`, read the body as JSON:\n    * Check that it has a required attribute `name` that should be a `str`.\n    * Check that it has a required attribute `price` that has to be a `float`.\n    * Check that it has an optional attribute `is_offer`, that should be a `bool`, if present.\n    * All this would also work for deeply nested JSON objects.\n* Convert from and to JSON automatically.\n* Document everything with OpenAPI, that can be used by:\n    * Interactive documentation systems.\n    * Automatic client code generation systems, for many languages.\n* Provide 2 interactive documentation web interfaces directly.\n\n---\n\nWe just scratched the surface, but you already get the idea of how it all works.\n\nTry changing the line with:\n\n```Python\n    return {\"item_name\": item.name, \"item_id\": item_id}\n```\n\n...from:\n\n```Python\n        ... \"item_name\": item.name ...\n```\n\n...to:\n\n```Python\n        ... \"item_price\": item.price ...\n```\n\n...and see how your editor will auto-complete the attributes and know their types:\n\n![editor support](https://fastapi.tiangolo.com/img/vscode-completion.png)\n\nFor a more complete example including more features, see the <a href=\"https://fastapi.tiangolo.com/tutorial/\">Tutorial - User Guide</a>.\n\n**Spoiler alert**: the tutorial - user guide includes:\n\n* Declaration of **parameters** from other different places such as: **headers**, **cookies**, **form fields** and **files**.\n* How to set **validation constraints** such as `maximum_length` or `regex`.\n* A very powerful and easy to use **<dfn title=\"also known as components, resources, providers, services, injectables\">Dependency Injection</dfn>** system.\n* Security and authentication, including support for **OAuth2** with **JWT tokens** and **HTTP Basic** auth.\n* More advanced (but equally easy) techniques for declaring **deeply nested JSON models** (thanks to Pydantic).\n* **GraphQL** integration with [Strawberry](https://strawberry.rocks) and other libraries.\n* Many extra features (thanks to Starlette) such as:\n    * **WebSockets**\n    * extremely easy tests based on HTTPX and `pytest`\n    * **CORS**\n    * **Cookie Sessions**\n    * ...and more.\n\n### Deploy your app (optional)\n\nYou can optionally deploy your FastAPI app to [FastAPI Cloud](https://fastapicloud.com) with a single command. 🚀\n\n<div class=\"termy\">\n\n```console\n$ uv run fastapi deploy\n\nDeploying to FastAPI Cloud...\n\n✅ Deployment successful!\n\n🐔 Ready the chicken! Your app is ready at https://myapp.fastapicloud.dev\n```\n\n</div>\n\nThe CLI will automatically detect your FastAPI application and deploy it to the cloud. If you are not logged in, your browser will open to complete the authentication process.\n\nThat's it! Now you can access your app at that URL. ✨\n\n#### About FastAPI Cloud\n\n**[FastAPI Cloud](https://fastapicloud.com)** is built by the same author and team behind **FastAPI**.\n\nIt streamlines the process of **building**, **deploying**, and **accessing** an API with minimal effort.\n\nIt brings the same **developer experience** of building apps with FastAPI to **deploying** them to the cloud. 🎉\n\nFastAPI Cloud is the primary sponsor and funding provider for the *FastAPI and friends* open source projects. ✨\n\n#### Deploy to other cloud providers\n\nFastAPI is open source and based on standards. You can deploy FastAPI apps to any cloud provider you choose.\n\nFollow your cloud provider's guides to deploy FastAPI apps with them. 🤓\n\n## Performance\n\nIndependent TechEmpower benchmarks show **FastAPI** applications running under Uvicorn as [one of the fastest Python frameworks available](https://www.techempower.com/benchmarks/#section=test&runid=7464e520-0dc2-473d-bd34-dbdfd7e85911&hw=ph&test=query&l=zijzen-7), only below Starlette and Uvicorn themselves (used internally by FastAPI). (*)\n\nTo understand more about it, see the section [Benchmarks](https://fastapi.tiangolo.com/benchmarks/).\n\n## Dependencies\n\nFastAPI depends on Pydantic and Starlette.\n\n### `standard` Dependencies\n\nWhen you install FastAPI with `uv add \"fastapi[standard]\"` it comes with the `standard` group of optional dependencies:\n\nUsed by Pydantic:\n\n* [`email-validator`](https://github.com/JoshData/python-email-validator) - for email validation.\n\nUsed by Starlette:\n\n* [`httpx`](https://www.python-httpx.org) - Required if you want to use the `TestClient`.\n* [`jinja2`](https://jinja.palletsprojects.com) - Required if you want to use the default template configuration.\n* [`python-multipart`](https://github.com/Kludex/python-multipart) - Required if you want to support form <dfn title=\"converting the string that comes from an HTTP request into Python data\">\"parsing\"</dfn>, with `request.form()`.\n\nUsed by FastAPI:\n\n* [`uvicorn`](https://uvicorn.dev) - for the server that loads and serves your application. This includes `uvicorn[standard]`, which includes some dependencies (e.g. `uvloop`) needed for high performance serving.\n* `fastapi-cli[standard]` - to provide the `fastapi` command.\n    * This includes `fastapi-cloud-cli`, which allows you to deploy your FastAPI application to [FastAPI Cloud](https://fastapicloud.com).\n\n### Without `standard` Dependencies\n\nIf you don't want to include the `standard` optional dependencies, you can install with `uv add fastapi` instead of `uv add \"fastapi[standard]\"`.\n\n### Without `fastapi-cloud-cli`\n\nIf you want to install FastAPI with the standard dependencies but without the `fastapi-cloud-cli`, you can install with `uv add \"fastapi[standard-no-fastapi-cloud-cli]\"`.\n\n### Additional Optional Dependencies\n\nThere are some additional dependencies you might want to install.\n\nAdditional optional Pydantic dependencies:\n\n* [`pydantic-settings`](https://pydantic.dev/docs/validation/latest/concepts/pydantic_settings/) - for settings management.\n* [`pydantic-extra-types`](https://github.com/pydantic/pydantic-extra-types) - for extra types to be used with Pydantic.\n\nAdditional optional FastAPI dependencies:\n\n* [`orjson`](https://github.com/ijl/orjson) - Required if you want to use `ORJSONResponse`.\n* [`ujson`](https://github.com/ultrajson/ultrajson) - Required if you want to use `UJSONResponse`.\n\n## License\n\nThis project is licensed under the terms of the MIT license.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Sebastián Ramírez <tiangolo@gmail.com>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python",
+          "Topic :: Internet",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Software Development",
+          "Typing :: Typed",
+          "Development Status :: 4 - Beta",
+          "Environment :: Web Environment",
+          "Framework :: AsyncIO",
+          "Framework :: FastAPI",
+          "Framework :: Pydantic",
+          "Framework :: Pydantic :: 2",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "starlette>=0.46.0",
+          "pydantic>=2.9.0",
+          "typing-extensions>=4.8.0",
+          "typing-inspection>=0.4.2",
+          "annotated-doc>=0.0.2",
+          "opentelemetry-api>=1.44.0",
+          "opentelemetry-sdk>=1.44.0; extra == \"opentelemetry\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"opentelemetry\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"standard\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"standard\"",
+          "fastapi-cli[standard]>=0.0.32; extra == \"standard\"",
+          "fastar>=0.9.0; extra == \"standard\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"standard\"",
+          "jinja2>=3.1.5; extra == \"standard\"",
+          "python-multipart>=0.0.18; extra == \"standard\"",
+          "email-validator>=2.0.0; extra == \"standard\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard\"",
+          "pydantic-settings>=2.0.0; extra == \"standard\"",
+          "pydantic-extra-types>=2.0.0; extra == \"standard\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "fastapi-cli[standard-no-fastapi-cloud-cli]>=0.0.32; extra == \"standard-no-fastapi-cloud-cli\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "jinja2>=3.1.5; extra == \"standard-no-fastapi-cloud-cli\"",
+          "python-multipart>=0.0.18; extra == \"standard-no-fastapi-cloud-cli\"",
+          "email-validator>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "pydantic-settings>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "pydantic-extra-types>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "opentelemetry-sdk>=1.44.0; extra == \"all\"",
+          "opentelemetry-exporter-otlp-proto-http>=1.44.0; extra == \"all\"",
+          "fastapi-cli[standard]>=0.0.32; extra == \"all\"",
+          "httpx<1.0.0,>=0.23.0; extra == \"all\"",
+          "jinja2>=3.1.5; extra == \"all\"",
+          "python-multipart>=0.0.18; extra == \"all\"",
+          "itsdangerous>=1.1.0; extra == \"all\"",
+          "pyyaml>=5.3.1; extra == \"all\"",
+          "email-validator>=2.0.0; extra == \"all\"",
+          "uvicorn[standard]>=0.12.0; extra == \"all\"",
+          "pydantic-settings>=2.0.0; extra == \"all\"",
+          "pydantic-extra-types>=2.0.0; extra == \"all\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/fastapi/fastapi",
+          "Documentation, https://fastapi.tiangolo.com/",
+          "Repository, https://github.com/fastapi/fastapi",
+          "Issues, https://github.com/fastapi/fastapi/issues",
+          "Changelog, https://fastapi.tiangolo.com/release-notes/"
+        ],
+        "provides_extra": [
+          "opentelemetry",
+          "standard",
+          "standard-no-fastapi-cloud-cli",
+          "all"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/ec/bb/2799cc2ede3ed41131f8975621e7213dfc7ef4acbbaadfa440f32500c370/starlette-1.3.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=c7372aae11c3c3f26a42df7bd626cec2f47d03483d261d369516a615a53714c6",
+          "hashes": {
+            "sha256": "c7372aae11c3c3f26a42df7bd626cec2f47d03483d261d369516a615a53714c6"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "starlette",
+        "version": "1.3.1",
+        "summary": "The little ASGI library that shines.",
+        "description": "<p align=\"center\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette_dark.svg\" width=\"420px\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette.svg\" width=\"420px\">\n    <img alt=\"starlette-logo\" src=\"https://raw.githubusercontent.com/Kludex/starlette/main/docs/img/starlette.svg\">\n  </picture>\n</p>\n\n<p align=\"center\">\n    <em>✨ The little ASGI framework that shines. ✨</em>\n</p>\n\n---\n\n[![Build Status](https://github.com/Kludex/starlette/workflows/Test%20Suite/badge.svg)](https://github.com/Kludex/starlette/actions)\n[![Package version](https://badge.fury.io/py/starlette.svg)](https://pypi.python.org/pypi/starlette)\n[![Supported Python Version](https://img.shields.io/pypi/pyversions/starlette.svg?color=%2334D058)](https://pypi.org/project/starlette)\n[![Discord](https://img.shields.io/discord/1051468649518616576?logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/RxKUF5JuHs)\n\n---\n\n**Documentation**: <a href=\"https://starlette.dev/\" target=\"_blank\">https://starlette.dev</a>\n\n**Source Code**: <a href=\"https://github.com/Kludex/starlette\" target=\"_blank\">https://github.com/Kludex/starlette</a>\n\n---\n\n# Starlette\n\nStarlette is a lightweight [ASGI][asgi] framework/toolkit,\nwhich is ideal for building async web services in Python.\n\nIt is production-ready, and gives you the following:\n\n* A lightweight, low-complexity HTTP web framework.\n* WebSocket support.\n* In-process background tasks.\n* Startup and shutdown events.\n* Test client built on `httpx`.\n* CORS, GZip, Static Files, Streaming responses.\n* Session and Cookie support.\n* 100% test coverage.\n* 100% type annotated codebase.\n* Few hard dependencies.\n* Compatible with `asyncio` and `trio` backends.\n* Great overall performance [against independent benchmarks][techempower].\n\n## Installation\n\n```shell\n$ pip install starlette\n```\n\nYou'll also want to install an ASGI server, such as [uvicorn](https://uvicorn.dev) or any of the [other ASGI server implementations](https://asgi.readthedocs.io/en/latest/implementations.html#servers).\n\n```shell\n$ pip install uvicorn\n```\n\n## Example\n\n```python title=\"main.py\"\nfrom starlette.applications import Starlette\nfrom starlette.responses import JSONResponse\nfrom starlette.routing import Route\n\n\nasync def homepage(request):\n    return JSONResponse({'hello': 'world'})\n\nroutes = [\n    Route(\"/\", endpoint=homepage)\n]\n\napp = Starlette(debug=True, routes=routes)\n```\n\nThen run the application using Uvicorn:\n\n```shell\n$ uvicorn main:app\n```\n\n## Dependencies\n\nStarlette only requires `anyio`, and the following are optional:\n\n* [`httpx2`][httpx2] - Required if you want to use the `TestClient`.\n* [`jinja2`][jinja2] - Required if you want to use `Jinja2Templates`.\n* [`python-multipart`][python-multipart] - Required if you want to support form parsing, with `request.form()`.\n* [`itsdangerous`][itsdangerous] - Required for `SessionMiddleware` support.\n* [`pyyaml`][pyyaml] - Required for `SchemaGenerator` support.\n\nYou can install all of these with `pip install starlette[full]`.\n\n## Framework or Toolkit\n\nStarlette is designed to be used either as a complete framework, or as\nan ASGI toolkit. You can use any of its components independently.\n\n```python\nfrom starlette.responses import PlainTextResponse\n\n\nasync def app(scope, receive, send):\n    assert scope['type'] == 'http'\n    response = PlainTextResponse('Hello, world!')\n    await response(scope, receive, send)\n```\n\nRun the `app` application in `example.py`:\n\n```shell\n$ uvicorn example:app\nINFO: Started server process [11509]\nINFO: Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)\n```\n\nRun uvicorn with `--reload` to enable auto-reloading on code changes.\n\n## Modularity\n\nThe modularity that Starlette is designed on promotes building reusable\ncomponents that can be shared between any ASGI framework. This should enable\nan ecosystem of shared middleware and mountable applications.\n\nThe clean API separation also means it's easier to understand each component\nin isolation.\n\n---\n\n<p align=\"center\"><i>Starlette is <a href=\"https://github.com/Kludex/starlette/blob/main/LICENSE.md\">BSD licensed</a> code.<br/>Designed & crafted with care.</i></br>&mdash; ⭐️ &mdash;</p>\n\n[asgi]: https://asgi.readthedocs.io/en/latest/\n[httpx2]: https://pypi.org/project/httpx2/\n[jinja2]: https://jinja.palletsprojects.com/\n[python-multipart]: https://multipart.fastapiexpert.com/\n[itsdangerous]: https://itsdangerous.palletsprojects.com/\n[sqlalchemy]: https://www.sqlalchemy.org\n[pyyaml]: https://pyyaml.org/wiki/PyYAMLDocumentation\n[techempower]: https://www.techempower.com/benchmarks/#hw=ph&test=fortune&l=zijzen-sf\n",
+        "description_content_type": "text/markdown",
+        "author_email": "Tom Christie <tom@tomchristie.com>",
+        "maintainer_email": "Marcelo Trylesinski <marcelotryle@gmail.com>",
+        "license_expression": "BSD-3-Clause",
+        "license_file": [
+          "LICENSE.md"
+        ],
+        "classifier": [
+          "Development Status :: 3 - Alpha",
+          "Environment :: Web Environment",
+          "Framework :: AnyIO",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Internet :: WWW/HTTP"
+        ],
+        "requires_dist": [
+          "anyio<5,>=3.6.2",
+          "typing-extensions>=4.10.0; python_version < '3.13'",
+          "httpx2>=2.0.0; extra == 'full'",
+          "httpx<0.29.0,>=0.27.0; extra == 'full'",
+          "itsdangerous; extra == 'full'",
+          "jinja2; extra == 'full'",
+          "python-multipart>=0.0.18; extra == 'full'",
+          "pyyaml; extra == 'full'"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/Kludex/starlette",
+          "Documentation, https://starlette.dev/",
+          "Changelog, https://starlette.dev/release-notes/",
+          "Funding, https://github.com/sponsors/Kludex",
+          "Source, https://github.com/Kludex/starlette"
+        ],
+        "provides_extra": [
+          "full"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101",
+          "hashes": {
+            "sha256": "117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "annotated-doc",
+        "version": "0.0.5",
+        "summary": "Document parameters, class attributes, return types, and variables inline, with Annotated.",
+        "description": "# Annotated Doc\n\nDocument parameters, class attributes, return types, and variables inline, with `Annotated`.\n\n<a href=\"https://github.com/fastapi/annotated-doc/actions?query=workflow%3ATest+event%3Apush+branch%3Amain\" target=\"_blank\">\n    <img src=\"https://github.com/fastapi/annotated-doc/actions/workflows/test.yml/badge.svg?event=push&branch=main\" alt=\"Test\">\n</a>\n<a href=\"https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/annotated-doc\" target=\"_blank\">\n    <img src=\"https://coverage-badge.samuelcolvin.workers.dev/fastapi/annotated-doc.svg\" alt=\"Coverage\">\n</a>\n<a href=\"https://pypi.org/project/annotated-doc\" target=\"_blank\">\n    <img src=\"https://img.shields.io/pypi/v/annotated-doc?color=%2334D058&label=pypi%20package\" alt=\"Package version\">\n</a>\n<a href=\"https://pypi.org/project/annotated-doc\" target=\"_blank\">\n    <img src=\"https://img.shields.io/pypi/pyversions/annotated-doc.svg?color=%2334D058\" alt=\"Supported Python versions\">\n</a>\n\n## Installation\n\n```bash\npip install annotated-doc\n```\n\nOr with `uv`:\n\n```Python\nuv add annotated-doc\n```\n\n## Usage\n\nImport `Doc` and pass a single literal string with the documentation for the specific parameter, class attribute, return type, or variable.\n\nFor example, to document a parameter `name` in a function `hi` you could do:\n\n```Python\nfrom typing import Annotated\n\nfrom annotated_doc import Doc\n\ndef hi(name: Annotated[str, Doc(\"Who to say hi to\")]) -> None:\n    print(f\"Hi, {name}!\")\n```\n\nYou can also use it to document class attributes:\n\n```Python\nfrom typing import Annotated\n\nfrom annotated_doc import Doc\n\nclass User:\n    name: Annotated[str, Doc(\"The user's name\")]\n    age: Annotated[int, Doc(\"The user's age\")]\n```\n\nThe same way, you could document return types and variables, or anything that could have a type annotation with `Annotated`.\n\n## Who Uses This\n\n`annotated-doc` was made for:\n\n* [FastAPI](https://fastapi.tiangolo.com/)\n* [Typer](https://typer.tiangolo.com/)\n* [SQLModel](https://sqlmodel.tiangolo.com/)\n* [Asyncer](https://asyncer.tiangolo.com/)\n\n`annotated-doc` is supported by [griffe-typingdoc](https://github.com/mkdocstrings/griffe-typingdoc), which powers reference documentation like the one in the [FastAPI Reference](https://fastapi.tiangolo.com/reference/).\n\n## Reasons not to use `annotated-doc`\n\nYou are already comfortable with one of the existing docstring formats, like:\n\n* Sphinx\n* numpydoc\n* Google\n* Keras\n\nYour team is already comfortable using them.\n\nYou prefer having the documentation about parameters all together in a docstring, separated from the code defining them.\n\nYou care about a specific set of users, using one specific editor, and that editor already has support for the specific docstring format you use.\n\n## Reasons to use `annotated-doc`\n\n* No micro-syntax to learn for newcomers, it’s **just Python** syntax.\n* **Editing** would be already fully supported by default by any editor (current or future) supporting Python syntax, including syntax errors, syntax highlighting, etc.\n* **Rendering** would be relatively straightforward to implement by static tools (tools that don't need runtime execution), as the information can be extracted from the AST they normally already create.\n* **Deduplication of information**: the name of a parameter would be defined in a single place, not duplicated inside of a docstring.\n* **Elimination** of the possibility of having **inconsistencies** when removing a parameter or class variable and **forgetting to remove** its documentation.\n* **Minimization** of the probability of adding a new parameter or class variable and **forgetting to add its documentation**.\n* **Elimination** of the possibility of having **inconsistencies** between the **name** of a parameter in the **signature** and the name in the docstring when it is renamed.\n* **Access** to the documentation string for each symbol at **runtime**, including existing (older) Python versions.\n* A more formalized way to document other symbols, like type aliases, that could use Annotated.\n* **Support** for apps using FastAPI, Typer and others.\n* **AI Accessibility**: AI tools will have an easier way understanding each parameter as the distance from documentation to parameter is much closer.\n\n## History\n\nI ([@tiangolo](https://github.com/tiangolo)) originally wanted for this to be part of the Python standard library (in [PEP 727](https://peps.python.org/pep-0727/)), but the proposal was withdrawn as there was a fair amount of negative feedback and opposition.\n\nThe conclusion was that this was better done as an external effort, in a third-party library.\n\nSo, here it is, with a simpler approach, as a third-party library, in a way that can be used by others, starting with FastAPI and friends.\n\n## License\n\nThis project is licensed under the terms of the MIT license.\n",
+        "description_content_type": "text/markdown",
+        "author_email": "=?utf-8?q?Sebasti=C3=A1n_Ram=C3=ADrez?= <tiangolo@gmail.com>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python",
+          "Topic :: Internet",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Software Development",
+          "Typing :: Typed",
+          "Development Status :: 4 - Beta",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14"
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Homepage, https://github.com/fastapi/annotated-doc",
+          "Documentation, https://github.com/fastapi/annotated-doc",
+          "Repository, https://github.com/fastapi/annotated-doc",
+          "Issues, https://github.com/fastapi/annotated-doc/issues",
+          "Changelog, https://github.com/fastapi/annotated-doc/release-notes.md"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/1e/41/f7dcf80b81ee8e71c1a2b59f14208bc723edbd89ed027a73b175abf6348e/opentelemetry_api-1.45.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb",
+          "hashes": {
+            "sha256": "b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.5",
+        "name": "opentelemetry-api",
+        "version": "1.45.1",
+        "summary": "OpenTelemetry Python API",
+        "description": "OpenTelemetry Python API\n============================================================================\n\n|pypi|\n\n.. |pypi| image:: https://badge.fury.io/py/opentelemetry-api.svg\n   :target: https://pypi.org/project/opentelemetry-api/\n\nInstallation\n------------\n\n::\n\n    pip install opentelemetry-api\n\nReferences\n----------\n\n* `OpenTelemetry Project <https://opentelemetry.io/>`_\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "OpenTelemetry Authors <cncf-opentelemetry-contributors@lists.cncf.io>",
+        "license_expression": "Apache-2.0",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Framework :: OpenTelemetry",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Typing :: Typed"
+        ],
+        "requires_dist": [
+          "typing-extensions>=4.5.0"
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "Homepage, https://github.com/open-telemetry/opentelemetry-python/tree/main/opentelemetry-api",
+          "Repository, https://github.com/open-telemetry/opentelemetry-python"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.14",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26200",
+    "python_full_version": "3.12.14",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "win32"
+  }
+}

@@ -1,0 +1,95 @@
+[
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/file/contentMediaType",
+    "before": null,
+    "after": "application/octet-stream"
+  },
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/file/format",
+    "before": "binary",
+    "after": null
+  },
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/materialRole",
+    "before": null,
+    "after": {
+      "type": "string",
+      "enum": [
+        "portfolio",
+        "reference"
+      ],
+      "title": "Materialrole",
+      "default": "portfolio"
+    }
+  },
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/material_role",
+    "before": {
+      "type": "string",
+      "enum": [
+        "portfolio",
+        "reference"
+      ],
+      "title": "Material Role",
+      "default": "portfolio"
+    },
+    "after": null
+  },
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/requestId",
+    "before": null,
+    "after": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Requestid"
+    }
+  },
+  {
+    "path": "/components/schemas/Body_upload_project_version_api_v1_projects__project_id__versions_post/properties/request_id",
+    "before": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Request Id"
+    },
+    "after": null
+  },
+  {
+    "path": "/components/schemas/Body_upload_resume_api_v1_resumes_post/properties/file/contentMediaType",
+    "before": null,
+    "after": "application/octet-stream"
+  },
+  {
+    "path": "/components/schemas/Body_upload_resume_api_v1_resumes_post/properties/file/format",
+    "before": "binary",
+    "after": null
+  },
+  {
+    "path": "/components/schemas/ValidationError/properties/ctx",
+    "before": null,
+    "after": {
+      "type": "object",
+      "title": "Context"
+    }
+  },
+  {
+    "path": "/components/schemas/ValidationError/properties/input",
+    "before": null,
+    "after": {
+      "title": "Input"
+    }
+  }
+]

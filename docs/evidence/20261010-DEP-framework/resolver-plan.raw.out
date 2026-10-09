@@ -1,0 +1,23 @@
+Collecting fastapi==0.143.0
+  Downloading fastapi-0.143.0-py3-none-any.whl.metadata (26 kB)
+Collecting starlette==1.3.1
+  Using cached starlette-1.3.1-py3-none-any.whl.metadata (6.4 kB)
+Requirement already satisfied: pydantic>=2.9.0 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from fastapi==0.143.0) (2.11.7)
+Requirement already satisfied: typing-extensions>=4.8.0 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from fastapi==0.143.0) (4.16.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from fastapi==0.143.0) (0.4.4)
+Collecting annotated-doc>=0.0.2 (from fastapi==0.143.0)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting opentelemetry-api>=1.44.0 (from fastapi==0.143.0)
+  Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+Requirement already satisfied: anyio<5,>=3.6.2 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from starlette==1.3.1) (4.15.0)
+Requirement already satisfied: idna>=2.8 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from anyio<5,>=3.6.2->starlette==1.3.1) (3.19)
+Requirement already satisfied: annotated-types>=0.6.0 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pydantic>=2.9.0->fastapi==0.143.0) (0.8.0)
+Requirement already satisfied: pydantic-core==2.33.2 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pydantic>=2.9.0->fastapi==0.143.0) (2.33.2)
+Downloading fastapi-0.143.0-py3-none-any.whl (144 kB)
+Using cached starlette-1.3.1-py3-none-any.whl (73 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+Would install annotated-doc-0.0.5 fastapi-0.143.0 opentelemetry-api-1.45.1 starlette-1.3.1
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip

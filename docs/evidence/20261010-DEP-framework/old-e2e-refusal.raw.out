@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\jbcode\web ai\jianli\backend\evals\verify_dependency_environment.py", line 44, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\backend\evals\verify_dependency_environment.py", line 39, in main
+    versions = verify_environment(manifest)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\evals\verify_dependency_environment.py", line 30, in verify_environment
+    raise ValueError(f"Selected E2E interpreter has {name}=={actual}; requires {required}")
+ValueError: Selected E2E interpreter has fastapi==0.116.1; requires 0.143.0
+Exception: D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:35
+Line |
+  35 |  … DE -ne 0) { throw 'Selected backend interpreter does not match curren …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Selected backend interpreter does not match current production dependency pins.
