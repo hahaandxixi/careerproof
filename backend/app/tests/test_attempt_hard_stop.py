@@ -228,6 +228,25 @@ async def wait_for_locks_released(factory, user_id, task_id, attempt_id):
             await asyncio.sleep(0.1)
 
 
+async def prepare_chain_task(fixture_case, chain, monkeypatch):
+    if chain == "verification":
+        return UUID((await fixture_case.start())["taskId"])
+    else:
+        # Same student as the existing application, new explicit materials/job.
+        # Execute only synthetic parsers while keeping model transport disabled.
+        with monkeypatch.context() as parsing:
+            parsing.setattr(FastAPIBackgroundTaskRunner, "submit", ORIGINAL_BACKGROUND_SUBMIT)
+            parsing.setattr(settings, "ai_external_enabled", False)
+            resume, _project, version = await upload_materials(fixture_case.student)
+        job = await create_job(fixture_case.hr)
+        accepted = await fixture_case.student.post("/api/v1/matches", json={
+            "jobId": job["id"], "resumeVersionId": resume["versionId"],
+            "projectVersionIds": [version["versionId"]], "externalAiConsent": True,
+        })
+        assert accepted.status_code == 202, accepted.text
+        return UUID(accepted.json()["data"]["taskId"])
+
+
 @pytest.mark.parametrize("phase", PHASES)
 @pytest.mark.parametrize("chain", ["verification", "matching"])
 async def test_real_child_hard_stop_then_database_only_recovery(
@@ -244,22 +263,7 @@ async def test_real_child_hard_stop_then_database_only_recovery(
     assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
     expected_usage = (123, 45, 17 if chain == "verification" else 0)
 
-    if chain == "verification":
-        task_id = UUID((await case.start())["taskId"])
-    else:
-        # Same student as the existing application, new explicit materials/job.
-        # Execute only synthetic parsers while keeping model transport disabled.
-        with monkeypatch.context() as parsing:
-            parsing.setattr(FastAPIBackgroundTaskRunner, "submit", ORIGINAL_BACKGROUND_SUBMIT)
-            parsing.setattr(settings, "ai_external_enabled", False)
-            resume, version = await upload_materials(case.student, tmp_path)
-        job = await create_job(case.hr)
-        accepted = await case.student.post("/api/v1/matches", json={
-            "jobId": job["id"], "resumeVersionId": resume["currentVersionId"],
-            "projectVersionIds": [version["id"]], "externalAiConsent": True,
-        })
-        assert accepted.status_code == 202, accepted.text
-        task_id = UUID(accepted.json()["data"]["taskId"])
+    task_id = await prepare_chain_task(case, chain, monkeypatch)
     async with case.factory() as session:
         for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
             assert await session.scalar(text(
