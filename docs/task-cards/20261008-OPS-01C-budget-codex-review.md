@@ -1,5 +1,7 @@
 # 共用预算独立复验卡
 
+2026-10-09更新：20事务故障、21依赖排序已交棒；22个人GLM-5.3正在补生产预算整合测试。下文原委派现场与旧实现描述为设计时快照，当前入口/所有权以[22任务卡](20261009-OPS-budget-production-race.md)、当前接力与实际Git为准。PG与预算后两链8硬停仍未执行；免费选模顺序已被个人按难度选模替代。
+
 主匹配阶段签收9b9080b；下一预算批以实际发送时HEAD为基线。实施协议见20261007-OPS-01C-shared-budget-implementation.md。本卡由Codex维护，ZCode不得把未跑场景写成通过。
 
 ## 文件所有权与启动条件
@@ -10,7 +12,7 @@ UI人工切换后的新任务草稿不等于已委派，必须确认项目jbcode
 
 ## Codex必须独立证明的反例
 
-1. 同owner的核验与匹配实际并发，最后一个日报告槽：两个准备请求必须跨独立session，数据库锁保证只有一个获准，不是先后调用伪竞态。获准方HTTP期间User/Task/day锁可NOWAIT取得。
+1. 同owner最后一个日报告槽：现行企业核验要求ENTERPRISE，学生匹配要求STUDENT，单角色User无法合法同时执行二者。两类生产入口分别构造同owner两个不同任务、跨独立session真实竞争，只有一个获准；不同角色owner预算隔离；共享内核同owner跨chain单独证明，不绕过授权或伪造owner。胜方commit前双方原prepare已创建独立session，不能先后准入伪竞态。获准方HTTP期间User/Task/day锁可NOWAIT取得。
 2. 输出剩额小于请求max_tokens：持久grant、reservation上界、实际MockTransport抓到的请求max_tokens三者相等。不得仅改预留数值；重试同样受新准入约束。
 3. 午夜从23:59:59到00:00:01：通过服务端可注入时钟控制prepare和intent，断言两日占额逐项变化。新日不够必须0HTTP，旧日确定未发送占额释放；迟到收据回到原发送日，不落在恢复日。
 4. 无usage的503确实HTTP已发生，未知上界继续占用并阻止超额retry。可信0收据允许真实0；未知记录不得填0、因TTL退出退额或恢复发送。
