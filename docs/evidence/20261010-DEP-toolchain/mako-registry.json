@@ -1,0 +1,24 @@
+{
+  "name": "Mako",
+  "version": "1.4.2",
+  "requires_python": ">=3.10",
+  "requires_dist": [
+    "MarkupSafe>=2.0",
+    "pytest; extra == \"testing\"",
+    "Babel; extra == \"babel\"",
+    "lingua>=4.16; extra == \"lingua\""
+  ],
+  "files": [
+    {
+      "filename": "mako-1.4.2-py3-none-any.whl",
+      "sha256": "e70a2a4308952b33a21208bfd6725da79fae5a8c224578f8cfdeb60e5ace03df",
+      "yanked": false
+    },
+    {
+      "filename": "mako-1.4.2.tar.gz",
+      "sha256": "7227a060ee3af55a493af61d73d6beef13044b81dba9586736c13945f09464ce",
+      "yanked": false
+    }
+  ],
+  "source": "https://pypi.org/pypi/Mako/1.4.2/json"
+}

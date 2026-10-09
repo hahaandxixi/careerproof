@@ -1,0 +1,71 @@
+..........................................................sss........... [  6%]
+........................................................................ [ 12%]
+............s.........................s............s.................... [ 18%]
+...............ss.......sss......s.....ssssssss......................... [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+.......................................................ss........s...... [ 44%]
+....................................................s................... [ 50%]
+........................................................................ [ 56%]
+...............................sss.......ss............................. [ 63%]
+...................ss............................ssssss................. [ 69%]
+.........................s.............................................. [ 75%]
+........................................................................ [ 82%]
+........................................................................ [ 88%]
+........................................................................ [ 94%]
+....................................ssssssss................             [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_dependency_upgrade_regression.py::test_decode_token_rejects_malformed_tokens[eyJhbGciOiJIUzI1NiJ9.W10.sig]
+app/tests/test_dependency_upgrade_regression.py::test_legacy_pytjwt_2101_token_still_decodes
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\jwt\api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [3] app\tests\test_ai_budget_production_race.py:98: The production-entry last-slot race needs real PostgreSQL row locks; set CAREERPROOF_TEST_DATABASE_URL to an isolated cp_test schema
+SKIPPED [1] app\tests\test_ai_request_attempt_migration.py:253: Requires explicit PostgreSQL cp_test schema
+SKIPPED [1] app\tests\test_ai_shared_budget_migration.py:200: Requires explicit PostgreSQL cp_test schema
+SKIPPED [1] app\tests\test_ai_shared_budget_service.py:283: Requires actual PostgreSQL row locks
+SKIPPED [1] app\tests\test_application_verification.py:717: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [1] app\tests\test_application_verification.py:755: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [3] app\tests\test_application_verification.py:933: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [1] app\tests\test_applications_api.py:395: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [8] app\tests\test_attempt_hard_stop.py:257: A real child-process hard stop needs an explicitly configured isolated PostgreSQL schema; SQLite cannot prove row-lock release across processes
+SKIPPED [1] app\tests\test_durable_attempt_service.py:212: Row-lock concurrent booking requires dedicated PostgreSQL
+SKIPPED [1] app\tests\test_durable_attempt_service.py:225: Serialized identity allocation requires dedicated PostgreSQL
+SKIPPED [1] app\tests\test_durable_matching.py:728: The borrowed-transaction probe needs the PostgreSQL integration database
+SKIPPED [1] app\tests\test_evidence_growth.py:347: Real PostgreSQL row-lock concurrency requires the integration database
+SKIPPED [1] app\tests\test_growth_answer_postgres.py:20: Requires explicit PostgreSQL row locks
+SKIPPED [1] app\tests\test_growth_answer_postgres.py:45: Requires explicit PostgreSQL row locks
+SKIPPED [1] app\tests\test_growth_answer_postgres.py:72: Requires explicit PostgreSQL cp_test schema
+SKIPPED [1] app\tests\test_growth_target_postgres.py:50: Requires explicit PostgreSQL cp_test schema
+SKIPPED [1] app\tests\test_growth_target_postgres.py:95: Requires explicit PostgreSQL row locks
+SKIPPED [1] app\tests\test_knowledge_semantic_postgres.py:152: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [1] app\tests\test_knowledge_semantic_postgres.py:173: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [1] app\tests\test_mcp_postgres_isolation.py:147: Requires explicit local PostgreSQL test database and real row locks
+SKIPPED [1] app\tests\test_mcp_postgres_isolation.py:224: Requires explicit local PostgreSQL test database and real row locks
+SKIPPED [4] app\tests\test_mcp_postgres_isolation.py:290: Requires explicit local PostgreSQL test database and real row locks
+SKIPPED [1] app\tests\test_notifications.py:148: PostgreSQL row lock integration only
+SKIPPED [4] app\tests\test_visual_postgres_concurrency.py:37: Requires an explicitly configured isolated PostgreSQL schema
+SKIPPED [4] app\tests\test_visual_postgres_concurrency.py:135: Requires an explicitly configured isolated PostgreSQL schema
+1094 passed, 46 skipped, 9 warnings in 299.44s (0:04:59)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

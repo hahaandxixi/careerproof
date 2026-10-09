@@ -1,0 +1,1 @@
+{"ghsa_id":"GHSA-vfj7-8cjw-p6xm","published_at":"2026-09-18T18:31:41Z","summary":"braces vulnerable to stack-exhaustion denial of service through deeply nested patterns","updated_at":"2026-10-02T22:36:34Z","vulnerabilities":[{"first_patched_version":null,"package":{"ecosystem":"npm","name":"braces"},"vulnerable_functions":[],"vulnerable_version_range":"\u003c= 3.0.3"}]}

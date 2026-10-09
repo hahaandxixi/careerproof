@@ -1,0 +1,24 @@
+Collecting pytest==9.0.3
+  Downloading pytest-9.0.3-py3-none-any.whl.metadata (7.6 kB)
+Collecting pytest-asyncio==1.4.0
+  Downloading pytest_asyncio-1.4.0-py3-none-any.whl.metadata (4.1 kB)
+Collecting Mako==1.4.2
+  Downloading mako-1.4.2-py3-none-any.whl.metadata (2.9 kB)
+Collecting pip==26.2.1
+  Downloading pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+Requirement already satisfied: colorama>=0.4 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest==9.0.3) (0.4.6)
+Requirement already satisfied: iniconfig>=1.0.1 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest==9.0.3) (2.3.0)
+Requirement already satisfied: packaging>=22 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest==9.0.3) (26.3)
+Requirement already satisfied: pluggy<2,>=1.5 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest==9.0.3) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest==9.0.3) (2.21.0)
+Requirement already satisfied: typing-extensions>=4.12 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from pytest-asyncio==1.4.0) (4.16.0)
+Requirement already satisfied: MarkupSafe>=2.0 in d:\jbcode\web ai\jianli\backend\.venv-dependency23\lib\site-packages (from Mako==1.4.2) (3.0.3)
+Downloading pytest-9.0.3-py3-none-any.whl (375 kB)
+Downloading pytest_asyncio-1.4.0-py3-none-any.whl (16 kB)
+Downloading mako-1.4.2-py3-none-any.whl (80 kB)
+Downloading pip-26.2.1-py3-none-any.whl (1.8 MB)
+   ---------------------------------------- 1.8/1.8 MB 3.8 MB/s eta 0:00:00
+Would install Mako-1.4.2 pip-26.2.1 pytest-9.0.3 pytest-asyncio-1.4.0
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe -m pip install --upgrade pip

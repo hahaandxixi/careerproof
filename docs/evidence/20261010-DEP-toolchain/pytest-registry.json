@@ -1,0 +1,34 @@
+{
+  "name": "pytest",
+  "version": "9.0.3",
+  "requires_python": ">=3.10",
+  "requires_dist": [
+    "colorama>=0.4; sys_platform == \"win32\"",
+    "exceptiongroup>=1; python_version < \"3.11\"",
+    "iniconfig>=1.0.1",
+    "packaging>=22",
+    "pluggy<2,>=1.5",
+    "pygments>=2.7.2",
+    "tomli>=1; python_version < \"3.11\"",
+    "argcomplete; extra == \"dev\"",
+    "attrs>=19.2; extra == \"dev\"",
+    "hypothesis>=3.56; extra == \"dev\"",
+    "mock; extra == \"dev\"",
+    "requests; extra == \"dev\"",
+    "setuptools; extra == \"dev\"",
+    "xmlschema; extra == \"dev\""
+  ],
+  "files": [
+    {
+      "filename": "pytest-9.0.3-py3-none-any.whl",
+      "sha256": "2c5efc453d45394fdd706ade797c0a81091eccd1d6e4bccfcd476e2b8e0ab5d9",
+      "yanked": false
+    },
+    {
+      "filename": "pytest-9.0.3.tar.gz",
+      "sha256": "b86ada508af81d19edeb213c681b1d48246c1a91d304c6c81a427674c17eb91c",
+      "yanked": false
+    }
+  ],
+  "source": "https://pypi.org/pypi/pytest/9.0.3/json"
+}
