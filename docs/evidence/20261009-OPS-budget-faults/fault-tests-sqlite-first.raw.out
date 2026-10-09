@@ -1,0 +1,677 @@
+EEEEEE                                                                   [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic[before] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 150
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 1: prepare's commit (#1) fails — no HTTP, attempt+hold stay atomic."""
+      factory, budget, faults, owner, task, provider, _service, calls = await wire(
+          budget_data, fail_on_commit=1, mode=mode
+      )
+      # before_send runs outside the provider retry catch: its failure propagates
+      # immediately and no POST is ever issued.
+      with pytest.raises(CommitFault):
+          await provider._completion(request_for(provider))
+      assert calls == []
+      assert faults.raised == 1
+      attempts, holds, _ledger = await persisted_rows(factory, task)
+      usage = await capacity_on(factory, budget, owner)
+      if mode == "before":
+          # The transaction was discarded before COMMIT: neither the attempt row
+          # nor its budget reservation exists, and no capacity is held.
+          assert attempts == [] and holds == []
+          assert (usage.inputs, usage.outputs, len(usage.task_ids)) == (0, 0, 0)
+      else:
+          # Ambiguous branch where the prepare COMMIT applied: the caller saw a
+          # failure, but the not_sent attempt and its held reservation are in the
+          # database — capacity conservatively stays held, never treated as free.
+          assert len(attempts) == len(holds) == 1
+          attempt, hold = attempts[0], holds[0]
+          assert attempt.state == "not_sent" and attempt.send_intent_at is None
+          assert attempt.ended_at is None
+          assert hold.state == "held" and hold.settled_at is None
+          assert hold.output_bound == attempt.max_output_tokens == 300
+          assert (usage.known_inputs, usage.known_outputs) == (0, 0)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+_ ERROR at setup of test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic[after] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 150
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 1: prepare's commit (#1) fails — no HTTP, attempt+hold stay atomic."""
+      factory, budget, faults, owner, task, provider, _service, calls = await wire(
+          budget_data, fail_on_commit=1, mode=mode
+      )
+      # before_send runs outside the provider retry catch: its failure propagates
+      # immediately and no POST is ever issued.
+      with pytest.raises(CommitFault):
+          await provider._completion(request_for(provider))
+      assert calls == []
+      assert faults.raised == 1
+      attempts, holds, _ledger = await persisted_rows(factory, task)
+      usage = await capacity_on(factory, budget, owner)
+      if mode == "before":
+          # The transaction was discarded before COMMIT: neither the attempt row
+          # nor its budget reservation exists, and no capacity is held.
+          assert attempts == [] and holds == []
+          assert (usage.inputs, usage.outputs, len(usage.task_ids)) == (0, 0, 0)
+      else:
+          # Ambiguous branch where the prepare COMMIT applied: the caller saw a
+          # failure, but the not_sent attempt and its held reservation are in the
+          # database — capacity conservatively stays held, never treated as free.
+          assert len(attempts) == len(holds) == 1
+          attempt, hold = attempts[0], holds[0]
+          assert attempt.state == "not_sent" and attempt.send_intent_at is None
+          assert attempt.ended_at is None
+          assert hold.state == "held" and hold.settled_at is None
+          assert hold.output_bound == attempt.max_output_tokens == 300
+          assert (usage.known_inputs, usage.known_outputs) == (0, 0)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+_ ERROR at setup of test_receipt_commit_fault_never_fabricates_trusted_cost[before] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 189
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_receipt_commit_fault_never_fabricates_trusted_cost(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 2: receive's commit (#3) fails — no fabricated trusted cost."""
+      factory, budget, faults, owner, task, provider, _service, calls = await wire(
+          budget_data, fail_on_commit=3, mode=mode
+      )
+      # The receipt persistence failure is not a provider send failure: it must
+      # surface as ProviderReceiptPersistenceError without another POST.
+      with pytest.raises(ProviderReceiptPersistenceError) as excinfo:
+          await provider._completion(request_for(provider))
+      assert isinstance(excinfo.value.__cause__, CommitFault)
+      assert faults.raised == 1
+      assert len(calls) == 1
+      attempts, holds, ledger = await persisted_rows(factory, task)
+      assert len(attempts) == len(holds) == 1
+      attempt, hold = attempts[0], holds[0]
+      usage = await capacity_on(factory, budget, owner)
+      if mode == "before":
+          # The receipt transaction was discarded before COMMIT: the physical
+          # response did not become a trusted cost, and the committed intent and
+          # hold stay conservative for recovery.
+          assert attempt.state == "in_flight" and attempt.ended_at is None
+          assert attempt.usage_raw == {} and attempt.response_digest is None
+          assert attempt.usage_input_tokens is None and attempt.usage_output_tokens is None
+          assert hold.state == "held" and hold.settled_at is None
+          assert hold.actual_input_tokens is None and hold.actual_output_tokens is None
+          assert ledger == []
+          assert (usage.known_inputs, usage.known_outputs) == (0, 0)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+          # Conservative recovery: the still-in-flight attempt closes as
+          # usage_unknown; its held capacity is neither released nor settled.
+          await provider.durable_observer.on_failure(attempt.id, "provider_network")
+          closed, closed_holds, _closed_ledger = await persisted_rows(factory, task)
+          assert closed[0].state == "usage_unknown" and closed[0].ended_at is not None
+          assert closed[0].reason == "provider_network"
+          assert closed[0].usage_input_tokens is None and closed[0].usage_raw == {}
+          assert closed_holds[0].state == "held"
+          after = await capacity_on(factory, budget, owner)
+          assert (after.known_inputs, after.known_outputs) == (0, 0)
+          assert (after.held_inputs, after.held_outputs, after.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+      else:
+          # Ambiguous branch where the receipt COMMIT applied: the trusted
+          # receipt is durable with its settled actuals. The late failure the
+          # caller saw must neither erase the receipt nor double the cost, and a
+          # late failure callback must not relabel it as unknown.
+          assert attempt.state == "received_unbooked" and attempt.receipt_at is not None
+          assert (attempt.usage_input_tokens, attempt.usage_output_tokens) == (12, 7)
+          assert attempt.response_digest is not None
+          assert hold.state == "settled" and hold.settled_at is not None
+          assert (hold.actual_input_tokens, hold.actual_output_tokens) == (12, 7)
+          assert ledger == []
+          assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (0, 0, 0)
+          await provider.durable_observer.on_failure(attempt.id, "provider_network")
+          kept, _kept_holds, _kept_ledger = await persisted_rows(factory, task)
+          assert kept[0].state == "received_unbooked"
+          assert (kept[0].usage_input_tokens, kept[0].usage_output_tokens) == (12, 7)
+      assert len(calls) == 1
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+_ ERROR at setup of test_receipt_commit_fault_never_fabricates_trusted_cost[after] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 189
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_receipt_commit_fault_never_fabricates_trusted_cost(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 2: receive's commit (#3) fails — no fabricated trusted cost."""
+      factory, budget, faults, owner, task, provider, _service, calls = await wire(
+          budget_data, fail_on_commit=3, mode=mode
+      )
+      # The receipt persistence failure is not a provider send failure: it must
+      # surface as ProviderReceiptPersistenceError without another POST.
+      with pytest.raises(ProviderReceiptPersistenceError) as excinfo:
+          await provider._completion(request_for(provider))
+      assert isinstance(excinfo.value.__cause__, CommitFault)
+      assert faults.raised == 1
+      assert len(calls) == 1
+      attempts, holds, ledger = await persisted_rows(factory, task)
+      assert len(attempts) == len(holds) == 1
+      attempt, hold = attempts[0], holds[0]
+      usage = await capacity_on(factory, budget, owner)
+      if mode == "before":
+          # The receipt transaction was discarded before COMMIT: the physical
+          # response did not become a trusted cost, and the committed intent and
+          # hold stay conservative for recovery.
+          assert attempt.state == "in_flight" and attempt.ended_at is None
+          assert attempt.usage_raw == {} and attempt.response_digest is None
+          assert attempt.usage_input_tokens is None and attempt.usage_output_tokens is None
+          assert hold.state == "held" and hold.settled_at is None
+          assert hold.actual_input_tokens is None and hold.actual_output_tokens is None
+          assert ledger == []
+          assert (usage.known_inputs, usage.known_outputs) == (0, 0)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+          # Conservative recovery: the still-in-flight attempt closes as
+          # usage_unknown; its held capacity is neither released nor settled.
+          await provider.durable_observer.on_failure(attempt.id, "provider_network")
+          closed, closed_holds, _closed_ledger = await persisted_rows(factory, task)
+          assert closed[0].state == "usage_unknown" and closed[0].ended_at is not None
+          assert closed[0].reason == "provider_network"
+          assert closed[0].usage_input_tokens is None and closed[0].usage_raw == {}
+          assert closed_holds[0].state == "held"
+          after = await capacity_on(factory, budget, owner)
+          assert (after.known_inputs, after.known_outputs) == (0, 0)
+          assert (after.held_inputs, after.held_outputs, after.unknown_count) == (
+              attempt.estimated_input_tokens,
+              300,
+              1,
+          )
+      else:
+          # Ambiguous branch where the receipt COMMIT applied: the trusted
+          # receipt is durable with its settled actuals. The late failure the
+          # caller saw must neither erase the receipt nor double the cost, and a
+          # late failure callback must not relabel it as unknown.
+          assert attempt.state == "received_unbooked" and attempt.receipt_at is not None
+          assert (attempt.usage_input_tokens, attempt.usage_output_tokens) == (12, 7)
+          assert attempt.response_digest is not None
+          assert hold.state == "settled" and hold.settled_at is not None
+          assert (hold.actual_input_tokens, hold.actual_output_tokens) == (12, 7)
+          assert ledger == []
+          assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+          assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (0, 0, 0)
+          await provider.durable_observer.on_failure(attempt.id, "provider_network")
+          kept, _kept_holds, _kept_ledger = await persisted_rows(factory, task)
+          assert kept[0].state == "received_unbooked"
+          assert (kept[0].usage_input_tokens, kept[0].usage_output_tokens) == (12, 7)
+      assert len(calls) == 1
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+_ ERROR at setup of test_book_commit_fault_recovers_exactly_once_without_http[before] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 259
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_book_commit_fault_recovers_exactly_once_without_http(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 3: book_one's commit (#4) fails — exactly-once ledger recovery."""
+      factory, budget, faults, owner, task, provider, service, calls = await wire(
+          budget_data, fail_on_commit=4, mode=mode
+      )
+      await provider._completion(request_for(provider))
+      assert len(calls) == 1
+      attempts, _holds, _ledger = await persisted_rows(factory, task)
+      assert len(attempts) == 1 and attempts[0].state == "received_unbooked"
+      attempt_id = attempts[0].id
+      # The trusted receipt and its settled budget actuals were already durable
+      # in the receipt transaction; the booking failure happens after them.
+      with pytest.raises(CommitFault):
+          await service.book_one(attempt_id)
+      assert faults.raised == 1
+      assert len(calls) == 1
+      if mode == "before":
+          faulted, faulted_holds, faulted_ledger = await persisted_rows(factory, task)
+          assert faulted[0].state == "received_unbooked" and faulted[0].booked_at is None
+          assert faulted_ledger == []
+          usage = await capacity_on(factory, budget, owner)
+          assert (usage.inputs, usage.outputs) == (12, 7)
+          assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+          assert faulted_holds[0].state == "settled"
+          assert (faulted_holds[0].actual_input_tokens, faulted_holds[0].actual_output_tokens) == (
+              12,
+              7,
+          )
+      else:
+          faulted, faulted_holds, faulted_ledger = await persisted_rows(factory, task)
+          # The booking COMMIT applied before the caller learned of the failure:
+          # the ledger row and booked state already exist.
+          assert faulted[0].state == "booked" and faulted[0].booked_at is not None
+          assert len(faulted_ledger) == 1
+          assert faulted_holds[0].state == "settled"
+      # Recovery: an independent reconciliation finishes the booking without any
+      # new provider HTTP, writes the ledger exactly once, and keeps the budget
+      # actuals from the durable receipt.
+      assert await service.reconcile() == (1 if mode == "before" else 0)
+      assert await service.reconcile() == 0
+      assert len(calls) == 1
+      attempts, holds, ledger = await persisted_rows(factory, task)
+      assert len(ledger) == 1
+      row = ledger[0]
+      assert (row.input_tokens, row.output_tokens) == (12, 7)
+      assert row.attempt_id == attempt_id and row.request_seq == 1
+      assert attempts[0].state == "booked" and attempts[0].booked_at is not None
+      assert holds[0].state == "settled"
+      assert (holds[0].actual_input_tokens, holds[0].actual_output_tokens) == (12, 7)
+      usage = await capacity_on(factory, budget, owner)
+      assert (usage.inputs, usage.outputs) == (12, 7)
+      assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+      assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (0, 0, 0)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+_ ERROR at setup of test_book_commit_fault_recovers_exactly_once_without_http[after] _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_budget_fault_recovery.py, line 259
+  @pytest.mark.parametrize("mode", ["before", "after"])
+  async def test_book_commit_fault_recovers_exactly_once_without_http(
+      budget_data, mode  # noqa: F811 - imported fixture
+  ):
+      """Boundary 3: book_one's commit (#4) fails — exactly-once ledger recovery."""
+      factory, budget, faults, owner, task, provider, service, calls = await wire(
+          budget_data, fail_on_commit=4, mode=mode
+      )
+      await provider._completion(request_for(provider))
+      assert len(calls) == 1
+      attempts, _holds, _ledger = await persisted_rows(factory, task)
+      assert len(attempts) == 1 and attempts[0].state == "received_unbooked"
+      attempt_id = attempts[0].id
+      # The trusted receipt and its settled budget actuals were already durable
+      # in the receipt transaction; the booking failure happens after them.
+      with pytest.raises(CommitFault):
+          await service.book_one(attempt_id)
+      assert faults.raised == 1
+      assert len(calls) == 1
+      if mode == "before":
+          faulted, faulted_holds, faulted_ledger = await persisted_rows(factory, task)
+          assert faulted[0].state == "received_unbooked" and faulted[0].booked_at is None
+          assert faulted_ledger == []
+          usage = await capacity_on(factory, budget, owner)
+          assert (usage.inputs, usage.outputs) == (12, 7)
+          assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+          assert faulted_holds[0].state == "settled"
+          assert (faulted_holds[0].actual_input_tokens, faulted_holds[0].actual_output_tokens) == (
+              12,
+              7,
+          )
+      else:
+          faulted, faulted_holds, faulted_ledger = await persisted_rows(factory, task)
+          # The booking COMMIT applied before the caller learned of the failure:
+          # the ledger row and booked state already exist.
+          assert faulted[0].state == "booked" and faulted[0].booked_at is not None
+          assert len(faulted_ledger) == 1
+          assert faulted_holds[0].state == "settled"
+      # Recovery: an independent reconciliation finishes the booking without any
+      # new provider HTTP, writes the ledger exactly once, and keeps the budget
+      # actuals from the durable receipt.
+      assert await service.reconcile() == (1 if mode == "before" else 0)
+      assert await service.reconcile() == 0
+      assert len(calls) == 1
+      attempts, holds, ledger = await persisted_rows(factory, task)
+      assert len(ledger) == 1
+      row = ledger[0]
+      assert (row.input_tokens, row.output_tokens) == (12, 7)
+      assert row.attempt_id == attempt_id and row.request_seq == 1
+      assert attempts[0].state == "booked" and attempts[0].booked_at is not None
+      assert holds[0].state == "settled"
+      assert (holds[0].actual_input_tokens, holds[0].actual_output_tokens) == (12, 7)
+      usage = await capacity_on(factory, budget, owner)
+      assert (usage.inputs, usage.outputs) == (12, 7)
+      assert (usage.known_inputs, usage.known_outputs) == (12, 7)
+      assert (usage.held_inputs, usage.held_outputs, usage.unknown_count) == (0, 0, 0)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py, line 29
+  @pytest.fixture
+  async def budget_data(durable_db):  # noqa: F811 - imported fixture
+      _app, factory, runtime = durable_db
+      owner, admin, first, second = (uuid4() for _ in range(4))
+      async with factory() as session:
+          session.add_all(
+              [
+                  User(
+                      id=owner,
+                      email=f"budget-{owner}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic budget student",
+                      role=UserRole.STUDENT,
+                  ),
+                  User(
+                      id=admin,
+                      email=f"budget-{admin}@synthetic.invalid",
+                      password_hash="synthetic",
+                      display_name="synthetic admin",
+                      role=UserRole.ADMIN,
+                  ),
+              ]
+          )
+          await session.flush()
+          for task_id, task_type in ((first, "job_match"), (second, "application_verification")):
+              session.add(
+                  AnalysisTask(
+                      id=task_id,
+                      created_by=owner,
+                      task_type=task_type,
+                      status=TaskStatus.RUNNING,
+                      run_token=uuid4(),
+                      input_snapshot={"externalAiConsent": True},
+                  )
+              )
+          session.add(
+              AiBudgetCutover(
+                  id=GATE_ID,
+                  enabled=True,
+                  activated_by=admin,
+                  activated_at=NOW,
+                  inventory_digest="a" * 64,
+                  reason="isolated capacity fixture, no production activation",
+              )
+          )
+          await session.commit()
+      return factory, runtime, owner, first, second
+E       fixture 'durable_db' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, budget_data, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_ai_shared_budget_service.py:29
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic[before]
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_prepare_commit_fault_sends_no_http_and_keeps_rows_atomic[after]
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_receipt_commit_fault_never_fabricates_trusted_cost[before]
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_receipt_commit_fault_never_fabricates_trusted_cost[after]
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_book_commit_fault_recovers_exactly_once_without_http[before]
+ERROR app/tests/test_ai_budget_fault_recovery.py::test_book_commit_fault_recovers_exactly_once_without_http[after]
+5 warnings, 6 errors in 1.49s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+EXIT=1

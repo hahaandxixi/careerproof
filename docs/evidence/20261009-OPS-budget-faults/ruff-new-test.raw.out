@@ -1,0 +1,23 @@
+F811 Redefinition of unused `budget_data` from line 44
+   --> app\tests\test_ai_budget_fault_recovery.py:135:16
+    |
+135 | async def wire(budget_data, *, fail_on_commit, mode):
+    |                ^^^^^^^^^^^ `budget_data` redefined here
+136 |     factory, _runtime, owner, task, _other = budget_data
+137 |     calls = []
+    |
+   ::: app\tests\test_ai_budget_fault_recovery.py:44:68
+    |
+ 42 | )
+ 43 | from app.tests.test_ai_shared_budget_service import NOW
+ 44 | from app.tests.test_ai_shared_budget_service import budget_data as budget_data
+    |                                                                    ----------- previous definition of `budget_data` here
+ 45 | from app.tests.test_durable_matching import durable_db as durable_db
+ 46 | from app.tests.test_durable_matching import synthetic_provider
+    |
+help: Remove definition: `budget_data`
+
+Found 1 error.
+EXIT=1
+All checks passed!
+EXIT=0
