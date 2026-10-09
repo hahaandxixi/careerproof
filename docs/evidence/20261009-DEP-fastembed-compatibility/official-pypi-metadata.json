@@ -1,0 +1,83 @@
+[
+  {
+    "version": "0.8.0",
+    "requires_python": ">=3.10.0",
+    "requires_dist": [
+      "huggingface-hub<2.0,>=0.20",
+      "loguru<0.8.0,>=0.7.2",
+      "mmh3<6.0.0,>=4.1.0",
+      "numpy>=1.21; python_version == \"3.11\"",
+      "numpy<2.3.0,>=1.21; python_version == \"3.10\"",
+      "numpy>=1.26; python_version == \"3.12\"",
+      "numpy>=2.1.0; python_version == \"3.13\"",
+      "numpy>=2.3.0; python_version >= \"3.14\"",
+      "onnxruntime!=1.24.0,!=1.24.1,>1.21.0; python_version == \"3.13\"",
+      "onnxruntime!=1.20.0,!=1.24.0,!=1.24.1,>=1.17.0; python_version >= \"3.11\" and python_version < \"3.13\"",
+      "onnxruntime!=1.20.0,<1.24,>=1.17.0; python_version == \"3.10\"",
+      "onnxruntime>=1.24.2; python_version >= \"3.14\"",
+      "pillow<13.0,>=10.3.0; python_version >= \"3.10\" and python_version < \"3.13\"",
+      "pillow<13.0,>=11.0.0; python_version == \"3.13\"",
+      "pillow<13.0,>=12.0.0; python_version >= \"3.14\"",
+      "py-rust-stemmers<0.2.0,>=0.1.0",
+      "requests<3.0,>=2.31",
+      "tokenizers<1.0,>=0.15",
+      "tqdm<5.0,>=4.66"
+    ],
+    "all_files_yanked": false,
+    "source": "https://pypi.org/pypi/fastembed/0.8.0/json"
+  },
+  {
+    "version": "0.8.1",
+    "requires_python": ">=3.10.0",
+    "requires_dist": [
+      "huggingface-hub<2.0,>=0.20",
+      "loguru<0.8.0,>=0.7.2",
+      "mmh3<6.0.0,>=4.1.0",
+      "numpy>=1.21; python_version == \"3.11\"",
+      "numpy<2.3.0,>=1.21; python_version == \"3.10\"",
+      "numpy>=1.26; python_version == \"3.12\"",
+      "numpy>=2.1.0; python_version == \"3.13\"",
+      "numpy>=2.3.0; python_version >= \"3.14\"",
+      "onnxruntime!=1.24.0,!=1.24.1,>1.21.0; python_version == \"3.13\"",
+      "onnxruntime!=1.20.0,!=1.24.0,!=1.24.1,>=1.17.0; python_version >= \"3.11\" and python_version < \"3.13\"",
+      "onnxruntime!=1.20.0,<1.24,>=1.17.0; python_version == \"3.10\"",
+      "onnxruntime>=1.24.2; python_version >= \"3.14\"",
+      "pillow<13.0,>=10.3.0; python_version >= \"3.10\" and python_version < \"3.13\"",
+      "pillow<13.0,>=11.0.0; python_version == \"3.13\"",
+      "pillow<13.0,>=12.0.0; python_version >= \"3.14\"",
+      "py-rust-stemmers<0.2.0,>=0.1.0",
+      "requests<3.0,>=2.31",
+      "tokenizers<1.0,>=0.15",
+      "tqdm<5.0,>=4.66"
+    ],
+    "all_files_yanked": false,
+    "source": "https://pypi.org/pypi/fastembed/0.8.1/json"
+  },
+  {
+    "version": "0.9.0",
+    "requires_python": ">=3.10.0",
+    "requires_dist": [
+      "huggingface-hub<2.0,>=0.20",
+      "loguru<0.8.0,>=0.7.2",
+      "mmh3<6.0.0,>=4.1.0",
+      "numpy>=1.21; python_version == \"3.11\"",
+      "numpy<2.3.0,>=1.21; python_version == \"3.10\"",
+      "numpy>=1.26; python_version == \"3.12\"",
+      "numpy>=2.1.0; python_version == \"3.13\"",
+      "numpy>=2.3.0; python_version >= \"3.14\"",
+      "onnxruntime!=1.24.0,!=1.24.1,>1.21.0; python_version == \"3.13\"",
+      "onnxruntime!=1.20.0,!=1.24.0,!=1.24.1,>=1.17.0; python_version >= \"3.11\" and python_version < \"3.13\"",
+      "onnxruntime!=1.20.0,<1.24,>=1.17.0; python_version == \"3.10\"",
+      "onnxruntime>=1.24.2; python_version >= \"3.14\"",
+      "pillow<13.0,>=10.3.0; python_version >= \"3.10\" and python_version < \"3.13\"",
+      "pillow<13.0,>=11.0.0; python_version == \"3.13\"",
+      "pillow<13.0,>=12.0.0; python_version >= \"3.14\"",
+      "py-rust-stemmers<0.2.0,>=0.1.0",
+      "requests<3.0,>=2.31",
+      "tokenizers<1.0,>=0.15",
+      "tqdm<5.0,>=4.66"
+    ],
+    "all_files_yanked": false,
+    "source": "https://pypi.org/pypi/fastembed/0.9.0/json"
+  }
+]
