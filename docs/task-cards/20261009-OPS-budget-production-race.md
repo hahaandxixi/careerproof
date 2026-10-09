@@ -9,7 +9,7 @@ ZCode唯一写新backend/app/tests/test_ai_budget_production_race.py与docs/evid
 ## 实际验收标准
 
 - 复用test_application_verification.case、test_attempt_hard_stop.prepare_chain_task构造同一个学生owner的核验任务与新材料匹配任务。原企业投递snapshot完整摘要不变；真实业务execute入口，不直接调用reserve代替。
-- 同owner日报告上限1，先准备两个pending任务；用独立session从两条生产入口进入。仅在实际预算reserve调用前设置两方到达barrier，必须先释放入口预检的User/Task锁，不在持锁阶段设barrier导致人工死锁。不能mock预算准入结果或顺序跑两链。
+- 同owner日报告上限1，先准备两个pending任务；用独立session从两条生产入口进入。在实际AttemptService.prepare_for_send进入原函数之前设置两方到达barrier；原函数内部_live_identity会锁同owner User，故不得在reserve前设置双方barrier，否则会因第一方持User锁、第二方尚未进入而人为死锁。保持原事务及锁原样，不commit或跳过_live_identity来迁就测试。不能mock预算准入结果或顺序跑两链。
 - 两种可控胜方均覆盖：matching先/verification先，落两边实际准备准入竞争；胜方MockTransport阻塞不返回，败方已到达且完成拒绝后检查。仅1份held、1个in_flight、1个实际HTTP，另一个daily_report_limit/规则降级须0外发、无预留；拒绝不消除胜方held。记录两session身份与事件时间，不以sleep推断竞争。
 - PostgreSQL HTTP阻塞期间，以第三个独立session对User、Task、AiDailyBudget实际FOR UPDATE NOWAIT，证明不跨HTTP持锁；随后返回可信usage，容量actual仅一次、ledger仅一次，原快照未变。有限timeout，finally释放事件并收回自有协程，不杀服务。
 - SQLite只能验证fixture准备/单链契约或收集，不能证明PG并发锁；PG案例必须显式skip无CAREERPROOF_TEST_DATABASE_URL。今日Docker不可用，禁止自动恢复/启动/安装或改.env、业务库。可写准备辅助回归与collect-only/Ruff，实际PG未跑明确登记，不声称通过。
