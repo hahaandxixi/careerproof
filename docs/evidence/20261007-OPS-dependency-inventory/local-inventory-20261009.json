@@ -1,0 +1,1107 @@
+{
+  "collectedAtUtc": "2026-10-09T09:40:29.981123+00:00",
+  "head": "dc409511f1f90faab96c240470372eb84502cb80",
+  "scope": "local metadata only; no advisory audit, upgrade, network or database action",
+  "manifestHashes": {
+    "backend/pyproject.toml": "3827ddeec7ccf4c61cdffb110f737e9b357d13e6935f343e84af85c4d0ca164c",
+    "jianli/package.json": "deca322e9c9af1b96597cf7280f3c04929a56ed5b25e76b1123968d221f8f1bf",
+    "jianli/package-lock.json": "56cc9c93e7b707f481ee9df5e67cad67b4b9541eda02d9359fbdad284ad57cb5"
+  },
+  "pythonGroups": {
+    "runtime": [
+      {
+        "requirement": "fastapi==0.116.1",
+        "name": "fastapi",
+        "installed": "0.116.1",
+        "requires": [
+          "starlette<0.48.0,>=0.40.0",
+          "pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4",
+          "typing-extensions>=4.8.0",
+          "fastapi-cli[standard]>=0.0.8; extra == \"standard\"",
+          "httpx>=0.23.0; extra == \"standard\"",
+          "jinja2>=3.1.5; extra == \"standard\"",
+          "python-multipart>=0.0.18; extra == \"standard\"",
+          "email-validator>=2.0.0; extra == \"standard\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard\"",
+          "fastapi-cli[standard-no-fastapi-cloud-cli]>=0.0.8; extra == \"standard-no-fastapi-cloud-cli\"",
+          "httpx>=0.23.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "jinja2>=3.1.5; extra == \"standard-no-fastapi-cloud-cli\"",
+          "python-multipart>=0.0.18; extra == \"standard-no-fastapi-cloud-cli\"",
+          "email-validator>=2.0.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "uvicorn[standard]>=0.12.0; extra == \"standard-no-fastapi-cloud-cli\"",
+          "fastapi-cli[standard]>=0.0.8; extra == \"all\"",
+          "httpx>=0.23.0; extra == \"all\"",
+          "jinja2>=3.1.5; extra == \"all\"",
+          "python-multipart>=0.0.18; extra == \"all\"",
+          "itsdangerous>=1.1.0; extra == \"all\"",
+          "pyyaml>=5.3.1; extra == \"all\"",
+          "ujson!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,>=4.0.1; extra == \"all\"",
+          "orjson>=3.2.1; extra == \"all\"",
+          "email-validator>=2.0.0; extra == \"all\"",
+          "uvicorn[standard]>=0.12.0; extra == \"all\"",
+          "pydantic-settings>=2.0.0; extra == \"all\"",
+          "pydantic-extra-types>=2.0.0; extra == \"all\""
+        ]
+      },
+      {
+        "requirement": "uvicorn[standard]==0.35.0",
+        "name": "uvicorn",
+        "installed": "0.35.0",
+        "requires": [
+          "click>=7.0",
+          "h11>=0.8",
+          "typing-extensions>=4.0; python_version < '3.11'",
+          "colorama>=0.4; (sys_platform == 'win32') and extra == 'standard'",
+          "httptools>=0.6.3; extra == 'standard'",
+          "python-dotenv>=0.13; extra == 'standard'",
+          "pyyaml>=5.1; extra == 'standard'",
+          "uvloop>=0.15.1; (sys_platform != 'win32' and (sys_platform != 'cygwin' and platform_python_implementation != 'PyPy')) and extra == 'standard'",
+          "watchfiles>=0.13; extra == 'standard'",
+          "websockets>=10.4; extra == 'standard'"
+        ]
+      },
+      {
+        "requirement": "pydantic==2.11.7",
+        "name": "pydantic",
+        "installed": "2.11.7",
+        "requires": [
+          "annotated-types>=0.6.0",
+          "pydantic-core==2.33.2",
+          "typing-extensions>=4.12.2",
+          "typing-inspection>=0.4.0",
+          "email-validator>=2.0.0; extra == 'email'",
+          "tzdata; (python_version >= '3.9' and platform_system == 'Windows') and extra == 'timezone'"
+        ]
+      },
+      {
+        "requirement": "pydantic-settings==2.10.1",
+        "name": "pydantic-settings",
+        "installed": "2.10.1",
+        "requires": [
+          "pydantic>=2.7.0",
+          "python-dotenv>=0.21.0",
+          "typing-inspection>=0.4.0",
+          "boto3-stubs[secretsmanager]; extra == 'aws-secrets-manager'",
+          "boto3>=1.35.0; extra == 'aws-secrets-manager'",
+          "azure-identity>=1.16.0; extra == 'azure-key-vault'",
+          "azure-keyvault-secrets>=4.8.0; extra == 'azure-key-vault'",
+          "google-cloud-secret-manager>=2.23.1; extra == 'gcp-secret-manager'",
+          "tomli>=2.0.1; extra == 'toml'",
+          "pyyaml>=6.0.1; extra == 'yaml'"
+        ]
+      },
+      {
+        "requirement": "sqlalchemy[asyncio]==2.0.43",
+        "name": "sqlalchemy",
+        "installed": "2.0.43",
+        "requires": [
+          "importlib-metadata; python_version < \"3.8\"",
+          "greenlet>=1; python_version < \"3.14\" and (platform_machine == \"aarch64\" or (platform_machine == \"ppc64le\" or (platform_machine == \"x86_64\" or (platform_machine == \"amd64\" or (platform_machine == \"AMD64\" or (platform_machine == \"win32\" or platform_machine == \"WIN32\"))))))",
+          "typing-extensions>=4.6.0",
+          "greenlet>=1; extra == \"asyncio\"",
+          "mypy>=0.910; extra == \"mypy\"",
+          "pyodbc; extra == \"mssql\"",
+          "pymssql; extra == \"mssql-pymssql\"",
+          "pyodbc; extra == \"mssql-pyodbc\"",
+          "mysqlclient>=1.4.0; extra == \"mysql\"",
+          "mysql-connector-python; extra == \"mysql-connector\"",
+          "mariadb!=1.1.10,!=1.1.2,!=1.1.5,>=1.0.1; extra == \"mariadb-connector\"",
+          "cx_oracle>=8; extra == \"oracle\"",
+          "oracledb>=1.0.1; extra == \"oracle-oracledb\"",
+          "psycopg2>=2.7; extra == \"postgresql\"",
+          "pg8000>=1.29.1; extra == \"postgresql-pg8000\"",
+          "greenlet>=1; extra == \"postgresql-asyncpg\"",
+          "asyncpg; extra == \"postgresql-asyncpg\"",
+          "psycopg2-binary; extra == \"postgresql-psycopg2binary\"",
+          "psycopg2cffi; extra == \"postgresql-psycopg2cffi\"",
+          "psycopg>=3.0.7; extra == \"postgresql-psycopg\"",
+          "psycopg[binary]>=3.0.7; extra == \"postgresql-psycopgbinary\"",
+          "pymysql; extra == \"pymysql\"",
+          "greenlet>=1; extra == \"aiomysql\"",
+          "aiomysql>=0.2.0; extra == \"aiomysql\"",
+          "greenlet>=1; extra == \"aioodbc\"",
+          "aioodbc; extra == \"aioodbc\"",
+          "greenlet>=1; extra == \"asyncmy\"",
+          "asyncmy!=0.2.4,!=0.2.6,>=0.2.3; extra == \"asyncmy\"",
+          "greenlet>=1; extra == \"aiosqlite\"",
+          "aiosqlite; extra == \"aiosqlite\"",
+          "typing_extensions!=3.10.0.1; extra == \"aiosqlite\"",
+          "sqlcipher3_binary; extra == \"sqlcipher\""
+        ]
+      },
+      {
+        "requirement": "alembic==1.16.5",
+        "name": "alembic",
+        "installed": "1.16.5",
+        "requires": [
+          "SQLAlchemy>=1.4.0",
+          "Mako",
+          "typing-extensions>=4.12",
+          "tomli; python_version < \"3.11\"",
+          "tzdata; extra == \"tz\""
+        ]
+      },
+      {
+        "requirement": "asyncpg==0.30.0",
+        "name": "asyncpg",
+        "installed": "0.30.0",
+        "requires": [
+          "async-timeout>=4.0.3; python_version < \"3.11.0\"",
+          "Sphinx~=8.1.3; extra == \"docs\"",
+          "sphinx-rtd-theme>=1.2.2; extra == \"docs\"",
+          "gssapi; platform_system != \"Windows\" and extra == \"gssauth\"",
+          "sspilib; platform_system == \"Windows\" and extra == \"gssauth\"",
+          "flake8~=6.1; extra == \"test\"",
+          "flake8-pyi~=24.1.0; extra == \"test\"",
+          "distro~=1.9.0; extra == \"test\"",
+          "mypy~=1.8.0; extra == \"test\"",
+          "uvloop>=0.15.3; (platform_system != \"Windows\" and python_version < \"3.14.0\") and extra == \"test\"",
+          "gssapi; platform_system == \"Linux\" and extra == \"test\"",
+          "k5test; platform_system == \"Linux\" and extra == \"test\"",
+          "sspilib; platform_system == \"Windows\" and extra == \"test\""
+        ]
+      },
+      {
+        "requirement": "pgvector==0.4.1",
+        "name": "pgvector",
+        "installed": "0.4.1",
+        "requires": [
+          "numpy"
+        ]
+      },
+      {
+        "requirement": "PyJWT==2.10.1",
+        "name": "PyJWT",
+        "installed": "2.10.1",
+        "requires": [
+          "cryptography>=3.4.0; extra == \"crypto\"",
+          "coverage[toml]==5.0.4; extra == \"dev\"",
+          "cryptography>=3.4.0; extra == \"dev\"",
+          "pre-commit; extra == \"dev\"",
+          "pytest<7.0.0,>=6.0.0; extra == \"dev\"",
+          "sphinx; extra == \"dev\"",
+          "sphinx-rtd-theme; extra == \"dev\"",
+          "zope.interface; extra == \"dev\"",
+          "sphinx; extra == \"docs\"",
+          "sphinx-rtd-theme; extra == \"docs\"",
+          "zope.interface; extra == \"docs\"",
+          "coverage[toml]==5.0.4; extra == \"tests\"",
+          "pytest<7.0.0,>=6.0.0; extra == \"tests\""
+        ]
+      },
+      {
+        "requirement": "pwdlib[argon2]==0.2.1",
+        "name": "pwdlib",
+        "installed": "0.2.1",
+        "requires": [
+          "argon2-cffi<24,>=23.1.0; extra == 'argon2'",
+          "bcrypt<5,>=4.1.2; extra == 'bcrypt'"
+        ]
+      },
+      {
+        "requirement": "python-multipart==0.0.20",
+        "name": "python-multipart",
+        "installed": "0.0.20",
+        "requires": []
+      },
+      {
+        "requirement": "email-validator==2.2.0",
+        "name": "email-validator",
+        "installed": "2.2.0",
+        "requires": [
+          "dnspython >=2.0.0",
+          "idna >=2.0.0"
+        ]
+      },
+      {
+        "requirement": "httpx==0.28.1",
+        "name": "httpx",
+        "installed": "0.28.1",
+        "requires": [
+          "anyio",
+          "certifi",
+          "httpcore==1.*",
+          "idna",
+          "brotli; (platform_python_implementation == 'CPython') and extra == 'brotli'",
+          "brotlicffi; (platform_python_implementation != 'CPython') and extra == 'brotli'",
+          "click==8.*; extra == 'cli'",
+          "pygments==2.*; extra == 'cli'",
+          "rich<14,>=10; extra == 'cli'",
+          "h2<5,>=3; extra == 'http2'",
+          "socksio==1.*; extra == 'socks'",
+          "zstandard>=0.18.0; extra == 'zstd'"
+        ]
+      },
+      {
+        "requirement": "PyMuPDF==1.26.4",
+        "name": "PyMuPDF",
+        "installed": "1.26.4",
+        "requires": []
+      },
+      {
+        "requirement": "python-docx==1.2.0",
+        "name": "python-docx",
+        "installed": "1.2.0",
+        "requires": [
+          "lxml>=3.1.0",
+          "typing_extensions>=4.9.0"
+        ]
+      },
+      {
+        "requirement": "rapidocr==3.9.2",
+        "name": "rapidocr",
+        "installed": "3.9.2",
+        "requires": [
+          "pyclipper>=1.2.0",
+          "opencv_python>=4.5.1.48",
+          "numpy<3.0.0,>=1.19.5",
+          "six>=1.15.0",
+          "Shapely!=2.0.4,>=1.7.1",
+          "PyYAML",
+          "Pillow",
+          "tqdm",
+          "omegaconf!=2.2.1",
+          "requests",
+          "colorlog"
+        ]
+      },
+      {
+        "requirement": "onnxruntime==1.30.0",
+        "name": "onnxruntime",
+        "installed": "1.30.0",
+        "requires": [
+          "flatbuffers",
+          "numpy>=1.21.6",
+          "packaging",
+          "protobuf>=4.25.8",
+          "sympy; extra == \"symbolic\"",
+          "ml_dtypes; extra == \"quantization\""
+        ]
+      },
+      {
+        "requirement": "Pillow==11.3.0",
+        "name": "Pillow",
+        "installed": "11.3.0",
+        "requires": [
+          "furo; extra == \"docs\"",
+          "olefile; extra == \"docs\"",
+          "sphinx>=8.2; extra == \"docs\"",
+          "sphinx-autobuild; extra == \"docs\"",
+          "sphinx-copybutton; extra == \"docs\"",
+          "sphinx-inline-tabs; extra == \"docs\"",
+          "sphinxext-opengraph; extra == \"docs\"",
+          "olefile; extra == \"fpx\"",
+          "olefile; extra == \"mic\"",
+          "pyarrow; extra == \"test-arrow\"",
+          "check-manifest; extra == \"tests\"",
+          "coverage>=7.4.2; extra == \"tests\"",
+          "defusedxml; extra == \"tests\"",
+          "markdown2; extra == \"tests\"",
+          "olefile; extra == \"tests\"",
+          "packaging; extra == \"tests\"",
+          "pyroma; extra == \"tests\"",
+          "pytest; extra == \"tests\"",
+          "pytest-cov; extra == \"tests\"",
+          "pytest-timeout; extra == \"tests\"",
+          "pytest-xdist; extra == \"tests\"",
+          "trove-classifiers>=2024.10.12; extra == \"tests\"",
+          "typing-extensions; python_version < \"3.10\" and extra == \"typing\"",
+          "defusedxml; extra == \"xmp\""
+        ]
+      },
+      {
+        "requirement": "fastembed==0.7.4",
+        "name": "fastembed",
+        "installed": "0.7.4",
+        "requires": [
+          "huggingface-hub (>=0.20,<2.0)",
+          "loguru (>=0.7.2,<0.8.0)",
+          "mmh3 (>=4.1.0,<6.0.0)",
+          "numpy (>=1.21) ; python_version == \"3.11\"",
+          "numpy (>=1.21,<2.1.0) ; python_version < \"3.10\"",
+          "numpy (>=1.21,<2.3.0) ; python_version == \"3.10\"",
+          "numpy (>=1.26) ; python_version == \"3.12\"",
+          "numpy (>=2.1.0) ; python_version == \"3.13\"",
+          "numpy (>=2.3.0) ; python_version >= \"3.14\"",
+          "onnxruntime (>1.20.0) ; python_version >= \"3.13\"",
+          "onnxruntime (>=1.17.0,!=1.20.0) ; python_version >= \"3.10\" and python_version < \"3.13\"",
+          "onnxruntime (>=1.17.0,<1.20.0) ; python_version < \"3.10\"",
+          "pillow (>=10.3.0,<11.0) ; python_version < \"3.10\"",
+          "pillow (>=10.3.0,<12.0) ; python_version >= \"3.10\" and python_version < \"3.13\"",
+          "pillow (>=11.0.0,<12.0) ; python_version >= \"3.13\"",
+          "py-rust-stemmers (>=0.1.0,<0.2.0)",
+          "requests (>=2.31,<3.0)",
+          "tokenizers (>=0.15,<1.0)",
+          "tqdm (>=4.66,<5.0)"
+        ]
+      }
+    ],
+    "mcp": [
+      {
+        "requirement": "mcp==1.30.0",
+        "name": "mcp",
+        "installed": "1.30.0",
+        "requires": [
+          "anyio>=4.5",
+          "httpx-sse>=0.4",
+          "httpx<1.0.0,>=0.27.1",
+          "jsonschema>=4.20.0",
+          "pydantic-settings>=2.5.2",
+          "pydantic<3.0.0,>=2.11.0; python_version < '3.14'",
+          "pydantic<3.0.0,>=2.12.0; python_version >= '3.14'",
+          "pyjwt[crypto]>=2.10.1",
+          "python-multipart>=0.0.9",
+          "pywin32>=310; sys_platform == 'win32' and python_version < '3.14'",
+          "pywin32>=311; sys_platform == 'win32' and python_version >= '3.14'",
+          "sse-starlette>=1.6.1",
+          "starlette>=0.27; python_version < '3.14'",
+          "starlette>=0.48.0; python_version >= '3.14'",
+          "typing-extensions>=4.9.0",
+          "typing-inspection>=0.4.1",
+          "uvicorn>=0.31.1; sys_platform != 'emscripten'",
+          "python-dotenv>=1.0.0; extra == 'cli'",
+          "typer>=0.16.0; extra == 'cli'",
+          "rich>=13.9.4; extra == 'rich'",
+          "websockets>=15.0.1; extra == 'ws'"
+        ]
+      },
+      {
+        "requirement": "sse-starlette==3.0.3",
+        "name": "sse-starlette",
+        "installed": "3.0.3",
+        "requires": [
+          "anyio>=4.7.0",
+          "uvicorn>=0.34.0; extra == \"examples\"",
+          "fastapi>=0.115.12; extra == \"examples\"",
+          "sqlalchemy[asyncio]>=2.0.41; extra == \"examples\"",
+          "starlette>=0.49.1; extra == \"examples\"",
+          "aiosqlite>=0.21.0; extra == \"examples\"",
+          "uvicorn>=0.34.0; extra == \"uvicorn\"",
+          "granian>=2.3.1; extra == \"granian\"",
+          "daphne>=4.2.0; extra == \"daphne\""
+        ]
+      },
+      {
+        "requirement": "starlette==0.47.3",
+        "name": "starlette",
+        "installed": "0.47.3",
+        "requires": [
+          "anyio<5,>=3.6.2",
+          "typing-extensions>=4.10.0; python_version < '3.13'",
+          "httpx<0.29.0,>=0.27.0; extra == 'full'",
+          "itsdangerous; extra == 'full'",
+          "jinja2; extra == 'full'",
+          "python-multipart>=0.0.18; extra == 'full'",
+          "pyyaml; extra == 'full'"
+        ]
+      }
+    ],
+    "dev": [
+      {
+        "requirement": "aiosqlite==0.21.0",
+        "name": "aiosqlite",
+        "installed": "0.21.0",
+        "requires": [
+          "typing_extensions >= 4.0",
+          "attribution==1.7.1 ; extra == \"dev\"",
+          "black==24.3.0 ; extra == \"dev\"",
+          "build>=1.2 ; extra == \"dev\"",
+          "coverage[toml]==7.6.10 ; extra == \"dev\"",
+          "flake8==7.0.0 ; extra == \"dev\"",
+          "flake8-bugbear==24.12.12 ; extra == \"dev\"",
+          "flit==3.10.1 ; extra == \"dev\"",
+          "mypy==1.14.1 ; extra == \"dev\"",
+          "ufmt==2.5.1 ; extra == \"dev\"",
+          "usort==1.0.8.post1 ; extra == \"dev\"",
+          "sphinx==8.1.3 ; extra == \"docs\"",
+          "sphinx-mdinclude==0.6.1 ; extra == \"docs\""
+        ]
+      },
+      {
+        "requirement": "pytest==8.4.2",
+        "name": "pytest",
+        "installed": "8.4.2",
+        "requires": [
+          "colorama>=0.4; sys_platform == \"win32\"",
+          "exceptiongroup>=1; python_version < \"3.11\"",
+          "iniconfig>=1",
+          "packaging>=20",
+          "pluggy<2,>=1.5",
+          "pygments>=2.7.2",
+          "tomli>=1; python_version < \"3.11\"",
+          "argcomplete; extra == \"dev\"",
+          "attrs>=19.2; extra == \"dev\"",
+          "hypothesis>=3.56; extra == \"dev\"",
+          "mock; extra == \"dev\"",
+          "requests; extra == \"dev\"",
+          "setuptools; extra == \"dev\"",
+          "xmlschema; extra == \"dev\""
+        ]
+      },
+      {
+        "requirement": "pytest-asyncio==1.1.0",
+        "name": "pytest-asyncio",
+        "installed": "1.1.0",
+        "requires": [
+          "backports-asyncio-runner<2,>=1.1; python_version < \"3.11\"",
+          "pytest<9,>=8.2",
+          "typing-extensions>=4.12; python_version < \"3.10\"",
+          "sphinx>=5.3; extra == \"docs\"",
+          "sphinx-rtd-theme>=1; extra == \"docs\"",
+          "coverage>=6.2; extra == \"testing\"",
+          "hypothesis>=5.7.1; extra == \"testing\""
+        ]
+      },
+      {
+        "requirement": "ruff==0.12.12",
+        "name": "ruff",
+        "installed": "0.12.12",
+        "requires": []
+      }
+    ]
+  },
+  "installedPythonDistributions": [
+    {
+      "name": "aiosqlite",
+      "version": "0.21.0"
+    },
+    {
+      "name": "alembic",
+      "version": "1.16.5"
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0"
+    },
+    {
+      "name": "antlr4-python3-runtime",
+      "version": "4.9.3"
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.0"
+    },
+    {
+      "name": "argon2-cffi",
+      "version": "23.1.0"
+    },
+    {
+      "name": "argon2-cffi-bindings",
+      "version": "26.1.0"
+    },
+    {
+      "name": "asyncpg",
+      "version": "0.30.0"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0"
+    },
+    {
+      "name": "boolean.py",
+      "version": "5.0"
+    },
+    {
+      "name": "CacheControl",
+      "version": "0.14.4"
+    },
+    {
+      "name": "careerproof-backend",
+      "version": "0.1.0"
+    },
+    {
+      "name": "certifi",
+      "version": "2026.7.22"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.1"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6"
+    },
+    {
+      "name": "colorlog",
+      "version": "6.12.0"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.1"
+    },
+    {
+      "name": "cyclonedx-python-lib",
+      "version": "11.12.0"
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1"
+    },
+    {
+      "name": "dnspython",
+      "version": "2.8.0"
+    },
+    {
+      "name": "email_validator",
+      "version": "2.2.0"
+    },
+    {
+      "name": "fastapi",
+      "version": "0.116.1"
+    },
+    {
+      "name": "fastembed",
+      "version": "0.7.4"
+    },
+    {
+      "name": "filelock",
+      "version": "4.0.1"
+    },
+    {
+      "name": "flatbuffers",
+      "version": "25.12.19"
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.9.0"
+    },
+    {
+      "name": "greenlet",
+      "version": "3.5.5"
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0"
+    },
+    {
+      "name": "hf-xet",
+      "version": "1.6.0"
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9"
+    },
+    {
+      "name": "httptools",
+      "version": "0.8.0"
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1"
+    },
+    {
+      "name": "httpx-sse",
+      "version": "0.4.3"
+    },
+    {
+      "name": "huggingface_hub",
+      "version": "1.32.0"
+    },
+    {
+      "name": "idna",
+      "version": "3.19"
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.0"
+    },
+    {
+      "name": "jsonschema",
+      "version": "4.26.0"
+    },
+    {
+      "name": "jsonschema-specifications",
+      "version": "2025.9.1"
+    },
+    {
+      "name": "license-expression",
+      "version": "30.4.4"
+    },
+    {
+      "name": "loguru",
+      "version": "0.7.3"
+    },
+    {
+      "name": "lxml",
+      "version": "6.1.3"
+    },
+    {
+      "name": "Mako",
+      "version": "1.4.1"
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.2.0"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3"
+    },
+    {
+      "name": "mcp",
+      "version": "1.30.0"
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2"
+    },
+    {
+      "name": "mmh3",
+      "version": "5.3.0"
+    },
+    {
+      "name": "msgpack",
+      "version": "1.2.3"
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.2"
+    },
+    {
+      "name": "omegaconf",
+      "version": "2.3.1"
+    },
+    {
+      "name": "onnxruntime",
+      "version": "1.30.0"
+    },
+    {
+      "name": "opencv-python",
+      "version": "5.0.0.93"
+    },
+    {
+      "name": "packageurl-python",
+      "version": "0.17.6"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pgvector",
+      "version": "0.4.1"
+    },
+    {
+      "name": "pillow",
+      "version": "11.3.0"
+    },
+    {
+      "name": "pip",
+      "version": "25.0.1"
+    },
+    {
+      "name": "pip-requirements-parser",
+      "version": "32.0.1"
+    },
+    {
+      "name": "pip_api",
+      "version": "0.0.35"
+    },
+    {
+      "name": "pip_audit",
+      "version": "2.10.1"
+    },
+    {
+      "name": "platformdirs",
+      "version": "4.12.2"
+    },
+    {
+      "name": "pluggy",
+      "version": "1.6.0"
+    },
+    {
+      "name": "protobuf",
+      "version": "7.36.1"
+    },
+    {
+      "name": "pwdlib",
+      "version": "0.2.1"
+    },
+    {
+      "name": "py-serializable",
+      "version": "2.1.0"
+    },
+    {
+      "name": "py_rust_stemmers",
+      "version": "0.1.8"
+    },
+    {
+      "name": "pyclipper",
+      "version": "1.4.0"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.0"
+    },
+    {
+      "name": "pydantic",
+      "version": "2.11.7"
+    },
+    {
+      "name": "pydantic-settings",
+      "version": "2.10.1"
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.33.2"
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0"
+    },
+    {
+      "name": "PyJWT",
+      "version": "2.10.1"
+    },
+    {
+      "name": "PyMuPDF",
+      "version": "1.26.4"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3"
+    },
+    {
+      "name": "pytest",
+      "version": "8.4.2"
+    },
+    {
+      "name": "pytest-asyncio",
+      "version": "1.1.0"
+    },
+    {
+      "name": "python-docx",
+      "version": "1.2.0"
+    },
+    {
+      "name": "python-dotenv",
+      "version": "1.2.3"
+    },
+    {
+      "name": "python-multipart",
+      "version": "0.0.20"
+    },
+    {
+      "name": "pywin32",
+      "version": "312"
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3"
+    },
+    {
+      "name": "rapidocr",
+      "version": "3.9.2"
+    },
+    {
+      "name": "referencing",
+      "version": "0.37.0"
+    },
+    {
+      "name": "reportlab",
+      "version": "5.0.1"
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2"
+    },
+    {
+      "name": "rich",
+      "version": "15.0.0"
+    },
+    {
+      "name": "rpds-py",
+      "version": "2026.6.3"
+    },
+    {
+      "name": "ruff",
+      "version": "0.12.12"
+    },
+    {
+      "name": "shapely",
+      "version": "2.1.2"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    },
+    {
+      "name": "sortedcontainers",
+      "version": "2.4.0"
+    },
+    {
+      "name": "SQLAlchemy",
+      "version": "2.0.43"
+    },
+    {
+      "name": "sse-starlette",
+      "version": "3.0.3"
+    },
+    {
+      "name": "starlette",
+      "version": "0.47.3"
+    },
+    {
+      "name": "tokenizers",
+      "version": "0.23.2"
+    },
+    {
+      "name": "tomli",
+      "version": "2.4.1"
+    },
+    {
+      "name": "tomli_w",
+      "version": "1.2.0"
+    },
+    {
+      "name": "tqdm",
+      "version": "4.70.1"
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "name": "urllib3",
+      "version": "2.8.0"
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.35.0"
+    },
+    {
+      "name": "watchfiles",
+      "version": "1.2.0"
+    },
+    {
+      "name": "websockets",
+      "version": "17.1"
+    },
+    {
+      "name": "win32_setctime",
+      "version": "1.2.0"
+    }
+  ],
+  "javascriptDirect": {
+    "dependencies": [
+      {
+        "name": "next",
+        "requested": "^15.5.25",
+        "locked": "15.5.25",
+        "installed": "15.5.25"
+      },
+      {
+        "name": "react",
+        "requested": "19.0.0",
+        "locked": "19.0.0",
+        "installed": "19.0.0"
+      },
+      {
+        "name": "react-dom",
+        "requested": "19.0.0",
+        "locked": "19.0.0",
+        "installed": "19.0.0"
+      }
+    ],
+    "devDependencies": [
+      {
+        "name": "@types/node",
+        "requested": "^22.10.5",
+        "locked": "22.20.1",
+        "installed": "22.20.2"
+      },
+      {
+        "name": "@types/react",
+        "requested": "^19.0.4",
+        "locked": "19.2.18",
+        "installed": "19.3.0"
+      },
+      {
+        "name": "@types/react-dom",
+        "requested": "^19.0.2",
+        "locked": "19.2.5",
+        "installed": "19.3.0"
+      },
+      {
+        "name": "autoprefixer",
+        "requested": "^10.4.20",
+        "locked": "10.5.4",
+        "installed": "10.5.6"
+      },
+      {
+        "name": "postcss",
+        "requested": "^8.4.49",
+        "locked": "8.5.26",
+        "installed": "8.5.28"
+      },
+      {
+        "name": "tailwindcss",
+        "requested": "^3.4.17",
+        "locked": "3.4.19",
+        "installed": "3.4.19"
+      },
+      {
+        "name": "typescript",
+        "requested": "^5.7.3",
+        "locked": "5.9.3",
+        "installed": "5.7.3"
+      }
+    ]
+  },
+  "javascriptLockVersions": {
+    "node_modules/@alloc/quick-lru": "5.3.0",
+    "node_modules/@emnapi/runtime": "1.11.3",
+    "node_modules/@img/colour": "1.1.0",
+    "node_modules/@img/sharp-darwin-arm64": "0.35.4",
+    "node_modules/@img/sharp-darwin-x64": "0.35.4",
+    "node_modules/@img/sharp-freebsd-wasm32": "0.35.4",
+    "node_modules/@img/sharp-libvips-darwin-arm64": "1.3.3",
+    "node_modules/@img/sharp-libvips-darwin-x64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-arm": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-arm64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-ppc64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-riscv64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-s390x": "1.3.3",
+    "node_modules/@img/sharp-libvips-linux-x64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linuxmusl-arm64": "1.3.3",
+    "node_modules/@img/sharp-libvips-linuxmusl-x64": "1.3.3",
+    "node_modules/@img/sharp-linux-arm": "0.35.4",
+    "node_modules/@img/sharp-linux-arm64": "0.35.4",
+    "node_modules/@img/sharp-linux-ppc64": "0.35.4",
+    "node_modules/@img/sharp-linux-riscv64": "0.35.4",
+    "node_modules/@img/sharp-linux-s390x": "0.35.4",
+    "node_modules/@img/sharp-linux-x64": "0.35.4",
+    "node_modules/@img/sharp-linuxmusl-arm64": "0.35.4",
+    "node_modules/@img/sharp-linuxmusl-x64": "0.35.4",
+    "node_modules/@img/sharp-wasm32": "0.35.4",
+    "node_modules/@img/sharp-webcontainers-wasm32": "0.35.4",
+    "node_modules/@img/sharp-win32-arm64": "0.35.4",
+    "node_modules/@img/sharp-win32-ia32": "0.35.4",
+    "node_modules/@img/sharp-win32-x64": "0.35.4",
+    "node_modules/@jridgewell/gen-mapping": "0.3.13",
+    "node_modules/@jridgewell/resolve-uri": "3.1.2",
+    "node_modules/@jridgewell/sourcemap-codec": "1.6.0",
+    "node_modules/@jridgewell/trace-mapping": "0.3.31",
+    "node_modules/@next/env": "15.5.25",
+    "node_modules/@next/swc-darwin-arm64": "15.5.25",
+    "node_modules/@next/swc-darwin-x64": "15.5.25",
+    "node_modules/@next/swc-linux-arm64-gnu": "15.5.25",
+    "node_modules/@next/swc-linux-arm64-musl": "15.5.25",
+    "node_modules/@next/swc-linux-x64-gnu": "15.5.25",
+    "node_modules/@next/swc-linux-x64-musl": "15.5.25",
+    "node_modules/@next/swc-win32-arm64-msvc": "15.5.25",
+    "node_modules/@next/swc-win32-x64-msvc": "15.5.25",
+    "node_modules/@nodelib/fs.scandir": "2.1.5",
+    "node_modules/@nodelib/fs.stat": "2.0.5",
+    "node_modules/@nodelib/fs.walk": "1.2.8",
+    "node_modules/@swc/helpers": "0.5.15",
+    "node_modules/@types/node": "22.20.1",
+    "node_modules/@types/react": "19.2.18",
+    "node_modules/@types/react-dom": "19.2.5",
+    "node_modules/any-promise": "1.3.0",
+    "node_modules/anymatch": "3.1.3",
+    "node_modules/arg": "5.0.2",
+    "node_modules/autoprefixer": "10.5.4",
+    "node_modules/baseline-browser-mapping": "2.11.20",
+    "node_modules/binary-extensions": "2.3.0",
+    "node_modules/braces": "3.0.3",
+    "node_modules/browserslist": "4.28.8",
+    "node_modules/camelcase-css": "2.0.1",
+    "node_modules/caniuse-lite": "1.0.30001810",
+    "node_modules/chokidar": "3.6.0",
+    "node_modules/chokidar/node_modules/glob-parent": "5.1.2",
+    "node_modules/client-only": "0.0.1",
+    "node_modules/commander": "4.1.1",
+    "node_modules/cssesc": "3.0.0",
+    "node_modules/csstype": "3.2.3",
+    "node_modules/detect-libc": "2.1.2",
+    "node_modules/didyoumean": "1.2.2",
+    "node_modules/dlv": "1.1.3",
+    "node_modules/electron-to-chromium": "1.5.420",
+    "node_modules/es-errors": "1.3.0",
+    "node_modules/escalade": "3.2.0",
+    "node_modules/fast-glob": "3.3.3",
+    "node_modules/fast-glob/node_modules/glob-parent": "5.1.2",
+    "node_modules/fastq": "1.20.3",
+    "node_modules/fill-range": "7.1.1",
+    "node_modules/fraction.js": "5.3.4",
+    "node_modules/fsevents": "2.3.3",
+    "node_modules/function-bind": "1.1.2",
+    "node_modules/glob-parent": "6.0.2",
+    "node_modules/hasown": "2.0.4",
+    "node_modules/is-binary-path": "2.1.0",
+    "node_modules/is-core-module": "2.16.2",
+    "node_modules/is-extglob": "2.1.1",
+    "node_modules/is-glob": "4.0.3",
+    "node_modules/is-number": "7.0.0",
+    "node_modules/jiti": "1.21.7",
+    "node_modules/lilconfig": "3.1.3",
+    "node_modules/lines-and-columns": "1.2.4",
+    "node_modules/merge2": "1.4.1",
+    "node_modules/micromatch": "4.0.8",
+    "node_modules/mz": "2.7.0",
+    "node_modules/nanoid": "3.3.18",
+    "node_modules/next": "15.5.25",
+    "node_modules/next/node_modules/postcss": "8.4.31",
+    "node_modules/node-releases": "2.0.54",
+    "node_modules/normalize-path": "3.0.0",
+    "node_modules/object-assign": "4.1.1",
+    "node_modules/object-hash": "3.0.0",
+    "node_modules/path-parse": "1.0.7",
+    "node_modules/picocolors": "1.1.1",
+    "node_modules/picomatch": "2.3.2",
+    "node_modules/pirates": "4.0.7",
+    "node_modules/postcss": "8.5.26",
+    "node_modules/postcss-import": "15.1.0",
+    "node_modules/postcss-js": "4.1.0",
+    "node_modules/postcss-load-config": "6.0.1",
+    "node_modules/postcss-nested": "6.2.0",
+    "node_modules/postcss-selector-parser": "6.1.4",
+    "node_modules/postcss-value-parser": "4.2.0",
+    "node_modules/queue-microtask": "1.2.3",
+    "node_modules/react": "19.0.0",
+    "node_modules/react-dom": "19.0.0",
+    "node_modules/read-cache": "1.0.2",
+    "node_modules/readdirp": "3.6.0",
+    "node_modules/resolve": "1.22.12",
+    "node_modules/reusify": "1.1.0",
+    "node_modules/run-parallel": "1.2.0",
+    "node_modules/scheduler": "0.25.0",
+    "node_modules/semver": "7.8.5",
+    "node_modules/sharp": "0.35.4",
+    "node_modules/source-map-js": "1.2.1",
+    "node_modules/styled-jsx": "5.1.6",
+    "node_modules/sucrase": "3.35.1",
+    "node_modules/supports-preserve-symlinks-flag": "1.0.0",
+    "node_modules/tailwindcss": "3.4.19",
+    "node_modules/thenify": "3.3.1",
+    "node_modules/thenify-all": "1.6.0",
+    "node_modules/tinyglobby": "0.2.17",
+    "node_modules/tinyglobby/node_modules/fdir": "6.5.0",
+    "node_modules/tinyglobby/node_modules/picomatch": "4.0.7",
+    "node_modules/to-regex-range": "5.0.1",
+    "node_modules/ts-interface-checker": "0.1.13",
+    "node_modules/tslib": "2.8.1",
+    "node_modules/typescript": "5.9.3",
+    "node_modules/undici-types": "6.21.0",
+    "node_modules/update-browserslist-db": "1.3.2",
+    "node_modules/util-deprecate": "1.0.2"
+  },
+  "notVerified": [
+    "current official advisories and affected version ranges",
+    "deployment or Docker image installed versions",
+    "upgrade compatibility and post-upgrade tests"
+  ]
+}
