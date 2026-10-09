@@ -1,0 +1,8 @@
+{
+  "version": "15.5.27",
+  "engines": {
+    "node": "^18.18.0 || ^19.8.0 || >= 20.0.0"
+  },
+  "dependencies.postcss": "8.4.31",
+  "optionalDependencies.sharp": "^0.34.3 || ^0.35.4"
+}

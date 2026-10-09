@@ -1,0 +1,80 @@
+{
+  "postcssVersion": "8.4.31",
+  "results": [
+    {
+      "css": "a{color:red;--gap:2px;margin:calc(2 * var(--gap))}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,EAAE,SAAS,CAAC,SAAS,CAAC,2BAA2B",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "a{color:red;--gap:2px;margin:calc(2 * var(--gap))}"
+        ]
+      }
+    },
+    {
+      "css": "@media (min-width:390px){.card:is(.active,.focus){display:grid}}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,yBAAyB,yBAAyB,YAAY,CAAC",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "@media (min-width:390px){.card:is(.active,.focus){display:grid}}"
+        ]
+      }
+    },
+    {
+      "css": ".中文{content:\"合成内容\";font-family:\"Arial\"}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,IAAI,cAAc,CAAC,mBAAmB",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          ".中文{content:\"合成内容\";font-family:\"Arial\"}"
+        ]
+      }
+    },
+    {
+      "css": "/* synthetic */ .a:hover::before{content:\"x\"}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,cAAc,EAAE,iBAAiB,WAAW",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "/* synthetic */ .a:hover::before{content:\"x\"}"
+        ]
+      }
+    },
+    {
+      "css": "@supports(display:grid){a{display:grid}}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,wBAAwB,EAAE,YAAY,CAAC",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "@supports(display:grid){a{display:grid}}"
+        ]
+      }
+    }
+  ]
+}

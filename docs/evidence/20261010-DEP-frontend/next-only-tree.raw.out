@@ -1,0 +1,20 @@
+jianli@0.1.0 D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261010
+├─┬ autoprefixer@10.5.4
+│ └── postcss@8.5.26 deduped
+├─┬ next@15.5.27
+│ ├─┬ postcss@8.4.31
+│ │ └── source-map-js@1.2.2 deduped
+│ └── sharp@0.35.5 overridden
+├─┬ postcss@8.5.26
+│ └── source-map-js@1.2.2 overridden
+└─┬ tailwindcss@3.4.19
+  ├─┬ postcss-import@15.1.0
+  │ └── postcss@8.5.26 deduped
+  ├─┬ postcss-js@4.1.0
+  │ └── postcss@8.5.26 deduped
+  ├─┬ postcss-load-config@6.0.1
+  │ └── postcss@8.5.26 deduped
+  ├─┬ postcss-nested@6.2.0
+  │ └── postcss@8.5.26 deduped
+  └── postcss@8.5.26 deduped
+

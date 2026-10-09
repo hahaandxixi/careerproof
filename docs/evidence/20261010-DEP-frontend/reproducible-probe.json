@@ -1,0 +1,119 @@
+{
+  "next": "15.5.27",
+  "postcssVersion": "8.5.28",
+  "sourceMap": "1.2.2",
+  "results": [
+    {
+      "css": "a{color:red;--gap:2px;margin:calc(2 * var(--gap))}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,EAAE,SAAS,CAAC,SAAS,CAAC,2BAA2B",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "a{color:red;--gap:2px;margin:calc(2 * var(--gap))}"
+        ]
+      }
+    },
+    {
+      "css": "@media (min-width:390px){.card:is(.active,.focus){display:grid}}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,yBAAyB,yBAAyB,YAAY,CAAC",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "@media (min-width:390px){.card:is(.active,.focus){display:grid}}"
+        ]
+      }
+    },
+    {
+      "css": ".中文{content:\"合成内容\";font-family:\"Arial\"}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,IAAI,cAAc,CAAC,mBAAmB",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          ".中文{content:\"合成内容\";font-family:\"Arial\"}"
+        ]
+      }
+    },
+    {
+      "css": "/* synthetic */ .a:hover::before{content:\"x\"}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,cAAc,EAAE,iBAAiB,WAAW",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "/* synthetic */ .a:hover::before{content:\"x\"}"
+        ]
+      }
+    },
+    {
+      "css": "@supports(display:grid){a{display:grid}}",
+      "map": {
+        "version": 3,
+        "sources": [
+          "synthetic.css"
+        ],
+        "names": [],
+        "mappings": "AAAA,wBAAwB,EAAE,YAAY,CAAC",
+        "file": "synthetic.css",
+        "sourcesContent": [
+          "@supports(display:grid){a{display:grid}}"
+        ]
+      }
+    }
+  ],
+  "comparedWithBaseline": true,
+  "sharpVersions": {
+    "aom": "3.15.1",
+    "archive": "3.8.9",
+    "cairo": "1.18.6",
+    "cgif": "0.5.4",
+    "exif": "0.6.26",
+    "expat": "2.8.5",
+    "ffi": "3.8.0",
+    "fontconfig": "2.18.3",
+    "freetype": "2.14.3",
+    "fribidi": "1.0.17",
+    "glib": "2.90.0",
+    "harfbuzz": "14.5.0",
+    "heif": "1.23.5",
+    "highway": "1.4.0",
+    "imagequant": "2.4.1",
+    "lcms": "2.19.1",
+    "mozjpeg": "0826579",
+    "pango": "1.58.2",
+    "pixman": "0.46.4",
+    "png": "1.6.58",
+    "proxy-libintl": "0.5",
+    "rsvg": "2.63.2",
+    "tiff": "4.7.2",
+    "uhdr": "2.0.2",
+    "vips": "8.18.7",
+    "webp": "1.6.0",
+    "xml2": "2.15.4",
+    "zlib-ng": "2.3.3",
+    "sharp": "0.35.5"
+  },
+  "syntheticSvg": {
+    "width": 2,
+    "height": 2,
+    "format": "png"
+  }
+}
