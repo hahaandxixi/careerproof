@@ -1,0 +1,19 @@
+[1] info scenario-start :: run=upgrade-20261010 scenario=variant-both head=e99856f
+[2] info chrome-launched :: student port 50439
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-e2e-student-upgraded\variant-both-2026-10-09T17-09-53-075Z\03-login-empty.png
+[4] pass login-ok :: /portfolio
+[5] evidence screenshot:task-form-filled :: docs\evidence\20261010-e2e-student-upgraded\variant-both-2026-10-09T17-09-53-075Z\05-task-form-filled.png
+[6] pass growth-task-created :: task 885b1f3a-4342-4393-be02-0706f83527e0 from report 854a03bc-cbcb-4164-9f10-a06fb3129127
+[7] pass v-both-task-saved :: task 885b1f3a-4342-4393-be02-0706f83527e0 persisted to state immediately after UI creation
+[8] evidence screenshot:v-both-saved :: docs\evidence\20261010-e2e-student-upgraded\variant-both-2026-10-09T17-09-53-075Z\08-v-both-saved.png
+[9] pass v-both-put-bodies :: ["{\"resumeVersionId\":\"21500f0e-7c7c-4559-b250-6bf361bd38d2\",\"projectVersionIds\":[\"2c6b87d3-8fcc-4bbc-9018-f1e476dfd227\"],\"targetJobId\":\"1a78a61b-09f8-4bb5-83a2-c67f803119c4\"}"]
+[10] pass v-both-refresh-reread :: after reload projects=[已保存：E2E学生补证项目（合成） · 第1版 · 个人作品 | 版本 2c6b87d3-8fcc-4bbc-9018-f1e476dfd227 · 摘要 38d3ff76bd3cccc26254239d17f3c09ffdc3ae4d44c7ff3ddd6fb57c9ad675b3] target="已保存目标岗位：E2E 岗位B（合成）（与任务原岗位不同；企业问题与基准引用仍关联原岗位要求） || 已保存目标：E2E 岗位B（合成）（≠ 任务原岗位）。生成新报告只使用已保存目标；改选岗位必须重新保存材料选择才会生效。 || 使用已保存版本和已保存目标岗位「E2E 岗位B（合成）」的当前要求，生成本人私有报告，不自动更新或再次投递给企业。AI解释需要单独确认；未授权时仅依据本地规则生成，不外发"
+[11] evidence screenshot:v-both-after-reload :: docs\evidence\20261010-e2e-student-upgraded\variant-both-2026-10-09T17-09-53-075Z\11-v-both-after-reload.png
+[12] pass v-both-analyze :: compared
+[13] evidence screenshot:variant-both-comparison :: docs\evidence\20261010-e2e-student-upgraded\variant-both-2026-10-09T17-09-53-075Z\13-variant-both-comparison.png
+[14] pass comparison:variant-both :: context=[变化背景：目标岗位变化、材料版本变化、岗位要求变化] items=3 citations=5 reportLinks=["854a03bc-cbcb-4164-9f10-a06fb3129127","08d6d5a5-a04c-44ed-bba7-b5201cd802f8"] banner=对比岗位：E2E 岗位C（合成·补证目标）（基准） → E2E 岗位B（合成）（目标）。不同岗位的 requirementId 不同，本对比按“原要求不再展示 / 新要求新增展示”逐条列出，不按技能名合并。
+
+原企业问题、缺口与基准引用仍关
+[15] pass v-both-attribution :: context="变化背景：目标岗位变化、材料版本变化、岗位要求变化" both=true bannerOk=true items=3 everyItemExplained=true newReportResolved=true
+[16] info chrome-stopped :: student exitCode=0
+[17] pass scenario-end :: exit=0

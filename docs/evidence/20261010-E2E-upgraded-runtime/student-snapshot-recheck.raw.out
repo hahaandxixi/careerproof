@@ -1,0 +1,16 @@
+[1] info scenario-start :: run=upgrade-20261010 scenario=enterprise-recheck head=e99856f
+[2] info chrome-launched :: enterprise-recheck port 65431
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\03-login-empty.png
+[4] pass login-ok :: /jobs
+[5] evidence screenshot:recheck-board-jobA :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\05-recheck-board-jobA.png
+[6] evidence screenshot:recheck-app-652fa343 :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\06-recheck-app-652fa343.png
+[7] pass recheck-app-652fa343 :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[8] evidence screenshot:recheck-app-3088a20e :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\08-recheck-app-3088a20e.png
+[9] pass recheck-app-3088a20e :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[10] evidence screenshot:recheck-board-jobB :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\10-recheck-board-jobB.png
+[11] evidence screenshot:recheck-app-23ed827d :: docs\evidence\20261010-e2e-student-upgraded\enterprise-recheck-2026-10-09T17-10-31-996Z\11-recheck-app-23ed827d.png
+[12] pass recheck-app-23ed827d :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[13] info chrome-stopped :: enterprise-recheck exitCode=0
+[14] pass snapshots-invariant :: apps=3 unchanged=true jobsABreqsUnchanged=true mismatches=none
+[15] info chain-summary :: jobIdC=bc00b579-d30e-4cba-9743-5f3b0b237433 base=1e32380c-8b1b-48bc-a862-1f5fdb848c0f R1=d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13 R2=854a03bc-cbcb-4164-9f10-a06fb3129127 R3=08d6d5a5-a04c-44ed-bba7-b5201cd802f8 replyTask=9b156ed2-8a71-4e52-8f71-256e6b1db3f8
+[16] pass scenario-end :: exit=0

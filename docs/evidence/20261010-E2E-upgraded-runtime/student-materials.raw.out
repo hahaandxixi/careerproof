@@ -1,0 +1,18 @@
+[1] info scenario-start :: run=upgrade-20261010 scenario=variant-materials head=e99856f
+[2] info chrome-launched :: student port 65386
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-e2e-student-upgraded\variant-materials-2026-10-09T17-08-51-756Z\03-login-empty.png
+[4] pass login-ok :: /portfolio
+[5] evidence screenshot:task-form-filled :: docs\evidence\20261010-e2e-student-upgraded\variant-materials-2026-10-09T17-08-51-756Z\05-task-form-filled.png
+[6] pass growth-task-created :: task 539cc04f-825d-4a07-880c-409679b40490 from report 1e32380c-8b1b-48bc-a862-1f5fdb848c0f
+[7] pass v-materials-task-saved :: task 539cc04f-825d-4a07-880c-409679b40490 persisted to state immediately after UI creation
+[8] pass materials-only-saved :: unsaved-target notice="(none)" (expected none — target untouched)
+[9] evidence screenshot:v-materials-saved :: docs\evidence\20261010-e2e-student-upgraded\variant-materials-2026-10-09T17-08-51-756Z\09-v-materials-saved.png
+[10] pass v-materials-put-bodies :: ["{\"resumeVersionId\":\"21500f0e-7c7c-4559-b250-6bf361bd38d2\",\"projectVersionIds\":[\"1b9e4f02-f2e3-457f-be66-3765193c50dc\"],\"targetJobId\":\"1a78a61b-09f8-4bb5-83a2-c67f803119c4\"}"]
+[11] pass v-materials-refresh-reread :: after reload projects=[已保存：E2E学生补证项目（合成） · 第2版 · 个人作品 | 版本 1b9e4f02-f2e3-457f-be66-3765193c50dc · 摘要 06399fb3e95be902d5ea4bf07906b717890ac4d49c4eda51978f537c6fd2d1b7]
+[12] evidence screenshot:v-materials-after-reload :: docs\evidence\20261010-e2e-student-upgraded\variant-materials-2026-10-09T17-08-51-756Z\12-v-materials-after-reload.png
+[13] pass v-materials-analyze :: compared
+[14] evidence screenshot:variant-materials-comparison :: docs\evidence\20261010-e2e-student-upgraded\variant-materials-2026-10-09T17-08-51-756Z\14-variant-materials-comparison.png
+[15] pass comparison:variant-materials :: context=[变化背景：材料版本变化] items=1 citations=5 reportLinks=["d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13","1e32380c-8b1b-48bc-a862-1f5fdb848c0f"] banner=(same-job)
+[16] pass v-materials-attribution :: context="变化背景：材料版本变化" materialsOnly=true citationsIntoNewReport=true focusAddedCount=6 newReportResolved=true
+[17] info chrome-stopped :: student exitCode=0
+[18] pass scenario-end :: exit=0

@@ -1,0 +1,32 @@
+{
+  "label": "setup-job-after",
+  "at": "2026-10-09T16:57:40.824Z",
+  "applications": [
+    {
+      "id": "3088a20e-652d-4166-bf04-eb0a25fb9550",
+      "status": "submitted",
+      "snapshotSha256": "74956c53080e7ecdfd9bcc2ba2ac10ebd4acfff91e574dd43b6ed0566916833a"
+    },
+    {
+      "id": "23ed827d-f61c-4dfc-9195-36173c134646",
+      "status": "submitted",
+      "snapshotSha256": "156ca1068a3a5088af29c64d5fb2f0f95355dd989224682785727a50458f57f4"
+    },
+    {
+      "id": "652fa343-84c7-42bc-b6af-8b4636fc95c2",
+      "status": "submitted",
+      "snapshotSha256": "20bd6f7cb049a89c504a502f6e9cd4c68305e06f5f108d7a0112912bf4bccf6a"
+    }
+  ],
+  "jobs": [
+    "6e9c0321-0c49-426b-84dd-46dc75b910d0|published|E2E 岗位A（合成）",
+    "1a78a61b-09f8-4bb5-83a2-c67f803119c4|published|E2E 岗位B（合成）",
+    "bc00b579-d30e-4cba-9743-5f3b0b237433|published|E2E 岗位C（合成·补证目标）"
+  ],
+  "requirements": [
+    "af98696b-4cff-4081-aa92-3d2d656c72dd|1a78a61b-09f8-4bb5-83a2-c67f803119c4|Python|1|true|岗位B要求：能够使用 Python 编写数据处理脚本",
+    "2080cea9-faec-4efe-b4b2-066da13e2511|6e9c0321-0c49-426b-84dd-46dc75b910d0|Python|1|true|岗位A要求：能够使用 Python 编写数据处理脚本",
+    "b08b9965-c9dc-4eeb-bcbf-a0c0778c1236|bc00b579-d30e-4cba-9743-5f3b0b237433|Python|3|true|岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试",
+    "99ef43ff-956c-41be-bcc6-6cf3aeb31d08|bc00b579-d30e-4cba-9743-5f3b0b237433|SQL|2|true|岗位C要求：能够编写 SQL 查询完成业务数据核对"
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "chain-reply",
+  "startedAt": "2026-10-09T17:02:46.266Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T17:02:46.303Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=chain-reply head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T17:02:46.551Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 58943"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T17:02:46.788Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T17:02:49.031Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T17:02:49.734Z",
+      "name": "enterprise-reply-context",
+      "status": "blocked",
+      "detail": "reply context block not found"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T17:02:49.822Z",
+      "name": "screenshot:task-start-reply-context",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\06-task-start-reply-context.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T17:02:51.704Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\07-task-form-filled.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T17:02:53.098Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task 9b156ed2-8a71-4e52-8f71-256e6b1db3f8 from report 54ea8bfc-c7f6-4706-b01c-76564b57230d"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T17:02:53.177Z",
+      "name": "screenshot:reply-task-page",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\09-reply-task-page.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T17:02:55.517Z",
+      "name": "screenshot:controlled-failure-alert",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\10-controlled-failure-alert.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T17:02:55.518Z",
+      "name": "controlled-failure",
+      "status": "pass",
+      "detail": "error=\"简历未提取到文字，请上传文字版或先进行OCR（请求编号：7a3e3107-e4b4-4da1-827f-43ac4c5ab0d8）\" retryPath=true (form collapses on error; re-read button is the documented retry path)"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T17:03:00.621Z",
+      "name": "failure-recovered-materials-saved",
+      "status": "pass",
+      "detail": "已保存：E2E学生补证简历（合成v2） · 第1版 · 简历 | 版本 21500f0e-7c7c-4559-b250-6bf361bd38d2 · 摘要 cdd09b29545ab84e3e1a9aeb8e11f124d5bbc8eff4e4a5934fdcb408be2ea066 ;; 已保存：E2E学生补证项目（合成） · 第2版 · 个人作品 | 版本 1b9e4f02-f2e3-457f-be66-3765193c50dc · 摘要 06399fb3e95be902d5ea4bf07906b717890ac4d49c4eda51978f537c6fd2d1b7"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T17:03:00.703Z",
+      "name": "screenshot:reply-materials-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\13-reply-materials-saved.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T17:03:06.158Z",
+      "name": "screenshot:chain-reply-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\14-chain-reply-comparison.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T17:03:06.159Z",
+      "name": "comparison:chain-reply",
+      "status": "pass",
+      "detail": "context=[变化背景：材料版本变化、岗位要求变化、检索版本变化、规则版本变化] items=1 citations=4 reportLinks=[\"9d99f8c4-2f3e-4f55-9f99-8be1de4a718e\",\"54ea8bfc-c7f6-4706-b01c-76564b57230d\"] banner=(same-job)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T17:03:06.159Z",
+      "name": "enterprise-question-review-block",
+      "status": "fail",
+      "detail": "review block missing"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-09T17:03:06.159Z",
+      "name": "reply-analyze-outcome",
+      "status": "pass",
+      "detail": "compared"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-09T17:03:06.195Z",
+      "name": "notifications-page",
+      "status": "pass",
+      "detail": "跳到主要内容 | 职证 CareerProof | 岗位发现 | 确认会话中… | 正在确认登录状态… | 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-09T17:03:06.252Z",
+      "name": "screenshot:notifications",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\19-notifications.png"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-09T17:03:07.594Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-09T17:03:07.594Z",
+      "name": "scenario-end",
+      "status": "blocked",
+      "detail": "exit=2"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-student-upgraded\\chain-reply-2026-10-09T17-02-46-266Z\\chain-reply-comparison.json"
+  ],
+  "finishedAt": "2026-10-09T17:03:07.594Z"
+}

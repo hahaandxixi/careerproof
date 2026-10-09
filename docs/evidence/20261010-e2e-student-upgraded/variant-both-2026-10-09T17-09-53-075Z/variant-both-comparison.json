@@ -1,0 +1,81 @@
+{
+  "context": "变化背景：目标岗位变化、材料版本变化、岗位要求变化",
+  "banner": "对比岗位：E2E 岗位C（合成·补证目标）（基准） → E2E 岗位B（合成）（目标）。不同岗位的 requirementId 不同，本对比按“原要求不再展示 / 新要求新增展示”逐条列出，不按技能名合并。\n\n原企业问题、缺口与基准引用仍关联基准岗位的基准要求；目标岗位更换不能直接认定原问题已被回答，也不能把新岗位要求的满足当作原岗位的核验结论。",
+  "items": [
+    {
+      "id": "b08b9965-c9dc-4eeb-bcbf-a0c0778c1236",
+      "title": "岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试 · 本次补证重点",
+      "status": "基准要求不再展示",
+      "focus": true,
+      "levelLine": "证据等级：3/5 → 未评级；该要求变化、移除要求、展示证据变化",
+      "addedCount": 0,
+      "removedCount": 7,
+      "sides": {
+        "base": true,
+        "target": true
+      },
+      "citations": [
+        "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E1",
+        "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E2",
+        "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E3"
+      ],
+      "text": "岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试基准要求不再展示 · 本次补证重点 | 证据等级：3/5 → 未评级；该要求变化、移除要求、展示证据变化 | 任务基准 | 存在Python函数实现；只评价材料支持程度，需核查本人贡献。 | 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 目标报告 | 未记录解释或无此要求 | 缺口：未记录 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 原要求：岗位C要求：能够使用 Python 编写数据清洗与自动化脚本并配套单元测试 · 权重3 → 当前要求：已移除 · 权重未记录 | 新增展示：0条 | 不再展示：7条 | 1b9e4f02-f2e3-457f-be66-3765193c50dc/pipeline.py · 第4—13行 | def process_records(records): |     \"\"\"按类目汇总金额，返回 {类目: 合计}。 |     具名实现：process_records —— 与补证任务交付物同名。 |     \"\"\" |     totals = {} |     for record in records: |         key = record.get(\"category\", \"未分类\") |         totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0)) |     return totals | 1b9e4f02-f2e3-457f-be66-3765193c50dc/tests/test_pipeline.py · 第5—13行 | def test_process_records_totals(): |     records = [ |         {\"category\": \"图书\", \"amount\": \"12.5\"}, |         {\"category\": \"图书\", \"amount\": \"30\"}, |         {\"category\": \"文具\", \"amount\": \"8\"}, |     ] |     result = process_records(records) |     assert result[\"图书\"] == 42.5 |     assert result[\"文具\"] == 8 | 1b9e4f02-f2e3-457f-be66-3765193c50dc/requirements.txt · 第2—2行 | pandas>=2.0 | 1b9e4f02-f2e3-457f-be66-3765193c50dc/docs/run-log.md · 第5—13行 | 本人（合成学生账号语境）在受控环境真实运行后另行生成，不得使用本文件冒充。 | - 日期：2026-10-05（合成标注日期） | - 环境：Python 3.12（合成示例） | - 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令） | - 预期输出样式：2 passed（合成示例，非真实运行输出） | - 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\" |   材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md |   第 4 节），其证据作用仅限人工核对。 | 1b9e4f02-f2e3-457f-be66-3765193c50dc/docs/run-log.md · 第7—13行 | - 日期：20"
+    },
+    {
+      "id": "99ef43ff-956c-41be-bcc6-6cf3aeb31d08",
+      "title": "岗位C要求：能够编写 SQL 查询完成业务数据核对",
+      "status": "基准要求不再展示",
+      "focus": false,
+      "levelLine": "证据等级：未评级 → 未评级；该要求变化、移除要求",
+      "addedCount": 0,
+      "removedCount": 0,
+      "sides": {
+        "base": true,
+        "target": true
+      },
+      "citations": [],
+      "text": "岗位C要求：能够编写 SQL 查询完成业务数据核对基准要求不再展示 | 证据等级：未评级 → 未评级；该要求变化、移除要求 | 任务基准 | 简历与个人作品中均未找到足够信息，当前无法确认该能力 | 缺口：补充与要求直接相关的材料。 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 目标报告 | 未记录解释或无此要求 | 缺口：未记录 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 原要求：岗位C要求：能够编写 SQL 查询完成业务数据核对 · 权重2 → 当前要求：已移除 · 权重未记录 | 新增展示：0条 | 不再展示：0条"
+    },
+    {
+      "id": "af98696b-4cff-4081-aa92-3d2d656c72dd",
+      "title": "岗位B要求：能够使用 Python 编写数据处理脚本",
+      "status": "目标报告新增要求",
+      "focus": false,
+      "levelLine": "证据等级：未评级 → 未评级；该要求变化、新增要求、展示证据变化",
+      "addedCount": 2,
+      "removedCount": 0,
+      "sides": {
+        "base": true,
+        "target": true
+      },
+      "citations": [
+        "/reports/08d6d5a5-a04c-44ed-bba7-b5201cd802f8#citation-R1-E1",
+        "/reports/08d6d5a5-a04c-44ed-bba7-b5201cd802f8#citation-R1-E2"
+      ],
+      "text": "岗位B要求：能够使用 Python 编写数据处理脚本目标报告新增要求 | 证据等级：未评级 → 未评级；该要求变化、新增要求、展示证据变化 | 任务基准 | 未记录解释或无此要求 | 缺口：未记录 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 目标报告 | 简历中存在该技能声明，但个人作品中暂未找到可验证证据 | 缺口：核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 原要求：未记录 · 权重未记录 → 当前要求：岗位B要求：能够使用 Python 编写数据处理脚本 · 权重1 | 新增展示：2条 | 2c6b87d3-8fcc-4bbc-9018-f1e476dfd227/README.md · 第3—7行 | 说明：本文件为 E2E 隔离测试的合成材料，非真实项目。 | 本项目使用 Python 完成了数据处理管线的开发，能够高效处理多种格式的数据， | 具备完善的错误处理和性能优化，测试覆盖充分，运行稳定可靠。 | 后续将补充更多功能。 | 2c6b87d3-8fcc-4bbc-9018-f1e476dfd227/README.md · 第1—7行 | # 合成数据看板（声明不足版本） | 说明：本文件为 E2E 隔离测试的合成材料，非真实项目。 | 本项目使用 Python 完成了数据处理管线的开发，能够高效处理多种格式的数据， | 具备完善的错误处理和性能优化，测试覆盖充分，运行稳定可靠。 | 后续将补充更多功能。 | 不再展示：0条"
+    }
+  ],
+  "citationHrefs": [
+    "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E1",
+    "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E2",
+    "/reports/854a03bc-cbcb-4164-9f10-a06fb3129127#citation-R1-E3",
+    "/reports/08d6d5a5-a04c-44ed-bba7-b5201cd802f8#citation-R1-E1",
+    "/reports/08d6d5a5-a04c-44ed-bba7-b5201cd802f8#citation-R1-E2"
+  ],
+  "limitation": [
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/pipeline.py · 第4—13行def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/tests/test_pipeline.py · 第5—13行def test_process_records_totals():\n    records = [\n        {\"category\": \"图书\", \"amount\": \"12.5\"},\n        {\"category\": \"图书\", \"amount\": \"30\"},\n        {\"category\": \"文具\", \"amount\": \"8\"},\n    ]\n    result = process_records(records)\n    assert result[\"图书\"] == 42.5\n    assert result[\"文具\"] == 8",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/requirements.txt · 第2—2行pandas>=2.0",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/docs/run-log.md · 第5—13行本人（合成学生账号语境）在受控环境真实运行后另行生成，不得使用本文件冒充。\n\n- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/docs/run-log.md · 第7—13行- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/docs/run-log.md · 第6—13行\n- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "1b9e4f02-f2e3-457f-be66-3765193c50dc/pipeline.py · 第1—7行\"\"\"合成数据管线（新版）：具名实现，供隔离 E2E 测试使用。\"\"\"\n\n\ndef process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。",
+    "2c6b87d3-8fcc-4bbc-9018-f1e476dfd227/README.md · 第3—7行说明：本文件为 E2E 隔离测试的合成材料，非真实项目。\n\n本项目使用 Python 完成了数据处理管线的开发，能够高效处理多种格式的数据，\n具备完善的错误处理和性能优化，测试覆盖充分，运行稳定可靠。\n后续将补充更多功能。",
+    "2c6b87d3-8fcc-4bbc-9018-f1e476dfd227/README.md · 第1—7行# 合成数据看板（声明不足版本）\n\n说明：本文件为 E2E 隔离测试的合成材料，非真实项目。\n\n本项目使用 Python 完成了数据处理管线的开发，能够高效处理多种格式的数据，\n具备完善的错误处理和性能优化，测试覆盖充分，运行稳定可靠。\n后续将补充更多功能。",
+    "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",
+    "等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。",
+    "历史岗位快照可能缺少必要性字段；无法还原未保存的属性。",
+    "基准是创建补证任务时固定的复核状态；目标报告采用当前复核状态。",
+    "引用减少仅表示目标报告未再展示，不代表原文件被删除。"
+  ]
+}

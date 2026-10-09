@@ -15,6 +15,16 @@ test("documented defaults and existing scenario names remain usable", () => {
   }
 });
 
+test("separate evidence destination accepts a bounded directory name", () => {
+  assert.deepEqual(parseRunnerArgs(["--run", "upgrade-20261010", "--scenario", "skeleton",
+    "--evidence-subdir", "20261010-e2e-enterprise-upgraded"]), {
+    runId: "upgrade-20261010", scenario: "skeleton", evidenceSubdir: "20261010-e2e-enterprise-upgraded",
+  });
+  for (const name of ["../old", "a/b", "a\\b", "D:old", ".", "a".repeat(65)]) {
+    assert.throws(() => parseRunnerArgs(["--evidence-subdir", name]), /Invalid runner arguments/);
+  }
+});
+
 for (const args of [
   ["--run", ".."], ["--run", "."], ["--run", "a..b"],
   ["--run", "--scenario", "skeleton"], ["--run"],

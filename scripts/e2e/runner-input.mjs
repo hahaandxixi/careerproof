@@ -5,7 +5,7 @@ export const ENTERPRISE_SCENARIOS = Object.freeze([
 ]);
 
 export function parseRunnerArgs(args) {
-  const values = { "--run": "audit-20261005", "--scenario": "skeleton" };
+  const values = { "--run": "audit-20261005", "--scenario": "skeleton", "--evidence-subdir": "" };
   const seen = new Set();
   for (let i = 0; i < args.length; i += 2) {
     const key = args[i], value = args[i + 1];
@@ -20,7 +20,14 @@ export function parseRunnerArgs(args) {
       !ENTERPRISE_SCENARIOS.includes(values["--scenario"])) {
     throw new Error("Invalid runner arguments");
   }
-  return { runId: values["--run"], scenario: values["--scenario"] };
+  const result = { runId: values["--run"], scenario: values["--scenario"] };
+  if (values["--evidence-subdir"]) result.evidenceSubdir = validateEvidenceSubdir(values["--evidence-subdir"]);
+  return result;
+}
+
+export function validateEvidenceSubdir(value) {
+  if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(value)) throw new Error("Invalid runner arguments");
+  return value;
 }
 
 // JSON parser messages can contain source fragments on some Node versions.

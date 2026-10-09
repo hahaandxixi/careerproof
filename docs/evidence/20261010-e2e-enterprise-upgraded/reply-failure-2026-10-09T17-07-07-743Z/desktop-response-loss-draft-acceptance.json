@@ -1,0 +1,13 @@
+{
+  "variant": "desktop-response-loss",
+  "preserved": true,
+  "readOnly": false,
+  "editedOk": true,
+  "stillExists": true,
+  "clearedOk": true,
+  "retypedOk": true,
+  "sendButtonGone": true,
+  "checkboxGone": true,
+  "oldReportGone": true,
+  "originalText": "E2E复测desktop响应丢失变体upgrade-20261010：具名正文，服务器应已收到此条。"
+}

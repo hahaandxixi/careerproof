@@ -30,7 +30,7 @@ try { selection = parseRunnerArgs(process.argv.slice(2)); }
 catch { console.error("Invalid --run/--scenario arguments; no files were written."); process.exit(2); }
 const { runId: RUN_ID, scenario: SCENARIO } = selection;
 const RUNTIME_DIR = path.join(ROOT, "backend", ".tmp", "e2e-browser", RUN_ID);
-const EVIDENCE_DIR = path.join(ROOT, "docs", "evidence", "20261005-E2E-enterprise-retest");
+const EVIDENCE_DIR = path.join(ROOT, "docs", "evidence", selection.evidenceSubdir ?? "20261005-E2E-enterprise-retest");
 
 fs.mkdirSync(RUNTIME_DIR, { recursive: true });
 fs.mkdirSync(EVIDENCE_DIR, { recursive: true });

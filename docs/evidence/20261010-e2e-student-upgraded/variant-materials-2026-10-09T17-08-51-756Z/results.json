@@ -1,0 +1,137 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "variant-materials",
+  "startedAt": "2026-10-09T17:08:51.756Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T17:08:51.786Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=variant-materials head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T17:08:52.028Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 65386"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T17:08:52.255Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T17:08:54.510Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T17:08:57.127Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\05-task-form-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T17:08:58.502Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task 539cc04f-825d-4a07-880c-409679b40490 from report 1e32380c-8b1b-48bc-a862-1f5fdb848c0f"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T17:08:58.503Z",
+      "name": "v-materials-task-saved",
+      "status": "pass",
+      "detail": "task 539cc04f-825d-4a07-880c-409679b40490 persisted to state immediately after UI creation"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T17:09:02.579Z",
+      "name": "materials-only-saved",
+      "status": "pass",
+      "detail": "unsaved-target notice=\"(none)\" (expected none — target untouched)"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T17:09:02.660Z",
+      "name": "screenshot:v-materials-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\09-v-materials-saved.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T17:09:02.661Z",
+      "name": "v-materials-put-bodies",
+      "status": "pass",
+      "detail": "[\"{\\\"resumeVersionId\\\":\\\"21500f0e-7c7c-4559-b250-6bf361bd38d2\\\",\\\"projectVersionIds\\\":[\\\"1b9e4f02-f2e3-457f-be66-3765193c50dc\\\"],\\\"targetJobId\\\":\\\"1a78a61b-09f8-4bb5-83a2-c67f803119c4\\\"}\"]"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T17:09:03.710Z",
+      "name": "v-materials-refresh-reread",
+      "status": "pass",
+      "detail": "after reload projects=[已保存：E2E学生补证项目（合成） · 第2版 · 个人作品 | 版本 1b9e4f02-f2e3-457f-be66-3765193c50dc · 摘要 06399fb3e95be902d5ea4bf07906b717890ac4d49c4eda51978f537c6fd2d1b7]"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T17:09:03.785Z",
+      "name": "screenshot:v-materials-after-reload",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\12-v-materials-after-reload.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T17:09:08.185Z",
+      "name": "v-materials-analyze",
+      "status": "pass",
+      "detail": "compared"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T17:09:09.097Z",
+      "name": "screenshot:variant-materials-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\14-variant-materials-comparison.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T17:09:09.098Z",
+      "name": "comparison:variant-materials",
+      "status": "pass",
+      "detail": "context=[变化背景：材料版本变化] items=1 citations=5 reportLinks=[\"d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13\",\"1e32380c-8b1b-48bc-a862-1f5fdb848c0f\"] banner=(same-job)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T17:09:09.098Z",
+      "name": "v-materials-attribution",
+      "status": "pass",
+      "detail": "context=\"变化背景：材料版本变化\" materialsOnly=true citationsIntoNewReport=true focusAddedCount=6 newReportResolved=true"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-09T17:09:09.220Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-09T17:09:09.221Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-student-upgraded\\variant-materials-2026-10-09T17-08-51-756Z\\variant-materials-comparison.json"
+  ],
+  "finishedAt": "2026-10-09T17:09:09.221Z"
+}

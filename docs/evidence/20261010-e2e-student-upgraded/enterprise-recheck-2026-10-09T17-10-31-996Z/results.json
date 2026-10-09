@@ -1,0 +1,124 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "enterprise-recheck",
+  "startedAt": "2026-10-09T17:10:31.997Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T17:10:32.028Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=enterprise-recheck head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T17:10:33.746Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-recheck port 65431"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T17:10:33.969Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T17:10:36.203Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T17:10:37.022Z",
+      "name": "screenshot:recheck-board-jobA",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\05-recheck-board-jobA.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T17:10:38.071Z",
+      "name": "screenshot:recheck-app-652fa343",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\06-recheck-app-652fa343.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T17:10:38.071Z",
+      "name": "recheck-app-652fa343",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T17:10:39.499Z",
+      "name": "screenshot:recheck-app-3088a20e",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\08-recheck-app-3088a20e.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T17:10:39.499Z",
+      "name": "recheck-app-3088a20e",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T17:10:40.688Z",
+      "name": "screenshot:recheck-board-jobB",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\10-recheck-board-jobB.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T17:10:41.735Z",
+      "name": "screenshot:recheck-app-23ed827d",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\11-recheck-app-23ed827d.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T17:10:41.735Z",
+      "name": "recheck-app-23ed827d",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T17:10:42.208Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-recheck exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T17:10:43.691Z",
+      "name": "snapshots-invariant",
+      "status": "pass",
+      "detail": "apps=3 unchanged=true jobsABreqsUnchanged=true mismatches=none"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T17:10:43.691Z",
+      "name": "chain-summary",
+      "status": "info",
+      "detail": "jobIdC=bc00b579-d30e-4cba-9743-5f3b0b237433 base=1e32380c-8b1b-48bc-a862-1f5fdb848c0f R1=d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13 R2=854a03bc-cbcb-4164-9f10-a06fb3129127 R3=08d6d5a5-a04c-44ed-bba7-b5201cd802f8 replyTask=9b156ed2-8a71-4e52-8f71-256e6b1db3f8"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T17:10:43.691Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\enterprise-recheck-before-readonly-db.json",
+    "docs\\evidence\\20261010-e2e-student-upgraded\\enterprise-recheck-2026-10-09T17-10-31-996Z\\enterprise-recheck-after-readonly-db.json"
+  ],
+  "finishedAt": "2026-10-09T17:10:43.691Z"
+}

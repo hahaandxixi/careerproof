@@ -1,0 +1,270 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "reply-failure",
+  "startedAt": "2026-10-09T17:07:07.744Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T17:07:07.744Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=reply-failure runId=upgrade-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T17:07:08.008Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-desktop dynamic port 62816 profile=profile-enterprise-desktop"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T17:07:08.193Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T17:07:10.085Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T17:07:12.229Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\05-reply-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T17:07:14.190Z",
+      "name": "desktop-request-fail-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T17:07:14.231Z",
+      "name": "screenshot:desktop-request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\07-desktop-request-fail-failure-draft.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T17:07:14.232Z",
+      "name": "desktop-request-fail-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=1 (expect 1, no auto-retry)"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T17:07:15.634Z",
+      "name": "desktop-request-fail-server-state",
+      "status": "pass",
+      "detail": "serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T17:07:15.695Z",
+      "name": "screenshot:desktop-request-fail-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\10-desktop-request-fail-after-refresh.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T17:07:16.577Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\11-reply-filled.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T17:07:18.524Z",
+      "name": "desktop-response-loss-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T17:07:18.581Z",
+      "name": "screenshot:desktop-response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\13-desktop-response-loss-failure-draft.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T17:07:20.583Z",
+      "name": "desktop-response-loss-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T17:07:21.983Z",
+      "name": "desktop-response-loss-server-state",
+      "status": "pass",
+      "detail": "serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T17:07:22.041Z",
+      "name": "screenshot:desktop-response-loss-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\16-desktop-response-loss-after-refresh.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-09T17:07:22.154Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-desktop exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-09T17:07:22.402Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 65413 profile=profile-enterprise-390"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-09T17:07:22.468Z",
+      "name": "390-viewport",
+      "status": "info",
+      "detail": "viewport=980 (device metrics after first load)"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-09T17:07:22.635Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\20-login-page-empty.png"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-09T17:07:24.537Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-09T17:07:26.708Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\22-reply-filled.png"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-09T17:07:28.649Z",
+      "name": "390-request-fail-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 24,
+      "at": "2026-10-09T17:07:28.738Z",
+      "name": "screenshot:390-request-fail-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\24-390-request-fail-failure-draft.png"
+    },
+    {
+      "n": 25,
+      "at": "2026-10-09T17:07:28.739Z",
+      "name": "390-request-fail-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=1 (expect 1, no auto-retry)"
+    },
+    {
+      "n": 26,
+      "at": "2026-10-09T17:07:30.140Z",
+      "name": "390-request-fail-server-state",
+      "status": "pass",
+      "detail": "serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)"
+    },
+    {
+      "n": 27,
+      "at": "2026-10-09T17:07:30.242Z",
+      "name": "screenshot:390-request-fail-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\27-390-request-fail-after-refresh.png"
+    },
+    {
+      "n": 28,
+      "at": "2026-10-09T17:07:31.178Z",
+      "name": "screenshot:reply-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\28-reply-filled.png"
+    },
+    {
+      "n": 29,
+      "at": "2026-10-09T17:07:33.136Z",
+      "name": "390-response-loss-draft-acceptance",
+      "status": "pass",
+      "detail": "preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true"
+    },
+    {
+      "n": 30,
+      "at": "2026-10-09T17:07:33.219Z",
+      "name": "screenshot:390-response-loss-failure-draft",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\30-390-response-loss-failure-draft.png"
+    },
+    {
+      "n": 31,
+      "at": "2026-10-09T17:07:35.224Z",
+      "name": "390-response-loss-post-count",
+      "status": "pass",
+      "detail": "reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)"
+    },
+    {
+      "n": 32,
+      "at": "2026-10-09T17:07:36.621Z",
+      "name": "390-response-loss-server-state",
+      "status": "pass",
+      "detail": "serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)"
+    },
+    {
+      "n": 33,
+      "at": "2026-10-09T17:07:36.723Z",
+      "name": "screenshot:390-response-loss-after-refresh",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\33-390-response-loss-after-refresh.png"
+    },
+    {
+      "n": 34,
+      "at": "2026-10-09T17:07:36.822Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=0"
+    },
+    {
+      "n": 35,
+      "at": "2026-10-09T17:07:36.823Z",
+      "name": "delivered-replies",
+      "status": "pass",
+      "detail": "2 replies delivered (desktop→A, 390→B); bodies + timestamps in delivered-replies-for-student.json"
+    },
+    {
+      "n": 36,
+      "at": "2026-10-09T17:07:36.823Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\desktop-request-fail-draft-acceptance.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\desktop-request-fail-refresh-dom.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\desktop-response-loss-draft-acceptance.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\desktop-response-loss-refresh-dom.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\390-request-fail-draft-acceptance.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\390-request-fail-refresh-dom.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\390-response-loss-draft-acceptance.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\390-response-loss-refresh-dom.json",
+    "docs\\evidence\\20261010-e2e-enterprise-upgraded\\reply-failure-2026-10-09T17-07-07-743Z\\delivered-replies-for-student.json"
+  ],
+  "finishedAt": "2026-10-09T17:07:36.823Z"
+}

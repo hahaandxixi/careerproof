@@ -1,0 +1,16 @@
+[
+  {
+    "viewport": "desktop",
+    "applicationId": "3088a20e-652d-4166-bf04-eb0a25fb9550",
+    "variant": "response-loss",
+    "replyText": "E2E复测desktop响应丢失变体upgrade-20261010：具名正文，服务器应已收到此条。",
+    "serverConfirmedAt": "2026-10-09T17:07:22.041Z"
+  },
+  {
+    "viewport": "390",
+    "applicationId": "23ed827d-f61c-4dfc-9195-36173c134646",
+    "variant": "response-loss",
+    "replyText": "E2E复测390响应丢失变体upgrade-20261010：具名正文，服务器应已收到此条。",
+    "serverConfirmedAt": "2026-10-09T17:07:36.723Z"
+  }
+]

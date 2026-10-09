@@ -1,0 +1,135 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "baseline",
+  "startedAt": "2026-10-09T16:58:50.469Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T16:58:50.503Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=baseline head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T16:58:50.759Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 63032"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T16:58:50.979Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T16:58:53.260Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T16:58:56.741Z",
+      "name": "upload-complete:resume-v2.txt",
+      "status": "pass",
+      "detail": "简历 | E2E学生补证简历（合成v2） | resume-v2.txt · 第 1 版 · 2026/10/10 00:58:54 | 分析完成 | 简历解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T16:58:56.813Z",
+      "name": "screenshot:resume-v2-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\06-resume-v2-uploaded.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T16:59:00.617Z",
+      "name": "upload-complete:claims-only-project.zip",
+      "status": "pass",
+      "detail": "项目 | E2E学生补证项目（合成） | claims-only-project.zip · 第 1 版 · 2026/10/10 00:58:58 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T16:59:00.700Z",
+      "name": "screenshot:claims-only-v1-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\08-claims-only-v1-uploaded.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T16:59:04.244Z",
+      "name": "upload-complete:new-version-project.zip",
+      "status": "pass",
+      "detail": "项目 | E2E学生补证项目（合成） | new-version-project.zip · 第 2 版 · 2026/10/10 00:59:02 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T16:59:04.333Z",
+      "name": "screenshot:new-version-v2-uploaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\10-new-version-v2-uploaded.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T16:59:04.334Z",
+      "name": "materials-uploaded",
+      "status": "pass",
+      "detail": "resume-v2 + claims-only v1 + new-version v2 via UI (source never executed)"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T16:59:07.816Z",
+      "name": "screenshot:baseline-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\12-baseline-form-filled.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T16:59:13.287Z",
+      "name": "screenshot:baseline-task-completed",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\13-baseline-task-completed.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T16:59:14.943Z",
+      "name": "screenshot:baseline-report",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\baseline-2026-10-09T16-58-50-468Z\\14-baseline-report.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T16:59:14.943Z",
+      "name": "baseline-report-generated",
+      "status": "pass",
+      "detail": "report 1e32380c-8b1b-48bc-a862-1f5fdb848c0f task f5b77065-c34b-41e7-a326-baa6e66cebdf items=[{\"id\":\"af98696b\",\"badge\":\"仅简历声明\"}]"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T16:59:14.943Z",
+      "name": "baseline-claims-only-check",
+      "status": "pass",
+      "detail": "claims-only materials must NOT be presented as implementation; badge/text contains 声明 marker: true"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-09T16:59:15.051Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-09T16:59:15.052Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-09T16:59:15.052Z"
+}

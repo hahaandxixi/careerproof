@@ -18,15 +18,13 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { parseCredentialDocument } from "./runner-input.mjs";
+import { parseCredentialDocument, validateEvidenceSubdir } from "./runner-input.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const FRONTEND = "http://127.0.0.1:3001";
 const BACKEND_DIR = path.join(ROOT, "backend");
-const EVIDENCE_DIR = path.join(ROOT, "docs", "evidence", "20261005-E2E-student");
 const MATERIALS_DIR = path.join(ROOT, "docs", "evidence", "20261005-E2E-student-preflight", "materials");
-const STATE_FILE = path.join(EVIDENCE_DIR, "state.json");
 
 const SCENARIOS = Object.freeze([
   "setup-job", "baseline", "chain-reply", "variant-materials",
@@ -37,7 +35,7 @@ const SCENARIOS = Object.freeze([
 // Arguments (run-id format matches Start/Stop-E2E + seeder)
 // ---------------------------------------------------------------------------
 function parseArgs(argv) {
-  const values = { "--run": "", "--scenario": "" };
+  const values = { "--run": "", "--scenario": "", "--evidence-subdir": "" };
   const seen = new Set();
   for (let i = 0; i < argv.length; i += 2) {
     const key = argv[i], value = argv[i + 1];
@@ -46,11 +44,16 @@ function parseArgs(argv) {
   }
   if (!/^[a-z0-9][a-z0-9-]{0,31}$/.test(values["--run"])) return null;
   if (!SCENARIOS.includes(values["--scenario"])) return null;
-  return { runId: values["--run"], scenario: values["--scenario"] };
+  try {
+    if (values["--evidence-subdir"]) validateEvidenceSubdir(values["--evidence-subdir"]);
+  } catch { return null; }
+  return { runId: values["--run"], scenario: values["--scenario"], evidenceSubdir: values["--evidence-subdir"] };
 }
 const selection = parseArgs(process.argv.slice(2));
 if (!selection) { console.error("Invalid --run/--scenario arguments; no files were written."); process.exit(3); }
 const { runId: RUN_ID, scenario: SCENARIO } = selection;
+const EVIDENCE_DIR = path.join(ROOT, "docs", "evidence", selection.evidenceSubdir || "20261005-E2E-student");
+const STATE_FILE = path.join(EVIDENCE_DIR, "state.json");
 
 fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
 const RUNTIME_DIR = path.join(BACKEND_DIR, ".tmp", "e2e-browser", `${RUN_ID}-student`);
@@ -606,10 +609,14 @@ async function createGrowthTaskFromReport(tab, reportId, plan, { expectReplyCont
   const body = await tab.bodyText();
   const existing = body.includes("打开这条缺口已有补证任务");
   if (expectReplyContext) {
+    await tab.waitFor(`() => Array.from(document.querySelectorAll('section')).some(n => (n.querySelector('h3')?.textContent || '').includes('企业人工回复中针对本项的核验内容'))`, { timeoutMs: 15000, label: "delivered enterprise reply context" });
     // The reply context is a <section> titled 企业人工回复中针对本项的核验内容.
     const replyBlock = await tab.evalJs(`(() => { const el = Array.from(document.querySelectorAll('section')).find(n => (n.querySelector('h3')?.textContent || '').includes('企业人工回复中针对本项的核验内容')); return el ? el.innerText.slice(0, 1200) : null; })()`);
     record({ name: "enterprise-reply-context", status: replyBlock ? "pass" : "blocked", detail: replyBlock ? String(replyBlock).replace(/\n+/g, " | ").slice(0, 600) : "reply context block not found" });
     await saveShot(tab, "task-start-reply-context");
+    if (!replyBlock) {
+      throw new CdpError("chain-reply requires a delivered enterprise reply before creating or opening the growth task; run enterprise reply-failure first");
+    }
   }
   if (existing) {
     // (report, requirement) already has a task: open it (documented dedup path).
@@ -1509,6 +1516,7 @@ async function visibleHeadingShot(tab, name, locatorBody) {
 // ---------------------------------------------------------------------------
 async function scenarioEnterpriseRecheck() {
   const state = loadState();
+  const beforeRecheck = await captureApplicationsBaseline("enterprise-recheck-before");
   const browser = activeBrowser = await new Chrome("enterprise-recheck").launch();
   const tab = await browser.openTab();
   await tab.enable();
@@ -1540,19 +1548,23 @@ async function scenarioEnterpriseRecheck() {
   await browser.stop();
   // read-only DB invariants after the whole student run
   const after = await captureApplicationsBaseline("enterprise-recheck-after");
-  const expected = {
-    [CREDS.applications.A.id]: { status: "replied", hash: CREDS.applications.A.snapshotSha256 },
-    [CREDS.applications.B.id]: { status: "replied", hash: CREDS.applications.B.snapshotSha256 },
-    [CREDS.applications.A2.id]: { status: "viewed", hash: CREDS.applications.A2.snapshotSha256 },
-  };
+  const expected = Object.fromEntries(Object.values(CREDS.applications).map(app => {
+    const prior = beforeRecheck.applications.find(row => row.id === app.id);
+    if (!prior || !["submitted", "viewed", "replied"].includes(prior.status)) {
+      throw new CdpError("snapshot recheck requires each original application to remain authorized before opening");
+    }
+    return [app.id, { status: prior.status === "submitted" ? "viewed" : prior.status, hash: app.snapshotSha256 }];
+  }));
   const mismatches = [];
   for (const app of after.applications) {
     const want = expected[app.id];
-    if (!want) continue;
+    if (!want) { mismatches.push("unexpected application"); continue; }
     if (app.status !== want.status) mismatches.push(`${app.id.slice(0, 8)} status ${app.status} != ${want.status}`);
     if (app.snapshotSha256 !== want.hash) mismatches.push(`${app.id.slice(0, 8)} hash changed`);
   }
-  const appsUnchanged = after.applications.length === 3 && mismatches.length === 0;
+  const appsUnchanged = after.applications.length === Object.keys(expected).length
+    && Object.keys(expected).every(id => after.applications.some(app => app.id === id))
+    && mismatches.length === 0;
   // job A/B rows identical to the setup-job "before" capture (newest stage dir)
   const stages = fs.readdirSync(EVIDENCE_DIR).filter(d => d.startsWith("setup-job-2026")).sort();
   const beforeFile = stages.length ? path.join(EVIDENCE_DIR, stages[stages.length - 1], "setup-job-before-readonly-db.json") : null;

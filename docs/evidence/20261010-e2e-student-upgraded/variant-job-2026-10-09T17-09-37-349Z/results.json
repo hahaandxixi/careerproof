@@ -1,0 +1,137 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "variant-job",
+  "startedAt": "2026-10-09T17:09:37.349Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T17:09:37.382Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=variant-job head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T17:09:37.644Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student port 63873"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T17:09:37.836Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T17:09:40.087Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T17:09:42.714Z",
+      "name": "screenshot:task-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\05-task-form-filled.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T17:09:44.099Z",
+      "name": "growth-task-created",
+      "status": "pass",
+      "detail": "task e223730e-26bb-4230-91a7-4a25f0a7f414 from report d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T17:09:44.100Z",
+      "name": "v-job-task-saved",
+      "status": "pass",
+      "detail": "task e223730e-26bb-4230-91a7-4a25f0a7f414 persisted to state immediately after UI creation"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T17:09:45.467Z",
+      "name": "screenshot:v-job-unsaved-notice",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\08-v-job-unsaved-notice.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T17:09:47.156Z",
+      "name": "screenshot:v-job-saved",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\09-v-job-saved.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T17:09:47.156Z",
+      "name": "v-job-put-bodies",
+      "status": "pass",
+      "detail": "[{\"url\":\"/api/v1/growth-tasks/e223730e-26bb-4230-91a7-4a25f0a7f414/materials\",\"body\":\"{\\\"resumeVersionId\\\":\\\"21500f0e-7c7c-4559-b250-6bf361bd38d2\\\",\\\"projectVersionIds\\\":[\\\"1b9e4f02-f2e3-457f-be66-3765193c50dc\\\"],\\\"targetJobId\\\":\\\"bc00b579-d30e-4cba-9743-5f3b0b237433\\\"}\"}]"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T17:09:51.569Z",
+      "name": "v-job-analyze",
+      "status": "pass",
+      "detail": "compared"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T17:09:51.817Z",
+      "name": "v-job-refresh-reread",
+      "status": "pass",
+      "detail": "after reload: \"已保存目标岗位：E2E 岗位C（合成·补证目标）（与任务原岗位不同；企业问题与基准引用仍关联原岗位要求） || 已保存目标：E2E 岗位C（合成·补证目标）（≠ 任务原岗位）。生成新报告只使用已保存目标；改选岗位必须重新保存材料选择才会生效。\""
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T17:09:51.953Z",
+      "name": "screenshot:v-job-after-reload",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\13-v-job-after-reload.png"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T17:09:52.902Z",
+      "name": "screenshot:variant-job-comparison",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\14-variant-job-comparison.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-09T17:09:52.902Z",
+      "name": "comparison:variant-job",
+      "status": "pass",
+      "detail": "context=[变化背景：目标岗位变化、岗位要求变化] items=3 citations=6 reportLinks=[\"d5fd2b95-491c-48a7-aa5f-a0ebcd52fb13\",\"854a03bc-cbcb-4164-9f10-a06fb3129127\"] banner=对比岗位：E2E 岗位B（合成）（基准） → E2E 岗位C（合成·补证目标）（目标）。不同岗位的 requirementId 不同，本对比按“原要求不再展示 / 新要求新增展示”逐条列出，不按技能名合并。\n\n原企业问题、缺口与基准引用仍关"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-09T17:09:52.902Z",
+      "name": "v-job-attribution",
+      "status": "pass",
+      "detail": "context=\"变化背景：目标岗位变化、岗位要求变化\" jobOnly=true bannerOk=true removed=1 added=2 pythonRemoved=1 pythonAdded=1 pythonSeparate=true newReportResolved=true"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-09T17:09:53.021Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-09T17:09:53.022Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-student-upgraded\\variant-job-2026-10-09T17-09-37-349Z\\variant-job-comparison.json"
+  ],
+  "finishedAt": "2026-10-09T17:09:53.022Z"
+}

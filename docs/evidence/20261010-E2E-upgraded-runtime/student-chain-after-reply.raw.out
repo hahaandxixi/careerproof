@@ -1,0 +1,12 @@
+[1] info scenario-start :: run=upgrade-20261010 scenario=chain-reply head=e99856f
+[2] info chrome-launched :: student port 49336
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-e2e-student-upgraded\chain-reply-2026-10-09T17-08-00-182Z\03-login-empty.png
+[4] pass login-ok :: /portfolio
+[5] evidence screenshot:error-page :: docs\evidence\20261010-e2e-student-upgraded\chain-reply-2026-10-09T17-08-00-182Z\05-error-page.png
+[6] info chrome-stopped :: student exitCode=0
+[7] blocked scenario-error :: Error: waitFor timeout 15000ms: delivered enterprise reply context
+    at Tab.waitFor (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:373:29)
+    at async createGrowthTaskFromReport (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:612:5)
+    at async Object.scenarioChainReply [as chain-reply] (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1076:34)
+    at async file:///D:/jbcode/web%20ai/jianli/scripts/e2e/student-browser-runner.mjs:1606:3
+[8] fail scenario-end :: exit=2

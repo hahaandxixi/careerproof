@@ -1,0 +1,110 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "setup-job",
+  "startedAt": "2026-10-09T16:57:25.312Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-09T16:57:25.345Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=upgrade-20261010 scenario=setup-job head=e99856f"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-09T16:57:27.279Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise port 56288"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-09T16:57:27.484Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-09T16:57:29.743Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-09T16:57:30.054Z",
+      "name": "screenshot:job-form-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\05-job-form-empty.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-09T16:57:35.183Z",
+      "name": "keyselect-step",
+      "status": "info",
+      "detail": "req2 weight iter=0 v=3 -> target 2"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-09T16:57:36.098Z",
+      "name": "keyselect-step",
+      "status": "info",
+      "detail": "job status iter=0 v=draft -> target published"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-09T16:57:36.401Z",
+      "name": "screenshot:job-form-filled",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\08-job-form-filled.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-09T16:57:39.333Z",
+      "name": "screenshot:job-c-detail",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\09-job-c-detail.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-09T16:57:39.334Z",
+      "name": "job-c-published",
+      "status": "pass",
+      "detail": "jobIdC=bc00b579-d30e-4cba-9743-5f3b0b237433 title/Python/SQL visible=true"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-09T16:57:40.825Z",
+      "name": "original-jobs-applications-unchanged",
+      "status": "pass",
+      "detail": "jobsAB/reqsAB same=true apps same=true exactly one new job=true"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-09T16:57:40.825Z",
+      "name": "state-saved",
+      "status": "pass",
+      "detail": "jobIdC persisted"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-09T16:57:40.936Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-09T16:57:40.936Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\setup-job-before-readonly-db.json",
+    "docs\\evidence\\20261010-e2e-student-upgraded\\setup-job-2026-10-09T16-57-25-311Z\\setup-job-after-readonly-db.json"
+  ],
+  "finishedAt": "2026-10-09T16:57:40.936Z"
+}

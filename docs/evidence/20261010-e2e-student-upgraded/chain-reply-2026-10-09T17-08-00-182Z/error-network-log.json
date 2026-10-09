@@ -1,0 +1,524 @@
+{
+  "network": [
+    {
+      "at": "2026-10-09T17:08:02.016Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/page-4e554d00f35a2243.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.020Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/notifications/page-a881dbac081829b0.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.304Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/resumes",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.304Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/projects",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.318Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/demo?_rsc=c4mLfVWrmqAJA1Hf",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.318Z",
+      "phase": "response",
+      "url": "/api/v1/resumes",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.319Z",
+      "phase": "response",
+      "url": "/api/v1/projects",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.334Z",
+      "phase": "response",
+      "url": "/demo?_rsc=c4mLfVWrmqAJA1Hf",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.935Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports/54ea8bfc-c7f6-4706-b01c-76564b57230d",
+      "type": "Document"
+    },
+    {
+      "at": "2026-10-09T17:08:02.943Z",
+      "phase": "response",
+      "url": "/reports/54ea8bfc-c7f6-4706-b01c-76564b57230d",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/css/d34cf6f78b54befc.css",
+      "type": "Stylesheet"
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/1255-5cd2fe06309409a0.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/main-app-1997624658e3521c.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.950Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/2619-3c9e02e22d10480a.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/error-8f800fa20461f59e.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/3834-85433632d93b5458.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/3834-85433632d93b5458.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.951Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/%5Bid%5D/page-f8b61f04a2426209.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:02.958Z",
+      "phase": "response",
+      "url": "/_next/static/css/d34cf6f78b54befc.css",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.959Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.960Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/main-app-1997624658e3521c.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.960Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/error-8f800fa20461f59e.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.960Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/2619-3c9e02e22d10480a.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.961Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.961Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.963Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/%5Bid%5D/page-f8b61f04a2426209.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.964Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.966Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/1255-5cd2fe06309409a0.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.977Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/users/me",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.989Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.990Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/jobs?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.990Z",
+      "phase": "response",
+      "url": "/api/v1/users/me",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.991Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/notifications/unread-count",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.991Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:02.995Z",
+      "phase": "response",
+      "url": "/?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.996Z",
+      "phase": "response",
+      "url": "/jobs?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:02.998Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/page-5774d92c19309573.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.000Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/page-5774d92c19309573.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.005Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/portfolio?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.006Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/recommendations?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.006Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/applications?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.006Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/reports?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.006Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/notifications?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.007Z",
+      "phase": "response",
+      "url": "/api/v1/notifications/unread-count",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.012Z",
+      "phase": "response",
+      "url": "/portfolio?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.014Z",
+      "phase": "response",
+      "url": "/recommendations?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.016Z",
+      "phase": "response",
+      "url": "/applications?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.017Z",
+      "phase": "response",
+      "url": "/reports?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.018Z",
+      "phase": "response",
+      "url": "/notifications?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.020Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/portfolio/page-f71c07f4d3cd531a.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.020Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/portfolio/page-f71c07f4d3cd531a.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.021Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/applications/page-6c7c150248fa6025.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.021Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/applications/page-6c7c150248fa6025.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.022Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/reports/page-4e554d00f35a2243.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.022Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/reports/page-4e554d00f35a2243.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.023Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/notifications/page-a881dbac081829b0.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.023Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/notifications/page-a881dbac081829b0.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.024Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.059Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/tasks/8cf13936-e005-4b00-93f6-16c03c62ed5e?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.059Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/materials/resume/a7fad04f-29f7-4092-9b9e-c2cda4c252d8?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.064Z",
+      "phase": "response",
+      "url": "/tasks/8cf13936-e005-4b00-93f6-16c03c62ed5e?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.066Z",
+      "phase": "response",
+      "url": "/materials/resume/a7fad04f-29f7-4092-9b9e-c2cda4c252d8?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.195Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/growth?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.199Z",
+      "phase": "response",
+      "url": "/growth?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.200Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/328-99770654c99917e8.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.200Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/7788-bc81b61803be0117.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.200Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/_next/static/chunks/app/growth/page-e8f7b2e3b1baa995.js",
+      "type": "Script"
+    },
+    {
+      "at": "2026-10-09T17:08:03.203Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/328-99770654c99917e8.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.204Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/app/growth/page-e8f7b2e3b1baa995.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.204Z",
+      "phase": "response",
+      "url": "/_next/static/chunks/7788-bc81b61803be0117.js",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.459Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d/growth-tasks/af98696b-4cff-4081-aa92-3d2d656c72dd",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.459Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d/enterprise-replies/af98696b-4cff-4081-aa92-3d2d656c72dd",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.478Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d/enterprise-replies/af98696b-4cff-4081-aa92-3d2d656c72dd",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.487Z",
+      "phase": "response",
+      "url": "/api/v1/match-reports/54ea8bfc-c7f6-4706-b01c-76564b57230d/growth-tasks/af98696b-4cff-4081-aa92-3d2d656c72dd",
+      "status": 200
+    },
+    {
+      "at": "2026-10-09T17:08:03.490Z",
+      "phase": "request",
+      "method": "GET",
+      "url": "/growth/9b156ed2-8a71-4e52-8f71-256e6b1db3f8?_rsc=bvepniPeIiXtZzON",
+      "type": "Fetch"
+    },
+    {
+      "at": "2026-10-09T17:08:03.494Z",
+      "phase": "response",
+      "url": "/growth/9b156ed2-8a71-4e52-8f71-256e6b1db3f8?_rsc=bvepniPeIiXtZzON",
+      "status": 200
+    }
+  ],
+  "bodies": []
+}

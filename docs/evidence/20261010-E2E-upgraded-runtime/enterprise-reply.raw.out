@@ -1,0 +1,36 @@
+[1] info scenario-start :: scenario=reply-failure runId=upgrade-20261010
+[2] info chrome-launched :: enterprise-desktop dynamic port 62816 profile=profile-enterprise-desktop
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] evidence screenshot:reply-filled :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\05-reply-filled.png
+[6] pass desktop-request-fail-draft-acceptance :: preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true
+[7] evidence screenshot:desktop-request-fail-failure-draft :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\07-desktop-request-fail-failure-draft.png
+[8] pass desktop-request-fail-post-count :: reply POSTs=1 (expect 1, no auto-retry)
+[9] pass desktop-request-fail-server-state :: serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)
+[10] evidence screenshot:desktop-request-fail-after-refresh :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\10-desktop-request-fail-after-refresh.png
+[11] evidence screenshot:reply-filled :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\11-reply-filled.png
+[12] pass desktop-response-loss-draft-acceptance :: preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true
+[13] evidence screenshot:desktop-response-loss-failure-draft :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\13-desktop-response-loss-failure-draft.png
+[14] pass desktop-response-loss-post-count :: reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)
+[15] pass desktop-response-loss-server-state :: serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)
+[16] evidence screenshot:desktop-response-loss-after-refresh :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\16-desktop-response-loss-after-refresh.png
+[17] info chrome-stopped :: enterprise-desktop exitCode=0
+[18] info chrome-launched :: enterprise-390 dynamic port 65413 profile=profile-enterprise-390
+[19] info 390-viewport :: viewport=980 (device metrics after first load)
+[20] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\20-login-page-empty.png
+[21] pass login-ok :: landed on /jobs
+[22] evidence screenshot:reply-filled :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\22-reply-filled.png
+[23] pass 390-request-fail-draft-acceptance :: preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true
+[24] evidence screenshot:390-request-fail-failure-draft :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\24-390-request-fail-failure-draft.png
+[25] pass 390-request-fail-post-count :: reply POSTs=1 (expect 1, no auto-retry)
+[26] pass 390-request-fail-server-state :: serverReplied=false replyFormBack=true (undelivered must stay sendable after re-verify)
+[27] evidence screenshot:390-request-fail-after-refresh :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\27-390-request-fail-after-refresh.png
+[28] evidence screenshot:reply-filled :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\28-reply-filled.png
+[29] pass 390-response-loss-draft-acceptance :: preserved=true readOnly=false edit=true clearKeptTextarea=true clearedEmpty=true retype=true sendGone=true checkboxGone=true oldReportGone=true
+[30] evidence screenshot:390-response-loss-failure-draft :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\30-390-response-loss-failure-draft.png
+[31] pass 390-response-loss-post-count :: reply POSTs=2 after 2s wait=2 (expect 2 total, no auto-retry while delivery unknown)
+[32] pass 390-response-loss-server-state :: serverDelivered=true editableReplyForms=0 sendButton=false (delivered reply must not be re-sendable)
+[33] evidence screenshot:390-response-loss-after-refresh :: docs\evidence\20261010-e2e-enterprise-upgraded\reply-failure-2026-10-09T17-07-07-743Z\33-390-response-loss-after-refresh.png
+[34] info chrome-stopped :: enterprise-390 exitCode=0
+[35] pass delivered-replies :: 2 replies delivered (desktop→A, 390→B); bodies + timestamps in delivered-replies-for-student.json
+[36] pass scenario-complete
