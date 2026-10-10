@@ -1,0 +1,51 @@
+{
+  "runId": "budget-matrix-20261010",
+  "scenario": "budget-state-matrix",
+  "startedAt": "2026-10-10T03:06:30.816Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:06:30.816Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=budget-state-matrix runId=budget-matrix-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:06:31.268Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "budget-state-matrix dynamic port 58995 profile=profile-budget-state-matrix"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:06:31.427Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-06-30-815Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:06:33.354Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:06:49.362Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "budget-state-matrix exitCode=0"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:06:49.364Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: cdp timeout after 15000ms: Runtime.evaluate |     at Timeout._onTimeout (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:196:16) |     at listOnTimeout (node:internal/timers:585:17)"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-10T03:06:49.364Z"
+}

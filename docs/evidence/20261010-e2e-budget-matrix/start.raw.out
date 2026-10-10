@@ -1,0 +1,74 @@
+Owned E2E services stopped; the cp_e2e_ database and its storage directory are left in place.
+database cp_e2e_budget-matrix-20261010: created
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_initial, Initial CareerProof schema.
+INFO  [alembic.runtime.migration] Running upgrade 0001_initial -> 0002_portfolio_history, Persist upload history links and idempotency keys without changing existing records.
+INFO  [alembic.runtime.migration] Running upgrade 0002_portfolio_history -> 0003_real_matching, Persist job filters, recoverable tasks and immutable report inputs.
+INFO  [alembic.runtime.migration] Running upgrade 0003_real_matching -> 0004_ai_evidence_analysis, Store report-level AI workflow metadata.
+INFO  [alembic.runtime.migration] Running upgrade 0004_ai_evidence_analysis -> 0005_project_material_role, Record whether an uploaded project version is a personal work or reference.
+INFO  [alembic.runtime.migration] Running upgrade 0005_project_material_role -> 0006_job_requirement_source, Retain exact source spans for AI-assisted job requirement drafts.
+INFO  [alembic.runtime.migration] Running upgrade 0006_job_requirement_source -> 0007_material_archiving, Keep retired fixtures recoverable without crowding material selection.
+INFO  [alembic.runtime.migration] Running upgrade 0007_material_archiving -> 0008_application_workflow, Scope enterprise reads to explicit, revocable application consent.
+INFO  [alembic.runtime.migration] Running upgrade 0008_application_workflow -> 0009_evidence_growth, Bind a student's evidence gap to selected versions and a follow-up report.
+INFO  [alembic.runtime.migration] Running upgrade 0009_evidence_growth -> 0010_notifications, Transactional application event notifications; no historical backfill.
+INFO  [alembic.runtime.migration] Running upgrade 0010_notifications -> 0011_reply_refs, Keep human reply links bound to the submitted report's own evidence.
+INFO  [alembic.runtime.migration] Running upgrade 0011_reply_refs -> 0012_knowledge_vec384, Switch the knowledge-chunk index to 384-dimension semantic embeddings.
+INFO  [alembic.runtime.migration] Running upgrade 0012_knowledge_vec384 -> 0013_ai_usage_idempotency, Add the per-request idempotency key to ai_usage_logs.
+INFO  [alembic.runtime.migration] Running upgrade 0013_ai_usage_idempotency -> 0014_growth_target_job, Persist the student's explicitly selected private comparison target.
+INFO  [alembic.runtime.migration] Running upgrade 0014_growth_target_job -> 0015_growth_answer_drafts, Store the student's private answer draft for one evidence growth task.
+INFO  [alembic.runtime.migration] Running upgrade 0015_growth_answer_drafts -> 0016_ai_request_attempts, Persist each physical model request attempt for the OPS-01B verification protocol.
+INFO  [alembic.runtime.migration] Running upgrade 0016_ai_request_attempts -> 0017_ai_shared_budget, Persistent shared budget schema; activation remains disabled until audited cutover.
+{
+  "run": "budget-matrix-20261010",
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "f251f248-452f-4756-9de6-a7cf21f02005",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "snapshotHashes": {},
+  "syntheticOnly": true
+}
+{
+  "runId": "budget-matrix-20261010",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "4ea29876-8c44-46c9-a71b-5fab9c75fdee",
+    "B": "db83e31b-4800-4b8c-9434-4f5422d98a35"
+  },
+  "reports": {
+    "A": "2e60b88e-ca93-4ce4-b88e-a09c11760d0e",
+    "B": "c488f20f-7cd1-44bd-9ed6-410c5be1bcb5",
+    "A2": "67d589ab-c470-4dea-9762-cf7f53717b14"
+  },
+  "materials": {
+    "student": "cacde00c-7fc1-41ba-aed8-e66c5d9ef1ed",
+    "studentA2": "31959361-123f-4458-8170-29e6fb151757"
+  },
+  "applications": {
+    "A": {
+      "id": "d9cefb92-9ee1-49a5-8e07-33ddde46d5f2",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "4c74a61d10839557ff9d113f8757df9921df72e26c5ae495bf19137e7594c47d"
+    },
+    "B": {
+      "id": "8c979aa5-4afc-44b4-9b37-4dd7fa59142d",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "5059715021573e11c7a8633be1eb5ae71acefc3c0efe009147815e415c3ba7e9"
+    },
+    "A2": {
+      "id": "3c4b645b-2894-4e8e-9105-b99041439df4",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "ce754501f4cb32eb1a1e06f104e3ab415dd1766e2cb28ba2a3be3f147d6de16a"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "created"
+}
+CareerProof E2E run 'budget-matrix-20261010' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_budget-matrix-20261010 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\budget-matrix-20261010, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\budget-matrix-20261010.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId budget-matrix-20261010.

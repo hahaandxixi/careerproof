@@ -1,0 +1,76 @@
+{
+  "run": "budget-matrix2-20261010",
+  "readOnlyTransaction": true,
+  "snapshotHashes": {
+    "c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923": "b6f2b47deb294bf17d746ffb10acdb247f4f1c218fd17ec339d66886bf121817",
+    "80a415be-f84c-4806-a049-cfebcbfcff8f": "23e8008eb1b3d0640fa40d08041a48c3507d91622454beefce4b91cf11071a82",
+    "37d17d23-ac9b-432d-b154-b7cb360e168e": "7d9c83ca15ed100d69822a00e1338681ec3e5eb698f25a4294177a9cc4f28d4e"
+  },
+  "allSeededSnapshotsUnchanged": true,
+  "attempts": [
+    {
+      "id": "038e3d73-c328-4963-91c6-cef92d8e80b4",
+      "taskId": "078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+      "state": "booked",
+      "reason": null,
+      "input": 100,
+      "output": 80
+    },
+    {
+      "id": "e223c7ed-773e-42b0-aa50-e804badc8117",
+      "taskId": "2f47ff8e-b2bb-4cd2-a566-fe898cdd8ca9",
+      "state": "usage_unknown",
+      "reason": "missing_usage",
+      "input": null,
+      "output": null
+    },
+    {
+      "id": "e27cd775-142e-4a43-a1b6-a7d1c1df51ba",
+      "taskId": "737ce1fa-4e0d-4200-9d46-8eae0b639d98",
+      "state": "usage_unknown",
+      "reason": "missing_usage",
+      "input": null,
+      "output": null
+    }
+  ],
+  "reservations": [
+    {
+      "attemptId": "038e3d73-c328-4963-91c6-cef92d8e80b4",
+      "state": "settled",
+      "inputBound": 4013,
+      "outputBound": 3000,
+      "actualInput": 100,
+      "actualOutput": 80
+    },
+    {
+      "attemptId": "e223c7ed-773e-42b0-aa50-e804badc8117",
+      "state": "held",
+      "inputBound": 4013,
+      "outputBound": 3000,
+      "actualInput": null,
+      "actualOutput": null
+    },
+    {
+      "attemptId": "e27cd775-142e-4a43-a1b6-a7d1c1df51ba",
+      "state": "held",
+      "inputBound": 4013,
+      "outputBound": 3000,
+      "actualInput": null,
+      "actualOutput": null
+    }
+  ],
+  "verificationTasks": [
+    {
+      "id": "2f47ff8e-b2bb-4cd2-a566-fe898cdd8ca9",
+      "status": "completed"
+    },
+    {
+      "id": "078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+      "status": "completed"
+    },
+    {
+      "id": "737ce1fa-4e0d-4200-9d46-8eae0b639d98",
+      "status": "failed"
+    }
+  ]
+}

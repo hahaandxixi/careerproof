@@ -1,0 +1,12 @@
+{
+  "allAssertionsPassed": true,
+  "physicalAttempts": 3,
+  "settled": 1,
+  "held": 2,
+  "knownInput": 100,
+  "knownOutput": 80,
+  "heldInput": 8026,
+  "heldOutput": 6000,
+  "unchangedDeliverySnapshots": 3,
+  "strict390Views": 8
+}

@@ -1,0 +1,178 @@
+{
+  "runId": "budget-matrix2-20261010",
+  "scenario": "budget-state-matrix",
+  "startedAt": "2026-10-10T03:10:34.618Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:10:34.618Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=budget-state-matrix runId=budget-matrix2-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:10:35.066Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "budget-state-matrix dynamic port 60645 profile=profile-budget-state-matrix"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:10:35.234Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:10:37.182Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:10:40.816Z",
+      "name": "in-flight-held-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 0 / 输出 0 Tokens\n\n保守预留：输入上界 4013 / 输出上界 3000 Tokens\n\n待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:10:40.865Z",
+      "name": "screenshot:in-flight-held-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\06-in-flight-held-390.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:10:54.599Z",
+      "name": "known-settled-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 0 / 输出上界 0 Tokens\n\n待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T03:10:54.652Z",
+      "name": "screenshot:known-settled-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\08-known-settled-390.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T03:10:55.991Z",
+      "name": "delay-reload-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 0 / 输出上界 0 Tokens\n\n待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T03:10:56.058Z",
+      "name": "screenshot:delay-reload-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\10-delay-reload-390.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T03:10:59.661Z",
+      "name": "unknown-held-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 4013 / 输出上界 3000 Tokens\n\n待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T03:10:59.720Z",
+      "name": "screenshot:unknown-held-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\12-unknown-held-390.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-10T03:11:00.062Z",
+      "name": "unknown-reuse-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 4013 / 输出上界 3000 Tokens\n\n待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-10T03:11:00.120Z",
+      "name": "screenshot:unknown-reuse-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\14-unknown-reuse-390.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-10T03:11:01.465Z",
+      "name": "unknown-reload-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 4013 / 输出上界 3000 Tokens\n\n待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-10T03:11:01.538Z",
+      "name": "screenshot:unknown-reload-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\16-unknown-reload-390.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-10T03:11:04.973Z",
+      "name": "http-failure-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 8026 / 输出上界 6000 Tokens\n\n待核实收据：2 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-10T03:11:05.037Z",
+      "name": "screenshot:http-failure-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\18-http-failure-390.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-10T03:11:05.038Z",
+      "name": "failed-task-has-no-stale-suggestion",
+      "status": "pass"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-10T03:11:06.348Z",
+      "name": "failure-reload-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 8026 / 输出上界 6000 Tokens\n\n待核实收据：2 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n本次收据不完整；已知部分不代表全部用量。"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-10T03:11:06.402Z",
+      "name": "screenshot:failure-reload-390",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\21-failure-reload-390.png"
+    },
+    {
+      "n": 22,
+      "at": "2026-10-10T03:11:06.518Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "budget-state-matrix exitCode=0"
+    },
+    {
+      "n": 23,
+      "at": "2026-10-10T03:11:06.518Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-state-views.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-10-34-617Z\\budget-matrix-network.json"
+  ],
+  "finishedAt": "2026-10-10T03:11:06.519Z"
+}

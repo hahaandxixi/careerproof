@@ -190,11 +190,13 @@ class ChromeInstance {
     const id = this.nextId++;
     const payload = { id, method, params };
     if (sessionId) payload.sessionId = sessionId;
+    const timeoutMs = method === "Runtime.evaluate" && Number.isFinite(params.timeout)
+      ? Math.max(15000, Math.min(90000, params.timeout + 2000)) : 15000;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new CdpError(`cdp timeout after 15000ms: ${method}`));
-      }, 15000);
+        reject(new CdpError(`cdp timeout after ${timeoutMs}ms: ${method}`));
+      }, timeoutMs);
       this.pending.set(id, { resolve: v => { clearTimeout(timer); resolve(v); }, reject: e => { clearTimeout(timer); reject(e); }, method });
       this.ws.send(JSON.stringify(payload));
     });
@@ -631,7 +633,13 @@ async function openBoard(tab, jobId) {
 }
 
 async function openApplication(tab, applicationId) {
-  await tab.click({ tag: `th#application-${applicationId} button` }, { label: `open application ${applicationId.slice(0, 8)}` });
+  await tab.clickStored(`(() => {
+    const button = document.querySelector(${JSON.stringify(`th#application-${applicationId} button`)});
+    if (!button) return false;
+    button.scrollIntoView({block:'center', inline:'center'});
+    window.__e2eClickEl = button;
+    return true;
+  })()`, `open application ${applicationId.slice(0, 8)}`);
   await tab.waitFor(`() => Array.from(document.querySelectorAll("h2")).some(h => (h.textContent || "").includes("投递时固定报告"))`, { timeoutMs: 20000, label: `report open ${applicationId.slice(0, 8)}` });
   await sleep(400); // radar chart and report items render after the header
 }
@@ -786,6 +794,107 @@ async function scenarioVerification(creds, budget = false) {
     record({ name: "verification-refresh", status: "pass", detail: "saved validated synthetic suggestion remains visible after page reload" });
     saveJson("verification-network", tab.networkLog);
   } finally {
+    await browser.stop();
+  }
+}
+
+async function scenarioBudgetStateMatrix(creds) {
+  const manifestPath = path.join(ROOT, "backend", ".tmp", "e2e-run", `processes-${RUN_ID}.json`);
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  const storage = path.join(ROOT, "backend", ".tmp", "e2e-storage", RUN_ID);
+  if (manifest.runId !== RUN_ID || !manifest.syntheticVerification ||
+      manifest.aiProvider !== "mock" || manifest.aiExternalEnabled !== "false" ||
+      path.resolve(manifest.storageDir) !== storage || fs.lstatSync(storage).isSymbolicLink()) {
+    throw new CdpError("Budget matrix requires the owned isolated synthetic runtime");
+  }
+  const control = path.join(storage, "synthetic-verification-control.json");
+  if (fs.existsSync(control) && fs.lstatSync(control).isSymbolicLink()) {
+    throw new CdpError("Linked synthetic control refused");
+  }
+  const browser = new ChromeInstance("budget-state-matrix", { width: 390, height: 844 });
+  const views = [];
+  let matrixTab;
+  async function capture(tab, label, predicate) {
+    await tab.waitFor(`() => {
+      const text = document.querySelector('[aria-label="今日 AI 预算"]')?.innerText || '';
+      return (${predicate})(text);
+    }`, { timeoutMs: 10000, label });
+    const view = await tab.evalJs(`({text:document.querySelector('[aria-label="今日 AI 预算"]').innerText,
+      width:innerWidth,pageWidth:document.documentElement.scrollWidth,
+      alerts:Array.from(document.querySelectorAll('[role=alert]')).map(e=>e.innerText)})`);
+    views.push({ label, ...view });
+    if (view.width !== 390 || view.pageWidth > 390) throw new CdpError("Budget viewport overflow");
+    saveJson("budget-state-views", views);
+    record({ name: label, status: "pass", detail: view.text });
+    await saveShot(tab, label);
+  }
+  try {
+    await browser.launch();
+    const tab = await browser.openTab();
+    matrixTab = tab;
+    await tab.enable();
+    await tab.send("Emulation.setDeviceMetricsOverride", {
+      width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
+    });
+    await login(tab, creds.accounts.enterprise);
+    for (const [key, mode, jobId] of [
+      ["A", "delay", creds.enterprise.jobIdA],
+      ["B", "unknown", creds.enterprise.jobIdB],
+      ["A2", "failure", creds.enterprise.jobIdA],
+    ]) {
+      fs.writeFileSync(control, JSON.stringify({ mode, delaySeconds: mode === "delay" ? 15 : 0 }));
+      await openBoard(tab, jobId);
+      await openApplication(tab, creds.applications[key].id);
+      await tab.click({ tag: "label", text: "我同意将该岗位当前要求" }, { label: `${mode} consent` });
+      await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: `${mode} generate` });
+      if (mode === "delay") {
+        await capture(tab, "in-flight-held-390", `text => {
+          const m = text.match(/输入上界 (\\d+).*输出上界 (\\d+)/);
+          return m && Number(m[1])>0 && Number(m[2])>0;
+        }`);
+        await tab.waitFor(`() => document.body.innerText.includes('合成核验建议：')`, {
+          timeoutMs: 30000, label: "delayed known completion",
+        });
+        await capture(tab, "known-settled-390", `text => text.includes('输入 100 / 输出 80 Tokens') &&
+          text.includes('输入上界 0 / 输出上界 0') && text.includes('待核实收据：0 条')`);
+      } else if (mode === "unknown") {
+        await tab.waitFor(`() => document.body.innerText.includes('合成核验建议：')`, {
+          timeoutMs: 30000, label: "unknown receipt completion",
+        });
+        await capture(tab, "unknown-held-390", `text => text.includes('输入 100 / 输出 80 Tokens') &&
+          text.includes('待核实收据：1 条') && text.includes('本次收据不完整') &&
+          /输入上界 [1-9]/.test(text)`);
+        await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: "unknown result reuse" });
+        await tab.waitFor(`() => document.body.innerText.includes('已复用')`, {
+          timeoutMs: 15000, label: "unknown cached reuse",
+        });
+        await capture(tab, "unknown-reuse-390", `text => text.includes('待核实收据：1 条') &&
+          text.includes('输入 100 / 输出 80 Tokens')`);
+      } else {
+        await tab.waitFor(`() => Boolean(document.querySelector('[role=alert]'))`, {
+          timeoutMs: 30000, label: "provider failure visible",
+        });
+        await capture(tab, "http-failure-390", `text => text.includes('输入 100 / 输出 80 Tokens') &&
+          text.includes('待核实收据：2 条')`);
+        const absent = await tab.evalJs(`!document.body.innerText.includes('合成核验建议：')`);
+        record({ name: "failed-task-has-no-stale-suggestion", status: absent ? "pass" : "fail" });
+      }
+      await openBoard(tab, jobId);
+      await openApplication(tab, creds.applications[key].id);
+      await capture(tab, `${mode}-reload-390`, mode === "delay"
+        ? `text => text.includes('输入 100 / 输出 80 Tokens')`
+        : `text => text.includes('待核实收据：${mode === "unknown" ? 1 : 2} 条')`);
+    }
+    saveJson("budget-matrix-network", tab.networkLog);
+  } catch (error) {
+    if (matrixTab) {
+      saveJson("budget-matrix-failure-network", matrixTab.networkLog);
+      saveJson("budget-matrix-failure-dom", await matrixTab.bodyText().catch(() => "unavailable"));
+      await saveShot(matrixTab, "budget-matrix-failure").catch(() => {});
+    }
+    throw error;
+  } finally {
+    // Leave the controlled fixture file as evidence of its final mode; no auto-retry.
     await browser.stop();
   }
 }
@@ -1411,6 +1520,7 @@ async function scenarioViewport390(creds) {
 const SCENARIOS = {
   verification: scenarioVerification,
   "budget-verification": creds => scenarioVerification(creds, true),
+  "budget-state-matrix": scenarioBudgetStateMatrix,
   skeleton: scenarioSkeleton,
   "reply-failure": scenarioReplyFailure,
   "notification-filter": scenarioNotificationFilter,

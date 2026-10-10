@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: documented defaults and existing scenario names remain usable
+ok 1 - documented defaults and existing scenario names remain usable
+  ---
+  duration_ms: 1.338
+  type: 'test'
+  ...
+# Subtest: separate evidence destination accepts a bounded directory name
+ok 2 - separate evidence destination accepts a bounded directory name
+  ---
+  duration_ms: 0.3756
+  type: 'test'
+  ...
+# Subtest: a delivery forty seconds before withdrawal is historical; same-second rounding is not
+ok 3 - a delivery forty seconds before withdrawal is historical; same-second rounding is not
+  ---
+  duration_ms: 0.2685
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run",".."]
+ok 4 - reject unsafe or ambiguous CLI ["--run",".."]
+  ---
+  duration_ms: 0.0945
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","."]
+ok 5 - reject unsafe or ambiguous CLI ["--run","."]
+  ---
+  duration_ms: 0.0655
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","a..b"]
+ok 6 - reject unsafe or ambiguous CLI ["--run","a..b"]
+  ---
+  duration_ms: 0.0652
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"]
+ok 7 - reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"]
+  ---
+  duration_ms: 0.0955
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run"]
+ok 8 - reject unsafe or ambiguous CLI ["--run"]
+  ---
+  duration_ms: 0.0729
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","valid","--run","other"]
+ok 9 - reject unsafe or ambiguous CLI ["--run","valid","--run","other"]
+  ---
+  duration_ms: 0.222
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--other","valid"]
+ok 10 - reject unsafe or ambiguous CLI ["--other","valid"]
+  ---
+  duration_ms: 0.2403
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","../../outside"]
+ok 11 - reject unsafe or ambiguous CLI ["--scenario","../../outside"]
+  ---
+  duration_ms: 0.1146
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","..\\\\..\\\\outside"]
+ok 12 - reject unsafe or ambiguous CLI ["--scenario","..\\\\..\\\\outside"]
+  ---
+  duration_ms: 0.0499
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"]
+ok 13 - reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"]
+  ---
+  duration_ms: 0.0377
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+ok 14 - reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+  ---
+  duration_ms: 0.0448
+  type: 'test'
+  ...
+# Subtest: actual CLI refuses a scenario traversal before creating runtime/evidence directories
+ok 15 - actual CLI refuses a scenario traversal before creating runtime/evidence directories
+  ---
+  duration_ms: 64.6735
+  type: 'test'
+  ...
+# Subtest: malformed synthetic credentials never expose JSON source fragments
+ok 16 - malformed synthetic credentials never expose JSON source fragments
+  ---
+  duration_ms: 0.3891
+  type: 'test'
+  ...
+# Subtest: withdrawn notification needs positive unavailable evidence, missing evidence is blocked
+ok 17 - withdrawn notification needs positive unavailable evidence, missing evidence is blocked
+  ---
+  duration_ms: 0.0872
+  type: 'test'
+  ...
+# Subtest: unexpected secret-bearing detail is redacted in both console and JSON evidence
+ok 18 - unexpected secret-bearing detail is redacted in both console and JSON evidence
+  ---
+  duration_ms: 0.1342
+  type: 'test'
+  ...
+# Subtest: withdrawn-card verification requires every open card to land, and rejects the withdrawn target
+ok 19 - withdrawn-card verification requires every open card to land, and rejects the withdrawn target
+  ---
+  duration_ms: 0.2262
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 152.2223

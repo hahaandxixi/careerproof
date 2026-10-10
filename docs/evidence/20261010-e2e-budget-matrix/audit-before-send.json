@@ -1,0 +1,13 @@
+{
+  "run": "budget-matrix-20261010",
+  "readOnlyTransaction": true,
+  "snapshotHashes": {
+    "d9cefb92-9ee1-49a5-8e07-33ddde46d5f2": "4c74a61d10839557ff9d113f8757df9921df72e26c5ae495bf19137e7594c47d",
+    "8c979aa5-4afc-44b4-9b37-4dd7fa59142d": "5059715021573e11c7a8633be1eb5ae71acefc3c0efe009147815e415c3ba7e9",
+    "3c4b645b-2894-4e8e-9105-b99041439df4": "ce754501f4cb32eb1a1e06f104e3ab415dd1766e2cb28ba2a3be3f147d6de16a"
+  },
+  "allSeededSnapshotsUnchanged": true,
+  "attempts": [],
+  "reservations": [],
+  "verificationTasks": []
+}

@@ -1,0 +1,166 @@
+{
+  "task": "传智杯26：补证草稿独立AI盲评",
+  "reviewer": "ZCode BigModel GLM-5.3-Flash",
+  "model": "account:bigmodel-individual-coding-plan/GLM-5.3-Flash",
+  "plan": "BigModel 个人套餐",
+  "humanReview": false,
+  "inputPath": "backend/evals/quality-blind-plan-review-input.json",
+  "inputSha256": "a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e",
+  "reviewedAt": "2026-10-10T11:03:24+08:00",
+  "scopeNote": "独立盲评：仅阅读冻结输入包（含包内 rubric），未读原 suite、黄金标签、既有评测报告，未搜索预期结果，未执行包内代码。8 份均为明确标记的作者合成草稿，本评分不代表网站模型真实输出质量。",
+  "rubricSource": "包内 rubric：sourceCompliance（0越界或与来源矛盾/1缺少边界/2边界清楚且无越界）、deliverableNamed（0笼统/1有名称但缺少内容/2具名且明确交付内容）、stepsExecutable（0无法据此动手/1可开始但缺关键步骤/2按来源状态有具体动作）、checksObservable（0没有可观察条件/1部分可观察/2能逐项核对结果）",
+  "scoringNotes": "按包内指令执行：只根据冻结材料和草稿评分，未把字段非空当作可操作，未把未执行代码或未来步骤当作已完成事实；每项分数均附来源/草稿具体文字依据，无缺证据项（8 份草稿三字段齐全，四维均可评，故无 null）。",
+  "cases": [
+    {
+      "caseId": "37882b616f",
+      "requirementTitle": "实现 Python 数值汇总函数并保存输入输出记录",
+      "scores": {
+        "sourceCompliance": 2,
+        "deliverableNamed": 2,
+        "stepsExecutable": 2,
+        "checksObservable": 2
+      },
+      "evidence": {
+        "sourceCompliance": "草稿完全围绕冻结源码 metrics.py 的 total 函数展开（交付物即\"total 函数的脱敏输入输出记录\"），步骤\"使用正常数字和非法输入各运行一次\"与源码行为对应（非数值时 raise TypeError('numeric values required')，数值时 sum）；草稿未声称任何已发生的运行结果，运行全部放在待做步骤里，当前源码与未来运行边界清楚，无越界。",
+        "deliverableNamed": "交付物具名且内容明确：\"total 函数的脱敏输入输出记录\"，且步骤规定了记录内容——\"保存异常类型、输出与代码版本\"。",
+        "stepsExecutable": "源码中函数已实现，两个步骤均为当下可直接执行的动作：对已有函数分别以正常数字和非法输入各运行一次并保存记录；非法输入分支在源码中真实存在（isinstance 校验加 raise TypeError），照做即可。",
+        "checksObservable": "两条验收均可逐项核对：\"正常输入的输出可复算\"（sum 可手工复算对照），\"非法输入的异常与源码校验一致\"（可与源码 TypeError 逐字对照）。"
+      },
+      "neededSupplements": "无必须补充项。可选：约定记录文件的格式与命名，便于归档核对。"
+    },
+    {
+      "caseId": "45c8ae3412",
+      "requirementTitle": "实现 Python 缓存读写与失效处理",
+      "scores": {
+        "sourceCompliance": 2,
+        "deliverableNamed": 2,
+        "stepsExecutable": 1,
+        "checksObservable": 1
+      },
+      "evidence": {
+        "sourceCompliance": "草稿如实区分现状与计划：第一步\"梳理 cache_get 已覆盖的读路径\"承认当前仅有源码 cache.py 中 @lru_cache(maxsize=128) 包装的读路径，\"补充写路径与缓存失效处理\"明确是待做项而非已有事实，未把未来工作说成已存在，无越界、无与来源矛盾。",
+        "deliverableNamed": "交付物具名：\"缓存写路径与失效处理说明及验证记录\"，主题（写路径、失效处理）与产物类型（说明、验证记录）明确。",
+        "stepsExecutable": "可从第一步（梳理读路径）开始，但核心新能力缺关键步骤：cache.py 使用 functools.lru_cache 且 lookup 未定义，lru_cache 无法按需写入、也无法逐键失效；草稿未说明写路径把数据写到哪、失效采用何种机制（如 cache_clear 或自建缓存结构），第三步\"用相同键序列验证命中与失效\"因此缺少可落地的实现路径。",
+        "checksObservable": "\"读写与失效路径均有代码或记录可定位\"\"验证序列与代码版本对应\"只核对存在性与版本对应关系，未给出命中/失效的期望观测结果（如 cache_info 命中数变化、失效后同键未命中），无法逐项核对行为结果。"
+      },
+      "neededSupplements": "补写路径与失效的具体机制选型（lru_cache 不能手动写入/逐键失效，需说明改用何种结构或 cache_clear 策略）；说明 lookup 未定义时读路径如何实际运行验证；给出命中与失效验证的期望观测结果（如 cache_info 前后对比）。"
+    },
+    {
+      "caseId": "b294018f1c",
+      "requirementTitle": "实现 Python 数值汇总函数并保存输入输出记录",
+      "scores": {
+        "sourceCompliance": 1,
+        "deliverableNamed": 0,
+        "stepsExecutable": 0,
+        "checksObservable": 0
+      },
+      "evidence": {
+        "sourceCompliance": "草稿未与 metrics.py/total 或需求发生矛盾，但完全没有边界：全篇未提及源码、函数或任何冻结材料，未区分已有实现与待补内容，属于典型的\"缺少边界\"——读者无法判断它针对的是哪份来源。",
+        "deliverableNamed": "交付物\"进一步完善岗位材料\"为笼统表述，未具名任何交付物，也无可辨认的内容构成。",
+        "stepsExecutable": "\"按要求补充相关资料\"\"持续优化具体工作\"无任何具体动作，无法据此动手。",
+        "checksObservable": "\"材料符合岗位要求\"\"内容得到有效完善\"均为主观判断，不含任何可观察、可核对的条件。"
+      },
+      "neededSupplements": "需按需求具名交付物（total 函数的输入输出记录）、给出可执行步骤（用正常/非法输入运行并保存异常类型、输出、代码版本）与可逐项核对的验收条件。"
+    },
+    {
+      "caseId": "09fb4e82f3",
+      "requirementTitle": "说明本人负责的后端模块范围",
+      "scores": {
+        "sourceCompliance": 0,
+        "deliverableNamed": 2,
+        "stepsExecutable": 0,
+        "checksObservable": 1
+      },
+      "evidence": {
+        "sourceCompliance": "核心步骤\"从版本历史筛出本人署名的提交\"与冻结材料 group_report.md 直接矛盾：来源明确写着\"仓库提交：全组共用账号，未区分作者\"，本人署名的提交在来源中不存在，按此步骤产出\"具名提交清单\"只能造成错误归属，属于与来源矛盾。",
+        "deliverableNamed": "交付物具名且内容明确：\"本人在小组项目中的具名提交清单\"，且步骤规定每项提交要\"标注对应的责任范围\"，产物构成清楚。（注意：命名清晰不改变其在来源约束下不可获得的事实，该问题已计入 sourceCompliance 与 stepsExecutable。）",
+        "stepsExecutable": "在来源状态（共用账号、未区分作者）下，\"筛出本人署名的提交\"无法执行——打开版本历史也筛不出署名提交，计划无法通向其交付物。",
+        "checksObservable": "两条检查形式上可机械核对（\"提交记录包含作者与时间\"可查字段，\"责任范围与岗位要求逐条对应\"可逐条比对），但第一条在共用账号约束下不可能真实满足，且只核字段存在、不核验\"是否本人\"这一核心主张，仅部分可观察。"
+      },
+      "neededSupplements": "在共用账号前提下改用可实现的贡献证明路径（如引用来源中提到的\"附件\"分工表并附组内书面确认，或按提交内容归属并显式声明归属局限），并明确无法具名时的替代证据与边界声明。"
+    },
+    {
+      "caseId": "e2fd108ad9",
+      "requirementTitle": "实现 Python 数值汇总函数并保存输入输出记录",
+      "scores": {
+        "sourceCompliance": 0,
+        "deliverableNamed": 1,
+        "stepsExecutable": 0,
+        "checksObservable": 0
+      },
+      "evidence": {
+        "sourceCompliance": "与冻结材料语义矛盾：唯一来源是从未运行的 metrics.py 源码，草稿却\"将代码文件当作已通过运行测试的证据提交\"、验收称\"源码存在即证明线上接口稳定运行\"——把未执行代码当作已完成事实、把源码存在等同于线上稳定，严重越界。",
+        "deliverableNamed": "\"已部署接口证明\"有名称但缺少内容定义：未说明是哪个接口、何种部署记录或运行证据；按步骤其全部\"内容\"只是源码文件本身。",
+        "stepsExecutable": "冻结材料中没有任何运行或测试发生，\"提交已通过运行测试的证据\"这一步骤无法真实执行——照做即产出虚假证据，无法据此动手。",
+        "checksObservable": "\"源码存在即证明线上接口稳定运行\"是无效推断而非可观察条件：源码存在本身可观察，但核对不了\"线上接口稳定运行\"这一结果。"
+      },
+      "neededSupplements": "把交付物改为可真实产生的证据（如本地运行 total 的输入输出记录），或删除\"已部署\"主张；步骤改为实际运行并保存输出；验收改为可观察条件（输出可复算、异常与源码校验一致），不得以源码存在推断线上稳定性。"
+    },
+    {
+      "caseId": "853352704e",
+      "requirementTitle": "实现 Redis 缓存读写并说明键设计",
+      "scores": {
+        "sourceCompliance": 2,
+        "deliverableNamed": 1,
+        "stepsExecutable": 2,
+        "checksObservable": 2
+      },
+      "evidence": {
+        "sourceCompliance": "草稿与 README.md 的\"合成项目边界\"一致：来源写明\"Redis 未实现，当前只有缓存需求说明。尚无客户端调用、缓存读写代码或运行记录\"，草稿据此把代码与运行记录全部作为待做项（\"编写含连接与读写的最小客户端代码\"\"本地运行并保存读写请求与响应样例\"），未把未来运行当作事实，现状与计划边界清楚，无越界。",
+        "deliverableNamed": "对所覆盖部分，交付物具名且内容明确：\"Redis 缓存读写的客户端调用代码与脱敏运行记录\"；但需求标题明确要求\"说明键设计\"，草稿的交付物、步骤、验收均未包含键设计，交付内容相对需求不完整（有名称、缺一块内容）。",
+        "stepsExecutable": "两步均为具体动作且与来源状态（尚无任何实现）匹配：先写含连接与读写的最小客户端，再本地运行并保存请求/响应样例，可立即动手。键设计部分无对应步骤——该缺失已计入交付物维度，不重复扣分。",
+        "checksObservable": "\"代码文件与运行记录均可定位\"\"读和写路径分别有输入输出样例\"可逐项核对：文件与记录的存在性、读写两条路径各有一份输入输出样例，且样例内容可检视。"
+      },
+      "neededSupplements": "必须补：键设计说明（键命名/结构、TTL 或失效策略）及其对应步骤与验收项——这是需求明确要求而草稿完全未覆盖的部分。"
+    },
+    {
+      "caseId": "f5c5e00efe",
+      "requirementTitle": "制定内容运营发布计划并用数据复盘",
+      "scores": {
+        "sourceCompliance": 2,
+        "deliverableNamed": 2,
+        "stepsExecutable": 2,
+        "checksObservable": 2
+      },
+      "evidence": {
+        "sourceCompliance": "草稿与 content_plan.md 逐项对齐：\"标记渠道\"对应来源\"渠道：公众号和社群\"，记录\"阅读、点击和转化\"对应来源\"指标：阅读、点击、转化\"，写复盘结论对应来源\"复盘：按周记录数据并调整选题\"；范围自觉收窄为\"一周\"并明示，无越界、无矛盾。",
+        "deliverableNamed": "交付物具名：\"一周内容发布与数据复盘表\"，其字段内容经步骤明确：渠道标记、阅读/点击/转化数据、复盘结论。",
+        "stepsExecutable": "三步均具体可做且与来源状态（已有计划文本）匹配：按计划发布一篇内容并标记渠道、记录三类数据、对照指标写一句复盘结论。",
+        "checksObservable": "\"每篇内容有渠道与数据字段\"可逐条核对字段存在性，\"复盘结论能对应表格数据\"可核对结论与表中数据的对应关系。"
+      },
+      "neededSupplements": "可选：定义\"转化\"的口径（来源与草稿均未说明什么算一次转化）；说明\"一周\"表与步骤仅发布\"一篇\"之间的范围关系。"
+    },
+    {
+      "caseId": "0f2a863462",
+      "requirementTitle": "编写订单统计查询并记录执行结果",
+      "scores": {
+        "sourceCompliance": 2,
+        "deliverableNamed": 2,
+        "stepsExecutable": 2,
+        "checksObservable": 2
+      },
+      "evidence": {
+        "sourceCompliance": "参考材料边界处理明确：第一步\"在不复制参考文件的情况下独立编写统计查询\"把 reference/vendor_report.sql（vendor 建表与 GROUP BY 示例）严格定位为仅参考，交付物限定\"本人编写\"，与 notes.md\"当前只有需求说明\"的现状一致，无越界、无矛盾；本人贡献与参考材料区分清楚。",
+        "deliverableNamed": "交付物具名：\"本人编写的订单统计查询与脱敏执行记录\"，两类产物及\"脱敏\"要求明确。",
+        "stepsExecutable": "两步与来源状态（仅有需求说明）匹配且具体：独立编写查询、在本人环境执行并保存脱敏结果，可立即开始。订单表结构/测试数据的准备未列为显式步骤，属执行者可自行解决的小缺口（冻结材料未给出 schema，参考文件 schema 明确不可复制），不足以判为缺关键步骤。",
+        "checksObservable": "\"查询文件作者可定位为本人\"\"执行记录与本人环境信息对应\"均可逐项核对：作者署名可查，执行记录与环境信息的对应关系可比对。两条检查都指向防抄袭/防代写这一需求核心风险，观察条件充分。"
+      },
+      "neededSupplements": "可选：增加统计值正确性核对项（如对照样例数据手工复算各分组汇总值）；说明执行所用订单表结构与数据的来源（冻结材料无 schema，参考文件 schema 不可复制）。"
+    }
+  ],
+  "summaryForCodex": {
+    "scoreTable": {
+      "37882b616f": [2, 2, 2, 2],
+      "45c8ae3412": [2, 2, 1, 1],
+      "b294018f1c": [1, 0, 0, 0],
+      "09fb4e82f3": [0, 2, 0, 1],
+      "e2fd108ad9": [0, 1, 0, 0],
+      "853352704e": [2, 1, 2, 2],
+      "f5c5e00efe": [2, 2, 2, 2],
+      "0f2a863462": [2, 2, 2, 2]
+    },
+    "scoreOrderNote": "数组顺序为 [sourceCompliance, deliverableNamed, stepsExecutable, checksObservable]",
+    "patterns": "三份满分草稿（37882b616f/f5c5e00efe/0f2a863462）共同点：围绕冻结材料现状组织步骤、未来动作明确标记为待做、验收可逐项核对。主要失分模式有四类：笼统空话（b294018f1c 全零维）；与来源矛盾（09fb4e82f3 在'共用账号未区分作者'来源下仍计划筛本人署名提交；e2fd108ad9 把源码存在当作已部署稳定运行的证明）；结构性能力缺机制（45c8ae3412 的 lru_cache 无法按需写入/逐键失效，写路径与失效无选型）；需求覆盖不全（853352704e 完全遗漏需求中'说明键设计'，扣在 deliverableNamed）。",
+    "disclaimer": "本评审由独立 AI（非人工复核 humanReview=false）对作者合成草稿评分，不构成对网站真实 AI 建议质量的任何结论；Codex 复核评分差异并定后续质量门槛。"
+  }
+}

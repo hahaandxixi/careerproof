@@ -1,0 +1,87 @@
+[1] info scenario-start :: scenario=budget-state-matrix runId=budget-matrix2-20261010
+[2] info chrome-launched :: budget-state-matrix dynamic port 60645 profile=profile-budget-state-matrix
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass in-flight-held-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 0 / 输出 0 Tokens
+
+保守预留：输入上界 4013 / 输出上界 3000 Tokens
+
+待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[6] evidence screenshot:in-flight-held-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\06-in-flight-held-390.png
+[7] pass known-settled-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 0 / 输出上界 0 Tokens
+
+待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。
+[8] evidence screenshot:known-settled-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\08-known-settled-390.png
+[9] pass delay-reload-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 0 / 输出上界 0 Tokens
+
+待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。
+[10] evidence screenshot:delay-reload-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\10-delay-reload-390.png
+[11] pass unknown-held-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 4013 / 输出上界 3000 Tokens
+
+待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[12] evidence screenshot:unknown-held-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\12-unknown-held-390.png
+[13] pass unknown-reuse-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 4013 / 输出上界 3000 Tokens
+
+待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[14] evidence screenshot:unknown-reuse-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\14-unknown-reuse-390.png
+[15] pass unknown-reload-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 4013 / 输出上界 3000 Tokens
+
+待核实收据：1 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[16] evidence screenshot:unknown-reload-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\16-unknown-reload-390.png
+[17] pass http-failure-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 8026 / 输出上界 6000 Tokens
+
+待核实收据：2 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[18] evidence screenshot:http-failure-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\18-http-failure-390.png
+[19] pass failed-task-has-no-stale-suggestion
+[20] pass failure-reload-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 100 / 输出 80 Tokens
+
+保守预留：输入上界 8026 / 输出上界 6000 Tokens
+
+待核实收据：2 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+本次收据不完整；已知部分不代表全部用量。
+[21] evidence screenshot:failure-reload-390 :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-10-34-617Z\21-failure-reload-390.png
+[22] info chrome-stopped :: budget-state-matrix exitCode=0
+[23] pass scenario-complete

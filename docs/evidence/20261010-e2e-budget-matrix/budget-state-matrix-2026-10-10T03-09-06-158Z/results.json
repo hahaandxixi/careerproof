@@ -1,0 +1,61 @@
+{
+  "runId": "budget-matrix-20261010",
+  "scenario": "budget-state-matrix",
+  "startedAt": "2026-10-10T03:09:06.159Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:09:06.159Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=budget-state-matrix runId=budget-matrix-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:09:06.459Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "budget-state-matrix dynamic port 55593 profile=profile-budget-state-matrix"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:09:06.621Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-09-06-158Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:09:08.557Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:09:20.685Z",
+      "name": "screenshot:budget-matrix-failure",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-09-06-158Z\\05-budget-matrix-failure.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:09:20.793Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "budget-state-matrix exitCode=0"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:09:20.794Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: waitFor timeout after 10000ms: in-flight-held-390 |     at Tab.waitFor (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:344:29) |     at async capture (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:818:5)"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-09-06-158Z\\budget-matrix-failure-network.json",
+    "docs\\evidence\\20261010-e2e-budget-matrix\\budget-state-matrix-2026-10-10T03-09-06-158Z\\budget-matrix-failure-dom.json"
+  ],
+  "finishedAt": "2026-10-10T03:09:20.794Z"
+}

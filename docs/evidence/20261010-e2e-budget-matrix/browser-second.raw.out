@@ -1,0 +1,7 @@
+[1] info scenario-start :: scenario=budget-state-matrix runId=budget-matrix-20261010
+[2] info chrome-launched :: budget-state-matrix dynamic port 64019 profile=profile-budget-state-matrix
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-07-45-884Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] evidence screenshot:budget-matrix-failure :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-07-45-884Z\05-budget-matrix-failure.png
+[6] info chrome-stopped :: budget-state-matrix exitCode=0
+[7] fail scenario-aborted :: Error: waitFor timeout after 20000ms: report open d9cefb92 |     at Tab.waitFor (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:344:29) |     at async openApplication (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:637:3)

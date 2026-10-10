@@ -1,0 +1,6 @@
+[1] info scenario-start :: scenario=budget-state-matrix runId=budget-matrix-20261010
+[2] info chrome-launched :: budget-state-matrix dynamic port 58995 profile=profile-budget-state-matrix
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-budget-matrix\budget-state-matrix-2026-10-10T03-06-30-815Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] info chrome-stopped :: budget-state-matrix exitCode=0
+[6] fail scenario-aborted :: Error: cdp timeout after 15000ms: Runtime.evaluate |     at Timeout._onTimeout (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:196:16) |     at listOnTimeout (node:internal/timers:585:17)

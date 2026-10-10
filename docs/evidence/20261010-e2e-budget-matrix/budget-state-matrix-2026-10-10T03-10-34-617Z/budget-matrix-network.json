@@ -1,0 +1,3018 @@
+[
+  {
+    "at": "2026-10-10T03:10:35.102Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/login",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:10:35.112Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/login",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.120Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:10:35.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.122Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.122Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.122Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/login/page-972229eff3bffe31.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.122Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.129Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.130Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.131Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.158Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.159Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.159Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.160Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/login/page-972229eff3bffe31.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.160Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.161Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.161Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.190Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.191Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/favicon.ico",
+    "method": "GET",
+    "type": "Other"
+  },
+  {
+    "at": "2026-10-10T03:10:35.195Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=j7s84HGI7papZ6oY",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.195Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=j7s84HGI7papZ6oY",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.195Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/demo?_rsc=j7s84HGI7papZ6oY",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.195Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/register?_rsc=j7s84HGI7papZ6oY",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.208Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=j7s84HGI7papZ6oY",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.223Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=j7s84HGI7papZ6oY",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.236Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.238Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 401
+  },
+  {
+    "at": "2026-10-10T03:10:35.239Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/auth/refresh",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:35.243Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.245Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/auth/refresh",
+    "status": 401
+  },
+  {
+    "at": "2026-10-10T03:10:35.250Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/demo?_rsc=j7s84HGI7papZ6oY",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.250Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/register?_rsc=j7s84HGI7papZ6oY",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.250Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/favicon.ico",
+    "status": 404
+  },
+  {
+    "at": "2026-10-10T03:10:35.252Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/demo/page-fd34a2bf5c7d5306.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.252Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/register/page-8a78622cd3d88dad.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:35.255Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/demo/page-fd34a2bf5c7d5306.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:35.255Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/register/page-8a78622cd3d88dad.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.406Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/auth/login",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.465Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/auth/login",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.466Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=fnr4d48fQnoJpcNC",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.468Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.477Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=fnr4d48fQnoJpcNC",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.477Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=QsxRzy58luoz_qpw",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.477Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=QsxRzy58luoz_qpw",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.477Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=QsxRzy58luoz_qpw",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.480Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.480Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/page-f3f47f0527366a7f.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.512Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.512Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=QsxRzy58luoz_qpw",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.513Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=QsxRzy58luoz_qpw",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.513Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=QsxRzy58luoz_qpw",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.513Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.513Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.513Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.514Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:36.514Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/page-f3f47f0527366a7f.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.514Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.515Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.515Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.515Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.515Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.807Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?page=1&pageSize=12",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.821Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?page=1&pageSize=12",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.829Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c?_rsc=QsxRzy58luoz_qpw",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.829Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f?_rsc=QsxRzy58luoz_qpw",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:36.838Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c?_rsc=QsxRzy58luoz_qpw",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:36.841Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f?_rsc=QsxRzy58luoz_qpw",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.187Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:10:37.221Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.230Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:10:37.230Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.231Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.231Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.231Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.232Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.232Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.232Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.232Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.232Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.233Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.233Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.233Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.234Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.234Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.234Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.234Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.235Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.235Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.235Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.236Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.237Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.243Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.244Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.244Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.247Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.248Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.250Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.250Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.256Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.269Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.269Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.270Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.270Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.270Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:37.278Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.278Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.279Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.280Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.281Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.281Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.281Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.282Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.282Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.282Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:37.283Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.286Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.369Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:37.981Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:38.013Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:38.013Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:38.013Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:38.029Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:38.035Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:38.038Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:38.060Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:38.060Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:38.080Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:39.087Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:39.132Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "status": 202
+  },
+  {
+    "at": "2026-10-10T03:10:40.641Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:40.660Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:42.175Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:42.192Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:43.704Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:43.723Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:45.233Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:45.251Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:46.758Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:46.777Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:48.289Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:48.307Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:49.813Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:49.833Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:51.335Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:51.353Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:52.864Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:52.882Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.393Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.436Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification/078c6aa6-b5f6-4468-b5f0-bb7b8523a459",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.657Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:10:54.670Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.682Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:10:54.683Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.683Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.683Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.684Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.684Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.684Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.684Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.685Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.685Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.686Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.686Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.686Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.687Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.687Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.687Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.688Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.688Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.689Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.689Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.689Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.689Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.691Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.691Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.692Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.695Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.695Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.696Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.696Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.696Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.698Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.698Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.709Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.709Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.709Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:54.714Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.715Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.716Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.717Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.717Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.718Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.718Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.718Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.718Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.720Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.721Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:54.721Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:54.722Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:55.425Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:55.446Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:55.447Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:55.447Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:55.461Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:55.469Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:55.471Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:55.471Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:55.477Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:55.498Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/c3f6b62f-f1f4-4ddd-86b4-dbc59aa89923/verification",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.063Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:10:56.075Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.092Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:10:56.092Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.092Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.093Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.093Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.093Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.094Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.094Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.094Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.095Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.095Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.095Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.096Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.096Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.096Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.097Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.097Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.097Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.098Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.098Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.098Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.099Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.100Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.101Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.101Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.102Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.104Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.104Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.105Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.105Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.110Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.111Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.111Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.111Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.111Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.114Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.116Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.118Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.118Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.119Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.119Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.119Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.119Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.120Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.121Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.121Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.122Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.129Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.844Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.875Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.875Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.875Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.886Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.895Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.897Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:10:56.897Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:56.901Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:56.918Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:57.958Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:57.988Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "status": 202
+  },
+  {
+    "at": "2026-10-10T03:10:59.492Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification/2f47ff8e-b2bb-4cd2-a566-fe898cdd8ca9",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:59.514Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification/2f47ff8e-b2bb-4cd2-a566-fe898cdd8ca9",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:10:59.909Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:10:59.937Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "status": 202
+  },
+  {
+    "at": "2026-10-10T03:11:00.126Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:11:00.134Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.143Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:11:00.143Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.144Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.144Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.144Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.145Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.145Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.145Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.146Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.146Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.146Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.146Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.147Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.147Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.147Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.147Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.148Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.148Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.149Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.149Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.149Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.150Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.151Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.152Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.152Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.155Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.157Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.160Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.161Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.162Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.162Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.162Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.174Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.175Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.175Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.175Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=J84rG4a9F_Wtor8G",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.179Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.181Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.183Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=J84rG4a9F_Wtor8G",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.184Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.185Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.185Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.186Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.186Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.186Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.186Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.187Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.187Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.894Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.920Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.921Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.921Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.932Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.937Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/721c824d-be04-4ed2-919a-85b5be24f82c/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.939Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:00.939Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:00.944Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:00.964Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/80a415be-f84c-4806-a049-cfebcbfcff8f/verification",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.543Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:11:01.552Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.561Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:11:01.562Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.562Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.563Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.563Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.563Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.564Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.564Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.564Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.564Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.565Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.565Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.565Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.566Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.566Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.566Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.567Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.567Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.567Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.567Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.568Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.568Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.570Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.570Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.570Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.573Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.576Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.577Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.577Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.580Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.583Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.583Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.592Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.592Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.592Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:01.596Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.599Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.599Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.600Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.600Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.601Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.601Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.602Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.602Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.603Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.603Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:01.603Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:01.606Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:02.307Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:02.336Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:02.337Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:02.337Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:02.348Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:02.356Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:02.358Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:02.358Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:02.362Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:02.378Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:03.396Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:03.427Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "status": 202
+  },
+  {
+    "at": "2026-10-10T03:11:04.942Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification/737ce1fa-4e0d-4200-9d46-8eae0b639d98",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:04.960Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification/737ce1fa-4e0d-4200-9d46-8eae0b639d98",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.042Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Document"
+  },
+  {
+    "at": "2026-10-10T03:11:05.051Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.060Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "method": "GET",
+    "type": "Stylesheet"
+  },
+  {
+    "at": "2026-10-10T03:11:05.060Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/css/d34cf6f78b54befc.css",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.060Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.061Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/webpack-9400bedfa88fd55c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.061Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.061Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/4bd1b696-f785427dddbba9fb.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.062Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.062Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/1255-5cd2fe06309409a0.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.063Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.063Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/main-app-1997624658e3521c.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.063Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.063Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/2619-3c9e02e22d10480a.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.064Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.064Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/layout-e0921d97ddcf3dd8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.065Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.065Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/error-8f800fa20461f59e.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.065Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.065Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/global-error-fc150831e0679c09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.066Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.066Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/3834-85433632d93b5458.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.066Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.067Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-50b1606172022d09.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.068Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/users/me",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.068Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.068Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.071Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.072Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.076Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/users/me",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.076Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.076Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/page-5774d92c19309573.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.078Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.078Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.089Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.091Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.091Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.091Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.095Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/mine?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.096Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/new?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.098Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications?_rsc=TGEjeRP1nWaGHxni",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.098Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.099Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/mine/page-1a51d569bdb0dd68.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.099Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.100Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/9131-38f63a317deb243b.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.100Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.100Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/jobs/new/page-02a6f2e87c0fe1ec.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.101Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.101Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/app/notifications/page-779b6aab2af32601.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.101Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.790Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/view",
+    "method": "POST",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.811Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/view",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.812Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.812Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.822Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/notifications/unread-count",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.833Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/jobs/8f5eb96d-bbeb-4aaf-ac1a-1b5a3febcf2f/applications",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.835Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "method": "GET",
+    "type": "Script"
+  },
+  {
+    "at": "2026-10-10T03:11:05.835Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/_next/static/chunks/7560.14e7d787ac47a2c8.js",
+    "status": 200
+  },
+  {
+    "at": "2026-10-10T03:11:05.839Z",
+    "phase": "request",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "method": "GET",
+    "type": "Fetch"
+  },
+  {
+    "at": "2026-10-10T03:11:05.858Z",
+    "phase": "response",
+    "url": "http://127.0.0.1:3001/applications/37d17d23-ac9b-432d-b154-b7cb360e168e/verification",
+    "status": 200
+  }
+]
