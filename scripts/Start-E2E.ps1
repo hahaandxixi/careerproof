@@ -10,6 +10,7 @@ param(
     [ValidatePattern('^$|^[a-z0-9][a-z0-9-]{0,63}$')][string]$FrontendStage = '',
     [switch]$SkipBuild,
     [switch]$SkipSeed,
+    [switch]$SyntheticVerification,
     [switch]$CheckOnly
 )
 $ErrorActionPreference = 'Stop'
@@ -32,6 +33,8 @@ $stateRoot = Join-Path $backendRoot '.tmp\e2e-run'
 $statePath = Join-Path $stateRoot "processes-$RunId.json"
 $backendPort = 8001
 $frontendPort = 3001
+$backendTarget = if ($SyntheticVerification) { 'evals.e2e_verification:create_app --factory' } else { 'app.main:app' }
+$backendArguments = "-m uvicorn $backendTarget --host 127.0.0.1 --port $backendPort"
 
 if (!(Test-Path -LiteralPath $pythonPath)) { throw 'Backend dependencies missing. Follow backend/README.md first.' }
 if (!(Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies missing. Run npm ci in jianli/ first.' }
@@ -139,7 +142,7 @@ New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
 # Start-Process children inherit this session's environment; every override is
 # restored in the finally block after the children have captured their copy.
 $previousEnv = @{}
-foreach ($name in @('DATABASE_URL', 'STORAGE_BASE_DIR', 'AI_EXTERNAL_ENABLED', 'AI_PROVIDER', 'FRONTEND_ORIGINS', 'BACKEND_ORIGIN', 'NEXT_DIST_DIR', 'E2E_STORAGE_DIR', 'NEXT_TELEMETRY_DISABLED')) {
+foreach ($name in @('DATABASE_URL', 'STORAGE_BASE_DIR', 'AI_EXTERNAL_ENABLED', 'AI_PROVIDER', 'FRONTEND_ORIGINS', 'BACKEND_ORIGIN', 'NEXT_DIST_DIR', 'E2E_STORAGE_DIR', 'NEXT_TELEMETRY_DISABLED', 'E2E_SYNTHETIC_VERIFICATION_RUN')) {
     $previousEnv[$name] = [Environment]::GetEnvironmentVariable($name)
 }
 # next-env.d.ts is tracked and rewritten by every Next build; tsconfig.json is
@@ -159,6 +162,7 @@ try {
     $env:STORAGE_BASE_DIR = $storageDir
     $env:AI_EXTERNAL_ENABLED = 'false'
     $env:AI_PROVIDER = 'mock'
+    $env:E2E_SYNTHETIC_VERIFICATION_RUN = if ($SyntheticVerification) { $RunId } else { $null }
     $env:NEXT_TELEMETRY_DISABLED = '1'
     $env:FRONTEND_ORIGINS = "[`"http://127.0.0.1:$frontendPort`"]"
     $env:E2E_STORAGE_DIR = $storageDir
@@ -176,7 +180,7 @@ try {
     } finally { Pop-Location }
 
     # 3. Backend on 8001 with AI forced to mock.
-    $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList "-m uvicorn app.main:app --host 127.0.0.1 --port $backendPort" -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot "backend-$RunId.out.log") -RedirectStandardError (Join-Path $stateRoot "backend-$RunId.err.log")
+    $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList $backendArguments -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot "backend-$RunId.out.log") -RedirectStandardError (Join-Path $stateRoot "backend-$RunId.err.log")
     # Manifest keys are camelCase (id/startedAt/needle) exactly as the Python
     # seeder reads them; PowerShell property access is case-insensitive, so
     # Stop-E2E.ps1 keeps working against the same fields.
@@ -194,6 +198,8 @@ try {
         storageDir        = $storageDir
         distDir           = '.next-e2e'
         backendVenv       = $BackendVenv
+        backendTarget     = $backendTarget
+        syntheticVerification = [bool]$SyntheticVerification
         backendRuntime    = $backendRuntime
         frontendStage     = $FrontendStage
         frontendRuntime   = $frontendRuntime
@@ -219,7 +225,7 @@ try {
     if (!$ready) { throw "Backend failed health check: http://127.0.0.1:$backendPort/api/v1/health. See $stateRoot logs." }
     # Re-verify ownership immediately before seeding: the health 200 must come
     # from this run's backend, not from a process that stole the port meanwhile.
-    if (!(Test-PortIsOwned -Port $backendPort -OwnedPid $backendProcess.Id -RootStartedAt $owned[$owned.Count - 1].startedAt -NeedleDir "-m uvicorn app.main:app --host 127.0.0.1 --port $backendPort")) {
+    if (!(Test-PortIsOwned -Port $backendPort -OwnedPid $backendProcess.Id -RootStartedAt $owned[$owned.Count - 1].startedAt -NeedleDir $backendArguments)) {
         throw "Port $backendPort is not owned by this run's backend PID $($backendProcess.Id); refusing to seed."
     }
 
