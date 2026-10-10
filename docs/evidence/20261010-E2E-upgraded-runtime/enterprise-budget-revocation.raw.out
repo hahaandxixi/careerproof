@@ -1,0 +1,12 @@
+[1] info scenario-start :: scenario=withdraw-verify runId=upgrade-budget-20261010
+[2] info chrome-launched :: enterprise dynamic port 60666 profile=profile-enterprise
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-budget\withdraw-verify-2026-10-10T01-46-27-841Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass board-A-unreadable :: aColumnGone=true otherCandidateKept=true aReportRendered=false
+[6] evidence screenshot:board-A-after-withdraw :: docs\evidence\20261010-e2e-enterprise-budget\withdraw-verify-2026-10-10T01-46-27-841Z\06-board-A-after-withdraw.png
+[7] pass old-anchor-A :: unavailableNotice=true otherCandidateKept=true aReportRendered=false
+[8] evidence screenshot:old-anchor-A-outcome :: docs\evidence\20261010-e2e-enterprise-budget\withdraw-verify-2026-10-10T01-46-27-841Z\08-old-anchor-A-outcome.png
+[9] blocked old-notification-A :: inaccessibleCards=2 withdrawalEventCardTime=2026/10/10 09:45:34 (withdrawnAt 2026-10-10T01:45:34.316Z from download-withdraw-2026-10-10T01-45-25-005Z) olderInaccessible=0 openCardAnchors=["#application-c73746aa-f8b0-4b94-ad78-04411e3ef812","#application-5bfc2f90-776c-4469-a762-57899d56782c"] aAnchorLeak=false
+[10] evidence screenshot:notifications-final-state :: docs\evidence\20261010-e2e-enterprise-budget\withdraw-verify-2026-10-10T01-46-27-841Z\10-notifications-final-state.png
+[11] info chrome-stopped :: enterprise exitCode=0
+[12] fail scenario-complete :: 1 step(s) not passed: 9:old-notification-A

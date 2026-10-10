@@ -66,6 +66,20 @@ def test_factory_overrides_only_verification_not_main_matching(monkeypatch):
 
 
 @pytest.mark.asyncio
+async def test_budget_activation_refuses_business_database_before_connection(monkeypatch):
+    from app.core.config import settings
+    from evals import activate_e2e_budget
+
+    def forbidden_connection(*args, **kwargs):
+        raise AssertionError("Invalid environment reached database connection")
+
+    monkeypatch.setattr(settings, "database_url", DATABASE.replace("cp_e2e_" + RUN, "careerproof"))
+    monkeypatch.setattr(activate_e2e_budget, "create_async_engine", forbidden_connection)
+    with pytest.raises(ValueError):
+        await activate_e2e_budget.activate(RUN)
+
+
+@pytest.mark.asyncio
 async def test_actual_provider_uses_only_mock_transport_and_validates_output(monkeypatch):
     async def forbidden_network(*args, **kwargs):
         raise AssertionError("Synthetic verification attempted real network transport")

@@ -1,0 +1,12 @@
+[1] info scenario-start :: scenario=verification runId=upgrade-budget-20261010
+[2] info chrome-launched :: enterprise-verification dynamic port 52803 profile=profile-enterprise-verification
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-budget\verification-2026-10-10T01-44-45-980Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] evidence screenshot:verification-completed :: docs\evidence\20261010-e2e-enterprise-budget\verification-2026-10-10T01-44-45-980Z\05-verification-completed.png
+[6] pass verification-generated :: production verification flow displayed explicitly synthetic information gaps
+[7] evidence screenshot:verification-reused :: docs\evidence\20261010-e2e-enterprise-budget\verification-2026-10-10T01-44-45-980Z\07-verification-reused.png
+[8] pass verification-reused :: saved suggestion reused through actual page
+[9] evidence screenshot:verification-reloaded :: docs\evidence\20261010-e2e-enterprise-budget\verification-2026-10-10T01-44-45-980Z\09-verification-reloaded.png
+[10] pass verification-refresh :: saved validated synthetic suggestion remains visible after page reload
+[11] info chrome-stopped :: enterprise-verification exitCode=0
+[12] pass scenario-complete

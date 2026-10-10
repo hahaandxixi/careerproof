@@ -1,0 +1,15 @@
+        task_type         |  status   
+--------------------------+-----------
+ application_verification | COMPLETED
+(1 row)
+
+ provider | state  | usage_input_tokens | usage_output_tokens 
+----------+--------+--------------------+---------------------
+ e2e-mock | booked |                100 |                  80
+(1 row)
+
+  state  | actual_input_tokens | actual_output_tokens 
+---------+---------------------+----------------------
+ settled |                 100 |                   80
+(1 row)
+

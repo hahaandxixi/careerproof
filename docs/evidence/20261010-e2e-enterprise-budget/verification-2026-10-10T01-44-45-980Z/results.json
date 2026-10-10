@@ -1,0 +1,94 @@
+{
+  "runId": "upgrade-budget-20261010",
+  "scenario": "verification",
+  "startedAt": "2026-10-10T01:44:45.981Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T01:44:45.981Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=verification runId=upgrade-budget-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T01:44:46.328Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-verification dynamic port 52803 profile=profile-enterprise-verification"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T01:44:46.569Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\verification-2026-10-10T01-44-45-980Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T01:44:48.478Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T01:44:52.584Z",
+      "name": "screenshot:verification-completed",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\verification-2026-10-10T01-44-45-980Z\\05-verification-completed.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T01:44:52.585Z",
+      "name": "verification-generated",
+      "status": "pass",
+      "detail": "production verification flow displayed explicitly synthetic information gaps"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T01:44:53.032Z",
+      "name": "screenshot:verification-reused",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\verification-2026-10-10T01-44-45-980Z\\07-verification-reused.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T01:44:53.033Z",
+      "name": "verification-reused",
+      "status": "pass",
+      "detail": "saved suggestion reused through actual page"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T01:44:54.383Z",
+      "name": "screenshot:verification-reloaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\verification-2026-10-10T01-44-45-980Z\\09-verification-reloaded.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T01:44:54.383Z",
+      "name": "verification-refresh",
+      "status": "pass",
+      "detail": "saved validated synthetic suggestion remains visible after page reload"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T01:44:54.504Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-verification exitCode=0"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T01:44:54.504Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-enterprise-budget\\verification-2026-10-10T01-44-45-980Z\\verification-network.json"
+  ],
+  "finishedAt": "2026-10-10T01:44:54.504Z"
+}

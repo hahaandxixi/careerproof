@@ -1,0 +1,20 @@
+{
+  "A": {
+    "applicationId": "2fd8247a-b725-4d26-ae6d-a41712d52cf2",
+    "snapshotSha256": "ddb6ffdeec885401c4608408f0b96d927cb3d03c9f2619968225fc0cc3f29be5"
+  },
+  "B": {
+    "applicationId": "5bfc2f90-776c-4469-a762-57899d56782c",
+    "snapshotSha256": "5358fc10b5a89a9f83c674e26a557e4c3a8811eec9172c2401a7234c9c17b2dd"
+  },
+  "resumeMaterialSha256": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b",
+  "downloadedA": {
+    "file": "e2e-合成简历.txt",
+    "sha256": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b",
+    "matchesMaterial": true
+  },
+  "downloadedB": {
+    "file": "e2e-合成简历.txt",
+    "sha256": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b"
+  }
+}

@@ -11,9 +11,13 @@ param(
     [switch]$SkipBuild,
     [switch]$SkipSeed,
     [switch]$SyntheticVerification,
+    [switch]$ActivateSyntheticBudget,
     [switch]$CheckOnly
 )
 $ErrorActionPreference = 'Stop'
+if ($ActivateSyntheticBudget -and !$SyntheticVerification) {
+    throw 'Synthetic budget activation requires the synthetic verification entry point.'
+}
 $repoRoot = Split-Path $PSScriptRoot -Parent
 $backendRoot = Join-Path $repoRoot 'backend'
 $frontendRoot = Join-Path $repoRoot 'jianli'
@@ -178,6 +182,14 @@ try {
         & $pythonPath -m alembic upgrade head
         if ($LASTEXITCODE -ne 0) { throw 'E2E database migration failed.' }
     } finally { Pop-Location }
+
+    if ($ActivateSyntheticBudget) {
+        Push-Location $backendRoot
+        try {
+            & $pythonPath -m evals.activate_e2e_budget --run $RunId
+            if ($LASTEXITCODE -ne 0) { throw 'Synthetic budget inventory audit refused activation.' }
+        } finally { Pop-Location }
+    }
 
     # 3. Backend on 8001 with AI forced to mock.
     $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList $backendArguments -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot "backend-$RunId.out.log") -RedirectStandardError (Join-Path $stateRoot "backend-$RunId.err.log")

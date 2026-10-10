@@ -1,0 +1,22 @@
+[
+  {
+    "run": "upgrade-20261010",
+    "originalSnapshots": 3,
+    "hashesUnchanged": true,
+    "hashes": {
+      "23ed827d-f61c-4dfc-9195-36173c134646": "156ca1068a3a5088af29c64d5fb2f0f95355dd989224682785727a50458f57f4",
+      "3088a20e-652d-4166-bf04-eb0a25fb9550": "74956c53080e7ecdfd9bcc2ba2ac10ebd4acfff91e574dd43b6ed0566916833a",
+      "652fa343-84c7-42bc-b6af-8b4636fc95c2": "20bd6f7cb049a89c504a502f6e9cd4c68305e06f5f108d7a0112912bf4bccf6a"
+    }
+  },
+  {
+    "run": "upgrade-budget-20261010",
+    "originalSnapshots": 3,
+    "hashesUnchanged": true,
+    "hashes": {
+      "2fd8247a-b725-4d26-ae6d-a41712d52cf2": "ddb6ffdeec885401c4608408f0b96d927cb3d03c9f2619968225fc0cc3f29be5",
+      "5bfc2f90-776c-4469-a762-57899d56782c": "5358fc10b5a89a9f83c674e26a557e4c3a8811eec9172c2401a7234c9c17b2dd",
+      "c73746aa-f8b0-4b94-ad78-04411e3ef812": "54bf7c53f1a037f50ff479953ad18c4570d66e263867e0d5bd25106dd5edca3a"
+    }
+  }
+]

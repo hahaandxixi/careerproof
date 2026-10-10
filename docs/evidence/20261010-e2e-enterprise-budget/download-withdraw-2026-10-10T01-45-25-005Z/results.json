@@ -1,0 +1,158 @@
+{
+  "runId": "upgrade-budget-20261010",
+  "scenario": "download-withdraw",
+  "startedAt": "2026-10-10T01:45:25.005Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T01:45:25.006Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=download-withdraw runId=upgrade-budget-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T01:45:25.300Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 53327 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T01:45:25.518Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T01:45:27.445Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T01:45:29.247Z",
+      "name": "download-A",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt bytes=203 sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b matchesAuthorizedFile=true"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T01:45:29.330Z",
+      "name": "screenshot:download-A-done",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\06-download-A-done.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T01:45:30.938Z",
+      "name": "download-B-baseline",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T01:45:31.222Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student dynamic port 54689 profile=profile-student"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T01:45:31.468Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\09-login-page-empty.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T01:45:33.372Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /portfolio"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T01:45:34.316Z",
+      "name": "student-withdrew-A",
+      "status": "pass",
+      "detail": "application 2fd8247a now shows 已撤回授权 in student list"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T01:45:34.373Z",
+      "name": "screenshot:student-withdrew-A",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\12-student-withdrew-A.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-10T01:45:34.872Z",
+      "name": "board-A-unreadable",
+      "status": "pass",
+      "detail": "aColumnGone=true otherCandidateKept=true"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-10T01:45:34.922Z",
+      "name": "screenshot:board-A-after-withdraw",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\14-board-A-after-withdraw.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-10T01:46:05.126Z",
+      "name": "old-notification-A",
+      "status": "blocked",
+      "detail": "probed cards for A anchor; outcome=null"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-10T01:46:05.187Z",
+      "name": "screenshot:old-notification-A-outcome",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\16-old-notification-A-outcome.png"
+    },
+    {
+      "n": 17,
+      "at": "2026-10-10T01:46:06.785Z",
+      "name": "download-B-after-withdraw",
+      "status": "pass",
+      "detail": "file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b unchanged=true"
+    },
+    {
+      "n": 18,
+      "at": "2026-10-10T01:46:06.852Z",
+      "name": "screenshot:download-B-after-withdraw",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\18-download-B-after-withdraw.png"
+    },
+    {
+      "n": 19,
+      "at": "2026-10-10T01:46:06.940Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 20,
+      "at": "2026-10-10T01:46:07.029Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=0"
+    },
+    {
+      "n": 21,
+      "at": "2026-10-10T01:46:07.030Z",
+      "name": "scenario-complete",
+      "status": "fail",
+      "detail": "1 step(s) not passed: 15:old-notification-A"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-e2e-enterprise-budget\\download-withdraw-2026-10-10T01-45-25-005Z\\snapshot-reference.json"
+  ],
+  "finishedAt": "2026-10-10T01:46:07.030Z"
+}

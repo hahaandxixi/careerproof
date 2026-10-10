@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\jbcode\web ai\jianli\backend\evals\activate_e2e_budget.py", line 73, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\backend\evals\activate_e2e_budget.py", line 69, in main
+    print(json.dumps(asyncio.run(activate(args.run)), ensure_ascii=False, indent=2))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\evals\activate_e2e_budget.py", line 49, in activate
+    digest = await SharedBudgetService().activate(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\app\services\ai_budget.py", line 179, in activate
+    raise BudgetAdmissionError("legacy_external_run_requires_audit_gate_remains_closed")
+app.services.ai_budget.BudgetAdmissionError: legacy_external_run_requires_audit_gate_remains_closed

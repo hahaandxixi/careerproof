@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { ENTERPRISE_SCENARIOS, parseRunnerArgs, parseCredentialDocument,
-  withdrawnNotificationStatus, prepareEvidenceRecord, withdrawnOpenCardsStatus } from "./runner-input.mjs";
+  withdrawnNotificationStatus, prepareEvidenceRecord, withdrawnOpenCardsStatus, withdrawalTimeline } from "./runner-input.mjs";
 
 test("documented defaults and existing scenario names remain usable", () => {
   assert.deepEqual(parseRunnerArgs([]), { runId: "audit-20261005", scenario: "skeleton" });
@@ -23,6 +23,16 @@ test("separate evidence destination accepts a bounded directory name", () => {
   for (const name of ["../old", "a/b", "a\\b", "D:old", ".", "a".repeat(65)]) {
     assert.throws(() => parseRunnerArgs(["--evidence-subdir", name]), /Invalid runner arguments/);
   }
+});
+
+test("a delivery forty seconds before withdrawal is historical; same-second rounding is not", () => {
+  const cards = [{ id: "old", timeMs: 60000 }, { id: "withdrawal", timeMs: 100000 },
+    { id: "rounded", timeMs: 100000 }, { id: "unknown", timeMs: NaN }];
+  const proof = withdrawalTimeline(cards, 100316);
+  assert.equal(proof.withdrawalEventCard.id, "withdrawal");
+  assert.deepEqual(proof.olderInaccessible.map(card => card.id), ["old"]);
+  assert.deepEqual(withdrawalTimeline(cards, NaN).olderInaccessible, []);
+  assert.equal(withdrawalTimeline([{ timeMs: 104000 }], 100000).withdrawalEventCard, null);
 });
 
 for (const args of [

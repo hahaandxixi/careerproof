@@ -31,6 +31,15 @@ export function validateEvidenceSubdir(value) {
   return value;
 }
 
+export function withdrawalTimeline(cards, withdrewMs) {
+  const timed = cards.filter(card => Number.isFinite(card.timeMs));
+  if (!Number.isFinite(withdrewMs)) return { withdrawalEventCard: null, olderInaccessible: [] };
+  const withdrawalEventCard = timed.filter(card => Math.abs(card.timeMs - withdrewMs) <= 2000)
+    .sort((a, b) => Math.abs(a.timeMs - withdrewMs) - Math.abs(b.timeMs - withdrewMs))[0] ?? null;
+  const olderInaccessible = timed.filter(card => card !== withdrawalEventCard && card.timeMs < withdrewMs - 1000);
+  return { withdrawalEventCard, olderInaccessible };
+}
+
 // JSON parser messages can contain source fragments on some Node versions.
 // Credential failures must never reuse their original message or cause.
 export function parseCredentialDocument(text) {

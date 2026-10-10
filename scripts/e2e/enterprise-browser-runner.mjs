@@ -18,7 +18,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { parseRunnerArgs, parseCredentialDocument, withdrawnNotificationStatus,
-  prepareEvidenceRecord, withdrawnOpenCardsStatus } from "./runner-input.mjs";
+  prepareEvidenceRecord, withdrawnOpenCardsStatus, withdrawalTimeline } from "./runner-input.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
@@ -1211,6 +1211,7 @@ async function scenarioDownloadWithdraw(creds) {
         return true;
       })()`);
       if (!clicked) continue;
+      await tab.clickStored(`(() => Boolean(window.__e2eClickEl?.isConnected))()`, `open old notification card ${i}`);
       const landed = await tab.waitFor(`() => location.hash.startsWith('#application-') || document.querySelector('p[role=alert]') !== null`, { timeoutMs: 15000, label: `card ${i} landing` }).then(() => true, () => false);
       if (!landed) continue;
       const hash = await tab.evalJs("location.hash");
@@ -1301,8 +1302,11 @@ async function scenarioWithdrawVerify(creds) {
     };
     const withdrewMs = withdrewAt ? Date.parse(withdrewAt) : NaN;
     const inaccessible = cards.filter(c => c.inaccessible);
-    const withdrawalEventCard = inaccessible.find(c => Number.isFinite(parseCardTime(c.timeText)) && Number.isFinite(withdrewMs) && Math.abs(parseCardTime(c.timeText) - withdrewMs) <= 120000);
-    const olderInaccessible = inaccessible.filter(c => c !== withdrawalEventCard && parseCardTime(c.timeText) < withdrewMs - 60000);
+    // Displayed timestamps have one-second precision. An older delivery need
+    // not be a full minute old: retain a one-second guard against rounding.
+    const { withdrawalEventCard, olderInaccessible } = withdrawalTimeline(
+      inaccessible.map(card => ({ ...card, timeMs: parseCardTime(card.timeText) })), withdrewMs,
+    );
     const openAnchors = [];
     const openCount = cards.filter(c => c.hasOpenButton).length;
     for (let j = 0; j < openCount; j++) {

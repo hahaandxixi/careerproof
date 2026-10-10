@@ -1,0 +1,21 @@
+[1] info scenario-start :: scenario=download-withdraw runId=upgrade-budget-20261010
+[2] info chrome-launched :: enterprise dynamic port 53327 profile=profile-enterprise
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass download-A :: file=e2e-合成简历.txt bytes=203 sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b matchesAuthorizedFile=true
+[6] evidence screenshot:download-A-done :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\06-download-A-done.png
+[7] pass download-B-baseline :: file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b
+[8] info chrome-launched :: student dynamic port 54689 profile=profile-student
+[9] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\09-login-page-empty.png
+[10] pass login-ok :: landed on /portfolio
+[11] pass student-withdrew-A :: application 2fd8247a now shows 已撤回授权 in student list
+[12] evidence screenshot:student-withdrew-A :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\12-student-withdrew-A.png
+[13] pass board-A-unreadable :: aColumnGone=true otherCandidateKept=true
+[14] evidence screenshot:board-A-after-withdraw :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\14-board-A-after-withdraw.png
+[15] blocked old-notification-A :: probed cards for A anchor; outcome=null
+[16] evidence screenshot:old-notification-A-outcome :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\16-old-notification-A-outcome.png
+[17] pass download-B-after-withdraw :: file=e2e-合成简历.txt sha256=a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b unchanged=true
+[18] evidence screenshot:download-B-after-withdraw :: docs\evidence\20261010-e2e-enterprise-budget\download-withdraw-2026-10-10T01-45-25-005Z\18-download-B-after-withdraw.png
+[19] info chrome-stopped :: enterprise exitCode=0
+[20] info chrome-stopped :: student exitCode=0
+[21] fail scenario-complete :: 1 step(s) not passed: 15:old-notification-A
