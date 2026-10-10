@@ -1,0 +1,1 @@
+PASS: isolated actual startup, identical repeated PIDs, demonstration reuse, owned stop; existing E2E services remain healthy. No seeding or model calls.

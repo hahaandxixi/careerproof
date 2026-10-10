@@ -1,0 +1,14 @@
+Verified runtime: backend .venv-dependency23; frontend D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261010
+Building changed frontend (production)...
+ ⨯ Failed to load next.config.mjs, see more info here https://nextjs.org/docs/messages/next-config-error
+
+> Build error occurred
+Error: NEXT_DIST_DIR must match ^\.[a-z0-9-]+$ and differ from ".next"; got ".next"
+    at <unknown> (next.config.mjs:12:9)
+Production build failed; database migration has not run.
+At D:\jbcode\web ai\jianli\Start-Local.ps1:119 char:77
++ ... DE -ne 0) { throw 'Production build failed; database migration has no ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Production buil...on has not run.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Production build failed; database migration has not run.
+ 

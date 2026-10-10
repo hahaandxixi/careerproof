@@ -1,0 +1,9 @@
+Get-Content : Cannot find path 'D:\jbcode\web ai\jianli\backend\.tmp\local-run\processes.json' because it does not exis
+t.
+At D:\jbcode\web ai\jianli\backend\.tmp\probe_local_launcher.ps1:31 char:14
++     $first = Get-Content -LiteralPath $state -Raw | ConvertFrom-Json
++              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (D:\jbcode\web a...\processes.json:String) [Get-Content], ItemNotFoundEx 
+   ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand
+ 

@@ -1,0 +1,11 @@
+  File "<string>", line 1
+    from sqlalchemy.engine import make_url; from app.core.config import settings; u=make_url(settings.database_url); assert u.host in {localhost,127.0.0.1,::1}; print(u.set(database=cp_e2e_startup-smoke-20261010).render_as_string(hide_password=False))
+                                                                                                                                                 ^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+Isolated URL resolution failed
+At D:\jbcode\web ai\jianli\backend\.tmp\probe_local_launcher.ps1:16 char:30
++         if ($LASTEXITCODE) { throw 'Isolated URL resolution failed' }
++                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Isolated URL resolution failed:String) [], RuntimeException
+    + FullyQualifiedErrorId : Isolated URL resolution failed
+ 

@@ -1,0 +1,10 @@
+{
+  "database": "cp_e2e_startup-smoke-20261010",
+  "migration": "0017_ai_shared_budget",
+  "counts": {
+    "analysis_tasks": 0,
+    "applications": 0,
+    "ai_request_attempts": 0
+  },
+  "readOnly": true
+}

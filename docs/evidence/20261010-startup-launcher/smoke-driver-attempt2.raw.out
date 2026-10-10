@@ -1,0 +1,7 @@
+powershell.exe :  Container backend-postgres-1 Running 
+At D:\jbcode\web ai\jianli\backend\.tmp\probe_local_launcher.ps1:28 char:5
++     & powershell -NoProfile -File ./Start-Local.ps1 > (Join-Path $evi ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container backend-postgres-1 Running :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
