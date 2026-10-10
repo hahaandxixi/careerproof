@@ -1,0 +1,234 @@
+{
+  "kind": "authored-synthetic-drafts-not-website-model-output",
+  "humanReview": false,
+  "instructions": "只根据冻结材料和草稿评分，不能把字段非空当作可操作；未执行代码、未来步骤不能当作已完成事实。",
+  "rubric": {
+    "sourceCompliance": "0越界或与来源矛盾，1缺少边界，2边界清楚且无越界",
+    "deliverableNamed": "0笼统，1有名称但缺少内容，2具名且明确交付内容",
+    "stepsExecutable": "0无法据此动手，1可开始但缺关键步骤，2按来源状态有具体动作",
+    "checksObservable": "0没有可观察条件，1部分可观察，2能逐项核对结果"
+  },
+  "cases": [
+    {
+      "id": "37882b616f",
+      "requirement": {
+        "title": "实现 Python 数值汇总函数并保存输入输出记录",
+        "skill": "Python",
+        "weight": 5
+      },
+      "resume": "熟悉 Python 数据处理。",
+      "personalFiles": [
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "total 函数的脱敏输入输出记录",
+        "steps": [
+          "使用正常数字和非法输入各运行一次",
+          "保存异常类型、输出与代码版本"
+        ],
+        "acceptanceChecks": [
+          "正常输入的输出可复算",
+          "非法输入的异常与源码校验一致"
+        ]
+      }
+    },
+    {
+      "id": "45c8ae3412",
+      "requirement": {
+        "title": "实现 Python 缓存读写与失效处理",
+        "skill": "Python",
+        "weight": 5
+      },
+      "resume": "熟悉 Python 缓存处理。",
+      "personalFiles": [
+        {
+          "path": "cache.py",
+          "content": "from functools import lru_cache\n\n\n@lru_cache(maxsize=128)\ndef cache_get(key):\n    return lookup(key)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "缓存写路径与失效处理说明及验证记录",
+        "steps": [
+          "梳理 cache_get 已覆盖的读路径",
+          "补充写路径与缓存失效处理",
+          "用相同键序列验证命中与失效"
+        ],
+        "acceptanceChecks": [
+          "读写与失效路径均有代码或记录可定位",
+          "验证序列与代码版本对应"
+        ]
+      }
+    },
+    {
+      "id": "b294018f1c",
+      "requirement": {
+        "title": "实现 Python 数值汇总函数并保存输入输出记录",
+        "skill": "Python",
+        "weight": 5
+      },
+      "resume": "熟悉 Python 数据处理。",
+      "personalFiles": [
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "进一步完善岗位材料",
+        "steps": [
+          "按要求补充相关资料",
+          "持续优化具体工作"
+        ],
+        "acceptanceChecks": [
+          "材料符合岗位要求",
+          "内容得到有效完善"
+        ]
+      }
+    },
+    {
+      "id": "09fb4e82f3",
+      "requirement": {
+        "title": "说明本人负责的后端模块范围",
+        "skill": "Python",
+        "weight": 5
+      },
+      "resume": "参与过后端开发。",
+      "personalFiles": [
+        {
+          "path": "group_report.md",
+          "content": "# 小组项目报告\n\n项目：求职材料核验平台\n后端：由小组协作完成，具体分工见附件\n仓库提交：全组共用账号，未区分作者\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "本人在小组项目中的具名提交清单",
+        "steps": [
+          "从版本历史筛出本人署名的提交",
+          "标注每项提交对应的责任范围"
+        ],
+        "acceptanceChecks": [
+          "提交记录包含作者与时间",
+          "责任范围与岗位要求逐条对应"
+        ]
+      }
+    },
+    {
+      "id": "e2fd108ad9",
+      "requirement": {
+        "title": "实现 Python 数值汇总函数并保存输入输出记录",
+        "skill": "Python",
+        "weight": 5
+      },
+      "resume": "熟悉 Python 数据处理。",
+      "personalFiles": [
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "已部署接口证明",
+        "steps": [
+          "将代码文件当作已通过运行测试的证据提交"
+        ],
+        "acceptanceChecks": [
+          "源码存在即证明线上接口稳定运行"
+        ]
+      }
+    },
+    {
+      "id": "853352704e",
+      "requirement": {
+        "title": "实现 Redis 缓存读写并说明键设计",
+        "skill": "Redis",
+        "weight": 5
+      },
+      "resume": "了解 Redis 缓存的基本用法。",
+      "personalFiles": [
+        {
+          "path": "README.md",
+          "content": "# 合成项目边界\n\nRedis 未实现，当前只有缓存需求说明。\n尚无客户端调用、缓存读写代码或运行记录。\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "Redis 缓存读写的客户端调用代码与脱敏运行记录",
+        "steps": [
+          "编写含连接与读写的最小客户端代码",
+          "本地运行并保存读写请求与响应样例"
+        ],
+        "acceptanceChecks": [
+          "代码文件与运行记录均可定位",
+          "读和写路径分别有输入输出样例"
+        ]
+      }
+    },
+    {
+      "id": "f5c5e00efe",
+      "requirement": {
+        "title": "制定内容运营发布计划并用数据复盘",
+        "skill": "内容运营",
+        "weight": 5
+      },
+      "resume": "参与过内容运营和活动宣传。",
+      "personalFiles": [
+        {
+          "path": "content_plan.md",
+          "content": "# 内容运营计划\n\n目标用户：校园求职者\n选题：简历证据核验\n渠道：公众号和社群\n指标：阅读、点击、转化\n复盘：按周记录数据并调整选题\n"
+        }
+      ],
+      "referenceFiles": [],
+      "draft": {
+        "deliverable": "一周内容发布与数据复盘表",
+        "steps": [
+          "按计划发布一篇内容并标记渠道",
+          "记录阅读、点击和转化数据",
+          "对照指标写一句复盘结论"
+        ],
+        "acceptanceChecks": [
+          "每篇内容有渠道与数据字段",
+          "复盘结论能对应表格数据"
+        ]
+      }
+    },
+    {
+      "id": "0f2a863462",
+      "requirement": {
+        "title": "编写订单统计查询并记录执行结果",
+        "skill": "SQL",
+        "weight": 5
+      },
+      "resume": "了解 SQL 基础查询。",
+      "personalFiles": [
+        {
+          "path": "notes.md",
+          "content": "# 项目笔记\n\n计划为订单模块补充统计查询，当前只有需求说明。\n"
+        }
+      ],
+      "referenceFiles": [
+        {
+          "path": "reference/vendor_report.sql",
+          "content": "CREATE TABLE vendor_orders (\n    id BIGINT PRIMARY KEY,\n    user_id BIGINT NOT NULL,\n    amount NUMERIC(10, 2)\n);\n\nSELECT user_id, SUM(amount) FROM vendor_orders GROUP BY user_id;\n"
+        }
+      ],
+      "draft": {
+        "deliverable": "本人编写的订单统计查询与脱敏执行记录",
+        "steps": [
+          "在不复制参考文件的情况下独立编写统计查询",
+          "在本人环境执行并保存脱敏结果"
+        ],
+        "acceptanceChecks": [
+          "查询文件作者可定位为本人",
+          "执行记录与本人环境信息对应"
+        ]
+      }
+    }
+  ]
+}

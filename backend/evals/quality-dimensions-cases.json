@@ -1,0 +1,2079 @@
+{
+  "suite": "quality-dimensions-v1",
+  "frozenAt": "2026-10-10",
+  "labelAuthorship": "黄金标签与分类理由由 ZCode（GLM-5.3）于 2026-10-10 在实现 runner 之前编写，全部为作者合成标签：不是真实模型输出，不是独立人工语义评分，也不冒充真实用户材料。生成器（本文件的合成输入与草稿）与评审标签（expected* 字段）分离存放于同一条目内，runner 只比对、不重推标签。",
+  "scope": "三个维度全部走生产路径：引用与建议维度经 match_candidate → enrich_evidence → build_evidence_contexts → validate_grounded_analysis；变化维度经 report_comparison.compare_views 与 CodeEvidenceView/evidence_key。不重写替代器，不创建 provider，不联网，不执行上传源码，不访问数据库。",
+  "gapCategoryMapping": {
+    "run-record": "运行/执行记录缺口：有源码但缺可复现运行记录（旧 gapKind execution、missing-run）",
+    "implementation-gap": "实现缺口：材料明示未实现或需先补实现（旧 gapKind implementation）",
+    "partial-implementation": "部分实现缺口：仅覆盖部分路径却被当作完整能力（旧 gapKind partial-implementation）",
+    "ownership-gap": "本人贡献缺口：小组/团队材料无法区分本人负责范围（旧 gapKind contribution、unclear-contribution）",
+    "data-review": "数据复盘缺口：计划文本存在但缺真实数据与复盘闭环（旧 gapKind review）",
+    "reference-substitution": "第三方参考替代：仅有第三方参考材料，无本人实践（旧 gapKind reference-only）"
+  },
+  "changeGroupRationale": {
+    "no-change": "两报告要求、材料、证据、解释完全一致，比较逻辑不得制造进步或退步。",
+    "materials-only": "仅新增材料：必须给出具体文件/行证据，且运行或贡献缺口仍需保留，不得声称能力提高。",
+    "requirements-only": "仅岗位要求变化：评价基准改变，与学生能力变化无关。",
+    "both-changed": "材料与岗位要求同时变化：必须能分别归因（context 同时列出两个信号）。",
+    "evidence-deleted": "删除证据：仅表示目标报告未再展示，不等于原文件被删除（limitations 须声明）。",
+    "provenance-role": "来源角色变化：同一位置从个人作品变为第三方参考，不能继续按本人实践计数。",
+    "same-path-diff-hash": "同名文件 hash 不同：内容已变，须按版本区分，不得静默对齐。",
+    "citation-id-reuse": "引用 ID 为报告局部标识：两报告同 ID 不同内容必须按版本/来源区分，不得判为无变化。",
+    "old-citation-out-of-bounds": "旧报告引用重放：旧引用在新上下文中越界或失配，必须在契约层被拒绝并在比较层显示移除。"
+  },
+  "citationCases": [
+    {
+      "id": "cit-valid-personal",
+      "narrative": "正例：引用来自当前冻结个人材料的证据应被接受。",
+      "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+      "requirements": [
+        {
+          "title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "weight": 5
+        }
+      ],
+      "files": [
+        {
+          "path": "app.py",
+          "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        }
+      ],
+      "referenceFiles": [],
+      "expectedVerdicts": [
+        "supported"
+      ],
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "cite-personal-current",
+          "defect": null,
+          "expectedContractRejection": false,
+          "goldReason": "引用解析到当前个人材料证据，属于允许的个人引用。",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 0,
+                "path": "app.py",
+                "snippetContains": "@app.get",
+                "provenance": "portfolio"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-cross-requirement",
+      "narrative": "越界：把另一条岗位要求名下的证据引用到本要求，应被拒绝。",
+      "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+      "requirements": [
+        {
+          "title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "weight": 5
+        },
+        {
+          "title": "实现 Python 数值汇总函数",
+          "skill": "Python",
+          "weight": 3
+        }
+      ],
+      "files": [
+        {
+          "path": "app.py",
+          "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        },
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "expectedVerdicts": [
+        "supported",
+        "supported"
+      ],
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "cite-other-requirement-evidence",
+          "defect": "第一条要求引用第二条要求名下的个人证据",
+          "expectedContractRejection": true,
+          "goldReason": "citation_id 是要求局部命名空间，跨要求引用属于越界，契约应拒绝。",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 1,
+                "path": "metrics.py",
+                "snippetContains": "def total",
+                "provenance": "portfolio"
+              }
+            ],
+            [
+              {
+                "kind": "source",
+                "reqIndex": 1,
+                "path": "metrics.py",
+                "snippetContains": "def total",
+                "provenance": "portfolio"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-unknown-future",
+      "narrative": "越界：引用计划未来上传的运行日志（当前不存在于冻结材料），应被拒绝。",
+      "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+      "requirements": [
+        {
+          "title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "weight": 5
+        }
+      ],
+      "files": [
+        {
+          "path": "app.py",
+          "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        }
+      ],
+      "referenceFiles": [],
+      "expectedVerdicts": [
+        "supported"
+      ],
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "cite-future-log",
+          "defect": "引用尚未上传的未来运行日志的编造 citation",
+          "expectedContractRejection": true,
+          "goldReason": "未来材料不产生当前可引用的 citation，未知引用应被拒绝。",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 0,
+                "path": "app.py",
+                "snippetContains": "@app.get",
+                "provenance": "portfolio"
+              },
+              {
+                "kind": "fabricated",
+                "citationId": "R1-E9"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-other-owner",
+      "narrative": "越界：引用另一名学生报告中的 citation（同格式但属他人上下文），在本人上下文应被拒绝。",
+      "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+      "requirements": [
+        {
+          "title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "weight": 5
+        }
+      ],
+      "files": [
+        {
+          "path": "app.py",
+          "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        }
+      ],
+      "referenceFiles": [],
+      "expectedVerdicts": [
+        "supported"
+      ],
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "cite-classmate-report",
+          "defect": "引用他人报告的局部 citation（本人上下文中不存在）",
+          "expectedContractRejection": true,
+          "goldReason": "他人报告的引用在本人上下文不可解析，属于未知引用，应被拒绝；跨报告安全依赖上下文内允许集合与比较层 evidence_key。",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 0,
+                "path": "app.py",
+                "snippetContains": "@app.get",
+                "provenance": "portfolio"
+              },
+              {
+                "kind": "fabricated",
+                "citationId": "R1-E8"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-old-report-reorder",
+      "narrative": "越界：旧报告（要求顺序为 Python 汇总、FastAPI）中的引用在新报告（要求顺序为 FastAPI、Python 汇总）重放，局部 ID 指向了另一条要求，应被拒绝。",
+      "resume": "使用 Python 和 FastAPI 完成过接口与数据处理开发。",
+      "requirements": [
+        {
+          "title": "实现 FastAPI 健康检查接口并说明响应",
+          "skill": "FastAPI",
+          "weight": 5
+        },
+        {
+          "title": "实现 Python 数值汇总函数",
+          "skill": "Python",
+          "weight": 3
+        }
+      ],
+      "files": [
+        {
+          "path": "app.py",
+          "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+        },
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "previous": {
+        "resume": "使用 Python 和 FastAPI 完成过接口与数据处理开发。",
+        "requirements": [
+          {
+            "title": "实现 Python 数值汇总函数",
+            "skill": "Python",
+            "weight": 3
+          },
+          {
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "skill": "FastAPI",
+            "weight": 5
+          }
+        ],
+        "files": [
+          {
+            "path": "metrics.py",
+            "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+          },
+          {
+            "path": "app.py",
+            "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+          }
+        ]
+      },
+      "expectedVerdicts": [
+        "supported",
+        "supported"
+      ],
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "replay-old-report-citation",
+          "defect": "旧报告中 FastAPI 证据的局部引用（R2-E1）在新报告指向 Python 汇总要求",
+          "expectedContractRejection": true,
+          "goldReason": "引用 ID 报告局部化，旧引用重放后指向另一条要求，应按跨要求越界拒绝。",
+          "cites": [
+            [
+              {
+                "kind": "previous",
+                "reqIndex": 1,
+                "path": "app.py",
+                "snippetContains": "@app.get"
+              }
+            ],
+            [
+              {
+                "kind": "source",
+                "reqIndex": 1,
+                "path": "metrics.py",
+                "snippetContains": "def total",
+                "provenance": "portfolio"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-reference-only",
+      "narrative": "越界：有个人证据的要求只引用第三方参考证据，应被拒绝——第三方参考不能证明本人实践。",
+      "resume": "使用 Python 完成过数据规范化处理。",
+      "requirements": [
+        {
+          "title": "实现 Python 数据规范化函数并说明边界输入",
+          "skill": "Python",
+          "weight": 5
+        }
+      ],
+      "files": [
+        {
+          "path": "normalize.py",
+          "content": "def normalize(value):\n    if value is None:\n        return ''\n    return value.strip()\n"
+        }
+      ],
+      "referenceFiles": [
+        {
+          "path": "reference/vendor_normalize.py",
+          "content": "def vendor_normalize(value):\n    if value is None:\n        return ''\n    return value.strip().lower()\n"
+        }
+      ],
+      "expectedVerdicts": [
+        "supported"
+      ],
+      "expectedSourceCountMin": 2,
+      "drafts": [
+        {
+          "id": "cite-reference-instead-of-personal",
+          "defect": "对有个人证据的要求只引用第三方参考证据",
+          "expectedContractRejection": true,
+          "goldReason": "有个人证据的要求必须至少引用一条个人证据；仅引用参考证据等于用第三方参考冒充本人实践，应被拒绝。",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 0,
+                "path": "reference/vendor_normalize.py",
+                "snippetContains": "vendor_normalize",
+                "provenance": "reference"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cit-gap-reference-mention",
+      "narrative": "边界正例：无个人实践的缺口要求下提及第三方参考是合法的，但评级必须保持空缺且解释必须声明参考不计入个人实践评级。",
+      "resume": "参与过校园社团活动，正在规划学习数据处理技能。",
+      "requirements": [
+        {
+          "title": "编写订单统计查询并记录执行结果",
+          "skill": "SQL",
+          "weight": 5
+        }
+      ],
+      "files": [
+        {
+          "path": "notes.md",
+          "content": "# 项目笔记\n\n计划为订单模块补充统计查询，当前只有需求说明。\n"
+        }
+      ],
+      "referenceFiles": [
+        {
+          "path": "reference/vendor_report.sql",
+          "content": "CREATE TABLE vendor_orders (\n    id BIGINT PRIMARY KEY,\n    user_id BIGINT NOT NULL,\n    amount NUMERIC(10, 2)\n);\n\nSELECT user_id, SUM(amount) FROM vendor_orders GROUP BY user_id;\n"
+        }
+      ],
+      "expectedVerdicts": [
+        "gap"
+      ],
+      "expectedExplanationContains": "不计入个人实践评级",
+      "expectedSourceCountMin": 1,
+      "drafts": [
+        {
+          "id": "cite-reference-mention-only",
+          "defect": null,
+          "expectedContractRejection": false,
+          "goldReason": "缺口要求下提及参考证据本身合法；非证明性边界体现为：规则裁决保持 gap、解释声明参考不计入个人实践评级、且被接受的引用确实来自 reference 来源而非个人作品。（修正记录：初版标签误要求 rating_ceiling 为空，但生产契约有意允许 gap 下基于候选证据的相关性评级，规则裁决不因此改变。）",
+          "cites": [
+            [
+              {
+                "kind": "source",
+                "reqIndex": 0,
+                "path": "reference/vendor_report.sql",
+                "snippetContains": "vendor_orders",
+                "provenance": "reference"
+              }
+            ]
+          ],
+          "goldInvariants": {
+            "verdictStaysGap": true,
+            "citedReferenceIsNotPersonal": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "cit-no-source-downgrade",
+      "narrative": "无来源单列：简历声明但无任何材料时，正确降级草稿（零引用+说明缺口）应被接受，且不计入引用成功分子。",
+      "resume": "熟悉 Docker 容器部署。",
+      "requirements": [
+        {
+          "title": "使用 Docker 部署服务并记录启动结果",
+          "skill": "Docker",
+          "weight": 5
+        }
+      ],
+      "files": [],
+      "referenceFiles": [],
+      "expectedVerdicts": [
+        "claimed_only"
+      ],
+      "expectedSourceCountMin": 0,
+      "drafts": [
+        {
+          "id": "no-citation-downgrade",
+          "defect": null,
+          "expectedContractRejection": false,
+          "goldReason": "无来源时的合法降级：不引用任何证据、说明信息缺口与建议；该例在指标中单列为 no-source，不计引用精确成功。",
+          "cites": [
+            []
+          ],
+          "goldInvariants": {
+            "sourceCountZero": true
+          }
+        }
+      ]
+    }
+  ],
+  "suggestionCases": [
+    {
+      "id": "sug-run-record",
+      "gapCategory": "run-record",
+      "narrative": "运行记录缺口：可操作建议须产出具名交付物、可执行步骤与可观察核验条件；不得把运行前提写成已运行，不得重复索取已有源码。",
+      "resume": "熟悉 Python 数据处理。",
+      "requirement": {
+        "title": "实现 Python 数值汇总函数并保存输入输出记录",
+        "skill": "Python",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "metrics.py",
+          "content": "def total(values):\n    if not all(isinstance(value, (int, float)) for value in values):\n        raise TypeError('numeric values required')\n    return sum(values)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "referenceDraft": {
+        "deliverable": "total 函数的脱敏输入输出记录",
+        "steps": [
+          "使用正常数字和非法输入各运行一次",
+          "保存异常类型、输出与代码版本"
+        ],
+        "acceptanceChecks": [
+          "正常输入的输出可复算",
+          "非法输入的异常与源码校验一致"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具名函数的输入输出记录，步骤绑定正常与非法输入及版本，核验条件可复算可对照源码。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "runtime-as-done",
+          "defectClass": "execution-overclaim",
+          "defect": "把尚未发生的运行写成已运行成功",
+          "draft": {
+            "deliverable": "显示代码运行成功的记录",
+            "steps": [
+              "提交代码运行成功的证明截图"
+            ],
+            "acceptanceChecks": [
+              "记录显示运行成功"
+            ]
+          },
+          "expectedContractRejection": true
+        },
+        {
+          "id": "repeat-source",
+          "defectClass": "redundant-source-request",
+          "defect": "重复索取已完整展示的函数源码",
+          "draft": {
+            "deliverable": "已展示函数的完整源码副本",
+            "steps": [
+              "再次提交该函数完整源码"
+            ],
+            "acceptanceChecks": [
+              "源码与已展示内容一致"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    },
+    {
+      "id": "sug-implementation-gap",
+      "gapCategory": "implementation-gap",
+      "narrative": "实现缺口：材料明示未实现时，计划不得先要运行输出；必须先补实现。",
+      "resume": "了解 Redis 缓存的基本用法。",
+      "requirement": {
+        "title": "实现 Redis 缓存读写并说明键设计",
+        "skill": "Redis",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "README.md",
+          "content": "# 合成项目边界\n\nRedis 未实现，当前只有缓存需求说明。\n尚无客户端调用、缓存读写代码或运行记录。\n"
+        }
+      ],
+      "referenceFiles": [],
+      "referenceDraft": {
+        "deliverable": "Redis 缓存读写的客户端调用代码与脱敏运行记录",
+        "steps": [
+          "编写含连接与读写的最小客户端代码",
+          "本地运行并保存读写请求与响应样例"
+        ],
+        "acceptanceChecks": [
+          "代码文件与运行记录均可定位",
+          "读和写路径分别有输入输出样例"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物指明代码与记录两类产物，步骤先补实现再运行，核验条件按读写路径可观察。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "runtime-before-implementation",
+          "defectClass": "runtime-before-implementation",
+          "defect": "材料明示未实现，却只要求保存运行输出",
+          "draft": {
+            "deliverable": "Redis 读写运行输出记录",
+            "steps": [
+              "启动 Redis 并保存读写输出"
+            ],
+            "acceptanceChecks": [
+              "输出包含读写样例"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    },
+    {
+      "id": "sug-partial-implementation",
+      "gapCategory": "partial-implementation",
+      "narrative": "部分实现缺口：仅有读路径的缓存不得按完整功能验收；完整范围验收必须先有范围核对步骤。",
+      "resume": "熟悉 Python 缓存处理。",
+      "requirement": {
+        "title": "实现 Python 缓存读写与失效处理",
+        "skill": "Python",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "cache.py",
+          "content": "from functools import lru_cache\n\n\n@lru_cache(maxsize=128)\ndef cache_get(key):\n    return lookup(key)\n"
+        }
+      ],
+      "referenceFiles": [],
+      "referenceDraft": {
+        "deliverable": "缓存写路径与失效处理说明及验证记录",
+        "steps": [
+          "梳理 cache_get 已覆盖的读路径",
+          "补充写路径与缓存失效处理",
+          "用相同键序列验证命中与失效"
+        ],
+        "acceptanceChecks": [
+          "读写与失效路径均有代码或记录可定位",
+          "验证序列与代码版本对应"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物覆盖缺口（写路径+失效），步骤含梳理、补齐、验证三段，核验条件按路径与版本可观察。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "partial-as-complete",
+          "defectClass": "full-scope-without-check",
+          "defect": "把仅有读路径的部分实现当作完整功能直接验收",
+          "draft": {
+            "deliverable": "完整缓存功能验收结论",
+            "steps": [
+              "提交验收通过的结论说明"
+            ],
+            "acceptanceChecks": [
+              "结论声明功能完整可用"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    },
+    {
+      "id": "sug-ownership-gap",
+      "gapCategory": "ownership-gap",
+      "narrative": "贡献归属缺口：小组材料不能直接当作本人负责范围的证明；建议应索取本人具名交付物。",
+      "resume": "参与过后端开发。",
+      "requirement": {
+        "title": "说明本人负责的后端模块范围",
+        "skill": "Python",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "group_report.md",
+          "content": "# 小组项目报告\n\n项目：求职材料核验平台\n后端：由小组协作完成，具体分工见附件\n仓库提交：全组共用账号，未区分作者\n"
+        }
+      ],
+      "referenceFiles": [],
+      "referenceDraft": {
+        "deliverable": "本人在小组项目中的具名提交清单",
+        "steps": [
+          "从版本历史筛出本人署名的提交",
+          "标注每项提交对应的责任范围"
+        ],
+        "acceptanceChecks": [
+          "提交记录包含作者与时间",
+          "责任范围与岗位要求逐条对应"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具名提交清单（区别于小组成果），步骤可执行，核验条件按作者/时间/对应关系可观察。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "group-as-personal",
+          "defectClass": "group-attribution",
+          "defect": "用小组成果直接证明本人负责范围",
+          "draft": {
+            "deliverable": "小组项目验收报告",
+            "steps": [
+              "把小组报告作为本人负责范围的证明提交"
+            ],
+            "acceptanceChecks": [
+              "报告与岗位要求对应"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    },
+    {
+      "id": "sug-data-review",
+      "gapCategory": "data-review",
+      "narrative": "数据复盘缺口：计划文本不能代替真实数据；建议不得输出能力断言。",
+      "resume": "参与过内容运营和活动宣传。",
+      "requirement": {
+        "title": "制定内容运营发布计划并用数据复盘",
+        "skill": "内容运营",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "content_plan.md",
+          "content": "# 内容运营计划\n\n目标用户：校园求职者\n选题：简历证据核验\n渠道：公众号和社群\n指标：阅读、点击、转化\n复盘：按周记录数据并调整选题\n"
+        }
+      ],
+      "referenceFiles": [],
+      "referenceDraft": {
+        "deliverable": "一周内容发布与数据复盘表",
+        "steps": [
+          "按计划发布一篇内容并标记渠道",
+          "记录阅读、点击和转化数据",
+          "对照指标写一句复盘结论"
+        ],
+        "acceptanceChecks": [
+          "每篇内容有渠道与数据字段",
+          "复盘结论能对应表格数据"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具体表格，步骤从发布到记录到复盘成闭环，核验条件检查字段与结论对应。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "ability-overclaim",
+          "defectClass": "ability-overclaim",
+          "defect": "用能力断言代替可观察的数据复盘条件",
+          "draft": {
+            "deliverable": "数据复盘能力证明材料",
+            "steps": [
+              "提交总结说明本人具备数据复盘能力"
+            ],
+            "acceptanceChecks": [
+              "总结提到具备数据复盘能力"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    },
+    {
+      "id": "sug-reference-substitution",
+      "gapCategory": "reference-substitution",
+      "narrative": "参考替代缺口：第三方参考 SQL 不能当作本人实践证明；建议应索取本人编写的查询与执行记录。",
+      "resume": "了解 SQL 基础查询。",
+      "requirement": {
+        "title": "编写订单统计查询并记录执行结果",
+        "skill": "SQL",
+        "weight": 5
+      },
+      "files": [
+        {
+          "path": "notes.md",
+          "content": "# 项目笔记\n\n计划为订单模块补充统计查询，当前只有需求说明。\n"
+        }
+      ],
+      "referenceFiles": [
+        {
+          "path": "reference/vendor_report.sql",
+          "content": "CREATE TABLE vendor_orders (\n    id BIGINT PRIMARY KEY,\n    user_id BIGINT NOT NULL,\n    amount NUMERIC(10, 2)\n);\n\nSELECT user_id, SUM(amount) FROM vendor_orders GROUP BY user_id;\n"
+        }
+      ],
+      "referenceDraft": {
+        "deliverable": "本人编写的订单统计查询与脱敏执行记录",
+        "steps": [
+          "在不复制参考文件的情况下独立编写统计查询",
+          "在本人环境执行并保存脱敏结果"
+        ],
+        "acceptanceChecks": [
+          "查询文件作者可定位为本人",
+          "执行记录与本人环境信息对应"
+        ],
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物强调本人编写+执行记录，步骤规避复制参考，核验条件按作者与环境可观察。"
+        }
+      },
+      "knownBadDrafts": [
+        {
+          "id": "reference-as-personal",
+          "defectClass": "reference-attribution",
+          "defect": "把第三方参考 SQL 当作本人实践证明提交",
+          "draft": {
+            "deliverable": "订单统计查询实践记录",
+            "steps": [
+              "把参考SQL当作本人实践证明提交"
+            ],
+            "acceptanceChecks": [
+              "SQL 与参考文件内容一致"
+            ]
+          },
+          "expectedContractRejection": true
+        }
+      ]
+    }
+  ],
+  "changeCases": [
+    {
+      "id": "chg-no-change",
+      "changeGroup": "no-change",
+      "narrative": "两报告完全一致：不得制造进步或退步。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "clone": "base"
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          []
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "attribution": "无变化：要求、材料、证据与解释完全一致，不得声称进步或退步。",
+        "attributionSignals": [
+          {
+            "kind": "no-requirement-change"
+          },
+          {
+            "kind": "level-unchanged"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-materials-only",
+      "changeGroup": "materials-only",
+      "narrative": "仅新增材料：须给出具体文件/行证据，且运行与贡献缺口保留，不得声称能力提高。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "运行记录与本人贡献仍未展示",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          },
+          {
+            "kind": "run_log",
+            "key": "mat-run",
+            "title": "补充运行记录",
+            "versionNumber": 1,
+            "contentHash": "h-run-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "运行记录与本人贡献仍未展示",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              },
+              {
+                "citationId": "R1-E2",
+                "filePath": "run_log.md",
+                "lineStart": 1,
+                "lineEnd": 2,
+                "snippet": "# 运行记录\nGET /health -> 200",
+                "contentHash": "h-run-1",
+                "provenance": "portfolio",
+                "contextComplete": false,
+                "functionLineStart": null,
+                "functionLineEnd": null
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [
+          "materials"
+        ],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "attribution": "仅新增材料：比较结果须能指出具体文件与行（added_evidence 含 file_path/line/content_hash），运行或贡献缺口仍需保留，不得声称能力提高。",
+        "attributionSignals": [
+          {
+            "kind": "no-requirement-change"
+          },
+          {
+            "kind": "added-evidence-complete-fields"
+          },
+          {
+            "kind": "target-gap-text",
+            "expect": "运行记录与本人贡献仍未展示"
+          }
+        ],
+        "remainingGapExpect": "运行记录与本人贡献仍未展示"
+      }
+    },
+    {
+      "id": "chg-requirements-only",
+      "changeGroup": "requirements-only",
+      "narrative": "仅岗位要求变化：评价基准改变，与学生能力变化无关。",
+      "allowJobChange": true,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-b",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 3
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [
+          "job",
+          "requirements"
+        ],
+        "itemChanges": [
+          [
+            "requirement"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "attribution": "仅岗位要求变化：评价基准改变（权重与岗位快照），不表示学生能力提高或下降。",
+        "attributionSignals": [
+          {
+            "kind": "no-evidence-change"
+          },
+          {
+            "kind": "level-unchanged"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-both-changed",
+      "changeGroup": "both-changed",
+      "narrative": "材料与岗位要求同时变化：必须能分别归因。",
+      "allowJobChange": true,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "运行记录与本人贡献仍未展示",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-b",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 2,
+            "contentHash": "h-resume-2"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 3
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "运行记录与本人贡献仍未展示",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              },
+              {
+                "citationId": "R1-E2",
+                "filePath": "run_log.md",
+                "lineStart": 1,
+                "lineEnd": 2,
+                "snippet": "# 运行记录\nGET /health -> 200",
+                "contentHash": "h-run-1",
+                "provenance": "portfolio",
+                "contextComplete": false,
+                "functionLineStart": null,
+                "functionLineEnd": null
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [
+          "job",
+          "materials",
+          "requirements"
+        ],
+        "itemChanges": [
+          [
+            "requirement",
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "attribution": "材料与岗位要求同时变化：context 同时列出 materials 与 requirements 信号，须分别归因，不得合并为单一能力结论。",
+        "attributionSignals": [
+          {
+            "kind": "added-evidence-complete-fields"
+          },
+          {
+            "kind": "target-gap-text",
+            "expect": "运行记录与本人贡献仍未展示"
+          }
+        ],
+        "remainingGapExpect": "运行记录与本人贡献仍未展示"
+      }
+    },
+    {
+      "id": "chg-evidence-deleted",
+      "changeGroup": "evidence-deleted",
+      "narrative": "删除证据：仅表示目标报告未再展示，不等于原文件被删除。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              },
+              {
+                "citationId": "R1-E2",
+                "filePath": "run_log.md",
+                "lineStart": 1,
+                "lineEnd": 2,
+                "snippet": "# 运行记录\nGET /health -> 200",
+                "contentHash": "h-run-1",
+                "provenance": "portfolio",
+                "contextComplete": false,
+                "functionLineStart": null,
+                "functionLineEnd": null
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "attribution": "证据删除：仅表示目标报告未再展示该引用（limitations 须声明不代表原文件被删除），不得推断文件已删除或能力下降。",
+        "attributionSignals": [
+          {
+            "kind": "limitation-contains",
+            "text": "不代表原文件被删除"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-provenance-role",
+      "changeGroup": "provenance-role",
+      "narrative": "来源角色变化：同一位置从个人作品变为第三方参考，不能继续按本人实践计数。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "reference",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "attribution": "来源角色变化：evidence_key 含 provenance，同位置由个人变参考必须记为移除+新增，不能继续按本人实践计数。",
+        "attributionSignals": [
+          {
+            "kind": "provenance-flip-detected"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-same-path-diff-hash",
+      "changeGroup": "same-path-diff-hash",
+      "narrative": "同名文件 hash 不同：内容已变，须按版本区分，不得静默对齐。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E2",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'status': 'ok'}",
+                "contentHash": "ha2",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "attribution": "同名文件 hash 不同：evidence_key 含 content_hash 与 snippet，必须按版本区分并记为移除+新增。",
+        "attributionSignals": [
+          {
+            "kind": "added-evidence-complete-fields"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-citation-id-reuse",
+      "changeGroup": "citation-id-reuse",
+      "narrative": "引用 ID 报告局部复用：两报告同 ID（R1-E1）不同内容，不得判为无变化。",
+      "allowJobChange": false,
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见接口源码，但未运行",
+            "gap": "缺少运行记录",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'status': 'ok'}",
+                "contentHash": "ha2",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "attribution": "引用 ID 为报告局部标识：同 ID 不同内容必须按版本/来源区分（移除+新增），不得因 ID 相同而判为无变化。",
+        "attributionSignals": [
+          {
+            "kind": "same-citation-id-content-diff-detected"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    },
+    {
+      "id": "chg-old-citation-out-of-bounds",
+      "changeGroup": "old-citation-out-of-bounds",
+      "narrative": "旧报告引用重放：旧引用在新上下文中越界，须在契约层被拒绝并在比较层显示移除。",
+      "allowJobChange": false,
+      "oldCitationReplay": {
+        "resume": "使用 Python 和 FastAPI 完成过接口开发。",
+        "oldRequirements": [
+          {
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "skill": "FastAPI",
+            "weight": 5
+          },
+          {
+            "title": "实现 FastAPI 缓存读取接口",
+            "skill": "FastAPI",
+            "weight": 3
+          }
+        ],
+        "newRequirements": [
+          {
+            "title": "实现 FastAPI 健康检查接口并说明响应",
+            "skill": "FastAPI",
+            "weight": 5
+          }
+        ],
+        "oldFiles": [
+          {
+            "path": "app.py",
+            "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+          },
+          {
+            "path": "cache_api.py",
+            "content": "from fastapi import FastAPI\n\ncache_app = FastAPI()\n\n@cache_app.get('/cache/{key}')\nasync def read_cache(key: str):\n    return {'key': key, 'value': None}\n"
+          }
+        ],
+        "newFiles": [
+          {
+            "path": "app.py",
+            "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+          }
+        ],
+        "oldCites": [
+          [
+            {
+              "kind": "source",
+              "reqIndex": 0,
+              "path": "app.py",
+              "snippetContains": "@app.get",
+              "provenance": "portfolio"
+            }
+          ],
+          [
+            {
+              "kind": "source",
+              "reqIndex": 1,
+              "path": "cache_api.py",
+              "snippetContains": "read_cache",
+              "provenance": "portfolio"
+            }
+          ]
+        ]
+      },
+      "base": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查与缓存接口",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见健康检查源码，但未运行",
+            "gap": "缺少运行记录与缓存接口材料",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              },
+              {
+                "citationId": "R1-E2",
+                "filePath": "cache_api.py",
+                "lineStart": 4,
+                "lineEnd": 5,
+                "snippet": "async def read_cache(key: str):\n    return {'key': key, 'value': None}",
+                "contentHash": "hc1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 4,
+                "functionLineEnd": 5
+              }
+            ]
+          }
+        ]
+      },
+      "target": {
+        "jobId": "job-a",
+        "materials": [
+          {
+            "kind": "resume",
+            "key": "mat-resume",
+            "title": "合成简历",
+            "versionNumber": 1,
+            "contentHash": "h-resume-1"
+          }
+        ],
+        "snapshot": {
+          "requirements": [
+            {
+              "key": "req-api",
+              "weight": 5
+            }
+          ]
+        },
+        "items": [
+          {
+            "key": "req-api",
+            "title": "实现 FastAPI 健康检查与缓存接口",
+            "aiStatus": "validated",
+            "evidenceLevel": 2,
+            "explanation": "可见健康检查源码，但未运行",
+            "gap": "缺少运行记录与缓存接口材料",
+            "suggestion": "补充运行输出",
+            "plan": {
+              "deliverable": "具名请求与响应记录",
+              "steps": [
+                "保存异常请求样例"
+              ],
+              "acceptanceChecks": [
+                "输入和输出可定位"
+              ]
+            },
+            "evidence": [
+              {
+                "citationId": "R1-E1",
+                "filePath": "app.py",
+                "lineStart": 5,
+                "lineEnd": 6,
+                "snippet": "def health():\n    return {'ok': True}",
+                "contentHash": "ha1",
+                "provenance": "portfolio",
+                "contextComplete": true,
+                "functionLineStart": 5,
+                "functionLineEnd": 6
+              }
+            ]
+          }
+        ]
+      },
+      "gold": {
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "attribution": "旧引用越界：契约层拒绝旧引用重放（cache_api.py 的引用在新上下文未知），比较层显示该证据移除。",
+        "attributionSignals": [
+          {
+            "kind": "old-citation-rejected"
+          }
+        ],
+        "remainingGapExpect": null
+      }
+    }
+  ]
+}

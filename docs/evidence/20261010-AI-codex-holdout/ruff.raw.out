@@ -1,0 +1,40 @@
+E501 Line too long (122 > 100)
+ --> app\tests\test_quality_dimensions_holdout.py:9:101
+  |
+8 | REQUIREMENT = {"title": "实现 FastAPI 健康检查接口", "skill": "FastAPI", "weight": 5}
+9 | OLD_SOURCE = "from fastapi import FastAPI\napp = FastAPI()\n@app.get('/health')\ndef health():\n    return {'ok': True}\n"
+  |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+  |
+
+E501 Line too long (106 > 100)
+  --> app\tests\test_quality_dimensions_holdout.py:33:101
+   |
+31 |     before = runner._view_ns(key, 'old', base)
+32 |     after = runner._view_ns(key, 'new', target)
+33 |     return runner.compare_views(before, after, runner._snapshot(key, base), runner._snapshot(key, target))
+   |                                                                                                     ^^^^^^
+   |
+
+E501 Line too long (102 > 100)
+  --> app\tests\test_quality_dimensions_holdout.py:62:75
+   |
+60 | def test_vague_but_valid_plan_does_not_produce_an_operability_score():
+61 |     current, *_ = contexts()
+62 |     draft = {"deliverable": "进一步完善岗位材料", "steps": ["按要求补充相关资料", "持续优化具体工作"],
+   |                                                                                                     ^^
+63 |              "acceptanceChecks": ["材料符合岗位要求", "内容得到有效完善"]}
+64 |     assert runner.validate(current, runner.plan_analysis(current[0], draft))['accepted'] is True
+   |
+
+E501 Line too long (125 > 100)
+  --> app\tests\test_quality_dimensions_holdout.py:76:101
+   |
+74 |         first = result.items[0]
+75 |         evidence = replace(first.evidence_list[0], content_hash='f' * 64)
+76 |         return replace(result, items=[replace(first, evidence_list=[evidence, *first.evidence_list[1:]]), *result.items[1:]])
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+77 |     monkeypatch.setattr(runner, 'enrich_evidence', tampered)
+78 |     _, exact, count, _ = contexts()
+   |
+
+Found 4 errors.

@@ -1,0 +1,990 @@
+{
+  "suite": "quality-dimensions-v2",
+  "generatedAt": "2026-10-10T02:48:38.720925+00:00",
+  "syntheticDataOnly": true,
+  "externalCalls": 0,
+  "generatedWebsiteModelOutputs": 0,
+  "labelAuthorship": "Author-written synthetic labels (ZCode, GLM-5.3, 2026-10-10): not real model outputs, not independent human semantic review.",
+  "scope": "Structural/rule probes over production paths only. semanticQualityPassRate stays null because no real-model or independent semantic review exists.",
+  "sourceHashes": {
+    "app.agents.contracts": "103d0e0b2740f9167391b397ba73b022b0fadf6d15a0db1cc2101a29db78519f",
+    "app.agents.evidence_workflow": "2719e41a2fbdda380d8dfaae7f1490869873630863f06572035da8b4d494809b",
+    "app.services.report_comparison": "ee7df0814c03b3a35908f9b77c2ab9aca2052f2f90cd60803b035f782fbd7ef1",
+    "app.tools.evidence_context": "c991ca4e9d905977d1520ef55b003e745d277a1d220cb106435e6480990099b4",
+    "app.tools.function_coverage": "4ee383aefeddb8934f05a653c82a718c9c3fd148e1f7eb9ff4be4469746bf354",
+    "app.tools.matcher": "5a15f5f450af074de7476098c03301b47fab2213c7bbe3bd780747dae68686bb",
+    "app.tools.resume_parser": "6db35975e9bc742086429c8d9632895439f685069c0be67af6a680476e3c1848",
+    "app.tools.task_boundaries": "e3e34c1e6b5d67adcef87a410dbdcdd24b32a93000eb8b8b0da567bd7fe4e203",
+    "fixture": "1201e12fa3bcc80f918257f1d5fb874c5f1d624819dfd4f665a63f6389018a24",
+    "runner": "d4658f50da3ff6cde2decba962f08d81c4313b9fa550c336b0ad62599b62a1af"
+  },
+  "results": {
+    "citation": [
+      {
+        "id": "cit-valid-personal",
+        "narrative": "正例：引用来自当前冻结个人材料的证据应被接受。",
+        "verdictsObserved": [
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 3,
+        "drafts": [
+          {
+            "draftId": "cite-personal-current",
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "resolvedCitationIds": [
+              [
+                "R1-E1"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "引用解析到当前个人材料证据，属于允许的个人引用。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-cross-requirement",
+        "narrative": "越界：把另一条岗位要求名下的证据引用到本要求，应被拒绝。",
+        "verdictsObserved": [
+          "supported",
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported",
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 5,
+        "drafts": [
+          {
+            "draftId": "cite-other-requirement-evidence",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unknown or cross-requirement citation",
+            "resolvedCitationIds": [
+              [
+                "R2-E2"
+              ],
+              [
+                "R2-E2"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "citation_id 是要求局部命名空间，跨要求引用属于越界，契约应拒绝。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-unknown-future",
+        "narrative": "越界：引用计划未来上传的运行日志（当前不存在于冻结材料），应被拒绝。",
+        "verdictsObserved": [
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 3,
+        "drafts": [
+          {
+            "draftId": "cite-future-log",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unknown or cross-requirement citation",
+            "resolvedCitationIds": [
+              [
+                "R1-E1",
+                "R1-E9"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "未来材料不产生当前可引用的 citation，未知引用应被拒绝。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-other-owner",
+        "narrative": "越界：引用另一名学生报告中的 citation（同格式但属他人上下文），在本人上下文应被拒绝。",
+        "verdictsObserved": [
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 3,
+        "drafts": [
+          {
+            "draftId": "cite-classmate-report",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unknown or cross-requirement citation",
+            "resolvedCitationIds": [
+              [
+                "R1-E1",
+                "R1-E8"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "他人报告的引用在本人上下文不可解析，属于未知引用，应被拒绝；跨报告安全依赖上下文内允许集合与比较层 evidence_key。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-old-report-reorder",
+        "narrative": "越界：旧报告（要求顺序为 Python 汇总、FastAPI）中的引用在新报告（要求顺序为 FastAPI、Python 汇总）重放，局部 ID 指向了另一条要求，应被拒绝。",
+        "verdictsObserved": [
+          "supported",
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported",
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 5,
+        "drafts": [
+          {
+            "draftId": "replay-old-report-citation",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unknown or cross-requirement citation",
+            "resolvedCitationIds": [
+              [
+                "R2-E1"
+              ],
+              [
+                "R2-E2"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "引用 ID 报告局部化，旧引用重放后指向另一条要求，应按跨要求越界拒绝。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-reference-only",
+        "narrative": "越界：有个人证据的要求只引用第三方参考证据，应被拒绝——第三方参考不能证明本人实践。",
+        "verdictsObserved": [
+          "supported"
+        ],
+        "verdictsExpected": [
+          "supported"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 2,
+        "drafts": [
+          {
+            "draftId": "cite-reference-instead-of-personal",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis omitted citations for an evidenced requirement",
+            "resolvedCitationIds": [
+              [
+                "R1-E2"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "有个人证据的要求必须至少引用一条个人证据；仅引用参考证据等于用第三方参考冒充本人实践，应被拒绝。",
+            "goldInvariants": {}
+          }
+        ]
+      },
+      {
+        "id": "cit-gap-reference-mention",
+        "narrative": "边界正例：无个人实践的缺口要求下提及第三方参考是合法的，但评级必须保持空缺且解释必须声明参考不计入个人实践评级。",
+        "verdictsObserved": [
+          "gap"
+        ],
+        "verdictsExpected": [
+          "gap"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": true,
+        "sourceCheck": "verified",
+        "sourceCount": 3,
+        "drafts": [
+          {
+            "draftId": "cite-reference-mention-only",
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "resolvedCitationIds": [
+              [
+                "R1-E2"
+              ]
+            ],
+            "expectationMatched": true,
+            "goldReason": "缺口要求下提及参考证据本身合法；非证明性边界体现为：规则裁决保持 gap、解释声明参考不计入个人实践评级、且被接受的引用确实来自 reference 来源而非个人作品。（修正记录：初版标签误要求 rating_ceiling 为空，但生产契约有意允许 gap 下基于候选证据的相关性评级，规则裁决不因此改变。）",
+            "goldInvariants": {
+              "verdictStaysGap": {
+                "expected": true,
+                "observed": true
+              },
+              "citedReferenceIsNotPersonal": {
+                "expected": true,
+                "observed": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "cit-no-source-downgrade",
+        "narrative": "无来源单列：简历声明但无任何材料时，正确降级草稿（零引用+说明缺口）应被接受，且不计入引用成功分子。",
+        "verdictsObserved": [
+          "claimed_only"
+        ],
+        "verdictsExpected": [
+          "claimed_only"
+        ],
+        "verdictExpectationMatched": true,
+        "explanationMarkerMatched": true,
+        "sourceExact": false,
+        "sourceCheck": "no-sources",
+        "sourceCount": 0,
+        "drafts": [
+          {
+            "draftId": "no-citation-downgrade",
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "resolvedCitationIds": [
+              []
+            ],
+            "expectationMatched": true,
+            "goldReason": "无来源时的合法降级：不引用任何证据、说明信息缺口与建议；该例在指标中单列为 no-source，不计引用精确成功。",
+            "goldInvariants": {
+              "sourceCountZero": {
+                "expected": true,
+                "observed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "suggestion": [
+      {
+        "id": "sug-run-record",
+        "gapCategory": "run-record",
+        "narrative": "运行记录缺口：可操作建议须产出具名交付物、可执行步骤与可观察核验条件；不得把运行前提写成已运行，不得重复索取已有源码。",
+        "verdictObserved": "supported",
+        "sourceCheck": "verified",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具名函数的输入输出记录，步骤绑定正常与非法输入及版本，核验条件可复算可对照源码。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "runtime-as-done",
+            "defectClass": "execution-overclaim",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unsupported ability or execution claim",
+            "expectationMatched": true
+          },
+          {
+            "probeId": "repeat-source",
+            "defectClass": "redundant-source-request",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI suggestion requests source already fully shown",
+            "expectationMatched": true
+          }
+        ]
+      },
+      {
+        "id": "sug-implementation-gap",
+        "gapCategory": "implementation-gap",
+        "narrative": "实现缺口：材料明示未实现时，计划不得先要运行输出；必须先补实现。",
+        "verdictObserved": "claimed_only",
+        "sourceCheck": "verified",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物指明代码与记录两类产物，步骤先补实现再运行，核验条件按读写路径可观察。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "runtime-before-implementation",
+            "defectClass": "runtime-before-implementation",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI task plan requests execution before missing implementation",
+            "expectationMatched": true
+          }
+        ]
+      },
+      {
+        "id": "sug-partial-implementation",
+        "gapCategory": "partial-implementation",
+        "narrative": "部分实现缺口：仅有读路径的缓存不得按完整功能验收；完整范围验收必须先有范围核对步骤。",
+        "verdictObserved": "supported",
+        "sourceCheck": "verified",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物覆盖缺口（写路径+失效），步骤含梳理、补齐、验证三段，核验条件按路径与版本可观察。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "partial-as-complete",
+            "defectClass": "full-scope-without-check",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI task plan assumes complete functionality without a scope check",
+            "expectationMatched": true
+          }
+        ]
+      },
+      {
+        "id": "sug-ownership-gap",
+        "gapCategory": "ownership-gap",
+        "narrative": "贡献归属缺口：小组材料不能直接当作本人负责范围的证明；建议应索取本人具名交付物。",
+        "verdictObserved": "gap",
+        "sourceCheck": "no-sources",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具名提交清单（区别于小组成果），步骤可执行，核验条件按作者/时间/对应关系可观察。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "group-as-personal",
+            "defectClass": "group-attribution",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI task plan substitutes group or reference material for personal evidence",
+            "expectationMatched": true
+          }
+        ]
+      },
+      {
+        "id": "sug-data-review",
+        "gapCategory": "data-review",
+        "narrative": "数据复盘缺口：计划文本不能代替真实数据；建议不得输出能力断言。",
+        "verdictObserved": "claimed_only",
+        "sourceCheck": "verified",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物为具体表格，步骤从发布到记录到复盘成闭环，核验条件检查字段与结论对应。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "ability-overclaim",
+            "defectClass": "ability-overclaim",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI analysis contains an unsupported ability or execution claim",
+            "expectationMatched": true
+          }
+        ]
+      },
+      {
+        "id": "sug-reference-substitution",
+        "gapCategory": "reference-substitution",
+        "narrative": "参考替代缺口：第三方参考 SQL 不能当作本人实践证明；建议应索取本人编写的查询与执行记录。",
+        "verdictObserved": "claimed_only",
+        "sourceCheck": "verified",
+        "operabilityGold": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true,
+          "reason": "交付物强调本人编写+执行记录，步骤规避复制参考，核验条件按作者与环境可观察。"
+        },
+        "probes": [
+          {
+            "probeId": "reference",
+            "defectClass": null,
+            "expectedContractRejection": false,
+            "accepted": true,
+            "error": null,
+            "expectationMatched": true
+          },
+          {
+            "probeId": "reference-as-personal",
+            "defectClass": "reference-attribution",
+            "expectedContractRejection": true,
+            "accepted": false,
+            "error": "AI task plan substitutes group or reference material for personal evidence",
+            "expectationMatched": true
+          }
+        ]
+      }
+    ],
+    "change": [
+      {
+        "id": "chg-no-change",
+        "changeGroup": "no-change",
+        "narrative": "两报告完全一致：不得制造进步或退步。",
+        "attribution": "无变化：要求、材料、证据与解释完全一致，不得声称进步或退步。",
+        "contextChanges": [],
+        "itemChanges": [
+          []
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "no-requirement-change",
+            "observed": true
+          },
+          {
+            "kind": "level-unchanged",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-materials-only",
+        "changeGroup": "materials-only",
+        "narrative": "仅新增材料：须给出具体文件/行证据，且运行与贡献缺口保留，不得声称能力提高。",
+        "attribution": "仅新增材料：比较结果须能指出具体文件与行（added_evidence 含 file_path/line/content_hash），运行或贡献缺口仍需保留，不得声称能力提高。",
+        "contextChanges": [
+          "materials"
+        ],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "targetInformationGaps": [
+          "运行记录与本人贡献仍未展示"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "no-requirement-change",
+            "observed": true
+          },
+          {
+            "kind": "added-evidence-complete-fields",
+            "observed": true
+          },
+          {
+            "kind": "target-gap-text",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": "运行记录与本人贡献仍未展示",
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-requirements-only",
+        "changeGroup": "requirements-only",
+        "narrative": "仅岗位要求变化：评价基准改变，与学生能力变化无关。",
+        "attribution": "仅岗位要求变化：评价基准改变（权重与岗位快照），不表示学生能力提高或下降。",
+        "contextChanges": [
+          "job",
+          "requirements"
+        ],
+        "itemChanges": [
+          [
+            "requirement"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "no-evidence-change",
+            "observed": true
+          },
+          {
+            "kind": "level-unchanged",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-both-changed",
+        "changeGroup": "both-changed",
+        "narrative": "材料与岗位要求同时变化：必须能分别归因。",
+        "attribution": "材料与岗位要求同时变化：context 同时列出 materials 与 requirements 信号，须分别归因，不得合并为单一能力结论。",
+        "contextChanges": [
+          "job",
+          "materials",
+          "requirements"
+        ],
+        "itemChanges": [
+          [
+            "requirement",
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          0
+        ],
+        "targetInformationGaps": [
+          "运行记录与本人贡献仍未展示"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "added-evidence-complete-fields",
+            "observed": true
+          },
+          {
+            "kind": "target-gap-text",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": "运行记录与本人贡献仍未展示",
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-evidence-deleted",
+        "changeGroup": "evidence-deleted",
+        "narrative": "删除证据：仅表示目标报告未再展示，不等于原文件被删除。",
+        "attribution": "证据删除：仅表示目标报告未再展示该引用（limitations 须声明不代表原文件被删除），不得推断文件已删除或能力下降。",
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "limitation-contains",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-provenance-role",
+        "changeGroup": "provenance-role",
+        "narrative": "来源角色变化：同一位置从个人作品变为第三方参考，不能继续按本人实践计数。",
+        "attribution": "来源角色变化：evidence_key 含 provenance，同位置由个人变参考必须记为移除+新增，不能继续按本人实践计数。",
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "provenance-flip-detected",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-same-path-diff-hash",
+        "changeGroup": "same-path-diff-hash",
+        "narrative": "同名文件 hash 不同：内容已变，须按版本区分，不得静默对齐。",
+        "attribution": "同名文件 hash 不同：evidence_key 含 content_hash 与 snippet，必须按版本区分并记为移除+新增。",
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "added-evidence-complete-fields",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-citation-id-reuse",
+        "changeGroup": "citation-id-reuse",
+        "narrative": "引用 ID 报告局部复用：两报告同 ID（R1-E1）不同内容，不得判为无变化。",
+        "attribution": "引用 ID 为报告局部标识：同 ID 不同内容必须按版本/来源区分（移除+新增），不得因 ID 相同而判为无变化。",
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          1
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "same-citation-id-content-diff-detected",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": null
+      },
+      {
+        "id": "chg-old-citation-out-of-bounds",
+        "changeGroup": "old-citation-out-of-bounds",
+        "narrative": "旧报告引用重放：旧引用在新上下文中越界，须在契约层被拒绝并在比较层显示移除。",
+        "attribution": "旧引用越界：契约层拒绝旧引用重放（cache_api.py 的引用在新上下文未知），比较层显示该证据移除。",
+        "contextChanges": [],
+        "itemChanges": [
+          [
+            "evidence"
+          ]
+        ],
+        "addedEvidenceCounts": [
+          0
+        ],
+        "removedEvidenceCounts": [
+          1
+        ],
+        "targetInformationGaps": [
+          "缺少运行记录与缓存接口材料"
+        ],
+        "changeTypeExpectationMatched": true,
+        "attributionSignals": [
+          {
+            "kind": "old-citation-rejected",
+            "observed": true
+          }
+        ],
+        "attributionSignalsMatched": true,
+        "remainingGapExpect": null,
+        "remainingGapMatched": true,
+        "oldCitationReplay": {
+          "oldCitationIds": [
+            [
+              "R1-E1"
+            ],
+            [
+              "R2-E3"
+            ]
+          ],
+          "accepted": false,
+          "error": "AI analysis requirement IDs do not match the request",
+          "newRequirementIds": [
+            "c0364ae6-6990-5e94-8102-887a26c64154"
+          ],
+          "newAllowedIds": [
+            "R1-E1",
+            "R1-E2",
+            "R1-E3"
+          ]
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "citation": {
+      "caseCount": 8,
+      "sourceExactCount": 7,
+      "sourceMismatchCount": 0,
+      "noSourceCount": 1,
+      "noSourceCaseIds": [
+        "cit-no-source-downgrade"
+      ],
+      "sourcedCaseIds": [
+        "cit-valid-personal",
+        "cit-cross-requirement",
+        "cit-unknown-future",
+        "cit-other-owner",
+        "cit-old-report-reorder",
+        "cit-reference-only",
+        "cit-gap-reference-mention"
+      ],
+      "draftsTotal": 8,
+      "validCitationGoldAccept": 2,
+      "validCitationAccepted": 2,
+      "validCitationAcceptanceRate": 1.0,
+      "outOfBoundsGoldReject": 5,
+      "outOfBoundsRejected": 5,
+      "outOfBoundsRejectionRate": 1.0,
+      "contractCitationPrecision": 1.0,
+      "contractCitationRecall": 1.0,
+      "failures": []
+    },
+    "suggestion": {
+      "caseCount": 6,
+      "gapCategoryCoverage": {
+        "data-review": 1,
+        "implementation-gap": 1,
+        "ownership-gap": 1,
+        "partial-implementation": 1,
+        "reference-substitution": 1,
+        "run-record": 1
+      },
+      "probesTotal": 13,
+      "expectationMatches": 13,
+      "expectationMatchRate": 1.0,
+      "referenceDraftAccepted": 6,
+      "referenceDraftTotal": 6,
+      "badDraftRejected": 7,
+      "badDraftTotal": 7,
+      "badDraftRejectionRate": 1.0,
+      "defectClassBreakdown": {
+        "ability-overclaim": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "execution-overclaim": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "full-scope-without-check": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "group-attribution": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "redundant-source-request": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "reference-attribution": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        },
+        "runtime-before-implementation": {
+          "rejected": 1,
+          "total": 1,
+          "rejectionRate": 1.0
+        }
+      },
+      "operabilityGoldBreakdown": {
+        "run-record": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        },
+        "implementation-gap": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        },
+        "partial-implementation": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        },
+        "ownership-gap": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        },
+        "data-review": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        },
+        "reference-substitution": {
+          "deliverableNamed": true,
+          "stepsExecutable": true,
+          "checksObservable": true
+        }
+      },
+      "authoredOperabilityCounts": {
+        "deliverableNamed": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "stepsExecutable": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "checksObservable": {
+          "numerator": 6,
+          "denominator": 6
+        }
+      },
+      "operabilityCounts": null,
+      "generatedPlanOperabilityRate": null,
+      "operabilityMeasurementStatus": "not-measured: authored draft labels only",
+      "failures": []
+    },
+    "change": {
+      "caseCount": 9,
+      "changeGroupCoverage": {
+        "both-changed": 1,
+        "citation-id-reuse": 1,
+        "evidence-deleted": 1,
+        "materials-only": 1,
+        "no-change": 1,
+        "old-citation-out-of-bounds": 1,
+        "provenance-role": 1,
+        "requirements-only": 1,
+        "same-path-diff-hash": 1
+      },
+      "changeTypeCorrect": 9,
+      "changeTypeAccuracy": 1.0,
+      "attributionSignalCorrect": 9,
+      "attributionSignalRate": 1.0,
+      "remainingGapCases": 2,
+      "remainingGapIdentified": 2,
+      "remainingGapIdentificationRate": 1.0,
+      "failures": []
+    },
+    "independentSemanticReviews": 0,
+    "semanticQualityPassRate": null
+  }
+}
