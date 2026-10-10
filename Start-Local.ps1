@@ -1,5 +1,7 @@
 param(
     [string]$NodePath = 'node',
+    [ValidatePattern('^\.venv(?:-[a-z0-9-]+)?$')][string]$BackendVenv = '.venv',
+    [ValidatePattern('^$|^[a-z0-9][a-z0-9-]{0,63}$')][string]$FrontendStage = '',
     [switch]$SkipBuild,
     [switch]$CheckOnly
 )
@@ -7,7 +9,15 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $backendRoot = Join-Path $projectRoot 'backend'
 $frontendRoot = Join-Path $projectRoot 'jianli'
-$pythonPath = Join-Path $backendRoot '.venv\Scripts\python.exe'
+if ($FrontendStage) { $frontendRoot = Join-Path $backendRoot ".tmp\$FrontendStage" }
+$venvRoot = Join-Path $backendRoot $BackendVenv
+foreach ($directory in @($venvRoot, $frontendRoot)) {
+    $item = Get-Item -LiteralPath $directory -ErrorAction Stop
+    if (!$item.PSIsContainer -or ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) {
+        throw 'Startup runtime directories must be local directories, not reparse points.'
+    }
+}
+$pythonPath = Join-Path $venvRoot 'Scripts\python.exe'
 $nextPath = Join-Path $frontendRoot 'node_modules\next\dist\bin\next'
 $stateRoot = Join-Path $backendRoot '.tmp\local-run'
 if (!(Test-Path -LiteralPath $pythonPath)) { throw 'Backend dependencies missing. Follow backend/README.md first.' }
@@ -15,6 +25,20 @@ if (!(Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies missing.
 $nodeCommand = Get-Command $NodePath -ErrorAction Stop
 $nodeExecutable = $nodeCommand.Source
 if (!$nodeExecutable) { throw 'NodePath must resolve to a Node executable.' }
+Push-Location $backendRoot
+try {
+    & $pythonPath -m evals.verify_dependency_environment | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'Selected backend runtime does not match current production dependency pins.' }
+} finally { Pop-Location }
+& $nodeExecutable (Join-Path $projectRoot 'scripts\dependencies\verify-frontend-runtime.mjs') --project-root $frontendRoot --expected-root (Join-Path $projectRoot 'jianli') | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'Selected frontend runtime or source does not match the current lock/source.' }
+if ($CheckOnly) {
+    Write-Output 'Runtime/source preflight passed; no services, migrations, builds or model calls started.'
+    exit 0
+}
+if ($SkipBuild -and !(Test-Path -LiteralPath (Join-Path $frontendRoot '.next\BUILD_ID'))) {
+    throw 'No production build found. Run without -SkipBuild.'
+}
 $envPath = Join-Path $backendRoot '.env'
 if (!(Test-Path -LiteralPath $envPath)) { throw 'Create backend/.env from .env.example first.' }
 function Get-DotEnvValue([string]$Path, [string]$Name) {
@@ -32,14 +56,6 @@ $apiKey = Get-DotEnvValue $envPath 'DEEPSEEK_API_KEY'
 if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey)) {
     throw 'Local product startup requires DeepSeek in backend/.env. Rules are automatic fallback, not a selectable mode.'
 }
-if ($CheckOnly) {
-    & $pythonPath -c "import fastapi, sqlalchemy, httpx; print('Backend dependencies OK')"
-    if ($LASTEXITCODE -ne 0) { throw 'Backend dependencies failed.' }
-    & $nodeExecutable --version
-    if ($LASTEXITCODE -ne 0) { throw 'Node is unavailable.' }
-    Write-Output 'Preflight passed; no services started.'
-    exit 0
-}
 foreach ($port in @(3000, 8000)) {
     if (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) {
         throw "Port $port is occupied. Stop the existing service before starting."
@@ -49,7 +65,11 @@ New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
 $statePath = Join-Path $stateRoot 'processes.json'
 if (Test-Path -LiteralPath $statePath) { throw 'Existing local run record. Run Stop-Local.ps1 first.' }
 $owned = @()
+$savedBackendOrigin = $env:BACKEND_ORIGIN
+$savedNextDistDir = $env:NEXT_DIST_DIR
 try {
+    $env:BACKEND_ORIGIN = 'http://127.0.0.1:8000'
+    $env:NEXT_DIST_DIR = '.next'
     Push-Location $backendRoot
     try {
         & docker compose up -d --wait postgres
@@ -84,4 +104,7 @@ try {
 } catch {
     if ($owned.Count -gt 0) { & (Join-Path $projectRoot 'Stop-Local.ps1') }
     throw
+} finally {
+    $env:BACKEND_ORIGIN = $savedBackendOrigin
+    $env:NEXT_DIST_DIR = $savedNextDistDir
 }

@@ -1,7 +1,7 @@
 """Build the competition technical-document candidate from verified project facts.
 
 数据来源：2026-10-02 仓库实测（后端 pytest 770 通过/20 跳过、Ruff 通过；前端 tsc、102 项
-Node 测试与生产构建通过）与 docs/DeepSeek统一路线与能力验收.md 能力矩阵。生成命令：
+Node 测试与生产构建通过）与 docs/guides/AI与数据边界.md 能力矩阵。生成命令：
 backend/.venv/Scripts/python.exe scripts/build_submission_pdf.py（依赖 reportlab，仅本地构建用）。
 """
 
@@ -240,7 +240,7 @@ story += [p("6.1 技术创新", "h2"),
 # ---------------- 7 总结与展望 ----------------
 story += title("7 总结与展望")
 story += [p("本项目以“证据链”为核心构建了学生成长与企业筛选的双端闭环：规则检索定界、DeepSeek 受控解释、人工复核纠错、全链路审计。工程上以 770＋102 项自动化测试、真实模型留痕与失败记录保留为质量底座；AI 深度体现在受控 Agent 工作流、三层 RAG、OCR/视觉双模态、MCP 只读导出与多层安全治理，而非单一对话功能。"),
-          p("展望（按优先级）：① 完成项目外独立语义复核与更大检索标注集，把“引用合法”推进到“结论被证据支持”的外部证据；② 赛后开源：按 docs/发布许可决策.md 在 AGPL-3.0（保留 PyMuPDF）与替换为 pypdfium2 后采用宽松许可之间二选一；③ 可选公网演示部署；④ 语音模态（Web Speech API）与检索重排的进一步评测。"),
+          p("展望（按优先级）：① 完成项目外独立语义复核与更大检索标注集，把“引用合法”推进到“结论被证据支持”的外部证据；② 赛后开源：按 docs/guides/比赛交付.md 在 AGPL-3.0（保留 PyMuPDF）与替换为 pypdfium2 后采用宽松许可之间二选一；③ 可选公网演示部署；④ 语音模态（Web Speech API）与检索重排的进一步评测。"),
           p("8 提交材料状态", "h2"),
           table([
               ["材料", "状态（2026-10-02）"],
@@ -248,11 +248,11 @@ story += [p("本项目以“证据链”为核心构建了学生成长与企业�
               ["技术文档", "本文件（候选稿 v2），≤30 页要求内"],
               ["演示视频", "脚本骨架已有；等待赛事具体通知后录制（5–8 分钟、1080p）"],
               ["团队信息", "广州软件学院 / B组 / jz（38419）/ 江博、郑振南 / 指导教师 杨斌（联系方式以报名系统为准）"],
-              ["许可", "比赛期间私有；赛后开源前完成许可证决策（见 docs/发布许可决策.md）"],
+              ["许可", "比赛期间私有；赛后开源前完成许可证决策（见 docs/guides/比赛交付.md）"],
               ["在线演示", "可选项，未部署"],
           ], [32 * mm, 133 * mm]),
           Spacer(1, 5 * mm),
-          p("追溯材料：docs/DeepSeek统一路线与能力验收.md（能力矩阵与全部验收记录入口）；docs/赛前验收清单.md；docs/发布许可决策.md；backend/evals/（评测脚本与基线 JSON）；THIRD_PARTY_NOTICES.md。", "small")]
+          p("追溯材料：docs/guides/AI与数据边界.md（能力矩阵与全部验收记录入口）；docs/guides/比赛交付.md；docs/guides/比赛交付.md；backend/evals/（评测脚本与基线 JSON）；THIRD_PARTY_NOTICES.md。", "small")]
 
 def keep_headings_with_body(flow):
     """小节标题（h2）与其后首个正文段落绑定同页，避免标题孤悬页底。"""

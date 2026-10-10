@@ -6,7 +6,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 EVAL_DIR = ROOT / "backend" / "evals"
-OUTPUT = ROOT / "docs" / "独立人工语义复核任务单-20260918.md"
+OUTPUT = ROOT / "docs/evidence/generated-review/独立人工语义复核任务单-20260918.md"
 
 
 def load_json(name: str) -> dict[str, Any]:
@@ -260,6 +260,7 @@ def main() -> None:
             "",
         ]
     )
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(lines), encoding="utf-8")
     print(OUTPUT)
 

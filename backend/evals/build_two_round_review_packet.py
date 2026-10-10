@@ -9,7 +9,7 @@ from evals.build_independent_review_packet import append_evidence, append_review
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "backend/evals/deepseek-two-rounds-20260925-151222.json"
-OUTPUT = ROOT / "docs/独立人工语义复核补充任务单-20260925.md"
+OUTPUT = ROOT / "docs/evidence/generated-review/独立人工语义复核补充任务单-20260925.md"
 
 
 def main() -> None:
@@ -103,6 +103,7 @@ def main() -> None:
             "",
         ]
     )
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(lines), encoding="utf-8")
     print(OUTPUT)
 

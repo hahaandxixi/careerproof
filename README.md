@@ -4,9 +4,7 @@ CareerProof 是面向学生证据成长与企业岗位定义的 AI Web 应用。
 
 ## 从这里开始
 
-- [网站人工测试手册](docs/网站人工测试手册.md)：第一次来即可按步骤测试学生端、企业端及异常场景。
-- [教师展示运行手册](docs/教师展示运行手册.md)：课堂展示的点击顺序与现场处理。
-- [完整操作流程](docs/完整操作流程.md)：安装、账号、双端使用、停止服务与验收。
+- [使用与启动指南](docs/guides/使用与启动.md)：安装、启动、学生/企业操作、人工测试与课堂展示。
 - [全部当前文档](docs/README.md)：按使用目的查找，历史日志另列归档。
 
 ## 当前实现与边界
@@ -17,11 +15,11 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 
 截图观察和本地 OCR 分开记录。截图不能证明本人贡献、真实部署或持续运行，不自动赋实践等级。学生本人采纳材料也不等于独立人工语义复核。企业发布岗位不会获得学生私有材料或报告访问权。
 
-已实现、已验收与待验证范围，以 [DeepSeek 统一路线与能力矩阵](docs/DeepSeek统一路线与能力验收.md) 为准；测试数量、旧供应商尝试与失败案例保留在 [历史归档](docs/archive/README.md)，不作为当前配置说明。
+已实现、已验收与待验证范围，以 [DeepSeek 统一路线与能力矩阵](docs/guides/AI与数据边界.md) 为准；测试数量、旧供应商尝试与失败案例保留在 [历史归档](docs/archive/README.md)，不作为当前配置说明。
 
 ## 本地启动
 
-首次安装按 [本地复现流程](docs/本地复现流程.md) 准备依赖与本地配置。启动 Docker Desktop 后，在仓库目录运行：
+首次安装按 [本地复现流程](docs/guides/使用与启动.md) 准备依赖与本地配置。启动 Docker Desktop 后，在仓库目录运行：
 
 ```powershell
 .\Start-Local.ps1 -CheckOnly
@@ -37,9 +35,9 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 ## 开发与比赛交付
 
 - [前端开发说明](jianli/README.md)、[后端开发说明](backend/README.md)。
-- [项目总控](阶段1-比赛需求拆解与项目总控.md)、[赛前验收清单](docs/赛前验收清单.md)、[提交资料骨架](docs/提交资料骨架.md)。
-- [AI 用量与隐私](docs/AI用量与隐私控制.md)、[数据边界](docs/隐私与数据边界.md)、[第三方依赖](THIRD_PARTY_NOTICES.md)。
-- [技术文档候选 PDF](output/pdf/CareerProof-技术文档-提交候选稿.pdf)、[演示视频脚本](docs/演示视频脚本骨架.md)。
+- [项目总控](阶段1-比赛需求拆解与项目总控.md)、[赛前验收清单](docs/guides/比赛交付.md)、[提交资料骨架](docs/guides/比赛交付.md)。
+- [AI 用量与隐私](docs/guides/AI与数据边界.md)、[数据边界](docs/guides/AI与数据边界.md)、[第三方依赖](THIRD_PARTY_NOTICES.md)。
+- [技术文档候选 PDF](output/pdf/CareerProof-技术文档-提交候选稿.pdf)、[演示视频脚本](docs/guides/比赛交付.md)。
 
 比赛期间仓库保持私有，公开发布及最终许可证待赛后确认。团队信息已按报名系统确认：广州软件学院，B组，团队成员江博、郑振南，指导教师杨斌（联系方式以报名系统为准，不写入仓库）。评审访问方式、正式视频与最终许可证仍需补齐；候选 PDF 基于旧版能力描述，重制前不作为正式提交。在线部署为可选项。独立语义复核、独立检索标注与全鼠标点击验收仍须按当前矩阵完成，不用程序校验替代。
 

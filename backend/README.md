@@ -1,6 +1,6 @@
 # CareerProof Backend
 
-当前目标 Provider 为 DeepSeek 官方 API：`AI_PROVIDER=deepseek`，Key 使用 `DEEPSEEK_API_KEY`，成本保护只允许 `deepseek-flash`。详见 [DeepSeek 官方 API 接入](../docs/DeepSeek官方API接入.md) 与 [AI 用量和隐私控制](../docs/AI用量与隐私控制.md)。普通自动测试使用合成响应，不消耗 API 额度。
+当前目标 Provider 为 DeepSeek 官方 API：`AI_PROVIDER=deepseek`，Key 使用 `DEEPSEEK_API_KEY`，成本保护只允许 `deepseek-flash`。详见 [DeepSeek 官方 API 接入](../docs/guides/AI与数据边界.md) 与 [AI 用量和隐私控制](../docs/guides/AI与数据边界.md)。普通自动测试使用合成响应，不消耗 API 额度。
 
 「职证 CareerProof」的 FastAPI 后端。当前完成真实岗位、学生材料上传与版本历史、
 私有匹配报告、失败重试和岗位分类筛选。产品运行时必须启用DeepSeek；规则负责检索候选证据和限制评级边界，
@@ -200,4 +200,4 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
 
 ## 本机只读 MCP
 
-可选依赖：`python -m pip install -e ".[mcp]"`。官方SDK stdio服务的启动入口是 `python -m app.mcp_server`。学生报告页可显式授权当前报告及上一份同岗位报告，签发十分钟专用令牌；只放入本机子进程环境变量 `CAREERPROOF_MCP_TOKEN`，不要提交或分享。支持三个只读工具，作用域、40次上限、独立审计与撤销在后端再次校验。没有模型消费，不是远程OAuth服务。详见[受控MCP使用与验收](../docs/受控MCP使用与验收-20260926.md)。
+可选依赖：`python -m pip install -e ".[mcp]"`。官方SDK stdio服务的启动入口是 `python -m app.mcp_server`。学生报告页可显式授权当前报告及上一份同岗位报告，签发十分钟专用令牌；只放入本机子进程环境变量 `CAREERPROOF_MCP_TOKEN`，不要提交或分享。支持三个只读工具，作用域、40次上限、独立审计与撤销在后端再次校验。没有模型消费，不是远程OAuth服务。详见[受控MCP使用与验收](../docs/guides/工具与接入.md)。

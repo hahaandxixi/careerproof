@@ -1,5 +1,7 @@
 param(
     [string]$NodePath = 'node',
+    [ValidatePattern('^\.venv(?:-[a-z0-9-]+)?$')][string]$BackendVenv = '.venv',
+    [ValidatePattern('^$|^[a-z0-9][a-z0-9-]{0,63}$')][string]$FrontendStage = '',
     [switch]$SkipBuild,
     [switch]$SkipSeed,
     [switch]$NoBrowser,
@@ -11,7 +13,7 @@ $projectRoot = $PSScriptRoot
 $backendRoot = Join-Path $projectRoot 'backend'
 $startScript = Join-Path $projectRoot 'Start-Local.ps1'
 $stopScript = Join-Path $projectRoot 'Stop-Local.ps1'
-$pythonPath = Join-Path $backendRoot '.venv\Scripts\python.exe'
+$pythonPath = Join-Path $backendRoot "$BackendVenv\Scripts\python.exe"
 $envPath = Join-Path $backendRoot '.env'
 $statePath = Join-Path $backendRoot '.tmp\local-run\processes.json'
 $demoUrl = 'http://127.0.0.1:3000/demo'
@@ -82,7 +84,7 @@ if ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNul
 }
 
 if ($CheckOnly) {
-    & $startScript -NodePath $NodePath -CheckOnly
+    & $startScript -NodePath $NodePath -BackendVenv $BackendVenv -FrontendStage $FrontendStage -CheckOnly
     if ($LASTEXITCODE -ne 0) { throw 'Preflight failed.' }
     Write-Output 'DeepSeek configuration is present; the key was not printed.'
     Write-Output 'AI-first demo preflight passed; no services started.'
@@ -104,7 +106,7 @@ if (!$frontendReady -and !$backendReady) {
             throw 'The stale local run record could not be cleared. Run Stop-Local.ps1 and inspect the recorded processes.'
         }
     }
-    $startParameters = @{ NodePath = $NodePath }
+    $startParameters = @{ NodePath = $NodePath; BackendVenv = $BackendVenv; FrontendStage = $FrontendStage }
     if ($SkipBuild) { $startParameters.SkipBuild = $true }
     & $startScript @startParameters
     if ($LASTEXITCODE -ne 0) { throw 'Local services did not start successfully.' }

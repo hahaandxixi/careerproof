@@ -1,0 +1,6 @@
+D:\jbcode\web ai\jianli\Start-Local.ps1 : Cannot validate argument on parameter 'BackendVenv'. The argument "../escape"
+ does not match the "^\.venv(?:-[a-z0-9-]+)?$" pattern. Supply an argument that matches "^\.venv(?:-[a-z0-9-]+)?$" and 
+try the command again.
+    + CategoryInfo          : InvalidData: (:) [Start-Local.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : ParameterArgumentValidationError,Start-Local.ps1
+ 
