@@ -261,7 +261,12 @@ class Chrome {
     const payload = { id, method, params };
     if (sessionId) payload.sessionId = sessionId;
     return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => { this.pending.delete(id); reject(new CdpError(`cdp timeout 20s: ${method}`)); }, 20000);
+      const timeoutMs = method === "Runtime.evaluate" && Number.isFinite(params.timeout)
+        ? Math.max(20000, Math.min(300000, params.timeout + 2000)) : 20000;
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(new CdpError(`cdp timeout ${timeoutMs}ms: ${method}`));
+      }, timeoutMs);
       this.pending.set(id, { resolve: v => { clearTimeout(timer); resolve(v); }, reject: e => { clearTimeout(timer); reject(e); }, method });
       this.ws.send(JSON.stringify(payload));
     });
@@ -1147,7 +1152,9 @@ async function scenarioChainReply() {
     // -- notification entry
     await tab.goto(`${FRONTEND}/notifications`);
     await tab.installFinder();
-    await tab.waitFor(`() => document.body.innerText.length > 50`, { timeoutMs: 20000, label: "notifications page" });
+    await tab.waitFor(`() => document.querySelector('h1')?.textContent.trim() === '通知中心' &&
+      Array.from(document.querySelectorAll('h2')).some(el => el.textContent.includes('企业已回复'))`,
+    { timeoutMs: 20000, label: "loaded notification list includes delivered enterprise reply" });
     const notif = await tab.evalJs(`document.body.innerText.slice(0, 1200)`);
     record({ name: "notifications-page", status: "pass", detail: notif.replace(/\n+/g, ' | ').slice(0, 400) });
     await saveShot(tab, "notifications");
@@ -1569,14 +1576,20 @@ async function scenarioEnterpriseRecheck() {
   const stages = fs.readdirSync(EVIDENCE_DIR).filter(d => d.startsWith("setup-job-2026")).sort();
   const beforeFile = stages.length ? path.join(EVIDENCE_DIR, stages[stages.length - 1], "setup-job-before-readonly-db.json") : null;
   let jobsUnchanged = null;
+  const jobBaselineScope = beforeFile ? "setup-job-to-recheck" : "recheck-window-only";
   if (fs.existsSync(beforeFile)) {
     const before = JSON.parse(fs.readFileSync(beforeFile, "utf8"));
     jobsUnchanged = JSON.stringify(before.jobs.filter(l => !l.includes("岗位C"))) === JSON.stringify(after.jobs.filter(l => !l.includes("岗位C")))
       && JSON.stringify(before.requirements) === JSON.stringify(after.requirements.filter(l => !state.jobIdC || !l.includes(state.jobIdC)));
+  } else {
+    // A same-job question chain does not create job C. Compare this recheck's
+    // explicit baseline, and report the narrower scope instead of assuming setup.
+    jobsUnchanged = JSON.stringify(beforeRecheck.jobs) === JSON.stringify(after.jobs)
+      && JSON.stringify(beforeRecheck.requirements) === JSON.stringify(after.requirements);
   }
   record({
     name: "snapshots-invariant", status: appsUnchanged && jobsUnchanged === true ? "pass" : "fail",
-    detail: `apps=${after.applications.length} unchanged=${appsUnchanged} jobsABreqsUnchanged=${jobsUnchanged} mismatches=${mismatches.join("; ") || "none"}`,
+    detail: `apps=${after.applications.length} unchanged=${appsUnchanged} jobsABreqsUnchanged=${jobsUnchanged} jobBaselineScope=${jobBaselineScope} mismatches=${mismatches.join("; ") || "none"}`,
   });
   // growth chain summary from state
   record({

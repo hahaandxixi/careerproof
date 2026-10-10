@@ -1,0 +1,196 @@
+TAP version 13
+# Subtest: documented defaults and existing scenario names remain usable
+ok 1 - documented defaults and existing scenario names remain usable
+  ---
+  duration_ms: 1.22
+  type: 'test'
+  ...
+# Subtest: separate evidence destination accepts a bounded directory name
+ok 2 - separate evidence destination accepts a bounded directory name
+  ---
+  duration_ms: 0.3822
+  type: 'test'
+  ...
+# Subtest: a delivery forty seconds before withdrawal is historical; same-second rounding is not
+ok 3 - a delivery forty seconds before withdrawal is historical; same-second rounding is not
+  ---
+  duration_ms: 0.2652
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run",".."]
+ok 4 - reject unsafe or ambiguous CLI ["--run",".."]
+  ---
+  duration_ms: 0.0942
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","."]
+ok 5 - reject unsafe or ambiguous CLI ["--run","."]
+  ---
+  duration_ms: 0.0669
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","a..b"]
+ok 6 - reject unsafe or ambiguous CLI ["--run","a..b"]
+  ---
+  duration_ms: 0.0634
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"]
+ok 7 - reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"]
+  ---
+  duration_ms: 0.0965
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run"]
+ok 8 - reject unsafe or ambiguous CLI ["--run"]
+  ---
+  duration_ms: 0.0572
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","valid","--run","other"]
+ok 9 - reject unsafe or ambiguous CLI ["--run","valid","--run","other"]
+  ---
+  duration_ms: 0.2109
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--other","valid"]
+ok 10 - reject unsafe or ambiguous CLI ["--other","valid"]
+  ---
+  duration_ms: 0.242
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","../../outside"]
+ok 11 - reject unsafe or ambiguous CLI ["--scenario","../../outside"]
+  ---
+  duration_ms: 0.1156
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","..\\\\..\\\\outside"]
+ok 12 - reject unsafe or ambiguous CLI ["--scenario","..\\\\..\\\\outside"]
+  ---
+  duration_ms: 0.0509
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"]
+ok 13 - reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"]
+  ---
+  duration_ms: 0.0393
+  type: 'test'
+  ...
+# Subtest: reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+ok 14 - reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+  ---
+  duration_ms: 0.0635
+  type: 'test'
+  ...
+# Subtest: actual CLI refuses a scenario traversal before creating runtime/evidence directories
+ok 15 - actual CLI refuses a scenario traversal before creating runtime/evidence directories
+  ---
+  duration_ms: 63.5156
+  type: 'test'
+  ...
+# Subtest: malformed synthetic credentials never expose JSON source fragments
+ok 16 - malformed synthetic credentials never expose JSON source fragments
+  ---
+  duration_ms: 0.374
+  type: 'test'
+  ...
+# Subtest: withdrawn notification needs positive unavailable evidence, missing evidence is blocked
+ok 17 - withdrawn notification needs positive unavailable evidence, missing evidence is blocked
+  ---
+  duration_ms: 0.0976
+  type: 'test'
+  ...
+# Subtest: unexpected secret-bearing detail is redacted in both console and JSON evidence
+ok 18 - unexpected secret-bearing detail is redacted in both console and JSON evidence
+  ---
+  duration_ms: 0.1374
+  type: 'test'
+  ...
+# Subtest: withdrawn-card verification requires every open card to land, and rejects the withdrawn target
+ok 19 - withdrawn-card verification requires every open card to land, and rejects the withdrawn target
+  ---
+  duration_ms: 0.2269
+  type: 'test'
+  ...
+# Subtest: runner parses as valid ESM (no half-edited try blocks)
+ok 20 - runner parses as valid ESM (no half-edited try blocks)
+  ---
+  duration_ms: 54.3957
+  type: 'test'
+  ...
+# Subtest: activeBrowser is declared: implicit global would crash in ESM
+ok 21 - activeBrowser is declared: implicit global would crash in ESM
+  ---
+  duration_ms: 0.18
+  type: 'test'
+  ...
+# Subtest: every scenario catch dumps evidence BEFORE stopping its own Chrome
+ok 22 - every scenario catch dumps evidence BEFORE stopping its own Chrome
+  ---
+  duration_ms: 0.2571
+  type: 'test'
+  ...
+# Subtest: outer catch still backstops dump + browser cleanup
+ok 23 - outer catch still backstops dump + browser cleanup
+  ---
+  duration_ms: 0.109
+  type: 'test'
+  ...
+# Subtest: dump is idempotent and captures screenshot, network log and page text
+ok 24 - dump is idempotent and captures screenshot, network log and page text
+  ---
+  duration_ms: 0.1838
+  type: 'test'
+  ...
+# Subtest: Chrome.stop is idempotent so double cleanup cannot double-kill
+ok 25 - Chrome.stop is idempotent so double cleanup cannot double-kill
+  ---
+  duration_ms: 0.1077
+  type: 'test'
+  ...
+# Subtest: variant-materials verdict requires citations into the new report, focus evidence rows and a resolved R1
+ok 26 - variant-materials verdict requires citations into the new report, focus evidence rows and a resolved R1
+  ---
+  duration_ms: 0.1967
+  type: 'test'
+  ...
+# Subtest: variant-job verdict requires removed AND added requirements, separate Python rows, banner and a resolved R2
+ok 27 - variant-job verdict requires removed AND added requirements, separate Python rows, banner and a resolved R2
+  ---
+  duration_ms: 0.1626
+  type: 'test'
+  ...
+# Subtest: variant-both verdict requires both change labels, banner, itemized two-sided explanations and a resolved R3
+ok 28 - variant-both verdict requires both change labels, banner, itemized two-sided explanations and a resolved R3
+  ---
+  duration_ms: 0.2839
+  type: 'test'
+  ...
+# Subtest: variant task ids reach state immediately after UI creation, and reruns reuse the task instead of recreating
+ok 29 - variant task ids reach state immediately after UI creation, and reruns reuse the task instead of recreating
+  ---
+  duration_ms: 0.4558
+  type: 'test'
+  ...
+# Subtest: viewport390 proves real visibility: scroll below the sticky header plus hit-test, folded into the verdict
+ok 30 - viewport390 proves real visibility: scroll below the sticky header plus hit-test, folded into the verdict
+  ---
+  duration_ms: 0.2819
+  type: 'test'
+  ...
+# Subtest: comparison extraction is structured so assertions judge rendered evidence, not text blobs
+ok 31 - comparison extraction is structured so assertions judge rendered evidence, not text blobs
+  ---
+  duration_ms: 0.1578
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 146.946

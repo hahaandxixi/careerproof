@@ -1,0 +1,60 @@
+{
+  "run": "question-chain-20261010",
+  "readOnlyTransaction": true,
+  "sameOwnerAndJob": true,
+  "sameFrozenRequirements": true,
+  "originalDeliveryReportRetained": true,
+  "baseReportId": "333ea81c-7928-429c-911b-c33617decb0b",
+  "newReportId": "c40b7398-a412-46ad-b8ef-01e493e4ee6c",
+  "growthTaskId": "e19d3489-ae23-4dde-b188-ca04bba14515",
+  "growthStatus": "analyzing",
+  "linkedQuestionRequirementId": "a4e42768-8981-41c9-b0a0-c9e01ab4d60c",
+  "linkedQuestionApplicationId": "be1cd581-85b9-40b4-b17c-8bc0c0b113f7",
+  "savedNewMaterialVersions": [
+    "0a5fbb78-0b72-4421-bf63-bcf2f83532ca",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe"
+  ],
+  "replySha256": "2026e11086efd85da2c5b66aa79c7c009bffa293499c18adf4fd5fcfa4f91fd0",
+  "replyReferences": [
+    {
+      "requirementId": "a4e42768-8981-41c9-b0a0-c9e01ab4d60c",
+      "citationIds": []
+    }
+  ],
+  "ledgerAndSnapshots": {
+    "run": "question-chain-20261010",
+    "readOnlyTransaction": true,
+    "snapshotHashes": {
+      "be1cd581-85b9-40b4-b17c-8bc0c0b113f7": "dcfb141106f2f1631287f4905a0149dd52d60b7a8046fee67fa290a5c18f06ec",
+      "0f33a790-d61c-49be-9ae1-73c38cc17b51": "bd97832212b180a77cd02b0d2a1eeb4d7dae9a79a6829a4d3fb0bb6c8b286ad3",
+      "931f5b55-2c29-410a-843b-f7a43a3edfe1": "6fbc729f6095021f140e9e4c684f442c89e5947fc3f33fc2bccd7245348dc16d"
+    },
+    "allSeededSnapshotsUnchanged": true,
+    "attempts": [
+      {
+        "id": "056aa7ef-7f60-469c-b36f-728dcc6b2d50",
+        "taskId": "fa70afe4-346c-41cd-83b0-c01b1ad34e01",
+        "state": "booked",
+        "reason": null,
+        "input": 100,
+        "output": 80
+      }
+    ],
+    "reservations": [
+      {
+        "attemptId": "056aa7ef-7f60-469c-b36f-728dcc6b2d50",
+        "state": "settled",
+        "inputBound": 4013,
+        "outputBound": 3000,
+        "actualInput": 100,
+        "actualOutput": 80
+      }
+    ],
+    "verificationTasks": [
+      {
+        "id": "fa70afe4-346c-41cd-83b0-c01b1ad34e01",
+        "status": "completed"
+      }
+    ]
+  }
+}

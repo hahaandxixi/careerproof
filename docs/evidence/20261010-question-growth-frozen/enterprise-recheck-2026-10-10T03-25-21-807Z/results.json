@@ -1,0 +1,124 @@
+{
+  "runId": "question-chain-20261010",
+  "scenario": "enterprise-recheck",
+  "startedAt": "2026-10-10T03:25:21.808Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:25:21.858Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=question-chain-20261010 scenario=enterprise-recheck head=f89ca0a"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:25:24.105Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-recheck port 50718"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:25:24.340Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:25:26.595Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:25:27.419Z",
+      "name": "screenshot:recheck-board-jobA",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\05-recheck-board-jobA.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:25:28.502Z",
+      "name": "screenshot:recheck-app-0f33a790",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\06-recheck-app-0f33a790.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:25:28.502Z",
+      "name": "recheck-app-0f33a790",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T03:25:29.958Z",
+      "name": "screenshot:recheck-app-931f5b55",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\08-recheck-app-931f5b55.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T03:25:29.959Z",
+      "name": "recheck-app-931f5b55",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T03:25:31.168Z",
+      "name": "screenshot:recheck-board-jobB",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\10-recheck-board-jobB.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T03:25:32.243Z",
+      "name": "screenshot:recheck-app-be1cd581",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\11-recheck-app-be1cd581.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T03:25:32.244Z",
+      "name": "recheck-app-be1cd581",
+      "status": "pass",
+      "detail": "fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-10T03:25:32.749Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-recheck exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-10T03:25:34.534Z",
+      "name": "snapshots-invariant",
+      "status": "fail",
+      "detail": "apps=3 unchanged=true jobsABreqsUnchanged=null mismatches=none"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-10T03:25:34.534Z",
+      "name": "chain-summary",
+      "status": "info",
+      "detail": "jobIdC=- base=0961dd8e-5ef2-4eba-9376-62a95c3f0c83 R1=- R2=- R3=- replyTask=e19d3489-ae23-4dde-b188-ca04bba14515"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-10T03:25:34.535Z",
+      "name": "scenario-end",
+      "status": "fail",
+      "detail": "exit=1"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\enterprise-recheck-before-readonly-db.json",
+    "docs\\evidence\\20261010-question-growth-frozen\\enterprise-recheck-2026-10-10T03-25-21-807Z\\enterprise-recheck-after-readonly-db.json"
+  ],
+  "finishedAt": "2026-10-10T03:25:34.535Z"
+}

@@ -1,0 +1,29 @@
+{
+  "label": "enterprise-recheck-before",
+  "at": "2026-10-10T03:25:23.793Z",
+  "applications": [
+    {
+      "id": "931f5b55-2c29-410a-843b-f7a43a3edfe1",
+      "status": "submitted",
+      "snapshotSha256": "6fbc729f6095021f140e9e4c684f442c89e5947fc3f33fc2bccd7245348dc16d"
+    },
+    {
+      "id": "be1cd581-85b9-40b4-b17c-8bc0c0b113f7",
+      "status": "replied",
+      "snapshotSha256": "dcfb141106f2f1631287f4905a0149dd52d60b7a8046fee67fa290a5c18f06ec"
+    },
+    {
+      "id": "0f33a790-d61c-49be-9ae1-73c38cc17b51",
+      "status": "submitted",
+      "snapshotSha256": "bd97832212b180a77cd02b0d2a1eeb4d7dae9a79a6829a4d3fb0bb6c8b286ad3"
+    }
+  ],
+  "jobs": [
+    "f5b0c81d-87c7-4327-935f-ac83ea9fe24e|published|E2E 岗位A（合成）",
+    "8996360c-507e-4ecd-a1a7-9eb891dc0d63|published|E2E 岗位B（合成）"
+  ],
+  "requirements": [
+    "a4e42768-8981-41c9-b0a0-c9e01ab4d60c|8996360c-507e-4ecd-a1a7-9eb891dc0d63|Python|1|true|岗位B要求：能够使用 Python 编写数据处理脚本",
+    "3a8f03fc-5e72-49f5-ab4a-562729d6427b|f5b0c81d-87c7-4327-935f-ac83ea9fe24e|Python|1|true|岗位A要求：能够使用 Python 编写数据处理脚本"
+  ]
+}

@@ -899,6 +899,52 @@ async function scenarioBudgetStateMatrix(creds) {
   }
 }
 
+async function scenarioQuestionReply(creds) {
+  const browser = new ChromeInstance("question-reply", { width: 390, height: 844 });
+  let tab;
+  try {
+    await browser.launch();
+    tab = await browser.openTab();
+    await tab.enable();
+    await tab.send("Emulation.setDeviceMetricsOverride", {
+      width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
+    });
+    await login(tab, creds.accounts.enterprise);
+    await openBoard(tab, creds.enterprise.jobIdB);
+    await openApplication(tab, creds.applications.B.id);
+    await tab.waitFor(`() => document.body.innerText.includes('合成核验建议：')`, {
+      timeoutMs: 15000, label: "saved synthetic verification for B",
+    });
+    // This path reuses the already validated suggestion, never creates a model request.
+    const sent = await tab.evalJs(`document.body.innerText.includes('已发送回复：')`);
+    if (sent) throw new CdpError("Question fixture already replied; preserve it instead of overwriting");
+    await tab.click({ tag: "button", text: "加入回复草稿" }, { label: "add linked question" });
+    const text = await tab.evalJs(`document.querySelector('textarea')?.value || ''`);
+    if (!text.includes("【第1项：") || !text.includes("请说明本人负责的部分")) {
+      throw new CdpError("Linked requirement question is absent from editable draft");
+    }
+    saveJson("linked-question-draft", { applicationId: creds.applications.B.id, text });
+    await tab.click({ tag: "label", text: "我已核对正文" }, { label: "confirm synthetic reply" });
+    await tab.click({ tag: "button", text: "确认发送站内回复" }, { label: "send linked synthetic question" });
+    await tab.waitFor(`() => document.body.innerText.includes('已发送回复：')`, {
+      timeoutMs: 20000, label: "server confirms delivered question",
+    });
+    const body = await tab.bodyText();
+    const valid = body.includes("【第1项：") && body.includes("请说明本人负责的部分");
+    record({ name: "linked-enterprise-question-delivered", status: valid ? "pass" : "fail" });
+    await saveShot(tab, "linked-question-delivered");
+    saveJson("linked-question-network", tab.networkLog);
+  } catch (error) {
+    if (tab) {
+      saveJson("question-failure-dom", await tab.bodyText().catch(() => "unavailable"));
+      await saveShot(tab, "question-reply-failure").catch(() => {});
+    }
+    throw error;
+  } finally {
+    await browser.stop();
+  }
+}
+
 // Task card item 6, post-fix ACCEPTANCE on the new build: both fault
 // variants (request failure / response loss) with real injection, exactly
 // one POST each and no auto-resend; editable draft (edit → clear → retype);
@@ -1521,6 +1567,7 @@ const SCENARIOS = {
   verification: scenarioVerification,
   "budget-verification": creds => scenarioVerification(creds, true),
   "budget-state-matrix": scenarioBudgetStateMatrix,
+  "question-reply": scenarioQuestionReply,
   skeleton: scenarioSkeleton,
   "reply-failure": scenarioReplyFailure,
   "notification-filter": scenarioNotificationFilter,

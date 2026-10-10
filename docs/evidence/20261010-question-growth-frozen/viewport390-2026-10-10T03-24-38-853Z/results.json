@@ -1,0 +1,107 @@
+{
+  "runId": "question-chain-20261010",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-10T03:24:38.853Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:24:38.908Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "run=question-chain-20261010 scenario=viewport390 head=f89ca0a"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:24:39.212Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "student-390 port 64985"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:24:39.792Z",
+      "name": "screenshot:login-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\viewport390-2026-10-10T03-24-38-853Z\\03-login-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:24:42.078Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "/portfolio"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:24:43.331Z",
+      "name": "screenshot:v390-growth-list",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\viewport390-2026-10-10T03-24-38-853Z\\05-v390-growth-list.png"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:24:44.781Z",
+      "name": "screenshot:v390-growth-task",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\viewport390-2026-10-10T03-24-38-853Z\\06-v390-growth-task.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:24:45.495Z",
+      "name": "screenshot:v390-job-picker",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\viewport390-2026-10-10T03-24-38-853Z\\07-v390-job-picker.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T03:24:46.959Z",
+      "name": "screenshot:v390-report",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-question-growth-frozen\\viewport390-2026-10-10T03-24-38-853Z\\08-v390-report.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T03:24:46.959Z",
+      "name": "v390-page:growth-list",
+      "status": "pass",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=185 headerBottom=117 hitSelf=true hitTag=h1 viewH=844)"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T03:24:46.960Z",
+      "name": "v390-page:growth-task",
+      "status": "pass",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h2 viewH=844)"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T03:24:46.960Z",
+      "name": "v390-page:report",
+      "status": "pass",
+      "detail": "overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h3 viewH=844)"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T03:24:46.960Z",
+      "name": "viewport390",
+      "status": "pass",
+      "detail": "growth-list: overflow=no visible=true ; growth-task: overflow=no visible=true ; report: overflow=no visible=true"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-10T03:24:47.093Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student-390 exitCode=0"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-10T03:24:47.094Z",
+      "name": "scenario-end",
+      "status": "pass",
+      "detail": "exit=0"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-10T03:24:47.094Z"
+}

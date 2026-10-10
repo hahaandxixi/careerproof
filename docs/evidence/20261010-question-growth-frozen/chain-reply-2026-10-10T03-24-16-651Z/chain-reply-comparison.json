@@ -1,0 +1,46 @@
+{
+  "context": "变化背景：材料版本变化、检索版本变化、规则版本变化",
+  "banner": "",
+  "items": [
+    {
+      "id": "a4e42768-8981-41c9-b0a0-c9e01ab4d60c",
+      "title": "岗位B要求：能够使用 Python 编写数据处理脚本 · 本次补证重点",
+      "status": "",
+      "focus": true,
+      "levelLine": "证据等级：1/5 → 3/5；规则版本变化、复核状态变化、等级变化、解释或缺口变化、展示证据变化",
+      "addedCount": 6,
+      "removedCount": 1,
+      "sides": {
+        "base": true,
+        "target": true
+      },
+      "citations": [
+        "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E1",
+        "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E2",
+        "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E3",
+        "/reports/333ea81c-7928-429c-911b-c33617decb0b#citation-R1-E1"
+      ],
+      "text": "岗位B要求：能够使用 Python 编写数据处理脚本 · 本次补证重点 | 企业问题与新报告核对 · 待人工确认 | 请说明本人负责的部分，并演示相关操作。 | 本项暂无支持引用，请说明可核验的本人材料。 | 本次新展示的个人作品证据条目：6 条；第三方参考条目：0 条。下方可逐条打开新报告引用。 | 新报告记录的仍缺项：仍需可核对的运行结果与验证记录，不能确认本人贡献。 | 这些是报告展示变化，不是对企业的自动回复或通过结论；请结合原问题、材料原文和本人贡献人工核对。 | 证据等级：1/5 → 3/5；规则版本变化、复核状态变化、等级变化、解释或缺口变化、展示证据变化 | 任务基准 | 仅见简历声明，等待企业核验（合成夹具） | 缺口：补充与该要求直接相关的操作或实现，证书名称与自述不能替代项目证据。 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 目标报告 | 存在Python函数实现；只评价材料支持程度，需核查本人贡献。 | 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。 | 补证建议：未记录可采用的 AI 建议，请到报告核对状态 | 新增展示：6条 | 7032ba43-0d42-415e-8b44-f651671d5cfe/pipeline.py · 第4—13行 | def process_records(records): |     \"\"\"按类目汇总金额，返回 {类目: 合计}。 |     具名实现：process_records —— 与补证任务交付物同名。 |     \"\"\" |     totals = {} |     for record in records: |         key = record.get(\"category\", \"未分类\") |         totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0)) |     return totals | 7032ba43-0d42-415e-8b44-f651671d5cfe/tests/test_pipeline.py · 第5—13行 | def test_process_records_totals(): |     records = [ |         {\"category\": \"图书\", \"amount\": \"12.5\"}, |         {\"category\": \"图书\", \"amount\": \"30\"}, |         {\"category\": \"文具\", \"amount\": \"8\"}, |     ] |     result = process_records(records) |     assert result[\"图书\"] == 42.5 |     assert result[\"文具\"] == 8 | 7032ba43-0d42-415e-8b44-f651671d5cfe/requirements.txt · 第2—2行 | pandas>=2.0 | 7032ba43-0d42-415e-8b44-f651671d5cfe/docs/run-log.md · 第5—13行 | 本人（合成学生账号语境）在受控环境真实运行后另行生成，不得使用本文件冒充。 | - 日期：2026-10-05（合成标注日期） | - 环境：Python 3.12（合成示例） | - 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令） | - 预期输出样式：2 passed（合成示例，非真实运行输出） | - 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具"
+    }
+  ],
+  "citationHrefs": [
+    "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E1",
+    "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E2",
+    "/reports/c40b7398-a412-46ad-b8ef-01e493e4ee6c#citation-R1-E3",
+    "/reports/333ea81c-7928-429c-911b-c33617decb0b#citation-R1-E1"
+  ],
+  "limitation": [
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/pipeline.py · 第4—13行def process_records(records):\n    \"\"\"按类目汇总金额，返回 {类目: 合计}。\n\n    具名实现：process_records —— 与补证任务交付物同名。\n    \"\"\"\n    totals = {}\n    for record in records:\n        key = record.get(\"category\", \"未分类\")\n        totals[key] = totals.get(key, 0) + float(record.get(\"amount\", 0))\n    return totals",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/tests/test_pipeline.py · 第5—13行def test_process_records_totals():\n    records = [\n        {\"category\": \"图书\", \"amount\": \"12.5\"},\n        {\"category\": \"图书\", \"amount\": \"30\"},\n        {\"category\": \"文具\", \"amount\": \"8\"},\n    ]\n    result = process_records(records)\n    assert result[\"图书\"] == 42.5\n    assert result[\"文具\"] == 8",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/requirements.txt · 第2—2行pandas>=2.0",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/docs/run-log.md · 第5—13行本人（合成学生账号语境）在受控环境真实运行后另行生成，不得使用本文件冒充。\n\n- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/docs/run-log.md · 第7—13行- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "7032ba43-0d42-415e-8b44-f651671d5cfe/docs/run-log.md · 第6—13行\n- 日期：2026-10-05（合成标注日期）\n- 环境：Python 3.12（合成示例）\n- 命令：`python -m pytest tests/test_pipeline.py -v`（合成示例命令）\n- 预期输出样式：2 passed（合成示例，非真实运行输出）\n- 说明：本记录的作用是让核对者在页面测试时有一个\"可对照的具名运行记录\"\n  材料样例；规则引擎不会将 .md 运行记录计为 Python 实现证据（见 preflight.md\n  第 4 节），其证据作用仅限人工核对。",
+    "e2e/合成简历.txt · 第3—3行技能声明：能够使用 Python 编写数据处理脚本",
+    "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",
+    "等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。",
+    "历史岗位快照可能缺少必要性字段；无法还原未保存的属性。",
+    "基准是创建补证任务时固定的复核状态；目标报告采用当前复核状态。",
+    "引用减少仅表示目标报告未再展示，不代表原文件被删除。"
+  ]
+}

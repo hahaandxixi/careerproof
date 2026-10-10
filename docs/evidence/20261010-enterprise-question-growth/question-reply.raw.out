@@ -1,0 +1,8 @@
+[1] info scenario-start :: scenario=question-reply runId=budget-matrix2-20261010
+[2] info chrome-launched :: question-reply dynamic port 53022 profile=profile-question-reply
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-enterprise-question-growth\question-reply-2026-10-10T03-17-01-319Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass linked-enterprise-question-delivered
+[6] evidence screenshot:linked-question-delivered :: docs\evidence\20261010-enterprise-question-growth\question-reply-2026-10-10T03-17-01-319Z\06-linked-question-delivered.png
+[7] info chrome-stopped :: question-reply exitCode=0
+[8] pass scenario-complete

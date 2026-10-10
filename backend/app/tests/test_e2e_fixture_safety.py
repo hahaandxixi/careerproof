@@ -25,7 +25,7 @@ from app.main import create_app
 from app.models.analysis import MatchReport
 from app.models.identity import StudentProfile, User
 from app.models.notification import Notification
-from app.models.recruitment import Application, ApplicationEvent
+from app.models.recruitment import Application, ApplicationEvent, JobRequirement
 from evals.seed_e2e import (
     DEFAULT_STATE_DIR,
     IsolationError,
@@ -425,6 +425,22 @@ async def test_seeded_reports_freeze_account_user_id_as_candidate_identity(e2e_a
             assert report.candidate_ref == str(user_id)
             delivery = await session.get(Application, UUID(state["applications"][slot]["id"]))
             assert delivery.report_snapshot["candidateId"] == str(user_id)
+
+
+async def test_seeded_reports_freeze_current_requirement_content_and_weight(e2e_app, tmp_path):
+    app, factory = e2e_app
+    await run_seed(app, factory, tmp_path)
+    state = await load_state(tmp_path)
+    async with factory() as session:
+        for slot in SLOTS:
+            report = await session.get(MatchReport, UUID(state['reports'][slot]))
+            requirements = (await session.scalars(select(JobRequirement).where(
+                JobRequirement.job_id == report.job_id,
+            ).order_by(JobRequirement.created_at))).all()
+            assert report.job_snapshot['requirements'] == [{
+                'id': str(row.id), 'title': row.raw_text, 'skill': row.skill_name,
+                'weight': row.weight,
+            } for row in requirements]
 
 
 async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tmp_path):

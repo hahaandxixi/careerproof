@@ -472,7 +472,15 @@ async def _insert_student_report(
         candidate_name=display_name,
         summary=f"E2E 固定报告 {slot}（合成夹具）",
         overall_score=55,
-        job_snapshot={"title": job["title"], "category": job.get("category", "software")},
+        job_snapshot={
+            "title": job["title"], "category": job.get("category", "software"),
+            # Match AnalysisService's frozen requirement schema; omitting it
+            # makes an unchanged live requirement look like a new requirement.
+            "requirements": [{
+                "id": row["id"], "title": row["rawText"],
+                "skill": row["skillName"], "weight": row["weight"],
+            } for row in job["requirements"]],
+        },
         materials_snapshot=[
             {
                 "kind": "resume",
@@ -492,7 +500,7 @@ async def _insert_student_report(
             report_id=report.id,
             requirement_id=UUID(job["requirements"][0]["id"]),
             rule_base_score=0.55,
-            weight=5,
+            weight=job["requirements"][0]["weight"],
             final_score=55,
             verdict="claimed_only",
             explanation="仅见简历声明，等待企业核验（合成夹具）",

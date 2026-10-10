@@ -1,0 +1,18 @@
+[1] info scenario-start :: run=question-chain-20261010 scenario=baseline head=f89ca0a
+[2] info chrome-launched :: student port 65106
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\03-login-empty.png
+[4] pass login-ok :: /portfolio
+[5] pass upload-complete:resume-v2.txt :: 简历 | E2E学生补证简历（合成v2） | resume-v2.txt · 第 1 版 · 2026/10/10 11:22:02 | 分析完成 | 简历解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配
+[6] evidence screenshot:resume-v2-uploaded :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\06-resume-v2-uploaded.png
+[7] pass upload-complete:claims-only-project.zip :: 项目 | E2E学生补证项目（合成） | claims-only-project.zip · 第 1 版 · 2026/10/10 11:22:08 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配
+[8] evidence screenshot:claims-only-v1-uploaded :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\08-claims-only-v1-uploaded.png
+[9] pass upload-complete:new-version-project.zip :: 项目 | E2E学生补证项目（合成） | new-version-project.zip · 第 2 版 · 2026/10/10 11:22:12 · 个人作品 | 分析完成 | 项目解析完成 | 100% | 预览解析内容 | 查看处理记录 | 获取职业推荐 | 选择岗位匹配
+[10] evidence screenshot:new-version-v2-uploaded :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\10-new-version-v2-uploaded.png
+[11] pass materials-uploaded :: resume-v2 + claims-only v1 + new-version v2 via UI (source never executed)
+[12] evidence screenshot:baseline-form-filled :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\12-baseline-form-filled.png
+[13] evidence screenshot:baseline-task-completed :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\13-baseline-task-completed.png
+[14] evidence screenshot:baseline-report :: docs\evidence\20261010-question-growth-frozen\baseline-2026-10-10T03-21-58-246Z\14-baseline-report.png
+[15] pass baseline-report-generated :: report 0961dd8e-5ef2-4eba-9376-62a95c3f0c83 task c85f9cf6-5d98-4218-942f-6b4827200b84 items=[{"id":"a4e42768","badge":"仅简历声明"}]
+[16] pass baseline-claims-only-check :: claims-only materials must NOT be presented as implementation; badge/text contains 声明 marker: true
+[17] info chrome-stopped :: student exitCode=0
+[18] pass scenario-end :: exit=0

@@ -3,6 +3,7 @@ export const ENTERPRISE_SCENARIOS = Object.freeze([
   "verification",
   "budget-verification",
   "budget-state-matrix",
+  "question-reply",
   "skeleton", "reply-failure", "notification-filter", "late-response",
   "download-withdraw", "withdraw-verify", "viewport390",
 ]);

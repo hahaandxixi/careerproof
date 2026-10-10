@@ -1,0 +1,66 @@
+{
+  "runId": "budget-matrix2-20261010",
+  "scenario": "question-reply",
+  "startedAt": "2026-10-10T03:17:01.320Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:17:01.320Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=question-reply runId=budget-matrix2-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:17:01.768Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "question-reply dynamic port 53022 profile=profile-question-reply"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:17:01.922Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\question-reply-2026-10-10T03-17-01-319Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:17:03.823Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:17:06.205Z",
+      "name": "linked-enterprise-question-delivered",
+      "status": "pass"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:17:06.255Z",
+      "name": "screenshot:linked-question-delivered",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\question-reply-2026-10-10T03-17-01-319Z\\06-linked-question-delivered.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:17:06.375Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "question-reply exitCode=0"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T03:17:06.376Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-enterprise-question-growth\\question-reply-2026-10-10T03-17-01-319Z\\linked-question-draft.json",
+    "docs\\evidence\\20261010-enterprise-question-growth\\question-reply-2026-10-10T03-17-01-319Z\\linked-question-network.json"
+  ],
+  "finishedAt": "2026-10-10T03:17:06.376Z"
+}

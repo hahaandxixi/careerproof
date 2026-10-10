@@ -1,0 +1,14 @@
+F401 [*] `sqlalchemy.select` imported but unused
+  --> evals\audit_e2e_question_chain.py:10:24
+   |
+ 8 | from uuid import UUID
+ 9 |
+10 | from sqlalchemy import select, text
+   |                        ^^^^^^
+11 | from sqlalchemy.engine import make_url
+12 | from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+   |
+help: Remove unused import: `sqlalchemy.select`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

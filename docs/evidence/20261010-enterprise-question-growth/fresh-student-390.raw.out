@@ -1,0 +1,14 @@
+[1] info scenario-start :: run=question-chain-20261010 scenario=viewport390 head=f89ca0a
+[2] info chrome-launched :: student-390 port 64985
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-question-growth-frozen\viewport390-2026-10-10T03-24-38-853Z\03-login-empty.png
+[4] pass login-ok :: /portfolio
+[5] evidence screenshot:v390-growth-list :: docs\evidence\20261010-question-growth-frozen\viewport390-2026-10-10T03-24-38-853Z\05-v390-growth-list.png
+[6] evidence screenshot:v390-growth-task :: docs\evidence\20261010-question-growth-frozen\viewport390-2026-10-10T03-24-38-853Z\06-v390-growth-task.png
+[7] evidence screenshot:v390-job-picker :: docs\evidence\20261010-question-growth-frozen\viewport390-2026-10-10T03-24-38-853Z\07-v390-job-picker.png
+[8] evidence screenshot:v390-report :: docs\evidence\20261010-question-growth-frozen\viewport390-2026-10-10T03-24-38-853Z\08-v390-report.png
+[9] pass v390-page:growth-list :: overflow(scrollW=390 winW=390=ok) visible(ok: top=185 headerBottom=117 hitSelf=true hitTag=h1 viewH=844)
+[10] pass v390-page:growth-task :: overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h2 viewH=844)
+[11] pass v390-page:report :: overflow(scrollW=390 winW=390=ok) visible(ok: top=129 headerBottom=117 hitSelf=true hitTag=h3 viewH=844)
+[12] pass viewport390 :: growth-list: overflow=no visible=true ; growth-task: overflow=no visible=true ; report: overflow=no visible=true
+[13] info chrome-stopped :: student-390 exitCode=0
+[14] pass scenario-end :: exit=0

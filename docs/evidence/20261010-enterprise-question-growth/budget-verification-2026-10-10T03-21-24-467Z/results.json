@@ -1,0 +1,102 @@
+{
+  "runId": "question-chain-20261010",
+  "scenario": "budget-verification",
+  "startedAt": "2026-10-10T03:21:24.468Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T03:21:24.469Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=budget-verification runId=question-chain-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T03:21:24.784Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-budget-verification dynamic port 57128 profile=profile-enterprise-budget-verification"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T03:21:25.009Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T03:21:26.945Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T03:21:31.034Z",
+      "name": "budget-known-and-released-390",
+      "status": "pass",
+      "detail": "今日 AI 预算（北京时间）\n\n已知用量：输入 100 / 输出 80 Tokens\n\n保守预留：输入上界 0 / 输出上界 0 Tokens\n\n待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。\n\n预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T03:21:31.098Z",
+      "name": "screenshot:verification-completed",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\06-verification-completed.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-10T03:21:31.099Z",
+      "name": "verification-generated",
+      "status": "pass",
+      "detail": "production verification flow displayed explicitly synthetic information gaps"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-10T03:21:31.521Z",
+      "name": "screenshot:verification-reused",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\08-verification-reused.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-10T03:21:31.522Z",
+      "name": "verification-reused",
+      "status": "pass",
+      "detail": "saved suggestion reused through actual page"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-10T03:21:32.929Z",
+      "name": "screenshot:verification-reloaded",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\10-verification-reloaded.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-10T03:21:32.930Z",
+      "name": "verification-refresh",
+      "status": "pass",
+      "detail": "saved validated synthetic suggestion remains visible after page reload"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-10T03:21:33.063Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-budget-verification exitCode=0"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-10T03:21:33.063Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\budget-known-view.json",
+    "docs\\evidence\\20261010-enterprise-question-growth\\budget-verification-2026-10-10T03-21-24-467Z\\verification-network.json"
+  ],
+  "finishedAt": "2026-10-10T03:21:33.063Z"
+}

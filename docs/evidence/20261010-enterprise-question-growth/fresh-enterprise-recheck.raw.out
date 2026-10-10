@@ -1,0 +1,16 @@
+[1] info scenario-start :: run=question-chain-20261010 scenario=enterprise-recheck head=f89ca0a
+[2] info chrome-launched :: enterprise-recheck port 50718
+[3] evidence screenshot:login-empty :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\03-login-empty.png
+[4] pass login-ok :: /jobs
+[5] evidence screenshot:recheck-board-jobA :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\05-recheck-board-jobA.png
+[6] evidence screenshot:recheck-app-0f33a790 :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\06-recheck-app-0f33a790.png
+[7] pass recheck-app-0f33a790 :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[8] evidence screenshot:recheck-app-931f5b55 :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\08-recheck-app-931f5b55.png
+[9] pass recheck-app-931f5b55 :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[10] evidence screenshot:recheck-board-jobB :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\10-recheck-board-jobB.png
+[11] evidence screenshot:recheck-app-be1cd581 :: docs\evidence\20261010-question-growth-frozen\enterprise-recheck-2026-10-10T03-25-21-807Z\11-recheck-app-be1cd581.png
+[12] pass recheck-app-be1cd581 :: fixedReport=shown scoreLike=true citationLike=true (materials/report/score must be the ORIGINAL)
+[13] info chrome-stopped :: enterprise-recheck exitCode=0
+[14] fail snapshots-invariant :: apps=3 unchanged=true jobsABreqsUnchanged=null mismatches=none
+[15] info chain-summary :: jobIdC=- base=0961dd8e-5ef2-4eba-9376-62a95c3f0c83 R1=- R2=- R3=- replyTask=e19d3489-ae23-4dde-b188-ca04bba14515
+[16] fail scenario-end :: exit=1
