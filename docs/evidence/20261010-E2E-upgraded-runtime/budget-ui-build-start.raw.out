@@ -1,0 +1,105 @@
+database cp_e2e_upgrade-budget-20261010: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "upgrade-budget-20261010",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "3bc5d195-24f3-4d01-aec2-baa06935373a",
+    "B": "854ba702-79c3-47c6-aebb-4772a0261196"
+  },
+  "reports": {
+    "A": "5d2ef074-558c-4fc5-968a-e33cc143f0cb",
+    "B": "73a58bd2-bafd-4e30-a708-abc18e309dd6",
+    "A2": "302e074e-d0cc-4926-8e69-3c9ee10db2cc"
+  },
+  "materials": {
+    "student": "8bc8f438-c6c4-4495-b8fa-d30d7eabb164",
+    "studentA2": "ffd1cf84-80b0-4e74-8a22-5805682fd6b8"
+  },
+  "applications": {
+    "A": {
+      "id": "2fd8247a-b725-4d26-ae6d-a41712d52cf2",
+      "student": "student",
+      "status": "withdrawn",
+      "enterpriseBoardVisible": false,
+      "snapshotSha256": "ddb6ffdeec885401c4608408f0b96d927cb3d03c9f2619968225fc0cc3f29be5"
+    },
+    "B": {
+      "id": "5bfc2f90-776c-4469-a762-57899d56782c",
+      "student": "student",
+      "status": "downloaded",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "5358fc10b5a89a9f83c674e26a557e4c3a8811eec9172c2401a7234c9c17b2dd"
+    },
+    "A2": {
+      "id": "c73746aa-f8b0-4b94-ad78-04411e3ef812",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "54bf7c53f1a037f50ff479953ad18c4570d66e263867e0d5bd25106dd5edca3a"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+withdrawn deliveries remain withdrawn and were not restored: A; use a new run id for a fresh fixture
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.9s
+   Linting and checking validity of types ...
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add '.next-e2e/types/**/*.ts'
+
+   Collecting page data ...
+   Generating static pages (0/18) ...
+   Generating static pages (4/18) 
+   Generating static pages (8/18) 
+   Generating static pages (13/18) 
+ ✓ Generating static pages (18/18)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            999 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                        3.44 kB         114 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                5.02 kB         111 kB
+├ ○ /growth                                134 B         129 kB
+├ ƒ /growth/[id]                           132 B         129 kB
+├ ƒ /jobs                                 2.3 kB         112 kB
+├ ƒ /jobs/[id]                           3.55 kB         119 kB
+├ ƒ /jobs/[id]/applications              12.3 kB         122 kB
+├ ƒ /jobs/[id]/edit                        132 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                            2.3 kB         112 kB
+├ ○ /jobs/new                              132 B         115 kB
+├ ○ /login                               4.54 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.26 kB         114 kB
+├ ○ /notifications                       2.34 kB         112 kB
+├ ○ /portfolio                           6.68 kB         117 kB
+├ ƒ /recommendations                        6 kB         121 kB
+├ ○ /register                            4.99 kB         111 kB
+├ ○ /reports                             1.46 kB         112 kB
+├ ƒ /reports/[id]                        15.2 kB         125 kB
+└ ƒ /tasks/[id]                          3.49 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+CareerProof E2E run 'upgrade-budget-20261010' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_upgrade-budget-20261010 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\upgrade-budget-20261010, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\upgrade-budget-20261010.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId upgrade-budget-20261010.
+next-env.d.ts was changed by the isolated build; the original bytes were restored.
+tsconfig.json was changed by the isolated build; the original bytes were restored.

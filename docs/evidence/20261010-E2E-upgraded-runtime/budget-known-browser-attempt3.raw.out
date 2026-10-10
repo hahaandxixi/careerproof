@@ -1,0 +1,21 @@
+[1] info scenario-start :: scenario=budget-verification runId=upgrade-budget-20261010
+[2] info chrome-launched :: enterprise-budget-verification dynamic port 49392 profile=profile-enterprise-budget-verification
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-budget-known\budget-verification-2026-10-10T02-15-16-184Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] pass budget-known-and-released-390 :: 今日 AI 预算（北京时间）
+
+已知用量：输入 200 / 输出 160 Tokens
+
+保守预留：输入上界 0 / 输出上界 0 Tokens
+
+待核实收据：0 条；没有可信收据的请求继续占用预留，不算作零用量。
+
+预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。
+[6] evidence screenshot:verification-completed :: docs\evidence\20261010-e2e-budget-known\budget-verification-2026-10-10T02-15-16-184Z\06-verification-completed.png
+[7] pass verification-generated :: production verification flow displayed explicitly synthetic information gaps
+[8] evidence screenshot:verification-reused :: docs\evidence\20261010-e2e-budget-known\budget-verification-2026-10-10T02-15-16-184Z\08-verification-reused.png
+[9] pass verification-reused :: saved suggestion reused through actual page
+[10] evidence screenshot:verification-reloaded :: docs\evidence\20261010-e2e-budget-known\budget-verification-2026-10-10T02-15-16-184Z\10-verification-reloaded.png
+[11] pass verification-refresh :: saved validated synthetic suggestion remains visible after page reload
+[12] info chrome-stopped :: enterprise-budget-verification exitCode=0
+[13] pass scenario-complete

@@ -735,15 +735,18 @@ async function scenarioSkeleton(creds) {
   }
 }
 
-async function scenarioVerification(creds) {
-  const browser = new ChromeInstance("enterprise-verification");
+async function scenarioVerification(creds, budget = false) {
+  const browser = new ChromeInstance(budget ? "enterprise-budget-verification" : "enterprise-verification", budget ? { width: 390, height: 844 } : {});
   try {
     await browser.launch();
     const tab = await browser.openTab();
     await tab.enable();
+    if (budget) await tab.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await login(tab, creds.accounts.enterprise);
-    await openBoard(tab, creds.enterprise.jobIdA);
-    await openApplication(tab, creds.applications.A.id);
+    const jobId = budget ? creds.enterprise.jobIdB : creds.enterprise.jobIdA;
+    const applicationId = budget ? creds.applications.B.id : creds.applications.A.id;
+    await openBoard(tab, jobId);
+    await openApplication(tab, applicationId);
     await tab.click({ tag: "label", text: "我同意将该岗位当前要求" }, { label: "synthetic verification consent" });
     await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: "generate synthetic verification" });
     let generated = false;
@@ -760,14 +763,24 @@ async function scenarioVerification(creds) {
       }
     }
     if (!generated) throw new CdpError("Synthetic verification did not display a valid result");
+    if (budget) {
+      await tab.waitFor(`() => Boolean(document.querySelector('[aria-label="今日 AI 预算"]'))`, { timeoutMs: 10000, label: "live daily budget" });
+      const text = await tab.evalJs(`document.querySelector('[aria-label="今日 AI 预算"]').innerText`);
+      const viewport = await tab.evalJs(`({width:innerWidth, pageWidth:document.documentElement.scrollWidth})`);
+      const known = text.match(/已知用量：输入 (\d+) \/ 输出 (\d+) Tokens/);
+      const settled = known && Number(known[1]) > 0 && Number(known[2]) > 0 && text.includes("输入上界 0 / 输出上界 0") && text.includes("待核实收据：0 条") && viewport.width === 390 && viewport.pageWidth <= viewport.width;
+      saveJson("budget-known-view", { text, settled: Boolean(settled), viewport });
+      record({ name: "budget-known-and-released-390", status: settled ? "pass" : "fail", detail: text });
+      if (!settled) throw new CdpError("Known budget did not display settled usage and released bounds");
+    }
     await saveShot(tab, "verification-completed");
     record({ name: "verification-generated", status: "pass", detail: "production verification flow displayed explicitly synthetic information gaps" });
     await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: "reuse synthetic verification" });
     await tab.waitFor(`() => document.body.innerText.includes('已复用')`, { timeoutMs: 30000, label: "verification reused" });
     await saveShot(tab, "verification-reused");
     record({ name: "verification-reused", status: "pass", detail: "saved suggestion reused through actual page" });
-    await openBoard(tab, creds.enterprise.jobIdA);
-    await openApplication(tab, creds.applications.A.id);
+    await openBoard(tab, jobId);
+    await openApplication(tab, applicationId);
     await tab.waitFor(`() => document.body.innerText.includes('合成核验建议：')`, { timeoutMs: 30000, label: "saved verification reload" });
     await saveShot(tab, "verification-reloaded");
     record({ name: "verification-refresh", status: "pass", detail: "saved validated synthetic suggestion remains visible after page reload" });
@@ -1397,6 +1410,7 @@ async function scenarioViewport390(creds) {
 
 const SCENARIOS = {
   verification: scenarioVerification,
+  "budget-verification": creds => scenarioVerification(creds, true),
   skeleton: scenarioSkeleton,
   "reply-failure": scenarioReplyFailure,
   "notification-filter": scenarioNotificationFilter,

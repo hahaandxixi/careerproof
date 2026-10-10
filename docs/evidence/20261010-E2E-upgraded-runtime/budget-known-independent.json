@@ -1,0 +1,13 @@
+{
+  "run": "upgrade-budget-20261010",
+  "bookedAttempts": 2,
+  "settledReservations": 2,
+  "knownInputTokens": 200,
+  "knownOutputTokens": 160,
+  "originalSnapshotsUnchanged": {
+    "A": "ddb6ffdeec885401c4608408f0b96d927cb3d03c9f2619968225fc0cc3f29be5",
+    "B": "5358fc10b5a89a9f83c674e26a557e4c3a8811eec9172c2401a7234c9c17b2dd",
+    "A2": "54bf7c53f1a037f50ff479953ad18c4570d66e263867e0d5bd25106dd5edca3a"
+  },
+  "readOnly": true
+}
