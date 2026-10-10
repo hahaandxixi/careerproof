@@ -1,0 +1,19 @@
+{
+  "ghsa_id": "GHSA-rj75-hqrm-r3gf",
+  "html_url": "https://github.com/advisories/GHSA-rj75-hqrm-r3gf",
+  "updated_at": "2026-10-05T22:53:57Z",
+  "withdrawn_at": null,
+  "vulnerabilities": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "postcss-selector-parser"
+      },
+      "vulnerable_version_range": "< 7.1.6",
+      "first_patched_version": "7.1.6",
+      "vulnerable_functions": []
+    }
+  ],
+  "fetchedDate": "2026-10-11",
+  "rawResponseSha256": "e98ee683abb4f138fd18d98ec3fd60cee989bebf6f48d280e321947597b3146b"
+}

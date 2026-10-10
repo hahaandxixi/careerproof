@@ -1,0 +1,19 @@
+{
+  "ghsa_id": "GHSA-vfj7-8cjw-p6xm",
+  "html_url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+  "updated_at": "2026-10-02T22:36:34Z",
+  "withdrawn_at": null,
+  "vulnerabilities": [
+    {
+      "package": {
+        "ecosystem": "npm",
+        "name": "braces"
+      },
+      "vulnerable_version_range": "<= 3.0.3",
+      "first_patched_version": null,
+      "vulnerable_functions": []
+    }
+  ],
+  "fetchedDate": "2026-10-11",
+  "rawResponseSha256": "b3961db9d1e95c8d03b9266e0cc6420efa3789f9361ef02d65f8f5997d9fc6b8"
+}
