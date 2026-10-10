@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
@@ -15,6 +16,46 @@ from app.core.config import settings
 
 MODEL = "deepseek-flash"
 PROVIDER = "e2e-mock"
+CONTROL_NAME = "synthetic-verification-control.json"
+
+
+def read_control(path: Path | None) -> dict:
+    """A fixed run-local file controls mock responses; never an HTTP endpoint."""
+    if path is None:
+        return {"mode": "known", "delaySeconds": 0}
+    if path.is_symlink() or path.parent.is_symlink():
+        raise ValueError("Synthetic control cannot use a linked path")
+    if not path.exists():
+        return {"mode": "known", "delaySeconds": 0}
+    if path.name != CONTROL_NAME or not path.is_file() or path.stat().st_size > 1024:
+        raise ValueError("Invalid synthetic control file")
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict) or set(value) - {"mode", "delaySeconds"}:
+        raise ValueError("Invalid synthetic control fields")
+    mode = value.get("mode")
+    delay = value.get("delaySeconds", 0)
+    if (mode not in {"known", "delay", "unknown", "failure"}
+            or type(delay) not in {int, float} or not 0 <= delay <= 15
+            or (mode != "delay" and delay != 0)):
+        raise ValueError("Invalid synthetic mode or bounded delay")
+    return {"mode": mode, "delaySeconds": delay}
+
+
+async def controlled_completion(
+    request: httpx.Request, control_path: Path | None,
+) -> httpx.Response:
+    # Read once per physical request; later file edits cannot change an in-flight result.
+    control = read_control(control_path)
+    if control["mode"] == "delay":
+        await asyncio.sleep(control["delaySeconds"])
+    if control["mode"] == "failure":
+        return httpx.Response(503, json={"error": {"message": "synthetic fixture failure"}})
+    response = synthetic_completion(request)
+    if control["mode"] == "unknown":
+        payload = response.json()
+        del payload["usage"]
+        return httpx.Response(200, json=payload)
+    return response
 
 
 def validate_environment(run: str, database_url: str, storage: Path,
@@ -60,10 +101,13 @@ def synthetic_completion(request: httpx.Request) -> httpx.Response:
 class SyntheticVerificationProvider(DeepSeekProvider):
     name = PROVIDER
 
-    def __init__(self):
+    def __init__(self, control_path: Path | None = None):
+        async def handler(request):
+            return await controlled_completion(request, control_path)
+
         super().__init__(api_key="synthetic-local-only", base_url="https://api.deepseek.com",
-                         model=MODEL, timeout_seconds=5,
-                         transport=httpx.MockTransport(synthetic_completion), max_attempts=1)
+                         model=MODEL, timeout_seconds=20,
+                         transport=httpx.MockTransport(handler), max_attempts=1)
 
 
 def create_app():
@@ -74,6 +118,8 @@ def create_app():
     from app.main import app
     from app.services import application_verification
 
+    control_path = settings.storage_base_dir / CONTROL_NAME
+    read_control(control_path)
     application_verification._identity = lambda: (PROVIDER, MODEL)
-    application_verification.get_ai_provider = SyntheticVerificationProvider
+    application_verification.get_ai_provider = lambda: SyntheticVerificationProvider(control_path)
     return app
