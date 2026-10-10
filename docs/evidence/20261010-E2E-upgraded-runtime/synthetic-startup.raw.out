@@ -1,0 +1,47 @@
+database cp_e2e_upgrade-20261010: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "upgrade-20261010",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "6e9c0321-0c49-426b-84dd-46dc75b910d0",
+    "B": "1a78a61b-09f8-4bb5-83a2-c67f803119c4"
+  },
+  "reports": {
+    "A": "6e7cb384-b935-486c-8615-22c9a9f21035",
+    "B": "54ea8bfc-c7f6-4706-b01c-76564b57230d",
+    "A2": "872efadf-1877-411b-84c2-c1b9bd643c46"
+  },
+  "materials": {
+    "student": "a7fad04f-29f7-4092-9b9e-c2cda4c252d8",
+    "studentA2": "c8f8592e-5ad3-473f-bd55-2aeba3570395"
+  },
+  "applications": {
+    "A": {
+      "id": "3088a20e-652d-4166-bf04-eb0a25fb9550",
+      "student": "student",
+      "status": "replied",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "74956c53080e7ecdfd9bcc2ba2ac10ebd4acfff91e574dd43b6ed0566916833a"
+    },
+    "B": {
+      "id": "23ed827d-f61c-4dfc-9195-36173c134646",
+      "student": "student",
+      "status": "replied",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "156ca1068a3a5088af29c64d5fb2f0f95355dd989224682785727a50458f57f4"
+    },
+    "A2": {
+      "id": "652fa343-84c7-42bc-b6af-8b4636fc95c2",
+      "student": "studentA2",
+      "status": "viewed",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "20bd6f7cb049a89c504a502f6e9cd4c68305e06f5f108d7a0112912bf4bccf6a"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+CareerProof E2E run 'upgrade-20261010' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_upgrade-20261010 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\upgrade-20261010, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\upgrade-20261010.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId upgrade-20261010.

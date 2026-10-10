@@ -1,0 +1,6 @@
+[1] info scenario-start :: scenario=verification runId=upgrade-20261010
+[2] info chrome-launched :: enterprise-verification dynamic port 57874 profile=profile-enterprise-verification
+[3] evidence screenshot:login-page-empty :: docs\evidence\20261010-e2e-enterprise-upgraded\verification-2026-10-10T01-40-16-551Z\03-login-page-empty.png
+[4] pass login-ok :: landed on /jobs
+[5] info chrome-stopped :: enterprise-verification exitCode=0
+[6] fail scenario-aborted :: Error: cdp timeout after 15000ms: Runtime.evaluate |     at Timeout._onTimeout (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:196:16) |     at listOnTimeout (node:internal/timers:585:17)

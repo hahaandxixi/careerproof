@@ -735,6 +735,48 @@ async function scenarioSkeleton(creds) {
   }
 }
 
+async function scenarioVerification(creds) {
+  const browser = new ChromeInstance("enterprise-verification");
+  try {
+    await browser.launch();
+    const tab = await browser.openTab();
+    await tab.enable();
+    await login(tab, creds.accounts.enterprise);
+    await openBoard(tab, creds.enterprise.jobIdA);
+    await openApplication(tab, creds.applications.A.id);
+    await tab.click({ tag: "label", text: "我同意将该岗位当前要求" }, { label: "synthetic verification consent" });
+    await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: "generate synthetic verification" });
+    let generated = false;
+    for (let attempt = 0; attempt < 30; attempt++) {
+      await sleep(1000);
+      generated = await tab.evalJs(`document.body.innerText.includes('合成核验建议：')`);
+      if (generated) break;
+      const alert = await tab.evalJs(`Array.from(document.querySelectorAll('[role=alert]')).map(el => el.textContent).join(' | ')`);
+      if (alert) {
+        await saveShot(tab, "verification-admission-or-generation-error");
+        record({ name: "verification-generation-error", status: "blocked", detail: String(alert).slice(0, 500) });
+        saveJson("verification-network", tab.networkLog);
+        return;
+      }
+    }
+    if (!generated) throw new CdpError("Synthetic verification did not display a valid result");
+    await saveShot(tab, "verification-completed");
+    record({ name: "verification-generated", status: "pass", detail: "production verification flow displayed explicitly synthetic information gaps" });
+    await tab.click({ tag: "button", text: "生成或复用核验建议" }, { label: "reuse synthetic verification" });
+    await tab.waitFor(`() => document.body.innerText.includes('已复用')`, { timeoutMs: 30000, label: "verification reused" });
+    await saveShot(tab, "verification-reused");
+    record({ name: "verification-reused", status: "pass", detail: "saved suggestion reused through actual page" });
+    await openBoard(tab, creds.enterprise.jobIdA);
+    await openApplication(tab, creds.applications.A.id);
+    await tab.waitFor(`() => document.body.innerText.includes('合成核验建议：')`, { timeoutMs: 30000, label: "saved verification reload" });
+    await saveShot(tab, "verification-reloaded");
+    record({ name: "verification-refresh", status: "pass", detail: "saved validated synthetic suggestion remains visible after page reload" });
+    saveJson("verification-network", tab.networkLog);
+  } finally {
+    await browser.stop();
+  }
+}
+
 // Task card item 6, post-fix ACCEPTANCE on the new build: both fault
 // variants (request failure / response loss) with real injection, exactly
 // one POST each and no auto-resend; editable draft (edit → clear → retype);
@@ -1350,6 +1392,7 @@ async function scenarioViewport390(creds) {
 }
 
 const SCENARIOS = {
+  verification: scenarioVerification,
   skeleton: scenarioSkeleton,
   "reply-failure": scenarioReplyFailure,
   "notification-filter": scenarioNotificationFilter,

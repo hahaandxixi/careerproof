@@ -1,0 +1,51 @@
+{
+  "runId": "upgrade-20261010",
+  "scenario": "verification",
+  "startedAt": "2026-10-10T01:40:16.552Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-10T01:40:16.552Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=verification runId=upgrade-20261010"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-10T01:40:17.024Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-verification dynamic port 57874 profile=profile-enterprise-verification"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-10T01:40:17.263Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261010-e2e-enterprise-upgraded\\verification-2026-10-10T01-40-16-551Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-10T01:40:19.195Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-10T01:40:38.069Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-verification exitCode=0"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-10T01:40:38.070Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: cdp timeout after 15000ms: Runtime.evaluate |     at Timeout._onTimeout (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:196:16) |     at listOnTimeout (node:internal/timers:585:17)"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-10T01:40:38.070Z"
+}
