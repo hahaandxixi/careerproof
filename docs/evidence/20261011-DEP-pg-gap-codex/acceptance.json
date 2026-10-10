@@ -1,0 +1,34 @@
+{
+  "trackedSourceHashesClosed": {
+    "app/tests/conftest.py": "3d69ce8efbeccbe0d5c3829963154528f8938f24",
+    "app/tests/budget_fixture_helpers.py": "25fc23895dd72f4e2aaf5d9ffbc72f11e09ebb3c",
+    "app/tests/test_real_matching.py": "de6fab425d126a200b98ef0299d25a61346bf665",
+    "app/tests/ops_hard_stop_worker.py": "d54c36e89000b22ae085b537617aff6b7b695544",
+    "app/tests/test_applications_api.py": "0b42956c004d64401535e13cbec188221f51b163",
+    "app/tests/test_attempt_hard_stop.py": "8dc1ef1abf7a092b7d02d1dec5d2e6deb07071f7",
+    "app/tests/test_durable_attempt_service.py": "2d13916a77aac9f731a65ac2e78379564efa44bd",
+    "app/tests/test_evidence_growth.py": "6853ebd17b8d5bcece133c724fc8f646131705c4",
+    "app/tests/test_growth_answer_postgres.py": "eac213b6f2ef352ed2502afd25f9808158a1ebec",
+    "app/tests/test_growth_target_postgres.py": "aa7e0c2de6e319fe0a1ffd8a02a20490e347d8dc",
+    "app/tests/test_knowledge_semantic_postgres.py": "69ae6c7c908ddb8db490b083bff358d198404200",
+    "app/tests/test_notifications.py": "63b68aae265097b763f2d822cbd3820b7847bc2f",
+    "app/tests/test_visual_postgres_concurrency.py": "8fdf7697a78dab95a6edfa0c6824690061fb7a6d"
+  },
+  "uniqueFinalPassedNodes": 60,
+  "originalSkippedNodesProven": 28,
+  "firstFailureNodes": [
+    "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-ledger_committed]",
+    "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-receipt_committed]",
+    "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-response_observed]",
+    "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-send_intent_committed]"
+  ],
+  "rerunPassedExactlyFirstFailures": true,
+  "skippedNodes": 0,
+  "independentPgRiskChecksPassed": 2,
+  "e2eProofIdenticalAfterPgTests": true,
+  "nodeEvidenceSha256": {
+    "run1-per-node-results.jsonl": "f4159c44df8b96be7b0379196a369b555fedca3c2463e400ed48f74b24dd0f85",
+    "run2-per-node-results.jsonl": "9f8cf7c5a961b0f992917a17837e3c9258209c421d7e707e06a3af69343a52f9",
+    "expected-28-nodes.txt": "032dada415243f0b604990bdefdd0cd8b9871b7f5f94fd871882a0e99f790689"
+  }
+}

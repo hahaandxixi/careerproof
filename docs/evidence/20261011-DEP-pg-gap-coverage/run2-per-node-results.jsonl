@@ -1,0 +1,4 @@
+{"nodeid": "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-ledger_committed]", "when": "call", "outcome": "passed", "skip_reason": null}
+{"nodeid": "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-receipt_committed]", "when": "call", "outcome": "passed", "skip_reason": null}
+{"nodeid": "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-response_observed]", "when": "call", "outcome": "passed", "skip_reason": null}
+{"nodeid": "app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-send_intent_committed]", "when": "call", "outcome": "passed", "skip_reason": null}

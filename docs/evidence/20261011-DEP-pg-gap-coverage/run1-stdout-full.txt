@@ -1,0 +1,414 @@
+..............FFFF..........................................             [100%]
+================================== FAILURES ===================================
+_ test_real_child_hard_stop_then_database_only_recovery[matching-send_intent_committed] _
+
+phase = 'send_intent_committed', chain = 'matching'
+case = Case(hr=<httpx.AsyncClient object at 0x000001C7476593A0>, student=<httpx.AsyncClient object at 0x000001C7467ACB30>, ou...0>, submitted=[(<function execute_match_task at 0x000001C742742340>, (UUID('89c46b42-96c7-40ae-a099-d545de4136d6'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C745415040>
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+>           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then4/child-state-send_intent_committed.json')
+wanted = 'hanging'
+child = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then4/child-log-send_intent_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+>                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 71, in validate_config
+E                       raise ValueError("Matching storage must belong to this hard-stop test's materials")
+E                   ValueError: Matching storage must belong to this hard-stop test's materials
+
+app\tests\test_attempt_hard_stop.py:190: Failed
+_ test_real_child_hard_stop_then_database_only_recovery[matching-response_observed] _
+
+phase = 'response_observed', chain = 'matching'
+case = Case(hr=<httpx.AsyncClient object at 0x000001C747659340>, student=<httpx.AsyncClient object at 0x000001C7492E7320>, ou...0>, submitted=[(<function execute_match_task at 0x000001C742742340>, (UUID('506c0f62-e19f-4325-ac26-470b5102af15'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C744A7FCB0>
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+>           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then5/child-state-response_observed.json')
+wanted = 'hanging'
+child = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then5/child-log-response_observed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+>                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 71, in validate_config
+E                       raise ValueError("Matching storage must belong to this hard-stop test's materials")
+E                   ValueError: Matching storage must belong to this hard-stop test's materials
+
+app\tests\test_attempt_hard_stop.py:190: Failed
+_ test_real_child_hard_stop_then_database_only_recovery[matching-receipt_committed] _
+
+phase = 'receipt_committed', chain = 'matching'
+case = Case(hr=<httpx.AsyncClient object at 0x000001C75932D940>, student=<httpx.AsyncClient object at 0x000001C759367770>, ou...0>, submitted=[(<function execute_match_task at 0x000001C742742340>, (UUID('f67fed9a-5e3d-42b3-817f-35af922091b8'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C747684B90>
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+>           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then6/child-state-receipt_committed.json')
+wanted = 'hanging'
+child = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then6/child-log-receipt_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+>                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 71, in validate_config
+E                       raise ValueError("Matching storage must belong to this hard-stop test's materials")
+E                   ValueError: Matching storage must belong to this hard-stop test's materials
+
+app\tests\test_attempt_hard_stop.py:190: Failed
+_ test_real_child_hard_stop_then_database_only_recovery[matching-ledger_committed] _
+
+phase = 'ledger_committed', chain = 'matching'
+case = Case(hr=<httpx.AsyncClient object at 0x000001C7593A7B60>, student=<httpx.AsyncClient object at 0x000001C7476B2CF0>, ou...0>, submitted=[(<function execute_match_task at 0x000001C742742340>, (UUID('6f39691d-a4be-4851-8897-cf13018cb98c'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001C746E89670>
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+>           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then7/child-state-ledger_committed.json')
+wanted = 'hanging'
+child = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/dep-pg-gaps-20261011-run/test_real_child_hard_stop_then7/child-log-ledger_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+>                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\app\tests\ops_hard_stop_worker.py", line 71, in validate_config
+E                       raise ValueError("Matching storage must belong to this hard-stop test's materials")
+E                   ValueError: Matching storage must belong to this hard-stop test's materials
+
+app\tests\test_attempt_hard_stop.py:190: Failed
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-send_intent_committed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-response_observed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-receipt_committed]
+FAILED app/tests/test_attempt_hard_stop.py::test_real_child_hard_stop_then_database_only_recovery[matching-ledger_committed]
+4 failed, 56 passed, 5 warnings in 84.18s (0:01:24)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

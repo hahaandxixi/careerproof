@@ -1,0 +1,61 @@
+{
+  "task": "传智杯29：升级环境剩余28项PG集成证据补齐",
+  "date": "2026-10-11",
+  "head_at_start": "ab8713e28b50a01365f5f8d8fdcbeb024debe0ef",
+  "head_at_finish": "d56535cb97b4f7ad0dcfad1a6c797f81fb10c1f0",
+  "head_note": "会话期间并行侧新增3提交（e9d4d88 28任务离线AI质量基准、85e9b88 docs、d56535c 本卡路径例外附录）。其中backend仅触及 test_quality_review_benchmark*.py 与 evals/run_quality_review_benchmark.py（非本卡范围）。本卡9目标+4个fixture链文件 hash 与运行前逐字闭合（HASHES-CLOSED-LOOP-OK），证据仍对 ab8713e 工作树有效。本任务零 git add/commit/push。",
+  "runtime": {
+    "python": "backend/.venv-dependency23/Scripts/python.exe (3.12.14)",
+    "pins_verified": "16项 == pyproject 全一致，见 runtime-pins.txt"
+  },
+  "db": {
+    "connectivity": "SELECT 1 OK, PG 17.11, loopback 127.0.0.1:5432, db careerproof, 非超级用户；仅连通检查，未启停/未安装",
+    "cp_test_schemas_before": 2,
+    "cp_test_schemas_after": 2,
+    "schemas_total_before": 5,
+    "schemas_total_after": 5,
+    "public_changes": "无；fixture 仅自身随机 cp_test_{uuid4().hex} schema，建后断言 current_schema 与每表 namespace，DROP 带正则守卫",
+    "url_handling": "父进程 settings.database_url 读取，仅经 CAREERPROOF_TEST_DATABASE_URL 环境变量传子进程；任何文件/日志未落URL或凭据"
+  },
+  "runs": [
+    {
+      "id": "run1",
+      "scope": "9模块全量60节点，一次运行",
+      "basetemp": "backend/.tmp/dep-pg-gaps-20261011-run",
+      "result": "56 passed / 4 failed / 0 skipped（84.18s）",
+      "failure_root_cause": "matching链4节点：worker仓库防护要求backend下首段路径以.tmp-开头（ops_hard_stop_worker.py:74），卡面basetemp .tmp/... 首段为.tmp。调用方式与既有防护不一致，非代码缺陷",
+      "evidence": "run1-stdout-full.txt（原文未覆盖）+ run1-per-node-results.jsonl（aux目录）"
+    },
+    {
+      "id": "run2",
+      "scope": "仅run1失败的4个matching硬停节点（d56535c 卡片附录批准的路径例外）",
+      "basetemp": "backend/.tmp-dep-pg-gaps-20261011-matching-rerun",
+      "result": "4 passed / 0 failed / 0 skipped（18.21s）",
+      "per_node_four_phase_proof": "4节点各为真实子进程：spawn后等hanging标记，先核对 parent_pid==child.pid/nonce/phase/task/schema/创建时间窗/物理HTTP计数，再 TerminateProcess 真硬停（非零退出码），随后断言行锁释放、attempt/ledger/reservation 状态逐相位成立（in_flight / received_unbooked / booked；hold held/settled）、reconcile两次仅数据库恢复且任务永不复活——非仅证明child启动",
+      "evidence": "run2-matching-rerun-stdout-full.txt + run2-per-node-results.jsonl（aux目录）"
+    }
+  ],
+  "gap_nodes": {
+    "expected": "1/8/2/1/3/2/2/1/8 = 28（与卡面一致，清单 expected-28-nodes.txt）",
+    "actual": "28/28 实跑且通过，0跳过；逐节点见 28-nodes-results.txt",
+    "regression": "其余32个普通用例（9模块全量）全部通过"
+  },
+  "external_calls": "conftest autouse ai_external_enabled=False/provider=mock；worker子进程内部联锁关闭外发+MockTransport合成provider；无真实模型/邮件/联网",
+  "hard_stop_scope": "只杀测试自身nonce核对+parent_pid+创建时间窗验证的自有子PID（WorkerProcess.terminate_and_wait）",
+  "secret_scan": "证据目录全文件 grep password/URL/api key/secret/Bearer：仅命中脱敏标记与包名PyJWT，零凭据",
+  "aux_scripts_hashed": {
+    "connectivity_check.py": "6c57ba4d9dac2a02e00e1316a3054c612d13b1e7",
+    "dep_pg_gaps_reporter.py": "c533a0443fb873e8cee49ebc630754e9ce7dd773",
+    "run_gaps.py": "0632d877dc30e2d6bb04e23c2e34f9d45c4a4d2d",
+    "rerun_matching.py": "85223388f0c4a005e9e0cf69b3f9a13b4c60199b"
+  },
+  "self_review": [
+    "HEAD/9目标/fixture链hash运行前后闭合一致",
+    "28项逐节点核对：全部原跳过节点实跑通过，无跳过策略变更、无断言修改",
+    "Run1失败未掩盖：原文保留，根因定位为调用basetemp与worker防护不一致，经卡片附录d56535c批准的例外路径重跑仅4节点",
+    "fixture只创建/销毁自身随机schema；DB前后残留计数不变；public零变更",
+    "URL/密码/hardstop临时config未入证据目录（密钥扫描零命中）；临时目录未入Git",
+    "未执行：Git暂存/提交/推送、迁移业务库、容器/服务启停、安装、真实外发、E2E数据变更",
+    "未验证（超出本卡）：18项PG专项（不重复）、Codex最高风险PG复验（交棒后由Codex执行）"
+  ]
+}

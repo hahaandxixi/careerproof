@@ -1,0 +1,14 @@
+# Connectivity + namespace precheck 2026-10-11 (safe facts only; URL/password never recorded)
+# Method: read settings.database_url in parent process; SELECT 1 via async engine.
+scheme=postgresql+asyncpg
+host=127.0.0.1 (loopback=True)
+port=5432
+database=careerproof
+has_password=(redacted, present)
+superuser=False (current_user is the application role, not postgres)
+select_one=OK
+server_version=PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2)
+schemas_total=5
+cp_test_schemas_before_run=2 (pre-existing leftovers from earlier tasks; untouched)
+protected_e2e_schemas=(none present in this database)
+public_users_table_exists=True (business tables live in public; fixtures never write public)

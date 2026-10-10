@@ -1,0 +1,13 @@
+# 升级PG缺口的Codex独立签收
+
+2026-10-11。ZCode29已终态交棒后，Codex作为唯一DB测试执行者，用同一升级Python/pytest/asyncio运行两个最高风险节点：test_durable_matching.py::test_history_read_releases_borrowed_transaction_during_http、test_applications_api.py::test_postgres_withdraw_wins_while_slow_resume_read_is_blocked。CAREERPROOF_TEST_DATABASE_URL由父进程读取loopback配置传给子进程，未输出凭据；自有随机cp_test schema、合成provider、无真实模型/外发。
+
+精确pytest参数：两上述节点、-q -ra -p no:cacheprovider --basetemp=.tmp-dep-pg-codex-final-20261011；independent-risk.raw.out为2通过、零跳过。前者还在pytest9/asyncio1.4下补齐之前只由框架批次验证过的借用事务释放节点；后者独立双跑撤回期间慢下载的授权竞态。
+
+acceptance.json独立核对Z29原始节点JSONL与观察插件（只观察不改结果）：首轮60节点56通过/4失败，第二轮恰好重跑这4个匹配硬停失败且全过，合并60个唯一节点最终通过；原28个跳过节点完整纳入并无跳过。13个目标/fixture Git blob哈希与现行文件闭合。原始JSONL、预期28清单及安全的观察插件复制到Z29证据目录，避免只依赖不可交接的临时目录。
+
+原全量46 PG跳过的覆盖关系：工具链专项79中的17个原跳过节点、本批Z29的28个、Codex当前借用事务节点1个，共46；框架59中的借用事务旧证据保留，但本次已在最终pytest版本复验，不冒称79单批覆盖全部46。普通用例、代表复跑均不重复累计为全量总通过数。
+
+PG测试完成后再次以SET TRANSACTION READ ONLY审计question-chain-20261010，chain-after-pg-signoff.json与恢复后的完整证明逐字段相同：报告、材料、企业原回复、三投递快照与核验attempt/预留都未变化。本批通过不代表其他链已经接入预算，也不替代真实模型语义验收。
+
+措辞纠正：Z29 manifest中“任何文件未落URL”过宽。硬停测试按既有协议将数据库URL写入自有临时child-config以启动子进程；本轮没有将这些临时config或凭据加入证据/Git。父runner本身仅以环境传URL，证据脱敏与未发布config才是可核对的结论。对public数据的保护依据是fixture namespace约束，未采集完整业务库前后内容hash，不声称取得全业务库逐行不变的证明。

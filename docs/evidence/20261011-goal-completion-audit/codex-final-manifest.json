@@ -1,0 +1,26 @@
+{
+  "preCommitHead": "d56535cb97b4f7ad0dcfad1a6c797f81fb10c1f0",
+  "filesSha256": {
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\28-nodes-results.txt": "fb3f14c8ac41eed54760dab1f6a48c64fa80ff41a6c5d360ba209228bedc0682",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\connectivity-safe-facts.txt": "a2f73bced4a082f49cf87d016d2912c6d81eda1c175df56e3efaf8fed1825d49",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\dep_pg_gaps_reporter.py": "146be599c3b13fdb2c667e25f0e3789ffb5dd60349450c0894b6d6cece606a87",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\expected-28-nodes.txt": "032dada415243f0b604990bdefdd0cd8b9871b7f5f94fd871882a0e99f790689",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\manifest.json": "1202d244d96555a1a823963918d1e0ed61b22b03e66d554e7a8ecb0b408e442e",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\README.md": "e9bf48b440e19f1ec44be8cc60c5e18da0875f0e87f54629d8858c9292d81cf3",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\run1-per-node-results.jsonl": "f4159c44df8b96be7b0379196a369b555fedca3c2463e400ed48f74b24dd0f85",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\run1-stdout-full.txt": "9dbe05c9896d3f3cc412846706d1328326f81ed9d6aee36b1766cad0cf512345",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\run2-matching-rerun-stdout-full.txt": "b8bd546d445140025cadbb9429407f8004c13e6fec10ce73a7480d0001077fa8",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\run2-per-node-results.jsonl": "9f8cf7c5a961b0f992917a17837e3c9258209c421d7e707e06a3af69343a52f9",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\runtime-pins.txt": "91180e366d9b55d11861df228e83a8f904a5ffbb1efe09224d3096bf42b10a49",
+    "docs\\evidence\\20261011-DEP-pg-gap-coverage\\target-hashes.txt": "86c92df77d86a49e04a790ed176691ac2f9506e71dda4a0dce253661afd43bd8",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\acceptance.json": "f7d1e990d356781116b7ea6a92e2e5955c4bcdf118c787e92a735ec5cdb9e5d0",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\chain-after-pg-signoff.json": "49bfc3ec398bc6f2c27afa0cb1f0e7d689a260c31c92ff160402792a672b138e",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\final-health.json": "f41d10568e4d3892d0e8ca5cdd32fd72b75fb1574a4ebd7df55dd88104f4268a",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\frontend-runtime-final.json": "7dff007a7ea950f30928478e9f369d603e0139aff1073ed7d06ca16333b47afb",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\independent-risk.raw.out": "f1824eb771fe805b05feed7bf791ecff23cb7e9facb95fc8ba7dda1c8743403e",
+    "docs\\evidence\\20261011-DEP-pg-gap-codex\\README.md": "2afb60aeec93184184d50ab21ef31ce9d09c9a78d0dd0ad53df80023dcab216b",
+    "docs\\evidence\\20261011-goal-completion-audit\\codex-final-signoff.md": "7ecfcca7e8136a992a5e8919c764b1c2b3e6b138c1f69f9c45b4cd72daff014d"
+  },
+  "p2Stash": "56c2b23fa4d923bd7af7a549967f82bafbcf2788",
+  "scope": "Dependency disposition, isolated upgraded E2E, repeatable offline quality baseline and P2 decision"
+}
