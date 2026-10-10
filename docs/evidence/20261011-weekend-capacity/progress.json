@@ -1,0 +1,19 @@
+{
+  "goal": "持续迭代消耗掉30%的glm免费token",
+  "bucket": "Start Plan / ZCode Weekend Build / GLM-5.3-Flash",
+  "bucketExpiryDisplayed": "2026-10-12 09:00",
+  "measurement": "ZCode live allowance panel; not raw input/output or cached token totals",
+  "initialRemaining": 278493179,
+  "totalGiftedAllowance": 300000000,
+  "requiredNewConsumption": 90000000,
+  "targetRemainingAtMost": 188493179,
+  "observations": [
+    {
+      "observedAtUtc": "2026-10-10 17:45:08 UTC",
+      "remaining": 278493179,
+      "newConsumptionSinceStart": 0,
+      "source": "ZCode model settings Start Plan: Weekend Build, expires Oct12 09:00"
+    }
+  ],
+  "completion": "unproven; meaningful iteration plus actual same-bucket decrement required"
+}
