@@ -1,0 +1,47 @@
+database cp_e2e_question-chain-20261010: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "question-chain-20261010",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "f5b0c81d-87c7-4327-935f-ac83ea9fe24e",
+    "B": "8996360c-507e-4ecd-a1a7-9eb891dc0d63"
+  },
+  "reports": {
+    "A": "62a042ef-c352-464b-818c-a9c84ff38c7a",
+    "B": "333ea81c-7928-429c-911b-c33617decb0b",
+    "A2": "7fe41263-2d1c-40c5-ac63-856c149feb65"
+  },
+  "materials": {
+    "student": "2f433c54-421b-4f9f-819f-3ee2e59a72e6",
+    "studentA2": "f80687b5-f9a2-4e4a-881f-3a92d1d624b4"
+  },
+  "applications": {
+    "A": {
+      "id": "931f5b55-2c29-410a-843b-f7a43a3edfe1",
+      "student": "student",
+      "status": "viewed",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "6fbc729f6095021f140e9e4c684f442c89e5947fc3f33fc2bccd7245348dc16d"
+    },
+    "B": {
+      "id": "be1cd581-85b9-40b4-b17c-8bc0c0b113f7",
+      "student": "student",
+      "status": "replied",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "dcfb141106f2f1631287f4905a0149dd52d60b7a8046fee67fa290a5c18f06ec"
+    },
+    "A2": {
+      "id": "0f33a790-d61c-49be-9ae1-73c38cc17b51",
+      "student": "studentA2",
+      "status": "viewed",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "bd97832212b180a77cd02b0d2a1eeb4d7dae9a79a6829a4d3fb0bb6c8b286ad3"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+CareerProof E2E run 'question-chain-20261010' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_question-chain-20261010 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\question-chain-20261010, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\question-chain-20261010.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId question-chain-20261010.
