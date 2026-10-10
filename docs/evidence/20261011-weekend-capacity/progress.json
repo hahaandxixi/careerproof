@@ -13,7 +13,32 @@
       "remaining": 278493179,
       "newConsumptionSinceStart": 0,
       "source": "ZCode model settings Start Plan: Weekend Build, expires Oct12 09:00"
+    },
+    {
+      "observedAtUtc": "2026-10-10 17:55:30 UTC",
+      "remaining": 273657932,
+      "tasks": "ZCode 30/31/32 confirmed live; read-only audits in progress",
+      "expiryDisplayed": "2026-10-12 09:00",
+      "newConsumptionSinceStart": 4835247
     }
   ],
-  "completion": "unproven; meaningful iteration plus actual same-bucket decrement required"
+  "completion": "unproven; meaningful iteration plus actual same-bucket decrement required",
+  "activeTasks": [
+    {
+      "number": 30,
+      "scope": "AI source consistency and actionable plans",
+      "mode": "read-only audit; own evidence only"
+    },
+    {
+      "number": 31,
+      "scope": "page recovery and stale responses",
+      "mode": "read-only audit; own evidence only"
+    },
+    {
+      "number": 32,
+      "scope": "launcher reliability and process ownership",
+      "mode": "read-only audit; own evidence only"
+    }
+  ],
+  "taskExecutionVerified": "ZCode each task observed working after send; latest 30 working 10min14sec, no completion claimed"
 }
