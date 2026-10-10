@@ -1,0 +1,15 @@
+{
+  "sourceHashesCurrent": true,
+  "frozenInputReviewHashesMatch": true,
+  "strictPassIdsIndependentlyRecomputed": [
+    "0f2a863462",
+    "37882b616f",
+    "f5c5e00efe"
+  ],
+  "strictPass": "3/8",
+  "fullDenominatorsVerified": true,
+  "twoReportsEqualExceptTimestamps": true,
+  "humanReview": false,
+  "generatedWebsiteOutputs": 0,
+  "independentHoldoutPassed": 4
+}

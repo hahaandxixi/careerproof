@@ -1,0 +1,91 @@
+FF.F                                                                     [100%]
+================================== FAILURES ===================================
+__ test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[review] ___
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/quality-review-holdout-red-20261011/test_ambiguous_duplicate_json_0')
+target = 'review'
+
+    @pytest.mark.parametrize('target', ['review', 'input'])
+    def test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay(tmp_path, target):
+        original_input = benchmark.DEFAULT_INPUT.read_bytes()
+        review = json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8'))
+        input_bytes = original_input
+        if target == 'input':
+            text = original_input.decode('utf-8')
+            marker = '"id": "37882b616f"'
+            assert marker in text
+            input_bytes = text.replace(marker, '"id": "hidden-case", ' + marker, 1).encode()
+            review['inputSha256'] = hashlib.sha256(input_bytes).hexdigest()
+        review_text = json.dumps(review, ensure_ascii=False)
+        if target == 'review':
+            marker = '"sourceCompliance": 2'
+            assert marker in review_text
+            review_text = review_text.replace(marker, '"sourceCompliance": 0, ' + marker, 1)
+        input_path, review_path = tmp_path / 'input.json', tmp_path / 'review.json'
+        input_path.write_bytes(input_bytes)
+        review_path.write_text(review_text, encoding='utf-8')
+        output = tmp_path / 'result.json'
+>       assert benchmark.main(argv=['--input', str(input_path), '--review', str(review_path),
+                                    '--output', str(output)]) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = <function main at 0x00000266EF4AFB00>(argv=['--input', 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-red-20261011\\test_ambiguous_duplicate_...ode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-red-20261011\\test_ambiguous_duplicate_json_0\\result.json'])
+E        +    where <function main at 0x00000266EF4AFB00> = benchmark.main
+
+app\tests\test_quality_review_benchmark_holdout.py:31: AssertionError
+---------------------------- Captured stdout call -----------------------------
+{"structuralSuitePass": true, "reviewedAuthoredDrafts": 8, "blindReviewStrictPass": {"count": 3, "rate": 0.375}, "blindReviewUnscored": 0, "generatedPlanOperabilityRate": null, "semanticQualityPassRate": null, "exitOk": true}
+___ test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[input] ___
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/quality-review-holdout-red-20261011/test_ambiguous_duplicate_json_1')
+target = 'input'
+
+    @pytest.mark.parametrize('target', ['review', 'input'])
+    def test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay(tmp_path, target):
+        original_input = benchmark.DEFAULT_INPUT.read_bytes()
+        review = json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8'))
+        input_bytes = original_input
+        if target == 'input':
+            text = original_input.decode('utf-8')
+            marker = '"id": "37882b616f"'
+            assert marker in text
+            input_bytes = text.replace(marker, '"id": "hidden-case", ' + marker, 1).encode()
+            review['inputSha256'] = hashlib.sha256(input_bytes).hexdigest()
+        review_text = json.dumps(review, ensure_ascii=False)
+        if target == 'review':
+            marker = '"sourceCompliance": 2'
+            assert marker in review_text
+            review_text = review_text.replace(marker, '"sourceCompliance": 0, ' + marker, 1)
+        input_path, review_path = tmp_path / 'input.json', tmp_path / 'review.json'
+        input_path.write_bytes(input_bytes)
+        review_path.write_text(review_text, encoding='utf-8')
+        output = tmp_path / 'result.json'
+>       assert benchmark.main(argv=['--input', str(input_path), '--review', str(review_path),
+                                    '--output', str(output)]) == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = <function main at 0x00000266EF4AFB00>(argv=['--input', 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-red-20261011\\test_ambiguous_duplicate_...ode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-red-20261011\\test_ambiguous_duplicate_json_1\\result.json'])
+E        +    where <function main at 0x00000266EF4AFB00> = benchmark.main
+
+app\tests\test_quality_review_benchmark_holdout.py:31: AssertionError
+---------------------------- Captured stdout call -----------------------------
+{"structuralSuitePass": true, "reviewedAuthoredDrafts": 8, "blindReviewStrictPass": {"count": 3, "rate": 0.375}, "blindReviewUnscored": 0, "generatedPlanOperabilityRate": null, "semanticQualityPassRate": null, "exitOk": true}
+______ test_input_rubric_cannot_remove_an_unfavorable_required_dimension ______
+
+    def test_input_rubric_cannot_remove_an_unfavorable_required_dimension():
+        payload = json.loads(benchmark.DEFAULT_INPUT.read_bytes())
+        review = copy.deepcopy(json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8')))
+        del payload['rubric']['stepsExecutable']
+        raw = json.dumps(payload, ensure_ascii=False).encode()
+        review['inputSha256'] = hashlib.sha256(raw).hexdigest()
+        for row in review['cases']:
+            del row['scores']['stepsExecutable']
+            del row['evidence']['stepsExecutable']
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_quality_review_benchmark_holdout.py:61: Failed
+=========================== short test summary info ===========================
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[review]
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[input]
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_input_rubric_cannot_remove_an_unfavorable_required_dimension
+3 failed, 1 passed in 0.76s

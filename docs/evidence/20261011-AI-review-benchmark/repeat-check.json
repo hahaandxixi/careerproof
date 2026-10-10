@@ -1,0 +1,68 @@
+{
+  "compared": [
+    "joint-run1-20261011.json",
+    "joint-run2-20261011.json"
+  ],
+  "identicalExceptGeneratedAt": true,
+  "topTimestamps": [
+    "2026-10-10T17:04:29.727632+00:00",
+    "2026-10-10T17:04:39.754458+00:00"
+  ],
+  "exitCodes": [
+    0,
+    0
+  ],
+  "command": "backend/.venv-dependency23/Scripts/python.exe -m evals.run_quality_review_benchmark --output <evidence>/joint-runN-20261011.json (cwd=backend, N=1/2)",
+  "sourceFiles": {
+    "benchmarkRunner": "backend/evals/run_quality_review_benchmark.py",
+    "benchmarkRunnerSha256": "dfe69d62730e37035dacd8e3ab2ab8a42683d887e3e11be3e45c65c26dae36a6",
+    "benchmarkTests": "backend/app/tests/test_quality_review_benchmark.py",
+    "benchmarkTestsSha256": "e1a2fc422351b12c28b3153a7597c3e11c254488bc597d250d0c2f97f6a95a7e",
+    "frozenInputSha256": "a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e",
+    "frozenReviewSha256": "69d88eae87cd7b4c327d6908d64b07b50b66e21436b5917d19a6f03cb7bf606b",
+    "structuralSuiteHashes": {
+      "app.agents.contracts": "103d0e0b2740f9167391b397ba73b022b0fadf6d15a0db1cc2101a29db78519f",
+      "app.agents.evidence_workflow": "2719e41a2fbdda380d8dfaae7f1490869873630863f06572035da8b4d494809b",
+      "app.services.report_comparison": "ee7df0814c03b3a35908f9b77c2ab9aca2052f2f90cd60803b035f782fbd7ef1",
+      "app.tools.evidence_context": "c991ca4e9d905977d1520ef55b003e745d277a1d220cb106435e6480990099b4",
+      "app.tools.function_coverage": "4ee383aefeddb8934f05a653c82a718c9c3fd148e1f7eb9ff4be4469746bf354",
+      "app.tools.matcher": "5a15f5f450af074de7476098c03301b47fab2213c7bbe3bd780747dae68686bb",
+      "app.tools.resume_parser": "6db35975e9bc742086429c8d9632895439f685069c0be67af6a680476e3c1848",
+      "app.tools.task_boundaries": "e3e34c1e6b5d67adcef87a410dbdcdd24b32a93000eb8b8b0da567bd7fe4e203",
+      "fixture": "1201e12fa3bcc80f918257f1d5fb874c5f1d624819dfd4f665a63f6389018a24",
+      "runner": "d7fb5012d6f080c7d72b1215f2ce66a3f26c2f3689e7f877f58d0b0f7f0cdbc3"
+    }
+  },
+  "summary": {
+    "structuralSuitePass": true,
+    "blindReviewEvidenceLegal": true,
+    "blindReviewReplayComplete": true,
+    "reviewedAuthoredDrafts": 8,
+    "blindReviewStrictPass": {
+      "count": 3,
+      "rate": 0.375
+    },
+    "authoredCoverageSeparate": {
+      "authoredOperabilityCounts": {
+        "deliverableNamed": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "stepsExecutable": {
+          "numerator": 6,
+          "denominator": 6
+        },
+        "checksObservable": {
+          "numerator": 6,
+          "denominator": 6
+        }
+      },
+      "independentStrictPassRate": 0.375,
+      "note": "作者标签覆盖率（结构suite authoredOperabilityCounts）只证明作者声明齐全，不证明建议实际可执行；与独立盲评严格通过分列，不得互相替代。"
+    },
+    "generatedWebsiteModelOutputs": 0,
+    "humanReview": false,
+    "generatedPlanOperabilityRate": null,
+    "semanticQualityPassRate": null
+  }
+}
