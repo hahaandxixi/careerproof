@@ -1,0 +1,69 @@
+--- /tmp/base.sorted	2026-10-10 09:35:36.205082900 +0800
++++ /tmp/final.sorted	2026-10-10 09:35:36.233144200 +0800
+@@ -1,13 +1,14 @@
+ CacheControl==0.14.4
+-Mako==1.4.1
++Mako==1.4.2
+ MarkupSafe==3.0.3
+-PyJWT==2.10.1
++PyJWT==2.15.0
+ PyMuPDF==1.26.4
+ PyYAML==6.0.3
+ Pygments==2.21.0
+ SQLAlchemy==2.0.43
+ aiosqlite==0.21.0
+ alembic==1.16.5
++annotated-doc==0.0.5
+ annotated-types==0.8.0
+ antlr4-python3-runtime==4.9.3
+ anyio==4.15.0
+@@ -27,8 +28,8 @@
+ defusedxml==0.7.1
+ dnspython==2.8.0
+ email_validator==2.2.0
+-fastapi==0.116.1
+-fastembed==0.7.4
++fastapi==0.143.0
++fastembed==0.8.1
+ filelock==4.0.1
+ flatbuffers==25.12.19
+ fsspec==2026.9.0
+@@ -56,12 +57,12 @@
+ omegaconf==2.3.1
+ onnxruntime==1.30.0
+ opencv-python==5.0.0.93
++opentelemetry-api==1.45.1
+ packageurl-python==0.17.6
+ packaging==26.3
+ pgvector==0.4.1
+-pillow==11.3.0
++pillow==12.3.0
+ pip-requirements-parser==32.0.1
+-pip==25.0.1
+ pip_api==0.0.35
+ pip_audit==2.10.1
+ platformdirs==4.12.2
+@@ -76,11 +77,11 @@
+ pydantic==2.11.7
+ pydantic_core==2.33.2
+ pyparsing==3.3.3
+-pytest-asyncio==1.1.0
+-pytest==8.4.2
++pytest-asyncio==1.4.0
++pytest==9.0.3
+ python-docx==1.2.0
+ python-dotenv==1.2.3
+-python-multipart==0.0.20
++python-multipart==0.0.31
+ pywin32==312
+ rapidocr==3.9.2
+ referencing==0.37.0
+@@ -93,7 +94,7 @@
+ six==1.17.0
+ sortedcontainers==2.4.0
+ sse-starlette==3.0.3
+-starlette==0.47.3
++starlette==1.3.1
+ tokenizers==0.23.2
+ tomli==2.4.1
+ tomli_w==1.2.0

@@ -1,0 +1,14 @@
+Python 3.12.14
+pip 25.0.1 from D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\pip (python 3.12)
+Name: fastembed
+Version: 0.7.4
+Name: pillow
+Version: 11.3.0
+Name: onnxruntime
+Version: 1.30.0
+Name: tokenizers
+Version: 0.23.2
+Name: huggingface_hub
+Version: 1.32.0
+Name: numpy
+Version: 2.5.2
