@@ -54,6 +54,14 @@ export default function ApplicationVerification({ applicationId, report, onUnava
     </div>
     <p className="text-xs leading-5 text-slate-500">读取已有结果不新增模型调用；同一投递快照优先复用已保存建议。授权变化时停止展示，刷新投递或离开窗口会收起建议。</p>
     <p className="text-xs leading-5 text-amber-800">岗位当前要求可能与投递时要求不同，请核对各项对应关系和变化；固定报告保留投递时依据。</p>
+    {task?.dailyBudget && <section aria-label="今日 AI 预算" className="rounded-lg bg-white p-3 text-xs leading-6 text-slate-700">
+      <p className="font-medium">今日 AI 预算（北京时间）</p>
+      <p>已知用量：输入 {task.dailyBudget.knownInputTokens} / 输出 {task.dailyBudget.knownOutputTokens} Tokens</p>
+      <p>保守预留：输入上界 {task.dailyBudget.heldInputBound} / 输出上界 {task.dailyBudget.heldOutputBound} Tokens</p>
+      <p>待核实收据：{task.dailyBudget.unknownReservationCount} 条；没有可信收据的请求继续占用预留，不算作零用量。</p>
+      {(task.dailyBudget.adjustedInputCapacity > 0 || task.dailyBudget.adjustedOutputCapacity > 0) && <p>管理员审计调整容量：输入 {task.dailyBudget.adjustedInputCapacity} / 输出 {task.dailyBudget.adjustedOutputCapacity} Tokens（不等于厂商实际账单）</p>}
+      <p>{task.usageKnown === false ? "本次收据不完整；已知部分不代表全部用量。" : "预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。"}</p>
+    </section>}
     {loading && <p role="status" className="text-sm text-indigo-800">{task ? "正在生成核验建议，已授权范围会再次核对…" : "正在核对已保存的核验建议…"}</p>}
     {notice && <p role="status" className="text-sm leading-6 text-amber-800">{notice}</p>}
     {error && <p role="alert" className="text-sm leading-6 text-rose-700">{error}</p>}

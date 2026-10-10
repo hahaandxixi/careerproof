@@ -135,6 +135,13 @@ export interface GrowthTask {
 }
 
 export interface ApplicationVerificationTask {
+  usageKnown?: boolean;
+  dailyBudget?: {
+    reportCount: number; knownInputTokens: number; knownOutputTokens: number;
+    heldInputBound: number; heldOutputBound: number;
+    adjustedInputCapacity: number; adjustedOutputCapacity: number;
+    unknownReservationCount: number;
+  };
   taskId: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   aiStatus: string;

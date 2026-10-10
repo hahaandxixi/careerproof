@@ -274,12 +274,17 @@ async def test_structured_support_gap_contradiction_and_completed_cache(case, mo
     assert result["usage"]["inputTokens"] == 123
     assert result["usage"]["outputTokens"] == 45
     assert result["usage"]["cacheHitTokens"] == 17
+    assert result["dailyBudget"]["knownInputTokens"] == 123
+    assert result["dailyBudget"]["knownOutputTokens"] == 45
+    assert result["dailyBudget"]["heldInputBound"] == 0
+    assert result["dailyBudget"]["unknownReservationCount"] == 0
     assert result["inputPreflights"][0]["allowed"] is True
     assert len(result["snapshotHash"]) == 64
     assert result["promptVersion"]
     reused = await case.start()
     assert reused["taskId"] == started["taskId"] and reused["reused"] is True
     assert len(requests) == 1
+    assert reused["dailyBudget"] == result["dailyBudget"]
     assert (await case.hr.get(case.path)).json()["data"]["taskId"] == started["taskId"]
     current = (await case.hr.post(
         f"/api/v1/applications/{case.application_id}/view"

@@ -346,7 +346,7 @@ class ApplicationVerificationService:
             )
         ):
             await self.session.commit()
-            return self._view(existing, item.report_snapshot, reused=True)
+            return await self._budget_view(existing, item.report_snapshot, reused=True)
         if not item.report_snapshot.get("items"):
             raise AppError("固定报告没有可核验的岗位要求", code=4096, status_code=409)
         pending_count = await self.session.scalar(
@@ -395,21 +395,28 @@ class ApplicationVerificationService:
             )
         )
         await self.session.commit()
-        return self._view(task, item.report_snapshot)
+        return await self._budget_view(task, item.report_snapshot)
 
     async def latest(self, application_id: UUID, user):
         # A short read lock keeps withdrawal from committing between this check
         # and selecting/assembling the saved result. Request cleanup releases it.
         item, context = await _authorized(self.session, application_id, user.id, lock=True)
         task = await self._latest(_binding(item, context, user.id))
-        return self._view(task, item.report_snapshot) if task else None
+        return await self._budget_view(task, item.report_snapshot) if task else None
 
     async def get(self, application_id: UUID, task_id: UUID, user):
         task = await self.session.get(AnalysisTask, task_id)
         if not task or task.input_snapshot.get("applicationId") != str(application_id):
             raise AppError("核验任务不存在或无权访问", code=4041, status_code=404)
         item = await ensure_verification_task_access(self.session, task, user)
-        return self._view(task, item.report_snapshot)
+        return await self._budget_view(task, item.report_snapshot)
+
+    async def _budget_view(self, task, report_snapshot, *, reused=False):
+        view = self._view(task, report_snapshot, reused=reused)
+        # Fresh authorized reads use the current owner's daily ledger, not the
+        # task's pre-request snapshot (which predates reservations/settlement).
+        view["dailyBudget"] = await _shared_budget_display(self.session, task.created_by)
+        return view
 
     @staticmethod
     def _checked_analysis(task, report_snapshot):
