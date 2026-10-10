@@ -20,3 +20,9 @@
 README含精确命令、升级runtime、总通过/失败/跳过数、28原跳过节点及各自结果、隔离/硬停范围与未验证项。完整stdout/stderr只入证据目录，先检查无密钥/连接凭据。manifest记录HEAD、目标/fixture/runtime源hash、自审；报告限一屏。不重复已过全量、不要改断言或跳过策略凑绿灯。
 
 禁止源码/测试修复、Git暂存提交推送、删除历史/应用P2、联网/模型/安装、修改E2E数据。完成交棒后Codex独立最高风险PG复验与本地提交。
+
+## 首轮失败后的路径兼容补验
+
+首轮60节点实测56通过/4 matching硬停失败；worker的validate_config在任何HTTP前拒绝`.tmp/dep-...`，它严格要求backend下`.tmp-*`首段且storage仅为本节点test_root或materials子目录。这是本卡basetemp约定与既有guard不一致，不改guard或业务源码。
+
+补验只重跑test_attempt_hard_stop.py的matching四节点，使用新的自有backend/.tmp-dep-pg-gaps-*目录（如--basetemp=.tmp-dep-pg-gaps-20261011-matching-rerun）；root已批准这个仓库内兼容路径例外。仍须schema/表namespace/nonce/PID防护、外发关闭不变，不改原标签/断言、不覆盖首轮56/4日志，逐节点确认真实四阶段挂起/硬停/数据库恢复，而非只证明child启动。
