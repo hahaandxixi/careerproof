@@ -42,19 +42,17 @@
   "activeTasks": [
     {
       "number": 36,
-      "card": "docs/task-cards/20261011-GLM-goal36-AI-false-positive.md",
-      "scope": "AI false positive fix"
+      "card": "docs/task-cards/20261011-GLM-goal36-AI-false-positive.md"
     },
     {
-      "number": 37,
-      "card": "docs/task-cards/20261011-GLM-goal37-launcher-identity.md",
-      "scope": "Launcher temporary path and PID identity"
+      "number": 39,
+      "card": "docs/task-cards/20261011-GLM-goal39-shared-history-current.md"
     },
     {
-      "number": 38,
-      "card": "docs/task-cards/20261011-GLM-goal38-private-draft-review.md",
-      "scope": "Private draft independent review and regression"
+      "number": 40,
+      "card": "docs/task-cards/20261011-GLM-goal40-launcher-time-precision.md"
     }
   ],
-  "taskExecutionVerified": "36/37/38 selected real /goal command, sent, each UI Working; disjoint source ownership"
+  "taskExecutionVerified": "39 real /goal first busy failure, one retry Working; 40 real /goal sent Working after37 terminal;36 queued scope correction",
+  "acceptedScope": "34+38 code and automated tests committed6410915; production frontend build exit0, actual page pending"
 }

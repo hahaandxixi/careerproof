@@ -1,0 +1,8 @@
+{
+  "scope": "read-only current PowerShell process; no Stop-Process",
+  "observedPid": 102808,
+  "cimUtcTicks": 639273191745370010,
+  "processUtcTicks": 639273191745370012,
+  "deltaTicks": -2,
+  "finding": "goal37 exact cross-API tick equality rejects real valid identity; pending precision normalization and ownership cleanup review"
+}
