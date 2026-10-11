@@ -1,0 +1,13 @@
+{
+  "scope": "synthetic prototype color comparison only",
+  "files": {
+    "docs/prototypes/evidence-workspace.html": "290742781a8de441c87e0bdb7f2424d16fe1599c91a57c0052ea150f1ce65ddc",
+    "docs/prototypes/color-comparison.html": "0239b8391379aa6accde4d7cf3043e5b2fc9feceb0e90ddcfeb65e62324d1060",
+    "docs/prototypes/设计说明与验收.md": "0f7425a8249563053b9a35e93c8d5dd7f478e010fd5e4015850c7d988dd10f74",
+    "docs/prototypes/assets/color-original.png": "a93d313e7eba82172444a60e010ed9ceea72cb69bc0fd1ec3e7b0cfd0b7cbd6c",
+    "docs/prototypes/assets/color-refined.png": "abd9194b4a40586250baaa42d8fed6252c2aac890ca7d03f2a3d2eaa604bc9c7",
+    "docs/prototypes/assets/color-teal.png": "047156ee1f64c5c812f43b0fe830b42f3375a9616e69d4e49ea2dda3fc3b3eb9",
+    "docs/evidence/20261011-design-color-comparison/comparison.png": "35aaaee68489ecc02cf5c52a34bfa2ccbf387fda4aaf40b85ed3bea98fd4dfac",
+    "docs/evidence/20261011-design-color-comparison/browser-checks.json": "c013e6bf8d1c4617d3f49afb217629631e14bf0691d87d61c6974d1cd58fc774"
+  }
+}

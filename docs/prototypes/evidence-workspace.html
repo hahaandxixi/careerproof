@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="original">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
@@ -10,11 +10,16 @@
 @media(max-width:900px){.layout,.enterprise-grid{grid-template-columns:1fr}.header-row{min-height:68px}.desktop-nav{display:none}.mobile-menu{display:block;margin:0;padding:0;border:0}.mobile-menu summary{padding:10px}.mobile-menu[open] nav{display:flex;flex-direction:column;align-items:stretch}.mobile-menu[open]{width:100%}.header-row{flex-wrap:wrap;padding-top:12px;padding-bottom:12px}.title-row{align-items:flex-start}.candidate{grid-template-columns:1fr 1fr}.candidate>*{min-width:0}.stack aside{position:static}}
 @media(max-width:520px){.wrap{padding:0 18px}main{padding-top:24px!important}.proto-row{align-items:flex-start}.proto .wrap{padding:0 12px}.prototype-controls{width:100%}.toggle{padding:7px 10px;font-size:12px}.title-row{display:block}.title-row>.btn{margin-top:16px;width:100%}h1{font-size:25px}.card{padding:20px}.overview{padding:0}.overview-top{padding:20px;align-items:flex-start}.metrics{padding:18px 0}.metric{padding:0 16px}.metric strong{font-size:25px}.metric span{font-size:11px}.caption{padding:0 20px 18px}.row-head{flex-wrap:wrap}.facts{grid-template-columns:1fr}.actions .btn{width:100%}.section-label{flex-wrap:wrap}.state-card{padding:26px}.candidate{gap:12px}.enterprise-grid{gap:18px}.person{min-width:0}.small,.muted{overflow-wrap:anywhere}.toast{width:calc(100% - 32px)}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+html[data-theme="original"]{--ink:#0f172a;--muted:#475569;--line:#e2e8f0;--bg:#f8fafc;--brand:#4f46e5;--tint:#eef2ff;--tint-line:#c7d2fe}
+html[data-theme="teal"]{--ink:#172639;--muted:#526275;--line:#dce4e9;--bg:#f4f7f8;--brand:#155e63;--tint:#eaf4f3;--tint-line:#c7dfdc}
+html[data-theme="refined"]{--ink:#20233e;--muted:#555d78;--line:#e0e3ef;--bg:#f6f7fc;--brand:#5145cd;--tint:#efedfb;--tint-line:#d7d2f2}
+.aside-note{border-color:var(--tint-line,#c7dfdc)}
 </style></head>
 <body>
 <a class="skip" href="#main">跳到主要内容</a>
 <header><div class="wrap header-row"><div class="brand"><span class="mark" aria-hidden="true">证</span><div>职证 <small>CareerProof</small></div></div><nav class="desktop-nav" aria-label="原型主导航"><button class="nav-item" data-view="student" aria-pressed="true">证据工作台</button><button class="nav-item" data-view="enterprise" aria-pressed="false">企业核验</button><button class="nav-item" data-demo="通知中心：这里将汇总站内通知。">通知 <span class="badge neutral">3</span></button><span class="avatar" aria-label="合成演示账号">演</span></nav><details class="mobile-menu"><summary>切换视图</summary><nav aria-label="移动原型导航"><button class="nav-item" data-view="student" aria-pressed="true">证据工作台</button><button class="nav-item" data-view="enterprise" aria-pressed="false">企业核验</button></nav></details></div></header>
-<div class="proto"><div class="wrap proto-row"><span>设计原型 · 全部为合成数据 · 不保存或发送</span><div class="prototype-controls" aria-label="原型演示设置"><button class="toggle" data-view="student" aria-pressed="true">A 学生工作台</button><button class="toggle" data-view="enterprise" aria-pressed="false">B 企业核验台</button><label class="visually-hidden" for="state">演示页面状态</label><select id="state"><option value="ready">正常状态</option><option value="loading">加载状态</option><option value="error">连接失败</option><option value="empty">空状态</option></select></div></div></div>
+<div class="proto"><div class="wrap proto-row"><span>设计原型 · 全部为合成数据 · 不保存或发送</span><div class="prototype-controls" aria-label="原型演示设置"><button class="toggle" data-view="student" aria-pressed="true">A 学生工作台</button><button class="toggle" data-view="enterprise" aria-pressed="false">B 企业核验台</button><label class="visually-hidden" for="theme">配色方案</label><select id="theme"><option value="original">原站靛蓝</option><option value="teal">当前青绿</option><option value="refined">柔和靛蓝</option></select><label class="visually-hidden" for="state">演示页面状态</label><select id="state"><option value="ready">正常状态</option><option value="loading">加载状态</option><option value="error">连接失败</option><option value="empty">空状态</option></select></div></div></div>
 <main class="wrap" id="main" tabindex="-1">
 <section id="student">
 <div class="title-row"><div><p class="eyebrow">MY EVIDENCE / 我的证据</p><h1>让每一次补证，都有迹可循。</h1><p class="muted small">合成学生 · 后端开发岗位 · 报告版本 v2</p></div><button class="btn secondary" data-demo="原型：查看报告版本；实际网站将读取本人历史报告。">查看版本变化 ↗</button></div>
@@ -35,6 +40,10 @@
 <script>
 let view='student',pageState='ready',timer;
 const $=id=>document.getElementById(id);
+const allowedThemes=['original','teal','refined'];
+const initialTheme=new URLSearchParams(location.search).get('theme');
+const setTheme=value=>{document.documentElement.dataset.theme=allowedThemes.includes(value)?value:'original';$('theme').value=document.documentElement.dataset.theme;};
+setTheme(initialTheme);$('theme').addEventListener('change',e=>setTheme(e.target.value));
 function render(){ $('student').hidden=pageState!=='ready'||view!=='student';$('enterprise').hidden=pageState!=='ready'||view!=='enterprise';$('state-panel').hidden=pageState==='ready';document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));const messages={loading:['正在读取已保存的报告…','等待完成后再核对材料，不提前显示成功结论。'],error:['暂时无法读取报告','已保存的材料仍保留；重试不会重新生成报告或调用模型。'],empty:['还没有可查看的报告','从选定材料与岗位开始；这里只展示空状态，不自动创建记录。']};if(messages[pageState]){ $('state-heading').textContent=messages[pageState][0];$('state-text').textContent=messages[pageState][1];}$('retry').hidden=pageState!=='error'; }
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;render();document.querySelectorAll('.mobile-menu').forEach(d=>d.open=false);}));
 $('state').addEventListener('change',e=>{pageState=e.target.value;render();});$('retry').addEventListener('click',()=>{pageState='ready';$('state').value='ready';render();document.querySelector('#'+view+' h1').setAttribute('tabindex','-1');document.querySelector('#'+view+' h1').focus();});

@@ -1,0 +1,48 @@
+{
+  "checks": [
+    {
+      "overflow": false,
+      "theme": "original",
+      "width": 939
+    },
+    {
+      "overflow": false,
+      "theme": "teal",
+      "width": 939
+    },
+    {
+      "overflow": false,
+      "theme": "refined",
+      "width": 939
+    },
+    {
+      "overflow": false,
+      "theme": "original",
+      "width": 390
+    },
+    {
+      "overflow": false,
+      "theme": "teal",
+      "width": 390
+    },
+    {
+      "overflow": false,
+      "theme": "refined",
+      "width": 390
+    }
+  ],
+  "images": [
+    {
+      "loaded": true,
+      "src": "assets/color-original.png"
+    },
+    {
+      "loaded": true,
+      "src": "assets/color-teal.png"
+    },
+    {
+      "loaded": true,
+      "src": "assets/color-refined.png"
+    }
+  ]
+}
