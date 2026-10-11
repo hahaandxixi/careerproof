@@ -20,25 +20,32 @@
       "tasks": "ZCode 30/31/32 confirmed live; read-only audits in progress",
       "expiryDisplayed": "2026-10-12 09:00",
       "newConsumptionSinceStart": 4835247
+    },
+    {
+      "observedAtUtc": "2026-10-11 01:25:57 UTC",
+      "remaining": 252631020,
+      "newConsumptionSinceStart": 25862159,
+      "source": "ZCode model settings: Start Plan / Weekend Build / Flash, expiry Oct12 09:00",
+      "goalTasks": "33/34/35 UI each shows Pause goal and Working; actual /goal active"
     }
   ],
   "completion": "unproven; meaningful iteration plus actual same-bucket decrement required",
   "activeTasks": [
     {
-      "number": 30,
-      "scope": "AI source consistency and actionable plans",
-      "mode": "read-only audit; own evidence only"
+      "number": 33,
+      "scope": "AI source/runtime boundary fixes",
+      "card": "docs/task-cards/20261011-GLM-goal33-AI-boundaries.md"
     },
     {
-      "number": 31,
-      "scope": "page recovery and stale responses",
-      "mode": "read-only audit; own evidence only"
+      "number": 34,
+      "scope": "Private draft recovery notices",
+      "card": "docs/task-cards/20261011-GLM-goal34-private-draft-recovery.md"
     },
     {
-      "number": 32,
-      "scope": "launcher reliability and process ownership",
-      "mode": "read-only audit; own evidence only"
+      "number": 35,
+      "scope": "Atomic launcher manifest/digest/error recovery",
+      "card": "docs/task-cards/20261011-GLM-goal35-launcher-recovery.md"
     }
   ],
-  "taskExecutionVerified": "ZCode each task observed working after send; latest 30 working 10min14sec, no completion claimed"
+  "taskExecutionVerified": "All three ZCode /goal state panels show Pause goal plus Working; disjoint source ownership"
 }

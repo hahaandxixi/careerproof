@@ -1,0 +1,26 @@
+=== probe 1: truncated processes.json (Start-Local.ps1:95 / Stop-Local.ps1:14 parse path) ===
+THREW: 传入了未终止的字符串。 (56): {"schemaVersion": 2, "backendVenv": ".venv", "backendDig
+error mentions file path? False
+=== probe 2: Get-Process -Id $null binding behavior (Wait-LocalService with incomplete manifest) ===
+SilentlyContinue THREW: 无法将参数绑定到参数“Id”，因为该参数是空值。
+Stop THREW: 无法将参数绑定到参数“Id”，因为该参数是空值。
+=== probe 3: $LASTEXITCODE residue after native-less child script (Start-Demo.ps1:90 check) ===
+child done (no native command inside)
+LASTEXITCODE is $null after child; Start-Demo check ($LASTEXITCODE -ne 0) evaluates TRUE -> would throw "Local services did not start successfully."
+=== probe 4: Get-LocalBackendDigest ignores alembic migrations ===
+digest before migration change: FC25D7E7C727851A
+digest after  migration change: FC25D7E7C727851A
+migration change detected? False
+app change detected? True
+=== probe 5: probe stderr noise would break ConvertFrom-Json (Start-Local.ps1:34/48 mechanism) ===
+captured lines: (node:1234) ExperimentalWarning: future noise | {"python":"3.12.0"}
+ConvertFrom-Json THREW: 无效的 JSON 基元: 。
+=== probe 6: Get-LocalEnvValue inline-comment handling ===
+value returned: [sk-abc123 # my note]
+=== probe 7: AST parse of audited ps1 files (syntax only) ===
+Start-Demo.ps1 parse errors: 0
+Start-Local.ps1 parse errors: 0
+Stop-Local.ps1 parse errors: 0
+scripts\local-runtime.ps1 parse errors: 0
+scripts\local-runtime.test.ps1 parse errors: 0
+=== probes complete; no live process, lock, manifest, container or DB touched ===

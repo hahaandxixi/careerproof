@@ -1,0 +1,648 @@
+{
+  "inputSha256": "a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e",
+  "kind": "authored-synthetic-drafts-not-website-model-output",
+  "results": [
+    {
+      "caseId": "37882b616f",
+      "blindReviewScores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "match": {
+        "verdict": "supported",
+        "rule_score": 0.65,
+        "claimed": true,
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "evidence": [
+          {
+            "evidence_type": "python_code",
+            "file_path": "metrics.py",
+            "line_start": 1,
+            "line_end": 1,
+            "strength": "high",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "def total(values):"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "55e5600a-3bb8-5ea6-b05e-ec113518140c",
+        "verdict": "supported",
+        "evidence_count": 1,
+        "evidence_types": [
+          "python_code"
+        ],
+        "rating_ceiling": 2
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "total 函数的脱敏输入输出记录": false,
+          "使用正常数字和非法输入各运行一次": false,
+          "保存异常类型、输出与代码版本": false,
+          "正常输入的输出可复算": false,
+          "非法输入的异常与源码校验一致": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "total 函数的脱敏输入输出记录": [],
+          "使用正常数字和非法输入各运行一次": [],
+          "保存异常类型、输出与代码版本": [],
+          "正常输入的输出可复算": [],
+          "非法输入的异常与源码校验一致": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "total 函数的脱敏输入输出记录": false,
+          "使用正常数字和非法输入各运行一次": false,
+          "保存异常类型、输出与代码版本": false,
+          "正常输入的输出可复算": false,
+          "非法输入的异常与源码校验一致": false
+        },
+        "runtime_plan_without_implementation_step": true,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {}
+    },
+    {
+      "caseId": "45c8ae3412",
+      "blindReviewScores": [
+        2,
+        2,
+        1,
+        1
+      ],
+      "match": {
+        "verdict": "supported",
+        "rule_score": 0.65,
+        "claimed": true,
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "evidence": [
+          {
+            "evidence_type": "python_code",
+            "file_path": "cache.py",
+            "line_start": 5,
+            "line_end": 5,
+            "strength": "high",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "def cache_get(key):"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "6d0e771e-d932-55b7-9b2a-63166b46d32a",
+        "verdict": "supported",
+        "evidence_count": 1,
+        "evidence_types": [
+          "python_code"
+        ],
+        "rating_ceiling": 2
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "缓存写路径与失效处理说明及验证记录": false,
+          "梳理 cache_get 已覆盖的读路径": false,
+          "补充写路径与缓存失效处理": false,
+          "用相同键序列验证命中与失效": false,
+          "读写与失效路径均有代码或记录可定位": false,
+          "验证序列与代码版本对应": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "缓存写路径与失效处理说明及验证记录": [],
+          "梳理 cache_get 已覆盖的读路径": [],
+          "补充写路径与缓存失效处理": [],
+          "用相同键序列验证命中与失效": [],
+          "读写与失效路径均有代码或记录可定位": [],
+          "验证序列与代码版本对应": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "缓存写路径与失效处理说明及验证记录": false,
+          "梳理 cache_get 已覆盖的读路径": false,
+          "补充写路径与缓存失效处理": false,
+          "用相同键序列验证命中与失效": false,
+          "读写与失效路径均有代码或记录可定位": false,
+          "验证序列与代码版本对应": false
+        },
+        "runtime_plan_without_implementation_step": false,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {
+        "v1_只去掉补充写路径步骤": {
+          "accepted": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "caseId": "b294018f1c",
+      "blindReviewScores": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "match": {
+        "verdict": "supported",
+        "rule_score": 0.65,
+        "claimed": true,
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "evidence": [
+          {
+            "evidence_type": "python_code",
+            "file_path": "metrics.py",
+            "line_start": 1,
+            "line_end": 1,
+            "strength": "high",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "def total(values):"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "1263304e-c00f-537b-83ad-992068ae1e3c",
+        "verdict": "supported",
+        "evidence_count": 1,
+        "evidence_types": [
+          "python_code"
+        ],
+        "rating_ceiling": 2
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "进一步完善岗位材料": false,
+          "按要求补充相关资料": false,
+          "持续优化具体工作": false,
+          "材料符合岗位要求": false,
+          "内容得到有效完善": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "进一步完善岗位材料": [],
+          "按要求补充相关资料": [],
+          "持续优化具体工作": [],
+          "材料符合岗位要求": [],
+          "内容得到有效完善": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "进一步完善岗位材料": false,
+          "按要求补充相关资料": false,
+          "持续优化具体工作": false,
+          "材料符合岗位要求": false,
+          "内容得到有效完善": false
+        },
+        "runtime_plan_without_implementation_step": false,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {
+        "v1_控制组_满足岗位要求": {
+          "accepted": false,
+          "error": "ValueError: AI analysis contains an unsupported ability or execution claim"
+        }
+      }
+    },
+    {
+      "caseId": "09fb4e82f3",
+      "blindReviewScores": [
+        0,
+        2,
+        0,
+        1
+      ],
+      "match": {
+        "verdict": "claimed_only",
+        "rule_score": 0.1,
+        "claimed": true,
+        "explanation": "简历中存在该技能声明，但个人作品中暂未找到可验证证据",
+        "evidence": []
+      },
+      "context": {
+        "requirement_id": "2f809bf2-9adf-5d60-9252-9e63699a9160",
+        "verdict": "claimed_only",
+        "evidence_count": 0,
+        "evidence_types": [],
+        "rating_ceiling": null
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "本人在小组项目中的具名提交清单": false,
+          "从版本历史筛出本人署名的提交": false,
+          "标注每项提交对应的责任范围": false,
+          "提交记录包含作者与时间": false,
+          "责任范围与岗位要求逐条对应": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "本人在小组项目中的具名提交清单": [],
+          "从版本历史筛出本人署名的提交": [],
+          "标注每项提交对应的责任范围": [],
+          "提交记录包含作者与时间": [],
+          "责任范围与岗位要求逐条对应": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "本人在小组项目中的具名提交清单": false,
+          "从版本历史筛出本人署名的提交": false,
+          "标注每项提交对应的责任范围": false,
+          "提交记录包含作者与时间": false,
+          "责任范围与岗位要求逐条对应": false
+        },
+        "runtime_plan_without_implementation_step": false,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {
+        "v1_控制组_小组报告作为本人贡献": {
+          "accepted": false,
+          "error": "ValueError: AI task plan substitutes group or reference material for personal evidence"
+        }
+      }
+    },
+    {
+      "caseId": "e2fd108ad9",
+      "blindReviewScores": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "match": {
+        "verdict": "supported",
+        "rule_score": 0.65,
+        "claimed": true,
+        "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+        "evidence": [
+          {
+            "evidence_type": "python_code",
+            "file_path": "metrics.py",
+            "line_start": 1,
+            "line_end": 1,
+            "strength": "high",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "def total(values):"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "d5650dc5-129c-517c-9c9e-28238ffd8b45",
+        "verdict": "supported",
+        "evidence_count": 1,
+        "evidence_types": [
+          "python_code"
+        ],
+        "rating_ceiling": 2
+      },
+      "validate": {
+        "accepted": false,
+        "error": "ValueError: AI analysis contains an unsupported ability or execution claim"
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "已部署接口证明": false,
+          "将代码文件当作已通过运行测试的证据提交": false,
+          "源码存在即证明线上接口稳定运行": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "已部署接口证明": [],
+          "将代码文件当作已通过运行测试的证据提交": [
+            "execution_claim"
+          ],
+          "源码存在即证明线上接口稳定运行": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "已部署接口证明": false,
+          "将代码文件当作已通过运行测试的证据提交": false,
+          "源码存在即证明线上接口稳定运行": false
+        },
+        "runtime_plan_without_implementation_step": true,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {
+        "v1_去掉已通过措辞保留已部署主张": {
+          "accepted": true,
+          "error": null
+        }
+      }
+    },
+    {
+      "caseId": "853352704e",
+      "blindReviewScores": [
+        2,
+        1,
+        2,
+        2
+      ],
+      "match": {
+        "verdict": "claimed_only",
+        "rule_score": 0.1,
+        "claimed": true,
+        "explanation": "简历中存在该技能声明，但个人作品中暂未找到可验证证据",
+        "evidence": [
+          {
+            "evidence_type": "retrieved_context",
+            "file_path": "README.md",
+            "line_start": 3,
+            "line_end": 3,
+            "strength": "low",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "Redis 未实现，当前只有缓存需求说明。"
+          },
+          {
+            "evidence_type": "retrieved_context",
+            "file_path": "README.md",
+            "line_start": 4,
+            "line_end": 4,
+            "strength": "low",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "尚无客户端调用、缓存读写代码或运行记录。"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "427ee22a-eb9c-5b2e-808e-cb997e97d39a",
+        "verdict": "claimed_only",
+        "evidence_count": 2,
+        "evidence_types": [
+          "retrieved_context",
+          "retrieved_context"
+        ],
+        "rating_ceiling": 1
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "Redis 缓存读写的客户端调用代码与脱敏运行记录": false,
+          "编写含连接与读写的最小客户端代码": false,
+          "本地运行并保存读写请求与响应样例": false,
+          "代码文件与运行记录均可定位": false,
+          "读和写路径分别有输入输出样例": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "Redis 缓存读写的客户端调用代码与脱敏运行记录": [],
+          "编写含连接与读写的最小客户端代码": [],
+          "本地运行并保存读写请求与响应样例": [],
+          "代码文件与运行记录均可定位": [],
+          "读和写路径分别有输入输出样例": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "Redis 缓存读写的客户端调用代码与脱敏运行记录": false,
+          "编写含连接与读写的最小客户端代码": false,
+          "本地运行并保存读写请求与响应样例": false,
+          "代码文件与运行记录均可定位": false,
+          "读和写路径分别有输入输出样例": false
+        },
+        "runtime_plan_without_implementation_step": false,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {
+        "v1_只运行不编写": {
+          "accepted": false,
+          "error": "ValueError: AI task plan requests execution before missing implementation"
+        }
+      }
+    },
+    {
+      "caseId": "f5c5e00efe",
+      "blindReviewScores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "match": {
+        "verdict": "claimed_only",
+        "rule_score": 0.1,
+        "claimed": true,
+        "explanation": "简历中存在该技能声明，但个人作品中暂未找到可验证证据",
+        "evidence": [
+          {
+            "evidence_type": "retrieved_context",
+            "file_path": "content_plan.md",
+            "line_start": 7,
+            "line_end": 7,
+            "strength": "low",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "复盘：按周记录数据并调整选题"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "aae06ff2-e73a-5aeb-b128-4a3560abcded",
+        "verdict": "claimed_only",
+        "evidence_count": 1,
+        "evidence_types": [
+          "retrieved_context"
+        ],
+        "rating_ceiling": 1
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "一周内容发布与数据复盘表": false,
+          "按计划发布一篇内容并标记渠道": false,
+          "记录阅读、点击和转化数据": false,
+          "对照指标写一句复盘结论": false,
+          "每篇内容有渠道与数据字段": false,
+          "复盘结论能对应表格数据": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "一周内容发布与数据复盘表": [],
+          "按计划发布一篇内容并标记渠道": [],
+          "记录阅读、点击和转化数据": [],
+          "对照指标写一句复盘结论": [],
+          "每篇内容有渠道与数据字段": [],
+          "复盘结论能对应表格数据": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "一周内容发布与数据复盘表": false,
+          "按计划发布一篇内容并标记渠道": false,
+          "记录阅读、点击和转化数据": false,
+          "对照指标写一句复盘结论": false,
+          "每篇内容有渠道与数据字段": false,
+          "复盘结论能对应表格数据": false
+        },
+        "runtime_plan_without_implementation_step": false,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {}
+    },
+    {
+      "caseId": "0f2a863462",
+      "blindReviewScores": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "match": {
+        "verdict": "claimed_only",
+        "rule_score": 0.1,
+        "claimed": true,
+        "explanation": "简历中存在该技能声明，但个人作品中暂未找到可验证证据；另有第三方参考代码，不计入个人实践评级",
+        "evidence": [
+          {
+            "evidence_type": "retrieved_context",
+            "file_path": "notes.md",
+            "line_start": 3,
+            "line_end": 3,
+            "strength": "low",
+            "provenance": "portfolio",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "计划为订单模块补充统计查询，当前只有需求说明。"
+          },
+          {
+            "evidence_type": "sql_schema",
+            "file_path": "reference/vendor_report.sql",
+            "line_start": 1,
+            "line_end": 1,
+            "strength": "high",
+            "provenance": "reference",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "CREATE TABLE vendor_orders ("
+          },
+          {
+            "evidence_type": "sql_query",
+            "file_path": "reference/vendor_report.sql",
+            "line_start": 7,
+            "line_end": 7,
+            "strength": "medium",
+            "provenance": "reference",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "SELECT user_id, SUM(amount) FROM vendor_orders GROUP BY user_id;"
+          },
+          {
+            "evidence_type": "retrieved_context",
+            "file_path": "reference/vendor_report.sql",
+            "line_start": 4,
+            "line_end": 4,
+            "strength": "low",
+            "provenance": "reference",
+            "context_complete": false,
+            "function_line_start": null,
+            "function_line_end": null,
+            "source_line_count": null,
+            "snippet": "amount NUMERIC(10, 2)"
+          }
+        ]
+      },
+      "context": {
+        "requirement_id": "d08edeb2-2d7a-5d1c-ac5b-a54ed893cc1e",
+        "verdict": "claimed_only",
+        "evidence_count": 3,
+        "evidence_types": [
+          "retrieved_context",
+          "sql_schema",
+          "sql_query"
+        ],
+        "rating_ceiling": 1
+      },
+      "validate": {
+        "accepted": true,
+        "error": null
+      },
+      "guards": {
+        "task_boundary_error": null,
+        "unsupported_attribution_per_text": {
+          "本人编写的订单统计查询与脱敏执行记录": false,
+          "在不复制参考文件的情况下独立编写统计查询": false,
+          "在本人环境执行并保存脱敏结果": false,
+          "查询文件作者可定位为本人": false,
+          "执行记录与本人环境信息对应": false
+        },
+        "overclaim_flags_narrative": [],
+        "overclaim_flags_plan_planned_execution": {
+          "本人编写的订单统计查询与脱敏执行记录": [],
+          "在不复制参考文件的情况下独立编写统计查询": [],
+          "在本人环境执行并保存脱敏结果": [],
+          "查询文件作者可定位为本人": [],
+          "执行记录与本人环境信息对应": []
+        },
+        "redundant_source_request": {
+          "补充可定位的实现或运行记录，并人工核对内容。": false,
+          "本人编写的订单统计查询与脱敏执行记录": false,
+          "在不复制参考文件的情况下独立编写统计查询": false,
+          "在本人环境执行并保存脱敏结果": false,
+          "查询文件作者可定位为本人": false,
+          "执行记录与本人环境信息对应": false
+        },
+        "runtime_plan_without_implementation_step": true,
+        "execution_plan_skips_explicitly_missing_implementation": false
+      },
+      "variants": {}
+    }
+  ]
+}

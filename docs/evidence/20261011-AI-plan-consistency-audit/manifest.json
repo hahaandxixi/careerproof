@@ -1,0 +1,76 @@
+{
+  "task": "传智杯30：AI补证建议来源一致性与可执行性审查",
+  "taskCard": "docs/task-cards/20261011-AI-plan-consistency-audit.md",
+  "goal": "docs/GOAL-周末免费额度驱动持续迭代-20261011.md",
+  "date": "2026-10-11",
+  "git": {
+    "root": "D:\\jbcode\\web ai\\jianli",
+    "head": "3d76a5b6883987987bb4ff0d0fd4f74ec694a65a",
+    "cardBaseline": "ff0c170",
+    "headVsBaseline": "仅 docs 提交（3d76a5b=GOAL 定义），无源码差异",
+    "commits": "无（本任务禁止 Git 操作）",
+    "sourceModifications": "零"
+  },
+  "executor": {
+    "sessionModel": "account:bigmodel-start-plan/GLM-5.3-Flash（Weekend Build 免费，最高推理）",
+    "providerCalls": 0,
+    "network": "无",
+    "database": "无",
+    "python": "backend/.venv/Scripts/python.exe 3.12.14"
+  },
+  "commands": [
+    {
+      "cmd": "cd backend && ./.venv/Scripts/python.exe .tmp-plan-audit-30/probe.py > .tmp-plan-audit-30/probe-stdout.json 2> .tmp-plan-audit-30/probe-stderr.txt",
+      "exit": 0,
+      "stderr": "0字节",
+      "output": "probe-results.json"
+    },
+    {
+      "cmd": "cd backend && ./.venv/Scripts/python.exe .tmp-plan-audit-30/probe2_source_visible.py > .tmp-plan-audit-30/probe2-stdout.json 2>&1",
+      "exit": 0,
+      "output": "probe2-source-visible.json"
+    }
+  ],
+  "readOnlyInputs": {
+    "backend/evals/quality-blind-plan-review-input.json": "a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e",
+    "docs/evidence/20261010-AI-blind-plan-review/review.json": "69d88eae87cd7b4c327d6908d64b07b50b66e21436b5917d19a6f03cb7bf606b",
+    "docs/evidence/20261010-AI-blind-plan-review/codex-review.md": "93c9bb6ee7152e9a7047393ba13453f70f0678015f142cdfac5c31205bffea15",
+    "backend/app/agents/contracts.py": "103d0e0b2740f9167391b397ba73b022b0fadf6d15a0db1cc2101a29db78519f",
+    "backend/app/agents/evidence_workflow.py": "2719e41a2fbdda380d8dfaae7f1490869873630863f06572035da8b4d494809b",
+    "backend/app/agents/provider.py": "e61852708b022fb3c23712464388ae3f8a21825cc2295d77402ce6896b425cff",
+    "backend/app/tools/task_boundaries.py": "e3e34c1e6b5d67adcef87a410dbdcdd24b32a93000eb8b8b0da567bd7fe4e203",
+    "backend/app/tools/function_coverage.py": "4ee383aefeddb8934f05a653c82a718c9c3fd148e1f7eb9ff4be4469746bf354",
+    "backend/app/tools/evidence_levels.py": "96c9c45307efc3793695b993b2b32c06d3c71e33aea63b965a4ed37f18a53312",
+    "backend/app/tools/matcher.py": "见 probe-commands.out（含 matcher/code_analyzer/hybrid_retrieval/semantic_retrieval/skill_rubric/resume_parser/test_task_boundaries 全量 hash）",
+    "backend/app/tests/test_task_boundaries.py": "见 probe-commands.out"
+  },
+  "outputs": {
+    "audit.md": "60eda81102d6531981161cbc0c45a3ecce812893c79e238961d8b24fb67b914c",
+    "manifest.json": "本文件",
+    "probe-commands.out": "093cf2be090ca4bb33131f27e4bffbfb25f8dd0091bb0aacabe208771b76f068",
+    "probe-results.json": "20e7dca130bc2886e3c3edc3a3a133fb03227729b72ce040222e0a126e0bbdaf",
+    "probe2-source-visible.json": "ea69752e793704ef22ddd47d8d0c3b2d2937ef99594b75e23389be4e6da1d31c",
+    "probe.py": "28e677e7cab424069b6ce1ea669284c6473d0ff33c669210c9239251ec4a8651",
+    "probe2_source_visible.py": "603bcb97594f745d3951fe7396788af672ff7a940ae95c9f0ffc127a41967df1"
+  },
+  "scratch": {
+    "path": "backend/.tmp-plan-audit-30/",
+    "note": "自有无数据 scratch：仅探针脚本与其 stdout/stderr；probe.py 与 probe2_source_visible.py 的可执行副本（evidence 目录内副本为存档，因相对路径引用不可直接运行）",
+    "probePy": "28e677e7cab424069b6ce1ea669284c6473d0ff33c669210c9239251ec4a8651",
+    "probe2Py": "603bcb97594f745d3951fe7396788af672ff7a940ae95c9f0ffc127a41967df1"
+  },
+  "keyFindings": {
+    "contractAcceptance": "8例中6接受、1拒绝（e2fd108ad9，词面巧合）、1为同例变体拒绝（853352704e 只运行变体）",
+    "top3Diffs": [
+      "b294018f1c 空话通过：overclaim 只认『满足』不认『符合』（contracts.py:225）",
+      "09fb4e82f3 共用账号：来源不可见（matcher.py:77 + code_analyzer.py:375）且可见仍接受（task_boundaries.py:7-14/39；test_task_boundaries.py:98-107 钉死允许）",
+      "e2fd108ad9 部署主张不受检：拒绝仅来自步骤『代码…已通过』（contracts.py:229-230），『源码存在即证明线上接口稳定运行』零 flag，v1 变体整套通过"
+    ],
+    "boundedFix": "规则A（部署主张缺运行记录步骤，contracts.py）推荐本轮；规则B（共用账号×从历史提取署名，task_boundaries.py）次选、须避开 test_task_boundaries.py:98-107 钉死形状；C（lru_cache 机制）与 D（键设计覆盖）只能人工核对/提示词引导，不做关键词规则"
+  },
+  "boundaries": [
+    "全部结论针对作者合成草稿（kind=authored-synthetic-drafts-not-website-model-output），盲评 humanReview=false，不代表网站真实输出",
+    "探针映射偏差：resume→SkillClaim 直接构造（09fb4e82f3 真实解析为 gap 而非 claimed_only，不影响计划守卫结论）；外圈文本固定；rating 按真实上限构造",
+    "生产上下文比盲评来源视图薄（.py 仅 def 行；markdown 行级候选），为抽取设计既定行为，本轮不动"
+  ]
+}

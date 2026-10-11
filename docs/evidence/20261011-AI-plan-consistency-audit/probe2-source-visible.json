@@ -1,0 +1,45 @@
+{
+  "verdict": "claimed_only",
+  "context_evidence": [
+    {
+      "evidence_type": "semantic_document_candidate",
+      "provenance": "portfolio",
+      "file_path": "group_report.md",
+      "line_start": 5,
+      "snippet": "仓库提交：全组共用账号，未区分作者"
+    }
+  ],
+  "rating_ceiling": 1,
+  "validate": {
+    "accepted": true,
+    "error": null
+  },
+  "guards": {
+    "task_boundary_error": null,
+    "unsupported_attribution_per_text": {
+      "本人在小组项目中的具名提交清单": false,
+      "从版本历史筛出本人署名的提交": false,
+      "标注每项提交对应的责任范围": false,
+      "提交记录包含作者与时间": false,
+      "责任范围与岗位要求逐条对应": false
+    },
+    "overclaim_flags_narrative": [],
+    "overclaim_flags_plan_planned_execution": {
+      "本人在小组项目中的具名提交清单": [],
+      "从版本历史筛出本人署名的提交": [],
+      "标注每项提交对应的责任范围": [],
+      "提交记录包含作者与时间": [],
+      "责任范围与岗位要求逐条对应": []
+    },
+    "redundant_source_request": {
+      "补充可定位的实现或运行记录，并人工核对内容。": false,
+      "本人在小组项目中的具名提交清单": false,
+      "从版本历史筛出本人署名的提交": false,
+      "标注每项提交对应的责任范围": false,
+      "提交记录包含作者与时间": false,
+      "责任范围与岗位要求逐条对应": false
+    },
+    "runtime_plan_without_implementation_step": false,
+    "execution_plan_skips_explicitly_missing_implementation": false
+  }
+}

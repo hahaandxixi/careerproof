@@ -1,0 +1,30 @@
+=== 传智杯30 探针原始命令记录 ===
+日期: 2026-10-11 02:07:31
+Git根: D:\jbcode\web ai\jianli  HEAD: c3374abdb6b4258768aa42e4064298851ae6547d  基线(卡面): ff0c170
+
+$ cd backend && ./.venv/Scripts/python.exe --version
+Python 3.12.14
+
+$ cd backend && ./.venv/Scripts/python.exe .tmp-plan-audit-30/probe.py > .tmp-plan-audit-30/probe-stdout.json 2> .tmp-plan-audit-30/probe-stderr.txt
+EXIT=0  (stderr 0字节; stdout 见 probe-results.json)
+
+$ cd backend && ./.venv/Scripts/python.exe .tmp-plan-audit-30/probe2_source_visible.py > .tmp-plan-audit-30/probe2-stdout.json 2>&1
+EXIT=0  (输出见 probe2-source-visible.json)
+
+=== 输入与生产文件 SHA256（执行时点） ===
+a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e *backend/evals/quality-blind-plan-review-input.json
+69d88eae87cd7b4c327d6908d64b07b50b66e21436b5917d19a6f03cb7bf606b *docs/evidence/20261010-AI-blind-plan-review/review.json
+93c9bb6ee7152e9a7047393ba13453f70f0678015f142cdfac5c31205bffea15 *docs/evidence/20261010-AI-blind-plan-review/codex-review.md
+103d0e0b2740f9167391b397ba73b022b0fadf6d15a0db1cc2101a29db78519f *backend/app/agents/contracts.py
+2719e41a2fbdda380d8dfaae7f1490869873630863f06572035da8b4d494809b *backend/app/agents/evidence_workflow.py
+e61852708b022fb3c23712464388ae3f8a21825cc2295d77402ce6896b425cff *backend/app/agents/provider.py
+e3e34c1e6b5d67adcef87a410dbdcdd24b32a93000eb8b8b0da567bd7fe4e203 *backend/app/tools/task_boundaries.py
+4ee383aefeddb8934f05a653c82a718c9c3fd148e1f7eb9ff4be4469746bf354 *backend/app/tools/function_coverage.py
+96c9c45307efc3793695b993b2b32c06d3c71e33aea63b965a4ed37f18a53312 *backend/app/tools/evidence_levels.py
+5a15f5f450af074de7476098c03301b47fab2213c7bbe3bd780747dae68686bb *backend/app/tools/matcher.py
+ae3ad8c4a829832ebdb506ddc82fb408254c4f7aecc6f540d43d368ae1124b1a *backend/app/tools/code_analyzer.py
+d8f3fafe0dce7a5098065fa95b3a6a57dca3b20077287dcd13d255c777500efa *backend/app/tools/hybrid_retrieval.py
+9b3abee98cf2bd1281433022223816d4b07d677501800c8ec332f4650cccee30 *backend/app/tools/semantic_retrieval.py
+6ef5aa1387bfcb9fe44b462fa32eaee961212cc8716699b94aecf1808816d3ef *backend/app/tools/skill_rubric.py
+6db35975e9bc742086429c8d9632895439f685069c0be67af6a680476e3c1848 *backend/app/tools/resume_parser.py
+fa0d27ec88a4c3f086594391fa539843a8d1412f28c60c230c5c4411fad780a0 *backend/app/tests/test_task_boundaries.py
