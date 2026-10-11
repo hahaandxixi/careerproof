@@ -1,5 +1,5 @@
 {
-  "goal": "持续迭代消耗掉30%的glm免费token",
+  "goal": "优先用完可用GLM赠额，持续完成网站迭代；原30%为里程碑",
   "bucket": "Start Plan / ZCode Weekend Build / GLM-5.3-Flash",
   "bucketExpiryDisplayed": "2026-10-12 09:00",
   "measurement": "ZCode live allowance panel; not raw input/output or cached token totals",
@@ -27,25 +27,34 @@
       "newConsumptionSinceStart": 25862159,
       "source": "ZCode model settings: Start Plan / Weekend Build / Flash, expiry Oct12 09:00",
       "goalTasks": "33/34/35 UI each shows Pause goal and Working; actual /goal active"
+    },
+    {
+      "observedAtUtc": "2026-10-11T12:16:57.301873+00:00",
+      "remainingPercentDisplayed": 76,
+      "expiryDisplayed": "10月12日",
+      "source": "ZCode Today allowance popover with Start Plan free Flash menu checked",
+      "remaining": null,
+      "newConsumptionSinceStart": null,
+      "note": "Percent only; no inferred precise token balance"
     }
   ],
   "completion": "unproven; meaningful iteration plus actual same-bucket decrement required",
   "activeTasks": [
     {
-      "number": 33,
-      "scope": "AI source/runtime boundary fixes",
-      "card": "docs/task-cards/20261011-GLM-goal33-AI-boundaries.md"
+      "number": 36,
+      "card": "docs/task-cards/20261011-GLM-goal36-AI-false-positive.md",
+      "scope": "AI false positive fix"
     },
     {
-      "number": 34,
-      "scope": "Private draft recovery notices",
-      "card": "docs/task-cards/20261011-GLM-goal34-private-draft-recovery.md"
+      "number": 37,
+      "card": "docs/task-cards/20261011-GLM-goal37-launcher-identity.md",
+      "scope": "Launcher temporary path and PID identity"
     },
     {
-      "number": 35,
-      "scope": "Atomic launcher manifest/digest/error recovery",
-      "card": "docs/task-cards/20261011-GLM-goal35-launcher-recovery.md"
+      "number": 38,
+      "card": "docs/task-cards/20261011-GLM-goal38-private-draft-review.md",
+      "scope": "Private draft independent review and regression"
     }
   ],
-  "taskExecutionVerified": "All three ZCode /goal state panels show Pause goal plus Working; disjoint source ownership"
+  "taskExecutionVerified": "36/37/38 selected real /goal command, sent, each UI Working; disjoint source ownership"
 }
