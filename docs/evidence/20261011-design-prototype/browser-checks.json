@@ -1,0 +1,76 @@
+{
+  "scope": "standalone synthetic prototype, not production website",
+  "checks": [
+    {
+      "name": "student-desktop-layout",
+      "overflow": false,
+      "visibleMain": true,
+      "width": 1280
+    },
+    {
+      "name": "pending-filter",
+      "visibleCandidates": 2
+    },
+    {
+      "name": "enterprise-390",
+      "overflow": false,
+      "width": 390
+    },
+    {
+      "name": "student-390",
+      "overflow": false,
+      "width": 390
+    },
+    {
+      "focused": "SUMMARY",
+      "name": "keyboard-disclosure",
+      "open": true
+    },
+    {
+      "name": "error-visible",
+      "visible": true
+    },
+    {
+      "focus": "H1",
+      "name": "keyboard-retry",
+      "ready": true
+    },
+    {
+      "name": "loading-visible",
+      "visible": true
+    },
+    {
+      "name": "empty-visible",
+      "visible": true
+    },
+    {
+      "name": "student-320",
+      "overflow": false,
+      "width": 320
+    },
+    {
+      "name": "enterprise-320",
+      "overflow": false,
+      "width": 320
+    },
+    {
+      "live": "polite",
+      "name": "error-live-region",
+      "role": "status"
+    },
+    {
+      "name": "visible-controls-44px",
+      "smallControls": [
+        {
+          "height": 119,
+          "text": "企业核验",
+          "width": 41
+        }
+      ]
+    },
+    {
+      "name": "rendered-controls-44px",
+      "smallControls": []
+    }
+  ]
+}

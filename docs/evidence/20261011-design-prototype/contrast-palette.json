@@ -1,0 +1,37 @@
+[
+  {
+    "name": "body",
+    "foreground": "#172639",
+    "background": "#ffffff",
+    "ratio": 15.3,
+    "passesNormalText": true
+  },
+  {
+    "name": "muted",
+    "foreground": "#526275",
+    "background": "#ffffff",
+    "ratio": 6.24,
+    "passesNormalText": true
+  },
+  {
+    "name": "brand button",
+    "foreground": "#ffffff",
+    "background": "#155e63",
+    "ratio": 7.46,
+    "passesNormalText": true
+  },
+  {
+    "name": "warning",
+    "foreground": "#854d0e",
+    "background": "#fff7e6",
+    "ratio": 6.43,
+    "passesNormalText": true
+  },
+  {
+    "name": "green badge",
+    "foreground": "#155e63",
+    "background": "#eaf4f3",
+    "ratio": 6.66,
+    "passesNormalText": true
+  }
+]

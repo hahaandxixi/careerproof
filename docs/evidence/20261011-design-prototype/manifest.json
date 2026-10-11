@@ -1,0 +1,37 @@
+{
+  "scope": "synthetic standalone prototype; production UI unchanged",
+  "files": [
+    {
+      "path": "docs/prototypes/evidence-workspace.html",
+      "sha256": "50cc32a142c43c5dbad95c3f9080e8487daf2e4dc29d92523dcbe92b3e9d2e95"
+    },
+    {
+      "path": "docs/prototypes/设计说明与验收.md",
+      "sha256": "75d7c1ebb6b7c65e0f8f65dd83ed89593fe745f1b162179194e7e3207a85287c"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/enterprise-390.png",
+      "sha256": "b9388f8aa94ce92824ee5e595e08b125d3a22001d45fd3c517837160c368ade2"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/enterprise-desktop.png",
+      "sha256": "ada598f07fc01e549e28cfd9940656c4655285888c7fc688de7497d4c560bfc0"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/student-390.png",
+      "sha256": "70fbfd7154d215256da75652b228ae76eee5beffc1c36e80769f36db19a4625d"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/student-desktop.png",
+      "sha256": "0417fe79338f8339aeddfe371e925a8fc3634f033caa03e5c36548e2a0c5bb3b"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/browser-checks.json",
+      "sha256": "a00f831c90ec6700bdd0821db096862942fd058dd4fc122c6936016d555fd455"
+    },
+    {
+      "path": "docs/evidence/20261011-design-prototype/contrast-palette.json",
+      "sha256": "a990da2e46f4671e028da2934dc11343c1076770dfd76a151465d2df77d531c0"
+    }
+  ]
+}
