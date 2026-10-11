@@ -1,0 +1,32 @@
+[
+  {
+    "name": "current_history",
+    "text": "项目当前共用账号，历史记录无法区分作者",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "name": "resolved_current_account",
+    "text": "此前共用账号，历史记录无法区分作者，当前已改用个人账号",
+    "expected": false,
+    "actual": true
+  },
+  {
+    "name": "current_still_impossible",
+    "text": "此前共用账号，当前提交仍无法区分作者",
+    "expected": true,
+    "actual": true
+  },
+  {
+    "name": "past_only_explicit",
+    "text": "此前共用账号，历史记录当时无法区分作者",
+    "expected": false,
+    "actual": false
+  },
+  {
+    "name": "conditional_other_clause",
+    "text": "如果后续增加分工证明会再核验；当前共用账号，历史记录无法区分作者",
+    "expected": true,
+    "actual": false
+  }
+]

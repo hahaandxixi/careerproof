@@ -1,0 +1,38 @@
+[
+  {
+    "name": "source_uploaded",
+    "text": "源码存在说明文件已经上传，实际运行仍待核验",
+    "expectedReject": false,
+    "actualReject": false
+  },
+  {
+    "name": "material_locatable",
+    "text": "源码存在证明材料可定位，部署结果需要另行核验",
+    "expectedReject": false,
+    "actualReject": false
+  },
+  {
+    "name": "source_causal",
+    "text": "源码存在即证明线上接口稳定运行",
+    "expectedReject": true,
+    "actualReject": true
+  },
+  {
+    "name": "negative_then_assertion",
+    "text": "部署是否成功待核验，但服务器已稳定运行",
+    "expectedReject": true,
+    "actualReject": false
+  },
+  {
+    "name": "pending_then_assertion",
+    "text": "本人贡献待核验，接口已部署",
+    "expectedReject": true,
+    "actualReject": false
+  },
+  {
+    "name": "explicit_future",
+    "text": "运行服务后保存日志，并核验是否已部署",
+    "expectedReject": false,
+    "actualReject": false
+  }
+]

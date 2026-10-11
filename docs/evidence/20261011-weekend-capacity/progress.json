@@ -40,19 +40,17 @@
   ],
   "completion": "unproven; meaningful iteration plus actual same-bucket decrement required",
   "activeTasks": [
-    {
-      "number": 36,
-      "card": "docs/task-cards/20261011-GLM-goal36-AI-false-positive.md"
-    },
-    {
-      "number": 39,
-      "card": "docs/task-cards/20261011-GLM-goal39-shared-history-current.md"
-    },
-    {
-      "number": 40,
-      "card": "docs/task-cards/20261011-GLM-goal40-launcher-time-precision.md"
-    }
+    "传智杯39：独立反例补修（一次免费重试恢复）",
+    "传智杯40：进程精度与临时文件所有权",
+    "传智杯41：私人草稿真实页面runner准备"
   ],
   "taskExecutionVerified": "39 real /goal first busy failure, one retry Working; 40 real /goal sent Working after37 terminal;36 queued scope correction",
-  "acceptedScope": "34+38 code and automated tests committed6410915; production frontend build exit0, actual page pending"
+  "acceptedScope": "34+38 code and automated tests committed6410915; production frontend build exit0, actual page pending",
+  "latestIndependentChecks": {
+    "goal36TargetPassed": 23,
+    "goal36HoldoutsPassed": 6,
+    "frontendE2EBuildExit": 0,
+    "oldQuestionChainEqual": true,
+    "pagesVerified": false
+  }
 }

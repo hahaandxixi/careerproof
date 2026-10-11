@@ -15,3 +15,10 @@
 - patch证据上下文空行本来含空格；以.gitattributes原始证据属性保留字节，不修剪patch改变hash。源码格式检查通过，证据格式以专属属性处理。
 - 37交棒后已确认UI「目标已完成，任务结束」；Codex真实只读进程发现CIM和StartTime差2tick，见launcher-precision-holdout.json。40实际goal接手表示精度与CreateNew未拥有临时文件时的清理保护，不签收37原假设。
 - 39一次免费重试后确认Working并读取卡与模块；没有切个人额度。
+
+## 继续操作与独立反例
+- 36范围纠正已实际执行：升级解释器纯模块64通过，报告补充全量含DB夹具。Codex独立23目标通过（goal36-target-final.raw.*）及6反例全部符合（goal36-independent-holdout-final.json）；逗号前待核验不再掩盖后独立部署断言，原红态保留。与39联合检查前不提交半套依赖。
+- 39初轮97通过仍有2独立反例：当前已解决误拒、前条件掩盖后独立当前事实，见goal39-independent-holdout.json。已实际送补修，4秒busy后只重试一次，Working恢复；不据busy判额度用尽、未切个人。
+- 41已实际新建goal准备独立真实页面runner，唯一写新runner/独立参数测试/证据，不碰产品代码；收到服务就绪指令前不运行页面。
+- 正确.next-e2e目录再构建exit0（frontend-e2e-build.raw.*），不是此前不同目录构建的替代推断。隔离端口尚未启动，不能声称页面已通过。
+- SET TRANSACTION READ ONLY链核查采用正确20261010-question-growth-frozen状态；最初误用旧失败链目录导致查不到task，无写操作。正式chain-before-new-pages.json与此前恢复逐字段相等，完整三快照hash不变，见chain-before-new-pages-integrity.json。
