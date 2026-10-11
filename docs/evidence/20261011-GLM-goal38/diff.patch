@@ -1,0 +1,111 @@
+--- a/jianli/src/lib/private-answer-workflow.ts
++++ b/jianli/src/lib/private-answer-workflow.ts
+@@ -48,7 +48,7 @@
+   notice: string;
+   // hidden/切身份清除的丢弃提示（固定文案，不含用户数据）：独立于 notice 生命周期，
+   // 恢复 load 的读取中、成功、失败全程保持可见，不被 load 首段同步清掉的 notice 影响；
+-  // 再次编辑或显式保存/对照/复制时结束。
++  // 再次编辑或显式保存/对照/复制时结束；重复 clear（无新丢弃）保留既有提示。
+   lossNotice: string;
+ }
+ 
+@@ -164,6 +164,7 @@
+ // - 丢弃提示（lossNotice，P1-1）：clear 按清除前状态布尔判定"是否真的丢弃了未保存编辑"，
+ //   只发布固定文案；该字段独立于 notice 生命周期——load 读取中/成功/失败全程不动它，
+ //   仅再次编辑（setText/toggleReference/removeSelection）或显式保存/对照/复制时结束；
++//   无新丢弃的重复 clear（读取中/失败后/成功后再次隐藏）保留既有提示不抹去（38号审查）。
+ //   load/refreshReferences 与并发票据语义不受其影响。
+ // - 读取用编辑序号区分先后：读取发起之后的新输入（文字/引用选择）不被GET回执覆盖；
+ //   显式重读仍替换点击之前就存在的本地编辑。
+@@ -471,7 +472,10 @@
+       // hidden/切身份：按清除前的本地状态判定是否真的存在未保存编辑（布尔驱动固定文案，
+       // 不携带任何草稿内容或身份数据）；丢弃事实写入独立的 lossNotice，恢复 load 读取中/
+       // 成功/失败全程保持可见（P1-1：此前该声明被恢复 load 首段同步清空，用户永远看不到）。
++      // 第二次 clear（读取中/失败后/成功后再次隐藏，此时状态已干净、无新丢弃）不得抹去
++      // 仍然存活的 lossNotice——提示生命周期只由再次编辑或显式保存/对照/复制结束（38号审查）。
+       const hadUnsaved = privateAnswerIsDirty(state);
++      const carriedLossNotice = state.lossNotice;
+       active = false;
+       ++epoch;
+       appliedValidation = null;
+@@ -479,7 +483,7 @@
+         ...initialPrivateAnswerState,
+         phase: "ready",
+         notice: hadUnsaved ? PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE : PRIVATE_ANSWER_CLEAR_CLEAN_NOTICE,
+-        lossNotice: hadUnsaved ? PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE : "",
++        lossNotice: hadUnsaved ? PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE : carriedLossNotice,
+       };
+       publish(state);
+     },
+--- a/jianli/tests/private-answer-recovery-notice.test.mjs
++++ b/jianli/tests/private-answer-recovery-notice.test.mjs
+@@ -377,3 +377,69 @@
+   })));
+   assert.ok(!/丢弃/.test(cleanHtml), "无丢弃事件时不得渲染丢弃提示");
+ });
++
++// ---- 传智杯38：二次clear不得抹去仍然存活的丢弃提示 ----
++// 以下场景全部复刻组件 visibilitychange 处理器的真实序列（hidden→clear；visible→activate+load）：
++// PrivateAnswerDraft.tsx 中 clear() 只在该分支被调用。
++
++test("恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示", async () => {
++  const gate = deferred();
++  let reads = 0;
++  const h = setup({
++    getDraft: async () => { reads += 1; return reads <= 1 ? savedView() : gate.promise.then(() => savedView()); },
++    listReferences: async () => [],
++  });
++  await h.session.load("task-1");
++  h.session.setText("未保存就要被丢弃的文字");
++  h.session.clear(); // hidden #1：丢弃提示发布
++  assert.match(h.state().lossNotice, /丢弃/);
++  h.session.activate(); // visible #1：恢复读取开始
++  const reading = h.session.load("task-1");
++  assert.equal(h.state().reading, true);
++  h.session.clear(); // hidden #2：读取进行中再次隐藏（此时状态已干净）
++  assert.match(h.state().lossNotice, /丢弃/, "第二次clear不得抹去已发布的丢弃提示");
++  h.session.activate(); // visible #2：重新恢复
++  gate.resolve(null);
++  assert.equal(await reading, false, "被第二次clear作废的读取回执不得生效");
++  assert.ok(await h.session.load("task-1"), "再次恢复读取成功");
++  const state = h.state();
++  assert.match(state.lossNotice, /丢弃/, "成功恢复后丢弃提示仍可见");
++  assert.equal(state.text, "已保存的正文", "恢复读取以服务器内容为准");
++});
++
++test("恢复读取失败后再次hidden：丢弃提示仍保持", async () => {
++  let reads = 0;
++  const h = setup({
++    getDraft: async () => { reads += 1; if (reads === 2) throw new Error("读取失败（合成）"); return savedView(); },
++    listReferences: async () => { if (reads === 2) throw new Error("读取失败（合成）"); return []; },
++  });
++  await h.session.load("task-1");
++  h.session.setText("未保存的编辑");
++  h.session.clear();
++  h.session.activate();
++  assert.equal(await h.session.load("task-1"), false, "恢复读取失败");
++  assert.match(h.state().error, /读取失败/);
++  assert.match(h.state().lossNotice, /丢弃/);
++  h.session.clear(); // 读取失败后再次隐藏
++  assert.match(h.state().lossNotice, /丢弃/, "失败后再次clear不得抹去丢弃提示");
++  h.session.activate();
++  assert.ok(await h.session.load("task-1"), "再次恢复读取成功");
++  assert.match(h.state().lossNotice, /丢弃/, "再次成功恢复后丢弃提示仍可见");
++});
++
++test("成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束", async () => {
++  const h = setup();
++  await h.session.load("task-1");
++  h.session.setText("未保存的编辑");
++  h.session.clear();
++  h.session.activate();
++  assert.ok(await h.session.load("task-1"));
++  assert.match(h.state().lossNotice, /丢弃/);
++  h.session.clear(); // 无新编辑的再次清除
++  assert.match(h.state().lossNotice, /丢弃/, "无新编辑的再次clear不得抹去丢弃提示");
++  h.session.activate();
++  assert.ok(await h.session.load("task-1"));
++  assert.match(h.state().lossNotice, /丢弃/);
++  h.session.setText("重新开始编辑");
++  assert.equal(h.state().lossNotice, "", "编辑仍按生命周期结束提示（修复不得让提示永久化）");
++});

@@ -1,0 +1,247 @@
+TAP version 13
+# Subtest: 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+not ok 1 - 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+  ---
+  duration_ms: 2.5175
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: '读取中丢弃提示必须可见（不被同步notice清空）'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:124:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+not ok 2 - 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+  ---
+  duration_ms: 0.9452
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:133:1'
+  failureType: 'testCodeFailure'
+  error: '引用选择丢弃同样必须提示'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:142:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 恢复读取失败：错误可见且丢弃提示仍可见
+not ok 3 - 恢复读取失败：错误可见且丢弃提示仍可见
+  ---
+  duration_ms: 0.3817
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:147:1'
+  failureType: 'testCodeFailure'
+  error: '失败恢复后丢弃提示必须仍可见'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:160:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 没有未保存编辑时，清除提示不得声称丢弃了编辑
+not ok 4 - 没有未保存编辑时，清除提示不得声称丢弃了编辑
+  ---
+  duration_ms: 0.5105
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:165:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    无编辑时不得发布丢弃声明
+    
+    undefined !== ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:171:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 提示生命周期：再次编辑后丢弃提示结束
+not ok 5 - 提示生命周期：再次编辑后丢弃提示结束
+  ---
+  duration_ms: 0.3427
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:180:1'
+  failureType: 'testCodeFailure'
+  error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:187:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 提示生命周期：显式保存或复制后丢弃提示结束
+not ok 6 - 提示生命周期：显式保存或复制后丢弃提示结束
+  ---
+  duration_ms: 0.3134
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:192:1'
+  failureType: 'testCodeFailure'
+  error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:199:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+not ok 7 - 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+  ---
+  duration_ms: 0.4845
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:213:1'
+  failureType: 'testCodeFailure'
+  error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:225:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 清除提示是固定文案：不携带旧草稿文字等用户数据
+not ok 8 - 清除提示是固定文案：不携带旧草稿文字等用户数据
+  ---
+  duration_ms: 0.5083
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:237:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'undefined'
+    - 'string'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'string'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:243:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 新会话不承接旧会话通知；dispose后旧回执不复活
+not ok 9 - 新会话不承接旧会话通知；dispose后旧回执不复活
+  ---
+  duration_ms: 7.2119
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:256:1'
+  failureType: 'testCodeFailure'
+  error: '清除时的丢弃提示保持'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:269:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+not ok 10 - clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+  ---
+  duration_ms: 1.0118
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:280:1'
+  failureType: 'testCodeFailure'
+  error: 'The "string" argument must be of type string. Received type undefined (undefined)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:294:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+ok 11 - clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+  ---
+  duration_ms: 0.4295
+  type: 'test'
+  ...
+# Subtest: 恢复后来源重验失败仍拒复制；门禁语义不变
+ok 12 - 恢复后来源重验失败仍拒复制；门禁语义不变
+  ---
+  duration_ms: 0.3487
+  type: 'test'
+  ...
+# Subtest: 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+not ok 13 - 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+  ---
+  duration_ms: 5.8367
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:347:1'
+  failureType: 'testCodeFailure'
+  error: '常驻警告必须始终渲染（不依赖任何状态）'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-4"><h2 class="text-lg font-semibold">私人回答草稿（仅本人可见）</h2><p class="text-sm leading-6 text-slate-600">在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。</p><p class="text-sm text-slate-600">尚未保存过草稿；首次保存从版本 0 开始。</p><div class="space-y-2"><label class="text-sm font-medium" for="private-answer-text">回答草稿正文</label><textarea id="private-answer-text" class="field min-h-32 w-full" aria-label="私人回答草稿正文" maxLength="6000" placeholder="写下你自己的回答草稿…（仅本人可见，不会发送给企业）"></textarea><p class="text-xs text-slate-500">最多 6000 字；换行按原样保存。清空内容也需要明确点击“保存草稿”才会替换服务器上的草稿。</p></div><fieldset class="space-y-2 rounded-xl border border-indigo-200 p-3"><legend class="px-1 text-sm font-medium">从服务端可选引用中选择证据（原要求：异常处理）</legend><p class="text-xs leading-6 text-slate-600">本任务当前没有可选引用；没有草稿也可以先选择，保存时一并提交。</p><ul class="space-y-1"></ul><p class="text-xs text-slate-500">最多选择 20 条引用；引用键由报告、要求与引用编号共同确定。</p></fieldset><div class="flex flex-wrap items-center gap-2"><button class="btn-secondary">保存草稿</button><button class="btn-secondary">重读已保存草稿</button></div><details class="rounded-xl border p-3"><summary class="cursor-pointer text-sm font-medium text-indigo-700">预览已保存草稿（先查看，再确认复制）</summary><div class="mt-2 space-y-2"><p role="status" class="text-sm leading-6 text-amber-800">尚无已保存草稿；请先保存后再预览与复制。</p></div></details></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:349:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+not ok 14 - 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+  ---
+  duration_ms: 0.4222
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:355:1'
+  failureType: 'testCodeFailure'
+  error: '读取中丢弃提示必须渲染'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-4"><h2 class="text-lg font-semibold">私人回答草稿（仅本人可见）</h2><p class="text-sm leading-6 text-slate-600">在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。</p><p class="text-sm text-slate-600">尚未保存过草稿；首次保存从版本 0 开始。</p><p role="status">正在读取已保存草稿…</p><div class="space-y-2"><label class="text-sm font-medium" for="private-answer-text">回答草稿正文</label><textarea id="private-answer-text" class="field min-h-32 w-full" aria-label="私人回答草稿正文" maxLength="6000" disabled="" placeholder="写下你自己的回答草稿…（仅本人可见，不会发送给企业）"></textarea><p class="text-xs text-slate-500">最多 6000 字；换行按原样保存。清空内容也需要明确点击“保存草稿”才会替换服务器上的草稿。</p></div><fieldset disabled="" class="space-y-2 rounded-xl border border-indigo-200 p-3"><legend class="px-1 text-sm font-medium">从服务端可选引用中选择证据（原要求：异常处理）</legend><p class="text-xs leading-6 text-slate-600">本任务当前没有可选引用；没有草稿也可以先选择，保存时一并提交。</p><ul class="space-y-1"></ul><p class="text-xs text-slate-500">最多选择 20 条引用；引用键由报告、要求与引用编号共同确定。</p></fieldset><div class="flex flex-wrap items-center gap-2"><button class="btn-secondary" disabled="">保存草稿</button><button class="btn-secondary" disabled="">重读已保存草稿</button></div><details class="rounded-xl border p-3"><summary class="cursor-pointer text-sm font-medium text-indigo-700">预览已保存草稿（先查看，再确认复制）</summary><div class="mt-2 space-y-2"><p role="status" class="text-sm leading-6 text-amber-800">尚无已保存草稿；请先保存后再预览与复制。</p></div></details></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:360:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 2
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 203.7793

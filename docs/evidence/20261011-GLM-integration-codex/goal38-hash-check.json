@@ -1,0 +1,38 @@
+[
+  {
+    "path": "jianli\\src\\lib\\private-answer-workflow.ts",
+    "match": true
+  },
+  {
+    "path": "jianli\\src\\components\\PrivateAnswerDraft.tsx",
+    "match": true
+  },
+  {
+    "path": "jianli\\tests\\private-answer-recovery-notice.test.mjs",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\red-target.raw.out",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\green-target.raw.out",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\green-affected.raw.out",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\green-full.raw.out",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\typecheck.raw.out",
+    "match": true
+  },
+  {
+    "path": "docs\\evidence\\20261011-GLM-goal38\\diff.patch",
+    "match": true
+  }
+]

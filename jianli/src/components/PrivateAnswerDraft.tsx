@@ -137,6 +137,7 @@ export function PrivateAnswerDraftPanel(props: {
     : "";
   return <section className="panel space-y-4">
     <h2 className="text-lg font-semibold">私人回答草稿（仅本人可见）</h2>
+    <p className="text-sm leading-6 text-amber-800">离开或最小化窗口会清除未保存的编辑：请先点击“保存草稿”再离开窗口。私人草稿只保存在你的账号下，没有发送给企业。</p>
     <p className="text-sm leading-6 text-slate-600">在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。</p>
     <p className="text-sm text-slate-600">{state.saved
       ? `已保存：版本 ${state.saved.revision} · ${state.saved.updatedAt ?? "保存时间未知"} · ${dirty ? "有未保存修改" : "与已保存内容一致"}`
@@ -148,6 +149,9 @@ export function PrivateAnswerDraftPanel(props: {
     {state.sourceCheck === "failed" && <p role="alert" className="text-sm text-rose-700">引用来源重验失败，暂不能确认复制旧来源；可重试重验，或重读/保存以重新建立验证。</p>}
     {state.error && <p role="alert" className="text-sm text-rose-700">{state.error}</p>}
     {state.notice && <p role="status" className="text-sm leading-6 text-amber-800">{state.notice}</p>}
+    {/* hidden/切身份的丢弃提示：独立于 notice 生命周期，恢复读取中/成功/失败后都保持可见；
+        与 notice 内容相同时不重复渲染（clear 刚发布时两者同文，恢复 load 启动后 notice 被清空）。 */}
+    {state.lossNotice && state.lossNotice !== state.notice && <p role="alert" className="text-sm leading-6 text-amber-800">{state.lossNotice}</p>}
     <div className="space-y-2">
       <label className="text-sm font-medium" htmlFor="private-answer-text">回答草稿正文</label>
       {/* 保存期间允许继续编辑：只有读取期间暂时停用 */}

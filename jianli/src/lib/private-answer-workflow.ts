@@ -46,13 +46,23 @@ export interface PrivateAnswerState {
   conflict: boolean;
   error: string;
   notice: string;
+  // hidden/切身份清除的丢弃提示（固定文案，不含用户数据）：独立于 notice 生命周期，
+  // 恢复 load 的读取中、成功、失败全程保持可见，不被 load 首段同步清掉的 notice 影响；
+  // 再次编辑或显式保存/对照/复制时结束；重复 clear（无新丢弃）保留既有提示。
+  lossNotice: string;
 }
 
 export const initialPrivateAnswerState: PrivateAnswerState = {
   phase: "loading", reading: false, text: "", selected: [], saved: null,
   options: [], optionsNotice: "", saving: false, comparing: false, copying: false,
-  sourceCheck: "current", serverCopy: null, conflict: false, error: "", notice: "",
+  sourceCheck: "current", serverCopy: null, conflict: false, error: "", notice: "", lossNotice: "",
 };
+
+// clear 的固定文案（31号审查P1-1）：只携带"是否有未保存编辑"这一个布尔事实，不携带任何草稿内容。
+export const PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE =
+  "页面已隐藏或切换身份：私人草稿状态已清除，未保存的修改已丢弃（草稿没有发送给企业）；恢复可见后将重新读取已保存草稿。";
+export const PRIVATE_ANSWER_CLEAR_CLEAN_NOTICE =
+  "页面已隐藏或切换身份：私人草稿状态已清除；没有未保存的编辑，恢复可见后将重新读取。";
 
 /** 引用键是三元组：两个报告出现相同 citationId 也不能合并。 */
 export function privateAnswerReferenceKey(reportId: string, requirementId: string, citationId: string): string {
@@ -151,6 +161,11 @@ interface PrivateAnswerDependencies {
 //   各自用独立busy互斥防重复提交，回执只写自己负责的字段，busy由各自回执复位，不会搁浅。
 // - clear 同时使会话失活：隐藏/切身份后旧按钮的 save/compare/copy/setText 全部拒绝，
 //   只有当前身份/任务effect重新 activate 才恢复（DOM按钮不能复活失效会话）。
+// - 丢弃提示（lossNotice，P1-1）：clear 按清除前状态布尔判定"是否真的丢弃了未保存编辑"，
+//   只发布固定文案；该字段独立于 notice 生命周期——load 读取中/成功/失败全程不动它，
+//   仅再次编辑（setText/toggleReference/removeSelection）或显式保存/对照/复制时结束；
+//   无新丢弃的重复 clear（读取中/失败后/成功后再次隐藏）保留既有提示不抹去（38号审查）。
+//   load/refreshReferences 与并发票据语义不受其影响。
 // - 读取用编辑序号区分先后：读取发起之后的新输入（文字/引用选择）不被GET回执覆盖；
 //   显式重读仍替换点击之前就存在的本地编辑。
 // - 读取回执不降级基线：GET结果比已知已保存版本旧（如在途保存刚落账）时，不用它覆盖
@@ -294,7 +309,7 @@ export function createPrivateAnswerSession(
   function setText(text: string) {
     if (!active) return;
     markEdit();
-    set({ text });
+    set({ text, lossNotice: "" });
   }
 
   function toggleReference(option: PrivateAnswerReferenceOption) {
@@ -312,7 +327,7 @@ export function createPrivateAnswerSession(
       });
     }
     markEdit();
-    set({ selected });
+    set({ selected, lossNotice: "" });
   }
 
   function removeSelection(key: string) {
@@ -322,13 +337,14 @@ export function createPrivateAnswerSession(
       selected: state.selected.filter(
         entry => privateAnswerReferenceKey(entry.reportId, entry.requirementId, entry.citationId) !== key,
       ),
+      lossNotice: "",
     });
   }
 
   async function persist(taskId: string, expectedRevision: number, overServer: boolean): Promise<boolean> {
     if (!active || state.saving) return false;
     const problem = privateAnswerSaveProblem(state.text, state.selected.length);
-    if (problem) { set({ error: problem }); return false; }
+    if (problem) { set({ error: problem, lossNotice: "" }); return false; }
     const payload: PrivateAnswerSave = {
       text: state.text,
       references: state.selected.map(entry => ({
@@ -338,7 +354,7 @@ export function createPrivateAnswerSession(
     };
     const capturedEpoch = epoch;
     const capturedSourceRun = sourceRun;
-    set({ saving: true, error: "", notice: "" });
+    set({ saving: true, error: "", notice: "", lossNotice: "" });
     try {
       const saved = await apiDeps.saveDraft(taskId, payload);
       if (!live(capturedEpoch)) return false;
@@ -399,7 +415,7 @@ export function createPrivateAnswerSession(
   async function compareWithServer(taskId: string): Promise<boolean> {
     if (!active || state.comparing) return false;
     const capturedEpoch = epoch;
-    set({ comparing: true, error: "" });
+    set({ comparing: true, error: "", lossNotice: "" });
     try {
       const draft = await apiDeps.getDraft(taskId);
       if (!live(capturedEpoch)) return false;
@@ -423,21 +439,21 @@ export function createPrivateAnswerSession(
     if (!active || state.copying) return false;
     // 来源重验期间或失败后，不得基于旧预览确认复制；成功后失效引用由预览文档排除。
     if (state.sourceCheck === "pending") {
-      set({ notice: "正在重新验证引用来源；完成后请基于刷新后的预览再确认复制。" });
+      set({ notice: "正在重新验证引用来源；完成后请基于刷新后的预览再确认复制。", lossNotice: "" });
       return false;
     }
     if (state.sourceCheck === "failed") {
-      set({ notice: "引用来源重验失败，暂不能确认复制旧来源；可重试重验，或重读/保存以重新建立验证。" });
+      set({ notice: "引用来源重验失败，暂不能确认复制旧来源；可重试重验，或重读/保存以重新建立验证。", lossNotice: "" });
       return false;
     }
-    if (!state.saved) { set({ notice: "尚无已保存草稿可复制；请先保存。" }); return false; }
+    if (!state.saved) { set({ notice: "尚无已保存草稿可复制；请先保存。", lossNotice: "" }); return false; }
     if (privateAnswerIsDirty(state)) {
-      set({ notice: "有未保存编辑：预览与复制只包含已保存内容；请先保存草稿，再复制。" });
+      set({ notice: "有未保存编辑：预览与复制只包含已保存内容；请先保存草稿，再复制。", lossNotice: "" });
       return false;
     }
     // 剪贴板写入不参与任何代际：本地复制不得废弃仍在途的保存/读取回执。
     const capturedEpoch = epoch;
-    set({ copying: true, error: "", notice: "" });
+    set({ copying: true, error: "", notice: "", lossNotice: "" });
     try {
       await write(documentText);
       if (!live(capturedEpoch)) return false;
@@ -453,14 +469,21 @@ export function createPrivateAnswerSession(
   return {
     activate() { active = true; },
     clear() {
-      // 隐藏/切身份：会话失活并作废全部在途回执；恢复只能由owner显式activate后重新load。
+      // hidden/切身份：按清除前的本地状态判定是否真的存在未保存编辑（布尔驱动固定文案，
+      // 不携带任何草稿内容或身份数据）；丢弃事实写入独立的 lossNotice，恢复 load 读取中/
+      // 成功/失败全程保持可见（P1-1：此前该声明被恢复 load 首段同步清空，用户永远看不到）。
+      // 第二次 clear（读取中/失败后/成功后再次隐藏，此时状态已干净、无新丢弃）不得抹去
+      // 仍然存活的 lossNotice——提示生命周期只由再次编辑或显式保存/对照/复制结束（38号审查）。
+      const hadUnsaved = privateAnswerIsDirty(state);
+      const carriedLossNotice = state.lossNotice;
       active = false;
       ++epoch;
       appliedValidation = null;
       state = {
         ...initialPrivateAnswerState,
         phase: "ready",
-        notice: "页面已隐藏或切换身份：私人草稿状态已清除，未保存的修改已丢弃；恢复可见后将重新读取。",
+        notice: hadUnsaved ? PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE : PRIVATE_ANSWER_CLEAR_CLEAN_NOTICE,
+        lossNotice: hadUnsaved ? PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE : carriedLossNotice,
       };
       publish(state);
     },
