@@ -35,7 +35,7 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 
 课堂演示双击 `Start-Demo.cmd`，停止双击 `Stop-Demo.cmd`（默认只停网站）。命令行可传 `-CheckOnly`、`-Rebuild`、`-NoBrowser`，停止入口支持 `-Database`。启动自动选择通过版本与源码核验的本地依赖环境；不自动安装或修改配置。源码/资源/锁文件未变时复用已有生产构建，重复启动只复用已确认归属、配置与代码一致的健康服务。初始化完成的同一演示运行不重复播种，必要时用 `-Reseed`。
 
-账号信息从本机未入库的 `backend/.tmp/demo-credentials.json` 读取；不要将合成演示账号用于真实个人材料或公网部署。修改凭据文件不会轮换数据库中已有账号的密码或撤销旧会话。
+**找不到账号？打开[本机演示账号文件](backend/.tmp/demo-credentials.json)**：`studentEmail` 是学生邮箱，`enterpriseEmail` 是企业邮箱，`password` 是两者共用密码。`Start-Local` 不创建账号，首次演示需用 `Start-Demo` 初始化。账号信息仅在本机读取；不要将合成演示账号用于真实个人材料或公网部署。修改凭据文件不会轮换数据库中已有账号的密码或撤销旧会话。
 
 访问 `http://127.0.0.1:3000`，接口说明在 `http://127.0.0.1:8000/docs`。统一使用 `127.0.0.1`，避免与 `localhost` 混用会话。启动日志与进程记录在 `backend/.tmp/local-run/`；已有运行记录时先按完整手册检查并停止原服务。
 
