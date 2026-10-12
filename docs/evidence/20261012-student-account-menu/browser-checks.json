@@ -1,0 +1,42 @@
+[
+  {
+    "name": "collapsed-private-links",
+    "value": true
+  },
+  {
+    "name": "escape-focus",
+    "value": true
+  },
+  {
+    "name": "keyboard-enter",
+    "value": true
+  },
+  {
+    "name": "outside-close",
+    "value": true
+  },
+  {
+    "name": "materials-nav-close",
+    "value": true
+  },
+  {
+    "name": "applications-nav",
+    "value": true
+  },
+  {
+    "name": "notifications-nav",
+    "value": true
+  },
+  {
+    "name": "mobile-390",
+    "value": false
+  },
+  {
+    "name": "mobile-390-fixed",
+    "value": true
+  },
+  {
+    "name": "mobile-320-fixed",
+    "value": true
+  }
+]

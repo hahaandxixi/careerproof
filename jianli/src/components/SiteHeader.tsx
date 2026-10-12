@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "./AuthProvider";
 import NotificationLink from "./NotificationLink";
+import StudentAccountMenu from "./StudentAccountMenu";
 import { errorMessage } from "@/lib/api/client";
 
 export default function SiteHeader() {
@@ -23,14 +24,15 @@ export default function SiteHeader() {
       <Link href="/" className="font-semibold text-indigo-700">职证 CareerProof</Link>
       <nav aria-label="主导航" className="flex flex-wrap items-center gap-4 text-sm">
         <Link href="/jobs">岗位发现</Link>
-        {user?.role === "student" && <><Link href="/portfolio">我的材料</Link><Link href="/recommendations">职业推荐</Link><Link href="/applications">我的投递</Link></>}
+        {user?.role === "student" && <Link href="/recommendations">职业推荐</Link>}
         {(user?.role === "student" || user?.role === "admin") && <Link href="/reports">我的匹配报告</Link>}
         {(user?.role === "enterprise" || user?.role === "admin") && <>
           <Link href="/jobs/mine">岗位管理</Link><Link href="/jobs/new" className="text-indigo-600">发布岗位</Link>
         </>}
-        <NotificationLink />
+        {user?.role !== "student" && <NotificationLink />}
         {status === "loading" ? <span className="text-slate-400">确认会话中…</span> :
           status === "error" ? <button onClick={() => void reload()} className="text-amber-700">服务连接异常 · 重试</button> :
+          user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
           user ? <><span className="max-w-28 truncate text-slate-500">{user.displayName}</span><button disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :
           <><Link href="/login">登录</Link><Link href="/register" className="text-indigo-600">注册</Link></>}
       </nav>

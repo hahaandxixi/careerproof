@@ -1,15 +1,15 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { api } from "@/lib/api/client";
 import { createRefreshGate } from "@/lib/refresh-gate";
 import { useAuth } from "./AuthProvider";
 
-export default function NotificationLink() {
+export default function NotificationLink({ render }: { render?: (count: number | null) => ReactNode } = {}) {
   const { user } = useAuth();
-  return user && ["student", "enterprise"].includes(user.role) ? <Counter key={user.id} /> : null;
+  return user && ["student", "enterprise"].includes(user.role) ? <Counter key={user.id} render={render} /> : null;
 }
-function Counter() {
+function Counter({ render }: { render?: (count: number | null) => ReactNode }) {
   const [count, setCount] = useState<number | null>(null);
   const generation = useRef(0);
   useEffect(() => {
@@ -31,5 +31,6 @@ function Counter() {
     return () => { ++generation.current; window.removeEventListener("notifications-changed", load);
       window.removeEventListener("focus", presenceLoad); window.removeEventListener("blur", blurWindow); document.removeEventListener("visibilitychange", presenceLoad); };
   }, []);
+  if (render) return render(count);
   return <Link href="/notifications">通知{count === null ? "" : `（${count} 未读）`}</Link>;
 }
