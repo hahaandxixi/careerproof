@@ -1,0 +1,130 @@
+FFs                                                                      [100%]
+================================== FAILURES ===================================
+___________ test_reconsent_keeps_old_snapshot_and_revocation[False] ___________
+
+matching_db = (<fastapi.applications.FastAPI object at 0x00000176222D10A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000176221B8110>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-resubmit-red-20261012/test_reconsent_keeps_old_snaps0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000176222D0AA0>
+new_report = False
+
+    @pytest.mark.parametrize("new_report", [False, True])
+    async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path, monkeypatch,
+                                                             new_report):
+        hr, student, other, job, rid, _, _, factory = await setup(
+            matching_db, tmp_path, monkeypatch
+        )
+        try:
+            payload = {"reportId": str(rid), "shareConsent": True}
+            original = (await student.post("/api/v1/applications", json=payload)).json()["data"]
+            old_id = original["id"]
+            await hr.post(f"/api/v1/applications/{old_id}/view")
+            await hr.post(f"/api/v1/applications/{old_id}/reply",
+                          json={"kind": "continue", "text": "�벹��ϳ����м�¼"})
+            await student.post(f"/api/v1/applications/{old_id}/withdraw")
+            async with factory() as session:
+                old = await session.get(Application, UUID(old_id))
+                snapshot = deepcopy(old.report_snapshot)
+                old_version = old.version
+                old_consent = old.consent_at
+                report = await session.get(MatchReport, rid)
+                if new_report:
+                    task = AnalysisTask(created_by=(await session.get(
+                        AnalysisTask, report.analysis_task_id)).created_by,
+                        task_type="job_match", status=TaskStatus.COMPLETED)
+                    session.add(task)
+                    await session.flush()
+                    report = MatchReport(analysis_task_id=task.id, job_id=report.job_id,
+                                         candidate_ref=report.candidate_ref,
+                                         job_snapshot=deepcopy(report.job_snapshot),
+                                         materials_snapshot=deepcopy(report.materials_snapshot),
+                                         summary="�ϳ��°汨��", overall_score=60)
+                    session.add(report)
+                    await session.flush()
+                    payload["reportId"] = str(report.id)
+                else:
+                    report.summary = "�������·����ı���"
+                await session.commit()
+    
+            refused = await student.post("/api/v1/applications",
+                                         json={**payload, "shareConsent": False})
+            assert refused.status_code == 422
+            created = await student.post("/api/v1/applications", json=payload)
+>           assert created.status_code == 201, created.text
+E           AssertionError: {"code":4098,"message":"�ø�λ����Ͷ�ݣ����ڲ���������Ȩ�Ĳ��ϰ汾","data":{},"requestId":"18259470-d5db-4c5a-9c61-1ab8ef254d0c"}
+E           assert 409 == 201
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+app\tests\test_application_resubmission.py:59: AssertionError
+___________ test_reconsent_keeps_old_snapshot_and_revocation[True] ____________
+
+matching_db = (<fastapi.applications.FastAPI object at 0x000001762246E6F0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000017622127810>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-resubmit-red-20261012/test_reconsent_keeps_old_snaps1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000176224A9940>
+new_report = True
+
+    @pytest.mark.parametrize("new_report", [False, True])
+    async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path, monkeypatch,
+                                                             new_report):
+        hr, student, other, job, rid, _, _, factory = await setup(
+            matching_db, tmp_path, monkeypatch
+        )
+        try:
+            payload = {"reportId": str(rid), "shareConsent": True}
+            original = (await student.post("/api/v1/applications", json=payload)).json()["data"]
+            old_id = original["id"]
+            await hr.post(f"/api/v1/applications/{old_id}/view")
+            await hr.post(f"/api/v1/applications/{old_id}/reply",
+                          json={"kind": "continue", "text": "�벹��ϳ����м�¼"})
+            await student.post(f"/api/v1/applications/{old_id}/withdraw")
+            async with factory() as session:
+                old = await session.get(Application, UUID(old_id))
+                snapshot = deepcopy(old.report_snapshot)
+                old_version = old.version
+                old_consent = old.consent_at
+                report = await session.get(MatchReport, rid)
+                if new_report:
+                    task = AnalysisTask(created_by=(await session.get(
+                        AnalysisTask, report.analysis_task_id)).created_by,
+                        task_type="job_match", status=TaskStatus.COMPLETED)
+                    session.add(task)
+                    await session.flush()
+                    report = MatchReport(analysis_task_id=task.id, job_id=report.job_id,
+                                         candidate_ref=report.candidate_ref,
+                                         job_snapshot=deepcopy(report.job_snapshot),
+                                         materials_snapshot=deepcopy(report.materials_snapshot),
+                                         summary="�ϳ��°汨��", overall_score=60)
+                    session.add(report)
+                    await session.flush()
+                    payload["reportId"] = str(report.id)
+                else:
+                    report.summary = "�������·����ı���"
+                await session.commit()
+    
+            refused = await student.post("/api/v1/applications",
+                                         json={**payload, "shareConsent": False})
+            assert refused.status_code == 422
+            created = await student.post("/api/v1/applications", json=payload)
+>           assert created.status_code == 201, created.text
+E           AssertionError: {"code":4098,"message":"�ø�λ����Ͷ�ݣ����ڲ���������Ȩ�Ĳ��ϰ汾","data":{},"requestId":"d74afbc9-9c54-4753-bc8a-6b97e8d6cb65"}
+E           assert 409 == 201
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+app\tests\test_application_resubmission.py:59: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_application_resubmission.py::test_reconsent_keeps_old_snapshot_and_revocation[False]
+FAILED app/tests/test_application_resubmission.py::test_reconsent_keeps_old_snapshot_and_revocation[True]
+2 failed, 1 skipped, 5 warnings in 2.09s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

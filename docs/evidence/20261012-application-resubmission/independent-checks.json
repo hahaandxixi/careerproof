@@ -1,0 +1,13 @@
+{
+  "dailyHistoricalRowsUnchanged": true,
+  "dailyRevision": "0018_application_reconsent",
+  "oldSnapshotHashes": {
+    "A": true,
+    "B": true,
+    "A2": true
+  },
+  "freshId": "996d83e2-d9c3-4dd4-89c2-033f19aa5728",
+  "enterpriseOldApplication404": true,
+  "enterpriseOldNotice404": true,
+  "enterpriseListsNewOnly": true
+}

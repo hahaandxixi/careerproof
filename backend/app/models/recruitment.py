@@ -3,7 +3,18 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -60,7 +71,11 @@ class JobRequirement(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
 
 class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "applications"
-    __table_args__ = (UniqueConstraint("job_id", "student_id"),)
+    __table_args__ = (Index(
+        "uq_applications_active_job_student", "job_id", "student_id", unique=True,
+        postgresql_where=text("status != 'withdrawn'"),
+        sqlite_where=text("status != 'withdrawn'"),
+    ),)
 
     job_id: Mapped[UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
     student_id: Mapped[UUID] = mapped_column(ForeignKey("student_profiles.id", ondelete="CASCADE"))

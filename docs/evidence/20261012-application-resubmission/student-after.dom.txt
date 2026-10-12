@@ -1,0 +1,55 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "岗位发现":
+      - /url: /jobs
+    - link "职业推荐":
+      - /url: /recommendations
+    - link "我的匹配报告":
+      - /url: /reports
+    - generic "学生账户 · E2E 合成学生 4 未读":
+      - generic: E
+      - generic: 学生账户 · E2E 合成学生
+      - generic: 4 未读
+      - generic: ▾
+- main:
+  - heading "我的投递" [level=1]
+  - paragraph: 状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。
+  - button "刷新投递状态"
+  - article:
+    - heading "E2E 岗位A（合成）" [level=2]
+    - paragraph: E2E 合成企业 resubmit-20261012 · 已投递
+    - paragraph:
+      - link "查看本次投递的原报告":
+        - /url: /reports/7191ff17-52d7-4142-abc9-76033b8853ae
+    - list:
+      - listitem: 2026/10/12 11:07:33 · 学生明确授权该岗位企业查看本次固定报告、引用片段并获取本次简历文件
+    - button "撤回投递授权"
+  - article:
+    - heading "E2E 岗位B（合成）" [level=2]
+    - paragraph: E2E 合成企业 resubmit-20261012 · 已投递
+    - paragraph:
+      - link "查看本次投递的原报告":
+        - /url: /reports/33d981fd-f619-46ae-adaf-59221de56fed
+    - list:
+      - listitem: 2026/10/12 11:05:02 · 学生明确授权该岗位企业查看本次固定报告、引用片段并获取本次简历文件
+    - button "撤回投递授权"
+  - article:
+    - heading "E2E 岗位A（合成）" [level=2]
+    - paragraph: E2E 合成企业 resubmit-20261012 · 已撤回授权
+    - paragraph:
+      - link "查看本次投递的原报告":
+        - /url: /reports/7191ff17-52d7-4142-abc9-76033b8853ae
+    - list:
+      - listitem: 2026/10/12 11:05:02 · 学生明确授权该岗位企业查看本次固定报告、引用片段并获取本次简历文件
+      - listitem: 2026/10/12 11:07:05 · 学生撤回授权；企业后续访问被拒绝，已下载副本无法追回
+    - paragraph:
+      - text: 本次授权已撤回。
+      - link "重新确认授权并投递":
+        - /url: /reports/7191ff17-52d7-4142-abc9-76033b8853ae#application-submit
+      - text: ；也可从新版报告投递，原记录与企业回复不会被覆盖。
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert: 可追溯人才匹配平台

@@ -254,11 +254,12 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
                 f"/api/v1/applications/{aid}/reply", json={"kind": "continue", "text": "不可发送"}
             )
         ).status_code == 404
-        assert (
-            await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
-            )
-        ).status_code == 409
+        resubmitted = await student.post(
+            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+        )
+        assert resubmitted.status_code == 201, resubmitted.text
+        assert resubmitted.json()["data"]["id"] != aid
+        assert (await hr.post(f"/api/v1/applications/{aid}/view")).status_code == 404
     finally:
         await close(hr, student, other)
 

@@ -230,13 +230,15 @@ class ApplicationService:
             raise AppError("岗位已关闭，不能投递", status_code=409, code=4098)
         existing = await self.session.scalar(
             select(Application).where(
-                Application.job_id == job.id, Application.student_id == student.id
+                Application.job_id == job.id, Application.student_id == student.id,
+                Application.status != "withdrawn",
             )
         )
         if existing:
-            if existing.report_id == report.id and existing.status != "withdrawn":
+            if existing.report_id == report.id:
                 return await self.view(existing, job)
-            raise AppError("该岗位已有投递；本期不覆盖已授权的材料版本", status_code=409, code=4098)
+            raise AppError("该岗位已有有效投递；如需分享另一份报告，请先撤回原投递授权",
+                           status_code=409, code=4098)
         # Lock the student's row so concurrent submissions to distinct jobs share one limit.
         await self.session.scalar(
             select(StudentProfile).where(StudentProfile.id == student.id).with_for_update()
@@ -250,7 +252,8 @@ class ApplicationService:
             )
         )
         if count >= 20:
-            raise AppError("24小时内最多投递20个岗位，请稍后再试", status_code=429, code=4298)
+            raise AppError("24小时内最多投递20次（含撤回后重新投递），请稍后再试",
+                           status_code=429, code=4298)
         snapshot = report_view.model_dump(mode="json", by_alias=True)
         item = Application(
             job_id=job.id,
