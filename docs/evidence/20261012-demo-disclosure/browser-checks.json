@@ -1,0 +1,231 @@
+[
+  {
+    "name": "candidate-switch",
+    "value": true
+  },
+  {
+    "name": "filter-sql-gap",
+    "value": true
+  },
+  {
+    "name": "empty-clears-detail",
+    "value": true
+  },
+  {
+    "name": "heatmap-390",
+    "value": true
+  },
+  {
+    "name": "default-disclosures",
+    "value": [
+      {
+        "open": false,
+        "title": "查看判断依据与 AI 解释"
+      },
+      {
+        "open": false,
+        "title": "查看 7 条来源证据"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "本人核对记录（可选） · 待本人核对"
+      },
+      {
+        "open": false,
+        "title": "查看判断依据与 AI 解释"
+      },
+      {
+        "open": false,
+        "title": "查看 7 条来源证据"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "本人核对记录（可选） · 待本人核对"
+      },
+      {
+        "open": false,
+        "title": "查看判断依据与 AI 解释"
+      },
+      {
+        "open": false,
+        "title": "查看 7 条来源证据"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "本人核对记录（可选） · 待本人核对"
+      },
+      {
+        "open": false,
+        "title": "查看判断依据与 AI 解释"
+      },
+      {
+        "open": false,
+        "title": "查看 7 条来源证据"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "本人核对记录（可选） · 待本人核对"
+      },
+      {
+        "open": false,
+        "title": "查看判断依据与 AI 解释"
+      },
+      {
+        "open": false,
+        "title": "查看 6 条来源证据"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "证据定位信息"
+      },
+      {
+        "open": false,
+        "title": "本人核对记录（可选） · 待本人核对"
+      }
+    ]
+  },
+  {
+    "name": "citation-expands-source",
+    "value": true
+  },
+  {
+    "name": "student-390",
+    "value": true
+  },
+  {
+    "name": "final-single-main",
+    "value": true
+  }
+]

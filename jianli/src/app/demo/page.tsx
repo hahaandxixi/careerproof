@@ -13,6 +13,7 @@ export default function DemoPage() {
       <h1 className="mt-2 text-3xl font-bold text-slate-900">选一个职业，用一套对应材料</h1>
       <p className="mt-3 leading-7 text-slate-600">每套都有独立编号、简历、项目或作品、人工测试步骤。先测一套；请勿将不同编号的材料混选。所有人物、经历和指标均为虚构。</p>
     </header>
+    <section className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6"><h2 className="text-xl font-bold">先看企业功能实例</h2><p className="mt-2 text-sm leading-6 text-slate-600">3 位虚构候选人对照 4 项岗位要求，体验热力图筛选与雷达图；不会创建真实投递或调用模型。</p><Link href="/demo/heatmap" className="btn mt-4">打开热力图交互演示 →</Link></section>
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">1. 登录学生演示账号</h2>
       <p className="mt-3 text-sm leading-7 text-slate-600">请向项目负责人索取本机演示账号。企业账号用于岗位管理，学生账号用于材料上传与报告测试。账号凭据不会显示在网页上。</p>

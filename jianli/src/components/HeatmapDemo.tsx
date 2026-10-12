@@ -1,0 +1,16 @@
+"use client";
+import { useState } from "react";
+import { filterApplications } from "@/lib/application-comparison";
+import { HEATMAP_DEMO, DEMO_REQUIREMENTS, DEMO_LABELS, demoCellClass } from "@/lib/heatmap-demo";
+import SkillRadar from "./SkillRadar";
+export default function HeatmapDemo() {
+  const [query, setQuery] = useState(""); const [focus, setFocus] = useState(""); const [verdict, setVerdict] = useState(""); const [selectedId, setSelectedId] = useState(HEATMAP_DEMO[0].id);
+  const rows = filterApplications(HEATMAP_DEMO, query, focus, verdict);
+  const selected = rows.find(row => row.id === selectedId) ?? rows[0];
+  return <div className="space-y-5">
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">合成界面演示：3 位虚构候选人、4 项要求，所有状态和示例分数预设。不是学生真实投递，不生成报告，不调用模型，也不会写入业务数据库。</div>
+    <div className="panel grid gap-4 sm:grid-cols-3"><label>关键词<input className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)} placeholder="候选人或技能" /></label><label>聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{DEMO_REQUIREMENTS.map(r=><option key={r.id} value={r.id}>{r.title}</option>)}</select></label><label>证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option>{Object.entries(DEMO_LABELS).map(([key,label])=><option key={key} value={key}>{key === "supported" ? "有证据或部分支持" : label}</option>)}</select></label></div>
+    <div className="panel space-y-4"><p className="text-sm text-slate-600" role="status">显示 {rows.length} 位合成候选人；分数只演示材料支持程度，不代表能力或录用顺序。筛选逻辑与真实投递页面共用。</p><div className="overflow-x-auto"><table className="w-full min-w-[650px] text-left text-sm"><caption className="mb-3 text-left font-semibold">岗位要求 × 合成候选人热力图</caption><thead><tr><th scope="col" className="p-3">候选人</th>{DEMO_REQUIREMENTS.map(r=><th scope="col" key={r.id} className="p-3">{r.title}</th>)}</tr></thead><tbody>{rows.map(row=><tr key={row.id} className="border-t border-slate-200"><th scope="row" className="p-3"><button className="btn-secondary min-h-11" aria-pressed={selected?.id===row.id} onClick={()=>setSelectedId(row.id)}>{row.candidateName}</button></th>{row.dimensions.map(d=><td key={d.requirementId} className="p-2"><span className={`block rounded-lg border border-slate-200 px-3 py-3 ${demoCellClass(d.verdict)}`}>{DEMO_LABELS[d.verdict]} · {d.score ?? "—"}</span></td>)}</tr>)}</tbody></table></div>{!rows.length&&<p>没有符合当前筛选的示例。<button className="ml-2 text-indigo-700 underline" onClick={()=>{setQuery("");setFocus("");setVerdict("");}}>清除筛选</button></p>}</div>
+    {selected&&<section className="panel space-y-4" aria-label="合成候选人证据对照"><h2 className="text-lg font-semibold">{selected.candidateName} · 合成固定快照 v1</h2><p className="text-sm leading-6 text-slate-600">点选候选人后，本面板与雷达图一起切换。不可评用“—”，缺材料不代表没有能力；雷达图不填充面积。</p><SkillRadar dimensions={selected.dimensions}/><details><summary className="cursor-pointer py-3 text-sm text-indigo-700">查看这份示例的来源说明</summary><p className="text-sm leading-6 text-slate-600">本页数据来自仓库中明确标注的合成界面夹具，没有真实文件、作者身份或核验结论。真实投递页面仅展示学生明确授权的原报告快照与可定位引用。</p></details></section>}
+  </div>;
+}

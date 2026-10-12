@@ -1,0 +1,19 @@
+{
+  "jianli/src/components/ReportDetail.tsx": "3afc4f250f24c0310dc517ad71f315e9f475e5a5f01c6c1e9b419193fffad1cc",
+  "jianli/src/components/ApplicationBoard.tsx": "831f955ad0b3226569cf24bd46687507a5ad494a96c019b7b3094f4ccfea50f0",
+  "jianli/src/components/HeatmapDemo.tsx": "ae5b548b50132a54851ad5763dc9ecf961df7e34a481d6621258d2643290ee93",
+  "jianli/src/lib/heatmap-demo.ts": "89a94024a7bd2a0fd38c1e48dcf14b879fd9b764b490e5f683a76bb1721d8c63",
+  "jianli/src/app/demo/page.tsx": "6c263c38fe8852cfcb1dc7d5fa94020625dcac2a7b4d6c2de7897ddf8441caa1",
+  "jianli/src/app/demo/heatmap/page.tsx": "cdd8b2dcd3dabe4d7c3e6064aae774408744907638995dca40d0a74d7327740e",
+  "jianli/tests/heatmap-demo.test.mjs": "b768199e72ab72871beaa69e8bed6325bed24fc102520e0d169c25a85c979a94",
+  "docs/guides/使用与启动.md": "3be021db1399dbef0bd9aa4caf3e25486d9ea7d124b6cdf02d47011d3efdf003",
+  "docs\\evidence\\20261012-demo-disclosure\\browser-checks.json": "f5b626d918883637fcb0d1da42dff69941287e994bc1d27a9d4fc6fc19425414",
+  "docs\\evidence\\20261012-demo-disclosure\\build-start-final.raw.out": "9ca59aec59341684f4aa416ced20ec771574134a7ec1eaef06d1e7412d9f1f6c",
+  "docs\\evidence\\20261012-demo-disclosure\\build-start.raw.out": "8ef055411f4d6302e5fba6ae56dd11bb671ca17319ea194bfbd2e41e373dda68",
+  "docs\\evidence\\20261012-demo-disclosure\\frontend-tests.raw.out": "c8d3f91a18702b390ddf407bd4c2673f39c4b7f561def2bb716b630ba674406d",
+  "docs\\evidence\\20261012-demo-disclosure\\heatmap-390.png": "81a41df5a4b1ab490cf2f2969800fce0185d959bbcbb27cbff1e1f73941078da",
+  "docs\\evidence\\20261012-demo-disclosure\\heatmap-desktop.png": "996d3f914e821b6b0258adcd449d3883aa0e576e7d0ed78d65c8f2e61012fc9a",
+  "docs\\evidence\\20261012-demo-disclosure\\README.md": "6e1a9201b389452e955b4ae7d28aa7a165b25893b2e08a746000addd23ff28ca",
+  "docs\\evidence\\20261012-demo-disclosure\\student-390.png": "d2f4c60781837c302d56d66a9129b96ac671fa13c7ee37c9b821705a5613e5ab",
+  "docs\\evidence\\20261012-demo-disclosure\\student-collapsed.png": "cd76aa0fb3ae5279234383565ee4c284f963a2045b8cfa7e851dcad31f15f834"
+}
