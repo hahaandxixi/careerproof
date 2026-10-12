@@ -1,0 +1,55 @@
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.8s
+   Linting and checking validity of types ...
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add '.next-e2e/types/**/*.ts'
+
+   Collecting page data ...
+   Generating static pages (0/18) ...
+   Generating static pages (4/18) 
+   Generating static pages (8/18) 
+   Generating static pages (13/18) 
+ ✓ Generating static pages (18/18)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            999 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                        3.44 kB         114 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                5.02 kB         111 kB
+├ ○ /growth                                134 B         129 kB
+├ ƒ /growth/[id]                           132 B         129 kB
+├ ƒ /jobs                                 2.3 kB         112 kB
+├ ƒ /jobs/[id]                           3.55 kB         119 kB
+├ ƒ /jobs/[id]/applications              12.3 kB         122 kB
+├ ƒ /jobs/[id]/edit                        132 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                            2.3 kB         112 kB
+├ ○ /jobs/new                              132 B         115 kB
+├ ○ /login                               4.54 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.26 kB         114 kB
+├ ○ /notifications                       2.34 kB         112 kB
+├ ○ /portfolio                           6.68 kB         117 kB
+├ ƒ /recommendations                        6 kB         121 kB
+├ ○ /register                            4.99 kB         111 kB
+├ ○ /reports                             1.46 kB         112 kB
+├ ƒ /reports/[id]                        16.4 kB         127 kB
+└ ƒ /tasks/[id]                          3.49 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

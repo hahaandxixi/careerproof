@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-12",
+  "scope": "code and automated validation accepted; remaining page interactions pending",
+  "sha256": {
+    "jianli/src/components/ReportDetail.tsx": "537edb5a910d33810dbecd3280618f4418858399db7b6ab44eeb63d3c4b17fa4",
+    "jianli/src/components/GrowthTaskStart.tsx": "f416dd07c641ee2db90880c66837b0f1b2f4ed78c017ded06c8a2f8675e02ff9",
+    "jianli/src/components/ReportEvidenceWorkspace.tsx": "2bd6818bfa6b34706f78e077baba096c8f8daef51d94d752dc0b5b1ca054af72",
+    "jianli/src/lib/evidence-workspace.ts": "06d42b83ef49ab6cbf02d7f805dcd38c0eb87fd9124934243c3805b4eb1ea1eb",
+    "jianli/tests/evidence-workspace.test.mjs": "827aef41619604ab64202ab933f838a15725a7cee2572fd05ce2ff04094ab9d2",
+    "docs/guides/使用与启动.md": "a1511665521e4ecdff1e09f7dad49b18e4d03f32e0fb7876ab10f3015713ae68",
+    "docs\\evidence\\20261011-design-color-comparison\\workspace-implementation.md": "18bdc6821e4b627f15d9310ba5f50c2ebac2a271e33f3d0b556f6459deb0716e",
+    "docs\\evidence\\20261011-design-color-comparison\\workspace-tests-final.raw.out": "1aacde1af44a95a759e371040f204f0e5719d5838cfda320cc294227959bf446",
+    "docs\\evidence\\20261011-design-color-comparison\\workspace-typecheck.raw.out": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs\\evidence\\20261011-design-color-comparison\\workspace-build.raw.out": "8fd0bfad990c7c41e1ae8a5b944ebd803cd388433173e965a9421374089efdac",
+    "docs\\evidence\\20261011-design-color-comparison\\workspace-desktop.png": "d03f52df42eb09340cf562caf09857a2b490e28a736fc31ed7784856deca232d"
+  }
+}

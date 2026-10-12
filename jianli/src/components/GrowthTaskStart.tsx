@@ -22,9 +22,12 @@ export default function GrowthTaskStart({ reportId, requirementId, advice }: { r
   const [lookupError, setLookupError] = useState("");
   const [lookupRevision, setLookupRevision] = useState(0);
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("enterpriseReply") === requirementId) {
-      setOpen(true);
-    }
+    const openFromAnchor = () => {
+      if (window.location.hash === `#growth-${requirementId}` || new URLSearchParams(window.location.search).get("enterpriseReply") === requirementId) setOpen(true);
+    };
+    openFromAnchor();
+    window.addEventListener("hashchange", openFromAnchor);
+    return () => window.removeEventListener("hashchange", openFromAnchor);
   }, [requirementId]);
   useEffect(() => {
     if (!open) return;
