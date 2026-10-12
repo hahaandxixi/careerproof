@@ -90,7 +90,7 @@ function MatchForm({
   const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
   const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
-  return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-500">选择已解析完成的版本。报告会固定本次材料版本；项目更新后，旧报告仍保留原始依据。</p>
+  return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-500">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。<Link className="mt-2 block text-indigo-700 underline" href="/applications">已有投递？查看企业回应 →</Link></p>
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
       <fieldset disabled={busy} className="space-y-4">

@@ -42,7 +42,7 @@ export default function JobList({ mine = false, initialQuery = "" }: { mine?: bo
     </form>
     {error && <ErrorNotice message={error} retry={refresh} />}
     {busy && <p role="status" className="text-sm text-slate-500">正在加载岗位…</p>}
-    {!busy && !error && data?.items.length === 0 && <div className="panel py-10 text-center text-slate-500">{mine ? "你的企业暂未创建岗位。" : "没有符合条件的岗位，试试其他筛选条件。"}</div>}
+    {!busy && !error && data?.items.length === 0 && <div className="panel py-10 text-center text-slate-500">{mine ? "你的企业暂未创建岗位。" : "没有符合条件的岗位，试试其他筛选条件。"}{mine ? <Link className="mt-4 block text-indigo-700 underline" href="/jobs/new">创建第一个岗位 →</Link> : <button type="button" className="mt-4 text-indigo-700 underline" onClick={() => { setDraft(EMPTY_FILTER); setFilter(EMPTY_FILTER); setPage(1); }}>清除筛选查看全部岗位</button>}</div>}
     {!error && <div className="grid gap-4 md:grid-cols-2">{data?.items.map(job => <article key={job.id} className="panel">
       <div className="flex items-start justify-between gap-3"><Link className="text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{job.title}</Link><span className="text-xs text-slate-500">{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span></div>
       <p className="mt-1 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p><p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">{job.description || "暂无描述"}</p>

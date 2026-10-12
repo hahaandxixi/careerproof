@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: B-15: one explicit anchor navigation scrolls exactly once; refreshes never re-scroll
+ok 1 - B-15: one explicit anchor navigation scrolls exactly once; refreshes never re-scroll
+  ---
+  duration_ms: 1.4539
+  type: 'test'
+  ...
+# Subtest: B-15: only a NEW anchor navigation may scroll again
+ok 2 - B-15: only a NEW anchor navigation may scroll again
+  ---
+  duration_ms: 0.2199
+  type: 'test'
+  ...
+# Subtest: B-15: a target hidden by filters reports filtered-out instead of failing silently
+ok 3 - B-15: a target hidden by filters reports filtered-out instead of failing silently
+  ---
+  duration_ms: 0.1216
+  type: 'test'
+  ...
+# Subtest: B-15: dismissing the filtered-out notice consumes the pending anchor
+ok 4 - B-15: dismissing the filtered-out notice consumes the pending anchor
+  ---
+  duration_ms: 0.1223
+  type: 'test'
+  ...
+# Subtest: B-15: an unavailable target whose hash was cleared externally stops waiting
+ok 5 - B-15: an unavailable target whose hash was cleared externally stops waiting
+  ---
+  duration_ms: 0.2707
+  type: 'test'
+  ...
+# Subtest: B-15: non-application or missing hashes never scroll
+ok 6 - B-15: non-application or missing hashes never scroll
+  ---
+  duration_ms: 0.1641
+  type: 'test'
+  ...
+# Subtest: B-15: a stale rendered element cannot bypass the authorized list or active filter
+ok 7 - B-15: a stale rendered element cannot bypass the authorized list or active filter
+  ---
+  duration_ms: 0.2193
+  type: 'test'
+  ...
+# Subtest: B-15: re-navigating after a filtered-out notice re-evaluates the new target
+ok 8 - B-15: re-navigating after a filtered-out notice re-evaluates the new target
+  ---
+  duration_ms: 0.1621
+  type: 'test'
+  ...
+# Subtest: B-15: closing a filtered-out notice still allows the next navigation to reveal
+ok 9 - B-15: closing a filtered-out notice still allows the next navigation to reveal
+  ---
+  duration_ms: 0.2989
+  type: 'test'
+  ...
+# Subtest: B-15: a withdrawn anchor target takes the notice path and never scrolls or opens
+ok 10 - B-15: a withdrawn anchor target takes the notice path and never scrolls or opens
+  ---
+  duration_ms: 0.7659
+  type: 'test'
+  ...
+# Subtest: 五种投递状态都有确定的状态文案
+ok 11 - 五种投递状态都有确定的状态文案
+  ---
+  duration_ms: 1.0485
+  type: 'test'
+  ...
+# Subtest: 未知状态原样显示，下一步只建议刷新，不臆造进展
+ok 12 - 未知状态原样显示，下一步只建议刷新，不臆造进展
+  ---
+  duration_ms: 0.1172
+  type: 'test'
+  ...
+# Subtest: 企业回复类型保留三类映射
+ok 13 - 企业回复类型保留三类映射
+  ---
+  duration_ms: 0.0821
+  type: 'test'
+  ...
+# Subtest: 查看/下载状态的下一步必须等待回复并明示不代表通过筛选，不得推断录用
+ok 14 - 查看/下载状态的下一步必须等待回复并明示不代表通过筛选，不得推断录用
+  ---
+  duration_ms: 0.2101
+  type: 'test'
+  ...
+# Subtest: 每种已知状态都有非空的下一步动作
+ok 15 - 每种已知状态都有非空的下一步动作
+  ---
+  duration_ms: 0.1001
+  type: 'test'
+  ...
+# Subtest: 事件列表摘要只给条数，不展开事件内容
+ok 16 - 事件列表摘要只给条数，不展开事件内容
+  ---
+  duration_ms: 0.1093
+  type: 'test'
+  ...
+# Subtest: student list errors clear prior reply and do not masquerade as empty success
+ok 17 - student list errors clear prior reply and do not masquerade as empty success
+  ---
+  duration_ms: 1.2857
+  type: 'test'
+  ...
+# Subtest: hidden, disposed and replaced student requests cannot restore old replies
+ok 18 - hidden, disposed and replaced student requests cannot restore old replies
+  ---
+  duration_ms: 0.2314
+  type: 'test'
+  ...
+# Subtest: withdrawal is single-flight and a late result cannot restore a hidden page
+ok 19 - withdrawal is single-flight and a late result cannot restore a hidden page
+  ---
+  duration_ms: 0.1717
+  type: 'test'
+  ...
+# Subtest: withdrawal success rereads current status rather than fabricating a state
+ok 20 - withdrawal success rereads current status rather than fabricating a state
+  ---
+  duration_ms: 0.1339
+  type: 'test'
+  ...
+# Subtest: focus refresh during withdrawal waits for committed status
+ok 21 - focus refresh during withdrawal waits for committed status
+  ---
+  duration_ms: 0.2603
+  type: 'test'
+  ...
+# Subtest: 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+ok 22 - 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+  ---
+  duration_ms: 20.7739
+  type: 'test'
+  ...
+# Subtest: 完整投递记录默认折叠，摘要给条数，内容仍可展开
+ok 23 - 完整投递记录默认折叠，摘要给条数，内容仍可展开
+  ---
+  duration_ms: 0.7111
+  type: 'test'
+  ...
+# Subtest: 查看与下载状态的卡片不推断录用
+ok 24 - 查看与下载状态的卡片不推断录用
+  ---
+  duration_ms: 1.144
+  type: 'test'
+  ...
+# Subtest: 企业回复与原报告/问题/引用链接保留
+ok 25 - 企业回复与原报告/问题/引用链接保留
+  ---
+  duration_ms: 1.4028
+  type: 'test'
+  ...
+# Subtest: 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+ok 26 - 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+  ---
+  duration_ms: 0.4206
+  type: 'test'
+  ...
+# Subtest: 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+ok 27 - 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+  ---
+  duration_ms: 1.0666
+  type: 'test'
+  ...
+# Subtest: 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+ok 28 - 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+  ---
+  duration_ms: 0.4569
+  type: 'test'
+  ...
+# Subtest: 提交成功：先进入忙碌，结束后 busy 归零并给出成功提示
+ok 29 - 提交成功：先进入忙碌，结束后 busy 归零并给出成功提示
+  ---
+  duration_ms: 1.24
+  type: 'test'
+  ...
+# Subtest: 忙碌防重：进行中的提交期间重复触发只发一次请求
+ok 30 - 忙碌防重：进行中的提交期间重复触发只发一次请求
+  ---
+  duration_ms: 0.1763
+  type: 'test'
+  ...
+# Subtest: 失败可重试：失败提示原样可见，busy 归零后再次提交发出新请求并成功
+ok 31 - 失败可重试：失败提示原样可见，busy 归零后再次提交发出新请求并成功
+  ---
+  duration_ms: 0.2659
+  type: 'test'
+  ...
+# Subtest: 重试仍失败：提示替换为最新一次失败原因，不残留成功提示
+ok 32 - 重试仍失败：提示替换为最新一次失败原因，不残留成功提示
+  ---
+  duration_ms: 0.2329
+  type: 'test'
+  ...
+# Subtest: 授权复选框不预勾选，未勾选时确认投递按钮必须禁用
+ok 33 - 授权复选框不预勾选，未勾选时确认投递按钮必须禁用
+  ---
+  duration_ms: 7.4842
+  type: 'test'
+  ...
+# Subtest: 首屏明示三项核心风险：固定报告/引用、简历下载可能含联系方式、撤回但已下载副本无法追回
+ok 34 - 首屏明示三项核心风险：固定报告/引用、简历下载可能含联系方式、撤回但已下载副本无法追回
+  ---
+  duration_ms: 0.5294
+  type: 'test'
+  ...
+# Subtest: 高级说明默认折叠且内容完整，不得隐藏其余分享风险
+ok 35 - 高级说明默认折叠且内容完整，不得隐藏其余分享风险
+  ---
+  duration_ms: 0.4973
+  type: 'test'
+  ...
+# Subtest: 保留确认投递入口、授权文案与查看我的投递链接及报告页锚点
+ok 36 - 保留确认投递入口、授权文案与查看我的投递链接及报告页锚点
+  ---
+  duration_ms: 0.3337
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 435.8402

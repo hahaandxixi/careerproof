@@ -1,0 +1,18 @@
+{
+  "snapshot_A": {
+    "unchanged": true,
+    "status": "withdrawn"
+  },
+  "snapshot_B": {
+    "unchanged": true,
+    "status": "submitted"
+  },
+  "snapshot_A2": {
+    "unchanged": true,
+    "status": "viewed"
+  },
+  "ai_usage_rows": 0,
+  "one_fresh_active_application": true,
+  "withdrawn_read_view_download_reply_denied": true,
+  "old_notification_targets_denied": 2
+}

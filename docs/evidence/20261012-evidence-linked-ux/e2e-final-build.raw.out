@@ -1,0 +1,26 @@
+database cp_e2e_linked-20261012: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "run": "linked-20261012",
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "528a1240-bc80-4cab-a569-b4b4d4239272",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "snapshotHashes": {
+    "7505c488-072e-4c32-b1e5-0c90bc04f26d": "4675bf8e69c7ef7a87e41f3ffe440933316d8697e453c5c34fa70892405765a6",
+    "5170fef8-c52f-4df5-be3d-9afe612bb8e4": "9f6e1c99775ef135f9004761d5d686b8c68d7c1f093489a2503d1bdf971e77df",
+    "74033518-f2e0-48fd-908f-4a0ddb55b70b": "27812fe04462047a13bd53e86a01ed5d030528426ffc54573c5027b61e756071",
+    "e4370510-6770-4a51-b9b3-c1456c0dd1e8": "27812fe04462047a13bd53e86a01ed5d030528426ffc54573c5027b61e756071"
+  },
+  "syntheticOnly": true
+}
+ISOLATION REFUSED: student student deliveries no longer match the recorded fixture; refusing to seed or restore anything
+Owned E2E services stopped; the cp_e2e_ database and its storage directory are left in place.
+E2E fixture verification failed.
+At D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:252 char:40
++ ... if ($LASTEXITCODE -ne 0) { throw 'E2E fixture verification failed.' }
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (E2E fixture verification failed.:String) [], RuntimeException
+    + FullyQualifiedErrorId : E2E fixture verification failed.
+ 

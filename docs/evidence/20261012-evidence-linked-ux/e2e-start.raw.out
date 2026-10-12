@@ -1,0 +1,7 @@
+E2E database name must match cp_e2e_[a-z0-9-]; refusing 'cp_e2e_linked_20261012'.
+At D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:68 char:67
++ ... {0,62}$') { throw "E2E database name must match cp_e2e_[a-z0-9-]; ref ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (E2E database na...nked_20261012'.:String) [], RuntimeException
+    + FullyQualifiedErrorId : E2E database name must match cp_e2e_[a-z0-9-]; refusing 'cp_e2e_linked_20261012'.
+ 

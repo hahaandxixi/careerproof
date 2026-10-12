@@ -1,0 +1,62 @@
+{
+  "jianli/src/components/ApplicationBoard.tsx": {
+    "sha256": "7d18e8f0c51485883db17720e0a8b381a94c3eb27a3842b34a1de9a76c1f72e6",
+    "stageMatches": true
+  },
+  "jianli/src/components/ApplicationList.tsx": {
+    "sha256": "76e84b1b77a3870ac3db78c11270b6c664586fb5ab3e803562d3ace7bb38a743",
+    "stageMatches": true
+  },
+  "jianli/src/components/ApplicationSubmit.tsx": {
+    "sha256": "1e0772d29b1680994ac8d86fd3032ca649180e5a86ba104f769e037b650fbd55",
+    "stageMatches": true
+  },
+  "jianli/src/components/GrowthComparison.tsx": {
+    "sha256": "dc7e9585676c2c8a56046784bcc6c373d4030568e0b16130dbd145302bb9cf03",
+    "stageMatches": true
+  },
+  "jianli/src/components/GrowthWorkspace.tsx": {
+    "sha256": "eb8d27f86baf221c77fdd261e97d1117f4f04321268125bb4c5559bec33fdf61",
+    "stageMatches": true
+  },
+  "jianli/src/components/HeatmapDemo.tsx": {
+    "sha256": "0572ad64cb6872fa3b73622c4612474b220c8bc8a6bc8b7f859409d8b4cec011",
+    "stageMatches": true
+  },
+  "jianli/src/components/JobDetailView.tsx": {
+    "sha256": "3b5ed8ea3d44814714eb4c67c0f5309d988f61902a780a64b676bffae3050079",
+    "stageMatches": true
+  },
+  "jianli/src/components/JobList.tsx": {
+    "sha256": "20cb076280286d3f5af6f86efbd262556f1899a7c50330b40d9da109bae403f9",
+    "stageMatches": true
+  },
+  "jianli/src/components/NotificationCenter.tsx": {
+    "sha256": "93ef3cb974a5106301e5ada430e18a0749a0d6cb89e1ebaee6192eadd3cbde06",
+    "stageMatches": true
+  },
+  "jianli/src/components/ReportDetail.tsx": {
+    "sha256": "816f40e613507058841a4025355859fbe186c22a4dc4c8a881603a3d14fac019",
+    "stageMatches": true
+  },
+  "jianli/src/components/ReportList.tsx": {
+    "sha256": "04502183938e3159fb246a0b8ee0cb48be38997ed9f2a6801f1c809ef6f57941",
+    "stageMatches": true
+  },
+  "jianli/src/components/SkillRadar.tsx": {
+    "sha256": "7ac7d9fdf05633cf9e703684e9e691290d90ac6b79dc42f452ddc8f831b2f74f",
+    "stageMatches": true
+  },
+  "jianli/src/lib/application-display.ts": {
+    "sha256": "28becd6727ec71e504b51dcfb8c3534eda6b27d0bc3878acdd3064e4d106f7fd",
+    "stageMatches": true
+  },
+  "jianli/src/lib/application-submit-session.ts": {
+    "sha256": "0a8040b9cea5f7ec69110d9f8672af359d140f7816885bcb753a76a9d8107c06",
+    "stageMatches": true
+  },
+  "jianli/src/lib/skill-radar.ts": {
+    "sha256": "ffc9648acbc983c19199d548df97ddc4bb80636e027071523a2e475e19440ab2",
+    "stageMatches": true
+  }
+}

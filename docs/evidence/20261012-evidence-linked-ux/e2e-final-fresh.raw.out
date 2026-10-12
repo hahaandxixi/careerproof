@@ -1,0 +1,125 @@
+database cp_e2e_linked-final-20261012: created
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_initial, Initial CareerProof schema.
+INFO  [alembic.runtime.migration] Running upgrade 0001_initial -> 0002_portfolio_history, Persist upload history links and idempotency keys without changing existing records.
+INFO  [alembic.runtime.migration] Running upgrade 0002_portfolio_history -> 0003_real_matching, Persist job filters, recoverable tasks and immutable report inputs.
+INFO  [alembic.runtime.migration] Running upgrade 0003_real_matching -> 0004_ai_evidence_analysis, Store report-level AI workflow metadata.
+INFO  [alembic.runtime.migration] Running upgrade 0004_ai_evidence_analysis -> 0005_project_material_role, Record whether an uploaded project version is a personal work or reference.
+INFO  [alembic.runtime.migration] Running upgrade 0005_project_material_role -> 0006_job_requirement_source, Retain exact source spans for AI-assisted job requirement drafts.
+INFO  [alembic.runtime.migration] Running upgrade 0006_job_requirement_source -> 0007_material_archiving, Keep retired fixtures recoverable without crowding material selection.
+INFO  [alembic.runtime.migration] Running upgrade 0007_material_archiving -> 0008_application_workflow, Scope enterprise reads to explicit, revocable application consent.
+INFO  [alembic.runtime.migration] Running upgrade 0008_application_workflow -> 0009_evidence_growth, Bind a student's evidence gap to selected versions and a follow-up report.
+INFO  [alembic.runtime.migration] Running upgrade 0009_evidence_growth -> 0010_notifications, Transactional application event notifications; no historical backfill.
+INFO  [alembic.runtime.migration] Running upgrade 0010_notifications -> 0011_reply_refs, Keep human reply links bound to the submitted report's own evidence.
+INFO  [alembic.runtime.migration] Running upgrade 0011_reply_refs -> 0012_knowledge_vec384, Switch the knowledge-chunk index to 384-dimension semantic embeddings.
+INFO  [alembic.runtime.migration] Running upgrade 0012_knowledge_vec384 -> 0013_ai_usage_idempotency, Add the per-request idempotency key to ai_usage_logs.
+INFO  [alembic.runtime.migration] Running upgrade 0013_ai_usage_idempotency -> 0014_growth_target_job, Persist the student's explicitly selected private comparison target.
+INFO  [alembic.runtime.migration] Running upgrade 0014_growth_target_job -> 0015_growth_answer_drafts, Store the student's private answer draft for one evidence growth task.
+INFO  [alembic.runtime.migration] Running upgrade 0015_growth_answer_drafts -> 0016_ai_request_attempts, Persist each physical model request attempt for the OPS-01B verification protocol.
+INFO  [alembic.runtime.migration] Running upgrade 0016_ai_request_attempts -> 0017_ai_shared_budget, Persistent shared budget schema; activation remains disabled until audited cutover.
+INFO  [alembic.runtime.migration] Running upgrade 0017_ai_shared_budget -> 0018_application_reconsent, Allow fresh consent after withdrawal, without reviving historical applications.
+{
+  "run": "linked-final-20261012",
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "02ef419f-2beb-493a-a921-88ff617c6b50",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "snapshotHashes": {},
+  "syntheticOnly": true
+}
+{
+  "runId": "linked-final-20261012",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "865ead4c-0c54-4422-83b6-64f836fd657b",
+    "B": "f701c99f-eeac-4126-87fc-cfc654184b46"
+  },
+  "reports": {
+    "A": "b123882b-088c-4de9-80cc-5150a053fdb7",
+    "B": "cec59ebc-3a3b-4291-9180-a56bc413fa43",
+    "A2": "a69f9bc9-e773-4521-ae55-d044f910abff"
+  },
+  "materials": {
+    "student": "769c658c-bdcd-47f0-88c7-eabcd70cbe06",
+    "studentA2": "0db9fd78-4b40-46cd-9c6f-bfe5232d4896"
+  },
+  "applications": {
+    "A": {
+      "id": "1f2ff86f-71b6-4e3c-ac5a-c316c2bf930e",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "72d9cc2375a9a6c34e354bf69d9b4d83eeb07b989ad83b2156d78356a5c41954"
+    },
+    "B": {
+      "id": "3b23c459-8ae9-46e3-b914-c081c26f05ca",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "b50982582c62b413583c589ef82be8fcdd43bcc5a1a4acdb0fd4ae22bb5ff868"
+    },
+    "A2": {
+      "id": "b00bc5a9-eca0-4b56-a433-1c300506bbae",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "7a5e1c1c35d1dd572f0a52204f094940a5f9c8effb678af4d701668c25a314b6"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "created"
+}
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.9s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            999 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                           4 kB         114 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                5.02 kB         111 kB
+├ ○ /demo/heatmap                        5.48 kB         112 kB
+├ ○ /growth                                134 B         129 kB
+├ ƒ /growth/[id]                           132 B         129 kB
+├ ƒ /jobs                                2.37 kB         112 kB
+├ ƒ /jobs/[id]                            3.6 kB         119 kB
+├ ƒ /jobs/[id]/applications              12.6 kB         123 kB
+├ ƒ /jobs/[id]/edit                        132 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                           2.38 kB         112 kB
+├ ○ /jobs/new                              132 B         115 kB
+├ ○ /login                               4.56 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.26 kB         114 kB
+├ ○ /notifications                       2.45 kB         113 kB
+├ ○ /portfolio                           6.69 kB         117 kB
+├ ƒ /recommendations                        6 kB         121 kB
+├ ○ /register                            5.01 kB         111 kB
+├ ○ /reports                             1.58 kB         112 kB
+├ ƒ /reports/[id]                        17.1 kB         127 kB
+└ ƒ /tasks/[id]                          3.51 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+CareerProof E2E run 'linked-final-20261012' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_linked-final-20261012 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\linked-final-20261012, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\linked-final-20261012.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId linked-final-20261012.
+next-env.d.ts was changed by the isolated build; the original bytes were restored.
