@@ -1,0 +1,26 @@
+{
+  "baseline": "71a2fd395cd8c296f923546b1e9c223c780e0e9d",
+  "files": {
+    ".gitignore": "c4b351f8f4ca62c03c8b460de3628a3f723c389cc27e6035221e2f5a5c20015c",
+    "backend/.gitignore": "15ac755326e1961268cf4014c041284fe424a52848eb52faef011b329b9f5d13",
+    "backend/pyproject.toml": "3ed1a37afaf403505b78b87e4b9b72190b779b9c84393fd77a5d8db4d6ec7478",
+    "backend/.env.example": "dc91192a6f36ff739ef150dee16279b6d87d7f3adf1fb6e4075fb67607c206bf",
+    "backend/app/core/config.py": "35ca57a2fe972ce776c436538040b30296768359a793181a64c2988480c67eac",
+    "backend/app/main.py": "67372bb2bae6c293a3ac0bc5be7cf1350723ce788ee340b471649c4dcc99d7fe",
+    "backend/app/tests/test_production_settings.py": "b825ea31010d42619a829802b92816074c7ce84c23bc23f387a7ed319eb882c3",
+    "backend/README.md": "a8f6d4e6967f7e9746d6be55f4c4bfb000f0f96e8f5dcd3d3b711d55958aa1a7",
+    "THIRD_PARTY_NOTICES.md": "78437a2f84e930220d8bb9f28b6a8e6860e3b97c60693d7939f0a6c4b78c2b7e",
+    "阶段1-比赛需求拆解与项目总控.md": "8481749b82d724a578fb5c85882431e1b09bb0b233c81da1b807b93fb6615d8d",
+    "docs/guides/使用与启动.md": "41f9785dab4e43132a3c0c443ad43d4574bd18a18b90ca8ed09e205bcc4df2aa",
+    "docs/任务清单.md": "49907961b0e35cb9180c3993891ddb33bbaa33356caa310c151be839f34976a3",
+    "docs/task-cards/20261013-ZCODE48-score-labels.md": "2095701f118c4dd6450a2f288ae7c30dc751bfce7f23ef737c58c949f3310b98"
+  },
+  "preservedUnsubmitted": [
+    "Start-Local.ps1",
+    "Stop-Local.ps1",
+    "scripts/local-runtime.ps1",
+    "backend/app/agents/contracts.py",
+    "backend/app/agents/provider.py",
+    "backend/app/tools/task_boundaries.py"
+  ]
+}

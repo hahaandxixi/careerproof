@@ -8,4 +8,5 @@ storage/
 htmlcov/
 .coverage
 .tmp/
+.tmp*/
 .venv-dependency23/

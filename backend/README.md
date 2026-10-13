@@ -68,11 +68,18 @@ python -m venv .venv
 
 ## 验证
 
+在后端目录运行。下例使用已经通过锁定版本核验的升级环境；新机器请先按上面的安装步骤
+建立环境，并运行 `python -m evals.verify_dependency_environment`，不要使用未同步依赖的旧 `.venv`。
+
 ```powershell
-.\.venv\Scripts\ruff.exe check .
-.\.venv\Scripts\pytest.exe
-.\.venv\Scripts\alembic.exe check
+.\.venv-dependency23\Scripts\ruff.exe check .
+.\.venv-dependency23\Scripts\python.exe -m pytest -p no:cacheprovider
+.\.venv-dependency23\Scripts\alembic.exe check
 ```
+
+`alembic check` 会连接当前配置数据库，仅在明确选定的本地库执行。生产环境必须设置
+`APP_ENV=production` 和至少32字符的私有随机 `JWT_SECRET`，默认值和示例占位符会被拒绝。
+生产模式强制关闭 Debug，`/docs`、`/redoc`、`/openapi.json` 不开放；开发与测试模式仍可用。
 
 ## 主要接口
 
@@ -159,20 +166,22 @@ PostgreSQL对项目行加锁来串行分配版本号。旧客户端不传编号�
 `cp_test_*` schema 中创建测试表并清理该 schema，不改 `public` 业务表。不要使用生产库测试，
 也不要在日志、公开仓库或命令截图中暴露数据库密码。
 
-本地检索在材料解析时按可追溯行号切块，使用 `local-hash-v1` 生成 1024 维确定性向量并写入
-pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登录学生自己的材料。
-已有材料可用 `python -m app.scripts.reindex_knowledge` 重建派生索引。
+本地检索在材料解析时按可追溯行号切块，优先用本地 MiniLM ONNX 模型生成384维向量；
+模型不可用时回退为 `local-hash-v1-384`，并保存实际嵌入引擎。它不调用外部API。
+`GET /knowledge/search` 只检索当前登录学生自己的材料。已有材料可用
+`python -m app.scripts.reindex_knowledge` 重建派生索引；0012迁移改变向量维度并清空旧派生索引，
+从旧版本升级后需显式重建并核对本人材料的查询结果，不能把迁移成功当成检索就绪。
 
 真实报告另有可选的本地 ONNX 语义检索，它只给项目文档补充低强度候选，和上述
-`local-hash-v1` 数据库索引是两条不同路径。新环境需显式运行
+上述知识库索引是两条不同路径。新环境需显式运行
 `python -m app.scripts.download_semantic_model` 安装约 235 MB 的固定版本权重；
 未安装或推理失败时自动保留词法检索与规则报告。运行
 `python -m app.scripts.evaluate_semantic_retrieval` 可复核四个固定小例。
-详见 [本地语义文档检索验收](../docs/archive/验收记录/本地语义文档检索验收-20260923.md)。
+详见 [本地语义文档检索验收](../docs/evidence/历史验收汇编.md#record-053)。
 
 固定规则评测：`python evals/run_rule_baseline.py --output evals/baseline-evidence-v3.json`。
 
-固定64例合成检索对照：`python -m evals.run_offline_retrieval_comparison --semantic --output evals/retrieval-new-run.json`。不调用外部API、不自动下载权重、不覆盖输出；独立人工标注尚待完成。结果区分文档范围、宏/微Recall@2和无目标时返回候选，召回不表示实现成立。详见[评测边界与复现](../docs/archive/验收记录/检索64例合成对照评测-20260926.md)。原`run_retrieval_comparison`是真实DeepSeek三组对照入口，需要显式`--live`并产生API费用。
+固定64例合成检索对照：`python -m evals.run_offline_retrieval_comparison --semantic --output evals/retrieval-new-run.json`。不调用外部API、不自动下载权重、不覆盖输出；独立人工标注尚待完成。结果区分文档范围、宏/微Recall@2和无目标时返回候选，召回不表示实现成立。详见[评测边界与复现](../docs/evidence/历史验收汇编.md#record-055)。原`run_retrieval_comparison`是真实DeepSeek三组对照入口，需要显式`--live`并产生API费用。
 
 固定 AI 评测：启用合成数据可用的真实 Provider 后，运行
 `python -m evals.run_ai_evidence_baseline --output evals/baseline-ai-evidence-deepseek-YYYY-MM-DD.json`。
@@ -187,7 +196,7 @@ pgvector；它不调用外部模型。`GET /knowledge/search` 只检索当前登
 - ZIP 上限 30 MB，PDF/DOCX/TXT 上限 10 MB；扫描 PDF 和常见图片可使用本地 RapidOCR，低置信度文字仍需人工核对。
 - 规则覆盖有限，分类入口不代表每个专业都具备完整评价器。
 - 当前是规则、词法与可选本地语义文档候选组成的受控生成闭环，不宣称通用向量 RAG；语音
-  企业投递授权、候选人对照与站内回复已接线；在线面试、通知中心和SMTP邮件尚未实现。截图观察已使用同一DeepSeek Key完成一次合成图片真实验收，区域定位及语义准确性仍待独立人工核验。
+  企业投递授权、候选人对照、站内回复和通知中心已接线；在线面试和SMTP邮件尚未实现。截图观察已使用同一DeepSeek Key完成一次合成图片真实验收，区域定位及语义准确性仍待独立人工核验。
 
 ## 安全策略
 

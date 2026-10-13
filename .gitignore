@@ -9,3 +9,6 @@ backend/evals/open-source-*.json
 
 # IDE share artifacts
 .trae-html-share-packages/
+
+# Local test scratch directories, including .tmp-* siblings.
+.tmp*/

@@ -1,0 +1,199 @@
+FFF.FF.F..FFFF..                                                         [100%]
+================================== FAILURES ===================================
+_________________ test_production_rejects_omitted_jwt_secret __________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED14186E0>
+
+    def test_production_rejects_omitted_jwt_secret(monkeypatch):
+        monkeypatch.delenv("JWT_SECRET", raising=False)
+>       with pytest.raises(ValidationError, match="JWT_SECRET"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+backend\app\tests\test_production_settings.py:15: Failed
+_ test_production_rejects_public_or_weak_secrets[development-only-secret-change-before-production] _
+
+secret = 'development-only-secret-change-before-production'
+
+    @pytest.mark.parametrize(
+        "secret",
+        [
+            "development-only-secret-change-before-production",
+            "replace-with-at-least-32-random-characters",
+            "short-secret",
+            " " * 48,
+        ],
+    )
+    def test_production_rejects_public_or_weak_secrets(secret):
+>       with pytest.raises(ValidationError, match="JWT_SECRET"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+backend\app\tests\test_production_settings.py:29: Failed
+_ test_production_rejects_public_or_weak_secrets[replace-with-at-least-32-random-characters] _
+
+secret = 'replace-with-at-least-32-random-characters'
+
+    @pytest.mark.parametrize(
+        "secret",
+        [
+            "development-only-secret-change-before-production",
+            "replace-with-at-least-32-random-characters",
+            "short-secret",
+            " " * 48,
+        ],
+    )
+    def test_production_rejects_public_or_weak_secrets(secret):
+>       with pytest.raises(ValidationError, match="JWT_SECRET"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+backend\app\tests\test_production_settings.py:29: Failed
+_ test_production_rejects_public_or_weak_secrets[                                                ] _
+
+secret = '                                                '
+
+    @pytest.mark.parametrize(
+        "secret",
+        [
+            "development-only-secret-change-before-production",
+            "replace-with-at-least-32-random-characters",
+            "short-secret",
+            " " * 48,
+        ],
+    )
+    def test_production_rejects_public_or_weak_secrets(secret):
+>       with pytest.raises(ValidationError, match="JWT_SECRET"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+backend\app\tests\test_production_settings.py:29: Failed
+_________________ test_production_always_disables_debug[True] _________________
+
+debug = True
+
+    @pytest.mark.parametrize("debug", [True, False])
+    def test_production_always_disables_debug(debug):
+        config = Settings(
+            _env_file=None, app_env="production", jwt_secret=SAFE_TEST_SECRET, debug=debug
+        )
+>       assert config.debug is False
+E       AssertionError: assert True is False
+E        +  where True = Settings(app_name='CareerProof API', app_env='production', debug=True, api_v1_prefix='/api/v1', database_url='postgres...led=True, semantic_retrieval_enabled=True, semantic_model_cache_dir=WindowsPath('D:/jbcode/web ai/jianli/.tmp/models')).debug
+
+backend\app\tests\test_production_settings.py:38: AssertionError
+_____________ test_production_environment_variables_are_validated _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED14C8230>
+
+    def test_production_environment_variables_are_validated(monkeypatch):
+        monkeypatch.setenv("APP_ENV", "production")
+        monkeypatch.setenv("DEBUG", "true")
+        monkeypatch.setenv("JWT_SECRET", SAFE_TEST_SECRET)
+>       assert Settings(_env_file=None).debug is False
+E       AssertionError: assert True is False
+E        +  where True = Settings(app_name='CareerProof API', app_env='production', debug=True, api_v1_prefix='/api/v1', database_url='postgres...led=True, semantic_retrieval_enabled=True, semantic_model_cache_dir=WindowsPath('D:/jbcode/web ai/jianli/.tmp/models')).debug
+E        +    where Settings(app_name='CareerProof API', app_env='production', debug=True, api_v1_prefix='/api/v1', database_url='postgres...led=True, semantic_retrieval_enabled=True, semantic_model_cache_dir=WindowsPath('D:/jbcode/web ai/jianli/.tmp/models')) = Settings(_env_file=None)
+
+backend\app\tests\test_production_settings.py:46: AssertionError
+____________ test_production_disables_documentation_routes[/docs] _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED14C8B30>
+path = '/docs'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json"])
+    async def test_production_disables_documentation_routes(monkeypatch, path):
+        config = Settings(_env_file=None, app_env="production", jwt_secret=SAFE_TEST_SECRET)
+        monkeypatch.setattr("app.main.settings", config)
+        app = create_app()
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+>           assert (await client.get(path)).status_code == 404
+E           assert 200 == 404
+E            +  where 200 = <Response [200 OK]>.status_code
+
+backend\app\tests\test_production_settings.py:62: AssertionError
+____________ test_production_disables_documentation_routes[/redoc] ____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED14C9EE0>
+path = '/redoc'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json"])
+    async def test_production_disables_documentation_routes(monkeypatch, path):
+        config = Settings(_env_file=None, app_env="production", jwt_secret=SAFE_TEST_SECRET)
+        monkeypatch.setattr("app.main.settings", config)
+        app = create_app()
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+>           assert (await client.get(path)).status_code == 404
+E           assert 200 == 404
+E            +  where 200 = <Response [200 OK]>.status_code
+
+backend\app\tests\test_production_settings.py:62: AssertionError
+________ test_production_disables_documentation_routes[/openapi.json] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED14E8C80>
+path = '/openapi.json'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json"])
+    async def test_production_disables_documentation_routes(monkeypatch, path):
+        config = Settings(_env_file=None, app_env="production", jwt_secret=SAFE_TEST_SECRET)
+        monkeypatch.setattr("app.main.settings", config)
+        app = create_app()
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+>           assert (await client.get(path)).status_code == 404
+E           assert 200 == 404
+E            +  where 200 = <Response [200 OK]>.status_code
+
+backend\app\tests\test_production_settings.py:62: AssertionError
+__________ test_production_unhandled_error_does_not_expose_traceback __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AED16B2BD0>
+
+    async def test_production_unhandled_error_does_not_expose_traceback(monkeypatch):
+        config = Settings(
+            _env_file=None, app_env="production", jwt_secret=SAFE_TEST_SECRET, debug=True
+        )
+        monkeypatch.setattr("app.main.settings", config)
+        app = create_app()
+    
+        @app.get("/__isolated_error_test")
+        async def fail():
+            raise RuntimeError("private-runtime-marker")
+    
+        transport = ASGITransport(app=app, raise_app_exceptions=False)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            response = await client.get("/__isolated_error_test")
+        assert response.status_code == 500
+>       assert "private-runtime-marker" not in response.text
+E       assert 'private-runtime-marker' not in 'Traceback (...ime-marker\n'
+E         
+E         'private-runtime-marker' is contained here:
+E           imeError("private-runtime-marker")
+E           RuntimeError: private-runtime-marker
+
+backend\app\tests\test_production_settings.py:80: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED backend\app\tests\test_production_settings.py::test_production_rejects_omitted_jwt_secret
+FAILED backend\app\tests\test_production_settings.py::test_production_rejects_public_or_weak_secrets[development-only-secret-change-before-production]
+FAILED backend\app\tests\test_production_settings.py::test_production_rejects_public_or_weak_secrets[replace-with-at-least-32-random-characters]
+FAILED backend\app\tests\test_production_settings.py::test_production_rejects_public_or_weak_secrets[                                                ]
+FAILED backend\app\tests\test_production_settings.py::test_production_always_disables_debug[True]
+FAILED backend\app\tests\test_production_settings.py::test_production_environment_variables_are_validated
+FAILED backend\app\tests\test_production_settings.py::test_production_disables_documentation_routes[/docs]
+FAILED backend\app\tests\test_production_settings.py::test_production_disables_documentation_routes[/redoc]
+FAILED backend\app\tests\test_production_settings.py::test_production_disables_documentation_routes[/openapi.json]
+FAILED backend\app\tests\test_production_settings.py::test_production_unhandled_error_does_not_expose_traceback
+10 failed, 6 passed, 5 warnings in 1.90s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

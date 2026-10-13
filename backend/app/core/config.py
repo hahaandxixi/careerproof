@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -78,9 +78,23 @@ class Settings(BaseSettings):
     @classmethod
     def reject_weak_production_secret(cls, value: str, info) -> str:
         environment = info.data.get("app_env", "development")
-        if environment == "production" and len(value) < 32:
-            raise ValueError("JWT_SECRET must contain at least 32 characters in production")
+        if environment == "production":
+            public_secrets = {
+                "development-only-secret-change-before-production",
+                "replace-with-at-least-32-random-characters",
+            }
+            if value.strip() in public_secrets or len(value.strip()) < 32:
+                raise ValueError(
+                    "JWT_SECRET must be a private secret of at least 32 characters in production; "
+                    "development and example secrets are forbidden"
+                )
         return value
+
+    @model_validator(mode="after")
+    def disable_production_debug(self) -> "Settings":
+        if self.app_env == "production":
+            self.debug = False
+        return self
 
     @field_validator("storage_base_dir")
     @classmethod
