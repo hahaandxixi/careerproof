@@ -6,9 +6,10 @@ export const DEMO_REQUIREMENTS = [
   { id: "demo-contribution", title: "本人贡献记录", skill: "贡献记录" },
 ];
 const rows = [
-  { name: "合成候选人 A", values: [["supported", 85], ["partial", 55], ["gap", 0], ["claimed_only", 20]] },
-  { name: "合成候选人 B", values: [["partial", 45], ["supported", 80], ["supported", 75], ["gap", 0]] },
-  { name: "合成候选人 C", values: [["claimed_only", 20], ["gap", 0], ["unsupported", null], ["partial", 40]] },
+  // Preset interface examples use the current rule scale; these are not generated reports.
+  { name: "合成候选人 A", values: [["supported", 65], ["partial", 40], ["gap", 0], ["claimed_only", 10]] },
+  { name: "合成候选人 B", values: [["partial", 40], ["supported", 65], ["supported", 65], ["gap", 0]] },
+  { name: "合成候选人 C", values: [["claimed_only", 10], ["gap", 0], ["unsupported", null], ["partial", 40]] },
 ];
 export const HEATMAP_DEMO: ApplicationView[] = rows.map((row, index) => ({
   id: `demo-application-${index}`, jobId: "demo-job", jobTitle: "Python 后端开发（合成示例）", companyName: "合成演示企业", candidateName: row.name,

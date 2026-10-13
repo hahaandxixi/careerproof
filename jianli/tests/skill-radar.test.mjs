@@ -11,12 +11,13 @@ test("missing material never creates a point; unavailable and invalid scores are
   assert.equal(radarScore(d("future","future",75)),null);
 });
 test("segments stop at gaps, self claims and unavailable axes instead of filling a misleading area", () => {
-  const dims=[d("a","supported",85),d("b","partial",55),d("c","gap",0),d("d","claimed_only",20)];
+  // 传智杯48：正常数据改为 evidence-v3 单项可达值 65/40/15/10
+  const dims=[d("a","supported",65),d("b","partial",40),d("c","gap",0),d("d","claimed_only",10)];
   assert.deepEqual(radarSegments(dims),[[0,1]]);
   assert.deepEqual(radarSegments(dims.slice(0,2)),[]);
 });
 test("selection joins only by requirement identity and never carries a missing citation from another requirement", () => {
-  const dims=[d("first","supported",85),d("second","gap",0)];
+  const dims=[d("first","supported",65),d("second","gap",0)];
   const items=[{requirementId:"first",evidenceList:[{citationId:"A-E1"}]}];
   assert.equal(radarSelection(dims,"second",items).item,undefined);
   assert.equal(radarSelection(dims,"first",items).item,items[0]);

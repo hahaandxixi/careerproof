@@ -54,14 +54,14 @@ const { ApplicationItemCard } = list;
 function fixture(overrides = {}) {
   return {
     id: "app-1", jobId: "j1", jobTitle: "前端工程师", companyName: "示例公司", candidateName: "张三",
-    reportId: "r-9", status: "viewed", createdAt: "2026-10-12T08:00:00Z", overallScore: 82,
+    reportId: "r-9", status: "viewed", createdAt: "2026-10-12T08:00:00Z", overallScore: 65,
     consentVersion: "v1", replyKind: null, replyText: null,
     replyReferences: [],
     events: [
       { type: "submitted", at: "2026-10-12T08:00:00Z", detail: "已确认授权投递" },
       { type: "viewed", at: "2026-10-12T09:00:00Z", detail: "企业已查看报告" },
     ],
-    dimensions: [{ requirementId: "q1", title: "React 基础", skill: "前端", score: 80, verdict: "supported", weight: 3, evidenceLevel: 2, evidenceLevelSource: "test", evidenceLevelVersion: "v1", formulaVersion: "f1" }],
+    dimensions: [{ requirementId: "q1", title: "React 基础", skill: "前端", score: 65, verdict: "supported", weight: 3, evidenceLevel: 2, evidenceLevelSource: "test", evidenceLevelVersion: "v1", formulaVersion: "evidence-v3" }],
     comparisonBasis: "固定报告",
     ...overrides,
   };

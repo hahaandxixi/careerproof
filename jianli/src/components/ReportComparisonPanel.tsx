@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ReportComparison } from "@/lib/api/domain";
 import { GROWTH_CHANGES as LABELS } from "@/lib/growth-workflow";
+import { evidenceLevelName } from "@/lib/evidence-display";
 import ReportItemExplanation from "./ReportItemExplanation";
 
 export default function ReportComparisonPanel({ reportId, revision }: { reportId: string; revision: string }) {
@@ -32,7 +33,7 @@ export default function ReportComparisonPanel({ reportId, revision }: { reportId
       <div className="flex flex-wrap gap-4"><Link className="text-indigo-700 underline" href={`/reports/${value.baseId}`}>打开基准报告</Link><span>变化背景：{value.contextChanges.map(key => LABELS[key] ?? key).join("、") || "未发现已记录的背景变化"}</span></div>
       <details><summary className="cursor-pointer">两次材料版本清单</summary>{[["基准", value.baseMaterials], ["当前", value.targetMaterials]].map(([label, rows]) => <div key={String(label)} className="mt-2"><strong>{String(label)}</strong><ul className="pl-4">{(rows as ReportComparison["baseMaterials"]).map(m => <li key={`${m.kind}-${m.id}`}>{m.title} · 第 {m.versionNumber} 版</li>)}</ul></div>)}</details>
       {value.items.map(item => <article key={item.requirementId} className="space-y-2 rounded-lg border border-slate-200 p-3">
-        <strong>{item.title}</strong>{item.changes.includes("requirement") && <div className="text-xs leading-6 text-slate-600"><p>原要求：{item.baseRequirement?.title ?? "无已保存要求"} · 权重 {item.baseRequirement?.weight ?? "未记录"}</p><p>当前要求：{item.targetRequirement?.title ?? "无已保存要求"} · 权重 {item.targetRequirement?.weight ?? "未记录"}</p></div>}<p>实践证据等级：{item.baseLevel == null ? "未评级" : `${item.baseLevel}/5`} → {item.targetLevel == null ? "未评级" : `${item.targetLevel}/5`}</p>
+        <strong>{item.title}</strong>{item.changes.includes("requirement") && <div className="text-xs leading-6 text-slate-600"><p>原要求：{item.baseRequirement?.title ?? "无已保存要求"} · 权重 {item.baseRequirement?.weight ?? "未记录"}</p><p>当前要求：{item.targetRequirement?.title ?? "无已保存要求"} · 权重 {item.targetRequirement?.weight ?? "未记录"}</p></div>}<p>实践证据等级：{item.baseLevel == null ? "未评级" : evidenceLevelName(item.baseLevel)} → {item.targetLevel == null ? "未评级" : evidenceLevelName(item.targetLevel)}</p>
         <p className="text-xs text-slate-600">{item.changes.map(key => LABELS[key] ?? key).join("、") || "未发现已记录的变化"}</p>
         <p className="text-xs text-slate-500">AI 状态：{item.baseAiStatus ?? "无此项"} → {item.targetAiStatus ?? "无此项"}；复核状态：{item.baseReview ?? "无复核"} → {item.targetReview ?? "无复核"}</p>
         <ReportItemExplanation item={item} targetLabel="当前报告" />

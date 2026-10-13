@@ -1,0 +1,139 @@
+TAP version 13
+# node:internal/modules/esm/resolve:275
+#     throw new ERR_MODULE_NOT_FOUND(
+#           ^
+# Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\\jbcode\\web ai\\jianli\\jianli\\src\\lib\\evidence-display.ts' imported from D:\\jbcode\\web ai\\jianli\\jianli\\tests\\evidence-display.test.mjs
+#     at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+#     at moduleResolve (node:internal/modules/esm/resolve:861:10)
+#     at defaultResolve (node:internal/modules/esm/resolve:985:11)
+#     at \#cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+#     at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+#     at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+#   code: 'ERR_MODULE_NOT_FOUND',
+#   url: 'file:///D:/jbcode/web%20ai/jianli/jianli/src/lib/evidence-display.ts'
+# }
+# Node.js v22.23.1
+# Subtest: tests\\evidence-display.test.mjs
+not ok 1 - tests\\evidence-display.test.mjs
+  ---
+  duration_ms: 64.2277
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\evidence-display.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+not ok 2 - SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+  ---
+  duration_ms: 10.2736
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\score-labels-render.test.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("实践证据 任务实现"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/score-labels-render.test.mjs:61:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+not ok 3 - SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+  ---
+  duration_ms: 0.9199
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\score-labels-render.test.mjs:70:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("等级 4"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/score-labels-render.test.mjs:74:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+not ok 4 - ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+  ---
+  duration_ms: 0.8677
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\score-labels-render.test.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("当前证据基础线索"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/score-labels-render.test.mjs:86:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+not ok 5 - GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+  ---
+  duration_ms: 2.1283
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\score-labels-render.test.mjs:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("任务实现"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/score-labels-render.test.mjs:116:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 453.6448

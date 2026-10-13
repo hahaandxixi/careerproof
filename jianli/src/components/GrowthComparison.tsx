@@ -3,6 +3,7 @@ import type { GrowthTask } from "@/lib/api/domain";
 import { GROWTH_CHANGES } from "@/lib/growth-workflow";
 import { careerPlanHref } from "@/lib/recommendation-selection";
 import { enterpriseQuestionReview } from "@/lib/enterprise-question-review";
+import { evidenceLevelName } from "@/lib/evidence-display";
 import ReportItemExplanation from "./ReportItemExplanation";
 
 export default function GrowthComparison({ task }: { task: GrowthTask }) {
@@ -33,7 +34,7 @@ export default function GrowthComparison({ task }: { task: GrowthTask }) {
           <p className="text-xs text-slate-600">这些是报告展示变化，不是对企业的自动回复或通过结论；请结合原问题、材料原文和本人贡献人工核对。</p>
         </div>;
       })()}
-      <p>证据等级：{item.baseLevel == null ? "未评级" : `${item.baseLevel}/5`} → {item.targetLevel == null ? "未评级" : `${item.targetLevel}/5`}；{item.changes.map(k => GROWTH_CHANGES[k] || k).join("、") || "无已记录变化"}</p>
+      <p>证据等级：{item.baseLevel == null ? "未评级" : evidenceLevelName(item.baseLevel)} → {item.targetLevel == null ? "未评级" : evidenceLevelName(item.targetLevel)}；{item.changes.map(k => GROWTH_CHANGES[k] || k).join("、") || "无已记录变化"}</p>
       <ReportItemExplanation item={item} baseLabel="任务基准" />
       {item.changes.includes("requirement") && <p>原要求：{item.baseRequirement?.title || "未记录"} · 权重{item.baseRequirement?.weight ?? "未记录"} → 当前要求：{item.targetRequirement?.title || "已移除"} · 权重{item.targetRequirement?.weight ?? "未记录"}</p>}
       {[["新增展示", item.addedEvidence, task.targetReportId], ["不再展示", item.removedEvidence, task.baseReportId]].map(([label, rows, report]) => <details key={String(label)} className="rounded-lg border border-slate-200 p-3">

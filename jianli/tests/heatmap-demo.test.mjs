@@ -2,6 +2,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { HEATMAP_DEMO, DEMO_REQUIREMENTS } from "../src/lib/heatmap-demo.ts";
 import { filterApplications } from "../src/lib/application-comparison.ts";
+import { RULE_SCORE_CAP } from "../src/lib/evidence-display.ts";
+
+test("preset interface scores stay within the current material-support rule scale", () => {
+ for (const row of HEATMAP_DEMO) for (const dimension of row.dimensions) {
+  if (dimension.score !== null) assert.ok(dimension.score >= 0 && dimension.score <= RULE_SCORE_CAP);
+  if (dimension.verdict === "claimed_only") assert.equal(dimension.score, 10);
+ }
+});
 test("demo has three synthetic identities with aligned requirement columns and no real report", () => {
  assert.equal(HEATMAP_DEMO.length, 3);
  for (const row of HEATMAP_DEMO) {

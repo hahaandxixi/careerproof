@@ -86,6 +86,8 @@ export interface MatchItem {
 export interface MatchResult {
   jobId: string;
   candidateId: string;
+  // 传智杯48：此 0-100 是 MVP 遗留演示模型口径；线上 evidence-v3 报告分数是材料支持度
+  // （当前规则上限 65，见 src/lib/evidence-display.ts），展示层不得按 0—100 成绩口径复用。
   overallScore: number; // 0-100
   items: MatchItem[];
   gaps: string[]; // 缺失项（verdict === gap）

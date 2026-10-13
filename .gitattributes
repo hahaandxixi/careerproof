@@ -3,6 +3,7 @@
 docs/evidence/**/*.raw.out -text -whitespace
 docs/evidence/**/*.raw.err -text -whitespace
 docs/evidence/**/*.patch -text -whitespace
+docs/evidence/20261013-z48-score-labels/*.log -text -whitespace
 
 # Double-click launchers and Windows PowerShell scripts keep Windows line endings.
 *.cmd text eol=crlf

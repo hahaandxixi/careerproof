@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+ok 1 - 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+  ---
+  duration_ms: 19.4152
+  type: 'test'
+  ...
+# Subtest: 完整投递记录默认折叠，摘要给条数，内容仍可展开
+ok 2 - 完整投递记录默认折叠，摘要给条数，内容仍可展开
+  ---
+  duration_ms: 0.6508
+  type: 'test'
+  ...
+# Subtest: 查看与下载状态的卡片不推断录用
+ok 3 - 查看与下载状态的卡片不推断录用
+  ---
+  duration_ms: 0.7659
+  type: 'test'
+  ...
+# Subtest: 企业回复与原报告/问题/引用链接保留
+ok 4 - 企业回复与原报告/问题/引用链接保留
+  ---
+  duration_ms: 1.414
+  type: 'test'
+  ...
+# Subtest: 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+ok 5 - 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+  ---
+  duration_ms: 0.4056
+  type: 'test'
+  ...
+# Subtest: 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+ok 6 - 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+  ---
+  duration_ms: 0.9393
+  type: 'test'
+  ...
+# Subtest: 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+ok 7 - 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+  ---
+  duration_ms: 0.4323
+  type: 'test'
+  ...
+# Subtest: 已知等级 1/2/3 显示为等级名称
+ok 8 - 已知等级 1/2/3 显示为等级名称
+  ---
+  duration_ms: 1.1579
+  type: 'test'
+  ...
+# Subtest: 未知历史等级保留原数字，不伪造比例
+ok 9 - 未知历史等级保留原数字，不伪造比例
+  ---
+  duration_ms: 0.1542
+  type: 'test'
+  ...
+# Subtest: 65 只是当前规则上限，不引入 100 分口径
+ok 10 - 65 只是当前规则上限，不引入 100 分口径
+  ---
+  duration_ms: 0.0939
+  type: 'test'
+  ...
+# Subtest: SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+ok 11 - SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+  ---
+  duration_ms: 7.8932
+  type: 'test'
+  ...
+# Subtest: SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+ok 12 - SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+  ---
+  duration_ms: 0.8915
+  type: 'test'
+  ...
+# Subtest: ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+ok 13 - ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+  ---
+  duration_ms: 0.8393
+  type: 'test'
+  ...
+# Subtest: GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+ok 14 - GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+  ---
+  duration_ms: 2.1421
+  type: 'test'
+  ...
+# Subtest: linked detail renders only selected requirement citations and keeps sources collapsed
+ok 15 - linked detail renders only selected requirement citations and keeps sources collapsed
+  ---
+  duration_ms: 9.185
+  type: 'test'
+  ...
+# Subtest: synthetic radar never fabricates citations and supports fewer than three requirements
+ok 16 - synthetic radar never fabricates citations and supports fewer than three requirements
+  ---
+  duration_ms: 0.3785
+  type: 'test'
+  ...
+# Subtest: reference source cannot be presented as personal contribution
+ok 17 - reference source cannot be presented as personal contribution
+  ---
+  duration_ms: 0.3569
+  type: 'test'
+  ...
+# Subtest: missing material never creates a point; unavailable and invalid scores are not invented zeros
+ok 18 - missing material never creates a point; unavailable and invalid scores are not invented zeros
+  ---
+  duration_ms: 0.661
+  type: 'test'
+  ...
+# Subtest: segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+ok 19 - segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+  ---
+  duration_ms: 0.5357
+  type: 'test'
+  ...
+# Subtest: selection joins only by requirement identity and never carries a missing citation from another requirement
+ok 20 - selection joins only by requirement identity and never carries a missing citation from another requirement
+  ---
+  duration_ms: 0.1634
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 414.0962

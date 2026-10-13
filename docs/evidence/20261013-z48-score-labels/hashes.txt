@@ -1,0 +1,12 @@
+aa49db1a82e871909cf83fef501f91a662b324ed  jianli/src/lib/evidence-display.ts
+7fc5b9dcbcd8304e95c2bf653ea7ab05f9fe6163  jianli/src/components/ActionPlan.tsx
+a877e1efe2dfab929de5e3356dafecbffb1adb64  jianli/src/components/ApplicationBoard.tsx
+0141f768d8d5601b2be0532d2a8061705d3e440e  jianli/src/components/GrowthComparison.tsx
+cf2cf30a63586018f15b2fd1a102531489bf698f  jianli/src/components/ReportComparisonPanel.tsx
+c61436df375391be34f56aac46464fc56bdb3641  jianli/src/components/ReportDetail.tsx
+f84a160d9fda4378d1712986fbcf663a69c82c07  jianli/src/components/SkillRadar.tsx
+6696b80fba863ae289db07c396ad1cb57128d857  jianli/src/lib/types.ts
+898d13dff73d71ed564c050976889d6ec752b0fd  jianli/tests/evidence-display.test.mjs
+d08eaf43cbf39817028586197e7507a692119f17  jianli/tests/score-labels-render.test.mjs
+063baae633db44c3dad711981ea2e953ea53399a  jianli/tests/skill-radar-render.test.mjs
+531511affa463dcd1793bce00e4482b56490212f  jianli/tests/skill-radar.test.mjs

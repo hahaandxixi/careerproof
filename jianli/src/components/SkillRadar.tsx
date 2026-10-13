@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection } from "@/lib/skill-radar";
+import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
 
 export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false }: {
   dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean;
@@ -20,7 +21,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
   return <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5" aria-label="证据联动雷达">
     <h3 className="font-semibold">岗位要求雷达 · 证据联动</h3>
-    <p className="mt-2 text-xs leading-5 text-slate-500">点选要求，核对原报告判断与来源。实心点有证据，空心点仅自述；缺材料不绘点，不可评用“—”。分数沿用原报告，不填充面积。</p>
+    <p className="mt-2 text-xs leading-5 text-slate-500">点选要求，核对原报告判断与来源。实心点有证据，空心点仅自述；缺材料不绘点，不可评用“—”。分数沿用原报告，不填充面积。{RULE_SCORE_CAP_NOTE}</p>
     <div className="mt-3 grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
       <div className="min-w-0">
         {dimensions.length >= 3 && dimensions.length <= 8 ? <svg className="mx-auto w-full max-w-[440px]" viewBox="0 0 400 400" role="group" aria-label="岗位要求分数，点选轴标签或下方要求按钮查看证据">
@@ -52,8 +53,9 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
       <div id={detailId} className="min-w-0 rounded-xl border border-indigo-100 bg-indigo-50/40 p-4" aria-live="polite">
         <p className="text-xs text-indigo-600">第 {selectedIndex + 1} 项 · 权重 {dimension.weight}</p>
         <h4 className="mt-2 break-words font-semibold">{dimension.title || dimension.skill}</h4>
-        <div className="mt-3 flex flex-wrap items-end gap-3"><p className="text-3xl font-semibold text-indigo-700">{score ?? "—"}{score !== null && <span className="ml-1 text-xs font-normal text-slate-500">/ 100</span>}</p><p className="pb-1 text-sm text-slate-600">{status(dimension)}</p></div>
-        {dimension.evidenceLevel != null && <p className="mt-2 text-xs text-slate-500">实践证据 {dimension.evidenceLevel}/5 · {dimension.evidenceLevelSource === "ai_preliminary" ? "AI初评，待独立核验" : "原报告结果"}</p>}
+        <div className="mt-3 flex flex-wrap items-end gap-3"><p className="text-3xl font-semibold text-indigo-700">{score ?? "—"}</p><p className="pb-1 text-sm text-slate-600">{status(dimension)}</p></div>
+        {score !== null && <p className="mt-1 text-xs text-slate-400">材料支持度 · 沿用原报告</p>}
+        {dimension.evidenceLevel != null && <p className="mt-2 text-xs text-slate-500">实践证据 {evidenceLevelName(dimension.evidenceLevel)} · {dimension.evidenceLevelSource === "ai_preliminary" ? "AI初评，待独立核验" : "原报告结果"}</p>}
         {item ? <>
           <p className="mt-4 break-words text-sm leading-6 text-slate-700">{item.aiExplanation || item.explanation || "原报告未提供这项判断的说明。"}</p>
           {item.aiInformationGap && <p className="mt-3 break-words text-xs leading-5 text-amber-800">待核对：{item.aiInformationGap}</p>}

@@ -1,5 +1,6 @@
 import EvidenceLink from "./EvidenceLink";
 import type { MatchReport } from "@/lib/api/domain";
+import { evidenceLevelName } from "@/lib/evidence-display";
 
 const SOURCE_LABELS = {
   ai_suggestion: "AI 证据建议",
@@ -25,7 +26,7 @@ export default function ActionPlan({ actions }: { actions: MatchReport["actionPl
           <a href={`#requirement-${action.requirementId}`} className="font-medium text-indigo-700 underline">{action.requirementTitle}</a>
           <span className="rounded-full bg-white px-2 py-1 text-xs text-slate-600">{SOURCE_LABELS[action.source]}</span>
         </div>
-        <p className="mt-2 text-xs text-slate-500">{action.skill} · 岗位权重 {action.weight}/5 · 当前证据{action.currentLevel == null ? "未评级" : `${action.currentLevel}/5`}</p>
+        <p className="mt-2 text-xs text-slate-500">{action.skill} · 岗位权重 {action.weight}/5 · 当前证据{action.currentLevel == null ? "未评级" : evidenceLevelName(action.currentLevel)}</p>
         <p className="mt-3 text-sm leading-6"><strong>建议行动：</strong>{action.action}</p>
         {action.evidenceGap && <p className="mt-1 text-sm leading-6 text-slate-600"><strong>对应缺口：</strong>{action.evidenceGap}</p>}
         {action.citationIds.length > 0 && <div className="mt-2 flex flex-wrap gap-2 text-xs text-indigo-700">{action.citationIds.map(citation => <EvidenceLink key={citation} citationId={citation} className="underline">查看引用 {citation}</EvidenceLink>)}</div>}

@@ -1,0 +1,256 @@
+TAP version 13
+# Subtest: pending list does not claim an empty result; refresh immediately removes the opened report
+ok 1 - pending list does not claim an empty result; refresh immediately removes the opened report
+  ---
+  duration_ms: 1.5798
+  type: 'test'
+  ...
+# Subtest: withdrawal between report response and authorization refresh prevents exporting that report
+ok 2 - withdrawal between report response and authorization refresh prevents exporting that report
+  ---
+  duration_ms: 0.2636
+  type: 'test'
+  ...
+# Subtest: a response started before a newer refresh cannot restore revoked content
+ok 3 - a response started before a newer refresh cannot restore revoked content
+  ---
+  duration_ms: 0.1705
+  type: 'test'
+  ...
+# Subtest: switching between two applications keeps the selected report and reply target aligned
+ok 4 - switching between two applications keeps the selected report and reply target aligned
+  ---
+  duration_ms: 0.3745
+  type: 'test'
+  ...
+# Subtest: window hiding and effect disposal invalidate requests, including across reactivation
+ok 5 - window hiding and effect disposal invalidate requests, including across reactivation
+  ---
+  duration_ms: 0.338
+  type: 'test'
+  ...
+# Subtest: download bytes are not delivered after a withdrawal or an intervening window clear
+ok 6 - download bytes are not delivered after a withdrawal or an intervening window clear
+  ---
+  duration_ms: 0.5879
+  type: 'test'
+  ...
+# Subtest: failed read, download, or reply leaves no stale report and remains retryable
+ok 7 - failed read, download, or reply leaves no stale report and remains retryable
+  ---
+  duration_ms: 0.488
+  type: 'test'
+  ...
+# Subtest: reply only reports confirmed delivery after detail and authorization reread
+ok 8 - reply only reports confirmed delivery after detail and authorization reread
+  ---
+  duration_ms: 0.9339
+  type: 'test'
+  ...
+# Subtest: a successful download reports browser delivery without claiming disk persistence
+ok 9 - a successful download reports browser delivery without claiming disk persistence
+  ---
+  duration_ms: 0.5125
+  type: 'test'
+  ...
+# Subtest: window cleanup triggered by browser download cannot restore the old report
+ok 10 - window cleanup triggered by browser download cannot restore the old report
+  ---
+  duration_ms: 0.4077
+  type: 'test'
+  ...
+# Subtest: filtering keeps unsupported and claimed-only separate from evidence-backed rows
+ok 11 - filtering keeps unsupported and claimed-only separate from evidence-backed rows
+  ---
+  duration_ms: 2.1347
+  type: 'test'
+  ...
+# Subtest: incomparable versions sort by submission time rather than implying a score ranking
+ok 12 - incomparable versions sort by submission time rather than implying a score ranking
+  ---
+  duration_ms: 7.6852
+  type: 'test'
+  ...
+# Subtest: equal criteria use saved scores with unassessed values last
+ok 13 - equal criteria use saved scores with unassessed values last
+  ---
+  duration_ms: 0.3304
+  type: 'test'
+  ...
+# Subtest: 已知等级 1/2/3 显示为等级名称
+ok 14 - 已知等级 1/2/3 显示为等级名称
+  ---
+  duration_ms: 1.4804
+  type: 'test'
+  ...
+# Subtest: 未知历史等级保留原数字，不伪造比例
+ok 15 - 未知历史等级保留原数字，不伪造比例
+  ---
+  duration_ms: 0.1679
+  type: 'test'
+  ...
+# Subtest: 65 只是当前规则上限，不引入 100 分口径
+ok 16 - 65 只是当前规则上限，不引入 100 分口径
+  ---
+  duration_ms: 0.0982
+  type: 'test'
+  ...
+# Subtest: 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+ok 17 - 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+  ---
+  duration_ms: 5.3719
+  type: 'test'
+  ...
+# Subtest: 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+ok 18 - 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+  ---
+  duration_ms: 0.2155
+  type: 'test'
+  ...
+# Subtest: 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+ok 19 - 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+  ---
+  duration_ms: 0.5375
+  type: 'test'
+  ...
+# Subtest: 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+ok 20 - 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+  ---
+  duration_ms: 0.7018
+  type: 'test'
+  ...
+# Subtest: 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+ok 21 - 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+  ---
+  duration_ms: 0.1216
+  type: 'test'
+  ...
+# Subtest: 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+ok 22 - 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+  ---
+  duration_ms: 0.0811
+  type: 'test'
+  ...
+# Subtest: 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 23 - 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 3.6946
+  type: 'test'
+  ...
+# Subtest: 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 24 - 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 0.4939
+  type: 'test'
+  ...
+# Subtest: hiding or switching accounts invalidates an in-flight saved task or generation response
+ok 25 - hiding or switching accounts invalidates an in-flight saved task or generation response
+  ---
+  duration_ms: 0.749
+  type: 'test'
+  ...
+# Subtest: a newer read or mutation prevents an older response from replacing the selected versions
+ok 26 - a newer read or mutation prevents an older response from replacing the selected versions
+  ---
+  duration_ms: 0.1771
+  type: 'test'
+  ...
+# Subtest: pending or compared reports freeze selected materials; only an explicit failed workflow can reselect
+ok 27 - pending or compared reports freeze selected materials; only an explicit failed workflow can reselect
+  ---
+  duration_ms: 0.2042
+  type: 'test'
+  ...
+# Subtest: B-13: a successful refresh that finds the task finished clears the stopped-auto-query notice
+ok 28 - B-13: a successful refresh that finds the task finished clears the stopped-auto-query notice
+  ---
+  duration_ms: 0.1458
+  type: 'test'
+  ...
+# Subtest: B-13: re-entering normal querying plans polls without the stopped notice
+ok 29 - B-13: re-entering normal querying plans polls without the stopped notice
+  ---
+  duration_ms: 0.1088
+  type: 'test'
+  ...
+# Subtest: B-13: an exhausted poll budget still stops polling with the stop notice
+ok 30 - B-13: an exhausted poll budget still stops polling with the stop notice
+  ---
+  duration_ms: 0.1336
+  type: 'test'
+  ...
+# Subtest: B-13: a failed or busy refresh keeps its error visible and leaves the notice untouched
+ok 31 - B-13: a failed or busy refresh keeps its error visible and leaves the notice untouched
+  ---
+  duration_ms: 0.0976
+  type: 'test'
+  ...
+# Subtest: SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+ok 32 - SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+  ---
+  duration_ms: 8.2514
+  type: 'test'
+  ...
+# Subtest: SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+ok 33 - SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+  ---
+  duration_ms: 0.7691
+  type: 'test'
+  ...
+# Subtest: ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+ok 34 - ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+  ---
+  duration_ms: 0.9259
+  type: 'test'
+  ...
+# Subtest: GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+ok 35 - GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+  ---
+  duration_ms: 2.3091
+  type: 'test'
+  ...
+# Subtest: linked detail renders only selected requirement citations and keeps sources collapsed
+ok 36 - linked detail renders only selected requirement citations and keeps sources collapsed
+  ---
+  duration_ms: 10.6424
+  type: 'test'
+  ...
+# Subtest: synthetic radar never fabricates citations and supports fewer than three requirements
+ok 37 - synthetic radar never fabricates citations and supports fewer than three requirements
+  ---
+  duration_ms: 0.4197
+  type: 'test'
+  ...
+# Subtest: reference source cannot be presented as personal contribution
+ok 38 - reference source cannot be presented as personal contribution
+  ---
+  duration_ms: 0.3712
+  type: 'test'
+  ...
+# Subtest: missing material never creates a point; unavailable and invalid scores are not invented zeros
+ok 39 - missing material never creates a point; unavailable and invalid scores are not invented zeros
+  ---
+  duration_ms: 0.706
+  type: 'test'
+  ...
+# Subtest: segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+ok 40 - segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+  ---
+  duration_ms: 0.6639
+  type: 'test'
+  ...
+# Subtest: selection joins only by requirement identity and never carries a missing citation from another requirement
+ok 41 - selection joins only by requirement identity and never carries a missing citation from another requirement
+  ---
+  duration_ms: 0.1658
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 475.9984

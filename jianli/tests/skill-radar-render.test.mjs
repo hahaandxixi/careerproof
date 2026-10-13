@@ -52,7 +52,8 @@ const { default: SkillRadar } = await import(pathToFileURL(path.join(SRC, "compo
 const dim = (id,verdict,score) => ({requirementId:id,title:id,skill:id,verdict,score,weight:1,evidenceLevel:null});
 const render = props => renderToStaticMarkup(React.createElement(SkillRadar,props));
 test("linked detail renders only selected requirement citations and keeps sources collapsed", () => {
- const dimensions=[dim("Python","supported",85),dim("SQL","partial",55),dim("pytest","gap",0)];
+ // 传智杯48：正常数据改为 evidence-v3 单项可达值 65/40/0（不再用 85/55 假装高分）
+ const dimensions=[dim("Python","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)];
  const items=[{requirementId:"Python",explanation:"Python依据",evidenceList:[{citationId:"R1-E1",filePath:"main.py",lineStart:1,lineEnd:3,snippet:"example-source-only",contextComplete:true}]}];
  const html=render({dimensions,items,initialRequirementId:"Python"});
  assert.ok(html.includes("R1-E1") && html.includes("example-source-only"));
@@ -69,7 +70,7 @@ test("synthetic radar never fabricates citations and supports fewer than three r
  assert.ok(html.includes('aria-pressed="true"') && html.includes("选择岗位要求"));
 });
 test("reference source cannot be presented as personal contribution", () => {
- const html=render({dimensions:[dim("Python","supported",85)],items:[{requirementId:"Python",explanation:"已保存解释",evidenceList:[{citationId:"REF1",filePath:"tutorial.py",snippet:"reference-source",provenance:"reference",contextComplete:false,contextNote:"截取片段",lineStart:1,lineEnd:2}]}]});
+ const html=render({dimensions:[dim("Python","supported",65)],items:[{requirementId:"Python",explanation:"已保存解释",evidenceList:[{citationId:"REF1",filePath:"tutorial.py",snippet:"reference-source",provenance:"reference",contextComplete:false,contextNote:"截取片段",lineStart:1,lineEnd:2}]}]});
  assert.ok(html.includes("参考材料，不能证明本人贡献"));
  assert.ok(html.includes("截取片段"));
 });

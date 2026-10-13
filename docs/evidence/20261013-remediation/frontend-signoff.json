@@ -1,0 +1,41 @@
+{
+  "baseline": "a1caa830e107d0884a6d845e082922c30508bf9e",
+  "sourceHashes": {
+    "jianli/src/lib/evidence-display.ts": "ead4736088a76b2dfa8c9bd4d30efe0217176d308a42e29944545a4e3b167561",
+    "jianli/src/lib/heatmap-demo.ts": "45023f6a11f92fcecd1fad34e190ac537b587ce17a1382fa986061f900bb0701",
+    "jianli/src/lib/types.ts": "1737000e7a7763ef777045fd8f814d5dd3da6b859df1a5da23213ca08a9ba165",
+    "jianli/src/components/ActionPlan.tsx": "d7fb3f697ca1955df770aa267acaef7d0c8008f821662805e154206ba8c15251",
+    "jianli/src/components/ApplicationBoard.tsx": "4333543aa0c15be4c405d99c99e98549457304f09f7832b43fec32e16e15a3e6",
+    "jianli/src/components/GrowthComparison.tsx": "0a432828f312cf4d59c60f88dc02db40f2d25830daa09631d831f7a6bd1eedb7",
+    "jianli/src/components/ReportComparisonPanel.tsx": "d5d7e959473527d47be41380173303208e7bc36a2958dad0a0b5e5878a09cf45",
+    "jianli/src/components/ReportDetail.tsx": "ff48732d2dcd735431021c3ef73e9e498beeacc4bb0b522091ed4fd606ff451c",
+    "jianli/src/components/SkillRadar.tsx": "a78b10557f71865b32f28e873a1a5a6574ddafb8e7bd433e96c24c1466a8521f",
+    "jianli/tests/evidence-display.test.mjs": "47c888c464192ae8a079148261f4551dbe33c9a3ca48e688dfafd04631fc955a",
+    "jianli/tests/score-labels-render.test.mjs": "2360b659040792dbb1e6ab8bce56dbf65f91f9b6ce3ce0c670ebebce37e63823",
+    "jianli/tests/skill-radar.test.mjs": "b26951a36a6cf490ad097b104160a7ba6c935c8e74ea7ac0b76f6147da567009",
+    "jianli/tests/skill-radar-render.test.mjs": "5ce300ca378e4a97210136bd250616821fa044931367bf1e515a1aca899568cd",
+    "jianli/tests/application-list.test.mjs": "add33240906b46ef02841acdaae91957ead0074244ff4095b92992e540adf8e6",
+    "jianli/tests/heatmap-demo.test.mjs": "0b094d6e7cb600d5c0fa32e6b7e817cd89d135e7f0c7255068f176e4f10a2825"
+  },
+  "zcode": {
+    "targetPass": 41,
+    "frontendPass": 249,
+    "typecheckExit": 0
+  },
+  "codex": {
+    "independentPass": 13,
+    "afterAmendmentTargetPass": 20,
+    "finalFrontendPass": 250,
+    "typecheckExit": 0,
+    "productionBuildExit": 0
+  },
+  "staticBuildInspection": {
+    "artifactSha256": "a279e2288eba99614de1d120aedecfad9219a72a980db135ed2c40cd2cdb6c91",
+    "capNoteCount": 1,
+    "syntheticLabelPresent": true,
+    "scoreOutOf100SuffixAbsent": true
+  },
+  "browserVerification": "Pending: additional port 3088 preview startup rejected by automatic approval, blocked by policy; not bypassed",
+  "originalGuardLauncherAndUserBlankLine": "Preserved outside this commit",
+  "externalWebsiteAI": "No calls"
+}
