@@ -1,0 +1,54 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "岗位发现":
+      - /url: /jobs
+    - link "职业推荐":
+      - /url: /recommendations
+    - link "我的匹配报告":
+      - /url: /reports
+    - generic "学生账户 · 合成首版验收学生 5 未读":
+      - generic: 合
+      - generic: 学生账户 · 合成首版验收学生
+      - generic: 5 未读
+      - generic: ▾
+- main:
+  - heading "我的投递" [level=1]
+  - generic "状态与刷新说明"
+  - button "刷新投递状态"
+  - article:
+    - heading "合成Python实习岗位" [level=2]
+    - paragraph: 合成首版验收-release-owner-20261012 · 已投递
+    - paragraph: 下一步：等待企业查看，稍后可刷新状态。
+    - paragraph:
+      - link "查看本次投递的原报告":
+        - /url: /reports/f8916c93-fde6-46b9-8bc3-be6b928645f2
+    - button "撤回投递授权"
+    - generic "投递记录（1 条）"
+  - article:
+    - heading "合成Python实习岗位" [level=2]
+    - paragraph: 合成首版验收-release-owner-20261012 · 已撤回授权
+    - paragraph: 下一步：如需继续该岗位，可重新确认授权后再次投递。
+    - blockquote: 继续沟通：【第1项：提供Python相关实践材料】 合成问题：请补实现与本人负责部分，运行仍待核验。
+    - paragraph:
+      - link "查看本次投递的原报告":
+        - /url: /reports/80c96d12-5172-425b-b184-13421d43547d
+      - text: 后续新报告不会替换本次投递。
+    - paragraph: 企业回复对应的原报告位置
+    - list:
+      - link "第1项：提供Python相关实践材料":
+        - /url: /reports/80c96d12-5172-425b-b184-13421d43547d#requirement-eb0f01a1-2eb4-4e1f-a31e-2e1512f93070
+      - link "带着这项问题补证 →":
+        - /url: /reports/80c96d12-5172-425b-b184-13421d43547d?enterpriseReply=eb0f01a1-2eb4-4e1f-a31e-2e1512f93070#requirement-eb0f01a1-2eb4-4e1f-a31e-2e1512f93070
+    - paragraph: 这些链接定位本次投递的原报告；引用不自动证明能力或本人贡献。
+    - paragraph:
+      - text: 本次授权已撤回。
+      - link "重新确认授权并投递":
+        - /url: /reports/80c96d12-5172-425b-b184-13421d43547d#application-submit
+      - text: ；也可从新版报告投递，原记录与企业回复不会被覆盖。
+    - generic "投递记录（5 条）"
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert

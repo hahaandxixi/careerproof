@@ -1,0 +1,72 @@
+{
+  "runId": "release-ready-20261012",
+  "scope": "HTTP only; local mock; no browser/real model",
+  "status": "passed",
+  "steps": [
+    {
+      "name": "independent_role_sessions",
+      "passed": true
+    },
+    {
+      "name": "uploads_parsed_and_report_generated",
+      "passed": true,
+      "requirementCount": 3,
+      "mode": "mock/rule fallback; not real AI success"
+    },
+    {
+      "name": "explicit_consent_idempotency_role_permissions_and_linked_reply",
+      "passed": true
+    },
+    {
+      "name": "new_materials_report_and_item_changes",
+      "passed": true,
+      "requirementCount": 3,
+      "items": [
+        {
+          "title": "提供Python相关实践材料",
+          "changes": [
+            "level",
+            "interpretation",
+            "evidence"
+          ],
+          "addedEvidence": 1
+        },
+        {
+          "title": "提供SQL相关实践材料",
+          "changes": [
+            "review",
+            "interpretation",
+            "evidence"
+          ],
+          "addedEvidence": 0
+        },
+        {
+          "title": "提供pytest相关实践材料",
+          "changes": [
+            "review",
+            "level",
+            "interpretation",
+            "evidence"
+          ],
+          "addedEvidence": 2
+        }
+      ]
+    },
+    {
+      "name": "frozen_snapshot_private_growth_withdraw_and_reconsent",
+      "passed": true
+    },
+    {
+      "name": "all_original_fixture_snapshots_unchanged",
+      "passed": true,
+      "count": 3
+    }
+  ],
+  "ids": {
+    "job": "6c53cd3a-03a2-4fc1-b354-ff3c36b366c5",
+    "baseReport": "b689955b-6125-47a3-be8c-db6146b7d023",
+    "application": "66d50e9f-178c-468c-a9d5-2ccff34e5a61",
+    "growthTask": "0922610c-5e72-45e8-beb8-f98e5305a33f",
+    "newReport": "2f50955b-3980-4bfc-87d8-58083e117521"
+  }
+}

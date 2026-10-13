@@ -1,0 +1,16 @@
+{
+  "head": "6c1b784ca47d0a417e444666db8c919a8c0f8f20",
+  "sourceSha256": {
+    "backend/app/services/applications.py": "952207e713b6d96f4c47924a05acbe5b5b87f4ba84208a3d0c75b98f4a000b02",
+    "backend/app/services/evidence_growth.py": "7761e691f6a7fcef6cda7f26c6c6c66a784541964d65dbc9ade1010defb72d8f",
+    "backend/app/services/notifications.py": "be70afa48657d5d647660c51d9b83af03c825aed72e6e12dc279a6716f33c41d",
+    "backend/app/agents/contracts.py": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+    "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+    "backend/app/tools/task_boundaries.py": "f6c126ed34406eb50b4fb2dbf5f39c0b70544bfa279bbd12eb00eb7bf090aec8",
+    "Start-Local.ps1": "a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1",
+    "Stop-Local.ps1": "025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2",
+    "scripts/local-runtime.ps1": "037f5fe4d9fc553732b640541f41868e2cbd9d5ed4ef22a96ca0003cfbfb84a5"
+  },
+  "unstagedTracked": "Start-Local.ps1\nStop-Local.ps1\nbackend/app/agents/contracts.py\nbackend/app/agents/provider.py\nbackend/app/tools/task_boundaries.py\n\"docs/\\345\\275\\223\\345\\211\\215\\346\\216\\245\\345\\212\\233.md\"\nscripts/local-runtime.ps1\n",
+  "scope": "current worktree; no claim that outstanding modifications were committed"
+}

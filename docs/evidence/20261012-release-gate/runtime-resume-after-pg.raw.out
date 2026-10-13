@@ -1,0 +1,27 @@
+database cp_e2e_release-ready-20261012: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "run": "release-ready-20261012",
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "0c06c557-c98b-44d8-9d04-4b7ca2ec9b6f",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "snapshotHashes": {
+    "b38a56c8-edec-4213-9b15-9ee8f2e5bb53": "c0c4219b7e06546e342bb3b7055bd547f68e32f2322c5fd8b46fb069fa7d91f9",
+    "3aa3aca9-3f1f-42c3-ad0f-4b189e6b5fca": "7ac3b7d187e59227a6e494ed27f6178b0a7a28d0e4cc3e64c4bdc36a6bd25c82",
+    "731d43dc-90d9-48d8-aa68-6bd7cc166da7": "97b2a87609d7273256496b7f0924eee58e301697d8d1982c5ffe8789c5a1ca2d",
+    "66d50e9f-178c-468c-a9d5-2ccff34e5a61": "f9d2f566a4c5f74c3cd5edebf96be3da1fb7e6606c9ec35c12a17bdb0998f30d",
+    "5235d56c-fc7c-437d-a4ff-7962a5f608b5": "f39d02f7de5e1ed9a792eda73cfa1e222254f2752b2110bff7c8240597fdf438"
+  },
+  "syntheticOnly": true
+}
+ISOLATION REFUSED: student student deliveries no longer match the recorded fixture; refusing to seed or restore anything
+Owned E2E services stopped; the cp_e2e_ database and its storage directory are left in place.
+E2E fixture verification failed.
+At D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:252 char:40
++ ... if ($LASTEXITCODE -ne 0) { throw 'E2E fixture verification failed.' }
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (E2E fixture verification failed.:String) [], RuntimeException
+    + FullyQualifiedErrorId : E2E fixture verification failed.
+ 

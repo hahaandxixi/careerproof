@@ -1,0 +1,18 @@
+Current worktree / isolated cp_test schema where matching_db is used; jobs_db uses temporary SQLite. External AI forced mock by autouse fixture.
+Command: "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe" -m pytest app/tests/test_applications_api.py app/tests/test_application_resubmission.py app/tests/test_notifications.py app/tests/test_evidence_growth.py app/tests/test_growth_target_job.py app/tests/test_growth_target_postgres.py app/tests/test_report_history.py -q -p no:cacheprovider --basetemp=.tmp-release-gate-pg
+..............................................                           [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+46 passed, 5 warnings in 80.78s (0:01:20)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

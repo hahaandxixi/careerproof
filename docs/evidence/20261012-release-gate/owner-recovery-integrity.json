@@ -1,0 +1,11 @@
+{
+  "runId": "release-owner-20261012",
+  "readOnly": true,
+  "originalSnapshotMatches": {
+    "A": true,
+    "B": true,
+    "A2": true
+  },
+  "applicationCount": 5,
+  "passed": true
+}

@@ -1,0 +1,74 @@
+database cp_e2e_release-repeat-20261012: created
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_initial, Initial CareerProof schema.
+INFO  [alembic.runtime.migration] Running upgrade 0001_initial -> 0002_portfolio_history, Persist upload history links and idempotency keys without changing existing records.
+INFO  [alembic.runtime.migration] Running upgrade 0002_portfolio_history -> 0003_real_matching, Persist job filters, recoverable tasks and immutable report inputs.
+INFO  [alembic.runtime.migration] Running upgrade 0003_real_matching -> 0004_ai_evidence_analysis, Store report-level AI workflow metadata.
+INFO  [alembic.runtime.migration] Running upgrade 0004_ai_evidence_analysis -> 0005_project_material_role, Record whether an uploaded project version is a personal work or reference.
+INFO  [alembic.runtime.migration] Running upgrade 0005_project_material_role -> 0006_job_requirement_source, Retain exact source spans for AI-assisted job requirement drafts.
+INFO  [alembic.runtime.migration] Running upgrade 0006_job_requirement_source -> 0007_material_archiving, Keep retired fixtures recoverable without crowding material selection.
+INFO  [alembic.runtime.migration] Running upgrade 0007_material_archiving -> 0008_application_workflow, Scope enterprise reads to explicit, revocable application consent.
+INFO  [alembic.runtime.migration] Running upgrade 0008_application_workflow -> 0009_evidence_growth, Bind a student's evidence gap to selected versions and a follow-up report.
+INFO  [alembic.runtime.migration] Running upgrade 0009_evidence_growth -> 0010_notifications, Transactional application event notifications; no historical backfill.
+INFO  [alembic.runtime.migration] Running upgrade 0010_notifications -> 0011_reply_refs, Keep human reply links bound to the submitted report's own evidence.
+INFO  [alembic.runtime.migration] Running upgrade 0011_reply_refs -> 0012_knowledge_vec384, Switch the knowledge-chunk index to 384-dimension semantic embeddings.
+INFO  [alembic.runtime.migration] Running upgrade 0012_knowledge_vec384 -> 0013_ai_usage_idempotency, Add the per-request idempotency key to ai_usage_logs.
+INFO  [alembic.runtime.migration] Running upgrade 0013_ai_usage_idempotency -> 0014_growth_target_job, Persist the student's explicitly selected private comparison target.
+INFO  [alembic.runtime.migration] Running upgrade 0014_growth_target_job -> 0015_growth_answer_drafts, Store the student's private answer draft for one evidence growth task.
+INFO  [alembic.runtime.migration] Running upgrade 0015_growth_answer_drafts -> 0016_ai_request_attempts, Persist each physical model request attempt for the OPS-01B verification protocol.
+INFO  [alembic.runtime.migration] Running upgrade 0016_ai_request_attempts -> 0017_ai_shared_budget, Persistent shared budget schema; activation remains disabled until audited cutover.
+INFO  [alembic.runtime.migration] Running upgrade 0017_ai_shared_budget -> 0018_application_reconsent, Allow fresh consent after withdrawal, without reviving historical applications.
+{
+  "run": "release-repeat-20261012",
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "882ea5a8-3288-48d0-ad01-afcffed9d8d3",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "snapshotHashes": {},
+  "syntheticOnly": true
+}
+{
+  "runId": "release-repeat-20261012",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "10f00f0e-e6dc-455e-b213-32ae0843293c",
+    "B": "c52104c7-d2e9-460d-8dd9-eefb969ef4eb"
+  },
+  "reports": {
+    "A": "c9885c11-6362-4a09-ba10-1c0a8dbbeb48",
+    "B": "7f002bbe-7467-4ad9-97f0-e25bcabd6f4f",
+    "A2": "63e27f79-0c3d-4815-8d4c-d4b9d6247b6a"
+  },
+  "materials": {
+    "student": "637d7f57-7fbb-4c48-9af1-9195f538066c",
+    "studentA2": "2e0b7920-dc5e-4e03-9f4d-1ec4ddcdb3df"
+  },
+  "applications": {
+    "A": {
+      "id": "ac731f75-f4e7-4c54-8e0c-dec4c987aee0",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "caae63c79506bcd5c145057386b0b2cabe667a3268b6d1d26657800a46ccad96"
+    },
+    "B": {
+      "id": "08c40ae7-a1a0-4e12-9c2d-9c0d4571a55f",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "23a9d10f803febad1e0afcb6b6ea47c5e6c7fb0f4a6bcbc9700c0da23a6eb811"
+    },
+    "A2": {
+      "id": "0d90c9ec-1b22-4ac0-a16b-2031490ecd0f",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "a2eca678fc2fdb92f303f55de7695c499884f7123e6614e1ca688f430eee47d6"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "created"
+}
+CareerProof E2E run 'release-repeat-20261012' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_release-repeat-20261012 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\release-repeat-20261012, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\release-repeat-20261012.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId release-repeat-20261012.

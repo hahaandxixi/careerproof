@@ -1,0 +1,28 @@
+{
+  "baseHead": "6c1b784ca47d0a417e444666db8c919a8c0f8f20",
+  "auditProductHashMatches": {
+    "jianli/src/components/ApplicationList.tsx": true,
+    "jianli/src/components/ApplicationSubmit.tsx": true,
+    "jianli/src/components/ReportList.tsx": true,
+    "jianli/src/components/JobList.tsx": true,
+    "jianli/src/components/ReportDetail.tsx": true,
+    "jianli/src/components/GrowthWorkspace.tsx": true,
+    "jianli/src/components/NotificationCenter.tsx": true,
+    "jianli/src/components/AccessGate.tsx": true,
+    "jianli/src/lib/application-display.ts": true,
+    "jianli/src/app/demo/page.tsx": true,
+    "backend/evals/seed_demo.py": true,
+    "backend/app/services/applications.py": true,
+    "backend/app/tools/matcher.py": true
+  },
+  "sourceSha256": {
+    "backend/evals/release_smoke.py": "adc31e1e43503381d7a84f9e56103d8d6a8241c39a0691c7dec47516d2052fe1",
+    "backend/app/tests/test_release_smoke_safety.py": "eda98ddf890f334486bb590a04aa02dd22baffade313d10dc45f35689451bafc",
+    "README.md": "46a0a1f5e57fd52db62ff3406406e1e1b4ee1a08f7348f461f7094f04d8ee5f9",
+    "docs/README.md": "af00a27e2c5e9f2ccbad7cf5a4ff1f33eb8c4841b54b283fc0a9de956e364d9d",
+    "docs/任务清单.md": "43fa553da2a22506401f90e4abcc203003c2b7ad6a4d61022f814703482486ef",
+    "docs/协作规则.md": "4f2f13afc968da8fd3b654b9479d70021295b445ff0b4273d4eb3b4286909e0a",
+    "docs/guides/功能演示.md": "479b7e54b221e01b6fa9e097b7527f2303b7cfe4bc267e06c9dca31c4092d289"
+  },
+  "scope": "Current worktree; previously pending guard/launcher are outside this commit; docs intentionally updated after ZCode45 audit."
+}

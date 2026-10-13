@@ -1,0 +1,26 @@
+{
+ "base": "6c1b784ca47d0a417e444666db8c919a8c0f8f20",
+ "note": "SHA256 of working tree at audit time 2026-10-12, base HEAD 6c1b784. Uncommitted working-tree changes exist (Start-Local.ps1, Stop-Local.ps1, backend/app/agents/*, backend/app/tools/task_boundaries.py, scripts/local-runtime.ps1, docs/当前接力.md); none of them were modified by this audit. docs/当前接力.md hash reflects its current modified content as read.",
+ "sha256": {
+  "README.md": "e59a9896d5ede25a1349024cf9e4a7d0a3d2434a3a64b547feb7c4cd0881bc34",
+  "docs/guides/功能演示.md": "a1762c98ae57b5e7a344273a0dffab9051b34b751e920f717e76c128ebe8a5cd",
+  "docs/guides/使用与启动.md": "58b57424067fad02db3f443a36283fa494c46cbca7e3ec8ada389320622c56e4",
+  "docs/当前接力.md": "5ecb80ca32fcf8a55443309578e4dbea65bb0657810e21e79201cfaa000d55ae",
+  "docs/任务清单.md": "77003a4ebb5f030475a5305edc8e89b697051edaac9f257499c5ea40e8129594",
+  "jianli/src/components/ApplicationList.tsx": "76e84b1b77a3870ac3db78c11270b6c664586fb5ab3e803562d3ace7bb38a743",
+  "jianli/src/components/ApplicationSubmit.tsx": "1e0772d29b1680994ac8d86fd3032ca649180e5a86ba104f769e037b650fbd55",
+  "jianli/src/components/ReportList.tsx": "04502183938e3159fb246a0b8ee0cb48be38997ed9f2a6801f1c809ef6f57941",
+  "jianli/src/components/JobList.tsx": "20cb076280286d3f5af6f86efbd262556f1899a7c50330b40d9da109bae403f9",
+  "jianli/src/components/ReportDetail.tsx": "816f40e613507058841a4025355859fbe186c22a4dc4c8a881603a3d14fac019",
+  "jianli/src/components/GrowthWorkspace.tsx": "eb8d27f86baf221c77fdd261e97d1117f4f04321268125bb4c5559bec33fdf61",
+  "jianli/src/components/NotificationCenter.tsx": "93ef3cb974a5106301e5ada430e18a0749a0d6cb89e1ebaee6192eadd3cbde06",
+  "jianli/src/components/AccessGate.tsx": "9af03942ebc78a4e8c265f1d78f4d3c5a3890d7b40f5ef0042cc4e9bcc9760ce",
+  "jianli/src/lib/application-display.ts": "28becd6727ec71e504b51dcfb8c3534eda6b27d0bc3878acdd3064e4d106f7fd",
+  "jianli/src/app/demo/page.tsx": "6c263c38fe8852cfcb1dc7d5fa94020625dcac2a7b4d6c2de7897ddf8441caa1",
+  "Start-Demo.ps1": "b55ea2036a4f470b68fe762bc721649ff878bde5ae575062d3d66c6046f669f0",
+  "scripts/Start-E2E.ps1": "54a647fc695134fbdcf28b32578cf31dc1ce3b6e7cc2d7d2012f4f3d180e7f6b",
+  "backend/evals/seed_demo.py": "65fdd55297b7230388a82006d5fc4a965d677ecc2617d8d56dcb9d3d952b9e4b",
+  "backend/app/services/applications.py": "952207e713b6d96f4c47924a05acbe5b5b87f4ba84208a3d0c75b98f4a000b02",
+  "backend/app/tools/matcher.py": "5a15f5f450af074de7476098c03301b47fab2213c7bbe3bd780747dae68686bb"
+ }
+}
