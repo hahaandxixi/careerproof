@@ -1,4 +1,5 @@
 import type { ApplicationView } from "./api/client.ts";
+import { heatmapCellClass } from "./heatmap-cell.js";
 export const DEMO_REQUIREMENTS = [
   { id: "demo-python", title: "Python 数据处理", skill: "Python" },
   { id: "demo-sql", title: "SQL 聚合查询", skill: "SQL" },
@@ -20,5 +21,5 @@ export const HEATMAP_DEMO: ApplicationView[] = rows.map((row, index) => ({
 }));
 export const DEMO_LABELS: Record<string, string> = { supported: "有证据", partial: "部分支持", claimed_only: "仅自述", gap: "缺材料", unsupported: "不可评" };
 export function demoCellClass(verdict: string) {
-  return ({ supported: "bg-emerald-100 text-emerald-900", partial: "bg-indigo-50 text-indigo-900", claimed_only: "bg-amber-50 text-amber-900", gap: "bg-white text-slate-700", unsupported: "bg-slate-100 text-slate-600" } as Record<string, string>)[verdict] ?? "bg-slate-100 text-slate-600";
+  return heatmapCellClass(verdict);
 }

@@ -1,0 +1,23 @@
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 5.4s
+   Linting and checking validity of types ...
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add '.next-ux-20261013/types/**/*.ts'
+
+Failed to compile.
+
+./src/lib/heatmap-demo.ts:2:34
+Type error: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+
+  1 | import type { ApplicationView } from "./api/client.ts";
+> 2 | import { heatmapCellClass } from "./heatmap-cell.ts";
+    |                                  ^
+  3 | export const DEMO_REQUIREMENTS = [
+  4 |   { id: "demo-python", title: "Python 数据处理", skill: "Python" },
+  5 |   { id: "demo-sql", title: "SQL 聚合查询", skill: "SQL" },
+Next.js build worker exited with code: 1 and signal: null
