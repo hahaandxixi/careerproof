@@ -1,6 +1,6 @@
 # 传智杯24：fastembed 0.8.1 实际嵌入兼容性独立证据（ZCode 轮）
 
-2026-10-10。Git 根 `D:\jbcode\web ai\jianli`，HEAD 80a6e63/main（任务卡所写 2fefa24 为其祖先，后续 f574cb4/58b728b 等批次已推进）。本目录是 ZCode 按 [任务卡](../../task-cards/20261010-DEP-fastembed-compatibility.md) 的专属证据，与 Codex 已有的 [20261009 签收](../20261009-DEP-fastembed-compatibility/codex-review-20261010.md) 相互独立；两轮结论一致。
+2026-10-10。Git 根 `D:\jbcode\web ai\jianli`，HEAD 80a6e63/main（任务卡所写 2fefa24 为其祖先，后续 f574cb4/58b728b 等批次已推进）。本目录是 ZCode 按 [任务卡](../历史任务协议.md#task-044) 的专属证据，与 Codex 已有的 [20261009 签收](../20261009-DEP-fastembed-compatibility/codex-review-20261010.md) 相互独立；两轮结论一致。
 
 ## 本轮实际做了什么
 

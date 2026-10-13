@@ -1,0 +1,1243 @@
+{
+  "date": "2026-10-13",
+  "baselineCommit": "658169b2367e7913c1fbd9f241b96dcb274eb620",
+  "before": {
+    "files": 2292,
+    "markdown": 347
+  },
+  "removed": [
+    {
+      "path": "docs/archive/document-reorganization-20261010.json",
+      "sha256": "9ac9c475f26a6c3f79cbf82f172d6e58681531027dd7e6a4624c02397094f4a6",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/README.md",
+      "sha256": "b40f895a7b699cce023fee0c341f79c18e1d4e9d10f86de297c98e9a8f2dd03d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/历史交接/README历史进展-20260928.md",
+      "sha256": "04ce792441e324f67ea37ddb96f0069b94cbb3876a219c190964fef1d80631a9",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/历史交接/模型接力交接-20260927-停点2.md",
+      "sha256": "7ab19f6f45961b30a77852fbf324b53faa563ef0d0006f823e5080bff524bc62",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/历史交接/模型接力交接-20260927-当前停点.md",
+      "sha256": "8d5cdb88d69b541a54500359de3cb6aa60a7a5949464d5fb74c2195a44c5699b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/历史交接/迭代进度交接-20260927.md",
+      "sha256": "3fb8fb01220e35f896e1eaabf8ff4d68ac48458b78f1feb5c6b28559d3b69dad",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/历史计划与交接.md",
+      "sha256": "3389fbaf2ce401e0100793bb66759482d6426ebfb05b124ce1a25d28755b335a",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/旧供应商/三模型API申请与接入操作流程.md",
+      "sha256": "4fa35d787945ceb64082f915f5223ceec440b8af1c73a7e31f7586cee8bbd709",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/旧供应商/免费模型API候选.md",
+      "sha256": "b049486b68557e594abdebe81d321321f41b010efcf01ba6fd7fa637ad64a1f6",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/旧供应商/智谱免费模型接入.md",
+      "sha256": "6b8a156184a857b7bf115f60d817b0d55d19bca7af8ae1f1b14a17cdef7ad562",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/旧供应商/证据可信度验收.md",
+      "sha256": "be18cfdf46339da16f005c51f48b4409f18e99b392b45bafff57c5e86849c3fa",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "历史范围说明"
+    },
+    {
+      "path": "docs/archive/验收记录/AI草稿变化对比与检索候选评级边界-20260930.md",
+      "sha256": "f7105d3e9c64e6fa2486ad42205a862f7a16bdab276b5d389e55f4a6f5f4a6e5",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-001",
+      "gitBlobSha256": "4139c43f363e002945ab95c8933ce1ca4913bcc434e5047e0f3070eacca1f79b"
+    },
+    {
+      "path": "docs/archive/验收记录/AI补证建议到人工任务草稿-20260930.md",
+      "sha256": "d92db6c9312ada70d006f98e9ae7679d3d977c3bf7dd979c0d7d4b29b5037623",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-002",
+      "gitBlobSha256": "d92db6c9312ada70d006f98e9ae7679d3d977c3bf7dd979c0d7d4b29b5037623"
+    },
+    {
+      "path": "docs/archive/验收记录/AI评级验收-20260917.md",
+      "sha256": "952c25db469517288a9df48f5ac5ac61ebf60e36afa752a318f57516a768838c",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-003",
+      "gitBlobSha256": "2429f681f6dbfd137f74f5b1dce0dbaaf9261ae32a5a2705c0d501fab3db5454"
+    },
+    {
+      "path": "docs/archive/验收记录/AI逐项结构化补证草稿-20260930.md",
+      "sha256": "d83c1e223074a5aab93ffe6228290e49ed22b709d857d7ac0eb3fbcd702f7d80",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-004",
+      "gitBlobSha256": "5a32d15276ea3957b8376c7c81c6da5ccd3aafc5b317cfd7dbf19773a4ff98d9"
+    },
+    {
+      "path": "docs/archive/验收记录/AI重复源码补证建议防回流-20260930.md",
+      "sha256": "82c77da52d0fa919913d0c6aa948e0a4a4841d30099aa2a9dbe4fe2d8d1083a4",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-005",
+      "gitBlobSha256": "82c77da52d0fa919913d0c6aa948e0a4a4841d30099aa2a9dbe4fe2d8d1083a4"
+    },
+    {
+      "path": "docs/archive/验收记录/B03-B05-B06联合验收-20261003.md",
+      "sha256": "2524b1964f751d9c5f7ba22174647f84f2162511ce3d6d062e842c0e98c1a6db",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-006",
+      "gitBlobSha256": "2524b1964f751d9c5f7ba22174647f84f2162511ce3d6d062e842c0e98c1a6db"
+    },
+    {
+      "path": "docs/archive/验收记录/B07-B15修复验收-20261003.md",
+      "sha256": "80dedca53db30403e18677d715aa14fcc1ac70417f92841bb479d8cc20bc5ff1",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-007",
+      "gitBlobSha256": "80dedca53db30403e18677d715aa14fcc1ac70417f92841bb479d8cc20bc5ff1"
+    },
+    {
+      "path": "docs/archive/验收记录/B11下载事务与撤回并发验收-20261004.md",
+      "sha256": "f7e5ee235365a4de6c5e5b51ca7e8fc785ffa642896dbbbe62017f895f44c2c6",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-008",
+      "gitBlobSha256": "f7e5ee235365a4de6c5e5b51ca7e8fc785ffa642896dbbbe62017f895f44c2c6"
+    },
+    {
+      "path": "docs/archive/验收记录/DeepSeek两轮补检索验收-20260925.md",
+      "sha256": "5b73921b0adbe398dd9a73705a65db9e7fc9fbd7282fc19e2d239b6eb459ae6f",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-009",
+      "gitBlobSha256": "3b875eedd3e318fd9d9df8fc21f89beb1fc10d210a81a74f05d33675c91d42df"
+    },
+    {
+      "path": "docs/archive/验收记录/DeepSeek可信度验收-20260918.md",
+      "sha256": "fa9cb06eac4f650b39fe205977215348e1e2c5c4cf98e2de591491334c90b8f3",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-010",
+      "gitBlobSha256": "40e9d88be28b318a225c15f0fcd4bb5266be1cb2cf7a35e415cac5dfd69db53a"
+    },
+    {
+      "path": "docs/archive/验收记录/DeepSeek文字外发凭据保护验收-20260927.md",
+      "sha256": "daee2e59b6c98d17036c17876f88f95640ca7c4f7f133ce19835d47a8d7e4b4e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-011",
+      "gitBlobSha256": "27504385b37eb3125cb53193ced4ba5f56d1e6c8e51a818e5b9000614ab5051c"
+    },
+    {
+      "path": "docs/archive/验收记录/DeepSeek正式API复验-20260925.md",
+      "sha256": "b2e31b631409b42178ef7ab2f84aa20106741cf71208cedff7e541f7fcf01dbe",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-012",
+      "gitBlobSha256": "f0a74e66e99d8571ec5f6dd8210cc35d9e97c3beba5d61387e7aceeb9bc4903d"
+    },
+    {
+      "path": "docs/archive/验收记录/MCP多授权并发与账号状态复检验收-20260927.md",
+      "sha256": "d42768978d8ae28a9016099ba7c904f1852664fa83d2edf7843b0f049200263b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-013",
+      "gitBlobSha256": "82d090fb81a7ceaaec8943d8591af32c1b568cf168a967316a4124c8b46d2fa7"
+    },
+    {
+      "path": "docs/archive/验收记录/MCP官方SDK协议与元数据联验-20260927.md",
+      "sha256": "cc17f3a8510a66e020bcdb5cdd9c19d4887cfbbe73815c76bfe77adc1a10bb99",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-014",
+      "gitBlobSha256": "ab26646d7e33e3083d910df59d3e13b9e6b429c1c0c33946e251fc4146589512"
+    },
+    {
+      "path": "docs/archive/验收记录/MCP导出凭据与源码上下文验收-20260927.md",
+      "sha256": "72d8766b1c451139aca1f3aa5252bff58e4ced3a3b2f8adb2b2236b4ee0049a9",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-015",
+      "gitBlobSha256": "5fb10e58e89bda4c67d6b8c1b004322e4d64ff0d3317cffa03f582b63764a3c2"
+    },
+    {
+      "path": "docs/archive/验收记录/MCP片段截断与脱敏边界验收-20260927.md",
+      "sha256": "0948595a3fffb50ffd5ae1e9d49f91cfb06efacccce6a8acab6e79dad8b0d1bf",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-016",
+      "gitBlobSha256": "42f85ba64336fdbd01f2effefde4d3884c7e7113f09529b96cc07aaaf42e7362"
+    },
+    {
+      "path": "docs/archive/验收记录/MCP过期与调用锁加固-20260927.md",
+      "sha256": "cd4a04e805761064a35c30c31b72a97b24980bc4bd976f080244862e5eb92f21",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-017",
+      "gitBlobSha256": "70043af0a3ea2a2017ad9a4896217a2253e0b6d8b902ee9a02662ff5bfbef927"
+    },
+    {
+      "path": "docs/archive/验收记录/RAG跨文件与近义干扰复核-20260927.md",
+      "sha256": "d6f42dc067f48a15ec862cea3e611b47c280dc6c2c49d428244c8e4e3329664e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-018",
+      "gitBlobSha256": "043381eceac8f56a94880676132e2da9e1eb5fad1b921c3e11b15669b3de339d"
+    },
+    {
+      "path": "docs/archive/验收记录/v23双端真实与职业建议一致性验收-20260927.md",
+      "sha256": "cab405b8829484229013f0f8ec1efbfa74c3bcbdce16c2a4cda4ce81ddbeb583",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-019",
+      "gitBlobSha256": "32296bd0622af630d06bd4b926e77b807e89bfe1a66e00e20d720b12f5fee598"
+    },
+    {
+      "path": "docs/archive/验收记录/v25页面收尾与企业核验建议-20260929.md",
+      "sha256": "b96f8bfa4ab8f5481f25af48a8117be845f42b81f579826c932d55965f0ea5c4",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-020",
+      "gitBlobSha256": "b96f8bfa4ab8f5481f25af48a8117be845f42b81f579826c932d55965f0ea5c4"
+    },
+    {
+      "path": "docs/archive/验收记录/今日验收与失败记录说明-20260927.md",
+      "sha256": "ecb300828a2f033e5d944b627cfdc0d7a69f0c0b44abd1c246901f762750967e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-021",
+      "gitBlobSha256": "bc77ea29fd09a3b15d8de6f5276835e04afc012cd9d6219ae1072ef61a8a1b62"
+    },
+    {
+      "path": "docs/archive/验收记录/任务草稿历史读取与离线质量样例-20261002.md",
+      "sha256": "07399220c81e5c09c7794948fdf71e1220900ac8f864bbd894cffd72237d3fdf",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-022",
+      "gitBlobSha256": "897e583a0661c9496ce6d37e9f43113c7b6f467f00637302119530345535698d"
+    },
+    {
+      "path": "docs/archive/验收记录/任务链检查与补证通知断点修复-20260930.md",
+      "sha256": "05d1339f95f8e2fe1d4c60a543e27a56c8fdf88635cb91b257328fad91e16435",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-023",
+      "gitBlobSha256": "c405ad0ad108497e5957750182a0b49b4ca1c6a20c7b8b2fc5d114e6985f9d3b"
+    },
+    {
+      "path": "docs/archive/验收记录/企业回复到学生补证上下文-20261002.md",
+      "sha256": "5740dffa0166f2824d567247d78021b0aff0cf020216ca26214df75091acb1f8",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-024",
+      "gitBlobSha256": "5740dffa0166f2824d567247d78021b0aff0cf020216ca26214df75091acb1f8"
+    },
+    {
+      "path": "docs/archive/验收记录/企业回复同名要求与引用编号消歧-20261002.md",
+      "sha256": "3bb1446aa6b07dae02d595060815e00663af2d6cb9142c033edaee2ef349e7e5",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-025",
+      "gitBlobSha256": "3bb1446aa6b07dae02d595060815e00663af2d6cb9142c033edaee2ef349e7e5"
+    },
+    {
+      "path": "docs/archive/验收记录/企业回复结构化引用与学生原报告直达-20261002.md",
+      "sha256": "24149f358ea30049409af5f69d45e55b8e5a469f50a621f3b3ddb154cf6252d9",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-026",
+      "gitBlobSha256": "24149f358ea30049409af5f69d45e55b8e5a469f50a621f3b3ddb154cf6252d9"
+    },
+    {
+      "path": "docs/archive/验收记录/企业投递浏览器闭环与页面授权保护-20260928.md",
+      "sha256": "bae5374368ae91d004532071849411ec2140d8c089e0f4f7e618a8131c0eb06b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-027",
+      "gitBlobSha256": "bae5374368ae91d004532071849411ec2140d8c089e0f4f7e618a8131c0eb06b"
+    },
+    {
+      "path": "docs/archive/验收记录/企业核验问题到人工回复与原报告定位-20261002.md",
+      "sha256": "0fa67e63d2b4a81ae4688a50f4a55393275f957b179a3f534f18dbb310867096",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-028",
+      "gitBlobSha256": "0fa67e63d2b4a81ae4688a50f4a55393275f957b179a3f534f18dbb310867096"
+    },
+    {
+      "path": "docs/archive/验收记录/公开仓库合成案例验收-20260924.md",
+      "sha256": "94eedca7567e98e40afef8e4519412554eedf952d78e1a1ad56fae76a223cf31",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-029",
+      "gitBlobSha256": "59150ea8152bf93e9e6b008ef90fd13ae310c7edfc47b3778bf8a148c6be2788"
+    },
+    {
+      "path": "docs/archive/验收记录/公开源码AI语义内部核对-20260924.md",
+      "sha256": "0841d5c43f1a4c408c07a10d89e572f2ce6000bfd51da0747bbb09f0568bb3c9",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-030",
+      "gitBlobSha256": "5f47a950fc65e1a21c66067542b14f328248f70f6b0c1d0fb2d96fd6713c41aa"
+    },
+    {
+      "path": "docs/archive/验收记录/冻结材料定向补检索验收-20260927.md",
+      "sha256": "0ce67270f3cdbf9243157c05a87fc09e45e1917a5aa984099db47cb601783c77",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-031",
+      "gitBlobSha256": "e2f5428ae2823dd77de20ded8edd1e7d7bc701652b6ae494486e002a0a37ed0f"
+    },
+    {
+      "path": "docs/archive/验收记录/冻结补检索真实模型验收-20260927.md",
+      "sha256": "cf73818381b51a86a25b04ec1c8c71b8f049128f181e4ff891a318307d4788c0",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-032",
+      "gitBlobSha256": "e37c0e173e2d99f7023bc51ed4af041575c56c7f6c480dfd4f7b4baad77c131f"
+    },
+    {
+      "path": "docs/archive/验收记录/函数引用联合覆盖验收-20260927.md",
+      "sha256": "bf8369f45d960399babc44e0a8d9093460535c6f058c584f8ba5ad3cbfb71f4b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-033",
+      "gitBlobSha256": "eb56adcd8eeedf05f50841a5bd63df3f311b3b9b878f41de766dfe82d2564439"
+    },
+    {
+      "path": "docs/archive/验收记录/历史工具新版真实与浏览器联验-20260926.md",
+      "sha256": "5df8eca8f20beb552567a81b3ea625805eb1b2d11cf5e7231acd460e0c9bbb81",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-034",
+      "gitBlobSha256": "fea1688ebfa393ba9f46e73dbff55631dce878ff411efe340f71df3efc63a4e2"
+    },
+    {
+      "path": "docs/archive/验收记录/历史引用隔离加固-20260926.md",
+      "sha256": "bd8be6fa2d6060c52d1d38fbbfe086bbb6bd5eaad04e5f527514196d9d943f2c",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-035",
+      "gitBlobSha256": "cd1efad1e67b051f6ba801fc66c7781ea08c90cb36217ef59703bc9aed43b555"
+    },
+    {
+      "path": "docs/archive/验收记录/历史难例与视觉浏览器复验-20260927.md",
+      "sha256": "59452ab6828f2c27079c8eb6581bcf1b817f27f7e519f7c7db4d5a3164a86a9b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-036",
+      "gitBlobSha256": "ef00052f2ad1a2935fa6b2a3c05782c7135ed48dab47bf86ae29cefda1d679da"
+    },
+    {
+      "path": "docs/archive/验收记录/历史难例完整报告验收-20260927.md",
+      "sha256": "a66f98153507be7ea4f935c23327670dfc7e597681dc072d264892e448e78ecd",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-037",
+      "gitBlobSha256": "9b54cd05c9f516ea2d1c78ea6687e986cf581947c1974283f81689b23ec00a53"
+    },
+    {
+      "path": "docs/archive/验收记录/双端AI行动设计验收-20260926.md",
+      "sha256": "b622b46d7716e9789382ae4f26c2be5676ce340ddb84ac17a4f90846ce59f220",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-038",
+      "gitBlobSha256": "e1e25ad1daedab5eb9e28fcbd7b576e8216909ad713d6de6e7510bb0c80b8655"
+    },
+    {
+      "path": "docs/archive/验收记录/双端通知中心与授权跳转-20260929.md",
+      "sha256": "10def9da1ae1df35a06c178318e3778199661042584d368c0a9d74ec811775ac",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-039",
+      "gitBlobSha256": "3a83fc3d5f31bf6c3c6480b51403b8878beee54858dfb7522463450b3b83582c"
+    },
+    {
+      "path": "docs/archive/验收记录/发布前检查-20260919.md",
+      "sha256": "7cc6cd0acd1a122765077b1227503f6495a0b650c8afc488b899a9401fae151c",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-040",
+      "gitBlobSha256": "1042b2c9eff5ed3f5c036dd8170ce86ea4853438026259f4ca16fb4fb1801a3b"
+    },
+    {
+      "path": "docs/archive/验收记录/发布前检查-20260925.md",
+      "sha256": "877788faa415c1e8e44f55ac7a381cfcb5e6ebf9b4712b5782c01a88019542cf",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-041",
+      "gitBlobSha256": "1dcca2b76ba346693d12cd047c45344663710bc8b9b87ce9f3818cfb67e814cd"
+    },
+    {
+      "path": "docs/archive/验收记录/受控MCP模型自主选用验收-20260927.md",
+      "sha256": "56aa318da61f1578fcf7a5be461eef9ccc068e279e286156a3bc2f317a2d5648",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-042",
+      "gitBlobSha256": "faeb554eb91fd482423f94e30ca69ec3acd11e28e811718f0383fe2dc0b5e50d"
+    },
+    {
+      "path": "docs/archive/验收记录/学生补证任务与固定报告成长闭环-20260929.md",
+      "sha256": "4f5a2e138e78c53ef954f5e481d3b1a0597a82389c6b69fc1b6de015c458d219",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-043",
+      "gitBlobSha256": "143116857c5c525bf4768043e3a9fdacfcfeb85846aee91e4fbbc6681b4a19f9"
+    },
+    {
+      "path": "docs/archive/验收记录/学生规划单次复验与待复核项-20260927.md",
+      "sha256": "366db7cb35cdf6d797fa4431f15639cb6ed3930e7b273e6417427b2b2c4bbddc",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-044",
+      "gitBlobSha256": "357bf0132991c076b044415a8d5fcd8ede41a4ee13c9b2e70bba1dc186917204"
+    },
+    {
+      "path": "docs/archive/验收记录/学生规划多方向合成验收-20260927.md",
+      "sha256": "dad267bd6f3e654e851d33cd71b82a75d3477cedafc6f69d90e544847c8d344e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-045",
+      "gitBlobSha256": "66f1f2a8a77b9221d2a5db212239b0d32a7ac7696da5c8004e3dab976714f9aa"
+    },
+    {
+      "path": "docs/archive/验收记录/报告对比与补证闭环验收-20260926.md",
+      "sha256": "77f387a3979c6abc3b184a9850703344f9561ddc6fa37b9a3572c6e097b05c96",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-046",
+      "gitBlobSha256": "0a6239797d5ce56dab08d934c724150db3fd160374ceb26d817c7faf21b280f9"
+    },
+    {
+      "path": "docs/archive/验收记录/报告输入预算预留与失败分类验收-20260928.md",
+      "sha256": "81ac39925ff3f36e6c902221260d5f0adc50bd8035d155e7725f8cc0945447b4",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-047",
+      "gitBlobSha256": "8c7074090badc501b0f19cda5b3217bcca99f872f28a80cf5a657aa2e9798b2a"
+    },
+    {
+      "path": "docs/archive/验收记录/持续迭代验收-20260926.md",
+      "sha256": "807d90b225f02409725914f4d72c359a1e197eba625c15fe8c93749a3c074f96",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-048",
+      "gitBlobSha256": "8b310a77dc2811089147ca4ac482802d150141c5be97bb9b3e9525a0ef720de3"
+    },
+    {
+      "path": "docs/archive/验收记录/明确未实现时先补实现-20261002.md",
+      "sha256": "0d28de1a91573ae7734b8f3be660fbf1c6aaddf6732c527754ffb40eb109b6f4",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-049",
+      "gitBlobSha256": "0d28de1a91573ae7734b8f3be660fbf1c6aaddf6732c527754ffb40eb109b6f4"
+    },
+    {
+      "path": "docs/archive/验收记录/智谱功能测试-20260916.md",
+      "sha256": "009135016c8c55307f883423d3561bc2467bfb6344631fe8497c60e2fd4562c1",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-050",
+      "gitBlobSha256": "7644e10ccfa65b3616def8f8d91efdf1d90200ca4e69c82286486ab43b6b7e12"
+    },
+    {
+      "path": "docs/archive/验收记录/智谱可信度验收-20260914.md",
+      "sha256": "7faf3ed501d512ed4978e0970aa40eedf81bc1325ce50d4de75b14b9e640e16b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-051",
+      "gitBlobSha256": "e53255026ad48d7e7caad2e527f4ea9af2ee7129de1879837439ecebc07ce724"
+    },
+    {
+      "path": "docs/archive/验收记录/有效补证建议与评级解释验收-20260927.md",
+      "sha256": "a6a141130f04b73005ce6d4748418b59164b19f5074e5515c51ff556c11cd9c5",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-052",
+      "gitBlobSha256": "1702603d9594f8292bb26a612d153ecd2b72f7e8b6a99824529caa54985156ea"
+    },
+    {
+      "path": "docs/archive/验收记录/本地语义文档检索验收-20260923.md",
+      "sha256": "05fec51087b8cf72efac44987a582be82201395a6b9ba73c5d9b59c25a490476",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-053",
+      "gitBlobSha256": "0df5f940f944e3f675c440a48b2542a46ecc28156519a3bf09106f66d2191eb0"
+    },
+    {
+      "path": "docs/archive/验收记录/材料选择与浏览器AI预算复验-20260928.md",
+      "sha256": "8514a95f870d628ec7041d35424ad13f77f3aeb128ec6865b4648dcfb67f537e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-054",
+      "gitBlobSha256": "e8e2bf9db10ffa9644e646560e6c8501ce06e8c45050bc4df307ef8ec423641d"
+    },
+    {
+      "path": "docs/archive/验收记录/检索64例合成对照评测-20260926.md",
+      "sha256": "eda4ea3fe3a109d42a7f020ba6edada6c617d611820320a1806fd923c980e05d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-055",
+      "gitBlobSha256": "db1a715d811b033f467cc04462e9fbd84ae1ea9cedb5f9ebde61f0412179fc5d"
+    },
+    {
+      "path": "docs/archive/验收记录/检索完整跨度评测-20260927.md",
+      "sha256": "2801cfc2bc7e9bb7a213a68df4d0842fed26f8daec8aed5912c91e15b5bf6817",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-056",
+      "gitBlobSha256": "c945f3aff7dc4898199c5d0cd18930b169e76afacca9408cc9302b7cc438b96b"
+    },
+    {
+      "path": "docs/archive/验收记录/浏览器与历史工具验收-20260926.md",
+      "sha256": "c938ae81cb80d32c086ca4abc280e0736f78e45a34e46cde9f106a11d404cf30",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-057",
+      "gitBlobSha256": "f7f80f1628cf4173231667eba98bc1ba782d88e72f8020030277ffe502685471"
+    },
+    {
+      "path": "docs/archive/验收记录/浏览器主链路验收记录-20260918.md",
+      "sha256": "5b2ac08f5d7e16746525142713ea5fd51e04c32dc35ac7443646712a3e645a2d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-058",
+      "gitBlobSha256": "117df9ab1f1ea2393ba109275a45e2c3db4583fdd994a8d010ad47f581416362"
+    },
+    {
+      "path": "docs/archive/验收记录/混合检索验收-20260923.md",
+      "sha256": "a00c23f712287c113e7a9408ad82cb547749f8ecd6e62e3ff3169158731e9534",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-059",
+      "gitBlobSha256": "51919771f90bc8f8b262de0678a96726c77c2268a3019b47b1f0314aff7ae89c"
+    },
+    {
+      "path": "docs/archive/验收记录/源码联合覆盖展示验收-20260927.md",
+      "sha256": "ee3f5ed9fbd42593267c49ab3214cd4bf822a46718152be941d364418afad3bb",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-060",
+      "gitBlobSha256": "c9855d8c8a10d691e0bb3f71626a71417b984cef5bcb3aa97829fc22b419c401"
+    },
+    {
+      "path": "docs/archive/验收记录/演示凭据预检与更换边界验收-20260927.md",
+      "sha256": "284f406ad739feb9aabcec789eac327f101f3f36bb07be5e7c69f551135428a4",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-061",
+      "gitBlobSha256": "18ecdd7576350ff934aaf9c4fe669df30944e3370de1e6e7028a3e74e1b11bea"
+    },
+    {
+      "path": "docs/archive/验收记录/真实历史矛盾回答离线重放验收-20260927.md",
+      "sha256": "3a6d0169076963ff65fe54e298fc5d25c835a19f4321ce75fcb726aca1a66f0b",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-062",
+      "gitBlobSha256": "e482a7246c7db6078cbd2c07238747daf159db43ae272965ae85b79ad6fd2513"
+    },
+    {
+      "path": "docs/archive/验收记录/真实模型检索对照评测-20260917.md",
+      "sha256": "0a7be3a14b42c64fe0a78ceca4071eef0470ce6b74349c0572db875cea70334d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-063",
+      "gitBlobSha256": "75b57013a15c8196be16a70eb31e3b12b1e45ca81f7c6b59d05b27c1d55978b3"
+    },
+    {
+      "path": "docs/archive/验收记录/第三方参考归属与AI回归-20260924.md",
+      "sha256": "76c44f8e75415b0dc14c09521f186170919d11d43717055ecf3a7c4ea213d1b3",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-064",
+      "gitBlobSha256": "ff0fd1e0433ad85c969534ca85ff4b39f2463cc55fb039d2bc1f5da430578008"
+    },
+    {
+      "path": "docs/archive/验收记录/统一案例归档与投递授权验收-20260928.md",
+      "sha256": "4800ed79f025ddac11e07e0b3ebfad889656bbdaed93433a5a2da4fb5bc0c1e2",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-065",
+      "gitBlobSha256": "d0bc5c225be447af3c5e043f3f9ac8bc97c245c1a97f8370c5d9abc09c7dafd0"
+    },
+    {
+      "path": "docs/archive/验收记录/职业探索本次结果展示调整-20260928.md",
+      "sha256": "fc9639b71a7ad80e7f5314fe77d2817a0a14ddebbab0a12c3c5f70eef4f4c132",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-066",
+      "gitBlobSha256": "fc9639b71a7ad80e7f5314fe77d2817a0a14ddebbab0a12c3c5f70eef4f4c132"
+    },
+    {
+      "path": "docs/archive/验收记录/职业推荐浏览器验收-20260922.md",
+      "sha256": "8501a9585af599cbd42ce0916548394f8e75350bb63a8aa92dc5bbcec4a9d206",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-067",
+      "gitBlobSha256": "dedf84e5d598f4cb521810ab5491e53a6e1b6231a69d38dd367ca8baec0b0cd9"
+    },
+    {
+      "path": "docs/archive/验收记录/职业测试岗位清理与配对材料验收-20260928.md",
+      "sha256": "33c95f0892163efe35f73b3a540a0990f0c4492af326d47c04f7c73babd7b245",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-068",
+      "gitBlobSha256": "5917931ca499005bddd68c849426957b5ec46117102890027e18e71941bcc144"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划AI变化事实冲突复检-20261002.md",
+      "sha256": "3d17fcb8e9edae43a8eca602fba2a6f462a5824acf4b366bf110d05a3c7852b7",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-069",
+      "gitBlobSha256": "3d17fcb8e9edae43a8eca602fba2a6f462a5824acf4b366bf110d05a3c7852b7"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划上轮重点岗位缺席解释-20261002.md",
+      "sha256": "fa56fc54d6e8ed1370cc94bf79849105b9078b7293f8fb00b542de8e74bff528",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-070",
+      "gitBlobSha256": "fa56fc54d6e8ed1370cc94bf79849105b9078b7293f8fb00b542de8e74bff528"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划历史AI建议读取复检-20261002.md",
+      "sha256": "e554ba45aa3e7c8e49e8bcdbcd6c6cedd8eefde4c16da00da99b26c7c729757d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-071",
+      "gitBlobSha256": "e554ba45aa3e7c8e49e8bcdbcd6c6cedd8eefde4c16da00da99b26c7c729757d"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划历史变化生产页面合成快照验收-20261002.md",
+      "sha256": "044155593378e65cd8764a3099aaccd3121153c14984eff27466e3671051cd88",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-072",
+      "gitBlobSha256": "044155593378e65cd8764a3099aaccd3121153c14984eff27466e3671051cd88"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划岗位基本信息变化解释-20261002.md",
+      "sha256": "5705d85b49d415e3a21899d7370aae8667fa2fed25f6fd7016e90d0a1da928f3",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-073",
+      "gitBlobSha256": "5705d85b49d415e3a21899d7370aae8667fa2fed25f6fd7016e90d0a1da928f3"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划岗位要求顺序误报修复-20261002.md",
+      "sha256": "7400b3f8721e1fe0159282b4d498f4ace98e64e7cc83be1f2450aa828062526f",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-074",
+      "gitBlobSha256": "7400b3f8721e1fe0159282b4d498f4ace98e64e7cc83be1f2450aa828062526f"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划材料岗位并发变化与归因拦截-20261002.md",
+      "sha256": "418a085bbc658d1711254a2823930cf88a7581a09181b06389073fbcccbef2bf",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-075",
+      "gitBlobSha256": "418a085bbc658d1711254a2823930cf88a7581a09181b06389073fbcccbef2bf"
+    },
+    {
+      "path": "docs/archive/验收记录/职业规划运行日志草稿缺少实现证据拦截-20261002.md",
+      "sha256": "d81d0276060a3707a1bca1aaba38849273c509777792ab789b77d6f8e435012f",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-076",
+      "gitBlobSha256": "d81d0276060a3707a1bca1aaba38849273c509777792ab789b77d6f8e435012f"
+    },
+    {
+      "path": "docs/archive/验收记录/补证到职业规划变化归因-20260930.md",
+      "sha256": "ee27f4948ff4c0eb3b8c39a27cf575920abcb53b923c00f5e2c5c0c52bd43078",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-077",
+      "gitBlobSha256": "ee27f4948ff4c0eb3b8c39a27cf575920abcb53b923c00f5e2c5c0c52bd43078"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉PostgreSQL并发与预算验收-20260927.md",
+      "sha256": "49d91c28ba6866d3431ce7336db083e3129a7e97d17884278706cf9ffe55cee6",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-078",
+      "gitBlobSha256": "decabb9f583d65a21745d3c9962bcb024fe9f48a337b243816d6049ec42ebe06"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉与AI完整报告组合验收-20260926.md",
+      "sha256": "880c6d8206fa65cecf13f45c9bca92b32ba615db06cdc90738a47f41951bed00",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-079",
+      "gitBlobSha256": "f43f7eb042e2e4d3c68c90ee181cf9d3d99ef73beb9ec8bd336a00f13c0c80c4"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉失败等待复用与真实并发验收-20260927.md",
+      "sha256": "9ac2e93eb57ee799678faf98cca62175d8a4f9433c8d611089813fb9b6c65711",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-080",
+      "gitBlobSha256": "e0723bc0c58eb52f9fa5b02b3a16a002419a6cab32a1375447c57986818523c0"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉排队外发前来源与账号复检验收-20260927.md",
+      "sha256": "3f728aa0333255794a3cebdebf869e20f55cb2ad8d230300056b3c17c7345503",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-081",
+      "gitBlobSha256": "9de4ee15359012da3530e0924ad5bf643d53c3945a38db424b7eb051a85b8ff1"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉结果复用与附件一致性验收-20260927.md",
+      "sha256": "2be8824a3e7363e4ba0ca55c4388244417a82b30b8ad10566723de1d8ebe6703",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-082",
+      "gitBlobSha256": "1aa69e207dba6a919b90bced5be760e6fb93deb94718c1a4ec1a3b702f703ccd"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉证据验收-20260926.md",
+      "sha256": "bf56c754e0cb210668a8f891978bc05b8898daa26f44493bcdb27822a220e644",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-083",
+      "gitBlobSha256": "597206340eb34859228af64fc02c6989af7cddaee5744f6d10a54f340c85dadd"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉读取与采纳来源复检验收-20260927.md",
+      "sha256": "fc49d2cc31d2064e3844012fc03addf94a75d94678f9328eb7f8ca1cadccee44",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-084",
+      "gitBlobSha256": "69af8007cca259a5bd38b69066c335c259ae42e4e1bbeb946633f9e27fb644c0"
+    },
+    {
+      "path": "docs/archive/验收记录/视觉输出与旧结果读取安全验收-20260927.md",
+      "sha256": "fefcbe34a0418ff3fbb34ad960a9416b7341c39a285bef5baf27af5028790909",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-085",
+      "gitBlobSha256": "7938ff914e291458a22cef2b1d9671377ba6b7eae41e08f0bed1a89463ac56ef"
+    },
+    {
+      "path": "docs/archive/验收记录/证据修正上下文压缩与预算回归-20260928.md",
+      "sha256": "e3efb76b27849da9f431bee02b5daf69d3f812f37b8df184f6c34459f78ead0d",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-086",
+      "gitBlobSha256": "e3efb76b27849da9f431bee02b5daf69d3f812f37b8df184f6c34459f78ead0d"
+    },
+    {
+      "path": "docs/archive/验收记录/证据规则v4验收-20260916.md",
+      "sha256": "fed671901700d86029a480697575c44d449db81bfe64492c7c97f4f873a8d9db",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-087",
+      "gitBlobSha256": "127327793cd1a835271cadfe47793f3ada13a4a9827ed030a63c1b25c9c49e34"
+    },
+    {
+      "path": "docs/archive/验收记录/证据锚点上下文修复-20260927.md",
+      "sha256": "06aef0a8e262339d4357bc54324bfffb0a1500a524893d5d20a7f96a53d0788c",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-088",
+      "gitBlobSha256": "30ff6635eb5e2e13133b32aeb3b1e0dbbb8dd8bcddc18687de9fa831c5fe28e1"
+    },
+    {
+      "path": "docs/archive/验收记录/赛事要求符合性对照-20260917.md",
+      "sha256": "0110f74109acf761b816aa27a3a5eb6323a50f57ad1a031c301fedb5b1bc163e",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-089",
+      "gitBlobSha256": "750bf946bce760fe3e2655b9fbcfc6cd4dad6eeea7335f2876edda88e3523781"
+    },
+    {
+      "path": "docs/archive/验收记录/运维DBA规则验收-20260916.md",
+      "sha256": "689aa9ef05610f7aad6801ef09be31c26764a224c6d32e9f1dfbf07d3ec86c24",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-090",
+      "gitBlobSha256": "80dca1925cbc6c08e617d749cbe69b0c1aa8ece4aad9288287be008e00d4b7a2"
+    },
+    {
+      "path": "docs/archive/验收记录/预算修复后真实API与服务恢复-20260928.md",
+      "sha256": "60192fcab4585055556b065a0192941dac9ce0dfbce335a926e50f1f01d64e2a",
+      "replacement": "docs/evidence/历史验收汇编.md",
+      "anchor": "record-091",
+      "gitBlobSha256": "60192fcab4585055556b065a0192941dac9ce0dfbce335a926e50f1f01d64e2a"
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/_shared/fonts/InstrumentSans-Bold.ttf",
+      "sha256": "444f85bf1c4b0e1ce1ca624f6be54bcd832207714ccaf4ea99ee531341683bdf",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/_shared/fonts/InstrumentSans-Regular.ttf",
+      "sha256": "a22cb26e48fd79bcb01bf2fc92d36785474dce36d9c544ab0a8868c2657c4a87",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/_shared/fonts/JetBrainsMono-Regular.ttf",
+      "sha256": "b6b1ff4ddefe36d7f2a6174e1d001cab374e594519ee9049af028d577b64c5f5",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/_shared/js/echarts.min.js",
+      "sha256": "e84270bd0cd5bdf60fefc26d00c2a391cb2e81f4d26a7a9ee16185a54773a3cf",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/_shared/js/mermaid.min.js",
+      "sha256": "a43bc1afd446f9c4cc66ac5dd45d02e8d65e26fc5344ec0ef787f88d6ddb6f9e",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/assets/charts.js",
+      "sha256": "976b63570304971d95b0e100ac6eb3ed87017c025463883f20fd83503ac1392e",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/assets/diagrams.js",
+      "sha256": "7f2f22cbf258a72eb45e994a77ee5bf25f02472c009b3b5d1e8a4cea24e238af",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/competition-compliance-ai-depth/competition-compliance-ai-depth.html",
+      "sha256": "a9f0449a718a56de0aa37f976798cb7851cc721c80b90b05af6e22cc21acbf22",
+      "replacement": "docs/guides/比赛交付.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/GOAL-依赖升级页面验收与AI质量评测-20261009.md",
+      "sha256": "2b7b0561cf4c7c4448c1e3762434fe59139eb59da541d36fc6febe469f398ff0",
+      "replacement": "docs/任务清单.md",
+      "anchor": "当前目标首版交付线"
+    },
+    {
+      "path": "docs/GOAL-周末免费额度驱动持续迭代-20261011.md",
+      "sha256": "e37491f6d417a3b7f5f22c77fac525a9363dc87bd357436b21d0a8972214e5f5",
+      "replacement": "docs/任务清单.md",
+      "anchor": "当前目标首版交付线"
+    },
+    {
+      "path": "docs/task-cards/20261004-AI-offline-coverage.md",
+      "sha256": "33c684c4fe31c56025f19f1b60765dfbcaeba7b351046f82a3fadb12de564bd2",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-001",
+      "gitBlobSha256": "33c684c4fe31c56025f19f1b60765dfbcaeba7b351046f82a3fadb12de564bd2"
+    },
+    {
+      "path": "docs/task-cards/20261004-B08-implementation.md",
+      "sha256": "c261342b920b5f12fc2aa9e2d56dba45d5cba442bc8d0de106f9de06fa9a3670",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-002",
+      "gitBlobSha256": "c261342b920b5f12fc2aa9e2d56dba45d5cba442bc8d0de106f9de06fa9a3670"
+    },
+    {
+      "path": "docs/task-cards/20261004-B08-investigation.md",
+      "sha256": "0aae17021caa4980567fad21634cbd4de389a015c70ef5974a7296258720cf88",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-003",
+      "gitBlobSha256": "0aae17021caa4980567fad21634cbd4de389a015c70ef5974a7296258720cf88"
+    },
+    {
+      "path": "docs/task-cards/20261004-B16.md",
+      "sha256": "8117ca9a2ee65ff09b69c28205e9fef941e805aaf554f9f1affedd308e4b381f",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-004",
+      "gitBlobSha256": "8117ca9a2ee65ff09b69c28205e9fef941e805aaf554f9f1affedd308e4b381f"
+    },
+    {
+      "path": "docs/task-cards/20261004-E2E-enterprise-browser.md",
+      "sha256": "f99b9c6256d45f4c2052f97897d6fa7ac58543721eb1a3c46a2278bbd6a2e09b",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-005",
+      "gitBlobSha256": "f99b9c6256d45f4c2052f97897d6fa7ac58543721eb1a3c46a2278bbd6a2e09b"
+    },
+    {
+      "path": "docs/task-cards/20261004-E2E-isolated-environment.md",
+      "sha256": "9b829e2254de72652b24edd9c4b0fee8663483c406bb680df0095190dac00b21",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-006",
+      "gitBlobSha256": "9b829e2254de72652b24edd9c4b0fee8663483c406bb680df0095190dac00b21"
+    },
+    {
+      "path": "docs/task-cards/20261004-E2E-isolation-review.md",
+      "sha256": "69823bc9a8f97e07e9df4b49dde4cbc31503e9ae97615db163507e5c03956de8",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-007",
+      "gitBlobSha256": "25f8823077c785355d8e1c9f2e8d8b041a15b3dbeae53f8712ee43ee977b706d"
+    },
+    {
+      "path": "docs/task-cards/20261004-E2E-personal-glm53-handoff.md",
+      "sha256": "1a2571c1c5c591a85ee027c4261bf4ca41a073e11f17313394261c7695015c24",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-008",
+      "gitBlobSha256": "1a2571c1c5c591a85ee027c4261bf4ca41a073e11f17313394261c7695015c24"
+    },
+    {
+      "path": "docs/task-cards/20261004-P0-enterprise-double-application-page.md",
+      "sha256": "fbe9a6a1cee13809b0dbc0e5bd2e95ecf917ca3951a6da213ecad39f91978fe5",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-009",
+      "gitBlobSha256": "fbe9a6a1cee13809b0dbc0e5bd2e95ecf917ca3951a6da213ecad39f91978fe5"
+    },
+    {
+      "path": "docs/task-cards/20261005-AI-independent-review.md",
+      "sha256": "4938ba02209ece9e10a2060c348a42ae93c06f1e68f0834070c408b6e1aa345f",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-010",
+      "gitBlobSha256": "4938ba02209ece9e10a2060c348a42ae93c06f1e68f0834070c408b6e1aa345f"
+    },
+    {
+      "path": "docs/task-cards/20261005-AI-task-boundaries.md",
+      "sha256": "965e7b1568fb3f5bb488147feffee4de0cc501ce70cc7f36facd3b405dc7237c",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-011",
+      "gitBlobSha256": "965e7b1568fb3f5bb488147feffee4de0cc501ce70cc7f36facd3b405dc7237c"
+    },
+    {
+      "path": "docs/task-cards/20261005-E2E-reply-draft.md",
+      "sha256": "159c5402887e2bb67bffaf6eba59464948eb45c1a21b155e94069c65b54130dc",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-012",
+      "gitBlobSha256": "159c5402887e2bb67bffaf6eba59464948eb45c1a21b155e94069c65b54130dc"
+    },
+    {
+      "path": "docs/task-cards/20261005-E2E-requirement-change-design.md",
+      "sha256": "2a330239cbc2783621e8a22e5f0a24af08b58416821d86b393de5f2800ae2f0e",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-013",
+      "gitBlobSha256": "2a330239cbc2783621e8a22e5f0a24af08b58416821d86b393de5f2800ae2f0e"
+    },
+    {
+      "path": "docs/task-cards/20261005-E2E-student-growth.md",
+      "sha256": "e2dd67edb107682e0c40a68cfabd106799e04ba59a9db26edad7346b896d6fb0",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-014",
+      "gitBlobSha256": "e2dd67edb107682e0c40a68cfabd106799e04ba59a9db26edad7346b896d6fb0"
+    },
+    {
+      "path": "docs/task-cards/20261005-enterprise-final-review.md",
+      "sha256": "9d6a7c2c0885f626a875c0949c43b09a5c3dc333c0ad0d68ccabd3161b149097",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-015",
+      "gitBlobSha256": "9d6a7c2c0885f626a875c0949c43b09a5c3dc333c0ad0d68ccabd3161b149097"
+    },
+    {
+      "path": "docs/task-cards/20261005-OPS-01-investigation.md",
+      "sha256": "08d9f05bf3660b732ef71ad2600c130aaa97494a92385c41c4cdbf87b8ebb94a",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-016",
+      "gitBlobSha256": "5360940bbeb8bcc27f3c9e02c36cc8f836655c82a0e8696174c44572a2e5f38a"
+    },
+    {
+      "path": "docs/task-cards/20261005-phase-final.md",
+      "sha256": "1497ad3fd12cdc12364aa72c0222006ee12ffa05edcb68d7d706742bfcf1ec9e",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-017",
+      "gitBlobSha256": "1497ad3fd12cdc12364aa72c0222006ee12ffa05edcb68d7d706742bfcf1ec9e"
+    },
+    {
+      "path": "docs/task-cards/20261005-phase-postgres.md",
+      "sha256": "9a826e7ace8c561173aff53fe23a22fe1f1fd2a79e04ae37ef1dcf0ba85d15c5",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-018",
+      "gitBlobSha256": "9a826e7ace8c561173aff53fe23a22fe1f1fd2a79e04ae37ef1dcf0ba85d15c5"
+    },
+    {
+      "path": "docs/task-cards/20261005-PRODUCT-01-frontend-plan.md",
+      "sha256": "b28e23ac40ff28a0c0f40790cc0dd8d28335e34b9730c34091681ed3a794fd57",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-019",
+      "gitBlobSha256": "0d5e7038641edf24bfa857033d2670e7b5918bdb435c26db67370d51eab52f95"
+    },
+    {
+      "path": "docs/task-cards/20261005-PRODUCT-01-private-answer.md",
+      "sha256": "9b6a2da04b6c408ebf830b37061d6c1730f0f6f530402fdc5567a566d6510b59",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-020",
+      "gitBlobSha256": "9b6a2da04b6c408ebf830b37061d6c1730f0f6f530402fdc5567a566d6510b59"
+    },
+    {
+      "path": "docs/task-cards/20261005-seed-candidate-identity.md",
+      "sha256": "b75e5719769026cfd3b036ddc7293cefb09e4abcb4d208505856c4f5ac5922fa",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-021",
+      "gitBlobSha256": "b75e5719769026cfd3b036ddc7293cefb09e4abcb4d208505856c4f5ac5922fa"
+    },
+    {
+      "path": "docs/task-cards/20261005-student-continuation.md",
+      "sha256": "9d553e27f31021c849924784cc165c2f1db2d38e9a2e35a8c51a9efbd313f13b",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-022",
+      "gitBlobSha256": "9d553e27f31021c849924784cc165c2f1db2d38e9a2e35a8c51a9efbd313f13b"
+    },
+    {
+      "path": "docs/task-cards/20261005-student-variants-after-review.md",
+      "sha256": "290e99358274314eb5dbfe8b4f4298359f09992596e77e6cd03557585b159d7b",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-023",
+      "gitBlobSha256": "290e99358274314eb5dbfe8b4f4298359f09992596e77e6cd03557585b159d7b"
+    },
+    {
+      "path": "docs/task-cards/20261006-OPS-01B-durable-attempts.md",
+      "sha256": "fec50faa8a37c85ef5fd15b9f82fc2c86d182d48b0b08e2c51ce0fdd0c071dbb",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-024",
+      "gitBlobSha256": "fec50faa8a37c85ef5fd15b9f82fc2c86d182d48b0b08e2c51ce0fdd0c071dbb"
+    },
+    {
+      "path": "docs/task-cards/20261006-PRODUCT-01-frontend-continuation.md",
+      "sha256": "07678d5ac1adb5ba59c584cba62105e44e154f344a40da835dd14e79c4823bb5",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-025",
+      "gitBlobSha256": "5fbe331d16ead9fdbd73dc6b4a7abd35e6d82e952f24284b6003b382cec3f9e8"
+    },
+    {
+      "path": "docs/task-cards/20261006-PRODUCT-01-page-acceptance.md",
+      "sha256": "f5a5f9b06de8a2a3493952d9d291a1f197a5c7712ac50d3598a815c0d14343e4",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-026",
+      "gitBlobSha256": "dc7c1542007dc269aebd26ede18b9b067ee7d398ecb231285a023717875a7b2f"
+    },
+    {
+      "path": "docs/task-cards/20261006-PRODUCT-01-personal-concurrency.md",
+      "sha256": "23f78662ac096512e12554df8476584a81f06164ecbb1a48422e07630117a6be",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-027",
+      "gitBlobSha256": "23f78662ac096512e12554df8476584a81f06164ecbb1a48422e07630117a6be"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01B-hard-stop-handoff.md",
+      "sha256": "05846d5190e9c08556be6f5351a01d05519bd8d43848a730bc3d613dc7516b14",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-028",
+      "gitBlobSha256": "0974a2abb559a72ea4f3b68b14edc6d6d13733364ea8e9b60daa271f2c361022"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01B-schema-handoff.md",
+      "sha256": "a58a570ed9e22d8b865fd23c4532bc65ff6a9edf6aea99066729c6ac07fca8f4",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-029",
+      "gitBlobSha256": "2673f3748cb48d45fe7075665560aa6e76138b022ea1c92e43d13f2a00857194"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01B-verification-implementation.md",
+      "sha256": "628275bb8dbe88385c36d937ee3989f83175ea26573648360f7d9553ee404825",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-030",
+      "gitBlobSha256": "d39b7d4b164c7d1e6248773aba992be7ad08a88af47884be6baa7b7b5dca35a1"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01C-main-budget-design.md",
+      "sha256": "19d716e6583c689e6a6b22dd673615848090e3885b8a4db51a43b62ee7a5b392",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-031",
+      "gitBlobSha256": "3e38cf5646e170f9c7b0165f06e56f4f4a1cb643f26d20e4060e3713ef236668"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01C-main-codex-review.md",
+      "sha256": "f9e3a909802ccff9022e0af86edfa1fcd750e950716cd50d6fe796c7a254c8f2",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-032",
+      "gitBlobSha256": "f9e3a909802ccff9022e0af86edfa1fcd750e950716cd50d6fe796c7a254c8f2"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01C-main-implementation.md",
+      "sha256": "036094a84f8693448be5fcd3f69f82fb98ca8ae455190fff92672dfeb2d19440",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-033",
+      "gitBlobSha256": "036094a84f8693448be5fcd3f69f82fb98ca8ae455190fff92672dfeb2d19440"
+    },
+    {
+      "path": "docs/task-cards/20261007-OPS-01C-shared-budget-implementation.md",
+      "sha256": "24a08f7aabb4dc9c3196a6608dc15e4d5dfd0c915270e1df80d55aff6c1fbedf",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-034",
+      "gitBlobSha256": "88e609ccf2985443454fa511b0c80b9ff2d8094a090bd5d182c76f3efd58b7ae"
+    },
+    {
+      "path": "docs/task-cards/20261007-PRODUCT-01-pages-continuation.md",
+      "sha256": "cc74267507d8cdc29c4f0ae2c4fc0069d92d5a7cdd5434338438a5402b96bf82",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-035",
+      "gitBlobSha256": "cc74267507d8cdc29c4f0ae2c4fc0069d92d5a7cdd5434338438a5402b96bf82"
+    },
+    {
+      "path": "docs/task-cards/20261008-OPS-01C-budget-codex-review.md",
+      "sha256": "e9cb6b46e1085530ab433a7b3b9fa37d3b289d5f9a8333d66c24f611078f2360",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-036",
+      "gitBlobSha256": "de758ba40b07a51d6d191d20f16b34b9701f7fc63cc53584ab3391789c97778e"
+    },
+    {
+      "path": "docs/task-cards/20261009-AI-quality-evaluation-protocol.md",
+      "sha256": "ca68451a3b75b3e7d658f9dbff5873b6c1522abacbebcbca21278d77a5c53a12",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-037",
+      "gitBlobSha256": "982135edf3a38639441b184630f7727abc06d4e79a30802545f0111f4c6c43d4"
+    },
+    {
+      "path": "docs/task-cards/20261009-DEP-01-first-batch.md",
+      "sha256": "5a5f71ac7a7593be8192c3b34c7d14d923242e25221e74a4b9b90c852f77aad7",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-038",
+      "gitBlobSha256": "346f66fe18a6eb3b724de7e5afcf65837dec9305de1c2f006eda7504638975bd"
+    },
+    {
+      "path": "docs/task-cards/20261009-OPS-budget-fault-tests.md",
+      "sha256": "7d5b85ddfc7642bc1fc47999f6b80a8478599507719171dad645ec1fe2c51a8c",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-039",
+      "gitBlobSha256": "7d5b85ddfc7642bc1fc47999f6b80a8478599507719171dad645ec1fe2c51a8c"
+    },
+    {
+      "path": "docs/task-cards/20261009-OPS-budget-production-race.md",
+      "sha256": "4dcd16aae55e4907e8c8eef2b876b4a4d763f883608005e3797493be3c482417",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-040",
+      "gitBlobSha256": "78cf7b629210389ab9243c85b21075ab3728c4738a5027ebc9b7e4588eeb17f9"
+    },
+    {
+      "path": "docs/task-cards/20261009-OPS-dependency-ranking.md",
+      "sha256": "8b4ac6c7be95dbb0f94ef3e207d4e78c64969ae1c3b7d29393c5b8d4ed1ba251",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-041",
+      "gitBlobSha256": "8b4ac6c7be95dbb0f94ef3e207d4e78c64969ae1c3b7d29393c5b8d4ed1ba251"
+    },
+    {
+      "path": "docs/task-cards/20261010-AI-blind-plan-review.md",
+      "sha256": "441e57b06b969c344c8ae161a6f2857ae396099e672ed087aecdc77d67527964",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-042",
+      "gitBlobSha256": "441e57b06b969c344c8ae161a6f2857ae396099e672ed087aecdc77d67527964"
+    },
+    {
+      "path": "docs/task-cards/20261010-AI-three-dimensions.md",
+      "sha256": "6870a77874bb583d25e070297787805caa13412a51f549dafee412a6cd8b6bef",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-043",
+      "gitBlobSha256": "6870a77874bb583d25e070297787805caa13412a51f549dafee412a6cd8b6bef"
+    },
+    {
+      "path": "docs/task-cards/20261010-DEP-fastembed-compatibility.md",
+      "sha256": "74cb22e36e2291c7eed5d1a3bea12bb9de5507fe4d0b213f3cdc299cb1a522eb",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-044",
+      "gitBlobSha256": "74cb22e36e2291c7eed5d1a3bea12bb9de5507fe4d0b213f3cdc299cb1a522eb"
+    },
+    {
+      "path": "docs/task-cards/20261010-DEP-residual-review.md",
+      "sha256": "ee74da89f1b019520cf1988a8084fe43ed9039c5e72969539ceababc7532b81c",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-045",
+      "gitBlobSha256": "ee74da89f1b019520cf1988a8084fe43ed9039c5e72969539ceababc7532b81c"
+    },
+    {
+      "path": "docs/task-cards/20261011-AI-plan-consistency-audit.md",
+      "sha256": "95bec63ade471dd1b0a2d620fdc036f41170217919ca742ba6d8af26b81023fe",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-046",
+      "gitBlobSha256": "95bec63ade471dd1b0a2d620fdc036f41170217919ca742ba6d8af26b81023fe"
+    },
+    {
+      "path": "docs/task-cards/20261011-GLM-goal34-private-draft-recovery.md",
+      "sha256": "2a3cf16eab06be60e74f11ec2aab53a15c61aa5525e5b6e24177a752872dbfb4",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-048",
+      "gitBlobSha256": "2a3cf16eab06be60e74f11ec2aab53a15c61aa5525e5b6e24177a752872dbfb4"
+    },
+    {
+      "path": "docs/task-cards/20261011-GLM-goal38-private-draft-review.md",
+      "sha256": "a4f5d010d7c76da1add2d9e21061c652e65c724ed1518d34f195a11f0c2f1baa",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-052",
+      "gitBlobSha256": "da6e436b9fbf11a9fb2680c17b43a8fe2f6084b4117a455fec1aae361b6650d4"
+    },
+    {
+      "path": "docs/task-cards/20261011-GLM-goal42-design-review.md",
+      "sha256": "9ff1ebd522148735975f948847bcceea4124aa67983c2774359d157d8ce2a5a5",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-056",
+      "gitBlobSha256": "9ff1ebd522148735975f948847bcceea4124aa67983c2774359d157d8ce2a5a5"
+    },
+    {
+      "path": "docs/task-cards/20261011-goal-completion-audit.md",
+      "sha256": "35d70fb9fa0eebdab46ba3643143830378819a751455df2539e1fa7fbb0082bc",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-057",
+      "gitBlobSha256": "35d70fb9fa0eebdab46ba3643143830378819a751455df2539e1fa7fbb0082bc"
+    },
+    {
+      "path": "docs/task-cards/20261011-launcher-reliability-audit.md",
+      "sha256": "caedb9d9982f4f43cf1fae59f543492274b8729e9b3c042fac9c2bf629412944",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-058",
+      "gitBlobSha256": "caedb9d9982f4f43cf1fae59f543492274b8729e9b3c042fac9c2bf629412944"
+    },
+    {
+      "path": "docs/task-cards/20261011-offline-review-benchmark.md",
+      "sha256": "cc7c805328a9d83a16e1a8e22a441bd3ad53ac03979735bd87728e4f340e247f",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-059",
+      "gitBlobSha256": "cc7c805328a9d83a16e1a8e22a441bd3ad53ac03979735bd87728e4f340e247f"
+    },
+    {
+      "path": "docs/task-cards/20261011-page-recovery-audit.md",
+      "sha256": "4a05eb9f5fc090e54ed697d40beb012028469f850609747975d8ebe02d93766a",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-060",
+      "gitBlobSha256": "4a05eb9f5fc090e54ed697d40beb012028469f850609747975d8ebe02d93766a"
+    },
+    {
+      "path": "docs/task-cards/20261011-upgraded-pg-gap-coverage.md",
+      "sha256": "e694a672a1bc7687190ca256e7d727cc5bb9680dad79af6acc7c6e942a5bebc4",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-061",
+      "gitBlobSha256": "e694a672a1bc7687190ca256e7d727cc5bb9680dad79af6acc7c6e942a5bebc4"
+    },
+    {
+      "path": "docs/task-cards/20261012-GLM-goal44-light-applications.md",
+      "sha256": "f75038a445ba19cc3d90a8d13baf0b9a736c9c1426943f5a4b9b8203c4a17fee",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-062",
+      "gitBlobSha256": "f75038a445ba19cc3d90a8d13baf0b9a736c9c1426943f5a4b9b8203c4a17fee"
+    },
+    {
+      "path": "docs/task-cards/20261012-GLM-goal45-release-usability-audit.md",
+      "sha256": "f82b3308b1f7ed077e96004a07e7cd85e206dce2ed7cc2ab2d1289885239567c",
+      "replacement": "docs/evidence/历史任务协议.md",
+      "anchor": "task-063",
+      "gitBlobSha256": "f82b3308b1f7ed077e96004a07e7cd85e206dce2ed7cc2ab2d1289885239567c"
+    },
+    {
+      "path": "docs/templates/ZCode任务卡模板.md",
+      "sha256": "49096209bf9e2b8615a6f7e35d9deda7b5ae950b0dbeb696ad56d1c0e2a533eb",
+      "replacement": "docs/templates/任务卡模板.md",
+      "anchor": ""
+    },
+    {
+      "path": "docs/templates/ZCode证据包模板.md",
+      "sha256": "2aa24651de516634bbab2879133e944cdce64a665f5bf4d240904efe0b640ae8",
+      "replacement": "docs/templates/证据包模板.md",
+      "anchor": ""
+    }
+  ],
+  "preservedTaskCards": [
+    "20261011-GLM-goal33-AI-boundaries.md",
+    "20261011-GLM-goal35-launcher-recovery.md",
+    "20261011-GLM-goal36-AI-false-positive.md",
+    "20261011-GLM-goal37-launcher-identity.md",
+    "20261011-GLM-goal39-shared-history-current.md",
+    "20261011-GLM-goal40-launcher-time-precision.md",
+    "20261011-GLM-goal41-private-recovery-pages.md",
+    "20261013-HARNESS46-release-smoke-review.md"
+  ],
+  "linkUpdates": [
+    "docs/README.md",
+    "docs/协作规则.md",
+    "docs/当前接力.md",
+    "docs/guides/AI与数据边界.md",
+    "docs/guides/工具与接入.md",
+    "docs/guides/比赛交付.md",
+    "docs/guides/证据与产品能力.md",
+    "docs/guides/评测与人工复核.md",
+    "docs/evidence/20261004-E2E-environment/summary.md",
+    "docs/evidence/20261004-P0-enterprise-page/codex-audit.md",
+    "docs/evidence/20261005-growth-target-job/relay-before-checkpoint.md",
+    "docs/evidence/20261005-PRODUCT-01-codex/codex-product-signoff-20261007.md",
+    "docs/evidence/20261010-DEP-fastembed-compatibility/README.md",
+    "docs/evidence/20261011-goal-completion-audit/audit.md",
+    "README.md"
+  ],
+  "scope": "Documentation only. Raw evidence, JSON provenance, current source/user edits, credentials and P2 stash are preserved.",
+  "after": {
+    "files": 2128,
+    "markdown": 191,
+    "topLevelMarkdown": 4,
+    "activeTaskCards": 8
+  },
+  "validation": {
+    "localLinksChecked": 486,
+    "currentEntryMissingLinks": [],
+    "existingUntrackedEvidenceMissingLinks": [
+      {
+        "file": "docs/evidence/20261011-GLM-goal40/README.md",
+        "target": "../local-runtime.test.ps1"
+      },
+      {
+        "file": "docs/evidence/20261011-GLM-goal40/README.md",
+        "target": "../../scripts/local-launcher-real-identity.test.ps1"
+      }
+    ],
+    "originalRawEvidenceChanged": [],
+    "deletedFilesStillPresent": [],
+    "websiteTests": "Not run: documentation-only changes.",
+    "currentGuidesLines": {
+      "AI与数据边界.md": 57,
+      "使用与启动.md": 169,
+      "功能演示.md": 148,
+      "工具与接入.md": 31,
+      "比赛交付.md": 50,
+      "证据与产品能力.md": 41,
+      "评测与人工复核.md": 28
+    }
+  },
+  "consolidationContentVerified": {
+    "records": 91,
+    "endedTaskCards": 56,
+    "allOriginalBodiesPreserved": true,
+    "method": "Full original Git body comparison after CRLF/LF and relative-link normalization; disk and Git blob SHA256 recorded separately."
+  }
+}

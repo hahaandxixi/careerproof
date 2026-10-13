@@ -7,7 +7,7 @@ CareerProof 面向准备实习/校招、拥有本人简历与项目材料的学�
 - [使用与启动指南](docs/guides/使用与启动.md)：安装、启动、学生/企业操作、人工测试与课堂展示。
 - [功能演示文档](docs/guides/功能演示.md)：5分钟预览、双端投递与通知、缺口补证、撤回后重新投递的逐步演示。
 - [首版交付线与开放问题](docs/任务清单.md)：目标用户、双端核心链路、权限/快照、演示和问题等级。
-- [全部当前文档](docs/README.md)：按使用目的查找，历史日志另列归档。
+- [全部当前文档](docs/README.md)：按使用目的查找，历史证据统一分类。
 
 ## 当前实现与边界
 
@@ -17,7 +17,7 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 
 截图观察和本地 OCR 分开记录。截图不能证明本人贡献、真实部署或持续运行，不自动赋实践等级。学生本人采纳材料也不等于独立人工语义复核。企业发布岗位不会获得学生私有材料或报告访问权。
 
-已实现、已验收与待验证范围，以 [DeepSeek 统一路线与能力矩阵](docs/guides/AI与数据边界.md) 为准；测试数量、旧供应商尝试与失败案例保留在 [历史归档](docs/archive/README.md)，不作为当前配置说明。
+已实现、已验收与待验证范围，以 [当前任务与验收](docs/任务清单.md) 为准；测试数量、旧供应商尝试与失败案例保留在 [历史验收汇编](docs/evidence/历史验收汇编.md)，不作为当前配置说明。
 
 ## 本地启动
 
@@ -44,7 +44,7 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 ## 开发与比赛交付
 
 - [前端开发说明](jianli/README.md)、[后端开发说明](backend/README.md)。
-- [项目总控](阶段1-比赛需求拆解与项目总控.md)、[赛前验收清单](docs/guides/比赛交付.md)、[提交资料骨架](docs/guides/比赛交付.md)。
+- [早期比赛需求（历史）](阶段1-比赛需求拆解与项目总控.md)、[赛前验收清单](docs/guides/比赛交付.md)、[提交资料骨架](docs/guides/比赛交付.md)。
 - [AI 用量与隐私](docs/guides/AI与数据边界.md)、[数据边界](docs/guides/AI与数据边界.md)、[第三方依赖](THIRD_PARTY_NOTICES.md)。
 - [技术文档候选 PDF](output/pdf/CareerProof-技术文档-提交候选稿.pdf)、[演示视频脚本](docs/guides/比赛交付.md)。
 

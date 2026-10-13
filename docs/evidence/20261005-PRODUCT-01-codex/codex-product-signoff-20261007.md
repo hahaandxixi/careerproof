@@ -4,7 +4,7 @@
 
 ## 实现与自动检查
 
-- 协议以[任务卡](../../task-cards/20261005-PRODUCT-01-private-answer.md)为准。后端2f91484：本人所有权、其他学生404/企业403、严格6000字符/20引用、原要求与真实引用解析、expectedRevision并发409、无草稿副作用已审查。[独立PG5零跳过、SQLite11及Ruff](backend-stage-signoff.md)。受影响PG原始18通过，记录中的32不采信；不声称本轮重跑后端全量。
+- 协议以[任务卡](../历史任务协议.md#task-020)为准。后端2f91484：本人所有权、其他学生404/企业403、严格6000字符/20引用、原要求与真实引用解析、expectedRevision并发409、无草稿副作用已审查。[独立PG5零跳过、SQLite11及Ruff](backend-stage-signoff.md)。受影响PG原始18通过，记录中的32不采信；不声称本轮重跑后端全量。
 - 0015迁移d760726：base→0015及0015→0014→0015真实通过；隔离closure升级前后旧行不变。首轮public回落失败留档且事务未提交。[迁移签收](migration-stage-signoff.md)
 - 前端027069d：执行方目标40/全套193/类型EXIT0，Codex独立11生命周期/编辑/单调版本/来源代际探针全绿。[前端签收](frontend-stage-signoff.md)。生产构建和独立8001/3001启动82ae80d；今天恢复SkipSeed/SkipBuild，Mock且外发关闭。
 - 最终 `git diff 027069d -- backend/app jianli/src jianli/tests` 为空，已通过的产品源码未发生后续变化；因此未重复全量。页面runner及历史证据56ebd09；真实剪贴板、完整冻结行及最终不变量32a3a0c。最新runner SHA256 `ec42023a2d84073bb4932a244e527b908a9fcf4227564fe44a3159e77bd8bec5`，语法检查EXIT0。
@@ -51,7 +51,7 @@ Codex实际独立复跑S3、S4、S7；32a3a0c加入可见Chrome原生剪贴板�
 
 ## OPS-01 接续顺序与责任
 
-PRODUCT-01有界功能完成。OPS-01只读调查与排序完成，实现、硬停实验、依赖升级及部署尚未进行。[复核](../20261006-OPS-01-investigation/codex-review.md)与[协议准备卡](../../task-cards/20261006-OPS-01B-durable-attempts.md)是下一轮入口。
+PRODUCT-01有界功能完成。OPS-01只读调查与排序完成，实现、硬停实验、依赖升级及部署尚未进行。[复核](../20261006-OPS-01-investigation/codex-review.md)与[协议准备卡](../历史任务协议.md#task-024)是下一轮入口。
 
 1. Codex先定持久attempt状态、可信收据、唯一账目/旧聚合切换及授权边界；ZCode GLM-5.3按单写入者任务卡实现核验链，Flash承接明确测试与证据整理。用mock和专属PG完成四窗口自有子进程硬停，Codex独立复跑最高风险1–2项。没有可信收据的窗口保留usage_unknown，不伪造精确恢复。
 2. 再扩主匹配链及共有日预算预留/跨午夜准入；锁序和未知占额策略先设计，不因单链通过称全系统已覆盖。
