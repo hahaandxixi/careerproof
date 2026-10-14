@@ -29,7 +29,11 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import settings
 from app.models.recruitment import Application
-from evals.seed_e2e import _windows_process_started_at, verify_startup_manifest
+from evals.seed_e2e import (
+    _windows_process_started_at,
+    assert_unlinked_state_path,
+    verify_startup_manifest,
+)
 
 
 def prepare_run(root: Path, run: str, venv: str, stage: str) -> None:
@@ -78,8 +82,7 @@ def validate_run(
         raise ValueError("Invalid E2E run id")
     files = [root / ".tmp/e2e" / f"{run}.json", root / ".tmp/e2e-run" / f"processes-{run}.json"]
     for file in files:
-        if file.is_symlink() or any(p.is_symlink() for p in file.parents):
-            raise ValueError("Linked E2E state is refused")
+        assert_unlinked_state_path(file)
     credentials, manifest = [json.loads(f.read_text(encoding="utf-8-sig")) for f in files]
     if (
         credentials.get("runId") != run
@@ -120,8 +123,7 @@ def smoke_account(root: Path, run: str) -> dict[str, str]:
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,31}", run):
         raise ValueError("Invalid E2E run id")
     path = root / ".tmp/release-smoke" / f"{run}.credentials.json"
-    if path.is_symlink() or any(p.is_symlink() for p in path.parents):
-        raise ValueError("Linked smoke state is refused")
+    assert_unlinked_state_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     account = {
         "email": f"smoke-{run}@example.com",
@@ -160,6 +162,7 @@ async def snapshot_hashes(run: str) -> dict[str, str]:
 async def exercise(run: str, root: Path) -> Path:
     credentials, _ = validate_run(root, run)
     path = root / ".tmp/release-smoke" / f"{run}.json"
+    assert_unlinked_state_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     # CreateNew means a rerun cannot discard an earlier failure or repeat writes.
     with path.open("x", encoding="utf-8") as file:

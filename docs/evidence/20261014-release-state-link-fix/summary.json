@@ -1,0 +1,24 @@
+{
+  "review_source": "docs/evidence/20261013-harness-release-review/review.md",
+  "scope": [
+    "backend/evals/release_smoke.py",
+    "backend/evals/seed_e2e.py",
+    "backend/app/tests/test_release_smoke_safety.py"
+  ],
+  "red": "2 failed,22 passed; actual Windows junction probes",
+  "green": "43 passed; release smoke guards and seed fixture safety",
+  "ruff": "passed",
+  "fixed": "Reject symlink/junction on state path and ancestors before smoke state read/write, seed replay/read/write and seed CLI engine creation",
+  "site_data": "No API/DB operation or service restart in this verification",
+  "limits": [
+    "Filesystem race after guard is not eliminated; atomic state persistence remains pending",
+    "Fresh complete HTTP reconsent smoke not run",
+    "Review recommendation requiring enterprise second authorization is not adopted: explicit student consent authorizes the new application",
+    "New report snapshot/board/idempotency assertions remain to strengthen"
+  ],
+  "hashes": {
+    "backend/evals/release_smoke.py": "dad9c5fb1dfe1f815439e5adcfec04de399a3fc36caf80f6037c32d456c08e90",
+    "backend/evals/seed_e2e.py": "6262a43dbb43e54f62d014fcba5ba7286cf7242e1e2e50a43bdadded38bca233",
+    "backend/app/tests/test_release_smoke_safety.py": "2d3d37931763db6dbe7f7545182a7bd50c3f835e18854cdb070748ba6b4c61b1"
+  }
+}

@@ -1,0 +1,59 @@
+...........FF...........                                                 [100%]
+================================== FAILURES ===================================
+___________ test_junction_smoke_state_refused_before_password_write ___________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/release-link-red-20261014-a/test_junction_smoke_state_refu0')
+
+    @pytest.mark.skipif(os.name != 'nt', reason='Windows directory junction guard')
+    def test_junction_smoke_state_refused_before_password_write(tmp_path):
+        import _winapi
+    
+        root = tmp_path / 'backend'
+        outside = tmp_path / 'outside'
+        (root / '.tmp').mkdir(parents=True)
+        outside.mkdir()
+        link = root / '.tmp/release-smoke'
+        _winapi.CreateJunction(str(outside), str(link))
+        try:
+>           with pytest.raises((IsolationError, ValueError), match='Linked'):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE any of (<class 'evals.seed_e2e.IsolationError'>, <class 'ValueError'>)
+
+app\tests\test_release_smoke_safety.py:102: Failed
+_________ test_junction_runtime_refused_before_read_or_process_probe __________
+
+runtime = (WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/release-link-red-20261014-a/test_junction_runtime_refused_0'), 'rel...'2026-10-14T14:09:13.644366+00:00'}, 'backendPort': 8001, ...}, <function runtime.<locals>.save at 0x0000028F7FEA9F80>)
+
+    @pytest.mark.skipif(os.name != 'nt', reason='Windows directory junction guard')
+    def test_junction_runtime_refused_before_read_or_process_probe(runtime):
+        import _winapi
+    
+        root, run, _, _, _, _ = runtime
+        original = root / '.tmp/e2e'
+        outside = root / 'fixture-state'
+        original.rename(outside)
+        _winapi.CreateJunction(str(outside), str(original))
+        try:
+            with pytest.raises((IsolationError, ValueError), match='Linked'):
+>               validate_run(root, run, process_probe=lambda _: pytest.fail('Probe preceded guard'))
+
+app\tests\test_release_smoke_safety.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\release_smoke.py:100: in validate_run
+    verify_startup_manifest(
+evals\seed_e2e.py:308: in verify_startup_manifest
+    started_at = process_probe(pid)
+                 ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_ = 123
+
+>   validate_run(root, run, process_probe=lambda _: pytest.fail('Probe preceded guard'))
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: Probe preceded guard
+
+app\tests\test_release_smoke_safety.py:120: Failed
+=========================== short test summary info ===========================
+FAILED app/tests/test_release_smoke_safety.py::test_junction_smoke_state_refused_before_password_write
+FAILED app/tests/test_release_smoke_safety.py::test_junction_runtime_refused_before_read_or_process_probe
+2 failed, 22 passed in 0.64s

@@ -1,6 +1,7 @@
 """Reject a wrong/demo/business/expired runtime before the smoke chain can write."""
 
 import json
+import os
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -85,6 +86,40 @@ def test_correct_live_owned_mock_run_allowed(runtime):
     root, run, started, *_ = runtime
     _, manifest = validate_run(root, run, process_probe=lambda _: started)
     assert manifest["databaseName"] == "cp_e2e_release-test"
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='Windows directory junction guard')
+def test_junction_smoke_state_refused_before_password_write(tmp_path):
+    import _winapi
+
+    root = tmp_path / 'backend'
+    outside = tmp_path / 'outside'
+    (root / '.tmp').mkdir(parents=True)
+    outside.mkdir()
+    link = root / '.tmp/release-smoke'
+    _winapi.CreateJunction(str(outside), str(link))
+    try:
+        with pytest.raises((IsolationError, ValueError), match='Linked'):
+            smoke_account(root, 'junction-probe')
+        assert list(outside.iterdir()) == []
+    finally:
+        link.rmdir()  # Remove only the test-created junction, never its target.
+
+
+@pytest.mark.skipif(os.name != 'nt', reason='Windows directory junction guard')
+def test_junction_runtime_refused_before_read_or_process_probe(runtime):
+    import _winapi
+
+    root, run, _, _, _, _ = runtime
+    original = root / '.tmp/e2e'
+    outside = root / 'fixture-state'
+    original.rename(outside)
+    _winapi.CreateJunction(str(outside), str(original))
+    try:
+        with pytest.raises((IsolationError, ValueError), match='Linked'):
+            validate_run(root, run, process_probe=lambda _: pytest.fail('Probe preceded guard'))
+    finally:
+        original.rmdir()
 
 
 @pytest.mark.parametrize("run", ["../careerproof", "release_test", "", "a" * 33])

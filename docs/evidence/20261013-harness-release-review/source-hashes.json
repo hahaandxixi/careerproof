@@ -1,0 +1,33 @@
+{
+  "review": "HARNESS46 release-smoke independent review (bounded, read-only on product code)",
+  "repoRoot": "D:\\jbcode\\web ai\\jianli",
+  "headAtReviewStart": "8f40ca8df5aef8f84b0d48a55dcca27075560448",
+  "headAfterExternalCommit": "c022230432e779c7044920979344fdd87db2f961",
+  "headDriftNote": "During the review HEAD moved 8f40ca8 -> c0222304 at 2026-10-14T21:40:28+08:00 (reflog: 'fix: clarify first-use demo steps and verify public evidence linking'; it touched jianli/src/app/demo/page.tsx, docs and a new evidence dir). Every reviewed source file is byte-identical at both commits, so the findings hold for both.",
+  "worktreeStatusAtStart": [
+    " M docs/当前接力.md (pre-existing, untouched by this review)"
+  ],
+  "gitBlobAtHead": {
+    "backend/evals/release_smoke.py": "a41383966dbfa300ec592beb9566ce51a70b0021",
+    "backend/evals/seed_e2e.py": "2f98890244e280bda821b5f8dff9720077a7c8dc",
+    "backend/app/tests/test_release_smoke_safety.py": "4753e5a1e0f542e62cca8e1f8875c91d4925d684",
+    "scripts/Start-E2E.ps1": "f218df0fdf54a97b5f8093c087ce6a3f575e76de"
+  },
+  "scriptsStartE2eSha256": "54a647fc695134fbdcf28b32578cf31dc1ce3b6e7cc2d7d2012f4f3d180e7f6b",
+  "sourceSha256": {
+    "backend/evals/release_smoke.py": "adc31e1e43503381d7a84f9e56103d8d6a8241c39a0691c7dec47516d2052fe1",
+    "backend/evals/seed_e2e.py": "df8857b33343c4ac16966857a51f473ff0143fd396e531b29dd8e06ad21eab16",
+    "backend/app/tests/test_release_smoke_safety.py": "eda98ddf890f334486bb590a04aa02dd22baffade313d10dc45f35689451bafc"
+  },
+  "changeSincePreviousGateEvidence": {
+    "note": "docs/evidence/20261012-release-gate/source-verification.json (baseHead 6c1b784) records sourceSha256 for release_smoke.py and test_release_smoke_safety.py; both hashes equal the ones above, so the recorded HTTP-chain evidence still applies to these exact bytes. seed_e2e.py was not hashed there, but git shows it unchanged between 6c1b784 and HEAD.",
+    "gitDiff6c1b784ToHeadEmptyFor": [
+      "backend/evals/seed_e2e.py",
+      "scripts/Start-E2E.ps1"
+    ]
+  },
+  "notCoveredByRecordedHash": [
+    "scripts/Start-E2E.ps1",
+    "backend/evals/seed_e2e.py"
+  ]
+}

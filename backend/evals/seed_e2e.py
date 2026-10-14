@@ -107,6 +107,14 @@ class IsolationError(RuntimeError):
     """Raised when a target, state or replay violates the E2E isolation contract."""
 
 
+def assert_unlinked_state_path(path: Path) -> None:
+    """Refuse symlinks and Windows junctions before reading/writing local state."""
+    path = Path(path).absolute()
+    if any(candidate.is_symlink() or candidate.is_junction()
+           for candidate in (path, *path.parents)):
+        raise IsolationError("Linked E2E state is refused")
+
+
 def guard_run_id(run_id: str) -> str:
     if not RUN_ID_PATTERN.fullmatch(run_id):
         raise IsolationError("run id must match [a-z0-9][a-z0-9-]{0,31}; got an invalid value")
@@ -179,6 +187,7 @@ def normalized_snapshot_hash(snapshot: object) -> str:
 
 def load_startup_manifest(manifest_path: Path) -> dict:
     path = Path(manifest_path)
+    assert_unlinked_state_path(path)
     if not path.exists():
         raise IsolationError(
             f"no E2E startup manifest at {path}; the seeder only runs against a backend "
@@ -683,6 +692,7 @@ async def _create_fixture(
                 for slot, student_key, _job_slot in DELIVERY_PLAN
             },
         }
+    assert_unlinked_state_path(state_path)
     state_path.parent.mkdir(parents=True, exist_ok=True)
     state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
     result = await _verify_fixture(client_factory, session_factory, state)
@@ -830,6 +840,7 @@ async def seed_fixture(
 ) -> dict:
     run_id = guard_run_id(run_id)
     state_path = Path(state_path)
+    assert_unlinked_state_path(state_path)
     if state_path.exists():
         state = json.loads(state_path.read_text(encoding="utf-8"))
         if state.get("runId") != run_id:
@@ -930,6 +941,7 @@ async def _async_main(args: argparse.Namespace) -> int:
         storage_dir=Path(storage_dir),
         backend_port=E2E_BACKEND_PORT,
     )
+    assert_unlinked_state_path(Path(args.state_dir) / f"{run_id}.json")
     engine = create_async_engine(database_url, hide_parameters=True, pool_pre_ping=True)
     factory = async_sessionmaker(engine, expire_on_commit=False)
     state_path = Path(args.state_dir) / f"{run_id}.json"
