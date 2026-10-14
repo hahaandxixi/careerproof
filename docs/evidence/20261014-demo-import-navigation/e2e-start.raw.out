@@ -1,0 +1,105 @@
+database cp_e2e_release-owner-20261012: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "release-owner-20261012",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "d3ae897a-0e37-42cc-87dc-efce0794eb7a",
+    "B": "59a8fdf5-ec35-40fc-8fb4-1007d72a34fe"
+  },
+  "reports": {
+    "A": "3967b943-06c6-4ab2-9722-af076ef91a14",
+    "B": "40992e63-6ff9-4ac9-bd52-09f21d0d00e7",
+    "A2": "d0b81d2a-bd0c-4832-b87d-5c5384ff90c3"
+  },
+  "materials": {
+    "student": "6f62205f-be25-4544-9c4f-a0a4ee927c03",
+    "studentA2": "79af11af-dd71-47f3-9427-f6e110835480"
+  },
+  "applications": {
+    "A": {
+      "id": "d08df56a-4f79-44f8-8094-34582865053f",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "d43f6d96419f2952acf7c238edb1b66b8109974eebe35ddd31cad3fa7ef52c97"
+    },
+    "B": {
+      "id": "2b3fa060-396f-4ef3-8f8e-93c811e00434",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "47d5d648a3f7fcfe2c075e1b1247979247cf9788eec7dcc12da67a6d1f04b1b5"
+    },
+    "A2": {
+      "id": "d97a30c2-11e5-4715-8012-ee5516eee3e5",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "2b96385952a91b60c92622c652b9af334b3d1449803191f867c8f32b085ee700"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.7s
+   Linting and checking validity of types ...
+
+   We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+   The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+   	- include was updated to add '.next-e2e/types/**/*.ts'
+
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            999 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                           4 kB         114 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                5.15 kB         111 kB
+├ ○ /demo/heatmap                        6.18 kB         112 kB
+├ ○ /growth                                134 B         129 kB
+├ ƒ /growth/[id]                           132 B         129 kB
+├ ƒ /jobs                                2.37 kB         112 kB
+├ ƒ /jobs/[id]                            3.6 kB         119 kB
+├ ƒ /jobs/[id]/applications              12.9 kB         123 kB
+├ ƒ /jobs/[id]/edit                        132 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                           2.38 kB         112 kB
+├ ○ /jobs/new                              132 B         115 kB
+├ ○ /login                               4.56 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.26 kB         114 kB
+├ ○ /notifications                       2.45 kB         113 kB
+├ ○ /portfolio                           6.69 kB         117 kB
+├ ƒ /recommendations                        6 kB         121 kB
+├ ○ /register                            5.01 kB         111 kB
+├ ○ /reports                             1.58 kB         112 kB
+├ ƒ /reports/[id]                        17.7 kB         128 kB
+└ ƒ /tasks/[id]                          3.51 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+CareerProof E2E run 'release-owner-20261012' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_release-owner-20261012 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\release-owner-20261012, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\release-owner-20261012.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId release-owner-20261012.
+next-env.d.ts was changed by the isolated build; the original bytes were restored.
+tsconfig.json was changed by the isolated build; the original bytes were restored.

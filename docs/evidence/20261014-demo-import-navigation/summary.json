@@ -1,0 +1,22 @@
+{
+  "baselineHead": "c32c9d2",
+  "obstacle": "Import completion sent users to obsolete 我的材料 label with no direct continuation link",
+  "observedBefore": "isolated browser CP01 actual import succeeded and showed obsolete label",
+  "change": "Use 个人材料 consistently and show /portfolio navigation alongside success or error; 44px minimum import/link touch height",
+  "typecheck": "upgraded stage tsc --noEmit exit 0",
+  "productionBuilds": "normal .next and isolated .next-e2e succeeded",
+  "recovery": "owned services stopped/rebuilt/restored without reseeding; both inventories and all 7 pre-existing isolated application snapshots unchanged",
+  "normalBrowser": "3000 demo student CP01 reused completed seed versions; new success text and /portfolio link visible; clicked to material page, CP01 resume and project both completed",
+  "syntheticUpload": "3001 smoke student imported CP01 through actual webpage before rebuild; 3000 only reused existing completed CP01 materials",
+  "screenshots": [
+    "normal-import-next-step.jpg"
+  ],
+  "notVerified": [
+    "independent first-user report generation/full chain",
+    "live real model semantic evaluation",
+    "import failure branch browser",
+    "all mobile screens"
+  ],
+  "realModelCalls": 0,
+  "userCreatedAccountsModified": false
+}
