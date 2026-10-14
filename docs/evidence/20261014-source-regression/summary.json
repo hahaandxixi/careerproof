@@ -1,0 +1,38 @@
+{
+  "source_commit": "4c8c41498491453394700ff39e2175f42d5bf080",
+  "package": "CareerProof-source-preview-20261014-r3.zip",
+  "sqlite": {
+    "passed": 1203,
+    "skipped": 49,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 310.91,
+    "exit_code": 0
+  },
+  "postgres_first": {
+    "passed": 91,
+    "failed": 4,
+    "skipped": 0,
+    "errors": 0,
+    "exit_code": 1,
+    "strict_non_hardstop_modules": 11,
+    "strict_non_hardstop_passed": 87
+  },
+  "hardstop_rerun": {
+    "passed": 8,
+    "skipped": 0,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 25.3,
+    "exit_code": 0,
+    "windows": "matching and verification; send_intent_committed/response_observed/receipt_committed/ledger_committed"
+  },
+  "first_pg_failure_reason": "External --basetemp caused matching storage safety refusal; rerun inside extracted backend .tmp-source-pg-hardstop-20261014-b. No test or guard weakened.",
+  "database": "dedicated labelled container careerproof-review-pg-20261014, loopback port 55432, database careerproof, vector extension; business/e2e databases unused",
+  "limitations": [
+    "No fresh frontend acceptance in this run",
+    "CI49 draft and uncommitted guard/launcher excluded",
+    "Real user/browser reconsent chain not proven by these tests",
+    "Not a final competition candidate sign-off"
+  ]
+}

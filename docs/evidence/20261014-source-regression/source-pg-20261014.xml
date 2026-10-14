@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="95" time="120.191" timestamp="2026-10-14T16:09:58.116790+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_ai_budget_production_race" name="test_matching_entry_same_owner_dual_task_last_slot_race" time="3.327" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_verification_entry_same_owner_dual_task_last_slot_race" time="1.350" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_cross_role_owner_isolation_and_entry_role_walls" time="3.271" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_offline_fixture_contract_dual_pending_and_single_chain_booking" time="3.094" /><testcase classname="app.tests.test_durable_matching" name="test_every_physical_matching_request_is_durable_attempted_and_booked" time="2.732" /><testcase classname="app.tests.test_durable_matching" name="test_fallback_after_invalid_repair_still_books_persisted_receipts" time="2.649" /><testcase classname="app.tests.test_durable_matching" name="test_booking_failure_recovers_without_extra_http" time="2.894" /><testcase classname="app.tests.test_durable_matching" name="test_report_save_failure_keeps_booked_receipts" time="2.793" /><testcase classname="app.tests.test_durable_matching" name="test_owner_deactivation_and_material_replacement_send_nothing" time="4.586" /><testcase classname="app.tests.test_durable_matching" name="test_concurrent_duplicate_booking_writes_one_ledger_row" time="0.494" /><testcase classname="app.tests.test_durable_matching" name="test_history_read_releases_borrowed_transaction_during_http" time="3.566" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[disabled]" time="0.621" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[role_changed]" time="0.594" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[missing]" time="0.642" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[changed]" time="0.588" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[True-True]" time="0.661" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[True-False]" time="0.750" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[False-True]" time="0.693" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[False-False]" time="0.847" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_pending_revocation_does_not_block_other_grants" time="1.176" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_four_grants_have_independent_caps_and_private_audits" time="3.007" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-disabled]" time="1.087" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-role_changed]" time="0.888" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-disabled]" time="0.858" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-role_changed]" time="0.887" /><testcase classname="app.tests.test_real_matching" name="test_real_report_survives_login_and_preserves_sources_and_snapshots" time="3.151" /><testcase classname="app.tests.test_real_matching" name="test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test]" time="3.658" /><testcase classname="app.tests.test_real_matching" name="test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash]" time="3.908" /><testcase classname="app.tests.test_real_matching" name="test_daily_ai_budget_uses_persisted_usage" time="0.459" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[context]" time="2.551" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[configuration]" time="2.485" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[request]" time="2.515" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[validation]" time="2.538" /><testcase classname="app.tests.test_real_matching" name="test_matching_materials_and_reports_are_owner_scoped" time="3.742" /><testcase classname="app.tests.test_real_matching" name="test_pending_materials_are_rejected_and_operations_documents_are_evaluated" time="2.514" /><testcase classname="app.tests.test_real_matching" name="test_pending_and_running_matches_coalesce_and_use_frozen_inputs" time="3.301" /><testcase classname="app.tests.test_real_matching" name="test_failed_match_retry_is_owner_only_atomic_and_not_duplicated" time="2.589" /><testcase classname="app.tests.test_real_matching" name="test_entirely_unsupported_job_has_null_overall_score" time="2.508" /><testcase classname="app.tests.test_real_matching" name="test_evidence_review_is_owner_scoped_and_persisted" time="2.493" /><testcase classname="app.tests.test_real_matching" name="test_job_recommendations_rank_owned_material_evidence" time="2.373" /><testcase classname="app.tests.test_real_matching" name="test_career_plan_cites_shortlist_and_tracks_new_material" time="5.407" /><testcase classname="app.tests.test_real_matching" name="test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3]" time="2.348" /><testcase classname="app.tests.test_real_matching" name="test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3]" time="2.271" /><testcase classname="app.tests.test_durable_attempt_service" name="test_recovery_books_receipt_once_without_restoring_old_result" time="0.193" /><testcase classname="app.tests.test_durable_attempt_service" name="test_late_receipt_can_settle_unknown_old_claim" time="0.186" /><testcase classname="app.tests.test_durable_attempt_service" name="test_no_receipt_is_unknown_and_never_a_zero_ledger" time="0.152" /><testcase classname="app.tests.test_durable_attempt_service" name="test_prepared_unsent_is_closed_without_billing_after_claim_loss" time="0.141" /><testcase classname="app.tests.test_durable_attempt_service" name="test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts" time="0.162" /><testcase classname="app.tests.test_durable_attempt_service" name="test_legacy_claim_cannot_switch_to_attempt_accounting" time="0.141" /><testcase classname="app.tests.test_durable_attempt_service" name="test_invalid_persisted_receipt_is_not_booked" time="0.166" /><testcase classname="app.tests.test_durable_attempt_service" name="test_live_claim_reconciliation_does_not_steal_slow_request" time="0.171" /><testcase classname="app.tests.test_durable_attempt_service" name="test_concurrent_pg_booking_records_one_fact" time="0.575" /><testcase classname="app.tests.test_durable_attempt_service" name="test_concurrent_pg_preparation_allocates_distinct_physical_numbers" time="0.217" /><testcase classname="app.tests.test_durable_attempt_service" name="test_ledger_commit_failure_is_recoverable_without_more_http" time="0.169" /><testcase classname="app.tests.test_durable_attempt_service" name="test_send_intent_commit_failure_prevents_any_http" time="0.142" /><testcase classname="app.tests.test_ai_request_attempt_migration" name="test_sqlite_0016_upgrade_downgrade_preserves_legacy_ledger" time="0.038" /><testcase classname="app.tests.test_ai_request_attempt_migration" name="test_postgres_0016_migration_inside_own_cp_test_schema" time="0.134" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_semantic_index_and_search_flow" time="0.162" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_mixed_engines_and_unavailable_model_skip" time="0.184" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily0-report0-100-700-500]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily1-report1-100-300-50]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily2-report2-100-300-10]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily3-report3-100-300-daily_input]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily4-report4-100-300-report_input]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily5-report5-100-300-output_token]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_hold_and_cross_run_grant_do_not_reset_report_capacity" time="0.334" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_disabled_gate_or_unreserved_old_attempt_cannot_admit" time="0.300" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_midnight_transfer_moves_only_unsent_hold" time="0.353" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_late_actual_over_bound_stays_original_day_and_blocks_new_admission" time="0.330" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_pre_budget_known_unknown_and_not_sent_strict_backfill" time="0.328" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_backfill_missing_day_rejects_without_capacity_rows" time="0.313" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_pg_cross_chain_last_slot_real_concurrent_sessions" time="0.356" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_committed_session_cannot_reuse_stale_day_lock_marker" time="0.363" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_empty_roundtrip_preserves_legacy_and_attempt" time="0.030" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes0]" time="0.024" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes1]" time="0.022" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes2]" time="0.026" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes3]" time="0.021" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes4]" time="0.022" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_one_reservation_and_real_zero_receipt" time="0.024" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_cutover_is_disabled_without_activation_evidence" time="0.022" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_owner_day_serialization_identity_unique" time="0.021" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_adjustment_reason_and_operation_identity" time="0.022" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_postgres_budget_roundtrip_and_unknown_downgrade_guard" time="0.175" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_reconsent_migration_preserves_history" time="0.019" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_postgres_reconsent_migration_preserves_history" time="0.131" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_migration_rejects_cascading_batch_rebuild" time="0.003" /><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[verification-send_intent_committed]" time="2.028" /><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[verification-response_observed]" time="2.025" /><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[verification-receipt_committed]" time="2.048" /><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[verification-ledger_committed]" time="2.093" /><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[matching-send_intent_committed]" time="2.329"><failure message="Failed: hard-stop child failed: Traceback (most recent call last):&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 205, in main&#10;    asyncio.run(run(config))&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 195, in run&#10;    return runner.run(main)&#10;           ^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 118, in run&#10;    return self._loop.run_until_complete(task)&#10;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py&quot;, line 691, in run_until_complete&#10;    return future.result()&#10;           ^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 77, in run&#10;    chain = validate_config(config)&#10;            ^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 67, in validate_config&#10;    raise ValueError(&quot;Matching storage must stay in this repository's test directory&quot;)&#10;ValueError: Matching storage must stay in this repository's test directory">phase = 'send_intent_committed', chain = 'matching'
+case = Case(hr=&lt;httpx.AsyncClient object at 0x0000029218A23DA0&gt;, student=&lt;httpx.AsyncClient object at 0x0000029218C19580&gt;, ou...0&gt;, submitted=[(&lt;function execute_match_task at 0x000002920E565DA0&gt;, (UUID('27c72e20-85ae-4e96-a6d1-536d90b62bd1'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then4')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002921704AC30&gt;
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+&gt;           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then4/child-state-send_intent_committed.json')
+wanted = 'hanging'
+child = &lt;Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...&gt;
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then4/child-log-send_intent_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+&gt;                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 67, in validate_config
+E                       raise ValueError("Matching storage must stay in this repository's test directory")
+E                   ValueError: Matching storage must stay in this repository's test directory
+
+app\tests\test_attempt_hard_stop.py:190: Failed</failure></testcase><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[matching-response_observed]" time="2.578"><failure message="Failed: hard-stop child failed: Traceback (most recent call last):&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 205, in main&#10;    asyncio.run(run(config))&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 195, in run&#10;    return runner.run(main)&#10;           ^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 118, in run&#10;    return self._loop.run_until_complete(task)&#10;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py&quot;, line 691, in run_until_complete&#10;    return future.result()&#10;           ^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 77, in run&#10;    chain = validate_config(config)&#10;            ^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 67, in validate_config&#10;    raise ValueError(&quot;Matching storage must stay in this repository's test directory&quot;)&#10;ValueError: Matching storage must stay in this repository's test directory">phase = 'response_observed', chain = 'matching'
+case = Case(hr=&lt;httpx.AsyncClient object at 0x0000029218D79A30&gt;, student=&lt;httpx.AsyncClient object at 0x0000029218D79700&gt;, ou...0&gt;, submitted=[(&lt;function execute_match_task at 0x000002920E565DA0&gt;, (UUID('3fe1940a-1788-494c-bce8-f6c3158c5cc5'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then5')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000029218C9C320&gt;
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+&gt;           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then5/child-state-response_observed.json')
+wanted = 'hanging'
+child = &lt;Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...&gt;
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then5/child-log-response_observed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+&gt;                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 67, in validate_config
+E                       raise ValueError("Matching storage must stay in this repository's test directory")
+E                   ValueError: Matching storage must stay in this repository's test directory
+
+app\tests\test_attempt_hard_stop.py:190: Failed</failure></testcase><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[matching-receipt_committed]" time="2.341"><failure message="Failed: hard-stop child failed: Traceback (most recent call last):&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 205, in main&#10;    asyncio.run(run(config))&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 195, in run&#10;    return runner.run(main)&#10;           ^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 118, in run&#10;    return self._loop.run_until_complete(task)&#10;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py&quot;, line 691, in run_until_complete&#10;    return future.result()&#10;           ^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 77, in run&#10;    chain = validate_config(config)&#10;            ^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 67, in validate_config&#10;    raise ValueError(&quot;Matching storage must stay in this repository's test directory&quot;)&#10;ValueError: Matching storage must stay in this repository's test directory">phase = 'receipt_committed', chain = 'matching'
+case = Case(hr=&lt;httpx.AsyncClient object at 0x0000029218C1BF50&gt;, student=&lt;httpx.AsyncClient object at 0x00000292188FD4C0&gt;, ou...0&gt;, submitted=[(&lt;function execute_match_task at 0x000002920E565DA0&gt;, (UUID('0c075d04-d666-4ba8-81d8-480eb7ac10c0'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then6')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000029218925940&gt;
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+&gt;           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then6/child-state-receipt_committed.json')
+wanted = 'hanging'
+child = &lt;Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...&gt;
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then6/child-log-receipt_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+&gt;                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 67, in validate_config
+E                       raise ValueError("Matching storage must stay in this repository's test directory")
+E                   ValueError: Matching storage must stay in this repository's test directory
+
+app\tests\test_attempt_hard_stop.py:190: Failed</failure></testcase><testcase classname="app.tests.test_attempt_hard_stop" name="test_real_child_hard_stop_then_database_only_recovery[matching-ledger_committed]" time="2.275"><failure message="Failed: hard-stop child failed: Traceback (most recent call last):&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 205, in main&#10;    asyncio.run(run(config))&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 195, in run&#10;    return runner.run(main)&#10;           ^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py&quot;, line 118, in run&#10;    return self._loop.run_until_complete(task)&#10;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py&quot;, line 691, in run_until_complete&#10;    return future.result()&#10;           ^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 77, in run&#10;    chain = validate_config(config)&#10;            ^^^^^^^^^^^^^^^^^^^^^^^&#10;  File &quot;D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py&quot;, line 67, in validate_config&#10;    raise ValueError(&quot;Matching storage must stay in this repository's test directory&quot;)&#10;ValueError: Matching storage must stay in this repository's test directory">phase = 'ledger_committed', chain = 'matching'
+case = Case(hr=&lt;httpx.AsyncClient object at 0x0000029218B30E60&gt;, student=&lt;httpx.AsyncClient object at 0x0000029217781310&gt;, ou...0&gt;, submitted=[(&lt;function execute_match_task at 0x000002920E565DA0&gt;, (UUID('90bb1bd6-002a-4a2d-b9e3-7d7819c7a989'),))])
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then7')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000292178AD940&gt;
+
+    @pytest.mark.parametrize("phase", PHASES)
+    @pytest.mark.parametrize("chain", ["verification", "matching"])
+    async def test_real_child_hard_stop_then_database_only_recovery(
+        phase, chain, case, tmp_path, monkeypatch  # noqa: F811
+    ):
+        database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
+        if not database_url:
+            pytest.skip(
+                "A real child-process hard stop needs an explicitly configured isolated "
+                "PostgreSQL schema; SQLite cannot prove row-lock release across processes"
+            )
+        async with case.factory() as session:
+            schema = await session.scalar(text("SELECT current_schema()"))
+        assert re.fullmatch(r"cp_test_[0-9a-f]{32}", schema)
+        expected_usage = (123, 45, 17 if chain == "verification" else 0)
+    
+        task_id = await prepare_chain_task(case, chain, monkeypatch)
+        async with case.factory() as session:
+            for table in ("users", "analysis_tasks", "ai_request_attempts", "ai_usage_logs"):
+                assert await session.scalar(text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:table)"
+                ), {"table": table}) == schema
+            application = await session.get(Application, UUID(case.application_id))
+            snapshot_digest = verification._digest(application.report_snapshot)
+    
+        nonce = uuid4().hex
+        counter_file = tmp_path / f"http-count-{phase}.txt"
+        state_file = tmp_path / f"child-state-{phase}.json"
+        log_file = tmp_path / f"child-log-{phase}.txt"
+        config_file = tmp_path / f"child-config-{phase}.json"
+        config_file.write_text(json.dumps({
+            "database_url": database_url,
+            "schema": schema,
+            "task_id": str(task_id),
+            "phase": phase,
+            "chain": chain,
+            "nonce": nonce,
+            "counter_file": str(counter_file),
+            "state_file": str(state_file),
+            "input_limit": 40000,
+            "storage_base_dir": str(settings.storage_base_dir.resolve()),
+        }), encoding="utf-8")
+        spawn_time = time.time()
+        with log_file.open("wb") as log_handle:
+            child = subprocess.Popen(
+                [sys.executable, "-u", str(WORKER), str(config_file)],
+                cwd=str(WORKER.parents[2]), stdout=log_handle, stderr=subprocess.STDOUT,
+            )
+        try:
+&gt;           state = await wait_for_child_state(state_file, "hanging", child, log_file)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_attempt_hard_stop.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then7/child-state-ledger_committed.json')
+wanted = 'hanging'
+child = &lt;Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...&gt;
+log_file = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/source-pg-tests-20261014-a/test_real_child_hard_stop_then7/child-log-ledger_committed.txt')
+
+    async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: Path):
+        deadline = asyncio.get_running_loop().time() + MARKER_TIMEOUT_SECONDS
+        while True:
+            if state_file.exists():
+                state = json.loads(state_file.read_text(encoding="utf-8"))
+                if state.get("event") == wanted:
+                    return state
+                if state.get("event") == "child_error":
+&gt;                   pytest.fail(f"hard-stop child failed: {redact(state.get('traceback', ''))}")
+E                   Failed: hard-stop child failed: Traceback (most recent call last):
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 205, in main
+E                       asyncio.run(run(config))
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+E                       return runner.run(main)
+E                              ^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+E                       return self._loop.run_until_complete(task)
+E                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+E                       return future.result()
+E                              ^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 77, in run
+E                       chain = validate_config(config)
+E                               ^^^^^^^^^^^^^^^^^^^^^^^
+E                     File "D:\jbcode\web ai\jianli\backend\.tmp\source-preview-20261014-r3\backend\app\tests\ops_hard_stop_worker.py", line 67, in validate_config
+E                       raise ValueError("Matching storage must stay in this repository's test directory")
+E                   ValueError: Matching storage must stay in this repository's test directory
+
+app\tests\test_attempt_hard_stop.py:190: Failed</failure></testcase></testsuite></testsuites>
