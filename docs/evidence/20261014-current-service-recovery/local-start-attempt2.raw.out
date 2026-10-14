@@ -55,3 +55,5 @@ Route (app)                                 Size  First Load JS
  Container backend-postgres-1 Healthy 
 INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
 INFO  [alembic.runtime.migration] Will assume transactional DDL.
+CareerProof is ready at http://127.0.0.1:3000
+Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.
