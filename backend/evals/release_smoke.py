@@ -159,6 +159,42 @@ async def snapshot_hashes(run: str) -> dict[str, str]:
         await engine.dispose()
 
 
+async def verify_reconsent(data, student, hr, other, job_id, old_id, new_report,
+                           old_notices=()) -> dict:
+    """Check explicit student consent, new frozen source and permanent old denial."""
+    board_url = f"/api/v1/jobs/{job_id}/applications"
+    board = await data(hr, "GET", board_url)
+    assert old_id not in {item["id"] for item in board}, "Withdrawn row remains on board"
+    payload = {"reportId": new_report["id"], "shareConsent": True}
+    await data(student, "POST", "/api/v1/applications", expected=422,
+               json={**payload, "shareConsent": False})
+    renewed = await data(student, "POST", "/api/v1/applications", expected=201, json=payload)
+    new_id = renewed["id"]
+    assert new_id != old_id and renewed["reportId"] == new_report["id"]
+    assert renewed["status"] == "submitted"
+    assert renewed["consentVersion"] and not renewed.get("replyText")
+    assert not renewed.get("replyKind") and not renewed.get("replyReferences")
+    again = await data(student, "POST", "/api/v1/applications", expected=201, json=payload)
+    assert again["id"] == new_id, "Repeated consent created another application"
+    detail = await data(hr, "GET", f"/api/v1/applications/{new_id}")
+    assert detail["reportId"] == new_report["id"]
+    await data(other, "GET", f"/api/v1/applications/{new_id}", expected=404)
+    opened = await data(hr, "POST", f"/api/v1/applications/{new_id}/view")
+    assert opened["report"] == new_report, "New application copied a stale snapshot"
+    reread = await data(hr, "POST", f"/api/v1/applications/{new_id}/view")
+    assert reread["report"] == opened["report"]
+    board = await data(hr, "GET", board_url)
+    ids = [item["id"] for item in board]
+    assert old_id not in ids and ids.count(new_id) == 1
+    for method, suffix in [("GET", ""), ("POST", "/view"), ("POST", "/resume-download")]:
+        await data(hr, method, f"/api/v1/applications/{old_id}{suffix}", expected=404)
+    await data(hr, "POST", f"/api/v1/applications/{old_id}/reply", expected=404,
+               json={"kind": "continue", "text": "合成旧授权不得复活"})
+    for notice in old_notices:
+        await data(hr, "GET", f"/api/v1/notifications/{notice}/target", expected=404)
+    return opened
+
+
 async def exercise(run: str, root: Path) -> Path:
     credentials, _ = validate_run(root, run)
     path = root / ".tmp/release-smoke" / f"{run}.json"
@@ -204,6 +240,7 @@ async def exercise(run: str, root: Path) -> Path:
 
     try:
         original = await snapshot_hashes(run)
+        fixture_snapshot_count = len(original)
         async with (
             httpx.AsyncClient(
                 base_url="http://127.0.0.1:8001",
@@ -491,18 +528,25 @@ async def exercise(run: str, root: Path) -> Path:
                 expected=404,
                 json={"kind": "continue", "text": "合成撤回后访问，应被拒绝"},
             )
-            renewed = await data(
-                student,
-                "POST",
-                "/api/v1/applications",
-                expected=201,
-                json={"reportId": comparison["targetId"], "shareConsent": True},
+            target_report = await data(
+                student, "GET", f"/api/v1/match-reports/{comparison['targetId']}"
             )
-            assert renewed["id"] != aid and not renewed.get("replyText")
-            record("frozen_snapshot_private_growth_withdraw_and_reconsent")
+            renewed = await verify_reconsent(
+                data, student, hr, other, job["id"], aid, target_report, own_notices
+            )
+            result["ids"]["renewedApplication"] = renewed["id"]
+            original[aid] = hashlib.sha256(json.dumps(
+                frozen, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode()).hexdigest()
+            original[renewed["id"]] = hashlib.sha256(json.dumps(
+                target_report, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode()).hexdigest()
+            record("frozen_snapshot_private_growth_withdraw_and_reconsent",
+                   reportId=target_report["id"], applicationId=renewed["id"])
         final = await snapshot_hashes(run)
         assert all(final.get(k) == v for k, v in original.items())
-        record("all_original_fixture_snapshots_unchanged", count=len(original))
+        record("all_original_fixture_snapshots_unchanged", count=fixture_snapshot_count,
+               smokeSnapshotsChecked=len(original) - fixture_snapshot_count)
         result["status"] = "passed"
         persist()
         return path

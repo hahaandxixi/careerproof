@@ -1,0 +1,36 @@
+{
+  "scope": [
+    "backend/evals/release_smoke.py",
+    "backend/app/tests/test_release_reconsent_checks.py"
+  ],
+  "hashes": {
+    "backend/evals/release_smoke.py": "47ded0294675d6ee19f3948a8bcfc0e01b12f80a62c648e3fabd0f1d1272cc39",
+    "backend/app/tests/test_release_reconsent_checks.py": "6f437b483557612c962ff06e7ceb16d109bd4bf8adcd5bb42205aaf11a2020c2"
+  },
+  "sqlite": "32 passed,1 explicit PostgreSQL skip",
+  "postgres": "9 passed,0 skipped,0 failed; isolated container55433/cp_ci, owned randomschemas",
+  "method": "Real FastAPI ASGI APIs over isolated temporary DB, no real socket server or browser",
+  "checks": [
+    "withdrawn board row absent",
+    "shareConsent false rejected",
+    "new ID submitted and reportId from new report",
+    "no old reply metadata",
+    "repeat consent returns same application ID",
+    "enterprise new access allowed, outsider rejected",
+    "entire new frozen report equals student target report, repeat read stable",
+    "old detail/view/download/reply and notice target still rejected after new consent",
+    "runner final DB hashes also check own withdrawn and renewed snapshots"
+  ],
+  "mutations_rejected": [
+    "stale snapshot",
+    "wrong report ID",
+    "non-idempotent new ID",
+    "withdrawn row still visible on board"
+  ],
+  "ruff": "passed",
+  "limitations": [
+    "Full fresh standalone HTTP smoke not rerun while user testing8001",
+    "Real page reconsent chain still pending",
+    "Atomic evidence checkpoint persistence remains pending; filesystem post-guard races not eliminated"
+  ]
+}
