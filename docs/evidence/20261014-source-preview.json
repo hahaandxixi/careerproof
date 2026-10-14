@@ -1,0 +1,42 @@
+{
+  "kind": "source-preview-integrity",
+  "commit": "4c8c41498491453394700ff39e2175f42d5bf080",
+  "path": "output/source/CareerProof-source-preview-20261014-r3.zip",
+  "file_count": 744,
+  "zip_sha256": "a5d5a1db9e93cbcf1078646db37b7cc1971a9ab2f9ef7ef36739a71305ce06df",
+  "zip_bytes": 2049404,
+  "manifest_hashes_verified": true,
+  "frozen_input_identity_verified": true,
+  "worktree_included": false,
+  "license_file_present": false,
+  "final_acceptance": false,
+  "checks": {
+    "root_packaging_tests": "9 passed; Ruff passed",
+    "extracted_packaging_and_review_tests": {
+      "command": "pytest app/tests/test_source_package.py app/tests/test_quality_review_benchmark.py app/tests/test_quality_review_benchmark_holdout.py -q -p no:cacheprovider --basetemp=<owned fresh directory>",
+      "passed": 47,
+      "failed": 0,
+      "errors": 0
+    }
+  },
+  "prior_failures": [
+    {
+      "attempt": "root tests default temporary directory",
+      "result": "5 passed, 4 errors: Windows temp permissions; rerun with owned basetemp passed"
+    },
+    {
+      "attempt": "first package test command",
+      "result": "incorrect holdout filename; no tests ran"
+    },
+    {
+      "attempt": "first extracted package",
+      "result": "35 passed, 2 failed, 10 errors: frozen input Git LF versus expected original CRLF; strict hash check retained"
+    }
+  ],
+  "limitations": [
+    "No candidate full-suite, PG or page acceptance implied",
+    "Root license choice pending",
+    "Uncommitted guard/launcher/CI changes excluded",
+    "Earlier preview ZIPs are failed/intermediate attempts; use r3 only"
+  ]
+}
