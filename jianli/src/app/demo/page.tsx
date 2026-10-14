@@ -15,10 +15,11 @@ export default function DemoPage() {
     </header>
     <section className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6"><h2 className="text-xl font-bold">先看企业功能实例</h2><p className="mt-2 text-sm leading-6 text-slate-600">3 位虚构候选人对照 4 项岗位要求，体验热力图筛选与雷达图；不会创建真实投递或调用模型。</p><Link href="/demo/heatmap" className="btn mt-4">打开热力图交互演示 →</Link></section>
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
-      <h2 className="text-xl font-bold">1. 登录学生演示账号</h2>
-      <p className="mt-3 text-sm leading-7 text-slate-600">请向项目负责人索取本机演示账号。企业账号用于岗位管理，学生账号用于材料上传与报告测试。账号凭据不会显示在网页上。</p>
-      <details className="mt-3 text-sm text-slate-600"><summary className="cursor-pointer">负责人：账号在哪里？</summary><p className="mt-2 leading-7">启动演示后，在本机 <code>backend/.tmp/demo-credentials.json</code> 查看学生与企业邮箱及密码；使用自定义演示账号时，以负责人配置为准。凭据不要截图分享或提交。</p></details>
+      <h2 className="text-xl font-bold">1. 登录或注册学生账号</h2>
+      <p className="mt-3 text-sm leading-7 text-slate-600">首次使用可先注册学生账号，已有账号直接登录。企业账号用于岗位管理，学生账号用于材料上传与报告测试；演示账号由负责人提供，凭据不会显示在网页上。注册和后续登录请保持同一网站地址。</p>
+      <details className="mt-3 text-sm text-slate-600"><summary className="cursor-pointer">负责人：账号在哪里？</summary><p className="mt-2 leading-7">日常3000演示账号在本机 <code>backend/.tmp/demo-credentials.json</code>；3001隔离运行的企业账号在 <code>backend/.tmp/e2e/&lt;RunId&gt;.json</code> 的 <code>accounts.enterprise</code>，不要混用。自行注册的账号使用自己设置的密码；文件不会记录这类账号的密码。凭据不要截图分享或提交。</p></details>
       <Link href="/login" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white">前往登录</Link>
+      <Link href="/register" className="ml-4 inline-block text-sm text-indigo-600 underline">注册学生账号</Link>
     </section>
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">2. 选职业，下载同编号的三个文件</h2>
@@ -45,14 +46,15 @@ export default function DemoPage() {
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">3. 上传并选择同一套版本</h2>
       <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-600">
-        <li>进入“我的材料”，照卡片填写简历名称和项目名称，分别上传同编号 TXT、ZIP。</li>
+        <li>从顶部“学生账户”打开“个人材料”，照卡片填写简历名称和项目名称，分别上传同编号 TXT、ZIP。</li>
         <li>项目说明填写“合成静态测试作品，未执行，不代表本人贡献。”等待两份材料均解析完成。</li>
         <li>在岗位发现打开对应岗位；简历和项目都选择同编号、同版本的文件，例如 CP08 的简历只配 CP08 的数据库项目。</li>
         <li>阅读发送范围，取得负责人对本次费用的同意后，点一次生成报告。职业规划和视觉观察会另外调用模型。</li>
-        <li>打开引用核对源码或文档，记录缺口，保存本人复核备注，再刷新找回。无需追求固定分数；本人采纳不是独立认证。</li>
+        <li>按需展开引用核对源码或文档，记录缺口；本人核对备注可选，不是投递前置条件。无需追求固定分数，本人采纳不是独立认证。</li>
+        <li>决定投递时，在报告页阅读分享范围、勾选同意并确认投递，再从账户菜单查看“个人投递”和“通知”。生成报告不会自动投递。</li>
       </ol>
       <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">代码和方案不等于执行成功；材料缺失不代表没有能力。AI 不可用时自动生成本地兜底报告，并明确显示降级。</p>
-      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入我的材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
+      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入个人材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
     </section>
     <details className="rounded-2xl border border-slate-200 bg-white p-6">
       <summary className="cursor-pointer font-semibold">查看规则覆盖范围与源码引用演示</summary>

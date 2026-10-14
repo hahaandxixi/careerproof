@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-14",
+  "site": "http://127.0.0.1:3001/demo/heatmap",
+  "method": "Codex in-app browser; temporary background tab, public synthetic UI only",
+  "checks": [
+    {
+      "action": "Filter keyword without matches",
+      "observed": "0 candidates, empty evidence panel, clear-filter button present"
+    },
+    {
+      "action": "Clear filters",
+      "observed": "3 candidates restored; default A and Python panel restored"
+    },
+    {
+      "action": "Click B / SQL heatmap cell",
+      "observed": "B snapshot and SQL requirement selected together; score65 and supported status displayed"
+    },
+    {
+      "action": "Read demo material page",
+      "observed": "CP01 download/import/lookup entry visible; upload steps use stale menu name and make optional personal review sound required"
+    }
+  ],
+  "screenshot": "linked-sql.jpg",
+  "capture_note": "Full-page screenshot API failed; documented viewport screenshot succeeded after scrolling to linked evidence region",
+  "source_fix": "Demo uses student account/personal materials names, self-registration entry, optional personal review; existing guide adds five-step first-user route",
+  "verification": "TypeScript noEmit passed; new source wording not rebuilt into currently running site",
+  "not_verified": [
+    "390px/200% zoom/keyboard-only navigation",
+    "Actual upload/import or report generation",
+    "Real application/withdraw/reconsent/notification chain",
+    "First-time independent human success"
+  ],
+  "harness_dispatch": {
+    "title": "传智杯52：隔离演示独立审查",
+    "workspace": "jbcode",
+    "model_display": "DeepSeek-V41-Flash High",
+    "basis": "8f40ca8",
+    "time_display": "21:35",
+    "verified": "Task running; agent confirmed actual repository HEAD and began reading existing46card",
+    "scope": "Read scoped release_smoke/seed_e2e; only write docs/evidence/20261013-harness-release-review",
+    "result": "pending, not accepted"
+  }
+}
