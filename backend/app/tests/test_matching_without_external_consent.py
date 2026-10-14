@@ -53,4 +53,3 @@ async def test_unconsented_report_has_no_physical_model_requests(
                 AiRequestAttempt
             ).where(AiRequestAttempt.analysis_task_id == UUID(report["taskId"])))
             assert attempts == 0
-
