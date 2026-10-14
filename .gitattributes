@@ -8,3 +8,6 @@ docs/evidence/20261013-z48-score-labels/*.log -text -whitespace
 # Double-click launchers and Windows PowerShell scripts keep Windows line endings.
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
+
+# Frozen review identity covers the original input bytes, including line endings.
+backend/evals/quality-blind-plan-review-input.json -text -whitespace

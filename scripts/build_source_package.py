@@ -24,7 +24,7 @@ REQUIRED = {
     "backend/pyproject.toml", "backend/app/main.py", "backend/.env.example",
     "backend/docker-compose.yml", "jianli/package.json", "jianli/package-lock.json",
     "jianli/src/app/page.tsx", "demo/build_role_packs.py", REVIEW_FIXTURE,
-    "docs/guides/使用与启动.md",
+    "docs/guides/使用与启动.md", "backend/evals/quality-blind-plan-review-input.json",
 }
 PRIVATE_PARTS = {".git", "storage", "node_modules", "__pycache__", ".pytest_cache",
                  ".ruff_cache", ".cache"}
