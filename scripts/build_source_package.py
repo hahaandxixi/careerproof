@@ -61,6 +61,8 @@ def included(name: str) -> bool:
         )
     if path.parts[0] in {"backend", "demo", "scripts"}:
         return True
+    if path.parts[:2] == (".github", "workflows") and path.suffix in {".yml", ".yaml"}:
+        return True
     if path.parts[0] == "jianli":
         return len(path.parts) == 2 or path.parts[1] in {"src", "public", "tests"}
     if path.parts[0] == "docs":

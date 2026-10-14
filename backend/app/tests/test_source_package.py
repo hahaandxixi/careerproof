@@ -95,3 +95,8 @@ def test_possible_provider_secret_refused_without_disclosing_value(repository, t
                                  "backend/a:stream", "backend/a\n.py"])
 def test_unsafe_archive_names_are_excluded(path):
     assert not package.included(path)
+
+
+def test_ci_workflows_are_exported_but_other_hidden_github_files_are_not():
+    assert package.included('.github/workflows/ci.yml')
+    assert not package.included('.github/private-credentials.json')

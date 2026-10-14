@@ -1,0 +1,293 @@
+# Goal 49: reproducible CI with three independent jobs and a mandatory
+# PostgreSQL gate. Read-only towards the repository: no deploy, no commit,
+# no secret. Actions are pinned to the official v7 release commits verified on
+# 2026-10-13 (see docs/task-cards/20261013-ZCODE49-ci-gates.md).
+#
+# backend-postgres note: the strict set runs on the dedicated CI database
+# cp_ci. test_attempt_hard_stop additionally needs a database literally named
+# "careerproof", because its child worker fixture validates the database name
+# (backend/app/tests/ops_hard_stop_worker.py, validate_config). That database
+# is created inside the same throwaway CI service container with the ci:ci
+# credentials and is dropped together with the job; the local business
+# database is never contacted.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-unit:
+    name: backend-unit (python 3.12, ruff, full SQLite suite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out (no persisted credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: Install backend with dev and mcp extras
+        working-directory: backend
+        run: python -m pip install -e '.[dev,mcp]'
+
+      - name: Verify pinned interpreter and dependency versions
+        working-directory: backend
+        run: |
+          python - <<'PY'
+          import sys
+          import tomllib
+          from importlib import metadata
+
+          assert sys.version_info[:2] == (3, 12), f"python {sys.version} is not 3.12"
+          with open("pyproject.toml", "rb") as handle:
+              project = tomllib.load(handle)["project"]
+          pins: dict[str, str] = {}
+          groups = [project["dependencies"], *project["optional-dependencies"].values()]
+          for group in groups:
+              for requirement in group:
+                  if "==" not in requirement:
+                      continue
+                  name, version = requirement.split("==", 1)
+                  pins[name.split("[", 1)[0]] = version
+          for name, expected in sorted(pins.items()):
+              actual = metadata.version(name)
+              assert actual == expected, f"{name}: installed {actual} != pinned {expected}"
+          print(f"version check ok: python {sys.version.split()[0]}, "
+                f"{len(pins)} pinned packages verified")
+          PY
+
+      - name: Ruff
+        working-directory: backend
+        run: ruff check .
+
+      # Scope: the full suite on SQLite. PostgreSQL-backed and local-ONNX
+      # weight tests skip explicitly here; those skips are visible in the
+      # uploaded JUnit and never counted as a passed PostgreSQL run.
+      - name: Run the full SQLite test suite
+        working-directory: backend
+        shell: bash
+        env:
+          APP_ENV: test
+          DEBUG: "false"
+          AI_PROVIDER: mock
+          AI_EXTERNAL_ENABLED: "false"
+          # Empty string keeps this job on SQLite: the suite treats a falsy
+          # URL as "no integration database configured".
+          CAREERPROOF_TEST_DATABASE_URL: ""
+        run: |
+          set -o pipefail
+          mkdir -p .tmp-ci
+          python -m pytest app/tests \
+            --basetemp=.tmp-ci-unit \
+            --junitxml=.tmp-ci/junit-unit.xml 2>&1 | tee .tmp-ci/pytest-unit.log
+
+      # Only JUnit and the captured test log are uploaded: never .tmp
+      # materials, .env, storage or source dumps.
+      - name: Upload unit JUnit and log
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: backend-unit-junit
+          path: |
+            backend/.tmp-ci/junit-unit.xml
+            backend/.tmp-ci/pytest-unit.log
+          retention-days: 7
+          if-no-files-found: warn
+
+  backend-postgres:
+    name: backend-postgres (strict 12 modules, JUnit gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    services:
+      postgres:
+        # pgvector/pgvector digest pinned by the task card; PostgreSQL 17.
+        image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: cp_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d cp_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Check out (no persisted credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: Install backend with dev and mcp extras
+        working-directory: backend
+        run: python -m pip install -e '.[dev,mcp]'
+
+      # CI-internal twin database: the hard-stop worker fixture only accepts
+      # a database literally named "careerproof". Same container, same ci:ci
+      # credentials, disposed with the job — this is never the business DB.
+      - name: Create the CI-internal hard-stop database and enable vector
+        working-directory: backend
+        env:
+          CI_ADMIN_URL: postgresql://ci:ci@127.0.0.1:5432/cp_ci
+          CI_HARDSTOP_URL: postgresql://ci:ci@127.0.0.1:5432/careerproof
+        run: |
+          python - <<'PY'
+          import asyncio
+          import os
+
+          import asyncpg
+
+
+          async def main() -> None:
+              connection = await asyncpg.connect(os.environ["CI_ADMIN_URL"])
+              try:
+                  await connection.execute("CREATE EXTENSION IF NOT EXISTS vector")
+                  await connection.execute("CREATE DATABASE careerproof OWNER ci")
+              finally:
+                  await connection.close()
+              hardstop = await asyncpg.connect(os.environ["CI_HARDSTOP_URL"])
+              try:
+                  await hardstop.execute("CREATE EXTENSION IF NOT EXISTS vector")
+              finally:
+                  await hardstop.close()
+
+
+          asyncio.run(main())
+          print("CI-internal databases ready; vector enabled in both")
+          PY
+
+      # Strict set part 1: eleven modules on the dedicated cp_ci database.
+      - name: Run the strict PostgreSQL set on cp_ci
+        working-directory: backend
+        shell: bash
+        env:
+          APP_ENV: test
+          DEBUG: "false"
+          AI_PROVIDER: mock
+          AI_EXTERNAL_ENABLED: "false"
+          CAREERPROOF_TEST_DATABASE_URL: postgresql+asyncpg://ci:ci@127.0.0.1:5432/cp_ci
+        run: |
+          set -o pipefail
+          mkdir -p .tmp-ci
+          python -m pytest \
+            app/tests/test_ai_budget_production_race.py \
+            app/tests/test_durable_matching.py \
+            app/tests/test_visual_postgres_concurrency.py \
+            app/tests/test_mcp_postgres_isolation.py \
+            app/tests/test_real_matching.py \
+            app/tests/test_durable_attempt_service.py \
+            app/tests/test_ai_request_attempt_migration.py \
+            app/tests/test_knowledge_semantic_postgres.py \
+            app/tests/test_ai_shared_budget_service.py \
+            app/tests/test_ai_shared_budget_migration.py \
+            app/tests/test_application_reconsent_migration.py \
+            --basetemp=.tmp-ci-pg \
+            --junitxml=.tmp-ci/junit-pg-strict.xml 2>&1 | tee .tmp-ci/pytest-pg-strict.log
+
+      # Strict set part 2: the two-chain four-window hard-stop module on the
+      # CI-internal careerproof database demanded by its worker validation.
+      - name: Run the hard-stop module on the CI-internal database
+        working-directory: backend
+        shell: bash
+        env:
+          APP_ENV: test
+          DEBUG: "false"
+          AI_PROVIDER: mock
+          AI_EXTERNAL_ENABLED: "false"
+          CAREERPROOF_TEST_DATABASE_URL: postgresql+asyncpg://ci:ci@127.0.0.1:5432/careerproof
+        run: |
+          set -o pipefail
+          python -m pytest app/tests/test_attempt_hard_stop.py \
+            --basetemp=.tmp-ci-pg-hardstop \
+            --junitxml=.tmp-ci/junit-pg-hardstop.xml 2>&1 | tee .tmp-ci/pytest-pg-hardstop.log
+
+      # The gate reads the JUnit XML, never the pytest exit code: 12 modules
+      # present, zero failure/error/skipped, and all 8 hard-stop windows.
+      - name: Enforce the JUnit gate on the strict set
+        if: always()
+        working-directory: backend
+        run: python scripts/check_ci_junit.py .tmp-ci/junit-pg-strict.xml .tmp-ci/junit-pg-hardstop.xml
+
+      - name: Upload strict-set JUnit and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: backend-postgres-junit
+          path: |
+            backend/.tmp-ci/junit-pg-strict.xml
+            backend/.tmp-ci/junit-pg-hardstop.xml
+            backend/.tmp-ci/pytest-pg-strict.log
+            backend/.tmp-ci/pytest-pg-hardstop.log
+          retention-days: 7
+          if-no-files-found: warn
+
+  frontend:
+    name: frontend (node 22.23.1, npm ci / test / typecheck / build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out (no persisted credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node 22.23.1
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22.23.1
+          cache: npm
+          cache-dependency-path: jianli/package-lock.json
+
+      - name: npm ci
+        working-directory: jianli
+        run: npm ci
+
+      - name: npm test
+        working-directory: jianli
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p .tmp-ci
+          npm test 2>&1 | tee .tmp-ci/npm-test.log
+
+      - name: Typecheck
+        working-directory: jianli
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: jianli
+        run: npm run build
+
+      - name: Upload frontend test log
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: frontend-test-log
+          path: jianli/.tmp-ci/npm-test.log
+          retention-days: 7
+          if-no-files-found: warn

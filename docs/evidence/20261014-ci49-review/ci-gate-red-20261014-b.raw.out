@@ -1,0 +1,36 @@
+..FF................                                                     [100%]
+================================== FAILURES ===================================
+_____ test_same_parameters_on_unrelated_function_do_not_prove_hard_stops ______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-gate-red-20261014-b/test_same_parameters_on_unrela0')
+
+    def test_same_parameters_on_unrelated_function_do_not_prove_hard_stops(tmp_path):
+        names = [name.replace('test_real_child_hard_stop_then_database_only_recovery',
+                              'test_unrelated_helper') for name in hardstop_case_names()]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=PASS modules=12 testcases=19 hardstop_windows=8
+E         
+E       assert 0 == 6
+E        +  where 0 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...unit-0.xml'], returncode=0, stdout='CI-JUNIT-GATE result=PASS modules=12 testcases=19 hardstop_windows=8\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:119: AssertionError
+________ test_repeated_parameter_tokens_do_not_prove_the_exact_matrix _________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-gate-red-20261014-b/test_repeated_parameter_tokens0')
+
+    def test_repeated_parameter_tokens_do_not_prove_the_exact_matrix(tmp_path):
+        names = [name[:-1] + '-' + name[:-1].rsplit('-', 1)[-1] + ']'
+                 for name in hardstop_case_names()]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=PASS modules=12 testcases=19 hardstop_windows=8
+E         
+E       assert 0 == 6
+E        +  where 0 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...unit-0.xml'], returncode=0, stdout='CI-JUNIT-GATE result=PASS modules=12 testcases=19 hardstop_windows=8\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:126: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_ci_junit_gate.py::test_same_parameters_on_unrelated_function_do_not_prove_hard_stops
+FAILED app/tests/test_ci_junit_gate.py::test_repeated_parameter_tokens_do_not_prove_the_exact_matrix
+2 failed, 18 passed in 1.38s
