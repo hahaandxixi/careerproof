@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "endpoint": "GET old",
+      "status": 404
+    },
+    {
+      "endpoint": "POST old/view",
+      "status": 404
+    },
+    {
+      "endpoint": "POST old/resume-download",
+      "status": 404
+    },
+    {
+      "endpoint": "POST old/reply",
+      "status": 404
+    },
+    {
+      "oldEnterpriseNotificationsDenied": 2
+    }
+  ],
+  "oldApplication": "2b2031bd-0e42-41e4-ba40-62d3945c9deb",
+  "newApplication": "5dfe5952-3af0-4467-8a73-12a786df6fde",
+  "newReport": "77af85c6-0e78-49d7-be70-4a41f2167592",
+  "newSnapshotEqualsSavedReport": true,
+  "allPreviousSnapshotsUnchanged": 6,
+  "newSnapshotHash": "e1ccaeb1020d2be6a6817014f777782bdff80ba7ada7b2c5422d85562f266a0d",
+  "newStatus": "replied"
+}

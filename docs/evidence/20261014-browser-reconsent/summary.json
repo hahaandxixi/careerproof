@@ -1,0 +1,36 @@
+{
+  "sourceHead": "afe14be",
+  "environment": "3001/8001 release-owner-20261012, existing synthetic smoke student and enterprise",
+  "flow": [
+    "student withdrew previously replied v2 application by two confirmation buttons",
+    "enterprise old application anchor showed inaccessible and board excluded old synthetic candidate",
+    "student opened saved v3 report, checked explicit consent and clicked confirm submit",
+    "enterprise board showed new candidate; SQL cell selected SQL radar and v3 GROUP BY citation",
+    "enterprise sent clearly marked local synthetic reply",
+    "student latest notification opened new application anchor and marked that notice read",
+    "independent HTTP rechecked old details/view/download/reply and old enterprise notification targets denied; persisted snapshots compared read-only"
+  ],
+  "oldApplication": "2b2031bd-0e42-41e4-ba40-62d3945c9deb",
+  "newApplication": "5dfe5952-3af0-4467-8a73-12a786df6fde",
+  "newReport": "77af85c6-0e78-49d7-be70-4a41f2167592",
+  "applicationNecessaryActions": 2,
+  "evidenceDefaultCollapsed": true,
+  "originalSnapshotsUnchanged": 6,
+  "newSnapshotEqualsSavedReport": true,
+  "userCreatedAccountTouched": false,
+  "realModelsCalled": false,
+  "screenshots": [
+    "student-withdrawn.jpg",
+    "enterprise-old-denied.jpg",
+    "student-new-consent.jpg",
+    "enterprise-new-sql-reply.jpg",
+    "student-new-reply-target.jpg"
+  ],
+  "limits": [
+    "this flow used previously prepared synthetic materials and reports; not an independent first-user upload evaluation",
+    "new resume browser download not repeated this batch",
+    "browser flow default viewport; 390px report grouping tested in prior recovery record, not every screen",
+    "no real AI semantic evaluation or independent human evaluation",
+    "no production deployment or external messages"
+  ]
+}
