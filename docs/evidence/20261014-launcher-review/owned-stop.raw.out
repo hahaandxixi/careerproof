@@ -1,0 +1,7 @@
+Stop attempted outside the test-owned child.
+At D:\jbcode\web ai\jianli\scripts\local-launcher-owned-stop.test.ps1:13 char:48
++ ... owedOwnedId) { throw 'Stop attempted outside the test-owned child.' }
++                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Stop attempted ...st-owned child.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Stop attempted outside the test-owned child.
+ 

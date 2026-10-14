@@ -1,0 +1,1 @@
+PASS real owned-child tree stop; 2 verified test-tree processes stopped, no services or files touched.

@@ -91,12 +91,13 @@ try {
     catch { throw 'Another local launch/stop is in progress. Wait for it to finish.' }
     $configHash = Get-LocalConfigDigest $envPath
     $backendDigest = Get-LocalBackendDigest $backendRoot
-    if (Test-Path -LiteralPath $statePath) {
-        $existing = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
-        $live = @(Get-ValidatedLocalProcesses $existing)
+    $existing = Read-LocalRunManifest $statePath
+    if ($null -ne $existing) {
+        $live = @(Get-ValidatedLocalProcesses $existing $statePath)
         if ($live.Count) {
             if ($BuildOnly) { throw 'Stop the owned local run before rebuilding its frontend.' }
-            if ($Rebuild -or $existing.schemaVersion -ne 2 -or $existing.backendVenv -ne $BackendVenv -or $existing.backendDigest -ne $backendDigest -or $existing.frontendRoot -ne $frontendRoot -or $existing.configHash -ne $configHash -or !$buildState.reusable) { throw 'Existing run differs from the selected code/runtime/config/build. Stop-Local.ps1, then start again.' }
+            Assert-LocalReusableManifest $existing $statePath
+            if ($Rebuild -or $existing.backendVenv -ne $BackendVenv -or $existing.backendDigest -ne $backendDigest -or $existing.frontendRoot -ne $frontendRoot -or $existing.configHash -ne $configHash -or !$buildState.reusable) { throw 'Existing run differs from the selected code/runtime/config/build. Stop-Local.ps1, then start again.' }
             Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $existing.processes[0]
             Wait-LocalService 'http://127.0.0.1:3000' 3000 $existing.processes[1]
             Write-Output 'Existing owned CareerProof services are healthy; reused without migration or rebuild.'
@@ -134,18 +135,19 @@ try {
     $manifest = @{ schemaVersion = 2; backendVenv = $BackendVenv; backendDigest = $backendDigest; frontendRoot = $frontendRoot; configHash = $configHash; createdAt = (Get-Date).ToUniversalTime().ToString('o'); processes = @() }
     $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList '-m uvicorn app.main:app --host 127.0.0.1 --port 8000' -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'backend.out.log') -RedirectStandardError (Join-Path $stateRoot 'backend.err.log')
     $owned += @{ Id = $backendProcess.Id; Started = $backendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $pythonPath; Invocation = 'uvicorn app.main:app --host 127.0.0.1 --port 8000' }
-    $manifest.processes = @($owned); $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $statePath -Encoding utf8
+    $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
     Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $owned[0]
     $frontendProcess = Start-Process -FilePath $nodeExecutable -ArgumentList @(('"' + $nextPath + '"'), 'start', '-H', '127.0.0.1', '-p', '3000') -WorkingDirectory $frontendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'frontend.out.log') -RedirectStandardError (Join-Path $stateRoot 'frontend.err.log')
     $owned += @{ Id = $frontendProcess.Id; Started = $frontendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $nextPath; Invocation = $nextPath }
-    $manifest.processes = @($owned); $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $statePath -Encoding utf8
+    $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
     Wait-LocalService 'http://127.0.0.1:3000' 3000 $owned[1]
     Write-Output 'CareerProof is ready at http://127.0.0.1:3000'
     Write-Output 'Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.'
 } catch {
+    $originalError = $_
     if ($launchLock) { $launchLock.Dispose(); $launchLock = $null }
-    if ($owned.Count -gt 0) { & (Join-Path $projectRoot 'Stop-Local.ps1') }
-    throw
+    if ($owned.Count -gt 0) { Invoke-LocalCleanupSafely { & (Join-Path $projectRoot 'Stop-Local.ps1') } }
+    throw $originalError
 } finally {
     $env:BACKEND_ORIGIN = $savedBackendOrigin
     $env:NEXT_DIST_DIR = $savedNextDistDir

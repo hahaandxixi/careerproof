@@ -1,0 +1,30 @@
+{
+  "scope": [
+    "Start-Local.ps1",
+    "Stop-Local.ps1",
+    "scripts/local-runtime.ps1",
+    "scripts/local-launcher-recovery.test.ps1",
+    "scripts/local-launcher-real-identity.test.ps1",
+    "scripts/local-launcher-owned-stop.test.ps1"
+  ],
+  "hashes": {
+    "Start-Local.ps1": "a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1",
+    "Stop-Local.ps1": "025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2",
+    "scripts/local-runtime.ps1": "268380c0bb20e6940843149004299b573a05254664783cc5696cd6e8d75faee2",
+    "scripts/local-launcher-recovery.test.ps1": "1b26a5450c5101ada6e9ad2250359e1baf381f83aaae1dee7c3b7b0c443053bf",
+    "scripts/local-launcher-real-identity.test.ps1": "fb6ae6fd16661a2a6592dfe3737b5474248c96096239d8690f97c05e93979d08",
+    "scripts/local-launcher-owned-stop.test.ps1": "a9d260514be5b73ad4b5634b36a6beae3ed3c33c1fc392be3582ae0ddc53af74"
+  },
+  "environment": "Windows PowerShell 5.1",
+  "offline_recovery": "34/34 passed; pure mock and exclusive scratch",
+  "real_identity": "7/7 passed; naturally exiting nonce child, no stop",
+  "real_stop": "one verified test-owned tree stopped (PowerShell root and console helper); no site processes touched",
+  "prior_stop_test_failure": "Initial one-PID tripwire rejected own console helper; child left to exit naturally. Final tripwire includes only observed test-tree descendants.",
+  "site_checks": "Start-Local -CheckOnly passed; Stop-Local -CheckOnly validated two current owned roots without stopping them",
+  "fixed": "Dead root with possible surviving child now refuses safely and preserves manifest; no PPID-only kill",
+  "remaining": [
+    "Possible orphan identity requires independent operator verification; automatic forced cleanup is intentionally refused",
+    "Full real service stop/restart while user manually testing not performed",
+    "AI guard and CI changes remain separate unaccepted scope"
+  ]
+}

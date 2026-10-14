@@ -23,6 +23,14 @@ function Get-LocalConfigDigest([string]$Path) {
 function Get-LocalBackendDigest([string]$Root) {
     $files = @(Get-ChildItem -LiteralPath (Join-Path $Root 'app') -Recurse -File -Filter '*.py' | Where-Object { $_.FullName -notmatch '[\\/]tests[\\/]' } | Sort-Object FullName)
     $files += Get-Item -LiteralPath (Join-Path $Root 'pyproject.toml')
+    $alembicIni = Join-Path $Root 'alembic.ini'
+    if (Test-Path -LiteralPath $alembicIni) { $files += Get-Item -LiteralPath $alembicIni }
+    $alembicRoot = Join-Path $Root 'alembic'
+    if (Test-Path -LiteralPath $alembicRoot) {
+        # Migrations and alembic config invalidate reuse; the bytecode cache and
+        # non-config scratch must not.
+        $files += @(Get-ChildItem -LiteralPath $alembicRoot -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]__pycache__[\\/]' -and $_.Extension -match '^\.(py|mako)$' } | Sort-Object FullName)
+    }
     $parts = foreach ($file in $files) { $file.FullName.Substring($Root.Length) + ':' + (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash }
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes(($parts -join "`n")))).Replace('-', '') }
@@ -38,23 +46,165 @@ function Get-LocalEnvValue([string]$Path, [string]$Name) {
     return $null
 }
 
+function Assert-LocalStatePath([string]$Path) {
+    foreach ($candidate in @($Path, (Split-Path -Parent $Path))) {
+        if (!$candidate) { continue }
+        $item = Get-Item -LiteralPath $candidate -ErrorAction SilentlyContinue
+        if ($item -and ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { throw "Local run state path must not be a reparse point: $candidate" }
+    }
+}
+
+function Read-LocalRunManifest([string]$Path) {
+    if (!(Test-Path -LiteralPath $Path)) { return $null }
+    Assert-LocalStatePath $Path
+    $raw = Get-Content -LiteralPath $Path -Raw
+    if ([string]::IsNullOrWhiteSpace($raw)) { throw "Local run record at $Path is empty. Corruption is not proof that nothing is running: confirm no services are live, then move the file aside manually; it was not removed automatically." }
+    try { $parsed = $raw | ConvertFrom-Json -ErrorAction Stop } catch { throw "Local run record at $Path is unreadable JSON. Corruption is not proof that nothing is running: confirm no services are live, then move the file aside manually; it was not removed automatically. ($($_.Exception.Message))" }
+    if ($null -eq $parsed) { throw "Local run record at $Path holds no readable process data. Confirm no services are live, then move the file aside manually; it was not removed automatically." }
+    return $parsed
+}
+
+function New-LocalExclusiveTempStream([string]$Temporary) {
+    # CreateNew refuses any existing entry, so a successful return is the proof
+    # of exclusive ownership of the temp path. Kept as its own function so
+    # tests can inject the refused-creation race without touching files.
+    return [System.IO.File]::Open($Temporary, [System.IO.FileMode]::CreateNew, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
+}
+
+function Save-LocalRunManifest([string]$Path, $Manifest) {
+    Assert-LocalStatePath $Path
+    # Own uniquely named temp beside the target, so nothing predictable is ever
+    # overwritten, followed, or deleted.
+    $temporary = Join-Path (Split-Path -Parent $Path) ((Split-Path -Leaf $Path) + '.tmp-' + [guid]::NewGuid().ToString('N'))
+    # Cleanup rights over the temp path are acquired only once the exclusive
+    # creation itself succeeded; a refused creation means an unknown object
+    # won the race and must never be touched.
+    $ownsTemporary = $false
+    try {
+        $json = $Manifest | ConvertTo-Json -Depth 4
+        $stream = New-LocalExclusiveTempStream $temporary
+        $ownsTemporary = $true
+        try {
+            $writer = New-Object System.IO.StreamWriter($stream, (New-Object System.Text.UTF8Encoding($true)))
+            try { $writer.Write($json) } finally { $writer.Dispose() }
+        } finally { $stream.Dispose() }
+        # Same-volume metadata replacement (ReplaceFile) when the record exists,
+        # a plain move on first write. Both are verifiable Windows replacement
+        # behaviors, not a power-failure durability guarantee. PowerShell 5.1
+        # binds a bare $null to an empty string here, which ReplaceFile rejects,
+        # so a true null must be passed for the no-backup case.
+        if (Test-Path -LiteralPath $Path) { [System.IO.File]::Replace($temporary, $Path, [NullString]::Value) }
+        else { [System.IO.File]::Move($temporary, $Path) }
+    } catch {
+        if ($ownsTemporary) { Remove-Item -LiteralPath $temporary -ErrorAction SilentlyContinue }
+        throw "Failed to save local run record at $Path; the previous record was left untouched. ($($_.Exception.Message))"
+    }
+}
+
 function Get-LocalRunRecords($Manifest) {
     if ($Manifest.schemaVersion -eq 2) { return @($Manifest.processes) }
     return @($Manifest) # compatibility with saved pre-upgrade process arrays
 }
 
-function Get-ValidatedLocalProcesses($Manifest) {
+function Get-LocalCimMicrosecondTicks([long]$Ticks) {
+    # Win32_Process.CreationDate is a DMTF datetime: CIM floors the kernel
+    # 100ns creation time onto its microsecond grid, while Get-Process keeps
+    # the full 100ns ticks (measured: CIM ...5370010 vs .NET ...5370012). The
+    # floor is done with DivRem so the whole 64-bit tick range stays exact —
+    # no double division, which loses precision above 2^53.
+    $remainder = [long]0
+    [void][Math]::DivRem($Ticks, 10, [ref]$remainder)
+    return $Ticks - $remainder
+}
+
+function Get-ValidatedLocalProcesses($Manifest, [string]$StatePath) {
+    $where = if ($StatePath) { " in $StatePath" } else { '' }
     $records = @(Get-LocalRunRecords $Manifest)
-    if ($records.Count -eq 0) { throw 'Empty local process record; refusing to guess.' }
+    if ($records.Count -eq 0) { throw "Empty local process record$where; refusing to guess." }
     $live = @()
     foreach ($record in $records) {
-        if (!$record.Id -or !$record.Started -or [string]::IsNullOrWhiteSpace($record.Needle)) { throw 'Invalid local process identity.' }
+        if (!$record.Id -or !$record.Started -or [string]::IsNullOrWhiteSpace($record.Needle)) { throw "Invalid local process identity$where." }
         $process = Get-Process -Id $record.Id -ErrorAction SilentlyContinue
-        if (!$process) { continue }
-        if ($process.StartTime.ToUniversalTime().Ticks -ne ([datetime]$record.Started).ToUniversalTime().Ticks) { throw 'PID reused; no processes stopped.' }
+        if (!$process) {
+            # A missing root is not proof that its child service has exited.
+            # ParentProcessId alone cannot prove ownership after root death/PID
+            # reuse, so preserve the manifest rather than kill an unproven child
+            # or let Stop-Local delete the only remaining recovery record.
+            $possibleChildren = @(Get-CimInstance Win32_Process | Where-Object {
+                $_.ParentProcessId -eq [int]$record.Id -and
+                ([datetime]$_.CreationDate).ToUniversalTime() -ge ([datetime]$record.Started).ToUniversalTime()
+            })
+            if ($possibleChildren.Count) { throw "Recorded root PID $($record.Id) exited but possible child processes remain$where. No processes stopped; keep this record and verify child identity before recovery." }
+            continue
+        }
+        if ($process.StartTime.ToUniversalTime().Ticks -ne ([datetime]$record.Started).ToUniversalTime().Ticks) { throw "PID reused; no processes stopped$where." }
         $details = Get-CimInstance Win32_Process -Filter "ProcessId = $($record.Id)"
-        if (!$details.CommandLine -or !$details.CommandLine.Contains([string]$record.Needle)) { throw 'Local process command changed; no processes stopped.' }
+        if (!$details.CommandLine -or !$details.CommandLine.Contains([string]$record.Needle)) { throw "Local process command changed; no processes stopped$where." }
         $live += $record
+    }
+    return $live
+}
+
+function Assert-LocalReusableManifest($Manifest, [string]$StatePath) {
+    if (!$Manifest -or $Manifest.schemaVersion -ne 2 -or @(Get-LocalRunRecords $Manifest).Count -lt 2) {
+        throw "Local run record at $StatePath is incomplete or from an older format; refusing to reuse it. Run Stop-Local.ps1 to stop any recorded services, then start again."
+    }
+}
+
+function Stop-ValidatedLocalProcesses($Manifest, [string]$StatePath, [switch]$ValidateOnly) {
+    $live = @(Get-ValidatedLocalProcesses $Manifest $StatePath)
+    if ($ValidateOnly) { return $live }
+    $where = if ($StatePath) { " in $StatePath" } else { '' }
+    # Build the full plan for every root first: snapshot, descendant walk and
+    # identity sampling must all succeed before any Stop-Process runs, so a
+    # failing later root cannot leave an earlier root already stopped.
+    $plans = @()
+    foreach ($record in $live) {
+        $allProcesses = @(Get-CimInstance Win32_Process)
+        $snapshots = @{}
+        foreach ($row in $allProcesses) { $snapshots[[int]$row.ProcessId] = $row }
+        $rootRow = $snapshots[[int]$record.Id]
+        if (!$rootRow) {
+            # The validated root vanished before the snapshot: if nothing lives
+            # at that PID any more there is nothing to stop, otherwise the
+            # snapshot cannot prove the identity and the whole stop is refused.
+            if (Get-Process -Id $record.Id -ErrorAction SilentlyContinue) { throw "Root PID $($record.Id) is missing from the process snapshot; no processes stopped$where." }
+            continue
+        }
+        # The root stays bound to its manifest record: the record carries the
+        # full .NET ticks, the snapshot carries CIM's microsecond grid, so both
+        # sides are compared on that grid; a reused PID lands outside it.
+        if ((Get-LocalCimMicrosecondTicks ([datetime]$rootRow.CreationDate).ToUniversalTime().Ticks) -ne (Get-LocalCimMicrosecondTicks ([datetime]$record.Started).ToUniversalTime().Ticks)) { throw "Root PID $($record.Id) no longer matches its recorded start time; no processes stopped$where." }
+        $descendants = @([int]$record.Id)
+        for ($index = 0; $index -lt $descendants.Count; $index++) {
+            $children = @($allProcesses | Where-Object { $_.ParentProcessId -eq $descendants[$index] })
+            foreach ($child in $children) { if ($descendants -notcontains [int]$child.ProcessId -and (Get-LocalCimMicrosecondTicks ([datetime]$child.CreationDate).ToUniversalTime().Ticks) -ge (Get-LocalCimMicrosecondTicks ([datetime]$record.Started).ToUniversalTime().Ticks)) { $descendants += [int]$child.ProcessId } }
+        }
+        [array]::Reverse($descendants)
+        $identities = @{}
+        foreach ($ownedId in $descendants) {
+            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+            if (!$ownedProcess) { continue }
+            # CIM floors creation times onto its microsecond grid while
+            # Get-Process keeps full 100ns ticks, so one process can differ
+            # across the two APIs by a few ticks; compare on the CIM grid. A
+            # grid difference here means the PID was reused between the
+            # snapshot and this sampling and the identity is not ours.
+            $row = $snapshots[$ownedId]
+            if (!$row -or (Get-LocalCimMicrosecondTicks ([datetime]$row.CreationDate).ToUniversalTime().Ticks) -ne (Get-LocalCimMicrosecondTicks $ownedProcess.StartTime.ToUniversalTime().Ticks)) { throw "PID $ownedId changed identity between the process snapshot and sampling; refusing to stop it$where." }
+            $identities[$ownedId] = $ownedProcess.StartTime.ToUniversalTime().Ticks
+        }
+        $plans += ,@($descendants, $identities)
+    }
+    foreach ($plan in $plans) {
+        $descendants = $plan[0]; $identities = $plan[1]
+        foreach ($ownedId in $descendants) {
+            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+            if ($ownedProcess -and $identities.ContainsKey($ownedId)) {
+                if ($ownedProcess.StartTime.ToUniversalTime().Ticks -ne $identities[$ownedId]) { throw 'A descendant PID was reused; refusing to stop it.' }
+                Stop-Process -Id $ownedId -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
     return $live
 }
@@ -66,9 +216,9 @@ function Test-LocalPortOwner([int]$Port, $Record) {
     $all = @(Get-CimInstance Win32_Process)
     $family = @([int]$Record.Id)
     for ($index = 0; $index -lt $family.Count; $index++) {
-        foreach ($child in @($all | Where-Object ParentProcessId -eq $family[$index])) {
-            if ($family -notcontains [int]$child.ProcessId -and ([datetime]$child.CreationDate).ToUniversalTime() -ge ([datetime]$Record.Started).ToUniversalTime()) { $family += [int]$child.ProcessId }
-        }
+            foreach ($child in @($all | Where-Object ParentProcessId -eq $family[$index])) {
+                if ($family -notcontains [int]$child.ProcessId -and (Get-LocalCimMicrosecondTicks ([datetime]$child.CreationDate).ToUniversalTime().Ticks) -ge (Get-LocalCimMicrosecondTicks ([datetime]$Record.Started).ToUniversalTime().Ticks)) { $family += [int]$child.ProcessId }
+            }
     }
     foreach ($listener in $listeners) {
         if ($family -notcontains [int]$listener.OwningProcess) { return $false }
@@ -88,4 +238,9 @@ function Wait-LocalService([string]$Url, [int]$Port, $Record) {
         Start-Sleep -Milliseconds 500
     }
     throw "Service failed its owned health check (port $Port); inspect backend/.tmp/local-run logs."
+}
+
+function Invoke-LocalCleanupSafely([scriptblock]$Cleanup) {
+    # Startup cleanup is best effort: its own failure must not mask the error that triggered it.
+    try { & $Cleanup } catch { Write-Warning "Startup cleanup did not complete: $($_.Exception.Message)" }
 }

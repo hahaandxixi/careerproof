@@ -1,0 +1,12 @@
+PASS R1 the current test process is accepted by its own real record in ValidateOnly
+TICKS self pid=158660 net=639275630922812789 cim=639275630922812780 gap=9
+PASS R2 the real self tick pair sits on the CIM microsecond grid
+PASS R3 a real command-line mismatch on the self record is refused
+CHILD nonce=goal40-real-identity-39a10963cca1445faccd6eee2207f57b pid=158372 started-at=2026-10-14T16:24:53.9883585+08:00 exits-by-itself-after-4s
+PASS R4 the nonce child is accepted by its own real record in ValidateOnly
+TICKS child pid=158372 net=639275630939785860 cim=639275630939785860 gap=0
+PASS R5 the real child tick pair sits on the CIM microsecond grid
+PASS R6 a one-hour start drift on the child record is refused
+PASS R7 a one-microsecond manifest drift on the child record is refused
+CHILD exited-on-its-own pid=158372
+7/7 real-identity assertions passed; read-only observation only, zero stops, zero files written.
