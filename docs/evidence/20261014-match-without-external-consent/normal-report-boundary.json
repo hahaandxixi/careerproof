@@ -1,0 +1,8 @@
+{
+  "taskId": "db6d2178-eb34-42bd-b56f-be95ce0098a3",
+  "reportId": "81a25748-9115-44c4-be86-d6d1cf0ee665",
+  "externalAiConsent": false,
+  "physicalRequestAttempts": 0,
+  "skipReason": "consent_not_granted",
+  "fallbackReason": null
+}

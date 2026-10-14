@@ -98,6 +98,7 @@ function MatchForm({
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
         <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-950">
           <p className="font-semibold">外部 AI 发送范围与脱敏预览</p>
+          <p className="mt-2 text-xs leading-6">外部 AI 可选：不勾选下方同意时，只在本站生成规则匹配报告，不发送材料给外部模型。规则报告也可以查看证据并明确投递。</p>
           <dl className="mt-3 grid gap-2 text-xs leading-6 sm:grid-cols-2">
             <div><dt className="font-medium">本次材料</dt><dd>{selectedResume ? `${selectedResume.title} · 第 ${selectedResume.versionNumber} 版` : "尚未选择简历"}{selectedProjects.length ? `；${selectedProjects.join("；")}` : "；未选择项目材料"}</dd></div>
             <div><dt className="font-medium">只发送</dt><dd>{job.requirements.length} 项岗位要求、规则结论和每项最多 3 条必要证据片段</dd></div>
@@ -111,7 +112,7 @@ function MatchForm({
           </label>
         </div>
         <label className="flex items-start gap-2 text-xs leading-6 text-slate-600"><input className="mt-1" type="checkbox" checked={usePreviousReport} onChange={event => setUsePreviousReport(event.target.checked)} /><span>可选：允许 AI 查询本人同岗位上一份报告的脱敏解释、缺口和最多两条历史片段。历史仅作参考，不作为本轮引用或评级依据；没有历史时只分析当前材料。</span></label>
-        <button className="btn" disabled={busy || !resumeVersionId || !externalAiConsent}>{busy ? "创建分析任务…" : "生成我的匹配报告"}</button>
+        <button className="btn" disabled={busy || !resumeVersionId}>{busy ? "创建分析任务…" : "生成我的匹配报告"}</button>
       </fieldset>
     </form>}
   </section>;

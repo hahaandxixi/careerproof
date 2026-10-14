@@ -1,0 +1,43 @@
+{
+  "baselineHead": "9a7eafd",
+  "obstacle": "frontend disabled matching submit unless external AI consent was checked although API and documented privacy contract permit local rule reports",
+  "fix": "only missing resume/busy disable submit; explain optional external AI without changing consent default or request payload",
+  "automatedBoundaryTest": "1 passed; external config enabled with fake key and interception, unconsented report retains evidence and zero completion invocations/attempt rows",
+  "ruff": "passed",
+  "typecheck": "passed",
+  "buildRecovery": "normal and isolated production builds/restoration passed; pre/post service recovery inventory and 7 isolated snapshots equal",
+  "normalBrowserFlow": [
+    "newly named CP01 TXT uploaded through actual file chooser",
+    "same numbered CP01 ZIP uploaded through actual file chooser; no execution",
+    "both parser workers completed 100%",
+    "selected both new versions at correct CareerProof synthetic employer job",
+    "before fix submit disabled with both selected and external consent unchecked; after fix enabled",
+    "generated local rule report and task showed consent not granted",
+    "opened Python source citations with file/line numbers",
+    "checked application sharing consent and clicked confirm; submitted successfully"
+  ],
+  "reportBoundary": {
+    "taskId": "db6d2178-eb34-42bd-b56f-be95ce0098a3",
+    "reportId": "81a25748-9115-44c4-be86-d6d1cf0ee665",
+    "externalAiConsent": false,
+    "physicalRequestAttempts": 0,
+    "skipReason": "consent_not_granted",
+    "fallbackReason": null
+  },
+  "applicationResult": {
+    "newApplication": "492871f8-d03a-4df1-b8ea-86b830fd56c5",
+    "status": "submitted",
+    "newReport": "81a25748-9115-44c4-be86-d6d1cf0ee665",
+    "priorNormalSnapshotHashesUnchanged": 7,
+    "newApplicationCount": 1
+  },
+  "realModelsCalled": false,
+  "applicationRequiredActions": 2,
+  "existingUserMaterialsOverwritten": false,
+  "limitations": [
+    "Codex browser walkthrough is not a first-time human usability evaluation",
+    "real AI semantic quality not evaluated",
+    "normal enterprise response for this particular new application not sent this batch",
+    "not full latest regression or all viewport coverage"
+  ]
+}
