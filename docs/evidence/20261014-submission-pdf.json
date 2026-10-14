@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-14",
+  "artifact": "output/pdf/CareerProof-技术文档-提交候选稿.pdf",
+  "baseline": "5f5cd36",
+  "pages": 8,
+  "sha256": "a54d2588582c5b8108e3ca6266fd8eed4a69a48c03fde38d44a33cda72ed311f",
+  "generator": "scripts/build_submission_pdf.py",
+  "generator_sha256": "6df790164936e5035d5278addc3b132c9a8f4d72c7443d7bce4ce75b2e9db3ab",
+  "command": "python scripts/build_submission_pdf.py --as-of 2026-10-14",
+  "render": "Poppler pdftoppm -r 110 -png",
+  "visually_reviewed_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "final_unchanged_page_images": [
+    3,
+    7,
+    8
+  ],
+  "text_bounds": "all blocks within A4 page",
+  "content": "current 384-dimensional index, reconsent, optional self-review, actual gates and remaining work",
+  "old_assertions_removed": [
+    "1024-dimensional index",
+    "770+102 test snapshot",
+    "11 migrations",
+    "2026-10-02 candidate date"
+  ],
+  "renderer_notes": "Exit 0; Poppler warned about three non-ASCII home-path auxiliary Bulgarian/Greek/Thai nameToUnicode files. All 8 pages rendered; embedded Chinese text visually checked.",
+  "scope": "Review draft only. No runtime, database, model, network, signatures, final submission or license decision."
+}
