@@ -1,0 +1,42 @@
+{
+  "scope": [
+    "backend/app/agents/contracts.py",
+    "backend/app/agents/provider.py",
+    "backend/app/tools/task_boundaries.py",
+    "backend/app/tests/test_shared_history_current_boundary.py",
+    "backend/app/tests/test_weekend_plan_boundaries.py"
+  ],
+  "hashes": {
+    "backend/app/agents/contracts.py": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+    "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+    "backend/app/tools/task_boundaries.py": "5f67f964ba1cd8a714f4bce486d30269b2534fdac85ef399fa02eb29fa8eecec",
+    "backend/app/tests/test_shared_history_current_boundary.py": "c004a73cc40c6dacf83b9da936eb077531252e3c5b99e22e8c4439f41aeeb0af",
+    "backend/app/tests/test_weekend_plan_boundaries.py": "c622a87b57ffe514c6b2dae8986e7994d754452eaa3e6cbdf50da795eb07bfa8"
+  },
+  "red": {
+    "passed": 10,
+    "failed": 4
+  },
+  "target": {
+    "passed": 37,
+    "failed": 0
+  },
+  "affected": {
+    "passed": 138,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "ruff": "passed after import/line length correction",
+  "changes": [
+    "Existing deployment/source causal guard and provider guidance reviewed with regressions",
+    "Past/resolved exemptions now limited to account/author-related clauses",
+    "Explicit future new personal code commits are allowed without exempting separate old-history extraction"
+  ],
+  "limits": [
+    "Narrow phrase guards do not prove personal contribution or deployment",
+    "Existing transferred already-deployed wording can still be conservatively rejected without runtime records",
+    "No website restart or real model invocation; running backend has not loaded the latest source correction",
+    "R3 source package/full SQLite/PG evidence remains for prior commit, not this change"
+  ]
+}

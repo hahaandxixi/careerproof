@@ -1,0 +1,66 @@
+.........FFFF.                                                           [100%]
+================================== FAILURES ===================================
+_ test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u767b\u5f55\u7f3a\u9677\u5df2\u89e3\u51b3\uff0c\u4ed3\u5e93\u4ecd\u5171\u7528\u8d26\u53f7\uff0c\u63d0\u4ea4\u672a\u533a\u5206\u4f5c\u8005] _
+
+source = '��¼ȱ���ѽ�����ֿ��Թ����˺ţ��ύδ��������'
+
+    @pytest.mark.parametrize('source', [
+        '��¼ȱ���ѽ�����ֿ��Թ����˺ţ��ύδ��������',
+        '��ǰ�汾����ȱ�ݣ���ǰ�����˺ţ���ʷ��¼�޷���������',
+        '�����ٱ�������Ŀ�����˺ţ��ύ�޷���������',
+    ])
+    def test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap(source):
+>       assert shared_history_attribution_impossible([source]) is True
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['��¼ȱ���ѽ�����ֿ��Թ����˺ţ��ύδ��������'])
+
+app\tests\test_shared_history_current_boundary.py:126: AssertionError
+_ test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u6b64\u524d\u7248\u672c\u53e6\u6709\u7f3a\u9677\uff0c\u5f53\u524d\u5171\u7528\u8d26\u53f7\uff0c\u5386\u53f2\u8bb0\u5f55\u65e0\u6cd5\u533a\u5206\u4f5c\u8005] _
+
+source = '��ǰ�汾����ȱ�ݣ���ǰ�����˺ţ���ʷ��¼�޷���������'
+
+    @pytest.mark.parametrize('source', [
+        '��¼ȱ���ѽ�����ֿ��Թ����˺ţ��ύδ��������',
+        '��ǰ�汾����ȱ�ݣ���ǰ�����˺ţ���ʷ��¼�޷���������',
+        '�����ٱ�������Ŀ�����˺ţ��ύ�޷���������',
+    ])
+    def test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap(source):
+>       assert shared_history_attribution_impossible([source]) is True
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['��ǰ�汾����ȱ�ݣ���ǰ�����˺ţ���ʷ��¼�޷���������'])
+
+app\tests\test_shared_history_current_boundary.py:126: AssertionError
+_ test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u670d\u52a1\u4e0d\u518d\u5d29\u6e83\uff0c\u9879\u76ee\u5171\u7528\u8d26\u53f7\uff0c\u63d0\u4ea4\u65e0\u6cd5\u533a\u5206\u4f5c\u8005] _
+
+source = '�����ٱ�������Ŀ�����˺ţ��ύ�޷���������'
+
+    @pytest.mark.parametrize('source', [
+        '��¼ȱ���ѽ�����ֿ��Թ����˺ţ��ύδ��������',
+        '��ǰ�汾����ȱ�ݣ���ǰ�����˺ţ���ʷ��¼�޷���������',
+        '�����ٱ�������Ŀ�����˺ţ��ύ�޷���������',
+    ])
+    def test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap(source):
+>       assert shared_history_attribution_impossible([source]) is True
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['�����ٱ�������Ŀ�����˺ţ��ύ�޷���������'])
+
+app\tests\test_shared_history_current_boundary.py:126: AssertionError
+___ test_explicit_future_personal_commits_are_not_extraction_of_old_history ___
+
+    def test_explicit_future_personal_commits_are_not_extraction_of_old_history():
+>       assert task_boundary_error(
+            deliverable='����Ը����˺��ύ�´����γɵľ����ύ�嵥',
+            steps=['�´����ύǰ��ע����ʵ�ַ�Χ'],
+            acceptance_checks=['������¼�˶�ǰ�Դ�����'],
+            personal_source_texts=[CURRENT_PLAIN_SOURCE],
+        ) is None
+E       AssertionError: assert 'AI task plan extracts personal attribution from shared-account history that explicitly cannot distinguish authors; provide independent named contribution proof or division confirmation and keep it pending verification' is None
+E        +  where 'AI task plan extracts personal attribution from shared-account history that explicitly cannot distinguish authors; provide independent named contribution proof or division confirmation and keep it pending verification' = task_boundary_error(deliverable='����Ը����˺��ύ�´����γɵľ����ύ�嵥', steps=['�´����ύǰ��ע����ʵ�ַ�Χ'], acceptance_checks=['������¼�˶�ǰ�Դ�����'], personal_source_texts=['��Ŀ��ǰ�����˺ţ��ύδ��������'])
+
+app\tests\test_shared_history_current_boundary.py:131: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_shared_history_current_boundary.py::test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u767b\u5f55\u7f3a\u9677\u5df2\u89e3\u51b3\uff0c\u4ed3\u5e93\u4ecd\u5171\u7528\u8d26\u53f7\uff0c\u63d0\u4ea4\u672a\u533a\u5206\u4f5c\u8005]
+FAILED app/tests/test_shared_history_current_boundary.py::test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u6b64\u524d\u7248\u672c\u53e6\u6709\u7f3a\u9677\uff0c\u5f53\u524d\u5171\u7528\u8d26\u53f7\uff0c\u5386\u53f2\u8bb0\u5f55\u65e0\u6cd5\u533a\u5206\u4f5c\u8005]
+FAILED app/tests/test_shared_history_current_boundary.py::test_unrelated_resolved_or_past_clause_cannot_hide_current_attribution_gap[\u670d\u52a1\u4e0d\u518d\u5d29\u6e83\uff0c\u9879\u76ee\u5171\u7528\u8d26\u53f7\uff0c\u63d0\u4ea4\u65e0\u6cd5\u533a\u5206\u4f5c\u8005]
+FAILED app/tests/test_shared_history_current_boundary.py::test_explicit_future_personal_commits_are_not_extraction_of_old_history
+4 failed, 10 passed in 0.11s
