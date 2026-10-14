@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="1" tests="5" time="6.030" timestamp="2026-10-14T08:19:43.456518+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_reconsent_migration_preserves_history" time="0.034" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_postgres_reconsent_migration_preserves_history" time="0.003"><skipped type="pytest.skip" message="Requires explicit PostgreSQL cp_test schema">D:\jbcode\web ai\jianli\backend\.tmp\ci-fixture-20261014\snapshot\backend\app\tests\test_application_reconsent_migration.py:64: Requires explicit PostgreSQL cp_test schema</skipped></testcase><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_migration_rejects_cascading_batch_rebuild" time="0.003" /><testcase classname="app.tests.test_real_matching" name="test_real_report_survives_login_and_preserves_sources_and_snapshots" time="2.420" /><testcase classname="app.tests.test_durable_matching" name="test_every_physical_matching_request_is_durable_attempted_and_booked" time="1.879"><failure message="AssertionError: assert 'rules' == 'ai_evidence'&#10;  &#10;  - ai_evidence&#10;  + rules">durable_db = (&lt;fastapi.applications.FastAPI object at 0x000001CBD8A5D460&gt;, async_sessionmaker(class_='AsyncSession', bind=&lt;sqlalche...Engine object at 0x000001CBD8B7CA10&gt;, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=''))
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001CBD93F8650&gt;
+
+    async def test_every_physical_matching_request_is_durable_attempted_and_booked(
+        durable_db, monkeypatch
+    ):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+        provider = synthetic_provider(retry_handler(calls, outcomes))
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+    
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "durable-owner@example.com")
+            job = await create_job(owner)
+            await register(student, "durable-student@example.com", "student")
+            resume, _project, version = await upload_materials(student)
+            report = await match_report(student, job, resume, version, externalAiConsent=True)
+    
+        expected_steps = [classify_request(call) for call in calls]
+        expected_states = [state for state, _usage in outcomes]
+        expected_usage = [usage for _state, usage in outcomes]
+&gt;       assert report["analysisMode"] == "ai_evidence"
+E       AssertionError: assert 'rules' == 'ai_evidence'
+E         
+E         - ai_evidence
+E         + rules
+
+app\tests\test_durable_matching.py:266: AssertionError</failure></testcase></testsuite></testsuites>

@@ -36,6 +36,7 @@ from app.services.retrieval import (
 
 REQUIRED_TABLES = {
     "users",
+    "analysis_tasks",
     "student_profiles",
     "resumes",
     "resume_versions",
@@ -65,6 +66,7 @@ async def knowledge_db(monkeypatch):
             await connection.execute(sql_text(f'CREATE SCHEMA "{schema_name}"'))
         created = True
         async with engine.begin() as connection:
+            assert await connection.scalar(sql_text("SELECT current_schema()")) == schema_name
             await connection.run_sync(
                 lambda sync: Base.metadata.create_all(
                     sync,
@@ -76,6 +78,12 @@ async def knowledge_db(monkeypatch):
                     checkfirst=False,
                 )
             )
+            for name in REQUIRED_TABLES:
+                assert await connection.scalar(sql_text(
+                    "SELECT n.nspname FROM pg_class c "
+                    "JOIN pg_namespace n ON n.oid=c.relnamespace "
+                    "WHERE c.oid=to_regclass(:name)"
+                ), {"name": name}) == schema_name, name
         monkeypatch.setattr(settings, "storage_base_dir", None)
         yield async_sessionmaker(engine, expire_on_commit=False)
     finally:

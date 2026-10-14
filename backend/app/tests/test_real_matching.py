@@ -87,13 +87,13 @@ async def matching_db(tmp_path, monkeypatch):
             await connection.run_sync(
                 lambda sync: Base.metadata.create_all(
                     sync,
-                    tables=[t for t in Base.metadata.sorted_tables if t.name != "knowledge_chunks"],
+                    tables=[t for t in Base.metadata.sorted_tables
+                            if schema_name or t.name != "knowledge_chunks"],
                     checkfirst=False,
                 )
             )
             if schema_name:
-                for name in (t.name for t in Base.metadata.sorted_tables
-                             if t.name != "knowledge_chunks"):
+                for name in (t.name for t in Base.metadata.sorted_tables):
                     assert await connection.scalar(text(
                         "SELECT n.nspname FROM pg_class c "
                         "JOIN pg_namespace n ON n.oid=c.relnamespace "

@@ -42,6 +42,11 @@ from app.tests.test_real_matching import (  # noqa: F401
 @pytest.fixture
 async def durable_db(tmp_path, monkeypatch, request):
     """Own cp_test schema with pre-write namespace verification, or temp SQLite."""
+    # Retry/repair cases exercise the whole synthetic workflow, not a tight
+    # production budget. Match the hard-stop fixture's explicit input budget;
+    # otherwise a developer's ignored .env decides whether these requests send.
+    # Individual budget tests can still override this with their own bounds.
+    monkeypatch.setattr(settings, "ai_per_report_input_token_limit", 40_000)
     database_url = os.environ.get("CAREERPROOF_TEST_DATABASE_URL")
     schema_name = None
     if database_url:
@@ -81,7 +86,7 @@ async def durable_db(tmp_path, monkeypatch, request):
                     tables=[
                         table
                         for table in Base.metadata.sorted_tables
-                        if table.name != "knowledge_chunks"
+                        if schema_name or table.name != "knowledge_chunks"
                     ],
                     checkfirst=False,
                 )
@@ -89,7 +94,6 @@ async def durable_db(tmp_path, monkeypatch, request):
             if schema_name:
                 for table in (
                     table.name for table in Base.metadata.sorted_tables
-                    if table.name != "knowledge_chunks"
                 ):
                     assert await connection.scalar(
                         text(

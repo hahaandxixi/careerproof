@@ -1,0 +1,2 @@
+# JUnit failure text contains literal source whitespace; retain the raw evidence.
+*.xml -text -whitespace

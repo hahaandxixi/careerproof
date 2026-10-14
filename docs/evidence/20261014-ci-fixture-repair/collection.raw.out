@@ -1,0 +1,10 @@
+
+app/tests/test_validation_errors.py: 1
+MIGRATION_FIXTURE_RESOLVED True ['app/tests/test_application_reconsent_migration.py']
+COLLECTED_ITEMS 1237
+=================================== ERRORS ====================================
+______________ ERROR collecting app/tests/test_role_materials.py ______________
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\demo\\build_role_packs.py'
+ERROR app/tests/test_role_materials.py - FileNotFoundError: [Errno 2] No such...
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+

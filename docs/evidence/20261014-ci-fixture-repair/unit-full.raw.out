@@ -1,0 +1,588 @@
+..........................................................sss........... [  5%]
+........................................................................ [ 11%]
+............s.........................s............s......s....s........ [ 17%]
+......................ss.......sss......s.....ssssssss.................. [ 23%]
+........................................................................ [ 28%]
+........................................................................ [ 34%]
+..............................................................ss........ [ 40%]
+s...........................................................s........... [ 46%]
+........................................................................ [ 52%]
+.....s....................................sss.......ss.................. [ 57%]
+..............................ss.............................ssssss..... [ 63%]
+.....................................s.................................. [ 69%]
+...........................................EEEEEEEEEE................... [ 75%]
+....FFFFF............................................................... [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 92%]
+...................................................................sssss [ 98%]
+sss................                                                      [100%]
+=================================== ERRORS ====================================
+_________ ERROR at setup of test_frozen_replay_counts_and_strict_pass _________
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+__ ERROR at setup of test_frozen_per_dimension_counts_have_full_denominator ___
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+___ ERROR at setup of test_frozen_rows_preserve_scores_reasons_supplements ____
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+_____ ERROR at setup of test_metadata_keeps_review_provenance_and_hashes ______
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+__________ ERROR at setup of test_real_production_paths_combined_run __________
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+_ ERROR at setup of test_author_coverage_stays_separate_from_independent_strict_pass _
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+________ ERROR at setup of test_website_generation_semantics_stay_null ________
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+_______ ERROR at setup of test_exit_ok_despite_low_baseline_strict_pass _______
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+_____ ERROR at setup of test_structural_suite_failure_makes_exit_nonzero ______
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+______ ERROR at setup of test_illegal_review_evidence_makes_exit_nonzero ______
+
+    @pytest.fixture(scope="module")
+    def report():
+>       return benchmark.build_report()
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+================================== FAILURES ===================================
+_______________ test_repeat_reports_identical_except_timestamp ________________
+
+    def test_repeat_reports_identical_except_timestamp():
+>       first = benchmark.build_report()
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark.py:366: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\run_quality_review_benchmark.py:290: in build_report
+    review_payload, review_raw = _read_json(review_path)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^
+evals\run_quality_review_benchmark.py:75: in _read_json
+    raw = path.read_bytes()
+          ^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1019: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+__ test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[review] ___
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/backend/.tmp-fixture-unit-full/test_ambiguous_duplicate_json_0')
+target = 'review'
+
+    @pytest.mark.parametrize('target', ['review', 'input'])
+    def test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay(tmp_path, target):
+        original_input = benchmark.DEFAULT_INPUT.read_bytes()
+>       review = json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8'))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark_holdout.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+___ test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[input] ___
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/backend/.tmp-fixture-unit-full/test_ambiguous_duplicate_json_1')
+target = 'input'
+
+    @pytest.mark.parametrize('target', ['review', 'input'])
+    def test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay(tmp_path, target):
+        original_input = benchmark.DEFAULT_INPUT.read_bytes()
+>       review = json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8'))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark_holdout.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+____ test_unknown_source_quality_cannot_be_rescued_by_other_perfect_scores ____
+
+    def test_unknown_source_quality_cannot_be_rescued_by_other_perfect_scores():
+        raw = benchmark.DEFAULT_INPUT.read_bytes()
+        payload = json.loads(raw)
+>       review = copy.deepcopy(json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8')))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark_holdout.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+______ test_input_rubric_cannot_remove_an_unfavorable_required_dimension ______
+
+    def test_input_rubric_cannot_remove_an_unfavorable_required_dimension():
+        payload = json.loads(benchmark.DEFAULT_INPUT.read_bytes())
+>       review = copy.deepcopy(json.loads(benchmark.DEFAULT_REVIEW.read_text(encoding='utf-8')))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_quality_review_benchmark_holdout.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-fixture-20261014/snapshot/docs/evidence/20261010-AI-blind-plan-review/review.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-fixture-20261014\\snapshot\\docs\\evidence\\20261010-AI-blind-plan-review\\review.json'
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: FileNotFoundError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_dependency_upgrade_regression.py::test_decode_token_rejects_malformed_tokens[eyJhbGciOiJIUzI1NiJ9.W10.sig]
+app/tests/test_dependency_upgrade_regression.py::test_legacy_pytjwt_2101_token_still_decodes
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\jwt\api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_quality_review_benchmark.py::test_repeat_reports_identical_except_timestamp
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[review]
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_ambiguous_duplicate_json_keys_cannot_produce_a_valid_replay[input]
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_unknown_source_quality_cannot_be_rescued_by_other_perfect_scores
+FAILED app/tests/test_quality_review_benchmark_holdout.py::test_input_rubric_cannot_remove_an_unfavorable_required_dimension
+ERROR app/tests/test_quality_review_benchmark.py::test_frozen_replay_counts_and_strict_pass
+ERROR app/tests/test_quality_review_benchmark.py::test_frozen_per_dimension_counts_have_full_denominator
+ERROR app/tests/test_quality_review_benchmark.py::test_frozen_rows_preserve_scores_reasons_supplements
+ERROR app/tests/test_quality_review_benchmark.py::test_metadata_keeps_review_provenance_and_hashes
+ERROR app/tests/test_quality_review_benchmark.py::test_real_production_paths_combined_run
+ERROR app/tests/test_quality_review_benchmark.py::test_author_coverage_stays_separate_from_independent_strict_pass
+ERROR app/tests/test_quality_review_benchmark.py::test_website_generation_semantics_stay_null
+ERROR app/tests/test_quality_review_benchmark.py::test_exit_ok_despite_low_baseline_strict_pass
+ERROR app/tests/test_quality_review_benchmark.py::test_structural_suite_failure_makes_exit_nonzero
+ERROR app/tests/test_quality_review_benchmark.py::test_illegal_review_evidence_makes_exit_nonzero
+5 failed, 1179 passed, 49 skipped, 9 warnings, 10 errors in 294.00s (0:04:53)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

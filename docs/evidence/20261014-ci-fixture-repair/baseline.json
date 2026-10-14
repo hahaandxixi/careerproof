@@ -1,0 +1,16 @@
+{
+  "commit": "dc5cfb9df87de9189dee43b3fc7781f72079fdda",
+  "overlay": [
+    "test_real_matching.py",
+    "test_durable_matching.py",
+    "test_knowledge_semantic_postgres.py",
+    "test_application_reconsent_migration.py"
+  ],
+  "scope": "Committed backend plus four test-only repairs; no .env, pending production guards or runtime data",
+  "committed_resource_paths": [
+    "backend",
+    "demo",
+    "docs/evidence/20261010-AI-blind-plan-review/review.json"
+  ],
+  "snapshot_preparation_failures": "Initial collection lacked demo; first full run lacked the frozen review JSON. Original failing logs retained."
+}

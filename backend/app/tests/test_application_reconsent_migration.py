@@ -5,9 +5,10 @@ import sqlalchemy as sa
 
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
+from app.tests.test_ai_request_attempt_migration import (
+    attempt_pg as attempt_pg,
+)
 from app.tests.test_ai_request_attempt_migration import migration
-
-pytest_plugins = ["app.tests.test_ai_request_attempt_migration"]
 
 
 def exercise(connection):
@@ -60,7 +61,7 @@ def test_sqlite_reconsent_migration_preserves_history(tmp_path):
         engine.dispose()
 
 
-async def test_postgres_reconsent_migration_preserves_history(attempt_pg):
+async def test_postgres_reconsent_migration_preserves_history(attempt_pg):  # noqa: F811
     engine, schema = attempt_pg
     async with engine.begin() as connection:
         assert await connection.scalar(sa.text("SELECT current_schema()")) == schema

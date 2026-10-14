@@ -1,0 +1,59 @@
+SYNTHETIC_FALLBACK_EXCEPTION BudgetAdmissionError report_input_token_limit
+SYNTHETIC_OUTCOME {'provider': 'deepseek', 'fallback': 'provider_error', 'skip': None, 'stage': 'request', 'requests': 1}
+F
+================================== FAILURES ===================================
+____ test_every_physical_matching_request_is_durable_attempted_and_booked _____
+
+durable_db = (<fastapi.applications.FastAPI object at 0x0000021B2FFFFFE0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalche...Engine object at 0x0000021B3075BA50>, autoflush=True, expire_on_commit=False), namespace(schema=None, database_url=''))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000021B2FFFF950>
+
+    async def test_every_physical_matching_request_is_durable_attempted_and_booked(
+        durable_db, monkeypatch
+    ):
+        app, factory, _runtime = durable_db
+        calls: list = []
+        outcomes: list = []
+        provider = synthetic_provider(retry_handler(calls, outcomes))
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+    
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "durable-owner@example.com")
+            job = await create_job(owner)
+            await register(student, "durable-student@example.com", "student")
+            resume, _project, version = await upload_materials(student)
+            report = await match_report(student, job, resume, version, externalAiConsent=True)
+    
+        expected_steps = [classify_request(call) for call in calls]
+        expected_states = [state for state, _usage in outcomes]
+        expected_usage = [usage for _state, usage in outcomes]
+>       assert report["analysisMode"] == "ai_evidence"
+E       AssertionError: assert 'rules' == 'ai_evidence'
+E         
+E         - ai_evidence
+E         + rules
+
+app\tests\test_durable_matching.py:266: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_durable_matching.py::test_every_physical_matching_request_is_durable_attempted_and_booked
+1 failed, 5 warnings in 3.10s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
