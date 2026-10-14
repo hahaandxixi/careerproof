@@ -1,0 +1,18 @@
+{
+  "change": "exclusive temporary write, flush/fsync, same-directory replace; retain exclusive initial run reservation",
+  "tests": "30 passed, zero failures/errors/skips",
+  "ruff": "passed",
+  "injectedFailures": [
+    "replacement failure",
+    "invalid serialization",
+    "temporary collision without deleting foreign file",
+    "flush failure",
+    "original error preserved when failure checkpoint also fails"
+  ],
+  "firstAttempt": "28 setup errors from Windows TEMP access denied, no test body executed; repository-owned basetemp used for final checks",
+  "limits": [
+    "does not guarantee machine power-loss durability",
+    "does not eliminate filesystem TOCTOU races",
+    "no HTTP writes or service changes by module tests"
+  ]
+}

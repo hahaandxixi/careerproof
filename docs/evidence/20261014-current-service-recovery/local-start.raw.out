@@ -1,0 +1,9 @@
+Verified runtime: backend .venv-dependency23; frontend D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261010
+Get-FileHash : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable pr
+ogram. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At D:\jbcode\web ai\jianli\scripts\local-runtime.ps1:14 char:53
++ ...  if (Test-Path -LiteralPath $Path) { $parts = @((Get-FileHash -Litera ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

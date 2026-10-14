@@ -195,6 +195,25 @@ async def verify_reconsent(data, student, hr, other, job_id, old_id, new_report,
     return opened
 
 
+def save_checkpoint(path: Path, result: dict) -> None:
+    """Replace a checkpoint only after its complete bytes are written locally."""
+    assert_unlinked_state_path(path)
+    payload = json.dumps(result, ensure_ascii=False, indent=2)
+    temporary = path.with_name(f".{path.name}.{uuid4().hex}.tmp")
+    created = False
+    try:
+        with temporary.open("x", encoding="utf-8") as file:
+            created = True
+            file.write(payload)
+            file.flush()
+            os.fsync(file.fileno())
+        assert_unlinked_state_path(path)
+        os.replace(temporary, path)
+    finally:
+        if created:
+            temporary.unlink(missing_ok=True)
+
+
 async def exercise(run: str, root: Path) -> Path:
     credentials, _ = validate_run(root, run)
     path = root / ".tmp/release-smoke" / f"{run}.json"
@@ -212,7 +231,7 @@ async def exercise(run: str, root: Path) -> Path:
     }
 
     def persist():
-        path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        save_checkpoint(path, result)
 
     def record(name, **facts):
         result["steps"].append({"name": name, "passed": True, **facts})
@@ -554,7 +573,12 @@ async def exercise(run: str, root: Path) -> Path:
         result["status"] = "failed"
         # HTTP helper errors are bounded and contain no response data/credentials.
         result["errorType"] = type(exc).__name__
-        persist()
+        try:
+            persist()
+        except Exception:
+            # Preserve the original failure and the preceding complete checkpoint.
+            # Never print request bodies or credentials while reporting this error.
+            print("Failure checkpoint could not be saved; preceding checkpoint retained.")
         raise
 
 

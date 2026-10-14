@@ -1,0 +1,42 @@
+{
+  "sourceHead": "4436bf6",
+  "userTestingFinished": true,
+  "normalSite": "http://127.0.0.1:3000",
+  "isolatedSite": "http://127.0.0.1:3001",
+  "restoration": "existing databases, SkipSeed, no synthetic budget activation",
+  "beforeAfterInventoryEqual": true,
+  "isolatedSnapshotsChecked": 6,
+  "counts": {
+    "careerproof": {
+      "users": 20,
+      "applications": 7,
+      "notifications": 16
+    },
+    "cp_e2e_release-owner-20261012": {
+      "users": 7,
+      "applications": 6,
+      "notifications": 20
+    }
+  },
+  "startupFirstFailure": "Windows PowerShell child could not resolve Get-FileHash; retained local-start.raw.out",
+  "recovery": "PowerShell 7, both production builds and owned service starts succeeded",
+  "browserChecks": [
+    "new demo wording optional self review visible",
+    "390px report default pending-material group 1 item",
+    "supported group expanded 2 items",
+    "390px no horizontal overflow"
+  ],
+  "screenshots": [
+    "report-390.jpg",
+    "report-390-supported.jpg",
+    "report-390-supported-final.jpg"
+  ],
+  "notVerified": [
+    "full browser withdraw/reconsent chain",
+    "enterprise browser verification after restoration",
+    "200% zoom",
+    "independent first-time human evaluation",
+    "real website model call"
+  ],
+  "screenshotNote": "Intermediate supported screenshot captured browser resize transition; final screenshot stored separately."
+}
