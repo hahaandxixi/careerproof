@@ -2,6 +2,7 @@
 # These files are evidence, not source formatting; do not normalize their bytes.
 docs/evidence/**/*.raw.out -text -whitespace
 docs/evidence/**/*.raw.err -text -whitespace
+docs/evidence/20261015-harness55-pdfium-prototype/*.stdout.txt -text -whitespace
 
 # This failing JUnit contains verbatim Python tracebacks; preserve their bytes.
 docs/evidence/20261015-data-integrity/full-sqlite.xml -text -whitespace

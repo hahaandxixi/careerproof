@@ -1,0 +1,10 @@
+{
+  "observed_at_utc": "2026-10-15T14:56:27.859458+00:00",
+  "access_token_minutes": 30,
+  "synthetic_account_token_state": {
+    "total": 82,
+    "active": 6,
+    "newest_created": "2026-10-15 14:55:58.049249+00:00",
+    "latest_consumed": "2026-10-15 14:55:58.037513+00:00"
+  }
+}

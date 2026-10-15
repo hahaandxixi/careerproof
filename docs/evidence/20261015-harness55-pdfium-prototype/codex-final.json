@@ -1,0 +1,25 @@
+{
+  "snapshot_sha256": "9fea4babadaf3470543e0f66b5f305691bfcee44c503ab91d33fe4f1116c029f",
+  "source_unchanged_during_probe": true,
+  "command": [
+    "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pdfium55-recheck-final\\prototype.py",
+    "--fixture-dir",
+    "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pdfium55-fixtures\\codex-independent",
+    "--print-json"
+  ],
+  "exit_code": 0,
+  "summary": {
+    "failed": 0,
+    "failed_ids": [],
+    "passed": 19,
+    "skipped_ids": [],
+    "total": 19,
+    "verdict": "pass"
+  },
+  "notes": [
+    "Previous no-persist run passed 18 with C19 skipped by explicit flag, not proven filesystem failure. Final run uses a unique owned synthetic fixture subdirectory to verify path-based input.",
+    "Per-instance thread affinity guard is not a process-wide PDFium concurrency guarantee. Existing process isolation still requires integration verification.",
+    "Prototype callbacks are synthetic; real RapidOCR and user upload flow are unverified. No production package or parser changed."
+  ]
+}

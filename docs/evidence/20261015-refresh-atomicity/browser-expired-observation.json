@@ -1,0 +1,17 @@
+{
+  "navigationStartedUtc": "2026-10-15T14:55:57.971Z",
+  "observedUtc": "2026-10-15T14:57:14.853Z",
+  "parallelNavigation": true,
+  "manualCookieChanges": false,
+  "applications": {
+    "sameSyntheticStudent": true,
+    "ready": true,
+    "savedApplicationPresent": true,
+    "savedApplicationDomIdPresent": true
+  },
+  "reports": {
+    "sameSyntheticStudent": true,
+    "savedReportPresent": true
+  },
+  "scope": "One normal-site synthetic student, one browser profile and one same-origin two-tab navigation. No manual expiry, login, logout, submission or user-account changes."
+}

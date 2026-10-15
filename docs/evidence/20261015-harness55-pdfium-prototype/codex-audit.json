@@ -1,0 +1,15 @@
+{
+  "prototype_sha256": "9fea4babadaf3470543e0f66b5f305691bfcee44c503ab91d33fe4f1116c029f",
+  "independent_execution": "codex-final.json",
+  "accepted_scope": "Standalone Windows PDFium prototype with synthetic OCR. Not adopted into production.",
+  "qualified_findings": [
+    "C15 simulates another thread id for one adapter; per-instance affinity does not serialize different adapters. Do not claim process-wide PDFium thread safety.",
+    "Resource close counters verify calls, not OS native-memory leak freedom.",
+    "No-persist run skips C19 by flag, not proven filesystem failure. Codex reran path input in an owned fixture directory: 19 passed, zero skipped.",
+    "Harness reports write failures and an attempted integrity-label adjustment outside task scope. Codex did not repeat or authorize any ACL/integrity/permission change. Detailed diagnosis remains self-reported.",
+    "Real RapidOCR, isolated worker/timeout, text equivalence against PyMuPDF, platform wheels and distribution notices remain unverified."
+  ],
+  "runtime_parser_unchanged": true,
+  "root_license_owner_choice_pending": true,
+  "prototype_sha256_lf_normalized": "9fea4babadaf3470543e0f66b5f305691bfcee44c503ab91d33fe4f1116c029f"
+}

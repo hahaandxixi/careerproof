@@ -1,0 +1,22 @@
+{
+  "snapshot_sha256": "9fea4babadaf3470543e0f66b5f305691bfcee44c503ab91d33fe4f1116c029f",
+  "source_unchanged_during_probe": true,
+  "command": [
+    "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pdfium55-recheck\\prototype.py",
+    "--no-persist-fixtures",
+    "--print-json"
+  ],
+  "exit_code": 0,
+  "summary": {
+    "failed": 0,
+    "failed_ids": [],
+    "passed": 18,
+    "skipped_ids": [
+      "C19"
+    ],
+    "total": 19,
+    "verdict": "pass"
+  },
+  "scope": "Independent execution of immutable standalone adapter snapshot with synthetic in-memory fixtures and synthetic recognizer. No app integration, real OCR, uploads, services, DB, dependency install or license signoff."
+}

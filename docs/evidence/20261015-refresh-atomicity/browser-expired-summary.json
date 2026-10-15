@@ -1,0 +1,16 @@
+{
+  "scenario": "Naturally expired same-origin browser profile, two tabs navigated in parallel",
+  "last_issuance_age_before_seconds": 2229.295287,
+  "configured_access_token_minutes": 30,
+  "refresh_row_delta": 1,
+  "active_refresh_rows_before": 6,
+  "active_refresh_rows_after": 6,
+  "both_protected_pages_loaded_same_synthetic_account": true,
+  "manual_cookie_or_expiry_changes": false,
+  "sources": [
+    "browser-expired-before.json",
+    "browser-expired-after.json",
+    "browser-expired-observation.json"
+  ],
+  "limits": "One browser/profile and synthetic account; no general claim about absent Web Locks, lost Set-Cookie, logout race, token families or persistent throttling."
+}
