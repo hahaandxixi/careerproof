@@ -1,0 +1,59 @@
+{
+  "reviewed_baseline": "f095d94",
+  "source_blobs": [
+    {
+      "path": "scripts/build_submission_pdf.py",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/guides/比赛交付.md",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/evidence/20261015-report-initial-group/summary.json",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/evidence/20261015-refresh-atomicity/final.json",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/evidence/20261014-browser-reconsent/summary.json",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/evidence/20261015-backup-rehearsal/normal-activation.json",
+      "committed_blob_verified": true
+    },
+    {
+      "path": "docs/evidence/20261015-source-regression/python-install.json",
+      "committed_blob_verified": true
+    }
+  ],
+  "review_is_not_final_pdf_signoff": true,
+  "concurrent_generator_drift_expected": "Codex owns the generator; Harness was requested to read the committed baseline. Mixed worktree observations do not sign off the final PDF.",
+  "accepted": [
+    "Update current PDF baseline/date/evidence reference",
+    "Separate old r4 package from current-source results",
+    "Update old frontend/mobile and backend counts with their actual source scope",
+    "Keep first-user, semantic, zoom, video and license limitations"
+  ],
+  "qualified_or_rejected": {
+    "item_2": "Old reproduction command date was not itself a contradiction; updated because the current artifact changed.",
+    "item_4": "Fresh installation record belongs to r4 dependency environment. Later refresh verification runs that Python from current backend; origin rechecked here. Do not erase later current-source test evidence.",
+    "item_6": "No evidence supports deleting historical guard/launcher/CI signoff. r4 can contain those signed-off changes while still not being final candidate.",
+    "item_10": "A checklist requiring current counts does not conflict with limitations. Keep both facts and gaps."
+  },
+  "current_backend_origin_check": {
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+      "-c",
+      "import app; print(app.__file__)"
+    ],
+    "cwd": "D:\\jbcode\\web ai\\jianli\\backend",
+    "resolved_app": "D:\\jbcode\\web ai\\jianli\\backend\\app\\__init__.py"
+  },
+  "final_pdf_audit": "docs/evidence/20261015-submission-pdf.json",
+  "review_sha256": "d894c44b05ba729ad074184b7c7a198e3ff38685a9659a2b9f52fbbf04fc306f",
+  "scope": "No website requests, user data changes, real AI calls, dependency installs, pushes or deployment"
+}

@@ -1,0 +1,122 @@
+{
+  "review": "传智杯54 技术文稿与交付事实核对",
+  "review_date": "2026-10-15",
+  "repository_root": "D:\\jbcode\\web ai\\jianli",
+  "head": {
+    "full": "f095d94a4ad4655c7b91798fc1c77450abc0b423",
+    "short": "f095d94",
+    "subject": "fix: open an available evidence group on initial report view"
+  },
+  "baseline_commit": "f095d94",
+  "worktree_status": {
+    "uncommitted_entries": 105,
+    "note": "includes modified docs/当前接力.md, modified scripts/build_submission_pdf.py and untracked evidence directories"
+  },
+  "hash_algorithm": "git blob hash (sha1): git rev-parse f095d94:<path> compared with git hash-object -- <path> re-run twice within this session",
+  "all_seven_read_files_identical_to_committed_at_read_time": true,
+  "files": [
+    {
+      "path": "scripts/build_submission_pdf.py",
+      "committed_blob": "0cb9d319d016f4280e96c7266e3f5dd1bb440f73",
+      "worktree_blob_at_read_time": "0cb9d319d016f4280e96c7266e3f5dd1bb440f73",
+      "same_at_read_time": true,
+      "worktree_blob_at_review_end": "de897711d0b47f622d17f59c0974175dcdd201bb",
+      "concurrent_drift": true,
+      "drift_note": "concurrent writer (Codex owns this file) rewrote 14 insertions / 11 deletions during the review; reviewed line numbers and quoted text correspond to the f095d94 blob 0cb9d31 version that was present when read. The newer uncommitted text already replaces 262->277, 390px->320px and adds 1318/56/107/8.",
+      "committed_old_markers": ["262", "390px", "no 277", "no 320px", "no 1318"]
+    },
+    {
+      "path": "docs/guides/比赛交付.md",
+      "committed_blob": "41666598a1c04d54daebee66d02cb6cba610508c",
+      "worktree_blob": "41666598a1c04d54daebee66d02cb6cba610508c",
+      "same": true,
+      "note": "unchanged from f095d94 at review end"
+    },
+    {
+      "path": "docs/evidence/20261015-report-initial-group/summary.json",
+      "committed_blob": "48672d13d041820e42e26ae16d9a7425afa5a771",
+      "worktree_blob": "48672d13d041820e42e26ae16d9a7425afa5a771",
+      "same": true,
+      "internal_base_commit": "8abed8b"
+    },
+    {
+      "path": "docs/evidence/20261015-refresh-atomicity/final.json",
+      "committed_blob": "2967c424ce3f5180dd2e0f8d0824a89a8eed6d34",
+      "worktree_blob": "2967c424ce3f5180dd2e0f8d0824a89a8eed6d34",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/20261014-browser-reconsent/summary.json",
+      "committed_blob": "546f7e91505fbb7231d00db10661bd358f48c97c",
+      "worktree_blob": "546f7e91505fbb7231d00db10661bd358f48c97c",
+      "same": true,
+      "internal_source_head": "afe14be"
+    },
+    {
+      "path": "docs/evidence/20261015-backup-rehearsal/normal-activation.json",
+      "committed_blob": "795c6a8bb3b022ddc8c5c9d113d78ab57203892f",
+      "worktree_blob": "795c6a8bb3b022ddc8c5c9d113d78ab57203892f",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/20261015-source-regression/python-install.json",
+      "committed_blob": "f5818ef361570bd86c5e96dd0c4d4697540f8b0f",
+      "worktree_blob": "f5818ef361570bd86c5e96dd0c4d4697540f8b0f",
+      "same": true,
+      "internal_source_commit": "9a710d5c87090eca13ca4e5ffd0f60b906ea888a"
+    }
+  ],
+  "artifact_checks": {
+    "output/pdf/CareerProof-技术文档-提交候选稿.pdf": {
+      "page_object_count": 8,
+      "pages_count_entry": 8,
+      "size_bytes": 121795,
+      "producer": "ReportLab PDF Library (opensource)",
+      "note": "embedded revision is drawn by reportlab at build time and is not machine-readable here; value not verified",
+      "read_only_inspection": true
+    },
+    "referenced_evidence_paths_exist": {
+      "docs/evidence/20261015-refresh-atomicity": true,
+      "docs/evidence/20261015-report-initial-group": true,
+      "docs/evidence/20261014-browser-reconsent": true,
+      "docs/evidence/20261015-source-regression": true,
+      "docs/evidence/20261014-submission-pdf.json": true,
+      "docs/evidence/20261015-migration-baseline/summary.json": true,
+      "docs/evidence/20261015-source-regression/frontend.json": true,
+      "docs/evidence/20261015-source-regression/summary.json": true,
+      "output/source/CareerProof-source-preview-20261015-r4.zip": true
+    }
+  },
+  "verified_counts": {
+    "frontend_tests_passed": 277,
+    "frontend_tests_failed": 0,
+    "sqlite_tests_total": 1374,
+    "sqlite_passed_derived": 1318,
+    "sqlite_skipped": 56,
+    "strict_pg_tests": 107,
+    "strict_pg_skipped": 0,
+    "hardstop_tests": 8,
+    "hardstop_skipped": 0,
+    "old_application_snapshots_unchanged": 6,
+    "old_submission_snapshots_claimed_in_generator": 8,
+    "revision": "0019_data_integrity_constraints",
+    "e2e_database_migrated": false,
+    "zoom_200_percent_verified": false,
+    "viewport_width": 320
+  },
+  "unverified": [
+    "PDF内嵌产品功能基线哈希值",
+    "320px 与键盘交互的截图与逐项指标",
+    "赛事项对PDF页数与字段的最终要求",
+    "Redis 读写调用、v2 上传解析与外发规则报告流程",
+    "视频、第三方许可处置、最终候选包、真实AI语义、200%缩放、首次独立用户"
+  ],
+  "limits": {
+    "external_network": false,
+    "services_started_or_stopped": false,
+    "database_operations": false,
+    "git_write_operations": false,
+    "source_files_read": 7,
+    "note": "只读核对；未修改PDF生成器、输出PDF、正式指南或任何业务/前端/启动脚本；未创建本目录以外的任何文件"
+  }
+}

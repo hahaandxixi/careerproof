@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-15",
+  "artifact": "output\\pdf\\CareerProof-技术文档-提交候选稿.pdf",
+  "baseline": "f095d94a4ad4655c7b91798fc1c77450abc0b423",
+  "pages": 8,
+  "sha256": "f0c27149c086b75e77eb3706ab847d1c37c020076b5420f8f203525b657a2b7f",
+  "generator": "scripts/build_submission_pdf.py",
+  "generator_sha256": "f6379451e3a91604b8204e72934dce2e2b4c43f926216abd52bf151fc6c3b90b",
+  "command": "python scripts/build_submission_pdf.py --as-of 2026-10-15",
+  "render": "Poppler pdftoppm -r 105 -png, final all eight pages rerendered; only page 5 changed and was visually rechecked",
+  "visually_reviewed_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "final_changed_pages_reviewed": [
+    5
+  ],
+  "text_bounds": "all character boxes within A4 page",
+  "required_text_checks": [
+    "f095d94",
+    "1318",
+    "277",
+    "专属PG107",
+    "真实同时过期",
+    "实际200%缩放",
+    "首次独立用户",
+    "学生仍可查看本人历史报告",
+    "预审包r4仍对应9a710d5"
+  ],
+  "review_status": "Review draft, not final frozen candidate, not official competition compliance approval",
+  "remaining": [
+    "first independent user feedback",
+    "independent real AI semantic review",
+    "actual 200 percent browser zoom",
+    "concurrent expired browser refresh",
+    "video recording and playback",
+    "license decision",
+    "official format and review access",
+    "human signatures and final submission"
+  ],
+  "renderer_notes": "Poppler exit 0; non-ASCII home path causes warnings for Bulgarian/Greek/Thai auxiliary mapping files; all Chinese pages visually inspected",
+  "scope": "Artifact only; no website, database, model, package installation, push, deployment or signatures",
+  "final_unchanged_reviewed_pages": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7,
+    8
+  ],
+  "independent_review": "docs/evidence/20261015-harness54-delivery-review/codex-audit.json"
+}
