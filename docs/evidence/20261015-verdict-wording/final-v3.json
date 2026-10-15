@@ -1,0 +1,31 @@
+[
+  {
+    "name": "tests-v3",
+    "command": [
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+      "test"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "typecheck-v3",
+    "command": [
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+      "run",
+      "typecheck"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "build-v3",
+    "command": [
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+      "run",
+      "build"
+    ],
+    "exit_code": 0
+  }
+]

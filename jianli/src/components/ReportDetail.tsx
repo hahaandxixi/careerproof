@@ -18,8 +18,8 @@ import ApplicationSubmit from "./ApplicationSubmit";
 import GrowthTaskStart from "./GrowthTaskStart";
 import { ReportActionLayer } from "./ReportEvidenceWorkspace";
 import { evidenceWorkspaceSummary } from "@/lib/evidence-workspace";
+import { VERDICT_LABELS as VERDICTS } from "@/lib/verdict-display.js";
 
-const VERDICTS: Record<string, string> = { supported: "有证据支持", partial: "部分证据支持", claimed_only: "仅简历声明", gap: "材料待补充", unsupported: "规则暂未支持", verified: "有证据支持" };
 const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
 const REVIEW_LABELS: Record<string, string> = { pending: "待本人核对", accepted: "本人已采纳", rejected: "本人已驳回", corrected: "本人标记已修正" };
 function retrievalEventLabel(call: MatchReport["aiToolCalls"][number]): string {

@@ -1,0 +1,6 @@
+
+> jianli@0.1.0 typecheck
+> tsc --noEmit
+
+src/lib/heatmap-demo.ts(3,32): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+src/lib/skill-radar.ts(3,32): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.

@@ -26,10 +26,10 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     </div>
     <p className="mt-2 text-sm leading-6 text-slate-600">选择一项要求，查看原报告判断，再按需展开来源片段。</p>
     <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="雷达图例">
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />有证据</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />仅自述</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-dashed border-slate-400" />缺材料不绘点</span>
-      <span>— 暂不可评</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported} / {RADAR_STATUS.partial}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-dashed border-slate-400" />{RADAR_STATUS.gap}（不绘点）</span>
+      <span>— {RADAR_STATUS.unsupported}</span>
     </div>
     <details className="mt-3 text-xs leading-5 text-slate-500"><summary className="w-fit cursor-pointer py-2 text-indigo-700">分数与图形如何理解</summary><p className="mt-1">分数沿用原报告，不填充面积。{RULE_SCORE_CAP_NOTE}</p></details>
     <div className="mt-4 grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">

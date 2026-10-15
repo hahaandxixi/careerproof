@@ -1,0 +1,19 @@
+{
+  "tests": 269,
+  "page_checks": {
+    "public_demo_candidate_C_linking": true,
+    "mobile_390_no_page_overflow": true,
+    "saved_report_five_source_groups_collapsed": true
+  },
+  "failures_retained": [
+    "TS5097 runtime .ts import unsupported by current compiler config",
+    "One old radar wording assertion",
+    "Runtime alias resolver required explicit .js imports"
+  ],
+  "not_verified": [
+    "Fresh enterprise board authentication route",
+    "Fresh career planning route",
+    "Independent first user"
+  ],
+  "scope": "Display labels only; no grading or authorization change"
+}

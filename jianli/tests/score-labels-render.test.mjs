@@ -52,6 +52,46 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const { default: SkillRadar } = await import(pathToFileURL(path.join(SRC, "components/SkillRadar.tsx")).href);
 const { default: ActionPlan } = await import(pathToFileURL(path.join(SRC, "components/ActionPlan.tsx")).href);
 const { default: GrowthComparison } = await import(pathToFileURL(path.join(SRC, "components/GrowthComparison.tsx")).href);
+const { default: VerdictBadge } = await import(pathToFileURL(path.join(SRC, "components/VerdictBadge.tsx")).href);
+const { VERDICT_LABELS, APPLICATION_STATUS_LABELS, verdictLabel } = await import(pathToFileURL(path.join(SRC, "lib/verdict-display.js")).href);
+const { RADAR_STATUS } = await import(pathToFileURL(path.join(SRC, "lib/skill-radar.ts")).href);
+const { DEMO_LABELS } = await import(pathToFileURL(path.join(SRC, "lib/heatmap-demo.ts")).href);
+
+test("判定用语由同一来源提供，历史值和未评估不混为新结论", () => {
+  assert.equal(RADAR_STATUS, VERDICT_LABELS);
+  assert.equal(DEMO_LABELS.verified, undefined); // No duplicate legacy-only filter.
+  for (const [value, label] of Object.entries(DEMO_LABELS)) assert.equal(label, VERDICT_LABELS[value]);
+  assert.equal(verdictLabel("verified"), "有证据支持");
+  assert.equal(verdictLabel("not_evaluated"), "尚未评估");
+  assert.equal(verdictLabel(null), "尚未评估");
+  assert.equal(verdictLabel("future_value"), "future_value");
+  assert.equal(APPLICATION_STATUS_LABELS.withdrawn, "已撤回授权");
+  assert.equal(APPLICATION_STATUS_LABELS.submitted, "已投递");
+  // Wiring check complements actual rendering below. It does not simulate
+  // authenticated report/board/planning fetches or replace their page checks.
+  for (const name of ["ApplicationBoard", "ReportDetail", "CareerRecommendations", "VerdictBadge"]) {
+    const source = readFileSync(path.join(SRC, `components/${name}.tsx`), "utf8");
+    assert.ok(source.includes('from "@/lib/verdict-display.js"'), name);
+    assert.ok(!source.includes('claimed_only: "仅'), name);
+  }
+});
+
+for (const [verdict, label] of Object.entries({
+  supported: "有证据支持", partial: "部分证据支持", claimed_only: "仅简历声明",
+  gap: "材料待补充", unsupported: "规则暂未支持", verified: "有证据支持",
+})) {
+  test(`徽标与雷达实际渲染统一判定：${verdict}`, () => {
+    const badge = renderToStaticMarkup(React.createElement(VerdictBadge, { verdict }));
+    assert.ok(badge.includes(label));
+    const dimensions = [
+      { requirementId: "wording", title: "本项", skill: "本项", verdict, score: 10, weight: 1, evidenceLevel: null },
+      { requirementId: "other", title: "其他", skill: "其他", verdict: "gap", score: 0, weight: 1, evidenceLevel: null },
+    ];
+    const radar = renderToStaticMarkup(React.createElement(SkillRadar, { dimensions, items: [], initialRequirementId: "wording" }));
+    assert.ok(radar.includes(label), label);
+    assert.ok(!radar.includes("仅自述"));
+  });
+}
 
 const dim = (id, verdict, score, extra = {}) => ({ requirementId: id, title: id, skill: id, verdict, score, weight: 3, evidenceLevel: null, ...extra });
 

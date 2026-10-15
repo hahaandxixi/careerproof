@@ -1,18 +1,20 @@
-import type { Verdict } from "@/lib/types";
+import { verdictLabel } from "@/lib/verdict-display.js";
 
-const CONFIG: Record<Verdict, { label: string; className: string }> = {
-  verified: { label: "有证据支持", className: "bg-emerald-100 text-emerald-700" },
-  claimed_only: { label: "仅声明", className: "bg-amber-100 text-amber-700" },
-  gap: { label: "材料待补充", className: "bg-rose-100 text-rose-700" },
+const COLORS: Record<string, string> = {
+  verified: "bg-emerald-100 text-emerald-700",
+  supported: "bg-emerald-100 text-emerald-700",
+  partial: "bg-indigo-100 text-indigo-700",
+  claimed_only: "bg-amber-100 text-amber-700",
+  gap: "bg-rose-100 text-rose-700",
+  unsupported: "bg-slate-100 text-slate-700",
 };
 
-export default function VerdictBadge({ verdict }: { verdict: Verdict }) {
-  const c = CONFIG[verdict];
+export default function VerdictBadge({ verdict }: { verdict: string }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${c.className}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${COLORS[verdict] ?? COLORS.unsupported}`}
     >
-      {c.label}
+      {verdictLabel(verdict)}
     </span>
   );
 }

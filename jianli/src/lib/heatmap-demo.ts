@@ -1,5 +1,6 @@
 import type { ApplicationView } from "./api/client.ts";
 import { heatmapCellClass } from "./heatmap-cell.js";
+import { VERDICT_LABELS } from "./verdict-display.js";
 export const DEMO_REQUIREMENTS = [
   { id: "demo-python", title: "Python 数据处理", skill: "Python" },
   { id: "demo-sql", title: "SQL 聚合查询", skill: "SQL" },
@@ -19,7 +20,9 @@ export const HEATMAP_DEMO: ApplicationView[] = rows.map((row, index) => ({
   dimensions: row.values.map(([verdict, score], i) => ({ requirementId: DEMO_REQUIREMENTS[i].id, title: DEMO_REQUIREMENTS[i].title, skill: DEMO_REQUIREMENTS[i].skill,
     verdict: String(verdict), score: score as number | null, weight: 1, evidenceLevel: null, evidenceLevelSource: null, evidenceLevelVersion: null, formulaVersion: "synthetic-only" })),
 }));
-export const DEMO_LABELS: Record<string, string> = { supported: "有证据", partial: "部分支持", claimed_only: "仅自述", gap: "缺材料", unsupported: "不可评" };
+export const DEMO_LABELS = Object.fromEntries(
+  Object.entries(VERDICT_LABELS).filter(([verdict]) => verdict !== "verified"),
+);
 export function demoCellClass(verdict: string) {
   return heatmapCellClass(verdict);
 }

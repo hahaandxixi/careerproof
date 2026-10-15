@@ -1,0 +1,11 @@
+[
+  {
+    "name": "tests-final",
+    "command": [
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+      "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+      "test"
+    ],
+    "exit_code": 1
+  }
+]

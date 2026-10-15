@@ -66,7 +66,7 @@ test("linked detail renders only selected requirement citations and keeps source
 test("synthetic radar never fabricates citations and supports fewer than three requirements", () => {
  const html=render({dimensions:[dim("SQL","unsupported",null)],synthetic:true});
  assert.ok(html.includes("没有真实来源文件"));
- assert.ok(html.includes("暂不可评") && !html.includes("<svg"));
+  assert.ok(html.includes("规则暂未支持") && !html.includes("<svg"));
  assert.ok(html.includes('aria-pressed="true"') && html.includes("选择岗位要求"));
 });
 test("reference source cannot be presented as personal contribution", () => {
