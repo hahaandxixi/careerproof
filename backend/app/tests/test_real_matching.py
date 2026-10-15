@@ -239,7 +239,7 @@ async def test_real_report_survives_login_and_preserves_sources_and_snapshots(ma
         assert report["jobTitle"] == "原始岗位标题"
         assert 0 < report["overallScore"] < 100
         assert all(item["aiConfidence"] is None for item in report["items"])
-        assert all(item["formulaVersion"] == "evidence-v3" for item in report["items"])
+        assert all(item["formulaVersion"] == "evidence-v4" for item in report["items"])
         assert report["items"][0]["evidence"]["projectVersionId"] == version["versionId"]
         assert {m["id"] for m in report["materials"]} == {resume["versionId"], version["versionId"]}
         history = (await student.get("/api/v1/match-reports")).json()["data"]

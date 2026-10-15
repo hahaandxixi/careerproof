@@ -1,0 +1,114 @@
+FFFFF..........                                                          [100%]
+================================== FAILURES ===================================
+_ test_redis_typed_injected_client_points_to_actual_call[import redis-redis.Redis] _
+
+declaration = 'import redis', annotation = 'redis.Redis'
+
+    @pytest.mark.parametrize("declaration,annotation", [
+        ("import redis", "redis.Redis"),
+        ("import redis as store", "store.Redis"),
+        ("from redis import Redis as Client", "Client"),
+        ("from redis import StrictRedis", "StrictRedis"),
+        ("import redis", "'redis.Redis'"),
+    ])
+    def test_redis_typed_injected_client_points_to_actual_call(declaration, annotation):
+        source = f"{declaration}\ndef save(client: {annotation}, value: str):\n    client.setex('course:1', 60, value)\n    return client.get('course:1')\n"
+        evidence = find_evidence([ProjectFileSnapshot("cache_service.py", source)], "Redis")
+>       assert len(evidence) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_redis_parameter_evidence.py:17: AssertionError
+_ test_redis_typed_injected_client_points_to_actual_call[import redis as store-store.Redis] _
+
+declaration = 'import redis as store', annotation = 'store.Redis'
+
+    @pytest.mark.parametrize("declaration,annotation", [
+        ("import redis", "redis.Redis"),
+        ("import redis as store", "store.Redis"),
+        ("from redis import Redis as Client", "Client"),
+        ("from redis import StrictRedis", "StrictRedis"),
+        ("import redis", "'redis.Redis'"),
+    ])
+    def test_redis_typed_injected_client_points_to_actual_call(declaration, annotation):
+        source = f"{declaration}\ndef save(client: {annotation}, value: str):\n    client.setex('course:1', 60, value)\n    return client.get('course:1')\n"
+        evidence = find_evidence([ProjectFileSnapshot("cache_service.py", source)], "Redis")
+>       assert len(evidence) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_redis_parameter_evidence.py:17: AssertionError
+_ test_redis_typed_injected_client_points_to_actual_call[from redis import Redis as Client-Client] _
+
+declaration = 'from redis import Redis as Client', annotation = 'Client'
+
+    @pytest.mark.parametrize("declaration,annotation", [
+        ("import redis", "redis.Redis"),
+        ("import redis as store", "store.Redis"),
+        ("from redis import Redis as Client", "Client"),
+        ("from redis import StrictRedis", "StrictRedis"),
+        ("import redis", "'redis.Redis'"),
+    ])
+    def test_redis_typed_injected_client_points_to_actual_call(declaration, annotation):
+        source = f"{declaration}\ndef save(client: {annotation}, value: str):\n    client.setex('course:1', 60, value)\n    return client.get('course:1')\n"
+        evidence = find_evidence([ProjectFileSnapshot("cache_service.py", source)], "Redis")
+>       assert len(evidence) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_redis_parameter_evidence.py:17: AssertionError
+_ test_redis_typed_injected_client_points_to_actual_call[from redis import StrictRedis-StrictRedis] _
+
+declaration = 'from redis import StrictRedis', annotation = 'StrictRedis'
+
+    @pytest.mark.parametrize("declaration,annotation", [
+        ("import redis", "redis.Redis"),
+        ("import redis as store", "store.Redis"),
+        ("from redis import Redis as Client", "Client"),
+        ("from redis import StrictRedis", "StrictRedis"),
+        ("import redis", "'redis.Redis'"),
+    ])
+    def test_redis_typed_injected_client_points_to_actual_call(declaration, annotation):
+        source = f"{declaration}\ndef save(client: {annotation}, value: str):\n    client.setex('course:1', 60, value)\n    return client.get('course:1')\n"
+        evidence = find_evidence([ProjectFileSnapshot("cache_service.py", source)], "Redis")
+>       assert len(evidence) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_redis_parameter_evidence.py:17: AssertionError
+_ test_redis_typed_injected_client_points_to_actual_call[import redis-'redis.Redis'] _
+
+declaration = 'import redis', annotation = "'redis.Redis'"
+
+    @pytest.mark.parametrize("declaration,annotation", [
+        ("import redis", "redis.Redis"),
+        ("import redis as store", "store.Redis"),
+        ("from redis import Redis as Client", "Client"),
+        ("from redis import StrictRedis", "StrictRedis"),
+        ("import redis", "'redis.Redis'"),
+    ])
+    def test_redis_typed_injected_client_points_to_actual_call(declaration, annotation):
+        source = f"{declaration}\ndef save(client: {annotation}, value: str):\n    client.setex('course:1', 60, value)\n    return client.get('course:1')\n"
+        evidence = find_evidence([ProjectFileSnapshot("cache_service.py", source)], "Redis")
+>       assert len(evidence) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+app\tests\test_redis_parameter_evidence.py:17: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_redis_parameter_evidence.py::test_redis_typed_injected_client_points_to_actual_call[import redis-redis.Redis]
+FAILED app/tests/test_redis_parameter_evidence.py::test_redis_typed_injected_client_points_to_actual_call[import redis as store-store.Redis]
+FAILED app/tests/test_redis_parameter_evidence.py::test_redis_typed_injected_client_points_to_actual_call[from redis import Redis as Client-Client]
+FAILED app/tests/test_redis_parameter_evidence.py::test_redis_typed_injected_client_points_to_actual_call[from redis import StrictRedis-StrictRedis]
+FAILED app/tests/test_redis_parameter_evidence.py::test_redis_typed_injected_client_points_to_actual_call[import redis-'redis.Redis']
+5 failed, 10 passed, 2 warnings in 0.17s

@@ -16,7 +16,9 @@ from app.tools.hybrid_retrieval import retrieve_requirement_candidates
 from app.tools.resume_parser import SkillClaim
 
 STRENGTH_SCORE = {"high": 0.65, "medium": 0.4, "low": 0.15}
-FORMULA_VERSION = "evidence-v3"
+# v4 adds Redis-typed parameter receivers; scoring weights remain unchanged.
+# Versioned cache keys and comparisons must distinguish this detector change.
+FORMULA_VERSION = "evidence-v4"
 
 
 @dataclass(frozen=True, slots=True)

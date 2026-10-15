@@ -1,0 +1,26 @@
+{
+  "normalApplicationSnapshotsUnchanged": 8,
+  "reports": {
+    "81a25748-9115-44c4-be86-d6d1cf0ee665": {
+      "versions": [
+        "evidence-v3"
+      ],
+      "externalAiConsent": false,
+      "attempts": 0
+    },
+    "570e7e06-479f-4919-8a59-e792979ca613": {
+      "versions": [
+        "evidence-v3"
+      ],
+      "externalAiConsent": false,
+      "attempts": 0
+    },
+    "5ad745b1-f740-4251-8b58-19a708f682f1": {
+      "versions": [
+        "evidence-v4"
+      ],
+      "externalAiConsent": false,
+      "attempts": 0
+    }
+  }
+}

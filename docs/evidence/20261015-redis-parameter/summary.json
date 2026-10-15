@@ -1,0 +1,29 @@
+{
+  "baselineHead": "e7842f4",
+  "defect": "Redis typed injected receiver client.setex/get omitted by name-only regex",
+  "red": "5 failed, 10 passed",
+  "firstRelated": "111 passed",
+  "final": "114 passed; SQLite temporary fixtures, not dedicated PostgreSQL",
+  "ruff": "passed",
+  "implementation": "AST-import/type-annotation/actual-call support; refuse rebound import/receiver names, nested scopes, non-code strings and comments; retain legacy detector patterns",
+  "version": "evidence-v4 invalidates old cached analysis and makes comparisons identify rule changes; scoring weights unchanged",
+  "artifact": "identical uploaded v2 bytes reused, no variable renaming to game detector",
+  "browser": {
+    "site": "http://127.0.0.1:3000",
+    "newReport": "5ad745b1-f740-4251-8b58-19a708f682f1",
+    "priorSameMaterialReport": "570e7e06-479f-4919-8a59-e792979ca613",
+    "result": "Redis partial support; citation redis_cache.py lines 5-10 contains client.setex/get",
+    "comparison": "same materials, rule_version change explicitly displayed",
+    "remaining": "Redis usage not yet mapped to local-operation practice level; still conservative basic clue, mapping/versioned historic-read behavior needs separate repair"
+  },
+  "runtime": "all four prior recorded service PIDs absent and ports unoccupied; Docker Engine running but database container stopped; restored existing container and both owned sites, SkipSeed retained; no cause assigned",
+  "preservation": "8 normal application snapshot hashes unchanged; old two report rule versions still evidence-v3, new report evidence-v4; all three consent false and zero physical attempts",
+  "initialVerifierError": "read-only verification first used wrong column match_report_id; corrected to model report_id, no data mutation",
+  "notVerified": [
+    "dedicated PG regressions for this detector change",
+    "independent human first-use evaluation",
+    "real model semantics",
+    "generic Python type inference or constructor/dataflow resolution",
+    "all legacy name-based Redis false positives"
+  ]
+}

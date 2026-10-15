@@ -24,7 +24,7 @@ def test_matcher_is_deterministic_and_evidence_based() -> None:
     assert first.items[0].evidence is not None
     assert first.items[0].evidence.file_path == "app/main.py"
     assert first.items[0].evidence.content_hash
-    assert first.items[0].formula_version == "evidence-v3"
+    assert first.items[0].formula_version == "evidence-v4"
     assert "材料支持度" in first.summary
 
 

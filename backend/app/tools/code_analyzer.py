@@ -559,6 +559,93 @@ def _python_implementation_line(content: str) -> int | None:
     )
 
 
+def _redis_parameter_usage_line(source: str) -> int | None:
+    """Locate a call through an imported Redis-typed parameter, without execution.
+
+    This is deliberately not general type inference: reassigned names and
+    ambiguous scopes are refused. An annotation is material evidence, not proof
+    that Redis was reached or that the submitted code was executed.
+    """
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError):
+        return None
+    modules: set[str] = set()
+    classes: set[str] = set()
+    imports = []
+    for node in tree.body:
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "redis":
+                    modules.add(alias.asname or alias.name)
+                    imports.append(node)
+        elif isinstance(node, ast.ImportFrom) and node.module == "redis" and not node.level:
+            for alias in node.names:
+                if alias.name in {"Redis", "StrictRedis"}:
+                    classes.add(alias.asname or alias.name)
+                    imports.append(node)
+
+    def bindings(node):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store | ast.Del):
+            return {node.id}
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+            return {node.name}
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            return {alias.asname or alias.name.split(".")[0] for alias in node.names}
+        if isinstance(node, ast.arg):
+            return {node.arg}
+        if isinstance(node, ast.ExceptHandler) and node.name:
+            return {node.name}
+        if isinstance(node, ast.MatchAs | ast.MatchStar) and node.name:
+            return {node.name}
+        return set()
+
+    # Conservatively refuse type aliases rebound anywhere in this file.
+    shadowed = set().union(*(bindings(node) for node in ast.walk(tree) if node not in imports))
+    modules -= shadowed
+    classes -= shadowed
+
+    def redis_type(annotation):
+        if isinstance(annotation, ast.Constant) and isinstance(annotation.value, str):
+            try:
+                annotation = ast.parse(annotation.value, mode="eval").body
+            except (SyntaxError, ValueError):
+                return False
+        return (
+            isinstance(annotation, ast.Name) and annotation.id in classes
+        ) or (
+            isinstance(annotation, ast.Attribute)
+            and isinstance(annotation.value, ast.Name)
+            and annotation.value.id in modules
+            and annotation.attr in {"Redis", "StrictRedis"}
+        )
+
+    def local_nodes(node):
+        yield node
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | ast.Lambda):
+            return
+        for child in ast.iter_child_nodes(node):
+            yield from local_nodes(child)
+
+    lines = []
+    for function in ast.walk(tree):
+        if not isinstance(function, ast.FunctionDef | ast.AsyncFunctionDef):
+            continue
+        args = [*function.args.posonlyargs, *function.args.args, *function.args.kwonlyargs]
+        receivers = {arg.arg for arg in args if redis_type(arg.annotation)}
+        nodes = [node for statement in function.body for node in local_nodes(statement)]
+        receivers -= set().union(*(bindings(node) for node in nodes))
+        for node in nodes:
+            if (
+                isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id in receivers
+                and node.func.attr in {"get", "set", "setex", "expire"}
+            ):
+                lines.append(node.lineno)
+    return min(lines, default=None)
+
+
 def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvidence]:
     skill = canonical_skill(skill) or skill
     results: list[CodeEvidence] = []
@@ -639,14 +726,20 @@ def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvid
             else:
                 match = item.content_pattern.search(content)
                 if not match:
-                    continue
-                match_start = match.start()
+                    line_number = (
+                        _redis_parameter_usage_line(file.content)
+                        if suffix == ".py" and item.evidence_type == "redis_usage" else None
+                    )
+                    if line_number is None:
+                        continue
+                else:
+                    match_start = match.start()
                 # Several complete-line patterns deliberately include leading
                 # newlines and indentation. Attribute the match to its first
                 # non-blank token rather than to a preceding blank line.
-                while match_start < match.end() and content[match_start].isspace():
-                    match_start += 1
-                line_number = content.count("\n", 0, match_start) + 1
+                    while match_start < match.end() and content[match_start].isspace():
+                        match_start += 1
+                    line_number = content.count("\n", 0, match_start) + 1
             seen.add((normalized_path, item.evidence_type))
             snippet = file.content.splitlines()[line_number - 1].strip()[:240]
             dependency = bool(

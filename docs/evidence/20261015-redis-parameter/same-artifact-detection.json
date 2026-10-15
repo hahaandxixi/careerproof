@@ -1,0 +1,19 @@
+[
+  {
+    "skill": "Redis",
+    "evidence_type": "redis_usage",
+    "file_path": "redis_cache.py",
+    "line_start": 9,
+    "line_end": 9,
+    "snippet": "client.setex(key, ttl_seconds, value)",
+    "strength": "medium",
+    "explanation": "存在缓存读写调用；只评价材料支持程度，需核查本人贡献。",
+    "content_hash": "aacf43b42f50688901b38397193c63cb21fa25413f38bfb95abc99b750455ea3",
+    "context_complete": false,
+    "context_note": "仅定位行，尚未补取上下文",
+    "provenance": "portfolio",
+    "function_line_start": null,
+    "function_line_end": null,
+    "source_line_count": null
+  }
+]
