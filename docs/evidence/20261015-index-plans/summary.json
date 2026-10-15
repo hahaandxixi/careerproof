@@ -1,0 +1,70 @@
+{
+  "source_commit": "2048417",
+  "kind": "PostgreSQL actual-schema synthetic EXPLAIN ANALYZE BUFFERS",
+  "planner_forced": false,
+  "scenarios": {
+    "balanced": {
+      "plans": "docs/evidence/20261015-index-plans/plans.json",
+      "selected_indexes": {
+        "student_applications": [
+          "ix_applications_student_created"
+        ],
+        "job_candidates": [
+          "uq_applications_active_job_student"
+        ],
+        "latest_career_plan": [
+          "ix_analysis_tasks_owner_type_status_created"
+        ],
+        "owner_history": [
+          "ix_match_reports_job_candidate_created",
+          "analysis_tasks_pkey"
+        ],
+        "unread_count": [
+          "ix_notifications_recipient_unread"
+        ]
+      },
+      "cleanup_verified": true
+    },
+    "hot_job": {
+      "plans": "docs/evidence/20261015-index-plans/hot-job/plans.json",
+      "selected_indexes": {
+        "student_applications": [
+          "ix_applications_student_created"
+        ],
+        "job_candidates": [
+          "ix_applications_job_created"
+        ],
+        "latest_career_plan": [
+          "ix_analysis_tasks_owner_type_status_created"
+        ],
+        "owner_history": [
+          "ix_match_reports_job_candidate_created",
+          "analysis_tasks_pkey"
+        ],
+        "unread_count": [
+          "ix_notifications_recipient_unread"
+        ]
+      },
+      "cleanup_verified": true
+    }
+  },
+  "limitations": [
+    "Synthetic distributions, not observed customer traffic or a latency SLA",
+    "No normal/e2e demonstration database read or modified",
+    "Most query shapes reconstructed from current service source; owner history uses the service query builder directly"
+  ],
+  "new_indexes_seen": [
+    "ix_analysis_tasks_owner_type_status_created",
+    "ix_applications_job_created",
+    "ix_applications_student_created",
+    "ix_match_reports_job_candidate_created",
+    "ix_notifications_recipient_unread"
+  ],
+  "query_sources": {
+    "backend/app/services/applications.py": "952207e713b6d96f4c47924a05acbe5b5b87f4ba84208a3d0c75b98f4a000b02",
+    "backend/app/services/career_planning.py": "ecbc3a3ea2edb020e2a9b8d2050bf0e9cef518962d839a47b8f6097b4479626d",
+    "backend/app/services/report_history.py": "5e9b1ea2fee4d7ea720c828d9a8832975544de07985c58da3a8a3fbc8238175c",
+    "backend/app/services/notifications.py": "be70afa48657d5d647660c51d9b83af03c825aed72e6e12dc279a6716f33c41d",
+    "backend/alembic/versions/0019_data_integrity_constraints.py": "e44eb724e923dbebe1885fdba11a04771197cb2c9da942573996fb9a9e2bdd76"
+  }
+}
