@@ -1,0 +1,127 @@
+{
+  "change": "synthetic verification fixture missing -> gap; no legacy database rewritten",
+  "steps": [
+    {
+      "name": "ruff-final",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "app/models",
+        "app/tests/test_data_integrity_migration.py",
+        "app/tests/test_application_verification.py",
+        "alembic/versions/0019_data_integrity_constraints.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "full-sqlite-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests",
+        "-q",
+        "-x",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-0019-full-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-data-integrity\\full-sqlite-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "55",
+          "tests": "1365",
+          "time": "276.575",
+          "timestamp": "2026-10-15T17:23:04.338423+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "strict-pg-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_ai_budget_production_race.py",
+        "app/tests/test_durable_matching.py",
+        "app/tests/test_visual_postgres_concurrency.py",
+        "app/tests/test_mcp_postgres_isolation.py",
+        "app/tests/test_real_matching.py",
+        "app/tests/test_durable_attempt_service.py",
+        "app/tests/test_ai_request_attempt_migration.py",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_ai_shared_budget_service.py",
+        "app/tests/test_ai_shared_budget_migration.py",
+        "app/tests/test_application_reconsent_migration.py",
+        "app/tests/test_data_integrity_migration.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-0019-strict-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-data-integrity\\strict-pg-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "103",
+          "time": "93.470",
+          "timestamp": "2026-10-15T17:27:50.945597+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "hardstop-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_attempt_hard_stop.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-0019-hardstop-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-data-integrity\\hardstop-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "8",
+          "time": "24.116",
+          "timestamp": "2026-10-15T17:29:27.206572+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "gate-final",
+      "command": [
+        "python",
+        "scripts/check_ci_junit.py",
+        "D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-data-integrity\\strict-pg-final.xml",
+        "D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-data-integrity\\hardstop-final.xml"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "remaining_test_schemas": {
+    "cp_ci": 0,
+    "careerproof": 0
+  },
+  "container_stop_exit_code": 0
+}

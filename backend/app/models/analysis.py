@@ -30,6 +30,8 @@ from app.models.enums import ConfirmationStatus, TaskStatus, VerificationStatus
 
 class AnalysisTask(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "analysis_tasks"
+    __table_args__ = (Index("ix_analysis_tasks_owner_type_status_created",
+                            "created_by", "task_type", "status", "created_at"),)
 
     created_by: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     task_type: Mapped[str] = mapped_column(String(50), index=True)
@@ -123,6 +125,8 @@ class MatchingFormulaVersion(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
 class MatchReport(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "match_reports"
+    __table_args__ = (Index("ix_match_reports_job_candidate_created",
+                            "job_id", "candidate_ref", "created_at"),)
 
     analysis_task_id: Mapped[UUID] = mapped_column(
         ForeignKey("analysis_tasks.id", ondelete="CASCADE"), unique=True
@@ -144,6 +148,11 @@ class MatchReport(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
 
 class MatchItem(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "match_items"
+    __table_args__ = (
+        CheckConstraint("verdict IN ('supported', 'partial', 'claimed_only', 'gap', 'unsupported')",
+                        name="ck_match_items_verdict"),
+        UniqueConstraint("report_id", "requirement_id", name="uq_match_items_report_requirement"),
+    )
 
     report_id: Mapped[UUID] = mapped_column(
         ForeignKey("match_reports.id", ondelete="CASCADE"), index=True

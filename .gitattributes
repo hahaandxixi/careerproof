@@ -2,6 +2,9 @@
 # These files are evidence, not source formatting; do not normalize their bytes.
 docs/evidence/**/*.raw.out -text -whitespace
 docs/evidence/**/*.raw.err -text -whitespace
+
+# This failing JUnit contains verbatim Python tracebacks; preserve their bytes.
+docs/evidence/20261015-data-integrity/full-sqlite.xml -text -whitespace
 docs/evidence/**/*.patch -text -whitespace
 docs/evidence/20261013-z48-score-labels/*.log -text -whitespace
 

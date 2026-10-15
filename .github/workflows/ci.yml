@@ -112,7 +112,7 @@ jobs:
           if-no-files-found: warn
 
   backend-postgres:
-    name: backend-postgres (strict 12 modules, JUnit gate)
+    name: backend-postgres (strict 13 modules, JUnit gate)
     runs-on: ubuntu-latest
     timeout-minutes: 75
     services:
@@ -214,7 +214,7 @@ jobs:
           python -m alembic upgrade head
           python -m alembic check
 
-      # Strict set part 1: eleven modules on the dedicated cp_ci database.
+      # Strict set part 1: twelve modules on the dedicated cp_ci database.
       - name: Run the strict PostgreSQL set on cp_ci
         working-directory: backend
         shell: bash
@@ -239,6 +239,7 @@ jobs:
             app/tests/test_ai_shared_budget_service.py \
             app/tests/test_ai_shared_budget_migration.py \
             app/tests/test_application_reconsent_migration.py \
+            app/tests/test_data_integrity_migration.py \
             --basetemp=.tmp-ci-pg \
             --junitxml=.tmp-ci/junit-pg-strict.xml 2>&1 | tee .tmp-ci/pytest-pg-strict.log
 
@@ -259,7 +260,7 @@ jobs:
             --basetemp=.tmp-ci-pg-hardstop \
             --junitxml=.tmp-ci/junit-pg-hardstop.xml 2>&1 | tee .tmp-ci/pytest-pg-hardstop.log
 
-      # The gate reads the JUnit XML, never the pytest exit code: 12 modules
+      # The gate reads the JUnit XML, never the pytest exit code: 13 modules
       # present, zero failure/error/skipped, and all 8 hard-stop windows.
       - name: Enforce the JUnit gate on the strict set
         if: always()

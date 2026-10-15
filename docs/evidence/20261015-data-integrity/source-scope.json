@@ -1,0 +1,21 @@
+{
+  "source_files": {
+    "backend/alembic/versions/0019_data_integrity_constraints.py": "e44eb724e923dbebe1885fdba11a04771197cb2c9da942573996fb9a9e2bdd76",
+    "backend/app/models/recruitment.py": "7d31d345d7a90e65269e9a821c83d7d333410e77de8f4fc7cca4888c2e90be26",
+    "backend/app/models/analysis.py": "36e927c236458fc1fbd5d36d6a374c82cfb96016a3570d80e6f1aab6fef606b9",
+    "backend/app/models/notification.py": "8c7be867878429e3d9a3543506df1a1f49b4fa86a34169d46f07459784f53f26",
+    "backend/app/models/enums.py": "f4839091ff74a9bf234c73aac1f91fba830e235683b1cefff1491cfe8ff92caf",
+    "backend/app/tests/test_data_integrity_migration.py": "33f8b96a369005787eabd8769759c088d508ccca8590ff88b93227b64078873f",
+    "backend/app/tests/test_application_verification.py": "9eb6ef9409bb3380fb7ccbf2e1f8172cb74a9b94a46854e18dc6c941d6e3be4d",
+    "backend/app/tests/test_ci_junit_gate.py": "e43bdb68f1335dbac1aa5c947e72e8603731113742ff8dce86e2dd7fd60c0ec6",
+    "backend/scripts/check_ci_junit.py": "0e4270346678f278db056d9b3a69c1bdeff7de5370cd386fc36cf4f49e92899e",
+    ".github/workflows/ci.yml": "eda5ea7fd2793221fe89e58c379662fa7832eca59cf431265b9addcda3796701"
+  },
+  "limits": [
+    "No normal or isolated demonstration database migrated; no service restart",
+    "Five index definitions verified; representative EXPLAIN remains pending",
+    "Full SQLite result predates the one additional model/index contract test; subsequent targeted contract run is separate",
+    "Remote CI not run; no push",
+    "A historical invalid verdict in any real database must stop preflight; never rewrite saved reports to force upgrade"
+  ]
+}

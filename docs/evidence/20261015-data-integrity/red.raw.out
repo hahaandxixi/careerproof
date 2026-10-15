@@ -1,0 +1,314 @@
+FsFFFFFFFF                                                               [100%]
+================================== FAILURES ===================================
+_______________________ test_sqlite_integrity_roundtrip _______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_integrity_roundtri0')
+
+    def test_sqlite_integrity_roundtrip(tmp_path):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'integrity.db'}")
+        try:
+            with engine.begin() as c:
+>               exercise(c)
+
+app\tests\test_data_integrity_migration.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_data_integrity_migration.py:72: in exercise
+    m = migration(REVISION)
+        ^^^^^^^^^^^^^^^^^^^
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E8247BB90>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_____ test_sqlite_invalid_legacy_refused_before_ddl[applications-status] ______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_invalid_legacy_ref0')
+table = 'applications', column = 'status'
+
+    @pytest.mark.parametrize(('table', 'column'), INVALID)
+    def test_sqlite_invalid_legacy_refused_before_ddl(tmp_path, table, column):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'invalid.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql(f"UPDATE {table} SET {column}='bogus'")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match=table), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E824F62D0>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+___ test_sqlite_invalid_legacy_refused_before_ddl[applications-reply_kind] ____
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_invalid_legacy_ref1')
+table = 'applications', column = 'reply_kind'
+
+    @pytest.mark.parametrize(('table', 'column'), INVALID)
+    def test_sqlite_invalid_legacy_refused_before_ddl(tmp_path, table, column):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'invalid.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql(f"UPDATE {table} SET {column}='bogus'")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match=table), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E824F5FD0>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_________ test_sqlite_invalid_legacy_refused_before_ddl[jobs-status] __________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_invalid_legacy_ref2')
+table = 'jobs', column = 'status'
+
+    @pytest.mark.parametrize(('table', 'column'), INVALID)
+    def test_sqlite_invalid_legacy_refused_before_ddl(tmp_path, table, column):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'invalid.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql(f"UPDATE {table} SET {column}='bogus'")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match=table), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E825BC770>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_ test_sqlite_invalid_legacy_refused_before_ddl[job_requirements-normalized_status] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_invalid_legacy_ref3')
+table = 'job_requirements', column = 'normalized_status'
+
+    @pytest.mark.parametrize(('table', 'column'), INVALID)
+    def test_sqlite_invalid_legacy_refused_before_ddl(tmp_path, table, column):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'invalid.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql(f"UPDATE {table} SET {column}='bogus'")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match=table), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E825BC350>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_____ test_sqlite_invalid_legacy_refused_before_ddl[match_items-verdict] ______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_invalid_legacy_ref4')
+table = 'match_items', column = 'verdict'
+
+    @pytest.mark.parametrize(('table', 'column'), INVALID)
+    def test_sqlite_invalid_legacy_refused_before_ddl(tmp_path, table, column):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'invalid.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql(f"UPDATE {table} SET {column}='bogus'")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match=table), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E825BD550>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_______________ test_sqlite_duplicate_legacy_refused_before_ddl _______________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_duplicate_legacy_r0')
+
+    def test_sqlite_duplicate_legacy_refused_before_ddl(tmp_path):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'duplicate.db'}")
+        try:
+            with engine.begin() as c:
+                legacy(c)
+                c.exec_driver_sql("INSERT INTO match_items VALUES ('dup','r','q','gap')")
+                before = snapshot(c)
+                with pytest.raises(RuntimeError, match='match_items'), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E825ACC80>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_______________________ test_sqlite_foreign_keys_guard ________________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-0019-red/test_sqlite_foreign_keys_guard0')
+
+    def test_sqlite_foreign_keys_guard(tmp_path):
+        engine = sa.create_engine(f"sqlite:///{tmp_path / 'fk.db'}")
+        try:
+            with engine.begin() as c:
+                c.exec_driver_sql('PRAGMA foreign_keys=ON')
+                with pytest.raises(RuntimeError, match='foreign_keys'), Operations.context(
+                    MigrationContext.configure(c)
+                ):
+>                   migration(REVISION).upgrade()
+                    ^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_data_integrity_migration.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_ai_request_attempt_migration.py:43: in migration
+    spec.loader.exec_module(module)
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap_external>:1132: in get_code
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <_frozen_importlib_external.SourceFileLoader object at 0x0000023E825BE4B0>
+path = 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+>   ???
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\jbcode\\web ai\\jianli\\backend\\alembic\\versions\\0019_data_integrity_constraints.py'
+
+<frozen importlib._bootstrap_external>:1190: FileNotFoundError
+_______ test_model_verdict_constraint_matches_enum_and_writer_contract ________
+
+    def test_model_verdict_constraint_matches_enum_and_writer_contract():
+>       assert {v.value for v in MatchVerdict} == VERDICTS
+E       AssertionError: assert {'claimed_onl...', 'verified'} == {'claimed_onl...'unsupported'}
+E         
+E         Extra items in the left set:
+E         'verified'
+E         Extra items in the right set:
+E         'supported'
+E         'unsupported'
+E         'partial'
+E         Use -v to get more diff
+
+app\tests\test_data_integrity_migration.py:171: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_integrity_roundtrip
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_invalid_legacy_refused_before_ddl[applications-status]
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_invalid_legacy_refused_before_ddl[applications-reply_kind]
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_invalid_legacy_refused_before_ddl[jobs-status]
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_invalid_legacy_refused_before_ddl[job_requirements-normalized_status]
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_invalid_legacy_refused_before_ddl[match_items-verdict]
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_duplicate_legacy_refused_before_ddl
+FAILED app/tests/test_data_integrity_migration.py::test_sqlite_foreign_keys_guard
+FAILED app/tests/test_data_integrity_migration.py::test_model_verdict_constraint_matches_enum_and_writer_contract
+9 failed, 1 skipped, 2 warnings in 0.63s

@@ -176,7 +176,7 @@ async def case(matching_db, tmp_path, monkeypatch):  # noqa: F811
             "evidenceList": [first],
         }
         for skill, text, verdict, evidence in (
-            ("SQL", "能够编写SQL查询", "missing", []),
+            ("SQL", "能够编写SQL查询", "gap", []),
             ("Python", "能够实现数据导出", "partial", [
                 citation("R3-E1", "导出功能已全部完成。", path="README.md"),
                 citation("R3-E2", "def export():\n    raise NotImplementedError\n"),

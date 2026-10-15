@@ -42,6 +42,8 @@ class EvidenceStrength(StrEnum):
 
 
 class MatchVerdict(StrEnum):
-    VERIFIED = "verified"
+    SUPPORTED = "supported"
+    PARTIAL = "partial"
     CLAIMED_ONLY = "claimed_only"
     GAP = "gap"
+    UNSUPPORTED = "unsupported"

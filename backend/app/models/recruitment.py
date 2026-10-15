@@ -6,6 +6,7 @@ from uuid import UUID
 from sqlalchemy import (
     JSON,
     Boolean,
+    CheckConstraint,
     DateTime,
     ForeignKey,
     Index,
@@ -38,6 +39,8 @@ class SkillAlias(Base, UUIDPrimaryKeyMixin, TimestampMixin):
 
 class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "jobs"
+    __table_args__ = (CheckConstraint(
+        "status IN ('draft', 'published', 'closed')", name="ck_jobs_status"),)
 
     enterprise_id: Mapped[UUID | None] = mapped_column(
         ForeignKey("enterprises.id", ondelete="SET NULL"), nullable=True, index=True
@@ -54,6 +57,9 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
 
 class JobRequirement(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "job_requirements"
+    __table_args__ = (CheckConstraint(
+        "normalized_status IN ('pending', 'normalized')",
+        name="ck_job_requirements_normalized_status"),)
 
     job_id: Mapped[UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
     skill_id: Mapped[UUID | None] = mapped_column(
@@ -75,7 +81,16 @@ class Application(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
         "uq_applications_active_job_student", "job_id", "student_id", unique=True,
         postgresql_where=text("status != 'withdrawn'"),
         sqlite_where=text("status != 'withdrawn'"),
-    ),)
+    ),
+        CheckConstraint(
+            "status IN ('submitted', 'viewed', 'downloaded', 'replied', 'withdrawn')",
+            name="ck_applications_status"),
+        CheckConstraint(
+            "reply_kind IS NULL OR reply_kind IN ('interview', 'continue', 'declined')",
+            name="ck_applications_reply_kind"),
+        Index("ix_applications_student_created", "student_id", "created_at"),
+        Index("ix_applications_job_created", "job_id", "created_at"),
+    )
 
     job_id: Mapped[UUID] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"))
     student_id: Mapped[UUID] = mapped_column(ForeignKey("student_profiles.id", ondelete="CASCADE"))

@@ -31,6 +31,7 @@ STRICT_MODULES = (
     "test_ai_shared_budget_service",
     "test_ai_shared_budget_migration",
     "test_application_reconsent_migration",
+    "test_data_integrity_migration",
 )
 HARD_STOP_MODULE = "test_attempt_hard_stop"
 HARD_STOP_PHASES = (
