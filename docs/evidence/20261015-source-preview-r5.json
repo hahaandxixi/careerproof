@@ -1,0 +1,51 @@
+{
+  "artifact": "output\\source\\CareerProof-source-preview-20261015-r5.zip",
+  "source_commit": "891781454140f642378ac1299f10bfcd5d21e1c4",
+  "file_count": 762,
+  "sha256": "8bec5ab7429ee8ddf422210a90eeb694d715e4858458c2a4e0b9ba9932d4a0b3",
+  "all_file_hashes_verified": true,
+  "frozen_review_original_bytes_verified": true,
+  "required_current_changes_included": [
+    "backend/alembic/versions/0019_data_integrity_constraints.py",
+    "backend/app/tests/test_refresh_atomicity.py",
+    "backend/app/core/security_headers.py",
+    "jianli/src/components/ReportEvidenceWorkspace.tsx",
+    "output/pdf/CareerProof-技术文档-提交候选稿.pdf"
+  ],
+  "technical_pdf_matches_reviewed_artifact": true,
+  "license_file_present": false,
+  "command": [
+    "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+    "-m",
+    "pytest",
+    "app/tests/test_source_package.py",
+    "app/tests/test_quality_review_benchmark.py",
+    "app/tests/test_quality_review_benchmark_holdout.py",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=.tmp-r5-package",
+    "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-source-regression\\r5-package.xml"
+  ],
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r5-20261015\\backend",
+  "app_import_origin": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r5-20261015\\backend\\app\\__init__.py",
+  "test_exit_code": 0,
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "48",
+      "time": "3.697",
+      "timestamp": "2026-10-15T22:49:48.740138+08:00",
+      "hostname": "LAPTOP-K7CHVGTD"
+    }
+  ],
+  "scope": "Current source preview plus targeted export/frozen replay checks only. Dependencies reused; no new full suite, PG, frontend clean install, services, models, push, deployment or final submission. Historical evidence omitted by design; see SOURCE_PACKAGE.md.",
+  "frozen_hashes": {
+    "backend/evals/quality-blind-plan-review-input.json": "a7418dbd53ed5b8b333fcb979902b720c480ee21a66a384cf4acd78fd250ac5e",
+    "docs/evidence/20261010-AI-blind-plan-review/review.json": "69d88eae87cd7b4c327d6908d64b07b50b66e21436b5917d19a6f03cb7bf606b"
+  },
+  "initial_verifier_error": "First probe compared the frozen input hash against the review file and failed before extraction. Both original files were then verified against their own hashes; no builder or fixture changes were needed."
+}
