@@ -1,0 +1,47 @@
+database cp_e2e_release-owner-20261012: already exists
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+{
+  "runId": "release-owner-20261012",
+  "credentialsStateFile": "<written next to the run state; never printed>",
+  "jobs": {
+    "A": "d3ae897a-0e37-42cc-87dc-efce0794eb7a",
+    "B": "59a8fdf5-ec35-40fc-8fb4-1007d72a34fe"
+  },
+  "reports": {
+    "A": "3967b943-06c6-4ab2-9722-af076ef91a14",
+    "B": "40992e63-6ff9-4ac9-bd52-09f21d0d00e7",
+    "A2": "d0b81d2a-bd0c-4832-b87d-5c5384ff90c3"
+  },
+  "materials": {
+    "student": "6f62205f-be25-4544-9c4f-a0a4ee927c03",
+    "studentA2": "79af11af-dd71-47f3-9427-f6e110835480"
+  },
+  "applications": {
+    "A": {
+      "id": "d08df56a-4f79-44f8-8094-34582865053f",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "d43f6d96419f2952acf7c238edb1b66b8109974eebe35ddd31cad3fa7ef52c97"
+    },
+    "B": {
+      "id": "2b3fa060-396f-4ef3-8f8e-93c811e00434",
+      "student": "student",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "47d5d648a3f7fcfe2c075e1b1247979247cf9788eec7dcc12da67a6d1f04b1b5"
+    },
+    "A2": {
+      "id": "d97a30c2-11e5-4715-8012-ee5516eee3e5",
+      "student": "studentA2",
+      "status": "submitted",
+      "enterpriseBoardVisible": true,
+      "snapshotSha256": "2b96385952a91b60c92622c652b9af334b3d1449803191f867c8f32b085ee700"
+    }
+  },
+  "withdrawnRestored": false,
+  "mode": "verified"
+}
+CareerProof E2E run 'release-owner-20261012' is ready at http://127.0.0.1:3001 (backend http://127.0.0.1:8001, database cp_e2e_release-owner-20261012 on loopback, storage D:\jbcode\web ai\jianli\backend\.tmp\e2e-storage\release-owner-20261012, distDir .next-e2e, AI mock).
+Fixture credentials are only in D:\jbcode\web ai\jianli\backend\.tmp\e2e\release-owner-20261012.json (gitignored). Stop with ./scripts/Stop-E2E.ps1 -RunId release-owner-20261012.
