@@ -35,6 +35,7 @@ STRICT_MODULES = (
     "test_ai_shared_budget_migration",
     "test_application_reconsent_migration",
     "test_data_integrity_migration",
+    "test_refresh_atomicity",
 )
 HARD_STOP_MODULE = "test_attempt_hard_stop"
 HARD_STOP_FUNCTION = "test_real_child_hard_stop_then_database_only_recovery"

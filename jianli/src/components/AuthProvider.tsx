@@ -53,10 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [reload]);
 
   useEffect(() => {
-    const expired = () => { setUser(null); setStatus("unauthenticated"); setError(""); };
+    // A stale request can arrive after another tab has renewed shared cookies.
+    // Confirm the current session before replacing the visible account state.
+    const expired = () => { void reload(); };
     window.addEventListener("careerproof:session-expired", expired);
     return () => window.removeEventListener("careerproof:session-expired", expired);
-  }, []);
+  }, [reload]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

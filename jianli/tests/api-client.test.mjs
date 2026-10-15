@@ -45,6 +45,85 @@ test("concurrent protected reads share one refresh and retry with cookies", asyn
   } finally { globalThis.fetch = original; }
 });
 
+test("recently consumed refresh is recoverable, never a forced logout", async () => {
+  const original = globalThis.fetch;
+  let rotations = 0;
+  globalThis.fetch = async url => {
+    if (url.endsWith("/auth/refresh")) {
+      rotations++;
+      return new Response(JSON.stringify({ code: 4015, message: "settling", data: null }), { status: 401 });
+    }
+    return envelope(null, 401);
+  };
+  try {
+    await assert.rejects(api.getMe(), error => error instanceof ApiError && error.status === 409 && error.code === 4015);
+    assert.equal(rotations, 1);
+  } finally { globalThis.fetch = original; }
+});
+
+test("refresh rejection recovers a cookie already renewed by another tab", async () => {
+  const original = globalThis.fetch;
+  let renewed = false, rotations = 0;
+  globalThis.fetch = async url => {
+    if (url.endsWith("/auth/refresh")) { rotations++; return envelope(null, 401); }
+    if (url.endsWith("/users/me")) { renewed = true; return envelope({ id: "peer-user" }); }
+    return renewed ? envelope({ saved: true }) : envelope(null, 401);
+  };
+  try {
+    assert.deepEqual(await request("/synthetic-protected"), { saved: true });
+    assert.equal(rotations, 1);
+  } finally { globalThis.fetch = original; }
+});
+
+test("lost rotation response and a subsequent stale-token retry stay recoverable", async () => {
+  const original = globalThis.fetch;
+  let rotations = 0;
+  globalThis.fetch = async url => {
+    if (url.endsWith("/auth/refresh")) {
+      if (++rotations === 1) throw new TypeError("synthetic response lost after commit");
+      return new Response(JSON.stringify({ code: 4015, message: "settling", data: null }), { status: 401 });
+    }
+    return envelope(null, 401);
+  };
+  try {
+    await assert.rejects(api.getMe(), error => !(error instanceof ApiError) && error.message.includes("确认会话"));
+    await assert.rejects(api.getMe(), error => error instanceof ApiError && error.status === 409);
+    assert.equal(rotations, 2);
+  } finally { globalThis.fetch = original; }
+});
+
+test("two independent client realms share a lock and rotate only once", async () => {
+  const originalFetch = globalThis.fetch;
+  const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+  let queue = Promise.resolve(), renewed = false, rotations = 0, locks = 0;
+  Object.defineProperty(globalThis, "navigator", { configurable: true, value: { locks: {
+    request(name, callback) {
+      assert.equal(name, "careerproof-refresh"); locks++;
+      const result = queue.then(callback);
+      queue = result.catch(() => {});
+      return result;
+    },
+  } } });
+  globalThis.fetch = async url => {
+    if (url.endsWith("/auth/refresh")) { rotations++; renewed = true; return envelope({}); }
+    return renewed ? envelope({ id: "shared-cookie-user" }) : envelope(null, 401);
+  };
+  try {
+    const [first, second] = await Promise.all([
+      import("../src/lib/api/client.ts?refresh-tab=first"),
+      import("../src/lib/api/client.ts?refresh-tab=second"),
+    ]);
+    const users = await Promise.all([first.api.getMe(), second.api.getMe()]);
+    assert.deepEqual(users.map(u => u.id), ["shared-cookie-user", "shared-cookie-user"]);
+    assert.equal(locks, 2);
+    assert.equal(rotations, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalNavigator) Object.defineProperty(globalThis, "navigator", originalNavigator);
+    else delete globalThis.navigator;
+  }
+});
+
 test("network failures remain connection errors rather than 401", async () => {
   const original = globalThis.fetch;
   globalThis.fetch = async () => { throw new TypeError("Failed to fetch"); };

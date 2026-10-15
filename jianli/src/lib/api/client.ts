@@ -138,18 +138,51 @@ async function readEnvelope<T>(response: Response): Promise<ApiEnvelope<T> | nul
 
 let refreshInFlight: Promise<boolean> | null = null;
 
+async function sharedSessionIsCurrent(): Promise<boolean> {
+  const response = await fetch(`${API_PREFIX}/users/me`, {
+    credentials: "include", cache: "no-store",
+  });
+  if (response.status === 401) return false;
+  if (!response.ok) {
+    const envelope = await readEnvelope<unknown>(response);
+    throw new ApiError(envelope?.message ?? "暂时无法确认会话，请稍后重试。", response.status);
+  }
+  return true;
+}
+
 function refreshSession(): Promise<boolean> {
   if (!refreshInFlight) {
-    refreshInFlight = fetch(`${API_PREFIX}/auth/refresh`, {
-      method: "POST", credentials: "include", cache: "no-store",
-    }).then(async (response) => {
-      if (response.status === 401) return false;
+    const rotate = async () => {
+      const response = await fetch(`${API_PREFIX}/auth/refresh`, {
+        method: "POST", credentials: "include", cache: "no-store",
+      });
+      if (response.status === 401) {
+        const envelope = await readEnvelope<unknown>(response);
+        if (await sharedSessionIsCurrent()) return true;
+        if (envelope?.code === 4015) {
+          // Another response may still be delivering the winner's cookie.
+          // Never infer logout or token theft from this ambiguous rejection.
+          throw new ApiError("会话正在其他窗口恢复，请稍后重试。", 409, 4015);
+        }
+        return false;
+      }
       if (!response.ok) {
         const envelope = await readEnvelope<unknown>(response);
         throw new ApiError(envelope?.message ?? "暂时无法恢复会话，请稍后重试。", response.status, envelope?.code, envelope?.requestId);
       }
       return true;
-    }).catch((reason) => {
+    };
+    refreshInFlight = (async () => {
+      if (typeof navigator !== "undefined" && navigator.locks?.request) {
+        return navigator.locks.request("careerproof-refresh", async () => {
+          // Same-origin tabs share cookies. A previous lock holder may have
+          // already refreshed; check before creating another successor.
+          if (await sharedSessionIsCurrent()) return true;
+          return rotate();
+        });
+      }
+      return rotate();
+    })().catch((reason) => {
       if (reason instanceof ApiError) throw reason;
       throw new Error("无法连接服务以确认会话，请检查网络后重试。");
     }).finally(() => { refreshInFlight = null; });

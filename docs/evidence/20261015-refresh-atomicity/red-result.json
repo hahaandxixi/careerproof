@@ -1,0 +1,9 @@
+{
+  "command": "python -m pytest app/tests/test_refresh_atomicity.py -q -p no:cacheprovider --basetemp=.tmp-refresh-red",
+  "result": "1 failed, 1 passed, 1 skipped",
+  "raw_log_kept_local": "backend\\.tmp\\refresh-red.raw.out",
+  "raw_sha256": "e173ce91d7c6d7d0ca8bf0838b1c76b9b3c3c9477ec01af0587c627998aa9f09",
+  "raw_not_committed": true,
+  "reason": "Failed concurrency assertion can render issued-token objects; preserve original in ignored local directory, do not publish credentials",
+  "token_shape_detected": false
+}

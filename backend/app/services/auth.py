@@ -63,13 +63,24 @@ class AuthService:
 
     async def refresh(self, encoded_refresh_token: str) -> IssuedTokens:
         payload = decode_token(encoded_refresh_token, "refresh")
-        stored = await self.users.get_active_refresh_token(token_digest(payload["jti"]))
-        if not stored:
+        digest = token_digest(payload["jti"])
+        user_id = await self.users.consume_active_refresh_token(digest)
+        if user_id is None:
+            stored = await self.users.get_refresh_token(digest)
+            if stored and stored.revoked_at:
+                revoked_at = stored.revoked_at
+                if revoked_at.tzinfo is None:
+                    revoked_at = revoked_at.replace(tzinfo=UTC)
+                if 0 <= (datetime.now(UTC) - revoked_at).total_seconds() <= 10:
+                    # Still rejected: this does not reissue a consumed token.
+                    # A delayed peer response may be updating the shared cookie.
+                    raise AppError(
+                        "会话可能正在其他窗口刷新，请稍后重试", code=4015, status_code=401
+                    )
             raise AppError("刷新凭证已失效", code=4013, status_code=401)
-        user = await self.users.get(stored.user_id)
+        user = await self.users.get(user_id)
         if not user or not user.is_active:
             raise AppError("账号不存在或已停用", code=4014, status_code=401)
-        stored.revoked_at = datetime.now(UTC)
         tokens = await self._issue_tokens(user)
         await self.session.commit()
         return tokens

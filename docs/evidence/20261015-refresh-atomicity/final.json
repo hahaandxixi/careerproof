@@ -1,0 +1,130 @@
+{
+  "change": "conditional refresh consumption plus cross-tab coordination; no schema or existing session rewrite",
+  "steps": [
+    {
+      "name": "ruff-final",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "app/models",
+        "app/services/auth.py",
+        "app/repositories/users.py",
+        "app/tests/test_refresh_atomicity.py",
+        "app/tests/test_ci_junit_gate.py",
+        "scripts/check_ci_junit.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "full-sqlite-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests",
+        "-q",
+        "-x",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-refresh-full-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-refresh-atomicity\\full-sqlite-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "56",
+          "tests": "1374",
+          "time": "343.775",
+          "timestamp": "2026-10-15T22:03:58.170593+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "strict-pg-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_ai_budget_production_race.py",
+        "app/tests/test_durable_matching.py",
+        "app/tests/test_visual_postgres_concurrency.py",
+        "app/tests/test_mcp_postgres_isolation.py",
+        "app/tests/test_real_matching.py",
+        "app/tests/test_durable_attempt_service.py",
+        "app/tests/test_ai_request_attempt_migration.py",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_ai_shared_budget_service.py",
+        "app/tests/test_ai_shared_budget_migration.py",
+        "app/tests/test_application_reconsent_migration.py",
+        "app/tests/test_data_integrity_migration.py",
+        "app/tests/test_refresh_atomicity.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-refresh-strict-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-refresh-atomicity\\strict-pg-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "107",
+          "time": "111.185",
+          "timestamp": "2026-10-15T22:09:53.898895+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "hardstop-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_attempt_hard_stop.py",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-refresh-hardstop-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-refresh-atomicity\\hardstop-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "8",
+          "time": "28.100",
+          "timestamp": "2026-10-15T22:11:48.425159+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    },
+    {
+      "name": "gate-final",
+      "command": [
+        "python",
+        "scripts/check_ci_junit.py",
+        "D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-refresh-atomicity\\strict-pg-final.xml",
+        "D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-refresh-atomicity\\hardstop-final.xml"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "remaining_test_schemas": {
+    "cp_ci": 0,
+    "careerproof": 0
+  },
+  "container_stop_exit_code": 0
+}
