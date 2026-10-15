@@ -1,0 +1,32 @@
+{
+  "observedAt": "2026-10-15T14:24:53.259Z",
+  "pages": [
+    {
+      "path": "/applications",
+      "hasStudentAccount": true,
+      "hasApplications": true
+    },
+    {
+      "path": "/reports",
+      "hasStudentAccount": true,
+      "hasSavedReport": true
+    }
+  ],
+  "parallelReload": true,
+  "expiredAccessForced": false,
+  "simultaneousExpiredRefreshProven": false,
+  "locatorNote": "AX treats account disclosure as button; DOM exposes generic. Button locators timed out; DOM snapshots confirmed both accounts.",
+  "synthetic_account_token_observations": {
+    "first_after_page_open": {
+      "total": 81,
+      "active": 6,
+      "newest_created_utc": "2026-10-15T14:18:35.231774+00:00"
+    },
+    "after_parallel_reload": {
+      "total": 81,
+      "active": 6,
+      "newest_created_utc": "2026-10-15T14:18:35.231774+00:00"
+    },
+    "meaning": "No additional token issued during the observed parallel reload. No forced expiry and no concurrent expired-cookie proof."
+  }
+}

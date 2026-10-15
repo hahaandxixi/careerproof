@@ -1,0 +1,51 @@
+{
+  "served_steps": [
+    {
+      "file": "CP01-Python 后端-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "725dfe838ee80311f24dd7dc5d62787922fbda4b051d3c9deb59b1558a92a00b"
+    },
+    {
+      "file": "CP02-前端开发-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "bd17b5d402aa7a0bbfd1110a01e956c96f22bbad7588c33d074b1d8c7ae2d266"
+    },
+    {
+      "file": "CP03-软件测试-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "7da1b912141a00aeed2b45b03db5d099182cc91e7dfac42836c6452f0f07b677"
+    },
+    {
+      "file": "CP04-数据分析-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "fb87b59d70be031550b83db5e2623a13e4756c5c666930fa6911af7a76978be3"
+    },
+    {
+      "file": "CP05-产品助理-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "7f38cd0fdb093b21141e40fb6bedd048993713949f952fd090c30987920ffb75"
+    },
+    {
+      "file": "CP06-用户运营-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "0948c8aaaf7d6048b4b8fc4e24b7f98a1cbfa9699c1decf2c0282631fc7528ef"
+    },
+    {
+      "file": "CP07-自动化运维-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "2615b1f5357c4c576b73a014de4d4e46f86fe0430d9272946b6b8fa38973858f"
+    },
+    {
+      "file": "CP08-数据库 DBA-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "76f15bc8b2688381a1ae7ece6c9d4f59d69ba44a2f5a07b68e044f170cbf46af"
+    },
+    {
+      "file": "CP09-数据工程-人工测试步骤-v1.txt",
+      "http_status": 200,
+      "sha256": "d898c817504552b7ca91d6ccc64416f675e17121d021e1090a3d3b41770b487c"
+    }
+  ],
+  "demo_html_has_optional_external_AI": true,
+  "first_independent_user_verified": false
+}

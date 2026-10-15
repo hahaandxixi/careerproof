@@ -1,0 +1,35 @@
+{
+  "changed_steps": [
+    "CP01-Python 后端-人工测试步骤-v1.txt",
+    "CP02-前端开发-人工测试步骤-v1.txt",
+    "CP03-软件测试-人工测试步骤-v1.txt",
+    "CP04-数据分析-人工测试步骤-v1.txt",
+    "CP05-产品助理-人工测试步骤-v1.txt",
+    "CP06-用户运营-人工测试步骤-v1.txt",
+    "CP07-自动化运维-人工测试步骤-v1.txt",
+    "CP08-数据库 DBA-人工测试步骤-v1.txt",
+    "CP09-数据工程-人工测试步骤-v1.txt"
+  ],
+  "unchanged_resume_project_and_catalog_hashes": {
+    "catalog.json": "7984027d83d71e1da1b6fad763ce1ac4262c79c30a1ce47e4719cc6658ecc779",
+    "CP01-Python 后端-任务管理 API-v1.zip": "711619cbef601cbf423156751bac719d304aa070dfcaf8d83fd08fe06946563a",
+    "CP01-Python 后端-简历-v1.txt": "542d8b20005b6f95f1a1cd46ffe4241544afac2b5b03702181db35909f2209f0",
+    "CP02-前端开发-任务列表页面-v1.zip": "239cee155a84bf7eef82784aa58585a34903aa24fe95c6104a638440da864f8e",
+    "CP02-前端开发-简历-v1.txt": "744929a5b01018c3439ae21ee7202f725cadc6252f726137be236f6007122456",
+    "CP03-软件测试-任务接口测试-v1.zip": "71b94c1d143999c4a6ba39c3407567cde1515801da9ca73d83d2e434fe678040",
+    "CP03-软件测试-简历-v1.txt": "87eebaf5848d1c5d56b90b842b0dc40520a03b3848715ef59f89298cb8ce7206",
+    "CP04-数据分析-活动漏斗分析-v1.zip": "e9908762c792da08f4eb5061ad38af05a16a477fb50dc3e5f25a8264f15ce7b5",
+    "CP04-数据分析-简历-v1.txt": "63bbf9fce2bff24b9a4e98510d07e0bf64efd21b5822bd0a216feee80af5471f",
+    "CP05-产品助理-校园失物登记方案-v1.zip": "f566b96ccbdeca69509baf95fa20352909f5dd0771093dc6a02b0bca62135784",
+    "CP05-产品助理-简历-v1.txt": "46a830397f6d36d8945c2dba0ec1ed02ded3117ea7ddc5111c66caf138890f71",
+    "CP06-用户运营-七日读书活动方案-v1.zip": "d70ad0f426968e2864cc5c1a0ba03c6efae3062bf329ae77fc024b8e8e15e946",
+    "CP06-用户运营-简历-v1.txt": "de60e78aa3780ee7d6462efc7ea9ee9313ce0697921ee51f21f247b9d6316f80",
+    "CP07-自动化运维-服务健康检查-v1.zip": "bc4fe6494fd54509fbae6d051844563c03dfb6be2649b3018f156aa2e3f9c20c",
+    "CP07-自动化运维-简历-v1.txt": "5c606a0500277c3a1d6439017fb3cacbe069405f4d0e02348c14fd7cbb9acab5",
+    "CP08-数据库 DBA-任务数据库管理-v1.zip": "a554411e2f71887d019890a7b595653f15eb69209a082c3369abd37ed4bd4900",
+    "CP08-数据库 DBA-简历-v1.txt": "303ef7935a3d53fcee2134a54ad86fccb01e8ac6ae81e6a486e5a1be53c2cbfa",
+    "CP09-数据工程-CSV 入库管道-v1.zip": "9582ca7dbaf838d396e7e643d5f1bb26a94b30c29d04f0d6dbed09ba73ffca9b",
+    "CP09-数据工程-简历-v1.txt": "08877d89914e236597de2bde334bde5af9b7d6d73d0adc498121785a7e24c041"
+  },
+  "generation_matched_existing_resume_and_project": true
+}

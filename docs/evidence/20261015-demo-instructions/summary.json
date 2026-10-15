@@ -1,0 +1,22 @@
+{
+  "change": "remove external AI consent as prerequisite from demo instructions; imported material need not be uploaded twice",
+  "typecheck_command": [
+    "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe",
+    "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+    "run",
+    "typecheck"
+  ],
+  "typecheck_exit_code": 0,
+  "first_independent_user_verified": false,
+  "role_material_tests": {
+    "passed": 6,
+    "failed": 0,
+    "command": "backend/.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_role_materials.py -q -p no:cacheprovider --basetemp=.tmp-demo-instructions-check",
+    "cwd": "backend"
+  },
+  "production_build_and_restore": "live-assets/normal-start.raw.out; live-assets/normal-activation.json",
+  "delivery": "delivery.json",
+  "browser_screenshot": "demo-live.png",
+  "material_source_unchanged": "assets.json",
+  "initial_command_error": "First test invocation used a root-relative Python path with backend cwd and did not run. Corrected invocation passed six tests."
+}
