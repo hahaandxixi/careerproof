@@ -70,6 +70,19 @@ async def client(auth_db):
         yield async_client
 
 
+@pytest.mark.parametrize(("path", "status"), [
+    ("/api/v1/health", 200), ("/api/v1/users/me", 401),
+    ("/no-such-route", 404), ("/api/v1/auth/login", 405),
+])
+async def test_api_security_headers_on_success_and_handled_errors(client, path, status):
+    response = await client.get(path)
+    assert response.status_code == status
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "strict-transport-security" not in response.headers
+
+
 async def _register_request(role: UserRole = UserRole.STUDENT, email: str | None = None):
     return RegisterRequest(
         email=email or f"auth-{datetime.now(UTC).timestamp()}@example.com",
@@ -141,6 +154,38 @@ async def test_register_creates_student_profile_and_hashes_password(auth_db):
         assert security.verify_password(PASSWORD, tokens.user.password_hash)
         profile_id = await session.scalar(select(StudentProfile.id))
         assert profile_id, "student registration must create a profile row"
+
+
+async def test_analysis_task_visibility_keeps_owner_admin_and_denies_other_roles(auth_db):
+    from uuid import uuid4
+
+    from app.models.analysis import AnalysisTask
+    from app.models.enums import TaskStatus
+    from app.services.analysis import AnalysisService
+
+    _app, factory = auth_db
+    async with factory() as session:
+        owner = (await AuthService(session).register(await _register_request())).user
+        other = (await AuthService(session).register(await _register_request())).user
+        enterprise = (await AuthService(session).register(
+            await _register_request(role=UserRole.ENTERPRISE)
+        )).user
+        admin = (await AuthService(session).register(await _register_request())).user
+        # Only the isolated test database grants this fixture its admin role.
+        admin.role = UserRole.ADMIN
+        task = AnalysisTask(created_by=owner.id, task_type="job_match", status=TaskStatus.COMPLETED)
+        session.add(task)
+        await session.commit()
+        service = AnalysisService(session)
+        for user in [owner, admin]:
+            assert (await service.get_task(task.id, user)).id == task.id
+        for user in [other, enterprise]:
+            with pytest.raises(AppError) as denied:
+                await service.get_task(task.id, user)
+            assert denied.value.status_code == 404
+        with pytest.raises(AppError) as missing:
+            await service.get_task(uuid4(), admin)
+        assert missing.value.status_code == 404
 
 
 async def test_register_rejects_duplicate_email_and_admin_role(auth_db):

@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.core.database import async_session_factory
 from app.core.exceptions import install_exception_handlers
 from app.core.request_context import RequestIdMiddleware
+from app.core.security_headers import SecurityHeadersMiddleware
 from app.services.task_dispatcher import dispatch_pending_tasks, stop_dispatched_tasks
 from app.services.task_lifecycle import recover_interrupted_tasks
 
@@ -59,6 +60,7 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    application.add_middleware(SecurityHeadersMiddleware)
     install_exception_handlers(application)
     application.include_router(api_v1_router, prefix=settings.api_v1_prefix)
     return application

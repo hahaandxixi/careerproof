@@ -1,0 +1,81 @@
+{
+  "review": "传智杯53 auth concurrency & rate-limit read-only review (harness53)",
+  "repo": "D:\\jbcode\\web ai\\jianli",
+  "head": "a3292804193d9245fe6a78643ecb640cd232ddac",
+  "head_subject": "fix: use consistent evidence verdict labels across report views",
+  "generated_at": "2026-10-15T18:12:00+08:00",
+  "hash_method": {
+    "sha256_worktree": "Get-FileHash -Algorithm SHA256 on the working-tree file",
+    "git_blob": "git rev-parse HEAD:<path> (content-addressed git blob id)",
+    "matches_head": "true when the reviewed path is absent from `git status --porcelain` (untracked-files=no)"
+  },
+  "reviewed_files": [
+    {
+      "path": "backend/app/services/auth.py",
+      "git_blob": "2d97f354a526a4c8531a1457fe551c5cc176081c",
+      "sha256_worktree": "9cf77610f8fc5f681575deab5b79fdac5a155db590dfd40eb9e8963fb9db821e",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/repositories/users.py",
+      "git_blob": "a269878ea26fcd882ed0b86f3166f688099fbe18",
+      "sha256_worktree": "eba7743b3b66f13921f889c52bfdbc1549be2839d2b48b33cd09c0b84e729c57",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/models/identity.py",
+      "git_blob": "849344a3eb6efc28dee794f9e67e24b111eeaee1",
+      "sha256_worktree": "8449a7c073c2e97861416672914e54737c233aecc510b0679de9c28276ae3e68",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/api/v1/auth.py",
+      "git_blob": "92aa976f03ae2466580c6d6683c333e51629f344",
+      "sha256_worktree": "ab625f1c8efb6926834a4298906cba1708ab0d0c9e5132f59e0ef92484d5992c",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/core/security.py",
+      "git_blob": "85b1dd667a279e93f8dc7f1c923770e8a315f66a",
+      "sha256_worktree": "0fc89201eb0a8a024c7ef39995edc62b0e1ac7d52612bf4d8bce2b2a3b039b83",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/core/database.py",
+      "git_blob": "ec45e12b5e34fba0f56d2fca2f446ede9a46385a",
+      "sha256_worktree": "d83c7f3e7bf327f09d9a1b3dba358d76b9e57773971d23f8338ea057db4d4c46",
+      "matches_head": true
+    },
+    {
+      "path": "backend/app/tests/test_auth.py",
+      "git_blob": "2e220b88be4459b6cccbb22ba62bb5380ef32949",
+      "sha256_worktree": "36165ef08a43230ad33564fad42347d5232e2a32f4ba66dabd0a9dfb8fd5fc35",
+      "matches_head": false,
+      "note": "modified during this review by the other agent at 2026-10-15T18:07:22+08:00 (mtime); the worktree sha256 is that version, NOT HEAD. HEAD content is the git_blob above. Diff adds test_analysis_task_visibility_keeps_owner_admin_and_denies_other_roles (+32 lines). This reviewer did not modify it."
+    },
+    {
+      "path": "jianli/src/lib/api/client.ts",
+      "git_blob": "90e6086353f8992807bc857eeade877db2ce6016",
+      "sha256_worktree": "666d2ffdc6e25e2deea7694334e56ebcfec1a9e6bf04e1121448f0f327fa4bae",
+      "matches_head": true
+    }
+  ],
+  "read_but_not_hashed": [
+    "backend/app/core/config.py",
+    "backend/app/core/request_context.py",
+    "jianli/src/components/AuthProvider.tsx",
+    "jianli/tests/api-client.test.mjs",
+    "backend/Dockerfile"
+  ],
+  "worktree_modifications_at_review_time": {
+    "backend/app/services/analysis.py": "modified by other agent 18:06:24 (out of review scope)",
+    "jianli/next.config.mjs": "modified by other agent 18:06:24 (out of review scope)",
+    "jianli/.env.example": "modified by other agent 18:07:22 (out of review scope)",
+    "backend/app/tests/test_auth.py": "modified by other agent 18:07:22 (IN review scope - see note)",
+    "docs/当前接力.md": "modified (out of review scope)"
+  },
+  "execution_boundary": {
+    "executed": ["git rev-parse", "git status --porcelain", "git diff", "file reads", "grep", "Get-FileHash", "directory existence check"],
+    "not_executed": ["pytest", "python/app import", "database connection", "service start/stop", "network or model call", ".env read", "install", "git commit/push"]
+  }
+}

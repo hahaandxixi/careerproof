@@ -1,0 +1,21 @@
+{
+  "review_hash_matches": {
+    "backend/app/services/auth.py": true,
+    "backend/app/repositories/users.py": true,
+    "backend/app/models/identity.py": true,
+    "backend/app/api/v1/auth.py": true,
+    "backend/app/core/security.py": true,
+    "backend/app/core/database.py": true,
+    "backend/app/tests/test_auth.py": false,
+    "jianli/src/lib/api/client.ts": true
+  },
+  "F1": "Independently reproduced in two real PG sessions; two successors remain active. No production account used. Fix pending.",
+  "F2": "Static design suggestion only; no family schema, retry protocol, or cross-tab recovery implemented. Do not revoke all user sessions solely on a race loser.",
+  "corrections": [
+    "Codex also added a role regression to test_auth.py during read-only review; later API header cases further changed that file. No concurrent second writer.",
+    "Installed uvicorn Config has proxy_headers=True by default; absence of a CLI flag does not prove forwarded headers are disabled. Need verify actual trusted chain before rate-limit key design.",
+    "Coarsening shared campus IP buckets can increase collateral throttling; not adopted as an anti-lockout solution.",
+    "Returning the same successor needs an explicit idempotency/storage design; cannot reconstruct a random token solely from its digest."
+  ],
+  "scope": "Static review accepted as input, not a completed security signoff"
+}

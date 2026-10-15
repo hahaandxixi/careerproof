@@ -1,0 +1,51 @@
+{
+  "base_commit": "a329280",
+  "stage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\security-ui-20261015",
+  "steps": [
+    {
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "name": "install",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "name": "tests",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "name": "typecheck",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "name": "build",
+      "exit_code": 0
+    }
+  ],
+  "backend_affected_passed": 40,
+  "frontend_passed": 271,
+  "live_headers": "home/login/proxied health/proxied 404 all verified after ASGI middleware",
+  "remaining": "Refresh concurrency reproduced, not fixed; persistent login throttling and replay family protocol pending",
+  "backend_full_suite_run": false
+}

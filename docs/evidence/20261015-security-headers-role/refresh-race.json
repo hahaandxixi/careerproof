@@ -1,0 +1,17 @@
+{
+  "kind": "two independent sessions, barrier after both valid-token reads",
+  "token_values_recorded": false,
+  "scope": "dedicated cp_ci random test schema; no website account or business database",
+  "outcomes": [
+    "issued",
+    "issued"
+  ],
+  "active_refresh_rows": 2,
+  "duplicate_success_reproduced": true,
+  "own_schema_removed": true,
+  "test_container_stop_exit_code": 0,
+  "source_hashes": {
+    "backend/app/services/auth.py": "9cf77610f8fc5f681575deab5b79fdac5a155db590dfd40eb9e8963fb9db821e",
+    "backend/app/repositories/users.py": "eba7743b3b66f13921f889c52bfdbc1549be2839d2b48b33cd09c0b84e729c57"
+  }
+}

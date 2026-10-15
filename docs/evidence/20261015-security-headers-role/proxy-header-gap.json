@@ -1,0 +1,8 @@
+{
+  "observed_before_api_middleware": {
+    "home": "three headers present",
+    "login": "three headers present",
+    "proxied_health": "three headers absent"
+  },
+  "action": "Add ASGI response middleware and handled-error tests; retain this failed live acceptance"
+}

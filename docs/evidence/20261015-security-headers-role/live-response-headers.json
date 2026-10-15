@@ -1,0 +1,42 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "hsts_on_local_http": false
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "hsts_on_local_http": false
+  },
+  {
+    "path": "/backend/api/v1/health",
+    "status": 200,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "hsts_on_local_http": false
+  },
+  {
+    "path": "/backend/no-such-route",
+    "status": 404,
+    "headers": {
+      "x-frame-options": "DENY",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "hsts_on_local_http": false
+  }
+]

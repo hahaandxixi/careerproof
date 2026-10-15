@@ -498,7 +498,7 @@ class AnalysisService:
 
     async def get_task(self, task_id: UUID, user: User) -> AnalysisTaskView:
         task = await self.analysis.get_task(task_id)
-        if not task or (task.created_by != user.id and user.role.value != "admin"):
+        if not task or (task.created_by != user.id and user.role is not UserRole.ADMIN):
             raise AppError("分析任务不存在或无权访问", code=4041, status_code=404)
         if task.task_type == "application_verification":
             from app.services.application_verification import ensure_verification_task_access
