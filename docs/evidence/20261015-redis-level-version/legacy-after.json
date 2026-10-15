@@ -1,0 +1,14 @@
+{
+  "81a25748-9115-44c4-be86-d6d1cf0ee665": {
+    "itemsSha256": "437b3d21e72e6c96519cc75c47f5c66d8298bad9e7bd1d022ab4945a0a34cdee",
+    "redisLevel": null,
+    "redisLabel": "待核对检索候选",
+    "levelVersion": "practice-evidence-v4-candidate-boundary"
+  },
+  "5ad745b1-f740-4251-8b58-19a708f682f1": {
+    "itemsSha256": "194e15a50cde79965e4425991cb1b33e6c78d901dde373bb3f67bcca185e75f8",
+    "redisLevel": 1,
+    "redisLabel": "基础线索",
+    "levelVersion": "practice-evidence-v4-candidate-boundary"
+  }
+}

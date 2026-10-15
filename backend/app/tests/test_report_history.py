@@ -134,6 +134,18 @@ def test_cache_key_separates_history_consent_and_frozen_source():
     assert len({ordinary, opted, pinned, changed}) == 4
 
 
+def test_cache_key_separates_saved_rule_interpretation_profiles(monkeypatch):
+    from app.services import analysis
+
+    snapshot = {"job": {}, "materials": [], "externalAiConsent": False}
+    monkeypatch.setattr(
+        analysis, "EVIDENCE_LEVEL_VERSION", "practice-evidence-v4-candidate-boundary"
+    )
+    previous = analysis._analysis_cache_key(snapshot)
+    monkeypatch.setattr(analysis, "EVIDENCE_LEVEL_VERSION", "practice-evidence-v5-redis-operation")
+    assert analysis._analysis_cache_key(snapshot) != previous
+
+
 @pytest.mark.parametrize("history_fault", [False, True])
 @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
 async def test_model_selects_history_once_without_promoting_old_level(

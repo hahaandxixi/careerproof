@@ -1,0 +1,49 @@
+F...F.................                                                   [100%]
+================================== FAILURES ===================================
+______ test_versioned_redis_operations_do_not_reclassify_legacy_reports _______
+
+    def test_versioned_redis_operations_do_not_reclassify_legacy_reports():
+        snapshot = {"skill": "Redis", "evidenceList": [{
+            "evidenceType": "redis_usage", "contextComplete": True,
+            "snippet": "client.setex(key, 60, value)",
+        }]}
+        legacy = classify_evidence(snapshot, "partial")
+        assert legacy["evidence_level"] == 1
+        assert legacy["evidence_level_version"] == "practice-evidence-v4-candidate-boundary"
+        current = classify_evidence({
+            **snapshot, "ruleClassificationVersion": "practice-evidence-v5-redis-operation"
+        }, "partial")
+>       assert current["evidence_level"] == 2
+E       assert 1 == 2
+
+app\tests\test_evidence_levels.py:17: AssertionError
+_ test_redis_operation_is_never_task_implementation_or_review_certification[accepted] _
+
+status = 'accepted'
+
+    @pytest.mark.parametrize("status", ["accepted", "rejected", "corrected"])
+    def test_redis_operation_is_never_task_implementation_or_review_certification(status):
+        snapshot = {"skill": "Redis", "ruleClassificationVersion":
+                    "practice-evidence-v5-redis-operation", "evidenceList": [{
+                        "evidenceType": "redis_usage", "contextComplete": True,
+                        "snippet": "client.get(key)",
+                    }]}
+        level = classify_evidence(snapshot, "partial", status)["evidence_level"]
+>       assert level == (2 if status == "accepted" else None)
+E       assert 1 == 2
+
+app\tests\test_evidence_levels.py:44: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_evidence_levels.py::test_versioned_redis_operations_do_not_reclassify_legacy_reports
+FAILED app/tests/test_evidence_levels.py::test_redis_operation_is_never_task_implementation_or_review_certification[accepted]
+2 failed, 20 passed, 2 warnings in 0.11s

@@ -1,0 +1,11 @@
+E501 Line too long (102 > 100)
+   --> app\tests\test_report_history.py:141:101
+    |
+140 |     snapshot = {"job": {}, "materials": [], "externalAiConsent": False}
+141 |     monkeypatch.setattr(analysis, "EVIDENCE_LEVEL_VERSION", "practice-evidence-v4-candidate-boundary")
+    |                                                                                                     ^^
+142 |     previous = analysis._analysis_cache_key(snapshot)
+143 |     monkeypatch.setattr(analysis, "EVIDENCE_LEVEL_VERSION", "practice-evidence-v5-redis-operation")
+    |
+
+Found 1 error.

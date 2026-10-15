@@ -4,7 +4,8 @@ import ast
 import re
 import textwrap
 
-VERSION = "practice-evidence-v4-candidate-boundary"
+LEGACY_VERSION = "practice-evidence-v4-candidate-boundary"
+VERSION = "practice-evidence-v5-redis-operation"
 CANDIDATE_TYPES = {"semantic_document_candidate", "retrieved_context"}
 
 
@@ -66,15 +67,17 @@ def is_empty_implementation(evidence: dict) -> bool:
 
 def _rule_classification(
     snapshot: dict, verdict: str, review_status: str | None = None,
-    *, include_candidates: bool = False,
+    *, include_candidates: bool = False, version: str = VERSION,
 ) -> dict:
+    selected_version = VERSION if version == VERSION else LEGACY_VERSION
+
     def result(level, label, reason, gap):
         return dict(
             evidence_level=level,
             evidence_level_label=label,
             evidence_level_reason=reason,
             evidence_level_gap=gap,
-            evidence_level_version=VERSION,
+            evidence_level_version=selected_version,
         )
 
     if verdict == "unsupported":
@@ -174,6 +177,8 @@ def _rule_classification(
         "alert_rule",
         "postgres_usage",
     }
+    if selected_version == VERSION:
+        operation_types.add("redis_usage")
     if any(
         e.get("evidenceType", e.get("evidence_type")) in operation_types for e in usable_evidence
     ):
@@ -203,7 +208,10 @@ def classify_evidence(snapshot: dict, verdict: str, review_status: str | None = 
     from app.agents.contracts import AIRating
     from app.tools.skill_rubric import rubric_for
 
-    result = _rule_classification(snapshot, verdict, review_status)
+    # New reports save their interpretation profile. Missing markers retain the
+    # legacy read behavior instead of silently upgrading historical reports.
+    version = snapshot.get("ruleClassificationVersion", LEGACY_VERSION)
+    result = _rule_classification(snapshot, verdict, review_status, version=version)
     ai = snapshot.get("ai") or {}
     rubric = ai.get("ratingRubric") or rubric_for(snapshot.get("skill", "未分类"))
     result.update(
@@ -222,7 +230,7 @@ def classify_evidence(snapshot: dict, verdict: str, review_status: str | None = 
         return result
     # Recheck the structural ceiling when reading saved reports as defense in depth.
     ceiling = _rule_classification(
-        snapshot, verdict, review_status, include_candidates=True
+        snapshot, verdict, review_status, include_candidates=True, version=version
     )["evidence_level"]
     if rating.level is not None and (ceiling is None or rating.level > ceiling):
         return result

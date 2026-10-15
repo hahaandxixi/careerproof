@@ -1,0 +1,26 @@
+{
+  "baselineHead": "2ef8adb",
+  "problem": "Redis usage was not an operation tier and blanket mapping would silently reclassify old reports",
+  "change": "New reports persist ruleClassificationVersion v5; missing or unknown versions use legacy v4 reading; current profile maps redis_usage to operation tier 2 only, not task implementation; shared fresh AI ceilings agree; cached reports separated by profile version",
+  "red": "2 failed, 20 passed",
+  "affected": "128 passed, temporary SQLite fixtures; no dedicated PostgreSQL regression in this batch",
+  "ruff": "passed",
+  "browser": {
+    "newReport": "f00cfca2-af6d-4bc0-b170-f2be0f749979",
+    "sameV2Material": true,
+    "redisLabel": "局部操作",
+    "redisLevel": 2,
+    "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+    "source": "redis_cache.py lines 5-10",
+    "realModelsCalled": false
+  },
+  "legacyAPI": "Both prior item-list hashes and Redis levels exactly equal before/after runtime change; legacy report remains ungraded/basic clue as originally returned",
+  "snapshots": "8 normal application snapshot hashes unchanged",
+  "runtime": "existing frontend builds reused, both owned services restored against original data, SkipSeed/SyntheticVerification; no reseed or synthetic budget activation",
+  "limits": [
+    "not an independent first-user human assessment",
+    "no execution of uploaded code or evidence of contribution",
+    "saved legacy profiles only preserve the existing v4 interpretation behavior; this is not a migration that freezes all historic data forever",
+    "real AI semantics and latest full candidate regression still pending"
+  ]
+}

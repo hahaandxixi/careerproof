@@ -64,6 +64,7 @@ from app.services.task_lifecycle import (
 )
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
+from app.tools.evidence_levels import VERSION as EVIDENCE_LEVEL_VERSION
 from app.tools.function_coverage import (
     redundant_source_request,
     task_plan_redundant_source_request,
@@ -257,6 +258,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "model": model,
         "promptVersion": EVIDENCE_PROMPT_VERSION,
         "formulaVersion": FORMULA_VERSION,
+        "evidenceLevelVersion": EVIDENCE_LEVEL_VERSION,
         "externalAiConsent": snapshot.get("externalAiConsent", False),
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
@@ -1001,6 +1003,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         explanation=item.explanation,
                         formula_version=item.formula_version,
                         evidence_snapshot={
+                            "ruleClassificationVersion": EVIDENCE_LEVEL_VERSION,
                             "requirementTitle": item.requirement_title,
                             "skill": item.skill,
                             "claimed": item.claimed,

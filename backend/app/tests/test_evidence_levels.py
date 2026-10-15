@@ -3,6 +3,47 @@ import pytest
 from app.tools.evidence_levels import _rule_classification, classify_evidence
 
 
+def test_versioned_redis_operations_do_not_reclassify_legacy_reports():
+    snapshot = {"skill": "Redis", "evidenceList": [{
+        "evidenceType": "redis_usage", "contextComplete": True,
+        "snippet": "client.setex(key, 60, value)",
+    }]}
+    legacy = classify_evidence(snapshot, "partial")
+    assert legacy["evidence_level"] == 1
+    assert legacy["evidence_level_version"] == "practice-evidence-v4-candidate-boundary"
+    current = classify_evidence({
+        **snapshot, "ruleClassificationVersion": "practice-evidence-v5-redis-operation"
+    }, "partial")
+    assert current["evidence_level"] == 2
+    assert current["evidence_level_label"] == "局部操作"
+    assert current["evidence_level_version"] == "practice-evidence-v5-redis-operation"
+    assert classify_evidence(snapshot, "partial") == legacy
+
+
+@pytest.mark.parametrize("kind,provenance,expected", [
+    ("redis_dependency", "portfolio", 1),
+    ("retrieved_context", "portfolio", None),
+    ("redis_usage", "reference", None),
+])
+def test_new_redis_profile_does_not_promote_dependencies_or_reference(kind, provenance, expected):
+    snapshot = {"skill": "Redis", "ruleClassificationVersion":
+                "practice-evidence-v5-redis-operation", "evidenceList": [{
+                    "evidenceType": kind, "provenance": provenance, "contextComplete": True
+                }]}
+    assert classify_evidence(snapshot, "partial")["evidence_level"] == expected
+
+
+@pytest.mark.parametrize("status", ["accepted", "rejected", "corrected"])
+def test_redis_operation_is_never_task_implementation_or_review_certification(status):
+    snapshot = {"skill": "Redis", "ruleClassificationVersion":
+                "practice-evidence-v5-redis-operation", "evidenceList": [{
+                    "evidenceType": "redis_usage", "contextComplete": True,
+                    "snippet": "client.get(key)",
+                }]}
+    level = classify_evidence(snapshot, "partial", status)["evidence_level"]
+    assert level == (2 if status == "accepted" else None)
+
+
 def test_empty_and_unsupported_are_not_level_one():
     assert classify_evidence({}, "gap")["evidence_level"] is None
     assert classify_evidence({"claimed": True}, "unsupported")["evidence_level"] is None
