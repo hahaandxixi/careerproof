@@ -107,13 +107,35 @@ test("student receives one merged plan and no standalone duplicate", () => {
  assert.ok(html.includes('id="evidence-group-gaps"'));
 });
 
-test("empty gap group stays honest and retains closed support and review groups", () => {
+test("review items open when gaps and partial support are absent", () => {
  const html = render(report([item("ok", "supported"), item("review", "supported", { confirmationStatus: "rejected" })]));
- assert.ok(html.includes("当前没有标记为“待补材料”的要求"));
+ assert.ok(html.includes('id="evidence-group-other" aria-expanded="true"'));
+ assert.ok(html.includes('href="#requirement-review"'));
  assert.equal(count(html, 'aria-controls="evidence-panel-'), 4);
- assert.ok(html.includes('id="evidence-panel-other" role="region" aria-labelledby="evidence-group-other" hidden=""'));
+ assert.ok(html.includes('id="evidence-group-supported" aria-expanded="false"'));
  assert.ok(!html.includes('href="#growth-'));
  assert.ok(!html.includes('<details open'));
+});
+
+test("partial support opens its complete saved list instead of an empty gap panel", () => {
+ const items = [item("sql", "partial"), item("redis", "partial"), item("ok", "supported")];
+ const html = render(report(items, [advice(items[0])]));
+ assert.ok(html.includes('id="evidence-group-partial" aria-expanded="true"'));
+ assert.equal(count(html, 'href="#growth-'), 2);
+ assert.ok(html.includes('href="#requirement-sql"'));
+ assert.ok(html.includes('href="#requirement-redis"'));
+ assert.ok(!html.includes("当前没有标记为“待补材料”的要求"));
+ assert.equal(count(html, "本地规则提示"), 1);
+});
+
+test("fully supported and empty reports do not invent gaps or advice", () => {
+ const html = render(report([item("complete", "supported")]));
+ assert.ok(html.includes('id="evidence-group-supported" aria-expanded="true"'));
+ assert.ok(html.includes('href="#requirement-complete"'));
+ assert.ok(!html.includes('href="#growth-'));
+ const empty = render(report([]));
+ assert.ok(empty.includes("当前没有标记为“待补材料”的要求"));
+ assert.ok(!empty.includes('href="#requirement-'));
 });
 
 test("unmatched actions never create requirements, suggestions or citations", () => {

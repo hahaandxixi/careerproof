@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: six material gaps render six items even when the saved action plan contains only three
+ok 1 - six material gaps render six items even when the saved action plan contains only three
+  ---
+  duration_ms: 9.5576
+  type: 'test'
+  ...
+# Subtest: an absent action plan never empties the group or invents advice and attribution
+ok 2 - an absent action plan never empties the group or invents advice and attribution
+  ---
+  duration_ms: 1.049
+  type: 'test'
+  ...
+# Subtest: identical rules advice appears once while its saved source remains visible
+ok 3 - identical rules advice appears once while its saved source remains visible
+  ---
+  duration_ms: 0.8207
+  type: 'test'
+  ...
+# Subtest: distinct AI advice and gap survive, with only same-requirement saved citations
+ok 4 - distinct AI advice and gap survive, with only same-requirement saved citations
+  ---
+  duration_ms: 0.7772
+  type: 'test'
+  ...
+# Subtest: admin retains its action plan without receiving student controls or duplicate rules text
+ok 5 - admin retains its action plan without receiving student controls or duplicate rules text
+  ---
+  duration_ms: 0.5784
+  type: 'test'
+  ...
+# Subtest: student receives one merged plan and no standalone duplicate
+ok 6 - student receives one merged plan and no standalone duplicate
+  ---
+  duration_ms: 0.5709
+  type: 'test'
+  ...
+# Subtest: empty gap group stays honest and retains closed support and review groups
+ok 7 - empty gap group stays honest and retains closed support and review groups
+  ---
+  duration_ms: 0.5231
+  type: 'test'
+  ...
+# Subtest: unmatched actions never create requirements, suggestions or citations
+ok 8 - unmatched actions never create requirements, suggestions or citations
+  ---
+  duration_ms: 0.4901
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 299.3791

@@ -20,8 +20,10 @@ export function ReportActionLayer({ report, role }: { report: MatchReport; role?
 }
 
 export default function ReportEvidenceWorkspace({ report }: { report: MatchReport }) {
-  const [expanded, setExpanded] = useState<Group | null>("gaps");
   const state = evidenceWorkspace(report.items);
+  const [expanded, setExpanded] = useState<Group | null>(() =>
+    (["gaps", "partial", "other", "supported"] as const).find(key => state[key].length > 0) ?? "gaps"
+  );
   const actions = new Map((report.actionPlan ?? []).map(action => [action.requirementId, action]));
 
   return <section aria-labelledby="evidence-workspace-title" className="panel min-w-0 space-y-4">

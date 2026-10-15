@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: six material gaps render six items even when the saved action plan contains only three
+ok 1 - six material gaps render six items even when the saved action plan contains only three
+  ---
+  duration_ms: 9.0117
+  type: 'test'
+  ...
+# Subtest: an absent action plan never empties the group or invents advice and attribution
+ok 2 - an absent action plan never empties the group or invents advice and attribution
+  ---
+  duration_ms: 0.599
+  type: 'test'
+  ...
+# Subtest: identical rules advice appears once while its saved source remains visible
+ok 3 - identical rules advice appears once while its saved source remains visible
+  ---
+  duration_ms: 0.6786
+  type: 'test'
+  ...
+# Subtest: distinct AI advice and gap survive, with only same-requirement saved citations
+ok 4 - distinct AI advice and gap survive, with only same-requirement saved citations
+  ---
+  duration_ms: 0.77
+  type: 'test'
+  ...
+# Subtest: admin retains its action plan without receiving student controls or duplicate rules text
+ok 5 - admin retains its action plan without receiving student controls or duplicate rules text
+  ---
+  duration_ms: 0.585
+  type: 'test'
+  ...
+# Subtest: student receives one merged plan and no standalone duplicate
+ok 6 - student receives one merged plan and no standalone duplicate
+  ---
+  duration_ms: 0.5667
+  type: 'test'
+  ...
+# Subtest: review items open when gaps and partial support are absent
+ok 7 - review items open when gaps and partial support are absent
+  ---
+  duration_ms: 0.5804
+  type: 'test'
+  ...
+# Subtest: partial support opens its complete saved list instead of an empty gap panel
+ok 8 - partial support opens its complete saved list instead of an empty gap panel
+  ---
+  duration_ms: 0.6674
+  type: 'test'
+  ...
+# Subtest: fully supported and empty reports do not invent gaps or advice
+ok 9 - fully supported and empty reports do not invent gaps or advice
+  ---
+  duration_ms: 1.2679
+  type: 'test'
+  ...
+# Subtest: unmatched actions never create requirements, suggestions or citations
+ok 10 - unmatched actions never create requirements, suggestions or citations
+  ---
+  duration_ms: 0.9737
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 298.2537

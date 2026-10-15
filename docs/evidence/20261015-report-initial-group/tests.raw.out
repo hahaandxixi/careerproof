@@ -1,0 +1,1676 @@
+
+> jianli@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: DeepSeek task steps are shown as successful AI analysis
+ok 1 - DeepSeek task steps are shown as successful AI analysis
+  ---
+  duration_ms: 0.7969
+  type: 'test'
+  ...
+# Subtest: fallback and local-only steps are not presented as successful AI
+ok 2 - fallback and local-only steps are not presented as successful AI
+  ---
+  duration_ms: 0.1415
+  type: 'test'
+  ...
+# Subtest: current source-verified reports are not labeled as unverified history
+ok 3 - current source-verified reports are not labeled as unverified history
+  ---
+  duration_ms: 0.1858
+  type: 'test'
+  ...
+# Subtest: validated current AI suggestion becomes an editable draft with same-item citation
+ok 4 - validated current AI suggestion becomes an editable draft with same-item citation
+  ---
+  duration_ms: 0.9293
+  type: 'test'
+  ...
+# Subtest: draft type favors missing execution, then contribution, while staying editable
+ok 5 - draft type favors missing execution, then contribution, while staying editable
+  ---
+  duration_ms: 0.2487
+  type: 'test'
+  ...
+# Subtest: validated structured AI task draft carries editable steps and checks
+ok 6 - validated structured AI task draft carries editable steps and checks
+  ---
+  duration_ms: 0.1943
+  type: 'test'
+  ...
+# Subtest: saved task-plan warning keeps advice but blocks unsafe draft adoption
+ok 7 - saved task-plan warning keeps advice but blocks unsafe draft adoption
+  ---
+  duration_ms: 0.1676
+  type: 'test'
+  ...
+# Subtest: historical, failed, reviewed, or incorrectly cited advice cannot prefill a task
+ok 8 - historical, failed, reviewed, or incorrectly cited advice cannot prefill a task
+  ---
+  duration_ms: 0.2315
+  type: 'test'
+  ...
+# Subtest: AI draft fills blanks after a student writes the deliverable without replacing their plan
+ok 9 - AI draft fills blanks after a student writes the deliverable without replacing their plan
+  ---
+  duration_ms: 0.3388
+  type: 'test'
+  ...
+# Subtest: legacy advice only fills a blank deliverable and leaves hand-written checks intact
+ok 10 - legacy advice only fills a blank deliverable and leaves hand-written checks intact
+  ---
+  duration_ms: 0.3417
+  type: 'test'
+  ...
+# Subtest: authorized resume download preserves binary bytes and filename after session refresh
+ok 11 - authorized resume download preserves binary bytes and filename after session refresh
+  ---
+  duration_ms: 25.326
+  type: 'test'
+  ...
+# Subtest: refresh server failure is not classified as an expired session
+ok 12 - refresh server failure is not classified as an expired session
+  ---
+  duration_ms: 0.8147
+  type: 'test'
+  ...
+# Subtest: definitive refresh rejection remains an authentication error
+ok 13 - definitive refresh rejection remains an authentication error
+  ---
+  duration_ms: 0.7425
+  type: 'test'
+  ...
+# Subtest: concurrent protected reads share one refresh and retry with cookies
+ok 14 - concurrent protected reads share one refresh and retry with cookies
+  ---
+  duration_ms: 17.5786
+  type: 'test'
+  ...
+# Subtest: recently consumed refresh is recoverable, never a forced logout
+ok 15 - recently consumed refresh is recoverable, never a forced logout
+  ---
+  duration_ms: 0.8983
+  type: 'test'
+  ...
+# Subtest: refresh rejection recovers a cookie already renewed by another tab
+ok 16 - refresh rejection recovers a cookie already renewed by another tab
+  ---
+  duration_ms: 0.9173
+  type: 'test'
+  ...
+# Subtest: lost rotation response and a subsequent stale-token retry stay recoverable
+ok 17 - lost rotation response and a subsequent stale-token retry stay recoverable
+  ---
+  duration_ms: 0.9976
+  type: 'test'
+  ...
+# Subtest: two independent client realms share a lock and rotate only once
+ok 18 - two independent client realms share a lock and rotate only once
+  ---
+  duration_ms: 12.1699
+  type: 'test'
+  ...
+# Subtest: network failures remain connection errors rather than 401
+ok 19 - network failures remain connection errors rather than 401
+  ---
+  duration_ms: 0.5046
+  type: 'test'
+  ...
+# Subtest: failed refresh network call also stays a connection error
+ok 20 - failed refresh network call also stays a connection error
+  ---
+  duration_ms: 0.6288
+  type: 'test'
+  ...
+# Subtest: authenticated retry preserves the exact multipart upload and request key
+ok 21 - authenticated retry preserves the exact multipart upload and request key
+  ---
+  duration_ms: 0.8861
+  type: 'test'
+  ...
+# Subtest: validation details become an actionable field message
+ok 22 - validation details become an actionable field message
+  ---
+  duration_ms: 0.2768
+  type: 'test'
+  ...
+# Subtest: visual generation and review send JSON content types and keep consent separate
+ok 23 - visual generation and review send JSON content types and keep consent separate
+  ---
+  duration_ms: 1.0615
+  type: 'test'
+  ...
+# Subtest: enterprise verification sends separate consent and reads only the application-scoped saved task
+ok 24 - enterprise verification sends separate consent and reads only the application-scoped saved task
+  ---
+  duration_ms: 0.6813
+  type: 'test'
+  ...
+# Subtest: growth task reads and version association do not grant model consent or replace an application
+ok 25 - growth task reads and version association do not grant model consent or replace an application
+  ---
+  duration_ms: 0.56
+  type: 'test'
+  ...
+# Subtest: successful application events refresh notification count; failed requests do not
+ok 26 - successful application events refresh notification count; failed requests do not
+  ---
+  duration_ms: 0.6779
+  type: 'test'
+  ...
+# Subtest: enterprise reply context is an owned report read with no model consent
+ok 27 - enterprise reply context is an owned report read with no model consent
+  ---
+  duration_ms: 0.9498
+  type: 'test'
+  ...
+# Subtest: human reply sends frozen report references with its text
+ok 28 - human reply sends frozen report references with its text
+  ---
+  duration_ms: 0.6433
+  type: 'test'
+  ...
+# Subtest: B-15: one explicit anchor navigation scrolls exactly once; refreshes never re-scroll
+ok 29 - B-15: one explicit anchor navigation scrolls exactly once; refreshes never re-scroll
+  ---
+  duration_ms: 1.4257
+  type: 'test'
+  ...
+# Subtest: B-15: only a NEW anchor navigation may scroll again
+ok 30 - B-15: only a NEW anchor navigation may scroll again
+  ---
+  duration_ms: 0.2335
+  type: 'test'
+  ...
+# Subtest: B-15: a target hidden by filters reports filtered-out instead of failing silently
+ok 31 - B-15: a target hidden by filters reports filtered-out instead of failing silently
+  ---
+  duration_ms: 0.2861
+  type: 'test'
+  ...
+# Subtest: B-15: dismissing the filtered-out notice consumes the pending anchor
+ok 32 - B-15: dismissing the filtered-out notice consumes the pending anchor
+  ---
+  duration_ms: 0.2457
+  type: 'test'
+  ...
+# Subtest: B-15: an unavailable target whose hash was cleared externally stops waiting
+ok 33 - B-15: an unavailable target whose hash was cleared externally stops waiting
+  ---
+  duration_ms: 0.2669
+  type: 'test'
+  ...
+# Subtest: B-15: non-application or missing hashes never scroll
+ok 34 - B-15: non-application or missing hashes never scroll
+  ---
+  duration_ms: 0.2025
+  type: 'test'
+  ...
+# Subtest: B-15: a stale rendered element cannot bypass the authorized list or active filter
+ok 35 - B-15: a stale rendered element cannot bypass the authorized list or active filter
+  ---
+  duration_ms: 0.281
+  type: 'test'
+  ...
+# Subtest: B-15: re-navigating after a filtered-out notice re-evaluates the new target
+ok 36 - B-15: re-navigating after a filtered-out notice re-evaluates the new target
+  ---
+  duration_ms: 0.2162
+  type: 'test'
+  ...
+# Subtest: B-15: closing a filtered-out notice still allows the next navigation to reveal
+ok 37 - B-15: closing a filtered-out notice still allows the next navigation to reveal
+  ---
+  duration_ms: 0.3687
+  type: 'test'
+  ...
+# Subtest: B-15: a withdrawn anchor target takes the notice path and never scrolls or opens
+ok 38 - B-15: a withdrawn anchor target takes the notice path and never scrolls or opens
+  ---
+  duration_ms: 0.7965
+  type: 'test'
+  ...
+# Subtest: pending list does not claim an empty result; refresh immediately removes the opened report
+ok 39 - pending list does not claim an empty result; refresh immediately removes the opened report
+  ---
+  duration_ms: 1.9721
+  type: 'test'
+  ...
+# Subtest: withdrawal between report response and authorization refresh prevents exporting that report
+ok 40 - withdrawal between report response and authorization refresh prevents exporting that report
+  ---
+  duration_ms: 0.3816
+  type: 'test'
+  ...
+# Subtest: a response started before a newer refresh cannot restore revoked content
+ok 41 - a response started before a newer refresh cannot restore revoked content
+  ---
+  duration_ms: 0.2075
+  type: 'test'
+  ...
+# Subtest: switching between two applications keeps the selected report and reply target aligned
+ok 42 - switching between two applications keeps the selected report and reply target aligned
+  ---
+  duration_ms: 0.5689
+  type: 'test'
+  ...
+# Subtest: window hiding and effect disposal invalidate requests, including across reactivation
+ok 43 - window hiding and effect disposal invalidate requests, including across reactivation
+  ---
+  duration_ms: 0.4883
+  type: 'test'
+  ...
+# Subtest: download bytes are not delivered after a withdrawal or an intervening window clear
+ok 44 - download bytes are not delivered after a withdrawal or an intervening window clear
+  ---
+  duration_ms: 0.7805
+  type: 'test'
+  ...
+# Subtest: failed read, download, or reply leaves no stale report and remains retryable
+ok 45 - failed read, download, or reply leaves no stale report and remains retryable
+  ---
+  duration_ms: 0.5913
+  type: 'test'
+  ...
+# Subtest: reply only reports confirmed delivery after detail and authorization reread
+ok 46 - reply only reports confirmed delivery after detail and authorization reread
+  ---
+  duration_ms: 1.3587
+  type: 'test'
+  ...
+# Subtest: a successful download reports browser delivery without claiming disk persistence
+ok 47 - a successful download reports browser delivery without claiming disk persistence
+  ---
+  duration_ms: 0.6126
+  type: 'test'
+  ...
+# Subtest: window cleanup triggered by browser download cannot restore the old report
+ok 48 - window cleanup triggered by browser download cannot restore the old report
+  ---
+  duration_ms: 0.518
+  type: 'test'
+  ...
+# Subtest: filtering keeps unsupported and claimed-only separate from evidence-backed rows
+ok 49 - filtering keeps unsupported and claimed-only separate from evidence-backed rows
+  ---
+  duration_ms: 1.439
+  type: 'test'
+  ...
+# Subtest: incomparable versions sort by submission time rather than implying a score ranking
+ok 50 - incomparable versions sort by submission time rather than implying a score ranking
+  ---
+  duration_ms: 10.5559
+  type: 'test'
+  ...
+# Subtest: equal criteria use saved scores with unassessed values last
+ok 51 - equal criteria use saved scores with unassessed values last
+  ---
+  duration_ms: 0.3135
+  type: 'test'
+  ...
+# Subtest: 五种投递状态都有确定的状态文案
+ok 52 - 五种投递状态都有确定的状态文案
+  ---
+  duration_ms: 1.3831
+  type: 'test'
+  ...
+# Subtest: 未知状态原样显示，下一步只建议刷新，不臆造进展
+ok 53 - 未知状态原样显示，下一步只建议刷新，不臆造进展
+  ---
+  duration_ms: 0.1872
+  type: 'test'
+  ...
+# Subtest: 企业回复类型保留三类映射
+ok 54 - 企业回复类型保留三类映射
+  ---
+  duration_ms: 0.1551
+  type: 'test'
+  ...
+# Subtest: 查看/下载状态的下一步必须等待回复并明示不代表通过筛选，不得推断录用
+ok 55 - 查看/下载状态的下一步必须等待回复并明示不代表通过筛选，不得推断录用
+  ---
+  duration_ms: 0.2857
+  type: 'test'
+  ...
+# Subtest: 每种已知状态都有非空的下一步动作
+ok 56 - 每种已知状态都有非空的下一步动作
+  ---
+  duration_ms: 0.1218
+  type: 'test'
+  ...
+# Subtest: 事件列表摘要只给条数，不展开事件内容
+ok 57 - 事件列表摘要只给条数，不展开事件内容
+  ---
+  duration_ms: 0.1386
+  type: 'test'
+  ...
+# Subtest: student list errors clear prior reply and do not masquerade as empty success
+ok 58 - student list errors clear prior reply and do not masquerade as empty success
+  ---
+  duration_ms: 1.4819
+  type: 'test'
+  ...
+# Subtest: hidden, disposed and replaced student requests cannot restore old replies
+ok 59 - hidden, disposed and replaced student requests cannot restore old replies
+  ---
+  duration_ms: 0.3496
+  type: 'test'
+  ...
+# Subtest: withdrawal is single-flight and a late result cannot restore a hidden page
+ok 60 - withdrawal is single-flight and a late result cannot restore a hidden page
+  ---
+  duration_ms: 0.2161
+  type: 'test'
+  ...
+# Subtest: withdrawal success rereads current status rather than fabricating a state
+ok 61 - withdrawal success rereads current status rather than fabricating a state
+  ---
+  duration_ms: 0.1554
+  type: 'test'
+  ...
+# Subtest: focus refresh during withdrawal waits for committed status
+ok 62 - focus refresh during withdrawal waits for committed status
+  ---
+  duration_ms: 0.2797
+  type: 'test'
+  ...
+# Subtest: 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+ok 63 - 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+  ---
+  duration_ms: 20.52
+  type: 'test'
+  ...
+# Subtest: 完整投递记录默认折叠，摘要给条数，内容仍可展开
+ok 64 - 完整投递记录默认折叠，摘要给条数，内容仍可展开
+  ---
+  duration_ms: 1.0404
+  type: 'test'
+  ...
+# Subtest: 查看与下载状态的卡片不推断录用
+ok 65 - 查看与下载状态的卡片不推断录用
+  ---
+  duration_ms: 1.1695
+  type: 'test'
+  ...
+# Subtest: 企业回复与原报告/问题/引用链接保留
+ok 66 - 企业回复与原报告/问题/引用链接保留
+  ---
+  duration_ms: 1.247
+  type: 'test'
+  ...
+# Subtest: 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+ok 67 - 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+  ---
+  duration_ms: 0.436
+  type: 'test'
+  ...
+# Subtest: 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+ok 68 - 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+  ---
+  duration_ms: 1.0346
+  type: 'test'
+  ...
+# Subtest: 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+ok 69 - 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+  ---
+  duration_ms: 0.4226
+  type: 'test'
+  ...
+# Subtest: 提交成功：先进入忙碌，结束后 busy 归零并给出成功提示
+ok 70 - 提交成功：先进入忙碌，结束后 busy 归零并给出成功提示
+  ---
+  duration_ms: 1.7091
+  type: 'test'
+  ...
+# Subtest: 忙碌防重：进行中的提交期间重复触发只发一次请求
+ok 71 - 忙碌防重：进行中的提交期间重复触发只发一次请求
+  ---
+  duration_ms: 0.2222
+  type: 'test'
+  ...
+# Subtest: 失败可重试：失败提示原样可见，busy 归零后再次提交发出新请求并成功
+ok 72 - 失败可重试：失败提示原样可见，busy 归零后再次提交发出新请求并成功
+  ---
+  duration_ms: 0.3194
+  type: 'test'
+  ...
+# Subtest: 重试仍失败：提示替换为最新一次失败原因，不残留成功提示
+ok 73 - 重试仍失败：提示替换为最新一次失败原因，不残留成功提示
+  ---
+  duration_ms: 0.35
+  type: 'test'
+  ...
+# Subtest: 授权复选框不预勾选，未勾选时确认投递按钮必须禁用
+ok 74 - 授权复选框不预勾选，未勾选时确认投递按钮必须禁用
+  ---
+  duration_ms: 8.6873
+  type: 'test'
+  ...
+# Subtest: 首屏明示三项核心风险：固定报告/引用、简历下载可能含联系方式、撤回但已下载副本无法追回
+ok 75 - 首屏明示三项核心风险：固定报告/引用、简历下载可能含联系方式、撤回但已下载副本无法追回
+  ---
+  duration_ms: 0.5497
+  type: 'test'
+  ...
+# Subtest: 高级说明默认折叠且内容完整，不得隐藏其余分享风险
+ok 76 - 高级说明默认折叠且内容完整，不得隐藏其余分享风险
+  ---
+  duration_ms: 0.4833
+  type: 'test'
+  ...
+# Subtest: 保留确认投递入口、授权文案与查看我的投递链接及报告页锚点
+ok 77 - 保留确认投递入口、授权文案与查看我的投递链接及报告页锚点
+  ---
+  duration_ms: 0.3486
+  type: 'test'
+  ...
+# Subtest: failed saved task distinguishes a pre-send budget stop from model rejection without leaking provider text
+ok 78 - failed saved task distinguishes a pre-send budget stop from model rejection without leaking provider text
+  ---
+  duration_ms: 1.3264
+  type: 'test'
+  ...
+# Subtest: generation requires explicit consent; loading saved suggestions never generates
+ok 79 - generation requires explicit consent; loading saved suggestions never generates
+  ---
+  duration_ms: 0.2698
+  type: 'test'
+  ...
+# Subtest: hiding clears AI text, aborts requests and ignores a late result
+ok 80 - hiding clears AI text, aborts requests and ignores a late result
+  ---
+  duration_ms: 0.2012
+  type: 'test'
+  ...
+# Subtest: disposed application cannot replace a newly opened application's saved result
+ok 81 - disposed application cannot replace a newly opened application's saved result
+  ---
+  duration_ms: 0.3725
+  type: 'test'
+  ...
+# Subtest: hiding during polling aborts the read and prevents a late completed result
+ok 82 - hiding during polling aborts the read and prevents a late completed result
+  ---
+  duration_ms: 18.6245
+  type: 'test'
+  ...
+# Subtest: polling reaches saved completed result without generating another task
+ok 83 - polling reaches saved completed result without generating another task
+  ---
+  duration_ms: 15.2842
+  type: 'test'
+  ...
+# Subtest: polling is finite and a later manual read resumes an existing task
+ok 84 - polling is finite and a later manual read resumes an existing task
+  ---
+  duration_ms: 61.536
+  type: 'test'
+  ...
+# Subtest: a failed poll clears AI result and does not loop or generate
+ok 85 - a failed poll clears AI result and does not loop or generate
+  ---
+  duration_ms: 15.5901
+  type: 'test'
+  ...
+# Subtest: revoked result clears saved AI text and requests an authorization refresh
+ok 86 - revoked result clears saved AI text and requests an authorization refresh
+  ---
+  duration_ms: 0.8223
+  type: 'test'
+  ...
+# Subtest: a stale revoked response cannot clear a different mounted application
+ok 87 - a stale revoked response cannot clear a different mounted application
+  ---
+  duration_ms: 0.7867
+  type: 'test'
+  ...
+# Subtest: effect cleanup and activation reload safely without retaining a stuck loading state
+ok 88 - effect cleanup and activation reload safely without retaining a stuck loading state
+  ---
+  duration_ms: 0.4354
+  type: 'test'
+  ...
+# Subtest: AI output uses each frozen requirement's citations and cannot borrow another requirement's evidence
+ok 89 - AI output uses each frozen requirement's citations and cannot borrow another requirement's evidence
+  ---
+  duration_ms: 0.3399
+  type: 'test'
+  ...
+# Subtest: mismatched frozen report output is cleared before display
+ok 90 - mismatched frozen report output is cleared before display
+  ---
+  duration_ms: 0.21
+  type: 'test'
+  ...
+# Subtest: legacy fixed reports may use their own saved primary evidence, while duplicate requirements are rejected
+ok 91 - legacy fixed reports may use their own saved primary evidence, while duplicate requirements are rejected
+  ---
+  duration_ms: 0.1337
+  type: 'test'
+  ...
+# Subtest: only AI-compared jobs are shown initially, retaining rule order and distinct companies
+ok 92 - only AI-compared jobs are shown initially, retaining rule order and distinct companies
+  ---
+  duration_ms: 1.4687
+  type: 'test'
+  ...
+# Subtest: model unavailable results retain the top three rule candidates and all saved candidates
+ok 93 - model unavailable results retain the top three rule candidates and all saved candidates
+  ---
+  duration_ms: 0.2826
+  type: 'test'
+  ...
+# Subtest: rejected model diagnostics never link to a candidate hidden by the compact view
+ok 94 - rejected model diagnostics never link to a candidate hidden by the compact view
+  ---
+  duration_ms: 0.1741
+  type: 'test'
+  ...
+# Subtest: empty or older saved results with unmatched advice do not invent or discard candidates
+ok 95 - empty or older saved results with unmatched advice do not invent or discard candidates
+  ---
+  duration_ms: 0.1345
+  type: 'test'
+  ...
+# Subtest: a previous focus job absent from current candidates remains visible in changes
+ok 96 - a previous focus job absent from current candidates remains visible in changes
+  ---
+  duration_ms: 0.1905
+  type: 'test'
+  ...
+# Subtest: question review separates personal evidence from third-party reference and preserves the report gap
+ok 97 - question review separates personal evidence from third-party reference and preserves the report gap
+  ---
+  duration_ms: 1.159
+  type: 'test'
+  ...
+# Subtest: reference-only evidence and a missing gap never imply the question is resolved
+ok 98 - reference-only evidence and a missing gap never imply the question is resolved
+  ---
+  duration_ms: 0.142
+  type: 'test'
+  ...
+# Subtest: changed and removed requirements demand a separate comparison
+ok 99 - changed and removed requirements demand a separate comparison
+  ---
+  duration_ms: 0.277
+  type: 'test'
+  ...
+# Subtest: 已知等级 1/2/3 显示为等级名称
+ok 100 - 已知等级 1/2/3 显示为等级名称
+  ---
+  duration_ms: 1.1106
+  type: 'test'
+  ...
+# Subtest: 未知历史等级保留原数字，不伪造比例
+ok 101 - 未知历史等级保留原数字，不伪造比例
+  ---
+  duration_ms: 0.4957
+  type: 'test'
+  ...
+# Subtest: 65 只是当前规则上限，不引入 100 分口径
+ok 102 - 65 只是当前规则上限，不引入 100 分口径
+  ---
+  duration_ms: 0.1552
+  type: 'test'
+  ...
+# Subtest: unsupported, rejected, corrected and unknown states never inflate support counts
+ok 103 - unsupported, rejected, corrected and unknown states never inflate support counts
+  ---
+  duration_ms: 2.3742
+  type: 'test'
+  ...
+# Subtest: priorities preserve requirement identities, stable equal weights and original report order
+ok 104 - priorities preserve requirement identities, stable equal weights and original report order
+  ---
+  duration_ms: 0.6274
+  type: 'test'
+  ...
+# Subtest: empty or fully supported reports do not invent a deficiency or completion claim
+ok 105 - empty or fully supported reports do not invent a deficiency or completion claim
+  ---
+  duration_ms: 0.1559
+  type: 'test'
+  ...
+# Subtest: all gaps survive a three-item action plan; priority uses weight, level then report order
+ok 106 - all gaps survive a three-item action plan; priority uses weight, level then report order
+  ---
+  duration_ms: 0.4118
+  type: 'test'
+  ...
+# Subtest: summary preserves every saved status, excludes reviewed items from support and invents no recommendation
+ok 107 - summary preserves every saved status, excludes reviewed items from support and invents no recommendation
+  ---
+  duration_ms: 0.4604
+  type: 'test'
+  ...
+# Subtest: deduplication hides identical saved advice and gaps while retaining distinct AI text
+ok 108 - deduplication hides identical saved advice and gaps while retaining distinct AI text
+  ---
+  duration_ms: 0.7472
+  type: 'test'
+  ...
+# Subtest: 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+ok 109 - 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+  ---
+  duration_ms: 6.0383
+  type: 'test'
+  ...
+# Subtest: 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+ok 110 - 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+  ---
+  duration_ms: 0.2003
+  type: 'test'
+  ...
+# Subtest: 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+ok 111 - 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+  ---
+  duration_ms: 0.7606
+  type: 'test'
+  ...
+# Subtest: 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+ok 112 - 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+  ---
+  duration_ms: 0.7678
+  type: 'test'
+  ...
+# Subtest: 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+ok 113 - 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+  ---
+  duration_ms: 0.1136
+  type: 'test'
+  ...
+# Subtest: 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+ok 114 - 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+  ---
+  duration_ms: 0.0714
+  type: 'test'
+  ...
+# Subtest: 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 115 - 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 3.8979
+  type: 'test'
+  ...
+# Subtest: 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 116 - 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 0.3789
+  type: 'test'
+  ...
+# Subtest: 旧任务（后端未下发目标字段）的有效目标就是原岗位，不显示跨岗位
+ok 117 - 旧任务（后端未下发目标字段）的有效目标就是原岗位，不显示跨岗位
+  ---
+  duration_ms: 2.4972
+  type: 'test'
+  ...
+# Subtest: 未改后端时同岗位回填 targetJobId 仍视为原岗位
+ok 118 - 未改后端时同岗位回填 targetJobId 仍视为原岗位
+  ---
+  duration_ms: 0.3682
+  type: 'test'
+  ...
+# Subtest: 已保存跨岗位目标：crossJob 为真且展示目标标题；空草稿不改已保存目标
+ok 119 - 已保存跨岗位目标：crossJob 为真且展示目标标题；空草稿不改已保存目标
+  ---
+  duration_ms: 0.2338
+  type: 'test'
+  ...
+# Subtest: 有效 UUID 草稿是未保存改选：不得误示为已保存，生成不使用它
+ok 120 - 有效 UUID 草稿是未保存改选：不得误示为已保存，生成不使用它
+  ---
+  duration_ms: 0.3645
+  type: 'test'
+  ...
+# Subtest: 草稿含空白会先修剪再校验
+ok 121 - 草稿含空白会先修剪再校验
+  ---
+  duration_ms: 0.3642
+  type: 'test'
+  ...
+# Subtest: 非 UUID 草稿回落到已保存目标，不作为有效改选
+ok 122 - 非 UUID 草稿回落到已保存目标，不作为有效改选
+  ---
+  duration_ms: 0.1873
+  type: 'test'
+  ...
+# Subtest: 跨岗位任务改选回原岗位同样是未保存改选，必须再保存
+ok 123 - 跨岗位任务改选回原岗位同样是未保存改选，必须再保存
+  ---
+  duration_ms: 0.2451
+  type: 'test'
+  ...
+# Subtest: 分析开始后岗位与材料同时锁定；失败后解锁可人工重存
+ok 124 - 分析开始后岗位与材料同时锁定；失败后解锁可人工重存
+  ---
+  duration_ms: 0.1617
+  type: 'test'
+  ...
+# Subtest: 公开岗位列表参数：空白搜索省略 q，页码下限 1，pageSize 固定 10
+ok 125 - 公开岗位列表参数：空白搜索省略 q，页码下限 1，pageSize 固定 10
+  ---
+  duration_ms: 1.077
+  type: 'test'
+  ...
+# Subtest: 分页边界：总页末 hasNext 关闭，翻页不受前 100 条限制
+ok 126 - 分页边界：总页末 hasNext 关闭，翻页不受前 100 条限制
+  ---
+  duration_ms: 0.4392
+  type: 'test'
+  ...
+# Subtest: 背景变化包含 job 标签并翻译为目标岗位变化
+ok 127 - 背景变化包含 job 标签并翻译为目标岗位变化
+  ---
+  duration_ms: 0.1524
+  type: 'test'
+  ...
+# Subtest: 保存材料选择：未选目标时请求体不含 targetJobId（client 层对可省略字段的契约）
+ok 128 - 保存材料选择：未选目标时请求体不含 targetJobId（client 层对可省略字段的契约）
+  ---
+  duration_ms: 26.6114
+  type: 'test'
+  ...
+# Subtest: 保存材料选择：已选目标时请求体携带 targetJobId UUID
+ok 129 - 保存材料选择：已选目标时请求体携带 targetJobId UUID
+  ---
+  duration_ms: 0.7336
+  type: 'test'
+  ...
+# Subtest: 保存载荷：组件实际路径恒携带显式目标——清除改选=保持已保存跨岗位目标，而非省略回原岗位
+ok 130 - 保存载荷：组件实际路径恒携带显式目标——清除改选=保持已保存跨岗位目标，而非省略回原岗位
+  ---
+  duration_ms: 0.3049
+  type: 'test'
+  ...
+# Subtest: 保存载荷：明确选择原岗位并保存，请求体显式携带原岗位 UUID
+ok 131 - 保存载荷：明确选择原岗位并保存，请求体显式携带原岗位 UUID
+  ---
+  duration_ms: 0.1321
+  type: 'test'
+  ...
+# Subtest: 保存载荷：旧任务无草稿=显式原岗位；有效改选草稿=使用改选
+ok 132 - 保存载荷：旧任务无草稿=显式原岗位；有效改选草稿=使用改选
+  ---
+  duration_ms: 0.1041
+  type: 'test'
+  ...
+# Subtest: 保存载荷经真实 client 发送：清除改选场景 body 携带已保存目标
+ok 133 - 保存载荷经真实 client 发送：清除改选场景 body 携带已保存目标
+  ---
+  duration_ms: 0.591
+  type: 'test'
+  ...
+# Subtest: 时间线：保存进行中读取列表——两个回执都生效，列表 busy 正常收尾不卡死
+ok 134 - 时间线：保存进行中读取列表——两个回执都生效，列表 busy 正常收尾不卡死
+  ---
+  duration_ms: 0.446
+  type: 'test'
+  ...
+# Subtest: 时间线：列表读取进行中保存——保存回执不被列表废弃
+ok 135 - 时间线：列表读取进行中保存——保存回执不被列表废弃
+  ---
+  duration_ms: 0.2638
+  type: 'test'
+  ...
+# Subtest: 时间线：隐藏页后过期的列表与任务回执都不得复活状态
+ok 136 - 时间线：隐藏页后过期的列表与任务回执都不得复活状态
+  ---
+  duration_ms: 0.3111
+  type: 'test'
+  ...
+# Subtest: 时间线：手动刷新清除在途列表并复位列表 busy，新列表随后生效
+ok 137 - 时间线：手动刷新清除在途列表并复位列表 busy，新列表随后生效
+  ---
+  duration_ms: 0.2632
+  type: 'test'
+  ...
+# Subtest: 时间线：更新请求使旧列表作废时，busy 仍由收尾路径复位
+ok 138 - 时间线：更新请求使旧列表作废时，busy 仍由收尾路径复位
+  ---
+  duration_ms: 0.238
+  type: 'test'
+  ...
+# Subtest: hiding or switching accounts invalidates an in-flight saved task or generation response
+ok 139 - hiding or switching accounts invalidates an in-flight saved task or generation response
+  ---
+  duration_ms: 0.9221
+  type: 'test'
+  ...
+# Subtest: a newer read or mutation prevents an older response from replacing the selected versions
+ok 140 - a newer read or mutation prevents an older response from replacing the selected versions
+  ---
+  duration_ms: 0.1302
+  type: 'test'
+  ...
+# Subtest: pending or compared reports freeze selected materials; only an explicit failed workflow can reselect
+ok 141 - pending or compared reports freeze selected materials; only an explicit failed workflow can reselect
+  ---
+  duration_ms: 0.221
+  type: 'test'
+  ...
+# Subtest: B-13: a successful refresh that finds the task finished clears the stopped-auto-query notice
+ok 142 - B-13: a successful refresh that finds the task finished clears the stopped-auto-query notice
+  ---
+  duration_ms: 0.1668
+  type: 'test'
+  ...
+# Subtest: B-13: re-entering normal querying plans polls without the stopped notice
+ok 143 - B-13: re-entering normal querying plans polls without the stopped notice
+  ---
+  duration_ms: 0.165
+  type: 'test'
+  ...
+# Subtest: B-13: an exhausted poll budget still stops polling with the stop notice
+ok 144 - B-13: an exhausted poll budget still stops polling with the stop notice
+  ---
+  duration_ms: 0.2345
+  type: 'test'
+  ...
+# Subtest: B-13: a failed or busy refresh keeps its error visible and leaves the notice untouched
+ok 145 - B-13: a failed or busy refresh keeps its error visible and leaves the notice untouched
+  ---
+  duration_ms: 0.148
+  type: 'test'
+  ...
+# Subtest: preset interface scores stay within the current material-support rule scale
+ok 146 - preset interface scores stay within the current material-support rule scale
+  ---
+  duration_ms: 1.1236
+  type: 'test'
+  ...
+# Subtest: demo has three synthetic identities with aligned requirement columns and no real report
+ok 147 - demo has three synthetic identities with aligned requirement columns and no real report
+  ---
+  duration_ms: 1.0517
+  type: 'test'
+  ...
+# Subtest: same production filter narrows demo by candidate, focused requirement and material state
+ok 148 - same production filter narrows demo by candidate, focused requirement and material state
+  ---
+  duration_ms: 0.5465
+  type: 'test'
+  ...
+# Subtest: demo and real heatmaps use evidence states even when the current rule cap is below 75
+ok 149 - demo and real heatmaps use evidence states even when the current rule cap is below 75
+  ---
+  duration_ms: 0.4048
+  type: 'test'
+  ...
+# Subtest: search excludes unfinished versions and finds historical filenames without mutating history
+ok 150 - search excludes unfinished versions and finds historical filenames without mutating history
+  ---
+  duration_ms: 2.302
+  type: 'test'
+  ...
+# Subtest: hiding selected versions by search does not discard the selection
+ok 151 - hiding selected versions by search does not discard the selection
+  ---
+  duration_ms: 0.3198
+  type: 'test'
+  ...
+# Subtest: ten-version limit keeps selected versions removable and does not duplicate IDs
+ok 152 - ten-version limit keeps selected versions removable and does not duplicate IDs
+  ---
+  duration_ms: 0.3442
+  type: 'test'
+  ...
+# Subtest: project display groups prioritize named pairs without removing discoverable old fixtures
+ok 153 - project display groups prioritize named pairs without removing discoverable old fixtures
+  ---
+  duration_ms: 0.8326
+  type: 'test'
+  ...
+# Subtest: notification destinations permit only authorized application pages
+ok 154 - notification destinations permit only authorized application pages
+  ---
+  duration_ms: 1.3568
+  type: 'test'
+  ...
+# Subtest: notification target outside recent 100 is fetched with a scoped read
+ok 155 - notification target outside recent 100 is fetched with a scoped read
+  ---
+  duration_ms: 0.498
+  type: 'test'
+  ...
+# Subtest: revoked or wrong-job notification target cannot enter an authorized board
+ok 156 - revoked or wrong-job notification target cannot enter an authorized board
+  ---
+  duration_ms: 0.6724
+  type: 'test'
+  ...
+# Subtest: only the stale application anchor is removed without dropping query parameters
+ok 157 - only the stale application anchor is removed without dropping query parameters
+  ---
+  duration_ms: 0.8638
+  type: 'test'
+  ...
+# Subtest: failed ZIP upload retains project and request key across repeated retries
+ok 158 - failed ZIP upload retains project and request key across repeated retries
+  ---
+  duration_ms: 3.3419
+  type: 'test'
+  ...
+# Subtest: lost creation response retries with the same creation key
+ok 159 - lost creation response retries with the same creation key
+  ---
+  duration_ms: 0.4913
+  type: 'test'
+  ...
+# Subtest: refresh restores pending keys for the correct user without storing files
+ok 160 - refresh restores pending keys for the correct user without storing files
+  ---
+  duration_ms: 1.9225
+  type: 'test'
+  ...
+# Subtest: explicit new version retains project but gets a new upload key
+ok 161 - explicit new version retains project but gets a new upload key
+  ---
+  duration_ms: 0.4828
+  type: 'test'
+  ...
+# Subtest: reference role survives upload retry and refresh
+ok 162 - reference role survives upload retry and refresh
+  ---
+  duration_ms: 0.593
+  type: 'test'
+  ...
+# Subtest: 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+ok 163 - 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+  ---
+  duration_ms: 3.4442
+  type: 'test'
+  ...
+# Subtest: 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+ok 164 - 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+  ---
+  duration_ms: 0.6075
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败：错误可见且丢弃提示仍可见
+ok 165 - 恢复读取失败：错误可见且丢弃提示仍可见
+  ---
+  duration_ms: 0.4277
+  type: 'test'
+  ...
+# Subtest: 没有未保存编辑时，清除提示不得声称丢弃了编辑
+ok 166 - 没有未保存编辑时，清除提示不得声称丢弃了编辑
+  ---
+  duration_ms: 0.3437
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：再次编辑后丢弃提示结束
+ok 167 - 提示生命周期：再次编辑后丢弃提示结束
+  ---
+  duration_ms: 0.3758
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：显式保存或复制后丢弃提示结束
+ok 168 - 提示生命周期：显式保存或复制后丢弃提示结束
+  ---
+  duration_ms: 0.771
+  type: 'test'
+  ...
+# Subtest: 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+ok 169 - 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+  ---
+  duration_ms: 1.7743
+  type: 'test'
+  ...
+# Subtest: 清除提示是固定文案：不携带旧草稿文字等用户数据
+ok 170 - 清除提示是固定文案：不携带旧草稿文字等用户数据
+  ---
+  duration_ms: 0.3066
+  type: 'test'
+  ...
+# Subtest: 新会话不承接旧会话通知；dispose后旧回执不复活
+ok 171 - 新会话不承接旧会话通知；dispose后旧回执不复活
+  ---
+  duration_ms: 6.8374
+  type: 'test'
+  ...
+# Subtest: clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+ok 172 - clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+  ---
+  duration_ms: 1.116
+  type: 'test'
+  ...
+# Subtest: clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+ok 173 - clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+  ---
+  duration_ms: 0.4049
+  type: 'test'
+  ...
+# Subtest: 恢复后来源重验失败仍拒复制；门禁语义不变
+ok 174 - 恢复后来源重验失败仍拒复制；门禁语义不变
+  ---
+  duration_ms: 0.4707
+  type: 'test'
+  ...
+# Subtest: 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+ok 175 - 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+  ---
+  duration_ms: 7.258
+  type: 'test'
+  ...
+# Subtest: 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+ok 176 - 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+  ---
+  duration_ms: 1.4034
+  type: 'test'
+  ...
+# Subtest: 恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
+ok 177 - 恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
+  ---
+  duration_ms: 0.3256
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败后再次hidden：丢弃提示仍保持
+ok 178 - 恢复读取失败后再次hidden：丢弃提示仍保持
+  ---
+  duration_ms: 0.2343
+  type: 'test'
+  ...
+# Subtest: 成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+ok 179 - 成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+  ---
+  duration_ms: 0.1625
+  type: 'test'
+  ...
+# Subtest: 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+ok 180 - 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+  ---
+  duration_ms: 3.4288
+  type: 'test'
+  ...
+# Subtest: 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+ok 181 - 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+  ---
+  duration_ms: 0.4436
+  type: 'test'
+  ...
+# Subtest: 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+ok 182 - 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+  ---
+  duration_ms: 7.0674
+  type: 'test'
+  ...
+# Subtest: 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+ok 183 - 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+  ---
+  duration_ms: 0.742
+  type: 'test'
+  ...
+# Subtest: 网络失败：保留文字与选择，不自动重试
+ok 184 - 网络失败：保留文字与选择，不自动重试
+  ---
+  duration_ms: 1.0271
+  type: 'test'
+  ...
+# Subtest: 重复点击：保存进行中再次保存不发出第二个 PUT
+ok 185 - 重复点击：保存进行中再次保存不发出第二个 PUT
+  ---
+  duration_ms: 0.4535
+  type: 'test'
+  ...
+# Subtest: 刷新重读已保存内容：显式读取替换本地编辑
+ok 186 - 刷新重读已保存内容：显式读取替换本地编辑
+  ---
+  duration_ms: 0.2358
+  type: 'test'
+  ...
+# Subtest: 清空内容也需明确保存；仅清空不删除服务端记录
+ok 187 - 清空内容也需明确保存；仅清空不删除服务端记录
+  ---
+  duration_ms: 0.3993
+  type: 'test'
+  ...
+# Subtest: 引用键为三元组：两个报告同 citationId 不合并
+ok 188 - 引用键为三元组：两个报告同 citationId 不合并
+  ---
+  duration_ms: 0.7977
+  type: 'test'
+  ...
+# Subtest: 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+ok 189 - 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+  ---
+  duration_ms: 0.6133
+  type: 'test'
+  ...
+# Subtest: 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+ok 190 - 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+  ---
+  duration_ms: 0.4662
+  type: 'test'
+  ...
+# Subtest: 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+ok 191 - 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+  ---
+  duration_ms: 1.5952
+  type: 'test'
+  ...
+# Subtest: 重复点击复制：上一次写入未完成时拒绝第二次
+ok 192 - 重复点击复制：上一次写入未完成时拒绝第二次
+  ---
+  duration_ms: 0.2249
+  type: 'test'
+  ...
+# Subtest: 422 来源不可用：保留编辑并提示，不进入冲突态
+ok 193 - 422 来源不可用：保留编辑并提示，不进入冲突态
+  ---
+  duration_ms: 0.1749
+  type: 'test'
+  ...
+# Subtest: 读取失败：错误可见且不清空已有本地输入
+ok 194 - 读取失败：错误可见且不清空已有本地输入
+  ---
+  duration_ms: 0.2187
+  type: 'test'
+  ...
+# Subtest: 本地限制：6000 字与 20 条引用在保存前被拦截
+ok 195 - 本地限制：6000 字与 20 条引用在保存前被拦截
+  ---
+  duration_ms: 0.0786
+  type: 'test'
+  ...
+# Subtest: api client：三个调用的路径、方法与载荷完全匹配协议
+ok 196 - api client：三个调用的路径、方法与载荷完全匹配协议
+  ---
+  duration_ms: 20.3577
+  type: 'test'
+  ...
+# Subtest: 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+ok 197 - 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+  ---
+  duration_ms: 0.3117
+  type: 'test'
+  ...
+# Subtest: 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+ok 198 - 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+  ---
+  duration_ms: 0.2043
+  type: 'test'
+  ...
+# Subtest: 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+ok 199 - 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+  ---
+  duration_ms: 0.2606
+  type: 'test'
+  ...
+# Subtest: 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+ok 200 - 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+  ---
+  duration_ms: 0.319
+  type: 'test'
+  ...
+# Subtest: 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+ok 201 - 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+  ---
+  duration_ms: 0.2727
+  type: 'test'
+  ...
+# Subtest: 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+ok 202 - 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+  ---
+  duration_ms: 0.1459
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+ok 203 - 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+  ---
+  duration_ms: 0.3393
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+ok 204 - 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+  ---
+  duration_ms: 0.2856
+  type: 'test'
+  ...
+# Subtest: 目标绑定刷新失败：错误可见且不清空已有options与编辑
+ok 205 - 目标绑定刷新失败：错误可见且不清空已有options与编辑
+  ---
+  duration_ms: 0.2114
+  type: 'test'
+  ...
+# Subtest: 来源重验成功：旧目标引用降级失效但保留身份，预览/复制不再含其原文
+ok 206 - 来源重验成功：旧目标引用降级失效但保留身份，预览/复制不再含其原文
+  ---
+  duration_ms: 0.2928
+  type: 'test'
+  ...
+# Subtest: 来源重验 pending：旧预览确认被拒绝，不写剪贴板
+ok 207 - 来源重验 pending：旧预览确认被拒绝，不写剪贴板
+  ---
+  duration_ms: 0.2047
+  type: 'test'
+  ...
+# Subtest: 来源重验失败：复制被拒；保存回执或重验成功恢复确认资格
+ok 208 - 来源重验失败：复制被拒；保存回执或重验成功恢复确认资格
+  ---
+  duration_ms: 0.2409
+  type: 'test'
+  ...
+# Subtest: 迟到保存回执：不降级已读取的新基线，saving正常结束，读取期间编辑保留
+ok 209 - 迟到保存回执：不降级已读取的新基线，saving正常结束，读取期间编辑保留
+  ---
+  duration_ms: 0.1962
+  type: 'test'
+  ...
+# Subtest: 旧GET回执不得恢复较新重验判失效的引用
+ok 210 - 旧GET回执不得恢复较新重验判失效的引用
+  ---
+  duration_ms: 0.271
+  type: 'test'
+  ...
+# Subtest: 旧PUT回执不得恢复较新重验判失效的引用；新revision与saving复位照常
+ok 211 - 旧PUT回执不得恢复较新重验判失效的引用；新revision与saving复位照常
+  ---
+  duration_ms: 0.2895
+  type: 'test'
+  ...
+# Subtest: 重验pending期间旧GET回执不得解除门禁放行旧预览复制
+ok 212 - 重验pending期间旧GET回执不得解除门禁放行旧预览复制
+  ---
+  duration_ms: 0.2983
+  type: 'test'
+  ...
+# Subtest: 较新重验failed后旧GET/PUT回执不得解除失败门禁
+ok 213 - 较新重验failed后旧GET/PUT回执不得解除失败门禁
+  ---
+  duration_ms: 0.2491
+  type: 'test'
+  ...
+# Subtest: 面板：来源重验 pending/failed 状态可见且复制确认被禁用
+ok 214 - 面板：来源重验 pending/failed 状态可见且复制确认被禁用
+  ---
+  duration_ms: 8.6022
+  type: 'test'
+  ...
+# Subtest: 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+ok 215 - 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+  ---
+  duration_ms: 0.7177
+  type: 'test'
+  ...
+# Subtest: 面板：引用列表区分基准/目标与第三方参考，选中可切换
+ok 216 - 面板：引用列表区分基准/目标与第三方参考，选中可切换
+  ---
+  duration_ms: 1.0315
+  type: 'test'
+  ...
+# Subtest: 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+ok 217 - 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+  ---
+  duration_ms: 0.6098
+  type: 'test'
+  ...
+# Subtest: 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+ok 218 - 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+  ---
+  duration_ms: 1.4812
+  type: 'test'
+  ...
+# Subtest: 面板：正文输入与失效引用移除走真实回调
+ok 219 - 面板：正文输入与失效引用移除走真实回调
+  ---
+  duration_ms: 0.7344
+  type: 'test'
+  ...
+# Subtest: growth continuation carries its exact material versions without starting AI
+ok 220 - growth continuation carries its exact material versions without starting AI
+  ---
+  duration_ms: 1.8484
+  type: 'test'
+  ...
+# Subtest: career recommendation carries the exact selected material versions to the job
+ok 221 - career recommendation carries the exact selected material versions to the job
+  ---
+  duration_ms: 0.2713
+  type: 'test'
+  ...
+# Subtest: job analysis accepts only completed owned versions and removes duplicates
+ok 222 - job analysis accepts only completed owned versions and removes duplicates
+  ---
+  duration_ms: 0.2011
+  type: 'test'
+  ...
+# Subtest: invalid requested resume stays unselected instead of silently replacing materials
+ok 223 - invalid requested resume stays unselected instead of silently replacing materials
+  ---
+  duration_ms: 0.1494
+  type: 'test'
+  ...
+# Subtest: direct job entry does not automatically select the newest career case
+ok 224 - direct job entry does not automatically select the newest career case
+  ---
+  duration_ms: 0.1932
+  type: 'test'
+  ...
+# Subtest: visibilitychange, focus and pageshow arriving together refresh once
+ok 225 - visibilitychange, focus and pageshow arriving together refresh once
+  ---
+  duration_ms: 1.051
+  type: 'test'
+  ...
+# Subtest: a trigger after the merge window refreshes again with fresh time
+ok 226 - a trigger after the merge window refreshes again with fresh time
+  ---
+  duration_ms: 0.162
+  type: 'test'
+  ...
+# Subtest: hiding resets the merge window so the return always reloads
+ok 227 - hiding resets the merge window so the return always reloads
+  ---
+  duration_ms: 0.1442
+  type: 'test'
+  ...
+# Subtest: each gate starts empty so a mount refresh is never absorbed
+ok 228 - each gate starts empty so a mount refresh is never absorbed
+  ---
+  duration_ms: 0.3453
+  type: 'test'
+  ...
+# Subtest: six material gaps render six items even when the saved action plan contains only three
+ok 229 - six material gaps render six items even when the saved action plan contains only three
+  ---
+  duration_ms: 10.7513
+  type: 'test'
+  ...
+# Subtest: an absent action plan never empties the group or invents advice and attribution
+ok 230 - an absent action plan never empties the group or invents advice and attribution
+  ---
+  duration_ms: 0.678
+  type: 'test'
+  ...
+# Subtest: identical rules advice appears once while its saved source remains visible
+ok 231 - identical rules advice appears once while its saved source remains visible
+  ---
+  duration_ms: 1.0973
+  type: 'test'
+  ...
+# Subtest: distinct AI advice and gap survive, with only same-requirement saved citations
+ok 232 - distinct AI advice and gap survive, with only same-requirement saved citations
+  ---
+  duration_ms: 0.9367
+  type: 'test'
+  ...
+# Subtest: admin retains its action plan without receiving student controls or duplicate rules text
+ok 233 - admin retains its action plan without receiving student controls or duplicate rules text
+  ---
+  duration_ms: 0.6332
+  type: 'test'
+  ...
+# Subtest: student receives one merged plan and no standalone duplicate
+ok 234 - student receives one merged plan and no standalone duplicate
+  ---
+  duration_ms: 0.6538
+  type: 'test'
+  ...
+# Subtest: review items open when gaps and partial support are absent
+ok 235 - review items open when gaps and partial support are absent
+  ---
+  duration_ms: 0.5899
+  type: 'test'
+  ...
+# Subtest: partial support opens its complete saved list instead of an empty gap panel
+ok 236 - partial support opens its complete saved list instead of an empty gap panel
+  ---
+  duration_ms: 0.6417
+  type: 'test'
+  ...
+# Subtest: fully supported and empty reports do not invent gaps or advice
+ok 237 - fully supported and empty reports do not invent gaps or advice
+  ---
+  duration_ms: 1.3387
+  type: 'test'
+  ...
+# Subtest: unmatched actions never create requirements, suggestions or citations
+ok 238 - unmatched actions never create requirements, suggestions or citations
+  ---
+  duration_ms: 0.7284
+  type: 'test'
+  ...
+# Subtest: known fixture categories change display only; unknown user titles stay visible
+ok 239 - known fixture categories change display only; unknown user titles stay visible
+  ---
+  duration_ms: 1.407
+  type: 'test'
+  ...
+# Subtest: default list omits known old fixtures and unfinished versions without modifying source
+ok 240 - default list omits known old fixtures and unfinished versions without modifying source
+  ---
+  duration_ms: 1.4102
+  type: 'test'
+  ...
+# Subtest: search can discover hidden history and version filenames, including null filenames
+ok 241 - search can discover hidden history and version filenames, including null filenames
+  ---
+  duration_ms: 0.3017
+  type: 'test'
+  ...
+# Subtest: all completed history stays available for existing explicit links even when search hides it
+ok 242 - all completed history stays available for existing explicit links even when search hides it
+  ---
+  duration_ms: 0.2833
+  type: 'test'
+  ...
+# Subtest: 判定用语由同一来源提供，历史值和未评估不混为新结论
+ok 243 - 判定用语由同一来源提供，历史值和未评估不混为新结论
+  ---
+  duration_ms: 1.1817
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：supported
+ok 244 - 徽标与雷达实际渲染统一判定：supported
+  ---
+  duration_ms: 6.3907
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：partial
+ok 245 - 徽标与雷达实际渲染统一判定：partial
+  ---
+  duration_ms: 0.5581
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：claimed_only
+ok 246 - 徽标与雷达实际渲染统一判定：claimed_only
+  ---
+  duration_ms: 0.4794
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：gap
+ok 247 - 徽标与雷达实际渲染统一判定：gap
+  ---
+  duration_ms: 0.4681
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：unsupported
+ok 248 - 徽标与雷达实际渲染统一判定：unsupported
+  ---
+  duration_ms: 0.7852
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：verified
+ok 249 - 徽标与雷达实际渲染统一判定：verified
+  ---
+  duration_ms: 0.3414
+  type: 'test'
+  ...
+# Subtest: SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+ok 250 - SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+  ---
+  duration_ms: 1.3779
+  type: 'test'
+  ...
+# Subtest: SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+ok 251 - SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+  ---
+  duration_ms: 0.9303
+  type: 'test'
+  ...
+# Subtest: ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+ok 252 - ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+  ---
+  duration_ms: 1.1356
+  type: 'test'
+  ...
+# Subtest: GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+ok 253 - GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+  ---
+  duration_ms: 2.113
+  type: 'test'
+  ...
+# Subtest: all frontend and proxied paths receive baseline response headers
+ok 254 - all frontend and proxied paths receive baseline response headers
+  ---
+  duration_ms: 1.2906
+  type: 'test'
+  ...
+# Subtest: HSTS requires both production and explicit HTTPS deployment
+ok 255 - HSTS requires both production and explicit HTTPS deployment
+  ---
+  duration_ms: 0.5871
+  type: 'test'
+  ...
+# Subtest: linked detail renders only selected requirement citations and keeps sources collapsed
+ok 256 - linked detail renders only selected requirement citations and keeps sources collapsed
+  ---
+  duration_ms: 11.4541
+  type: 'test'
+  ...
+# Subtest: synthetic radar never fabricates citations and supports fewer than three requirements
+ok 257 - synthetic radar never fabricates citations and supports fewer than three requirements
+  ---
+  duration_ms: 0.5218
+  type: 'test'
+  ...
+# Subtest: reference source cannot be presented as personal contribution
+ok 258 - reference source cannot be presented as personal contribution
+  ---
+  duration_ms: 0.5563
+  type: 'test'
+  ...
+# Subtest: missing material never creates a point; unavailable and invalid scores are not invented zeros
+ok 259 - missing material never creates a point; unavailable and invalid scores are not invented zeros
+  ---
+  duration_ms: 0.7604
+  type: 'test'
+  ...
+# Subtest: segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+ok 260 - segments stop at gaps, self claims and unavailable axes instead of filling a misleading area
+  ---
+  duration_ms: 0.5977
+  type: 'test'
+  ...
+# Subtest: selection joins only by requirement identity and never carries a missing citation from another requirement
+ok 261 - selection joins only by requirement identity and never carries a missing citation from another requirement
+  ---
+  duration_ms: 0.1615
+  type: 'test'
+  ...
+# Subtest: overlapping bounded excerpts expose 45 actual lines, without claiming either excerpt is complete
+ok 262 - overlapping bounded excerpts expose 45 actual lines, without claiming either excerpt is complete
+  ---
+  duration_ms: 1.6511
+  type: 'test'
+  ...
+# Subtest: complete function does not imply complete file
+ok 263 - complete function does not imply complete file
+  ---
+  duration_ms: 0.2356
+  type: 'test'
+  ...
+# Subtest: legacy ranges are unknown rather than inferred from snippet endpoints
+ok 264 - legacy ranges are unknown rather than inferred from snippet endpoints
+  ---
+  duration_ms: 0.1968
+  type: 'test'
+  ...
+# Subtest: a missing interior line cannot be displayed as full coverage
+ok 265 - a missing interior line cannot be displayed as full coverage
+  ---
+  duration_ms: 0.2564
+  type: 'test'
+  ...
+# Subtest: reference, changed version, conflicting hash, and wrong file cannot complete personal coverage
+ok 266 - reference, changed version, conflicting hash, and wrong file cannot complete personal coverage
+  ---
+  duration_ms: 0.3088
+  type: 'test'
+  ...
+# Subtest: stale, duplicate, or missing citation identifiers and truncated snippets fail closed
+ok 267 - stale, duplicate, or missing citation identifiers and truncated snippets fail closed
+  ---
+  duration_ms: 0.2905
+  type: 'test'
+  ...
+# Subtest: coverage beyond the source range and inconsistent full flags are not presented as verified
+ok 268 - coverage beyond the source range and inconsistent full flags are not presented as verified
+  ---
+  duration_ms: 0.8564
+  type: 'test'
+  ...
+# Subtest: deep links reveal nested evidence details and handle missing anchors safely
+ok 269 - deep links reveal nested evidence details and handle missing anchors safely
+  ---
+  duration_ms: 0.1826
+  type: 'test'
+  ...
+# Subtest: AI verification question becomes an editable, source-labeled human reply draft
+ok 270 - AI verification question becomes an editable, source-labeled human reply draft
+  ---
+  duration_ms: 1.1232
+  type: 'test'
+  ...
+# Subtest: empty citation list asks for verifiable material without implying report support
+ok 271 - empty citation list asks for verifiable material without implying report support
+  ---
+  duration_ms: 0.1476
+  type: 'test'
+  ...
+# Subtest: overlong draft is left untouched so a question cannot silently truncate a manual reply
+ok 272 - overlong draft is left untouched so a question cannot silently truncate a manual reply
+  ---
+  duration_ms: 0.7052
+  type: 'test'
+  ...
+# Subtest: direct report links follow edited reply text and deduplicate each requirement
+ok 273 - direct report links follow edited reply text and deduplicate each requirement
+  ---
+  duration_ms: 0.887
+  type: 'test'
+  ...
+# Subtest: equal requirement titles remain distinct when one edited block is removed
+ok 274 - equal requirement titles remain distinct when one edited block is removed
+  ---
+  duration_ms: 0.4515
+  type: 'test'
+  ...
+# Subtest: bracketed requirement titles retain their own report references
+ok 275 - bracketed requirement titles retain their own report references
+  ---
+  duration_ms: 0.2571
+  type: 'test'
+  ...
+# Subtest: only the citation declaration line keeps a direct link, not mentions in the reply body
+ok 276 - only the citation declaration line keeps a direct link, not mentions in the reply body
+  ---
+  duration_ms: 0.3016
+  type: 'test'
+  ...
+# Subtest: an edited longer citation identifier cannot keep a shorter direct link
+ok 277 - an edited longer citation identifier cannot keep a shorter direct link
+  ---
+  duration_ms: 0.2937
+  type: 'test'
+  ...
+1..277
+# tests 277
+# suites 0
+# pass 277
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 713.6523

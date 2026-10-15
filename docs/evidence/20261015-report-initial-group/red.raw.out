@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: six material gaps render six items even when the saved action plan contains only three
+ok 1 - six material gaps render six items even when the saved action plan contains only three
+  ---
+  duration_ms: 9.4494
+  type: 'test'
+  ...
+# Subtest: an absent action plan never empties the group or invents advice and attribution
+ok 2 - an absent action plan never empties the group or invents advice and attribution
+  ---
+  duration_ms: 0.6017
+  type: 'test'
+  ...
+# Subtest: identical rules advice appears once while its saved source remains visible
+ok 3 - identical rules advice appears once while its saved source remains visible
+  ---
+  duration_ms: 0.6753
+  type: 'test'
+  ...
+# Subtest: distinct AI advice and gap survive, with only same-requirement saved citations
+ok 4 - distinct AI advice and gap survive, with only same-requirement saved citations
+  ---
+  duration_ms: 0.9134
+  type: 'test'
+  ...
+# Subtest: admin retains its action plan without receiving student controls or duplicate rules text
+ok 5 - admin retains its action plan without receiving student controls or duplicate rules text
+  ---
+  duration_ms: 0.5977
+  type: 'test'
+  ...
+# Subtest: student receives one merged plan and no standalone duplicate
+ok 6 - student receives one merged plan and no standalone duplicate
+  ---
+  duration_ms: 0.5873
+  type: 'test'
+  ...
+# Subtest: review items open when gaps and partial support are absent
+not ok 7 - review items open when gaps and partial support are absent
+  ---
+  duration_ms: 3.4065
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\refresh-ui-20261015\\tests\\report-action-layer.test.mjs:110:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes('id="evidence-group-other" aria-expanded="true"'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/refresh-ui-20261015/tests/report-action-layer.test.mjs:112:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: partial support opens its complete saved list instead of an empty gap panel
+not ok 8 - partial support opens its complete saved list instead of an empty gap panel
+  ---
+  duration_ms: 0.6036
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\refresh-ui-20261015\\tests\\report-action-layer.test.mjs:120:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes('id="evidence-group-partial" aria-expanded="true"'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/refresh-ui-20261015/tests/report-action-layer.test.mjs:123:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: fully supported and empty reports do not invent gaps or advice
+not ok 9 - fully supported and empty reports do not invent gaps or advice
+  ---
+  duration_ms: 1.3961
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\refresh-ui-20261015\\tests\\report-action-layer.test.mjs:131:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes('id="evidence-group-supported" aria-expanded="true"'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/refresh-ui-20261015/tests/report-action-layer.test.mjs:133:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unmatched actions never create requirements, suggestions or citations
+ok 10 - unmatched actions never create requirements, suggestions or citations
+  ---
+  duration_ms: 0.8801
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 7
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 297.3594

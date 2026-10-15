@@ -1,0 +1,65 @@
+{
+  "base_commit": "8abed8b",
+  "steps": [
+    {
+      "name": "tests",
+      "command": [
+        "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "red": {
+    "passed": 7,
+    "failed": 3
+  },
+  "scope": "Only initial evidence group selection; saved report items, counts, advice and submission unchanged",
+  "frontend_tests": {
+    "passed": 277,
+    "failed": 0
+  },
+  "target_tests": {
+    "passed": 10,
+    "failed": 0
+  },
+  "browser": {
+    "report": "f00cfca2-af6d-4bc0-b170-f2be0f749979",
+    "initial_group_before": "gaps (0 items)",
+    "initial_group_after": "partial (2 items)",
+    "partial_titles": [
+      "PostgreSQL 数据访问代码",
+      "Redis 读写或缓存逻辑"
+    ],
+    "viewport_width": 320,
+    "scroll_width": 305,
+    "keyboard_enter_collapse": true,
+    "keyboard_enter_switch_supported_count": 3,
+    "source_details_initially_closed": 5,
+    "submission_consent_unchecked_and_disabled": true,
+    "viewport_reset": true,
+    "zoom_200_percent_verified": false
+  },
+  "limitations": [
+    "First created tab handle from prior turn was gone; used a new owned tab. Initial viewport did not apply to new tab until explicitly reset; measured innerWidth=320 before acceptance.",
+    "First copy invocation used the wrong cwd and then ran prior eight tests; retained prior-target-beforecopy.raw.out, not accepted as red result. Corrected copy produced seven passed/three failed.",
+    "before-320.png may show loading; before-empty-320.png is the observed empty panel proof.",
+    "No new report, submission, consent, model call or database migration was created. 3001 was not restarted."
+  ],
+  "production_restore": "live/normal-activation.json",
+  "hashes": {
+    "jianli/src/components/ReportEvidenceWorkspace.tsx": "97741a7f13b3f5797af1e9fad29297cf96af0ff4397f8b5d84b404a0c4b15b58",
+    "jianli/tests/report-action-layer.test.mjs": "067ba6ca8996b57c4c0a3883aaa19e16a28b81f67a060c258b51c8fc3b70efd1"
+  }
+}
