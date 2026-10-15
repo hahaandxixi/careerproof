@@ -70,7 +70,10 @@ python -m venv .venv
 ## 验证
 
 在后端目录运行。下例使用已经通过锁定版本核验的升级环境；新机器请先按上面的安装步骤
-建立环境，并运行 `python -m evals.verify_dependency_environment`，不要使用未同步依赖的旧 `.venv`。
+建立环境，并用所选环境的Python运行 `-m evals.verify_dependency_environment`，不要使用未同步依赖的旧 `.venv`。
+启动器会依次校验候选环境并跳过不匹配者；手动测试也必须使用通过校验的环境。
+若系统临时目录受限，可给pytest加 `--basetemp=.tmp-pytest-local`，只使用本轮专属且可重建的目录；
+涉及子进程读取TEMP的检查，还需将TMP/TEMP指向仓库内另一个专属临时目录。环境错误仍需记录并修复后复跑，不计作通过。
 
 ```powershell
 .\.venv-dependency23\Scripts\ruff.exe check .

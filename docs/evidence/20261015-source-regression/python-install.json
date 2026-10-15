@@ -1,0 +1,62 @@
+{
+  "source_commit": "9a710d5c87090eca13ca4e5ffd0f60b906ea888a",
+  "backend": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend",
+  "venv": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review",
+  "steps": [
+    {
+      "name": "venv",
+      "command": [
+        "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+        "-m",
+        "venv",
+        "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review"
+      ],
+      "exit_code": 0,
+      "seconds": 2.22
+    },
+    {
+      "name": "install",
+      "command": [
+        "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "install",
+        "-e",
+        ".[dev,mcp]"
+      ],
+      "exit_code": 0,
+      "seconds": 805.05
+    },
+    {
+      "name": "pip-check",
+      "command": [
+        "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.33
+    },
+    {
+      "name": "production-pins",
+      "command": [
+        "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+        "-m",
+        "evals.verify_dependency_environment"
+      ],
+      "exit_code": 0,
+      "seconds": 0.11
+    },
+    {
+      "name": "app-import",
+      "command": [
+        "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\.venv-review\\Scripts\\python.exe",
+        "-c",
+        "import app.main; print(app.main.__file__)"
+      ],
+      "exit_code": 0,
+      "seconds": 1.3
+    }
+  ]
+}

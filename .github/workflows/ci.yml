@@ -181,6 +181,39 @@ jobs:
           print("CI-internal databases ready; vector enabled in both")
           PY
 
+      # Migration drift uses a third database: migrated public tables must not
+      # affect the strict tests' schema-isolation assumptions.
+      - name: Verify full migration chain and model alignment
+        working-directory: backend
+        shell: bash
+        env:
+          APP_ENV: test
+          DEBUG: "false"
+          AI_PROVIDER: mock
+          AI_EXTERNAL_ENABLED: "false"
+          CI_ADMIN_URL: postgresql://ci:ci@127.0.0.1:5432/cp_ci
+          DATABASE_URL: postgresql+asyncpg://ci:ci@127.0.0.1:5432/alembic_check
+        run: |
+          python - <<'PY'
+          import asyncio
+          import os
+
+          import asyncpg
+
+
+          async def main() -> None:
+              connection = await asyncpg.connect(os.environ["CI_ADMIN_URL"])
+              try:
+                  await connection.execute("CREATE DATABASE alembic_check OWNER ci")
+              finally:
+                  await connection.close()
+
+
+          asyncio.run(main())
+          PY
+          python -m alembic upgrade head
+          python -m alembic check
+
       # Strict set part 1: eleven modules on the dedicated cp_ci database.
       - name: Run the strict PostgreSQL set on cp_ci
         working-directory: backend

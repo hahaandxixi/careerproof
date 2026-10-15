@@ -1,0 +1,28 @@
+{
+  "source_commit": "9a710d5c87090eca13ca4e5ffd0f60b906ea888a",
+  "database": "cp_migration_review_20261015",
+  "container": "careerproof-ci49-pg-20261014",
+  "steps": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "alembic",
+        "upgrade",
+        "head"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "alembic",
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "drop_test_database_exit_code": 0,
+  "stop_test_container_exit_code": 0
+}
