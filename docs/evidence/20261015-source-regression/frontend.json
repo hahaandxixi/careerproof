@@ -1,0 +1,51 @@
+{
+  "node": "v22.23.1",
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\jianli",
+  "source_commit": "9a710d5c87090eca13ca4e5ffd0f60b906ea888a",
+  "steps": [
+    {
+      "name": "install",
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 0,
+      "seconds": 7.92
+    },
+    {
+      "name": "tests",
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "test"
+      ],
+      "exit_code": 0,
+      "seconds": 1.03
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "exit_code": 0,
+      "seconds": 3.12
+    },
+    {
+      "name": "build",
+      "command": [
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\\u6c5f\u535a\\AppData\\Local\\hermes\\node\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "build"
+      ],
+      "exit_code": 0,
+      "seconds": 18.67
+    }
+  ]
+}

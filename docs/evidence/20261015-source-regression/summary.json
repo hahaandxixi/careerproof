@@ -1,0 +1,116 @@
+{
+  "source_commit": "9a710d5c87090eca13ca4e5ffd0f60b906ea888a",
+  "package": "CareerProof-source-preview-20261015-r4.zip",
+  "package_sha256": "964482f718dd61b7f1d0dcd11963a22dfd85ed71c6440ec366cd7dbe4761d217",
+  "verified_files": 756,
+  "app_source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend\\app\\__init__.py",
+  "fresh_dependency_install": false,
+  "ruff": {
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend",
+    "exit_code": 0,
+    "seconds": 0.09
+  },
+  "sqlite": {
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests",
+      "-q",
+      "--basetemp=.tmp-source-unit-r4",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-source-regression\\sqlite.junit.xml"
+    ],
+    "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r4-20261015\\backend",
+    "exit_code": 0,
+    "seconds": 324.38,
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "49",
+        "tests": "1349",
+        "time": "315.130",
+        "timestamp": "2026-10-15T16:19:21.933842+08:00",
+        "hostname": "LAPTOP-K7CHVGTD"
+      }
+    ]
+  },
+  "pg-strict": {
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests/test_ai_budget_production_race.py",
+      "app/tests/test_durable_matching.py",
+      "app/tests/test_visual_postgres_concurrency.py",
+      "app/tests/test_mcp_postgres_isolation.py",
+      "app/tests/test_real_matching.py",
+      "app/tests/test_durable_attempt_service.py",
+      "app/tests/test_ai_request_attempt_migration.py",
+      "app/tests/test_knowledge_semantic_postgres.py",
+      "app/tests/test_ai_shared_budget_service.py",
+      "app/tests/test_ai_shared_budget_migration.py",
+      "app/tests/test_application_reconsent_migration.py",
+      "-q",
+      "--basetemp=.tmp-source-r4-pg-strict",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-source-regression\\pg-strict.junit.xml"
+    ],
+    "database": "cp_ci",
+    "container": "careerproof-ci49-pg-20261014",
+    "exit_code": 0,
+    "seconds": 98.91,
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "87",
+        "time": "96.334",
+        "timestamp": "2026-10-15T16:27:37.229942+08:00",
+        "hostname": "LAPTOP-K7CHVGTD"
+      }
+    ]
+  },
+  "pg-hardstop": {
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests/test_attempt_hard_stop.py",
+      "-q",
+      "--basetemp=.tmp-source-r4-pg-hardstop",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261015-source-regression\\pg-hardstop.junit.xml"
+    ],
+    "database": "careerproof",
+    "container": "careerproof-ci49-pg-20261014",
+    "exit_code": 0,
+    "seconds": 24.55,
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "8",
+        "time": "23.477",
+        "timestamp": "2026-10-15T16:29:16.149892+08:00",
+        "hostname": "LAPTOP-K7CHVGTD"
+      }
+    ]
+  },
+  "pg_gate_exit_code": 0,
+  "remaining_test_schemas": {
+    "cp_ci": 0,
+    "careerproof": 0
+  },
+  "dedicated_container_stop_exit_code": 0
+}

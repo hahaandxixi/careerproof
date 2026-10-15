@@ -3,8 +3,9 @@
 当前目标 Provider 为 DeepSeek 官方 API：`AI_PROVIDER=deepseek`，Key 使用 `DEEPSEEK_API_KEY`，成本保护只允许 `deepseek-flash`。详见 [DeepSeek 官方 API 接入](../docs/guides/AI与数据边界.md) 与 [AI 用量和隐私控制](../docs/guides/AI与数据边界.md)。普通自动测试使用合成响应，不消耗 API 额度。
 
 「职证 CareerProof」的 FastAPI 后端。当前完成真实岗位、学生材料上传与版本历史、
-私有匹配报告、失败重试和岗位分类筛选。产品运行时必须启用DeepSeek；规则负责检索候选证据和限制评级边界，
-DeepSeek逐项解释候选证据、返回引用和材料缺口，调用或校验失败时才自动保留本地兜底报告。
+私有匹配报告、失败重试和岗位分类筛选。正常产品环境配置DeepSeek；规则负责检索候选证据和限制评级边界。
+学生未同意向外部AI发送材料时，仍可生成本地规则报告，不调用外部模型；明确同意后，
+DeepSeek逐项解释候选证据、返回引用和材料缺口，调用或校验失败时自动保留本地兜底报告。
 
 ## 架构边界
 
