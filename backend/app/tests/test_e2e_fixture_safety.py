@@ -194,6 +194,8 @@ def _manifest(tmp_path, **overrides):
         "distDir": ".next-e2e",
         "aiExternalEnabled": "false",
         "aiProvider": "mock",
+        "syntheticVerification": True,
+        "backendTarget": "evals.e2e_verification:create_app --factory",
         "backend": {
             "id": 424242,
             "startedAt": datetime.now(UTC).isoformat(),
@@ -243,6 +245,11 @@ def test_startup_manifest_verification_binds_pid_database_storage_and_mock(tmp_p
         ("aiExternalEnabled", "true"),
         ("aiProvider", "deepseek"),
         ("backendPort", 8000),
+        ("syntheticVerification", False),
+        ("syntheticVerification", "true"),
+        ("syntheticVerification", 1),
+        ("syntheticVerification", None),
+        ("backendTarget", "app.main:app"),
     ):
         with pytest.raises(IsolationError):
             verify_startup_manifest(
@@ -453,6 +460,10 @@ async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tm
     assert replay["mode"] == "verified"
     assert replay["applications"]["A"]["status"] == "withdrawn"
     assert replay["applications"]["A"]["enterpriseBoardVisible"] is False
+    assert replay["withdrawalChecks"]["checkedCount"] == 1
+    assert replay["withdrawalChecks"]["keptWithdrawnIds"] == [
+        state["applications"]["A"]["id"],
+    ]
     # Withdrawing A leaves the same-job delivery A2 and the other job B readable.
     assert replay["applications"]["A2"]["status"] == "submitted"
     assert replay["applications"]["A2"]["enterpriseBoardVisible"] is True
@@ -463,6 +474,28 @@ async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tm
     async with factory() as session:
         row = await session.get(Application, UUID(state["applications"]["A"]["id"]))
         assert row.status == "withdrawn"
+
+
+@pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+def test_database_guard_requires_explicit_project_port(port):
+    with pytest.raises(IsolationError, match="port") as denied:
+        guard_database_url(f"postgresql+asyncpg://u:never-print-this@127.0.0.1{port}/cp_e2e_r1")
+    assert "never-print-this" not in str(denied.value)
+
+
+async def test_replay_refuses_resurrected_delivery_with_withdrawal_history(e2e_app, tmp_path):
+    app, factory = e2e_app
+    await run_seed(app, factory, tmp_path)
+    state = await load_state(tmp_path)
+    assert (await withdraw_as(app, state, "student", "A")).status_code == 200
+    async with factory() as session:
+        row = await session.get(Application, UUID(state["applications"]["A"]["id"]))
+        row.status = "submitted"  # Isolated synthetic corruption, retaining the withdrawal event.
+        await session.commit()
+    before = await fixture_counts(factory)
+    with pytest.raises(IsolationError, match="withdrawn"):
+        await run_seed(app, factory, tmp_path, verify_only=True)
+    assert await fixture_counts(factory) == before
 
 
 async def test_verify_only_refuses_without_state_and_state_mismatch_refuses(e2e_app, tmp_path):

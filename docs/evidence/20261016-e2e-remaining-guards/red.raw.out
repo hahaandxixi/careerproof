@@ -1,0 +1,184 @@
+FFFFFFFFF                                                                [100%]
+================================== FAILURES ===================================
+___ test_startup_manifest_verification_binds_pid_database_storage_and_mock ____
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-e2e-guards-red/test_startup_manifest_verifica0')
+
+    def test_startup_manifest_verification_binds_pid_database_storage_and_mock(tmp_path):
+        def matching_probe(pid):
+            return datetime.fromisoformat(_manifest(tmp_path)["backend"]["startedAt"])
+    
+        assert verify_startup_manifest(
+            _manifest(tmp_path),
+            run_id=RUN_ID,
+            database_name="cp_e2e_e2e-card01",
+            storage_dir=Path(tmp_path) / "storage",
+            process_probe=matching_probe,
+        )["id"] == 424242
+        # A dead or reused PID refuses the seed.
+        with pytest.raises(IsolationError):
+            verify_startup_manifest(
+                _manifest(tmp_path),
+                run_id=RUN_ID,
+                database_name="cp_e2e_e2e-card01",
+                storage_dir=Path(tmp_path) / "storage",
+                process_probe=lambda pid: None,
+            )
+        stale = _manifest(tmp_path)
+        stale["backend"]["startedAt"] = (datetime.now(UTC) - timedelta(hours=1)).isoformat()
+        with pytest.raises(IsolationError):
+            verify_startup_manifest(
+                stale,
+                run_id=RUN_ID,
+                database_name="cp_e2e_e2e-card01",
+                storage_dir=Path(tmp_path) / "storage",
+                process_probe=matching_probe,
+            )
+        # Any manifest drift (run id, database, storage, AI mode, port) refuses.
+        for key, value in (
+            ("runId", "e2e-other02"),
+            ("databaseName", "careerproof"),
+            ("storageDir", str(Path(tmp_path) / "other-storage")),
+            ("aiExternalEnabled", "true"),
+            ("aiProvider", "deepseek"),
+            ("backendPort", 8000),
+            ("syntheticVerification", False),
+            ("syntheticVerification", "true"),
+            ("backendTarget", "app.main:app"),
+        ):
+>           with pytest.raises(IsolationError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:252: Failed
+_________ test_rerun_after_withdraw_keeps_a2_and_b_without_restoring __________
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x00000285C9360200>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000285FFE54250>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-e2e-guards-red/test_rerun_after_withdraw_keep0')
+
+    async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tmp_path):
+        app, factory = e2e_app
+        await run_seed(app, factory, tmp_path)
+        state = await load_state(tmp_path)
+        assert (await withdraw_as(app, state, "student", "A")).status_code == 200
+        after_withdraw = await fixture_counts(factory)
+        replay = await run_seed(app, factory, tmp_path)
+        assert replay["mode"] == "verified"
+        assert replay["applications"]["A"]["status"] == "withdrawn"
+        assert replay["applications"]["A"]["enterpriseBoardVisible"] is False
+>       assert replay["withdrawalChecks"]["checkedCount"] == 1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'withdrawalChecks'
+
+app\tests\test_e2e_fixture_safety.py:461: KeyError
+____________ test_database_guard_requires_explicit_project_port[] _____________
+
+port = ''
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+__________ test_database_guard_requires_explicit_project_port[:6543] __________
+
+port = ':6543'
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+___________ test_database_guard_requires_explicit_project_port[:0] ____________
+
+port = ':0'
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+_________ test_database_guard_requires_explicit_project_port[:65536] __________
+
+port = ':65536'
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+__________ test_database_guard_requires_explicit_project_port[:bad] ___________
+
+port = ':bad'
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+___________ test_database_guard_requires_explicit_project_port[:-1] ___________
+
+port = ':-1'
+
+    @pytest.mark.parametrize("port", ["", ":6543", ":0", ":65536", ":bad", ":-1"])
+    def test_database_guard_requires_explicit_project_port(port):
+>       with pytest.raises(IsolationError, match="port") as denied:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:479: Failed
+______ test_replay_refuses_resurrected_delivery_with_withdrawal_history _______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x00000285FFF92F30>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002858058F690>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-e2e-guards-red/test_replay_refuses_resurrecte0')
+
+    async def test_replay_refuses_resurrected_delivery_with_withdrawal_history(e2e_app, tmp_path):
+        app, factory = e2e_app
+        await run_seed(app, factory, tmp_path)
+        state = await load_state(tmp_path)
+        assert (await withdraw_as(app, state, "student", "A")).status_code == 200
+        async with factory() as session:
+            row = await session.get(Application, UUID(state["applications"]["A"]["id"]))
+            row.status = "submitted"  # Isolated synthetic corruption, retaining the withdrawal event.
+            await session.commit()
+        before = await fixture_counts(factory)
+>       with pytest.raises(IsolationError, match="withdrawn"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'evals.seed_e2e.IsolationError'>
+
+app\tests\test_e2e_fixture_safety.py:494: Failed
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_e2e_fixture_safety.py::test_startup_manifest_verification_binds_pid_database_storage_and_mock
+FAILED app/tests/test_e2e_fixture_safety.py::test_rerun_after_withdraw_keeps_a2_and_b_without_restoring
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[]
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[:6543]
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[:0]
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[:65536]
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[:bad]
+FAILED app/tests/test_e2e_fixture_safety.py::test_database_guard_requires_explicit_project_port[:-1]
+FAILED app/tests/test_e2e_fixture_safety.py::test_replay_refuses_resurrected_delivery_with_withdrawal_history
+9 failed, 17 deselected, 5 warnings in 2.54s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

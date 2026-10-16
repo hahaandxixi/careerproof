@@ -1,0 +1,5 @@
+Exception: D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:19
+Line |
+  19 |      throw 'E2E fixture startup requires -SyntheticVerification; no da …
+     |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | E2E fixture startup requires -SyntheticVerification; no database or service was touched.

@@ -1,0 +1,40 @@
+{
+  "base_commit": "a9b373e",
+  "scope": [
+    "B3 explicit loopback PostgreSQL port 5432",
+    "B4 strict synthetic flag and expected backend target; launcher refuses missing flag before side effects",
+    "B7 withdrawal event/state/board consistency; refuse resurrected fixture delivery"
+  ],
+  "red": {
+    "failed": 9,
+    "reason": "old port and manifest guards accepted unsafe values; no withdrawal check metadata; resurrected delivery adopted"
+  },
+  "target": {
+    "passed": 61,
+    "skipped": 0,
+    "modules": [
+      "test_e2e_fixture_safety.py",
+      "test_release_smoke_safety.py",
+      "test_release_reconsent_checks.py",
+      "test_release_checkpoint.py"
+    ],
+    "junit": "target.xml"
+  },
+  "failed_check_retained": {
+    "file": "target-attempt1.raw.out",
+    "reason": "nonexistent test module filenames; zero tests, corrected names in next run"
+  },
+  "powershell": "powershell.json",
+  "verification_limits": [
+    "Temporary SQLite/ASGI fixture tests and Windows CheckOnly only; no new PostgreSQL integration or live seeding claim",
+    "No service restart, migration, user account or application mutation",
+    "Fixture verification authenticates and can write tokens/rate-limit records; only fixture business writes are avoided",
+    "5432 is now the supported project E2E database port; alternate-port setups explicitly refused",
+    "Zero checked withdrawals is reported explicitly; no claim that an absent withdrawal was tested"
+  ],
+  "source_sha256": {
+    "backend/evals/seed_e2e.py": "2b078c293c352f7423cef7d6e9ceb17e701c61b2867596810b7a9762326b3c09",
+    "backend/app/tests/test_e2e_fixture_safety.py": "ba7e6a9d23de2e79ddaec5152a88bfe51a8141e345042198bd71ebfee9ae5959",
+    "scripts/Start-E2E.ps1": "3efc64f842375a5f26b6d7ad6fa01c85e55d2e573fb2bae7c88d3d038b6e8bac"
+  }
+}

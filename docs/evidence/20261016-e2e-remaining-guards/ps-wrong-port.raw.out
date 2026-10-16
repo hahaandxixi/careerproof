@@ -1,0 +1,5 @@
+Exception: D:\jbcode\web ai\jianli\scripts\Start-E2E.ps1:71
+Line |
+  71 |  … e '5432') { throw 'E2E_DATABASE_URL must explicitly use project Postg …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | E2E_DATABASE_URL must explicitly use project PostgreSQL port 5432.

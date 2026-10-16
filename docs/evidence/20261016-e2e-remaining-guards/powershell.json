@@ -1,0 +1,20 @@
+[
+  {
+    "name": "missing-flag",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "manifest_created": false
+  },
+  {
+    "name": "wrong-port",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "manifest_created": false
+  },
+  {
+    "name": "valid-preflight",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "manifest_created": false
+  }
+]

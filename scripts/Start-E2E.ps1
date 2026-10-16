@@ -15,6 +15,9 @@ param(
     [switch]$CheckOnly
 )
 $ErrorActionPreference = 'Stop'
+if (!$SyntheticVerification) {
+    throw 'E2E fixture startup requires -SyntheticVerification; no database or service was touched.'
+}
 if ($ActivateSyntheticBudget -and !$SyntheticVerification) {
     throw 'Synthetic budget activation requires the synthetic verification entry point.'
 }
@@ -65,6 +68,7 @@ if ($databaseUrl -notmatch '^postgresql\+asyncpg://[^@]+@(127\.0\.0\.1|localhost
     throw 'E2E_DATABASE_URL must be postgresql+asyncpg://<user>:<pass>@127.0.0.1:<port>/<db> (loopback only, percent-encode special characters in the password).'
 }
 $databaseName = $Matches[3]
+if ($Matches[2] -ne '5432') { throw 'E2E_DATABASE_URL must explicitly use project PostgreSQL port 5432.' }
 if ($databaseName -notmatch '^cp_e2e_[a-z0-9][a-z0-9-]{0,62}$') { throw "E2E database name must match cp_e2e_[a-z0-9-]; refusing '$databaseName'." }
 if ($databaseName -ne ('cp_e2e_' + $RunId)) { throw "E2E database name must be cp_e2e_$RunId for this run." }
 

@@ -5,7 +5,8 @@ against an isolated ``cp_e2e_<run-id>`` PostgreSQL database, an isolated storage
 directory and a loopback-only API. This module is the only supported seeding entry
 point and enforces the isolation guards itself:
 
-- ``guard_database_url`` refuses any URL whose dialect is not asyncpg, whose host is
+- ``guard_database_url`` requires explicit port 5432 and refuses any URL whose dialect
+  is not asyncpg, whose host is
   not loopback, whose name does not match ``cp_e2e_[a-z0-9-]+``, or whose URL carries
   a query or fragment that could override connection parameters.
 - Seeding (not only database creation) requires the exact ``cp_e2e_<run-id>`` name.
@@ -19,7 +20,8 @@ point and enforces the isolation guards itself:
 - Account passwords come from ``secrets`` and are written only to the ignored local
   state file (``backend/.tmp/e2e/<run-id>.json``); they are never printed or logged.
 - A run id seeds exactly once. Re-running with the same run id only verifies the
-  recorded fixture (read-only HTTP GETs plus fixture-row reads); it never creates a
+  recorded fixture (business HTTP GETs plus fixture-row reads; authentication still
+  writes session and rate-limit records); it never creates a
   second account, delivery or notification, and never un-withdraws a withdrawn
   delivery. A fresh fixture requires an explicit new run id.
 - Materials are synthetic and generated here; business tables, existing resumes and
@@ -62,6 +64,7 @@ DATABASE_NAME_PATTERN = re.compile(r"cp_e2e_[a-z0-9](?:[a-z0-9-]{0,62})")
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "::1", "localhost"})
 POSTGRESQL_SCHEME = "postgresql+asyncpg"
 E2E_BACKEND_PORT = 8001
+E2E_DATABASE_PORT = 5432
 DEFAULT_BASE_URL = f"http://127.0.0.1:{E2E_BACKEND_PORT}/api/v1"
 DEFAULT_STATE_DIR = Path(__file__).resolve().parents[1] / ".tmp" / "e2e"
 DEFAULT_MANIFEST_DIR = Path(__file__).resolve().parents[1] / ".tmp" / "e2e-run"
@@ -135,6 +138,12 @@ def guard_database_url(database_url: str) -> str:
     host = (parsed.hostname or "").lower()
     if host not in LOOPBACK_HOSTS:
         raise IsolationError(f"E2E database host must be loopback; got {host or 'missing'}")
+    try:
+        port = parsed.port
+    except ValueError:
+        raise IsolationError("E2E database URL has an invalid port") from None
+    if port != E2E_DATABASE_PORT:
+        raise IsolationError(f"E2E database URL must explicitly use port {E2E_DATABASE_PORT}")
     name = parsed.path.lstrip("/")
     if not DATABASE_NAME_PATTERN.fullmatch(name):
         raise IsolationError("E2E database name must match cp_e2e_[a-z0-9-]; refusing the target")
@@ -296,7 +305,10 @@ def verify_startup_manifest(
         "backendPort": backend_port,
         "aiExternalEnabled": "false",
         "aiProvider": "mock",
+        "backendTarget": "evals.e2e_verification:create_app --factory",
     }
+    if manifest.get("syntheticVerification") is not True:
+        raise IsolationError("startup manifest syntheticVerification mismatch; refusing to seed")
     for key, value in expected.items():
         if manifest.get(key) != value:
             raise IsolationError(f"startup manifest {key} mismatch; refusing to seed")
@@ -705,7 +717,7 @@ async def _verify_fixture(
     session_factory: async_sessionmaker,
     state: dict,
 ) -> dict:
-    """Read-only replay: GETs through the product API plus fixture-row reads only."""
+    """Verify fixture rows without replaying writes; login still persists session state."""
     async with (
         client_factory() as enterprise_client,
         client_factory() as student_client,
@@ -783,10 +795,22 @@ async def _verify_fixture(
                         f"delivery {slot} must keep exactly one submitted event and one "
                         "enterprise notification; a replay would duplicate them"
                     )
+                withdrawn_events = await session.scalar(
+                    select(func.count()).select_from(ApplicationEvent).where(
+                        ApplicationEvent.application_id == row.id,
+                        ApplicationEvent.event_type == "withdrawn",
+                    )
+                )
+                if bool(withdrawn_events) != (row.status == "withdrawn"):
+                    raise IsolationError(
+                        f"delivery {slot} withdrawn history and current state disagree; "
+                        "refusing to restore or adopt it"
+                    )
                 applications[slot] = {
                     "id": record["id"],
                     "student": record["student"],
                     "status": row.status,
+                    "withdrawalEventCount": withdrawn_events,
                 }
         # Each enterprise board must expose exactly the non-withdrawn recorded
         # deliveries for that job (job A carries both A and A2), order not assumed.
@@ -816,6 +840,10 @@ async def _verify_fixture(
     for slot, record in applications.items():
         record.setdefault("enterpriseBoardVisible", False)
         record["snapshotSha256"] = state["applications"][slot]["snapshotSha256"]
+    withdrawn_records = [record for record in applications.values()
+                         if record["withdrawalEventCount"] > 0]
+    restored = any(record["status"] != "withdrawn" or record["enterpriseBoardVisible"]
+                   for record in withdrawn_records)
     return {
         "runId": state["runId"],
         "credentialsStateFile": "<written next to the run state; never printed>",
@@ -825,7 +853,11 @@ async def _verify_fixture(
             key: state["materials"][key]["resumeVersionId"] for key in ("student", "studentA2")
         },
         "applications": applications,
-        "withdrawnRestored": False,
+        "withdrawnRestored": restored,
+        "withdrawalChecks": {
+            "checkedCount": len(withdrawn_records),
+            "keptWithdrawnIds": [record["id"] for record in withdrawn_records],
+        },
     }
 
 
