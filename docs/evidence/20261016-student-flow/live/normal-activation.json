@@ -1,0 +1,9 @@
+{
+  "all_table_data_unchanged_except_revision": true,
+  "http_status": {
+    "http://127.0.0.1:3000/login": 200,
+    "http://127.0.0.1:8000/api/v1/health": 200
+  },
+  "revision": "0020_login_limits",
+  "e2e_database_migrated": false
+}

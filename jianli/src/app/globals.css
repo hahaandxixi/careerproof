@@ -4,6 +4,13 @@
 
 :root {
   color-scheme: light;
+  /* Navigation uses indigo/slate; emerald/amber/rose/sky retain data semantics. */
+  --flow-brand: #4338ca;
+  --flow-text: #475569;
+  --flow-line: #94a3b8;
+  --flow-surface: #ffffff;
+  --flow-selected: #eef2ff;
+  --flow-ring: #c7d2fe;
 }
 
 body {
@@ -21,8 +28,26 @@ body {
 }
 
 @layer components {
+  .student-flow { max-width: 100%; overflow-x: auto; padding: 5px 4px 12px; scrollbar-width: thin; }
+  .student-flow ol { display: flex; align-items: center; gap: 14px; width: max-content; margin: 0; padding: 0; list-style: none; }
+  .student-flow li { display: flex; align-items: center; gap: 14px; color: var(--flow-text); }
+  .flow-step { display: flex; align-items: center; gap: 8px; min-height: 44px; white-space: nowrap; border-radius: 6px; }
+  .flow-step[href]:hover { color: var(--flow-brand); text-decoration: underline; }
+  .flow-number { display: grid; place-items: center; flex-shrink: 0; width: 25px; height: 25px; border: 1px solid var(--flow-line); border-radius: 50%; background: var(--flow-surface); font-size: 12px; }
+  .student-flow [aria-current="step"] { color: var(--flow-brand); font-weight: 600; }
+  .student-flow [aria-current="step"] .flow-number { color: var(--flow-surface); background: var(--flow-brand); border-color: var(--flow-brand); outline: 3px solid var(--flow-ring); }
+  .flow-step small { display: block; font-size: 12px; }
+  .flow-arrow { color: var(--flow-text); }
+  .career-job-card { transition: border-color 120ms; }
+  .career-job-card:hover { border-color: #a5b4fc; }
+  .career-job-card:has(> details[open]) { border-color: var(--flow-brand); box-shadow: inset 0 0 0 1px var(--flow-brand); }
+  .career-job-card > details[open] > summary { background: var(--flow-selected); }
   .panel { @apply rounded-2xl border border-slate-200 bg-white p-5 sm:p-6; }
   .field { @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 disabled:bg-slate-100; }
   .btn { @apply inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50; }
   .btn-secondary { @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .career-job-card { transition: none; }
 }

@@ -1,0 +1,46 @@
+{
+  "base_commit": "19df69b",
+  "scope": "Student-only guide with location, no inferred completion; optional growth; existing report confirmation anchor; selected career job styling",
+  "checks": {
+    "frontend_tests_passed": 280,
+    "frontend_tests_failed": 0,
+    "typecheck_final": "passed",
+    "initial_build": "passed",
+    "final_activation_build": "passed"
+  },
+  "browser": {
+    "normal_3000": "owned synthetic demo student",
+    "desktop_guide": true,
+    "initial_job_details": {
+      "total": 3,
+      "open": 0
+    },
+    "selected_job_header_and_border": "indigo",
+    "nested_source_default_closed": true,
+    "viewport_width": 390,
+    "document_scroll_width": 375,
+    "guide_scrolls_independently": true,
+    "growth_current_step_visible_after_navigation": true,
+    "report_confirmation_anchor": {
+      "section_id": "application-submit",
+      "heading": "向该岗位投递本份报告",
+      "top_after_click": 96
+    },
+    "new_submission": false,
+    "model_call": false,
+    "saved_plan_read_only": true
+  },
+  "limits": [
+    "No screen reader or actual 200 percent zoom test",
+    "No enterprise live login; role visibility covered by pure function regression",
+    "No inferred completion checks: all step markers remain numbered"
+  ],
+  "source_sha256": {
+    "jianli/src/lib/flow-steps.ts": "8f7a3e04dcb28329a9b8c00f2e34396e1cd008e7372b8a648f59f8b5e9a84ff6",
+    "jianli/src/components/FlowSteps.tsx": "72e77126eb224683b5adc23d0ff235dde50e5810f5869c701fc261bd21b490cd",
+    "jianli/src/components/StudentFlowGuide.tsx": "79733ad953e3fa07e0d87e1bd68e4731382af69f667d54758c7fac7352ca3872",
+    "jianli/src/app/layout.tsx": "8effc1c7e90f301d1556ea50e1033699fb5ff7a4612d92fe95c3f7e2696b5201",
+    "jianli/src/app/globals.css": "b86dccfb65fb1ea4ac83c2dd48642e4f60e28e5e98853cb1683b565cd96f8ac7",
+    "jianli/src/components/CareerRecommendations.tsx": "102178cca433d11de6656d03328362da765276a68113b942f3757a00580bb297"
+  }
+}

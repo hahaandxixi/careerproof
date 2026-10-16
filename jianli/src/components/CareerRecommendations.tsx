@@ -145,12 +145,12 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
       {!result.recommendations.length && <div className="panel text-sm text-slate-500">当前没有可推荐的已发布岗位。</div>}
       {result.recommendations.length > visibleRecommendations.length && <p className="text-sm text-slate-600">仅展示本次重点岗位；其他规则候选已收起，不影响完整结果保存。</p>}
       {!!visibleRecommendations.length && <p className="text-sm text-slate-600">先比较岗位，点击感兴趣的岗位查看具体补证建议和推荐依据。</p>}
-      {visibleRecommendations.map(item => <article id={`plan-job-${item.jobId}`} className="panel scroll-mt-24" key={item.jobId}>
+      {visibleRecommendations.map(item => <article id={`plan-job-${item.jobId}`} className="career-job-card panel scroll-mt-24" key={item.jobId}>
         <details className="group/job">
-        <summary className="cursor-pointer list-none rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600 [&::-webkit-details-marker]:hidden">
+        <summary className="cursor-pointer list-none rounded-lg px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600 [&::-webkit-details-marker]:hidden">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs text-indigo-600">{CATEGORY_LABELS[item.category] ?? item.category} · {EMPLOYMENT_LABELS[item.employmentType] ?? item.employmentType}</p><h3 className="mt-1 text-xl font-semibold">{item.jobTitle}</h3><p className="mt-1 text-sm text-slate-500">{item.companyName} · {item.city}</p></div><span className="rounded-full bg-indigo-50 px-3 py-1 text-xs text-indigo-700">{PRIORITY_LABELS[item.priority]}</span></div>
         <p className="mt-3 text-xs leading-6 text-slate-500">{item.supportedCount} 项有项目证据 · {item.claimedCount} 项仅见简历声明 · {item.assessedCount}/{item.requirementCount} 项可由当前规则比较</p>
-        <span className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-indigo-700"><span aria-hidden="true" className="transition-transform group-open/job:rotate-90">▸</span>查看补证建议与推荐依据</span>
+        <span className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-indigo-700"><span aria-hidden="true" className="transition-transform group-open/job:rotate-90">▸</span><span className="group-open/job:hidden">查看补证建议与推荐依据</span><span className="hidden group-open/job:inline">收起岗位详情</span></span>
         </summary>
         <div className="mt-2 border-t border-slate-100 pt-1">
         {!!item.matchedSkills.length && <div className="mt-4"><p className="text-sm font-medium">匹配线索</p><div className="mt-2 flex flex-wrap gap-2">{item.matchedSkills.map(skill => <span key={skill} className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700">{skill}</span>)}</div></div>}
