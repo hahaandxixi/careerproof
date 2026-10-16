@@ -1,0 +1,87 @@
+{
+  "kind": "segmented real-browser draft",
+  "native_fps": "see frame timestamps",
+  "encoded_format": "1920x1080, H.264, 25fps, no audio",
+  "clips": [
+    {
+      "name": "01-materials",
+      "caption": "个人材料：从账户菜单进入；本轮未上传新材料。",
+      "frame_count": 26,
+      "duration_ms": 6128,
+      "capture_sha256": "0c19b63a582e8b2e2ce6fdb34f9af49caee11617c9e5193ccef87f05de8cb74e"
+    },
+    {
+      "name": "02-saved-material",
+      "caption": "已保存项目版本：查看实际提取的文件，不执行上传代码。",
+      "frame_count": 26,
+      "duration_ms": 6137,
+      "capture_sha256": "727e681bccacdfd27ee6c73ee6e5ecd81a161adb64844baa7b3e8ff179da5718"
+    },
+    {
+      "name": "03-source-file",
+      "caption": "静态原文与行号：不代表运行结果或本人贡献已核验。",
+      "frame_count": 26,
+      "duration_ms": 6136,
+      "capture_sha256": "0bb8bc3a18aaa4f75ecd8a3514560329114fe6a13b72cd32d22c45fdc9aa0334"
+    },
+    {
+      "name": "04-report-list",
+      "caption": "报告列表：读取已保存结果，本轮不调用网站模型。",
+      "frame_count": 26,
+      "duration_ms": 6127,
+      "capture_sha256": "eacb55a6378f0255fb440d5c8e28e848ed4b3746bac8f4918a42f4e9a6e3d968"
+    },
+    {
+      "name": "05-saved-report",
+      "caption": "规则证据报告：描述材料支持程度，不是能力认证。",
+      "frame_count": 26,
+      "duration_ms": 6131,
+      "capture_sha256": "49745cc19eaf6702ce636a153f449c209bfbcef8972bd47b61a17ff0155f7b96"
+    },
+    {
+      "name": "06-evidence-expand",
+      "caption": "按需展开来源：查看文件、行号和原文，其余来源仍收起。",
+      "frame_count": 26,
+      "duration_ms": 6105,
+      "capture_sha256": "396b8c8090c7e109e394cef2343a6901a0c639ac6eaf5ee6fcb18be37f1eb7f6"
+    },
+    {
+      "name": "07-report-groups",
+      "caption": "切换状态分组：本轮未创建补证任务或投递。",
+      "frame_count": 26,
+      "duration_ms": 6116,
+      "capture_sha256": "bb8db5bbde1f429759a474afb59894ff0c82564a53318a333523965c23ed6e6e"
+    },
+    {
+      "name": "08-heatmap-demo",
+      "caption": "合成热力图：三位虚构候选人，状态与分数均预设。",
+      "frame_count": 26,
+      "duration_ms": 6101,
+      "capture_sha256": "0b64f8698b8e441417a4317c8ab193e618177773de9fe6292a26e59509d608b8"
+    },
+    {
+      "name": "09-candidate-evidence",
+      "caption": "选择候选人与要求：同步切换对照面板。",
+      "frame_count": 26,
+      "duration_ms": 6128,
+      "capture_sha256": "e46da57c67d0fafd45428178be1521334a6ccdb84fc2f2e37a08eb7ced9ecd1f"
+    },
+    {
+      "name": "10-radar-link",
+      "caption": "证据联动雷达：缺少材料，不等于没有能力。",
+      "frame_count": 26,
+      "duration_ms": 6105,
+      "capture_sha256": "ed352903d5f8e94561313091b1434bf1c40772707f9149687d2ff161a351d5a1"
+    },
+    {
+      "name": "11-radar-full",
+      "caption": "查看雷达全图；零与不可评状态都须结合说明阅读。",
+      "frame_count": 26,
+      "duration_ms": 6141,
+      "capture_sha256": "c0852e6b1b6599ca787de3b414c9c8897203656e54208f19f65c1a632b0939f2"
+    }
+  ],
+  "limitations": "分段网页实录 · 低帧率初稿 · 无配音 · 未录完整上传／新报告／企业／撤回链路",
+  "sha256": "78284f3c9ab524a9e7fdc8619b069c09da8cd3b82fc5a48eccc574e102f02727",
+  "bytes": 2012228
+}

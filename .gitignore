@@ -6,6 +6,7 @@ Thumbs.db
 .DS_Store
 tmp/pdfs/
 /output/source/
+/output/video/
 backend/evals/open-source-*.json
 
 # IDE share artifacts

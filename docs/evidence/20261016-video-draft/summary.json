@@ -1,0 +1,65 @@
+{
+  "source_commit": "3763e39",
+  "artifact": "output/video/CareerProof-功能演示初稿-20261016-r2.mp4",
+  "sha256": "78284f3c9ab524a9e7fdc8619b069c09da8cd3b82fc5a48eccc574e102f02727",
+  "bytes": 2012228,
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p",
+        "r_frame_rate": "25/1"
+      }
+    ],
+    "format": {
+      "duration": "80.080000",
+      "size": "2012228"
+    }
+  },
+  "actual_capture": {
+    "clips": 11,
+    "browser_frames": 286,
+    "native_resolution": [
+      1265,
+      712
+    ],
+    "cadence": "approximately 4.2 captured frames/second; encoded output duplicates frames at 25fps",
+    "method": "bounded concurrent browser screenshot capture during real locator actions; cuts between clips; no fabricated webpage UI"
+  },
+  "quality": {
+    "complete_decode_exit_code": 0,
+    "visual_review": [
+      "intro/outro title cards",
+      "source text/line numbers",
+      "expanded PostgreSQL source",
+      "report groups",
+      "heatmap/candidate switch",
+      "radar including lower labels"
+    ],
+    "caption_bound_check": "passed during build"
+  },
+  "retained_failures": [
+    "Initial across-tool background capture stopped after one frame: node_repl exec context not found. Not used in video.",
+    "First draft cropped lower radar labels; r2 adds actual End-key scroll segment. Earlier local draft retained."
+  ],
+  "claims": [
+    "Existing synthetic materials and saved rules report, explicitly labelled",
+    "Static preset heatmap, no new inference or delivery",
+    "No business record updates, service restart or migration; normal authentication can persist session records"
+  ],
+  "not_completed": [
+    "Fresh upload/generation/growth demonstration",
+    "Enterprise reply/notification/withdrawal/new-consent video",
+    "Voiceover and independent human rehearsal",
+    "Final competition duration/encoding/format approval"
+  ],
+  "local_only": [
+    "MP4, original captures and FFmpeg intermediate segments are ignored by Git; copy them or record again on another machine"
+  ],
+  "builder_sha256": "2b8049a91ed12aeb6af02bc54cb2a7103e160503eb682ad10da72b5b99f396aa"
+}
