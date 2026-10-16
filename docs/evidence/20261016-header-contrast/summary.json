@@ -1,0 +1,30 @@
+{
+  "base_commit": "27db3e2",
+  "scope": "Header-only dark slate/indigo gradient, current navigation semantics and contrast; white account dropdown retained",
+  "checks": {
+    "frontend_tests": 280,
+    "failed": 0,
+    "typecheck": "passed",
+    "production_build": "passed"
+  },
+  "browser": {
+    "normal_site": "http://127.0.0.1:3000/recommendations",
+    "account": "owned synthetic demo student",
+    "desktop_visual": "passed",
+    "account_dropdown_white_and_readable": "passed",
+    "viewport": 390,
+    "document_scroll_width": 375,
+    "body_horizontal_overflow": false,
+    "model_calls": false,
+    "submission": false,
+    "3001_touched": false
+  },
+  "source_sha256": {
+    "jianli/src/components/SiteHeader.tsx": "c7a163367719496668c7bb7e28aa967ca7978479ede24deb68c055daeced0d6e",
+    "jianli/src/app/globals.css": "4a5cc73bf49a8166f89ef851302d095a8e3cfee7b8a93b5dfa4af4b368c760b6"
+  },
+  "limits": [
+    "Enterprise and anonymous header not separately tested in live browser",
+    "No eye-fatigue reduction claim; visual hierarchy change only"
+  ]
+}

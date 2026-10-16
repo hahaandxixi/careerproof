@@ -28,6 +28,14 @@ body {
 }
 
 @layer components {
+  .site-header { color: #e2e8f0; border-color: #334155; background: linear-gradient(110deg, #1e293b 0%, #252642 100%); }
+  .site-header .site-brand { color: #c7d2fe; }
+  .site-primary-nav > a { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 10px; border-radius: 8px; color: #e2e8f0; }
+  .site-primary-nav > a:hover { color: #fff; background: rgb(255 255 255 / 8%); }
+  .site-primary-nav > a[aria-current="page"] { color: #fff; background: #3b3d65; text-decoration: underline; text-underline-offset: 7px; text-decoration-thickness: 2px; text-decoration-color: #a5b4fc; font-weight: 600; }
+  .site-primary-nav > details > summary { color: #e2e8f0; border-color: #64748b; background: rgb(255 255 255 / 4%); }
+  .site-primary-nav > details > summary:hover, .site-primary-nav > details[open] > summary { background: rgb(255 255 255 / 10%); }
+  .site-brand:focus-visible, .site-primary-nav > a:focus-visible, .site-primary-nav > button:focus-visible, .site-primary-nav > details > summary:focus-visible { outline-color: #c7d2fe; }
   .student-flow { max-width: 100%; overflow-x: auto; padding: 5px 4px 12px; scrollbar-width: thin; }
   .student-flow ol { display: flex; align-items: center; gap: 14px; width: max-content; margin: 0; padding: 0; list-style: none; }
   .student-flow li { display: flex; align-items: center; gap: 14px; color: var(--flow-text); }
