@@ -1,0 +1,56 @@
+{
+  "change": "persistent login admission, 0020 schema, explicit proxy policy; not yet activated",
+  "steps": [
+    {
+      "name": "ruff-final",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "app/models",
+        "app/services/auth.py",
+        "app/services/login_limit.py",
+        "app/api/v1/auth.py",
+        "app/core/config.py",
+        "app/core/exceptions.py",
+        "app/tests/test_login_rate_limit.py",
+        "app/tests/test_login_limit_migration.py",
+        "alembic/versions/0020_login_limits.py",
+        "app/repositories/users.py",
+        "app/tests/test_refresh_atomicity.py",
+        "app/tests/test_ci_junit_gate.py",
+        "scripts/check_ci_junit.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "full-sqlite-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests",
+        "-q",
+        "-x",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-login-limit-full-final",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261016-login-rate-limit\\full-sqlite-final.xml"
+      ],
+      "exit_code": 1,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "1",
+          "skipped": "50",
+          "tests": "937",
+          "time": "231.607",
+          "timestamp": "2026-10-16T09:11:33.282504+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    }
+  ]
+}

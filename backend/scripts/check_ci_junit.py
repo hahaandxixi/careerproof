@@ -36,6 +36,8 @@ STRICT_MODULES = (
     "test_application_reconsent_migration",
     "test_data_integrity_migration",
     "test_refresh_atomicity",
+    "test_login_rate_limit",
+    "test_login_limit_migration",
 )
 HARD_STOP_MODULE = "test_attempt_hard_stop"
 HARD_STOP_FUNCTION = "test_real_child_hard_stop_then_database_only_recovery"

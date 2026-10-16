@@ -1,0 +1,56 @@
+{
+  "verified_at": "2026-10-16",
+  "base_commit": "557edd7",
+  "behavior": {
+    "pair": "5 admissions per 300 seconds per normalized email and source; successful issuance clears pair in same transaction",
+    "source": "120 admissions per 60 seconds per source, including successes; IPv4 address / IPv6 /64 / unknown fallback",
+    "storage": "database conditional UPSERT and expiry; HMAC keys; no account mutation or demo identity exception",
+    "proxy": "project launchers explicitly disable proxy headers; application never reads XFF",
+    "failure": "4293 with Retry-After; admission database failure 5033, no bypass"
+  },
+  "checks": {
+    "sqlite": {
+      "passed": 1333,
+      "skipped": 59,
+      "result": "sqlite-final/final.json"
+    },
+    "postgres": {
+      "strict_passed": 119,
+      "hardstop_passed": 8,
+      "skipped": 0,
+      "gate_modules": 16,
+      "result": "attempt2/final.json"
+    },
+    "real_http": "real-http.json",
+    "normal_activation": "live/normal-activation.json",
+    "normal_rewrite_login": "live/normal-login-proof.json",
+    "backup_restore": "backup/summary.json"
+  },
+  "failures_retained": {
+    "red.raw.out": "old implementation permits sixth credential check: 401 instead of 429",
+    "full-sqlite-final.raw.out": "first full run: portfolio fixture did not create new login_limits table; fixed fixture, no limiter bypass",
+    "attempt2/full-sqlite-final.raw.out": "verification runner retained PG URL after stopping dedicated container; corrected separate SQLite environment, not a production code defect"
+  },
+  "limits": [
+    "No distributed source-rotation protection or registration/global capacity limit",
+    "Shared NAT/reverse-proxy sources may share source budget; not public deployment sign-off",
+    "No browser-rendered countdown claim; server message is displayed by existing generic login error path",
+    "Normal existing business rows preserved; only revision/new limiter rows changed",
+    "3001 neither restarted nor migrated; old isolated run remains on old version",
+    "Remote CI not executed; full candidate artifact rebuild, video, independent human and final review still pending"
+  ],
+  "source_sha256": {
+    "backend/app/services/login_limit.py": "ca072705896e80b4d616294031229d3b03fe032f323684c54a9c9d58b438401e",
+    "backend/app/models/login_limit.py": "ec59cb2b9b25a8042d10c4cc2ac7ce3f5f6c7440025812a533e6fe647b04b660",
+    "backend/app/services/auth.py": "907835c3fbc167e7822007fb7ad958b8d811bf9c94ad9ea1ae21ed2e9903f513",
+    "backend/app/api/v1/auth.py": "365fc6f02ff1b6a8868006cf53b26d9d2a06a944578e1baa1f6f5218110f0a1f",
+    "backend/app/core/config.py": "1a5743248727bc4d1807c2641dfce9a674e2a54b4107c24986aadffb7953d4e9",
+    "backend/app/core/exceptions.py": "155ce0313e1d5c540b77b2bcb28a9f751a396838ea5231aede6efe2ad7a7b467",
+    "backend/alembic/versions/0020_login_limits.py": "af67b5cf87765ef94e1c2ed74248668e281cb3907b32c218c353cd13e89c517a",
+    "backend/app/tests/test_login_rate_limit.py": "a01ab512ed627ddcd5d34cd67098533e56009fd7ac9bea6412676f7d7441683b",
+    "backend/app/tests/test_login_limit_migration.py": "9d17b4118072f0a425602974e4f17ff0b6340e87934d2533df631d59d1a774e5",
+    "Start-Local.ps1": "be17d678a85ddaf96c4677a880798bf2aeade11f47c7e032f3d4923860c02c05",
+    "scripts/Start-E2E.ps1": "1ff72935fee3be283a7f3b7389a911df88b3cdfb7a12167399ca09f14d6a85b4",
+    "backend/Dockerfile": "6ae8a2983cad514fae0f4a30a3a669d082e3ff70353f9f108a88a7d755e5f91d"
+  }
+}

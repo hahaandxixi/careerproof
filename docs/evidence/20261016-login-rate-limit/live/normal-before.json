@@ -1,0 +1,157 @@
+{
+  "tables": {
+    "agent_steps": {
+      "rows": 505,
+      "digest": "32d8874833627a0593028ff6e5720139"
+    },
+    "ai_budget_adjustments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_cutover": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_reservations": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_daily_budgets": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_request_attempts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_usage_logs": {
+      "rows": 51,
+      "digest": "6b66fb3808a112c7ca64c20ec3a59606"
+    },
+    "alembic_version": {
+      "rows": 1,
+      "digest": "96acafc3fc1d06285624bc837ca6612a"
+    },
+    "analysis_tasks": {
+      "rows": 185,
+      "digest": "1408a7dce1e60869a8e614c10a60cbaa"
+    },
+    "application_events": {
+      "rows": 25,
+      "digest": "34d72578bf1e4464fee9b4b779616800"
+    },
+    "applications": {
+      "rows": 8,
+      "digest": "b7b2fc29b1c94113bc5dc3727974fdd5"
+    },
+    "audit_logs": {
+      "rows": 225,
+      "digest": "3e66749d0ab2a10651c081a062020880"
+    },
+    "enterprise_memberships": {
+      "rows": 9,
+      "digest": "552536065f67594211c5d0a8f1d9198e"
+    },
+    "enterprises": {
+      "rows": 9,
+      "digest": "87a2392d8d3419689d226258ce75b6e9"
+    },
+    "evidence_growth_tasks": {
+      "rows": 4,
+      "digest": "0c30809a1ed9311db9b84affa70057b7"
+    },
+    "evidence_sources": {
+      "rows": 545,
+      "digest": "318b134df834ab83848e76fc60340486"
+    },
+    "growth_answer_drafts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_answers": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_sessions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "job_requirements": {
+      "rows": 121,
+      "digest": "5c6ee0315529b18ba5b93c92a888c14b"
+    },
+    "jobs": {
+      "rows": 36,
+      "digest": "a51280342f10ea7e8458d3f9c442582b"
+    },
+    "knowledge_chunks": {
+      "rows": 2052,
+      "digest": "ee23c813f1a8383ffdcd09db095dd6eb"
+    },
+    "match_items": {
+      "rows": 211,
+      "digest": "1f9a8ad0edb14772e442e9b395b66401"
+    },
+    "match_reports": {
+      "rows": 67,
+      "digest": "d623dd738d3bb387b167aef8e3b68f39"
+    },
+    "matching_formula_versions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "notifications": {
+      "rows": 18,
+      "digest": "d2cbd5c3cedd413c64d41b2af77faad5"
+    },
+    "project_files": {
+      "rows": 152,
+      "digest": "6db76ce8ce792062c5ff00d8f4f4e244"
+    },
+    "project_versions": {
+      "rows": 52,
+      "digest": "4f629e1dedaeb85a2a9cae518db8307b"
+    },
+    "projects": {
+      "rows": 42,
+      "digest": "dbcc3a5a11596af08a46a1bc5c3aeb60"
+    },
+    "refresh_tokens": {
+      "rows": 278,
+      "digest": "2403cb46e4348433965bb3b2998b8efa"
+    },
+    "resume_sections": {
+      "rows": 42,
+      "digest": "fbd6692ceacbdc9968ec1760194f90ab"
+    },
+    "resume_versions": {
+      "rows": 44,
+      "digest": "2e3e449ea25a756474d75c8edc920217"
+    },
+    "resumes": {
+      "rows": 44,
+      "digest": "9f30041b64d2ecfb9df284daa4a7613b"
+    },
+    "skill_aliases": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "skill_evidence": {
+      "rows": 545,
+      "digest": "590ea69c656510b97421fc37e2454281"
+    },
+    "skills": {
+      "rows": 20,
+      "digest": "98a100912aa50285b526cc963fb79e30"
+    },
+    "student_profiles": {
+      "rows": 12,
+      "digest": "d0d3cfb40c7609517bf157329e5feade"
+    },
+    "users": {
+      "rows": 21,
+      "digest": "71f8a977e0e5aa4a6aaf215e31915c38"
+    }
+  },
+  "revision": "0019_data_integrity_constraints"
+}

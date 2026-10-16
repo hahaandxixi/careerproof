@@ -133,8 +133,8 @@ try {
         Invoke-LocalNative $pythonPath @('-m', 'alembic', 'upgrade', 'head')
     } finally { Pop-Location }
     $manifest = @{ schemaVersion = 2; backendVenv = $BackendVenv; backendDigest = $backendDigest; frontendRoot = $frontendRoot; configHash = $configHash; createdAt = (Get-Date).ToUniversalTime().ToString('o'); processes = @() }
-    $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList '-m uvicorn app.main:app --host 127.0.0.1 --port 8000' -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'backend.out.log') -RedirectStandardError (Join-Path $stateRoot 'backend.err.log')
-    $owned += @{ Id = $backendProcess.Id; Started = $backendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $pythonPath; Invocation = 'uvicorn app.main:app --host 127.0.0.1 --port 8000' }
+    $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList '-m uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8000' -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'backend.out.log') -RedirectStandardError (Join-Path $stateRoot 'backend.err.log')
+    $owned += @{ Id = $backendProcess.Id; Started = $backendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $pythonPath; Invocation = 'uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8000' }
     $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
     Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $owned[0]
     $frontendProcess = Start-Process -FilePath $nodeExecutable -ArgumentList @(('"' + $nextPath + '"'), 'start', '-H', '127.0.0.1', '-p', '3000') -WorkingDirectory $frontendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'frontend.out.log') -RedirectStandardError (Join-Path $stateRoot 'frontend.err.log')

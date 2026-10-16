@@ -8,11 +8,13 @@ from app.core.request_context import get_request_id
 
 
 class AppError(Exception):
-    def __init__(self, message: str, *, code: int = 4000, status_code: int = 400) -> None:
+    def __init__(self, message: str, *, code: int = 4000, status_code: int = 400,
+                 headers: dict[str, str] | None = None) -> None:
         super().__init__(message)
         self.message = message
         self.code = code
         self.status_code = status_code
+        self.headers = headers
 
 
 def error_body(code: int, message: str, details: Any = None) -> dict[str, Any]:
@@ -33,6 +35,7 @@ def install_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content=error_body(exc.code, exc.message),
+            headers=exc.headers,
         )
 
     @app.exception_handler(RequestValidationError)

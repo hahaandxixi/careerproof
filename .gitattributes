@@ -15,3 +15,4 @@ docs/evidence/20261013-z48-score-labels/*.log -text -whitespace
 
 # Frozen review identity covers the original input bytes, including line endings.
 backend/evals/quality-blind-plan-review-input.json -text -whitespace
+docs/evidence/20261016-login-rate-limit/attempt2/full-sqlite-final.xml -text -whitespace

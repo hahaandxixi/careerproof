@@ -1,0 +1,43 @@
+{
+  "via": "normal Next rewrite to normal API",
+  "synthetic_nonexistent_identity_only": true,
+  "forged_xff_cannot_change_bucket": true,
+  "events": [
+    {
+      "status": 401,
+      "code": 4012,
+      "retry_after": null,
+      "sets_cookie": false
+    },
+    {
+      "status": 401,
+      "code": 4012,
+      "retry_after": null,
+      "sets_cookie": false
+    },
+    {
+      "status": 401,
+      "code": 4012,
+      "retry_after": null,
+      "sets_cookie": false
+    },
+    {
+      "status": 401,
+      "code": 4012,
+      "retry_after": null,
+      "sets_cookie": false
+    },
+    {
+      "status": 401,
+      "code": 4012,
+      "retry_after": null,
+      "sets_cookie": false
+    },
+    {
+      "status": 429,
+      "code": 4293,
+      "retry_after": "300",
+      "sets_cookie": false
+    }
+  ]
+}

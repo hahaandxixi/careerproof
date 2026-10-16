@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_minutes: int = 30
     refresh_token_days: int = 7
+    login_pair_limit: int = Field(default=5, ge=1, le=100)
+    login_pair_window_seconds: int = Field(default=300, ge=1, le=3600)
+    login_source_limit: int = Field(default=120, ge=1, le=10000)
+    login_source_window_seconds: int = Field(default=60, ge=1, le=3600)
     frontend_origins: list[str] = Field(
         default_factory=lambda: ["http://127.0.0.1:3000", "http://localhost:3000"]
     )

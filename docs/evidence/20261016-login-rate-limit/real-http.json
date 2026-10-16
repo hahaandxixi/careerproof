@@ -1,0 +1,14 @@
+{
+  "database": "owned synthetic SQLite only",
+  "proxy_headers": false,
+  "pair_window_seconds": 5,
+  "events": [
+    "four failures followed by successful fifth attempt",
+    "correct password temporarily limited; forged XFF cannot reset allowance",
+    "new server process retains database-backed limit",
+    "automatic expiry restores successful login"
+  ],
+  "retry_after_before_restart": 5,
+  "account_active": true,
+  "passed": true
+}

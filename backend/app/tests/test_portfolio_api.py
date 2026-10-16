@@ -19,6 +19,7 @@ from app.core.database import Base, get_session
 from app.main import create_app
 from app.models.analysis import AnalysisTask
 from app.models.identity import RefreshToken, StudentProfile, User
+from app.models.login_limit import LoginLimit
 from app.models.portfolio import (
     Project,
     ProjectFile,
@@ -54,6 +55,7 @@ async def app_database(tmp_path, monkeypatch):
         for model in (
             User,
             RefreshToken,
+            LoginLimit,
             StudentProfile,
             AnalysisTask,
             Resume,

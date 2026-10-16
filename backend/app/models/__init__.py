@@ -25,6 +25,7 @@ from app.models.identity import (
     StudentProfile,
     User,
 )
+from app.models.login_limit import LoginLimit
 from app.models.notification import Notification
 from app.models.portfolio import (
     InterviewAnswer,
@@ -66,6 +67,7 @@ __all__ = [
     "InterviewSession",
     "Job",
     "JobRequirement",
+    "LoginLimit",
     "MatchItem",
     "MatchReport",
     "MatchingFormulaVersion",

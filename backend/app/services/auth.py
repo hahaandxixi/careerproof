@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -16,6 +17,7 @@ from app.core.security import (
 )
 from app.models.enums import UserRole
 from app.models.identity import RefreshToken, StudentProfile, User
+from app.models.login_limit import LoginLimit
 from app.repositories.users import UserRepository
 from app.schemas.auth import LoginRequest, RegisterRequest
 
@@ -51,12 +53,17 @@ class AuthService:
         await self.session.commit()
         return tokens
 
-    async def login(self, request: LoginRequest) -> IssuedTokens:
+    async def login(self, request: LoginRequest, *,
+                    admitted_pair_key: str | None = None) -> IssuedTokens:
         user = await self.users.get_by_email(str(request.email))
         if not user or not verify_password(request.password, user.password_hash):
             raise AppError("邮箱或密码错误", code=4012, status_code=401)
         if not user.is_active:
             raise AppError("账号已停用", code=4032, status_code=403)
+        if admitted_pair_key is not None:
+            await self.session.execute(delete(LoginLimit).where(
+                LoginLimit.key_hash == admitted_pair_key, LoginLimit.scope == "pair",
+            ))
         tokens = await self._issue_tokens(user)
         await self.session.commit()
         return tokens

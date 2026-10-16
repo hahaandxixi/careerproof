@@ -1,0 +1,43 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______________ test_http_repeated_login_is_temporarily_limited _______________
+
+auth_db = (<fastapi.applications.FastAPI object at 0x00000242DF4E01A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000242DF388CD0>, autoflush=True, expire_on_commit=False))
+
+    async def test_http_repeated_login_is_temporarily_limited(auth_db):  # noqa: F811
+        app, _ = auth_db
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+            payload = {"email": "missing@example.com", "password": "incorrect-synthetic"}
+            for _ in range(5):
+                assert (await c.post("/api/v1/auth/login", json=payload)).status_code == 401
+            denied = await c.post("/api/v1/auth/login", json=payload)
+>           assert denied.status_code == 429
+E           assert 401 == 429
+E            +  where 401 = <Response [401 Unauthorized]>.status_code
+
+app\tests\test_login_rate_limit.py:22: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_login_rate_limit.py::test_http_repeated_login_is_temporarily_limited
+1 failed, 7 warnings in 1.41s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -38,7 +38,7 @@ $statePath = Join-Path $stateRoot "processes-$RunId.json"
 $backendPort = 8001
 $frontendPort = 3001
 $backendTarget = if ($SyntheticVerification) { 'evals.e2e_verification:create_app --factory' } else { 'app.main:app' }
-$backendArguments = "-m uvicorn $backendTarget --host 127.0.0.1 --port $backendPort"
+$backendArguments = "-m uvicorn $backendTarget --no-proxy-headers --host 127.0.0.1 --port $backendPort"
 
 if (!(Test-Path -LiteralPath $pythonPath)) { throw 'Backend dependencies missing. Follow backend/README.md first.' }
 if (!(Test-Path -LiteralPath $nextPath)) { throw 'Frontend dependencies missing. Run npm ci in jianli/ first.' }

@@ -1,0 +1,46 @@
+{
+  "change": "persistent login admission, 0020 schema, explicit proxy policy; not yet activated",
+  "steps": [
+    {
+      "name": "ruff-final",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "app",
+        "alembic/versions/0020_login_limits.py",
+        "scripts/check_ci_junit.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "full-sqlite-final",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests",
+        "-q",
+        "-x",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp=.tmp-login-limit-v3-full",
+        "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261016-login-rate-limit\\sqlite-final\\full-sqlite-final.xml"
+      ],
+      "exit_code": 0,
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "59",
+          "tests": "1392",
+          "time": "300.218",
+          "timestamp": "2026-10-16T09:19:03.891744+08:00",
+          "hostname": "LAPTOP-K7CHVGTD"
+        }
+      ]
+    }
+  ]
+}

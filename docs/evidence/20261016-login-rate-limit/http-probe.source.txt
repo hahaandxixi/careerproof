@@ -1,0 +1,78 @@
+# Executed from backend/.tmp/probe-login-http-20261016.py; source snapshot, not a new launcher.
+import asyncio, json, os, socket, subprocess, sys, time
+from pathlib import Path
+import httpx
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from app.models.identity import User, StudentProfile, RefreshToken
+from app.models.login_limit import LoginLimit
+root=Path(__file__).resolve().parents[2]
+base=root/'backend/.tmp/login-http-20261016'
+base.mkdir(exist_ok=False)
+out=root/'docs/evidence/20261016-login-rate-limit'
+db='sqlite+aiosqlite:///'+(base/'synthetic.db').as_posix()
+async def prepare():
+    engine=create_async_engine(db)
+    async with engine.begin() as c:
+        for table in [User.__table__, StudentProfile.__table__, RefreshToken.__table__, LoginLimit.__table__]:
+            await c.run_sync(table.create)
+    await engine.dispose()
+asyncio.run(prepare())
+with socket.socket() as probe:
+    probe.bind(('127.0.0.1',0)); port=probe.getsockname()[1]
+env={**os.environ,'DATABASE_URL':db,'APP_ENV':'test','DEBUG':'false','AI_EXTERNAL_ENABLED':'false','AI_PROVIDER':'mock','LOGIN_PAIR_WINDOW_SECONDS':'5'}
+summary={'database':'owned synthetic SQLite only','proxy_headers':False,'pair_window_seconds':5,'events':[]}
+child=None
+logs=[]
+def start(label):
+    global child
+    log=(out/f'http-{label}.raw.out').open('xb');logs.append(log)
+    child=subprocess.Popen([sys.executable,'-m','uvicorn','app.main:app','--no-proxy-headers','--host','127.0.0.1','--port',str(port),'--lifespan','off'],cwd=root/'backend',env=env,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
+    for _ in range(100):
+        if child.poll() is not None:raise RuntimeError('Owned synthetic server exited')
+        try:
+            if httpx.get(f'http://127.0.0.1:{port}/api/v1/health',timeout=1,trust_env=False).status_code==200:return
+        except httpx.TransportError:pass
+        time.sleep(.05)
+    raise RuntimeError('Owned synthetic server readiness timed out')
+def stop():
+    global child
+    if child is not None:
+        if child.poll() is None:child.terminate()
+        child.wait(timeout=10);child=None
+try:
+    start('first')
+    with httpx.Client(base_url=f'http://127.0.0.1:{port}',trust_env=False) as c:
+        account={'email':'synthetic-throttle@example.com','password':'synthetic-throttle-password-2026'}
+        assert c.post('/api/v1/auth/register',json={**account,'displayName':'Synthetic throttle probe','role':'student'}).status_code==201
+        for _ in range(4):assert c.post('/api/v1/auth/login',json={**account,'password':'synthetic-wrong'}).status_code==401
+        assert c.post('/api/v1/auth/login',json=account).status_code==200
+        summary['events'].append('four failures followed by successful fifth attempt')
+        for _ in range(5):assert c.post('/api/v1/auth/login',json={**account,'password':'synthetic-wrong'}).status_code==401
+        denied=c.post('/api/v1/auth/login',json=account,headers={'X-Forwarded-For':'192.0.2.254'})
+        assert denied.status_code==429 and denied.json()['code']==4293
+        assert 'set-cookie' not in denied.headers
+        summary['retry_after_before_restart']=int(denied.headers['Retry-After'])
+        summary['events'].append('correct password temporarily limited; forged XFF cannot reset allowance')
+    stop();start('restarted')
+    with httpx.Client(base_url=f'http://127.0.0.1:{port}',trust_env=False) as c:
+        denied=c.post('/api/v1/auth/login',json=account)
+        assert denied.status_code==429
+        retry=int(denied.headers['Retry-After'])
+        summary['events'].append('new server process retains database-backed limit')
+        time.sleep(retry+.2)
+        assert c.post('/api/v1/auth/login',json=account).status_code==200
+        summary['events'].append('automatic expiry restores successful login')
+    async def inspect():
+        engine=create_async_engine(db)
+        async with async_sessionmaker(engine)() as session:
+            assert (await session.scalar(select(User))).is_active
+        await engine.dispose()
+    asyncio.run(inspect())
+    summary['account_active']=True
+    summary['passed']=True
+finally:
+    stop()
+    for log in logs:log.close()
+    (out/'real-http.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')
+print('Owned real HTTP login/restart/expiry probe passed')

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request, Response
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -12,6 +13,7 @@ from app.services.auth import (
     access_cookie_max_age,
     refresh_cookie_max_age,
 )
+from app.services.login_limit import LoginLimiter
 
 router = APIRouter()
 
@@ -58,10 +60,18 @@ async def register(
 @router.post("/login", response_model=ApiResponse[AuthData])
 async def login(
     payload: LoginRequest,
+    request: Request,
     response: Response,
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[AuthData]:
-    tokens = await AuthService(session).login(payload)
+    try:
+        pair = await LoginLimiter(session).admit(
+            str(payload.email), request.client.host if request.client else None,
+        )
+    except SQLAlchemyError as exc:
+        await session.rollback()
+        raise AppError("登录服务暂不可用，请稍后重试", code=5033, status_code=503) from exc
+    tokens = await AuthService(session).login(payload, admitted_pair_key=pair)
     _set_auth_cookies(response, tokens)
     return success(_auth_data(tokens), message="authenticated")
 
