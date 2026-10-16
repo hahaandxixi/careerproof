@@ -1,0 +1,38 @@
+{
+  "scope": "Job overview first; per-job details and source evidence default closed; saved recommendations unchanged",
+  "base_commit": "2637813",
+  "frontend_tests": {
+    "passed": 277,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typecheck": "passed",
+  "build": "passed",
+  "live": {
+    "normal_site": "http://127.0.0.1:3000/recommendations",
+    "account": "owned synthetic demo student",
+    "saved_plan_only": true,
+    "initial_jobs": 3,
+    "initial_open_job_details": 0,
+    "click_opens_only_selected_job": true,
+    "enter_closes": true,
+    "space_opens": true,
+    "nested_evidence_opens_with_source_lines": true,
+    "expand_other_candidates": {
+      "jobs": 10,
+      "open_job_details": 0
+    },
+    "collapse_other_candidates": {
+      "jobs": 3,
+      "open_job_details": 0
+    },
+    "model_called": false,
+    "new_plan_generated": false,
+    "e2e_3001_untouched": true
+  },
+  "limits": [
+    "No new live model generation; exercised existing saved AI plan",
+    "Mobile viewport and screen-reader testing not performed this turn"
+  ],
+  "source_sha256": "8aab13e56f87f70b7d6b378f3b98a20d3a612fb3e000da12ed9ac3d5bf165668"
+}
