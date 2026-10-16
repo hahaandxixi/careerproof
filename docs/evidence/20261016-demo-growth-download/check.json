@@ -1,0 +1,27 @@
+{
+  "baseline": "a20353d",
+  "v1_source_files_preserved": true,
+  "changed_existing_entries": [
+    "案例说明.txt"
+  ],
+  "added_entries": [
+    "redis_cache.py",
+    "Redis-v2-说明.txt"
+  ],
+  "v2_sha256": "8e37e50cef1079e666770fd17956b468fa6f4c40e470532036951de271fd90a1",
+  "identical_to_previously_browser_checked_v2": true,
+  "archive_integrity": "passed",
+  "code_execution": false,
+  "typecheck_exit": 0,
+  "limits": [
+    "New download link has not yet been activated on the normal website.",
+    "Existing v2 browser results are historical; this change does not claim a fresh growth walkthrough.",
+    "No independent first-time human assessment or external model call."
+  ],
+  "preview_browser_download": {
+    "origin": "http://127.0.0.1:3096/demo",
+    "expanded_link": true,
+    "download_sha256": "8e37e50cef1079e666770fd17956b468fa6f4c40e470532036951de271fd90a1",
+    "matches_shipped_asset": true
+  }
+}

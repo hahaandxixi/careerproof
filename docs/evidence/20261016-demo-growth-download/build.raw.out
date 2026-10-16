@@ -1,0 +1,50 @@
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.5s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            998 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                        4.43 kB         114 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                2.17 kB         112 kB
+├ ○ /demo/heatmap                        7.17 kB         113 kB
+├ ○ /growth                                135 B         129 kB
+├ ƒ /growth/[id]                           134 B         129 kB
+├ ƒ /jobs                                2.83 kB         113 kB
+├ ƒ /jobs/[id]                           3.69 kB         119 kB
+├ ƒ /jobs/[id]/applications              13.3 kB         123 kB
+├ ƒ /jobs/[id]/edit                        133 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                           2.84 kB         113 kB
+├ ○ /jobs/new                              133 B         115 kB
+├ ○ /login                                1.4 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.69 kB         114 kB
+├ ○ /notifications                       2.93 kB         113 kB
+├ ○ /portfolio                              7 kB         117 kB
+├ ƒ /recommendations                     6.49 kB         122 kB
+├ ○ /register                            1.87 kB         112 kB
+├ ○ /reports                             2.04 kB         112 kB
+├ ƒ /reports/[id]                        18.2 kB         128 kB
+└ ƒ /tasks/[id]                          3.94 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.03 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

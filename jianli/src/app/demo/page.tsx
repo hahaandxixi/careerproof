@@ -37,6 +37,15 @@ export default function DemoPage() {
             <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.projectFilename)} download={sample.projectFilename}>下载对应项目</a>
             <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset(sample.scriptFilename)} download={sample.scriptFilename}>下载测试步骤</a>
           </div>
+          {sample.caseId === "CP01" && <details className="mt-3 rounded-lg border border-indigo-200 p-3 text-sm">
+            <summary className="cursor-pointer font-medium text-indigo-800">继续演示补证：下载 Redis 合成新版</summary>
+            <p className="mt-2 leading-6 text-slate-600">先用首版生成报告，再从 Redis 缺口保存补证任务。将新版上传到原项目，保存新版选择后生成新报告；保留原简历，不必重新投递。</p>
+            <div className="mt-3 flex flex-wrap gap-3 text-indigo-700">
+              <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset("CP01-Python-Redis-synthetic-v2.zip")} download>下载补证项目 v2</a>
+              <a className="rounded-lg bg-indigo-50 px-3 py-2" href={asset("CP01-Redis-补证演示步骤-v2.txt")} download>下载补证步骤</a>
+            </div>
+            <p className="mt-2 text-xs leading-6 text-slate-600">仅增加可引用的 Redis 读写源码，未执行代码，不证明运行成功、个人贡献或完整缓存能力。新报告不会覆盖企业原投递快照；没有升级也应照实解释。</p>
+          </details>}
           <DemoCaseImport sample={sample}/>
           <p className="mt-3 text-xs leading-6 text-amber-800">应识别的边界：{sample.boundary}</p>
           <Link className="mt-3 inline-block text-sm text-indigo-600 underline" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
