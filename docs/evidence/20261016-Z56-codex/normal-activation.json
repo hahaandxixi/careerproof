@@ -1,0 +1,27 @@
+{
+  "all_table_data_unchanged": false,
+  "all_non_auth_tables_unchanged": true,
+  "changed_tables": [
+    "refresh_tokens"
+  ],
+  "refresh_rows_before": 289,
+  "refresh_rows_after": 290,
+  "normal_log_refresh_200": true,
+  "revision": "0020_login_limits",
+  "http_status": {
+    "http://127.0.0.1:3000/login": 200,
+    "http://127.0.0.1:8000/api/v1/health": 200,
+    "http://127.0.0.1:3001/login": "URLError"
+  },
+  "e2e_environment_actions": "no stop/start/migration/seed issued; current 3001/8001 have no listeners",
+  "failed_checks": [
+    "Initial equality assertion failed due to one additional refresh row.",
+    "Newest refresh-row ownership assumption did not match seeded demo student; do not attribute identity.",
+    "First metadata probe used separate asyncio loops for disposal; read-only helper corrected.",
+    "Combined HTTP probe failed on offline 3001; per-endpoint recheck shows normal 3000/8000 healthy."
+  ],
+  "limits": [
+    "Browser automatic refresh 200 was observed, but not attributed to a particular tab/user.",
+    "No claim that original 3001 environment is currently online."
+  ]
+}

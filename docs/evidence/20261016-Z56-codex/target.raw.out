@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: loading：显式读取中，不给结论、无链接
+ok 1 - loading：显式读取中，不给结论、无链接
+  ---
+  duration_ms: 4.1647
+  type: 'test'
+  ...
+# Subtest: active(submitted)：复用共享文案“已投递”，链接定位到 /applications\#application-<id>，并说明不会替换
+ok 2 - active(submitted)：复用共享文案“已投递”，链接定位到 /applications\#application-<id>，并说明不会替换
+  ---
+  duration_ms: 1.8907
+  type: 'test'
+  ...
+# Subtest: active(viewed)：共享状态文案按状态映射，含下一步指引
+ok 3 - active(viewed)：共享状态文案按状态映射，含下一步指引
+  ---
+  duration_ms: 0.7506
+  type: 'test'
+  ...
+# Subtest: withdrawn：呈现为撤回史而非进行中投递，可看记录，不给重投/授权入口
+ok 4 - withdrawn：呈现为撤回史而非进行中投递，可看记录，不给重投/授权入口
+  ---
+  duration_ms: 0.6254
+  type: 'test'
+  ...
+# Subtest: error：显式失败与重试，绝不写成未投递，也不阻断生成报告
+ok 5 - error：显式失败与重试，绝不写成未投递，也不阻断生成报告
+  ---
+  duration_ms: 0.4259
+  type: 'test'
+  ...
+# Subtest: error：重试按钮只走只读 onRetry 回调
+ok 6 - error：重试按钮只走只读 onRetry 回调
+  ---
+  duration_ms: 0.5142
+  type: 'test'
+  ...
+# Subtest: unknown：无记录证明时不渲染任何结论（空输出，且绝不出现“未投递”）
+ok 7 - unknown：无记录证明时不渲染任何结论（空输出，且绝不出现“未投递”）
+  ---
+  duration_ms: 0.2154
+  type: 'test'
+  ...
+# Subtest: 同岗位未撤回投递解析为 active，携带真实 id/状态；重试仍只调用只读接口
+ok 8 - 同岗位未撤回投递解析为 active，携带真实 id/状态；重试仍只调用只读接口
+  ---
+  duration_ms: 1.3439
+  type: 'test'
+  ...
+# Subtest: 其他岗位的记录不得给本岗位下结论：解析为 unknown
+ok 9 - 其他岗位的记录不得给本岗位下结论：解析为 unknown
+  ---
+  duration_ms: 0.1892
+  type: 'test'
+  ...
+# Subtest: 只有撤回记录时解析为 withdrawn，绝不当成进行中的投递
+ok 10 - 只有撤回记录时解析为 withdrawn，绝不当成进行中的投递
+  ---
+  duration_ms: 0.1245
+  type: 'test'
+  ...
+# Subtest: 撤回与进行中并存时 active 优先；多条 active 取最新 createdAt
+ok 11 - 撤回与进行中并存时 active 优先；多条 active 取最新 createdAt
+  ---
+  duration_ms: 0.0957
+  type: 'test'
+  ...
+# Subtest: 残缺记录不能证明任何状态：缺 id/缺 status/非对象一律 unknown
+ok 12 - 残缺记录不能证明任何状态：缺 id/缺 status/非对象一律 unknown
+  ---
+  duration_ms: 0.0966
+  type: 'test'
+  ...
+# Subtest: 读取失败解析为显式 error，绝不是未投递，也不冒充成功
+ok 13 - 读取失败解析为显式 error，绝不是未投递，也不冒充成功
+  ---
+  duration_ms: 0.5548
+  type: 'test'
+  ...
+# Subtest: 失败后重试成功可以恢复：仅新增一次只读调用
+ok 14 - 失败后重试成功可以恢复：仅新增一次只读调用
+  ---
+  duration_ms: 0.1578
+  type: 'test'
+  ...
+# Subtest: 乱序响应：晚到的旧响应被丢弃，状态停留在后发起的那次读取
+ok 15 - 乱序响应：晚到的旧响应被丢弃，状态停留在后发起的那次读取
+  ---
+  duration_ms: 0.2419
+  type: 'test'
+  ...
+# Subtest: 岗位切换：立即清成 loading，旧岗位的迟到响应丢弃，只认新岗位数据
+ok 16 - 岗位切换：立即清成 loading，旧岗位的迟到响应丢弃，只认新岗位数据
+  ---
+  duration_ms: 0.3343
+  type: 'test'
+  ...
+# Subtest: 卸载后到达的响应绝不发布；dispose 前只留下 loading
+ok 17 - 卸载后到达的响应绝不发布；dispose 前只留下 loading
+  ---
+  duration_ms: 0.3416
+  type: 'test'
+  ...
+# Subtest: 未 activate 的会话不发起读取、不发布状态
+ok 18 - 未 activate 的会话不发起读取、不发布状态
+  ---
+  duration_ms: 0.1484
+  type: 'test'
+  ...
+# Subtest: page lifecycle invalidates hidden reads, coalesces return events and removes listeners
+ok 19 - page lifecycle invalidates hidden reads, coalesces return events and removes listeners
+  ---
+  duration_ms: 0.4238
+  type: 'test'
+  ...
+# Subtest: hidden mount waits until visible and cleanup rejects late response
+ok 20 - hidden mount waits until visible and cleanup rejects late response
+  ---
+  duration_ms: 0.1549
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 402.0851

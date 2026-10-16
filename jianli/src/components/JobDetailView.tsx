@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, errorMessage, type ResumeHistory, type ProjectHistory } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobDetail } from "@/lib/api/domain";
+import { applicationNextAction, applicationStatusText } from "@/lib/application-display";
+import { bindJobApplicationStatusLifecycle, createJobApplicationStatusSession, type JobApplicationStatusState } from "@/lib/job-application-status";
 import { resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
 import { useAuth } from "./AuthProvider";
 import AccessGate, { ErrorNotice } from "./AccessGate";
@@ -42,6 +44,18 @@ export default function JobDetailView({
   </div>;
 }
 
+// 传智杯56：岗位匹配表单的已有投递提示（无状态展示组件）。只有会话证明的状态才给具体
+// 文案并复用 application-display 的共享口径；unknown 不渲染任何结论（绝不显示“未投递”）；
+// error 显式且不阻断匹配，重试只读；撤回史如实呈现，不给重投/授权入口。
+export function JobApplicationStatusNotice({ state, onRetry }: { state: JobApplicationStatusState; onRetry(): void }) {
+  if (state.kind === "loading") return <p role="status" className="mt-3 text-xs text-slate-500">正在核对本岗位的已有投递…</p>;
+  if (state.kind === "error") return <p role="alert" className="mt-3 text-xs leading-6 text-rose-700">本岗位投递状态读取失败：{state.message}。这不影响生成报告。<button type="button" className="ml-1 underline" onClick={onRetry}>重试读取</button></p>;
+  if (state.kind === "unknown") return null;
+  const anchor = `/applications#application-${encodeURIComponent(state.application.id)}`;
+  if (state.kind === "withdrawn") return <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600"><p>本岗位此前的投递{applicationStatusText(state.application.status)}。这里只说明该条撤回记录；其他投递状态请查看个人投递。生成新报告不受影响；再次分享仍须从报告页确认授权。</p><Link className="text-indigo-700 underline" href={anchor}>查看该条撤回记录 →</Link></div>;
+  return <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm text-indigo-950"><p className="font-semibold">本岗位已有进行中的投递：{applicationStatusText(state.application.status)}</p><p className="mt-1 text-xs leading-6">下一步：{applicationNextAction(state.application.status)}生成新报告不会替换该投递。</p><Link className="mt-1 block text-indigo-700 underline" href={anchor}>查看本岗位投递状态 →</Link></div>;
+}
+
 function MatchForm({
   job,
   initialResumeVersionId,
@@ -63,6 +77,11 @@ function MatchForm({
   const [busy, setBusy] = useState(false);
   const submitting = useRef(false);
   const [revision, setRevision] = useState(0);
+  // 传智杯56：投递状态读取与材料加载完全解耦——独立会话、独立错误与重试；
+  // 状态读取失败只影响提示行，不重置材料、不阻断生成报告。
+  const [applicationStatus, setApplicationStatus] = useState<JobApplicationStatusState>({ kind: "loading" });
+  const statusSession = useMemo(() => createJobApplicationStatusSession({ api: { myApplications: api.myApplications, errorMessage }, publish: setApplicationStatus }), []);
+  useEffect(() => bindJobApplicationStatusLifecycle(statusSession, job.id, { page: window, document }), [statusSession, job.id]);
   useEffect(() => {
     let current = true;
     setLoading(true); setError("");
@@ -91,6 +110,7 @@ function MatchForm({
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
   const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
   return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-500">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。<Link className="mt-2 block text-indigo-700 underline" href="/applications">已有投递？查看企业回应 →</Link></p>
+    <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
       <fieldset disabled={busy} className="space-y-4">

@@ -1,0 +1,13 @@
+== 当前交付文件（工作区） ==
+c4b634e8f887d98175886fe6862e6f6a260a3ae619d2ffab840e88f8505592b3 *jianli/src/lib/job-application-status.ts
+31d1a2f38c0aa83f63489254ff5184540c25e428694d3ca4f2d041cef0b39a17 *jianli/src/components/JobDetailView.tsx
+f58a572d912566c11d15dac20463f1f711ca00f9892bea9eede69f395aa3a0da *jianli/tests/job-application-status.test.mjs
+d7c3f6ff865737b4f8ad87cfd39ceb55601f149a810992125497079c35d603d6 *jianli/tests/job-application-status-notice.test.mjs
+
+== 基线（HEAD a45b345）JobDetailView.tsx（库内 LF） ==
+8e92d40e218827df7694ecd5e7de30e5e0a22cf3a9f403d2bc0496ffb54b8f99 *-
+
+== 边界（权威：git diff --name-only HEAD -- jianli/src jianli/tests） ==
+仅 jianli/src/components/JobDetailView.tsx；其余 src/tests 文件与 HEAD 一致。
+注：ApplicationSubmit/ApplicationList/application-display/api/client 直接 sha 与 git show 不等，
+系工作区 CRLF 与库内 LF 的换行差异（git status 干净、git diff 为空），非内容改动。

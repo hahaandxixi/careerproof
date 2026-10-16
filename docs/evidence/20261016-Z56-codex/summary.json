@@ -1,0 +1,35 @@
+{
+  "baseline": "307bf35",
+  "zcode_delivery": "18 targeted / 303 frontend / typecheck reported before independent integration",
+  "codex_changes": [
+    "Withdrawn notice describes that returned record only; no claim no active share exists.",
+    "Actual lifecycle binder rechecks visible/focus/pageshow, coalesces clustered events, clears and invalidates on blur/hide, disposes listeners on unmount.",
+    "Two real lifecycle regressions exercise deferred reads and DOM-like EventTargets."
+  ],
+  "checks": {
+    "targeted": 20,
+    "frontend": 305,
+    "failed": 0,
+    "skipped": 0,
+    "typecheck": "passed",
+    "normal_production_build": "passed"
+  },
+  "normal_browser": {
+    "candidate_b_selection": "observed at 3000; screenshot normal-selected-b.png",
+    "job_existing_application": "real replied status, application b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+    "status_link": "clicked and reached matching /applications anchor with saved reply",
+    "cp01_v2_download": "normal HTTP200, exact shipped bytes"
+  },
+  "limits": [
+    "Browser did not inject failed status responses or synthetic visibility events; lifecycle is proven by real helper tests, current saved status and link by browser.",
+    "Enterprise candidate styling, visual observation button and resume option were not freshly exercised in this integration.",
+    "No real model call, material upload, new report, application mutation or message write in this batch.",
+    "Normal data comparison has one auth-table delta; see normal-activation.json. 3001 is currently offline and was not restarted."
+  ],
+  "source_sha256": {
+    "jianli/src/components/JobDetailView.tsx": "78fb28999caa7d4f0581cfb7679b6dcba85e35b2458af61b7cfa31e5aebb11ee",
+    "jianli/src/lib/job-application-status.ts": "48f264ddb3a3aa60d26d6e540baa5e0f0fe04c8d0bfebf6ebc7d1e906e8f3b49",
+    "jianli/tests/job-application-status.test.mjs": "2823918d6f677583354bcd75591fd1c87b38bd71be32f797df5c2105699e2c54",
+    "jianli/tests/job-application-status-notice.test.mjs": "6e55f9088d2b471b4647393a2b3e33d8118b9dcc6babe36ba5814f083081b882"
+  }
+}
