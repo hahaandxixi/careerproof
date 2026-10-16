@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: failed generation retry retains chosen versions and consent without automatically calling AI
+not ok 1 - failed generation retry retains chosen versions and consent without automatically calling AI
+  ---
+  duration_ms: 23.6863
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\refresh-ui-20261015\\tests\\career-retry.test.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '' !== 'resume-v2'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'resume-v2'
+  actual: ''
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/refresh-ui-20261015/tests/career-retry.test.mjs:53:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: material list failure retry really rereads the list
+ok 2 - material list failure retry really rereads the list
+  ---
+  duration_ms: 10.9819
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 152.3937

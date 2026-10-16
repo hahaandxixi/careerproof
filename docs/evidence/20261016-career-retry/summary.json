@@ -1,0 +1,37 @@
+{
+  "base_commit": "785db6a",
+  "gate_progress": [
+    "G1 error recovery",
+    "G4 normal service restoration"
+  ],
+  "bug": "Generation failure retry reloaded material inventories and reset user selection to initial route defaults",
+  "red": {
+    "passed": 1,
+    "failed": 1,
+    "actual_selected_resume_after_retry": "",
+    "expected": "resume-v2"
+  },
+  "checks": {
+    "tests_passed": 283,
+    "tests_failed": 0,
+    "typecheck": "passed",
+    "normal_production_build": "passed"
+  },
+  "behavior": {
+    "generation_error_retry": "Clear error only; retain resume/project/consent; later explicit submit required",
+    "material_list_error_retry": "Read material inventories again",
+    "history_error_retry": "Read saved history again, preserve selection"
+  },
+  "verification_scope": "Real component executed with deterministic hook/API harness; original test failed before fix. Browser confirmed saved history label after normal deployment. No browser network failure injection or real AI request.",
+  "normal_restoration": "All table digests unchanged before browser auth/read; revision 0020; 3001 untouched",
+  "remaining": [
+    "Independent first user feedback unavailable",
+    "Real model independent semantic quality not verified",
+    "Complete dual-role video, frozen PDF/source package, reviewer access and human signatures remain"
+  ],
+  "source_sha256": {
+    "jianli/src/components/CareerRecommendations.tsx": "a6b093b1580233000c0cd7e5bacf7ebd87dc6f6c8b98f7dc2106e7e5e4bb1c64",
+    "jianli/src/components/AccessGate.tsx": "7546f961c4b64857cb45cc9155e2a1f723b6020d4446b1f949d03556cd53c3fc",
+    "jianli/tests/career-retry.test.mjs": "7d3a2127d82a885a14003eddb4e8262239778af09525a2f01202560607022c38"
+  }
+}

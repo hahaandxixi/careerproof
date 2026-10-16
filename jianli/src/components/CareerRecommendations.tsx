@@ -48,12 +48,13 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [errorSource, setErrorSource] = useState<"materials" | "generation" | "history">("materials");
   const [selectionNotice, setSelectionNotice] = useState("");
   const [revision, setRevision] = useState(0);
 
   useEffect(() => {
     let current = true;
-    setLoading(true); setError(""); setResult(null); setHistoryNotice(""); setSelectionNotice("");
+    setLoading(true); setError(""); setErrorSource("materials"); setResult(null); setHistoryNotice(""); setSelectionNotice("");
     Promise.all([api.listResumes(), api.listProjects()]).then(([resumeRows, projectRows]) => {
       if (!current) return;
       setResumes(resumeRows); setProjects(projectRows);
@@ -76,7 +77,7 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!resumeVersionId || !externalAiConsent || busy || historyLoading) return;
-    setBusy(true); setError(""); setResult(null); setHistoryNotice("");
+    setBusy(true); setError(""); setErrorSource("generation"); setResult(null); setHistoryNotice("");
     setResultKind("current"); setExpandedCandidates(false);
     try {
       setResult(await api.createCareerPlan({ resumeVersionId, projectVersionIds, limit: 10, externalAiConsent }));
@@ -94,7 +95,7 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
 
   async function viewPreviousPlan() {
     if (busy || historyLoading) return;
-    setHistoryLoading(true); setError(""); setHistoryNotice("");
+    setHistoryLoading(true); setError(""); setErrorSource("history"); setHistoryNotice("");
     try {
       const saved = await api.latestCareerPlan();
       if (saved) {
@@ -119,7 +120,13 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
       <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">系统先用本地证据规则筛出岗位，再由 AI 优先比较不同职业方向的候选岗位、指出缺口和下一份可提交材料。上传新版本后再次生成，可查看证据变化。推荐顺序不代表能力认证或录用概率。</p>
     </section>
 
-    {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
+    {error && <ErrorNotice message={error}
+      retryLabel={errorSource === "generation" ? "保留材料，返回重试" : errorSource === "history" ? "重新读取历史规划" : "重新加载材料"}
+      retry={() => {
+        if (errorSource === "materials") setRevision(value => value + 1);
+        else if (errorSource === "history") void viewPreviousPlan();
+        else setError(""); // Only a later explicit form submit may call the model again.
+      }} />}
     {selectionNotice && <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{selectionNotice}</p>}
     <form className="panel space-y-5" onSubmit={submit}>
       <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">请选择一份简历，可勾选最多 10 份作品；测试材料请选择同一 CP 编号的一对简历与项目。第三方参考材料不会计入个人评级。</p></div>

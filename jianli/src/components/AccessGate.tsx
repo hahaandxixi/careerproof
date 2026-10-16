@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useAuth } from "./AuthProvider";
 import type { UserRole } from "@/lib/api/client";
 
-export function ErrorNotice({ message, retry }: { message: string; retry?: () => void }) {
+export function ErrorNotice({ message, retry, retryLabel = "重新加载" }: { message: string; retry?: () => void; retryLabel?: string }) {
   return <div role="alert" className="rounded-xl bg-rose-50 p-4 text-sm text-rose-800">
-    <p>{message}</p>{retry && <button className="mt-2 font-medium underline" onClick={retry}>重新加载</button>}
+    <p>{message}</p>{retry && <button className="mt-2 font-medium underline" onClick={retry}>{retryLabel}</button>}
   </div>;
 }
 
