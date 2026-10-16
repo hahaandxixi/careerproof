@@ -1,0 +1,50 @@
+{
+  "base_commit": "29975c4",
+  "artifact": "D:\\jbcode\\web ai\\jianli\\output\\video\\CareerProof-双端规则链演示初稿-20261016-r2.mp4",
+  "duration_seconds": 198.16,
+  "bytes": 4335023,
+  "sha256": "bea01833250d8c89f620a214e8afc8ab5676620503e8c3ec15a604331eca826d",
+  "actual_browser_clips": 23,
+  "actual_frames": 667,
+  "capture_viewport": "1265x712",
+  "native_fps_approx": 3.6,
+  "encoded": "1920x1080 H264 yuv420p 25fps; duplicated frames; no audio",
+  "coverage": [
+    "fresh synthetic resume and project uploads",
+    "local rule report with external consent false",
+    "source evidence",
+    "existing application prevents replacement",
+    "explicit old authorization withdrawal",
+    "new report explicit application",
+    "enterprise board and PostgreSQL source",
+    "synthetic onsite enterprise reply",
+    "student notification resolves new application"
+  ],
+  "independent_checks": {
+    "original_snapshots_unchanged": 8,
+    "old_detail_view_download_status": 404,
+    "new_detail_status": 200,
+    "physical_model_requests": 0
+  },
+  "failures_preserved": [
+    "Two radio-selector observation failures after selection closed the picker; those raw clips omitted",
+    "Old valid application blocked initial new submission as designed; branch retained in video",
+    "Initial enterprise shots did not visibly frame details; supplementary read-only clips added",
+    "Capture helper referenced closed tab during supplementary first try; fresh explicit tab parameter used"
+  ],
+  "quality": {
+    "full_decode": "passed; no errors",
+    "ruff": "passed",
+    "subtitle_and_source_visual_check": "passed, final supplementary images inspected",
+    "first_assembled_video": "retained, r2 is preferred"
+  },
+  "limits": [
+    "Segmented low-frame-rate no-audio draft, not final contest video",
+    "Growth task/new version/change comparison not yet recorded",
+    "Not a first-time independent human test or real external AI evaluation",
+    "Native capture below 1080p; upscaled output is not native high-resolution recording",
+    "Raw frames and MP4 ignored by Git; another machine needs copying or rerecording",
+    "No services stopped or restarted; original 3001 environment untouched"
+  ],
+  "source_sha256": "56c4d1e3bc72f733ad216d8ae7ff1c731d574b6e571e499c802c8b3f11fc10fc"
+}

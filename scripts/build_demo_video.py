@@ -50,6 +50,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--font", type=Path, default=Path("C:/Windows/Fonts/msyh.ttc"))
+    parser.add_argument("--story", type=Path, help="Optional captions and truthful coverage for a new capture batch")
     args = parser.parse_args()
     output, work = args.output.resolve(), args.work_dir.resolve()
     captures, font = args.capture_dir.resolve(), args.font.resolve()
@@ -58,11 +59,18 @@ def main():
     work.mkdir(parents=True, exist_ok=False)
     output.parent.mkdir(parents=True, exist_ok=True)
     index = json.loads((captures / "index.json").read_text(encoding="utf-8"))
-    if len(index) != len(CAPTIONS):
+    story = json.loads(args.story.read_text(encoding="utf-8")) if args.story else None
+    captions = story["captions"] if story else CAPTIONS
+    boundary = story["boundary"] if story else BOUNDARY
+    if not captions or not all(isinstance(c, str) and c.strip() for c in captions):
+        raise ValueError("Each observed clip requires a nonempty caption")
+    if not isinstance(boundary, str) or not boundary.strip():
+        raise ValueError("Explicit coverage limitations are required")
+    if len(index) != len(captions):
         raise ValueError("This draft requires all observed browser clips")
     manifest = {"kind": "segmented real-browser draft", "native_fps": "see frame timestamps",
                 "encoded_format": "1920x1080, H.264, 25fps, no audio",
-                "clips": [], "limitations": BOUNDARY}
+                "clips": [], "limitations": boundary}
     common = ["-an", "-r", "25", "-c:v", "libx264", "-preset", "fast",
               "-crf", "20", "-pix_fmt", "yuv420p"]
     segments = []
@@ -78,6 +86,11 @@ def main():
             "首次独立用户、真实 AI 语义与最终赛事格式仍待核对",
             "当前为分段初稿，不代表完整端到端演示已交付"], 8),
     ]
+    if story:
+        title_cards = [
+            (name, story[name]["title"], story[name]["lines"], duration)
+            for name, duration in [("intro", 5), ("outro", 8)]
+        ]
     for name, title, lines, duration in title_cards:
         card(work / f"{name}.png", title, lines, font)
         run(["ffmpeg", "-hide_banner", "-loglevel", "warning", "-n", "-loop", "1",
@@ -85,8 +98,8 @@ def main():
             work, work / f"{name}.raw.out")
     segments.append("intro.mp4")
     font_filter = font.as_posix().replace(":", r"\:")
-    (work / "boundary.txt").write_text(BOUNDARY, encoding="utf-8")
-    for number, (item, caption) in enumerate(zip(index, CAPTIONS, strict=True), 1):
+    (work / "boundary.txt").write_text(boundary, encoding="utf-8")
+    for number, (item, caption) in enumerate(zip(index, captions, strict=True), 1):
         data = json.loads((captures / item["name"] / "capture.json").read_text(encoding="utf-8"))
         frames = data["frames"]
         if len(frames) < 2 or any(b["ms"] <= a["ms"] for a, b in zip(frames, frames[1:])):

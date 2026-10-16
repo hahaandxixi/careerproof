@@ -1,0 +1,111 @@
+{
+  "materials": [
+    {
+      "preview": "/materials/project/38afd6db-409e-4acc-af79-058de48f6a65",
+      "title": "CP01｜任务管理 API｜视频走查-20261016"
+    },
+    {
+      "preview": "/materials/resume/2a860b9c-0ecd-478c-9fbb-77ed681aa3fd",
+      "title": "CP01｜Python 后端｜视频走查-20261016"
+    }
+  ],
+  "taskUrl": "http://127.0.0.1:3000/tasks/4becda34-df02-42a9-8037-b21f4fe5b07b",
+  "reportUrl": "http://127.0.0.1:3000/reports/1b6c0425-848a-4229-8cc8-cc4d4447ba54",
+  "newApplicationId": "b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+  "oldApplicationId": "492871f8-d03a-4df1-b8ea-86b830fd56c5",
+  "notificationTarget": "http://127.0.0.1:3000/applications#application-b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+  "clips": [
+    {
+      "name": "01-resume-upload",
+      "caption": "新上传合成简历；本地解析，不调用外部模型。"
+    },
+    {
+      "name": "02-project-upload",
+      "caption": "新上传同一 CP01 合成项目 ZIP；只做安全检查与静态解析。"
+    },
+    {
+      "name": "03-processing-and-jobs",
+      "caption": "两份新材料解析完成；从材料入口继续选择岗位。"
+    },
+    {
+      "name": "04-job-detail",
+      "caption": "选择对应合成企业的 Python 岗位，核对原文要求。"
+    },
+    {
+      "name": "05-select-materials",
+      "caption": "只选择本轮新上传的同一套合成材料；外部 AI 同意保持未勾选。"
+    },
+    {
+      "name": "06-select-materials-corrected",
+      "caption": "选择新简历与新项目；此前选择器定位失败未产生提交，已保留失败片段。"
+    },
+    {
+      "name": "07-project-selected",
+      "caption": "本轮新简历已选定；再勾选同一套项目版本。"
+    },
+    {
+      "name": "08-generate-rule-report",
+      "caption": "不授权外发，显式生成本地规则报告；生成不等于向企业投递。"
+    },
+    {
+      "name": "09-open-new-report",
+      "caption": "新任务完成后打开本轮报告；查看规则来源与固定材料版本。"
+    },
+    {
+      "name": "10-source-evidence",
+      "caption": "展开 Python 原文与行号；静态代码不代表运行结果或本人贡献已核验。"
+    },
+    {
+      "name": "11-explicit-application",
+      "caption": "明确分享授权后确认投递；补证不是前置门槛，两项必要操作。"
+    },
+    {
+      "name": "12-existing-application-boundary",
+      "caption": "已有有效投递时拒绝覆盖；先查看本人投递，再决定是否撤回旧授权。"
+    },
+    {
+      "name": "13-revoke-old-authorization",
+      "caption": "明确确认撤回旧授权；旧记录保留，企业后续访问应被拒绝。"
+    },
+    {
+      "name": "14-new-report-application",
+      "caption": "回到本轮新报告，重新勾选分享授权并确认；创建新的投递记录。"
+    },
+    {
+      "name": "15-new-application-progress",
+      "caption": "个人投递已指向本轮新报告；旧授权不会因重新投递而恢复。"
+    },
+    {
+      "name": "16-enterprise-jobs",
+      "caption": "企业账号进入自己的岗位管理，查看学生明确授权的投递。"
+    },
+    {
+      "name": "17-enterprise-find-job",
+      "caption": "在本人岗位中按关键词筛选，找到对应的 Python 合成岗位。"
+    },
+    {
+      "name": "18-enterprise-authorized-board",
+      "caption": "企业只看到当前仍有效的授权投递，打开固定报告对照。"
+    },
+    {
+      "name": "19-enterprise-evidence-link",
+      "caption": "点击 PostgreSQL 要求，联动学生授权报告中的原证据。"
+    },
+    {
+      "name": "20-enterprise-source",
+      "caption": "按需展开本次授权的 SQL／连接代码片段，核对路径与行号。"
+    },
+    {
+      "name": "21-enterprise-reply",
+      "caption": "合成企业发送站内测试回复；显式确认，不发邮件、不作录用决定。"
+    },
+    {
+      "name": "22-student-notification",
+      "caption": "学生从账户菜单进入通知，查看企业刚发送的站内回复。"
+    },
+    {
+      "name": "23-notification-target",
+      "caption": "点击企业回复通知，重新核对授权并定位本次新投递，而不是旧记录。"
+    }
+  ]
+}
