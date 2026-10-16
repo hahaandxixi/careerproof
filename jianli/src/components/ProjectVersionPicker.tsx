@@ -62,7 +62,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
               <span className="ml-2 text-xs font-normal text-slate-500">{project.versions.length} 个版本 · 已选 {project.versions.filter(version => selectedIds.includes(version.id)).length}</span>
             </summary>
             <div className="space-y-2 px-3 pb-3">
-              {project.versions.map(version => <label key={version.id} className="flex items-start gap-2 rounded-lg bg-white p-2 text-sm">
+              {project.versions.map(version => <label key={version.id} className="material-version flex items-start gap-2 rounded-lg bg-white p-2 text-sm">
                 <input className="mt-1 shrink-0" type="checkbox" checked={selectedIds.includes(version.id)} disabled={!selectedIds.includes(version.id) && selectedIds.length >= 10} onChange={event => onChange(toggleMaterialVersion(selectedIds, version.id, event.target.checked))} />
                 <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
               </label>)}

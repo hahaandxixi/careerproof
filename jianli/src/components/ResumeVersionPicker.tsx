@@ -78,7 +78,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
   </section>;
 
   function renderVersion(version: ResumeHistory["versions"][number], title: string) {
-    return <label key={version.id} className="mt-2 flex cursor-pointer items-start gap-2 rounded-lg bg-white p-2 text-sm">
+    return <label key={version.id} className="material-version mt-2 flex cursor-pointer items-start gap-2 rounded-lg bg-white p-2 text-sm">
       <input className="mt-1 shrink-0" type="radio" name={radioName} aria-label={`${title} 第 ${version.versionNumber} 版 ${version.originalFilename ?? ""}`} checked={selectedId === version.id} onChange={() => choose(version.id)} />
       <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename}
         <span className="block text-xs text-slate-500">{version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>

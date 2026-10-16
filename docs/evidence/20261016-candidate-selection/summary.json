@@ -1,0 +1,44 @@
+{
+  "baseline": "a20353d",
+  "changes": [
+    "Demo candidate: unique indigo name button, current-candidate label and row background",
+    "Authorized board: selected candidate name and column background follow accepted session selection",
+    "Notification all/unread: pressed-state background/border",
+    "Resume/project versions: checked-input label background/border, native radio/check preserved",
+    "Visual observation locator: pressed-state button styling"
+  ],
+  "already_present": [
+    "Report evidence groups: indigo active border/background and expand/collapse text",
+    "Radar requirement buttons and axes: selected styling",
+    "Expanded job recommendation and main navigation/current flow step"
+  ],
+  "checks": {
+    "real_component_selection_regressions": 2,
+    "frontend_passed": 285,
+    "frontend_failed": 0,
+    "typecheck": "passed",
+    "production_build": "passed"
+  },
+  "browser": {
+    "origin": "http://127.0.0.1:3096",
+    "demo_b_selected": true,
+    "selected_background": "rgb(224, 231, 255)",
+    "selected_border": "rgb(79, 70, 229)",
+    "unselected_background": "rgb(255, 255, 255)",
+    "mobile_viewport": 390,
+    "mobile_document_width": 375,
+    "notifications_unread_selection": "passed; no notification marked read",
+    "checked_project_background": "rgb(238, 242, 255)",
+    "checked_project_border": "rgb(129, 140, 248)"
+  },
+  "limits": [
+    "Normal 3000 site not yet activated; temporary preview only.",
+    "Enterprise board, resume picker and visual-observation button have source/type/build verification but not fresh browser interaction in this batch.",
+    "No external model, upload, report generation, application or message write."
+  ],
+  "build_preparation_failures": [
+    "First asset copy used incorrect working-directory-relative paths.",
+    "Second copy target directory did not exist.",
+    "Created exact owned scratch public directory and copied assets successfully; original errors retained in tool history."
+  ]
+}

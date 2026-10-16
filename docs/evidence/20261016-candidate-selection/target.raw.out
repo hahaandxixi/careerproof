@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: name and evidence-cell selection move a unique visible candidate marker together
+ok 1 - name and evidence-cell selection move a unique visible candidate marker together
+  ---
+  duration_ms: 23.6575
+  type: 'test'
+  ...
+# Subtest: filtered fallback highlights the candidate actually displayed and empty results have no stale marker
+ok 2 - filtered fallback highlights the candidate actually displayed and empty results have no stale marker
+  ---
+  duration_ms: 5.1741
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 172.3014
