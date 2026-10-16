@@ -92,3 +92,64 @@ def test_image_without_recognized_text_is_rejected(tmp_path, monkeypatch):
     )
     with pytest.raises(AppError, match="未识别到"):
         parse_document(image, "image/jpeg")
+
+
+@pytest.mark.parametrize(
+    "width,height,rotation", [(595, 842, 0), (600, 600, 90), (750.5, 400.5, 270)]
+)
+def test_pdf_pixel_limit_rejects_before_bitmap_allocation(
+    tmp_path, monkeypatch, width, height, rotation
+):
+    pdf = tmp_path / "over-budget.pdf"
+    with fitz.open() as document:
+        page = document.new_page(width=width, height=height)
+        page.set_rotation(rotation)
+        document.save(pdf)
+    monkeypatch.setattr(settings, "ocr_enabled", True)
+    monkeypatch.setattr(settings, "ocr_max_image_pixels", 1_000_000)
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+
+    monkeypatch.setattr(fitz.Page, "get_pixmap", forbidden)
+    with pytest.raises(AppError, match="PDF页面像素过大") as error:
+        parse_document(pdf, "application/pdf")
+    assert error.value.code == 4026
+
+
+@pytest.mark.parametrize("rotation", [0, 90])
+def test_pdf_exact_pixel_budget_allows_real_rendered_png(tmp_path, monkeypatch, rotation):
+    pdf = tmp_path / "within-budget.pdf"
+    with fitz.open() as document:
+        page = document.new_page(width=510.25, height=500.25)
+        page.set_rotation(rotation)
+        bounds = (page.rect * fitz.Matrix(2, 2)).irect
+        expected_size = (bounds.width, bounds.height)
+        document.save(pdf)
+    monkeypatch.setattr(settings, "ocr_enabled", True)
+    monkeypatch.setattr(settings, "ocr_max_image_pixels", expected_size[0] * expected_size[1])
+    seen = []
+
+    def synthetic_recognizer(png):
+        with Image.open(BytesIO(png)) as image:
+            seen.append(image.size)
+        return OCRResult("合成识别文字", 0.9, 1)
+
+    monkeypatch.setattr("app.tools.document_parser.recognize_image", synthetic_recognizer)
+    sections = parse_document(pdf, "application/pdf")
+    assert seen == [expected_size]
+    assert sections[0].page_number == 1 and sections[0].section_type == "ocr_page"
+
+
+async def test_pdf_pixel_limit_crosses_real_isolated_worker(tmp_path, monkeypatch):
+    from app.services.task_runner import run_isolated
+
+    pdf = tmp_path / "worker-over-budget.pdf"
+    with fitz.open() as document:
+        document.new_page(width=600, height=600)
+        document.save(pdf)
+    monkeypatch.setenv("OCR_ENABLED", "true")
+    monkeypatch.setenv("OCR_MAX_IMAGE_PIXELS", "1000000")
+    with pytest.raises(AppError, match="PDF页面像素过大") as error:
+        await run_isolated(parse_document, pdf, "application/pdf", timeout_seconds=15)
+    assert error.value.code == 4026

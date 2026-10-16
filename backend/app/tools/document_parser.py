@@ -62,7 +62,15 @@ def parse_document(path: Path, mime_type: str) -> list[DocumentSection]:
                 if text:
                     sections.append(DocumentSection("page", text, index + 1))
                 elif settings.ocr_enabled and ocr_pages < settings.ocr_max_pages:
-                    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+                    matrix = fitz.Matrix(2, 2)
+                    bounds = (page.rect * matrix).irect
+                    if (
+                        bounds.width <= 0
+                        or bounds.height <= 0
+                        or bounds.width * bounds.height > settings.ocr_max_image_pixels
+                    ):
+                        raise AppError("PDF页面像素过大，无法安全进行OCR识别", code=4026)
+                    pixmap = page.get_pixmap(matrix=matrix, alpha=False)
                     if pixmap.width * pixmap.height > settings.ocr_max_image_pixels:
                         raise AppError("PDF页面像素过大，无法安全进行OCR识别", code=4026)
                     result = recognize_image(pixmap.tobytes("png"))

@@ -1,0 +1,135 @@
+.....FFF...                                                              [100%]
+================================== FAILURES ===================================
+______ test_pdf_pixel_limit_rejects_before_bitmap_allocation[595-842-0] _______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-pdf-preflight-red/test_pdf_pixel_limit_rejects_b0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024F0A0B58E0>
+width = 595, height = 842, rotation = 0
+
+    @pytest.mark.parametrize("width,height,rotation", [(595, 842, 0), (600, 600, 90), (750.5, 400.5, 270)])
+    def test_pdf_pixel_limit_rejects_before_bitmap_allocation(tmp_path, monkeypatch, width, height, rotation):
+        pdf = tmp_path / "over-budget.pdf"
+        with fitz.open() as document:
+            page = document.new_page(width=width, height=height)
+            page.set_rotation(rotation)
+            document.save(pdf)
+        monkeypatch.setattr(settings, "ocr_enabled", True)
+        monkeypatch.setattr(settings, "ocr_max_image_pixels", 1_000_000)
+    
+        def forbidden(*_args, **_kwargs):
+            pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+    
+        monkeypatch.setattr(fitz.Page, "get_pixmap", forbidden)
+        with pytest.raises(AppError, match="PDFҳ�����ع���") as error:
+>           parse_document(pdf, "application/pdf")
+
+app\tests\test_document_ocr.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tools\document_parser.py:65: in parse_document
+    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_args = (<[AttributeError("'NoneType' object has no attribute 'm_internal'") raised in repr()] Page object at 0x24f0a101f40>,)
+_kwargs = {'alpha': False, 'matrix': Matrix(2.0, 0.0, 0.0, 2.0, 0.0, 0.0)}
+
+    def forbidden(*_args, **_kwargs):
+>       pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+E       Failed: Over-budget PDF must be rejected before allocating a bitmap
+
+app\tests\test_document_ocr.py:108: Failed
+______ test_pdf_pixel_limit_rejects_before_bitmap_allocation[600-600-90] ______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-pdf-preflight-red/test_pdf_pixel_limit_rejects_b1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024F0A1028D0>
+width = 600, height = 600, rotation = 90
+
+    @pytest.mark.parametrize("width,height,rotation", [(595, 842, 0), (600, 600, 90), (750.5, 400.5, 270)])
+    def test_pdf_pixel_limit_rejects_before_bitmap_allocation(tmp_path, monkeypatch, width, height, rotation):
+        pdf = tmp_path / "over-budget.pdf"
+        with fitz.open() as document:
+            page = document.new_page(width=width, height=height)
+            page.set_rotation(rotation)
+            document.save(pdf)
+        monkeypatch.setattr(settings, "ocr_enabled", True)
+        monkeypatch.setattr(settings, "ocr_max_image_pixels", 1_000_000)
+    
+        def forbidden(*_args, **_kwargs):
+            pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+    
+        monkeypatch.setattr(fitz.Page, "get_pixmap", forbidden)
+        with pytest.raises(AppError, match="PDFҳ�����ع���") as error:
+>           parse_document(pdf, "application/pdf")
+
+app\tests\test_document_ocr.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tools\document_parser.py:65: in parse_document
+    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_args = (<[AttributeError("'NoneType' object has no attribute 'm_internal'") raised in repr()] Page object at 0x24f0a102ae0>,)
+_kwargs = {'alpha': False, 'matrix': Matrix(2.0, 0.0, 0.0, 2.0, 0.0, 0.0)}
+
+    def forbidden(*_args, **_kwargs):
+>       pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+E       Failed: Over-budget PDF must be rejected before allocating a bitmap
+
+app\tests\test_document_ocr.py:108: Failed
+___ test_pdf_pixel_limit_rejects_before_bitmap_allocation[750.5-400.5-270] ____
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-pdf-preflight-red/test_pdf_pixel_limit_rejects_b2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024F0A1036E0>
+width = 750.5, height = 400.5, rotation = 270
+
+    @pytest.mark.parametrize("width,height,rotation", [(595, 842, 0), (600, 600, 90), (750.5, 400.5, 270)])
+    def test_pdf_pixel_limit_rejects_before_bitmap_allocation(tmp_path, monkeypatch, width, height, rotation):
+        pdf = tmp_path / "over-budget.pdf"
+        with fitz.open() as document:
+            page = document.new_page(width=width, height=height)
+            page.set_rotation(rotation)
+            document.save(pdf)
+        monkeypatch.setattr(settings, "ocr_enabled", True)
+        monkeypatch.setattr(settings, "ocr_max_image_pixels", 1_000_000)
+    
+        def forbidden(*_args, **_kwargs):
+            pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+    
+        monkeypatch.setattr(fitz.Page, "get_pixmap", forbidden)
+        with pytest.raises(AppError, match="PDFҳ�����ع���") as error:
+>           parse_document(pdf, "application/pdf")
+
+app\tests\test_document_ocr.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tools\document_parser.py:65: in parse_document
+    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_args = (<[AttributeError("'NoneType' object has no attribute 'm_internal'") raised in repr()] Page object at 0x24f0a1038f0>,)
+_kwargs = {'alpha': False, 'matrix': Matrix(2.0, 0.0, 0.0, 2.0, 0.0, 0.0)}
+
+    def forbidden(*_args, **_kwargs):
+>       pytest.fail("Over-budget PDF must be rejected before allocating a bitmap")
+E       Failed: Over-budget PDF must be rejected before allocating a bitmap
+
+app\tests\test_document_ocr.py:108: Failed
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_document_ocr.py::test_pdf_pixel_limit_rejects_before_bitmap_allocation[595-842-0]
+FAILED app/tests/test_document_ocr.py::test_pdf_pixel_limit_rejects_before_bitmap_allocation[600-600-90]
+FAILED app/tests/test_document_ocr.py::test_pdf_pixel_limit_rejects_before_bitmap_allocation[750.5-400.5-270]
+3 failed, 8 passed, 5 warnings in 0.89s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,48 @@
+{
+  "verified_at": "2026-10-16",
+  "scope": "PDF OCR bitmap preallocation guard; PyMuPDF remains production dependency",
+  "checks": {
+    "red": {
+      "failed": 3,
+      "passed": 8,
+      "reason": "get_pixmap allocation spy reached on old code"
+    },
+    "target": {
+      "passed": 11
+    },
+    "affected": {
+      "passed": 29,
+      "warnings": 5,
+      "modules": [
+        "test_document_ocr.py",
+        "test_material_tasks.py",
+        "test_docx_textboxes.py",
+        "test_portfolio_api.py"
+      ]
+    },
+    "ruff": "passed"
+  },
+  "coverage": [
+    "reject before get_pixmap; 0/90/270 degree rotations",
+    "exact pixel budget and actual rendered PNG dimensions",
+    "real isolated worker returns 4026",
+    "native text bypasses OCR"
+  ],
+  "limits": [
+    "recognizer in allowed-PNG tests is synthetic; no real OCR accuracy conclusion",
+    "no PDFium integration or dependency replacement",
+    "no new complete backend/frontend suite claim"
+  ],
+  "activation": {
+    "initial_attempt": "Connection refused before inventory or Stop-Local; Docker Engine was up, owned PostgreSQL container stopped. No services stopped by failed runner.",
+    "recovery": "Verified Compose working_dir/service ownership; started existing backend-postgres-1 without reseeding. pg_isready accepting before retry.",
+    "result": "live-attempt2/normal-activation.json",
+    "normal_data_unchanged": true,
+    "revision": "0019_data_integrity_constraints",
+    "e2e_3001_restarted_or_migrated": false
+  },
+  "source_sha256": {
+    "backend/app/tools/document_parser.py": "8bf855a0cb4f3e50b6ab60bf8118b9ede3840b713aac9a390aa73267a1d85974",
+    "backend/app/tests/test_document_ocr.py": "e2a58b1c0704c47d417e7caf0d03cf3310c0314280b3f256db21d5204e88d948"
+  }
+}
