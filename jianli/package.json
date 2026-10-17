@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test:portfolio": "node --experimental-strip-types --test tests/portfolio-upload.test.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit"
@@ -18,10 +18,13 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "3.3.7",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
+    "eslint": "9.39.5",
+    "eslint-config-next": "15.5.27",
     "postcss": "^8.4.49",
     "sucrase": "3.35.1",
     "tailwindcss": "^3.4.17",

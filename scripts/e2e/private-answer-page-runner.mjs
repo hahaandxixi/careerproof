@@ -186,7 +186,9 @@ async function preflight() {
   // Empirical DB identity: the session the backend actually serves must see
   // exactly the growth tasks stored in cp_e2e_<run> (read-only psql).
   const auth = await apiLogin(CREDS.accounts.student);
-  const tasks = await auth.getJson("/growth-tasks");
+  const taskPage = await auth.getJson("/growth-tasks?page=1&pageSize=20");
+  if (!Array.isArray(taskPage.items)) throw new Error("growth tasks paging contract is missing");
+  const tasks = taskPage.items;
   const uiIds = tasks.map(t => t.id).sort();
   // GET /growth-tasks returns only the caller's own tasks; the closure DB also
   // holds other fixture users' tasks, so filter by the same owner.

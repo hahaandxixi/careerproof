@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import ListPagination from "./ListPagination";
 import { api, errorMessage } from "@/lib/api/client";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
 import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
@@ -27,13 +28,14 @@ export default function ApplicationBoard({jobId}:{jobId:string}){
   return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId}/></AccessGate>;
 }
 function Workspace({jobId}:{jobId:string}){
+  const page=useRef(1);
   const [state,setState]=useState(initialApplicationBoardState);
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,selected,error,notice,loading:busy}=state;
   const session=useMemo(()=>createApplicationBoardSession({
-    list:async()=>{const id=applicationAnchorId();return includeApplicationTarget(await api.jobApplications(jobId), api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});}, open:api.openApplication,
+    list:async()=>{const id=applicationAnchorId();const result=await api.jobApplications(jobId,page.current,20);const items=await includeApplicationTarget(result.items, api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});return {...result,items,pageItemCount:result.items.length};}, open:api.openApplication,
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
-  },setState),[jobId]);
+  },value=>{if(value.pagination)page.current=value.pagination.page;setState(value);}),[jobId]);
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；目标被筛选条件排除时给出可执行提示，不静默失败。
   // 提示存为 string（""=无提示）：filtered-out 期间每次渲染都会重放同一 outcome，依赖 Object.is 去重，避免对象身份引发循环渲染。
   const [anchorFilterTarget,setAnchorFilterTarget]=useState("");
@@ -98,13 +100,15 @@ function Workspace({jobId}:{jobId:string}){
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
   return <div className="space-y-5"><h1 className="text-3xl font-bold">已授权投递 · 岗位匹配对照</h1><p className="text-sm leading-6 text-slate-600">查看学生向本岗位授权的固定报告，点选格子即可联动要求与证据。分数仅辅助核对，不代表录用顺序。</p>
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{resetReply();void session.refresh();}}>刷新授权投递</button>
-    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。默认展示最近100份，更早的通知目标会单独核对授权后补入。刷新或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
+    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；下方筛选仅作用于当前页及额外核对的通知目标，不代表所有候选人的检索结果。通知目标会单独核对授权后补入。刷新、翻页或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
+    {state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的候选人，不计入本页记录数。</p>}</>}
     {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="text-indigo-700 underline" onClick={()=>{setQuery("");setFocus("");setVerdict("");}}>清除筛选并定位</button><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="text-sm underline" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
     {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
     {unconfirmedReply&&<UnconfirmedReplyDraft text={replyText} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
+    <p className="text-xs text-slate-600">以下筛选仅作用于当前页及通知补入的候选人；查看更早投递请先翻页。</p>
     <div className="panel grid gap-3 sm:grid-cols-3"><label className="text-sm">关键词（姓名、技能或要求）<input type="search" className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label></div>
     {mixedBasis&&<p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">投递报告的岗位要求、权重或规则版本不同，当前按投递时间排列，不按分数排名。请打开每份报告核对其原始要求；表格行名仅作定位，格子中的说明来自各自快照。</p>}
     {!items.length&&!busy&&!error&&<p className="panel">暂无已授权投递，请由学生从该岗位的完整报告中确认投递。平台不会从学生库导出未经授权的简历。<Link className="mt-3 block text-indigo-700 underline" href="/demo/heatmap">先查看合成热力图交互示例 →</Link></p>}

@@ -1,0 +1,7 @@
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\z58-fixture-invalid.tsx
+  8:21  error  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+✖ 1 problem (1 error, 0 warnings)
+
+INVALID_FIXTURE_EXIT=1

@@ -22,6 +22,7 @@ from app.models.identity import StudentProfile, User
 from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.schemas.applications import ApplicationCreate, ApplicationReply
+from app.schemas.common import PaginatedData
 from app.services.analysis import AnalysisService
 from app.services.jobs import JobService
 from app.services.notifications import notify_application_event
@@ -349,17 +350,46 @@ class ApplicationService:
             result["report"] = item.report_snapshot
         return result
 
-    async def mine(self, user):
+    @staticmethod
+    def _clamp(page: int, page_size: int, total: int) -> int:
+        """Keep callers on the last available page; an empty dataset stays page 1."""
+        return min(page, max(1, (total + page_size - 1) // page_size))
+
+    async def mine(self, user, page: int = 1, page_size: int = 20, job_id=None):
         student = await self._student(user)
+        # The count and the page slice share one predicate, so a caller can never see a
+        # total or a row it is not entitled to. jobId is applied inside the current
+        # student's query before both steps, never after loading an arbitrary first page.
+        conditions = [
+            Application.student_id == student.id,
+            Application.consent_at.is_not(None),
+        ]
+        if job_id is not None:
+            conditions.append(Application.job_id == job_id)
+        total = int(
+            await self.session.scalar(
+                select(func.count()).select_from(Application).where(*conditions)
+            )
+            or 0
+        )
+        page = self._clamp(page, page_size, total)
         items = await self.session.scalars(
             select(Application)
-            .where(Application.student_id == student.id, Application.consent_at.is_not(None))
-            .order_by(Application.created_at.desc())
-            .limit(100)
+            .where(*conditions)
+            .order_by(Application.created_at.desc(), Application.id.desc())
+            .offset((page - 1) * page_size)
+            .limit(page_size)
         )
-        return [await self.view(item, await self.session.get(Job, item.job_id)) for item in items]
+        return PaginatedData(
+            items=[
+                await self.view(item, await self.session.get(Job, item.job_id)) for item in items
+            ],
+            total=total,
+            page=page,
+            page_size=page_size,
+        )
 
-    async def candidates(self, job_id, user):
+    async def candidates(self, job_id, user, page: int = 1, page_size: int = 20):
         job = await self.session.get(Job, job_id)
         if (
             not job
@@ -367,18 +397,32 @@ class ApplicationService:
             or not await JobService(self.session).can_manage(job, user)
         ):
             raise AppError("岗位不存在或无管理权限", status_code=404, code=4040)
+        conditions = [
+            Application.job_id == job.id,
+            Application.consent_at.is_not(None),
+            Application.status != "withdrawn",
+        ]
+        total = int(
+            await self.session.scalar(
+                select(func.count()).select_from(Application).where(*conditions)
+            )
+            or 0
+        )
+        page = self._clamp(page, page_size, total)
         items = await self.session.scalars(
             select(Application)
-            .where(
-                Application.job_id == job.id,
-                Application.consent_at.is_not(None),
-                Application.status != "withdrawn",
-            )
-            .order_by(Application.created_at.desc())
-            .limit(100)
+            .where(*conditions)
+            .order_by(Application.created_at.desc(), Application.id.desc())
+            .offset((page - 1) * page_size)
+            .limit(page_size)
         )
         # The report is not exported in list responses: opening it is an explicit audited action.
-        return [await self.view(item, job) for item in items]
+        return PaginatedData(
+            items=[await self.view(item, job) for item in items],
+            total=total,
+            page=page,
+            page_size=page_size,
+        )
 
     async def detail(self, application_id, user):
         # A notification may reference an application older than the recent list.

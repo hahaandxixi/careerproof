@@ -1,0 +1,17 @@
+== changed files (git diff vs HEAD e94be9b) ==
+ M .github/workflows/ci.yml
+ M jianli/package-lock.json
+ M jianli/package.json
+?? docs/evidence/20261016-Z58-lint/
+?? jianli/eslint.config.mjs
+?? jianli/tests/lint-config.test.mjs
+
+== sha256 of changed/new tracked files ==
+2e5425d9cf5910fde0aec3f18184d66ce87f81c4f57cb2adcc085ecb1d224cc9 *jianli/package.json
+b95bf8852e451fcc81087efb22cf0752e66583b3ad3ceba804ac27aee37cbb7c *jianli/package-lock.json
+7ba614e329b9f3952d90b01e89f29ecc1e635d9b42be9572adcb601cf35a4304 *jianli/eslint.config.mjs
+c8f0f29d87459c872e22cb9ae29cf728cb6f6fa044a4a5ffda4c1f1c119d4bad *jianli/tests/lint-config.test.mjs
+b31f400ac727e3ce2231dd03464853a30cad8dfe27596827ddaf7708bfc4afe0 *.github/workflows/ci.yml
+
+== src untouched check: src diff vs HEAD ==
+(empty = zero src changes)

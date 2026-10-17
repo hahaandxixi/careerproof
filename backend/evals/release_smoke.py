@@ -164,7 +164,7 @@ async def verify_reconsent(data, student, hr, other, job_id, old_id, new_report,
     """Check explicit student consent, new frozen source and permanent old denial."""
     board_url = f"/api/v1/jobs/{job_id}/applications"
     board = await data(hr, "GET", board_url)
-    assert old_id not in {item["id"] for item in board}, "Withdrawn row remains on board"
+    assert old_id not in {item["id"] for item in board["items"]}, "Withdrawn row remains on board"
     payload = {"reportId": new_report["id"], "shareConsent": True}
     await data(student, "POST", "/api/v1/applications", expected=422,
                json={**payload, "shareConsent": False})
@@ -184,7 +184,7 @@ async def verify_reconsent(data, student, hr, other, job_id, old_id, new_report,
     reread = await data(hr, "POST", f"/api/v1/applications/{new_id}/view")
     assert reread["report"] == opened["report"]
     board = await data(hr, "GET", board_url)
-    ids = [item["id"] for item in board]
+    ids = [item["id"] for item in board["items"]]
     assert old_id not in ids and ids.count(new_id) == 1
     for method, suffix in [("GET", ""), ("POST", "/view"), ("POST", "/resume-download")]:
         await data(hr, method, f"/api/v1/applications/{old_id}{suffix}", expected=404)

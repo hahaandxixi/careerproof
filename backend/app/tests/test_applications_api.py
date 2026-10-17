@@ -176,7 +176,7 @@ async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
         assert (await other.get(f"/api/v1/jobs/{job['id']}/applications")).status_code == 404
         assert (await other.post(f"/api/v1/applications/{aid}/view")).status_code == 404
         assert (await hr.get(f"/api/v1/match-reports/{rid}")).status_code == 404
-        listed = (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()["data"]
+        listed = (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()["data"]["items"]
         assert (
             len(listed) == 1
             and "report" not in listed[0]
@@ -236,7 +236,7 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
             json={"kind": "continue", "text": "请补充运行记录，合成测试用。"},
         )
         assert replied.status_code == 200, replied.text
-        mine = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        mine = (await student.get("/api/v1/applications/mine")).json()["data"]["items"][0]
         assert mine["status"] == "replied" and mine["replyText"] == "请补充运行记录，合成测试用。"
         assert [e["type"] for e in mine["events"]] == [
             "submitted",
@@ -248,7 +248,9 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
         assert (await student.post(f"/api/v1/applications/{aid}/withdraw")).status_code == 200
         for endpoint in ("view", "resume-download"):
             assert (await hr.post(f"/api/v1/applications/{aid}/{endpoint}")).status_code == 404
-        assert (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()["data"] == []
+        assert (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()["data"][
+            "items"
+        ] == []
         assert (
             await hr.post(
                 f"/api/v1/applications/{aid}/reply", json={"kind": "continue", "text": "不可发送"}
@@ -323,7 +325,7 @@ async def test_reply_links_only_to_its_frozen_requirement_and_citations(
         assert sent.status_code == 200, sent.text
         expected = [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}]
         assert sent.json()["data"]["replyReferences"] == expected
-        mine = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        mine = (await student.get("/api/v1/applications/mine")).json()["data"]["items"][0]
         assert mine["reportId"] == str(rid) and mine["replyReferences"] == expected
         detail = (await student.get(f"/api/v1/applications/{aid}")).json()["data"]
         assert detail["replyReferences"] == expected
@@ -349,7 +351,7 @@ async def test_reply_links_only_to_its_frozen_requirement_and_citations(
             application.reply_text = text_body
             await session.commit()
         await student.post(f"/api/v1/applications/{aid}/withdraw")
-        withdrawn = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        withdrawn = (await student.get("/api/v1/applications/mine")).json()["data"]["items"][0]
         assert withdrawn["replyReferences"] == expected
         assert (await hr.get(f"/api/v1/applications/{aid}")).status_code == 404
     finally:
@@ -369,7 +371,7 @@ async def test_missing_or_tampered_download_does_not_record_success(jobs_db, tmp
         assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 409
         (tmp_path / "resume.txt").unlink()
         assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 404
-        mine = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        mine = (await student.get("/api/v1/applications/mine")).json()["data"]["items"][0]
         assert mine["status"] == "viewed" and "downloaded" not in [
             e["type"] for e in mine["events"]
         ]
@@ -528,9 +530,9 @@ async def test_daily_limit_and_membership_revocation_fail_closed(jobs_db, tmp_pa
         payload = {"reportId": str(rid), "shareConsent": True}
         limited = await student.post("/api/v1/applications", json=payload)
         assert limited.status_code == 429
-        assert len((await student.get("/api/v1/applications/mine")).json()["data"]) == 20
+        assert len((await student.get("/api/v1/applications/mine")).json()["data"]["items"]) == 20
         # An existing consent remains readable only while the caller is a current member.
-        prior = (await student.get("/api/v1/applications/mine")).json()["data"][0]
+        prior = (await student.get("/api/v1/applications/mine")).json()["data"]["items"][0]
         aid = prior["id"]
         assert (await hr.post(f"/api/v1/applications/{aid}/view")).status_code == 200
         async with factory() as session:

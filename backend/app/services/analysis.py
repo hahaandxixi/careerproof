@@ -47,6 +47,7 @@ from app.schemas.analysis import (
     MatchReportView,
     TaskAccepted,
 )
+from app.schemas.common import PaginatedData
 from app.services.action_plan import build_action_plan
 from app.services.ai_budget import SharedBudgetService
 from app.services.ai_request_attempts import (
@@ -551,16 +552,34 @@ class AnalysisService:
             created_at=report.created_at,
         )
 
-    async def list_reports(self, user: User, page: int = 1, page_size: int = 50):
+    async def list_reports(self, user: User, page: int = 1, page_size: int = 20):
+        # The count and the page slice share the same ownership predicate, and a
+        # caller is clamped to the last available page instead of an empty page.
+        conditions = [AnalysisTask.created_by == user.id]
+        total = int(
+            await self.session.scalar(
+                select(func.count())
+                .select_from(MatchReport)
+                .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+                .where(*conditions)
+            )
+            or 0
+        )
+        page = min(page, max(1, (total + page_size - 1) // page_size))
         rows = await self.session.scalars(
             select(MatchReport)
             .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
-            .where(AnalysisTask.created_by == user.id)
-            .order_by(MatchReport.created_at.desc(), MatchReport.id)
+            .where(*conditions)
+            .order_by(MatchReport.created_at.desc(), MatchReport.id.desc())
             .offset((page - 1) * page_size)
             .limit(page_size)
         )
-        return [self.summary(row) for row in rows]
+        return PaginatedData(
+            items=[self.summary(row) for row in rows],
+            total=total,
+            page=page,
+            page_size=page_size,
+        )
 
     async def get_report(self, report_id: UUID, user: User) -> MatchReportView:
         report = await self.analysis.get_report(report_id)

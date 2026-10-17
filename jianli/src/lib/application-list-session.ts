@@ -1,9 +1,11 @@
 import type { ApplicationView } from "./api/client";
+import { unpackList, type ListPage, type PaginationInfo } from "./list-pagination.js";
 export interface ApplicationListState {
   items: ApplicationView[]; loading: boolean; error: string;
+  pagination?: PaginationInfo;
 }
 export function createApplicationListSession(
-  api: { list(): Promise<ApplicationView[]>; withdraw(id: string): Promise<unknown>; errorMessage(error: unknown): string },
+  api: { list(): Promise<ApplicationView[] | ListPage<ApplicationView>>; withdraw(id: string): Promise<unknown>; errorMessage(error: unknown): string },
   publish: (value: ApplicationListState) => void,
 ) {
   let active = false, generation = 0, withdrawing = false, refreshQueued = false;
@@ -15,8 +17,8 @@ export function createApplicationListSession(
     try {
       if (operation) await operation();
       if (!current(ticket)) return;
-      const items = await api.list();
-      if (current(ticket)) publish({ items, loading: false, error: "" });
+      const result = unpackList(await api.list());
+      if (current(ticket)) publish({ ...result, loading: false, error: "" });
     } catch (error) {
       if (current(ticket)) publish({ items: [], loading: false, error: api.errorMessage(error) });
     }

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ListPagination from "./ListPagination";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ApplicationView } from "@/lib/api/client";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
@@ -44,14 +45,15 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
 
 export default function ApplicationList(){const {user}=useAuth();return <AccessGate roles={["student"]}><Workspace key={user?.id}/></AccessGate>;}
 function Workspace(){
+  const page = useRef(1);
   const [state,setState]=useState<ApplicationListState>({items:[],loading:true,error:""});
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,error,loading:busy}=state;
   const [revokeId,setRevokeId]=useState<string|null>(null);
   const session=useMemo(()=>createApplicationListSession({
-    list:async()=>{const id=applicationAnchorId();return includeApplicationTarget(await api.myApplications(),api.applicationDetail,id,undefined,()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示你的其他投递。");});},
+    list:async()=>{const id=applicationAnchorId();const result=await api.myApplications(page.current,20);const items=await includeApplicationTarget(result.items,api.applicationDetail,id,undefined,()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示你的其他投递。");});return {...result,items,pageItemCount:result.items.length};},
     withdraw:api.withdrawApplication,errorMessage,
-  },setState),[]);
+  },value=>{if(value.pagination)page.current=value.pagination.page;setState(value);}),[]);
   useEffect(()=>{
     session.activate();
     const refresh=()=>{if(document.visibilityState!=="hidden"){setRevokeId(null);void session.refresh();}};
@@ -73,5 +75,6 @@ function Workspace(){
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>
     {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&<p className="panel">暂无投递。先生成匹配报告，再确认分享授权。</p>}
     {items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}
+    {state.pagination&&<><ListPagination label="投递分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;setRevokeId(null);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的投递，不计入本页记录数。</p>}</>}
   </div>;
 }

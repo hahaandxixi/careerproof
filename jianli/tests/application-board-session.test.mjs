@@ -45,7 +45,7 @@ test("withdrawal between report response and authorization refresh prevents expo
   list.resolve([]);
   await opening;
   assert.equal(h.state().selected, null);
-  assert.match(h.state().notice, /不可访问/);
+  assert.match(h.state().notice, /不在当前列表/);
 });
 
 test("a response started before a newer refresh cannot restore revoked content", async () => {

@@ -354,6 +354,19 @@ def _payload(response: httpx.Response) -> dict:
     return body["data"]
 
 
+def _fixture_page(response: httpx.Response) -> list[dict]:
+    """The tiny isolated fixture must fit one page, never hide unexpected rows."""
+    page = _payload(response)
+    if (
+        not isinstance(page, dict)
+        or not isinstance(page.get("items"), list)
+        or page.get("page") != 1
+        or page.get("total") != len(page["items"])
+    ):
+        raise IsolationError("fixture list is not a complete first-page envelope")
+    return page["items"]
+
+
 async def _register(client: httpx.AsyncClient, email: str, password: str, role: str) -> dict:
     display_name = "E2E 合成企业" if role == "enterprise" else "E2E 合成学生"
     response = await client.post(
@@ -747,8 +760,8 @@ async def _verify_fixture(
         ):
             raise IsolationError("fixture accounts do not match the recorded user ids")
         mine = {
-            "student": _payload(await student_client.get("/applications/mine")),
-            "studentA2": _payload(await a2_client.get("/applications/mine")),
+            "student": _fixture_page(await student_client.get("/applications/mine")),
+            "studentA2": _fixture_page(await a2_client.get("/applications/mine")),
         }
         recorded_by_student: dict[str, set[str]] = {"student": set(), "studentA2": set()}
         for record in state["applications"].values():
@@ -818,7 +831,7 @@ async def _verify_fixture(
         for job_slot, job_key in {"A": "jobIdA", "B": "jobIdB"}.items():
             board_ids = {
                 item["id"]
-                for item in _payload(
+                for item in _fixture_page(
                     await enterprise_client.get(
                         f"/jobs/{state['enterprise'][job_key]}/applications"
                     )

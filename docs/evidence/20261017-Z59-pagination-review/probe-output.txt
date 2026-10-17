@@ -1,0 +1,15 @@
+PASS 空集: {"pages":1,"previous":false,"next":false,"start":0,"end":0}
+PASS 整除末页 40/2: {"pages":2,"previous":true,"next":false,"start":21,"end":40}
+PASS 非整除末页 45/3: {"pages":3,"previous":true,"next":false,"start":41,"end":45}
+PASS 越界页(服务端应钳制, 防御态): {"pages":3,"previous":true,"next":false,"start":161,"end":45}
+PASS 第1页: {"pages":3,"previous":false,"next":true,"start":1,"end":20}
+PASS Page 默认 pageItemCount: {"items":[1,2],"pagination":{"total":7,"page":1,"pageSize":20,"pageItemCount":2}}
+PASS Page 显式 pageItemCount 保留: {"items":[1,2,3],"pagination":{"total":7,"page":1,"pageSize":20,"pageItemCount":2}}
+PASS 数组(内部会话)无 pagination: {"items":[1]}
+PASS 跨岗位记录不判定: "unknown"
+PASS 最新活跃优先于撤回史: "a"
+PASS 仅撤回→withdrawn: "withdrawn"
+PASS 服务端已过滤(page1-only)时缺活跃记录→unknown 不误报未投递: "withdrawn"
+PASS 空/残缺记录→unknown: "unknown"
+
+13 passed, 0 failed

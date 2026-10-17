@@ -4,7 +4,7 @@ import logging
 from uuid import UUID
 
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.agents.provider import redact_external_text
 from app.core.exceptions import AppError
@@ -14,6 +14,7 @@ from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import StudentProfile, User
 from app.models.recruitment import Application, Job
 from app.schemas.analysis import MatchCreate, MatchReportView, ReportMaterial
+from app.schemas.pagination import GrowthTaskPage
 from app.services.action_plan import build_action_plan
 from app.services.analysis import AnalysisService
 from app.services.applications import reply_context_for_requirement
@@ -126,17 +127,29 @@ class EvidenceGrowthService:
         )
         return reply_context_for_requirement(application, requirement_id) if application else None
 
-    async def list(self, user):
+    async def list(self, user, page: int = 1, page_size: int = 20):
         await self._student(user)
+        # Bounded DB pagination over the student's owned saved rows: total counts every
+        # owned record, the page slice is one query, and history is never fully scanned.
+        conditions = [EvidenceGrowthTask.created_by == user.id]
+        total = int(
+            await self.session.scalar(
+                select(func.count()).select_from(EvidenceGrowthTask).where(*conditions)
+            )
+            or 0
+        )
+        page = min(page, max(1, (total + page_size - 1) // page_size))
         rows = (
             await self.session.scalars(
                 select(EvidenceGrowthTask)
-                .where(EvidenceGrowthTask.created_by == user.id)
+                .where(*conditions)
                 .order_by(EvidenceGrowthTask.created_at.desc(), EvidenceGrowthTask.id.desc())
-                .limit(100)
+                .offset((page - 1) * page_size)
+                .limit(page_size)
             )
         ).all()
         views = []
+        unavailable = 0
         for row in rows:
             try:
                 views.append(await self.view(row, user))
@@ -146,12 +159,21 @@ class EvidenceGrowthService:
                 # absent from the frozen report or a vanished analysis task
                 # (AppError), a missing snapshot field (KeyError). Anything else
                 # — storage outages, new defects — must still fail the request.
+                # The skipped row is counted for this page, never silently dropped
+                # and never replaced by rendering further history.
+                unavailable += 1
                 logger.warning(
                     "Skipped unreadable evidence growth task %s: %s",
                     row.id,
                     type(error).__name__,
                 )
-        return views
+        return GrowthTaskPage(
+            items=views,
+            total=total,
+            page=page,
+            page_size=page_size,
+            unavailable_count=unavailable,
+        )
 
     async def attach(self, task_id, payload, user):
         row = await self._owned(task_id, user, True)

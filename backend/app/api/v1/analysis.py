@@ -26,7 +26,7 @@ from app.schemas.analysis import (
     MatchReportView,
     TaskAccepted,
 )
-from app.schemas.common import ApiResponse, success
+from app.schemas.common import ApiResponse, PaginatedData, success
 from app.schemas.report_comparison import ReportComparison
 from app.services.analysis import AnalysisService, execute_match_task, format_sse_event
 from app.services.career_planning import create_career_plan, latest_plan
@@ -102,13 +102,13 @@ async def retry_task(
     return success(accepted, message="accepted")
 
 
-@router.get("/match-reports", response_model=ApiResponse[list[MatchReportSummary]])
+@router.get("/match-reports", response_model=ApiResponse[PaginatedData[MatchReportSummary]])
 async def list_match_reports(
     page: int = Query(default=1, ge=1),
-    page_size: int = Query(default=50, ge=1, le=100, alias="pageSize"),
+    page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-) -> ApiResponse[list[MatchReportSummary]]:
+) -> ApiResponse[PaginatedData[MatchReportSummary]]:
     return success(await AnalysisService(session).list_reports(current_user, page, page_size))
 
 

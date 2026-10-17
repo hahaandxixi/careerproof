@@ -1,0 +1,1322 @@
+EEEEEEEE                                                                 [100%]
+=================================== ERRORS ====================================
+___ ERROR at setup of test_equal_timestamps_order_stably_without_duplicates ___
+
+self = <Coroutine test_equal_timestamps_order_stably_without_duplicates>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAE2FF50>, ss...67f1b43bca7f33917e969623b,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAE2FF50>, ss...67f1b43bca7f33917e969623b,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+___ ERROR at setup of test_exact_last_page_clamping_empty_and_query_bounds ____
+
+self = <Coroutine test_exact_last_page_clamping_empty_and_query_bounds>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FC31D0D0>, ss...2cee64aee9c4af0ca345a8aa6,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FC31D0D0>, ss...2cee64aee9c4af0ca345a8aa6,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+_ ERROR at setup of test_growth_page_counts_rows_it_could_not_read_without_widening_catches _
+
+self = <Coroutine test_growth_page_counts_rows_it_could_not_read_without_widening_catches>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAE2E750>, ss...6db6747679df43136cdb0c6b3,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAE2E750>, ss...6db6747679df43136cdb0c6b3,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+_ ERROR at setup of test_job_candidates_page_excludes_withdrawn_and_denies_non_managers _
+
+self = <Coroutine test_job_candidates_page_excludes_withdrawn_and_denies_non_managers>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FBE9D2D0>, ss...1ee194212bc760aec87032b47,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FBE9D2D0>, ss...1ee194212bc760aec87032b47,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+_ ERROR at setup of test_job_filter_applies_before_count_and_stays_owner_scoped _
+
+self = <Coroutine test_job_filter_applies_before_count_and_stays_owner_scoped>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAC53A50>, ss...9d9ec4dbd803be5c89197d44a,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAC53A50>, ss...9d9ec4dbd803be5c89197d44a,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+____ ERROR at setup of test_match_report_history_pages_with_default_twenty ____
+
+self = <Coroutine test_match_report_history_pages_with_default_twenty>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FBAC8DD0>, ss...71f174ec0bbeadc1eb70b246a,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FBAC8DD0>, ss...71f174ec0bbeadc1eb70b246a,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+_____ ERROR at setup of test_notification_page_size_aliases_and_conflict ______
+
+self = <Coroutine test_notification_page_size_aliases_and_conflict>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAD7CAD0>, ss...92142487aa06a10dc3e9c358d,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FAD7CAD0>, ss...92142487aa06a10dc3e9c358d,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+_ ERROR at setup of test_owned_applications_page_reaches_past_the_first_hundred _
+
+self = <Coroutine test_owned_applications_page_reaches_past_the_first_hundred>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:944: in pytest_fixture_setup
+    hook_result = yield
+                  ^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:407: in _asyncgen_fixture_wrapper
+    result = runner.run(setup(), context=context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:403: in setup
+    res = await gen_obj.__anext__()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\tests\test_real_matching.py:81: in matching_db
+    async with engine.begin() as connection:
+               ^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:1066: in begin
+    async with conn:
+               ^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\base.py:121: in __aenter__
+    return await self.start(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:274: in start
+    await greenlet_spawn(self.sync_engine.connect)
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3277: in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:143: in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py:3301: in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:447: in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:1264: in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:711: in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:177: in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\impl.py:175: in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:388: in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:673: in __init__
+    self.__connect()
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:899: in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py:224: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py:895: in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\create.py:661: in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py:629: in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:964: in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:132: in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+.venv-dependency23\Lib\site-packages\asyncpg\connection.py:2421: in connect
+    return await connect_utils._connect(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:1049: in _connect
+    conn = await _connect_addr(
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:886: in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+params = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FC3B2550>, ss...1c3374c25811c04b262a50be3,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+retry = True, addr = ('127.0.0.1', 55433)
+loop = <ProactorEventLoop running=False closed=False debug=False>
+config = ConnectionConfiguration(command_timeout=None, statement_cache_size=100, max_cached_statement_lifetime=300, max_cacheable_statement_size=15360)
+connection_class = <class 'asyncpg.connection.Connection'>
+record_class = <class 'asyncpg.Record'>
+params_input = ConnectionParameters(user='ci', password='ci', database='cp_ci', ssl=<ssl.SSLContext object at 0x00000210FC3B2550>, ss...1c3374c25811c04b262a50be3,public'}, target_session_attrs=<SessionAttribute.any: 'any'>, krbsrvname=None, gsslib='sspi')
+
+    async def __connect_addr(
+        params,
+        retry,
+        addr,
+        loop,
+        config,
+        connection_class,
+        record_class,
+        params_input,
+    ):
+        connected = _create_future(loop)
+    
+        proto_factory = lambda: protocol.Protocol(
+            addr, connected, params, record_class, loop)
+    
+        if isinstance(addr, str):
+            # UNIX socket
+            connector = loop.create_unix_connection(proto_factory, addr)
+    
+        elif params.ssl and params.ssl_negotiation is SSLNegotiation.direct:
+            # if ssl and ssl_negotiation is `direct`, skip STARTTLS and perform
+            # direct SSL connection
+            connector = loop.create_connection(
+                proto_factory, *addr, ssl=params.ssl
+            )
+    
+        elif params.ssl:
+            connector = _create_ssl_connection(
+                proto_factory, *addr, loop=loop, ssl_context=params.ssl,
+                ssl_is_advisory=params.sslmode == SSLMode.prefer)
+        else:
+            connector = loop.create_connection(proto_factory, *addr)
+    
+        tr, pr = await connector
+    
+        try:
+>           await connected
+E           asyncpg.exceptions.InvalidPasswordError: password authentication failed for user "ci"
+
+.venv-dependency23\Lib\site-packages\asyncpg\connect_utils.py:934: InvalidPasswordError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR app/tests/test_paginated_lists_postgres.py::test_equal_timestamps_order_stably_without_duplicates
+ERROR app/tests/test_paginated_lists_postgres.py::test_exact_last_page_clamping_empty_and_query_bounds
+ERROR app/tests/test_paginated_lists_postgres.py::test_growth_page_counts_rows_it_could_not_read_without_widening_catches
+ERROR app/tests/test_paginated_lists_postgres.py::test_job_candidates_page_excludes_withdrawn_and_denies_non_managers
+ERROR app/tests/test_paginated_lists_postgres.py::test_job_filter_applies_before_count_and_stays_owner_scoped
+ERROR app/tests/test_paginated_lists_postgres.py::test_match_report_history_pages_with_default_twenty
+ERROR app/tests/test_paginated_lists_postgres.py::test_notification_page_size_aliases_and_conflict
+ERROR app/tests/test_paginated_lists_postgres.py::test_owned_applications_page_reaches_past_the_first_hundred
+5 warnings, 8 errors in 3.51s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

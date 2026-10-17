@@ -1,7 +1,7 @@
 from urllib.parse import quote
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +10,7 @@ from app.core.database import get_session
 from app.models.identity import User
 from app.schemas.application_verification import ApplicationVerificationRequest
 from app.schemas.applications import ApplicationCreate, ApplicationReply
-from app.schemas.common import ApiResponse, success
+from app.schemas.common import ApiResponse, PaginatedData, success
 from app.services.application_verification import (
     ApplicationVerificationService,
     execute_application_verification_task,
@@ -30,20 +30,26 @@ async def create(
     return success(await ApplicationService(session).create(payload, user))
 
 
-@router.get("/applications/mine", response_model=ApiResponse[list[dict]])
+@router.get("/applications/mine", response_model=ApiResponse[PaginatedData[dict]])
 async def mine(
-    user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)
-):
-    return success(await ApplicationService(session).mine(user))
-
-
-@router.get("/jobs/{job_id}/applications", response_model=ApiResponse[list[dict]])
-async def candidates(
-    job_id: UUID,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
+    job_id: UUID | None = Query(default=None, alias="jobId"),
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
-    return success(await ApplicationService(session).candidates(job_id, user))
+    return success(await ApplicationService(session).mine(user, page, page_size, job_id))
+
+
+@router.get("/jobs/{job_id}/applications", response_model=ApiResponse[PaginatedData[dict]])
+async def candidates(
+    job_id: UUID,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    return success(await ApplicationService(session).candidates(job_id, user, page, page_size))
 
 
 @router.get("/applications/{application_id}", response_model=ApiResponse[dict])

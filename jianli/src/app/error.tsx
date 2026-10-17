@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 // 路由段错误边界：捕获页面渲染异常，提供重试，避免整页白屏到框架默认错误页。
 // 根布局仍会渲染，这里的内容位于布局的 <main> 内，不再嵌套 <main>。
@@ -20,9 +21,9 @@ export default function RouteError({
         <button type="button" className="btn" onClick={reset}>
           重试此页面
         </button>
-        <a className="btn-secondary" href="/">
+        <Link className="btn-secondary" href="/">
           返回首页
-        </a>
+        </Link>
       </div>
     </section>
   );

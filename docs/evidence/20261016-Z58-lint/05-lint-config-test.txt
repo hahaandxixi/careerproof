@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: lint script runs the ESLint CLI noninteractively
+ok 1 - lint script runs the ESLint CLI noninteractively
+  ---
+  duration_ms: 0.6659
+  type: 'test'
+  ...
+# Subtest: lint devDependencies are pinned to exact compatible versions
+ok 2 - lint devDependencies are pinned to exact compatible versions
+  ---
+  duration_ms: 0.1767
+  type: 'test'
+  ...
+# Subtest: flat config loads and extends the Next presets
+ok 3 - flat config loads and extends the Next presets
+  ---
+  duration_ms: 0.2352
+  type: 'test'
+  ...
+# Subtest: ESLint resolves the flat config with React Hooks and Next plugins active
+ok 4 - ESLint resolves the flat config with React Hooks and Next plugins active
+  ---
+  duration_ms: 1091.6177
+  type: 'test'
+  ...
+# Subtest: flat config sets no local rule overrides (no off / no severity edits)
+ok 5 - flat config sets no local rule overrides (no off / no severity edits)
+  ---
+  duration_ms: 0.331
+  type: 'test'
+  ...
+# Subtest: ignores are limited to generated build artifacts
+ok 6 - ignores are limited to generated build artifacts
+  ---
+  duration_ms: 0.8258
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1167.5005
+TEST_EXIT=0

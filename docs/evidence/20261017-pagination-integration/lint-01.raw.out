@@ -1,0 +1,24 @@
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\src\components\MaterialPreview.tsx
+  29:49  warning  The ref value 'fileRequest.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'fileRequest.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\src\components\NotificationCenter.tsx
+  33:33  warning  The ref value 'generation.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'generation.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\src\components\NotificationLink.tsx
+  31:33  warning  The ref value 'generation.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'generation.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\src\components\PrivateAnswerDraft.tsx
+  76:6  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\src\components\VisualEvidencePanel.tsx
+  46:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\tests\application-board-session.test.mjs
+  124:46  warning  'args' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\jbcode\web ai\jianli\backend\.tmp\z58-lint-20261016\stage\jianli\tests\private-answer-workflow.test.mjs
+  731:7  warning  'reads' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 7 problems (0 errors, 7 warnings)
+

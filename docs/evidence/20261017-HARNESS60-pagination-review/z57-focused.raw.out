@@ -1,0 +1,91 @@
+HARNESS60 raw test evidence — provenance and key extracts
+=========================================================
+Repo root : D:/jbcode/web ai/jianli
+HEAD      : ef774cb13d9187a8afaeedad03351006acfed198
+Time      : 2026-10-17 (Asia/Shanghai)
+Scope     : one attempted run of the existing eight Z57 focused tests, exclusive
+            basetemp, cacheprovider disabled. Result: BLOCKED BY SANDBOX, no test
+            body ever executed. No backend assertion was exercised.
+
+-------------------------------------------------------------------------------
+ATTEMPT LOG (all attempts, in order)
+-------------------------------------------------------------------------------
+r1  basetemp = <git-root>/docs/evidence/... (via --basetemp)
+    -> PowerShell denied the Tee-Object evidence log itself
+       ("对路径 ...z57-focused.raw.out 的访问被拒绝", UnauthorizedAccessException)
+    -> run aborted before pytest started, exit -1. Not a test failure.
+
+r2  basetemp = D:\jbcode\.probe\h60-basetemp-r2 (pre-created, ASCII)
+    cmd: python -m pytest app/tests/test_z57_pagination.py -p no:cacheprovider
+         --basetemp=<...> -q --no-header --tb=line -rf
+    -> collected 8 items; result "EEEEEEEE [100%]"; exit 1
+    -> session teardown raised: PermissionError [WinError 5] ... 'h60-basetemp-r2'
+
+r3  basetemp = %TEMP%\dsh-...\h60-pagination-z57-basetemp (platform temp)
+    -> identical PermissionError [WinError 5] on the basetemp
+
+r4  basetemp = D:\jbcode\.probe\h60bt-r4 (pre-created), -x --tb=short -rA
+    -> "collected 8 items" then teardown PermissionError; setup traceback masked
+
+r5  control run with '-p no:tmpdir' (to unmask the setup error)
+    -> ERROR at setup: "fixture 'tmp_path' not found"
+    -> This proves r2-r4 never reached the test body either: the tmp_path fixture
+       family is unusable, and pytest's own tmpdir plugin is what dies.
+    -> NOTE: r5 is a diagnostic control, NOT a verification run; the missing
+       fixture is an artifact of disabling the plugin.
+
+r6  basetemp = D:\jbcode\.probe\h60bt-r6-fresh (verified non-existent before run)
+    -> still PermissionError [WinError 5] on that fresh basetemp; exit 1
+    -> tail of raw output (verbatim key lines):
+       _pytest/tmpdir.py", line 301, in pytest_sessionfinish
+           cleanup_dead_symlinks(basetemp)
+       _pytest/pathlib.py", line 357, in cleanup_dead_symlinks
+           for left_dir in root.iterdir():
+       PermissionError: [WinError 5] ... 'D:\\jbcode\\.probe\\h60bt-r6-fresh'
+       EEEEEEEE                                                                 [100%]
+
+    Raw file: D:\jbcode\.probe\h60-z57-focused-r6.raw.out (72 lines, full traceback).
+
+-------------------------------------------------------------------------------
+ROOT CAUSE (independent probe, not a pytest problem)
+-------------------------------------------------------------------------------
+Probe: backend\.venv\Scripts\python.exe D:\jbcode\.probe\h60-fs-probe.py
+base  = D:\jbcode\.probe\h60bt-r6-fresh (created by the pytest run itself)
+
+Output (verbatim):
+  exists: True isdir: True
+  iterdir FAILED: PermissionError [WinError 5] ... '\h60bt-r6-fresh'
+  chmod FAILED: PermissionError [WinError 5] ... '\h60bt-r6-fresh'
+  mkdir+write FAILED: PermissionError [WinError 5] ... '\h60bt-r6-fresh\sub'
+  rmtree FAILED: FileNotFoundError [WinError 3] ... '\h60bt-r6-fresh\sub'
+  rmdir base FAILED: PermissionError [WinError 5] ... '\h60bt-r6-fresh'
+
+Interpretation: Python's os.listdir / mkdir / chmod / rmdir are denied inside the
+workspace temp area, while PowerShell (New-Item, Remove-Item, Out-File) succeeded
+there in the same session. pytest's tmpdir plugin must list/clean/chmod its
+basetemp on both startup and sessionfinish
+(_pytest/tmpdir.py ensure_relative_to_basetemp + cleanup_dead_symlinks), so no
+pytest run using tmp_path/tmp_path_factory can execute under this confinement.
+The eight Z57 tests all require tmp_path (jobs_db / matching_db fixtures).
+
+CONSEQUENCE: this is an environment block, NOT a product defect. No Z57 test
+passed or failed on its merits here; the runtime behaviour of the reviewed
+paging code remains UNVERIFIED by this review.
+
+-------------------------------------------------------------------------------
+Cleanup / side-effect statement
+-------------------------------------------------------------------------------
+No backend source, test, config, frontend or doc file was modified. No PG or
+business DB was contacted (all fixtures are sqlite+aiosqlite:///<tmp_path>;
+app/tests/conftest.py additionally forces ai_external_enabled=False and
+ai_provider="mock"). No service was started or stopped, no package installed,
+no .env/credential read, no model call, no ACL change, no git operation.
+
+Scratch artifacts left outside the git tree (read-only evidence, safe to delete):
+  D:\jbcode\.probe\h60-z57-focused-r6.raw.out        (raw pytest output r6)
+  D:\jbcode\.probe\h60-z57-focused-r5.raw.out        (control run, tmpdir off)
+  D:\jbcode\.probe\h60-z57-focused-r4.raw.out        (raw pytest output r4)
+  D:\jbcode\.probe\h60-z57-focused-r2.raw.out        (raw pytest output r2)
+  D:\jbcode\.probe\h60-z57-focused-r3.raw.out        (raw pytest output r3)
+  D:\jbcode\.probe\h60-fs-probe.py                   (filesystem probe source)
+  D:\jbcode\.probe\h60bt-r4, h60bt-r6-fresh, h60-basetemp-r2 (empty basetemps)

@@ -258,15 +258,15 @@ function applicationEvent<T>(result: Promise<T>) {
 }
 
 export const api = {
-  notifications(page = 1, unreadOnly = false) { return request<NotificationPage>(`/notifications?page=${page}&unread_only=${unreadOnly}`); },
+  notifications(page = 1, unreadOnly = false, pageSize = 20) { return request<NotificationPage>(`/notifications?page=${page}&pageSize=${pageSize}&unread_only=${unreadOnly}`); },
   notificationCount() { return request<{ unreadCount: number }>("/notifications/unread-count"); },
   readNotification(id: string) { return request<{ unreadCount: number }>(`/notifications/${id}/read`, { method: "POST" }); },
   readAllNotifications() { return request<{ unreadCount: number }>("/notifications/read-all", { method: "POST" }); },
   notificationTarget(id: string) { return request<{ href: string }>(`/notifications/${id}/target`); },
   createApplication(reportId: string) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true }) })); },
   applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}`); },
-  myApplications() { return request<ApplicationView[]>("/applications/mine"); },
-  jobApplications(jobId: string) { return request<ApplicationView[]>(`/jobs/${jobId}/applications`); },
+  myApplications(page = 1, pageSize = 20, jobId?: string) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); if (jobId) query.set("jobId", jobId); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
+  jobApplications(jobId: string, page = 1, pageSize = 20) { return request<Page<ApplicationView>>(`/jobs/${jobId}/applications?page=${page}&pageSize=${pageSize}`); },
   openApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/view`, { method: "POST" })); },
   replyApplication(id: string, kind: string, text: string, references: ApplicationView["replyReferences"] = []) { return applicationEvent(request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text, references }) })); },
   withdrawApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/withdraw`, { method: "POST" })); },
@@ -314,12 +314,12 @@ export const api = {
     return request<CareerPlanResult>("/career-plans", { method: "POST", ...jsonBody(payload) });
   },
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
-  listReports(page = 1, pageSize = 20) { return request<ReportSummary[]>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
+  listReports(page = 1, pageSize = 20) { return request<Page<ReportSummary>>(`/match-reports?page=${page}&pageSize=${pageSize}`); },
   previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
   existingGrowthTask(reportId: string, requirementId: string) { return request<GrowthTask | null>(`/match-reports/${reportId}/growth-tasks/${requirementId}`); },
   enterpriseReplyContext(reportId: string, requirementId: string) { return request<EnterpriseReplyContext | null>(`/match-reports/${reportId}/enterprise-replies/${requirementId}`); },
   createGrowthTask(reportId: string, plan: GrowthPlan) { return request<GrowthTask>(`/match-reports/${reportId}/growth-tasks`, { method: "POST", ...jsonBody(plan) }); },
-  listGrowthTasks() { return request<GrowthTask[]>("/growth-tasks"); },
+  listGrowthTasks(page = 1, pageSize = 20) { return request<Page<GrowthTask> & { unavailableCount: number }>(`/growth-tasks?page=${page}&pageSize=${pageSize}`); },
   growthTask(id: string) { return request<GrowthTask>(`/growth-tasks/${id}`); },
   growthMaterials(id: string, payload: { resumeVersionId: string; projectVersionIds: string[]; targetJobId?: string }) {
     // 可省略 targetJobId=沿用原岗位；undefined 不会被 JSON 序列化。

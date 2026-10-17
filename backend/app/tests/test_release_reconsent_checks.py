@@ -63,7 +63,7 @@ async def test_reconsent_smoke_checks_reject_incomplete_chain(
             if mutation == 'stale_snapshot' and endpoint.endswith('/view'):
                 value['report'] = deepcopy(frozen)
             if mutation == 'withdrawn_board' and endpoint.endswith('/applications'):
-                value.append({'id': old_id})
+                value['items'].append({'id': old_id})
             return value
 
         arguments = (data, student, hr, other, job['id'], old_id, report,

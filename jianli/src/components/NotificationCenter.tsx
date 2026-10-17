@@ -16,11 +16,12 @@ function Workspace() {
   const generation = useRef(0), locked = useRef(false);
   const [data, setData] = useState<NotificationPage | null>(null);
   const [page, setPage] = useState(1), [unread, setUnread] = useState(false);
+  const [pageSize, setPageSize] = useState(20);
   const [revision, setRevision] = useState(0), [busy, setBusy] = useState(false), [error, setError] = useState("");
   useEffect(() => {
     const ticket = ++generation.current; setData(null); setError(""); setBusy(true);
     if (document.visibilityState !== "hidden") {
-      void api.notifications(page, unread).then(result => { if (ticket === generation.current) { if (result.page !== page) setPage(result.page); else setData(result); notificationsChanged(); } })
+      void api.notifications(page, unread, pageSize).then(result => { if (ticket === generation.current) { if (result.page !== page) setPage(result.page); else setData(result); notificationsChanged(); } })
         .catch(reason => { if (ticket === generation.current) setError(errorMessage(reason)); })
         .finally(() => { if (ticket === generation.current) setBusy(false); });
     }
@@ -30,7 +31,7 @@ function Workspace() {
     };
     document.addEventListener("visibilitychange", visibility);
     return () => { ++generation.current; document.removeEventListener("visibilitychange", visibility); };
-  }, [page, unread, revision]);
+  }, [page, pageSize, unread, revision]);
   async function act(operation: () => Promise<unknown>, id?: string) {
     if (locked.current) return;
     locked.current = true; const ticket = ++generation.current; setBusy(true); setError("");
@@ -54,6 +55,7 @@ function Workspace() {
     <details className="text-xs text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">通知说明</summary><p className="mt-2 leading-5">投递、查看、下载、回复和撤回会产生站内通知。阅读通知不等于阅读报告，历史事件不补发。打开投递时仍会核对授权；撤回后旧通知不能打开报告。</p></details>
     <div className="flex flex-wrap items-center gap-3"><button aria-pressed={!unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(false); }}>全部</button><button aria-pressed={unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(true); }}>未读</button><button className="text-indigo-700 underline" disabled={busy} onClick={() => setRevision(value => value + 1)}>刷新通知</button><button className="text-indigo-700 underline" disabled={busy || !data?.unreadCount} onClick={() => void act(api.readAllNotifications)}>全部标为已读</button></div>
     {busy && <p role="status">正在读取或更新通知…</p>}{error && <p role="alert" className="panel text-rose-700">{error}</p>}
+    <label className="flex items-center gap-2 text-sm">每页通知数<select className="field w-auto" disabled={busy} value={pageSize} onChange={event => { setPage(1); setPageSize(Number(event.target.value)); }}><option value={20}>20条</option><option value={50}>50条</option></select></label>
     {data && <><p className="text-sm">未读 {data.unreadCount} 条 · 当前筛选共 {data.total} 条</p>
       {!data.items.length && <p className="panel">{unread ? "暂无未读通知。" : "暂无通知，新的投递事件会显示在这里。"}</p>}
       <ul className="space-y-3">{data.items.map(item => <li key={item.id} className="panel space-y-3"><h2 className="font-semibold">{item.title}</h2><p className="text-xs text-slate-500">{new Date(item.createdAt).toLocaleString()} · {item.readAt ? "已读" : "未读"}</p><div className="flex flex-wrap gap-4">{item.accessible ? <button className="text-sm text-indigo-700 underline" disabled={busy} onClick={() => void act(() => Promise.resolve(), item.id)}>核对授权并打开投递</button> : <p className="text-sm text-slate-500">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button className="text-sm underline" disabled={busy} onClick={() => void act(() => api.readNotification(item.id))}>标为已读</button>}</div></li>)}</ul>

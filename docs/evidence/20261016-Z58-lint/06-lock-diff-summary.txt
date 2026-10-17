@@ -1,0 +1,10 @@
+lockfileVersion: 3 -> 3
+package entries: 138 -> 416 | added: 278 | removed: 0
+kept packages with changed version: 0 []
+  node_modules/next 15.5.27 -> 15.5.27
+  node_modules/react 19.0.0 -> 19.0.0
+  node_modules/react-dom 19.0.0 -> 19.0.0
+  node_modules/typescript 5.9.3 -> 5.9.3
+  new devDep node_modules/eslint -> 9.39.5
+  new devDep node_modules/eslint-config-next -> 15.5.27
+  new devDep node_modules/@eslint/eslintrc -> 3.3.7

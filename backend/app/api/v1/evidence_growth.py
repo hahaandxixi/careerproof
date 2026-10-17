@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import get_current_user
@@ -9,6 +9,7 @@ from app.models.identity import User
 from app.schemas.common import ApiResponse, success
 from app.schemas.evidence_growth import GrowthAnalyze, GrowthCreate, GrowthMaterials
 from app.schemas.growth_answer import AnswerDraftSave
+from app.schemas.pagination import GrowthTaskPage
 from app.services.analysis import execute_match_task
 from app.services.evidence_growth import EvidenceGrowthService
 from app.services.growth_answer import GrowthAnswerService
@@ -29,11 +30,14 @@ async def create(
     return success(await EvidenceGrowthService(session).create(report_id, payload, user))
 
 
-@router.get("/growth-tasks", response_model=ApiResponse[list[dict]])
+@router.get("/growth-tasks", response_model=ApiResponse[GrowthTaskPage])
 async def list_tasks(
-    user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
 ):
-    return success(await EvidenceGrowthService(session).list(user))
+    return success(await EvidenceGrowthService(session).list(user, page, page_size))
 
 
 @router.get("/growth-tasks/{task_id}", response_model=ApiResponse[dict])

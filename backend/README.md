@@ -131,6 +131,8 @@ SSE 接收任务事件。
 文件内容从服务端已上传版本读取；不能再使用前端模拟的简历正文或项目快照创建报告。
 简历必选，项目最多 10 个版本，必须属于本人且解析完成。
 
+`GET /applications/mine`、`GET /jobs/{job_id}/applications`、`GET /growth-tasks`、`GET /match-reports` 的 `data` 均为 `{items,total,page,pageSize}`，不再返回裸数组。`page>=1`、`pageSize=1..100`（默认20），越界页回退到末页、空集为第1页，按创建时间和ID降序。学生投递列表可用 `jobId` 在本人归属内先过滤再分页；补证任务另含本页 `unavailableCount`，总数仍包含不可读的已保存记录。通知使用 `pageSize`（默认20、上限50），兼容旧 `page_size`，两者冲突返回422。更新调用脚本时同步读取 `data.items`，不要用当前页条数推断总数。
+
 岗位支持方向、城市、工作类型、关键词与分页。公开列表只展示已发布岗位；企业负责人/HR
 管理所属组织的岗位。已产生匹配历史的岗位不能直接替换能力要求，应新建岗位。
 

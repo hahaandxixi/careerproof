@@ -71,7 +71,7 @@ async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path
         notices = (await hr.get("/api/v1/notifications")).json()["data"]["items"]
         assert sum(n["accessible"] for n in notices) == 1
         assert (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()[
-            "data"][0]["id"] == current["id"]
+            "data"]["items"][0]["id"] == current["id"]
         for path in (f"/api/v1/applications/{old_id}",):
             assert (await hr.get(path)).status_code == 404
         for endpoint in ("view", "resume-download"):
@@ -90,7 +90,7 @@ async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path
             assert old.reply_text == "请补充合成运行记录"
         # Repeating the old withdraw does not revoke the newly created application.
         await student.post(f"/api/v1/applications/{old_id}/withdraw")
-        mine = (await student.get("/api/v1/applications/mine")).json()["data"]
+        mine = (await student.get("/api/v1/applications/mine")).json()["data"]["items"]
         assert {i["id"]: i["status"] for i in mine} == {
             old_id: "withdrawn", current["id"]: "viewed"
         }

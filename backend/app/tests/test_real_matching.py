@@ -246,7 +246,7 @@ async def test_real_report_survives_login_and_preserves_sources_and_snapshots(ma
         )
         assert report["items"][0]["evidence"]["projectVersionId"] == version["versionId"]
         assert {m["id"] for m in report["materials"]} == {resume["versionId"], version["versionId"]}
-        history = (await student.get("/api/v1/match-reports")).json()["data"]
+        history = (await student.get("/api/v1/match-reports")).json()["data"]["items"]
         assert [row["id"] for row in history] == [report["id"]]
         async with factory() as session:
             evidence = list(await session.scalars(select(SkillEvidence)))
@@ -289,7 +289,7 @@ async def test_real_report_survives_login_and_preserves_sources_and_snapshots(ma
             },
         )
         assert login.status_code == 200, login.text
-        assert (await student.get("/api/v1/match-reports")).json()["data"] == history
+        assert (await student.get("/api/v1/match-reports")).json()["data"]["items"] == history
         assert (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"] == report
         # Enterprise authors cannot inspect students' privately generated analyses.
         assert (await owner.get(f"/api/v1/match-reports/{report['id']}")).status_code == 404
@@ -663,7 +663,7 @@ async def test_matching_materials_and_reports_are_owner_scoped(matching_db):
             assert response.status_code == 404, response.text
         assert (await bob.get(f"/api/v1/match-reports/{report['id']}")).status_code == 404
         assert (await bob.get(f"/api/v1/analysis-tasks/{report['taskId']}")).status_code == 404
-        assert (await bob.get("/api/v1/match-reports")).json()["data"] == []
+        assert (await bob.get("/api/v1/match-reports")).json()["data"]["items"] == []
         # A frontend submitting only a fabricated candidate payload cannot create a match.
         fake = await bob.post(
             "/api/v1/matches",
@@ -865,7 +865,7 @@ async def test_failed_match_retry_is_owner_only_atomic_and_not_duplicated(matchi
             row = await session.get(AnalysisTask, UUID(task_id))
             assert row.status == TaskStatus.COMPLETED and row.attempt == 2
             assert len(list(await session.scalars(select(MatchReport)))) == 1
-        history = (await student.get("/api/v1/match-reports")).json()["data"]
+        history = (await student.get("/api/v1/match-reports")).json()["data"]["items"]
         assert len(history) == 1 and history[0]["id"] == completed["reportId"]
 
 

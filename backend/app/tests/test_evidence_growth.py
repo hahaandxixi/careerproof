@@ -434,10 +434,12 @@ async def test_list_survives_one_corrupted_persisted_row(matching_db, corruption
             await session.commit()
         listed = await student.get("/api/v1/growth-tasks")
         assert listed.status_code == 200, listed.text
-        items = listed.json()["data"]
+        page = listed.json()["data"]
+        items = page["items"]
         # The healthy task stays readable; the corrupted row is skipped, never
-        # rendered with fabricated evidence.
+        # rendered with fabricated evidence, and is reported instead of hidden.
         assert [i["id"] for i in items] == [healthy["id"]]
+        assert page["total"] == 2 and page["unavailableCount"] == 1
         assert items[0]["requirementId"] == healthy["requirementId"]
         assert items[0]["status"] == "planned"
         if corruption == "requirement_drift":
@@ -480,4 +482,6 @@ async def test_list_does_not_swallow_unexpected_view_errors(matching_db, monkeyp
         monkeypatch.setattr(EvidenceGrowthService, "view", strict_view)
         listed = await student.get("/api/v1/growth-tasks")
         assert listed.status_code == 200, listed.text
-        assert [i["id"] for i in listed.json()["data"]] == [created["id"]]
+        page = listed.json()["data"]
+        assert [i["id"] for i in page["items"]] == [created["id"]]
+        assert page["total"] == 1 and page["unavailableCount"] == 0

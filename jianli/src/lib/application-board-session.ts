@@ -1,4 +1,5 @@
 import type { ApplicationView } from "./api/client";
+import { unpackList, type ListPage, type PaginationInfo } from "./list-pagination.js";
 
 export interface ApplicationBoardState {
   items: ApplicationView[];
@@ -6,6 +7,7 @@ export interface ApplicationBoardState {
   loading: boolean;
   error: string;
   notice: string;
+  pagination?: PaginationInfo;
 }
 
 export const initialApplicationBoardState: ApplicationBoardState = {
@@ -13,7 +15,7 @@ export const initialApplicationBoardState: ApplicationBoardState = {
 };
 
 interface Dependencies {
-  list(): Promise<ApplicationView[]>;
+  list(): Promise<ApplicationView[] | ListPage<ApplicationView>>;
   open(id: string): Promise<ApplicationView>;
   download(id: string): Promise<{ blob: Blob; filename: string }>;
   reply(id: string, kind: string, text: string, references: ApplicationView["replyReferences"]): Promise<ApplicationView>;
@@ -41,15 +43,16 @@ export function createApplicationBoardSession(
     try {
       const result = await operation();
       if (!current(ticket)) return false;
-      const items = await api.list();
+      const list = unpackList(await api.list());
+      const { items } = list;
       if (!current(ticket)) return false;
       const stillAuthorized = !selectedId || items.some(item => item.id === selectedId);
       if (stillAuthorized) result.deliver?.();
       if (!current(ticket)) return false;
       set({
-        items, selected: stillAuthorized ? result.selected ?? null : null,
+        ...list, selected: stillAuthorized ? result.selected ?? null : null,
         loading: false, error: "",
-        notice: stillAuthorized ? result.notice ?? "" : "该投递已不可访问，已清除打开的报告。可能已撤回授权，请以最新列表为准。",
+        notice: stillAuthorized ? result.notice ?? "" : "该投递已不在当前列表，已清除打开的报告。请刷新或翻页重新核对授权。",
       });
       return stillAuthorized;
     } catch (error) {

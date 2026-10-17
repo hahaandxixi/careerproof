@@ -1,0 +1,654 @@
+..........................................................sss........... [  5%]
+........................................................................ [ 10%]
+............s.........................s............s......s....s........ [ 15%]
+......................ss.......sss......s.....ssssssss.................. [ 20%]
+........................................................................ [ 25%]
+........................................................................ [ 30%]
+.......s.........ssssss................................................. [ 35%]
+......................................ss........s....................... [ 40%]
+........FFFF......FFFF.....................s............................ [ 45%]
+........................................................................ [ 50%]
+................................sss.......ss............................ [ 55%]
+....................ss....s.......ss............................ssssss.. [ 61%]
+........................................s..........................sssss [ 66%]
+sss..................................................................... [ 71%]
+...............................................................s........ [ 76%]
+........................................................................ [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 91%]
+................................................................ssssssss [ 96%]
+...............................................                          [100%]
+================================== FAILURES ===================================
+__ test_seed_creates_two_students_three_frozen_deliveries_and_notifications ___
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B770AD190>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B77282910>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_seed_creates_two_students0')
+
+    async def test_seed_creates_two_students_three_frozen_deliveries_and_notifications(
+        e2e_app, tmp_path
+    ):
+        app, factory = e2e_app
+>       result = await run_seed(app, factory, tmp_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_e2e_fixture_safety.py:369: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B7728B240>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B77282910>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'Zaa0izQwrD2DiwemvPWCnh...717a546e6f4ed84a9d32b716f752de22dc8134f', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:43.236255+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+______ test_seeded_reports_freeze_account_user_id_as_candidate_identity _______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B771B7BF0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B77172DD0>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_seeded_reports_freeze_acc0')
+
+    async def test_seeded_reports_freeze_account_user_id_as_candidate_identity(e2e_app, tmp_path):
+        """SEED-02 (2026-10-05): the formal AnalysisService freezes candidateId as the
+        account User.id, so every seeded A/B/A2 report and its frozen delivery snapshot
+        must carry that same User.id; the StudentProfile.id is a different identity and
+        must never stand in for the candidate user identity."""
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:421: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B7728B600>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B77172DD0>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'vXm64VRmu6Y3PdQkWVUUib...06e8dc388082fea5ea069d411c3d2aad0066e07', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:44.021836+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+______ test_seeded_reports_freeze_current_requirement_content_and_weight ______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B772B8320>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B775E1D10>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_seeded_reports_freeze_cur0')
+
+    async def test_seeded_reports_freeze_current_requirement_content_and_weight(e2e_app, tmp_path):
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:439: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B774C5BC0>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B775E1D10>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'a-YcguB2BBDAXjjJ6Tn0NR...8f5259cc42f45fbfb2262a97e2afe63ac4c210c', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:44.615792+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+_________ test_rerun_after_withdraw_keeps_a2_and_b_without_restoring __________
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B776E5F10>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B7778CFD0>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_rerun_after_withdraw_keep0')
+
+    async def test_rerun_after_withdraw_keeps_a2_and_b_without_restoring(e2e_app, tmp_path):
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:455: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B77519F80>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B7778CFD0>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'wWLAxM2-_B-RG276GnBhDK...f9bfe4843d101d136c272ccb4b6892f7a72f9f1', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:45.254280+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+______ test_replay_refuses_resurrected_delivery_with_withdrawal_history _______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B77850C50>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779EA850>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_replay_refuses_resurrecte0')
+
+    async def test_replay_refuses_resurrected_delivery_with_withdrawal_history(e2e_app, tmp_path):
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:488: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B778DF880>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779EA850>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': '0RgfUKfnmxLvqYW740JNj2...788e35843c4f5045dfc656be1f3c99cb84604f9', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:46.541380+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+______ test_verify_only_refuses_without_state_and_state_mismatch_refuses ______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B77A782C0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779E8090>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_verify_only_refuses_witho0')
+
+    async def test_verify_only_refuses_without_state_and_state_mismatch_refuses(e2e_app, tmp_path):
+        app, factory = e2e_app
+        with pytest.raises(IsolationError):
+            await run_seed(app, factory, tmp_path, verify_only=True)
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:505: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B778DF600>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779E8090>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'KlwPHwuz_S4-8AY0aFyJAB...a9f465157af59e0200ce651a48c8ec175dd1890', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:47.164067+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+_______________ test_deleted_state_file_blocks_account_adoption _______________
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B77A5CC80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779EE010>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_deleted_state_file_blocks0')
+
+    async def test_deleted_state_file_blocks_account_adoption(e2e_app, tmp_path):
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:526: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B779156C0>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B779EE010>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'acU_6uyM4GsIChTLhkomCj...b27c9dffbeef0143659b2e118b71ca60157f7fb', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:47.778107+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+_______ test_credentials_never_reach_stdout_and_state_dir_stays_ignored _______
+
+e2e_app = (<fastapi.applications.FastAPI object at 0x0000013B776FE4B0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B76A14B10>, autoflush=True, expire_on_commit=False))
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/codex-pagination-full-20261017/test_credentials_never_reach_s0')
+capsys = <_pytest.capture.CaptureFixture object at 0x0000013B773A3800>
+
+    async def test_credentials_never_reach_stdout_and_state_dir_stays_ignored(
+        e2e_app, tmp_path, capsys
+    ):
+        app, factory = e2e_app
+>       await run_seed(app, factory, tmp_path)
+
+app\tests\test_e2e_fixture_safety.py:538: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_e2e_fixture_safety.py:89: in run_seed
+    return await seed_fixture(
+evals\seed_e2e.py:885: in seed_fixture
+    ) -> dict:
+evals\seed_e2e.py:710: in _create_fixture
+    "reports": dict(reports),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client_factory = <function run_seed.<locals>.client_factory at 0x0000013B76742DE0>
+session_factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000013B76A14B10>, autoflush=True, expire_on_commit=False)
+state = {'accounts': {'enterprise': {'email': 'e2e-e2e-card01-enterprise@e2e.example.com', 'password': 'BJeLXGe1X3C-oP5SE2t4Pl...c5813e0f9e34919b4fbc3566ee39a6dfb0e4d47', 'student': 'student'}}, 'createdAt': '2026-10-17T00:29:48.385003+00:00', ...}
+
+                        "snapshotSha256": normalized_snapshot_hash(snapshots[deliveries[slot]["id"]]),
+                    }
+                    for slot, student_key, _job_slot in DELIVERY_PLAN
+                },
+            }
+        assert_unlinked_state_path(state_path)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+        result = await _verify_fixture(client_factory, session_factory, state)
+        result["mode"] = "created"
+        return result
+    
+    
+    async def _verify_fixture(
+        client_factory: Callable[[], httpx.AsyncClient],
+        session_factory: async_sessionmaker,
+        state: dict,
+    ) -> dict:
+        """Verify fixture rows without replaying writes; login still persists session state."""
+        async with (
+            client_factory() as enterprise_client,
+            client_factory() as student_client,
+            client_factory() as a2_client,
+        ):
+            enterprise = await _login(
+                enterprise_client,
+                state["accounts"]["enterprise"]["email"],
+                state["accounts"]["enterprise"]["password"],
+                "enterprise",
+            )
+            students = {}
+            for key, client in (("student", student_client), ("studentA2", a2_client)):
+                students[key] = await _login(
+                    client,
+                    state["accounts"][key]["email"],
+                    state["accounts"][key]["password"],
+                    "student",
+                )
+            recorded_user_ids = {
+                key: state["accounts"][key]["userId"] for key in ("student", "studentA2", "enterprise")
+            }
+            if (
+>               enterprise["id"] != recorded_user_ids["enterprise"]
+                    ^^^^^^^^^^
+                or students["student"]["id"] != recorded_user_ids["student"]
+                or students["studentA2"]["id"] != recorded_user_ids["studentA2"]
+            ):
+E           TypeError: string indices must be integers, not 'str'
+
+evals\seed_e2e.py:757: TypeError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_dependency_upgrade_regression.py::test_decode_token_rejects_malformed_tokens[eyJhbGciOiJIUzI1NiJ9.W10.sig]
+app/tests/test_dependency_upgrade_regression.py::test_legacy_pytjwt_2101_token_still_decodes
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\jwt\api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_e2e_fixture_safety.py::test_seed_creates_two_students_three_frozen_deliveries_and_notifications
+FAILED app/tests/test_e2e_fixture_safety.py::test_seeded_reports_freeze_account_user_id_as_candidate_identity
+FAILED app/tests/test_e2e_fixture_safety.py::test_seeded_reports_freeze_current_requirement_content_and_weight
+FAILED app/tests/test_e2e_fixture_safety.py::test_rerun_after_withdraw_keeps_a2_and_b_without_restoring
+FAILED app/tests/test_e2e_fixture_safety.py::test_replay_refuses_resurrected_delivery_with_withdrawal_history
+FAILED app/tests/test_e2e_fixture_safety.py::test_verify_only_refuses_without_state_and_state_mismatch_refuses
+FAILED app/tests/test_e2e_fixture_safety.py::test_deleted_state_file_blocks_account_adoption
+FAILED app/tests/test_e2e_fixture_safety.py::test_credentials_never_reach_stdout_and_state_dir_stays_ignored
+8 failed, 1340 passed, 67 skipped, 9 warnings in 317.38s (0:05:17)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

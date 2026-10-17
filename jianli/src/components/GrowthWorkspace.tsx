@@ -11,6 +11,8 @@ import ProjectVersionPicker from "./ProjectVersionPicker";
 import GrowthComparison from "./GrowthComparison";
 import EnterpriseReplyContext from "./EnterpriseReplyContext";
 import PrivateAnswerDraft from "./PrivateAnswerDraft";
+import ListPagination from "./ListPagination";
+import type { Page } from "@/lib/api/domain";
 
 export default function GrowthWorkspace({ id }: { id?: string }) {
   const { user } = useAuth();
@@ -24,6 +26,8 @@ function GrowthContent({ id }: { id?: string }) {
   const jobGuard = useRef(createGrowthRequestGuard()).current;
   const [task, setTask] = useState<GrowthTask | null>(null);
   const [tasks, setTasks] = useState<GrowthTask[]>([]);
+  const [taskPage, setTaskPage] = useState(1);
+  const [taskData, setTaskData] = useState<(Page<GrowthTask> & { unavailableCount: number }) | null>(null);
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
   const [projects, setProjects] = useState<ProjectHistory[]>([]);
   const [resumeId, setResumeId] = useState("");
@@ -46,7 +50,7 @@ function GrowthContent({ id }: { id?: string }) {
   const locked = useRef(false);
   useEffect(() => {
     const ticket = guard.start(); jobGuard.clear();
-    setTask(null); setTasks([]); setError(""); setBusy(true);
+    setTask(null); setTasks([]); setTaskData(null); setError(""); setBusy(true);
     setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError("");
     polls.current = 0;
     const load = id ? Promise.all([api.growthTask(id), api.listResumes(), api.listProjects()]).then(([value, r, p]) => {
@@ -56,17 +60,17 @@ function GrowthContent({ id }: { id?: string }) {
       setResumeId(materials.find(m => m.kind === "resume")?.id || "");
       setProjectIds(materials.filter(m => m.kind === "project").map(m => m.id));
       setTargetJobId(value.targetJobId || "");
-    }) : api.listGrowthTasks().then(value => { if (guard.accepts(ticket)) setTasks(value); });
+    }) : api.listGrowthTasks(taskPage, 20).then(value => { if (guard.accepts(ticket)) { if (value.page !== taskPage) setTaskPage(value.page); else { setTasks(value.items); setTaskData(value); } } });
     void load.catch(reason => { if (guard.accepts(ticket)) setError(errorMessage(reason)); }).finally(() => { if (guard.accepts(ticket)) setBusy(false); });
     const visibility = () => {
       if (document.visibilityState === "hidden") {
-        guard.clear(); jobGuard.clear();
+        guard.clear(); jobGuard.clear(); setTaskData(null);
         setTask(null); setTasks([]); setResumes([]); setProjects([]); setResumeId(""); setProjectIds([]); setTargetJobId(""); setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError(""); setConsent(false); setBusy(false);
       } else { setRevision(v => v + 1); }
     };
     document.addEventListener("visibilitychange", visibility);
     return () => { guard.clear(); jobGuard.clear(); document.removeEventListener("visibilitychange", visibility); };
-  }, [id, revision, guard, jobGuard]);
+  }, [id, revision, guard, jobGuard, taskPage]);
 
   useEffect(() => {
     if (!id || !task) return;
@@ -103,7 +107,8 @@ function GrowthContent({ id }: { id?: string }) {
     <div><Link className="text-sm text-indigo-700 underline" href="/reports">← 我的报告</Link><h1 className="mt-3 text-2xl font-bold">{id ? "从缺口到新证据" : "我的补证任务"}</h1><p className="mt-2 text-sm leading-6 text-slate-600">上传与分析是行动进度，不等于能力认证；企业原投递保持固定。</p></div>
     <button className="btn-secondary" disabled={busy} onClick={() => { setConsent(false); setRevision(v => v + 1); }}>读取已保存任务</button>
     {busy && <p role="status">正在处理…</p>}{error && <p role="alert" className="text-sm text-rose-700">{error}</p>}{notice && <p role="status" className="text-sm text-amber-800">{notice}</p>}
-    {!id && !busy && !error && (tasks.length ? <ul className="space-y-3">{tasks.map(value => <li key={value.id} className="panel"><Link className="font-medium text-indigo-700 underline" href={`/growth/${value.id}`}>{value.requirementTitle}</Link><p className="mt-2 text-sm">{value.jobTitle}{value.targetJobId && value.targetJobId !== value.jobId ? ` → 已保存目标：${value.targetJobTitle || value.targetJobId}` : ""} · {GROWTH_STATUS[value.status]}</p><p className="mt-1 text-sm text-slate-600">{value.plan.deliverable}</p></li>)}</ul> : <p className="panel">暂无补证任务。从报告中选一条缺口，先完成一个小目标。<Link className="mt-3 block text-indigo-700 underline" href="/reports">从我的报告开始 →</Link></p>)}
+    {!id && !busy && !error && (tasks.length ? <ul className="space-y-3">{tasks.map(value => <li key={value.id} className="panel"><Link className="font-medium text-indigo-700 underline" href={`/growth/${value.id}`}>{value.requirementTitle}</Link><p className="mt-2 text-sm">{value.jobTitle}{value.targetJobId && value.targetJobId !== value.jobId ? ` → 已保存目标：${value.targetJobTitle || value.targetJobId}` : ""} · {GROWTH_STATUS[value.status]}</p><p className="mt-1 text-sm text-slate-600">{value.plan.deliverable}</p></li>)}</ul> : taskData?.total === 0 ? <p className="panel">暂无补证任务。从报告中选一条缺口，先完成一个小目标。<Link className="mt-3 block text-indigo-700 underline" href="/reports">从我的报告开始 →</Link></p> : null)}
+    {!id && taskData && <>{taskData.unavailableCount > 0 && <p role="status" className="text-sm text-amber-800">本页有 {taskData.unavailableCount} 条已保存任务暂时无法读取，仍计入总数；可重试读取或翻页查看其他任务，不代表任务已删除。</p>}<ListPagination label="补证任务分页" value={taskData} busy={busy} onPage={setTaskPage} /></>}
     {task && (() => {
       const jobState = growthTargetJobState(task, targetJobId);
       const jobBounds = growthJobPageBounds(jobTotal, jobPage, jobPageSize);

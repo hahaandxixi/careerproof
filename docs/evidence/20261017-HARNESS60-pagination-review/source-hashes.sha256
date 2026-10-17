@@ -1,0 +1,33 @@
+# HARNESS60 pagination review — SHA256 of reviewed files
+# Repo root: D:/jbcode/web ai/jianli
+# HEAD: ef774cb13d9187a8afaeedad03351006acfed198
+# Captured: 2026-10-17 (Asia/Shanghai)
+# Hash tool: Get-FileHash -Algorithm SHA256 (Windows).
+# Method caveat: two caller files were edited by Codex mid-review (08:22:09+08:00)
+# and this tool returned pre-edit bytes for them; see the STALE note below.
+# Live-defect conclusions rest on content re-read at 08:26, not on these hashes.
+#
+# Reviewed backend paging sources
+EC7B470B22B3F332FFD9153A52C7E6D1DFB0901AC63ABA443DEADF1EA2E7D5EE  backend/app/api/v1/applications.py
+09455C36C12F27898E764570D40A10F2C70B303CDA001AAA74EA3E847B67B5D5  backend/app/api/v1/evidence_growth.py
+A1077CB0FD31287C64C2B2C9C5C9B3857EC19BA578C8BB539D0C89464E083CF6  backend/app/api/v1/analysis.py
+F91691EB2844D92EE11636BEB4A13BB365CCC53B481CB549D55F7EBEA7D6659C  backend/app/api/v1/notifications.py
+52263B3ED53F19D1DA224A577C955C6AFD68C72874F25F3F4CCB99ADA2655F28  backend/app/services/applications.py
+299DFDFF008274613A5AD47E8B456696040A9BE296A235B5B67B677558CE9FEC  backend/app/services/evidence_growth.py
+87FAE5789658449B05BFCE3B57B4EA7E50D644E6E89409374F9037E606E13222  backend/app/services/analysis.py
+BE70AFA48657D5D647660C51D9B83AF03C825AED72E6E12DC279A6716F33C41D  backend/app/services/notifications.py
+5EC4B924DB069342E26BCE01D094DEDF8C6756832B59A42C95636AD2B160503D  backend/app/schemas/pagination.py
+19503D544A90AEE211981F0CF69DE25D78937C04B73B1E0FB7E79C71CC45CC17  backend/app/schemas/common.py
+40B8EA87DA20E728329771D257241D7E01BBE6883FFFFD96A043F912B9D6C8AA  backend/app/tests/test_z57_pagination.py
+# NOTE: the two STALE entries below (private-answer-page-runner.mjs,
+# release_smoke.py) were rewritten by Codex at 2026-10-17T08:22:09+08:00, after this
+# review first read them; these are the pre-rewrite bytes that Get-FileHash kept
+# returning. Both are ALREADY FIXED in the current tree (answer runner now reads
+# taskPage.items; release_smoke now iterates board["items"]). See review.md sec 2/4.
+# Do NOT report them as live defects.
+966417196E09E17B7223878B29BFCADB73F486021B6BAA7596DE55E5A7E2FAEA  scripts/e2e/private-answer-page-runner.mjs
+24AC39C797957E62296B9157849A2FC1B03F376024F7D49998BCC6D2D5FAC42E  backend/evals/release_smoke.py
+# Live defects confirmed by re-reading content at 08:26 (mtime unchanged during review):
+49E0D733236667784F39FDD8F59442EB1C3A71D3A0BC1AEFC7AC89918A1C6732  scripts/e2e/private-recovery-notice-runner.mjs
+2B078C293C352F7423CEF7D6E9CEB17E701C61B2867596810B7A9762326B3C09  backend/evals/seed_e2e.py
+

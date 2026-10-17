@@ -80,7 +80,7 @@ function MatchForm({
   // 传智杯56：投递状态读取与材料加载完全解耦——独立会话、独立错误与重试；
   // 状态读取失败只影响提示行，不重置材料、不阻断生成报告。
   const [applicationStatus, setApplicationStatus] = useState<JobApplicationStatusState>({ kind: "loading" });
-  const statusSession = useMemo(() => createJobApplicationStatusSession({ api: { myApplications: api.myApplications, errorMessage }, publish: setApplicationStatus }), []);
+  const statusSession = useMemo(() => createJobApplicationStatusSession({ api: { myApplications: async () => (await api.myApplications(1, 20, job.id)).items, errorMessage }, publish: setApplicationStatus }), [job.id]);
   useEffect(() => bindJobApplicationStatusLifecycle(statusSession, job.id, { page: window, document }), [statusSession, job.id]);
   useEffect(() => {
     let current = true;

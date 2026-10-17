@@ -112,7 +112,7 @@ jobs:
           if-no-files-found: warn
 
   backend-postgres:
-    name: backend-postgres (strict 16 modules, JUnit gate)
+    name: backend-postgres (strict 17 modules, JUnit gate)
     runs-on: ubuntu-latest
     timeout-minutes: 75
     services:
@@ -243,6 +243,7 @@ jobs:
             app/tests/test_refresh_atomicity.py \
             app/tests/test_login_rate_limit.py \
             app/tests/test_login_limit_migration.py \
+            app/tests/test_paginated_lists_postgres.py \
             --basetemp=.tmp-ci-pg \
             --junitxml=.tmp-ci/junit-pg-strict.xml 2>&1 | tee .tmp-ci/pytest-pg-strict.log
 
@@ -263,7 +264,7 @@ jobs:
             --basetemp=.tmp-ci-pg-hardstop \
             --junitxml=.tmp-ci/junit-pg-hardstop.xml 2>&1 | tee .tmp-ci/pytest-pg-hardstop.log
 
-      # The gate reads the JUnit XML, never the pytest exit code: 16 modules
+      # The gate reads the JUnit XML, never the pytest exit code: 17 modules
       # present, zero failure/error/skipped, and all 8 hard-stop windows.
       - name: Enforce the JUnit gate on the strict set
         if: always()
@@ -304,6 +305,14 @@ jobs:
         working-directory: jianli
         run: npm ci
 
+      - name: Lint
+        working-directory: jianli
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p .tmp-ci
+          npm run lint 2>&1 | tee .tmp-ci/npm-lint.log
+
       - name: npm test
         working-directory: jianli
         shell: bash
@@ -326,5 +335,14 @@ jobs:
         with:
           name: frontend-test-log
           path: jianli/.tmp-ci/npm-test.log
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload frontend lint log
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: frontend-lint-log
+          path: jianli/.tmp-ci/npm-lint.log
           retention-days: 7
           if-no-files-found: warn
