@@ -1,0 +1,76 @@
+Verified runtime: backend .venv-dependency23; frontend D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261017
+Building changed frontend (production)...
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.6s
+   Linting and checking validity of types ...
+
+./src/components/MaterialPreview.tsx
+29:49  Warning: The ref value 'fileRequest.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'fileRequest.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+./src/components/NotificationCenter.tsx
+33:33  Warning: The ref value 'generation.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'generation.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+./src/components/NotificationLink.tsx
+31:33  Warning: The ref value 'generation.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'generation.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+./src/components/PrivateAnswerDraft.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/VisualEvidencePanel.tsx
+46:7  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      171 B         106 kB
+├ ○ /_not-found                            996 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                        5.03 kB         115 kB
+├ ƒ /candidates/[id]                       171 B         106 kB
+├ ○ /demo                                2.17 kB         112 kB
+├ ○ /demo/heatmap                        7.21 kB         113 kB
+├ ○ /growth                                135 B         130 kB
+├ ƒ /growth/[id]                           134 B         130 kB
+├ ƒ /jobs                                2.83 kB         113 kB
+├ ƒ /jobs/[id]                           5.35 kB         121 kB
+├ ƒ /jobs/[id]/applications                14 kB         124 kB
+├ ƒ /jobs/[id]/edit                        133 B         115 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                           2.84 kB         113 kB
+├ ○ /jobs/new                              132 B         115 kB
+├ ○ /login                                1.4 kB         111 kB
+├ ƒ /match/[jobId]/[candidateId]           171 B         106 kB
+├ ƒ /materials/[kind]/[id]               4.69 kB         114 kB
+├ ○ /notifications                       3.06 kB         113 kB
+├ ○ /portfolio                           6.99 kB         117 kB
+├ ƒ /recommendations                     6.49 kB         122 kB
+├ ○ /register                            1.87 kB         112 kB
+├ ○ /reports                             2.39 kB         112 kB
+├ ƒ /reports/[id]                        18.2 kB         128 kB
+└ ƒ /tasks/[id]                          3.94 kB         114 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.03 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ Container backend-postgres-1 Running 
+ Container backend-postgres-1 Waiting 
+ Container backend-postgres-1 Healthy 
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+CareerProof is ready at http://127.0.0.1:3000
+Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.
