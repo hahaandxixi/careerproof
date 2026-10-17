@@ -25,9 +25,17 @@ export default function GrowthTaskStart({ reportId, requirementId, advice }: { r
     const openFromAnchor = () => {
       if (window.location.hash === `#growth-${requirementId}` || new URLSearchParams(window.location.search).get("enterpriseReply") === requirementId) setOpen(true);
     };
+    // SPA hash navigation need not emit hashchange; a repeated same-fragment
+    // click also emits none. Observe the explicit local link, including Enter.
+    const openFromLink = (event: MouseEvent) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (link?.getAttribute("href") === `#growth-${requirementId}`) setOpen(true);
+    };
     openFromAnchor();
     window.addEventListener("hashchange", openFromAnchor);
-    return () => window.removeEventListener("hashchange", openFromAnchor);
+    document.addEventListener("click", openFromLink);
+    return () => { window.removeEventListener("hashchange", openFromAnchor); document.removeEventListener("click", openFromLink); };
   }, [requirementId]);
   useEffect(() => {
     if (!open) return;
