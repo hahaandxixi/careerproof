@@ -1,0 +1,7 @@
+-m
+pytest
+app/tests
+--basetemp=D:\jbcode\web ai\jianli\backend\.tmp\integrated-20261019-48701787ebe14f088437d01d763b66d1\pytest
+-p
+no:cacheprovider
+--junitxml=D:\jbcode\web ai\jianli\docs\evidence\20261019-backend-integrated-regression\junit.xml

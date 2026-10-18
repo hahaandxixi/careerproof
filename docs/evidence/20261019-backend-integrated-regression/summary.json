@@ -1,0 +1,35 @@
+{
+  "sourceHead": "26a64b9e03170f644680b9bf2814dd80c42c3896",
+  "tests": 1478,
+  "passed": 1404,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 74,
+  "skipReasons": {
+    "The production-entry last-slot race needs real PostgreSQL row locks; set CAREERPROOF_TEST_DATABASE_URL to an isolated cp_test schema": 3,
+    "Requires explicit PostgreSQL cp_test schema": 16,
+    "Requires actual PostgreSQL row locks": 1,
+    "Requires PostgreSQL row locks": 1,
+    "Requires an explicitly configured isolated PostgreSQL schema": 20,
+    "A real child-process hard stop needs an explicitly configured isolated PostgreSQL schema; SQLite cannot prove row-lock release across processes": 8,
+    "Row-lock concurrent booking requires dedicated PostgreSQL": 1,
+    "Serialized identity allocation requires dedicated PostgreSQL": 1,
+    "The borrowed-transaction probe needs the PostgreSQL integration database": 1,
+    "Real PostgreSQL row-lock concurrency requires the integration database": 1,
+    "Requires explicit PostgreSQL row locks": 3,
+    "Requires explicit local PostgreSQL test database and real row locks": 6,
+    "PostgreSQL row lock integration only": 1,
+    "requires an explicit isolated PostgreSQL integration database": 11
+  },
+  "warnings": 9,
+  "exitCode": 0,
+  "durationSeconds": 328.24,
+  "ruffExitCode": 0,
+  "dependencyPinsMatched": 28,
+  "candidateFrozen": false,
+  "artifactsSha256": {
+    "junit.xml": "b61c53f25a7c8037f42dde70eb80a871a7ee11f5e1c08259f219971a565384d0",
+    "pytest.raw.out": "5da4c8ac0ee6e941b24722ee9dfb44b95d9bb31bb0c7c774c512cfe3531ded40",
+    "ruff.raw.out": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+  }
+}
