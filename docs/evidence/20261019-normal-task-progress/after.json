@@ -1,0 +1,161 @@
+{
+  "tables": {
+    "agent_steps": {
+      "rows": 541,
+      "digest": "8e7b90eea407489b4bc0862c0a1fc851"
+    },
+    "ai_budget_adjustments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_cutover": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_reservations": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_daily_budgets": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_request_attempts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_usage_logs": {
+      "rows": 51,
+      "digest": "6b66fb3808a112c7ca64c20ec3a59606"
+    },
+    "alembic_version": {
+      "rows": 1,
+      "digest": "af191538c130a9f4114df6847ca24c44"
+    },
+    "analysis_tasks": {
+      "rows": 192,
+      "digest": "5cf7f0933c62cef2d610b2ff94defbc9"
+    },
+    "application_events": {
+      "rows": 30,
+      "digest": "d948d0be01e11b3d501039a8241a70d6"
+    },
+    "applications": {
+      "rows": 10,
+      "digest": "46e8af3c082e1784308ad64201629b64"
+    },
+    "audit_logs": {
+      "rows": 230,
+      "digest": "2e24a52c05a6f3aaf330f582aa07e028"
+    },
+    "enterprise_memberships": {
+      "rows": 9,
+      "digest": "552536065f67594211c5d0a8f1d9198e"
+    },
+    "enterprises": {
+      "rows": 9,
+      "digest": "87a2392d8d3419689d226258ce75b6e9"
+    },
+    "evidence_growth_tasks": {
+      "rows": 5,
+      "digest": "fddc645a63c2c3f18b3192b555d5bd9b"
+    },
+    "evidence_sources": {
+      "rows": 633,
+      "digest": "8ce38089ac010b4d8fab2eec7f01c39d"
+    },
+    "growth_answer_drafts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_answers": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_sessions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "job_requirements": {
+      "rows": 121,
+      "digest": "5c6ee0315529b18ba5b93c92a888c14b"
+    },
+    "jobs": {
+      "rows": 36,
+      "digest": "a51280342f10ea7e8458d3f9c442582b"
+    },
+    "knowledge_chunks": {
+      "rows": 2065,
+      "digest": "8a9c46cb760a5db922d27a87e02edfd6"
+    },
+    "login_limits": {
+      "rows": 1,
+      "digest": "1da4008b805bf84d086b6af17593c98c"
+    },
+    "match_items": {
+      "rows": 231,
+      "digest": "f539e40c3cc08d72e4c6caf5db467db6"
+    },
+    "match_reports": {
+      "rows": 71,
+      "digest": "9cff277a1f57bca39d54d98e97885c26"
+    },
+    "matching_formula_versions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "notifications": {
+      "rows": 26,
+      "digest": "7974f224853f9e96240a5036cdddf701"
+    },
+    "project_files": {
+      "rows": 164,
+      "digest": "6a3cdb3f8ae2ff9544d1527fdde8f1b1"
+    },
+    "project_versions": {
+      "rows": 54,
+      "digest": "950abb363bb33ab6574e62be9cc238bf"
+    },
+    "projects": {
+      "rows": 43,
+      "digest": "df427bf8ac190189221986f34b0948c8"
+    },
+    "refresh_tokens": {
+      "rows": 294,
+      "digest": "4adda058fdc9f5d8fb1b6e31eb984a02"
+    },
+    "resume_sections": {
+      "rows": 43,
+      "digest": "631acbda0924cf79728dcd4e0b0e943c"
+    },
+    "resume_versions": {
+      "rows": 45,
+      "digest": "34d7ac1295d783c9096e9a87b90d800a"
+    },
+    "resumes": {
+      "rows": 45,
+      "digest": "bf52e36e44452d74036a6b8800ea3b4c"
+    },
+    "skill_aliases": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "skill_evidence": {
+      "rows": 633,
+      "digest": "61c7a66ccb57bd4abd2d8b98be13e78c"
+    },
+    "skills": {
+      "rows": 27,
+      "digest": "d60fa2092386145eb26e03b6d9de4557"
+    },
+    "student_profiles": {
+      "rows": 12,
+      "digest": "d0d3cfb40c7609517bf157329e5feade"
+    },
+    "users": {
+      "rows": 21,
+      "digest": "71f8a977e0e5aa4a6aaf215e31915c38"
+    }
+  },
+  "revision": "0020_login_limits"
+}

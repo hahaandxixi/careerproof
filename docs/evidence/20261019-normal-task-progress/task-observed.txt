@@ -1,0 +1,18 @@
+Browser tab: 3, Title: "可追溯人才匹配平台", URL: "http://127.0.0.1:3000/tasks/ec7c7076-4db4-4163-83d1-58c32a6f3b97".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			104 heading 处理完成, Value: 2
+~				105 text 处理完成
+~			106 text 100 %
+~			107 progress indicator Description: 分析进度, Value: 100
+~			108 text 材料支持度报告已生成
++				125 container
++					126 container 实际处理时长：
++						127 text 实际处理时长：
++					128 text 2.4 秒
+~					121 text 任务已结束，状态不再变化
++			129 link Description: 查看匹配报告, Value: 127.0.0.1:3000/reports/aab09c18-c88e-4e8d-9828-b588812c0fc1
+~		122 button (collapsed) 实际处理记录已有 9 条完成记录, Secondary Actions: Expand
++			130 text 已有 
++			131 text 9
++			132 text  条完成记录
+The focused UI element is 0 AXWebArea 可追溯人才匹配平台, URL: 127.0.0.1:3000/tasks/ec7c7076-4db4-4163-83d1-58c32a6f3b97

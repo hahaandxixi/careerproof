@@ -1,0 +1,50 @@
+{
+  "sourceHead": "10f8773",
+  "runtimeFrontendSource": "7f7802b",
+  "taskId": "ec7c7076-4db4-4163-83d1-58c32a6f3b97",
+  "reportId": "aab09c18-c88e-4e8d-9828-b588812c0fc1",
+  "externalAiConsent": false,
+  "externalRequestTablesUnchanged": true,
+  "applicationsEventsAndNotificationsUnchanged": true,
+  "changedTables": {
+    "agent_steps": {
+      "before": 532,
+      "after": 541
+    },
+    "analysis_tasks": {
+      "before": 191,
+      "after": 192
+    },
+    "evidence_sources": {
+      "before": 611,
+      "after": 633
+    },
+    "match_items": {
+      "before": 226,
+      "after": 231
+    },
+    "match_reports": {
+      "before": 70,
+      "after": 71
+    },
+    "skill_evidence": {
+      "before": 611,
+      "after": 633
+    },
+    "skills": {
+      "before": 23,
+      "after": 27
+    }
+  },
+  "durationSeconds": 2.435514,
+  "sseHttp200": true,
+  "observedActiveProgress": 25,
+  "terminalProgress": 100,
+  "mobileNoHorizontalOverflow": true,
+  "unverified": [
+    "real disconnect/reconnect",
+    "hidden document lifecycle",
+    "actual reduced-motion preference",
+    "independent first user"
+  ]
+}

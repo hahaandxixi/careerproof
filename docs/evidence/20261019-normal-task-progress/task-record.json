@@ -1,0 +1,87 @@
+{
+  "id": "ec7c7076-4db4-4163-83d1-58c32a6f3b97",
+  "status": "COMPLETED",
+  "progress": 100,
+  "current_step": "材料支持度报告已生成",
+  "started_at": "2026-10-18 16:25:41.121712+00:00",
+  "completed_at": "2026-10-18 16:25:43.557226+00:00",
+  "total_cost_rmb": "0.000000",
+  "selectedInput": {
+    "jobId": "4dfa9d69-d6ec-450c-a9d2-89a520a6be12",
+    "resumeVersionId": "876a780a-3b3d-4318-9aa8-e3d3e2d6c070",
+    "projectVersionIds": [
+      "605a7faf-4d31-4c16-b8d4-618af6df7485"
+    ],
+    "externalAiConsent": false,
+    "usePreviousReport": false
+  },
+  "steps": [
+    {
+      "step_number": 1,
+      "event_type": "tool.completed",
+      "name": "核对材料版本",
+      "detail": "读取2份所选材料，报告固定到所选版本",
+      "payload": {}
+    },
+    {
+      "step_number": 2,
+      "event_type": "tool.completed",
+      "name": "检索候选证据",
+      "detail": "静态检查3个文件，找到22条候选证据",
+      "payload": {}
+    },
+    {
+      "step_number": 3,
+      "event_type": "tool.completed",
+      "name": "补取并核对证据上下文",
+      "detail": "一次补取，22条多行原文；21条仍为局部上下文；未执行上传代码",
+      "payload": {}
+    },
+    {
+      "step_number": 4,
+      "event_type": "tool.completed",
+      "name": "混合检索补充候选上下文",
+      "detail": "规则检测后补充11条低强度候选原文；候选不改变规则分数，需经引用校验与模型判断",
+      "payload": {}
+    },
+    {
+      "step_number": 5,
+      "event_type": "tool.completed",
+      "name": "本地语义文档检索",
+      "detail": "本地模型检索9段项目文档，返回10条低强度线索；不改变规则分数",
+      "payload": {}
+    },
+    {
+      "step_number": 6,
+      "event_type": "tool.completed",
+      "name": "计算材料支持度",
+      "detail": "使用evidence-v4规则；未支持的能力不参与评分",
+      "payload": {}
+    },
+    {
+      "step_number": 7,
+      "event_type": "tool.completed",
+      "name": "模型证据分析",
+      "detail": "未获得外部 AI 授权，已保留本地规则报告",
+      "payload": {
+        "provider": "rules",
+        "fallbackUsed": false,
+        "skippedReason": "consent_not_granted"
+      }
+    },
+    {
+      "step_number": 8,
+      "event_type": "tool.completed",
+      "name": "校验模型引用",
+      "detail": "未采信模型输出，规则证据保持不变",
+      "payload": {}
+    },
+    {
+      "step_number": 9,
+      "event_type": "tool.completed",
+      "name": "保存可追溯报告",
+      "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+      "payload": {}
+    }
+  ]
+}
