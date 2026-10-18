@@ -11,6 +11,16 @@
 - 后续拟议授权范围：官方DeepSeek deepseek-flash，最多3次物理请求（含重试/修复），每次输入保守上界20000、输出1200，总费用上限1元。**此范围尚未获授权、当日价格未核验、发送前共享计数与失效停止执行器未实现，因此liveExecutionReady=false，不应直接将本包交给旧runner外发。**
 - 旧run_evidence_trust仅按返回usage事后检查累计门槛，底层可能重试；这不满足本批物理请求硬上限。补执行器及离线边界测试、核价之后，再就确切输入申请网站外发授权。开发客户端额度许可不能替代。
 
+### 10/18执行器补验（尚无真实调用授权）
+
+接续预演新增`backend/evals/bounded_evidence_smoke.py`，没有另起评测框架或修改生产提示词。复用生产DeepSeekProvider和grounding校验，固定三例及请求正文哈希；默认CLI仅核包，不构造provider。Live必须显式传价格及新输出，不能把该参数当用户授权。
+
+- 共享RequestGuard在POST前计数、按每次20000输入/1200输出的高峰价预留，最多3次/总上限1元；关闭此批provider重试。额外用真实provider+MockTransport证明，即便改成3次重试，503/超时后也不会发生第二次HTTP。缺失/非法/超量usage、费用不足、记录写入失败或请求哈希变化均停止，不填补为成功。
+- 首版仅单实例上限，复核发现不同输出文件可启动另一个实例。已加固定批次`current-smoke-20261018-three-cases`的持久独占claim，位于backend/.tmp/ai-smoke；不同输出、重启、崩溃都不重置。两独立Python进程争抢同一claim恰好一胜一拒，8个并发准入最多3个通过。不得自行删除claim恢复额度；新一轮须重新明确授权和评测范围。
+- 当前生产输入JSON仅本地截获，输出/人工评分为空；`deepseek-prices-20261018.json`记录当日官方页及按高峰未命中2元输入/8元输出每百万tokens的保守价。固定三次最大预留0.1488元，网页费率不等于实际账户账单。价格日期按北京时间核对，过期拒绝执行。
+- 环境backend/.venv-dependency23，Ruff通过；`app/tests/test_bounded_evidence_smoke.py`最终21通过，原始输出`bounded-guard-tests-final.raw.out`，包括可信收据不会退还请求次数。第二轮20通过保留在round2日志。第一次默认系统tmp_path有2项权限错误，其余16项通过；改用backend/.tmp下全新独占basetemp、禁缓存，不改ACL。首轮格式7项、格式化后剩1项长路径，最终修正。无正常库、服务启停或真实模型调用。
+- 复跑：在backend目录，`python -m evals.bounded_evidence_smoke --packet ../docs/evidence/20261017-task70-semantic-review-packet/current-smoke-preflight-20261018.json`，退出0、OFFLINE。实际`--live`仍等待用户对确切三例/官方DeepSeek/最多3次/1元上限的确认；本次尚未创建真实批次claim、未执行真实网络/语义评测、未代人工签字。
+
 下方仍是10/17历史交棒：
 
 HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。**未改任何产品源码/评测输入/提示词**；只在本目录产出材料。

@@ -1,0 +1,12 @@
+{
+  "verifiedDate": "2026-10-18",
+  "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "model": "deepseek-flash",
+  "advertisedVersion": "DeepSeek-V4.1-Flash-1017",
+  "currency": "CNY",
+  "inputYuanPerMillion": 2,
+  "outputYuanPerMillion": 8,
+  "basis": "Conservative peak pricing, all input counted as cache miss; weekend would be cheaper.",
+  "verification": "Official page retrieved through web open after agent-reach Jina connection failed. Page lists idle input 1/output 4, peak input 2/output 8 per million tokens. No model API call made.",
+  "fixedThreeRequestWorstYuan": "0.1488"
+}
