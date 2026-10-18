@@ -1,0 +1,12 @@
+{
+  "case": "contradictory-return",
+  "externalRequests": 0,
+  "originalAcceptedByStructuralGroundingValidator": true,
+  "negativeCriteriaWithCitationsAccepted": true,
+  "originalDisplayLevel": null,
+  "originalDisplayLabel": "AI 未确认相关实践证据",
+  "counterfactualLevelOneStructurallyAccepted": true,
+  "counterfactualIsNotModelOutput": true,
+  "rubricRelevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+  "semanticAccuracyOrHumanAcceptanceProved": false
+}
