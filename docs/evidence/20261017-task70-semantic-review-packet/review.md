@@ -1,0 +1,65 @@
+# task70 · AI 质量人工复核包 — 交棒
+
+## 10/18补充：当前生产提示词的三例待评测输入
+
+在7f7802b源码上运行`prepare_current_smoke.py --output current-smoke-preflight-20261018.json`（命令从仓库根用backend/.venv-dependency23解释器，文件参数写本目录完整相对路径）。新增预演不覆盖下方10/17历史包或旧模型输出。
+
+- 使用既有合成route-body、empty-route、contradictory-return，分别检查可见实现、空实现、声明与实现矛盾；不是12例/6类完整评测。
+- 真实DeepSeekProvider.analyze_evidence、生产上下文（最多2条证据）、净化及预算预检，MockTransport在HTTP客户端发送边界截获JSON后主动抛出专用异常；底层仅1次尝试，无外部网络。3次本地截获≠3次真实调用。
+- 生产promptVersion为evidence-trust-v29-implementation-first-plan，thinking disabled；每例输出上限1200，保守输入字符上界分别7427/7358/6848（不是供应商账单token）。原合成输入、实际请求正文及来源文件SHA256均在JSON，不保存headers或凭据。
+- Ruff退出0；独立检查三例请求、thinking/model/output上限、模型输出/人工评分仍为空、无凭据；再次指定原输出路径退出非0且原包SHA256不变。没有运行真实AI或填写语义支持率。
+- 后续拟议授权范围：官方DeepSeek deepseek-flash，最多3次物理请求（含重试/修复），每次输入保守上界20000、输出1200，总费用上限1元。**此范围尚未获授权、当日价格未核验、发送前共享计数与失效停止执行器未实现，因此liveExecutionReady=false，不应直接将本包交给旧runner外发。**
+- 旧run_evidence_trust仅按返回usage事后检查累计门槛，底层可能重试；这不满足本批物理请求硬上限。补执行器及离线边界测试、核价之后，再就确切输入申请网站外发授权。开发客户端额度许可不能替代。
+
+下方仍是10/17历史交棒：
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。**未改任何产品源码/评测输入/提示词**；只在本目录产出材料。
+
+## 产出
+
+| 文件 | 内容 |
+| --- | --- |
+| `sample-table.md` | 12 例**匿名**样本表：材料 + 生产输出原文 + 空白人工判断栏 + 汇总签署；**不含类别与预期结论** |
+| `reference-criteria.md` | 与样本**分离**的参考判据：每例的设计类别、冻结 rubric、检验意图、来源/模型/日期 |
+| `build_packet.py` | 生成脚本（只读冻结产物，复用既有 run 结果，未另造评测框架） |
+| `input-hashes.txt` | 4 个冻結输入文件的 SHA256 |
+| `build.raw.out` | 生成原始输出（exit 0） |
+
+## 案例构成（12 例，6 类设计）
+
+- 支持 2（C01 route-body、C02 test-assertion）
+- 部分支持 2（C03 sql-query、C04 truncated-body）
+- 缺证据 3（C05 no-evidence、C06 dependency-only、C11 unsupported）
+- 归属冲突 2（C07 forged-claim、C08 contradictory-return）
+- 注入 2（C09 prompt-injection、C10 empty-route）
+- **建议不可执行 1（C12 controlled-function-calling-report，且无本轮新输出）**
+
+来源构成：模型正文 8 例、规则跳过 3 例、无输出 1 例。
+
+## 必须如实说明的缺口
+
+1. **6 类各 2 例的完整覆盖未达成**：冻结产物在「建议不可执行」只有 1 例，且本卡禁止外发、
+   不允许重跑模型，故 C12 留空。已在该文件内显式声明，**没有用凑数案例补齐**。
+2. **输出不是今日模型**：11 个冻结用例的模型正文来自 `2026-09-18T01:37:15Z` 保存结果
+   （provider=deepseek、suite=evidence-trust-v2、promptVersion=evidence-trust-v6-consistency）。
+   不得据此声称当前模型质量或当前配置表现。
+3. **人工判断全部留空**：机器评分、模型自评、本脚本均未填写任何「结论支持度/是否过度推断」，
+   不代签。包内保留「评审前未见 assistant-review 文件」的独立性声明栏。
+4. 真实模型小批评测**未执行**：`sample-table.md` 内已列「待批字段」（用例集、提示词版本、
+   每例请求数上限 1、合计 11、输入/输出上限、预算上限、模型版本、停止条件、授权状态=未获授权）。
+
+## 命令与结果
+
+- `python docs/evidence/20261017-task70-semantic-review-packet/build_packet.py`
+  → exit 0，`cases=12 models=8 rules=3 no_output=1`
+
+## 未验证项
+
+1. 未做任何真实模型请求，未产生新的模型质量证据。
+2. 未邀请真实评审者填写，故本包**不含任何人工语义结论**。
+3. 未核验 `trust-deepseek-v6-assistant-review-20260918.json` 的内容（独立性要求：评审前不应查看）；
+   本脚本也未读取它。
+
+## 证据
+
+本目录全部文件；输入 hash 见 `input-hashes.txt`。
