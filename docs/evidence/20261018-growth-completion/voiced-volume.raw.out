@@ -1,0 +1,39 @@
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'D:\jbcode\web ai\jianli\output\video\CareerProof-voiced-draft-20261018-r1.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.12.102
+  Duration: 00:06:22.06, start: 0.000000, bitrate: 251 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 148 kb/s, 25 fps, 25 tbr, 12800 tbn, start 0.021016 (default)
+    Metadata:
+      handler_name    : VideoHandler
+      encoder         : Lavc62.28.102 libx264
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, mono, fltp, 96 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+[Parsed_volumedetect_0 @ 00000139f6973bc0] n_samples: 0
+Stream mapping:
+  Stream #0:1 -> #0:0 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.12.102
+  Stream #0:0(und): Audio: pcm_s16le, 48000 Hz, mono, s16, 768 kb/s (default)
+    Metadata:
+      encoder         : Lavc62.28.102 pcm_s16le
+      handler_name    : SoundHandler
+[Parsed_volumedetect_0 @ 00000139f8b995c0] n_samples: 18364416
+[Parsed_volumedetect_0 @ 00000139f8b995c0] mean_volume: -24.4 dB
+[Parsed_volumedetect_0 @ 00000139f8b995c0] max_volume: -0.5 dB
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_0db: 94
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_1db: 563
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_2db: 1755
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_3db: 4015
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_4db: 8114
+[Parsed_volumedetect_0 @ 00000139f8b995c0] histogram_5db: 13411
+[out#0/null @ 00000139f6975540] video:0KiB audio:35868KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:06:22.06 bitrate=N/A speed=2.45e+03x elapsed=0:00:00.15    

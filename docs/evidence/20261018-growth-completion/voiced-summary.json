@@ -1,0 +1,348 @@
+{
+  "kind": "segmented synthetic-data demo with disclosed offline Mandarin TTS",
+  "voice": "Microsoft Huihui Desktop",
+  "rate": 0,
+  "plannedSeconds": 381.41639229024946,
+  "sha256": "8b615651f363fe3dbcdb672508c722e1ccba418356c4f8441a9eddb7e1330a82",
+  "bytes": 12005643,
+  "parts": [
+    {
+      "name": "intro",
+      "text": "这是职证，一个连接求职材料与岗位要求的证据对照网站。学生先核对材料，再自主决定投递；企业只查看已授权的报告。接下来展示上传、双端投递和补证对比。人物与材料均为合成数据，本稿采用规则报告和离线合成配音。",
+      "speechSeconds": 25.87950113378685,
+      "originalSeconds": 5,
+      "outputSeconds": 26.62950113378685,
+      "endFrameHoldSeconds": 21.62950113378685
+    },
+    {
+      "name": "clip-01",
+      "text": "新上传合成简历；本地解析，不调用外部模型。",
+      "speechSeconds": 5.8375510204081635,
+      "originalSeconds": 8.156,
+      "outputSeconds": 8.156,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-02",
+      "text": "新上传同一 CP01 合成项目 ZIP；只做安全检查与静态解析。",
+      "speechSeconds": 7.261950113378685,
+      "originalSeconds": 8.104,
+      "outputSeconds": 8.104,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-03",
+      "text": "两份新材料解析完成；从材料入口继续选择岗位。",
+      "speechSeconds": 5.897278911564626,
+      "originalSeconds": 8.07,
+      "outputSeconds": 8.07,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-04",
+      "text": "选择对应合成企业的 Python 岗位，核对原文要求。",
+      "speechSeconds": 5.772290249433107,
+      "originalSeconds": 8.102,
+      "outputSeconds": 8.102,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-05",
+      "text": "本轮新简历已选定；再勾选同一套项目版本。",
+      "speechSeconds": 5.557641723356009,
+      "originalSeconds": 8.105,
+      "outputSeconds": 8.105,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-06",
+      "text": "不授权外发，显式生成本地规则报告；生成不等于向企业投递。",
+      "speechSeconds": 7.446848072562358,
+      "originalSeconds": 8.036,
+      "outputSeconds": 8.196848072562357,
+      "endFrameHoldSeconds": 0.16084807256235756
+    },
+    {
+      "name": "clip-07",
+      "text": "新任务完成后打开本轮报告；查看规则来源与固定材料版本。",
+      "speechSeconds": 6.806666666666667,
+      "originalSeconds": 8.037,
+      "outputSeconds": 8.037,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-08",
+      "text": "展开 Python 原文与行号；静态代码不代表运行结果或本人贡献已核验。",
+      "speechSeconds": 7.711337868480726,
+      "originalSeconds": 8.078,
+      "outputSeconds": 8.461337868480726,
+      "endFrameHoldSeconds": 0.3833378684807265
+    },
+    {
+      "name": "clip-09",
+      "text": "首次尝试被既有有效投递阻止；网站拒绝用新报告静默覆盖旧快照。",
+      "speechSeconds": 7.826621315192744,
+      "originalSeconds": 8.026,
+      "outputSeconds": 8.576621315192744,
+      "endFrameHoldSeconds": 0.5506213151927444
+    },
+    {
+      "name": "clip-10",
+      "text": "已有有效投递时拒绝覆盖；先查看本人投递，再决定是否撤回旧授权。",
+      "speechSeconds": 8.146167800453515,
+      "originalSeconds": 8.036,
+      "outputSeconds": 8.896167800453515,
+      "endFrameHoldSeconds": 0.8601678004535156
+    },
+    {
+      "name": "clip-11",
+      "text": "明确确认撤回旧授权；旧记录保留，企业后续访问应被拒绝。",
+      "speechSeconds": 7.271882086167801,
+      "originalSeconds": 8.046,
+      "outputSeconds": 8.046,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-12",
+      "text": "回到本轮新报告，重新勾选分享授权并确认；创建新的投递记录。",
+      "speechSeconds": 7.901496598639456,
+      "originalSeconds": 8.055,
+      "outputSeconds": 8.651496598639456,
+      "endFrameHoldSeconds": 0.5964965986394564
+    },
+    {
+      "name": "clip-13",
+      "text": "个人投递已指向本轮新报告；旧授权不会因重新投递而恢复。",
+      "speechSeconds": 6.9169614512471655,
+      "originalSeconds": 8.178,
+      "outputSeconds": 8.178,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-14",
+      "text": "企业账号进入自己的岗位管理，查看学生明确授权的投递。",
+      "speechSeconds": 6.516961451247165,
+      "originalSeconds": 8.078,
+      "outputSeconds": 8.078,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-15",
+      "text": "在本人岗位中按关键词筛选，找到对应的 Python 合成岗位。",
+      "speechSeconds": 6.666802721088436,
+      "originalSeconds": 8.087,
+      "outputSeconds": 8.087,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-16",
+      "text": "企业只看到当前仍有效的授权投递，打开固定报告对照。",
+      "speechSeconds": 6.422131519274377,
+      "originalSeconds": 8.11,
+      "outputSeconds": 8.11,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-17",
+      "text": "点击 PostgreSQL 要求，联动学生授权报告中的原证据。",
+      "speechSeconds": 6.582312925170068,
+      "originalSeconds": 8.102,
+      "outputSeconds": 8.102,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-18",
+      "text": "按需展开本次授权的 SQL／连接代码片段，核对路径与行号。",
+      "speechSeconds": 6.911972789115646,
+      "originalSeconds": 8.075,
+      "outputSeconds": 8.075,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-19",
+      "text": "合成企业发送站内测试回复；显式确认，不发邮件、不作录用决定。",
+      "speechSeconds": 7.896689342403628,
+      "originalSeconds": 8.097,
+      "outputSeconds": 8.64668934240363,
+      "endFrameHoldSeconds": 0.5496893424036298
+    },
+    {
+      "name": "clip-20",
+      "text": "回复后复看：站内正文已发送，内容明确为合成测试。",
+      "speechSeconds": 6.6072562358276645,
+      "originalSeconds": 8.089,
+      "outputSeconds": 8.089,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-21",
+      "text": "复看 PostgreSQL 原文与行号；这是静态材料，不是数据库运行证明。",
+      "speechSeconds": 8.176780045351475,
+      "originalSeconds": 8.048,
+      "outputSeconds": 8.926780045351475,
+      "endFrameHoldSeconds": 0.8787800453514745
+    },
+    {
+      "name": "clip-22",
+      "text": "学生从账户菜单进入通知，查看企业刚发送的站内回复。",
+      "speechSeconds": 6.632108843537415,
+      "originalSeconds": 8.03,
+      "outputSeconds": 8.03,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-23",
+      "text": "点击企业回复通知，重新核对授权并定位本次新投递，而不是旧记录。",
+      "speechSeconds": 8.03170068027211,
+      "originalSeconds": 8.028,
+      "outputSeconds": 8.78170068027211,
+      "endFrameHoldSeconds": 0.7537006802721091
+    },
+    {
+      "name": "clip-24",
+      "text": "明确补证交付物和核验条件；合成源码不等于实际运行或本人贡献。",
+      "speechSeconds": 7.596326530612245,
+      "originalSeconds": 6.092,
+      "outputSeconds": 8.346326530612245,
+      "endFrameHoldSeconds": 2.2543265306122455
+    },
+    {
+      "name": "clip-25",
+      "text": "保存本人私有补证任务；固定首版基准，不创建企业投递。",
+      "speechSeconds": 6.726938775510204,
+      "originalSeconds": 4.719,
+      "outputSeconds": 7.476938775510204,
+      "endFrameHoldSeconds": 2.757938775510204
+    },
+    {
+      "name": "clip-26",
+      "text": "原项目上传模式已确认；选择公开的 Redis 合成 v2 ZIP。",
+      "speechSeconds": 6.457142857142857,
+      "originalSeconds": 4.432,
+      "outputSeconds": 7.207142857142857,
+      "endFrameHoldSeconds": 2.775142857142857
+    },
+    {
+      "name": "clip-27",
+      "text": "明确上传到原项目；仅静态解析，原版本仍保留。",
+      "speechSeconds": 6.287392290249433,
+      "originalSeconds": 7.03,
+      "outputSeconds": 7.037392290249433,
+      "endFrameHoldSeconds": 0.007392290249432776
+    },
+    {
+      "name": "clip-28",
+      "text": "保留原简历，替换项目版本",
+      "speechSeconds": 3.8332426303854876,
+      "originalSeconds": 3.194,
+      "outputSeconds": 4.583242630385488,
+      "endFrameHoldSeconds": 1.3892426303854881
+    },
+    {
+      "name": "clip-29",
+      "text": "选择原项目的已解析第二版",
+      "speechSeconds": 3.5532426303854874,
+      "originalSeconds": 3.552,
+      "outputSeconds": 4.303242630385487,
+      "endFrameHoldSeconds": 0.7512426303854869
+    },
+    {
+      "name": "clip-30",
+      "text": "保存原简历与项目第二版，尚未向企业投递",
+      "speechSeconds": 5.447573696145125,
+      "originalSeconds": 4.658,
+      "outputSeconds": 6.197573696145125,
+      "endFrameHoldSeconds": 1.5395736961451245
+    },
+    {
+      "name": "clip-31",
+      "text": "不授权外发，使用保存的新版生成规则报告",
+      "speechSeconds": 5.362403628117914,
+      "originalSeconds": 9.1,
+      "outputSeconds": 9.1,
+      "endFrameHoldSeconds": 0
+    },
+    {
+      "name": "clip-32",
+      "text": "Redis由仅声明变为局部操作；仍未证明运行与本人贡献",
+      "speechSeconds": 6.5869387755102045,
+      "originalSeconds": 5.542,
+      "outputSeconds": 7.3369387755102045,
+      "endFrameHoldSeconds": 1.7949387755102046
+    },
+    {
+      "name": "clip-33",
+      "text": "新版报告保持私有，查看具体证据",
+      "speechSeconds": 4.473197278911565,
+      "originalSeconds": 4.668,
+      "outputSeconds": 5.223197278911565,
+      "endFrameHoldSeconds": 0.5551972789115647
+    },
+    {
+      "name": "clip-34",
+      "text": "引用定位到redis_cache.py第5至10行；未执行上传代码",
+      "speechSeconds": 6.916825396825397,
+      "originalSeconds": 6.139,
+      "outputSeconds": 7.666825396825397,
+      "endFrameHoldSeconds": 1.5278253968253965
+    },
+    {
+      "name": "clip-35",
+      "text": "原投递仍绑定首版报告，补证报告没有自动替换或重新投递",
+      "speechSeconds": 6.9366893424036284,
+      "originalSeconds": 4.626,
+      "outputSeconds": 7.6866893424036284,
+      "endFrameHoldSeconds": 3.060689342403628
+    },
+    {
+      "name": "technology",
+      "text": "下面说明系统的AI工作流设计，而不是展示模型思考过程。规则先从用户选择的材料版本中检索候选证据，保留文件路径、行号和引用范围。只有用户明确同意，模型才会接收必要的脱敏材料，在证据边界内解释结论，并提出可核验的补证建议。引用越界、输出不合要求或模型调用失败时，系统会保留明确标记的规则结果。上传的项目代码不会被执行，静态代码不能证明部署成功或个人贡献。本稿没有真实模型外发，当前提示词的语义质量仍需独立评测。",
+      "speechSeconds": 51.57015873015873,
+      "originalSeconds": 0,
+      "outputSeconds": 52.32015873015873,
+      "endFrameHoldSeconds": 52.32015873015873
+    },
+    {
+      "name": "outro",
+      "text": "这版草稿展示了材料、报告、授权和补证的完整使用路线，但仍是跨日期分段实录，不是冻结版本验收。真实AI评测、独立首次用户走查和许可确认尚待完成。最终视频需要团队完整审片，核对旁白、隐私与画面，并与候选源码、技术文档一起提交。",
+      "speechSeconds": 29.044580498866214,
+      "originalSeconds": 8,
+      "outputSeconds": 29.794580498866214,
+      "endFrameHoldSeconds": 21.794580498866214
+    }
+  ],
+  "limitations": [
+    "Not a frozen candidate or continuous recording",
+    "Source screenshots are low frame rate and upscaled",
+    "End-frame holds are listed per segment",
+    "No fresh external AI result; independent human review pending"
+  ],
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "duration": "382.040000"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 1,
+        "duration": "382.055917"
+      }
+    ],
+    "format": {
+      "duration": "382.061016",
+      "size": "12005643"
+    }
+  },
+  "videoPath": "D:\\jbcode\\web ai\\jianli\\output\\video\\CareerProof-voiced-draft-20261018-r1.mp4",
+  "fullDecodeExit": 0,
+  "humanFullPlayback": false,
+  "actualExternalModelRequests": 0
+}

@@ -30,4 +30,16 @@ ffprobe格式检查、全片解码退出0，Redis段实际编码帧目检确认�
 
 ## 剩余范围
 
+### 同日后续：离线合成普通话配音草稿
+
+新文件`output/video/CareerProof-voiced-draft-20261018-r1.mp4`，实际382.061016秒（6分22秒）、12,005,643字节，H264 1920×1080/25fps＋AAC 48kHz单声道。SHA256为`8b615651f363fe3dbcdb672508c722e1ccba418356c4f8441a9eddb7e1330a82`。旧4分21秒无声稿、原帧与转码中间件均保留。
+
+使用本机System.Speech的Microsoft Huihui Desktop（zh-CN、rate=0），没有把文本/音频上传到语音服务，没有克隆真人声音。35段原实录重新叠加如实的“合成配音/低帧率/非冻结”边界，新增项目介绍、工作流说明和结尾三张解释卡。配音文本见narration-draft.json/captions.md；素材为10/16—18跨日期版本，模型演示仍为规则路径，不把工作流介绍讲成真实调用结果。
+
+执行：`backend/.venv-dependency23/Scripts/python.exe scripts/build_narrated_demo.py --capture-dir output/video/capture-20261018-combined --manifest docs/evidence/20261018-growth-completion/narration-draft.json --work-dir output/video/build-20261018-voiced-r1 --output output/video/CareerProof-voiced-draft-20261018-r1.mp4`。原始合成/编码日志、WAV、38段计划均留在该ignored工作目录。全片ffmpeg解码退出0、错误日志为空；格式/音轨已核，响度检测有非静音信号（均值-24.4dB、峰值-0.5dB），不等同听感合格。四个实际编码关键帧目检、voiced-contact-sheet.jpg；没有完整人工试听、逐句同步或口音评价。
+
+35段实录合计末帧延长约23.15秒，最长单段3.06秒；不加快/改写实际操作。片头、技术说明、片尾按实际旁白长度显示，所有时长见voiced-summary.json；原素材低帧率且编码放大，不宣称原生1080p录屏。Ruff首轮发现未使用subprocess导入，移除后通过；PowerShell helper语法检查通过。未启停网站、未操作数据库。
+
+本稿已具备所列时长/编码/音轨，但仍需团队完整审片、确认合成讲解使用、补入新鲜真实AI证据并与冻结版本同步。不能据此宣布正式视频交付或赛事审核通过。MP4/WAV/原始素材不随Git源码包带走，须另行备份。
+
 本轮证明开发者沿已有合成现场完成新版链路，不是独立首次使用者验证，也不是从空库同一版本连续录制。真人首次用户、真实AI语义质量、配音/赛事格式/最终候选、PDF/源码包/评审访问/签署/第三方许可仍待。此次未修改源码、不清理任何临时目录，网站保持运行。
