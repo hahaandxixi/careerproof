@@ -1,0 +1,6 @@
+section { max-width: 56rem; margin: auto; padding: 1rem; }
+input { min-height: 2.75rem; max-width: 100%; box-sizing: border-box; }
+.activity-list { display: grid; gap: 1rem; list-style: none; padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.activity-list li { border: 1px solid #cbd5e1; border-radius: .75rem; padding: 1rem; }
+input:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }

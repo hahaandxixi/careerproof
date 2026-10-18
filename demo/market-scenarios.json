@@ -1,0 +1,71 @@
+{
+  "version": "market-scenarios-20261019",
+  "syntheticOnly": true,
+  "companyName": "职证场景实验室（虚构）",
+  "notice": "以下为参考公开岗位能力方向编写的体验场景，企业、人物和经历均为虚构；不向BOSS或真实企业投递。",
+  "sourceBoundary": "参考公开聚合页的技术方向，自行编写业务背景、要求与材料；未确认任何单个岗位当前在招，不复制企业身份、薪资、联系方式或完整招聘文案。",
+  "sources": [
+    {"key": "python", "url": "https://www.zhipin.com/zhaopin/1de63f63601598543nJz3dq5/", "observedOn": "2026-10-19", "kind": "public_aggregate", "usedFor": "Python、Web开发、数据库与开发验证等岗位方向"},
+    {"key": "frontend", "url": "https://www.zhipin.com/zhaopin/c075eb6d11c4af233nd539q0/", "observedOn": "2026-10-19", "kind": "public_aggregate", "usedFor": "React、TypeScript、Next.js页面与组件开发方向"},
+    {"key": "qa", "url": "https://www.zhipin.com/zhaopin/a680cb52546712fa1nF_0960/", "observedOn": "2026-10-19", "kind": "public_aggregate", "usedFor": "用例设计、缺陷跟踪与自动化测试方向"}
+  ],
+  "scenarios": [
+    {
+      "key": "event-api",
+      "sourceKey": "python",
+      "title": "Python 后端开发实习生",
+      "category": "software",
+      "city": "杭州",
+      "employmentType": "internship",
+      "description": "参与校园活动报名服务的开发：把活动列表、报名校验和名额管理做成清晰的HTTP接口，与页面开发者约定请求和响应。适合掌握Python基础、希望参与业务模块实现的在校学生。工作内容包括接口实现、关系数据建模、输入校验、测试与代码协作。此为原创体验岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName": "Python", "rawText": "使用Python编写可读的业务处理函数，处理报名数据与边界输入。", "weight": 4, "isRequired": true},
+        {"skillName": "FastAPI", "rawText": "实现活动列表与报名接口，明确请求校验、状态码和错误返回。", "weight": 5, "isRequired": true},
+        {"skillName": "SQL", "rawText": "设计活动、报名记录的关系表，说明重复报名约束与持久化方式。", "weight": 4, "isRequired": true},
+        {"skillName": "pytest", "rawText": "为正常报名、重复报名和无效输入编写可运行的接口测试。", "weight": 3, "isRequired": true},
+        {"skillName": "Git", "rawText": "通过清晰提交或变更说明交代本人修改范围与接口联调过程。", "weight": 2, "isRequired": false}
+      ],
+      "resumeFile": "event-api-resume.txt",
+      "projectFile": "event-api-project.zip",
+      "materialBoundary": "有列表与报名静态实现及SQL草案；尚无数据库接入、并发名额控制、独立运行回执或可验证提交历史。"
+    },
+    {
+      "key": "event-console",
+      "sourceKey": "frontend",
+      "title": "React 前端开发实习生",
+      "category": "software",
+      "city": "深圳",
+      "employmentType": "internship",
+      "description": "为活动运营同学开发轻量管理页面，让使用者能快速找到活动、查看报名情况并理解操作反馈。与设计和后端协作，把页面、数据状态与异常提示连接起来。工作内容包括React/TypeScript组件、接口联调、加载与失败恢复、移动布局和代码说明。此为原创体验岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName": "React", "rawText": "使用React与TypeScript拆分活动列表、筛选和详情组件，定义明确的数据类型。", "weight": 5, "isRequired": true},
+        {"skillName": "状态管理", "rawText": "实现搜索筛选和当前活动选择，切换时保持可理解的页面状态。", "weight": 4, "isRequired": true},
+        {"skillName": "接口联调", "rawText": "读取活动接口并区分加载、空结果与请求失败，提供有效重试入口。", "weight": 5, "isRequired": true},
+        {"skillName": "响应式布局", "rawText": "保证窄屏阅读和键盘操作可用，交互状态不能只靠颜色区分。", "weight": 3, "isRequired": true},
+        {"skillName": "Git", "rawText": "记录组件变更与联调问题，清楚说明本人完成的部分。", "weight": 2, "isRequired": false}
+      ],
+      "resumeFile": "event-console-resume.txt",
+      "projectFile": "event-console-project.zip",
+      "materialBoundary": "有类型、列表与筛选组件；当前使用本地数组，尚无真实接口联调、详情选择、移动截图或键盘验收记录。"
+    },
+    {
+      "key": "booking-quality",
+      "sourceKey": "qa",
+      "title": "接口测试开发实习生",
+      "category": "software",
+      "city": "上海",
+      "employmentType": "internship",
+      "description": "参与会议室预约服务的质量保障，关注同一时段冲突、错误输入与取消后状态等实际问题。从需求中写出可执行用例，用Python自动检查接口返回，并把缺陷变成别人可以复现的步骤。工作内容包括用例设计、正常与异常路径测试、自动化断言、缺陷记录和结果整理。此为原创体验岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName": "测试用例", "rawText": "根据预约规则写明前置条件、输入、操作步骤和预期结果，覆盖边界。", "weight": 5, "isRequired": true},
+        {"skillName": "接口测试", "rawText": "覆盖正常预约、重复时段冲突及无效输入，核对状态码与响应内容。", "weight": 5, "isRequired": true},
+        {"skillName": "pytest", "rawText": "使用Python和pytest组织可重复执行的测试，并使用有意义的业务断言。", "weight": 4, "isRequired": true},
+        {"skillName": "缺陷记录", "rawText": "提供缺陷复现步骤、实际结果与预期差异，说明修复后的回归方式。", "weight": 3, "isRequired": true},
+        {"skillName": "测试报告", "rawText": "记录实际执行命令、环境、结果与未覆盖范围，不能用计划代替执行结果。", "weight": 3, "isRequired": true}
+      ],
+      "resumeFile": "booking-quality-resume.txt",
+      "projectFile": "booking-quality-project.zip",
+      "materialBoundary": "有自包含的演示接口与三类测试、用例说明；不声称覆盖生产系统、并发仲裁、身份授权或所有预约规则。"
+    }
+  ]
+}

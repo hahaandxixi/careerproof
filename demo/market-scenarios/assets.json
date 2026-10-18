@@ -1,0 +1,32 @@
+[
+  {
+    "file": "booking-quality-project.zip",
+    "bytes": 1943,
+    "sha256": "03d247e13efd46aa2f41fac9466845ca38bd9ea9a634254b6682ae17c9b255c6"
+  },
+  {
+    "file": "booking-quality-resume.txt",
+    "bytes": 1003,
+    "sha256": "f7c5698bc4ec6a37c8dbd117c3a86deefe4827bde0fc596027917431a153e55f"
+  },
+  {
+    "file": "event-api-project.zip",
+    "bytes": 1412,
+    "sha256": "2a984835e600386674c36044fb0fdac349725b6716bd16f3b2230b300c369167"
+  },
+  {
+    "file": "event-api-resume.txt",
+    "bytes": 1009,
+    "sha256": "bfe4821e688ffe8443000d0b32a850a3b051ad264aceb092c6743db6d8b66237"
+  },
+  {
+    "file": "event-console-project.zip",
+    "bytes": 1584,
+    "sha256": "bec0cef457a4dd8b2d5cc775925c39718eabb0150ff8337fa8f10d3c0466b022"
+  },
+  {
+    "file": "event-console-resume.txt",
+    "bytes": 1005,
+    "sha256": "43c1ab56e171389bc6aa0b8fe83dc9d9cd8d7cbb2bc0d0f4b122c01db3681f28"
+  }
+]

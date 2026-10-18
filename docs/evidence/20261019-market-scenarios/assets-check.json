@@ -1,0 +1,20 @@
+[
+  {
+    "key": "event-api",
+    "requirements": 5,
+    "resumeExists": true,
+    "archiveMatchesLFSourceBytes": true
+  },
+  {
+    "key": "event-console",
+    "requirements": 5,
+    "resumeExists": true,
+    "archiveMatchesLFSourceBytes": true
+  },
+  {
+    "key": "booking-quality",
+    "requirements": 5,
+    "resumeExists": true,
+    "archiveMatchesLFSourceBytes": true
+  }
+]
