@@ -17,6 +17,8 @@
 
 正式运行守卫拒绝该stage依赖联接（`runtime.raw.out`），所以它只作为组件/构建检查环境，不宣称已获正常运行资格。后续使用独立实体依赖目录核验，不放宽守卫。
 
+随后建立`backend/.tmp/dep-frontend-20261018`，复制已安装依赖为实体目录（无安装/升级），原共享目录联接保留不动。源码/锁文件/运行依赖守卫通过，125个源码文件digest为`28252a148bb59acf62265361469ee0c570c8a46d60d0677e8af9e9d65728fdc5`；该实体目录生产构建也通过，见`runtime-physical.raw.out`与`build-physical.raw.out`。尚未启动正常服务，启动缓存应由正式入口核实后记录，不能手工伪造。
+
 ## 真实组件浏览器检查
 
 独占3106验证台挂载真实MaterialPreview/TaskView，组件API由合成数据和受控Promise替代；EventSource也是模拟类。这证明真实渲染和组件时序，不证明真实HTTP/SSE/后台全链。模拟页源码保留`fixture/page.tsx`，原文件曾使用null图片观察值导致图片URL尝试访问未运行的8000并失败，没有读写业务数据；不将图片作为本批验收对象。验证台已停止。
