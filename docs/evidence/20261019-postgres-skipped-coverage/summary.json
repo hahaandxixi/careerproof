@@ -1,0 +1,61 @@
+{
+  "sourceHead": "dece154d9f9e46d2d804c5e192c0a5fb012453a7",
+  "normalDatabaseUnchanged": true,
+  "normalTableCount": 39,
+  "revision": "0020_login_limits",
+  "sourceUnchangedDuringRun": true,
+  "groups": {
+    "regular": {
+      "passed": 59,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "seconds": 62.677,
+      "modules": {
+        "app.tests.test_ai_budget_production_race": 3,
+        "app.tests.test_ai_request_attempt_migration": 1,
+        "app.tests.test_ai_shared_budget_migration": 1,
+        "app.tests.test_ai_shared_budget_service": 1,
+        "app.tests.test_application_reconsent_migration": 1,
+        "app.tests.test_application_resubmission": 1,
+        "app.tests.test_application_verification": 5,
+        "app.tests.test_applications_api": 1,
+        "app.tests.test_data_integrity_migration": 7,
+        "app.tests.test_durable_attempt_service": 2,
+        "app.tests.test_durable_matching": 1,
+        "app.tests.test_evidence_growth": 1,
+        "app.tests.test_growth_answer_postgres": 3,
+        "app.tests.test_growth_target_postgres": 2,
+        "app.tests.test_knowledge_semantic_postgres": 2,
+        "app.tests.test_login_limit_migration": 1,
+        "app.tests.test_login_rate_limit": 2,
+        "app.tests.test_mcp_postgres_isolation": 6,
+        "app.tests.test_notifications": 1,
+        "app.tests.test_paginated_lists_postgres": 8,
+        "app.tests.test_refresh_atomicity": 1,
+        "app.tests.test_visual_postgres_concurrency": 8
+      },
+      "junitSha256": "8e456941bd96c6573b66f25db5b43f59f9ce1a2b36232723dd9cca0b4fde81eb"
+    },
+    "hardstop": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "seconds": 26.61,
+      "modules": {
+        "app.tests.test_attempt_hard_stop": 8
+      },
+      "junitSha256": "5a161ae5f2c0c31bdb8ff6679bfe020ec7c6016fa2c0445218420f9f02ac35d3"
+    }
+  },
+  "excludedPreviouslyVerifiedPG": 7,
+  "notCandidateAcceptance": true,
+  "dedicatedContainerRemoved": true,
+  "remainingTestSchemas": {
+    "cp_ci": 0,
+    "careerproof": 0
+  },
+  "totalPassed": 67,
+  "priorUnchangedRetrievalSourceSha256": "456130a4028dd2fc246638f8aa76ecdbedb151e78efcf42f781882c387bbac00"
+}

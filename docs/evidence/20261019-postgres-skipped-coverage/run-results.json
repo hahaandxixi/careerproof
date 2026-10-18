@@ -1,0 +1,16 @@
+{
+  "sourceHead": "dece154d9f9e46d2d804c5e192c0a5fb012453a7",
+  "selected": 67,
+  "excludedPriorVerified": 7,
+  "groups": {
+    "regular": {
+      "selected": 59,
+      "exitCode": 0
+    },
+    "hardstop": {
+      "selected": 8,
+      "exitCode": 0
+    }
+  },
+  "sourceUnchangedDuringRun": true
+}

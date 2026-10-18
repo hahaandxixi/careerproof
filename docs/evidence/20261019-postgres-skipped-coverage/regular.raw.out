@@ -1,0 +1,47 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0
+rootdir: D:\jbcode\web ai\jianli\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 59 items
+
+app\tests\test_ai_budget_production_race.py ...                          [  5%]
+app\tests\test_ai_request_attempt_migration.py .                         [  6%]
+app\tests\test_ai_shared_budget_migration.py .                           [  8%]
+app\tests\test_ai_shared_budget_service.py .                             [ 10%]
+app\tests\test_application_reconsent_migration.py .                      [ 11%]
+app\tests\test_application_resubmission.py .                             [ 13%]
+app\tests\test_application_verification.py .....                         [ 22%]
+app\tests\test_applications_api.py .                                     [ 23%]
+app\tests\test_data_integrity_migration.py .......                       [ 35%]
+app\tests\test_durable_attempt_service.py ..                             [ 38%]
+app\tests\test_durable_matching.py .                                     [ 40%]
+app\tests\test_evidence_growth.py .                                      [ 42%]
+app\tests\test_growth_answer_postgres.py ...                             [ 47%]
+app\tests\test_growth_target_postgres.py ..                              [ 50%]
+app\tests\test_knowledge_semantic_postgres.py ..                         [ 54%]
+app\tests\test_login_limit_migration.py .                                [ 55%]
+app\tests\test_login_rate_limit.py ..                                    [ 59%]
+app\tests\test_mcp_postgres_isolation.py ......                          [ 69%]
+app\tests\test_notifications.py .                                        [ 71%]
+app\tests\test_paginated_lists_postgres.py ........                      [ 84%]
+app\tests\test_refresh_atomicity.py .                                    [ 86%]
+app\tests\test_visual_postgres_concurrency.py ........                   [100%]
+
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: D:\jbcode\web ai\jianli\docs\evidence\20261019-postgres-skipped-coverage\regular.xml -
+================== 59 passed, 5 warnings in 62.68s (0:01:02) ==================
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
