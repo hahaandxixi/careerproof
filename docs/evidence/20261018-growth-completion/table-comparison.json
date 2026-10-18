@@ -1,0 +1,108 @@
+{
+  "changed": {
+    "agent_steps": {
+      "before": {
+        "rows": 523,
+        "digest": "76d001b506f7726059caa28a68f3c6a5"
+      },
+      "after": {
+        "rows": 532,
+        "digest": "a3006d8961ac86c225141d9182a29c26"
+      }
+    },
+    "analysis_tasks": {
+      "before": {
+        "rows": 190,
+        "digest": "09c9e7256a2847bcf423bbadd0935f90"
+      },
+      "after": {
+        "rows": 191,
+        "digest": "e5f1654bfcd38631b2332e3bdb83ea3e"
+      }
+    },
+    "evidence_growth_tasks": {
+      "before": {
+        "rows": 5,
+        "digest": "2142a726acc23a516a1db927ccefa6bc"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "fddc645a63c2c3f18b3192b555d5bd9b"
+      }
+    },
+    "evidence_sources": {
+      "before": {
+        "rows": 585,
+        "digest": "7bccf5805c1936b3fcf4827a7e9c7e56"
+      },
+      "after": {
+        "rows": 611,
+        "digest": "a72b21d63723fb0ffed84aae96af8d76"
+      }
+    },
+    "match_items": {
+      "before": {
+        "rows": 221,
+        "digest": "06a032edb29cca6298fa5c02e15000c7"
+      },
+      "after": {
+        "rows": 226,
+        "digest": "20bf1bd780b823fdff0daf7e796f764c"
+      }
+    },
+    "match_reports": {
+      "before": {
+        "rows": 69,
+        "digest": "760c0d212578f01494ae912347ae110e"
+      },
+      "after": {
+        "rows": 70,
+        "digest": "4696ae163316538402c2b1e7fce3ef33"
+      }
+    },
+    "skill_evidence": {
+      "before": {
+        "rows": 585,
+        "digest": "f5e43bd6713403a04528998f721207db"
+      },
+      "after": {
+        "rows": 611,
+        "digest": "114b85df132143f5554746f5606b3177"
+      }
+    }
+  },
+  "unchanged": [
+    "ai_budget_adjustments",
+    "ai_budget_cutover",
+    "ai_budget_reservations",
+    "ai_daily_budgets",
+    "ai_request_attempts",
+    "ai_usage_logs",
+    "alembic_version",
+    "application_events",
+    "applications",
+    "audit_logs",
+    "enterprise_memberships",
+    "enterprises",
+    "growth_answer_drafts",
+    "interview_answers",
+    "interview_sessions",
+    "job_requirements",
+    "jobs",
+    "knowledge_chunks",
+    "login_limits",
+    "matching_formula_versions",
+    "notifications",
+    "project_files",
+    "project_versions",
+    "projects",
+    "refresh_tokens",
+    "resume_sections",
+    "resume_versions",
+    "resumes",
+    "skill_aliases",
+    "skills",
+    "student_profiles",
+    "users"
+  ]
+}

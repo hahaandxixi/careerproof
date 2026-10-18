@@ -1,0 +1,255 @@
+{
+  "kind": "segmented real-browser draft",
+  "native_fps": "see frame timestamps",
+  "encoded_format": "1920x1080, H.264, 25fps, no audio",
+  "clips": [
+    {
+      "name": "../capture-20261016-upload-chain/01-resume-upload",
+      "caption": "新上传合成简历；本地解析，不调用外部模型。",
+      "frame_count": 29,
+      "duration_ms": 8156,
+      "capture_sha256": "d9e5844a4f53ecfd84e01de88310687fc0b8ab3fc5b7d61d2400291baa8273c1"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/02-project-upload",
+      "caption": "新上传同一 CP01 合成项目 ZIP；只做安全检查与静态解析。",
+      "frame_count": 29,
+      "duration_ms": 8104,
+      "capture_sha256": "f932f029964c279a798d64874fc2bfccdb288ebc9e502501ee81f67377f88dfd"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/03-processing-and-jobs",
+      "caption": "两份新材料解析完成；从材料入口继续选择岗位。",
+      "frame_count": 29,
+      "duration_ms": 8070,
+      "capture_sha256": "c346560cca4c7fda26112155ca0164da22681a7c633d5effcaacb4ebd55684fb"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/04-job-detail",
+      "caption": "选择对应合成企业的 Python 岗位，核对原文要求。",
+      "frame_count": 29,
+      "duration_ms": 8102,
+      "capture_sha256": "a756fd5cfb90dc2e5771333508172c5c12d5bea27dd3a35c505b8f436c7ad05c"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/07-project-selected",
+      "caption": "本轮新简历已选定；再勾选同一套项目版本。",
+      "frame_count": 29,
+      "duration_ms": 8105,
+      "capture_sha256": "c90832bc271fc081487575630f108f84a1e81cb62c762d92472081a5230218dd"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/08-generate-rule-report",
+      "caption": "不授权外发，显式生成本地规则报告；生成不等于向企业投递。",
+      "frame_count": 29,
+      "duration_ms": 8036,
+      "capture_sha256": "62a2b8237d8bfe4944fb4b1c9c8ffbf98b30c9a5c4a202f4f1101b151be70fa8"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/09-open-new-report",
+      "caption": "新任务完成后打开本轮报告；查看规则来源与固定材料版本。",
+      "frame_count": 29,
+      "duration_ms": 8037,
+      "capture_sha256": "ff0c60f08f8c2c08d021aab07424c1d5384db81504220f16fe8ba5b75d687f4a"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/10-source-evidence",
+      "caption": "展开 Python 原文与行号；静态代码不代表运行结果或本人贡献已核验。",
+      "frame_count": 29,
+      "duration_ms": 8078,
+      "capture_sha256": "ab927dbc6d97376049e50819e3af472aa660224ce49a71fd02f5325e7bc435a7"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/11-explicit-application",
+      "caption": "首次尝试被既有有效投递阻止；网站拒绝用新报告静默覆盖旧快照。",
+      "frame_count": 29,
+      "duration_ms": 8026,
+      "capture_sha256": "101e687ac80345409adf4763bd763d1a89663b602d50fea76c81c3e0a53e6923"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/12-existing-application-boundary",
+      "caption": "已有有效投递时拒绝覆盖；先查看本人投递，再决定是否撤回旧授权。",
+      "frame_count": 29,
+      "duration_ms": 8036,
+      "capture_sha256": "ae42997acf1e94eafdb84b61e35ca1c696f82f3f4bd464f1eee8ec1ebdc01e17"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/13-revoke-old-authorization",
+      "caption": "明确确认撤回旧授权；旧记录保留，企业后续访问应被拒绝。",
+      "frame_count": 29,
+      "duration_ms": 8046,
+      "capture_sha256": "4f5e578b9cf7cb4a41d465b7811a663360d29ecb5b701443017a7a914ac0c28e"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/14-new-report-application",
+      "caption": "回到本轮新报告，重新勾选分享授权并确认；创建新的投递记录。",
+      "frame_count": 29,
+      "duration_ms": 8055,
+      "capture_sha256": "25d93a1bb48feee30110146993e522c4b470b5c56e3efa5164ed1cdda02f747f"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/15-new-application-progress",
+      "caption": "个人投递已指向本轮新报告；旧授权不会因重新投递而恢复。",
+      "frame_count": 29,
+      "duration_ms": 8178,
+      "capture_sha256": "6587a2534101b6504b5c9e0de5b08625c96ec1441269501053ccd53b5ec902b9"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/16-enterprise-jobs",
+      "caption": "企业账号进入自己的岗位管理，查看学生明确授权的投递。",
+      "frame_count": 29,
+      "duration_ms": 8078,
+      "capture_sha256": "4ade3535aa133bece4bb210ebf6da6ac6c6dac0c23efd06fa277bccbe344b32f"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/17-enterprise-find-job",
+      "caption": "在本人岗位中按关键词筛选，找到对应的 Python 合成岗位。",
+      "frame_count": 29,
+      "duration_ms": 8087,
+      "capture_sha256": "d11b647553cd2dc044125cd431048d7e7affa4dab71518d81c421fb8fe3d33da"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/18-enterprise-authorized-board",
+      "caption": "企业只看到当前仍有效的授权投递，打开固定报告对照。",
+      "frame_count": 29,
+      "duration_ms": 8110,
+      "capture_sha256": "eeaaf5c0c8f54463b92351f4a4444c553dc465d14d8cc8eab58bb4c453694772"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/19-enterprise-evidence-link",
+      "caption": "点击 PostgreSQL 要求，联动学生授权报告中的原证据。",
+      "frame_count": 29,
+      "duration_ms": 8102,
+      "capture_sha256": "52efc87b85b4e4aa4189e9c78a5d540390b92ac8be82cdc5f9c31cc25e518331"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/20-enterprise-source",
+      "caption": "按需展开本次授权的 SQL／连接代码片段，核对路径与行号。",
+      "frame_count": 29,
+      "duration_ms": 8075,
+      "capture_sha256": "fd6c03a863fa5a3e51db2f5f0845efc962492c83bb13961187754c21b3c25961"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/21-enterprise-reply",
+      "caption": "合成企业发送站内测试回复；显式确认，不发邮件、不作录用决定。",
+      "frame_count": 29,
+      "duration_ms": 8097,
+      "capture_sha256": "15107bda628fc9e5c792682b8b8459610b81f341ef714c176b0202691f47ab53"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/26-enterprise-reply-visible",
+      "caption": "回复后复看：站内正文已发送，内容明确为合成测试。",
+      "frame_count": 29,
+      "duration_ms": 8089,
+      "capture_sha256": "d21de3afd31ed26fc3cc6aaadbedfbbf67ae6dc67c176f56d9f85eefa3575930"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/28-enterprise-source-framed",
+      "caption": "复看 PostgreSQL 原文与行号；这是静态材料，不是数据库运行证明。",
+      "frame_count": 29,
+      "duration_ms": 8048,
+      "capture_sha256": "66542bd522b48226fe65d42fc9c058c8b990ad46b9768178a03dff7b2a0ca1db"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/22-student-notification",
+      "caption": "学生从账户菜单进入通知，查看企业刚发送的站内回复。",
+      "frame_count": 29,
+      "duration_ms": 8030,
+      "capture_sha256": "4db6e0adc77951376478eae8a622da79ec84a006be92740d80316191de3378e7"
+    },
+    {
+      "name": "../capture-20261016-upload-chain/23-notification-target",
+      "caption": "点击企业回复通知，重新核对授权并定位本次新投递，而不是旧记录。",
+      "frame_count": 29,
+      "duration_ms": 8028,
+      "capture_sha256": "a713fdf39f12f890ccd578b9431c7a62a89232df64a17fdc8631d785a4093d8b"
+    },
+    {
+      "name": "../capture-20261017-growth/02-write-plan",
+      "caption": "明确补证交付物和核验条件；合成源码不等于实际运行或本人贡献。",
+      "frame_count": 29,
+      "duration_ms": 6092,
+      "capture_sha256": "bc01bd80bc565f064b3a7658b3d52b8500d2af73169e5df821dc51232449b739"
+    },
+    {
+      "name": "../capture-20261017-growth/03-save-plan",
+      "caption": "保存本人私有补证任务；固定首版基准，不创建企业投递。",
+      "frame_count": 22,
+      "duration_ms": 4719,
+      "capture_sha256": "92ece878961484a30866bbe5e365a113fde4ff24c16210d1d17445a8471860cd"
+    },
+    {
+      "name": "../capture-20261017-growth/05-choose-zip",
+      "caption": "原项目上传模式已确认；选择公开的 Redis 合成 v2 ZIP。",
+      "frame_count": 21,
+      "duration_ms": 4432,
+      "capture_sha256": "1daf8d4fd71be97d20c15e724180f4dad3d5a233fe6d33988fc023b295fb2c2b"
+    },
+    {
+      "name": "../capture-20261017-growth/06-upload-and-parse",
+      "caption": "明确上传到原项目；仅静态解析，原版本仍保留。",
+      "frame_count": 33,
+      "duration_ms": 7030,
+      "capture_sha256": "625112eed4bb30e84b1c54e8a6d630de6b53f31eea783d3ff220aee56e163730"
+    },
+    {
+      "name": "../capture-20261018-growth/07-deselect-old",
+      "caption": "保留原简历，替换项目版本",
+      "frame_count": 15,
+      "duration_ms": 3194,
+      "capture_sha256": "872da601781cbf2cf094c643f80c5d5de9cae98d91324e903ab041d0ab6cc476"
+    },
+    {
+      "name": "../capture-20261018-growth/08-select-v2",
+      "caption": "选择原项目的已解析第二版",
+      "frame_count": 17,
+      "duration_ms": 3552,
+      "capture_sha256": "6941ee3ffca51bcbd3d8ff7772598bfd4cb3e2c705c5d059e96a5c9bbdb36e52"
+    },
+    {
+      "name": "../capture-20261018-growth/09-save-materials",
+      "caption": "保存原简历与项目第二版，尚未向企业投递",
+      "frame_count": 22,
+      "duration_ms": 4658,
+      "capture_sha256": "17dd3fcf2fbd1969dd605b39d18c0389ececa9589094633392222ffaf8d17b99"
+    },
+    {
+      "name": "../capture-20261018-growth/10-generate-report",
+      "caption": "不授权外发，使用保存的新版生成规则报告",
+      "frame_count": 43,
+      "duration_ms": 9100,
+      "capture_sha256": "628a5be84d89110797aeee7b312e02bda4395fc065a5aad207720c804d3edc8d"
+    },
+    {
+      "name": "../capture-20261018-growth/11-redis-comparison",
+      "caption": "Redis由仅声明变为局部操作；仍未证明运行与本人贡献",
+      "frame_count": 26,
+      "duration_ms": 5542,
+      "capture_sha256": "cb651769efa1d047d53659b14cb3250b42baeabb0151fe98a1ddeba2c4444eab"
+    },
+    {
+      "name": "../capture-20261018-growth/12-open-new-report",
+      "caption": "新版报告保持私有，查看具体证据",
+      "frame_count": 22,
+      "duration_ms": 4668,
+      "capture_sha256": "1af4084fc601b9d9b3f6f217d3459e457273df804ecff06af17703a1971af9c2"
+    },
+    {
+      "name": "../capture-20261018-growth/13-redis-source",
+      "caption": "引用定位到redis_cache.py第5至10行；未执行上传代码",
+      "frame_count": 29,
+      "duration_ms": 6139,
+      "capture_sha256": "b46060f97e25c597bcb5cedfa017b9f7c25ee25b10219e16f702ee1557158040"
+    },
+    {
+      "name": "../capture-20261018-growth/14-original-application",
+      "caption": "原投递仍绑定首版报告，补证报告没有自动替换或重新投递",
+      "frame_count": 22,
+      "duration_ms": 4626,
+      "capture_sha256": "c8ab3541967fa19b0ca60eb327b36dd8ba15b97fca6c397e8c830d10f94e6059"
+    }
+  ],
+  "limitations": "合成材料 · 规则报告 · 分段低帧率实录 · 无配音 · 真实AI与独立用户待验",
+  "sha256": "0ef7352b79f86ccfd543d16764db2bd223c1a3063bc894237f4a95f63e383a72",
+  "bytes": 6289195
+}

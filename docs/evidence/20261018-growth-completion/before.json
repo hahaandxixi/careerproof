@@ -1,0 +1,161 @@
+{
+  "tables": {
+    "agent_steps": {
+      "rows": 523,
+      "digest": "76d001b506f7726059caa28a68f3c6a5"
+    },
+    "ai_budget_adjustments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_cutover": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_budget_reservations": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_daily_budgets": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_request_attempts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "ai_usage_logs": {
+      "rows": 51,
+      "digest": "6b66fb3808a112c7ca64c20ec3a59606"
+    },
+    "alembic_version": {
+      "rows": 1,
+      "digest": "af191538c130a9f4114df6847ca24c44"
+    },
+    "analysis_tasks": {
+      "rows": 190,
+      "digest": "09c9e7256a2847bcf423bbadd0935f90"
+    },
+    "application_events": {
+      "rows": 29,
+      "digest": "e1f06b13b48e1c19dde26f1c462a0a4a"
+    },
+    "applications": {
+      "rows": 9,
+      "digest": "b094d410128311223c63b49e014529b5"
+    },
+    "audit_logs": {
+      "rows": 229,
+      "digest": "056444e42027b8fac589064d060fa406"
+    },
+    "enterprise_memberships": {
+      "rows": 9,
+      "digest": "552536065f67594211c5d0a8f1d9198e"
+    },
+    "enterprises": {
+      "rows": 9,
+      "digest": "87a2392d8d3419689d226258ce75b6e9"
+    },
+    "evidence_growth_tasks": {
+      "rows": 5,
+      "digest": "2142a726acc23a516a1db927ccefa6bc"
+    },
+    "evidence_sources": {
+      "rows": 585,
+      "digest": "7bccf5805c1936b3fcf4827a7e9c7e56"
+    },
+    "growth_answer_drafts": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_answers": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "interview_sessions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "job_requirements": {
+      "rows": 121,
+      "digest": "5c6ee0315529b18ba5b93c92a888c14b"
+    },
+    "jobs": {
+      "rows": 36,
+      "digest": "a51280342f10ea7e8458d3f9c442582b"
+    },
+    "knowledge_chunks": {
+      "rows": 2065,
+      "digest": "8a9c46cb760a5db922d27a87e02edfd6"
+    },
+    "login_limits": {
+      "rows": 1,
+      "digest": "1da4008b805bf84d086b6af17593c98c"
+    },
+    "match_items": {
+      "rows": 221,
+      "digest": "06a032edb29cca6298fa5c02e15000c7"
+    },
+    "match_reports": {
+      "rows": 69,
+      "digest": "760c0d212578f01494ae912347ae110e"
+    },
+    "matching_formula_versions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "notifications": {
+      "rows": 24,
+      "digest": "63d528177b60ccaafd3f3422d681b09d"
+    },
+    "project_files": {
+      "rows": 164,
+      "digest": "6a3cdb3f8ae2ff9544d1527fdde8f1b1"
+    },
+    "project_versions": {
+      "rows": 54,
+      "digest": "950abb363bb33ab6574e62be9cc238bf"
+    },
+    "projects": {
+      "rows": 43,
+      "digest": "df427bf8ac190189221986f34b0948c8"
+    },
+    "refresh_tokens": {
+      "rows": 293,
+      "digest": "567e42d7db8e6a05c1e36299e4878fd5"
+    },
+    "resume_sections": {
+      "rows": 43,
+      "digest": "631acbda0924cf79728dcd4e0b0e943c"
+    },
+    "resume_versions": {
+      "rows": 45,
+      "digest": "34d7ac1295d783c9096e9a87b90d800a"
+    },
+    "resumes": {
+      "rows": 45,
+      "digest": "bf52e36e44452d74036a6b8800ea3b4c"
+    },
+    "skill_aliases": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "skill_evidence": {
+      "rows": 585,
+      "digest": "f5e43bd6713403a04528998f721207db"
+    },
+    "skills": {
+      "rows": 23,
+      "digest": "4261185d27399ac707a9e51f2d63c38e"
+    },
+    "student_profiles": {
+      "rows": 12,
+      "digest": "d0d3cfb40c7609517bf157329e5feade"
+    },
+    "users": {
+      "rows": 21,
+      "digest": "71f8a977e0e5aa4a6aaf215e31915c38"
+    }
+  },
+  "revision": "0020_login_limits"
+}

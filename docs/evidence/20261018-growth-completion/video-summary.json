@@ -1,0 +1,17 @@
+{
+  "video": "output\\video\\CareerProof-chain-and-growth-20261018-r1.mp4",
+  "sha256": "0ef7352b79f86ccfd543d16764db2bd223c1a3063bc894237f4a95f63e383a72",
+  "bytes": 6289195,
+  "seconds": 261.36,
+  "clips": 35,
+  "realFrames": 968,
+  "encoded": "1920x1080 H264 25fps",
+  "audio": false,
+  "sourceDates": [
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18"
+  ],
+  "nativeCapture": "1265x712, low and variable frame rate; encoding upscaled and duplicates frames",
+  "limitations": "segmented draft; no narration; no real AI semantic or independent first-user validation; not frozen candidate"
+}

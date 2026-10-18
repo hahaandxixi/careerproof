@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+not ok 1 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 17.7248
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\tests\\growth-anchor-entry.test.mjs:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/z58-lint-20261016/stage/jianli/tests/growth-anchor-entry.test.mjs:45:42)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+not ok 2 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 6.3351
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\tests\\growth-anchor-entry.test.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/z58-lint-20261016/stage/jianli/tests/growth-anchor-entry.test.mjs:51:86)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 3 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 3.7956
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 4 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 3.8086
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.5575
