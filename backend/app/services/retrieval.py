@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
+import logging
 import math
 import re
 from dataclasses import dataclass
@@ -19,8 +21,9 @@ from functools import lru_cache
 from pathlib import Path
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
 from app.models.analysis import KnowledgeChunk
 from app.models.identity import StudentProfile, User
@@ -38,6 +41,8 @@ HASH_ENGINE = "local-hash-v1-384"
 SEMANTIC_ENGINE = "minilm-l12-v2-onnx"
 QUERY_ENGINE_SAMPLE = 50
 TOKEN_PATTERN = re.compile(r"[A-Za-z][A-Za-z0-9_.+#-]*|[\u4e00-\u9fff]")
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -221,9 +226,19 @@ async def _owner_chunk_engines(session: AsyncSession, allowed_ids: list[UUID]) -
     return engines
 
 
-async def search_owned_chunks(
-    session: AsyncSession, user: User, query: str, limit: int
-) -> list[dict]:
+async def _allowed_source_ids(session: AsyncSession, user: User) -> list[UUID]:
+    """Ids of the caller's own material chunks that this library search may read.
+
+    Scope is the existing one: every section and file of the caller's non-archived
+    resumes and projects, across *all* of that owner's versions. It deliberately does
+    not narrow to the newest version. A student may pick any saved version when
+    creating a report, so an older version is still legitimate material to discover
+    here; version choice belongs to the report/material-selection path
+    (``matching_materials.resolve_materials`` pins the exact ``ResumeVersion.id`` and
+    ``project_version_ids`` the user chose), not to this discovery query.
+
+    Owner is the only boundary: another student's chunks can never be admitted.
+    """
     student_id = await session.scalar(
         select(StudentProfile.id).where(StudentProfile.user_id == user.id)
     )
@@ -241,35 +256,82 @@ async def search_owned_chunks(
         .join(Project)
         .where(Project.student_id == student_id, Project.is_archived.is_(False))
     )
-    allowed_ids = list(await session.scalars(resume_ids)) + list(await session.scalars(project_ids))
+    return list(await session.scalars(resume_ids)) + list(
+        await session.scalars(project_ids)
+    )
+async def search_owned_chunks(
+    session: AsyncSession, user: User, query: str, limit: int
+) -> list[dict]:
+    def _log_search(outcome: str, **facts) -> None:
+        payload = {
+            "outcome": outcome,
+            "queryEngine": facts.get("engine"),
+            "mixedEngines": facts.get("mixed", False),
+            "ownedMatches": facts.get("owned_matches", 0),
+            "requested": limit,
+            "delivered": facts.get("delivered", 0),
+            "shortfall": facts.get("delivered", 0) < min(limit, facts.get("owned_matches", 0))
+            if facts.get("owned_matches", 0) > 0
+            else False,
+        }
+        logger.info(
+            "knowledge_search %s",
+            json.dumps(payload, ensure_ascii=False, sort_keys=True),
+        )
+
+    student_id = await session.scalar(
+        select(StudentProfile.id).where(StudentProfile.user_id == user.id)
+    )
+    if not student_id:
+        _log_search("no-profile")
+        return []
+    allowed_ids = await _allowed_source_ids(session, user)
     if not allowed_ids:
+        _log_search("no-allowed-sources")
         return []
     engines = await _owner_chunk_engines(session, allowed_ids)
     engine, mixed = select_query_engine(
         engines, semantic_available=load_semantic_embedder() is not None
     )
     if engine is None:
+        _log_search("no-indexed-chunks" if not engines else "engine-unavailable", mixed=mixed)
         return []
     if engine == SEMANTIC_ENGINE:
         embedder = load_semantic_embedder()
         if embedder is None:
+            _log_search("engine-unavailable", engine=engine, mixed=mixed)
             return []
         query_vector = await asyncio.to_thread(
             lambda: [float(value) for value in next(iter(embedder.embed([query])))]
         )
         if not _valid_vector(query_vector):
+            _log_search("invalid-query-vector", engine=engine, mixed=mixed)
             return []
     else:
         query_vector = local_embedding(query)
-    distance = KnowledgeChunk.embedding.cosine_distance(query_vector)
-    rows = list(
-        await session.scalars(
-            select(KnowledgeChunk)
-            .where(KnowledgeChunk.source_id.in_(allowed_ids))
+    # 过滤先于排序：允许行先物化进 CTE（owned_matches 用窗口计数一并取回），
+    # 距离排序只发生在自有子集内。HNSW 后置过滤在 ef_search 预算内可能把
+    # 自有命中整批漏掉，交给外层排序则召回与计划无关。
+    allowed_rows = (
+        select(KnowledgeChunk, func.count().over().label("owned_matches"))
+        .where(KnowledgeChunk.source_id.in_(allowed_ids))
+        .cte("owned_chunks")
+        .prefix_with("MATERIALIZED")
+    )
+    owned_chunk = aliased(KnowledgeChunk, allowed_rows)
+    distance = allowed_rows.c.embedding.cosine_distance(query_vector)
+    ranked = list(
+        await session.execute(
+            select(owned_chunk, allowed_rows.c.owned_matches)
             .order_by(distance)
             .limit(limit)
         )
     )
+    rows = [row[0] for row in ranked]
+    owned_matches = int(ranked[0][1]) if ranked else 0
+    delivered = len(rows)
+    shortfall = delivered < min(limit, owned_matches)
+    _log_search("ok", engine=engine, mixed=mixed, owned_matches=owned_matches, delivered=delivered)
     return [
         {
             "id": row.id,
@@ -280,6 +342,10 @@ async def search_owned_chunks(
                 **row.chunk_metadata,
                 "queryEngine": engine,
                 "mixedEngines": mixed,
+                "requested": limit,
+                "delivered": delivered,
+                "ownedMatches": owned_matches,
+                "shortfall": shortfall,
             },
         }
         for row in rows

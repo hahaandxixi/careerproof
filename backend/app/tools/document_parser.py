@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from zipfile import BadZipFile
 
 import fitz
 from docx import Document
@@ -10,6 +11,15 @@ from docx.oxml.ns import qn
 from app.core.config import settings
 from app.core.exceptions import AppError
 from app.tools.ocr import marked_ocr_text, recognize_image
+
+# Failures that belong to the *input* rather than to our code, captured only around the
+# library call that opens the file. Deliberately narrow: a ValueError or KeyError raised
+# later by our own reading/OCR code is a defect in this program and must keep
+# propagating, and a process-level failure stays with the isolated worker in
+# app.services.task_runner. Password protection is detected explicitly, not by
+# exception type.
+_PDF_OPEN_ERRORS = (fitz.FileDataError, fitz.FileNotFoundError)
+_DOCX_OPEN_ERRORS = (BadZipFile, KeyError, ValueError)
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,7 +64,18 @@ def _docx_text(root) -> str:
 
 def parse_document(path: Path, mime_type: str) -> list[DocumentSection]:
     if mime_type == "application/pdf" or path.suffix.lower() == ".pdf":
-        with fitz.open(path) as document:
+        # Only opening the file is classified as an input problem. Everything inside the
+        # document (page reads, OCR) runs outside this capture so an internal ValueError
+        # is never reported to the user as a corrupt upload.
+        try:
+            document = fitz.open(path)
+        except _PDF_OPEN_ERRORS as error:
+            raise AppError(
+                "PDF文件无法解析，可能已损坏，请重新导出后上传", code=4024
+            ) from error
+        with document:
+            if document.needs_pass:
+                raise AppError("PDF文件已加密，需要密码才能打开，请移除密码后重新上传", code=4024)
             sections = []
             ocr_pages = 0
             for index, page in enumerate(document):
@@ -88,8 +109,14 @@ def parse_document(path: Path, mime_type: str) -> list[DocumentSection]:
         mime_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         or path.suffix.lower() == ".docx"
     ):
-        document = Document(path)
-        text = _docx_text(document.element.body)
+        # Same split as the PDF branch: only the package open is an input problem, while
+        # _docx_text (our own traversal) keeps its exceptions.
+        try:
+            document = Document(path)
+            body = document.element.body
+        except _DOCX_OPEN_ERRORS as error:
+            raise AppError("文档无法解析，可能已损坏，请重新导出后上传", code=4024) from error
+        text = _docx_text(body)
         if not text:
             raise AppError("文档没有可分析文字，请检查内容或先进行OCR识别", code=4024)
         return [DocumentSection("document", text, None)]

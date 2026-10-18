@@ -292,6 +292,93 @@ async def test_failed_upload_retry_keeps_project_and_replays_version(student, mo
     assert conflict.status_code == 409
 
 
+async def test_upload_request_key_is_scoped_to_owner_and_project(student, app_database):
+    def archive(entry: str, body: str) -> bytes:
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as bundle:
+            bundle.writestr(entry, body)
+        return buffer.getvalue()
+
+    key = str(uuid4())
+    alice_content = archive("alice.txt", "alice")
+    alice_project = (
+        await student.post("/api/v1/projects", json={"name": "alice-idem"})
+    ).json()["data"]
+    alice_path = f"/api/v1/projects/{alice_project['id']}/versions"
+    first = await student.post(
+        alice_path,
+        data={"requestId": key},
+        files={"file": ("alice.zip", alice_content, "application/zip")},
+    )
+    assert first.status_code == 202, first.text
+    first_data = first.json()["data"]
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app_database), base_url="http://test"
+    ) as bob:
+        await register(bob, "bob-idem@example.com")
+        # Another owner cannot address Alice's project with the same key.
+        denied = await bob.post(
+            alice_path,
+            data={"requestId": key},
+            files={"file": ("stolen.zip", archive("stolen.txt", "stolen"), "application/zip")},
+        )
+        assert denied.status_code == 404
+        bob_project = (
+            await bob.post("/api/v1/projects", json={"name": "bob-idem"})
+        ).json()["data"]
+        bob_path = f"/api/v1/projects/{bob_project['id']}/versions"
+        # The key is owner-scoped in effect: Bob gets a new version of his own,
+        # never Alice's task or version.
+        bob_upload = await bob.post(
+            bob_path,
+            data={"requestId": key},
+            files={"file": ("bob.zip", archive("bob.txt", "bob"), "application/zip")},
+        )
+        assert bob_upload.status_code == 202, bob_upload.text
+        bob_data = bob_upload.json()["data"]
+        assert bob_data["versionId"] != first_data["versionId"]
+        assert bob_data["taskId"] != first_data["taskId"]
+        bob_versions = (await bob.get(bob_path)).json()["data"]
+        assert [version["originalFilename"] for version in bob_versions] == ["bob.zip"]
+
+    alice_history = (await student.get("/api/v1/projects")).json()["data"]
+    alice_versions = next(
+        project for project in alice_history if project["id"] == alice_project["id"]
+    )["versions"]
+    assert [version["originalFilename"] for version in alice_versions] == ["alice.zip"]
+    assert alice_versions[0]["id"] == first_data["versionId"]
+
+    # The key is unique per target project. Reusing it for another project
+    # creates that project's own version instead of binding Alice's material.
+    second_project = (
+        await student.post("/api/v1/projects", json={"name": "alice-second"})
+    ).json()["data"]
+    second_path = f"/api/v1/projects/{second_project['id']}/versions"
+    second = await student.post(
+        second_path,
+        data={"requestId": key},
+        files={"file": ("second.zip", archive("second.txt", "second"), "application/zip")},
+    )
+    assert second.status_code == 202, second.text
+    second_data = second.json()["data"]
+    assert second_data["versionId"] != first_data["versionId"]
+    second_versions = (await student.get(second_path)).json()["data"]
+    assert [version["originalFilename"] for version in second_versions] == ["second.zip"]
+
+    # Replaying the original key against the original project is still idempotent.
+    replay = await student.post(
+        alice_path,
+        data={"requestId": key},
+        files={"file": ("alice.zip", alice_content, "application/zip")},
+    )
+    assert replay.status_code == 202, replay.text
+    replay_data = replay.json()["data"]
+    assert replay_data["projectId"] == first_data["projectId"]
+    assert replay_data["versionId"] == first_data["versionId"]
+    assert replay_data["taskId"] == first_data["taskId"]
+
+
 async def test_concurrent_create_has_one_project(student):
     payload = {"name": "concurrent", "requestId": str(uuid4())}
     responses = await asyncio.gather(
