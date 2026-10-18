@@ -1,0 +1,60 @@
+{
+  "sourceCommit": "7197f35",
+  "executorCommit": "d31e01d",
+  "physicalRequests": 3,
+  "automaticRetryRequests": 0,
+  "repairRequests": 0,
+  "programmaticAccepted": 3,
+  "humanReviewedCount": 0,
+  "humanSemanticPassRate": null,
+  "totals": {
+    "prompt": 9496,
+    "completion": 1315,
+    "cacheHit": 4864,
+    "cacheMiss": 4632
+  },
+  "rows": [
+    {
+      "id": "route-body",
+      "input": 3225,
+      "output": 461,
+      "cacheHit": 0,
+      "cacheMiss": 3225,
+      "latencyMs": 2702,
+      "returnedModel": "deepseek-flash"
+    },
+    {
+      "id": "empty-route",
+      "input": 3212,
+      "output": 452,
+      "cacheHit": 2432,
+      "cacheMiss": 780,
+      "latencyMs": 2985,
+      "returnedModel": "deepseek-flash"
+    },
+    {
+      "id": "contradictory-return",
+      "input": 3059,
+      "output": 402,
+      "cacheHit": 2432,
+      "cacheMiss": 627,
+      "latencyMs": 2159,
+      "returnedModel": "deepseek-flash"
+    }
+  ],
+  "reservedYuan": "0.1488",
+  "estimatedWeekendYuan": "0.00998928",
+  "estimateNotAccountInvoice": true,
+  "priceSource": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "sourceSha256": {
+    "docs\\evidence\\20261017-task70-semantic-review-packet\\live-smoke-20261018-a.json": "41ad6d3ae1e700b61089fa5d5711598af351fedb227a2dbea389badc129773e0",
+    "docs\\evidence\\20261017-task70-semantic-review-packet\\current-smoke-preflight-20261018.json": "12675cfa46ac0ee1ccf64a1bea4139201e494bd9a2ba12248686fd5a96c37588",
+    "docs\\evidence\\20261017-task70-semantic-review-packet\\deepseek-prices-20261018.json": "3cb1a5ffe9bd358c4904a5e6b42788a354de5848d02ff932231129af38f8abd7"
+  },
+  "scope": "Production provider, prompts, input sanitization and grounding validator; standalone synthetic eval, no DB ledger, no browser/SSE or website end-to-end claim.",
+  "providerCreatedBeijing": [
+    "2026-10-18T23:57:55+08:00",
+    "2026-10-18T23:57:57+08:00",
+    "2026-10-18T23:58:00+08:00"
+  ]
+}

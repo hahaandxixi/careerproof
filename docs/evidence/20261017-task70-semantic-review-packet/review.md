@@ -1,5 +1,19 @@
 # task70 · AI 质量人工复核包 — 交棒
 
+## 10/18最新：首批真实三例已执行，人工语义待核
+
+用户明确授权后，从7197f35工作树、backend/.venv-dependency23运行d31e01d执行器；实际3次POST、无自动重试/修复外发，生产结构及grounding校验3通过，状态structural_checks_complete_human_review_pending。Prompt为v29，响应model字段均为deepseek-flash；官网公布的具体版本名不是响应明确给出的版本标识。
+
+跨日核对：三个供应商created时间换算北京分别为2026-10-18 23:57:55、23:57:57、23:58:00，结果文件23:58:01写完；因此本批确在10/18周末执行。10/19只整理证据，未新增请求；不能复用10/18价格快照发起新批次。
+
+完整原响应、模型输出、收据在live-smoke-20261018-a.json；CLI原始输出live-smoke-20261018-a.raw.out，摘要与SHA256在live-smoke-summary-20261018.json。供应商回执输入9496、输出1315 tokens，其中缓存命中4864、未命中4632。按当日官方周末价估算0.00998928元（约1分钱），非账户扣费发票或余额核对；0.1488元是保守预算预留，不是实际支出。批次claim保留于backend/.tmp/ai-smoke，额度已用满，不再运行或删claim续跑。
+
+助手初查（不计人工成绩）：健康接口输出限定静态返回、明确运行和贡献未知；空接口指出pass并先补实现；固定返回0案例识别与求和声明不一致，没有声称程序已运行或推断造假动机。建议包含交付物及核验点，但实际可执行性和等级边界仍需独立人员判断。这不是3/3语义合格率，也不满足12例/6类覆盖。
+
+[首批三例人工核对表](current-three-human-review.md)含完整合成输入、实际发送引用映射、模型原输出及空白评审栏，不附预期rubric或助手初查；人工评审数仍0、语义通过率null。复核者应先独立阅读该表，不先读本段。仅证明生产provider/提示词/净化/grounding阶段的独立合成评测；没有业务库持久账、SSE/浏览器或整站真实AI报告链验收。
+
+精确执行命令（backend目录）：`python -m evals.bounded_evidence_smoke --live --packet ../docs/evidence/20261017-task70-semantic-review-packet/current-smoke-preflight-20261018.json --prices ../docs/evidence/20261017-task70-semantic-review-packet/deepseek-prices-20261018.json --output ../docs/evidence/20261017-task70-semantic-review-packet/live-smoke-20261018-a.json`，退出0。未扩大授权、未读真实简历或操作正常库/服务。
+
 ## 10/18补充：当前生产提示词的三例待评测输入
 
 在7f7802b源码上运行`prepare_current_smoke.py --output current-smoke-preflight-20261018.json`（命令从仓库根用backend/.venv-dependency23解释器，文件参数写本目录完整相对路径）。新增预演不覆盖下方10/17历史包或旧模型输出。
@@ -12,6 +26,8 @@
 - 旧run_evidence_trust仅按返回usage事后检查累计门槛，底层可能重试；这不满足本批物理请求硬上限。补执行器及离线边界测试、核价之后，再就确切输入申请网站外发授权。开发客户端额度许可不能替代。
 
 ### 10/18执行器补验（尚无真实调用授权）
+
+后续授权更新：用户在本聊天明确回复“授权，仅这3例和上述上限”。仅覆盖已固定的健康接口、pass空接口、固定返回0/求和声明三例及生产提示词，官方DeepSeek deepseek-flash，最多3次物理请求（含重试/修复）、每次输入预算上界20000/输出1200、总费用上限1元；不包含真实个人材料、业务数据库或后续扩大批次。授权后再次取回当日官方价格页，仍按保守高峰未命中2元输入/8元输出每百万tokens预留。执行前离线核包通过、北京时间2026-10-18、实际批次尚未claim；以下“尚无授权”是先前检查时点。
 
 接续预演新增`backend/evals/bounded_evidence_smoke.py`，没有另起评测框架或修改生产提示词。复用生产DeepSeekProvider和grounding校验，固定三例及请求正文哈希；默认CLI仅核包，不构造provider。Live必须显式传价格及新输出，不能把该参数当用户授权。
 
