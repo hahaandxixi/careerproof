@@ -20,34 +20,55 @@ if ($BackendVenv -eq 'auto') {
     $backendCandidates = @('.venv') + @(Get-ChildItem -LiteralPath $backendRoot -Directory -Filter '.venv-*' | Sort-Object Name | Select-Object -ExpandProperty Name)
 }
 $backendVerified = $false
+$backendAttempts = @()
 foreach ($candidate in $backendCandidates) {
     if ($candidate -notmatch '^\.venv(?:-[a-z0-9-]+)?$') { continue }
     $directory = Join-Path $backendRoot $candidate
-    if (!(Test-Path -LiteralPath $directory)) { continue }
-    if ((Get-Item -LiteralPath $directory).Attributes -band [System.IO.FileAttributes]::ReparsePoint) { continue }
+    if (!(Test-Path -LiteralPath $directory)) { $backendAttempts += "$candidate -> directory missing ($directory)"; continue }
+    if ((Get-Item -LiteralPath $directory).Attributes -band [System.IO.FileAttributes]::ReparsePoint) { $backendAttempts += "$candidate -> reparse point rejected ($directory)"; continue }
     $pythonCandidate = Join-Path $directory 'Scripts\python.exe'
-    if (!(Test-Path -LiteralPath $pythonCandidate)) { continue }
+    if (!(Test-Path -LiteralPath $pythonCandidate)) { $backendAttempts += "$candidate -> python.exe missing ($pythonCandidate)"; continue }
     Push-Location $backendRoot
     $probeErrorAction = $ErrorActionPreference
     try { $ErrorActionPreference = 'Continue'; $metadata = & $pythonCandidate -m evals.verify_dependency_environment 2>&1; $verified = $LASTEXITCODE -eq 0 }
     finally { $ErrorActionPreference = $probeErrorAction; Pop-Location }
     if ($verified) { $BackendVenv = $candidate; $backendMetadata = $metadata | ConvertFrom-Json; $backendVerified = $true; break }
+    $reason = ($metadata | Where-Object { $_ } | Select-Object -First 1)
+    if ($reason) { $reason = ([string]$reason).Trim().Substring(0, [Math]::Min(200, ([string]$reason).Trim().Length)) }
+    $backendAttempts += "$candidate -> python $pythonCandidate -> $reason"
 }
-if (!$backendVerified) { throw 'No selected local Python environment matches current dependency pins. Install backend dependencies or select -BackendVenv explicitly.' }
+if (!$backendVerified) {
+    # Name every interpreter that was tried and why it failed: no silent install or downgrade.
+    throw ("No selected local Python environment matches current dependency pins. Tried:`n" + ($backendAttempts -join "`n") + "`nInstall backend dependencies or select -BackendVenv explicitly.")
+}
 $frontendCandidates = @($FrontendStage)
 if ($FrontendStage -eq 'auto') {
     $frontendCandidates = @('') + @(Get-ChildItem -LiteralPath (Join-Path $backendRoot '.tmp') -Directory -Filter 'dep-frontend-*' -ErrorAction SilentlyContinue | Sort-Object Name | Select-Object -ExpandProperty Name)
 }
 $frontendVerified = $false
+$frontendAttempts = @()
 foreach ($candidate in $frontendCandidates) {
     $directory = if ($candidate) { Join-Path $backendRoot ".tmp\$candidate" } else { Join-Path $projectRoot 'jianli' }
-    if (!(Test-Path -LiteralPath $directory) -or ((Get-Item -LiteralPath $directory).Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { continue }
+    if (!(Test-Path -LiteralPath $directory) -or ((Get-Item -LiteralPath $directory).Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { $frontendAttempts += "$directory -> missing or reparse point"; continue }
     $probeErrorAction = $ErrorActionPreference
     try { $ErrorActionPreference = 'Continue'; $metadata = & $nodeExecutable (Join-Path $projectRoot 'scripts\dependencies\verify-frontend-runtime.mjs') --project-root $directory --expected-root (Join-Path $projectRoot 'jianli') 2>&1; $verified = $LASTEXITCODE -eq 0 }
     finally { $ErrorActionPreference = $probeErrorAction }
     if ($verified) { $FrontendStage = $candidate; $frontendMetadata = $metadata | ConvertFrom-Json; $frontendVerified = $true; break }
+    # Keep the verifier's own reason (stale lock / stale next runtime / stale source) so the
+    # operator sees the exact path and mismatch instead of a generic failure. Take the text
+    # after "AssertionError[...]: " / "Error: " and ignore stack frames, source lines and the
+    # Node version footer.
+    $reason = $null
+    foreach ($line in ($metadata | ForEach-Object { [string]$_ })) {
+        if ($line -match '^\s*at\s' -or $line -match 'throw new Error' -or $line -match '^Node\.js v') { continue }
+        if ($line -match '(?:AssertionError|Error)(?:\s*\[[^\]]*\])?:\s*(.+)$') { $reason = $Matches[1].Trim(); break }
+    }
+    if ($reason) { $reason = $reason.Substring(0, [Math]::Min(200, $reason.Length)) } else { $reason = 'verifier produced no reason' }
+    $frontendAttempts += "$directory -> $reason"
 }
-if (!$frontendVerified) { throw 'No selected frontend matches current lock and source. Run npm ci or select an up-to-date -FrontendStage.' }
+if (!$frontendVerified) {
+    throw ("No selected frontend matches current lock and source. Tried:`n" + ($frontendAttempts -join "`n") + "`nRun npm ci in jianli/ or select an up-to-date -FrontendStage.")
+}
 $frontendRoot = Join-Path $projectRoot 'jianli'
 if ($FrontendStage) { $frontendRoot = Join-Path $backendRoot ".tmp\$FrontendStage" }
 $venvRoot = Join-Path $backendRoot $BackendVenv
@@ -142,6 +163,13 @@ try {
     $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
     Wait-LocalService 'http://127.0.0.1:3000' 3000 $owned[1]
     Write-Output 'CareerProof is ready at http://127.0.0.1:3000'
+    # Normal environment: state what it is and where to find accounts. Never print the
+    # .env secrets, a full database URL, or demo credentials (demo owns that entry).
+    $appEnv = Get-LocalEnvValue $envPath 'APP_ENV'
+    if ([string]::IsNullOrWhiteSpace($appEnv)) { $appEnv = 'not declared' }
+    Write-Output "Mode: normal local (APP_ENV=$appEnv). Real local database; this entry creates or resets no accounts."
+    Write-Output 'Data environment: PostgreSQL selected by backend/.env; the launcher manages the local compose container (the connection string is not printed).'
+    Write-Output 'Accounts: sign in with an account you registered yourself, or create one at http://127.0.0.1:3000/register.'
     Write-Output 'Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.'
 } catch {
     $originalError = $_

@@ -29,6 +29,10 @@ try {
     $manifest = @{ schemaVersion = 2; processes = @(@{ Id = $child.Id; Started = $childStarted.ToString('o'); Needle = $nonce; Invocation = $nonce }) }
     $live = @(Stop-ValidatedLocalProcesses $manifest $null)
     if ($live.Count -ne 1 -or $child.Id -notin $script:actualStops) { throw 'Expected the recorded test-owned root to stop.' }
+    # Stop-Process returns before Windows drops the process object: observed alive right
+    # after the call and gone within ~200 ms. Wait for the exit so the assertion measures
+    # termination instead of that teardown race; a process that never stops still fails.
+    try { Wait-Process -Id $child.Id -Timeout 10 -ErrorAction Stop } catch { }
     if (Get-Process -Id $child.Id -ErrorAction SilentlyContinue) { throw 'Owned child remains alive.' }
     Write-Output "PASS real owned-child tree stop; $($script:actualStops.Count) verified test-tree processes stopped, no services or files touched."
 } finally {
