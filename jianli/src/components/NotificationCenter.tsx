@@ -13,24 +13,28 @@ export default function NotificationCenter() {
 }
 function Workspace() {
   const router = useRouter();
-  const generation = useRef(0), locked = useRef(false);
+  // generation 只在 effect 体、act 与可见性处理里推进（清理不读取）；
+  // alive 在清理中只做常量赋值：卸载后在途回执一律丢弃，依赖变化由
+  // effect 重跑时的新票据使旧回执失效，行为与原先清理内推进计数器一致。
+  const generation = useRef(0), locked = useRef(false), alive = useRef(true);
   const [data, setData] = useState<NotificationPage | null>(null);
   const [page, setPage] = useState(1), [unread, setUnread] = useState(false);
   const [pageSize, setPageSize] = useState(20);
   const [revision, setRevision] = useState(0), [busy, setBusy] = useState(false), [error, setError] = useState("");
   useEffect(() => {
+    alive.current = true;
     const ticket = ++generation.current; setData(null); setError(""); setBusy(true);
     if (document.visibilityState !== "hidden") {
-      void api.notifications(page, unread, pageSize).then(result => { if (ticket === generation.current) { if (result.page !== page) setPage(result.page); else setData(result); notificationsChanged(); } })
-        .catch(reason => { if (ticket === generation.current) setError(errorMessage(reason)); })
-        .finally(() => { if (ticket === generation.current) setBusy(false); });
+      void api.notifications(page, unread, pageSize).then(result => { if (alive.current && ticket === generation.current) { if (result.page !== page) setPage(result.page); else setData(result); notificationsChanged(); } })
+        .catch(reason => { if (alive.current && ticket === generation.current) setError(errorMessage(reason)); })
+        .finally(() => { if (alive.current && ticket === generation.current) setBusy(false); });
     }
     const visibility = () => {
       if (document.visibilityState === "hidden") { ++generation.current; setData(null); setError(""); setBusy(false); }
       else setRevision(value => value + 1);
     };
     document.addEventListener("visibilitychange", visibility);
-    return () => { ++generation.current; document.removeEventListener("visibilitychange", visibility); };
+    return () => { alive.current = false; document.removeEventListener("visibilitychange", visibility); };
   }, [page, pageSize, unread, revision]);
   async function act(operation: () => Promise<unknown>, id?: string) {
     if (locked.current) return;
@@ -38,17 +42,17 @@ function Workspace() {
     try {
       if (id) {
         const target = await api.notificationTarget(id);
-        if (ticket !== generation.current) return;
+        if (!alive.current || ticket !== generation.current) return;
         if (!notificationHref(target.href)) throw new Error("通知目的地无效，请刷新。");
         await api.readNotification(id);
-        if (ticket !== generation.current) return;
+        if (!alive.current || ticket !== generation.current) return;
         notificationsChanged(); router.push(target.href);
       } else {
-        await operation(); if (ticket !== generation.current) return;
+        await operation(); if (!alive.current || ticket !== generation.current) return;
         notificationsChanged(); setRevision(value => value + 1);
       }
-    } catch (reason) { if (ticket === generation.current) setError(errorMessage(reason)); }
-    finally { locked.current = false; if (ticket === generation.current) setBusy(false); }
+    } catch (reason) { if (alive.current && ticket === generation.current) setError(errorMessage(reason)); }
+    finally { locked.current = false; if (alive.current && ticket === generation.current) setBusy(false); }
   }
   return <div className="space-y-5"><h1 className="text-3xl font-bold">通知中心</h1>
     <p className="text-sm leading-6 text-slate-600">在这里查看投递进度与企业回应。查看或下载不代表面试或录用。</p>

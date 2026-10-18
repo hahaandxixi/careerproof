@@ -728,9 +728,9 @@ test("重验pending期间旧GET回执不得解除门禁放行旧预览复制", a
 
 test("较新重验failed后旧GET/PUT回执不得解除失败门禁", async () => {
   const saveGate = deferred();
-  let reads = 0, lists = 0;
+  let lists = 0;
   const h = setup({
-    getDraft: async () => { reads += 1; return savedView({ references: [savedReference()] }); },
+    getDraft: async () => savedView({ references: [savedReference()] }),
     saveDraft: (id, payload) => saveGate.promise.then(() => savedView({ revision: payload.expectedRevision + 1, references: [savedReference()] })),
     listReferences: async () => { lists += 1; if (lists >= 2) throw new Error("重验失败（合成）"); return [baseOption()]; },
   });

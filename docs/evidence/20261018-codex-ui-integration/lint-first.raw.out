@@ -1,0 +1,9 @@
+
+D:\jbcode\web ai\jianli\backend\.tmp\codex-ui-20261018\src\components\VisualEvidencePanel.tsx
+  46:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\jbcode\web ai\jianli\backend\.tmp\codex-ui-20261018\tests\task-trace-render.test.mjs
+  12:3  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+✖ 2 problems (1 error, 1 warning)
+

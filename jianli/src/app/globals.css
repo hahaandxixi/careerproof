@@ -59,8 +59,24 @@ body {
   .material-version:has(input:checked) { @apply border-indigo-400 bg-indigo-50 ring-1 ring-indigo-200; }
   .material-version:focus-within { @apply outline outline-2 outline-offset-2 outline-indigo-600; }
   .btn-secondary { @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
+  /* Current-stage marker: only rendered while a task is active, so terminal states stay still. */
+  .task-stage { display: flex; align-items: flex-start; gap: 8px; }
+  .task-stage-dot { flex-shrink: 0; width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #4f46e5; animation: task-stage-pulse 1.6s ease-in-out infinite; }
 }
+
+@keyframes task-stage-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+/* Explicit native progress styling keeps Chromium from using its green default. */
+.task-progress { appearance: none; overflow: hidden; border: 0; border-radius: 9999px; background: #e2e8f0; }
+.task-progress::-webkit-progress-bar { background: #e2e8f0; }
+.task-progress::-webkit-progress-value { background: #4f46e5; }
+.task-progress::-moz-progress-bar { background: #4f46e5; }
 
 @media (prefers-reduced-motion: reduce) {
   .career-job-card { transition: none; }
+  /* Reduced motion: the stage dot stays visible but never pulses. */
+  .task-stage-dot { animation: none; }
 }

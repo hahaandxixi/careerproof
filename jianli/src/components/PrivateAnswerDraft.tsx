@@ -28,7 +28,7 @@ function privateAnswerBindingKey(props: Pick<PrivateAnswerDraftProps, "targetRep
 // 身份切换由父组件 key 重挂载；隐藏/卸载在自身 effect 内 clear/dispose 并废弃迟到回执。
 // clear 已使会话失活：恢复可见必须由本 effect 重新 activate 后再读取，旧DOM按钮无法复活会话。
 export default function PrivateAnswerDraft(props: PrivateAnswerDraftProps) {
-  const { taskId } = props;
+  const { taskId, targetReportId, crossJob } = props;
   const [state, setState] = useState(initialPrivateAnswerState);
   const [previewOpen, setPreviewOpen] = useState(false);
   const sessionRef = useRef<ReturnType<typeof createPrivateAnswerSession> | null>(null);
@@ -67,13 +67,13 @@ export default function PrivateAnswerDraft(props: PrivateAnswerDraftProps) {
   // 目标绑定（目标报告/跨岗位）变化：只独立重验可选引用来源并关闭旧预览（阻止基于旧来源的确认复制），
   // 不重建草稿、不重置未存编辑；taskId 变化由上方 effect 整体重读，不需要这里的局部刷新。
   useEffect(() => {
-    if (bindingRef.current === privateAnswerBindingKey(props)) return;
-    bindingRef.current = privateAnswerBindingKey(props);
+    if (bindingRef.current === privateAnswerBindingKey({ targetReportId, crossJob })) return;
+    bindingRef.current = privateAnswerBindingKey({ targetReportId, crossJob });
     setPreviewOpen(false);
     void sessionRef.current?.refreshReferences(taskId, {
-      crossJob: infoRef.current.crossJob, hasTargetReport: !!infoRef.current.targetReportId,
+      crossJob, hasTargetReport: !!targetReportId,
     });
-  }, [taskId, props.targetReportId, props.crossJob]);
+  }, [taskId, targetReportId, crossJob]);
 
   const session = () => sessionRef.current;
   const reload = () => {

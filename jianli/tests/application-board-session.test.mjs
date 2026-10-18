@@ -121,7 +121,7 @@ test("failed read, download, or reply leaves no stale report and remains retryab
   for (const operation of ["open", "download", "reply"]) {
     let fail = false;
     const failure = async () => { throw new Error("授权失效（合成错误）"); };
-    const h = setup({ [operation]: async (...args) => {
+    const h = setup({ [operation]: async () => {
       if (fail) return failure();
       return operation === "download" ? { blob: new Blob(), filename: "CP08.txt" } : candidate;
     } });

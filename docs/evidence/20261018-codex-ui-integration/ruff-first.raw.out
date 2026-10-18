@@ -1,0 +1,14 @@
+UP037 [*] Remove quotes from type annotation
+  --> app\tests\test_document_parser_release.py:63:28
+   |
+61 |         self.events: list[str] = []
+62 |
+63 |     def __enter__(self) -> "RecordingDocument":
+   |                            ^^^^^^^^^^^^^^^^^^^
+64 |         self.events.append("enter")
+65 |         return self
+   |
+help: Remove quotes
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

@@ -99,3 +99,35 @@ test("reference role survives upload retry and refresh", async () => {
   }, restored, file, () => {});
   assert.equal(sentRole, "reference");
 });
+
+test("client timeout keeps the attempt retryable without inferring upload failure", async () => {
+  // 超时（AbortError）意味着结果不确定，客户端不得据此推断上传已失败：
+  // 服务端可能未收到，也可能已提交。两种情形下客户端的安全反应相同——
+  // 保留 attempt、沿用同一 uploadRequestId 重试、不再次创建项目。
+  // 若服务端确已提交，重试携带同一幂等键，由后端按 requestId 去重回传
+  // 已提交的版本；该去重行为属于后端端点契约，不在本（前端 lib）测试范围。
+  let attempt = newProjectAttempt(project.name, project.description);
+  const remember = (next) => { attempt = next; };
+  let creates = 0;
+  const uploadCalls = [];
+  const client = {
+    async createProject() { creates++; return project; },
+    async uploadProjectVersion(id, _file, key) {
+      uploadCalls.push({ id, key });
+      if (uploadCalls.length === 1) {
+        throw new DOMException("The operation was aborted due to timeout", "AbortError");
+      }
+      // 第二次调用模拟服务端对同一幂等键的响应：无论首次是否已提交，
+      // 客户端都接受这一份结果，不做"失败后重发新内容"的推断。
+      return response;
+    },
+  };
+  await assert.rejects(submitProjectAttempt(client, attempt, file, remember), /aborted due to timeout/);
+  // 结果不确定时 attempt 仍指向已建项目：重试不再走创建，且复用同一上传幂等键。
+  assert.equal(attempt.project?.id, project.id);
+  assert.deepEqual(await submitProjectAttempt(client, attempt, file, remember), response);
+  assert.equal(creates, 1);
+  assert.equal(uploadCalls.length, 2);
+  assert.equal(uploadCalls[0].key, uploadCalls[1].key);
+  assert.ok(uploadCalls.every(call => call.id === project.id));
+});
