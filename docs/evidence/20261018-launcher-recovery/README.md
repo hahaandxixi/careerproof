@@ -25,3 +25,11 @@
 没有实际双击鼠标演示CMD（已用真实CMD执行停止/检查）；Docker不可用、端口冲突、构建失败的组合故障未在本轮再造。正常运行入口仍要求当前DeepSeek配置，配置存在不代表模型连通。实时任务SSE断线恢复/reduced-motion真实偏好、通知完整离窗、完整首次用户路线与补证录像、企业新批次页均待；不据此宣布整个比赛版完成。
 
 网站现保持3000/8000运行，原数据保留；3001/P2不动。79清理仍未启动。
+
+## 同日补充：重复启动的入口提示
+
+首次启动与健康服务复用统一调用Show-LocalReady，均显示3000网址、正常环境、注册入口和Stop-Local.cmd；本机已有演示凭据文件时仅提示路径，不读取密码或声称账号有效。明确3001隔离账号不互通。只改输出与用户指南，不变更进程、数据库或演示初始化流程。
+
+- `powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/local-launcher-entry.test.ps1`：退出0，6项通过。
+- `Start-Local.ps1 -NodePath C:/Users/江博/AppData/Local/hermes/node/node.exe -BackendVenv .venv-dependency23 -FrontendStage dep-frontend-20261018`：退出0，实际健康检查后走复用分支，以上全部提示出现；执行前后processes.json全文相等。
+- 本次未重跑实际停止/恢复或数据库摘要比较；对应前次证据仍在上文，不将这次提示修改描述为新一轮全链验收。

@@ -101,6 +101,19 @@ $apiKey = Get-LocalEnvValue $envPath 'DEEPSEEK_API_KEY'
 if (!$BuildOnly -and ($externalEnabled -ne 'true' -or $provider -ne 'deepseek' -or [string]::IsNullOrWhiteSpace($apiKey))) {
     throw 'Local product startup requires DeepSeek in backend/.env. Rules are automatic fallback, not a selectable mode.'
 }
+function Show-LocalReady {
+    Write-Output 'CareerProof is ready at http://127.0.0.1:3000'
+    $appEnv = Get-LocalEnvValue $envPath 'APP_ENV'
+    if ([string]::IsNullOrWhiteSpace($appEnv)) { $appEnv = 'not declared' }
+    Write-Output "Mode: normal local (APP_ENV=$appEnv). This entry creates or resets no accounts."
+    Write-Output 'Data environment: PostgreSQL selected by backend/.env; 3001 isolated test accounts and data are separate.'
+    Write-Output 'Accounts: use your registered account, or register at http://127.0.0.1:3000/register.'
+    $credentialsPath = Join-Path $backendRoot '.tmp\demo-credentials.json'
+    if (Test-Path -LiteralPath $credentialsPath -PathType Leaf) {
+        Write-Output "Existing demo credential file: $credentialsPath (account validity was not checked; no password printed)."
+    }
+    Write-Output 'Stop website: double-click Stop-Local.cmd. To stop PostgreSQL too, run Stop-Local.ps1 -Database; saved data is retained.'
+}
 New-Item -ItemType Directory -Path $stateRoot -Force | Out-Null
 $statePath = Join-Path $stateRoot 'processes.json'
 $launchLock = $null
@@ -122,6 +135,7 @@ try {
             Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $existing.processes[0]
             Wait-LocalService 'http://127.0.0.1:3000' 3000 $existing.processes[1]
             Write-Output 'Existing owned CareerProof services are healthy; reused without migration or rebuild.'
+            Show-LocalReady
             return
         }
         Remove-Item -LiteralPath $statePath -Force
@@ -162,15 +176,7 @@ try {
     $owned += @{ Id = $frontendProcess.Id; Started = $frontendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $nextPath; Invocation = $nextPath }
     $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
     Wait-LocalService 'http://127.0.0.1:3000' 3000 $owned[1]
-    Write-Output 'CareerProof is ready at http://127.0.0.1:3000'
-    # Normal environment: state what it is and where to find accounts. Never print the
-    # .env secrets, a full database URL, or demo credentials (demo owns that entry).
-    $appEnv = Get-LocalEnvValue $envPath 'APP_ENV'
-    if ([string]::IsNullOrWhiteSpace($appEnv)) { $appEnv = 'not declared' }
-    Write-Output "Mode: normal local (APP_ENV=$appEnv). Real local database; this entry creates or resets no accounts."
-    Write-Output 'Data environment: PostgreSQL selected by backend/.env; the launcher manages the local compose container (the connection string is not printed).'
-    Write-Output 'Accounts: sign in with an account you registered yourself, or create one at http://127.0.0.1:3000/register.'
-    Write-Output 'Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.'
+    Show-LocalReady
 } catch {
     $originalError = $_
     if ($launchLock) { $launchLock.Dispose(); $launchLock = $null }
