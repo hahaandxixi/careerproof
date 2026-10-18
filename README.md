@@ -21,25 +21,13 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 
 ## 本地启动
 
-首次安装按 [本地复现流程](docs/guides/使用与启动.md) 准备依赖与本地配置。启动 Docker Desktop 后，在仓库目录运行：
+1. 双击桌面的 **Docker Desktop**，等待引擎就绪。
+2. 在 `D:\jbcode\web ai\jianli` 双击 **`Start-Local.cmd`**，等待提示ready。
+3. 浏览器打开 **[http://127.0.0.1:3000](http://127.0.0.1:3000)**；用完双击 **`Stop-Local.cmd`**。账号、材料和投递数据保留。
 
-```powershell
-.\Start-Local.ps1 -CheckOnly
-.\Start-Local.ps1
-# 强制重建 / 仅构建（不启动、不迁移）
-.\Start-Local.ps1 -Rebuild
-.\Start-Local.ps1 -BuildOnly
-# 只停止网站；共用数据库继续运行
-.\Stop-Local.ps1
-# 确认数据库不再被其他验收服务使用时再停止
-.\Stop-Local.ps1 -Database
-```
+新机器安装、账号查找、学生五步体验、企业查看及故障处理，按同一份[使用与启动指南](docs/guides/使用与启动.md)操作。已有账号和数据时使用普通启动；首次准备演示账号、合成岗位及材料才运行`Start-Demo.cmd`。
 
-课堂演示双击 `Start-Demo.cmd`，停止双击 `Stop-Demo.cmd`（默认只停网站）。命令行可传 `-CheckOnly`、`-Rebuild`、`-NoBrowser`，停止入口支持 `-Database`。启动自动选择通过版本与源码核验的本地依赖环境；不自动安装或修改配置。源码/资源/锁文件未变时复用已有生产构建，重复启动只复用已确认归属、配置与代码一致的健康服务。初始化完成的同一演示运行不重复播种，必要时用 `-Reseed`。
-
-**找不到账号？打开[本机演示账号文件](backend/.tmp/demo-credentials.json)**：`studentEmail` 是学生邮箱，`enterpriseEmail` 是企业邮箱，`password` 是两者共用密码。`Start-Local` 不创建账号，首次演示需用 `Start-Demo` 初始化。账号信息仅在本机读取；不要将合成演示账号用于真实个人材料或公网部署。修改凭据文件不会轮换数据库中已有账号的密码或撤销旧会话。
-
-访问 `http://127.0.0.1:3000`，接口说明在 `http://127.0.0.1:8000/docs`。统一使用 `127.0.0.1`，避免与 `localhost` 混用会话。启动日志与进程记录在 `backend/.tmp/local-run/`；已有运行记录时先按完整手册检查并停止原服务。
+**找不到账号？** 自己注册的账号使用自行设置的密码；演示账号在本机[凭据文件](backend/.tmp/demo-credentials.json)查找。3001是独立开发验收环境，账号和记录不与3000互通。不要修改凭据JSON或重新播种来重置密码。
 
 ## 开发与比赛交付
 
