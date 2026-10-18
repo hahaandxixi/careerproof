@@ -1,0 +1,62 @@
+{
+  "report": {
+    "id": "f0e36d67-d028-4bcb-ba3f-64f71a52b1c6",
+    "job_id": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+    "row_hash": "5d6c4954c284358e8e0d6adf3d6046d9"
+  },
+  "studentId": "f998ec3a-2354-4bd9-91e3-55c0e2e5f3b3",
+  "targetJobId": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+  "applications": [
+    {
+      "id": "1a40f797-2725-4d42-bdb5-d8ba631c5ad7",
+      "job_id": "4956d2b4-e749-44db-a2f1-e85bd865619d",
+      "report_id": "46f48482-5043-4bd2-82e2-584a3d187855",
+      "status": "withdrawn",
+      "row_hash": "8aa567acf0b541b3e8e927fdff1009a3",
+      "snapshot_hash": "0494ab7b54d95783979459b009bda692",
+      "has_consent": true,
+      "consent_version": "application-report-v1"
+    },
+    {
+      "id": "492871f8-d03a-4df1-b8ea-86b830fd56c5",
+      "job_id": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+      "report_id": "81a25748-9115-44c4-be86-d6d1cf0ee665",
+      "status": "withdrawn",
+      "row_hash": "0f4fda06755a0f12a7f390a2c8a08353",
+      "snapshot_hash": "c8e781f24970eb8bb27fa44de3915eca",
+      "has_consent": true,
+      "consent_version": "application-report-v1"
+    },
+    {
+      "id": "83178baf-422e-4c82-8f6f-3b49d8c73f1e",
+      "job_id": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+      "report_id": "f0e36d67-d028-4bcb-ba3f-64f71a52b1c6",
+      "status": "submitted",
+      "row_hash": "61c2bc96e14798da06563a42a3bfc56f",
+      "snapshot_hash": "3c37f801fa457fd4d807faa92af1e5ed",
+      "has_consent": true,
+      "consent_version": "application-report-v1"
+    },
+    {
+      "id": "97b6128d-a7c4-4b8b-8789-13201b07e272",
+      "job_id": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+      "report_id": "f0e36d67-d028-4bcb-ba3f-64f71a52b1c6",
+      "status": "withdrawn",
+      "row_hash": "7cc4e0efd417f0d08cfd3130db3743e5",
+      "snapshot_hash": "36a81349719b2ff03e419f3dda46ac3c",
+      "has_consent": true,
+      "consent_version": "application-report-v1"
+    },
+    {
+      "id": "b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+      "job_id": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+      "report_id": "1b6c0425-848a-4229-8cc8-cc4d4447ba54",
+      "status": "replied",
+      "row_hash": "3513f25eee73d182ada0a4fe78207501",
+      "snapshot_hash": "0c7fc0a9270151ce7ccd48459f968e55",
+      "has_consent": true,
+      "consent_version": "application-report-v1"
+    }
+  ],
+  "targetActiveCount": 1
+}

@@ -1,0 +1,13 @@
+Verified runtime: backend .venv-dependency23; frontend D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261018
+Reusing verified unchanged production build.
+ Container backend-postgres-1 Running 
+ Container backend-postgres-1 Waiting 
+ Container backend-postgres-1 Healthy 
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+CareerProof is ready at http://127.0.0.1:3000
+Mode: normal local (APP_ENV=development). This entry creates or resets no accounts.
+Data environment: PostgreSQL selected by backend/.env; 3001 isolated test accounts and data are separate.
+Accounts: use your registered account, or register at http://127.0.0.1:3000/register.
+Existing demo credential file: D:\jbcode\web ai\jianli\backend\.tmp\demo-credentials.json (account validity was not checked; no password printed).
+Stop website: double-click Stop-Local.cmd. To stop PostgreSQL too, run Stop-Local.ps1 -Database; saved data is retained.

@@ -1,0 +1,15 @@
+[
+  {
+    "number": 1,
+    "action": "点击顶部操作指南的确认投递，定位到application-submit",
+    "url": "http://127.0.0.1:3000/reports/f0e36d67-d028-4bcb-ba3f-64f71a52b1c6#application-submit"
+  },
+  {
+    "number": 2,
+    "action": "明确勾选分享授权"
+  },
+  {
+    "number": 3,
+    "action": "点击确认投递"
+  }
+]
