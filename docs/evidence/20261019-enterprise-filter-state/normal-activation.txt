@@ -1,0 +1,8 @@
+﻿commit=3024f2adb823ff674ed3de4dc9ce23901fd74c53
+frontend_pid=404752
+frontend_command="C:\Users\江博\AppData\Local\hermes\node\node.exe" "D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-enterprise-filter\node_modules\next\dist\bin\next" start -H 127.0.0.1 -p 3000
+frontend_http=200
+backend_health={"code":0,"message":"success","data":{"status":"ok","service":"CareerProof API","timestamp":"2026-10-19T05:43:08.318269Z"},"requestId":"a5f61697-202b-4d7f-bd15-7a55c017cad8"}
+run_dir=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-enterprise-filter
+dist=.next-prod
+old_build=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-task82

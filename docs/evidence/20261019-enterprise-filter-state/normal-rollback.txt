@@ -1,0 +1,5 @@
+﻿old_pid=345092
+old_command="C:\Users\江博\AppData\Local\hermes\node\node.exe" "D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-task82\node_modules\next\dist\bin\next" start -H 127.0.0.1 -p 3000
+rollback_dir=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-task82
+rollback_port=3000
+new_pid=404752

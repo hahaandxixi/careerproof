@@ -1,0 +1,22 @@
+{
+  "login": 200,
+  "empty": {
+    "tables": 0,
+    "notice": "当前页没有符合关键词、岗位要求和证据状态组合的候选人。筛选只作用于当前页及通知补入的候选人。",
+    "scope": true
+  },
+  "cleared": {
+    "keyword": "",
+    "selects": [
+      "",
+      ""
+    ],
+    "candidates": 1
+  },
+  "mobile": {
+    "width": 390,
+    "scrollWidth": 390,
+    "tableScroll": 316
+  },
+  "screenshot": "normal-3000-empty-filter.png"
+}
