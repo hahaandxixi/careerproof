@@ -1,0 +1,2570 @@
+{
+  "removedBytes": 4849138096,
+  "removedGiB": 4.516,
+  "removedFiles": 25330,
+  "fullyRemovedDirectories": 255,
+  "retainedOrPartial": [],
+  "scanSkippedUnreadable": 60,
+  "protectedFilesChecked": 1626,
+  "protectedChanged": [],
+  "stashUnchanged": true,
+  "activeBuildId": "XaZKbZz9Z7rYI8ltVzuUO",
+  "http": {
+    "site": 200,
+    "api": 404,
+    "discoveryTotal": 4,
+    "sampleCount": 3
+  },
+  "perPathAfter": [
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next\\cache",
+      "beforeBytes": 130612286,
+      "beforeFiles": 51,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next-e2e\\cache",
+      "beforeBytes": 122440879,
+      "beforeFiles": 46,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next-e2e-question-chain-20261010\\cache",
+      "beforeBytes": 98562433,
+      "beforeFiles": 9,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next-remediation-20261013\\cache",
+      "beforeBytes": 102650723,
+      "beforeFiles": 9,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next-report-actions-20261014\\cache",
+      "beforeBytes": 103394887,
+      "beforeFiles": 9,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261010\\.next-ux-20261013\\cache",
+      "beforeBytes": 114083310,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261017\\.next\\cache",
+      "beforeBytes": 115970031,
+      "beforeFiles": 20,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261017\\.next-e2e\\cache",
+      "beforeBytes": 115494101,
+      "beforeFiles": 21,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261018\\.next\\cache",
+      "beforeBytes": 115943865,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-task82\\.next\\cache",
+      "beforeBytes": 116559035,
+      "beforeFiles": 14,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\.ruff_cache",
+      "beforeBytes": 1532,
+      "beforeFiles": 14,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.ruff_cache",
+      "beforeBytes": 29165,
+      "beforeFiles": 22,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-contract",
+      "beforeBytes": 574559,
+      "beforeFiles": 27,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-full",
+      "beforeBytes": 184244120,
+      "beforeFiles": 1217,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-full-final",
+      "beforeBytes": 185416357,
+      "beforeFiles": 1223,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-gate",
+      "beforeBytes": 33887,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-green",
+      "beforeBytes": 540672,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-hardstop-final",
+      "beforeBytes": 9938,
+      "beforeFiles": 50,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-pg",
+      "beforeBytes": 577536,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-red",
+      "beforeBytes": 516096,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-strict-final",
+      "beforeBytes": 1754476,
+      "beforeFiles": 126,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-0019-verification",
+      "beforeBytes": 26342510,
+      "beforeFiles": 84,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-admin-final-sqlite",
+      "beforeBytes": 13234176,
+      "beforeFiles": 33,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-admin-sqlite",
+      "beforeBytes": 11128832,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-admin-sqlite2",
+      "beforeBytes": 3514368,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-affected-pg-resume-20261009",
+      "beforeBytes": 595081,
+      "beforeFiles": 114,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-attempt-pg",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-attempt-sqlite",
+      "beforeBytes": 2342912,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-attempt-sqlite2",
+      "beforeBytes": 8548352,
+      "beforeFiles": 25,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-ddl-pg",
+      "beforeBytes": 1105920,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-fault-affected-20261009",
+      "beforeBytes": 17042254,
+      "beforeFiles": 55,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-fault-affected-codex-20261009",
+      "beforeBytes": 18213710,
+      "beforeFiles": 57,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-fault-codex-20261009",
+      "beforeBytes": 4685824,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-fault-sqlite-20261009b",
+      "beforeBytes": 3514368,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-guards-20261009",
+      "beforeBytes": 65,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-guards-storage-20261009",
+      "beforeBytes": 65,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-pg-final-20261009",
+      "beforeBytes": 10146,
+      "beforeFiles": 50,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-pg-first-20261009",
+      "beforeBytes": 10443,
+      "beforeFiles": 47,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-pg-fixed-20261009",
+      "beforeBytes": 14664,
+      "beforeFiles": 47,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-hard-stop-pg-independent-20261009",
+      "beforeBytes": 5134,
+      "beforeFiles": 26,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-pg-final-gates-20261009",
+      "beforeBytes": 1115503,
+      "beforeFiles": 90,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-schema-review",
+      "beforeBytes": 1105920,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-service-pg",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-service-pg2",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-service-sqlite",
+      "beforeBytes": 4100096,
+      "beforeFiles": 7,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-service-sqlite2",
+      "beforeBytes": 4100096,
+      "beforeFiles": 7,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-service-sqlite3",
+      "beforeBytes": 4685824,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-workflow-affected",
+      "beforeBytes": 50758209,
+      "beforeFiles": 257,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-workflow-display",
+      "beforeBytes": 7070460,
+      "beforeFiles": 20,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-workflow-sqlite",
+      "beforeBytes": 37089322,
+      "beforeFiles": 164,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-workflow-target",
+      "beforeBytes": 2384636,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-budget-workflow-target2",
+      "beforeBytes": 2384636,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-demo-instructions-check",
+      "beforeBytes": 89246,
+      "beforeFiles": 56,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-dep-pg-codex-final-20261011",
+      "beforeBytes": 382,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-dep-pg-gaps-20261011-matching-rerun",
+      "beforeBytes": 5790,
+      "beforeFiles": 31,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-e2e-guards-green2",
+      "beforeBytes": 8340711,
+      "beforeFiles": 75,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-e2e-guards-red",
+      "beforeBytes": 1291978,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal33-affected2",
+      "beforeBytes": 20114506,
+      "beforeFiles": 127,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal33-affected3",
+      "beforeBytes": 48365,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal33-affected4",
+      "beforeBytes": 20114506,
+      "beforeFiles": 127,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal33-evals",
+      "beforeBytes": 48365,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal36-20261011",
+      "beforeBytes": 171398838,
+      "beforeFiles": 890,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-goal36-final",
+      "beforeBytes": 171398835,
+      "beforeFiles": 890,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-affected-20261009",
+      "beforeBytes": 602559,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-final-20261009",
+      "beforeBytes": 602494,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-green-20261009",
+      "beforeBytes": 602494,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-red-20261009",
+      "beforeBytes": 602139,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-red2-20261009",
+      "beforeBytes": 602139,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-hard-stop-setup-red3-20261009",
+      "beforeBytes": 602139,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-linked-ux-pg",
+      "beforeBytes": 108,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-affected",
+      "beforeBytes": 16314368,
+      "beforeFiles": 27,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-full-final",
+      "beforeBytes": 153952194,
+      "beforeFiles": 681,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-green",
+      "beforeBytes": 3133440,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-red",
+      "beforeBytes": 610304,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-v2-full-final",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-v2-hardstop-final",
+      "beforeBytes": 10170,
+      "beforeFiles": 50,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-v2-strict-final",
+      "beforeBytes": 7415148,
+      "beforeFiles": 136,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-login-limit-v3-full",
+      "beforeBytes": 199185822,
+      "beforeFiles": 1244,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-contract-pg",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-extra-pg",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-hard-stop",
+      "beforeBytes": 3559,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-schema",
+      "beforeBytes": 1224704,
+      "beforeFiles": 16,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-service",
+      "beforeBytes": 30750157,
+      "beforeFiles": 117,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-service-final",
+      "beforeBytes": 30750157,
+      "beforeFiles": 117,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-service-pg",
+      "beforeBytes": 1485,
+      "beforeFiles": 55,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-service-pg-final",
+      "beforeBytes": 1485,
+      "beforeFiles": 55,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-codex-service-sqlite-guard",
+      "beforeBytes": 544768,
+      "beforeFiles": 7,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01b-hard-stop",
+      "beforeBytes": 3511,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-affected-pg",
+      "beforeBytes": 544348,
+      "beforeFiles": 96,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-affected-sqlite",
+      "beforeBytes": 15637753,
+      "beforeFiles": 121,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-lifecycle-pg",
+      "beforeBytes": 7455,
+      "beforeFiles": 63,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-review-green",
+      "beforeBytes": 2155916,
+      "beforeFiles": 16,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-review-lifecycle",
+      "beforeBytes": 7508842,
+      "beforeFiles": 56,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-review-lifecycle2",
+      "beforeBytes": 7508842,
+      "beforeFiles": 56,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-ops01c-codex-review-red",
+      "beforeBytes": 2168204,
+      "beforeFiles": 16,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pdf-preflight-affected",
+      "beforeBytes": 2180711,
+      "beforeFiles": 39,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pdf-preflight-green",
+      "beforeBytes": 4888,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pdf-preflight-red",
+      "beforeBytes": 4888,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pg-skips-20261019-hardstop-40ae51028dc04bef863d4e74c26479d7\\pytest",
+      "beforeBytes": 10810,
+      "beforeFiles": 50,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pg-skips-20261019-regular-ee7e378dc8bc4277ac41a53bcce6acb7\\pytest",
+      "beforeBytes": 6287,
+      "beforeFiles": 59,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-diagnostic-20261006",
+      "beforeBytes": 5416085,
+      "beforeFiles": 54,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-pg-restored",
+      "beforeBytes": 1971,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-target-20261006",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-production-race-codex-20261009",
+      "beforeBytes": 2413007,
+      "beforeFiles": 11,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-production-race-codex-final-20261009",
+      "beforeBytes": 2413007,
+      "beforeFiles": 11,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-production-race-pg-fixed-20261009",
+      "beforeBytes": 1173,
+      "beforeFiles": 13,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-production-race-pg-resume-20261009",
+      "beforeBytes": 1173,
+      "beforeFiles": 13,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-refresh-full-final",
+      "beforeBytes": 189691249,
+      "beforeFiles": 1230,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-refresh-green",
+      "beforeBytes": 11595776,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-refresh-hardstop-final",
+      "beforeBytes": 10010,
+      "beforeFiles": 50,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-refresh-red",
+      "beforeBytes": 1220608,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-refresh-strict-final",
+      "beforeBytes": 2975084,
+      "beforeFiles": 128,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-release-gate-pg",
+      "beforeBytes": 7069894,
+      "beforeFiles": 98,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-release-owner-tests",
+      "beforeBytes": 5972,
+      "beforeFiles": 23,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-release-safety",
+      "beforeBytes": 5769,
+      "beforeFiles": 22,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-release-safety-final",
+      "beforeBytes": 5829,
+      "beforeFiles": 22,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-release-safety-prepare",
+      "beforeBytes": 5849,
+      "beforeFiles": 22,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-resubmit-green-20261012",
+      "beforeBytes": 6492403,
+      "beforeFiles": 20,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-resubmit-pg-20261012",
+      "beforeBytes": 6519091,
+      "beforeFiles": 114,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-resubmit-red-20261012",
+      "beforeBytes": 1757238,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-resubmit-sqlite2-20261012",
+      "beforeBytes": 10125690,
+      "beforeFiles": 33,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-security-header-role",
+      "beforeBytes": 19074843,
+      "beforeFiles": 93,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-security-role-api",
+      "beforeBytes": 21516059,
+      "beforeFiles": 97,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-z49-green",
+      "beforeBytes": 27671,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-z49-red",
+      "beforeBytes": 27671,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\bounded-smoke-2b3e44377c5543f7bba6faaf73b9c8dc",
+      "beforeBytes": 1505,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\bounded-smoke-69258636431749c6bb83f290c92456ea",
+      "beforeBytes": 590,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\bounded-smoke-6a0728f0fe804a3aa00de5397230ba12",
+      "beforeBytes": 590,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\bounded-smoke-cd5720a9e31d4cb8ac062e4970e57fb2",
+      "beforeBytes": 1505,
+      "beforeFiles": 5,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\checkpoint-tests-20261014-2258",
+      "beforeBytes": 6810,
+      "beforeFiles": 30,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\checkpoint-tests-20261014-2301",
+      "beforeBytes": 6888,
+      "beforeFiles": 32,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-final-tools-20261014-a",
+      "beforeBytes": 169830,
+      "beforeFiles": 270,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-gate-green-20261014-a",
+      "beforeBytes": 32473,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-gate-red-20261014-a",
+      "beforeBytes": 32457,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-gate-red-20261014-b",
+      "beforeBytes": 32473,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-adjacent-20261018",
+      "beforeBytes": 1696821,
+      "beforeFiles": 27,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pagination-full-20261017",
+      "beforeBytes": 205466201,
+      "beforeFiles": 1266,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pagination-pg-20261017",
+      "beforeBytes": 0,
+      "beforeFiles": 0,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pagination-pg-20261017-02",
+      "beforeBytes": 544,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pagination-repair-20261017",
+      "beforeBytes": 8373268,
+      "beforeFiles": 62,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pagination-tooling-20261017",
+      "beforeBytes": 39291,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-parser-20261018",
+      "beforeBytes": 144048,
+      "beforeFiles": 30,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-pg-20261018",
+      "beforeBytes": 32,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\context-span-20260927",
+      "beforeBytes": 479,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-env-guard-20261010",
+      "beforeBytes": 221,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-framework-baseline-20261010",
+      "beforeBytes": 11342527,
+      "beforeFiles": 37,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-framework-e2e-guards-20261010",
+      "beforeBytes": 3629896,
+      "beforeFiles": 25,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-framework-full-20261010",
+      "beforeBytes": 170743171,
+      "beforeFiles": 871,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-framework-pg-20261010",
+      "beforeBytes": 4792,
+      "beforeFiles": 76,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-framework-target-20261010",
+      "beforeBytes": 11944639,
+      "beforeFiles": 38,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-pg-gaps-20261011-run",
+      "beforeBytes": 6491075,
+      "beforeFiles": 137,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-toolchain-full-20261010",
+      "beforeBytes": 170743392,
+      "beforeFiles": 875,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-toolchain-pg-20261010",
+      "beforeBytes": 1165571,
+      "beforeFiles": 66,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-toolchain-template-20261010",
+      "beforeBytes": 141577,
+      "beforeFiles": 9,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep23-basetemp",
+      "beforeBytes": 26648666,
+      "beforeFiles": 158,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep23-codex-independent-20261010",
+      "beforeBytes": 7612531,
+      "beforeFiles": 19,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep24-codex-target-20261010",
+      "beforeBytes": 26648860,
+      "beforeFiles": 160,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep24-zcode-basetemp",
+      "beforeBytes": 26648860,
+      "beforeFiles": 160,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\guard-affected-20261014-a",
+      "beforeBytes": 48365,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\integrated-20261019-48701787ebe14f088437d01d763b66d1\\pytest",
+      "beforeBytes": 205795729,
+      "beforeFiles": 1298,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-20260926-2230",
+      "beforeBytes": 450560,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-cap-20260926-2250",
+      "beforeBytes": 458752,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-full-20260926-2240",
+      "beforeBytes": 13316449,
+      "beforeFiles": 134,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-full-20260927",
+      "beforeBytes": 14234240,
+      "beforeFiles": 138,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-resumed-20260927",
+      "beforeBytes": 1368064,
+      "beforeFiles": 3,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\no-consent-tests-20261014-2310",
+      "beforeBytes": 590179,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth10",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth11",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth2",
+      "beforeBytes": 495616,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth3",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth4",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth5",
+      "beforeBytes": 495616,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth6",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth7",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth8",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-auth9",
+      "beforeBytes": 5947392,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-bug-scan",
+      "beforeBytes": 77725675,
+      "beforeFiles": 493,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-bug-scan-pg",
+      "beforeBytes": 13740592,
+      "beforeFiles": 381,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-e2e",
+      "beforeBytes": 2594779,
+      "beforeFiles": 20,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-e2e-aff",
+      "beforeBytes": 4022461,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-e2e-jobs",
+      "beforeBytes": 499712,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-glm53-e2e-a",
+      "beforeBytes": 2594787,
+      "beforeFiles": 21,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p1-full",
+      "beforeBytes": 77725677,
+      "beforeFiles": 493,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p1-pgfull",
+      "beforeBytes": 13740592,
+      "beforeFiles": 381,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p2-final",
+      "beforeBytes": 83673069,
+      "beforeFiles": 505,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p2-final2",
+      "beforeBytes": 20702792,
+      "beforeFiles": 82,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p2-full",
+      "beforeBytes": 83673069,
+      "beforeFiles": 505,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p2-full2",
+      "beforeBytes": 83673069,
+      "beforeFiles": 505,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-p2-full3",
+      "beforeBytes": 83672875,
+      "beforeFiles": 503,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-seed02",
+      "beforeBytes": 3113800,
+      "beforeFiles": 25,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-zcode-run",
+      "beforeBytes": 77725677,
+      "beforeFiles": 493,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-final-20261011",
+      "beforeBytes": 46684,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\quality-review-holdout-red-20261011",
+      "beforeBytes": 171412,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\question-seed-final-20261010",
+      "beforeBytes": 4234925,
+      "beforeFiles": 29,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\reconsent-checks-20261014-a",
+      "beforeBytes": 5409455,
+      "beforeFiles": 42,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\reconsent-pg-20261014-a",
+      "beforeBytes": 243,
+      "beforeFiles": 9,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\redis-final-20261015",
+      "beforeBytes": 11284251,
+      "beforeFiles": 81,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\redis-level-green-20261015",
+      "beforeBytes": 11870649,
+      "beforeFiles": 93,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\release-link-green-20261014-a",
+      "beforeBytes": 4241562,
+      "beforeFiles": 54,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\release-link-red-20261014-a",
+      "beforeBytes": 6770,
+      "beforeFiles": 26,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\remediation-config-d37357a6fb3a4dea84f4ec1ea9da7fe6",
+      "beforeBytes": 7028736,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\review-benchmark-basetemp",
+      "beforeBytes": 48365,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-full-sqlite-20261014-a",
+      "beforeBytes": 174028490,
+      "beforeFiles": 1173,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-package-test-20261014-a",
+      "beforeBytes": 135501,
+      "beforeFiles": 243,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-pg-tests-20261014-a",
+      "beforeBytes": 1228979,
+      "beforeFiles": 165,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-preview-tests-20261014-b",
+      "beforeBytes": 183398,
+      "beforeFiles": 251,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-preview-tests-20261014-c",
+      "beforeBytes": 185730,
+      "beforeFiles": 259,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\synthetic-verification-tests-ec57e82e7aa649d7a8e00a5c2d41f66a",
+      "beforeBytes": 3629896,
+      "beforeFiles": 25,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task-final-all",
+      "beforeBytes": 697278,
+      "beforeFiles": 28,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task-final34",
+      "beforeBytes": 711008,
+      "beforeFiles": 33,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task-regress",
+      "beforeBytes": 697563,
+      "beforeFiles": 30,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task69-broader",
+      "beforeBytes": 640460,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task69-final",
+      "beforeBytes": 640175,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task69-v2-all",
+      "beforeBytes": 640175,
+      "beforeFiles": 8,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-all",
+      "beforeBytes": 57103,
+      "beforeFiles": 20,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-diag1",
+      "beforeBytes": 4372,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-diag2",
+      "beforeBytes": 4372,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-final",
+      "beforeBytes": 70833,
+      "beforeFiles": 25,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-gc",
+      "beforeBytes": 4372,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-gcmut",
+      "beforeBytes": 4372,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-mut",
+      "beforeBytes": 53270,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-mut2",
+      "beforeBytes": 4372,
+      "beforeFiles": 2,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-mut3",
+      "beforeBytes": 67260,
+      "beforeFiles": 16,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-new",
+      "beforeBytes": 52215,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-pytest",
+      "beforeBytes": 4888,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-r2",
+      "beforeBytes": 30675,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-r3",
+      "beforeBytes": 5687,
+      "beforeFiles": 3,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-r6",
+      "beforeBytes": 67260,
+      "beforeFiles": 16,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-r7",
+      "beforeBytes": 65945,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-r8",
+      "beforeBytes": 65945,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-red",
+      "beforeBytes": 52215,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-review",
+      "beforeBytes": 53270,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-codex-c44c697be259484eb595fa1646d4a75b",
+      "beforeBytes": 6356992,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-final",
+      "beforeBytes": 6356992,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-final-tests",
+      "beforeBytes": 10801152,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-final2",
+      "beforeBytes": 6356992,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-final3",
+      "beforeBytes": 6356992,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-fix-tests-1",
+      "beforeBytes": 7626752,
+      "beforeFiles": 12,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-fix-tests-2",
+      "beforeBytes": 10801152,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-fix-tests-3",
+      "beforeBytes": 10801152,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-green",
+      "beforeBytes": 3817472,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-mutant-test",
+      "beforeBytes": 634880,
+      "beforeFiles": 1,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-pytest",
+      "beforeBytes": 3809280,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-pytest2",
+      "beforeBytes": 3809280,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-pytest3",
+      "beforeBytes": 3817472,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-red",
+      "beforeBytes": 3817472,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-related",
+      "beforeBytes": 2539520,
+      "beforeFiles": 4,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task82-related2",
+      "beforeBytes": 6356992,
+      "beforeFiles": 10,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verification-budget-display-a5f8a0d7b7944018adce07856ad2f652",
+      "beforeBytes": 25310318,
+      "beforeFiles": 84,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verification-budget-pg-61a779d325ad47ab9dabbb9360109c92",
+      "beforeBytes": 1134,
+      "beforeFiles": 42,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verification-controls-20261010",
+      "beforeBytes": 331,
+      "beforeFiles": 13,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verification-controls-final-20261010",
+      "beforeBytes": 1357,
+      "beforeFiles": 15,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verification-controls-receipts-20261010",
+      "beforeBytes": 1393,
+      "beforeFiles": 17,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\visual-heartbeat-20260926-2207",
+      "beforeBytes": 910235,
+      "beforeFiles": 6,
+      "status": "deleted",
+      "reason": "",
+      "remainingBytes": 0,
+      "remainingFiles": 0,
+      "measurementErrors": 0
+    }
+  ]
+}
