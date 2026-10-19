@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-19T05:27:42.813080+00:00",
+  "savedVerification": {
+    "83178baf-422e-4c82-8f6f-3b49d8c73f1e": null,
+    "b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3": null
+  },
+  "studentNotifications": {
+    "total": 10,
+    "unreadCount": 5,
+    "sample": [
+      {
+        "notificationId": "cc8bbb19-ef27-42c6-bfd1-ee96fd98b12a",
+        "title": "投递已提交",
+        "accessible": true,
+        "href": "/applications#application-83178baf-422e-4c82-8f6f-3b49d8c73f1e"
+      },
+      {
+        "notificationId": "1eee5ca1-c20d-4d5b-a5cd-723d83544e63",
+        "title": "企业已回复，请在投递详情核对正文",
+        "accessible": true,
+        "href": "/applications#application-b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3"
+      },
+      {
+        "notificationId": "9feeae08-9f98-40c3-8fc1-a53dc5162eb7",
+        "title": "企业已请求查看报告；不代表进入面试或录用",
+        "accessible": true,
+        "href": "/applications#application-b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3"
+      },
+      {
+        "notificationId": "cf646925-537c-4071-a94a-cd9639b658d6",
+        "title": "投递已提交",
+        "accessible": true,
+        "href": "/applications#application-b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3"
+      },
+      {
+        "notificationId": "a2c0d3a8-3a3e-480e-a138-ae72f8f2cefd",
+        "title": "投递授权已撤回；已下载副本无法追回",
+        "accessible": true,
+        "href": "/applications#application-492871f8-d03a-4df1-b8ea-86b830fd56c5"
+      },
+      {
+        "notificationId": "1bab9ccc-6e5e-428b-a431-4f80ed3e8e24",
+        "title": "投递已提交",
+        "accessible": true,
+        "href": "/applications#application-492871f8-d03a-4df1-b8ea-86b830fd56c5"
+      },
+      {
+        "notificationId": "a617c9da-ca06-4632-b30e-fa65c2a8b5b8",
+        "title": "投递授权已撤回；已下载副本无法追回",
+        "accessible": true,
+        "href": "/applications#application-1a40f797-2725-4d42-bdb5-d8ba631c5ad7"
+      },
+      {
+        "notificationId": "ea653de7-54e0-4bea-bf16-b96552a32060",
+        "title": "企业已请求查看报告；不代表进入面试或录用",
+        "accessible": true,
+        "href": "/applications#application-1a40f797-2725-4d42-bdb5-d8ba631c5ad7"
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { filterApplications, mixedComparisonBasis } from "../src/lib/application-comparison.ts";
+import { applicationFilterView, filterApplications, mixedComparisonBasis } from "../src/lib/application-comparison.ts";
 
 const item = (id, score, verdict, basis = "same", at = "2026-09-28T12:00:00Z") => ({
   id, candidateName: id, createdAt: at, comparisonBasis: basis, overallScore: score,
@@ -26,4 +26,17 @@ test("incomparable versions sort by submission time rather than implying a score
 test("equal criteria use saved scores with unassessed values last", () => {
   const values = [item("未评", null, "unsupported"), item("低", 20, "partial"), item("高", 50, "supported")];
   assert.deepEqual(filterApplications(values, "", "sql", "").map(i => i.id), ["高", "低", "未评"]);
+});
+
+test("filter view reports empty results and selected reports outside the current filter", () => {
+  const values = [item("甲", 50, "partial"), item("乙", 60, "supported")];
+  const outside = applicationFilterView(values, "甲", "", "", "乙");
+  assert.deepEqual(outside.visible.map(i => i.id), ["甲"]);
+  assert.equal(outside.empty, false);
+  assert.equal(outside.selectedOutside, true);
+  const empty = applicationFilterView(values, "不存在", "", "", "乙");
+  assert.deepEqual(empty.visible, []);
+  assert.equal(empty.empty, true);
+  assert.equal(empty.selectedOutside, true);
+  assert.equal(applicationFilterView(values, "", "", "", "甲").selectedOutside, false);
 });

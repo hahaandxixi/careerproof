@@ -1,0 +1,6 @@
+﻿staging=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-enterprise-filter
+next=15.5.27
+eslint=9.39.5
+package_lock_sha256=B95BF8852E451FCC81087EFB22CF0752E66583B3AD3CEBA804AC27AEE37CBB7C
+node=v22.23.1
+source_ApplicationBoard_sha256=77570BCD4D8F32DDE2B0229E97E63A6B1234B6E9E98D613CF424C9A8FF6A26FB

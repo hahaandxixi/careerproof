@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-19T05:27:36.781364+00:00",
+  "enterpriseJobs": 21,
+  "jobsWithAuthorizedApplications": 2,
+  "maximumAuthorizedCandidatesPerJob": 1,
+  "jobs": [
+    {
+      "jobId": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+      "jobTitle": "数据库工程师 DBA（合成演示）",
+      "total": 1,
+      "candidates": [
+        {
+          "applicationId": "83178baf-422e-4c82-8f6f-3b49d8c73f1e",
+          "candidateName": "演示学生",
+          "status": "submitted",
+          "reportId": "f0e36d67-d028-4bcb-ba3f-64f71a52b1c6",
+          "dimensions": 5,
+          "overallScore": 42.27,
+          "hasReply": false
+        }
+      ]
+    },
+    {
+      "jobId": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+      "jobTitle": "Python 后端开发实习生（合成演示）",
+      "total": 1,
+      "candidates": [
+        {
+          "applicationId": "b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+          "candidateName": "演示学生",
+          "status": "replied",
+          "reportId": "1b6c0425-848a-4229-8cc8-cc4d4447ba54",
+          "dimensions": 5,
+          "overallScore": 53.95,
+          "hasReply": true
+        }
+      ]
+    }
+  ]
+}

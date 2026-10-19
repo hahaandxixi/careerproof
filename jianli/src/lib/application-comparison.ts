@@ -25,3 +25,16 @@ export function filterApplications(
     return (score(b) ?? -1) - (score(a) ?? -1) || b.createdAt.localeCompare(a.createdAt);
   });
 }
+
+/** Keep the filtered list, its empty state and an already-open report in sync. */
+export function applicationFilterView(
+  items: ApplicationView[], query: string, focus: string, verdict: string,
+  selectedId?: string,
+) {
+  const visible = filterApplications(items, query, focus, verdict);
+  return {
+    visible,
+    empty: visible.length === 0,
+    selectedOutside: !!selectedId && !visible.some(item => item.id === selectedId),
+  };
+}

@@ -126,6 +126,37 @@ test("代际一致时发送结果才生效：失败标记未确认，成功重�
   assert.equal(board.replySendOutcome(true, true), "reset");
 });
 
+test("筛选空结果或已打开报告在筛选外时，提示原因、保留报告并给出清除入口", () => {
+  let cleared = 0;
+  const emptyHtml = renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
+    empty: true, selectedName: "合成候选人乙", onClear: () => { cleared += 1; },
+  }));
+  assert.match(emptyHtml, /当前页没有符合关键词、岗位要求和证据状态组合的候选人/);
+  assert.match(emptyHtml, /合成候选人乙 不在筛选结果中/);
+  assert.match(emptyHtml, /报告与未发送草稿仍保留/);
+  const emptyButton = board.CandidateFilterNotice({
+    empty: true, selectedName: "合成候选人乙", onClear: () => { cleared += 1; },
+  });
+  const buttons = [];
+  const collect = node => {
+    if (!node || typeof node !== "object") return;
+    if (node.type === "button") buttons.push(node);
+    [node.props?.children].flat(Infinity).forEach(collect);
+  };
+  collect(emptyButton);
+  assert.equal(buttons.length, 1);
+  buttons[0].props.onClick();
+  assert.equal(cleared, 1);
+
+  const outsideHtml = renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
+    empty: false, selectedName: "合成候选人乙", onClear: () => {},
+  }));
+  assert.match(outsideHtml, /当前打开的 合成候选人乙 不在筛选结果中/);
+  assert.equal(renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
+    empty: false, onClear: () => {},
+  })), "");
+});
+
 function setup(overrides = {}) {
   const snapshots = [];
   const session = createApplicationBoardSession({

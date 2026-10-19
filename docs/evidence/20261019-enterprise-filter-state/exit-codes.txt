@@ -1,0 +1,5 @@
+﻿tests_exit=0
+typecheck_exit=0
+eslint_target_exit=0
+build_exit=0
+note=all runs use backend/.tmp/dep-frontend-20261019-enterprise-filter with next 15.5.27 and package-lock sha256 B95BF8852E451FCC81087EFB22CF0752E66583B3AD3CEBA804AC27AEE37CBB7C

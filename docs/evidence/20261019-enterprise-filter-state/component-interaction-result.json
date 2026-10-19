@@ -1,0 +1,39 @@
+{
+  "filtered": {
+    "candidates": [
+      "合成候选人 B"
+    ],
+    "notice": "当前打开的 合成候选人 A 不在筛选结果中。筛选只影响上方候选列表，报告与未发送草稿不会被清空。",
+    "draft": "A候选人草稿：请补充运行记录",
+    "recipient": "当前收件人：合成候选人 A · 投递编号 a（仅发送给该投递对应学生）"
+  },
+  "beforeEmpty": {
+    "keyword": "合成候选人 B",
+    "selects": [
+      "r1",
+      "gap"
+    ],
+    "candidates": 1
+  },
+  "empty": {
+    "tables": 0,
+    "draft": "A候选人草稿：请补充运行记录"
+  },
+  "cleared": {
+    "keyword": "",
+    "selects": [
+      "",
+      ""
+    ],
+    "draft": "A候选人草稿：请补充运行记录"
+  },
+  "switched": {
+    "draft": "",
+    "recipient": "当前收件人：合成候选人 B · 投递编号 b（仅发送给该投递对应学生）",
+    "pressed": [
+      "false",
+      "true"
+    ],
+    "leaked": false
+  }
+}
