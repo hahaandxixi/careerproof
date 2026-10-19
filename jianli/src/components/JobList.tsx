@@ -33,7 +33,6 @@ export default function JobList({ mine = false, initialQuery = "" }: { mine?: bo
   }
   return <div className="space-y-6">
     <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-sm text-indigo-600">{mine ? "企业工作台" : "职业与岗位探索"}</p><h1 className="mt-1 text-3xl font-bold">{mine ? "我的岗位" : "岗位发现"}</h1></div>{mine && <Link className="btn" href="/jobs/new">发布新岗位</Link>}</div>
-    {!mine && data?.items.some(job => job.isDemo) && <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-600">标有“体验样例”的岗位、企业和配套人物均为虚构，可下载对应材料练习匹配与补证；站内投递仅用于演示，不会发送给BOSS或真实企业。其他岗位由对应企业账号发布。</p>}
     <form className="panel grid gap-3 sm:grid-cols-2 lg:grid-cols-5" onSubmit={event => { event.preventDefault(); setPage(1); setFilter({ ...draft }); }}>
       <label className="space-y-1 text-sm">关键词<input className="field" value={draft.q} maxLength={200} placeholder="岗位、企业或描述" onChange={e => setDraft({ ...draft, q: e.target.value })} /></label>
       <label className="space-y-1 text-sm">方向<select className="field" value={draft.category} onChange={e => setDraft({ ...draft, category: e.target.value })}><option value="">全部方向</option>{Object.entries(CATEGORY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
