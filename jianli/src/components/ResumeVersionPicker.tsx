@@ -9,7 +9,7 @@ import cases from "@/app/demo/samples.json";
 const DEMO_TITLES = cases.map(item => item.resumeName);
 const GROUPS = [
   { key: "personal", label: "我的其他简历" },
-  { key: "demo", label: "职业测试简历 · CP01—CP09" },
+  { key: "demo", label: "示例简历" },
   { key: "history", label: "历史验收材料 · 按名称归类" },
 ] as const;
 
@@ -48,14 +48,14 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
         <label className="block text-xs text-slate-600">搜索简历名称或文件名
-          <input className="field mt-1" type="search" value={query} placeholder="如：CP08、数据库、简历.docx" onChange={event => setQuery(event.target.value)} />
+          <input className="field mt-1" type="search" value={query} placeholder="输入简历名称或文件名" onChange={event => setQuery(event.target.value)} />
         </label>
         {historyCount > 0 && <label className="flex items-start gap-2 text-xs leading-6 text-slate-600">
           <input className="mt-1 shrink-0" type="checkbox" checked={includeHistory} onChange={event => setIncludeHistory(event.target.checked)} />
           <span>显示历史验收材料（{historyCount} 份）；搜索时也会查找这些材料。</span>
         </label>}
-        <p className="text-xs leading-6 text-slate-500">选择简历后，再选择同一编号的测试项目。搜索、收起或隐藏历史材料不会更改已选版本。</p>
-        {!all.some(resume => resume.category === "demo") && <p className="text-xs leading-6 text-slate-500">当前账号尚无预置职业测试简历。可在<Link href="/demo" className="text-indigo-700 underline">演示指南</Link>下载一套，上传到当前账号；预置材料仅属于初始化时使用的学生演示账号。</p>}
+        <p className="text-xs leading-6 text-slate-500">选择简历后，可选择与其对应的项目材料。搜索、收起或隐藏历史材料不会更改已选版本。</p>
+        {!all.some(resume => resume.category === "demo") && <p className="text-xs leading-6 text-slate-500">需要体验材料？可在<Link href="/jobs" className="text-indigo-700 underline">对应体验岗位详情</Link>下载配套简历与项目，再上传到当前账号。</p>}
         <div className="max-h-72 space-y-3 overflow-y-auto">
           {GROUPS.map(group => {
             const rows = visible.filter(resume => resume.category === group.key);

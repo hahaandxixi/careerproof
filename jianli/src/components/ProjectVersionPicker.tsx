@@ -9,7 +9,7 @@ import cases from "@/app/demo/samples.json";
 const DEMO_NAMES = cases.map(item => item.projectName);
 const GROUPS = [
   { key: "personal", label: "我的其他项目与作品" },
-  { key: "demo", label: "职业测试项目 · CP01—CP09" },
+  { key: "demo", label: "示例项目" },
   { key: "history", label: "历史验收材料 · 按名称归类" },
 ] as const;
 
@@ -43,7 +43,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
         <label className="block text-xs text-slate-600">搜索项目名称或文件名
-          <input className="field mt-1" type="search" value={query} placeholder="如：后端项目、app.zip" onChange={event => setQuery(event.target.value)} />
+          <input className="field mt-1" type="search" value={query} placeholder="输入项目名称或文件名" onChange={event => setQuery(event.target.value)} />
         </label>
         {historyCount > 0 && <label className="flex items-start gap-2 text-xs leading-6 text-slate-600">
           <input className="mt-1 shrink-0" type="checkbox" checked={includeHistory} onChange={event => setIncludeHistory(event.target.checked)} />
