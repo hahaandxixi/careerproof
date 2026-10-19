@@ -1,0 +1,25 @@
+修复前观测（终端转录，不是原始 pty 日志）
+日期：2026-10-19（Asia/Shanghai）
+HEAD：dac9650fef91dfce7357fddd3792613d5d172f8e
+测试：app/tests/test_report_history.py::test_ineligible_second_retrieval_is_rejected_without_losing_analysis
+
+命令：
+python -m pytest app/tests/test_report_history.py::test_ineligible_second_retrieval_is_rejected_without_losing_analysis -q --no-header --tb=short -s -p no:cacheprovider
+
+修复前结果：
+- planning_requests=2
+- TOOL_CALLS: 只有第 1 轮 retrieve_more_evidence（resultCount=1, citationId=R1-E3, round=1），没有第 2 轮拒绝事件
+- FALLBACK: True invalid_output_or_config tool_execution
+- 断言失败：assert not outcome.fallback_used and outcome.analysis is not None
+- 解释：模型在第 2 轮对已满 3 条引用的要求再次请求补检索；旧实现在工具执行阶段抛出 ValueError，被外层当成工作流故障，整份 AI 报告降级为规则报告。
+
+同一文件首次失败还观察到（在调整测试为“另一要求仍可检索”之前）：
+- 模型调用未被提供的工具时，事件被记为 status=rejected, reason=invalid_tool_call，最终分析继续；说明“调用未提供的工具”已有本地拒绝，不是本缺陷。
+- 该观察促使测试改为：仍提供 retrieve_more_evidence（因为另一要求可检索），但模型选择已经达到 3 条引用的要求，才能命中真正的“工具已提供、目标不合格”边界。
+
+修复后同一测试：
+- planning_requests=2
+- TOOL_CALLS: 第 1 轮 completed / R1-E3；第 2 轮 rejected / ineligible_retrieval_scope
+- FALLBACK: False None None
+- 最终分析保留，引用 R1-E3
+- 相关 5 个测试文件：93 passed, 5 warnings

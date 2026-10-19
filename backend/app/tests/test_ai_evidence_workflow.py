@@ -210,6 +210,7 @@ def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None
     assert updated[0].evidence[-1].citation_id == "R1-E3"
     assert updated[0].evidence[-1].file_path == "routes.py"
     assert event["scope"] == "current-upload-index"
+    assert event["status"] == "completed"
     assert event["resultCount"] == 1
     assert eligible_retrieval_contexts(result, updated) == []
     with pytest.raises(ValueError, match="cannot exceed three citations"):
@@ -218,6 +219,26 @@ def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None
             updated,
             RetrievalToolCall(requirement_id=contexts[0].requirement_id, query="更多实现"),
         )
+
+
+def test_retrieval_without_novel_candidate_reports_no_result() -> None:
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    result = replace(result, items=[replace(result.items[0], evidence_list=[first])])
+    contexts = build_evidence_contexts(result, max_evidence=2)
+
+    updated, event = execute_retrieval_tool(
+        result,
+        contexts,
+        RetrievalToolCall(
+            requirement_id=contexts[0].requirement_id,
+            query="不存在的补充实现",
+        ),
+    )
+
+    assert updated == contexts
+    assert event["status"] == "no_result"
+    assert event["resultCount"] == 0
 
 
 def test_retrieval_prefers_new_source_lines_over_overlapping_context() -> None:

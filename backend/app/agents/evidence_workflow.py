@@ -205,6 +205,7 @@ def execute_retrieval_tool(
         "requirementId": call.requirement_id,
         "query": call.query,
         "resultCount": 1 if selected else 0,
+        "status": "completed" if selected else "no_result",
         "scope": "current-upload-index",
     }
     if selected is None:
@@ -470,19 +471,36 @@ async def run_evidence_workflow(
                         stage = "tool_execution"
                         await _notify(progress, f"正在按模型第 {round_number} 轮请求补充证据")
                         search_detail = None
-                        if result.retrieval_sources:
-                            requested = next(
-                                (
-                                    context
-                                    for context in model_contexts
-                                    if context.requirement_id == tool_call.requirement_id
-                                ),
-                                None,
+                        requested = next(
+                            (
+                                context
+                                for context in model_contexts
+                                if context.requirement_id == tool_call.requirement_id
+                            ),
+                            None,
+                        )
+                        if requested is None or len(requested.evidence) >= 3:
+                            # A model can see history-bearing contexts that are no
+                            # longer eligible for retrieval. Reject only that tool
+                            # step and keep the validated evidence for analysis.
+                            tool_calls.append(
+                                {
+                                    "tool": "retrieve_more_evidence",
+                                    "round": round_number,
+                                    "status": "rejected",
+                                    "reason": "ineligible_retrieval_scope",
+                                    "scope": (
+                                        "current-frozen-materials"
+                                        if result.retrieval_sources
+                                        else "current-upload-index"
+                                    ),
+                                }
                             )
-                            if requested is None or len(requested.evidence) >= 3:
-                                raise ValueError(
-                                    "Directed retrieval outside allowed requirement scope"
-                                )
+                            await _notify(
+                                progress, "补检索目标已超出可补充范围，继续分析现有证据"
+                            )
+                            break
+                        if result.retrieval_sources:
                             try:
                                 candidates, search_detail = await asyncio.to_thread(
                                     search_frozen_sources,

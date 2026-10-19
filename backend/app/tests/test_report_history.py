@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import UUID, uuid4
@@ -263,6 +264,154 @@ async def test_model_selects_history_once_without_promoting_old_level(
         for event in outcome.tool_calls
     )
     assert len(seen) <= 4
+
+
+@pytest.mark.asyncio
+async def test_ineligible_second_retrieval_is_rejected_without_losing_analysis(monkeypatch):
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    full_item = replace(
+        result.items[0],
+        evidence_list=[
+            first,
+            replace(
+                first,
+                file_path="routes.py",
+                line_start=8,
+                line_end=10,
+                snippet="@app.get('/items')\ndef items():\n    return []",
+                content_hash="3" * 64,
+            ),
+            replace(
+                first,
+                file_path="service.py",
+                line_start=2,
+                line_end=4,
+                snippet="def service():\n    return {'ok': True}",
+                content_hash="4" * 64,
+            ),
+        ],
+    )
+    result = replace(
+        result,
+        items=[
+            full_item,
+            replace(
+                full_item,
+                requirement_id=uuid4(),
+                requirement_title="有 Redis 缓存实践",
+                skill="Redis",
+                weight=3,
+            ),
+        ],
+    )
+    requirement_id = str(result.items[0].requirement_id)
+    other_requirement_id = str(result.items[1].requirement_id)
+    planning_requests = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        if "tools" in body:
+            planning_requests.append(body)
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {
+                            "message": {
+                                "tool_calls": [
+                                    {
+                                        "function": {
+                                            "name": "retrieve_more_evidence",
+                                            "arguments": json.dumps(
+                                                {
+                                                    "requirement_id": requirement_id,
+                                                    "query": "完整路由与返回实现",
+                                                }
+                                            ),
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 30, "completion_tokens": 10},
+                },
+            )
+        def analysis_item(target, citation, reason):
+            return {
+                "requirement_id": target,
+                "explanation": "片段包含实现线索，运行结果仍待核验。",
+                "citation_ids": [citation],
+                "information_gap": "运行结果与本人贡献仍待核验。",
+                "suggestion": "补充运行记录。",
+                "confidence": 0.5,
+                "rating": {
+                    "level": 1,
+                    "reason": "只确认相关实现线索。",
+                    "criteria": [
+                        {
+                            "criterion": "relevance",
+                            "supported": True,
+                            "citation_ids": [citation],
+                            "reason": reason,
+                        },
+                        {
+                            "criterion": "operation",
+                            "supported": False,
+                            "citation_ids": [],
+                            "reason": "未展示完整运行结果。",
+                        },
+                        {
+                            "criterion": "task",
+                            "supported": False,
+                            "citation_ids": [],
+                            "reason": "未展示完整任务实现。",
+                        },
+                    ],
+                },
+            }
+
+        answer = {
+            "summary": "当前材料展示实现片段。",
+            "items": [
+                analysis_item(requirement_id, "R1-E3", "片段含 FastAPI 路由声明。"),
+                analysis_item(other_requirement_id, "R2-E1", "片段含 Redis 相关线索。"),
+            ],
+        }
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"message": {"content": json.dumps(answer, ensure_ascii=False)}}],
+                "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+            },
+        )
+
+    async def read(_requirement_id):
+        return {"savedAiLevel": 1, "previousExplanation": "旧解释", "previousEvidence": []}
+
+    provider = DeepSeekProvider(
+        api_key="synthetic-key",
+        base_url="https://api.deepseek.com",
+        model="deepseek-flash",
+        timeout_seconds=5,
+        transport=httpx.MockTransport(handler),
+        max_attempts=1,
+    )
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+    monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+
+    outcome = await run_evidence_workflow(result, history_loader=read)
+
+    assert len(planning_requests) == 2
+    assert not outcome.fallback_used and outcome.analysis is not None
+    assert outcome.analysis.items[0].citation_ids == ["R1-E3"]
+    assert outcome.tool_calls[0]["resultCount"] == 1
+    assert outcome.tool_calls[0]["status"] == "completed"
+    assert outcome.tool_calls[-1]["status"] == "rejected"
+    assert outcome.tool_calls[-1]["reason"] == "ineligible_retrieval_scope"
 
 
 def test_historical_context_has_separate_prompt_boundary():
