@@ -1,0 +1,43 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ test_replay_keeps_closed_hidden_sample_and_exact_timestamps _________
+
+jobs_db = (<fastapi.applications.FastAPI object at 0x000002AEE6457500>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002AEE8656B10>, autoflush=True, expire_on_commit=False))
+
+    async def test_replay_keeps_closed_hidden_sample_and_exact_timestamps(jobs_db):
+        importer, factory, org = await curated_org(jobs_db)
+        async with factory() as session:
+            first = await importer.apply_plan(session, importer.load_scenarios(), org)
+            job = await session.get(Job, UUID(first["created"][0]))
+            job.status, job.discovery_visible = "closed", False
+            await session.commit()
+            await session.refresh(job)  # Compare values after the same SQLite round-trip.
+            before = (job.id, job.status, job.discovery_visible, job.updated_at)
+        async with factory() as session:
+            replay = await importer.apply_plan(session, importer.load_scenarios(), org)
+            job = await session.get(Job, before[0])
+            assert replay["created"] == replay["updated"] == replay["hidden"] == []
+>           assert (job.id, job.status, job.discovery_visible, job.updated_at) == before
+E           AssertionError: assert (UUID('6c6f28..., 53, 253505)) == (UUID('6c6f28..., 53, 245693))
+E             
+E             At index 1 diff: 'published' != 'closed'
+E             Use -v to get more diff
+
+.tmp\task82-mutant\test_mutation.py:330: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED .tmp/task82-mutant/test_mutation.py::test_replay_keeps_closed_hidden_sample_and_exact_timestamps
+1 failed, 12 deselected, 5 warnings in 1.47s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

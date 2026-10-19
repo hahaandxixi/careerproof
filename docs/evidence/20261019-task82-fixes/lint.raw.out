@@ -1,0 +1,6 @@
+
+D:\jbcode\web ai\jianli\backend\.tmp\task82-fix-frontend\tests\scenario-materials.test.mjs
+  12:1  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+✖ 1 problem (1 error, 0 warnings)
+

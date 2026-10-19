@@ -1,0 +1,27 @@
+{
+  "created": [
+    "c53cce04-a7b9-4466-8067-ddf7f9981568",
+    "2a37f055-f4fd-4936-acc9-1b87ba7d6e05",
+    "107e059b-97ff-4ead-a869-b66444faf70b"
+  ],
+  "hidden": [
+    "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+    "3d9b94f8-b917-4e10-b389-cd72c0a0b003",
+    "4dfa9d69-d6ec-450c-a9d2-89a520a6be12",
+    "f7b12163-58ab-4022-b90e-6b69ca9da93f",
+    "2877ee12-15d4-4840-8081-c54f755575c5",
+    "2b66a031-20c4-43dc-a3e5-258645c51dcc",
+    "9fc02d8b-06be-41e0-bce1-1e834c6020e3",
+    "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+    "4956d2b4-e749-44db-a2f1-e85bd865619d"
+  ],
+  "changedTables": [
+    "enterprise_memberships",
+    "enterprises",
+    "job_requirements",
+    "jobs"
+  ],
+  "oldJobsPreserved": 36,
+  "replayAllTableDigestsIdentical": true,
+  "reportsApplicationsSnapshotsNotificationsUnchanged": true
+}

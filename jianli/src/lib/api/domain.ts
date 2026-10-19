@@ -16,6 +16,8 @@ export interface JobRequirement extends RequirementInput { id: string; skillId: 
 export interface JobSummary {
   id: string; title: string; companyName: string; description: string; status: string;
   category: string; city: string; employmentType: string; requirementCount: number; createdAt: string;
+  // Curated experience sample rather than a real vacancy; the flag comes from the server.
+  isDemo?: boolean; discoveryVisible?: boolean;
 }
 export interface JobDetail extends JobSummary { enterpriseId: string | null; createdBy: string; requirements: JobRequirement[] }
 export interface JobInput {

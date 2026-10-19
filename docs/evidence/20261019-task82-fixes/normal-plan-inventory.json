@@ -1,0 +1,248 @@
+[
+  {
+    "enterpriseId": "f7ba8b79-3f7a-4e66-ba6c-5027ccfaad85",
+    "name": "CareerProof 合成演示企业",
+    "ownerId": "04388175-3143-4935-9b18-afe94b4dc2db",
+    "jobs": [
+      {
+        "id": "d76773b9-d090-4ee3-ab96-12bff1997262",
+        "title": "Python 受控补检索（合成验收）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "公开合成材料的受控 Function Calling 验收岗位。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "f66951b1-490a-472b-9d82-c9f3f911d900",
+        "title": "Python 后端开发实习生（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成演示岗位：上传样例简历和 evidence-api.zip，核对代码证据与 Redis 仅声明的差异。不是实际招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "a3d9e1c1-27ae-4009-a920-c11f58572c91",
+        "title": "前端开发工程师（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "e11be75a-f19c-45cc-94ea-8b4ab20e83a8",
+        "title": "FastAPI 受控补检索（合成验收）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "公开合成材料的受控 Function Calling 验收岗位。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "2428d4c5-cf54-401e-8dc2-b68b956dbbe3",
+        "title": "软件测试工程师（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "d1e844e7-1e89-4c3f-a369-c5ae8485d8bf",
+        "title": "数据分析师（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "dd4c94a9-83f6-451f-b21b-a6410445bb42",
+        "title": "产品助理（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "ed15c548-998e-4e03-8c41-dfda0ae7f467",
+        "title": "用户运营专员（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "4b57d2e7-856f-49e5-807a-8eb68d693620",
+        "title": "自动化运维工程师（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "c4d45d6f-975d-4774-b952-46e849fd6e6a",
+        "title": "数据库工程师 DBA（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "e32bda42-f558-4364-837b-370abdcf61b2",
+        "title": "数据工程师（合成演示）",
+        "creatorId": "04388175-3143-4935-9b18-afe94b4dc2db",
+        "status": "closed",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      }
+    ]
+  },
+  {
+    "enterpriseId": "4a074a4f-f0eb-40b2-a6a3-c69f3662438f",
+    "name": "CareerProof 合成演示企业",
+    "ownerId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+    "jobs": [
+      {
+        "id": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+        "title": "Python 后端开发实习生（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "3d9b94f8-b917-4e10-b389-cd72c0a0b003",
+        "title": "前端开发工程师（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "4dfa9d69-d6ec-450c-a9d2-89a520a6be12",
+        "title": "软件测试工程师（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "f7b12163-58ab-4022-b90e-6b69ca9da93f",
+        "title": "数据分析师（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "2877ee12-15d4-4840-8081-c54f755575c5",
+        "title": "产品助理（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "2b66a031-20c4-43dc-a3e5-258645c51dcc",
+        "title": "用户运营专员（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "9fc02d8b-06be-41e0-bce1-1e834c6020e3",
+        "title": "自动化运维工程师（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+        "title": "数据库工程师 DBA（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "4956d2b4-e749-44db-a2f1-e85bd865619d",
+        "title": "数据工程师（合成演示）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "published",
+        "description": "合成测试岗位，不是实际招聘。请以材料证据核验要求；缺少材料不代表没有能力。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "f72b6799-7f9a-47ee-a4ef-c438a226b50e",
+        "title": "历史补证合成验收 20260926-234002",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "fc344df4-c8c9-4567-8a41-428f649f68f3",
+        "title": "历史补证合成验收 20260926-142342",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "64c162f0-26e3-41d7-9200-01dfdef2f424",
+        "title": "历史完整报告 injected-history（合成）20260927-163752-487512",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "b41f1cc0-fc31-409d-8602-2fec2ed340eb",
+        "title": "改要求新岗位（合成）20260927-153359-736499",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "07a91069-1f91-467e-b5ce-0f71c475dc15",
+        "title": "历史完整报告 job-change（合成）20260927-153359-736499",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "bc167e55-8e74-4383-bd9f-cfe0ae2edee5",
+        "title": "历史完整报告 withdrawn-material（合成）20260927-153350-089678",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "2aaa074a-e0a2-4b08-8c1a-d0e6d64bfcc6",
+        "title": "历史完整报告 anchor-down（合成）20260927-153340-156204",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "aab3304e-ce05-4431-8bb8-cf3323abc819",
+        "title": "历史完整报告 injected-history（合成）20260927-143452-923151",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "本机合成验收，不用于真实招聘。",
+        "companyName": "CareerProof 合成演示企业"
+      },
+      {
+        "id": "a4b9b97d-9082-4db6-930e-e69e962990a6",
+        "title": "Python 受控补检索（合成验收）",
+        "creatorId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+        "status": "closed",
+        "description": "公开合成材料的受控 Function Calling 验收岗位。",
+        "companyName": "CareerProof 合成演示企业"
+      }
+    ]
+  }
+]

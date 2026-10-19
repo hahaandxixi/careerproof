@@ -53,6 +53,9 @@ function Ensure-DemoCredentials {
 
 function Get-DemoSeedDigest {
     $digest = (Get-FileHash -LiteralPath (Join-Path $backendRoot 'evals\seed_demo.py')).Hash + (Get-FileHash -LiteralPath (Join-Path $backendRoot 'evals\seed_role_materials.py')).Hash
+    $digest += (Get-FileHash -LiteralPath (Join-Path $backendRoot 'scripts\import_market_scenarios.py')).Hash
+    $digest += (Get-FileHash -LiteralPath (Join-Path $projectRoot 'demo\market-scenarios.json')).Hash
+    $digest += (Get-FileHash -LiteralPath (Join-Path $projectRoot 'demo\jobs.json')).Hash
     if (Test-Path -LiteralPath $credentialsPath) { $digest += (Get-FileHash -LiteralPath $credentialsPath).Hash }
     return $digest
 }

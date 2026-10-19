@@ -1,0 +1,15 @@
+{
+  "Start-Demo.ps1": "f89582c25a9ba501d572d170c12c18ecb8c0a57bab8121a0265433ae941dcf14",
+  "backend/scripts/import_market_scenarios.py": "27248198c1df02ed9974f8db579f58fd95422ceabd37eff811e4d40187df8c5e",
+  "backend/evals/seed_demo.py": "beca09cd918b4ea8e34af7a744db93fa46085995c62fddcaee4736b2b0b9f112",
+  "backend/app/tests/test_job_discovery_curation.py": "d0bbdf598f6ae19ed2b1a9a8a8b4eba742f21e788cc77bdf355357934fb9489a",
+  "backend/app/repositories/jobs.py": "9792c1392a074c7e369a8991f9918e91c6b183f50f33c4ef6a73323f8be4f47e",
+  "backend/app/schemas/jobs.py": "593eeb55e84cb8d4eddbe28070010547f51d475d8e1ce58ec0cb0194a5933ac5",
+  "backend/app/services/jobs.py": "9289de2af4ad3a5791eb35ebbbf86ba772203a93d77a6d834a6dddaff688969f",
+  "backend/app/services/recommendations.py": "3e16d6aace1d60ea8abce9410e803e7ce9905384a9c461e7d958c20535bee254",
+  "jianli/src/components/JobList.tsx": "6549ccfbb5044b54b90c5ab31c87520420a384dd207250b2616115e9228ceee0",
+  "jianli/src/components/JobDetailView.tsx": "f635b6ea057bc49a612afb3c3f0df901f9093618c4c631a99bc7ce65e7c2fca2",
+  "jianli/src/components/ScenarioMaterials.tsx": "6827c56deb772b5d5c3f6ec77ba737eafc80cfff5f448e7c274a0929176e7363",
+  "jianli/src/lib/api/domain.ts": "33bb62432f78fe3683da55557a8aaa2a8320cdd7efda003f25d552f9bfa8ba54",
+  "jianli/tests/scenario-materials.test.mjs": "52a9bcfbcc03d862d4f3f3f48fe66c3a0bc99d4091b11099a47bb43a1cfed316"
+}

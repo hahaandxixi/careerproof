@@ -1,0 +1,19 @@
+{
+  "discoveryTotal": 4,
+  "curatedSampleCount": 3,
+  "preservedOtherEnterprisePostings": 1,
+  "hiddenJobsReadableByOriginalId": 9,
+  "sixAssetHashesMatch": [
+    "booking-quality-project.zip",
+    "booking-quality-resume.txt",
+    "event-api-project.zip",
+    "event-api-resume.txt",
+    "event-console-project.zip",
+    "event-console-resume.txt"
+  ],
+  "newIds": [
+    "c53cce04-a7b9-4466-8067-ddf7f9981568",
+    "2a37f055-f4fd-4936-acc9-1b87ba7d6e05",
+    "107e059b-97ff-4ead-a869-b66444faf70b"
+  ]
+}

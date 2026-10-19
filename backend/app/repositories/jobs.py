@@ -31,7 +31,11 @@ class JobRepository:
         if manager_id is not None:
             conditions.append(Job.enterprise_id.in_(self.managed_enterprise_ids(manager_id)))
         elif not include_all:
+            # Discovery (and only discovery): published, and explicitly visible. Count and
+            # slice share these conditions, so a hidden posting is neither counted nor
+            # paged into a gap. Management listings above stay unfiltered.
             conditions.append(Job.status == "published")
+            conditions.append(Job.discovery_visible.is_(True))
         if q:
             conditions.append(
                 or_(
@@ -60,6 +64,17 @@ class JobRepository:
         )
         rows = list((await self.session.execute(query)).all())
         return rows, int(count_result or 0)
+
+    async def recommendation_candidates(self, limit: int) -> list[Job]:
+        """Published jobs that may be recommended — the same visibility predicate as discovery."""
+        return list(
+            await self.session.scalars(
+                select(Job)
+                .where(Job.status == "published", Job.discovery_visible.is_(True))
+                .order_by(Job.created_at.desc(), Job.id.desc())
+                .limit(limit)
+            )
+        )
 
     async def get(self, job_id: UUID, *, lock: bool = False) -> Job | None:
         query = select(Job).where(Job.id == job_id)

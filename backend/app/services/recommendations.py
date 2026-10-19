@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.models.identity import User
-from app.models.recruitment import Job, JobRequirement
+from app.models.recruitment import JobRequirement
+from app.repositories.jobs import JobRepository
 from app.schemas.analysis import (
     JobRecommendationRequest,
     JobRecommendationResult,
@@ -31,14 +32,9 @@ async def recommend_jobs(
     """Rank published jobs from one bounded scan of the student's saved materials."""
     materials = await resolve_materials(session, request, user)
     files_by_path = {file["path"]: file for file in materials.files}
-    job_rows = list(
-        await session.scalars(
-            select(Job)
-            .where(Job.status == "published")
-            .order_by(Job.created_at.desc(), Job.id.desc())
-            .limit(MAX_RECOMMENDATION_JOBS)
-        )
-    )
+    # Same visibility predicate as job discovery: a sample hidden from the job list must
+    # not reappear through recommendations.
+    job_rows = await JobRepository(session).recommendation_candidates(MAX_RECOMMENDATION_JOBS)
     jobs = []
     seen_jobs: set[tuple[str, str, str, str, str]] = set()
     for job in job_rows:

@@ -115,6 +115,8 @@ class JobView(APIModel):
     employment_type: EmploymentType
     created_at: datetime
     requirements: list[JobRequirementView]
+    is_demo: bool = False
+    discovery_visible: bool = True
 
 
 class JobSummary(APIModel):
@@ -128,3 +130,5 @@ class JobSummary(APIModel):
     employment_type: EmploymentType
     requirement_count: int
     created_at: datetime
+    is_demo: bool = False
+    discovery_visible: bool = True

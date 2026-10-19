@@ -12,6 +12,7 @@ import { useAuth } from "./AuthProvider";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import ProjectVersionPicker from "./ProjectVersionPicker";
 import ResumeVersionPicker from "./ResumeVersionPicker";
+import ScenarioMaterials from "./ScenarioMaterials";
 
 export default function JobDetailView({
   id,
@@ -36,7 +37,8 @@ export default function JobDetailView({
   if (!job) return <p className="py-12 text-center text-slate-500">正在加载岗位…</p>;
   return <div className="space-y-6">
     <Link className="text-sm text-indigo-600" href="/jobs">← 岗位发现</Link>
-    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="mt-2 text-3xl font-bold">{job.title}</h1><p className="mt-2 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p></div><span className="rounded bg-slate-100 px-3 py-1 text-sm">{job.status === "published" ? "招聘中" : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{job.description || "暂无岗位描述"}</p></section>
+    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="mt-2 text-3xl font-bold">{job.title}</h1><p className="mt-2 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p>{job.isDemo && <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-6 text-slate-700">体验样例：岗位、企业与人物均为虚构，仅用于练习材料核对；不向真实企业投递，也不代表任何真实招聘。</p>}</div><span className="rounded bg-slate-100 px-3 py-1 text-sm">{job.status === "published" ? (job.isDemo ? "可体验" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{job.description || "暂无岗位描述"}</p></section>
+    <ScenarioMaterials title={job.title} companyName={job.companyName} isDemo={job.isDemo} />
     <section className="panel"><h2 className="text-lg font-semibold">岗位要求</h2><ol className="mt-4 space-y-3">{job.requirements.map((requirement, index) => <li key={requirement.id} className="rounded-xl bg-slate-50 p-4"><p className="text-sm font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p>{requirement.sourceQuote && <p className="mt-2 rounded-lg bg-white p-2 text-xs leading-6 text-slate-600">岗位原文：“{requirement.sourceQuote}”</p>}</li>)}</ol></section>
     {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} /></AccessGate>}
     {user?.role === "enterprise" && <Link className="panel block text-indigo-700 underline" href={`/jobs/${job.id}/applications`}>查看本岗位已授权投递与匹配对照</Link>}

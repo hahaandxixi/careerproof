@@ -1,0 +1,101 @@
+TAP version 13
+# Subtest: 同岗位未撤回投递解析为 active，携带真实 id/状态；重试仍只调用只读接口
+ok 1 - 同岗位未撤回投递解析为 active，携带真实 id/状态；重试仍只调用只读接口
+  ---
+  duration_ms: 1.3008
+  type: 'test'
+  ...
+# Subtest: 其他岗位的记录不得给本岗位下结论：解析为 unknown
+ok 2 - 其他岗位的记录不得给本岗位下结论：解析为 unknown
+  ---
+  duration_ms: 0.192
+  type: 'test'
+  ...
+# Subtest: 只有撤回记录时解析为 withdrawn，绝不当成进行中的投递
+ok 3 - 只有撤回记录时解析为 withdrawn，绝不当成进行中的投递
+  ---
+  duration_ms: 0.1252
+  type: 'test'
+  ...
+# Subtest: 撤回与进行中并存时 active 优先；多条 active 取最新 createdAt
+ok 4 - 撤回与进行中并存时 active 优先；多条 active 取最新 createdAt
+  ---
+  duration_ms: 0.0971
+  type: 'test'
+  ...
+# Subtest: 残缺记录不能证明任何状态：缺 id/缺 status/非对象一律 unknown
+ok 5 - 残缺记录不能证明任何状态：缺 id/缺 status/非对象一律 unknown
+  ---
+  duration_ms: 0.1126
+  type: 'test'
+  ...
+# Subtest: 读取失败解析为显式 error，绝不是未投递，也不冒充成功
+ok 6 - 读取失败解析为显式 error，绝不是未投递，也不冒充成功
+  ---
+  duration_ms: 0.1772
+  type: 'test'
+  ...
+# Subtest: 失败后重试成功可以恢复：仅新增一次只读调用
+ok 7 - 失败后重试成功可以恢复：仅新增一次只读调用
+  ---
+  duration_ms: 0.1567
+  type: 'test'
+  ...
+# Subtest: 乱序响应：晚到的旧响应被丢弃，状态停留在后发起的那次读取
+ok 8 - 乱序响应：晚到的旧响应被丢弃，状态停留在后发起的那次读取
+  ---
+  duration_ms: 0.198
+  type: 'test'
+  ...
+# Subtest: 岗位切换：立即清成 loading，旧岗位的迟到响应丢弃，只认新岗位数据
+ok 9 - 岗位切换：立即清成 loading，旧岗位的迟到响应丢弃，只认新岗位数据
+  ---
+  duration_ms: 0.3285
+  type: 'test'
+  ...
+# Subtest: 卸载后到达的响应绝不发布；dispose 前只留下 loading
+ok 10 - 卸载后到达的响应绝不发布；dispose 前只留下 loading
+  ---
+  duration_ms: 0.3282
+  type: 'test'
+  ...
+# Subtest: 未 activate 的会话不发起读取、不发布状态
+ok 11 - 未 activate 的会话不发起读取、不发布状态
+  ---
+  duration_ms: 0.141
+  type: 'test'
+  ...
+# Subtest: page lifecycle invalidates hidden reads, coalesces return events and removes listeners
+ok 12 - page lifecycle invalidates hidden reads, coalesces return events and removes listeners
+  ---
+  duration_ms: 0.4385
+  type: 'test'
+  ...
+# Subtest: hidden mount waits until visible and cleanup rejects late response
+ok 13 - hidden mount waits until visible and cleanup rejects late response
+  ---
+  duration_ms: 0.584
+  type: 'test'
+  ...
+# Your app (or one of its dependencies) is using an outdated JSX transform. Update to the modern JSX transform for faster performance: https://react.dev/link/new-jsx-transform
+# Subtest: each canonical sample renders its own real downloadable files
+ok 14 - each canonical sample renders its own real downloadable files
+  ---
+  duration_ms: 6.8366
+  type: 'test'
+  ...
+# Subtest: ordinary jobs and unrecognized samples do not get unrelated materials
+ok 15 - ordinary jobs and unrecognized samples do not get unrelated materials
+  ---
+  duration_ms: 0.3674
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 134.5184

@@ -1,0 +1,26 @@
+{
+  "desktop": {
+    "viewport": 1280,
+    "scrollWidth": 1265,
+    "cards": 4
+  },
+  "mobile": {
+    "viewport": 390,
+    "scrollWidth": 375,
+    "cards": 4
+  },
+  "detail": {
+    "viewport": 390,
+    "scrollWidth": 375,
+    "materialLinks": [
+      "event-api-resume.txt",
+      "event-api-project.zip"
+    ],
+    "afterKeyboardTab": {
+      "scrollWidth": 390,
+      "width": 390,
+      "focus": "下载项目材料（ZIP）"
+    }
+  },
+  "scope": "Real production build and normal API; no upload, report generation or application performed in this pass."
+}

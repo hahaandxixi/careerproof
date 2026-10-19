@@ -58,6 +58,8 @@ class JobService:
                     employment_type=job.employment_type,
                     requirement_count=requirement_count,
                     created_at=job.created_at,
+                    is_demo=job.is_demo,
+                    discovery_visible=job.discovery_visible,
                 )
                 for job, requirement_count in rows
             ],
@@ -209,5 +211,7 @@ class JobService:
             city=job.city,
             employment_type=job.employment_type,
             created_at=job.created_at,
+            is_demo=job.is_demo,
+            discovery_visible=job.discovery_visible,
             requirements=[JobRequirementView.model_validate(item) for item in requirements],
         )

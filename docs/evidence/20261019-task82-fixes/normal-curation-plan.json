@@ -1,0 +1,57 @@
+{
+  "legacyEnterpriseId": "4a074a4f-f0eb-40b2-a6a3-c69f3662438f",
+  "ownerId": "12eca85a-1315-479f-9a49-9cf0f7b2d080",
+  "createScenarioTitles": [
+    "Python 后端开发实习生",
+    "React 前端开发实习生",
+    "接口测试开发实习生"
+  ],
+  "hide": [
+    {
+      "id": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+      "title": "Python 后端开发实习生（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "3d9b94f8-b917-4e10-b389-cd72c0a0b003",
+      "title": "前端开发工程师（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "4dfa9d69-d6ec-450c-a9d2-89a520a6be12",
+      "title": "软件测试工程师（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "f7b12163-58ab-4022-b90e-6b69ca9da93f",
+      "title": "数据分析师（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "2877ee12-15d4-4840-8081-c54f755575c5",
+      "title": "产品助理（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "2b66a031-20c4-43dc-a3e5-258645c51dcc",
+      "title": "用户运营专员（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "9fc02d8b-06be-41e0-bce1-1e834c6020e3",
+      "title": "自动化运维工程师（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "9c2afb19-a3ec-40c6-9229-bdd3d9c333cc",
+      "title": "数据库工程师 DBA（合成演示）",
+      "status": "published"
+    },
+    {
+      "id": "4956d2b4-e749-44db-a2f1-e85bd865619d",
+      "title": "数据工程师（合成演示）",
+      "status": "published"
+    }
+  ],
+  "preservedUnproven": []
+}
