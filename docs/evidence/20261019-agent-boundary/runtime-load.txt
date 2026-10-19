@@ -1,0 +1,11 @@
+﻿head=b6115c3874b7995d506ac5f7f119a20b1b691e92
+commit_date=2026-10-19T21:47:47+08:00
+backend_manifest_root=463372
+backend_listener=463296
+backend_start=2026-10-19T21:48:23+08:00
+frontend_manifest_and_listener=461148
+frontend_start=2026-10-19T21:48:27+08:00
+source_mtime=2026-10-19T12:15:42+08:00
+health_3000=200
+health_8000=200
+note=managed restart after commit; backend and frontend processes started after HEAD commit and after source mtime; no manual process takeover

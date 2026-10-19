@@ -1,6 +1,6 @@
 # 2026-10-19 Agent 工具边界补强与评分证据矩阵
 
-范围：核对 Agent、Function Calling、MCP 接线；新增一个有界回归并修复一个工具边界缺陷。没有真实模型请求、没有改历史报告/评分协议/数据库。三文件于 2026-10-19 单独提交；受管后端在提交后重启以加载相同源码。
+范围：核对 Agent、Function Calling、MCP 接线；新增一个有界回归并修复一个工具边界缺陷。没有真实模型请求、没有改历史报告/评分协议/数据库。三文件提交为 `b6115c3`；受管后端在提交后重启（21:48:23，晚于提交 21:47:47），运行源码与验收记录对齐。
 
 结论先行：
 
@@ -95,7 +95,7 @@
   → **1 passed, 5 warnings, 2.57s**（`mcp-stdio-current.raw.out`，stderr 单列 `mcp-stdio-current.raw.err`；临时 SQLite、本机 loopback HTTP、官方 SDK stdio；不证明商业客户端或 PostgreSQL 并发）。
 - `python -m ruff check app/agents/evidence_workflow.py app/tests/test_report_history.py app/tests/test_ai_evidence_workflow.py`
   → **All checks passed**（`ruff-final.raw.out`）。未把 `ruff format --check` 写成通过：被改文件在 HEAD 已有整文件重排差异，本轮不做无关全文件格式化。
-- 源码加载核对：后端进程 21:17:02 启动，三文件最后修改为 12:15—12:17；无 reload，运行进程在启动时已导入该工作树源码。三文件提交后用受管启停重启，后端进程启动时间晚于提交，确保运行源码与验收记录对齐。
+- 源码加载核对：`b6115c3` 提交后受管重启；后端启动 21:48:23、前端 21:48:27，均晚于提交 21:47:47 和三文件 mtime 12:15—12:17。清单根 463372，后端监听 463296；前端清单/监听 461148。详见 [`runtime-load.txt`](runtime-load.txt)。
 - 正常站：`http://127.0.0.1:3000` 返回 200；`http://127.0.0.1:8000/api/v1/health` 返回 200。**本轮未生成新的 AI 报告，因此不能声称 `completed/rejected` 新状态已在真实报告页显示。**
 
 ## 五、已验证 / 未验证边界
@@ -141,6 +141,8 @@
 - 源码：`backend/app/agents/evidence_workflow.py`
 - 回归：`backend/app/tests/test_report_history.py`、`backend/app/tests/test_ai_evidence_workflow.py`
 - 最终输出：`agent-related-tests-final.raw.out`、`agent-related-tests-final.exit`、`ruff-final.raw.out`
+- 运行加载：`runtime-load.txt`
+- 现有三例人工复核交接与 Agent 调用方案：[next-human-and-live-plan.md](next-human-and-live-plan.md)
 - 历史输出保留：`agent-related-tests.raw.out`、`ruff.raw.out`、`mcp-stdio-current.raw.out`、`mcp-stdio-current.raw.err`
 - 修复前终端转录：`red-before-fix-transcript.txt`（原始 pty 未保存，已如实标注）
 - 版本与哈希：`git-baseline.txt`、`source-hashes.txt`
