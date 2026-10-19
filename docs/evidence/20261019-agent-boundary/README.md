@@ -112,7 +112,7 @@
 - 本轮 `status` 是否在正常站真实报告页显示（未生成新 AI 报告；页面级未验）。
 - PostgreSQL 下的 MCP 并发/锁语义（本轮只跑 SQLite 协议链；历史 PG 证据另列）。
 - 商业 MCP 客户端、外部客户端界面、独立人工语义/区域标注、首次独立用户、性能基准、完整后端全量、前端全量、候选冻结。
-- 本轮只显式提交三文件，不推送；`docs/当前接力.md`、`docs/guides/使用与启动.md`、`jianli/src/components/JobDetailView.tsx` 及角色一致性证据的既有改动不属于本轮，未覆盖。
+- 本轮显式提交三文件及本证据目录，不推送；`docs/当前接力.md`、`docs/guides/使用与启动.md`、`jianli/src/components/JobDetailView.tsx` 及已提交的角色一致性证据不属于本轮，未覆盖。
 
 ## 六、接下来三项
 
