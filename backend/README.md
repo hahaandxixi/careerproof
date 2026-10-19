@@ -81,7 +81,10 @@ python -m venv .venv
 .\.venv-dependency23\Scripts\alembic.exe check
 ```
 
-`alembic check` 会连接当前配置数据库，仅在明确选定的本地库执行。生产环境必须设置
+`alembic check` 会连接当前配置数据库，仅在明确选定的本地库执行。
+隔离验证必须在该命令的子进程环境中显式设置 `DATABASE_URL`，并先核对目标主机、端口和库名。
+本项目不支持 `-x dburl=...` 等自定义选择参数；提供 `-x` 会在创建数据库引擎前报错，不能把它当作隔离方式。
+生产环境必须设置
 `APP_ENV=production` 和至少32字符的私有随机 `JWT_SECRET`，默认值和示例占位符会被拒绝。
 生产模式强制关闭 Debug，`/docs`、`/redoc`、`/openapi.json` 不开放；开发与测试模式仍可用。
 

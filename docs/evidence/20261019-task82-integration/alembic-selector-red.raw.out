@@ -1,0 +1,116 @@
+FF.                                                                      [100%]
+================================== FAILURES ===================================
+_ test_unsupported_x_option_rejected_before_engine_creation[dburl=sqlite+aiosqlite:///never-open.db] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000021FDDC6EC00>
+option = 'dburl=sqlite+aiosqlite:///never-open.db'
+
+    @pytest.mark.parametrize("option", [
+        "dburl=sqlite+aiosqlite:///never-open.db",
+        "database_url=postgresql://should-not-be-logged@127.0.0.1/never-open",
+    ])
+    def test_unsupported_x_option_rejected_before_engine_creation(monkeypatch, option):
+        prepare(monkeypatch, [option])
+        engine_calls = []
+    
+        def forbidden_engine(*args, **kwargs):
+            engine_calls.append(True)
+            pytest.fail("Alembic tried to create an engine despite an unsupported selector")
+    
+        monkeypatch.setattr(sa_async, "async_engine_from_config", forbidden_engine)
+        with pytest.raises(ValueError, match="Unsupported Alembic -x") as error:
+>           runpy.run_path(str(BACKEND / "alembic/env.py"))
+
+app\tests\test_alembic_environment.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<frozen runpy>:287: in run_path
+    ???
+<frozen runpy>:98: in _run_module_code
+    ???
+<frozen runpy>:88: in _run_code
+    ???
+alembic\env.py:59: in <module>
+    run_migrations_online()
+alembic\env.py:53: in run_migrations_online
+    asyncio.run(run_async_migrations())
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+alembic\env.py:42: in run_async_migrations
+    connectable = async_engine_from_config(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = ({'here': 'D:/jbcode/web ai/jianli/backend', 'prepend_sys_path': '.', 'script_location': 'alembic', 'sqlalchemy.url': 'postgresql+asyncpg://careerproof:careerproof@127.0.0.1:5432/careerproof'},)
+kwargs = {'poolclass': <class 'sqlalchemy.pool.impl.NullPool'>, 'prefix': 'sqlalchemy.'}
+
+    def forbidden_engine(*args, **kwargs):
+        engine_calls.append(True)
+>       pytest.fail("Alembic tried to create an engine despite an unsupported selector")
+E       Failed: Alembic tried to create an engine despite an unsupported selector
+
+app\tests\test_alembic_environment.py:30: Failed
+_ test_unsupported_x_option_rejected_before_engine_creation[database_url=postgresql://should-not-be-logged@127.0.0.1/never-open] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000021F8C0C22D0>
+option = 'database_url=postgresql://should-not-be-logged@127.0.0.1/never-open'
+
+    @pytest.mark.parametrize("option", [
+        "dburl=sqlite+aiosqlite:///never-open.db",
+        "database_url=postgresql://should-not-be-logged@127.0.0.1/never-open",
+    ])
+    def test_unsupported_x_option_rejected_before_engine_creation(monkeypatch, option):
+        prepare(monkeypatch, [option])
+        engine_calls = []
+    
+        def forbidden_engine(*args, **kwargs):
+            engine_calls.append(True)
+            pytest.fail("Alembic tried to create an engine despite an unsupported selector")
+    
+        monkeypatch.setattr(sa_async, "async_engine_from_config", forbidden_engine)
+        with pytest.raises(ValueError, match="Unsupported Alembic -x") as error:
+>           runpy.run_path(str(BACKEND / "alembic/env.py"))
+
+app\tests\test_alembic_environment.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<frozen runpy>:287: in run_path
+    ???
+<frozen runpy>:98: in _run_module_code
+    ???
+<frozen runpy>:88: in _run_code
+    ???
+alembic\env.py:59: in <module>
+    run_migrations_online()
+alembic\env.py:53: in run_migrations_online
+    asyncio.run(run_async_migrations())
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+alembic\env.py:42: in run_async_migrations
+    connectable = async_engine_from_config(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+args = ({'here': 'D:/jbcode/web ai/jianli/backend', 'prepend_sys_path': '.', 'script_location': 'alembic', 'sqlalchemy.url': 'postgresql+asyncpg://careerproof:careerproof@127.0.0.1:5432/careerproof'},)
+kwargs = {'poolclass': <class 'sqlalchemy.pool.impl.NullPool'>, 'prefix': 'sqlalchemy.'}
+
+    def forbidden_engine(*args, **kwargs):
+        engine_calls.append(True)
+>       pytest.fail("Alembic tried to create an engine despite an unsupported selector")
+E       Failed: Alembic tried to create an engine despite an unsupported selector
+
+app\tests\test_alembic_environment.py:30: Failed
+=========================== short test summary info ===========================
+FAILED app/tests/test_alembic_environment.py::test_unsupported_x_option_rejected_before_engine_creation[dburl=sqlite+aiosqlite:///never-open.db]
+FAILED app/tests/test_alembic_environment.py::test_unsupported_x_option_rejected_before_engine_creation[database_url=postgresql://should-not-be-logged@127.0.0.1/never-open]
+2 failed, 1 passed in 0.59s

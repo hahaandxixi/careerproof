@@ -14,7 +14,9 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    false,
     text,
+    true,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -53,6 +55,18 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     category: Mapped[str] = mapped_column(String(50), default="software", index=True)
     city: Mapped[str] = mapped_column(String(100), default="不限", index=True)
     employment_type: Mapped[str] = mapped_column(String(30), default="campus", index=True)
+    # Two separate facts, deliberately not inferred from the title:
+    #   is_demo           the posting is a curated experience sample, not a real vacancy
+    #   discovery_visible whether the posting may appear in job discovery (and in
+    #                     recommendation candidates). A hidden posting keeps its id,
+    #                     reports, applications and growth tasks reachable by id.
+    # Enterprise postings default to a real, discoverable job.
+    is_demo: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=false(), index=True
+    )
+    discovery_visible: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default=true(), index=True
+    )
 
 
 class JobRequirement(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):

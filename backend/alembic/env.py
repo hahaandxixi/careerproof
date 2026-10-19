@@ -12,6 +12,14 @@ from app.core.config import settings
 from app.core.database import Base
 
 config = context.config
+# This project selects its database through DATABASE_URL, not custom -x options.
+# Silently ignoring a guessed selector can migrate the configured business DB.
+# Reject before configuring or constructing any engine; never echo option values.
+if context.get_x_argument():
+    raise ValueError(
+        "Unsupported Alembic -x options. Set DATABASE_URL explicitly; "
+        "-x dburl does not select a database in this project."
+    )
 config.set_main_option("sqlalchemy.url", settings.database_url)
 
 if config.config_file_name is not None:

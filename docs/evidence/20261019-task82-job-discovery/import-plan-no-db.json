@@ -1,0 +1,24 @@
+﻿{
+  "version": "market-scenarios-20261019",
+  "companyName": "职证场景实验室（虚构）",
+  "notice": "以下为参考公开岗位能力方向编写的体验场景，企业、人物和经历均为虚构；不向BOSS或真实企业投递。",
+  "targetEnterprise": null,
+  "scenarios": [
+    {
+      "title": "Python 后端开发实习生",
+      "action": "unknown (no database)"
+    },
+    {
+      "title": "React 前端开发实习生",
+      "action": "unknown (no database)"
+    },
+    {
+      "title": "接口测试开发实习生",
+      "action": "unknown (no database)"
+    }
+  ],
+  "legacyToHide": [],
+  "ambiguities": [
+    "No --database-url given: no job ids were inspected. Re-run the plan with the target database url to list existing scenario postings and legacy ids."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "dedicatedPort": 55437,
+  "countAndPagesUseSamePredicate": true,
+  "enterpriseOpeningPreserved": true,
+  "recommendationsRespectVisibility": true,
+  "hiddenPublishedJobStillReadableById": true,
+  "rolledBackFixtures": true
+}
