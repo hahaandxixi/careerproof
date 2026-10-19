@@ -1,0 +1,7 @@
+﻿stop_exit=0
+port 3000 free after stop
+port 8000 free after stop
+start_output=managed-start.out contains CareerProof is ready
+start_wrapper_note=outer Start-Process -Wait wrapper hung on redirected child handles; it was stopped after Start-Local had written the ready line and manifest. This is a wrapper artifact, not a service failure.
+health_3000=200
+health_8000=200

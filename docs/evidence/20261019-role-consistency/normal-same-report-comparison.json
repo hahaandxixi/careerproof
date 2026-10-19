@@ -1,0 +1,32 @@
+{
+  "comparisonObject": {
+    "jobId": "151b3397-7cc4-48f4-96fc-aabd4f346f3c",
+    "reportId": "1b6c0425-848a-4229-8cc8-cc4d4447ba54",
+    "applicationId": "b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3",
+    "roleA": "student API GET /match-reports/{id}",
+    "roleB": "enterprise application report_snapshot",
+    "reportCreatedAt": "2026-10-16T06:08:54.285260Z",
+    "ruleVersionEpoch": "source-context-v8-actionable-evidence-gaps",
+    "itemCount": 5,
+    "evidenceCount": 20
+  },
+  "exactTopLevelEqual": true,
+  "canonicalSha256": "f8d7e47a8df1e1283f670d17c5c10325aa254bc5e911efbdd1424a89aee2d8cc",
+  "enterpriseCanonicalSha256": "f8d7e47a8df1e1283f670d17c5c10325aa254bc5e911efbdd1424a89aee2d8cc",
+  "commonFields": {
+    "id": true,
+    "jobId": true,
+    "jobTitle": true,
+    "candidateId": true,
+    "candidateName": true,
+    "overallScore": true,
+    "summary": true,
+    "analysisMode": true,
+    "aiFallbackUsed": true,
+    "evidenceContextVersion": true,
+    "createdAt": true,
+    "items": true
+  },
+  "sameRequirementIds": true,
+  "sameEvidenceLists": true
+}

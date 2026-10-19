@@ -1,0 +1,8 @@
+﻿head_before=a45f347560e3b2e01ddf880f11af6219ba182bf8
+managed_stage=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-consistency
+next=15.5.27
+eslint=9.39.5
+package_lock_sha256=B95BF8852E451FCC81087EFB22CF0752E66583B3AD3CEBA804AC27AEE37CBB7C
+node=v22.23.1
+backend_venv=.venv-dependency23
+normal_manifest=D:\jbcode\web ai\jianli\backend\.tmp\local-run\processes.json

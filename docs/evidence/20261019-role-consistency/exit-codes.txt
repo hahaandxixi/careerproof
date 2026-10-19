@@ -1,0 +1,6 @@
+﻿tests_affected_exit=0
+typecheck_exit=0
+eslint_exit=0
+build_after_unknown_exit=0
+managed_stop_exit=0
+managed_start_ready=1

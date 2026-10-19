@@ -1,0 +1,5 @@
+﻿68d974b738dfac61949c79858932fbbf2187d5dc4b309cc1172b9fa0d796521a  jianli/src/lib/report-display.ts
+6dd6e3f47b2f0ad94ffbfc26a24686e797c83e83654a6b555a8fa3b5e062066a  jianli/src/components/ReportDetail.tsx
+a44bfca9962f29df32e415f82d5501c2711eebacec505e2f4121286307ee191f  jianli/src/components/ReportList.tsx
+d2bdd9ec16f88c0b9cb198f5653cddbe44f1976801083da65007dfa20c5333be  jianli/src/components/ApplicationBoard.tsx
+517ba305e5910497bfcc327728209f569c5933e28210bdf38c353e8f96de752a  jianli/tests/report-display.test.mjs

@@ -1,0 +1,22 @@
+﻿{
+    "configHash":  "CB7E6ECE1CDE27E0BEBDC270E51A260910A5F81CDADBBBA759345F9F09888EEE",
+    "backendDigest":  "DE21176C27F586A59580CD38204F2D84C766AE10B4837793F66EFC54C4BABE51",
+    "schemaVersion":  2,
+    "frontendRoot":  "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-consistency",
+    "backendVenv":  ".venv-dependency23",
+    "createdAt":  "2026-10-19T13:17:02.7771275Z",
+    "processes":  [
+                      {
+                          "Started":  "2026-10-19T13:17:02.7824566Z",
+                          "Needle":  "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+                          "Id":  451264,
+                          "Invocation":  "uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8000"
+                      },
+                      {
+                          "Started":  "2026-10-19T13:17:06.1357514Z",
+                          "Needle":  "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-consistency\\node_modules\\next\\dist\\bin\\next",
+                          "Id":  449268,
+                          "Invocation":  "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-consistency\\node_modules\\next\\dist\\bin\\next"
+                      }
+                  ]
+}

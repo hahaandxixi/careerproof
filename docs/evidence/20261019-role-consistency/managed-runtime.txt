@@ -1,0 +1,17 @@
+﻿checkedAt=2026-10-19T21:23:27.1731525+08:00
+manifest_createdAt=2026-10-19T13:17:02.7771275Z
+backendVenv=.venv-dependency23
+frontendRoot=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-consistency
+backendDigest=DE21176C27F586A59580CD38204F2D84C766AE10B4837793F66EFC54C4BABE51
+configHash=CB7E6ECE1CDE27E0BEBDC270E51A260910A5F81CDADBBBA759345F9F09888EEE
+manifest_process id=451264 needle=D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe invocation=uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8000
+manifest_process id=449268 needle=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-consistency\node_modules\next\dist\bin\next invocation=D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-consistency\node_modules\next\dist\bin\next
+listener port=3000 pid=449268 name=node.exe parent=450292
+  command="C:\Users\江博\AppData\Local\hermes\node\node.exe" "D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261019-consistency\node_modules\next\dist\bin\next" start -H 127.0.0.1 -p 3000
+listener port=8000 pid=451320 name=python.exe parent=451264
+  command="C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" -m uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8000
+health_3000=200
+health_8000=200
+stop_script_output=Owned local services stopped.; ports 3000/8000 free after stop; manifest removed then recreated by Start-Local
+start_script_output=CareerProof is ready at http://127.0.0.1:3000; managed-start.out retained
+ownership_note=backend manifest records the .venv-dependency23 launcher pid; the venv launcher starts the base python child that owns listener 451320. Stop-Local previously validated 2 roots and actually stopped both services (ports freed). Frontend manifest pid equals listener.
