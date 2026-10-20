@@ -59,6 +59,9 @@ def test_committed_snapshot_excludes_private_and_worktree_content(repository, tm
         assert saved == manifest
         assert set(saved["files"]) == package.REQUIRED
         assert not saved["worktree_included"]
+        assert not saved["git_history_included"]
+        assert set(package.AGENT_FIXTURES) <= set(saved["files"])
+        assert "完整Git历史须通过原托管仓库" in archive.read("SOURCE_PACKAGE.md").decode()
 
 
 def test_reproducible_and_existing_output_never_overwritten(repository, tmp_path):
@@ -100,3 +103,75 @@ def test_unsafe_archive_names_are_excluded(path):
 def test_ci_workflows_are_exported_but_other_hidden_github_files_are_not():
     assert package.included('.github/workflows/ci.yml')
     assert not package.included('.github/private-credentials.json')
+
+
+@pytest.mark.parametrize("name", [
+    "docs/任务清单.md", "docs/协作规则.md", "docs/当前接力.md",
+    "docs/task-cards/task.md", "docs/guides/unapproved.md",
+    "output/pdf/CareerProof-技术文档-提交候选稿.pdf",
+])
+def test_internal_documents_and_old_pdf_are_excluded(name):
+    assert not package.included(name)
+
+
+def test_reviewer_guides_and_required_agent_fixtures_are_preserved():
+    assert len(package.REVIEW_DOCS) == 8
+    for name in package.REVIEW_DOCS | package.AGENT_FIXTURES:
+        assert package.included(name)
+        assert name in package.REQUIRED
+
+
+@pytest.mark.parametrize("fixture", sorted(package.AGENT_FIXTURES))
+def test_missing_agent_fixture_refuses_package(repository, tmp_path, fixture):
+    git(repository, "rm", fixture)
+    git(repository, "commit", "-qm", "Remove required Agent fixture")
+    output = tmp_path / "missing-agent.zip"
+    with pytest.raises(ValueError, match="Missing required source/resources"):
+        package.build(repository, output)
+    assert not output.exists()
+
+
+def test_local_links_check_paths_directories_references_images_and_ignore_code():
+    contents = {
+        "README.md": b'''[guide](<docs/guide one.md>)
+[root](/backend/README.md?view=1#setup)
+[directory](docs/)
+![image](demo/picture.png "title")
+[reference][guide]
+[guide]: docs/guide%20one.md#heading
+[url](https://example.invalid/missing)
+[anchor](#not-checked)
+`[inline example](missing.txt)`
+```markdown
+[fenced example](missing.txt)
+```
+''',
+        "docs/guide one.md": b"material",
+        "backend/README.md": b"[up](../README.md)",
+        "demo/picture.png": b"not rendered",
+        "backend/app/tests/fixture.md": b"[not navigation](missing.md)",
+    }
+    assert package.validate_document_links(contents) == ["README.md", "backend/README.md"]
+
+
+def test_missing_local_link_refuses_before_creating_zip(repository, tmp_path):
+    (repository / "README.md").write_text("[internal](docs/任务清单.md)\n", encoding="utf-8")
+    internal = repository / "docs/任务清单.md"
+    internal.write_text("Exists in Git but must not be exported", encoding="utf-8")
+    git(repository, "add", ".")
+    git(repository, "commit", "-qm", "Link to excluded internal document")
+    output = tmp_path / "broken-link.zip"
+    with pytest.raises(ValueError, match="Missing package document links") as failure:
+        package.build(repository, output)
+    assert "README.md:1:" in str(failure.value)
+    assert "docs/任务清单.md" in str(failure.value)
+    assert not output.exists()
+
+
+def test_navigation_is_checked_from_committed_bytes(repository, tmp_path):
+    (repository / "README.md").write_text("[guide](docs/guides/使用与启动.md)", encoding="utf-8")
+    git(repository, "add", ".")
+    git(repository, "commit", "-qm", "Valid committed navigation")
+    (repository / "README.md").write_text("[missing](missing.md)", encoding="utf-8")
+    manifest = package.build(repository, tmp_path / "committed-links.zip")
+    assert "README.md" in manifest["document_link_check"]["documents"]

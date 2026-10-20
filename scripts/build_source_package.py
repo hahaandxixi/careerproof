@@ -10,22 +10,33 @@ import argparse
 import hashlib
 import io
 import json
+import posixpath
 import re
 import subprocess
 from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
+from urllib.parse import unquote, urlsplit
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 REVIEW_FIXTURE = "docs/evidence/20261010-AI-blind-plan-review/review.json"
-PDF = "output/pdf/CareerProof-技术文档-提交候选稿.pdf"
+AGENT_FIXTURES = {
+    "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json",
+    "docs/evidence/20261017-task70-semantic-review-packet/current-smoke-preflight-20261018.json",
+}
+REVIEW_DOCS = {
+    "docs/README.md", "docs/guides/使用与启动.md", "docs/guides/功能演示.md",
+    "docs/guides/AI与数据边界.md", "docs/guides/证据与产品能力.md",
+    "docs/guides/工具与接入.md", "docs/guides/评测与人工复核.md",
+    "docs/guides/比赛交付.md",
+}
 REQUIRED = {
     "README.md", "THIRD_PARTY_NOTICES.md", "Start-Local.ps1", "Stop-Local.ps1",
     "backend/pyproject.toml", "backend/app/main.py", "backend/.env.example",
     "backend/docker-compose.yml", "jianli/package.json", "jianli/package-lock.json",
     "jianli/src/app/page.tsx", "demo/build_role_packs.py", REVIEW_FIXTURE,
-    "docs/guides/使用与启动.md", "backend/evals/quality-blind-plan-review-input.json",
-}
+    "backend/evals/quality-blind-plan-review-input.json",
+} | REVIEW_DOCS | AGENT_FIXTURES
 PRIVATE_PARTS = {".git", "storage", "node_modules", "__pycache__", ".pytest_cache",
                  ".ruff_cache", ".cache"}
 SECRET_ASSIGNMENT = re.compile(
@@ -66,10 +77,73 @@ def included(name: str) -> bool:
     if path.parts[0] == "jianli":
         return len(path.parts) == 2 or path.parts[1] in {"src", "public", "tests"}
     if path.parts[0] == "docs":
-        return (len(path.parts) == 2 and path.suffix == ".md") or (
-            path.parts[1] == "guides" and path.suffix == ".md"
-        ) or name == REVIEW_FIXTURE
-    return name == PDF
+        return name in REVIEW_DOCS | AGENT_FIXTURES | {REVIEW_FIXTURE}
+    return False
+
+
+def reviewer_document(name: str) -> bool:
+    """Only navigational documentation, not arbitrary test/source Markdown."""
+    return name in REVIEW_DOCS | {
+        "README.md", "THIRD_PARTY_NOTICES.md", "backend/README.md", "jianli/README.md",
+    } or (name.startswith("demo/") and PurePosixPath(name).name == "README.md")
+
+
+def markdown_destinations(content: str):
+    """Read inline links/images and reference definitions outside code examples.
+
+    This checks local file navigation, not Markdown rendering or URL availability.
+    Anchor fragments are deliberately outside its acceptance claim.
+    """
+    fence = None
+    inline = re.compile(
+        r'!?\[[^\]\n]*\]\(\s*(?:<([^>\n]*)>|((?:[^()\s\\]|\\.|\([^()\n]*\))+))'
+        r'(?:\s+(?:"[^"\n]*"|\'[^\'\n]*\'|\([^()\n]*\)))?\s*\)'
+    )
+    reference = re.compile(r'^\s{0,3}\[[^\]\n]+\]:\s*(?:<([^>\n]+)>|(\S+))')
+    for number, line in enumerate(content.splitlines(), 1):
+        marker = re.match(r"^\s{0,3}(`{3,}|~{3,})", line)
+        if marker:
+            run = marker[1]
+            if fence is None:
+                fence = run
+            elif run[0] == fence[0] and len(run) >= len(fence):
+                fence = None
+            continue
+        if fence is not None:
+            continue
+        line = re.sub(r"(`+).*?\1", "", line)
+        for match in inline.finditer(line):
+            yield number, match[1] if match[1] is not None else match[2]
+        match = reference.match(line)
+        if match:
+            yield number, match[1] if match[1] is not None else match[2]
+
+
+def validate_document_links(contents: dict[str, bytes]) -> list[str]:
+    """Reject local links missing from this exact committed export."""
+    names = set(contents) | {"SOURCE_PACKAGE.md", "SOURCE_MANIFEST.json"}
+    checked = []
+    failures = []
+    for name, content in sorted(contents.items()):
+        if not reviewer_document(name):
+            continue
+        checked.append(name)
+        for line, destination in markdown_destinations(content.decode("utf-8")):
+            destination = re.sub(r"\\([\\() ])", r"\1", destination)
+            parsed = urlsplit(destination)
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            path = unquote(parsed.path)
+            target = posixpath.normpath(
+                path.lstrip("/") if path.startswith("/") else
+                posixpath.join(posixpath.dirname(name), path)
+            )
+            if (target not in names and target not in {".", ""}
+                    and not any(item.startswith(target.rstrip("/") + "/") for item in names)):
+                failures.append(f"{name}:{line}: {destination} -> {target}")
+    if failures:
+        raise ValueError("Missing package document links:\n" + "\n".join(failures))
+    return checked
 
 
 def read_blobs(root: Path, identities: list[str]) -> dict[str, bytes]:
@@ -116,6 +190,9 @@ def build(root: Path, output: Path, revision: str = "HEAD") -> dict:
         for match in SECRET_ASSIGNMENT.finditer(content):
             if not match[1].startswith((b"sk-synthetic", b"sk-test", b"sk-dummy")):
                 raise ValueError(f"Possible provider key in committed content: {name}")
+    checked_documents = validate_document_links({
+        name: blobs[identity] for name, _mode, identity, _length in entries
+    })
     timestamp = int(git(root, "show", "-s", "--format=%ct", commit).strip())
     date = datetime.fromtimestamp(timestamp, UTC)
     zip_date = (max(1980, date.year), date.month, date.day, date.hour, date.minute, date.second)
@@ -124,9 +201,14 @@ def build(root: Path, output: Path, revision: str = "HEAD") -> dict:
         "worktree_included": False, "git_history_included": False,
         "license_file_present": any(name in {"LICENSE", "LICENSE.md", "COPYING"}
                                     for name, *_ in entries),
-        "scope": "Application, tests, synthetic demo, guides and the required frozen review.",
+        "scope": "Application, tests, synthetic demo, reviewer guides and required test fixtures.",
+        "document_link_check": {
+            "documents": checked_documents,
+            "local_files_and_directories": True, "anchors_and_external_urls_checked": False,
+        },
         "omitted": "Local environments, credentials, uploads, caches, historical raw evidence "
-                   "and development task cards are excluded. No release acceptance is implied.",
+                   "and internal development documents are excluded. Video/PDF are separate "
+                   "deliverables. No release acceptance is implied.",
         "files": {name: {"sha256": hashlib.sha256(blobs[identity]).hexdigest(),
                          "bytes": length, "git_mode": mode}
                   for name, mode, identity, length in sorted(entries)},
@@ -138,7 +220,10 @@ def build(root: Path, output: Path, revision: str = "HEAD") -> dict:
         "上传材料或模型缓存。依赖安装见backend/README.md和jianli/README.md，"
         "运行与演示见docs/guides。需要在本机准备配置和合成账号，不能复用作者的临时环境。\n\n"
         "包含自动测试所需的合成演示源与冻结评测JSON。历史截图、原始日志及开发任务卡"
-        "不随包分发；相关历史证据链接需在原仓库查阅。\n\n"
+        "及内部协作记录不随包分发。视频与PDF另行交付；本包未内嵌历史PDF。\n\n"
+        "已核对保留说明文档的包内文件与目录链接；未核查外部网址与页内锚点，"
+        "也未因此完成干净环境启动验证。赛事要求的完整Git历史须通过原托管仓库"
+        "及实际评审访问另行提供，不能用此快照ZIP代替。\n\n"
         "SOURCE_MANIFEST.json列出实际提交和逐文件哈希。本包不是最终验收、许可确认、"
         "评审授权或正式提交证明，视频及最终签署仍须另行完成。\n"
     ).encode()
