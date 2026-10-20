@@ -1,0 +1,160 @@
+FFFFFF                                                                   [100%]
+================================== FAILURES ===================================
+_____ test_receipt_checkpoint_failure_stops_real_executor_after_one_post ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D6088D070>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_receipt_checkpoint_failur0')
+
+    def test_receipt_checkpoint_failure_stops_real_executor_after_one_post(monkeypatch, tmp_path):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path)
+        output = tmp_path / "receipt.json"
+        fault = fail_receipt_write(monkeypatch, output, persistent=False)
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+        assert fault["fired"]
+>       assert calls == [("POST", "AG-01", "planning_1")]
+E       AssertionError: assert [('POST', 'AG..., 'analysis')] == [('POST', 'AG...'planning_1')]
+E         
+E         Left contains 3 more items, first extra item: ('POST', 'AG-02', 'analysis')
+E         Use -v to get more diff
+
+app\tests\test_agent_smoke_hard_stop.py:73: AssertionError
+_________ test_final_log_write_failure_exits_without_success_summary __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D6088DE80>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_final_log_write_failure_e0')
+capsys = <_pytest.capture.CaptureFixture object at 0x0000028D6088DC10>
+
+    def test_final_log_write_failure_exits_without_success_summary(monkeypatch, tmp_path, capsys):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path)
+        output = tmp_path / "unsaved.json"
+        fail_receipt_write(monkeypatch, output, persistent=True)
+        monkeypatch.setattr(smoke, "checked_prices", lambda _: (Decimal(2), Decimal(8)))
+        import sys
+        monkeypatch.setattr(sys, "argv", ["smoke", "--agent", "--live", "--packet",
+                                         str(tmp_path / "packet.json"), "--output", str(output),
+                                         "--prices", str(tmp_path / "synthetic-price.json")])
+        (tmp_path / "packet.json").write_text(json.dumps(data), encoding="utf-8")
+        with pytest.raises(smoke.SmokeStopped, match="final report persistence failed"):
+>           smoke.main()  # Unhandled exception at CLI boundary means non-zero process exit.
+            ^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\bounded_evidence_smoke.py:625: in main
+    report = asyncio.run(execute_agent(packet, args.output, checked_prices(args.prices)))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:496: in execute_agent
+    save()
+evals\bounded_evidence_smoke.py:386: in save
+    output.write_text(content, encoding="utf-8")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_final_log_write_failure_e0/unsaved.json')
+content = '{\n  "batch": "agent-live-20261020-three-cases",\n  "status": "stopped",\n  "results": [\n    {\n      "id": "AG-01",...ly": true,\n  "externalRequests": 1,\n  "errorType": "OSError",\n  "stopReason": "synthetic receipt disk failure"\n}\n'
+args = (), kwargs = {'encoding': 'utf-8'}
+attempts = [{'case': 'AG-01', 'latencyMs': 0, 'requestSha256': '2498e59d5f9e276d4390428a3331f5eee8290f96e09bd84b0794da7cf8bbb029', 'response': {'choices': [{'message': {'content': ''}}], 'usage': {'completion_tokens': 10, 'prompt_tokens': 100}}, ...}]
+receipt = True
+
+    def write(path, content, *args, **kwargs):
+        if path == output:
+            attempts = json.loads(content).get("attempts", [])
+            receipt = any(a["status"] == "receipt_observed" for a in attempts)
+            if (receipt and not fault["fired"]) or (persistent and fault["fired"]):
+                fault["fired"] = True
+>               raise OSError("synthetic receipt disk failure")
+E               OSError: synthetic receipt disk failure
+
+app\tests\test_agent_smoke_hard_stop.py:60: OSError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D6088D730>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_nonretry_http_error_with_0')
+status = 400, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (3 == 1)
+E        +  where 3 = len([('POST', 'AG-01', 'planning_1'), ('POST', 'AG-02', 'analysis'), ('POST', 'AG-03', 'planning_1')])
+
+app\tests\test_agent_smoke_hard_stop.py:110: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D608BEEA0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_nonretry_http_error_with_1')
+status = 401, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (3 == 1)
+E        +  where 3 = len([('POST', 'AG-01', 'planning_1'), ('POST', 'AG-02', 'analysis'), ('POST', 'AG-03', 'planning_1')])
+
+app\tests\test_agent_smoke_hard_stop.py:110: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D608BD820>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_nonretry_http_error_with_2')
+status = 400, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (5 == 2)
+E        +  where 5 = len([('POST', 'AG-01', 'planning_1'), ('POST', 'AG-01', 'analysis'), ('POST', 'AG-02', 'analysis'), ('POST', 'AG-03', 'planning_1'), ('POST', 'AG-03', 'analysis')])
+
+app\tests\test_agent_smoke_hard_stop.py:110: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000028D6088E390>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/agent-closeout-red-20261020/test_nonretry_http_error_with_3')
+status = 401, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (5 == 2)
+E        +  where 5 = len([('POST', 'AG-01', 'planning_1'), ('POST', 'AG-01', 'analysis'), ('POST', 'AG-02', 'analysis'), ('POST', 'AG-03', 'planning_1'), ('POST', 'AG-03', 'analysis')])
+
+app\tests\test_agent_smoke_hard_stop.py:110: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_receipt_checkpoint_failure_stops_real_executor_after_one_post
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_final_log_write_failure_exits_without_success_summary
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]
+6 failed in 0.39s

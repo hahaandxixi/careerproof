@@ -16,3 +16,14 @@ docs/evidence/20261013-z48-score-labels/*.log -text -whitespace
 # Frozen review identity covers the original input bytes, including line endings.
 backend/evals/quality-blind-plan-review-input.json -text -whitespace
 docs/evidence/20261016-login-rate-limit/attempt2/full-sqlite-final.xml -text -whitespace
+
+# Executor authorization uses reproducible source bytes across checkouts.
+backend/evals/bounded_evidence_smoke.py text eol=lf
+backend/app/agents/evidence_workflow.py text eol=lf
+backend/app/agents/provider.py text eol=lf
+backend/app/agents/contracts.py text eol=lf
+backend/app/tools/matcher.py text eol=lf
+backend/app/tools/code_analyzer.py text eol=lf
+docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json -text
+docs/evidence/20261020-agent-integration/historical-v2/* -text
+docs/evidence/20261020-agent-smoke-closeout/historical-package/* -text

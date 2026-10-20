@@ -1,0 +1,138 @@
+{
+  "version": "agent-live-preflight-20261020-v2",
+  "batchId": "agent-live-20261020-three-cases",
+  "promptVersion": "evidence-trust-v29-implementation-first-plan",
+  "model": "deepseek-flash",
+  "limits": {
+    "perCasePhysicalRequests": 4,
+    "batchPhysicalRequests": 12,
+    "inputUpperBoundPerRequest": 20000,
+    "outputLimitPerRequest": 1200,
+    "ceilingYuan": "2"
+  },
+  "sourceHashes": {
+    "backend/evals/bounded_evidence_smoke.py": "e0e87580776dc637c8f4f84d6ac7a729575290bea9161d5cf2828d914263fcac",
+    "backend/app/agents/evidence_workflow.py": "8e7538b2e66317ba61dfbd8ec6cfce7b2aa054c8b4bf07d6b164bcfb529aca4e",
+    "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+    "backend/app/agents/contracts.py": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+    "backend/app/tools/matcher.py": "5442747ce8be2e0732f65379f4989943fd931c9014c3c4d4cf26d2554933dd61",
+    "backend/app/tools/code_analyzer.py": "890034eefb1c6ce650adda5ecbedfcf910973c1259f63dd9172d829ec5dbca8f"
+  },
+  "cases": [
+    {
+      "id": "AG-01",
+      "requirementId": "11111111-1111-4111-8111-111111111111",
+      "requirement": "实现带回滚的订单处理",
+      "skill": "Python",
+      "resume": "熟悉 Python 和异常回滚",
+      "allowedPaths": [
+        "project/order.py"
+      ],
+      "evidence": [
+        {
+          "filePath": "project/order.py",
+          "lineStart": 1,
+          "lineEnd": 3,
+          "snippet": "def process_order(payload):\n    if not payload.get('id'):\n        raise ValueError('id required')",
+          "strength": "medium",
+          "contextComplete": false,
+          "contextNote": "仅合成片段",
+          "explanation": "合成订单入口。"
+        },
+        {
+          "filePath": "project/order.py",
+          "lineStart": 5,
+          "lineEnd": 7,
+          "snippet": "def persist(store, payload):\n    store.write(payload)\n    return payload",
+          "strength": "medium",
+          "contextComplete": false,
+          "contextNote": "仅合成片段",
+          "explanation": "合成持久化调用。"
+        },
+        {
+          "filePath": "project/order.py",
+          "lineStart": 10,
+          "lineEnd": 14,
+          "snippet": "def rollback(store):\n    try:\n        store.rollback()\n    except Exception:\n        raise",
+          "strength": "low",
+          "contextComplete": false,
+          "contextNote": "仅合成片段",
+          "explanation": "合成回滚候选，尚未展示。"
+        }
+      ],
+      "history": null
+    },
+    {
+      "id": "AG-02",
+      "requirementId": "22222222-2222-4222-8222-222222222222",
+      "requirement": "展示 Python 输入校验",
+      "skill": "Python",
+      "resume": "熟悉 Python 输入校验",
+      "allowedPaths": [
+        "project/validate.py"
+      ],
+      "evidence": [
+        {
+          "filePath": "project/validate.py",
+          "lineStart": 1,
+          "lineEnd": 3,
+          "snippet": "def validate(payload):\n    if not payload:\n        raise ValueError('empty')",
+          "strength": "medium",
+          "contextComplete": false,
+          "contextNote": "仅合成片段",
+          "explanation": "合成输入校验。"
+        },
+        {
+          "filePath": "project/validate.py",
+          "lineStart": 5,
+          "lineEnd": 7,
+          "snippet": "def normalize(payload):\n    return payload.strip()\n    # synthetic",
+          "strength": "low",
+          "contextComplete": false,
+          "contextNote": "仅合成片段",
+          "explanation": "合成规范化。"
+        }
+      ],
+      "history": null
+    },
+    {
+      "id": "AG-03",
+      "requirementId": "33333333-3333-4333-8333-333333333333",
+      "requirement": "说明 Python 回滚实现",
+      "skill": "Python",
+      "resume": "熟悉 Python 异常处理",
+      "allowedPaths": [
+        "project/current.py"
+      ],
+      "evidence": [
+        {
+          "filePath": "project/current.py",
+          "lineStart": 1,
+          "lineEnd": 4,
+          "snippet": "def handle(store):\n    store.begin()\n    store.write({})\n    store.commit()",
+          "strength": "medium",
+          "contextComplete": false,
+          "contextNote": "仅合成当前片段",
+          "explanation": "当前实现片段。"
+        },
+        {
+          "filePath": "project/current.py",
+          "lineStart": 6,
+          "lineEnd": 9,
+          "snippet": "def explain():\n    return 'rollback path is described in prior report'\n    # synthetic",
+          "strength": "low",
+          "contextComplete": false,
+          "contextNote": "仅合成当前片段",
+          "explanation": "合成解释占位。"
+        }
+      ],
+      "history": {
+        "previousReportId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+        "savedAiLevel": 2,
+        "previousExplanation": "上一份合成报告只描述回滚意图，未证明运行。",
+        "previousEvidence": [],
+        "previousReportCreatedAt": "2026-10-17T00:00:00Z"
+      }
+    }
+  ]
+}

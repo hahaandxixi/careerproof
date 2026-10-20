@@ -1,0 +1,81 @@
+--- handoff/backend/evals/bounded_evidence_smoke.py
++++ closeout/backend/evals/bounded_evidence_smoke.py
+@@ -10,6 +10,8 @@
+ from decimal import Decimal
+ from pathlib import Path
+ from uuid import NAMESPACE_URL, UUID, uuid5
++
++import httpx
+ 
+ from app.agents.contracts import validate_grounded_analysis
+ from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
+@@ -183,8 +185,17 @@
+         try:
+             await super().after_response(attempt_id, payload, latency_ms)
+         except SmokeStopped as exc:
++            self.stopped = True
+             self.hard_stop_reason = str(exc)
+             raise
++        except Exception as exc:
++            # A trusted usage payload is not a durable receipt. The workflow may
++            # catch the provider's persistence error and fall back, so latch the
++            # batch stop here before that exception leaves the observer.
++            self.stopped = True
++            self.hard_stop_reason = "receipt_checkpoint_failed"
++            self.attempts[attempt_id]["status"] = "receipt_persistence_failed"
++            raise SmokeStopped("Agent receipt checkpoint failed") from exc
+ 
+     async def on_failure(self, attempt_id: int, reason: str):
+         self.hard_stop_reason = reason
+@@ -406,6 +417,14 @@
+         original_plan = provider.plan_evidence_retrieval
+         original_analyze = provider.analyze_evidence
+ 
++        def stop_http(error):
++            # Non-retryable HTTP errors do not invoke the production observer's
++            # on_failure hook. Stop this eval batch without changing that policy.
++            guard.stopped = True
++            guard.hard_stop_reason = f"provider_http_{error.response.status_code}"
++            if guard.attempts:
++                guard.attempts[-1]["httpStatus"] = error.response.status_code
++
+         async def guarded_plan(**kwargs):
+             try:
+                 guard.validate_contexts(kwargs["contexts"])
+@@ -414,6 +433,9 @@
+                 guard.stopped = True
+                 guard.hard_stop_reason = str(exc)
+                 raise
++            except httpx.HTTPStatusError as exc:
++                stop_http(exc)
++                raise
+ 
+         async def guarded_analyze(**kwargs):
+             try:
+@@ -423,6 +445,9 @@
+             except SmokeStopped as exc:
+                 guard.stopped = True
+                 guard.hard_stop_reason = str(exc)
++                raise
++            except httpx.HTTPStatusError as exc:
++                stop_http(exc)
+                 raise
+ 
+         provider.plan_evidence_retrieval = guarded_plan
+@@ -493,7 +518,15 @@
+     finally:
+         settings.ai_per_report_input_token_limit = old_input_limit
+         settings.ai_per_report_output_token_limit = old_output_limit
+-        save()
++        try:
++            save()
++        except Exception as exc:
++            guard.stopped = True
++            # No report is returned and the CLI emits no success summary when
++            # either durable destination cannot persist the final stopped state.
++            raise SmokeStopped(
++                "Agent final report persistence failed; batch cannot continue"
++            ) from exc
+     return report
+ 
+ 

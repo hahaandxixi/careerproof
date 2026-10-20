@@ -147,3 +147,17 @@
 - 修复前终端转录：`red-before-fix-transcript.txt`（原始 pty 未保存，已如实标注）
 - 版本与哈希：`git-baseline.txt`、`source-hashes.txt`
 - 退出码：`exit-codes.txt`
+
+## 九、当前版本 Agent 执行前准备（2026-10-20）
+
+- 复用 `backend/evals/bounded_evidence_smoke.py` 的 claim、价格检查、请求计数和 receipt 机制，增加 Agent 批处理：每例 4 次、整批 12 次物理请求；输入 20,000/输出 1,200 每次上限；动态请求哈希；路径、行号、片段内容、引用映射和历史内容校验。
+- `run_evidence_workflow` 增加可选 `provider_override`；执行器把受约束 provider 传入真实工作流，默认生产调用行为不变，不依赖两个模块工厂返回同一对象。
+- 硬停止（usage 缺失、来源校验、计数/预算、留痕失败）不再被 fallback 吞掉；停止后不进入下一案例，最终状态不会被覆盖为结构通过。
+- 固定输入包：[agent-live-preflight-20261020.json](agent-live-preflight-20261020.json)
+  - SHA256 `930bc0001e76965dc4c8fc1dd4573a7cd3edd6bd8fca45b108c20926fef431da`
+- 可直接审批的授权包：[agent-authorization-package-20261020.md](agent-authorization-package-20261020.md)
+- 当前集成离线测试：**51 passed**（4个相关套件；旧执行器同输出/同claim拒绝断言保留）；Ruff 通过；`--agent` 离线 CLI 退出 0、未构造 provider。
+- 修复前红测：`agent-preflight-red-before-fix.raw.out`（provider 注入未生效时失败）；修复后同一测试通过。
+- 旧历史包未被修改；新增测试明确验证其源码哈希过期后被拒绝。未重跑历史授权。
+- 未发出任何外部请求；未读取真实材料、正常库或凭据；授权包价格仍“待核验”。
+- 旧三例人工复核仍为 0/3；不得把辅助复核计入人工人数。

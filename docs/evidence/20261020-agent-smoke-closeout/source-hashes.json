@@ -1,0 +1,15 @@
+{
+  "backend/evals/bounded_evidence_smoke.py": "e0e87580776dc637c8f4f84d6ac7a729575290bea9161d5cf2828d914263fcac",
+  "backend/app/agents/evidence_workflow.py": "8e7538b2e66317ba61dfbd8ec6cfce7b2aa054c8b4bf07d6b164bcfb529aca4e",
+  "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+  "backend/app/agents/contracts.py": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+  "backend/app/tools/matcher.py": "5442747ce8be2e0732f65379f4989943fd931c9014c3c4d4cf26d2554933dd61",
+  "backend/app/tools/code_analyzer.py": "890034eefb1c6ce650adda5ecbedfcf910973c1259f63dd9172d829ec5dbca8f",
+  "backend/app/tests/test_agent_smoke_hard_stop.py": "01437b3df1b4a52d49b65e06992159ec2c2863de23b25491be9d27c2ebe43b73",
+  "backend/app/tests/test_agent_evidence_smoke.py": "a5e639ce461365aba694bc2b912fb8402db9c8d3f93329c4641a9e6efe0edb4e",
+  "backend/app/tests/test_bounded_evidence_smoke.py": "47cd6a9b2bc1b837bb28e27b61f4e1583b73c582c9f8be3027cace44c2ffd521",
+  "docs/evidence/20261017-task70-semantic-review-packet/current-three-human-review.md": "b42e410a275739d87810e00a46e687f2040032fbf0ad19ffd6d422d129fff302",
+  "docs/evidence/20261017-task70-semantic-review-packet/REVIEWER-GUIDE.md": "adeeb93ab9309266770d998755b108a71a18a6aa1bf1394553d99162161f16da",
+  "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json": "df7f402193bececdb6409615691a5bc827cfb6fc42c3cf49914efb39c87a8551",
+  "docs/evidence/20261019-agent-boundary/agent-authorization-package-20261020.md": "61a189c893dafbc5aacc93bc75da9b9a5531fa7689f1f057a1e269a8cc096e23"
+}

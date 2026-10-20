@@ -1,0 +1,18 @@
+{
+  "createdAt": "2026-10-19T13:48:23.4928246Z",
+  "frontendRoot": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-consistency",
+  "backendVenv": ".venv-dependency23",
+  "processes": [
+    {
+      "Id": 463372,
+      "Started": "2026-10-19T13:48:23.5011474Z"
+    },
+    {
+      "Id": 461148,
+      "Started": "2026-10-19T13:48:27.0458534Z"
+    }
+  ],
+  "frontendError": "URLError",
+  "backendError": "URLError",
+  "frontendBuildId": "PuYpj_zoxVNl7X5LAfjyp"
+}

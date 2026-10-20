@@ -1,0 +1,13 @@
+{
+  "head": "b756d3231f317078948f2da118e03e79e5aae4aa",
+  "hashes": {
+    "backend/app/agents/evidence_workflow.py": "8e7538b2e66317ba61dfbd8ec6cfce7b2aa054c8b4bf07d6b164bcfb529aca4e",
+    "backend/app/tests/test_bounded_evidence_smoke.py": "47cd6a9b2bc1b837bb28e27b61f4e1583b73c582c9f8be3027cace44c2ffd521",
+    "backend/evals/bounded_evidence_smoke.py": "735cfd12ed83668efeb437692c0f05dd6fe52a50ae9959c4fda31e4f55efa484",
+    "backend/app/tests/test_agent_evidence_smoke.py": "a5e639ce461365aba694bc2b912fb8402db9c8d3f93329c4641a9e6efe0edb4e",
+    "docs/evidence/20261019-agent-boundary/agent-authorization-package-20261020.md": "ee804d3d3342f30bcefe6ef47aaba1d13c4388efe7399d605260959c5359f4bd",
+    "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json": "1ac3278bcd29454ae15f28830c506a04870f8c7d58575868d06fbd3da6940c86",
+    "docs/evidence/20261017-task70-semantic-review-packet/current-three-human-review.md": "d319b79cbc48d53bf1415750d4934a7b94764b1df80fa1f1abe6e2ce3179815b",
+    "docs/evidence/20261017-task70-semantic-review-packet/REVIEWER-GUIDE.md": "66f2682269571f58e4808c1d5574190e1e25b984bd95df6ec36bc501fe2db3a4"
+  }
+}

@@ -157,56 +157,84 @@ def packet_path():
     )
 
 
-def test_real_packet_unknown_usage_records_once_then_stops(tmp_path, monkeypatch):
+def test_old_executor_unknown_usage_stops_once_with_synthetic_fixture(monkeypatch, tmp_path):
+    payload = request()
+
+    def old_case(case_id):
+        return {
+            "id": case_id,
+            "syntheticInput": {
+                "requirement": "Python 业务处理",
+                "skill": "Python",
+                "resume": "熟悉 Python",
+                "files": [{"path": "app.py", "content": "def handle():\n    return 1\n"}],
+            },
+            "request": payload,
+            "requestSha256": smoke.payload_hash(payload),
+        }
+
+    packet = {"sourceHashes": {}, "cases": [old_case(case_id) for case_id in smoke.CASE_IDS]}
     calls = []
 
-    def reply(req):
-        calls.append(req)
-        return httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+    class FixedProvider(DeepSeekProvider):
+        async def analyze_evidence(self, **kwargs):
+            return await self._completion(payload)
 
-    provider = DeepSeekProvider(
+    provider = FixedProvider(
         api_key="synthetic-not-real",
         base_url="https://api.deepseek.com",
         model="deepseek-flash",
-        timeout_seconds=1,
-        transport=httpx.MockTransport(reply),
+        timeout_seconds=5,
+        max_attempts=1,
+        transport=httpx.MockTransport(
+            lambda req: (
+                calls.append(req)
+                or httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]})
+            )
+        ),
     )
     monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
-    monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "shared-batch")
-    output = tmp_path / "result.json"
+    monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "old-state")
     report = asyncio.run(
-        smoke.execute(
-            json.loads(packet_path().read_text(encoding="utf-8")), output, (Decimal(2), Decimal(8))
-        )
+        smoke.execute(packet, tmp_path / "old-result.json", (Decimal(2), Decimal(8)))
     )
-    assert report["status"] == "stopped" and len(calls) == 1
-    assert len(report["results"]) == 1 and report["humanReview"] is None
+    assert report["status"] == "stopped"
+    assert report["errorType"] == "ProviderReceiptPersistenceError"
+    assert len(report["results"]) == 1
     assert report["attempts"][0]["status"] == "usage_untrusted"
-    assert "synthetic-not-real" not in output.read_text(encoding="utf-8")
+    assert len(calls) == 1
+    assert "synthetic-not-real" not in (tmp_path / "old-result.json").read_text()
     with pytest.raises(FileExistsError):
-        asyncio.run(
-            smoke.execute(
-                json.loads(packet_path().read_text(encoding="utf-8")),
-                output,
-                (Decimal(2), Decimal(8)),
-            )
-        )
-    assert len(calls) == 1
-    # Changing only the output must not create a new physical-request allowance.
-    second = asyncio.run(
-        smoke.execute(
-            json.loads(packet_path().read_text(encoding="utf-8")),
-            tmp_path / "different-output.json",
-            (Decimal(2), Decimal(8)),
-        )
+        asyncio.run(smoke.execute(packet, tmp_path / "old-result.json", (Decimal(2), Decimal(8))))
+    replay = asyncio.run(
+        smoke.execute(packet, tmp_path / "old-replay.json", (Decimal(2), Decimal(8)))
     )
-    assert second["status"] == "stopped" and second["errorType"] == "FileExistsError"
+    assert replay["status"] == "stopped"
+    assert replay["errorType"] == "FileExistsError"
     assert len(calls) == 1
 
 
-def test_offline_cli_never_constructs_provider(monkeypatch):
+def test_historical_packet_is_rejected_after_source_change():
+    with pytest.raises(smoke.SmokeStopped, match="source changed"):
+        smoke.check_packet(json.loads(packet_path().read_text(encoding="utf-8")))
+
+
+def test_offline_cli_never_constructs_provider(tmp_path, monkeypatch):
+    packet = {
+        "sourceHashes": {},
+        "cases": [
+            {
+                "id": case_id,
+                "request": request(),
+                "requestSha256": smoke.payload_hash(request()),
+            }
+            for case_id in smoke.CASE_IDS
+        ],
+    }
+    path = tmp_path / "synthetic-offline.json"
+    path.write_text(json.dumps(packet), encoding="utf-8")
     monkeypatch.setattr(smoke, "get_ai_provider", lambda: pytest.fail("Provider constructed"))
-    monkeypatch.setattr("sys.argv", ["smoke", "--packet", str(packet_path())])
+    monkeypatch.setattr("sys.argv", ["smoke", "--packet", str(path)])
     assert smoke.main() == 0
 
 

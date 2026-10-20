@@ -1,0 +1,15 @@
+{
+  "historicalPacketPreserved": true,
+  "casesUnchanged": true,
+  "humanWorksheetBodyUnchanged": true,
+  "pendingCells": 15,
+  "productionRuntimeHashesUnchanged": true,
+  "currentPacketSha256": "df7f402193bececdb6409615691a5bc827cfb6fc42c3cf49914efb39c87a8551",
+  "humanReview": "0/3",
+  "externalRequests": 0,
+  "existingHandoffSourcesPreserved": [
+    "backend/app/agents/evidence_workflow.py",
+    "backend/app/tests/test_bounded_evidence_smoke.py",
+    "backend/app/tests/test_agent_evidence_smoke.py"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "baseCommit": "b756d3231f317078948f2da118e03e79e5aae4aa",
+  "packetSha256": "930bc0001e76965dc4c8fc1dd4573a7cd3edd6bd8fca45b108c20926fef431da",
+  "sourceHashes": {
+    "backend/evals/bounded_evidence_smoke.py": "e0e87580776dc637c8f4f84d6ac7a729575290bea9161d5cf2828d914263fcac",
+    "backend/app/agents/evidence_workflow.py": "56ca89ed61ed19a588e29db9eb57a6e8c05738b7ce45d71dfc11cfeed65012ea",
+    "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+    "backend/app/agents/contracts.py": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "backend/app/tools/matcher.py": "c4f4c2bd54e63df77050bfcbd805aff66ad357ac919aa2f62fcce7e293525577",
+    "backend/app/tools/code_analyzer.py": "ad3955fd8f998c945ce1479fe532cae632e3c64a2df2c35f4ad3dc8c4ecc3a8f"
+  },
+  "historicalV2Sha256": "df7f402193bececdb6409615691a5bc827cfb6fc42c3cf49914efb39c87a8551",
+  "externalRequests": 0,
+  "humanReview": "0/3"
+}

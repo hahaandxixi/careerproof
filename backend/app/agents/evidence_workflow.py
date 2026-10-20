@@ -314,6 +314,7 @@ async def run_evidence_workflow(
     external_skip_reason: str | None = None,
     history_loader: Callable[[str], Awaitable[dict]] | None = None,
     durable_observer_factory: Callable[[OpenAICompatibleProvider, str], object] | None = None,
+    provider_override: OpenAICompatibleProvider | None = None,
 ) -> EvidenceWorkflowOutcome:
     contexts: list[RequirementEvidenceContext] = []
     configured_provider = settings.ai_provider if settings.ai_external_enabled else "rules"
@@ -371,7 +372,7 @@ async def run_evidence_workflow(
                     skipped_reason="no_evidence",
                 )
             stage = "configuration"
-            provider = get_ai_provider()
+            provider = provider_override or get_ai_provider()
             if provider.name == "mock":
                 return EvidenceWorkflowOutcome(contexts, None, "rules", None, False, None)
             contexts = build_evidence_contexts(result, max_evidence=2)
