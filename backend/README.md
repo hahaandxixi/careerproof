@@ -67,6 +67,38 @@ python -m venv .venv
 
 健康检查：<http://127.0.0.1:8000/api/v1/health>
 
+## 无外部AI的隔离交付复现
+
+此路线只用于专属合成环境。新目录安装依赖，不修改正常站配置；日常双击入口仍要求DeepSeek，不能拿它启动下面的自定义端口。先另建PostgreSQL/pgvector容器与专属数据库，核实55441、8107、3107空闲；数据库仅绑定本机55441，不使用正常库或默认compose目标。
+
+在新解包目录的 `backend/.env` 配置以下字段。数据库用户名、口令、库名须对应本轮专属容器；已有配置不能覆盖。迁移前核对目标，不用Alembic的 `-x dburl` 选择环境。
+
+```dotenv
+APP_ENV=development
+DATABASE_URL=postgresql+asyncpg://<本轮用户名>:<本轮口令>@127.0.0.1:55441/<本轮专属库名>
+STORAGE_BASE_DIR=./.tmp/review-storage
+AI_PROVIDER=mock
+AI_EXTERNAL_ENABLED=false
+FRONTEND_ORIGINS=["http://127.0.0.1:3107"]
+```
+
+在此backend目录执行迁移并启动；保持服务窗口存活：
+
+```powershell
+.\.venv\Scripts\python.exe -m alembic upgrade head
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8107 --no-proxy-headers
+```
+
+前端自定义地址见[前端隔离说明](../jianli/README.md#隔离复现的前端地址)。准备演示账号时，另开终端进入同一新backend目录，成套设置 `DEMO_STUDENT_EMAIL`、`DEMO_ENTERPRISE_EMAIL`、`DEMO_PASSWORD`（两种邮箱不同，密码12—128字符，仅私下保存）。没有本机凭据也没设置三项变量时，seed会拒绝，不应删除数据库重试。随后运行：
+
+```powershell
+.\.venv\Scripts\python.exe -c "from evals import seed_demo; seed_demo.BASE='http://127.0.0.1:8107/api/v1'; seed_demo.seed()"
+```
+
+此调用仅为现有播种函数选择本次API地址；数据库仍从新backend/.env读取，须再次核对。环境变量方式不会生成 `demo-credentials.json`，账号值应由准备者仅在本机保存，不到正常站查密码。重跑复用原三项值，不重新生成密码。
+
+在3107登录，上传配套合成简历/项目，选择解析完成版本，不勾外部AI同意生成规则报告并展开引用。停止后用原目录、配置、存储和数据库启动，不重新播种，核对原报告仍可读。此演练不计首次独立用户验收，也不证明真实模型质量。
+
 ## 验证
 
 在后端目录运行。下例使用已经通过锁定版本核验的升级环境；新机器请先按上面的安装步骤

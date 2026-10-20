@@ -23,6 +23,18 @@ Set-Location ..
 
 `npm ci`按本目录已提交的package-lock.json安装依赖，不生成账号、不调用模型。还需按[后端说明](../backend/README.md)安装Python依赖、配置本机环境并准备Docker。两侧准备完成后，从根目录运行 `Start-Local.cmd`，由统一入口构建和启动；不要再同时手动启动第二套服务。检查入口为根目录 `Start-Local.ps1 -CheckOnly`，它不等于Docker/数据库、页面或模型连通性验收。
 
+## 隔离复现的前端地址
+
+仅在新解包、已执行 `npm ci` 的独立目录使用。后端先按[隔离说明](../backend/README.md#无外部ai的隔离交付复现)连接专属数据库、禁用外部AI并监听8107。在该目录的jianli中运行：
+
+```powershell
+$env:BACKEND_ORIGIN='http://127.0.0.1:8107'
+npm run build
+.\node_modules\.bin\next.cmd start --hostname 127.0.0.1 --port 3107
+```
+
+浏览器打开 `http://127.0.0.1:3107`。修改后端端口后需要设置BACKEND_ORIGIN并重建，不能复用指向8000的旧构建；重启沿用同一构建与配置。这不是日常3000/8000网站或3001的E2E账号环境。
+
 ## 业务入口
 
 - `/jobs`：从 FastAPI 查询已发布岗位，按方向、城市、工作类型和关键词筛选。
