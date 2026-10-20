@@ -1,0 +1,90 @@
+{
+  "historicalPacket": "current-smoke-preflight-20261018.json",
+  "historicalPacketSha256": "12675cfa46ac0ee1ccf64a1bea4139201e494bd9a2ba12248686fd5a96c37588",
+  "promptVersion": "evidence-trust-v29-implementation-first-plan",
+  "historicalRequests": [
+    {
+      "caseId": "route-body",
+      "requestSha256": "650572d5656ac17170bdde946af34be0753ea7f2f476eb3418ffead34a3282a6",
+      "systemPromptSha256": "ce6444d864822302e33800c13d931cd84dddd6460c24b66656432eca03bba5e8",
+      "ratingRubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+          "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "ratingCeiling": 3
+    },
+    {
+      "caseId": "empty-route",
+      "requestSha256": "69b80ea262a1d6e9a1dc39af0d20603b0e89c0d5fcf990b7acd3fb303795a61f",
+      "systemPromptSha256": "ce6444d864822302e33800c13d931cd84dddd6460c24b66656432eca03bba5e8",
+      "ratingRubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "FastAPI"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "路由函数包含非空处理逻辑；只有装饰器、函数名或 pass 不满足。",
+          "task": "完整函数展示请求输入、实质处理与明确返回或异常分支；不推断服务已运行。岗位要求同时包含测试时，还须引用测试请求与结果断言；仅 TestClient 初始化不算完整测试。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "ratingCeiling": 1
+    },
+    {
+      "caseId": "contradictory-return",
+      "requestSha256": "638598a2cf77e69878780dd8b47fa04691bd34850e4195e011cd66374994fa31",
+      "systemPromptSha256": "ce6444d864822302e33800c13d931cd84dddd6460c24b66656432eca03bba5e8",
+      "ratingRubric": {
+        "version": "skill-rubric-v3",
+        "path": [
+          "后端开发",
+          "Python"
+        ],
+        "criteria": {
+          "relevance": "片段中存在与当前岗位要求直接相关的内容；名称相似不够。",
+          "operation": "存在实际操作或非空实现；仅声明、依赖、函数名或 pass 不满足。",
+          "task": "完整上下文展示输入、实质处理与输出，且对应当前要求；不等于运行成功。"
+        },
+        "note": "逐项检查证据与岗位要求的关系，不从上级领域推断其他技能。"
+      },
+      "ratingCeiling": 3
+    }
+  ],
+  "contractSource": "7197f35:backend/app/agents/contracts.py",
+  "contractFrozenSourceSha256": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+  "contractByteCheck": "Git LF restored to historical CRLF matches frozen source hash",
+  "confidenceRangeVerified": "AIRequirementAnalysis.confidence Field(ge=0, le=1)",
+  "guideChange": "neutral definitions only; no case verdicts or reference answers",
+  "guideSha256": "9b606091fecb5ebe585f15708650d3585330107eb955e08a664a0a0b2582e12c",
+  "reviewFormSha256Unchanged": "ecbd70619fb229ec494d7e8c8ecb7802f5f1cb8b100e9d7b118b73b2af23739c",
+  "allThreeOutputsEqualSavedRealResponses": true,
+  "pendingJudgments": 12,
+  "pendingReasons": 12,
+  "humanReviewedCount": 0,
+  "humanSemanticPassRate": null,
+  "oldBundle": "D:\\jbcode\\web ai\\jianli\\output\\review\\CareerProof-three-case-human-review-20261020.zip",
+  "oldBundleSha256": "fc222ad8dba2323170e876e458caee856b5a380858314fc2655b7b96043c6852",
+  "externalRequests": 0,
+  "sourcePackageReinstalled": false,
+  "newBundle": "D:\\jbcode\\web ai\\jianli\\output\\review\\CareerProof-three-case-human-review-20261021-v2.zip",
+  "newBundleSha256": "a90a3cb19674de3fb881876cb9ff8a027cbdbb196c941fe848b5fb1bf4258c11",
+  "newBundleFiles": {
+    "REVIEWER-GUIDE.md": "9b606091fecb5ebe585f15708650d3585330107eb955e08a664a0a0b2582e12c",
+    "current-three-human-review.md": "ecbd70619fb229ec494d7e8c8ecb7802f5f1cb8b100e9d7b118b73b2af23739c"
+  },
+  "newBundleContainsOnlyGuideAndBlankForm": true,
+  "bundleLocalLinksResolve": true,
+  "oldBundlePreserved": true,
+  "stagedGuideBlob": "8d1b8bb7b10cb468250b07f8899975defffe0610"
+}
