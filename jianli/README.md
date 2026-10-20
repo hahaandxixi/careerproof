@@ -11,6 +11,18 @@ Next.js 前端通过同源 `/backend/*` 代理访问 FastAPI，因此登录使�
 
 当前已接入：注册、登录、退出、登录状态恢复、真实岗位发布/编辑、企业组织、分类搜索分页、简历/项目/作品上传、版本预览、匹配任务、任务失败重试、持久化报告、AI 职业规划、补证成长闭环、投递授权与双端通知。
 
+## 新机器首次安装
+
+Windows PowerShell中先安装Node.js 22.18+（或24）及npm，再在**解压后的项目根目录**执行：
+
+```powershell
+Set-Location jianli
+npm ci
+Set-Location ..
+```
+
+`npm ci`按本目录已提交的package-lock.json安装依赖，不生成账号、不调用模型。还需按[后端说明](../backend/README.md)安装Python依赖、配置本机环境并准备Docker。两侧准备完成后，从根目录运行 `Start-Local.cmd`，由统一入口构建和启动；不要再同时手动启动第二套服务。检查入口为根目录 `Start-Local.ps1 -CheckOnly`，它不等于Docker/数据库、页面或模型连通性验收。
+
 ## 业务入口
 
 - `/jobs`：从 FastAPI 查询已发布岗位，按方向、城市、工作类型和关键词筛选。

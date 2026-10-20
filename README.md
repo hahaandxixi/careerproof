@@ -22,7 +22,7 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 ## 本地启动
 
 1. 双击桌面的 **Docker Desktop**，等待引擎就绪。
-2. 在 `D:\jbcode\web ai\jianli` 双击 **`Start-Local.cmd`**，等待提示ready。
+2. 在项目根目录（源码ZIP的解压目录，包含启动文件）双击 **`Start-Local.cmd`**，等待提示ready。
 3. 浏览器打开 **[http://127.0.0.1:3000](http://127.0.0.1:3000)**；用完双击 **`Stop-Local.cmd`**。账号、材料和投递数据保留。
 
 新机器安装、账号查找、学生五步体验、企业查看及故障处理，按同一份[使用与启动指南](docs/guides/使用与启动.md)操作。已有账号和数据时使用普通启动；首次准备演示账号、合成岗位及材料才运行`Start-Demo.cmd`。

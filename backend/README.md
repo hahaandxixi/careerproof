@@ -36,7 +36,7 @@ AI_DAILY_REPORT_LIMIT=20
 AI_LOCAL_FALLBACK_ENABLED=true
 ```
 
-用不含真实个人信息的合成请求检查连接：
+可选的模型连通检查如下：它会向官方API发送合成材料并可能收费，须另行获得对应授权；不是安装或启动的必经步骤。
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.scripts.check_deepseek
@@ -51,8 +51,8 @@ Key 或模型正文。正式分析发送岗位要求、规则判定、相关简�
 
 ## 本地启动
 
-要求 Python 3.12 与 Docker。以下命令在 PowerShell 的 `backend` 目录执行。
-已有 `.env` 时不要覆盖；只需检查新增配置，未填写的任务配置使用默认值。
+要求 Python 3.12 与 Docker。以下是开发者手动启动方式，命令在 PowerShell 的 `backend` 目录执行；日常双击启动按[使用与启动](../docs/guides/使用与启动.md)，不要同时运行两套服务。
+已有 `.env` 时不要覆盖；只需检查新增配置，未填写的任务配置使用默认值。新机器复制模板后，先按上面的配置节填写本机Key并核对DATABASE_URL，再执行连接数据库/迁移和启动命令；模板不是可直接外发的凭据。
 
 ```powershell
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
