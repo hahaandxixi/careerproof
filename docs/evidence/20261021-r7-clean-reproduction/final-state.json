@@ -1,0 +1,17 @@
+{
+  "isolatedPortsClosed": {
+    "3107": true,
+    "8107": true,
+    "55441": true
+  },
+  "isolatedContainer": "careerproof-r7-clean-20261021",
+  "containerState": "exited",
+  "databaseAndAnonymousVolumeRetained": true,
+  "freshVenvAndNodeModulesRetained": true,
+  "sourceAndStorageRetained": true,
+  "normalServicesNotStartedOrStopped": true,
+  "protectedWorktreeFilesByteIdentical": true,
+  "pausedP2Unchanged": true,
+  "dockerDesktopLeftRunning": "user started engine; not stopped",
+  "credentialsRemainLocal": "backend/.tmp/r7-clean-20261021 only; not included in evidence/packages"
+}

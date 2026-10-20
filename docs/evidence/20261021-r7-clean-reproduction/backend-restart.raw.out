@@ -1,0 +1,18 @@
+INFO:     Started server process [102856]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8107 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52577 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50927 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50929 - "GET /api/v1/match-reports/02523760-321e-41ab-b052-913243cdfcf9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50931 - "GET /api/v1/resume-versions/3698dfa0-ca29-40b6-984d-d071fdffbf1a/preview HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50933 - "GET /api/v1/project-versions/322dd763-7a0f-4811-bd37-bd7c588c1132/files HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49680 - "GET /api/v1/users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56687 - "GET /api/v1/notifications/unread-count HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56688 - "GET /api/v1/match-reports/02523760-321e-41ab-b052-913243cdfcf9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61256 - "POST /api/v1/auth/register HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:61256 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61256 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61257 - "POST /api/v1/auth/register HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:61257 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61257 - "POST /api/v1/auth/logout HTTP/1.1" 200 OK

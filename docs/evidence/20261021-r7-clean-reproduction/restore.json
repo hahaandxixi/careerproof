@@ -1,0 +1,22 @@
+{
+  "reportId": "02523760-321e-41ab-b052-913243cdfcf9",
+  "reportSha256Unchanged": "3b33b4f1baa4cf3cc3cf828fe728552792e4f84e466e25ce04a52622ec1df3a3",
+  "sameReportReadable": true,
+  "resumePreviewReadable": true,
+  "sameProjectFilesReadable": true,
+  "analysisMode": "rules",
+  "aiProvider": null,
+  "aiUsage": null,
+  "aiToolCalls": [],
+  "aiTables": {
+    "ai_request_attempts": 0,
+    "ai_usage_logs": 0,
+    "ai_daily_budgets": 0,
+    "ai_budget_reservations": 0,
+    "ai_budget_adjustments": 0,
+    "ai_budget_cutover": 0
+  },
+  "externalAiEnabled": false,
+  "databaseRestarted": true,
+  "apiAndFrontendRestarted": true
+}

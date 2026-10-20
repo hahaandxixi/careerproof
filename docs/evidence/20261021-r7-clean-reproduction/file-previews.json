@@ -1,0 +1,20 @@
+[
+  {
+    "id": "5aec1128-c657-4936-b984-6d3fff97c878",
+    "relativePath": "app.py",
+    "content": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel, Field\n\napp = FastAPI(title=\"Campus activity exercise\")\nevents = {1: {\"id\": 1, \"title\": \"Python study group\", \"capacity\": 2}}\nregistrations = []\n\nclass Signup(BaseModel):\n    event_id: int = Field(ge=1)\n    student_code: str = Field(min_length=3, max_length=16)\n\n@app.get(\"/events\")\ndef list_events():\n    return list(events.values())\n\n@app.post(\"/registrations\", status_code=201)\ndef register(payload: Signup):\n    event = events.get(payload.event_id)\n    if event is None:\n        raise HTTPException(404, \"Unknown event\")\n    if any(r[\"event_id\"] == payload.event_id and\n           r[\"student_code\"] == payload.student_code for r in registrations):\n        raise HTTPException(409, \"Already registered\")\n    if sum(r[\"event_id\"] == payload.event_id for r in registrations) >= event[\"capacity\"]:\n        raise HTTPException(409, \"No remaining places\")\n    record = {\"id\": len(registrations) + 1, **payload.model_dump()}\n    registrations.append(record)\n    return record",
+    "projectVersionId": "322dd763-7a0f-4811-bd37-bd7c588c1132"
+  },
+  {
+    "id": "327e0c75-0581-4d7b-b766-930360a4add3",
+    "relativePath": "README.md",
+    "content": "# 活动报名服务：静态课程样例\n\n所有人物和业务均为虚构。包含活动读取、基本报名校验和独立SQL设计草案。\n依赖为FastAPI、Pydantic与ASGI服务器；本包不提供安装锁，也不声明可直接生产部署。\napp.py使用内存记录，重启即清空；schema.sql尚未接入，不支持并发名额仲裁。\n未提供自动测试输出、持久化、用户授权或可验证提交历史。请据实际文件核对，不把设计草案视为已实现。",
+    "projectVersionId": "322dd763-7a0f-4811-bd37-bd7c588c1132"
+  },
+  {
+    "id": "59997b95-d761-41ff-b764-a3b3fec591c9",
+    "relativePath": "schema.sql",
+    "content": "-- Design draft only: app.py does not use these tables.\nCREATE TABLE events (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    capacity INTEGER NOT NULL CHECK (capacity > 0)\n);\nCREATE TABLE registrations (\n    id INTEGER PRIMARY KEY,\n    event_id INTEGER NOT NULL REFERENCES events(id),\n    student_code TEXT NOT NULL,\n    UNIQUE (event_id, student_code)\n);",
+    "projectVersionId": "322dd763-7a0f-4811-bd37-bd7c588c1132"
+  }
+]

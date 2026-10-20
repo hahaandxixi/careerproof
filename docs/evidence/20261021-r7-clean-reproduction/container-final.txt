@@ -1,0 +1,1 @@
+"exited" [{"Type":"volume","Name":"7f61921491c9b50fe400a0054622db90c80bfa81dfe90f0394ce7c5ee817e5d1","Source":"/var/lib/docker/volumes/7f61921491c9b50fe400a0054622db90c80bfa81dfe90f0394ce7c5ee817e5d1/_data","Destination":"/var/lib/postgresql/data","Driver":"local","Mode":"","RW":true,"Propagation":""}]

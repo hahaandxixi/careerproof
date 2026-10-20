@@ -1,0 +1,92 @@
+[
+  {
+    "method": "POST",
+    "path": "/auth/login",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/jobs",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/resumes",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/1b7f0ef4-8df0-4dc8-83da-0e868f1b0b74",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/1b7f0ef4-8df0-4dc8-83da-0e868f1b0b74",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/projects",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/projects/b267fdf1-dcba-4bd2-bbf9-57c92eade4fe/versions",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/bae9972a-ab76-46fb-8cb3-105bd7f36217",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/bae9972a-ab76-46fb-8cb3-105bd7f36217",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/matches",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/1142af5c-6b0d-4747-8701-bff1c833d7b6",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/1142af5c-6b0d-4747-8701-bff1c833d7b6",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/1142af5c-6b0d-4747-8701-bff1c833d7b6",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/match-reports/02523760-321e-41ab-b052-913243cdfcf9",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-versions/322dd763-7a0f-4811-bd37-bd7c588c1132/files",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/5aec1128-c657-4936-b984-6d3fff97c878",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/327e0c75-0581-4d7b-b766-930360a4add3",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/59997b95-d761-41ff-b764-a3b3fec591c9",
+    "status": 200
+  }
+]

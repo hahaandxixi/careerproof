@@ -1,0 +1,13 @@
+{
+  "containerName": "careerproof-r7-clean-20261021",
+  "containerId": "ea35d58c943b335414eeb11565ee8bf65ac9e80139b0e8c9567808a25f8efe0d",
+  "databaseHost": "127.0.0.1",
+  "databasePort": 55441,
+  "databaseName": "cp_review_r7_20261021",
+  "databaseUser": "cp_review",
+  "backendPort": 8107,
+  "frontendPort": 3107,
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\storage",
+  "externalAi": false,
+  "portsWereFree": true
+}

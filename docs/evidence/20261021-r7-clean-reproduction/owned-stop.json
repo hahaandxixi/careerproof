@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "frontend",
+    "pid": 100460,
+    "command": "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe \"D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\source\\jianli\\node_modules\\next\\dist\\bin\\next\" start --hostname 127.0.0.1 --port 3107"
+  },
+  {
+    "kind": "backend",
+    "pid": 91540,
+    "command": "\"D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\source\\backend\\.venv\\Scripts\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8107 --no-proxy-headers"
+  }
+]

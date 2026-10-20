@@ -1,0 +1,23 @@
+{
+  "zip": "D:\\jbcode\\web ai\\jianli\\output\\source\\CareerProof-source-review-20261020-r7.zip",
+  "zipSha256": "5b0169c10daca3b766c1a6085b6a379f614676e715da5663567c19f76df90ea2",
+  "packageCommit": "9d43e5a02fbd76cba5dd8370e6956feac90f3d7a",
+  "files": 837,
+  "workingHead": "d7375caa5ceb22b594f50c68fb1fc45c89f1b80a",
+  "worktreeProtectedHashes": {
+    "docs/guides/使用与启动.md": "fc541b98b6ac8fd9c1cadd81df64ba063a155403396cbebea46ec70f47505541",
+    "docs/当前接力.md": "7d19fd6ba4bcc7ff315b130717e991079703d578bffdef7d4ff76ba9d8335e73",
+    "jianli/src/components/JobDetailView.tsx": "3a31ccbef20dad07526cd6a0f5508175f54289bcf7a1dcb2be9f16a6df454cc0",
+    "jianli/src/lib/match-readiness.ts": "1ee76970a1be25d3cb3a4bc53e5c65d81fed9bf01730068f3b8058048c18e2fb",
+    "jianli/tests/match-readiness.test.mjs": "db2fcbc141853647441de57f7073c31842750f8e5aea0e9be45ec69f99eee4df"
+  },
+  "stash": "stash@{0}: On main: P2 RRF fusion draft - paused by user 20261002",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\source",
+  "isolatedPorts": {
+    "database": 55441,
+    "frontend": 3107,
+    "backend": 8107
+  },
+  "initialDocker": "engine stopped",
+  "externalAi": false
+}

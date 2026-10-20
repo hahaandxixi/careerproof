@@ -1,0 +1,38 @@
+{
+  "r7Sha256": "5b0169c10daca3b766c1a6085b6a379f614676e715da5663567c19f76df90ea2",
+  "r7Commit": "9d43e5a02fbd76cba5dd8370e6956feac90f3d7a",
+  "r8Sha256": "1666cf7f5cb6d88dd2ef2c1e9484fed242258967bcf544887106bf5733f845ab",
+  "r8Commit": "39f49d7d9c79282a62401d0b23c7182bdaaf8e2f",
+  "r8Files": 837,
+  "r8LocalNavigationDocuments": 20,
+  "changedPackageFiles": [
+    "backend/README.md",
+    "jianli/README.md"
+  ],
+  "r7ExecutedSourceMutations": [],
+  "r8RuntimeAndDependencyFilesIdenticalToExecutedR7": true,
+  "r8SeparateCleanInstallPerformed": false,
+  "verifiedCitationSpansUploadByteHashesAndVersions": 12,
+  "browserLoginAndReportCitationObserved": true,
+  "uploadsAndReportCreation": "HTTP through isolated production frontend proxy",
+  "databaseAndServicesRestarted": true,
+  "reportUnchangedAfterRestart": true,
+  "externalAiRequests": 0,
+  "independentFirstUserAcceptance": false,
+  "installation": {
+    "python": "fresh .venv, include-system-site-packages=false",
+    "frontend": "fresh source/jianli/node_modules, npm ci",
+    "downloadCacheAllowed": true,
+    "borrowedInstalledEnvironment": false,
+    "pipInstallExitCode": null,
+    "npmCiExitCode": null,
+    "installExitCodeNote": "Tool response interrupted by user; background installs completed with successful logs. Fresh import, pip check, migration, build and running flow independently verified."
+  },
+  "verifiedExitCodes": {
+    "pipCheck": 0,
+    "migration": 0,
+    "frontendBuild": 0,
+    "documentedSeedReplay": 0,
+    "r8Build": 0
+  }
+}

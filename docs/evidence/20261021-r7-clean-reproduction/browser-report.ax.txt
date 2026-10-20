@@ -1,0 +1,247 @@
+Browser tab: 1, Title: "可追溯人才匹配平台", URL: "http://127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9".
+1 AXWebArea 可追溯人才匹配平台, URL: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9
+	2 link Description: 跳到主要内容, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#main-content
+	3 container
+		4 link Description: 职证 CareerProof, Value: 127.0.0.1:3107/
+		5 container 主导航
+			6 link Description: 岗位发现, Value: 127.0.0.1:3107/jobs
+			7 link Description: 职业推荐, Value: 127.0.0.1:3107/recommendations
+			8 link Description: 我的匹配报告, Value: 127.0.0.1:3107/reports
+			9 button (collapsed) 学生账户 · 演示学生, Secondary Actions: Expand
+				10 text 学生账户 · 
+				11 text 演示学生
+	12 container main-content
+		13 container 学生操作指南
+			14 content list
+				15 link Description: 准备材料, Value: 127.0.0.1:3107/portfolio
+				16 link Description: 推荐职业与岗位, Value: 127.0.0.1:3107/recommendations
+				17 container
+					18 text 查看岗位匹配 当前位置
+				19 link Description: 补充材料, Value: 127.0.0.1:3107/growth
+				20 link Description: 确认投递, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#application-submit
+		21 link Description: ← 匹配报告, Value: 127.0.0.1:3107/reports
+		22 container
+			23 text 规则可评估  5 / 5  项要求。  全部要求有对应规则，不代表证据完整或能力已被证实。
+		24 container
+			25 text 规则证据报告
+			26 heading 演示学生 × Python 后端开发实习生, Value: 1
+				27 text 演示学生  ×  Python 后端开发实习生
+			28 text 5 项要求：3 项有证据支持、0 项部分支持、2 项待补材料、0 项未覆盖或需复核。按岗位权重，先补「为正常报名、重复报名和无效输入编写可运行的接口测试。」的材料缺口。 2026/10/21 00:09:58 逐项实践证据等级 不汇总总分，不对应考试证书级别 共5项岗位要求，其中3项有项目证据支撑，0项仅有简历声明，2项当前无法确认，0项暂不支持评估且不评级。评级描述材料证据，不是能力或录用结论。 有证据支持不等于能力认证；没有找到证据不代表没有能力。暂不支持的技能不评级。
+			29 link Description: 查看实际处理记录 →, Value: 127.0.0.1:3107/tasks/1142af5c-6b0d-4747-8701-bff1c833d7b6
+		30 container 下一步补证计划
+			31 heading 下一步补证计划, Value: 2, ID: evidence-workspace-title
+				32 text 下一步补证计划
+			33 text 选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。
+			34 link Description: 查看版本变化 →, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#report-comparison
+			35 container 按已保存的材料支持状态查看要求
+				36 button (collapsed) 有证据支持 3项 展开, ID: evidence-group-supported, Secondary Actions: Expand
+					37 text 有证据支持
+					38 text 3
+					39 text 项
+					40 text 展开
+				41 button (collapsed) 部分支持 0项 展开, ID: evidence-group-partial, Secondary Actions: Expand
+					42 text 部分支持
+					43 text 0
+					44 text 项
+					45 text 展开
+				46 button (expanded) 待补材料 2项 收起, ID: evidence-group-gaps, Secondary Actions: Collapse
+					47 text 待补材料
+					48 text 2
+					49 text 项
+					50 text 收起
+				51 button (collapsed) 未覆盖或需复核 0项 展开, ID: evidence-group-other, Secondary Actions: Expand
+					52 text 未覆盖或需复核
+					53 text 0
+					54 text 项
+					55 text 展开
+			56 container 待补材料 2项 收起, ID: evidence-panel-gaps
+				57 heading 待补材料 · 2 项, Value: 3
+					58 text 待补材料  ·  2  项
+				59 content list
+					60 container
+						61 heading 为正常报名、重复报名和无效输入编写可运行的接口测试。, Value: 4
+							62 text 为正常报名、重复报名和无效输入编写可运行的接口测试。
+						63 text 岗位权重  3  / 5 补充与要求直接相关的材料。
+						64 link Description: 核对来源与逐项解释, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#requirement-cdc7ff04-0b7a-4f7f-bf19-fb56809dec78
+						65 link Description: 从这条缺口开始补证 →, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#growth-cdc7ff04-0b7a-4f7f-bf19-fb56809dec78
+					66 container
+						67 heading 通过清晰提交或变更说明交代本人修改范围与接口联调过程。, Value: 4
+							68 text 通过清晰提交或变更说明交代本人修改范围与接口联调过程。
+						69 text 岗位权重  2  / 5 补充与要求直接相关的材料。
+						70 link Description: 核对来源与逐项解释, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#requirement-223e951d-af24-4054-b0d8-3bbc8b27e0cb
+						71 link Description: 从这条缺口开始补证 →, Value: 127.0.0.1:3107/reports/02523760-321e-41ab-b052-913243cdfcf9#growth-223e951d-af24-4054-b0d8-3bbc8b27e0cb
+			72 button (collapsed) 补证步骤与投递说明, Secondary Actions: Expand
+				73 text 补证步骤与投递说明
+		74 container application-submit
+			75 heading 向该岗位投递本份报告, Value: 2
+				76 text 向该岗位投递本份报告
+			77 text 确认后，该岗位所属企业将获得以下访问权：
+			78 content list
+				79 container
+					80 AXListMarker • 
+					81 text 查看 投递时固定的报告 与代码引用片段，后续新报告不会替换本次内容；
+				82 container
+					83 AXListMarker • 
+					84 text 下载 本次投递的简历原文件 ，文件可能含联系方式；
+				85 container
+					86 AXListMarker • 
+					87 text 以上访问可随时撤回，但 撤回前已下载的副本无法追回 。
+			88 container
+				89 checkbox (settable, integer) Description: 我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。, Value: 0
+				90 text 我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。
+			91 button (disabled) 确认投递
+			92 button (collapsed) 其他分享说明与限制, Secondary Actions: Expand
+				93 text 其他分享说明与限制
+			94 link Description: 查看我的投递, Value: 127.0.0.1:3107/applications
+		95 button (collapsed) 本次使用的材料版本（2份）, Secondary Actions: Expand
+			96 text 本次使用的材料版本（
+			97 text 2
+			98 text 份）
+		99 button (collapsed) 外部工具只读访问（可选）, Secondary Actions: Expand
+			100 text 外部工具只读访问（可选）
+		101 container
+			102 heading 证据变化与补证进度, Value: 2
+				103 text 证据变化与补证进度
+			104 text 与同一岗位最近一份更早的报告比较；读取已有结果，不调用模型。
+			105 button 与上一份报告对比
+		106 button (collapsed) 证据等级如何划分？, Secondary Actions: Expand
+			107 text 证据等级如何划分？
+		108 container
+			109 text 本报告  0 / 5  项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。
+		110 container
+			111 heading 逐项证据, Value: 2
+				112 text 逐项证据
+			113 container requirement-3c55b334-12b1-4187-b065-dad0fe747465
+				114 heading 使用Python编写可读的业务处理函数，处理报名数据与边界输入。, Value: 3
+					115 text 使用Python编写可读的业务处理函数，处理报名数据与边界输入。
+				116 container
+					117 text Python  · 岗位权重  4  / 5
+				118 text 有证据支持
+				119 text 任务实现
+				120 text 存在Python函数实现；只评价材料支持程度，需核查本人贡献。
+				121 text 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+				122 button (collapsed) 查看判断依据与 AI 解释, Secondary Actions: Expand
+					123 text 查看判断依据与 AI 解释
+				124 button (collapsed) 从这条缺口创建或打开补证任务, Secondary Actions: Expand
+				207 container
+					208 button (expanded) 查看 3 条来源证据, Secondary Actions: Collapse
+						209 text 查看 
+						210 text 3
+						211 text  条来源证据
+					212 container citation-R1-E1
+						213 container
+							214 text R1-E1 322dd763-7a0f-4811-bd37-bd7c588c1132/app.py  · 第  12 – 14  行
+						215 text 存在Python函数实现；只评价材料支持程度，需核查本人贡献。
+						216 container
+							217 text 单个引用片段： 已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验
+						218 container 原文 322dd763-7a0f-4811-bd37-bd7c588c1132/app.py 第 12 至 14 行
+							219 container
+								220 text @app.get("/events") def list_events():     return list(events.values())
+						245 container
+							246 button (expanded) 证据定位信息, Secondary Actions: Collapse
+								247 text 证据定位信息
+							248 text 证据类型： python_code
+							249 text 材料版本： 322dd763-7a0f-4811-bd37-bd7c588c1132
+							250 text 内容摘要： 1cf0011528cb0cb83d593a90fba19940bfdd9eff9f5ca92217d2ee6b1ef2c49f
+					223 container citation-R1-E2
+						224 container
+							225 text R1-E2 322dd763-7a0f-4811-bd37-bd7c588c1132/app.py  · 第  3 – 11  行
+						226 text 混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。
+						227 container
+							228 text 单个引用片段： 局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验
+						229 container 原文 322dd763-7a0f-4811-bd37-bd7c588c1132/app.py 第 3 至 11 行
+							230 container
+								231 text app = FastAPI(title="Campus activity exercise") events = {1: {"id": 1, "title": "Python study group", "capacity": 2}} registrations = [] class Signup(BaseModel):     event_id: int = Field(ge=1)     student_code: str = Field(min_length=3, max_length=16)
+						232 button (collapsed) 证据定位信息, Secondary Actions: Expand
+							233 text 证据定位信息
+					234 container citation-R1-E3
+						235 container
+							236 text R1-E3 322dd763-7a0f-4811-bd37-bd7c588c1132/README.md  · 第  1 – 6  行
+						237 text 混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。
+						238 container
+							239 text 单个引用片段： 局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验
+						240 container 原文 322dd763-7a0f-4811-bd37-bd7c588c1132/README.md 第 1 至 6 行
+							241 container
+								242 text # 活动报名服务：静态课程样例 所有人物和业务均为虚构。包含活动读取、基本报名校验和独立SQL设计草案。 依赖为FastAPI、Pydantic与ASGI服务器；本包不提供安装锁，也不声明可直接生产部署。 app.py使用内存记录，重启即清空；schema.sql尚未接入，不支持并发名额仲裁。 未提供自动测试输出、持久化、用户授权或可验证提交历史。请据实际文件核对，不把设计草案视为已实现。
+						243 button (collapsed) 证据定位信息, Secondary Actions: Expand
+							244 text 证据定位信息
+				129 button (collapsed) 本人核对记录（可选） · 待本人核对, Secondary Actions: Expand
+					130 text 本人核对记录（可选） · 
+					131 text 待本人核对
+				132 container
+					133 text 评级规则版本： practice-evidence-v5-redis-operation
+			134 container requirement-d2265e5d-92ef-46af-9ca4-988902f697db
+				135 heading 实现活动列表与报名接口，明确请求校验、状态码和错误返回。, Value: 3
+					136 text 实现活动列表与报名接口，明确请求校验、状态码和错误返回。
+				137 container
+					138 text FastAPI  · 岗位权重  5  / 5
+				139 text 有证据支持
+				140 text 任务实现
+				141 text 存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。
+				142 text 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+				143 button (collapsed) 查看判断依据与 AI 解释, Secondary Actions: Expand
+					144 text 查看判断依据与 AI 解释
+				145 button (collapsed) 从这条缺口创建或打开补证任务, Secondary Actions: Expand
+				146 button (collapsed) 查看 5 条来源证据, Secondary Actions: Expand
+					147 text 查看 
+					148 text 5
+					149 text  条来源证据
+				150 button (collapsed) 本人核对记录（可选） · 待本人核对, Secondary Actions: Expand
+					151 text 本人核对记录（可选） · 
+					152 text 待本人核对
+				153 container
+					154 text 评级规则版本： practice-evidence-v5-redis-operation
+			155 container requirement-223e951d-af24-4054-b0d8-3bbc8b27e0cb
+				156 heading 通过清晰提交或变更说明交代本人修改范围与接口联调过程。, Value: 3
+					157 text 通过清晰提交或变更说明交代本人修改范围与接口联调过程。
+				158 container
+					159 text Git  · 岗位权重  2  / 5
+				160 text 材料待补充
+				161 text 未找到证据
+				162 text 简历与个人作品中均未找到足够信息，当前无法确认该能力
+				163 text 仍缺少：补充与要求直接相关的材料。
+				164 button (collapsed) 查看判断依据与 AI 解释, Secondary Actions: Expand
+					165 text 查看判断依据与 AI 解释
+				166 button (collapsed) 从这条缺口创建或打开补证任务, Secondary Actions: Expand
+				167 text 本次材料中未找到支持证据，可补充作品、说明或在面试中核实。
+				168 container
+					169 text 评级规则版本： practice-evidence-v5-redis-operation
+			170 container requirement-37644e3c-8978-4b0c-8516-b7249ef88cd6
+				171 heading 设计活动、报名记录的关系表，说明重复报名约束与持久化方式。, Value: 3
+					172 text 设计活动、报名记录的关系表，说明重复报名约束与持久化方式。
+				173 container
+					174 text SQL  · 岗位权重  4  / 5
+				175 text 有证据支持
+				176 text 局部操作
+				177 text 存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。
+				178 text 仍缺少：补充输入、操作、输出和异常处理，以及可定位的验证材料。
+				179 button (collapsed) 查看判断依据与 AI 解释, Secondary Actions: Expand
+					180 text 查看判断依据与 AI 解释
+				181 button (collapsed) 从这条缺口创建或打开补证任务, Secondary Actions: Expand
+				182 button (collapsed) 查看 4 条来源证据, Secondary Actions: Expand
+					183 text 查看 
+					184 text 4
+					185 text  条来源证据
+				186 button (collapsed) 本人核对记录（可选） · 待本人核对, Secondary Actions: Expand
+					187 text 本人核对记录（可选） · 
+					188 text 待本人核对
+				189 container
+					190 text 评级规则版本： practice-evidence-v5-redis-operation
+			191 container requirement-cdc7ff04-0b7a-4f7f-bf19-fb56809dec78
+				192 heading 为正常报名、重复报名和无效输入编写可运行的接口测试。, Value: 3
+					193 text 为正常报名、重复报名和无效输入编写可运行的接口测试。
+				194 container
+					195 text pytest  · 岗位权重  3  / 5
+				196 text 材料待补充
+				197 text 未找到证据
+				198 text 简历与个人作品中均未找到足够信息，当前无法确认该能力
+				199 text 仍缺少：补充与要求直接相关的材料。
+				200 button (collapsed) 查看判断依据与 AI 解释, Secondary Actions: Expand
+					201 text 查看判断依据与 AI 解释
+				202 button (collapsed) 从这条缺口创建或打开补证任务, Secondary Actions: Expand
+				203 text 本次材料中未找到支持证据，可补充作品、说明或在面试中核实。
+				204 container
+					205 text 评级规则版本： practice-evidence-v5-redis-operation
+	206 text 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+
+The focused UI element is 246 button (expanded) 证据定位信息, Secondary Actions: Collapse

@@ -1,0 +1,12 @@
+{
+  "database": "cp_review_r7_20261021",
+  "postgres": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+  "migration": "0021_job_discovery_flags",
+  "python": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\source\\backend\\.venv\\Scripts\\python.exe",
+  "prefix": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\source\\backend\\.venv",
+  "basePrefix": "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python",
+  "systemSitePackages": false,
+  "aiExternalEnabled": false,
+  "aiProvider": "mock",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\r7-clean-20261021\\storage"
+}
