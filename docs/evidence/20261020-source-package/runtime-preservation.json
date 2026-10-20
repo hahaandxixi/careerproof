@@ -1,0 +1,9 @@
+{
+  "manifestIdentityUnchanged": true,
+  "servicesStartedOrStopped": false,
+  "normalBusinessWrites": false,
+  "externalModelRequests": 0,
+  "buildSource": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-consistency",
+  "createdAt": "2026-10-19T13:48:23.4928246Z",
+  "note": "3000/8000 were unavailable during baseline read-only HTTP checks; no page success claimed"
+}
