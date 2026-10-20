@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "9d43e5a02fbd76cba5dd8370e6956feac90f3d7a",
+  "agentSourceCommit": "ca01e52",
+  "sourceZip": "D:\\jbcode\\web ai\\jianli\\output\\source\\CareerProof-source-review-20261020-r7.zip",
+  "sourceZipSha256": "5b0169c10daca3b766c1a6085b6a379f614676e715da5663567c19f76df90ea2",
+  "files": 837,
+  "navigationDocumentsChecked": 20,
+  "allFileHashesMatch": true,
+  "necessaryFixturesPresent": true,
+  "internalDocsAndCredentialsExcluded": true,
+  "agentSourceBinding": "six files unchanged/MATCH",
+  "reviewBundle": "D:\\jbcode\\web ai\\jianli\\output\\review\\CareerProof-three-case-human-review-20261020.zip",
+  "reviewBundleSha256": "fc222ad8dba2323170e876e458caee856b5a380858314fc2655b7b96043c6852",
+  "reviewBundleFiles": {
+    "REVIEWER-GUIDE.md": "819cdf929f5dbf715442b8aa6e3d9135f383b8f429be5374470fcb052a44e452",
+    "current-three-human-review.md": "ecbd70619fb229ec494d7e8c8ecb7802f5f1cb8b100e9d7b118b73b2af23739c"
+  },
+  "threeOutputsEqualSavedRealResponses": true,
+  "allSyntheticInputsAndCitationMappingsPresent": true,
+  "humanReview": "0/3",
+  "pendingJudgmentsAndReasons": 12,
+  "realModelRequestsThisRound": 0,
+  "cleanInstallVerified": false,
+  "normalServiceRestarted": false,
+  "normalBusinessWrites": false,
+  "unpackedAt": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-review-r7-20261020",
+  "gitHistoryIncluded": false,
+  "unpackedPackageTests": {
+    "command": "python -m pytest app/tests/test_source_package.py -q --basetemp=<dedicated source-review-r7-tests-20261020> -p no:cacheprovider",
+    "exitCode": 0,
+    "result": "22 passed in 3.20s",
+    "dependencies": "reused .venv-dependency23; not clean install"
+  },
+  "unpackedAgentOfflineCheck": {
+    "command": "python -m evals.bounded_evidence_smoke --agent --packet ../docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json",
+    "exitCode": 0,
+    "providerConstructed": false
+  },
+  "agentRegressionReuse": "No six-source change since ca01e52/31ff69f; retained existing four-suite 51-pass evidence and r6 five-suite 73-pass extracted evidence; not rerun or summed as candidate acceptance"
+}
