@@ -1,0 +1,14 @@
+{
+  "modelOutputsUnchanged": true,
+  "modelOutputSha256": [
+    "84f4ad34b9e83297654de97b792c5329eb025662e4861f62dc23823181107171",
+    "bb4fd45379e2c9df012e6d16382c6f73da384929097aa6e4d85aca075b7829f9",
+    "c5fbc7c6c9d9ce4edd8a8ba6c023ea564e90cc169ee87240de29b0d14272abde"
+  ],
+  "humanReviewedCount": 0,
+  "humanSemanticPassRate": null,
+  "pendingJudgments": 12,
+  "pendingReasons": 12,
+  "reviewerSignatureBlank": true,
+  "externalRequests": 0
+}
