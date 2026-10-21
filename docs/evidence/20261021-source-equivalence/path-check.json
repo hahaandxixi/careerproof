@@ -88,6 +88,14 @@
       "dirty": false,
       "untracked": false,
       "passed": true
+    },
+    {
+      "path": "backend/evals/tool_choice_smoke.py",
+      "expectedSha256": "97bf4a0729dedb742489af0db0219a6105a38bec0744bc344f807a1692ad0a57",
+      "actualSha256": "97bf4a0729dedb742489af0db0219a6105a38bec0744bc344f807a1692ad0a57",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
     }
   ]
 }
