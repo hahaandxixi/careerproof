@@ -1,0 +1,15 @@
+{
+  "zip": "D:\\jbcode\\web ai\\jianli\\output\\demo\\CareerProof-campus-signup-v2-runtime.zip",
+  "sha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+  "version1Sha256": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c",
+  "originalNineFilesUnchanged": true,
+  "addedActualOutputs": {
+    "runtime/http-observations.json": "74fedb00f1fd4b0d715095585988b6f00edba4d5e37ab5f2c28adf69a3d858a7",
+    "runtime/pytest-output.txt": "a097dc755aff92e023c7ac8863a70baedde5f90fd99474480204e2cf8d7f7a6a",
+    "runtime/source-hashes.json": "cc73a82e2c737c309ee7dce3d6daba5481628a9fd147b26b72d2b50dbde78ea5",
+    "runtime/README.txt": "17da3123884d59b7fef7a9430c677250975a0db50369058e799bef085b8b9175"
+  },
+  "evaluationPlanNotUploaded": true,
+  "targetGrade": null,
+  "frozenBeforeGrowthAnalyze": true
+}

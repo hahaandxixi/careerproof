@@ -1,0 +1,11 @@
+{
+  "originalNineSourceFilesUnchanged": true,
+  "allHistoricalReportsUnchanged": true,
+  "applicationsUnchanged": true,
+  "aiRequestAttemptsAndUsageUnchanged": true,
+  "newMaterialVersionActuallyUsed": true,
+  "newFiles": 13,
+  "realModelRequests": 0,
+  "normalDatabaseTouched": false,
+  "uiVerification": "Not performed: 3108 startup rejected by automatic approval review"
+}

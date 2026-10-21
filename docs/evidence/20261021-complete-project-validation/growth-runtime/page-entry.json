@@ -1,0 +1,12 @@
+{
+  "growthTaskId": "3b9ba85b-aed3-4e1f-9e17-6ced074828c5",
+  "baseReportId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+  "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d",
+  "newReportId": "5960cf5d-0f6a-4564-b7ca-037e17d743e3",
+  "newProjectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+  "projectVersionNumber": 2,
+  "rulesOnly": true,
+  "mockReport": false,
+  "growthUrl": "http://127.0.0.1:3108/growth/3b9ba85b-aed3-4e1f-9e17-6ced074828c5",
+  "reportUrl": "http://127.0.0.1:3108/reports/5960cf5d-0f6a-4564-b7ca-037e17d743e3"
+}

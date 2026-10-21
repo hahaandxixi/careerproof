@@ -1,0 +1,14 @@
+{
+  "id": "b35e561f-e4b7-47b9-abb0-4b9ba63ef771",
+  "taskType": "project_scan",
+  "status": "completed",
+  "progress": 100,
+  "currentStep": "项目解析完成",
+  "errorMessage": null,
+  "totalCostRmb": "0.000000",
+  "createdAt": "2026-10-21T08:49:05.508614Z",
+  "startedAt": "2026-10-21T08:49:05.515899Z",
+  "completedAt": "2026-10-21T08:49:06.010299Z",
+  "reportId": null,
+  "steps": []
+}

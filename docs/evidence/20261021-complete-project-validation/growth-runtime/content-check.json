@@ -1,0 +1,54 @@
+{
+  "sourceExactEntries": 29,
+  "allOriginalNineFilesByteIdentical": true,
+  "newFilesOnlyActualRuntimeOutputs": true,
+  "allLevelsUnchanged": true,
+  "criteria": [
+    {
+      "skill": "FastAPI",
+      "beforeVerdict": "supported",
+      "afterVerdict": "supported",
+      "beforeLevel": 3,
+      "afterLevel": 3,
+      "runtimeCandidates": []
+    },
+    {
+      "skill": "SQL",
+      "beforeVerdict": "supported",
+      "afterVerdict": "supported",
+      "beforeLevel": 3,
+      "afterLevel": 3,
+      "runtimeCandidates": []
+    },
+    {
+      "skill": "Python",
+      "beforeVerdict": "supported",
+      "afterVerdict": "supported",
+      "beforeLevel": 3,
+      "afterLevel": 3,
+      "runtimeCandidates": []
+    },
+    {
+      "skill": "pytest",
+      "beforeVerdict": "supported",
+      "afterVerdict": "supported",
+      "beforeLevel": 3,
+      "afterLevel": 3,
+      "runtimeCandidates": [
+        "6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt"
+      ]
+    },
+    {
+      "skill": "Redis",
+      "beforeVerdict": "gap",
+      "afterVerdict": "gap",
+      "beforeLevel": null,
+      "afterLevel": null,
+      "runtimeCandidates": []
+    }
+  ],
+  "sqlRuntimeReceiptNotSelected": true,
+  "uiFlowNotVerified": true,
+  "noNewProductFeatures": true,
+  "comparisonIsActualSavedReportComparison": true
+}

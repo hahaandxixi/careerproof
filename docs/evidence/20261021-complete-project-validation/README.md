@@ -85,3 +85,15 @@
 在原专属PG上用原简历和项目版本生成新规则报告`4cd00c84-855f-4d26-8a3b-6fe31a076535`。新证据确实包含`campus_signup/schema.sql`第1—8行；29条证据再次与固定源码逐条匹配。旧报告/投递/AI请求与用量行不变。临时API使用空闲loopback端口，结束后已停止；没有启动正常站。
 
 SQL状态由partial变为supported，是检测器修复后的结果差异，**不是用户补证或能力成长**；材料版本没有变化，不能冒充“补证→新版”验收。事务封装、取消方法等遗漏及通用建议仍未解决，等级仍受原规则局限。本节只关闭DDL漏识别，不签收整个业务理解。[真实新报告](sql-fix/report-after.json)、[前后对比](sql-fix/comparison.json)、[隔离与历史保持](sql-fix/result.json)、[红](sql-fix/red.raw.out)→[绿](sql-fix/green.raw.out)。
+
+## 后续：实际运行回执补证链路（HTTP，页面未验）
+
+为原SQL缺口创建`execution`类型任务，以修复后的`4cd00c84-855f-4d26-8a3b-6fe31a076535`为固定基准。V2 ZIP保留九个原文件的全部字节，只追加本次已产生的HTTP响应、pytest原始输出、源码摘要与说明；没有加入评测标准、期望答案或人为改写的结论，也不设置目标等级。运行回执来自本地合成环境，不伪装为独立审核或本人贡献认证。V1不变，原始失败记录保留。
+
+既有API实际完成：创建补证任务→同项目上传第2版→保存材料选择→未授权外发的规则分析→读取任务和固定基准对比。补证任务`3b9ba85b-aed3-4e1f-9e17-6ced074828c5`状态为`compared`，新报告`5960cf5d-0f6a-4564-b7ca-037e17d743e3`。13个文件完成扫描，29条展示证据与V2原文及哈希一致，均属于新版本；历史报告、投递及AI请求/用量行保持原样。
+
+**内容结果：五项等级全部未变。** pytest运行输出进入候选，SQL报告仍未选到事务运行回执，建议仍泛化。这不是“运行回执没上传”，也不能据此宣称业务内容已被系统充分理解；该限制应先于继续美化过程展示处理。比较由真实已有接口生成，没有手工填写对比结果。[补证任务](growth-runtime/growth-task.json)、[报告](growth-runtime/report-after.json)、[比较](growth-runtime/comparison.json)、[内容核验](growth-runtime/content-check.json)、[V2指纹](growth-runtime/v2-manifest.json)、[隔离保持](growth-runtime/result.json)。本机V2文件为`output/demo/CareerProof-campus-signup-v2-runtime.zip`。
+
+本轮隔离后端通过受管会话45480/PID210292运行8108，HTTP完成后已主动结束；PG和数据保留。启动3108隔离前端被自动审批拒绝，工具只返回“blocked by policy”，未提供更具体原因。没有换入口或改命令绕过；本节没有页面、键鼠或390px补证走查通过结论。前述原报告页面截图不能替代新补证链路验收。入口记录见[growth-runtime/page-entry.json](growth-runtime/page-entry.json)，前端恢复前不宣称这些URL当前在线。
+
+后续真实AI入口是现有`POST /api/v1/matches`，选择本项目岗位、合成简历和V2项目版本（见入口记录），另行明确外发授权后才可设置`externalAiConsent=true`。需要核对当前工具规划、可能的补检索/历史读取及最终分析的实际物理请求上限与预算；一次业务请求不等于一次模型请求。现有三例单步分析授权不覆盖该项目，本轮不发送、不预扣、不重置claim。当前仍无该完整项目的真实Agent语义结果，不以HTTP成功、Mock或未变化的规则等级替代。
