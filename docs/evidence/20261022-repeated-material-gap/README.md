@@ -72,13 +72,16 @@ pytest `suggestion`：
 - 改前：`本机可核对的运行结果或验证记录，仍需确认本人贡献。`
 - 改后：`...已上传测试命名文件：tests/test_registration.py；已上传文本/JSON材料：runtime/README.txt、runtime/http-observations.json、runtime/pytest-output.txt。已有材料无需重复上传；...`
 
-`rules-report-after.json` 是由固定 V2 材料和当前 `build_rule_narrative` 做**离线规则投影**，不是重新通过 HTTP 生成一份新规则报告；没有调用模型、没有读写正常数据库。
+规则报告已实际重跑：从当前源码启动临时隔离后端 `127.0.0.1:8110`（隔离数据库，未重启 8108/3108），用固定 V2 材料、五项要求、`externalAiConsent=false` 创建规则任务；报告 `186faca9-a656-49a7-87d1-dcc7dbc5bafe`，模式 `rules`，五项齐全，pytest gap 已包含 `runtime/pytest-output.txt`。临时后端随后停止。
+
+`rules-report-after.json` 仍保留为离线规则投影；以 `rules-report-current.json` 作为实际重跑证据。整个过程未调用模型、未读写正常库。
 
 ## 6. 验收
 
 - `wire-request.json`：wire/attempt 均 38,846，pytest 发送 3 条、规则 6 条、未发送 3 条、材料内测试函数 10 个、runtime `11 passed`。
 - `gap-before-after.json`：AI gap/suggestion 改前改后、规则 narrative gap 改前改后。
-- `rules-report-after.json`：规则层 pytest gap 投影。
+- `rules-report-current.json`：当前源码实际生成的五项规则报告（`186faca9...`，`rules`）；pytest gap 已包含 runtime 输出。
+- `rules-report-after.json`：规则层 pytest gap 的离线投影，保留作对照。
 - 新增回归：`app/tests/test_evidence_scope.py`、`test_rule_narrative.py` 的 runtime inventory 测试。
 - 未做真实 AI 重跑；历史 `f918` 报告未改动。
 
@@ -86,5 +89,6 @@ pytest `suggestion`：
 
 - 其余 9 个测试函数仍未进入模型上下文；本段按任务要求只修措辞/回查，不修检索与选证。
 - 没有证明模型看到完整 10 个测试后会如何评级。
-- 规则投影不是新的 HTTP 报告；如需正式重跑，需要隔离 API/DB 和新的任务记录，另行执行。
-- 未提交，交 Codex 审查第一段。
+- 规则报告已实际重跑；临时隔离后端 8110 已停止，8108/3108 未重启。
+- AI 措辞修复尚未经新的真实模型输出验证；本段没有调用模型。
+- 本段已本地提交，交 Codex 审查第一段。
