@@ -1,0 +1,13 @@
+{
+  "runCommit": "bcbe0e3",
+  "currentCommit": "f17be7a",
+  "runCopySha256": "a571a225af506cc001784fca91d6555d2ba825ae8920e2d0ad17f0d31b2ca5ab",
+  "preBudgetFixSha256": "691dbf73a46611c815b206ba6870cb9a6a7b332ccd0be34a7e8634b3eb6ac9cf",
+  "normalizedRunCopySha256": "691dbf73a46611c815b206ba6870cb9a6a7b332ccd0be34a7e8634b3eb6ac9cf",
+  "currentWorkflowSha256": "e76c04dd327be8caf50e83a16674c7d8ff0515bae976c84cf92c8bd88d9b0615",
+  "historicalBusinessEquivalent": true,
+  "currentBusinessEquivalent": false,
+  "debugLineRemoved": "print(f\"WORKFLOW_EXC {type(exc).__name__}: {exc}\", flush=True)",
+  "currentDelta": "budget estimator label and admission implementation changed after the historical run",
+  "claim": "historical source-equivalent after removing one diagnostic print; not current-source byte-identical"
+}
