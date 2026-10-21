@@ -1,0 +1,41 @@
+{
+  "status": "pass",
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+      "query": "cancel 取消函数",
+      "resultCount": 1,
+      "status": "completed",
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    }
+  ],
+  "toolCompleted": true,
+  "analysisCitations": [
+    "R1-E3"
+  ],
+  "requestCount": 2,
+  "attempts": [
+    {
+      "stage": "planning_1",
+      "status": "receipt_observed",
+      "usage": {
+        "prompt_tokens": 10,
+        "completion_tokens": 10
+      }
+    },
+    {
+      "stage": "analysis",
+      "status": "receipt_observed",
+      "usage": {
+        "prompt_tokens": 10,
+        "completion_tokens": 10
+      }
+    }
+  ],
+  "fallback": false,
+  "fallbackReason": null,
+  "contextEvidenceBefore": 2
+}
