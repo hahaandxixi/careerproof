@@ -75,6 +75,29 @@ def test_reproducible_and_existing_output_never_overwritten(repository, tmp_path
     assert first.read_bytes() == original
 
 
+def test_historical_outputs_excluded_but_eval_sources_retained(repository, tmp_path):
+    historical = [
+        f"backend/evals/{stem}.{extension}"
+        for stem in ("demo-zhipu-20260916-run1", "demo-zhipu-v3-run1",
+                     "demo-zhipu-v4-20260916-run1")
+        for extension in ("md", "json")
+    ]
+    retained = ["backend/evals/README.md", "backend/evals/run_quality.py",
+                "backend/evals/synthetic-fixture.json"]
+    for name in historical + retained:
+        path = repository / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("synthetic test content", encoding="utf-8")
+    git(repository, "add", ".")
+    git(repository, "commit", "-qm", "Add historical outputs and eval resources")
+    output = tmp_path / "without-history.zip"
+    package.build(repository, output)
+    with ZipFile(output) as archive:
+        assert not set(historical).intersection(archive.namelist())
+        assert set(retained).issubset(archive.namelist())
+    assert all((repository / name).exists() for name in historical)
+
+
 def test_missing_frozen_review_refuses_incomplete_package(repository, tmp_path):
     git(repository, "rm", package.REVIEW_FIXTURE)
     git(repository, "commit", "-qm", "Remove required resource")

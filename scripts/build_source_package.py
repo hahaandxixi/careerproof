@@ -30,6 +30,13 @@ REVIEW_DOCS = {
     "docs/guides/工具与接入.md", "docs/guides/评测与人工复核.md",
     "docs/guides/比赛交付.md",
 }
+# Historical outputs remain in Git; eval runners and frozen fixtures stay exported.
+HISTORICAL_EVAL_OUTPUTS = {
+    f"backend/evals/{stem}.{suffix}"
+    for stem in ("demo-zhipu-20260916-run1", "demo-zhipu-v3-run1",
+                 "demo-zhipu-v4-20260916-run1")
+    for suffix in ("md", "json")
+}
 REQUIRED = {
     "README.md", "THIRD_PARTY_NOTICES.md", "Start-Local.ps1", "Stop-Local.ps1",
     "backend/pyproject.toml", "backend/app/main.py", "backend/.env.example",
@@ -51,6 +58,8 @@ def git(root: Path, *arguments: str, data: bytes | None = None) -> bytes:
 
 
 def included(name: str) -> bool:
+    if name in HISTORICAL_EVAL_OUTPUTS:
+        return False
     path = PurePosixPath(name)
     if path.is_absolute() or "\\" in name or ":" in name or ".." in path.parts:
         return False
