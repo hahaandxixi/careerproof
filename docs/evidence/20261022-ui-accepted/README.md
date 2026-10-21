@@ -37,7 +37,7 @@
 
 ## 3. 构建与 3130 预览
 
-- 接受文件集在独立工作树 `backend/.tmp/ui-accepted-worktree` 构建，工作树基线 `8e344aa`；不包含暂停展示改动。
+- 接受文件集在独立工作树 `backend/.tmp/ui-accepted-worktree` 构建，工作树基线 `8e344aa`，最终接受提交 `b91c2550011c4e08b615f765d712516926bbf4af`；构建源码与实际提交文件 SHA256 已逐项比对一致，不包含暂停展示改动。
 - 构建命令：`NEXT_DIST_DIR=.next-accepted BACKEND_ORIGIN=http://127.0.0.1:8108 node node_modules/next/dist/bin/next build`
 - 结果：exit 0，19 页面生成；BUILD_ID `_MAQzEIqP5DEgV9hioxr_`。Next 提示构建环境未安装 ESLint（不是 lint 通过声明）。
 - 独立 3130 预览：`next start` 已启动并实际访问；测试完成后停止。
@@ -67,7 +67,7 @@
 - 接受文件集前端测试：`node --test tests/flow-steps.test.mjs tests/report-action-layer.test.mjs` → **16 passed**。
 - 旧记录里的 **21 passed** 属于旧 source，已作废；本批不沿用。
 - 未调用模型，未重跑规则报告，未读写正常库，未重启 3108/8108。
-- 本记录对应接受提交：`<待提交>`。
+- 本记录对应接受提交：`b91c2550011c4e08b615f765d712516926bbf4af`（`ui: accept report page guidance and guides`）。
 
 ## 6. 未验证 / 边界
 
