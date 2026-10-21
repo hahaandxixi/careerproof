@@ -21,10 +21,17 @@ def digest(data: bytes) -> str:
 def main() -> None:
     pre = subprocess.check_output(["git", "-C", str(ROOT), "show", f"{RUN_COMMIT}:{REL}"])
     run = RUN_COPY.read_bytes()
-    normalized = ("\n".join(
-        line for line in run.decode("utf-8").splitlines() if not line.lstrip().startswith(DEBUG_PREFIX)
-    ) + "\n").encode("utf-8")
-    current = subprocess.check_output(["git", "-C", str(ROOT), "show", f"{CURRENT_COMMIT}:{REL}"])
+    normalized = (
+        "\n".join(
+            line
+            for line in run.decode("utf-8").splitlines()
+            if not line.lstrip().startswith(DEBUG_PREFIX)
+        )
+        + "\n"
+    ).encode("utf-8")
+    current = subprocess.check_output(
+        ["git", "-C", str(ROOT), "show", f"{CURRENT_COMMIT}:{REL}"]
+    )
     result = {
         "runCommit": RUN_COMMIT,
         "currentCommit": CURRENT_COMMIT,
@@ -35,10 +42,20 @@ def main() -> None:
         "historicalBusinessEquivalent": normalized == pre,
         "currentBusinessEquivalent": normalized == current,
         "debugLineRemoved": next(
-            (line.strip() for line in run.decode("utf-8").splitlines() if DEBUG_PREFIX in line), None
+            (
+                line.strip()
+                for line in run.decode("utf-8").splitlines()
+                if DEBUG_PREFIX in line
+            ),
+            None,
         ),
-        "currentDelta": "budget estimator label and admission implementation changed after the historical run",
-        "claim": "historical source-equivalent after removing one diagnostic print; not current-source byte-identical",
+        "currentDelta": (
+            "budget estimator label and admission implementation changed after the historical run"
+        ),
+        "claim": (
+            "historical source-equivalent after removing one diagnostic print; "
+            "not current-source byte-identical"
+        ),
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     out = ROOT / "docs/evidence/20261021-source-equivalence/source-equivalence.json"
