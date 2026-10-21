@@ -1,0 +1,19 @@
+INFO:     Started server process [238640]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:65263 (Press CTRL+C to quit)
+INFO:     127.0.0.1:65264 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/match-reports/c97cdfa6-b87e-4143-9551-f780012648aa HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "POST /api/v1/matches HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/analysis-tasks/d182a90c-9d24-49ed-887e-20d46d6e82bb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/match-reports/516cc695-5044-481f-ab9b-5ffa5e59f1a5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65269 - "GET /api/v1/match-reports/c97cdfa6-b87e-4143-9551-f780012648aa HTTP/1.1" 200 OK

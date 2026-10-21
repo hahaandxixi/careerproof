@@ -76,7 +76,7 @@ def match_candidate(
     for requirement in requirements:
         skill = canonical_skill(requirement.skill)
         claim = claims_by_skill.get(skill) if skill else None
-        detected_evidence = find_evidence(files, requirement.skill)
+        detected_evidence = find_evidence(files, requirement.skill, requirement.title)
         detected_keys = {
             (evidence.file_path, evidence.line_start, evidence.line_end)
             for evidence in detected_evidence
@@ -101,7 +101,9 @@ def match_candidate(
         retrieved_count += len(retrieved_evidence)
         reference_evidence = [
             replace(evidence, provenance="reference")
-            for evidence in find_evidence(reference_files or [], requirement.skill)
+            for evidence in find_evidence(
+                reference_files or [], requirement.skill, requirement.title
+            )
         ]
         reference_keys = {
             (evidence.file_path, evidence.line_start, evidence.line_end)

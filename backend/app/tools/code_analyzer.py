@@ -504,59 +504,110 @@ def _line_details(content: str, match_start: int) -> tuple[int, str]:
     return line_number, snippet[:240]
 
 
-def _python_implementation_line(content: str) -> int | None:
-    """Locate an implemented function, not an earlier stub or quoted example."""
+MAX_PYTHON_FUNCTIONS_PER_FILE = 4
+MAX_PYTHON_SOURCE_LINES = 80
+
+
+def _python_function_nodes(content: str) -> list[ast.FunctionDef | ast.AsyncFunctionDef]:
+    """Return top-level functions and direct class methods, never nested closures."""
     try:
         tree = ast.parse(content)
     except SyntaxError:
-        return None
-
-    def has_behavior(statement: ast.AST) -> bool:
-        if isinstance(statement, ast.Return):
-            return statement.value is not None and not (
-                isinstance(statement.value, ast.Constant) and statement.value.value is None
+        return []
+    nodes: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
+            nodes.append(node)
+        elif isinstance(node, ast.ClassDef):
+            nodes.extend(
+                child
+                for child in node.body
+                if isinstance(child, ast.FunctionDef | ast.AsyncFunctionDef)
             )
-        if isinstance(statement, ast.Expr):
-            return isinstance(statement.value, ast.Call | ast.Await | ast.Yield | ast.YieldFrom)
-        if isinstance(statement, ast.Assign | ast.AugAssign | ast.Delete):
-            return True
-        if isinstance(statement, ast.AnnAssign):
-            return statement.value is not None
-        if isinstance(
-            statement,
-            ast.If
-            | ast.For
-            | ast.AsyncFor
-            | ast.While
-            | ast.With
-            | ast.AsyncWith
-            | ast.Try
-            | ast.TryStar
-            | ast.ExceptHandler
-            | ast.Match
-            | ast.match_case,
-        ):
-            return any(has_behavior(child) for child in ast.iter_child_nodes(statement))
-        # Declarations, imports, pass, ellipsis and raise-only placeholders are
-        # not enough. Nested functions are considered at their own source lines.
-        return False
+    return sorted(nodes, key=lambda node: node.lineno)
 
-    functions = sorted(
-        (
-            node
-            for node in ast.walk(tree)
-            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef)
-        ),
-        key=lambda node: node.lineno,
+
+def _has_python_behavior(statement: ast.AST) -> bool:
+    if isinstance(statement, ast.Return):
+        return statement.value is not None and not (
+            isinstance(statement.value, ast.Constant) and statement.value.value is None
+        )
+    if isinstance(statement, ast.Expr):
+        return isinstance(statement.value, ast.Call | ast.Await | ast.Yield | ast.YieldFrom)
+    if isinstance(statement, ast.Assign | ast.AugAssign | ast.Delete):
+        return True
+    if isinstance(statement, ast.AnnAssign):
+        return statement.value is not None
+    if isinstance(
+        statement,
+        ast.If
+        | ast.For
+        | ast.AsyncFor
+        | ast.While
+        | ast.With
+        | ast.AsyncWith
+        | ast.Try
+        | ast.TryStar
+        | ast.ExceptHandler
+        | ast.Match
+        | ast.match_case,
+    ):
+        return any(_has_python_behavior(child) for child in ast.iter_child_nodes(statement))
+    return False
+
+
+def _python_function_score(source: str, name: str, requirement_title: str) -> int:
+    """Rank useful implementation anchors without relying on a project-specific name."""
+    score = 0
+    if not name.startswith("_"):
+        score += 2
+    mutations = len(
+        re.findall(r"\b(?:INSERT|UPDATE|DELETE|BEGIN|COMMIT|ROLLBACK)\b", source, re.I)
     )
-    return next(
-        (
-            node.lineno
-            for node in functions
-            if any(has_behavior(statement) for statement in node.body)
-        ),
-        None,
-    )
+    score += min(mutations, 4) * 2
+    if re.search(r"\.(?:commit|rollback)\s*\(", source, re.I):
+        score += 2
+    # Only lexical hints that are actually present in the function body. This is
+    # a tie-breaker, not a claim that matching a word proves business relevance.
+    words = {
+        word
+        for word in re.findall(r"[a-z][a-z0-9_]{2,}", requirement_title.lower())
+        if word not in {"python", "实现", "完成", "使用", "以及", "要求"}
+    }
+    if words:
+        source_lower = source.lower()
+        score += sum(1 for word in words if word in source_lower)
+    return score
+
+
+def _python_implementation_anchors(
+    content: str, requirement_title: str = ""
+) -> list[tuple[int, int]]:
+    """Return bounded (line, score) anchors, ranked by observable behavior."""
+    lines = content.splitlines()
+    ranked = []
+    for node in _python_function_nodes(content):
+        if not any(_has_python_behavior(statement) for statement in node.body):
+            continue
+        end = min(node.end_lineno or node.lineno, len(lines))
+        source = "\n".join(
+            lines[node.lineno - 1 : min(end, node.lineno - 1 + MAX_PYTHON_SOURCE_LINES)]
+        )
+        ranked.append((_python_function_score(source, node.name, requirement_title), node.lineno))
+    ranked.sort(key=lambda item: (-item[0], item[1]))
+    return [(line, score) for score, line in ranked[:MAX_PYTHON_FUNCTIONS_PER_FILE]]
+
+
+def _python_implementation_lines(
+    content: str, requirement_title: str = ""
+) -> list[int]:
+    return [line for line, _ in _python_implementation_anchors(content, requirement_title)]
+
+
+def _python_implementation_line(content: str) -> int | None:
+    """Compatibility wrapper for callers that only need the strongest anchor."""
+    lines = _python_implementation_lines(content)
+    return lines[0] if lines else None
 
 
 def _redis_parameter_usage_line(source: str) -> int | None:
@@ -646,10 +697,13 @@ def _redis_parameter_usage_line(source: str) -> int | None:
     return min(lines, default=None)
 
 
-def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvidence]:
+def find_evidence(
+    files: list[ProjectFileSnapshot], skill: str, requirement_title: str = ""
+) -> list[CodeEvidence]:
     skill = canonical_skill(skill) or skill
     results: list[CodeEvidence] = []
-    seen: set[tuple[str, str]] = set()
+    seen: set[tuple] = set()
+    python_scores: dict[tuple[str, int], int] = {}
     mysql_specific = (
         any(
             re.search(r"jdbc:mysql|mysql\.connector|[\"']mysql2?[\"']", _analysis_text(f), re.I)
@@ -715,31 +769,56 @@ def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvid
                 and not mysql_specific
             ):
                 continue
+            if item.evidence_type == "python_code":
+                # Keep a small set of implemented functions, not just the first
+                # one. A helper/exception class must not hide later business
+                # methods, and the ranking must remain bounded.
+                anchors = _python_implementation_anchors(file.content, requirement_title)
+                if not anchors:
+                    continue
+                for line_number, score in anchors:
+                    key = (normalized_path, item.evidence_type, line_number)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    snippet = file.content.splitlines()[line_number - 1].strip()[:240]
+                    results.append(
+                        CodeEvidence(
+                            skill=skill,
+                            evidence_type=item.evidence_type,
+                            file_path=normalized_path,
+                            line_start=line_number,
+                            line_end=line_number,
+                            snippet=snippet,
+                            strength=item.strength,
+                            explanation=(
+                                item.explanation + "；只评价材料支持程度，需核查本人贡献。"
+                            ),
+                            content_hash=hashlib.sha256(
+                                file.content.encode("utf-8")
+                            ).hexdigest(),
+                        )
+                    )
+                    python_scores[(normalized_path, line_number)] = score
+                continue
             if (normalized_path, item.evidence_type) in seen:
                 continue
-            if item.evidence_type == "python_code":
-                # Parse original source: removing a docstring-only body for other
-                # detectors can make otherwise valid Python unparsable.
-                line_number = _python_implementation_line(file.content)
+            match = item.content_pattern.search(content)
+            if not match:
+                line_number = (
+                    _redis_parameter_usage_line(file.content)
+                    if suffix == ".py" and item.evidence_type == "redis_usage" else None
+                )
                 if line_number is None:
                     continue
             else:
-                match = item.content_pattern.search(content)
-                if not match:
-                    line_number = (
-                        _redis_parameter_usage_line(file.content)
-                        if suffix == ".py" and item.evidence_type == "redis_usage" else None
-                    )
-                    if line_number is None:
-                        continue
-                else:
-                    match_start = match.start()
+                match_start = match.start()
                 # Several complete-line patterns deliberately include leading
                 # newlines and indentation. Attribute the match to its first
                 # non-blank token rather than to a preceding blank line.
-                    while match_start < match.end() and content[match_start].isspace():
-                        match_start += 1
-                    line_number = content.count("\n", 0, match_start) + 1
+                while match_start < match.end() and content[match_start].isspace():
+                    match_start += 1
+                line_number = content.count("\n", 0, match_start) + 1
             seen.add((normalized_path, item.evidence_type))
             snippet = file.content.splitlines()[line_number - 1].strip()[:240]
             dependency = bool(
@@ -765,4 +844,15 @@ def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvid
                     content_hash=hashlib.sha256(file.content.encode("utf-8")).hexdigest(),
                 )
             )
-    return sorted(results, key=lambda evidence: STRENGTH_ORDER[evidence.strength])
+    if skill == "Python":
+        results.sort(
+            key=lambda evidence: (
+                STRENGTH_ORDER[evidence.strength],
+                -python_scores.get((evidence.file_path, evidence.line_start), 0),
+                evidence.file_path,
+                evidence.line_start,
+            )
+        )
+    else:
+        results.sort(key=lambda evidence: STRENGTH_ORDER[evidence.strength])
+    return results
