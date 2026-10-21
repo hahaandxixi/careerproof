@@ -1,0 +1,32 @@
+{
+  "windowTitle": "可追溯人才匹配平台 - Google Chrome",
+  "foregroundTitle": "可追溯人才匹配平台 - Google Chrome",
+  "before": {
+    "innerWidth": 1280,
+    "innerHeight": 900,
+    "clientWidth": 1265,
+    "scrollWidth": 1265,
+    "dpr": 1.0000000149011612,
+    "visualScale": 1,
+    "title": "可追溯人才匹配平台"
+  },
+  "afterCtrlShiftPlus": {
+    "innerWidth": 640,
+    "innerHeight": 450,
+    "clientWidth": 632,
+    "scrollWidth": 632,
+    "dpr": 2.0000000298023224,
+    "visualScale": 1,
+    "title": "可追溯人才匹配平台"
+  },
+  "afterCtrlPlus": {
+    "innerWidth": 640,
+    "innerHeight": 450,
+    "clientWidth": 632,
+    "scrollWidth": 632,
+    "dpr": 2.0000000298023224,
+    "visualScale": 1,
+    "title": "可追溯人才匹配平台"
+  },
+  "zoomReached200": true
+}

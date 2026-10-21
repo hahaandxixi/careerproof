@@ -25,12 +25,27 @@ export default function ReportEvidenceWorkspace({ report }: { report: MatchRepor
     (["gaps", "partial", "other", "supported"] as const).find(key => state[key].length > 0) ?? "gaps"
   );
   const actions = new Map((report.actionPlan ?? []).map(action => [action.requirementId, action]));
+  const materialVersions = (report.materials ?? [])
+    .map(material => {
+      const kind = material.kind === "resume" ? "简历" : material.kind === "project" ? "项目" : material.kind;
+      return `${material.title || kind}（${kind} v${material.versionNumber}）`;
+    })
+    .join(" · ");
+  const openCount = state.gaps.length + state.partial.length + state.other.length;
 
   return <section aria-labelledby="evidence-workspace-title" className="panel min-w-0 space-y-4">
     <div className="flex flex-wrap items-start justify-between gap-3">
-      <div>
+      <div className="min-w-0">
         <h2 id="evidence-workspace-title" className="text-lg font-semibold">下一步补证计划</h2>
         <p className="mt-1 text-sm leading-6 text-slate-600">选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。</p>
+        {materialVersions && <p className="mt-2 break-words text-xs leading-5 text-slate-500">本报告固定材料：{materialVersions}。补证或上传新版不会替换本报告。</p>}
+        <p className="mt-2 text-sm leading-6 text-slate-700">
+          {report.items.length === 0
+            ? "下一步：暂无逐项结果，请先核对报告状态。"
+            : openCount > 0
+            ? `下一步：可核对 ${openCount} 项待补、部分支持或需复核的要求，也可直接投递当前报告；若补充材料，请生成新报告后再选择投递版本。`
+            : "下一步：核对关键引用后，可直接投递本报告；如材料更新，请生成新报告再决定。"}
+        </p>
       </div>
       <Link href="#report-comparison" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">查看版本变化 →</Link>
     </div>

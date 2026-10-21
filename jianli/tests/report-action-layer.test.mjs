@@ -145,3 +145,32 @@ test("unmatched actions never create requirements, suggestions or citations", ()
  assert.ok(!html.includes('href="#requirement-other-report"'));
  assert.ok(html.includes('href="#requirement-current"'));
 });
+
+test("fixed material versions and next action are visible without a second source of truth", () => {
+ const html = render({
+  ...report([item("ok", "supported")]),
+  materials: [
+   { kind: "resume", id: "r", title: "简历", versionNumber: 1, contentHash: "r" },
+   { kind: "project", id: "p", title: "库存服务", versionNumber: 2, contentHash: "p" },
+   { kind: "project", id: "q", title: "分析服务", versionNumber: 1, contentHash: "q" },
+  ],
+ });
+ assert.ok(html.includes("简历（简历 v1） · 库存服务（项目 v2） · 分析服务（项目 v1）"));
+ assert.ok(html.includes("补证或上传新版不会替换本报告。"));
+ assert.ok(html.includes("下一步：核对关键引用后，可直接投递本报告"));
+ assert.ok(!html.includes("先处理 0 项"));
+});
+
+test("review-only items offer review without imposing a new delivery prerequisite", () => {
+ const html = render(report([item("review", "supported", { confirmationStatus: "rejected" })]));
+ assert.ok(html.includes("下一步：可核对 1 项待补、部分支持或需复核的要求"));
+ assert.ok(html.includes("也可直接投递当前报告"));
+ assert.ok(!html.includes("完成后生成新报告再决定是否投递"));
+ assert.ok(!html.includes("下一步：核对关键引用后，可直接投递本报告"));
+});
+
+test("empty items do not masquerade as full support", () => {
+ const html = render(report([]));
+ assert.ok(html.includes("暂无逐项结果，请先核对报告状态"));
+ assert.ok(!html.includes("下一步：核对关键引用后，可直接投递本报告"));
+});

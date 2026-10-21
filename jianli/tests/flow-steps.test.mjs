@@ -67,6 +67,7 @@ test("navigation retains all five ordered steps and only one current location", 
   assert.ok(!html.includes('href="#"'));
   assert.ok(!html.includes('href="/applications"'));
   assert.ok(html.includes('href="/growth"')); // Optional guidance, not a completion gate.
+  assert.ok(html.includes("左右滑动查看全部 5 步。"));
 });
 
 test("confirmation is text until a concrete report supplies the existing confirmation anchor", () => {
