@@ -1,0 +1,13 @@
+{
+  "gateEnabled": true,
+  "inventoryDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "activationDigest": "05e51cd61442fe2b93343d811ae6ed779cafb4366384014d102eba5b70550ac6",
+  "auditedActor": "12b9e51e-3bb2-46da-bb92-b317b7de503b",
+  "removedFailedTasks": [
+    "cfd5a95b-2aa2-45a5-9e0d-856160112ca9",
+    "62c3a27e-2ebb-4b37-a29d-2456eefd4a8c",
+    "8eaaf99e-7b49-465e-8e85-c5c07fd573bf",
+    "23a83d82-c1f4-4f79-83ec-71f3dbe4a01a"
+  ],
+  "reason": "Agent live 20261021: remove failed preflight tasks, audit before one budgeted run"
+}

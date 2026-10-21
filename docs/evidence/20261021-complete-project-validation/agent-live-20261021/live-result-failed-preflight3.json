@@ -1,0 +1,4 @@
+{
+  "status": "stopped",
+  "reason": "no trusted usage rows; refusing to treat as success"
+}

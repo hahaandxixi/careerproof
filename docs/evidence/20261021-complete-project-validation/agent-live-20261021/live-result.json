@@ -1,0 +1,105 @@
+{
+  "status": "completed",
+  "taskId": "32967100-77b7-456f-844b-a642e0b9e9a8",
+  "reportId": "f918f3d7-c4b3-4ae3-b48e-6c119e030628",
+  "analysisMode": "ai_evidence",
+  "aiProvider": "deepseek",
+  "itemCount": 5,
+  "pythonCitationIds": [
+    "R3-E1",
+    "R3-E2",
+    "R3-E3"
+  ],
+  "pythonEvidence": [
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/__main__.py",
+      9,
+      14
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+      22,
+      56
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+      14,
+      23
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+      25,
+      54
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+      56,
+      77
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+      10,
+      14
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+      16,
+      19
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+      21,
+      30
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+      32,
+      36
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+      14,
+      16
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+      92,
+      105
+    ],
+    [
+      "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+      108,
+      118
+    ]
+  ],
+  "physicalRequests": 2,
+  "inputTokens": 11137,
+  "outputTokens": 1679,
+  "costYuanAtPeak": "0.035706",
+  "inputEstimate": 25792,
+  "oldReportsUnchanged": true,
+  "realRequests": 2,
+  "sourceHashes": {
+    "app/core/config.py": "1959307d269338fd7e1ae9f7bafc10afdac16b668629e09ec0a7ae9f5aa6d7e4",
+    "app/agents/evidence_workflow.py": "a571a225af506cc001784fca91d6555d2ba825ae8920e2d0ad17f0d31b2ca5ab",
+    "app/tools/code_analyzer.py": "a353c2961474f04caf0cbf9aeb2c20f4e485f5ff3df9ab0f551f9264c8f57186",
+    "app/tools/matcher.py": "8ca77bd966b79822fea1882ca5e8e164fd0aa6ca6e8b5f34992f44b6c6b3647d"
+  },
+  "materialZipSha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+  "price": {
+    "verifiedDate": "2026-10-21",
+    "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+    "model": "deepseek-flash",
+    "currency": "CNY",
+    "peak": {
+      "inputYuanPerMillion": 2,
+      "outputYuanPerMillion": 8
+    },
+    "offPeak": {
+      "inputYuanPerMillion": 1,
+      "outputYuanPerMillion": 4
+    },
+    "note": "User-provided current official price snapshot; not independently re-fetched this run. Recheck on execution day before any real request."
+  },
+  "scope": "one isolated full five-item Agent report; no page; no normal DB"
+}

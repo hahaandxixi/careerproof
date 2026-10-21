@@ -1,0 +1,15 @@
+{
+  "verifiedDate": "2026-10-21",
+  "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "model": "deepseek-flash",
+  "currency": "CNY",
+  "peak": {
+    "inputYuanPerMillion": 2,
+    "outputYuanPerMillion": 8
+  },
+  "offPeak": {
+    "inputYuanPerMillion": 1,
+    "outputYuanPerMillion": 4
+  },
+  "note": "User-provided current official price snapshot; not independently re-fetched this run. Recheck on execution day before any real request."
+}

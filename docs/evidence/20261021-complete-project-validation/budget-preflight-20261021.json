@@ -1,104 +1,54 @@
 {
-  "status": "offline_preflight_only",
-  "authorized": false,
-  "realRequests": 0,
+  "status": "offline_preflight_completed_live_once",
+  "authorized": true,
+  "actualRun": "agent-live-20261021/live-result.json",
   "gitHead": "94701564943066af482e811a1780b4cdec740e35",
   "sourceSha256": {
+    "backend/app/core/config.py": "1959307d269338fd7e1ae9f7bafc10afdac16b668629e09ec0a7ae9f5aa6d7e4",
+    "backend/app/agents/evidence_workflow.py": "691dbf73a46611c815b206ba6870cb9a6a7b332ccd0be34a7e8634b3eb6ac9cf",
     "backend/app/tools/code_analyzer.py": "a353c2961474f04caf0cbf9aeb2c20f4e485f5ff3df9ab0f551f9264c8f57186",
     "backend/app/tools/matcher.py": "8ca77bd966b79822fea1882ca5e8e164fd0aa6ca6e8b5f34992f44b6c6b3647d",
     "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
-    "backend/app/agents/evidence_workflow.py": "56ca89ed61ed19a588e29db9eb57a6e8c05738b7ce45d71dfc11cfeed65012ea",
     "backend/app/agents/contracts.py": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602"
   },
+  "effectiveIsolationConfig": {
+    "inputCharLimit": 60000,
+    "outputLimit": 4000,
+    "contextEvidenceLimit": 3,
+    "deepseekMaxAttempts": 1,
+    "dailyInputTokenLimit": 250000,
+    "dailyOutputTokenLimit": 24000
+  },
+  "measured": {
+    "completeFiveContextEstimate": 25792,
+    "initialAnalysisPreflight": 27725,
+    "planningPreflight": 4108,
+    "actualInputTokens": 11137,
+    "actualOutputTokens": 1679,
+    "physicalRequests": 2,
+    "costYuanAtPeak": "0.035706"
+  },
   "limits": {
-    "effectiveInput": 12000,
+    "inputCharLimit": 60000,
     "output": 4000,
-    "normalEnvInput": 40000,
-    "normalEnvNotUsed": true,
-    "estimateMethod": "conservative_input_token_estimate: compact JSON character upper bound, not provider billing tokens"
+    "maxPhysicalRequests": 12,
+    "maxCostYuan": "5"
   },
-  "legacyAuthorization": {
-    "packet": "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json",
-    "packetSha256": "930bc0001e76965dc4c8fc1dd4573a7cd3edd6bd8fca45b108c20926fef431da",
-    "packetCheck": "SmokeStopped: Agent reviewed source changed",
-    "scope": "three synthetic cases, not the complete five-requirement project",
-    "applicable": false,
-    "legacyCompleteProjectAuthorization": false
-  },
-  "singleRequest": {
-    "systemChars": 5339,
-    "evidenceCharsApprox": 11208,
-    "rubricChars": 1234,
-    "coverageChars": 2588,
-    "otherCharsApprox": 3631,
-    "analysisMessagesApprox": 24000,
-    "afterOneSqlToolApprox": 24766,
-    "repairApprox": 26678,
-    "fitsInputLimit": false
-  },
-  "stages": {
-    "planningMessages": 11439,
-    "planningWithToolSchema": 11758,
-    "toolSchemaChars": 319,
-    "historyChars": 0,
-    "initialAnalysis": 24000,
-    "analysisAfterTool": 24766,
-    "fullRepair": 26678
-  },
-  "compression": {
-    "strategy": "drop repeated function_source_coverage and file_source_coverage only; retain all evidence snippets, citation IDs, requirements, rubric, verdict, failure limits",
-    "allFiveAfterCompressionApprox": 21412,
-    "singleRequestStillFits": false,
-    "groups": [
-      {
-        "id": "A",
-        "requirements": ["FastAPI", "SQL"],
-        "inputEstimate": 11793,
-        "fits": true
-      },
-      {
-        "id": "B",
-        "requirements": ["Python"],
-        "pythonEvidence": 3,
-        "includes": ["storage.py:21-30", "service.py:25-54", "service.py:56-77"],
-        "inputEstimate": 10491,
-        "fits": true
-      },
-      {
-        "id": "C",
-        "requirements": ["pytest", "Redis"],
-        "inputEstimate": 9562,
-        "fits": true
-      }
+  "legacyAuthorizationApplicable": false,
+  "legacyPacketCheck": "SmokeStopped: Agent reviewed source changed",
+  "report": {
+    "id": "f918f3d7-c4b3-4ae3-b48e-6c119e030628",
+    "analysisMode": "ai_evidence",
+    "items": 5,
+    "pythonCitations": ["R3-E1", "R3-E2", "R3-E3"],
+    "toolCalls": [
+      {"tool": "retrieve_more_evidence", "status": "not_requested", "reason": "planner_declined"}
     ]
   },
-  "proposedScheme": {
-    "physicalRequestsMax": 4,
-    "planningRequests": 1,
-    "analysisRequests": 3,
-    "repairRequests": 0,
-    "retriesIncluded": true,
-    "toolExecution": "not used in this scheme; if a tool is added to batch A, rerun the budget preflight",
-    "outputBudget": {
-      "planning": 200,
-      "analysisEach": 1200,
-      "total": 3800,
-      "ceiling": 4000,
-      "fits": true
-    },
-    "aggregation": "deterministic merge by requirement_id; exactly five unique items; fail on missing, duplicate, out-of-range citation, or grounding failure",
-    "failureBehavior": "hard stop; no full-five repair; no fallback relabeled as success"
-  },
-  "notImplemented": [
-    "grouped three-analysis execution in the current workflow",
-    "deterministic cross-batch aggregation",
-    "per-batch failure/validation handling",
-    "coverage-field compaction in the production prompt"
-  ],
-  "notVerified": [
-    "real model semantic consistency across three batches",
-    "human review",
-    "page/UI representation",
-    "independent user acceptance"
+  "notes": [
+    "60000 is a local conservative JSON character bound, not provider-billed tokens.",
+    "12000/30000/42000 failed preflight or budget admission before physical send.",
+    "Actual run used an isolated copy whose evidence_workflow.py differs from current by one diagnostic print only.",
+    "No page, human review, or independent user acceptance was performed."
   ]
 }

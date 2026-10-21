@@ -1,0 +1,70 @@
+[
+  {
+    "id": "bc1602c6-87ec-4b3f-be49-ab96b0e7cafe",
+    "step": "planning_1",
+    "model": "deepseek-flash",
+    "state": "booked",
+    "reason": null,
+    "ended_at": "2026-10-21T10:46:53.206548+00:00",
+    "provider": "deepseek",
+    "booked_at": "2026-10-21T10:47:01.096203+00:00",
+    "run_token": "be599eba-25cd-4f12-9fd0-8d83c36c0be3",
+    "usage_raw": {
+      "prompt_tokens": 2259,
+      "completion_tokens": 48,
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      },
+      "prompt_cache_hit_tokens": 2048
+    },
+    "created_at": "2026-10-21T10:46:52.021343+00:00",
+    "created_by": "d37532ac-ff22-4d4e-a469-305da757b71c",
+    "latency_ms": 1125,
+    "receipt_at": "2026-10-21T10:46:53.206548+00:00",
+    "updated_at": "2026-10-21T10:47:01.096203+00:00",
+    "sending_day": "2026-10-21",
+    "send_intent_at": "2026-10-21T10:46:52.068188+00:00",
+    "response_digest": "e286a04c7cf22965fb24173e141486ef597a27975c6770f79c528754b680af4b",
+    "analysis_task_id": "32967100-77b7-456f-844b-a642e0b9e9a8",
+    "max_output_tokens": 200,
+    "physical_sequence": 1,
+    "usage_input_tokens": 2259,
+    "usage_output_tokens": 48,
+    "estimated_input_tokens": 10653,
+    "usage_cache_hit_tokens": 2048
+  },
+  {
+    "id": "d8c028d6-d9e6-4733-9f64-1d859816e000",
+    "step": "analysis",
+    "model": "deepseek-flash",
+    "state": "booked",
+    "reason": null,
+    "ended_at": "2026-10-21T10:47:01.067156+00:00",
+    "provider": "deepseek",
+    "booked_at": "2026-10-21T10:47:01.108365+00:00",
+    "run_token": "be599eba-25cd-4f12-9fd0-8d83c36c0be3",
+    "usage_raw": {
+      "prompt_tokens": 8878,
+      "completion_tokens": 1631,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432
+    },
+    "created_at": "2026-10-21T10:46:53.28073+00:00",
+    "created_by": "d37532ac-ff22-4d4e-a469-305da757b71c",
+    "latency_ms": 7752,
+    "receipt_at": "2026-10-21T10:47:01.067156+00:00",
+    "updated_at": "2026-10-21T10:47:01.108365+00:00",
+    "sending_day": "2026-10-21",
+    "send_intent_at": "2026-10-21T10:46:53.305466+00:00",
+    "response_digest": "f8de2a5934ae7a0beab99539b74da2496085179e385e7df4894fd2a72978d4c9",
+    "analysis_task_id": "32967100-77b7-456f-844b-a642e0b9e9a8",
+    "max_output_tokens": 3952,
+    "physical_sequence": 2,
+    "usage_input_tokens": 8878,
+    "usage_output_tokens": 1631,
+    "estimated_input_tokens": 38846,
+    "usage_cache_hit_tokens": 2432
+  }
+]

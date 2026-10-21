@@ -375,7 +375,9 @@ async def run_evidence_workflow(
             provider = provider_override or get_ai_provider()
             if provider.name == "mock":
                 return EvidenceWorkflowOutcome(contexts, None, "rules", None, False, None)
-            contexts = build_evidence_contexts(result, max_evidence=2)
+            contexts = build_evidence_contexts(
+                result, max_evidence=settings.ai_context_evidence_limit
+            )
             model_contexts = [context for context in contexts if context.evidence]
             stage = "request"
             await _notify(progress, "等待可用的模型调用名额")

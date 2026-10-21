@@ -1,0 +1,4 @@
+{
+  "status": "stopped",
+  "reason": "output already exists; refusing to overwrite a prior run"
+}

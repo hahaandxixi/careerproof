@@ -171,6 +171,88 @@ async def test_mixed_report_only_sends_evidenced_requirements(monkeypatch) -> No
     assert len(outcome.analysis.items) == 1
 
 
+@pytest.mark.asyncio
+async def test_external_context_evidence_limit_is_configurable(monkeypatch) -> None:
+    result = evidenced_result()
+    first = result.items[0].evidence_list[0]
+    extras = [
+        replace(
+            first,
+            file_path="service.py",
+            line_start=2,
+            line_end=4,
+            snippet="def service():\n    return {'ok': True}",
+            content_hash="2" * 64,
+        ),
+        replace(
+            first,
+            file_path="routes.py",
+            line_start=8,
+            line_end=10,
+            snippet="@app.get('/items')\ndef items():\n    return []",
+            content_hash="3" * 64,
+        ),
+    ]
+    result = replace(result, items=[replace(result.items[0], evidence_list=[first, *extras])])
+    seen = []
+
+    class Provider:
+        name = "synthetic"
+
+        async def analyze_evidence(self, *, contexts):
+            seen.extend(contexts)
+            citation = contexts[0].evidence[0].citation_id
+            return EvidenceAnalysis(
+                summary="材料含实现线索。",
+                model="synthetic",
+                usage=ModelUsage(input_tokens=10, output_tokens=20),
+                items=[
+                    AIRequirementAnalysis(
+                        requirement_id=contexts[0].requirement_id,
+                        explanation="材料含实现线索。",
+                        citation_ids=[citation],
+                        information_gap="运行结果待核验。",
+                        suggestion="补充运行记录。",
+                        confidence=0.5,
+                        rating=AIRating(
+                            level=1,
+                            reason="只确认相关线索。",
+                            criteria=[
+                                CriterionDecision(
+                                    criterion="relevance",
+                                    supported=True,
+                                    citation_ids=[citation],
+                                    reason="片段相关。",
+                                ),
+                                CriterionDecision(
+                                    criterion="operation",
+                                    supported=False,
+                                    citation_ids=[],
+                                    reason="未展示实质操作。",
+                                ),
+                                CriterionDecision(
+                                    criterion="task",
+                                    supported=False,
+                                    citation_ids=[],
+                                    reason="未展示完整任务。",
+                                ),
+                            ],
+                        ),
+                    )
+                ],
+            )
+
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_context_evidence_limit", 3)
+    monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", Provider)
+
+    outcome = await run_evidence_workflow(result)
+
+    assert len(seen) == 1
+    assert len(seen[0].evidence) == 3
+    assert outcome.analysis is not None
+
+
 def test_controlled_retrieval_tool_only_adds_one_whitelisted_candidate() -> None:
     result = evidenced_result()
     first = result.items[0].evidence_list[0]

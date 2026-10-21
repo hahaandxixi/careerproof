@@ -1,0 +1,42 @@
+[
+  {
+    "id": "65db7c6c-4c7d-49ec-b0b6-1c99431a435d",
+    "model": "deepseek-flash",
+    "cost_rmb": 0.0,
+    "run_token": "be599eba-25cd-4f12-9fd0-8d83c36c0be3",
+    "attempt_id": "d8c028d6-d9e6-4733-9f64-1d859816e000",
+    "created_at": "2026-10-21T10:47:01.105733+00:00",
+    "latency_ms": 7752,
+    "updated_at": "2026-10-21T10:47:01.105733+00:00",
+    "request_seq": 2,
+    "input_tokens": 8878,
+    "output_tokens": 1631,
+    "analysis_task_id": "32967100-77b7-456f-844b-a642e0b9e9a8",
+    "cache_hit_tokens": 2432,
+    "unit_price_snapshot": {
+      "provider": "deepseek",
+      "priceVerified": false,
+      "accountingMode": "attempt_v1"
+    }
+  },
+  {
+    "id": "94c5f8d8-fe12-4ea3-8b6c-8c33f98951f3",
+    "model": "deepseek-flash",
+    "cost_rmb": 0.0,
+    "run_token": "be599eba-25cd-4f12-9fd0-8d83c36c0be3",
+    "attempt_id": "bc1602c6-87ec-4b3f-be49-ab96b0e7cafe",
+    "created_at": "2026-10-21T10:47:01.092527+00:00",
+    "latency_ms": 1125,
+    "updated_at": "2026-10-21T10:47:01.092527+00:00",
+    "request_seq": 1,
+    "input_tokens": 2259,
+    "output_tokens": 48,
+    "analysis_task_id": "32967100-77b7-456f-844b-a642e0b9e9a8",
+    "cache_hit_tokens": 2048,
+    "unit_price_snapshot": {
+      "provider": "deepseek",
+      "priceVerified": false,
+      "accountingMode": "attempt_v1"
+    }
+  }
+]
