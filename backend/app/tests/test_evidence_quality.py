@@ -1,5 +1,6 @@
 """Source text must not imply verified candidate ability."""
 
+import sqlite3
 from uuid import uuid4
 
 import pytest
@@ -56,6 +57,38 @@ def test_readme_todo_schema_is_not_implementation(skill):
     )
     assert result.overall_score == 0
     assert result.items[0].verdict == "gap"
+    assert result.items[0].evidence is None
+
+
+@pytest.mark.parametrize("statement", [
+    "CREATE TABLE registrations (id INTEGER PRIMARY KEY);",
+    "CREATE TABLE IF NOT EXISTS registrations (id INTEGER PRIMARY KEY);",
+    "create table if not exists registrations (id integer primary key);",
+    "CREATE\nTABLE\nIF NOT EXISTS registrations (id INTEGER PRIMARY KEY);",
+])
+def test_sql_schema_recognizes_executable_idempotent_table_definition(statement):
+    # Both forms are real SQLite DDL, not a dependency or a README promise.
+    with sqlite3.connect(":memory:") as connection:
+        connection.execute(statement)
+        assert connection.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table'"
+        ).fetchone() == ("registrations",)
+    result = evaluate(
+        "SQL", "提供报名数据表的SQL实现", ProjectFileSnapshot("schema.sql", statement)
+    )
+    evidence = result.items[0].evidence
+    assert evidence is not None
+    assert evidence.evidence_type == "sql_schema"
+    assert evidence.file_path == "schema.sql"
+    assert evidence.line_start == 1
+    assert evidence.snippet == statement.splitlines()[0]
+
+
+def test_sql_incomplete_if_clause_does_not_become_schema_evidence():
+    result = evaluate(
+        "SQL", "提供报名数据表的SQL实现",
+        ProjectFileSnapshot("schema.sql", "CREATE TABLE IF EXISTS registrations (id INTEGER);"),
+    )
     assert result.items[0].evidence is None
 
 

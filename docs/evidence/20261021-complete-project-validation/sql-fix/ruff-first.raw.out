@@ -1,0 +1,30 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> app\tests\test_evidence_quality.py:3:1
+   |
+ 1 |   """Source text must not imply verified candidate ability."""
+ 2 |
+ 3 | / import sqlite3
+ 4 | |
+ 5 | | from uuid import uuid4
+ 6 | |
+ 7 | | import pytest
+ 8 | |
+ 9 | | from app.tools.code_analyzer import ProjectFileSnapshot
+10 | | from app.tools.matcher import RequirementInput, match_candidate
+   | |_______________________________________________________________^
+   |
+help: Organize imports
+
+E501 Line too long (101 > 100)
+  --> app\tests\test_evidence_quality.py:77:91
+   |
+75 |             "SELECT name FROM sqlite_master WHERE type = 'table'"
+76 |         ).fetchone() == ("registrations",)
+77 |     result = evaluate("SQL", "提供报名数据表的SQL实现", ProjectFileSnapshot("schema.sql", statement))
+   |                                                                                                     ^
+78 |     evidence = result.items[0].evidence
+79 |     assert evidence is not None
+   |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.

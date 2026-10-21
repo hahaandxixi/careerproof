@@ -1,0 +1,16 @@
+{
+  "oldReportId": "c97cdfa6-b87e-4143-9551-f780012648aa",
+  "newReportId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+  "sameMaterialVersions": true,
+  "allHistoricalReportRowsUnchanged": true,
+  "applicationsUnchanged": true,
+  "aiRequestAttemptsAndUsageUnchanged": true,
+  "realModelRequests": 0,
+  "schemaNowInRuleEvidence": true,
+  "sourceFile": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source\\backend\\app\\tools\\code_analyzer.py",
+  "sourceSha256": "99b106c029a8ccaa6ab1a5b7582da0d19ef65fd11a562e06e46b5fd100a49636",
+  "scope": "Only SQL CREATE TABLE IF NOT EXISTS compatibility; Python business selection still unresolved",
+  "newApiProcessStopped": true,
+  "port": 50649,
+  "normalServicesTouched": false
+}

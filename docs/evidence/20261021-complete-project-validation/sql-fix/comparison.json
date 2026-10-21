@@ -1,0 +1,236 @@
+{
+  "baseId": "c97cdfa6-b87e-4143-9551-f780012648aa",
+  "targetId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+  "baseJobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+  "targetJobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+  "baseJobTitle": "校园活动后端：完整项目材料验证",
+  "targetJobTitle": "校园活动后端：完整项目材料验证",
+  "contextChanges": [],
+  "baseMaterials": [
+    {
+      "kind": "resume",
+      "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+      "title": "校园活动项目合成简历",
+      "versionNumber": 1,
+      "materialRole": null,
+      "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+    },
+    {
+      "kind": "project",
+      "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+      "title": "Campus Signup：完整业务实现",
+      "versionNumber": 1,
+      "materialRole": "portfolio",
+      "contentHash": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c"
+    }
+  ],
+  "targetMaterials": [
+    {
+      "kind": "resume",
+      "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+      "title": "校园活动项目合成简历",
+      "versionNumber": 1,
+      "materialRole": null,
+      "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+    },
+    {
+      "kind": "project",
+      "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+      "title": "Campus Signup：完整业务实现",
+      "versionNumber": 1,
+      "materialRole": "portfolio",
+      "contentHash": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c"
+    }
+  ],
+  "items": [
+    {
+      "requirementId": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+      "title": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+      "status": "existing",
+      "baseRequirement": {
+        "id": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "title": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "skill": "FastAPI",
+        "weight": 5
+      },
+      "targetRequirement": {
+        "id": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "title": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "skill": "FastAPI",
+        "weight": 5
+      },
+      "baseLevel": 3,
+      "targetLevel": 3,
+      "baseAiStatus": "not_used",
+      "targetAiStatus": "not_used",
+      "baseReview": "pending",
+      "targetReview": "pending",
+      "baseExplanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "targetExplanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "baseInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "targetInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "baseSuggestion": null,
+      "targetSuggestion": null,
+      "baseTaskPlanWarning": null,
+      "targetTaskPlanWarning": null,
+      "baseTaskPlan": null,
+      "targetTaskPlan": null,
+      "addedEvidence": [],
+      "removedEvidence": [],
+      "changes": []
+    },
+    {
+      "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+      "title": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+      "status": "existing",
+      "baseRequirement": {
+        "id": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "title": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "skill": "SQL",
+        "weight": 5
+      },
+      "targetRequirement": {
+        "id": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "title": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "skill": "SQL",
+        "weight": 5
+      },
+      "baseLevel": 3,
+      "targetLevel": 3,
+      "baseAiStatus": "not_used",
+      "targetAiStatus": "not_used",
+      "baseReview": "pending",
+      "targetReview": "pending",
+      "baseExplanation": "存在SQL查询实现；只评价材料支持程度，需核查本人贡献。",
+      "targetExplanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+      "baseInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "targetInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "baseSuggestion": null,
+      "targetSuggestion": null,
+      "baseTaskPlanWarning": null,
+      "targetTaskPlanWarning": null,
+      "baseTaskPlan": null,
+      "targetTaskPlan": null,
+      "addedEvidence": [],
+      "removedEvidence": [],
+      "changes": [
+        "interpretation"
+      ]
+    },
+    {
+      "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+      "title": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+      "status": "existing",
+      "baseRequirement": {
+        "id": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+        "title": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+        "skill": "Python",
+        "weight": 5
+      },
+      "targetRequirement": {
+        "id": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+        "title": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+        "skill": "Python",
+        "weight": 5
+      },
+      "baseLevel": 3,
+      "targetLevel": 3,
+      "baseAiStatus": "not_used",
+      "targetAiStatus": "not_used",
+      "baseReview": "pending",
+      "targetReview": "pending",
+      "baseExplanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "targetExplanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "baseInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "targetInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "baseSuggestion": null,
+      "targetSuggestion": null,
+      "baseTaskPlanWarning": null,
+      "targetTaskPlanWarning": null,
+      "baseTaskPlan": null,
+      "targetTaskPlan": null,
+      "addedEvidence": [],
+      "removedEvidence": [],
+      "changes": []
+    },
+    {
+      "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+      "title": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+      "status": "existing",
+      "baseRequirement": {
+        "id": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+        "title": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+        "skill": "pytest",
+        "weight": 5
+      },
+      "targetRequirement": {
+        "id": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+        "title": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+        "skill": "pytest",
+        "weight": 5
+      },
+      "baseLevel": 3,
+      "targetLevel": 3,
+      "baseAiStatus": "not_used",
+      "targetAiStatus": "not_used",
+      "baseReview": "pending",
+      "targetReview": "pending",
+      "baseExplanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+      "targetExplanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+      "baseInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "targetInformationGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "baseSuggestion": null,
+      "targetSuggestion": null,
+      "baseTaskPlanWarning": null,
+      "targetTaskPlanWarning": null,
+      "baseTaskPlan": null,
+      "targetTaskPlan": null,
+      "addedEvidence": [],
+      "removedEvidence": [],
+      "changes": []
+    },
+    {
+      "requirementId": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+      "title": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+      "status": "existing",
+      "baseRequirement": {
+        "id": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "title": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "skill": "Redis",
+        "weight": 5
+      },
+      "targetRequirement": {
+        "id": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "title": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "skill": "Redis",
+        "weight": 5
+      },
+      "baseLevel": null,
+      "targetLevel": null,
+      "baseAiStatus": "not_used",
+      "targetAiStatus": "not_used",
+      "baseReview": "pending",
+      "targetReview": "pending",
+      "baseExplanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+      "targetExplanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+      "baseInformationGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+      "targetInformationGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+      "baseSuggestion": null,
+      "targetSuggestion": null,
+      "baseTaskPlanWarning": null,
+      "targetTaskPlanWarning": null,
+      "baseTaskPlan": null,
+      "targetTaskPlan": null,
+      "addedEvidence": [],
+      "removedEvidence": [],
+      "changes": []
+    }
+  ],
+  "limitations": [
+    "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",
+    "等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。",
+    "历史岗位快照可能缺少必要性字段；无法还原未保存的属性。",
+    "复核状态是当前状态，不代表报告生成时的状态。",
+    "引用减少仅表示目标报告未再展示，不代表原文件被删除。"
+  ]
+}

@@ -675,7 +675,7 @@ def find_evidence(files: list[ProjectFileSnapshot], skill: str) -> list[CodeEvid
             detectors = (
                 detector(
                     "sql_schema",
-                    r"\bCREATE\s+TABLE\s+\w+\s*\(",
+                    r"\bCREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?\w+\s*\(",
                     "high",
                     "存在建表实现，不代表查询优化能力",
                     r"\.sql$",
