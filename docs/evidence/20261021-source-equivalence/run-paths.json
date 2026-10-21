@@ -1,5 +1,6 @@
 {
   "definition": "explicit paths executed by the verifier/tool workflow; paused display files are excluded",
+  "verifiedAtCommit": "5cb9326",
   "paths": {
     "backend/app/agents/input_budget.py": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
     "backend/app/agents/provider.py": "2155f15cd07598a4dfe91e00b299eb26fce1436e93720b0b69311bae19bf1cff",
