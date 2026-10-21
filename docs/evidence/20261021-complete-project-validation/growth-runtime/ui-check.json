@@ -1,0 +1,20 @@
+{
+  "reportMobile": {
+    "bodyWidth": 375,
+    "clientWidth": 375,
+    "rulesOnly": true,
+    "scrollWidth": 375,
+    "sourceFound": true,
+    "width": 390
+  },
+  "reportDesktop": {
+    "bodyWidth": 1265,
+    "clientWidth": 1265,
+    "scrollWidth": 1265,
+    "width": 1280
+  },
+  "navigation": "baseline SQL requirement → existing saved growth task → saved new report",
+  "newData": false,
+  "modelRequests": 0,
+  "independentHuman": false
+}

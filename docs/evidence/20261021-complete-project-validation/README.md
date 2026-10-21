@@ -86,7 +86,7 @@
 
 SQL状态由partial变为supported，是检测器修复后的结果差异，**不是用户补证或能力成长**；材料版本没有变化，不能冒充“补证→新版”验收。事务封装、取消方法等遗漏及通用建议仍未解决，等级仍受原规则局限。本节只关闭DDL漏识别，不签收整个业务理解。[真实新报告](sql-fix/report-after.json)、[前后对比](sql-fix/comparison.json)、[隔离与历史保持](sql-fix/result.json)、[红](sql-fix/red.raw.out)→[绿](sql-fix/green.raw.out)。
 
-## 后续：实际运行回执补证链路（HTTP，页面未验）
+## 后续：实际运行回执补证链路（HTTP，页面随后补验）
 
 为原SQL缺口创建`execution`类型任务，以修复后的`4cd00c84-855f-4d26-8a3b-6fe31a076535`为固定基准。V2 ZIP保留九个原文件的全部字节，只追加本次已产生的HTTP响应、pytest原始输出、源码摘要与说明；没有加入评测标准、期望答案或人为改写的结论，也不设置目标等级。运行回执来自本地合成环境，不伪装为独立审核或本人贡献认证。V1不变，原始失败记录保留。
 
@@ -117,7 +117,12 @@ SQL状态由partial变为supported，是检测器修复后的结果差异，**�
 ```powershell
 Set-Location -LiteralPath 'D:\jbcode\web ai\jianli\backend\.tmp\agent-display-20261021\source\backend'
 $env:PYTHONPATH = (Get-Location).Path
-& 'D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe' -m uvicorn app.main:app --host 127.0.0.1 --port 8108 --no-proxy-headers
+$env:AI_EXTERNAL_ENABLED = 'false'
+$env:AI_PROVIDER = 'mock'
+$taskPython = 'D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe'
+& $taskPython -c "from urllib.parse import urlparse; from app.core.config import settings; u=urlparse(settings.database_url); assert (u.hostname,u.port,u.path)==('127.0.0.1',55442,'/cp_agent_display_20261021'), 'Wrong database: stop'; print('Isolated database verified')"
+if ($LASTEXITCODE -ne 0) { throw '数据库检查失败，已停止启动' }
+& $taskPython -m uvicorn app.main:app --host 127.0.0.1 --port 8108 --no-proxy-headers
 ```
 
 终端二（原隔离生产构建）：
@@ -125,7 +130,17 @@ $env:PYTHONPATH = (Get-Location).Path
 ```powershell
 Set-Location -LiteralPath 'D:\jbcode\web ai\jianli\backend\.tmp\agent-display-20261021\source\jianli'
 $env:BACKEND_ORIGIN = 'http://127.0.0.1:8108'
-& 'C:\Users\江博\AppData\Local\hermes\node\node.exe' '.\node_modules\next\dist\bin\next' start --hostname 127.0.0.1 --port 3108
+& 'C:\Users\江博\AppData\Local\hermes\node\node.exe' 'D:\jbcode\web ai\jianli\backend\.tmp\agent-display-20261021\source\jianli\node_modules\next\dist\bin\next' start --hostname 127.0.0.1 --port 3108
 ```
 
 恢复后可使用本机原凭据文件登录，打开`http://127.0.0.1:3108/growth/3b9ba85b-aed3-4e1f-9e17-6ced074828c5`核对固定基准、第2版材料和真实报告比较。代码/构建来源仍按前述隔离说明，不宣称最新HEAD全仓构建；两个进程都应留在各自终端，结束时仅停止这两个专属进程，不操作正常站。
+
+### 用户手动恢复后的页面补验
+
+用户已手动启动两个终端；本次核实8108/PID178520与3108/PID224728均监听loopback。没有由执行端重试被拒绝的启动命令，也未重建前端。读取既有隔离生产构建，BUILD_ID为`WDMAX7DoSVpEqnsSppkxf`，不是本次HEAD的全仓构建验收。
+
+浏览器实际走查：固定基准报告SQL项展开补证入口 → 打开同一条已保存任务 → 打开已保存V2新报告 → 展开pytest来源。入口明确沿用既有任务，不重新填写；任务显示固定基准、V2版本及摘要、新报告链接和真实比较。pytest新增来源显示`runtime/pytest-output.txt`第1—8行；报告仍把它标为检索候选，未宣称独立认证或已执行上传代码。五项等级未变，SQL事务运行回执未进入该项来源、建议泛化的内容限制仍在。本次未点击上传、分析、投递或保存私人草稿，没有新建业务记录或模型调用。
+
+1280×900及390×844实际视口下，补证页面和展开来源的新报告均无整页横向溢出：内容宽度分别1265与375（差额为滚动条）。步骤条为局部横滚，不能把其子项超出可见区判为整页溢出。页面控制台未观察到error。没有发现阻碍本次内容核对的展示问题，因此产品源码零改动；这不是完整键盘、首次独立用户或真实Agent语义验收。
+
+证据：[检查记录](growth-runtime/ui-check.json)、[390尺寸](growth-runtime/mobile-geometry.json)、[桌面任务页](growth-runtime/desktop-ui.jpg)、[390任务页](growth-runtime/mobile-ui.jpg)、[桌面新版来源](growth-runtime/new-report-desktop-ui.jpg)、[390新版来源](growth-runtime/new-report-mobile-ui.jpg)。保存的DOM记录仅对应本次实际展开状态。用户启动的服务保持运行，本轮未停止其终端、正常站或专属PG；真实Agent上下文预算阻断仍按上节保留。

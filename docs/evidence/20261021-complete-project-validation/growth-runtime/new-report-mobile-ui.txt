@@ -1,0 +1,271 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "岗位发现":
+      - /url: /jobs
+    - link "职业推荐":
+      - /url: /recommendations
+    - link "我的匹配报告":
+      - /url: /reports
+    - generic "学生账户 · 林舟（虚构项目验证）":
+      - generic: 林
+      - generic: 学生账户 · 林舟（虚构项目验证）
+      - generic: ▾
+- main:
+  - navigation "学生操作指南":
+    - list:
+      - link "准备材料":
+        - /url: /portfolio
+        - generic: "1"
+        - generic: 准备材料
+      - generic: →
+      - link "推荐职业与岗位":
+        - /url: /recommendations
+        - generic: "2"
+        - generic: 推荐职业与岗位
+      - generic: →
+      - generic: "3"
+      - text: 查看岗位匹配
+      - generic: 当前位置
+      - generic: →
+      - link "补充材料":
+        - /url: /growth
+        - generic: "4"
+        - generic: 补充材料
+      - generic: →
+      - link "确认投递":
+        - /url: /reports/5960cf5d-0f6a-4564-b7ca-037e17d743e3#application-submit
+        - generic: "5"
+        - generic: 确认投递
+  - link "← 匹配报告":
+    - /url: /reports
+  - complementary: 规则可评估 5/5 项要求。 全部要求有对应规则，不代表证据完整或能力已被证实。
+  - paragraph: 规则证据报告
+  - heading "林舟（虚构项目验证） × 校园活动后端：完整项目材料验证" [level=1]
+  - paragraph: 5 项要求：4 项有证据支持、0 项部分支持、1 项待补材料、0 项未覆盖或需复核。按岗位权重，先补「使用Redis缓存活动查询并在报名或取消后失效缓存」的材料缺口。
+  - paragraph: 2026/10/21 16:49:07
+  - strong: 逐项实践证据等级
+  - paragraph: 不汇总总分，不对应考试证书级别
+  - paragraph: 共5项岗位要求，其中4项有项目证据支撑，0项仅有简历声明，1项当前无法确认，0项暂不支持评估且不评级。评级描述材料证据，不是能力或录用结论。
+  - paragraph: 有证据支持不等于能力认证；没有找到证据不代表没有能力。暂不支持的技能不评级。
+  - link "查看实际处理记录 →":
+    - /url: /tasks/812d8522-6163-465f-a2b0-f3783dd70df1
+  - region "下一步补证计划":
+    - heading "下一步补证计划" [level=2]
+    - paragraph: 选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。
+    - link "查看版本变化 →":
+      - /url: "#report-comparison"
+    - generic "按已保存的材料支持状态查看要求":
+      - button "有证据支持 4项 展开":
+        - generic: 有证据支持
+        - generic: 4项
+        - generic: 展开
+      - button "部分支持 0项 展开":
+        - generic: 部分支持
+        - generic: 0项
+        - generic: 展开
+      - button "待补材料 1项 收起" [expanded]:
+        - generic: 待补材料
+        - generic: 1项
+        - generic: 收起
+      - button "未覆盖或需复核 0项 展开":
+        - generic: 未覆盖或需复核
+        - generic: 0项
+        - generic: 展开
+    - region "待补材料 1项 收起":
+      - heading "待补材料 · 1 项" [level=3]
+      - list:
+        - heading "使用Redis缓存活动查询并在报名或取消后失效缓存" [level=4]
+        - generic: 本地规则提示
+        - paragraph: 岗位权重 5 / 5
+        - paragraph: 核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。
+        - link "核对来源与逐项解释":
+          - /url: "#requirement-58f121b0-fbd4-4e81-ad03-df57eed7978f"
+        - link "从这条缺口开始补证 →":
+          - /url: "#growth-58f121b0-fbd4-4e81-ad03-df57eed7978f"
+    - generic "补证步骤与投递说明"
+  - heading "向该岗位投递本份报告" [level=2]
+  - paragraph: 确认后，该岗位所属企业将获得以下访问权：
+  - list:
+    - listitem: 查看投递时固定的报告与代码引用片段，后续新报告不会替换本次内容；
+    - listitem: 下载本次投递的简历原文件，文件可能含联系方式；
+    - listitem: 以上访问可随时撤回，但撤回前已下载的副本无法追回。
+  - checkbox "我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。"
+  - generic: 我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。
+  - button "确认投递" [disabled]
+  - generic "其他分享说明与限制"
+  - link "查看我的投递":
+    - /url: /applications
+  - generic "本次使用的材料版本（2份）"
+  - generic "外部工具只读访问（可选）"
+  - heading "证据变化与补证进度" [level=2]
+  - paragraph: 与同一岗位最近一份更早的报告比较；读取已有结果，不调用模型。
+  - button "与上一份报告对比"
+  - generic "证据等级如何划分？"
+  - paragraph: 本报告 0/5 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。
+  - heading "逐项证据" [level=2]
+  - article:
+    - heading "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态" [level=3]
+    - paragraph: FastAPI · 岗位权重 5 / 5
+    - text: 有证据支持
+    - paragraph: 任务实现
+    - paragraph: 存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - generic "查看判断依据与 AI 解释"
+    - button "从这条缺口创建或打开补证任务"
+    - generic "查看 6 条来源证据"
+    - generic "本人核对记录（可选） · 待本人核对"
+    - paragraph: 评级规则版本：practice-evidence-v5-redis-operation
+  - article:
+    - heading "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录" [level=3]
+    - paragraph: SQL · 岗位权重 5 / 5
+    - text: 有证据支持
+    - paragraph: 任务实现
+    - paragraph: 存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - generic "查看判断依据与 AI 解释"
+    - button "从这条缺口创建或打开补证任务"
+    - generic "查看 7 条来源证据"
+    - generic "本人核对记录（可选） · 待本人核对"
+    - paragraph: 评级规则版本：practice-evidence-v5-redis-operation
+  - article:
+    - heading "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加" [level=3]
+    - paragraph: Python · 岗位权重 5 / 5
+    - text: 有证据支持
+    - paragraph: 任务实现
+    - paragraph: 存在Python函数实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - generic "查看判断依据与 AI 解释"
+    - button "从这条缺口创建或打开补证任务"
+    - generic "查看 8 条来源证据"
+    - generic "本人核对记录（可选） · 待本人核对"
+    - paragraph: 评级规则版本：practice-evidence-v5-redis-operation
+  - article:
+    - heading "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争" [level=3]
+    - paragraph: pytest · 岗位权重 5 / 5
+    - text: 有证据支持
+    - paragraph: 任务实现
+    - paragraph: 存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 仍缺少：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - generic "查看判断依据与 AI 解释"
+    - button "从这条缺口创建或打开补证任务"
+    - generic "查看 6 条来源证据" [active]
+    - paragraph: R4-E16db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py · 第 29–39 行
+    - paragraph: 存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 单个引用片段：已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第 29 至 39 行":
+      - code:
+        - generic: "29"
+        - text: "def test_registration_persists_across_application_restart(database):"
+        - generic: "30"
+        - text: "with TestClient(create_app(database)) as client:"
+        - generic: "31"
+        - text: event_id = event(client)
+        - generic: "32"
+        - text: registered = signup(client, event_id)
+        - generic: "33"
+        - text: assert registered.status_code == 201
+        - generic: "34"
+        - text: saved = registered.json()
+        - generic: "35"
+        - text: assert saved["status"] == "active"
+        - generic: "36"
+        - text: assert client.get("/events").json()[0]["remaining"] == 1
+        - generic: "37"
+        - text: "with TestClient(create_app(database)) as restarted:"
+        - generic: "38"
+        - text: assert restarted.get("/registrations").json() == [saved]
+        - generic: "39"
+        - text: assert restarted.get("/events").json()[0]["remaining"] == 1
+    - generic "证据定位信息"
+    - paragraph: R4-E26db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py · 第 14–16 行
+    - paragraph: 使用了pytest夹具或测试标记；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 单个引用片段：已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第 14 至 16 行":
+      - code:
+        - generic: "14"
+        - text: "@pytest.fixture"
+        - generic: "15"
+        - text: "def database(tmp_path):"
+        - generic: "16"
+        - text: return tmp_path / "signup.sqlite3"
+    - generic "证据定位信息"
+    - paragraph: R4-E36db170c9-ea2b-4036-84d1-47260c687014/requirements.txt · 第 5–5 行
+    - paragraph: 仅有依赖或配置声明，未据此确认功能实现。
+    - paragraph: 单个引用片段：完整依赖声明；仅证明声明，不能证明安装、运行或功能实现
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/requirements.txt 第 5 至 5 行":
+      - code:
+        - generic: "5"
+        - text: pytest==9.0.3
+    - generic "证据定位信息"
+    - paragraph: 6db170c9-ea2b-4036-84d1-47260c687014/README.md · 第 1–9 行
+    - paragraph: 混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。
+    - paragraph: 单个引用片段：局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/README.md 第 1 至 9 行":
+      - code:
+        - generic: "1"
+        - text: "# Campus Signup"
+        - generic: "2"
+        - generic: "3"
+        - text: 原创合成的本地校园活动报名服务。提供创建活动、报名、查询与取消报名接口；数据保存到调用者指定的 SQLite 文件。活动名额、报名记录与审计记录在同一事务中更新。重复报名和满额返回409，未知活动返回404，非法请求返回422，数据库故障返回503。
+        - generic: "4"
+        - generic: "5"
+        - text: 这是范围有限的练习项目：不提供登录鉴权、支付、邮件、分布式部署、本人贡献认证或生产服务承诺。报名取消后该学生不能再次报名同一活动；保留原报名记录，其他学生可使用释放的名额。
+        - generic: "6"
+        - generic: "7"
+        - text: 需要Python 3.12。在本目录执行：
+        - generic: "8"
+        - generic: "9"
+        - text: "```powershell"
+    - generic "证据定位信息"
+    - paragraph: 6db170c9-ea2b-4036-84d1-47260c687014/README.md · 第 16–18 行
+    - paragraph: 混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。
+    - paragraph: 单个引用片段：局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/README.md 第 16 至 18 行":
+      - code:
+        - generic: "16"
+        - text: "在 `http://127.0.0.1:8121/docs` 可操作接口：先POST `/events`（title、capacity），再POST `/registrations`（event_id、student_code）；GET接口读取已保存记录，POST `/registrations/{id}/cancel` 释放名额。重新启动时传入同一个数据库文件即可读取原记录。"
+        - generic: "17"
+        - generic: "18"
+        - text: "`campus_signup/api.py` 负责HTTP边界；`service.py` 负责业务；`storage.py` 和 `schema.sql` 负责事务、数据约束和读取；`tests/test_registration.py` 是行为测试。运行产生的数据库、缓存、虚拟环境不属于源码材料，不应上传。"
+    - generic "证据定位信息"
+    - paragraph: 6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt · 第 1–8 行
+    - paragraph: 混合检索发现与岗位要求词项相关的原文；仅作为AI核对候选，不直接证明功能完成、运行结果或本人贡献。
+    - paragraph: 单个引用片段：局部原文，不能据此判断完整实现；运行结果和本人贡献需人工核验
+    - generic "原文 6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt 第 1 至 8 行":
+      - code:
+        - generic: "1"
+        - text: ........... [100%]
+        - generic: "2"
+        - text: ============================== warnings summary ===============================
+        - generic: "3"
+        - text: ..\..\..\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+        - generic: "4"
+        - text: "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead."
+        - generic: "5"
+        - text: "from starlette.testclient import TestClient as TestClient # noqa"
+        - generic: "6"
+        - generic: "7"
+        - text: ..\..\..\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+        - generic: "8"
+        - text: "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Lib\\site-packages\\starlette\\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead."
+    - generic "证据定位信息"
+    - generic "本人核对记录（可选） · 待本人核对"
+    - paragraph: 评级规则版本：practice-evidence-v5-redis-operation
+  - article:
+    - heading "使用Redis缓存活动查询并在报名或取消后失效缓存" [level=3]
+    - paragraph: Redis · 岗位权重 5 / 5
+    - text: 材料待补充
+    - paragraph: 待核对检索候选
+    - paragraph: 简历与个人作品中均未找到足够信息，当前无法确认该能力
+    - paragraph: 仍缺少：核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。
+    - generic "查看判断依据与 AI 解释"
+    - button "从这条缺口创建或打开补证任务"
+    - generic "查看 2 条来源证据"
+    - generic "本人核对记录（可选） · 待本人核对"
+    - paragraph: 评级规则版本：practice-evidence-v5-redis-operation
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert

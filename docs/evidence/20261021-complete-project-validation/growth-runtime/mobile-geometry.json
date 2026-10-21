@@ -1,0 +1,68 @@
+{
+  "bodyWidth": 375,
+  "clientWidth": 375,
+  "overflowElements": [
+    {
+      "tag": "OL",
+      "text": "1准备材料→2推荐职业与岗位→3查看岗位匹配→4补充材料当前位置→5确认投递",
+      "width": 741
+    },
+    {
+      "tag": "LI",
+      "text": "→3查看岗位匹配",
+      "width": 159
+    },
+    {
+      "tag": "A",
+      "text": "3查看岗位匹配",
+      "width": 129
+    },
+    {
+      "tag": "SPAN",
+      "text": "查看岗位匹配",
+      "width": 96
+    },
+    {
+      "tag": "LI",
+      "text": "→4补充材料当前位置",
+      "width": 127
+    },
+    {
+      "tag": "SPAN",
+      "text": "→",
+      "width": 16
+    },
+    {
+      "tag": "SPAN",
+      "text": "4补充材料当前位置",
+      "width": 97
+    },
+    {
+      "tag": "SPAN",
+      "text": "4",
+      "width": 25
+    },
+    {
+      "tag": "SPAN",
+      "text": "补充材料当前位置",
+      "width": 64
+    },
+    {
+      "tag": "SMALL",
+      "text": "当前位置",
+      "width": 64
+    },
+    {
+      "tag": "LI",
+      "text": "→5确认投递",
+      "width": 127
+    },
+    {
+      "tag": "SPAN",
+      "text": "→",
+      "width": 16
+    }
+  ],
+  "scrollWidth": 375,
+  "width": 390
+}
