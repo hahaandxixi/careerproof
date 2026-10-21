@@ -129,7 +129,17 @@ def analysis_answer(item):
     }
 
 
-async def main(report_path: Path, output: Path) -> None:
+async def main(report_path: Path, output: Path, live: bool = False) -> None:
+    if live:
+        claim = Path(__file__).resolve().parents[1] / ".tmp/tool-choice-live-claim.json"
+        claim.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with claim.open("x", encoding="utf-8") as handle:
+                json.dump({"status": "claimed_before_send"}, handle)
+        except FileExistsError:
+            raise SystemExit(
+                "live tool-choice claim already exists; refusing a second run"
+            ) from None
     result, item = load_python_case(report_path)
     contexts = build_evidence_contexts(result, max_evidence=2)
     guard = Guard()
@@ -156,10 +166,18 @@ async def main(report_path: Path, output: Path) -> None:
             "usage": {"prompt_tokens": 10, "completion_tokens": 10},
         })
 
+    api_key = "offline-not-a-real-key"
+    transport = httpx.MockTransport(handler)
+    if live:
+        from app.core.config import settings as live_settings
+        if live_settings.deepseek_api_key is None:
+            raise SystemExit("DEEPSEEK_API_KEY is missing; no live request sent")
+        api_key = live_settings.deepseek_api_key.get_secret_value()
+        transport = None
     provider = DeepSeekProvider(
-        api_key="offline-not-a-real-key", base_url="https://api.deepseek.com",
-        model="deepseek-flash", timeout_seconds=5, max_attempts=1,
-        transport=httpx.MockTransport(handler),
+        api_key=api_key, base_url="https://api.deepseek.com",
+        model="deepseek-flash", timeout_seconds=120, max_attempts=1,
+        transport=transport,
     )
     settings.ai_external_enabled = True
     settings.ai_provider = "deepseek"
@@ -176,20 +194,39 @@ async def main(report_path: Path, output: Path) -> None:
         result, provider_override=provider, external_allowed=True,
         durable_observer_factory=factory,
     )
+    citations = sorted({
+        cid
+        for row in (outcome.analysis.items if outcome.analysis else [])
+        for cid in row.citation_ids
+    })
+    input_tokens = sum(
+        int(row.get("usage", {}).get("prompt_tokens") or 0) for row in guard.attempts
+    )
+    output_tokens = sum(
+        int(row.get("usage", {}).get("completion_tokens") or 0) for row in guard.attempts
+    )
+    cost = (input_tokens * 2 + output_tokens * 8) / 1_000_000
+    tool_completed = any(row.get("status") == "completed" for row in outcome.tool_calls)
+    passed = bool(
+        outcome.analysis
+        and not outcome.fallback_used
+        and tool_completed
+        and "R1-E3" in citations
+    )
     result_data = {
-        "status": "pass" if outcome.analysis and not outcome.fallback_used else "fail",
+        "status": "pass" if passed else "fail",
+        "live": live,
         "toolCalls": list(outcome.tool_calls),
-        "toolCompleted": any(row.get("status") == "completed" for row in outcome.tool_calls),
-        "analysisCitations": sorted({
-            cid
-            for row in (outcome.analysis.items if outcome.analysis else [])
-            for cid in row.citation_ids
-        }),
+        "toolCompleted": tool_completed,
+        "analysisCitations": citations,
         "requestCount": outcome.request_count,
         "attempts": guard.attempts,
         "fallback": outcome.fallback_used,
         "fallbackReason": outcome.fallback_reason,
         "contextEvidenceBefore": len(contexts[0].evidence),
+        "inputTokens": input_tokens,
+        "outputTokens": output_tokens,
+        "costYuanAtPeak": f"{cost:.6f}",
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
@@ -204,5 +241,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--live", action="store_true")
     args = parser.parse_args()
-    asyncio.run(main(args.report, args.output))
+    asyncio.run(main(args.report, args.output, live=args.live))

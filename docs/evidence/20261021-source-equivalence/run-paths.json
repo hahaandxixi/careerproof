@@ -12,6 +12,6 @@
     "backend/evals/verify_agent_run.py": "19897bc48265039460f6d2e479dff8c1819774d60bc93806a8b5af56ed135694",
     "backend/evals/agent_source_equivalence.py": "97824377373239ea3053b3b676c10fbe006f2d84c7a0511ec6e7604063f4756d",
     "backend/evals/check_run_paths.py": "99278dbc27202473466785fceb03275f58a7bb0fb4f236f90fabd7fd369e4970",
-    "backend/evals/tool_choice_smoke.py": "97bf4a0729dedb742489af0db0219a6105a38bec0744bc344f807a1692ad0a57"
+    "backend/evals/tool_choice_smoke.py": "3621d786bb30421b83e11f8a263b674fb1c28c1126e59ef5ea9635aed46f8a12"
   }
 }

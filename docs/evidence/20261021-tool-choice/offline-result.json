@@ -1,5 +1,6 @@
 {
   "status": "pass",
+  "live": false,
   "toolCalls": [
     {
       "tool": "retrieve_more_evidence",
@@ -37,5 +38,8 @@
   ],
   "fallback": false,
   "fallbackReason": null,
-  "contextEvidenceBefore": 2
+  "contextEvidenceBefore": 2,
+  "inputTokens": 20,
+  "outputTokens": 20,
+  "costYuanAtPeak": "0.000200"
 }

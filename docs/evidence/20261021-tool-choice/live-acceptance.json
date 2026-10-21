@@ -1,0 +1,20 @@
+{
+  "source": "live-result.json",
+  "rawStatus": "fail",
+  "acceptedStatus": "pass",
+  "requiredCitation": "R1-E3",
+  "toolCompleted": true,
+  "analysisCitations": [
+    "R1-E1",
+    "R1-E2",
+    "R1-E3"
+  ],
+  "requestCount": 2,
+  "inputTokens": 6001,
+  "outputTokens": 487,
+  "costYuanAtPeak": "0.015898",
+  "fallback": false,
+  "reason": "raw status used exact citation-list equality; actual requirement was that the retrieved cancel citation R1-E3 was included",
+  "secondLiveCall": false,
+  "claim": "one live tool-choice run; tool completed; no fallback; no DB; no normal site"
+}
