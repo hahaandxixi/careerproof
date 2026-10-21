@@ -1,0 +1,27 @@
+{
+  "module": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source\\backend\\app\\tools\\code_analyzer.py",
+  "moduleSha256": "ad3955fd8f998c945ce1479fe532cae632e3c64a2df2c35f4ad3dc8c4ecc3a8f",
+  "actualFrozenSchemaDetections": 0,
+  "actualBusinessFilePythonAnchor": {
+    "line": 5,
+    "snippet": "def __init__(self, message: str, status_code: int):"
+  },
+  "businessMethodsRemainInFrozenSource": {
+    "register": 25,
+    "cancel": 56
+  },
+  "controlsNotUploaded": {
+    "simple": {
+      "sqliteExecutes": true,
+      "detections": [
+        "sql_schema"
+      ]
+    },
+    "idempotent": {
+      "sqliteExecutes": true,
+      "detections": []
+    }
+  },
+  "frozenMaterialChanged": false,
+  "productionCodeChanged": false
+}

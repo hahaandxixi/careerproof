@@ -1,0 +1,25 @@
+INFO:     Started server process [72152]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:53604 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53605 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53608 - "POST /events HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:53608 - "POST /registrations/1/cancel HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53608 - "POST /registrations/1/cancel HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53608 - "POST /events HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53608 - "POST /registrations HTTP/1.1" 503 Service Unavailable
+INFO:     127.0.0.1:53608 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53608 - "GET /registrations HTTP/1.1" 200 OK
+INFO:     Started server process [73336]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:53609 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53610 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53616 - "GET /registrations HTTP/1.1" 200 OK

@@ -1,0 +1,19 @@
+{
+  "database": "cp_agent_display_20261021",
+  "port": 55442,
+  "containerScope": "agent-display-20261021",
+  "externalAiEnabled": false,
+  "externalAiConsent": false,
+  "normalDatabaseTouched": false,
+  "oldSyntheticReportsUnchanged": true,
+  "applicationsUnchanged": true,
+  "aiRequestAttemptsUnchanged": true,
+  "aiUsageLogsUnchanged": true,
+  "materialZipUnchanged": true,
+  "reviewRubricInUploadedArchive": false,
+  "oldReportsCount": 1,
+  "newReportsCount": 2,
+  "runtimeSource": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source",
+  "backendBaseCommit": "75d6c59",
+  "backendReadOnlyDisplayProjectionPresent": true
+}

@@ -1,0 +1,28 @@
+{
+  "version": "campus-signup-v1",
+  "frozenBeforeCareerProofUpload": true,
+  "zip": "D:\\jbcode\\web ai\\jianli\\output\\demo\\CareerProof-campus-signup-v1.zip",
+  "zipSha256": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c",
+  "resume": "D:\\jbcode\\web ai\\jianli\\output\\demo\\CareerProof-campus-signup-resume.txt",
+  "resumeSha256": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0",
+  "files": {
+    "campus_signup/__init__.py": "0fe785f355d3610024e7efcb521da01999cd63b9ba2b7898ec893e296f43f6a9",
+    "campus_signup/__main__.py": "b777c4c18f9b13baea27e5f4bbd1a9d175bb60b363cc6660e27f1d72e6560009",
+    "campus_signup/api.py": "7035d7745e5b7eb4e143029b185ba17ca9f1f3e1adf11101704f2ee5f234de79",
+    "campus_signup/schema.sql": "182162244aee1881986140c004e76f8ff5665587fd383141b31e1dea39ad3fa5",
+    "campus_signup/service.py": "69a9aaa6aeaf83383d6b4ce70ac106e537737ebf64cf8a9aadd32770b5a12b04",
+    "campus_signup/storage.py": "ae74fafb0cca2e3ff769d1d0451379d10a03c950a8fa62434847d72d84b91505",
+    "README.md": "89939f0f681e8d0eb61a74693c310253d18373039c1e6976b1f51125089bd410",
+    "requirements.txt": "18429cfadddf9abeaebd6248c0d95731e6fb6dd97bdb863e77163c1ffc6baf45",
+    "tests/test_registration.py": "df777b7d36e7d77e8a7961e2bac837dc0b16b4e351e82c1f25c72a96ded324c6"
+  },
+  "excluded": [
+    "evaluation criteria",
+    "expected answers",
+    "runtime outputs",
+    "database",
+    "cache",
+    "virtualenv"
+  ],
+  "sourceChangedAfterReadingReport": false
+}

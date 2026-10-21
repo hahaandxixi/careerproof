@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\run_business.py", line 91, in <module>
+    process = start()
+              ^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\run_business.py", line 30, in start
+    check.bind(("127.0.0.1", PORT))
+OSError: [WinError 10048] 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\check_report.py", line 23, in <module>
+    assert preview["content"] == frozen[preview["relativePath"]].decode("utf-8")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

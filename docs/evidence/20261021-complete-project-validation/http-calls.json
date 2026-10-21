@@ -1,0 +1,197 @@
+[
+  {
+    "method": "POST",
+    "path": "/auth/register",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/enterprises",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/jobs",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/auth/register",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/resumes",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/2495ca5e-d5e1-4987-a13f-473fe187c471",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/2495ca5e-d5e1-4987-a13f-473fe187c471",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/2495ca5e-d5e1-4987-a13f-473fe187c471",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/2495ca5e-d5e1-4987-a13f-473fe187c471",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/projects",
+    "status": 201
+  },
+  {
+    "method": "POST",
+    "path": "/projects/1d4636c9-2497-490a-969c-e9ac431d694d/versions",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/b13432c2-0874-41c1-8049-f691808da0af",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/b13432c2-0874-41c1-8049-f691808da0af",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/b13432c2-0874-41c1-8049-f691808da0af",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/b13432c2-0874-41c1-8049-f691808da0af",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-versions/ca395374-2435-46ae-94f5-249c4331f33b/files",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/a0ded6bb-0901-4cb1-bed6-fbb22137e19a",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/0b193251-3113-4b3b-96f9-7607cf6961f2",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/a3c3638d-9275-4ecc-99cf-9ffbd898d65b",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/bca16803-3503-49c5-a243-831a15b4045e",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/2f202a1a-206b-4a83-851d-fda8a65c821b",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/2133bcdf-bbaa-4cb7-92e0-33150b3409a1",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/1f74d629-9586-40fb-b5a8-9023049e93c4",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/1c892c2b-86f3-4a1f-96c6-fe9bf5d0c128",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/project-files/3dfb8b67-bc09-41d3-80f2-9d502cfd3f50",
+    "status": 200
+  },
+  {
+    "method": "POST",
+    "path": "/matches",
+    "status": 202
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/analysis-tasks/d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/match-reports/c97cdfa6-b87e-4143-9551-f780012648aa",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/knowledge/search",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/knowledge/search",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/knowledge/search",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/knowledge/search",
+    "status": 200
+  },
+  {
+    "method": "GET",
+    "path": "/knowledge/search",
+    "status": 200
+  }
+]

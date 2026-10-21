@@ -1,0 +1,11 @@
+{
+  "reportId": "c97cdfa6-b87e-4143-9551-f780012648aa",
+  "taskId": "d238eb04-a7e5-4729-b78e-265ddd5f2065",
+  "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+  "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d",
+  "resumeVersionId": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+  "projectVersionId": "ca395374-2435-46ae-94f5-249c4331f33b",
+  "reportUrl": "http://127.0.0.1:3108/reports/c97cdfa6-b87e-4143-9551-f780012648aa",
+  "rulesOnly": true,
+  "mockReport": false
+}

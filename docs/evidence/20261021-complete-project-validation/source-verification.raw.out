@@ -1,0 +1,6 @@
+PASS: 9 uploaded files; 29 evidence entries match exact source, lines, SHA and selected version.
+api supported 任务实现 [('campus_signup/api.py', 36, 38), ('campus_signup/api.py', 22, 56), ('requirements.txt', 1, 1)]
+sql partial 任务实现 [('campus_signup/service.py', 25, 54), ('campus_signup/storage.py', 32, 36), ('tests/test_registration.py', 92, 105)]
+business supported 任务实现 [('campus_signup/api.py', 22, 56), ('campus_signup/__main__.py', 9, 14), ('campus_signup/service.py', 5, 7)]
+tests supported 任务实现 [('tests/test_registration.py', 29, 39), ('tests/test_registration.py', 14, 16), ('requirements.txt', 5, 5)]
+redis gap 待核对检索候选 [('README.md', 1, 9), ('README.md', 3, 11)]

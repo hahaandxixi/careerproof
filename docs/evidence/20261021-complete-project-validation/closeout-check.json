@@ -1,0 +1,43 @@
+{
+  "headBeforeOwnCommit": "496f1bc4a71d8e35be072cb6aa7079898995ba9b",
+  "all11PriorAgentDisplayFilesUnchanged": true,
+  "otherOwnedFileSnapshots": {
+    "docs/guides/使用与启动.md": {
+      "start": "fc541b98b6ac8fd9c1cadd81df64ba063a155403396cbebea46ec70f47505541",
+      "end": "fbad347cb75e884e5d002828589874c21b10797ae8125f006a180d55146dafdd",
+      "same": false
+    },
+    "docs/当前接力.md": {
+      "start": "7d19fd6ba4bcc7ff315b130717e991079703d578bffdef7d4ff76ba9d8335e73",
+      "end": "dd563c96d498abe689f0f9b9e5372526a85237ef1bca2d60e8583e1a8e71588a",
+      "same": false
+    },
+    "jianli/src/components/JobDetailView.tsx": {
+      "start": "3a31ccbef20dad07526cd6a0f5508175f54289bcf7a1dcb2be9f16a6df454cc0",
+      "end": "3a31ccbef20dad07526cd6a0f5508175f54289bcf7a1dcb2be9f16a6df454cc0",
+      "same": true
+    },
+    "jianli/src/lib/match-readiness.ts": {
+      "start": "1ee76970a1be25d3cb3a4bc53e5c65d81fed9bf01730068f3b8058048c18e2fb",
+      "end": "1ee76970a1be25d3cb3a4bc53e5c65d81fed9bf01730068f3b8058048c18e2fb",
+      "same": true
+    },
+    "jianli/tests/match-readiness.test.mjs": {
+      "start": "db2fcbc141853647441de57f7073c31842750f8e5aea0e9be45ec69f99eee4df",
+      "end": "db2fcbc141853647441de57f7073c31842750f8e5aea0e9be45ec69f99eee4df",
+      "same": true
+    }
+  },
+  "otherLocalDiff": "8\t0\t\"docs/guides/\\344\\275\\277\\347\\224\\250\\344\\270\\216\\345\\220\\257\\345\\212\\250.md\"\n1\t1\t\"docs/\\345\\275\\223\\345\\211\\215\\346\\216\\245\\345\\212\\233.md\"\n8\t1\tjianli/src/components/JobDetailView.tsx\n",
+  "all9FrozenSourceFilesUnchanged": true,
+  "zipSha256": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c",
+  "readmeLocalLinksResolve": true,
+  "noProductCodeChangedThisTask": true,
+  "businessServerStopped": true,
+  "isolatedCareerProofRetainedForReview": true,
+  "parallelDocCommitsNotRolledBack": [
+    "496f1bc",
+    "b87af65",
+    "ab66948"
+  ]
+}

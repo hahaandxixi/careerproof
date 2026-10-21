@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\run_careerproof.py", line 52, in <module>
+    before = snapshot()
+             ^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\run_careerproof.py", line 48, in snapshot
+    return {name: sql(f"SELECT COALESCE(jsonb_agg(to_jsonb(t) ORDER BY id)::text, '[]') FROM {name} t")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\run_careerproof.py", line 40, in sql
+    return subprocess.check_output(["docker", "exec", CONTAINER, "psql", "-U", "cp_agent", "-d", DATABASE,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\subprocess.py", line 1196, in communicate
+    stdout = self.stdout.read()
+             ^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'gbk' codec can't decode byte 0xa6 in position 142: illegal multibyte sequence

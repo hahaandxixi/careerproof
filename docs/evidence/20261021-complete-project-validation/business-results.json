@@ -1,0 +1,253 @@
+{
+  "business": "Create event, bounded registration, cancellation and durable audit",
+  "syntheticOnly": true,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/events",
+      "input": {
+        "title": "Robotics workshop",
+        "capacity": 1
+      },
+      "status": 201,
+      "body": {
+        "id": 1,
+        "title": "Robotics workshop",
+        "capacity": 1,
+        "remaining": 1
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 1,
+        "student_code": "DEMO001"
+      },
+      "status": 201,
+      "body": {
+        "id": 1,
+        "event_id": 1,
+        "student_code": "DEMO001",
+        "status": "active"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 1,
+        "student_code": "DEMO001"
+      },
+      "status": 409,
+      "body": {
+        "detail": "Registration already exists"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 1,
+        "student_code": "DEMO002"
+      },
+      "status": 409,
+      "body": {
+        "detail": "Event full"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 999,
+        "student_code": "DEMO001"
+      },
+      "status": 404,
+      "body": {
+        "detail": "Event not found"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 1,
+        "student_code": "X"
+      },
+      "status": 422,
+      "body": {
+        "detail": [
+          {
+            "type": "string_too_short",
+            "loc": [
+              "body",
+              "student_code"
+            ],
+            "msg": "String should have at least 3 characters",
+            "input": "X",
+            "ctx": {
+              "min_length": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations/1/cancel",
+      "input": null,
+      "status": 200,
+      "body": {
+        "id": 1,
+        "event_id": 1,
+        "student_code": "DEMO001",
+        "status": "cancelled"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations/1/cancel",
+      "input": null,
+      "status": 409,
+      "body": {
+        "detail": "Registration already cancelled"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 1,
+        "student_code": "DEMO002"
+      },
+      "status": 201,
+      "body": {
+        "id": 2,
+        "event_id": 1,
+        "student_code": "DEMO002",
+        "status": "active"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/events",
+      "input": {
+        "title": "Failure workshop",
+        "capacity": 1
+      },
+      "status": 201,
+      "body": {
+        "id": 2,
+        "title": "Failure workshop",
+        "capacity": 1,
+        "remaining": 1
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "input": {
+        "event_id": 2,
+        "student_code": "DEMO003"
+      },
+      "status": 503,
+      "body": {
+        "detail": "Storage unavailable"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "input": null,
+      "status": 200,
+      "body": [
+        {
+          "id": 1,
+          "title": "Robotics workshop",
+          "capacity": 1,
+          "remaining": 0
+        },
+        {
+          "id": 2,
+          "title": "Failure workshop",
+          "capacity": 1,
+          "remaining": 1
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/registrations",
+      "input": null,
+      "status": 200,
+      "body": [
+        {
+          "id": 1,
+          "event_id": 1,
+          "student_code": "DEMO001",
+          "status": "cancelled"
+        },
+        {
+          "id": 2,
+          "event_id": 1,
+          "student_code": "DEMO002",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "input": null,
+      "status": 200,
+      "body": [
+        {
+          "id": 1,
+          "title": "Robotics workshop",
+          "capacity": 1,
+          "remaining": 0
+        },
+        {
+          "id": 2,
+          "title": "Failure workshop",
+          "capacity": 1,
+          "remaining": 1
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/registrations",
+      "input": null,
+      "status": 200,
+      "body": [
+        {
+          "id": 1,
+          "event_id": 1,
+          "student_code": "DEMO001",
+          "status": "cancelled"
+        },
+        {
+          "id": 2,
+          "event_id": 1,
+          "student_code": "DEMO002",
+          "status": "active"
+        }
+      ]
+    }
+  ],
+  "restartRecordsEqual": true,
+  "databaseSha256BeforeRestart": "f3d165f2989036efac67153bacc20966633148c3303206edd8b3bac87216c44c",
+  "databaseSha256AfterRestart": "f3d165f2989036efac67153bacc20966633148c3303206edd8b3bac87216c44c",
+  "realExternalModelRequests": 0,
+  "mockBusinessLogic": false,
+  "dependenciesReusedNotCleanInstalled": true,
+  "versions": {
+    "fastapi": "0.143.0",
+    "pydantic": "2.11.7",
+    "uvicorn": "0.35.0",
+    "httpx": "0.28.1",
+    "pytest": "9.0.3"
+  }
+}

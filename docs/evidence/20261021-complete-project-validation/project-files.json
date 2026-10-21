@@ -1,0 +1,65 @@
+[
+  {
+    "id": "a0ded6bb-0901-4cb1-bed6-fbb22137e19a",
+    "relativePath": "campus_signup/api.py",
+    "language": "Python",
+    "sizeBytes": 1770,
+    "lineCount": 57
+  },
+  {
+    "id": "0b193251-3113-4b3b-96f9-7607cf6961f2",
+    "relativePath": "campus_signup/__init__.py",
+    "language": "Python",
+    "sizeBytes": 60,
+    "lineCount": 2
+  },
+  {
+    "id": "a3c3638d-9275-4ecc-99cf-9ffbd898d65b",
+    "relativePath": "campus_signup/__main__.py",
+    "language": "Python",
+    "sizeBytes": 461,
+    "lineCount": 19
+  },
+  {
+    "id": "bca16803-3503-49c5-a243-831a15b4045e",
+    "relativePath": "campus_signup/schema.sql",
+    "language": "SQL",
+    "sizeBytes": 711,
+    "lineCount": 20
+  },
+  {
+    "id": "2f202a1a-206b-4a83-851d-fda8a65c821b",
+    "relativePath": "campus_signup/service.py",
+    "language": "Python",
+    "sizeBytes": 3422,
+    "lineCount": 78
+  },
+  {
+    "id": "2133bcdf-bbaa-4cb7-92e0-33150b3409a1",
+    "relativePath": "campus_signup/storage.py",
+    "language": "Python",
+    "sizeBytes": 1438,
+    "lineCount": 43
+  },
+  {
+    "id": "1f74d629-9586-40fb-b5a8-9023049e93c4",
+    "relativePath": "README.md",
+    "language": null,
+    "sizeBytes": 1476,
+    "lineCount": 19
+  },
+  {
+    "id": "1c892c2b-86f3-4a1f-96c6-fe9bf5d0c128",
+    "relativePath": "requirements.txt",
+    "language": null,
+    "sizeBytes": 78,
+    "lineCount": 6
+  },
+  {
+    "id": "3dfb8b67-bc09-41d3-80f2-9d502cfd3f50",
+    "relativePath": "tests/test_registration.py",
+    "language": "Python",
+    "sizeBytes": 6136,
+    "lineCount": 150
+  }
+]

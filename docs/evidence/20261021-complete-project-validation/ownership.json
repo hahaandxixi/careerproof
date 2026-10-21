@@ -1,0 +1,37 @@
+{
+  "head": "1d3a50eaa9e0d46bb351eee8c2028237ed7e41f8",
+  "branch": "main",
+  "previousAgentDisplay": {
+    "task": "Previous active goal: expose Agent evidence in existing report",
+    "status": "Uncommitted and paused; preserved, not included in complete-project commit",
+    "files": {
+      "backend/app/schemas/analysis.py": "8ecce6ea35d742cecefdfe28d34335cbead6fd29cc96d1d5ba8bebd02b47e386",
+      "backend/app/services/analysis.py": "ba25c2d2e07c305bfc54adad411e3d9c6d588f9e090619e3ffd81230cae2f112",
+      "backend/app/tests/test_agent_process_display.py": "b7d2ab40ef570581a067c06df23c6e793e56717dec65e5ea2f143534f64992e2",
+      "jianli/src/components/ReportAgentEvidence.tsx": "b3c2fbed0ce9e853dcdc83a89844cc8d6ba392fb0832bf52256a240879a5be36",
+      "jianli/src/components/ReportDetail.tsx": "5e4ed9f6106609de144e45aa41b2a977fd44ae1b2045cba7e4cc6ade83ffced8",
+      "jianli/src/lib/agent-evidence.ts": "63d042241c9f2feb75eaa8492036297dbe8827cc985c8a8344f925a941fd0036",
+      "jianli/src/lib/report-display.ts": "23150fc42fc524087c7f79240342422ab1f1c5fc7a822d0857673ebe50090d11",
+      "jianli/src/lib/api/domain.ts": "c4e3c8678ca291c7519c67167677b0e9da769815fee02d686cba424f89a1ff12",
+      "jianli/tests/agent-evidence.test.mjs": "c0b8e5accb889acabc2e711f5dfdd39150b8b12f5a2d798d012e4dc138f1a3df",
+      "jianli/tests/agent-evidence-render.test.mjs": "d6c7c68987de4122589fe705ae0cfd134ef22e465b35c5b2b272944ba758ef33",
+      "jianli/tests/fixtures/agent-evidence-report.json": "984e7d26a657c4f48d5680fa3758915b3adea334a847e9d2f7c8c5b5b7ebfd1c"
+    }
+  },
+  "preexistingOtherChanges": {
+    "status": "not owned or included this round",
+    "files": {
+      "docs/guides/使用与启动.md": "fc541b98b6ac8fd9c1cadd81df64ba063a155403396cbebea46ec70f47505541",
+      "docs/当前接力.md": "7d19fd6ba4bcc7ff315b130717e991079703d578bffdef7d4ff76ba9d8335e73",
+      "jianli/src/components/JobDetailView.tsx": "3a31ccbef20dad07526cd6a0f5508175f54289bcf7a1dcb2be9f16a6df454cc0",
+      "jianli/src/lib/match-readiness.ts": "1ee76970a1be25d3cb3a4bc53e5c65d81fed9bf01730068f3b8058048c18e2fb",
+      "jianli/tests/match-readiness.test.mjs": "db2fcbc141853647441de57f7073c31842750f8e5aea0e9be45ec69f99eee4df"
+    }
+  },
+  "reviewMaterialCommits": [
+    "75d6c59",
+    "1d3a50e"
+  ],
+  "reviewCommitsContainAgentSource": false,
+  "currentBusinessTask": "Original runnable demo + existing rule pipeline validation; no product feature changes"
+}

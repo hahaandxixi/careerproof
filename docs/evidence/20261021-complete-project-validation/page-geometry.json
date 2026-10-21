@@ -1,0 +1,15 @@
+{
+  "desktop": {
+    "bodyWidth": 1265,
+    "clientWidth": 1265,
+    "documentWidth": 1265,
+    "viewport": 1280
+  },
+  "mobile": {
+    "bodyWidth": 375,
+    "clientWidth": 375,
+    "documentWidth": 375,
+    "viewport": 390
+  },
+  "checksFollowedContentValidation": true
+}

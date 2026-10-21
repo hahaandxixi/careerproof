@@ -1,0 +1,762 @@
+{
+  "reportId": "c97cdfa6-b87e-4143-9551-f780012648aa",
+  "filesAccepted": 9,
+  "frozenFiles": 9,
+  "everyPreviewMatchesFrozenLines": true,
+  "previewNormalizesFinalNewline": true,
+  "evidenceEntries": 29,
+  "allEvidenceExact": true,
+  "allEvidenceSameSelectedVersion": true,
+  "actualRulePipelineNotMock": true,
+  "requirements": [
+    {
+      "key": "api",
+      "skill": "FastAPI",
+      "verdict": "supported",
+      "level": 3,
+      "levelLabel": "任务实现",
+      "explanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+      "gap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "expectedSourceFiles": [
+        "campus_signup/api.py"
+      ],
+      "actualSourceFiles": [
+        "README.md",
+        "campus_signup/api.py",
+        "requirements.txt"
+      ],
+      "modelCitations": [
+        {
+          "requirement": "api",
+          "citationId": "R1-E1",
+          "file": "campus_signup/api.py",
+          "start": 36,
+          "end": 38,
+          "type": "fastapi_route",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "api",
+          "citationId": "R1-E2",
+          "file": "campus_signup/api.py",
+          "start": 22,
+          "end": 56,
+          "type": "fastapi_app",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "api",
+          "citationId": "R1-E3",
+          "file": "requirements.txt",
+          "start": 1,
+          "end": 1,
+          "type": "fastapi_dependency",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ],
+      "candidateOnly": [
+        {
+          "requirement": "api",
+          "citationId": null,
+          "file": "README.md",
+          "start": 1,
+          "end": 9,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "api",
+          "citationId": null,
+          "file": "README.md",
+          "start": 3,
+          "end": 11,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "api",
+          "citationId": null,
+          "file": "campus_signup/api.py",
+          "start": 2,
+          "end": 10,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ]
+    },
+    {
+      "key": "sql",
+      "skill": "SQL",
+      "verdict": "partial",
+      "level": 3,
+      "levelLabel": "任务实现",
+      "explanation": "存在SQL查询实现；只评价材料支持程度，需核查本人贡献。",
+      "gap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "expectedSourceFiles": [
+        "campus_signup/storage.py",
+        "campus_signup/service.py",
+        "campus_signup/schema.sql"
+      ],
+      "actualSourceFiles": [
+        "README.md",
+        "campus_signup/schema.sql",
+        "campus_signup/service.py",
+        "campus_signup/storage.py",
+        "tests/test_registration.py"
+      ],
+      "modelCitations": [
+        {
+          "requirement": "sql",
+          "citationId": "R2-E1",
+          "file": "campus_signup/service.py",
+          "start": 25,
+          "end": 54,
+          "type": "sql_query",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "sql",
+          "citationId": "R2-E2",
+          "file": "campus_signup/storage.py",
+          "start": 32,
+          "end": 36,
+          "type": "sql_query",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "sql",
+          "citationId": "R2-E3",
+          "file": "tests/test_registration.py",
+          "start": 92,
+          "end": 105,
+          "type": "sql_query",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ],
+      "candidateOnly": [
+        {
+          "requirement": "sql",
+          "citationId": null,
+          "file": "README.md",
+          "start": 1,
+          "end": 9,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "sql",
+          "citationId": null,
+          "file": "README.md",
+          "start": 3,
+          "end": 11,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "sql",
+          "citationId": null,
+          "file": "campus_signup/schema.sql",
+          "start": 1,
+          "end": 7,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "sql",
+          "citationId": null,
+          "file": "campus_signup/schema.sql",
+          "start": 1,
+          "end": 8,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ]
+    },
+    {
+      "key": "business",
+      "skill": "Python",
+      "verdict": "supported",
+      "level": 3,
+      "levelLabel": "任务实现",
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "gap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "expectedSourceFiles": [
+        "campus_signup/service.py"
+      ],
+      "actualSourceFiles": [
+        "README.md",
+        "campus_signup/__main__.py",
+        "campus_signup/api.py",
+        "campus_signup/service.py",
+        "campus_signup/storage.py",
+        "requirements.txt",
+        "tests/test_registration.py"
+      ],
+      "modelCitations": [
+        {
+          "requirement": "business",
+          "citationId": "R3-E1",
+          "file": "campus_signup/api.py",
+          "start": 22,
+          "end": 56,
+          "type": "python_code",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": "R3-E2",
+          "file": "campus_signup/__main__.py",
+          "start": 9,
+          "end": 14,
+          "type": "python_code",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": "R3-E3",
+          "file": "campus_signup/service.py",
+          "start": 5,
+          "end": 7,
+          "type": "python_code",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ],
+      "candidateOnly": [
+        {
+          "requirement": "business",
+          "citationId": null,
+          "file": "campus_signup/storage.py",
+          "start": 7,
+          "end": 8,
+          "type": "python_code",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": null,
+          "file": "tests/test_registration.py",
+          "start": 14,
+          "end": 16,
+          "type": "python_code",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": null,
+          "file": "requirements.txt",
+          "start": 1,
+          "end": 1,
+          "type": "python_dependency",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": null,
+          "file": "README.md",
+          "start": 1,
+          "end": 9,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "business",
+          "citationId": null,
+          "file": "README.md",
+          "start": 3,
+          "end": 11,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ]
+    },
+    {
+      "key": "tests",
+      "skill": "pytest",
+      "verdict": "supported",
+      "level": 3,
+      "levelLabel": "任务实现",
+      "explanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+      "gap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+      "expectedSourceFiles": [
+        "tests/test_registration.py"
+      ],
+      "actualSourceFiles": [
+        "README.md",
+        "requirements.txt",
+        "tests/test_registration.py"
+      ],
+      "modelCitations": [
+        {
+          "requirement": "tests",
+          "citationId": "R4-E1",
+          "file": "tests/test_registration.py",
+          "start": 29,
+          "end": 39,
+          "type": "pytest_test",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "tests",
+          "citationId": "R4-E2",
+          "file": "tests/test_registration.py",
+          "start": 14,
+          "end": 16,
+          "type": "pytest_fixture",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "tests",
+          "citationId": "R4-E3",
+          "file": "requirements.txt",
+          "start": 5,
+          "end": 5,
+          "type": "pytest_dependency",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ],
+      "candidateOnly": [
+        {
+          "requirement": "tests",
+          "citationId": null,
+          "file": "README.md",
+          "start": 1,
+          "end": 9,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "tests",
+          "citationId": null,
+          "file": "README.md",
+          "start": 16,
+          "end": 18,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "tests",
+          "citationId": null,
+          "file": "tests/test_registration.py",
+          "start": 69,
+          "end": 76,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ]
+    },
+    {
+      "key": "redis",
+      "skill": "Redis",
+      "verdict": "gap",
+      "level": null,
+      "levelLabel": "待核对检索候选",
+      "explanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+      "gap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+      "expectedSourceFiles": [],
+      "actualSourceFiles": [
+        "README.md"
+      ],
+      "modelCitations": [
+        {
+          "requirement": "redis",
+          "citationId": "R5-E1",
+          "file": "README.md",
+          "start": 1,
+          "end": 9,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        },
+        {
+          "requirement": "redis",
+          "citationId": "R5-E2",
+          "file": "README.md",
+          "start": 3,
+          "end": 11,
+          "type": "retrieved_context",
+          "snippetExact": true,
+          "hashExact": true,
+          "versionExact": true
+        }
+      ],
+      "candidateOnly": []
+    }
+  ],
+  "citationChecks": [
+    {
+      "requirement": "api",
+      "citationId": "R1-E1",
+      "file": "campus_signup/api.py",
+      "start": 36,
+      "end": 38,
+      "type": "fastapi_route",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "api",
+      "citationId": "R1-E2",
+      "file": "campus_signup/api.py",
+      "start": 22,
+      "end": 56,
+      "type": "fastapi_app",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "api",
+      "citationId": "R1-E3",
+      "file": "requirements.txt",
+      "start": 1,
+      "end": 1,
+      "type": "fastapi_dependency",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "api",
+      "citationId": null,
+      "file": "README.md",
+      "start": 1,
+      "end": 9,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "api",
+      "citationId": null,
+      "file": "README.md",
+      "start": 3,
+      "end": 11,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "api",
+      "citationId": null,
+      "file": "campus_signup/api.py",
+      "start": 2,
+      "end": 10,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": "R2-E1",
+      "file": "campus_signup/service.py",
+      "start": 25,
+      "end": 54,
+      "type": "sql_query",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": "R2-E2",
+      "file": "campus_signup/storage.py",
+      "start": 32,
+      "end": 36,
+      "type": "sql_query",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": "R2-E3",
+      "file": "tests/test_registration.py",
+      "start": 92,
+      "end": 105,
+      "type": "sql_query",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": null,
+      "file": "README.md",
+      "start": 1,
+      "end": 9,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": null,
+      "file": "README.md",
+      "start": 3,
+      "end": 11,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": null,
+      "file": "campus_signup/schema.sql",
+      "start": 1,
+      "end": 7,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "sql",
+      "citationId": null,
+      "file": "campus_signup/schema.sql",
+      "start": 1,
+      "end": 8,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": "R3-E1",
+      "file": "campus_signup/api.py",
+      "start": 22,
+      "end": 56,
+      "type": "python_code",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": "R3-E2",
+      "file": "campus_signup/__main__.py",
+      "start": 9,
+      "end": 14,
+      "type": "python_code",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": "R3-E3",
+      "file": "campus_signup/service.py",
+      "start": 5,
+      "end": 7,
+      "type": "python_code",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": null,
+      "file": "campus_signup/storage.py",
+      "start": 7,
+      "end": 8,
+      "type": "python_code",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": null,
+      "file": "tests/test_registration.py",
+      "start": 14,
+      "end": 16,
+      "type": "python_code",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": null,
+      "file": "requirements.txt",
+      "start": 1,
+      "end": 1,
+      "type": "python_dependency",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": null,
+      "file": "README.md",
+      "start": 1,
+      "end": 9,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "business",
+      "citationId": null,
+      "file": "README.md",
+      "start": 3,
+      "end": 11,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": "R4-E1",
+      "file": "tests/test_registration.py",
+      "start": 29,
+      "end": 39,
+      "type": "pytest_test",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": "R4-E2",
+      "file": "tests/test_registration.py",
+      "start": 14,
+      "end": 16,
+      "type": "pytest_fixture",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": "R4-E3",
+      "file": "requirements.txt",
+      "start": 5,
+      "end": 5,
+      "type": "pytest_dependency",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": null,
+      "file": "README.md",
+      "start": 1,
+      "end": 9,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": null,
+      "file": "README.md",
+      "start": 16,
+      "end": 18,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "tests",
+      "citationId": null,
+      "file": "tests/test_registration.py",
+      "start": 69,
+      "end": 76,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "redis",
+      "citationId": "R5-E1",
+      "file": "README.md",
+      "start": 1,
+      "end": 9,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    },
+    {
+      "requirement": "redis",
+      "citationId": "R5-E2",
+      "file": "README.md",
+      "start": 3,
+      "end": 11,
+      "type": "retrieved_context",
+      "snippetExact": true,
+      "hashExact": true,
+      "versionExact": true
+    }
+  ],
+  "semanticCompletenessNotProvenBySourceExactness": true
+}

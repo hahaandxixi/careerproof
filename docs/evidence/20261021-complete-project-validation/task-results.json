@@ -1,0 +1,188 @@
+{
+  "resume": {
+    "id": "2495ca5e-d5e1-4987-a13f-473fe187c471",
+    "taskType": "resume_parse",
+    "status": "completed",
+    "progress": 100,
+    "currentStep": "简历解析完成",
+    "errorMessage": null,
+    "totalCostRmb": "0.000000",
+    "createdAt": "2026-10-21T03:53:35.514361Z",
+    "startedAt": "2026-10-21T03:53:35.519634Z",
+    "completedAt": "2026-10-21T03:53:35.984604Z",
+    "reportId": null,
+    "steps": []
+  },
+  "scan": {
+    "id": "b13432c2-0874-41c1-8049-f691808da0af",
+    "taskType": "project_scan",
+    "status": "completed",
+    "progress": 100,
+    "currentStep": "项目解析完成",
+    "errorMessage": null,
+    "totalCostRmb": "0.000000",
+    "createdAt": "2026-10-21T03:53:36.096302Z",
+    "startedAt": "2026-10-21T03:53:36.101569Z",
+    "completedAt": "2026-10-21T03:53:36.557212Z",
+    "reportId": null,
+    "steps": []
+  },
+  "match": {
+    "id": "d238eb04-a7e5-4729-b78e-265ddd5f2065",
+    "taskType": "job_match",
+    "status": "completed",
+    "progress": 100,
+    "currentStep": "材料支持度报告已生成",
+    "errorMessage": null,
+    "totalCostRmb": "0.000000",
+    "createdAt": "2026-10-21T03:53:36.872565Z",
+    "startedAt": "2026-10-21T03:53:36.873068Z",
+    "completedAt": "2026-10-21T03:53:37.678530Z",
+    "reportId": "c97cdfa6-b87e-4143-9551-f780012648aa",
+    "steps": [
+      {
+        "step": 1,
+        "eventType": "tool.completed",
+        "name": "核对材料版本",
+        "detail": "读取2份所选材料，报告固定到所选版本",
+        "payload": {
+          "materialCount": 2
+        }
+      },
+      {
+        "step": 2,
+        "eventType": "tool.completed",
+        "name": "检索候选证据",
+        "detail": "静态检查9个文件，找到29条候选证据",
+        "payload": {
+          "fileCount": 9,
+          "evidenceCount": 29,
+          "contextRetrieval": [
+            {
+              "name": "补取并核对证据上下文",
+              "rounds": 1,
+              "expandedCount": 26,
+              "limitedCount": 13,
+              "sourceExact": true,
+              "maxLines": 40,
+              "maxCharacters": 4000
+            },
+            {
+              "name": "混合检索补充候选上下文",
+              "engine": "hybrid-lexical-v1",
+              "candidateCount": 14,
+              "changesRuleScore": false,
+              "semanticEmbedding": false
+            },
+            {
+              "name": "本地语义文档检索",
+              "engine": "multilingual-minilm-docs-v1",
+              "status": "unavailable",
+              "candidateCount": 0,
+              "changesRuleScore": false,
+              "semanticEmbedding": false
+            }
+          ]
+        }
+      },
+      {
+        "step": 3,
+        "eventType": "tool.completed",
+        "name": "补取并核对证据上下文",
+        "detail": "一次补取，26条多行原文；13条仍为局部上下文；未执行上传代码",
+        "payload": {
+          "name": "补取并核对证据上下文",
+          "rounds": 1,
+          "expandedCount": 26,
+          "limitedCount": 13,
+          "sourceExact": true,
+          "maxLines": 40,
+          "maxCharacters": 4000
+        }
+      },
+      {
+        "step": 4,
+        "eventType": "tool.completed",
+        "name": "混合检索补充候选上下文",
+        "detail": "规则检测后补充14条低强度候选原文；候选不改变规则分数，需经引用校验与模型判断",
+        "payload": {
+          "name": "混合检索补充候选上下文",
+          "engine": "hybrid-lexical-v1",
+          "candidateCount": 14,
+          "changesRuleScore": false,
+          "semanticEmbedding": false
+        }
+      },
+      {
+        "step": 5,
+        "eventType": "tool.completed",
+        "name": "本地语义文档检索",
+        "detail": "本地语义模型不可用，已保留词法检索与规则报告",
+        "payload": {
+          "name": "本地语义文档检索",
+          "engine": "multilingual-minilm-docs-v1",
+          "status": "unavailable",
+          "candidateCount": 0,
+          "changesRuleScore": false,
+          "semanticEmbedding": false
+        }
+      },
+      {
+        "step": 6,
+        "eventType": "tool.completed",
+        "name": "计算材料支持度",
+        "detail": "使用evidence-v4规则；未支持的能力不参与评分",
+        "payload": {
+          "engine": "rules",
+          "formulaVersion": "evidence-v4"
+        }
+      },
+      {
+        "step": 7,
+        "eventType": "tool.completed",
+        "name": "模型证据分析",
+        "detail": "外部模型未启用",
+        "payload": {
+          "provider": "rules",
+          "promptVersion": "evidence-trust-v29-implementation-first-plan",
+          "model": null,
+          "fallbackUsed": false,
+          "fallbackReason": null,
+          "failureStage": null,
+          "inputBudgetStop": null,
+          "inputPreflights": [],
+          "skippedReason": null,
+          "repairUsed": false,
+          "requestCount": 0,
+          "planningSkippedReason": null,
+          "jsonRepairCount": 0,
+          "modelRequirementCount": 0,
+          "providerFinishReason": null,
+          "modelToolCalls": [],
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "latencyMs": 0
+        }
+      },
+      {
+        "step": 8,
+        "eventType": "tool.completed",
+        "name": "校验模型引用",
+        "detail": "未采信模型输出，规则证据保持不变",
+        "payload": {
+          "validation": "not_run",
+          "acceptedCitationCount": 0
+        }
+      },
+      {
+        "step": 9,
+        "eventType": "tool.completed",
+        "name": "保存可追溯报告",
+        "detail": "保存材料版本、文件行号、证据哈希、模型解释与降级状态",
+        "payload": {
+          "mode": "rules"
+        }
+      }
+    ]
+  }
+}
