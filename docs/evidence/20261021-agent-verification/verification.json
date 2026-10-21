@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "failures": [],
+  "unverified": [
+    "tool execution: no completed retrieve_more_evidence call",
+    "page rendering and human semantic review are outside this verifier"
+  ],
+  "items": 5,
+  "evidenceCitations": 14,
+  "physicalRequests": 2,
+  "inputTokens": 11137,
+  "outputTokens": 1679,
+  "costYuanAtPeak": "0.035706",
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "round": 1,
+      "status": "not_requested",
+      "reason": "planner_declined",
+      "scope": "current-upload-index"
+    }
+  ],
+  "materialZip": "D:\\jbcode\\web ai\\jianli\\output\\demo\\CareerProof-campus-signup-v2-runtime.zip"
+}
