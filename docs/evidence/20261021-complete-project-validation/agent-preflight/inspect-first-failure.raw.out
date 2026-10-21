@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\agent-preflight\inspect_frozen_project.py", line 80, in <module>
+    assert added.file_path.endswith("campus_signup/storage.py")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

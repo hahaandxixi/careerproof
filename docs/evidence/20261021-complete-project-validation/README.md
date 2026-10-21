@@ -97,3 +97,35 @@ SQL状态由partial变为supported，是检测器修复后的结果差异，**�
 本轮隔离后端通过受管会话45480/PID210292运行8108，HTTP完成后已主动结束；PG和数据保留。启动3108隔离前端被自动审批拒绝，工具只返回“blocked by policy”，未提供更具体原因。没有换入口或改命令绕过；本节没有页面、键鼠或390px补证走查通过结论。前述原报告页面截图不能替代新补证链路验收。入口记录见[growth-runtime/page-entry.json](growth-runtime/page-entry.json)，前端恢复前不宣称这些URL当前在线。
 
 后续真实AI入口是现有`POST /api/v1/matches`，选择本项目岗位、合成简历和V2项目版本（见入口记录），另行明确外发授权后才可设置`externalAiConsent=true`。需要核对当前工具规划、可能的补检索/历史读取及最终分析的实际物理请求上限与预算；一次业务请求不等于一次模型请求。现有三例单步分析授权不覆盖该项目，本轮不发送、不预扣、不重置claim。当前仍无该完整项目的真实Agent语义结果，不以HTTP成功、Mock或未变化的规则等级替代。
+
+## 后续：完整项目的Agent离线准入核对
+
+[只读预检结果](agent-preflight/result.json)使用已保存V2规则证据、原13文件ZIP和当前生产函数：`build_evidence_contexts(max_evidence=2)`、冻结源定向搜索、`execute_retrieval_tool`及DeepSeekProvider的真实输入估算器。没有模型响应、HTTP请求、数据库写入或新Mock报告。初次探针只调用末端选取函数，遗漏工作流前面的冻结源搜索步骤，因此期望路径断言失败；已按生产顺序补齐该分支再核对，查询没有改变，生产检索代码没有为探针改动。这里不是全工作流执行或模型决策。
+
+- 五项要求都有补取空间。人工指定`storage.py transaction connection.rollback`后，真实冻结源工具能补到`campus_signup/storage.py`21—30行（包含BEGIN/commit/rollback），原文逐行对应。只证明工具能返回该片段，**不证明模型会选择此查询或采信结果**。
+- 真实provider估算器给出的最终分析输入保守上界：初始**22,610**，补入上述片段后**23,774**；本隔离环境当前报告输入上限为**12,000**。这不是供应商计费token数；但按现有本地门禁，完整五项上下文不能直接进入最终分析。不能现在发送一次后再把规则降级当作真实Agent成功。
+- 当前工作流最多2轮工具规划、1次最终分析、至多1次结构修正；配置默认每次最多2次传输尝试，因此业务入口不等于1次物理请求。现有固定三例执行器还限制每例仅1个requirement，不能假装它已支持本项目5项要求，不能换上旧AG编号或重置旧claim来复用授权。
+
+真实演示应是本项目V2、同岗位五项要求的一次已有工作流匹配：允许的只是当前材料的只读补检索、同owner同岗位历史（若明确纳入输入）及最终分析；不运行上传代码，不外发正常库材料。执行前必须先解决已证实的上下文预算准入，并为这一个报告明确物理请求总上限、重试、输出/费用上限和硬停证据，再核验执行日价格并获得单独授权。本轮没有提高配置，没有伪造“授权包已就绪”，也没有用缩成单技能的简化结果代替五项整体验证。
+
+### 人工恢复已验隔离页面的现有命令
+
+自动审批拒绝启动3108，暂不能完成新补证链路页面验收；以下仅供用户自行检查并执行，执行端没有改命令绕过。PG专属容器需已运行，8108和3108应空闲。不要在正常工程目录运行普通Start-Local来替代。
+
+终端一（隔离后端）：
+
+```powershell
+Set-Location -LiteralPath 'D:\jbcode\web ai\jianli\backend\.tmp\agent-display-20261021\source\backend'
+$env:PYTHONPATH = (Get-Location).Path
+& 'D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe' -m uvicorn app.main:app --host 127.0.0.1 --port 8108 --no-proxy-headers
+```
+
+终端二（原隔离生产构建）：
+
+```powershell
+Set-Location -LiteralPath 'D:\jbcode\web ai\jianli\backend\.tmp\agent-display-20261021\source\jianli'
+$env:BACKEND_ORIGIN = 'http://127.0.0.1:8108'
+& 'C:\Users\江博\AppData\Local\hermes\node\node.exe' '.\node_modules\next\dist\bin\next' start --hostname 127.0.0.1 --port 3108
+```
+
+恢复后可使用本机原凭据文件登录，打开`http://127.0.0.1:3108/growth/3b9ba85b-aed3-4e1f-9e17-6ced074828c5`核对固定基准、第2版材料和真实报告比较。代码/构建来源仍按前述隔离说明，不宣称最新HEAD全仓构建；两个进程都应留在各自终端，结束时仅停止这两个专属进程，不操作正常站。

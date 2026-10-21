@@ -1,0 +1,153 @@
+{
+  "reportId": "5960cf5d-0f6a-4564-b7ca-037e17d743e3",
+  "reconstructedFromSavedRuleEvidence": true,
+  "materialVersionId": "6db170c9-ea2b-4036-84d1-47260c687014",
+  "materialZipSha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+  "requirements": [
+    {
+      "id": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+      "skill": "FastAPI",
+      "initialSources": [
+        {
+          "citationId": "R1-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+          "start": 36,
+          "end": 38
+        },
+        {
+          "citationId": "R1-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+          "start": 22,
+          "end": 56
+        }
+      ],
+      "hasRetrievalSpace": true
+    },
+    {
+      "id": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+      "skill": "SQL",
+      "initialSources": [
+        {
+          "citationId": "R2-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql",
+          "start": 1,
+          "end": 8
+        },
+        {
+          "citationId": "R2-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+          "start": 25,
+          "end": 54
+        }
+      ],
+      "hasRetrievalSpace": true
+    },
+    {
+      "id": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+      "skill": "Python",
+      "initialSources": [
+        {
+          "citationId": "R3-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py",
+          "start": 22,
+          "end": 56
+        },
+        {
+          "citationId": "R3-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/__main__.py",
+          "start": 9,
+          "end": 14
+        }
+      ],
+      "hasRetrievalSpace": true
+    },
+    {
+      "id": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+      "skill": "pytest",
+      "initialSources": [
+        {
+          "citationId": "R4-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+          "start": 29,
+          "end": 39
+        },
+        {
+          "citationId": "R4-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py",
+          "start": 14,
+          "end": 16
+        }
+      ],
+      "hasRetrievalSpace": true
+    },
+    {
+      "id": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+      "skill": "Redis",
+      "initialSources": [
+        {
+          "citationId": "R5-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+          "start": 1,
+          "end": 9
+        },
+        {
+          "citationId": "R5-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/README.md",
+          "start": 3,
+          "end": 11
+        }
+      ],
+      "hasRetrievalSpace": true
+    }
+  ],
+  "operatorQuery": "storage.py transaction connection.rollback",
+  "toolResult": {
+    "tool": "retrieve_more_evidence",
+    "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+    "query": "storage.py transaction connection.rollback",
+    "resultCount": 1,
+    "status": "completed",
+    "scope": "current-upload-index",
+    "citationId": "R2-E3"
+  },
+  "addedSource": {
+    "citation_id": "R2-E3",
+    "file_path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+    "line_start": 21,
+    "line_end": 30,
+    "evidence_type": "retrieved_context",
+    "strength": "low",
+    "snippet": "    @contextmanager\n    def transaction(self):\n        with closing(self.connect()) as connection:\n            connection.execute(\"BEGIN IMMEDIATE\")\n            try:\n                yield connection\n                connection.commit()\n            except Exception:\n                connection.rollback()\n                raise",
+    "context_complete": true,
+    "context_note": "已补取整个函数及装饰器原文；未执行代码，测试结果与本人贡献需人工核验",
+    "provenance": "portfolio",
+    "function_line_start": 21,
+    "function_line_end": 30,
+    "source_line_count": 42
+  },
+  "directedSearchDetail": {
+    "engine": "frozen-directed-v1",
+    "scannedLines": 664,
+    "scanLimit": 20000,
+    "scanLimitReached": false,
+    "candidateCount": 4,
+    "maxAnchors": 16,
+    "sourceExact": true
+  },
+  "selectedContainsTransactionRollback": true,
+  "individualProductionHelpersNotWholeWorkflowExecution": true,
+  "notAModelChoice": true,
+  "noModelResponseFabricated": true,
+  "reportsWritten": 0,
+  "httpRequests": 0,
+  "liveAuthorizationProvided": false,
+  "realProviderConservativeInputUpperBoundBeforeTool": 22610,
+  "realProviderConservativeInputUpperBoundAfterTool": 23774,
+  "configuredReportInputLimit": 12000,
+  "configuredReportOutputLimit": 4000,
+  "configuredToolRoundLimit": 2,
+  "initialFinalPromptFitsInputLimit": false,
+  "afterToolFinalPromptFitsInputLimit": false,
+  "fixedThreeCaseGuardCompatibleWithFiveRequirements": false,
+  "legacyAuthorizationApplicable": false
+}
