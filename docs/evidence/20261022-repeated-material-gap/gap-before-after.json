@@ -1,0 +1,24 @@
+{
+  "requirement": "pytest",
+  "beforeInformationGap": "未展示重复、满额、取消、回滚及并发测试，测试执行结果未核验。",
+  "afterInformationGap": "本次片段未覆盖模型判断所需的部分材料；规则层保存了未发送证据：6db170c9-ea2b-4036-84d1-47260c687014/README.md:1-9、6db170c9-ea2b-4036-84d1-47260c687014/README.md:16-18、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt:1-8。材料中可能已包含，请先核对这些材料后再判断是否仍需补充。",
+  "beforeSuggestion": "补充其余场景测试函数与pytest运行输出，并说明本人贡献。",
+  "afterSuggestion": "先核对规则层保存但未发送的材料（6db170c9-ea2b-4036-84d1-47260c687014/README.md:1-9、6db170c9-ea2b-4036-84d1-47260c687014/README.md:16-18、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt:1-8）；材料中可能已包含，仅对核对后仍未覆盖的场景再补充具体材料。",
+  "sentEvidence": [
+    "R1-E1",
+    "R1-E2",
+    "R1-E3"
+  ],
+  "unsentRuleEvidence": [
+    "6db170c9-ea2b-4036-84d1-47260c687014/README.md:1-9",
+    "6db170c9-ea2b-4036-84d1-47260c687014/README.md:16-18",
+    "6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt:1-8"
+  ],
+  "ruleBeforeGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+  "ruleAfterNarrativeGap": "先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。已上传测试命名文件：tests/test_registration.py；已上传文本/JSON材料：runtime/README.txt、runtime/http-observations.json、runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+  "ruleNarrative": {
+    "version": "rule-narrative-v1",
+    "reason": "本项静态引用：tests/test_registration.py 第29—39行（test_registration_persists_across_application_restart、assert断言）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+    "gap": "先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。已上传测试命名文件：tests/test_registration.py；已上传文本/JSON材料：runtime/README.txt、runtime/http-observations.json、runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
+  }
+}

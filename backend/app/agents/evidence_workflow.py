@@ -19,6 +19,7 @@ from app.agents.contracts import (
     RetrievalToolCall,
     validate_grounded_analysis,
 )
+from app.agents.evidence_scope import qualify_analysis
 from app.agents.provider import (
     OpenAICompatibleProvider,
     ProviderInputBudgetError,
@@ -591,6 +592,7 @@ async def run_evidence_workflow(
                     )
                 else:
                     analysis = await provider.analyze_evidence(contexts=model_contexts)
+                analysis = qualify_analysis(analysis, result, model_contexts)
                 stage = "validation"
                 try:
                     validate_grounded_analysis(model_contexts, analysis)
@@ -616,6 +618,9 @@ async def run_evidence_workflow(
                         previous_analysis=analysis,
                         input_token_limit=remaining_input,
                         output_token_limit=remaining_output,
+                    )
+                    repaired_analysis = qualify_analysis(
+                        repaired_analysis, result, model_contexts
                     )
                     validate_grounded_analysis(model_contexts, repaired_analysis)
                     repaired = True
