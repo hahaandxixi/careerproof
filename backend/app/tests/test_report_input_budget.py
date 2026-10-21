@@ -164,7 +164,7 @@ async def test_final_input_limit_is_not_a_provider_fault_and_never_sends(monkeyp
     assert outcome.input_budget_stop == {
         "estimatedInputBound": required,
         "remainingInputBudget": required - 1,
-        "estimateMethod": "json-character-upper-bound",
+        "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
     }
 
 
@@ -197,12 +197,13 @@ async def test_repair_budget_diagnostics_keep_first_response_usage(monkeypatch):
     assert outcome.attempted_usage.output_tokens == 40
     assert outcome.input_budget_stop["remainingInputBudget"] == limit - 80
     assert outcome.input_budget_stop["estimatedInputBound"] > limit - 80
-    assert outcome.input_budget_stop["estimateMethod"] == "json-character-upper-bound"
+    assert outcome.input_budget_stop["estimateMethod"] == "utf8-wire-bytes-plus-safety-margin"
     assert len(outcome.input_preflights) == 2
     assert outcome.input_preflights[0]["allowed"] is True
     assert outcome.input_preflights[1]["allowed"] is False
     assert set(outcome.input_preflights[1]) == {
-        "requestKind", "estimatedInputBound", "remainingInputBudget", "estimateMethod", "allowed",
+        "requestKind", "estimatedInputBound", "remainingInputBudget", "estimateMethod",
+        "safetyMarginBytes", "allowed",
     }
 
 

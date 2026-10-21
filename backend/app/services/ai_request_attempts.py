@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta, timezone
 from uuid import UUID
@@ -479,7 +478,9 @@ class DurableRequestObserver:
         maximum = request.get("max_tokens")
         if type(maximum) is not int or maximum < 1:
             raise AttemptAdmissionError("unbounded_output_request")
-        estimated = len(json.dumps(request, ensure_ascii=False, allow_nan=False).encode()) + 1024
+        from app.agents.input_budget import estimate_wire_input_bytes
+
+        estimated = estimate_wire_input_bytes(request)
         if self.service.budget is None:
             attempt_id = await self.service.prepare(
                 estimated_input_tokens=estimated,

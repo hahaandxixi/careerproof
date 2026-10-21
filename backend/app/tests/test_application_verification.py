@@ -872,7 +872,7 @@ async def test_input_preflight_blocks_network_and_preserves_numeric_budget_diagn
     preflight = result["inputPreflights"][0]
     assert preflight["allowed"] is False and preflight["remainingInputBudget"] == 1000
     assert preflight["estimatedInputBound"] > preflight["remainingInputBudget"]
-    assert preflight["estimateMethod"] == "json-character-upper-bound"
+    assert preflight["estimateMethod"] == "utf8-wire-bytes-plus-safety-margin"
     async with case.factory() as session:
         task = await session.get(AnalysisTask, UUID(started["taskId"]))
         stop = task.input_snapshot["inputBudgetStop"]

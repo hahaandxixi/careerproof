@@ -1,0 +1,53 @@
+{
+  "status": "canonical_wire_bytes_integrated",
+  "generatedAt": "2026-10-21",
+  "sourceSha256": {
+    "backend/app/agents/input_budget.py": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
+    "backend/app/agents/provider.py": "2155f15cd07598a4dfe91e00b299eb26fce1436e93720b0b69311bae19bf1cff",
+    "backend/app/services/ai_request_attempts.py": "7f5bf499d71ee69c1b575580a1ef251766c9690efadfc6e20815319434b38112",
+    "backend/app/agents/evidence_workflow.py": "e76c04dd327be8caf50e83a16674c7d8ff0515bae976c84cf92c8bd88d9b0615",
+    "backend/app/services/application_verification.py": "cbe431ddbbc1154d368e1bb6da3b76b7b24a3e33e1cee3b175ebb8cb4e2628c6"
+  },
+  "estimator": {
+    "unit": "utf8_bytes",
+    "serialization": "json.dumps(request, ensure_ascii=False, allow_nan=False)",
+    "safetyMarginBytes": 1024,
+    "safetyMarginMeaning": "conservative framing/escaping reserve; not provider tokens; tools already in request body",
+    "method": "utf8-wire-bytes-plus-safety-margin"
+  },
+  "historicalRun": {
+    "reportId": "f918f3d7-c4b3-4ae3-b48e-6c119e030628",
+    "planning": {
+      "messageCharacterEstimate": 4108,
+      "wireByteEstimate": 10653,
+      "actualInputTokens": 2259
+    },
+    "analysis": {
+      "messageCharacterEstimate": 26960,
+      "wireByteEstimate": 38846,
+      "actualInputTokens": 8878
+    },
+    "wireTotal": 49499,
+    "actualInputTotal": 11137,
+    "budget42k": "reject",
+    "budget60k": "accept",
+    "remainingAt60k": 10501
+  },
+  "tests": {
+    "command": "python -m pytest app/tests/test_input_budget_ledger.py app/tests/test_report_input_budget.py app/tests/test_compact_evidence_prompt.py app/tests/test_real_matching.py app/tests/test_application_verification.py -q",
+    "result": "76 passed, 5 skipped",
+    "failedBeforeFix": [
+      "test_final_input_limit_is_not_a_provider_fault_and_never_sends: estimateMethod expected old char label",
+      "test_repair_budget_diagnostics_keep_first_response_usage: estimateMethod expected old char label",
+      "test_compact_repair_fits_budget_that_rejected_legacy_payload: old char limit not byte budget",
+      "test_input_preflight_blocks_network_and_preserves_numeric_budget_diagnostic: estimateMethod expected old char label"
+    ]
+  },
+  "notes": [
+    "Historical character figures are from the pre-change evidence; wire bytes are the stored attempt estimates.",
+    "42k rejection is the historical cumulative-admission result; 60k covered the observed no-tool, no-repair path.",
+    "The current estimate_evidence_input estimate for the rebuilt V2 contexts was 37678 bytes; it is not claimed to reproduce 38846 exactly because the saved wire request is not persisted byte-for-byte.",
+    "Tool/repair path is not covered by this reconciliation; it requires separate measurement and context compression.",
+    "No model request or database connection was made to produce this file."
+  ]
+}

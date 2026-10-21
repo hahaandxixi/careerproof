@@ -24,6 +24,7 @@ from app.agents.contracts import (
     RetrievalToolCall,
     allowed_personal_citation_ids,
 )
+from app.agents.input_budget import estimate_wire_input_bytes
 from app.core.config import settings
 from app.tools.credential_redaction import redact_credential_values
 
@@ -511,10 +512,21 @@ class OpenAICompatibleProvider:
         return conservative_input_token_estimate(messages)
 
     def estimate_evidence_input(self, contexts: list[RequirementEvidenceContext]) -> int:
-        messages = evidence_analysis_messages(
-            contexts, history_context=getattr(self, "history_context", None)
-        )
-        return self._estimate_input_tokens(sanitize_outgoing_messages(messages))
+        """Return the canonical wire-byte bound for the final analysis request."""
+        request = {
+            "model": self.model,
+            "temperature": 0.1,
+            "max_tokens": settings.ai_per_report_output_token_limit,
+            "response_format": {"type": "json_object"},
+            "messages": sanitize_outgoing_messages(
+                evidence_analysis_messages(
+                    contexts, history_context=getattr(self, "history_context", None)
+                )
+            ),
+        }
+        if getattr(self, "name", "") == "deepseek":
+            request["thinking"] = {"type": "disabled"}
+        return estimate_wire_input_bytes(request)
 
     async def _completion(self, request: dict) -> tuple[dict, int]:
         request = dict(request)
@@ -530,12 +542,13 @@ class OpenAICompatibleProvider:
         if isinstance(messages, list):
             messages = sanitize_outgoing_messages(messages)
             request["messages"] = messages
-            estimate = self._estimate_input_tokens(messages)
+            estimate = estimate_wire_input_bytes(request)
             self.input_preflights.append({
                 "requestKind": "tool_planning" if request.get("tools") else "structured_output",
                 "estimatedInputBound": estimate,
                 "remainingInputBudget": input_limit,
-                "estimateMethod": "json-character-upper-bound",
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
                 "allowed": estimate <= input_limit,
             })
             if estimate > input_limit:

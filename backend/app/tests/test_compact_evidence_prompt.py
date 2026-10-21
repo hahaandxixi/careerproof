@@ -5,9 +5,9 @@ import pytest
 
 from app.agents.contracts import EvidenceAnalysis, validate_grounded_analysis
 from app.agents.evidence_workflow import build_evidence_contexts
+from app.agents.input_budget import estimate_wire_input_bytes
 from app.agents.provider import (
     ProviderInputBudgetError,
-    conservative_input_token_estimate,
     evidence_analysis_messages,
     sanitize_outgoing_messages,
 )
@@ -119,20 +119,29 @@ def test_correction_feedback_names_requirement_without_relaxing_guard(context, p
     assert "Do not increase the rating" in str(error.value)
 
 
+def wire_bound(messages):
+    return estimate_wire_input_bytes({
+        "model": "deepseek-flash",
+        "temperature": 0.1,
+        "max_tokens": 4000,
+        "response_format": {"type": "json_object"},
+        "thinking": {"type": "disabled"},
+        "messages": sanitize_outgoing_messages(messages),
+    })
+
+
 @pytest.mark.asyncio
 async def test_compact_repair_fits_budget_that_rejected_legacy_payload(
     monkeypatch, context, previous,
 ):
     messages = repair_messages(context, previous)
-    required = conservative_input_token_estimate(sanitize_outgoing_messages(messages))
+    required = wire_bound(messages)
     legacy_payload = json.loads(messages[1]["content"])
     legacy_payload["rejectedOutput"] = previous.model_dump()
     legacy_messages = [messages[0], {
         "role": "user", "content": json.dumps(legacy_payload, ensure_ascii=False),
     }]
-    legacy_required = conservative_input_token_estimate(
-        sanitize_outgoing_messages(legacy_messages)
-    )
+    legacy_required = wire_bound(legacy_messages)
     limit = (required + legacy_required) // 2
     assert required <= limit < legacy_required
     monkeypatch.setattr(settings, "ai_per_report_input_token_limit", limit)
@@ -161,7 +170,7 @@ async def test_compact_repair_still_blocks_before_transport_below_budget(
     monkeypatch, context, previous,
 ):
     messages = repair_messages(context, previous)
-    required = conservative_input_token_estimate(sanitize_outgoing_messages(messages))
+    required = wire_bound(messages)
     monkeypatch.setattr(settings, "ai_per_report_input_token_limit", required)
     monkeypatch.setattr(settings, "ai_per_report_output_token_limit", 4000)
     calls = []

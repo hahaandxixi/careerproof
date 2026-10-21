@@ -688,7 +688,7 @@ async def run_evidence_workflow(
             input_budget_stop = {
                 "estimatedInputBound": exc.estimated_input_bound,
                 "remainingInputBudget": exc.remaining_input_budget,
-                "estimateMethod": "json-character-upper-bound",
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
             }
         return EvidenceWorkflowOutcome(
             contexts=contexts,

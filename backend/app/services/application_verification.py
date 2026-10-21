@@ -644,7 +644,7 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
             saved["inputBudgetStop"] = {
                 "estimatedInputBound": exc.estimated_input_bound,
                 "remainingInputBudget": exc.remaining_input_budget,
-                "estimateMethod": "json-character-upper-bound",
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
             }
 
     # Book trustworthy usage before any finalization step: the ledger fact must
