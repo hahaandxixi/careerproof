@@ -344,9 +344,11 @@ function panelProps(over = {}) {
   };
 }
 
-test("面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业", () => {
+test("面板：普通切标签页保留编辑，刷新/切身份或任务前须保存，且不发送给企业", () => {
   const html = renderToStaticMarkup(React.createElement(draftComponent.PrivateAnswerDraftPanel, panelProps()));
-  assert.match(html, /离开[^<]*窗口/, "常驻警告必须始终渲染（不依赖任何状态）");
+  assert.match(html, /切换标签页[^<]*暂存/, "切标签页应保留当前任务编辑");
+  assert.match(html, /刷新页面、退出账号或切换任务前请先/, "身份和任务边界仍需明确保存");
+  assert.doesNotMatch(html, /离开或最小化窗口会清除未保存/, "不得继续宣称普通隐藏会丢弃");
   assert.match(html, /未保存/);
   assert.match(html, /先保存|保存草稿/);
   assert.match(html, /没有发送给企业|不会发送给企业|未发送给企业/);
@@ -379,10 +381,9 @@ test("面板：丢弃提示独立渲染且读取中可见；与notice相同内�
 });
 
 // ---- 传智杯38：二次clear不得抹去仍然存活的丢弃提示 ----
-// 以下场景全部复刻组件 visibilitychange 处理器的真实序列（hidden→clear；visible→activate+load）：
-// PrivateAnswerDraft.tsx 中 clear() 只在该分支被调用。
+// 以下保留显式身份/任务清理的提示和旧回执隔离边界；普通visibilitychange另由visibility测试覆盖。
 
-test("恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示", async () => {
+test("恢复读取进行中再次清理身份/任务：第二次clear不得抹去丢弃提示", async () => {
   const gate = deferred();
   let reads = 0;
   const h = setup({
@@ -391,12 +392,12 @@ test("恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
   });
   await h.session.load("task-1");
   h.session.setText("未保存就要被丢弃的文字");
-  h.session.clear(); // hidden #1：丢弃提示发布
+  h.session.clear(); // 显式clear #1：丢弃提示发布
   assert.match(h.state().lossNotice, /丢弃/);
   h.session.activate(); // visible #1：恢复读取开始
   const reading = h.session.load("task-1");
   assert.equal(h.state().reading, true);
-  h.session.clear(); // hidden #2：读取进行中再次隐藏（此时状态已干净）
+  h.session.clear(); // 显式clear #2：读取进行中再次隐藏（此时状态已干净）
   assert.match(h.state().lossNotice, /丢弃/, "第二次clear不得抹去已发布的丢弃提示");
   h.session.activate(); // visible #2：重新恢复
   gate.resolve(null);
@@ -407,7 +408,7 @@ test("恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
   assert.equal(state.text, "已保存的正文", "恢复读取以服务器内容为准");
 });
 
-test("恢复读取失败后再次hidden：丢弃提示仍保持", async () => {
+test("恢复读取失败后再次清理身份/任务：丢弃提示仍保持", async () => {
   let reads = 0;
   const h = setup({
     getDraft: async () => { reads += 1; if (reads === 2) throw new Error("读取失败（合成）"); return savedView(); },
@@ -427,7 +428,7 @@ test("恢复读取失败后再次hidden：丢弃提示仍保持", async () => {
   assert.match(h.state().lossNotice, /丢弃/, "再次成功恢复后丢弃提示仍可见");
 });
 
-test("成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束", async () => {
+test("成功恢复后再次清理身份/任务（无新编辑）：丢弃提示保持，编辑仍按生命周期结束", async () => {
   const h = setup();
   await h.session.load("task-1");
   h.session.setText("未保存的编辑");

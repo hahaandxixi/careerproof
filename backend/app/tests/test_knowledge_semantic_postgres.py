@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import os
 import re
-from datetime import UTC
+from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
@@ -95,11 +95,16 @@ async def knowledge_db(monkeypatch):
 
 
 class FakeSemanticEmbedder:
-    """Deterministic stand-in reusing the hash projection; engine tags differ."""
+    """Independent coordinate system: rotate and negate the hash basis.
+
+    Semantic-to-semantic distances are meaningful here; comparing these vectors
+    with hash coordinates is deliberately invalid, even for identical text.
+    """
 
     def embed(self, documents: list[str]):
         for document in documents:
-            yield retrieval.local_embedding(document)
+            vector = retrieval.local_embedding(document)
+            yield [-value for value in vector[113:] + vector[:113]]
 
 
 async def _seed_resume(factory, *, suffix: str, content: str, content_hash: str):
@@ -198,8 +203,6 @@ async def test_mixed_engines_and_unavailable_model_skip(knowledge_db, monkeypatc
         assert results
 
         # 显式构造混合状态：最新块哈希引擎、其余语义引擎；时间戳手动错开保证确定性。
-        from datetime import datetime, timedelta
-
         chunks = list(
             await session.scalars(
                 select(KnowledgeChunk).order_by(KnowledgeChunk.created_at.asc())
@@ -214,12 +217,17 @@ async def test_mixed_engines_and_unavailable_model_skip(knowledge_db, monkeypatc
                 **chunk.chunk_metadata,
                 "embeddingEngine": HASH_ENGINE if offset == len(chunks) - 1 else SEMANTIC_ENGINE,
             }
+            if offset == len(chunks) - 1:
+                chunk.embedding = retrieval.local_embedding(chunk.content)
         await session.commit()
 
         mixed_results = await search_owned_chunks(session, user, "数据可视化 性能优化", 10)
         assert mixed_results
         assert all(result["metadata"]["queryEngine"] == HASH_ENGINE for result in mixed_results)
         assert all(result["metadata"]["mixedEngines"] for result in mixed_results)
+        assert len(mixed_results) == 1
+        assert mixed_results[0]["id"] == chunks[-1].id
+        assert mixed_results[0]["metadata"]["ownedMatches"] == 1
 
         # 把全部块恢复为语义引擎后，查询时模型不可用必须整体跳过向量检索，
         # 而不是用不可比的哈希向量冒充语义查询结果。
@@ -228,6 +236,141 @@ async def test_mixed_engines_and_unavailable_model_skip(knowledge_db, monkeypatc
                 **chunk.chunk_metadata,
                 "embeddingEngine": SEMANTIC_ENGINE,
             }
+            chunk.embedding = next(FakeSemanticEmbedder().embed([chunk.content]))
         await session.commit()
         monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: None)
         assert await search_owned_chunks(session, user, "数据可视化 性能优化", 10) == []
+
+
+async def _add_chunk(session, source_id, content, engine, when):
+    vector = (
+        next(FakeSemanticEmbedder().embed([content]))
+        if engine == SEMANTIC_ENGINE
+        else retrieval.local_embedding(content)
+    )
+    chunk = KnowledgeChunk(
+        source_type="resume_section",
+        source_id=source_id,
+        content=content,
+        embedding=vector,
+        chunk_metadata={} if engine is None else {"embeddingEngine": engine},
+        created_at=when,
+    )
+    session.add(chunk)
+    await session.flush()
+    return chunk
+
+
+async def test_engine_inventory_includes_chunks_older_than_newest_fifty(knowledge_db, monkeypatch):
+    monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FakeSemanticEmbedder())
+    content = "FastAPI database rollback"
+    user_id, section_id, _ = await _seed_resume(
+        knowledge_db, suffix="over-fifty", content=content, content_hash="d" * 64
+    )
+    base = datetime.now(UTC) - timedelta(hours=1)
+    async with knowledge_db() as session:
+        older = await _add_chunk(session, section_id, content, SEMANTIC_ENGINE, base)
+        for offset in range(51):
+            await _add_chunk(
+                session, section_id, f"hash material {offset}", HASH_ENGINE,
+                base + timedelta(seconds=offset + 1),
+            )
+        await session.commit()
+        user = await session.get(User, user_id)
+        results = await search_owned_chunks(session, user, content, 100)
+        assert len(results) == 51
+        assert older.id not in {row["id"] for row in results}
+        assert all(row["metadata"]["mixedEngines"] for row in results)
+        assert all(row["metadata"]["embeddingEngine"] == HASH_ENGINE for row in results)
+        assert all(row["metadata"]["ownedMatches"] == 51 for row in results)
+
+
+async def test_semantic_query_excludes_hash_unknown_archived_and_other_owner(
+    knowledge_db, monkeypatch,
+):
+    monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FakeSemanticEmbedder())
+    content = "FastAPI database rollback"
+    user_id, section_id, _ = await _seed_resume(
+        knowledge_db, suffix="own", content=content, content_hash="e" * 64
+    )
+    _, other_id, _ = await _seed_resume(
+        knowledge_db, suffix="other", content=content, content_hash="f" * 64
+    )
+    archived_user, archived_id, _ = await _seed_resume(
+        knowledge_db, suffix="archived", content=content, content_hash="1" * 64
+    )
+    base = datetime.now(UTC) - timedelta(hours=1)
+    async with knowledge_db() as session:
+        own_profile = await session.scalar(
+            select(StudentProfile.id).where(StudentProfile.user_id == user_id)
+        )
+        archived_profile = await session.scalar(
+            select(StudentProfile.id).where(StudentProfile.user_id == archived_user)
+        )
+        archived_resume = await session.scalar(
+            select(Resume).where(Resume.student_id == archived_profile)
+        )
+        archived_resume.student_id = own_profile
+        archived_resume.is_archived = True
+        await _add_chunk(session, section_id, content, HASH_ENGINE, base)
+        await _add_chunk(session, section_id, content, None, base + timedelta(seconds=1))
+        chosen = await _add_chunk(
+            session, section_id, content, SEMANTIC_ENGINE, base + timedelta(seconds=2)
+        )
+        await _add_chunk(
+            session, other_id, content, HASH_ENGINE, base + timedelta(seconds=3)
+        )
+        await _add_chunk(
+            session, archived_id, content, HASH_ENGINE, base + timedelta(seconds=4)
+        )
+        await session.commit()
+        assert next(FakeSemanticEmbedder().embed([content])) != retrieval.local_embedding(content)
+        user = await session.get(User, user_id)
+        results = await search_owned_chunks(session, user, content, 10)
+        assert [row["id"] for row in results] == [chosen.id]
+        assert results[0]["metadata"]["queryEngine"] == SEMANTIC_ENGINE
+        assert results[0]["metadata"]["mixedEngines"] is True
+        assert results[0]["metadata"]["ownedMatches"] == 1
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: None)
+        assert await search_owned_chunks(session, user, content, 10) == []
+
+
+async def test_legacy_unlabelled_chunks_are_not_assumed_hash(knowledge_db, monkeypatch):
+    monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: None)
+    content = "database material"
+    user_id, section_id, _ = await _seed_resume(
+        knowledge_db, suffix="legacy", content=content, content_hash="2" * 64
+    )
+    base = datetime.now(UTC) - timedelta(hours=1)
+    async with knowledge_db() as session:
+        await _add_chunk(session, section_id, content, None, base)
+        await session.commit()
+        user = await session.get(User, user_id)
+        assert await search_owned_chunks(session, user, content, 10) == []
+        compatible = await _add_chunk(
+            session, section_id, content, HASH_ENGINE, base + timedelta(seconds=1)
+        )
+        await session.commit()
+        results = await search_owned_chunks(session, user, content, 10)
+        assert [row["id"] for row in results] == [compatible.id]
+        assert results[0]["metadata"]["mixedEngines"] is True
+
+
+async def test_query_inference_failure_never_uses_hash_against_semantic_index(
+    knowledge_db, monkeypatch,
+):
+    content = "database material"
+    user_id, section_id, _ = await _seed_resume(
+        knowledge_db, suffix="inference", content=content, content_hash="3" * 64
+    )
+    async with knowledge_db() as session:
+        await _add_chunk(session, section_id, content, SEMANTIC_ENGINE, datetime.now(UTC))
+        await session.commit()
+
+        class FailingEmbedder:
+            def embed(self, documents):
+                raise RuntimeError("synthetic inference unavailable")
+
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FailingEmbedder())
+        user = await session.get(User, user_id)
+        assert await search_owned_chunks(session, user, content, 10) == []

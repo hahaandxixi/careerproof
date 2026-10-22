@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
 from pathlib import Path
 
 from app.core.exceptions import AppError
@@ -24,7 +26,14 @@ def process_project(
     original_filename: str,
     limits: ArchiveLimits,
     max_characters: int,
+    *,
+    run_context: dict | None = None,
 ) -> list[dict]:
+    if run_context:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        marker = destination.parent / f".{destination.name}.worker.json"
+        with marker.open("x", encoding="utf-8") as handle:
+            json.dump({**run_context, "pid": os.getpid()}, handle)
     if source.suffix.lower() == ".zip":
         entries = inspect_zip(source, limits)
         # Duplicate normalized archive paths cannot identify immutable source files.

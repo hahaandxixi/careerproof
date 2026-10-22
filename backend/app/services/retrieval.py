@@ -39,7 +39,6 @@ from app.models.portfolio import (
 EMBEDDING_DIMENSIONS = 384
 HASH_ENGINE = "local-hash-v1-384"
 SEMANTIC_ENGINE = "minilm-l12-v2-onnx"
-QUERY_ENGINE_SAMPLE = 50
 TOKEN_PATTERN = re.compile(r"[A-Za-z][A-Za-z0-9_.+#-]*|[\u4e00-\u9fff]")
 
 logger = logging.getLogger(__name__)
@@ -151,7 +150,8 @@ def select_query_engine(
     """Decide the query embedding engine from the owner's indexed chunks.
 
     ``chunk_engines`` is newest-first. Mixed engines cannot be compared, so the
-    newest chunk decides and the caller must surface ``mixed_engines``. When the
+    newest chunk decides and the caller filters candidates to that same engine.
+    The caller must surface ``mixed_engines``. When the
     index is semantic but the model is unavailable at query time, vector search
     is skipped (None) rather than answered with incompatible hash vectors.
     """
@@ -212,18 +212,32 @@ async def index_sources(session: AsyncSession, sources: list[ChunkSource]) -> in
 async def _owner_chunk_engines(session: AsyncSession, allowed_ids: list[UUID]) -> list[str]:
     if session.bind.dialect.name != "postgresql":
         return []
+    engine = KnowledgeChunk.chunk_metadata["embeddingEngine"].as_string()
+    # Aggregate all permitted chunks, not the latest N: an old incompatible or
+    # unlabelled vector must never disappear from compatibility diagnostics.
+    newest = func.max(KnowledgeChunk.created_at)
     rows = await session.execute(
-        select(KnowledgeChunk.chunk_metadata)
+        select(engine)
         .where(KnowledgeChunk.source_id.in_(allowed_ids))
-        .order_by(KnowledgeChunk.created_at.desc())
-        .limit(QUERY_ENGINE_SAMPLE)
+        .group_by(engine)
+        .order_by(newest.desc(), engine.asc().nulls_last())
     )
-    engines = []
-    for (metadata,) in rows:
-        engine = (metadata or {}).get("embeddingEngine")
-        if engine:
-            engines.append(str(engine))
-    return engines
+    # Missing metadata is an unknown space, never an implicit hash label. Such
+    # legacy rows remain stored and can be reindexed; search does not guess.
+    return [str(value) if value is not None else "" for (value,) in rows]
+
+
+def _semantic_query_vector(embedder, query: str) -> list[float] | None:
+    try:
+        vectors = list(embedder.embed([query]))
+        if len(vectors) != 1:
+            return None
+        vector = [float(value) for value in vectors[0]]
+        return vector if _valid_vector(vector) else None
+    except (OSError, ValueError, RuntimeError):
+        # An inference failure must not compare fallback hash coordinates with
+        # a semantic index, and does not alter or delete the existing index.
+        return None
 
 
 async def _allowed_source_ids(session: AsyncSession, user: User) -> list[UUID]:
@@ -259,6 +273,8 @@ async def _allowed_source_ids(session: AsyncSession, user: User) -> list[UUID]:
     return list(await session.scalars(resume_ids)) + list(
         await session.scalars(project_ids)
     )
+
+
 async def search_owned_chunks(
     session: AsyncSession, user: User, query: str, limit: int
 ) -> list[dict]:
@@ -301,10 +317,8 @@ async def search_owned_chunks(
         if embedder is None:
             _log_search("engine-unavailable", engine=engine, mixed=mixed)
             return []
-        query_vector = await asyncio.to_thread(
-            lambda: [float(value) for value in next(iter(embedder.embed([query])))]
-        )
-        if not _valid_vector(query_vector):
+        query_vector = await asyncio.to_thread(_semantic_query_vector, embedder, query)
+        if query_vector is None:
             _log_search("invalid-query-vector", engine=engine, mixed=mixed)
             return []
     else:
@@ -314,7 +328,10 @@ async def search_owned_chunks(
     # 自有命中整批漏掉，交给外层排序则召回与计划无关。
     allowed_rows = (
         select(KnowledgeChunk, func.count().over().label("owned_matches"))
-        .where(KnowledgeChunk.source_id.in_(allowed_ids))
+        .where(
+            KnowledgeChunk.source_id.in_(allowed_ids),
+            KnowledgeChunk.chunk_metadata["embeddingEngine"].as_string() == engine,
+        )
         .cte("owned_chunks")
         .prefix_with("MATERIALIZED")
     )

@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     max_extracted_bytes: int = 100 * 1024 * 1024
     max_file_bytes: int = 1024 * 1024
     max_archive_files: int = 2000
+    material_storage_limit_bytes: int = Field(default=512 * 1024 * 1024, ge=1)
+    material_pending_task_limit: int = Field(default=4, ge=1, le=100)
     task_concurrency: int = Field(default=2, ge=1, le=8)
     task_timeout_seconds: float = Field(default=90, gt=0, le=600)
     task_lease_seconds: int = Field(default=120, ge=30, le=3600)

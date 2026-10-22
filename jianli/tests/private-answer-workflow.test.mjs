@@ -143,7 +143,7 @@ test("保存期间继续编辑：旧回执只更新已存基线，不覆盖后�
   assert.equal(h.calls.saveDraft[0].payload.text, "第一版文字", "保存快照应是发起时的文字");
 });
 
-test("隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态", async () => {
+test("退出身份/任务清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态", async () => {
   let send;
   const pending = new Promise(resolve => { send = resolve; });
   const h = setup({ saveDraft: () => pending.then(() => savedView({ text: "迟到的保存结果", revision: 2 })) });

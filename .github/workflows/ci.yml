@@ -112,7 +112,7 @@ jobs:
           if-no-files-found: warn
 
   backend-postgres:
-    name: backend-postgres (strict 17 modules, JUnit gate)
+    name: backend-postgres (strict 18 modules, JUnit gate)
     runs-on: ubuntu-latest
     timeout-minutes: 75
     services:
@@ -244,6 +244,7 @@ jobs:
             app/tests/test_login_rate_limit.py \
             app/tests/test_login_limit_migration.py \
             app/tests/test_paginated_lists_postgres.py \
+            app/tests/test_material_admission_postgres.py \
             --basetemp=.tmp-ci-pg \
             --junitxml=.tmp-ci/junit-pg-strict.xml 2>&1 | tee .tmp-ci/pytest-pg-strict.log
 
@@ -264,7 +265,7 @@ jobs:
             --basetemp=.tmp-ci-pg-hardstop \
             --junitxml=.tmp-ci/junit-pg-hardstop.xml 2>&1 | tee .tmp-ci/pytest-pg-hardstop.log
 
-      # The gate reads the JUnit XML, never the pytest exit code: 17 modules
+      # The gate reads the JUnit XML, never the pytest exit code: 18 modules
       # present, zero failure/error/skipped, and all 8 hard-stop windows.
       - name: Enforce the JUnit gate on the strict set
         if: always()

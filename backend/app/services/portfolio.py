@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import logging
 from contextlib import suppress
 from pathlib import Path
 from uuid import UUID
@@ -41,6 +42,8 @@ from app.schemas.portfolio import (
     ResumeSectionView,
     ResumeUploadData,
 )
+from app.services.material_admission import admit_material, lock_material_owner, persisted_upload
+from app.services.material_cleanup import cleanup_attempt
 from app.services.retrieval import ChunkSource, delete_source_chunks, index_sources
 from app.services.task_lifecycle import claim_task, finish_task, heartbeat_task, reset_failed_task
 from app.services.task_runner import run_isolated
@@ -50,6 +53,7 @@ from app.tools.material_processor import process_document, process_project
 from app.tools.storage import LocalStorage
 
 RESUME_MAX_BYTES = 10 * 1024 * 1024
+logger = logging.getLogger(__name__)
 
 
 def _record_content_warnings(session: AsyncSession, task_id: UUID, sources) -> None:
@@ -205,6 +209,9 @@ class PortfolioService:
                 code=4020,
                 status_code=415,
             )
+        await lock_material_owner(self.session, current_user.id)
+        await admit_material(self.session, current_user.id, student.id,
+                             size=len(content), project=False)
         resume = Resume(student_id=student.id, title=title)
         self.session.add(resume)
         await self.session.flush()
@@ -222,18 +229,20 @@ class PortfolioService:
         self.session.add(version)
         await self.session.flush()
         object_key = f"resumes/{resume.id}/{version.id}{suffix}"
-        self.storage.save(object_key, content)
-        version.storage_key = object_key
-        task = AnalysisTask(
-            created_by=current_user.id,
-            task_type="resume_parse",
-            status=TaskStatus.PENDING,
-            current_step="等待解析",
-        )
-        self.analysis.add_task(task)
-        await self.session.flush()
-        version.analysis_task_id = task.id
-        await self.session.commit()
+        async with persisted_upload(
+            self.session, self.storage, object_key, content, async_session_factory
+        ):
+            version.storage_key = object_key
+            task = AnalysisTask(
+                created_by=current_user.id,
+                task_type="resume_parse",
+                status=TaskStatus.PENDING,
+                current_step="等待解析",
+            )
+            self.analysis.add_task(task)
+            await self.session.flush()
+            version.analysis_task_id = task.id
+            await self.session.commit()
         return ResumeUploadData(
             resume_id=resume.id,
             version_id=version.id,
@@ -336,6 +345,7 @@ class PortfolioService:
             raise AppError("材料归属只能选择个人作品或第三方参考", code=4220, status_code=422)
         student = await self._student(current_user)
         # PostgreSQL serializes version allocation per project, including different request keys.
+        await lock_material_owner(self.session, current_user.id)
         project = await self.portfolios.owned_project(project_id, student.id, lock=True)
         if not project:
             raise AppError("项目不存在或无权访问", code=4043, status_code=404)
@@ -381,6 +391,8 @@ class PortfolioService:
                     task_id=task.id,
                     status=task.status,
                 ), False
+        await admit_material(self.session, current_user.id, student.id,
+                             size=len(content), project=True)
         version_number = await self.portfolios.next_project_version(project.id)
         version = ProjectVersion(
             project_id=project.id,
@@ -396,18 +408,20 @@ class PortfolioService:
         self.portfolios.add_project_version(version)
         await self.session.flush()
         object_key = f"projects/{project.id}/versions/{version.id}{suffix}"
-        self.storage.save(object_key, content)
-        version.archive_storage_key = object_key
-        task = AnalysisTask(
-            created_by=current_user.id,
-            task_type="project_scan",
-            status=TaskStatus.PENDING,
-            current_step="等待扫描",
-        )
-        self.analysis.add_task(task)
-        await self.session.flush()
-        version.analysis_task_id = task.id
-        await self.session.commit()
+        async with persisted_upload(
+            self.session, self.storage, object_key, content, async_session_factory
+        ):
+            version.archive_storage_key = object_key
+            task = AnalysisTask(
+                created_by=current_user.id,
+                task_type="project_scan",
+                status=TaskStatus.PENDING,
+                current_step="等待扫描",
+            )
+            self.analysis.add_task(task)
+            await self.session.flush()
+            version.analysis_task_id = task.id
+            await self.session.commit()
         return ProjectVersionUploadData(
             project_id=project.id,
             version_id=version.id,
@@ -520,6 +534,8 @@ async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
         if token is None:
             return
         heartbeat = asyncio.create_task(heartbeat_task(task_id, token, async_session_factory))
+        storage = None
+        completed = False
         try:
             version = await session.get(ProjectVersion, version_id)
             if not version or version.analysis_task_id != task_id:
@@ -540,6 +556,7 @@ async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
                     settings.max_archive_files,
                 ),
                 settings.max_document_characters,
+                run_context={"versionId": str(version_id), "runToken": str(token)},
             )
             if not await finish_task(session, task_id, token, step="项目解析完成"):
                 await session.rollback()
@@ -589,6 +606,7 @@ async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
             )
             version.analysis_status = "completed"
             await session.commit()
+            completed = True
         except Exception as exc:
             await session.rollback()
             if await finish_task(
@@ -611,10 +629,22 @@ async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
             heartbeat.cancel()
             with suppress(asyncio.CancelledError):
                 await heartbeat
+            if storage is not None and not completed:
+                # Independently check the actual parser PID, including a venv child.
+                # A fresh transaction protects a commit whose outcome was uncertain.
+                await session.rollback()
+                async with async_session_factory() as cleanup_session:
+                    try:
+                        await cleanup_attempt(cleanup_session, storage, version_id, token,
+                                              local_attempt=True)
+                    except OSError:
+                        logger.warning("Extraction cleanup deferred for %s/%s", version_id,
+                                       token, exc_info=True)
 
 
 async def retry_material_task(session: AsyncSession, task_id: UUID, current_user: User):
     """Return (accepted, function, args); caller schedules after this commits."""
+    await lock_material_owner(session, current_user.id)
     task = await session.get(AnalysisTask, task_id)
     if not task or task.created_by != current_user.id:
         raise AppError("分析任务不存在或无权访问", code=4041, status_code=404)
@@ -640,6 +670,8 @@ async def retry_material_task(session: AsyncSession, task_id: UUID, current_user
         raise AppError("此任务不属于材料解析任务", code=4095, status_code=409)
     if not version or not key or not service.storage.resolve(key).is_file():
         raise AppError("源文件不可用，请重新上传材料", code=4046, status_code=404)
+    await admit_material(session, current_user.id, student.id, size=0,
+                         project=isinstance(version, ProjectVersion))
     task = await reset_failed_task(session, task_id, current_user)
     if isinstance(version, ResumeVersion):
         version.parse_status = "pending"

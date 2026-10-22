@@ -36,6 +36,7 @@ STRICT_MODULES = (
     "test_login_rate_limit",
     "test_login_limit_migration",
     "test_paginated_lists_postgres",
+    "test_material_admission_postgres",
 )
 HARD_STOP_MODULE = "test_attempt_hard_stop"
 HARD_STOP_PHASES = (

@@ -45,12 +45,14 @@ function GrowthContent({ id }: { id?: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [pageHidden, setPageHidden] = useState(false);
   const [revision, setRevision] = useState(0);
   const polls = useRef(0);
   const locked = useRef(false);
   useEffect(() => {
     const ticket = guard.start(); jobGuard.clear();
-    setTask(null); setTasks([]); setTaskData(null); setError(""); setBusy(true);
+    // 当前身份/任务由外层key隔离；同任务恢复读取不卸载私人草稿，避免丢失本机编辑。
+    setTasks([]); setTaskData(null); setError(""); setBusy(true);
     setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError("");
     polls.current = 0;
     const load = id ? Promise.all([api.growthTask(id), api.listResumes(), api.listProjects()]).then(([value, r, p]) => {
@@ -64,9 +66,10 @@ function GrowthContent({ id }: { id?: string }) {
     void load.catch(reason => { if (guard.accepts(ticket)) setError(errorMessage(reason)); }).finally(() => { if (guard.accepts(ticket)) setBusy(false); });
     const visibility = () => {
       if (document.visibilityState === "hidden") {
+        setPageHidden(true);
         guard.clear(); jobGuard.clear(); setTaskData(null);
-        setTask(null); setTasks([]); setResumes([]); setProjects([]); setResumeId(""); setProjectIds([]); setTargetJobId(""); setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError(""); setConsent(false); setBusy(false);
-      } else { setRevision(v => v + 1); }
+        setTasks([]); setResumes([]); setProjects([]); setResumeId(""); setProjectIds([]); setTargetJobId(""); setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError(""); setConsent(false); setBusy(false);
+      } else { setPageHidden(false); setRevision(v => v + 1); }
     };
     document.addEventListener("visibilitychange", visibility);
     return () => { guard.clear(); jobGuard.clear(); document.removeEventListener("visibilitychange", visibility); };
@@ -103,7 +106,7 @@ function GrowthContent({ id }: { id?: string }) {
     } catch (reason) { if (jobGuard.accepts(ticket)) setJobError(errorMessage(reason)); }
     finally { if (jobGuard.accepts(ticket)) setJobBusy(false); }
   }
-  return <div className="space-y-6">
+  return <div className="space-y-6" hidden={pageHidden}>
     <div><Link className="text-sm text-indigo-700 underline" href="/reports">← 我的报告</Link><h1 className="mt-3 text-2xl font-bold">{id ? "从缺口到新证据" : "我的补证任务"}</h1><p className="mt-2 text-sm leading-6 text-slate-600">上传与分析是行动进度，不等于能力认证；企业原投递保持固定。</p></div>
     <button className="btn-secondary" disabled={busy} onClick={() => { setConsent(false); setRevision(v => v + 1); }}>读取已保存任务</button>
     {busy && <p role="status">正在处理…</p>}{error && <p role="alert" className="text-sm text-rose-700">{error}</p>}{notice && <p role="status" className="text-sm text-amber-800">{notice}</p>}

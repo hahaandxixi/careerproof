@@ -2,11 +2,19 @@
 
 import pickle
 import sys
+from pathlib import Path
 
 from app.core.exceptions import AppError
 
 
 def main() -> None:
+    if len(sys.argv) > 1:
+        if len(sys.argv) != 4 or sys.argv[1] != "--identity":
+            raise ValueError("Invalid private parser startup arguments")
+        from app.services.worker_identity import await_parent_admission
+
+        # If publication/admission fails, do not deserialize or run the parser.
+        await_parent_admission(Path(sys.argv[2]), sys.argv[3])
     function, args, kwargs = pickle.loads(sys.stdin.buffer.read())
     try:
         result = {"ok": True, "value": function(*args, **kwargs)}

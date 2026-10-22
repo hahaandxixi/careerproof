@@ -26,6 +26,10 @@ function render(payload, eventType = "tool.completed") {
       detail: "synthetic", payload}], reportId: null, currentStep: "处理结束" };
   let state = 0;
   const trace = load("../src/lib/process-trace.ts", {});
+  const link = { __esModule: true, default: ({children, href}) => React.createElement("a", {href}, children) };
+  const contentNotice = load("../src/components/MaterialContentNotice.tsx", {
+    "react/jsx-runtime": require("react/jsx-runtime"), "next/link": link,
+  });
   const component = load("../src/components/TaskView.tsx", {
     "react": { useEffect() {}, useState: initial => [state++ === 0 ? task : initial, () => {}] },
     "react/jsx-runtime": require("react/jsx-runtime"),
@@ -35,6 +39,7 @@ function render(payload, eventType = "tool.completed") {
     "@/lib/analysis-status": { taskUsedExternalAI: (provider, fallback) => !!provider && provider !== "rules" && !fallback },
     "@/lib/process-trace": trace,
     "./AccessGate": { ErrorNotice: () => null },
+    "./MaterialContentNotice": contentNotice,
   }).default;
   return renderToStaticMarkup(React.createElement(component, {id: "synthetic"}));
 }
