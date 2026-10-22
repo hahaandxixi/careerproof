@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: real notice renders category and original location without repeating source content
+ok 1 - real notice renders category and original location without repeating source content
+  ---
+  duration_ms: 7.0571
+  type: 'test'
+  ...
+# Subtest: four categories remain distinct and markup-like filenames are escaped
+ok 2 - four categories remain distinct and markup-like filenames are escaped
+  ---
+  duration_ms: 0.514
+  type: 'test'
+  ...
+# Subtest: malformed and unknown schemas never become a safety certification
+ok 3 - malformed and unknown schemas never become a safety certification
+  ---
+  duration_ms: 0.7986
+  type: 'test'
+  ...
+# Subtest: truncation is visible even when no match was retained
+ok 4 - truncation is visible even when no match was retained
+  ---
+  duration_ms: 0.2721
+  type: 'test'
+  ...
+# Subtest: rendering stays bounded and cannot expose arbitrary payload fields
+ok 5 - rendering stays bounded and cannot expose arbitrary payload fields
+  ---
+  duration_ms: 6.861
+  type: 'test'
+  ...
+# Subtest: same filename distinguishes projects and versions in the rendered label
+ok 6 - same filename distinguishes projects and versions in the rendered label
+  ---
+  duration_ms: 4.4921
+  type: 'test'
+  ...
+# Subtest: details preserve full identity while a legal UUID inside code and filename survives
+ok 7 - details preserve full identity while a legal UUID inside code and filename survives
+  ---
+  duration_ms: 2.3791
+  type: 'test'
+  ...
+# Subtest: legacy source retains raw UUID-shaped path and declares missing version
+ok 8 - legacy source retains raw UUID-shaped path and declares missing version
+  ---
+  duration_ms: 0.3124
+  type: 'test'
+  ...
+# Subtest: coverage keeps separate ranges and links of the same file
+ok 9 - coverage keeps separate ranges and links of the same file
+  ---
+  duration_ms: 1.3871
+  type: 'test'
+  ...
+# Subtest: two projects with service.py keep distinct saved project names
+ok 10 - two projects with service.py keep distinct saved project names
+  ---
+  duration_ms: 0.7505
+  type: 'test'
+  ...
+# Subtest: same project file in two saved versions stays distinguishable
+ok 11 - same project file in two saved versions stays distinguishable
+  ---
+  duration_ms: 0.149
+  type: 'test'
+  ...
+# Subtest: duplicate title and version do not collapse even when IDs share eight characters
+ok 12 - duplicate title and version do not collapse even when IDs share eight characters
+  ---
+  duration_ms: 0.1949
+  type: 'test'
+  ...
+# Subtest: only the proven leading version prefix is shortened, never a nested UUID
+ok 13 - only the proven leading version prefix is shortened, never a nested UUID
+  ---
+  duration_ms: 0.0978
+  type: 'test'
+  ...
+# Subtest: UUID in a legitimate filename and a non-matching leading UUID are preserved
+ok 14 - UUID in a legitimate filename and a non-matching leading UUID are preserved
+  ---
+  duration_ms: 0.1501
+  type: 'test'
+  ...
+# Subtest: historical or unrecognized metadata leaves the full raw source available
+ok 15 - historical or unrecognized metadata leaves the full raw source available
+  ---
+  duration_ms: 0.0995
+  type: 'test'
+  ...
+# Subtest: labels use the supplied fixed snapshot rather than another report's current version
+ok 16 - labels use the supplied fixed snapshot rather than another report's current version
+  ---
+  duration_ms: 0.1576
+  type: 'test'
+  ...
+# Subtest: formatting does not mutate paths, snippets, IDs, ranges or frozen material metadata
+ok 17 - formatting does not mutate paths, snippets, IDs, ranges or frozen material metadata
+  ---
+  duration_ms: 0.1583
+  type: 'test'
+  ...
+# Subtest: range cards preserve citation anchors and give uncited candidates stable distinct anchors
+ok 18 - range cards preserve citation anchors and give uncited candidates stable distinct anchors
+  ---
+  duration_ms: 0.2519
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 242.7547

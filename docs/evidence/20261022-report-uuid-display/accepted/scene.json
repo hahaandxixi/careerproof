@@ -1,0 +1,11 @@
+{
+  "reportId": "fdd97afc-9004-4439-81a6-c6e70e1d6871",
+  "projectVersionId": "9ac10bf3-b998-44b4-b34a-6ddc576a9f75",
+  "frontend": "http://127.0.0.1:3132",
+  "api": "http://127.0.0.1:8111",
+  "rulesOnly": true,
+  "mockReport": false,
+  "oldReportsUnchanged": true,
+  "modelRequests": 0,
+  "growthTargetWasNotChanged": true
+}

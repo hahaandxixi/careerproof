@@ -2,11 +2,13 @@
 import { useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
+import type { SourceMaterial } from "@/lib/source-label";
+import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false }: {
-  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean;
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [] }: {
+  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[];
 }) {
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
@@ -72,9 +74,9 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           <details key={dimension.requirementId} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
             <summary className="cursor-pointer text-sm text-indigo-700">查看本次授权引用片段（{item.evidenceList.length}）</summary>
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
-              <p className="break-all leading-5">{e.citationId || "原报告引用"} · {e.filePath} · 第{e.lineStart}—{e.lineEnd}行</p>
+              <p className="break-all leading-5">{e.citationId || "原报告引用"} · <SourceIdentity source={e} materials={materials} /> · 第{e.lineStart}—{e.lineEnd}行</p>
               {e.provenance === "reference" && <p className="mt-1 text-amber-800">参考材料，不能证明本人贡献。</p>}
-              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{e.snippet}</pre>
+              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{e.snippet}</pre><SourceIdentityDetails source={e} />
               {!e.contextComplete && <p className="mt-2 leading-5 text-amber-800">{e.contextNote || "引用上下文不完整，需要结合原报告核对。"}</p>}
             </div>) : <p className="mt-3 text-xs leading-5 text-slate-500">本项没有可定位的引用片段，可在完整报告中核对材料缺口。</p>}
           </details>

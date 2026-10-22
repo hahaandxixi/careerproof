@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { sourceLabel } from "@/lib/source-label";
 import { useEffect, useRef, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ReportComparison } from "@/lib/api/domain";
@@ -37,7 +38,7 @@ export default function ReportComparisonPanel({ reportId, revision }: { reportId
         <p className="text-xs text-slate-600">{item.changes.map(key => LABELS[key] ?? key).join("、") || "未发现已记录的变化"}</p>
         <p className="text-xs text-slate-500">AI 状态：{item.baseAiStatus ?? "无此项"} → {item.targetAiStatus ?? "无此项"}；复核状态：{item.baseReview ?? "无复核"} → {item.targetReview ?? "无复核"}</p>
         <ReportItemExplanation item={item} targetLabel="当前报告" />
-        {[["新增展示", item.addedEvidence, reportId], ["不再展示", item.removedEvidence, value.baseId]].map(([label, entries, id]) => <div key={String(label)}><p>{String(label)}：{(entries as typeof item.addedEvidence).length} 条</p><ul>{(entries as typeof item.addedEvidence).map((e, i) => <li key={i} className="break-all"><Link className="text-indigo-700 underline" href={`/reports/${id}${e.citationId ? `#citation-${e.citationId}` : `#requirement-${item.requirementId}`}`}>{e.filePath} · 第 {e.lineStart}–{e.lineEnd} 行</Link></li>)}</ul></div>)}
+        {[["新增展示", item.addedEvidence, reportId], ["不再展示", item.removedEvidence, value.baseId]].map(([label, entries, id]) => <div key={String(label)}><p>{String(label)}：{(entries as typeof item.addedEvidence).length} 条</p><ul>{(entries as typeof item.addedEvidence).map((e, i) => <li key={i} className="break-all"><Link className="text-indigo-700 underline" href={`/reports/${id}${e.citationId ? `#citation-${e.citationId}` : `#requirement-${item.requirementId}`}`}>{sourceLabel(e, String(label) === "新增展示" ? value.targetMaterials : value.baseMaterials)} · 第 {e.lineStart}–{e.lineEnd} 行</Link></li>)}</ul></div>)}
       </article>)}
       <ul className="space-y-1 rounded-lg bg-amber-50 p-3 text-xs leading-6 text-amber-900">{value.limitations.map(note => <li key={note}>{note}</li>)}</ul>
     </div>}

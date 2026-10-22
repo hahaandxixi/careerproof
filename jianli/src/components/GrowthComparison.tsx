@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { sourceLabel } from "@/lib/source-label";
 import type { GrowthTask } from "@/lib/api/domain";
 import { GROWTH_CHANGES } from "@/lib/growth-workflow";
 import { careerPlanHref } from "@/lib/recommendation-selection";
@@ -40,7 +41,7 @@ export default function GrowthComparison({ task }: { task: GrowthTask }) {
       {[["新增展示", item.addedEvidence, task.targetReportId], ["不再展示", item.removedEvidence, task.baseReportId]].map(([label, rows, report]) => <details key={String(label)} className="rounded-lg border border-slate-200 p-3">
         <summary className="cursor-pointer text-indigo-700">{String(label)}的来源证据：{(rows as typeof item.addedEvidence).length}条</summary>
         <ul>{(rows as typeof item.addedEvidence).map((source, index) => <li key={index} className="break-all">
-          <Link className="text-indigo-700 underline" href={`/reports/${report}${source.citationId ? `#citation-${source.citationId}` : `#requirement-${item.requirementId}`}`}>{source.filePath} · 第{source.lineStart}—{source.lineEnd}行</Link>
+          <Link className="text-indigo-700 underline" href={`/reports/${report}${source.citationId ? `#citation-${source.citationId}` : `#requirement-${item.requirementId}`}`}>{sourceLabel(source, String(label) === "新增展示" ? comparison.targetMaterials : comparison.baseMaterials)} · 第{source.lineStart}—{source.lineEnd}行</Link>
           {source.provenance === "reference" && <p className="text-xs text-amber-800">第三方参考，不构成个人实践证明。</p>}
           <pre className="my-2 whitespace-pre-wrap break-words rounded bg-slate-50 p-2 text-xs">{source.snippet}</pre>
         </li>)}</ul>
