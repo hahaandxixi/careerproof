@@ -1,0 +1,16 @@
+{
+  "api8111": "stopped",
+  "frontend3132": "stopped",
+  "container": "careerproof-agent-display-20261021",
+  "containerRunning": false,
+  "restoredInitialContainerState": true,
+  "normalPortsAtFinalCheck": {
+    "3000": "not listening",
+    "3001": "not listening",
+    "3108": "not listening",
+    "8108": "not listening"
+  },
+  "normalServicesRestarted": false,
+  "syntheticDataAndStorage": "retained",
+  "externalModelRequests": 0
+}

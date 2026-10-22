@@ -17,6 +17,7 @@ import {
   type ConnectionState,
 } from "@/lib/process-trace";
 import { ErrorNotice } from "./AccessGate";
+import MaterialContentNotice from "./MaterialContentNotice";
 
 const TERMINAL = new Set(["completed", "failed", "cancelled"]);
 const MODEL_STEPS = ["模型证据分析", "千问证据分析"];
@@ -179,6 +180,8 @@ export default function TaskView({ id }: { id: string }) {
         <div className="mt-5 flex flex-wrap gap-3">{task.reportId && <Link className="btn" href={`/reports/${task.reportId}`}>查看匹配报告</Link>}{task.status === "failed" && <button className="btn-secondary" disabled={busy} onClick={() => void retry()}>{busy ? "提交重试…" : "重试此任务"}</button>}{task.status === "completed" && !task.reportId && <Link className="btn" href="/portfolio">返回材料，查看解析结果</Link>}</div>
         {task.status === "failed" && <p className="mt-3 text-xs text-slate-500">重试会复用原材料版本。如果文件本身不受支持，请上传修正后的新版本。</p>}
       </section>
+      {task.steps.filter(step => step.eventType === "material.content_warning").map(step =>
+        <MaterialContentNotice key={step.step} report={step.payload} />)}
       <details className="panel">
         <summary className="cursor-pointer font-semibold">实际处理记录{completionRecords > 0 && <span className="ml-2 text-xs font-normal text-slate-500">已有 {completionRecords} 条完成记录</span>}</summary>
         {!task.steps.length

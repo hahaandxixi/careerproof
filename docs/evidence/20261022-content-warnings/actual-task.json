@@ -1,0 +1,54 @@
+{
+  "taskId": "aee64324-60f5-4a28-ae66-f0d68e9f31ce",
+  "status": "completed",
+  "warnings": [
+    {
+      "version": "local-content-warnings-v1",
+      "warningOnly": true,
+      "findings": [
+        {
+          "category": "sexual_solicitation",
+          "ruleId": "sexual.contact_solicitation",
+          "path": "content-review.txt · 解析段 1（页 未记录）",
+          "line": 2
+        },
+        {
+          "category": "abuse_threat",
+          "ruleId": "abuse.targeted_threat",
+          "path": "content-review.txt · 解析段 1（页 未记录）",
+          "line": 3
+        },
+        {
+          "category": "recruitment_fraud",
+          "ruleId": "recruitment.upfront_fee",
+          "path": "content-review.txt · 解析段 1（页 未记录）",
+          "line": 4
+        },
+        {
+          "category": "spam",
+          "ruleId": "spam.guaranteed_income_contact",
+          "path": "content-review.txt · 解析段 1（页 未记录）",
+          "line": 5
+        }
+      ],
+      "counts": {
+        "sexual_solicitation": 1,
+        "abuse_threat": 1,
+        "recruitment_fraud": 1,
+        "spam": 1
+      },
+      "truncated": false,
+      "truncationReasons": [],
+      "scannedFiles": 1,
+      "scannedCharacters": 95,
+      "limits": {
+        "maxFiles": 200,
+        "maxCharacters": 500000,
+        "maxFindings": 30,
+        "maxPathCharacters": 1024
+      }
+    }
+  ],
+  "externalAi": false,
+  "physicalModelRequests": 0
+}

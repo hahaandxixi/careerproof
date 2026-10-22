@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.database import async_session_factory
 from app.core.exceptions import AppError
-from app.models.analysis import AnalysisTask
+from app.models.analysis import AgentStep, AnalysisTask
 from app.models.enums import TaskStatus, UserRole
 from app.models.identity import User
 from app.models.portfolio import (
@@ -45,10 +45,25 @@ from app.services.retrieval import ChunkSource, delete_source_chunks, index_sour
 from app.services.task_lifecycle import claim_task, finish_task, heartbeat_task, reset_failed_task
 from app.services.task_runner import run_isolated
 from app.tools.archive_scanner import ArchiveLimits
+from app.tools.content_warnings import scan_content_warnings
 from app.tools.material_processor import process_document, process_project
 from app.tools.storage import LocalStorage
 
 RESUME_MAX_BYTES = 10 * 1024 * 1024
+
+
+def _record_content_warnings(session: AsyncSession, task_id: UUID, sources) -> None:
+    """Save advisory locations with this material transaction, never raw excerpts."""
+    report = scan_content_warnings(sources)
+    if report["findings"] or report["truncated"]:
+        session.add(AgentStep(
+            analysis_task_id=task_id,
+            step_number=1,
+            event_type="material.content_warning",
+            name="本地内容核对提示",
+            detail="部分已解析文本需核对；仅作提示，不是违规判定，未修改原文或评级。",
+            payload=report,
+        ))
 
 
 class PortfolioService:
@@ -447,6 +462,14 @@ async def execute_resume_parse_task(task_id: UUID, version_id: UUID) -> None:
                 )
                 for item in parsed
             ]
+            _record_content_warnings(session, task_id, (
+                (
+                    f"{version.original_filename or '简历'} · 解析段 {index + 1}"
+                    f"（页 {section.page_number or '未记录'}）",
+                    section.content,
+                )
+                for index, section in enumerate(sections)
+            ))
             session.add_all(sections)
             await session.flush()
             await index_sources(
@@ -543,6 +566,10 @@ async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
                     for file in files
                 ]
             )
+            _record_content_warnings(session, task_id, (
+                (file.relative_path, content)
+                for file, content in zip(files, contents, strict=True)
+            ))
             await index_sources(
                 session,
                 [
