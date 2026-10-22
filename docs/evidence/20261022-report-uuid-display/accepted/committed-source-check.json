@@ -1,0 +1,154 @@
+{
+  "commit": "44d57ae516330241759d5d3a7851c5316ea3afeb",
+  "buildId": "HcR0P85IxK-L4gqVCIZbk",
+  "files": [
+    {
+      "path": "jianli/src/components/ApplicationBoard.tsx",
+      "buildSourceSha256": "2bd275bc78757d6b681734c0083852bfe38f46b40d207b44fe7c3e2005e22a0f",
+      "committedBlobSha256": "2bd275bc78757d6b681734c0083852bfe38f46b40d207b44fe7c3e2005e22a0f",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/EvidenceSnippet.tsx",
+      "buildSourceSha256": "ac2d38a781d6da02ec0b7b0998b15e10a41d7957da09f1380b637dffeb99f49e",
+      "committedBlobSha256": "ac2d38a781d6da02ec0b7b0998b15e10a41d7957da09f1380b637dffeb99f49e",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/GrowthComparison.tsx",
+      "buildSourceSha256": "ae84cbacfd140ddc5b3418933805ac8e5df7716eabeb72a8d4e54eec148c9507",
+      "committedBlobSha256": "ae84cbacfd140ddc5b3418933805ac8e5df7716eabeb72a8d4e54eec148c9507",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/ReportComparisonPanel.tsx",
+      "buildSourceSha256": "b012464cfb405abd8c92ccc9ac72b32989d41917c38ccfb0cb114b207c49d3ac",
+      "committedBlobSha256": "b012464cfb405abd8c92ccc9ac72b32989d41917c38ccfb0cb114b207c49d3ac",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/ReportDetail.tsx",
+      "buildSourceSha256": "041c40372e867003f1b68013d0dfcedf7c69c8f6c0b80b1949214dd4aa2c2280",
+      "committedBlobSha256": "041c40372e867003f1b68013d0dfcedf7c69c8f6c0b80b1949214dd4aa2c2280",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/SourceCoverage.tsx",
+      "buildSourceSha256": "541528ff9a9ee1857c0a7bf3d2eb1dfc37355db7d5e01308b945ddae12e1da0b",
+      "committedBlobSha256": "541528ff9a9ee1857c0a7bf3d2eb1dfc37355db7d5e01308b945ddae12e1da0b",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/SkillRadar.tsx",
+      "buildSourceSha256": "044294d576b48ed4b11af998a2bb32441d39892ed57e14b8d0aeb07541d18933",
+      "committedBlobSha256": "044294d576b48ed4b11af998a2bb32441d39892ed57e14b8d0aeb07541d18933",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/SourceIdentity.tsx",
+      "buildSourceSha256": "1805883767cfdfb645161a3002017dd49386cf01ee67f572dbdb9ad1815132cb",
+      "committedBlobSha256": "1805883767cfdfb645161a3002017dd49386cf01ee67f572dbdb9ad1815132cb",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/EvidenceLink.tsx",
+      "buildSourceSha256": "73e3e366bed2b5acb7552fd2fea946a84c43897aa016d7ea7cbfb76e32caa472",
+      "committedBlobSha256": "41a14fb9057b535a777a8d1b6c725f8a76256999eb29b8caaf57904053070bca",
+      "rawBytesIdentical": false,
+      "onlyCrlfNormalization": true
+    },
+    {
+      "path": "jianli/src/lib/source-label.ts",
+      "buildSourceSha256": "30fc2121d7ade65c0f37171765f672d90335b63b64e80a2d3b92d1e7db32f4df",
+      "committedBlobSha256": "30fc2121d7ade65c0f37171765f672d90335b63b64e80a2d3b92d1e7db32f4df",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/tests/source-label.test.mjs",
+      "buildSourceSha256": "7170b7a6f02707fdd2a1e9b6f1f56340b47a1a88c3b5adf9c8b88a652b0c75d4",
+      "committedBlobSha256": "7170b7a6f02707fdd2a1e9b6f1f56340b47a1a88c3b5adf9c8b88a652b0c75d4",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/tests/source-identity-render.test.mjs",
+      "buildSourceSha256": "497d5e5714835fcb66174b958d8133385e277d921d8f402f250daaecd2216174",
+      "committedBlobSha256": "497d5e5714835fcb66174b958d8133385e277d921d8f402f250daaecd2216174",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/services/portfolio.py",
+      "buildSourceSha256": "7904042303b2fe6c58f30de2733c97c87b4febbf44710fdf93b3b4813c6d170b",
+      "committedBlobSha256": "7904042303b2fe6c58f30de2733c97c87b4febbf44710fdf93b3b4813c6d170b",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/tools/content_warnings.py",
+      "buildSourceSha256": "7847a82c8efda2f712257ae30c4e3ed1bf7d386447d984c21206e781e403771b",
+      "committedBlobSha256": "7847a82c8efda2f712257ae30c4e3ed1bf7d386447d984c21206e781e403771b",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/tests/test_material_content_warnings.py",
+      "buildSourceSha256": "61495d6f33382992430b5f3f0154ab79d39d460d578f1879861511e3fa73602d",
+      "committedBlobSha256": "61495d6f33382992430b5f3f0154ab79d39d460d578f1879861511e3fa73602d",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/tests/test_content_warnings.py",
+      "buildSourceSha256": "ae910279298481597b51b5f3d6317cf5179c663b6b463db5e31bfa4434c9c800",
+      "committedBlobSha256": "ae910279298481597b51b5f3d6317cf5179c663b6b463db5e31bfa4434c9c800",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/TaskView.tsx",
+      "buildSourceSha256": "b46c447eb3fbef97c8b629d7f50eaac3ca8e7e2788b495c7aca8b6c292bf7218",
+      "committedBlobSha256": "b46c447eb3fbef97c8b629d7f50eaac3ca8e7e2788b495c7aca8b6c292bf7218",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/src/components/MaterialContentNotice.tsx",
+      "buildSourceSha256": "f8cf524ee4ec079e79474c807e292758d2a4de69f6cc2432d8710b27125e85c3",
+      "committedBlobSha256": "f8cf524ee4ec079e79474c807e292758d2a4de69f6cc2432d8710b27125e85c3",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "jianli/tests/material-content-notice.test.mjs",
+      "buildSourceSha256": "ace7311215f276350e4dc6285f897a4c86feff207a75bc119a8d980ad1332862",
+      "committedBlobSha256": "ace7311215f276350e4dc6285f897a4c86feff207a75bc119a8d980ad1332862",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/tools/code_analyzer.py",
+      "buildSourceSha256": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+      "committedBlobSha256": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    },
+    {
+      "path": "backend/app/tests/test_test_source_selection.py",
+      "buildSourceSha256": "673b356f7735da4e37dc8bc6dbcd5ff86a834b19d08c64290174f91cd75516b7",
+      "committedBlobSha256": "673b356f7735da4e37dc8bc6dbcd5ff86a834b19d08c64290174f91cd75516b7",
+      "rawBytesIdentical": true,
+      "onlyCrlfNormalization": false
+    }
+  ],
+  "noSemanticDiffAfterEolNormalization": true
+}
