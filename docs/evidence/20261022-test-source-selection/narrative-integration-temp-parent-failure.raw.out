@@ -1,0 +1,721 @@
+....................................EEEEEEEEEEEEEEEEEEE                  [100%]
+=================================== ERRORS ====================================
+_ ERROR at setup of test_rules_explain_selected_source_without_requesting_duplicate_upload _
+
+self = <Coroutine test_rules_explain_selected_source_without_requesting_duplicate_upload>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_real_report_survives_login_and_preserves_sources_and_snapshots _
+
+self = <Coroutine test_real_report_survives_login_and_preserves_sources_and_snapshots>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test] _
+
+self = <Coroutine test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash] _
+
+self = <Coroutine test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_________ ERROR at setup of test_daily_ai_budget_uses_persisted_usage _________
+
+self = <Coroutine test_daily_ai_budget_uses_persisted_usage>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_model_stage_failure_still_persists_rule_report[context] _
+
+self = <Coroutine test_model_stage_failure_still_persists_rule_report[context]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_model_stage_failure_still_persists_rule_report[configuration] _
+
+self = <Coroutine test_model_stage_failure_still_persists_rule_report[configuration]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_model_stage_failure_still_persists_rule_report[request] _
+
+self = <Coroutine test_model_stage_failure_still_persists_rule_report[request]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_model_stage_failure_still_persists_rule_report[validation] _
+
+self = <Coroutine test_model_stage_failure_still_persists_rule_report[validation]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+___ ERROR at setup of test_matching_materials_and_reports_are_owner_scoped ____
+
+self = <Coroutine test_matching_materials_and_reports_are_owner_scoped>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_pending_materials_are_rejected_and_operations_documents_are_evaluated _
+
+self = <Coroutine test_pending_materials_are_rejected_and_operations_documents_are_evaluated>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_pending_and_running_matches_coalesce_and_use_frozen_inputs _
+
+self = <Coroutine test_pending_and_running_matches_coalesce_and_use_frozen_inputs>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_failed_match_retry_is_owner_only_atomic_and_not_duplicated _
+
+self = <Coroutine test_failed_match_retry_is_owner_only_atomic_and_not_duplicated>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+___ ERROR at setup of test_entirely_unsupported_job_has_null_overall_score ____
+
+self = <Coroutine test_entirely_unsupported_job_has_null_overall_score>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+____ ERROR at setup of test_evidence_review_is_owner_scoped_and_persisted _____
+
+self = <Coroutine test_evidence_review_is_owner_scoped_and_persisted>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+___ ERROR at setup of test_job_recommendations_rank_owned_material_evidence ___
+
+self = <Coroutine test_job_recommendations_rank_owned_material_evidence>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_career_plan_cites_shortlist_and_tracks_new_material __
+
+self = <Coroutine test_career_plan_cites_shortlist_and_tracks_new_material>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3] _
+
+self = <Coroutine test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+_ ERROR at setup of test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3] _
+
+self = <Coroutine test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/test-source-accepted-20261022/backend/.tmp/narrative-regression')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend\\.tmp\\narrative-regression'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR app/tests/test_real_matching.py::test_rules_explain_selected_source_without_requesting_duplicate_upload
+ERROR app/tests/test_real_matching.py::test_real_report_survives_login_and_preserves_sources_and_snapshots
+ERROR app/tests/test_real_matching.py::test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test]
+ERROR app/tests/test_real_matching.py::test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash]
+ERROR app/tests/test_real_matching.py::test_daily_ai_budget_uses_persisted_usage
+ERROR app/tests/test_real_matching.py::test_model_stage_failure_still_persists_rule_report[context]
+ERROR app/tests/test_real_matching.py::test_model_stage_failure_still_persists_rule_report[configuration]
+ERROR app/tests/test_real_matching.py::test_model_stage_failure_still_persists_rule_report[request]
+ERROR app/tests/test_real_matching.py::test_model_stage_failure_still_persists_rule_report[validation]
+ERROR app/tests/test_real_matching.py::test_matching_materials_and_reports_are_owner_scoped
+ERROR app/tests/test_real_matching.py::test_pending_materials_are_rejected_and_operations_documents_are_evaluated
+ERROR app/tests/test_real_matching.py::test_pending_and_running_matches_coalesce_and_use_frozen_inputs
+ERROR app/tests/test_real_matching.py::test_failed_match_retry_is_owner_only_atomic_and_not_duplicated
+ERROR app/tests/test_real_matching.py::test_entirely_unsupported_job_has_null_overall_score
+ERROR app/tests/test_real_matching.py::test_evidence_review_is_owner_scoped_and_persisted
+ERROR app/tests/test_real_matching.py::test_job_recommendations_rank_owned_material_evidence
+ERROR app/tests/test_real_matching.py::test_career_plan_cites_shortlist_and_tracks_new_material
+ERROR app/tests/test_real_matching.py::test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3]
+ERROR app/tests/test_real_matching.py::test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3]
+36 passed, 5 warnings, 19 errors in 1.50s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,9 @@
+{
+  "database": "cp_agent_display_20261021",
+  "dbPort": 55442,
+  "apiPort": 8110,
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\storage",
+  "externalAi": false,
+  "initialContainerRunning": false
+}

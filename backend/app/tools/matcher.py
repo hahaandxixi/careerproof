@@ -11,6 +11,7 @@ from app.tools.code_analyzer import (
     canonical_skill,
     find_evidence,
 )
+from app.tools.evidence_selection import select_test_context
 from app.tools.hybrid_retrieval import VERSION as HYBRID_RETRIEVAL_VERSION
 from app.tools.hybrid_retrieval import retrieve_requirement_candidates
 from app.tools.resume_parser import SkillClaim
@@ -123,6 +124,11 @@ def match_candidate(
             *retrieved_evidence,
             *reference_evidence,
         ]
+        if skill == "pytest":
+            # Preserve one low-strength output candidate before the existing
+            # twelve-source context cap; this does not affect strongest/score.
+            first_context = select_test_context(evidence_list, 3)
+            evidence_list = first_context + [e for e in evidence_list if e not in first_context]
         # Retrieved candidates enrich the AI context but never raise the
         # deterministic verdict or score by themselves.
         strongest = detected_evidence[0] if detected_evidence else None

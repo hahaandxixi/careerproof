@@ -1,0 +1,65 @@
+{
+  "backend/app/tools/code_analyzer.py": {
+    "gitBlob": "062bb03221b0ccc64762489fd8df9d898c108d44",
+    "gitContentSha256": "fba87a0f7520720424294484de0c3a447981eb7da6ef185ee014a3281bafa497",
+    "executionSourceSha256": "fba87a0f7520720424294484de0c3a447981eb7da6ef185ee014a3281bafa497",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tools/evidence_selection.py": {
+    "gitBlob": "e75a51e5cf16c0e9d0b4f8e5a61cc9a5b578adbe",
+    "gitContentSha256": "b60aabd10a21a66a55d6880dd95bd7331dec0cf1e3131732623b1e17efae758c",
+    "executionSourceSha256": "b60aabd10a21a66a55d6880dd95bd7331dec0cf1e3131732623b1e17efae758c",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tools/hybrid_retrieval.py": {
+    "gitBlob": "f9170e137c14edb4a47bf1e54fb53b6ab8df8aef",
+    "gitContentSha256": "9139246900664b655b265a3d4bc7d8da16797767039bf56cc80acba43bc62ad0",
+    "executionSourceSha256": "9139246900664b655b265a3d4bc7d8da16797767039bf56cc80acba43bc62ad0",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tools/matcher.py": {
+    "gitBlob": "381abdf528c5545744458b5a6be72453681f3681",
+    "gitContentSha256": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "executionSourceSha256": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/agents/evidence_workflow.py": {
+    "gitBlob": "5a38474a95170374bcc910967871da700700d0e8",
+    "gitContentSha256": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "executionSourceSha256": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tests/test_test_source_selection.py": {
+    "gitBlob": "6766d16b111f7a845ff4f2607b20b2e9d171ce9b",
+    "gitContentSha256": "7f258354e1609167e4e20b1fcd86b8fc2121c53ad7f4e28256fb5362e72579bc",
+    "executionSourceSha256": "7f258354e1609167e4e20b1fcd86b8fc2121c53ad7f4e28256fb5362e72579bc",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/services/analysis.py": {
+    "gitBlob": "dfe91964c7f001a3fbf9a2ca9de422d375764a28",
+    "gitContentSha256": "96a2323b4e6afde4b3877dbab008eae6e7cddf3b3467feb8411a0fc55a4e6c7a",
+    "executionSourceSha256": "96a2323b4e6afde4b3877dbab008eae6e7cddf3b3467feb8411a0fc55a4e6c7a",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tools/evidence_levels.py": {
+    "gitBlob": "38ff2a7a04080136ea76b1c613282d89e88c5149",
+    "gitContentSha256": "34dda01d2782da89793e1acdc07ed2993e2b8da43b1dbbd5ec2c4426c4159df8",
+    "executionSourceSha256": "34dda01d2782da89793e1acdc07ed2993e2b8da43b1dbbd5ec2c4426c4159df8",
+    "rawBytesEqual": true,
+    "equalAfterNewlineNormalization": true
+  },
+  "backend/app/tests/test_real_matching.py": {
+    "gitBlob": "764aa869f4d81d1f9c3935f417c724a54633a141",
+    "gitContentSha256": "a2a06342312292d0d8b47f5df8bd27df0e8665977856bc30514034ea9f2a39b1",
+    "executionSourceSha256": "6914bc1edbfa377a206fcfa588bdbae11149d879d8661782b9ff533050b2ba5a",
+    "rawBytesEqual": false,
+    "equalAfterNewlineNormalization": true
+  }
+}

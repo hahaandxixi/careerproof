@@ -71,6 +71,7 @@ from app.tools.function_coverage import (
     task_plan_redundant_source_request,
 )
 from app.tools.matcher import FORMULA_VERSION, RequirementInput
+from app.tools.rule_narrative import build_rule_narrative
 from app.tools.semantic_retrieval import VERSION as SEMANTIC_VERSION
 from app.tools.semantic_retrieval import model_available
 
@@ -264,7 +265,7 @@ def _analysis_cache_key(snapshot: dict) -> str:
         "usePreviousReport": snapshot.get("usePreviousReport", False),
         "previousReportId": snapshot.get("previousReportId"),
         "visualClaims": snapshot.get("visualClaims", []),
-        "cacheVersion": "report-context-v8-actionable-evidence-gaps",
+        "cacheVersion": "report-context-v11-bounded-test-narrative",
         "semanticEngine": (
             SEMANTIC_VERSION
             if settings.semantic_retrieval_enabled
@@ -1009,6 +1010,10 @@ async def execute_match_task(task_id: UUID) -> None:
                             "source_id": str(source.id),
                         }
                     )
+                narrative = (
+                    build_rule_narrative(evidence_list, result.retrieval_sources)
+                    if not ai_item and not result.grounding_error else None
+                )
                 session.add(
                     MatchItem(
                         report_id=report.id,
@@ -1019,7 +1024,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         weight=item.weight,
                         final_score=item.final_score,
                         verdict=item.verdict,
-                        explanation=item.explanation,
+                        explanation=narrative["reason"] if narrative else item.explanation,
                         formula_version=item.formula_version,
                         evidence_snapshot={
                             "ruleClassificationVersion": EVIDENCE_LEVEL_VERSION,
@@ -1029,6 +1034,7 @@ async def execute_match_task(task_id: UUID) -> None:
                             "claimText": item.claim_text,
                             "evidence": evidence_list[0] if strongest_id else None,
                             "evidenceList": evidence_list,
+                            "ruleNarrative": narrative,
                             "ai": {
                                 "status": (
                                     "validated"

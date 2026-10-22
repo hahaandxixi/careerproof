@@ -1,0 +1,16 @@
+{
+  "baseCommit": "7a19e6b872c8df1a9b74c6e912f0488e43fbe203",
+  "acceptedSource": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\backend",
+  "reportId": "65557c7c-737b-49f9-83e5-a2fd968f2252",
+  "taskId": "2773329a-ff44-451d-9710-c99aa66a6227",
+  "database": "cp_agent_display_20261021",
+  "dbPort": 55442,
+  "sourceSet": "accepted-source.json",
+  "externalRequests": 0,
+  "historicalRowsUnchanged": true,
+  "oldReportReadbackUnchanged": true,
+  "newReportCount": 1,
+  "aiTablesUnchanged": true,
+  "normalSiteTouched": false,
+  "browserVerified": false
+}

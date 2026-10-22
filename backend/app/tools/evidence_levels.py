@@ -222,6 +222,15 @@ def classify_evidence(snapshot: dict, verdict: str, review_status: str | None = 
     if review_status in {"rejected", "corrected"}:
         result["evidence_level_source"] = "review_suspended"
         return result
+    # New reports freeze source observations separately from rating semantics.
+    # A missing marker keeps every historical interpretation unchanged.
+    from app.tools.rule_narrative import saved_rule_narrative
+
+    narrative = saved_rule_narrative(snapshot)
+    if narrative and verdict != "unsupported":
+        result.update(
+            evidence_level_reason=narrative["reason"], evidence_level_gap=narrative["gap"],
+        )
     if ai.get("status") != "validated" or not ai.get("rating"):
         return result
     try:

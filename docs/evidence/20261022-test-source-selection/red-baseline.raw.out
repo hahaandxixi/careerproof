@@ -1,0 +1,117 @@
+FFF.FFF..                                                                [100%]
+================================== FAILURES ===================================
+___ test_separate_functions_survive_and_a_stub_cannot_borrow_next_assertion ___
+
+    def test_separate_functions_survive_and_a_stub_cannot_borrow_next_assertion():
+        content = (
+            "def test_stub():\n    pass\n\n"
+            "def test_create():\n    assert create() == 201\n\n"
+            "def test_duplicate():\n    assert create() == 409\n"
+        )
+        candidates = _test_candidates(content)
+>       assert [e.line_start for e in candidates] == [4, 7]
+E       assert [1] == [4, 7]
+E         
+E         At index 0 diff: 1 != 4
+E         Right contains one more item: 7
+E         Use -v to get more diff
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:28: AssertionError
+________ test_assertion_must_belong_to_test_and_raises_is_an_assertion ________
+
+    def test_assertion_must_belong_to_test_and_raises_is_an_assertion():
+        content = (
+            "import pytest\n"
+            "def test_nested_helper_only():\n"
+            "    def helper():\n        assert False\n"
+            "    helper()\n\n"
+            "async def test_error():\n"
+            "    with pytest.raises(ValueError):\n        await create()\n\n"
+            "class TestOrders:\n"
+            "    def test_read(self):\n        assert read()\n"
+        )
+>       assert [e.line_start for e in _test_candidates(content)] == [7, 12]
+E       assert [2] == [7, 12]
+E         
+E         At index 0 diff: 2 != 7
+E         Right contains one more item: 12
+E         Use -v to get more diff
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:43: AssertionError
+______ test_large_test_file_is_bounded_without_always_dropping_the_tail _______
+
+    def test_large_test_file_is_bounded_without_always_dropping_the_tail():
+        content = "\n".join(f"def test_case_{i}():\n    assert check({i})\n" for i in range(30))
+        candidates = _test_candidates(content)
+>       assert 2 <= len(candidates) <= 6
+E       AssertionError: assert 2 <= 1
+E        +  where 1 = len([CodeEvidence(skill='pytest', evidence_type='pytest_test', file_path='tests/test_orders.py', line_start=1, line_end=1,...note='����λ�У���δ��ȡ������', provenance='portfolio', function_line_start=None, function_line_end=None, source_line_count=None)])
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:49: AssertionError
+___ test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap[2] ___
+
+cap = 2
+
+    @pytest.mark.parametrize("cap", [1, 2, 3])
+    def test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap(cap):
+        files = files_with_output()
+        result = match_candidate([RequirementInput(uuid4(), "pytest��Ϊ����", "pytest", 1)], [], files)
+        enriched = enrich_evidence(result, files)
+        context = build_evidence_contexts(enriched, max_evidence=cap)[0]
+        assert len(context.evidence) == cap
+        assert context.evidence[0].evidence_type == "pytest_test"
+        if cap > 1:
+            output = context.evidence[-1]
+>           assert output.file_path == "runtime/pytest-output.txt"
+E           AssertionError: assert 'tests/test_orders.py' == 'runtime/pytest-output.txt'
+E             
+E             - runtime/pytest-output.txt
+E             + tests/test_orders.py
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:80: AssertionError
+___ test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap[3] ___
+
+cap = 3
+
+    @pytest.mark.parametrize("cap", [1, 2, 3])
+    def test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap(cap):
+        files = files_with_output()
+        result = match_candidate([RequirementInput(uuid4(), "pytest��Ϊ����", "pytest", 1)], [], files)
+        enriched = enrich_evidence(result, files)
+        context = build_evidence_contexts(enriched, max_evidence=cap)[0]
+        assert len(context.evidence) == cap
+        assert context.evidence[0].evidence_type == "pytest_test"
+        if cap > 1:
+            output = context.evidence[-1]
+>           assert output.file_path == "runtime/pytest-output.txt"
+E           AssertionError: assert 'pyproject.toml' == 'runtime/pytest-output.txt'
+E             
+E             - runtime/pytest-output.txt
+E             + pyproject.toml
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:80: AssertionError
+_______ test_output_survives_twelve_source_cap_and_does_not_raise_score _______
+
+    def test_output_survives_twelve_source_cap_and_does_not_raise_score():
+        files = files_with_output()
+        files.extend(ProjectFileSnapshot(f"tests/test_more_{i}.py", (
+            "def test_more():\n    assert check()\n"
+        )) for i in range(20))
+        requirement = RequirementInput(uuid4(), "pytest��Ϊ����", "pytest", 1)
+        result = match_candidate([requirement], [], files)
+        enriched = enrich_evidence(result, files)
+        assert len(enriched.items[0].evidence_list) <= 12
+        context = build_evidence_contexts(enriched)[0]
+>       assert any(e.file_path == "runtime/pytest-output.txt" for e in context.evidence)
+E       assert False
+E        +  where False = any(<generator object test_output_survives_twelve_source_cap_and_does_not_raise_score.<locals>.<genexpr> at 0x000002C89877A190>)
+
+.tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py:110: AssertionError
+=========================== short test summary info ===========================
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_separate_functions_survive_and_a_stub_cannot_borrow_next_assertion
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_assertion_must_belong_to_test_and_raises_is_an_assertion
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_large_test_file_is_bounded_without_always_dropping_the_tail
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap[2]
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_real_prompt_retains_tests_and_uploaded_output_with_existing_cap[3]
+FAILED .tmp\test-source-baseline-20261022\backend\app\tests\test_test_source_selection.py::test_output_survives_twelve_source_cap_and_does_not_raise_score
+6 failed, 3 passed in 0.38s

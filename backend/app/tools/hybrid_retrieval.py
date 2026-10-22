@@ -14,6 +14,7 @@ from collections import Counter
 from pathlib import PurePosixPath
 
 from app.tools.code_analyzer import CodeEvidence, ProjectFileSnapshot
+from app.tools.evidence_selection import pytest_output_line
 
 VERSION = "hybrid-lexical-v1"
 MAX_CANDIDATES = 4
@@ -33,6 +34,7 @@ _SAFE_SUFFIXES = {
     ".json",
     ".jsx",
     ".kt",
+    ".log",
     ".md",
     ".php",
     ".properties",
@@ -119,13 +121,17 @@ def retrieve_requirement_candidates(
         raise ValueError(f"limit must be between 1 and {MAX_CANDIDATES}")
     skill_terms = lexical_terms(skill)
     query_terms = lexical_terms(f"{skill} {requirement_title}")
+    is_pytest = skill.strip().lower() in {"pytest", "py.test"}
     if not query_terms:
         return []
 
     rows: list[tuple[ProjectFileSnapshot, int, str, set[str]]] = []
+    output_lines: dict[str, int | None] = {}
     for file in files:
         if not _eligible(file):
             continue
+        output_line = pytest_output_line(file.path, file.content) if is_pytest else None
+        output_lines[file.path] = output_line
         for line_number, line in enumerate(file.content.splitlines(), 1):
             if len(rows) >= MAX_SCANNED_LINES:
                 break
@@ -135,7 +141,7 @@ def retrieve_requirement_candidates(
             overlap = query_terms & terms
             # A skill-name hit is sufficient; otherwise require two query terms
             # so generic words do not become evidence candidates.
-            if not (skill_terms & terms) and len(overlap) < 2:
+            if not (skill_terms & terms) and len(overlap) < 2 and line_number != output_line:
                 continue
             rows.append((file, line_number, line, terms))
         if len(rows) >= MAX_SCANNED_LINES:
@@ -148,7 +154,7 @@ def retrieve_requirement_candidates(
     )
     row_count = len(rows)
 
-    def score(row: tuple[ProjectFileSnapshot, int, str, set[str]]) -> tuple[float, int, str]:
+    def score(row: tuple[ProjectFileSnapshot, int, str, set[str]]) -> tuple[bool, float, int, str]:
         file, line_number, line, terms = row
         overlap = query_terms & terms
         idf_score = sum(
@@ -165,7 +171,8 @@ def retrieve_requirement_candidates(
             if re.search(r"[(){}=]|\b(?:class|def|function|select|insert)\b", line, re.I)
             else 0.0
         )
-        return idf_score + exact_skill + code_signal, -line_number, file.path
+        output_summary = line_number == output_lines.get(file.path)
+        return output_summary, idf_score + exact_skill + code_signal, -line_number, file.path
 
     ranked = sorted(rows, key=score, reverse=True)
     selected: list[CodeEvidence] = []

@@ -31,6 +31,7 @@ from app.core.config import settings
 from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import _rule_classification
+from app.tools.evidence_selection import select_test_context
 from app.tools.function_coverage import file_coverage, function_coverage
 from app.tools.matcher import MatchResult
 from app.tools.skill_rubric import rubric_for
@@ -99,7 +100,11 @@ def build_evidence_contexts(
                 function_line_end=source.function_line_end,
                 source_line_count=source.source_line_count,
             )
-            for evidence_index, source in enumerate(item.evidence_list[:max_evidence], 1)
+            for evidence_index, source in enumerate(
+                select_test_context(item.evidence_list, max_evidence)
+                if item.skill.lower() in {"pytest", "py.test"}
+                else item.evidence_list[:max_evidence], 1,
+            )
             if source.snippet.strip()
         ]
         contexts.append(

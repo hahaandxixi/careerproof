@@ -1,0 +1,20 @@
+{
+  "baseCommit": "7a19e6b872c8df1a9b74c6e912f0488e43fbe203",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022",
+  "acceptedFiles": {
+    "backend/app/tools/code_analyzer.py": "fba87a0f7520720424294484de0c3a447981eb7da6ef185ee014a3281bafa497",
+    "backend/app/tools/evidence_selection.py": "b60aabd10a21a66a55d6880dd95bd7331dec0cf1e3131732623b1e17efae758c",
+    "backend/app/tools/hybrid_retrieval.py": "9139246900664b655b265a3d4bc7d8da16797767039bf56cc80acba43bc62ad0",
+    "backend/app/tools/matcher.py": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "backend/app/agents/evidence_workflow.py": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "backend/app/tests/test_test_source_selection.py": "7f258354e1609167e4e20b1fcd86b8fc2121c53ad7f4e28256fb5362e72579bc",
+    "jianli/src/components/ListPagination.tsx": "81492cc949188cdd0e1974c1bd123befe118f35fc4253a581a681223d138f3ad",
+    "jianli/src/lib/list-pagination.js": "83f755adaa9c186e57caa62e1668af26dd85c32cedf4be5689b281af35ac3aed",
+    "jianli/src/lib/list-pagination.d.ts": "590b4243c1ca73b5570ce9f9be790e4139130f5d4bcf60ec32f66c5d08491922",
+    "jianli/tests/list-pagination.test.mjs": "9d9a85007d6d02edbf68217cfbb5ecc67b2209f8652699c1355f0f0a3802cf25",
+    "backend/app/services/analysis.py": "96a2323b4e6afde4b3877dbab008eae6e7cddf3b3467feb8411a0fc55a4e6c7a",
+    "backend/app/tools/evidence_levels.py": "34dda01d2782da89793e1acdc07ed2993e2b8da43b1dbbd5ec2c4426c4159df8",
+    "backend/app/tests/test_real_matching.py": "6914bc1edbfa377a206fcfa588bdbae11149d879d8661782b9ff533050b2ba5a"
+  },
+  "excluded": "All other working-tree changes, including UUID display and paused Agent display"
+}

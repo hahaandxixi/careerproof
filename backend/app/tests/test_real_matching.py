@@ -212,6 +212,45 @@ async def match_report(student, job, resume, version, **extra):
     return report.json()["data"]
 
 
+async def test_rules_explain_selected_source_without_requesting_duplicate_upload(
+    matching_db, monkeypatch,
+):
+    app, factory = matching_db
+    archive = io.BytesIO()
+    with zipfile.ZipFile(archive, "w") as package:
+        package.writestr("service.py", (
+            "def reserve(connection, units):\n"
+            "    if units < 1:\n"
+            "        raise ValueError('invalid units')\n"
+            "    connection.execute('UPDATE stock SET units = units - ?', (units,))\n"
+            "    return units\n"
+        ))
+        package.writestr("observations.txt", "1 passed; submitted record, not trusted execution")
+    monkeypatch.setattr("app.tests.test_real_matching.source_archive", lambda: archive.getvalue())
+    async with (
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+    ):
+        await register(owner, "narrative-hr@example.com")
+        job = await create_job(owner)
+        await register(student, "narrative-student@example.com", "student")
+        resume, _, version = await upload_materials(student)
+        report = await match_report(student, job, resume, version, externalAiConsent=False)
+        item = report["items"][0]
+        assert "reserve" in item["explanation"]
+        assert "service.py" in item["explanation"]
+        assert "observations.txt" in item["evidenceLevelGap"]
+        assert "无需重复上传" in item["evidenceLevelGap"]
+        assert "不代表运行成功" in item["evidenceLevelGap"]
+        assert item["evidenceLevel"] == 3  # Interpretation changes, no rating change.
+        assert item["aiStatus"] == "not_used"
+        assert report["actionPlan"][0]["action"] == item["evidenceLevelGap"]
+        async with factory() as session:
+            saved = await session.scalar(select(MatchItem))
+            assert saved.evidence_snapshot["ruleNarrative"]["version"] == "rule-narrative-v1"
+        assert (await student.get(f"/api/v1/match-reports/{report['id']}")).json()["data"] == report
+
+
 async def test_real_report_survives_login_and_preserves_sources_and_snapshots(matching_db):
     app, factory = matching_db
     transport = ASGITransport(app=app)

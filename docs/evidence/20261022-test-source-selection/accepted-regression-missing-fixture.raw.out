@@ -1,0 +1,25 @@
+........................................................................ [ 63%]
+....F....................................                                [100%]
+================================== FAILURES ===================================
+______ test_retrieval_prefers_new_source_lines_over_overlapping_context _______
+
+    def test_retrieval_prefers_new_source_lines_over_overlapping_context() -> None:
+        result, _sources = synthetic_case()
+        contexts = build_evidence_contexts(result, max_evidence=2)
+        updated, event = execute_retrieval_tool(
+            result,
+            contexts,
+            RetrievalToolCall(
+                requirement_id=contexts[0].requirement_id,
+                query="FastAPI 路由定义、请求处理函数与测试用例实现",
+            ),
+        )
+    
+>       assert event["citationId"] == "R1-E3"
+               ^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'citationId'
+
+app\tests\test_ai_evidence_workflow.py:338: KeyError
+=========================== short test summary info ===========================
+FAILED app/tests/test_ai_evidence_workflow.py::test_retrieval_prefers_new_source_lines_over_overlapping_context
+1 failed, 112 passed in 0.42s

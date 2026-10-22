@@ -506,6 +506,35 @@ def _line_details(content: str, match_start: int) -> tuple[int, str]:
 
 MAX_PYTHON_FUNCTIONS_PER_FILE = 4
 MAX_PYTHON_SOURCE_LINES = 80
+MAX_PYTEST_FUNCTIONS_PER_FILE = 6
+
+
+def _pytest_implementation_lines(content: str) -> list[int]:
+    lines = []
+    for function in _python_function_nodes(content):
+        if not function.name.startswith("test_"):
+            continue
+        pending = list(function.body)
+        has_assertion = False
+        while pending:
+            node = pending.pop()
+            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+                continue
+            if isinstance(node, ast.Assert):
+                has_assertion = True
+            if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name) and node.func.value.id == "pytest"
+                and node.func.attr == "raises"):
+                has_assertion = True
+            pending.extend(ast.iter_child_nodes(node))
+        if has_assertion:
+            lines.append(function.lineno)
+    # Sample across the file instead of letting early happy-path tests consume
+    # all slots. Names/line positions select source only; they never prove coverage.
+    if len(lines) > MAX_PYTEST_FUNCTIONS_PER_FILE:
+        return [lines[round(i * (len(lines) - 1) / (MAX_PYTEST_FUNCTIONS_PER_FILE - 1))]
+                for i in range(MAX_PYTEST_FUNCTIONS_PER_FILE)]
+    return lines
 
 
 def _python_function_nodes(content: str) -> list[ast.FunctionDef | ast.AsyncFunctionDef]:
@@ -769,11 +798,15 @@ def find_evidence(
                 and not mysql_specific
             ):
                 continue
-            if item.evidence_type == "python_code":
+            if item.evidence_type in {"python_code", "pytest_test"}:
                 # Keep a small set of implemented functions, not just the first
                 # one. A helper/exception class must not hide later business
                 # methods, and the ranking must remain bounded.
-                anchors = _python_implementation_anchors(file.content, requirement_title)
+                anchors = (
+                    [(line, 0) for line in _pytest_implementation_lines(file.content)]
+                    if item.evidence_type == "pytest_test" else
+                    _python_implementation_anchors(file.content, requirement_title)
+                )
                 if not anchors:
                     continue
                 for line_number, score in anchors:
