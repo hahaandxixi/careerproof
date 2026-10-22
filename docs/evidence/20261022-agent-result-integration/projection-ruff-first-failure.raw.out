@@ -1,0 +1,12 @@
+E501 Line too long (103 > 100)
+   --> app\services\analysis.py:609:101
+    |
+607 |             ai_process={
+608 |                 key: value if isinstance(value, str) else None
+609 |                 for key in ("planningSkippedReason", "skippedReason", "fallbackReason", "failureStage")
+    |                                                                                                     ^^^
+610 |                 for value in [(report.analysis_metadata or {}).get(key)]
+611 |             },
+    |
+
+Found 1 error.

@@ -1,0 +1,30 @@
+{
+  "status": "not_authorized_not_executed",
+  "purpose": "One new current-version complete-project report; show actual tool decision and source use, including a legitimate model stop.",
+  "input": {
+    "syntheticOnly": true,
+    "projectZip": "output/demo/CareerProof-campus-signup-v2-runtime.zip",
+    "projectZipSha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "resumeVersionId": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "requirements": 5
+  },
+  "proposedCalls": {
+    "planningRoundsAtMost": 2,
+    "finalAnalysis": 1,
+    "repairAtMost": 1,
+    "physicalPostLimitIncludingRetries": 4,
+    "aggregateOutputTokenLimit": 4000,
+    "note": "Every retry or repair consumes the same physical limit; fewer calls or model stop is valid. Do not force a tool or retry until it uses one."
+  },
+  "beforeExecutionRequired": [
+    "Review final serialized input and exact sources; calculate request-byte preflight independently of provider tokens",
+    "Verify execution-day official price and propose a monetary ceiling for explicit user approval",
+    "Bind accepted source hashes and prompt/input fingerprint; allocate a fresh batch claim",
+    "Assert dedicated database/storage; keep normal data and existing claims unchanged"
+  ],
+  "destination": "official api.deepseek.com",
+  "model": "deepseek-flash",
+  "oldClaimsMayBeReused": false,
+  "thisFileIsNotAuthorization": true
+}

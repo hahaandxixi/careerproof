@@ -1,0 +1,175 @@
+{
+  "citationChecks": [
+    {
+      "case": "actual-stop",
+      "citationId": "R1-E1",
+      "path": "campus_signup/api.py",
+      "range": [
+        36,
+        38
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R1-E2",
+      "path": "campus_signup/api.py",
+      "range": [
+        22,
+        56
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R1-E3",
+      "path": "requirements.txt",
+      "range": [
+        1,
+        1
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R2-E1",
+      "path": "campus_signup/schema.sql",
+      "range": [
+        1,
+        8
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R2-E2",
+      "path": "campus_signup/service.py",
+      "range": [
+        25,
+        54
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R2-E3",
+      "path": "campus_signup/storage.py",
+      "range": [
+        32,
+        36
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R3-E1",
+      "path": "campus_signup/storage.py",
+      "range": [
+        21,
+        30
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R3-E2",
+      "path": "campus_signup/service.py",
+      "range": [
+        25,
+        54
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R3-E3",
+      "path": "campus_signup/service.py",
+      "range": [
+        56,
+        77
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R4-E1",
+      "path": "tests/test_registration.py",
+      "range": [
+        29,
+        39
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R4-E2",
+      "path": "tests/test_registration.py",
+      "range": [
+        14,
+        16
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R4-E3",
+      "path": "requirements.txt",
+      "range": [
+        5,
+        5
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R5-E1",
+      "path": "README.md",
+      "range": [
+        1,
+        9
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "actual-stop",
+      "citationId": "R5-E2",
+      "path": "README.md",
+      "range": [
+        3,
+        11
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "mock-supplement",
+      "citationId": "R1-E1",
+      "path": "project/order.py",
+      "range": [
+        1,
+        3
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "mock-supplement",
+      "citationId": "R1-E2",
+      "path": "project/order.py",
+      "range": [
+        5,
+        7
+      ],
+      "matchesFrozenArchive": true
+    },
+    {
+      "case": "mock-supplement",
+      "citationId": "R1-E3",
+      "path": "project/order.py",
+      "range": [
+        10,
+        14
+      ],
+      "matchesFrozenArchive": true
+    }
+  ],
+  "newRequests": 0
+}

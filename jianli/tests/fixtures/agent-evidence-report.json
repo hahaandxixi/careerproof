@@ -1,0 +1,244 @@
+{
+  "id": "ac09d831-073b-4d9e-8799-3b4971716562",
+  "taskId": "b0bf05ca-4047-4faf-8908-ff5902a7d9b3",
+  "jobId": "b3b6bfc4-0625-461c-8733-06e5b990133f",
+  "jobTitle": "Mock界面验证：Python订单处理",
+  "jobCategory": "software",
+  "candidateId": "c581424f-9932-4259-8df5-87115c5809a9",
+  "candidateName": "Mock界面合成学生",
+  "overallScore": 65.0,
+  "summary": "Mock界面验证：离线工作流补到回滚片段，预设解释引用了它，但没有完整订单异常处理链或运行证明。工具选择和回答均为预设，不是真实Agent运行。",
+  "analysisMode": "ai_evidence",
+  "aiProvider": "mock-ui",
+  "aiModel": "MockTransport预设（非真实模型）",
+  "aiFallbackUsed": false,
+  "evidenceContextVersion": "source-context-v8-actionable-evidence-gaps",
+  "createdAt": "2026-10-21T03:19:56.588922Z",
+  "visualClaims": [],
+  "materials": [
+    {
+      "kind": "resume",
+      "id": "92bbbf63-6444-447f-9838-1f6538f7cde2",
+      "title": "合成订单处理简历",
+      "versionNumber": 1,
+      "materialRole": null,
+      "contentHash": "886347543dd2d89b5ba725060062d9e538b1965fe82eba069e9ce81fb285dead"
+    },
+    {
+      "kind": "project",
+      "id": "6616e705-3d97-4730-93ef-273adba1ed52",
+      "title": "合成订单处理",
+      "versionNumber": 1,
+      "materialRole": "portfolio",
+      "contentHash": "37036943937fefb55dcae8f797f8bcfe4373ed7971cb2007833461b9affd3ac3"
+    }
+  ],
+  "gaps": [],
+  "claimedOnly": [],
+  "items": [
+    {
+      "evidenceLevelSource": "ai_preliminary",
+      "skillPath": [
+        "后端开发",
+        "Python"
+      ],
+      "ratingCriteria": [
+        {
+          "criterion": "relevance",
+          "supported": true,
+          "citation_ids": [
+            "R1-E3"
+          ],
+          "reason": "引用相关。"
+        },
+        {
+          "criterion": "operation",
+          "supported": false,
+          "citation_ids": [],
+          "reason": "当前允许的初评级别仅支持相关线索。"
+        },
+        {
+          "criterion": "task",
+          "supported": false,
+          "citation_ids": [],
+          "reason": "未展示订单写入与回滚衔接的完整路径。"
+        }
+      ],
+      "evidenceLevel": 1,
+      "evidenceLevelLabel": "基础线索",
+      "evidenceLevelReason": "预设界面初评：可见回滚调用，完整订单异常处理链未展示。",
+      "evidenceLevelGap": "补充订单写入失败时触发回滚的完整实现与验证材料；当前没有运行记录和本人贡献核验。",
+      "evidenceLevelVersion": "practice-evidence-v3-ai",
+      "requirementId": "4b065df1-9844-4804-8942-905e2660bbc7",
+      "requirementTitle": "实现带回滚的订单处理",
+      "skill": "Python",
+      "claimed": true,
+      "claimText": "合成人物：熟悉 Python 和异常回滚；无运行结果或本人贡献证明。",
+      "evidence": {
+        "citationId": "R1-E1",
+        "provenance": "portfolio",
+        "contextComplete": false,
+        "contextNote": "Mock界面：合成材料的实际冻结片段，非真实模型运行。",
+        "functionLineStart": null,
+        "functionLineEnd": null,
+        "sourceLineCount": null,
+        "skill": "Python",
+        "evidenceType": "python_code",
+        "filePath": "project/order.py",
+        "lineStart": 1,
+        "lineEnd": 3,
+        "snippet": "def process_order(payload):\n    if not payload.get('id'):\n        raise ValueError('id required')",
+        "strength": "medium",
+        "explanation": "合成订单入口。",
+        "contentHash": "faaabe1426a0d67607d4c501f2e0ac71c16a3cbcd3d011e9c11e4f7fb3f3bb94",
+        "projectFileId": "a0c313d2-6fb5-400c-a268-0337e9391b31",
+        "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52",
+        "sourceId": null
+      },
+      "evidenceList": [
+        {
+          "citationId": "R1-E1",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "Mock界面：合成材料的实际冻结片段，非真实模型运行。",
+          "functionLineStart": null,
+          "functionLineEnd": null,
+          "sourceLineCount": null,
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "project/order.py",
+          "lineStart": 1,
+          "lineEnd": 3,
+          "snippet": "def process_order(payload):\n    if not payload.get('id'):\n        raise ValueError('id required')",
+          "strength": "medium",
+          "explanation": "合成订单入口。",
+          "contentHash": "faaabe1426a0d67607d4c501f2e0ac71c16a3cbcd3d011e9c11e4f7fb3f3bb94",
+          "projectFileId": "a0c313d2-6fb5-400c-a268-0337e9391b31",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52",
+          "sourceId": null
+        },
+        {
+          "citationId": "R1-E2",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "Mock界面：合成材料的实际冻结片段，非真实模型运行。",
+          "functionLineStart": null,
+          "functionLineEnd": null,
+          "sourceLineCount": null,
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "project/order.py",
+          "lineStart": 5,
+          "lineEnd": 7,
+          "snippet": "def persist(store, payload):\n    store.write(payload)\n    return payload",
+          "strength": "medium",
+          "explanation": "合成持久化调用。",
+          "contentHash": "faaabe1426a0d67607d4c501f2e0ac71c16a3cbcd3d011e9c11e4f7fb3f3bb94",
+          "projectFileId": "a0c313d2-6fb5-400c-a268-0337e9391b31",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52",
+          "sourceId": null
+        },
+        {
+          "citationId": "R1-E3",
+          "provenance": "portfolio",
+          "contextComplete": false,
+          "contextNote": "Mock界面：合成材料的实际冻结片段，非真实模型运行。",
+          "functionLineStart": null,
+          "functionLineEnd": null,
+          "sourceLineCount": null,
+          "skill": "Python",
+          "evidenceType": "python_code",
+          "filePath": "project/order.py",
+          "lineStart": 10,
+          "lineEnd": 14,
+          "snippet": "def rollback(store):\n    try:\n        store.rollback()\n    except Exception:\n        raise",
+          "strength": "low",
+          "explanation": "合成回滚候选，尚未展示。",
+          "contentHash": "faaabe1426a0d67607d4c501f2e0ac71c16a3cbcd3d011e9c11e4f7fb3f3bb94",
+          "projectFileId": "a0c313d2-6fb5-400c-a268-0337e9391b31",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52",
+          "sourceId": null
+        }
+      ],
+      "verdict": "supported",
+      "aiConfidence": null,
+      "ruleBaseScore": 0.65,
+      "weight": 5,
+      "finalScore": 65.0,
+      "explanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+      "formulaVersion": "evidence-v4",
+      "evidenceId": "01d6f2cf-a099-4e98-85aa-5c54c2ce5901",
+      "confirmationStatus": "pending",
+      "confirmedAt": null,
+      "reviewerNote": null,
+      "aiExplanation": "预设界面输出：补充片段中可见 store.rollback() 调用；未展示它与订单写入失败的完整联动。",
+      "aiCitationIds": [
+        "R1-E3"
+      ],
+      "aiInformationGap": "补充订单写入失败时触发回滚的完整实现与验证材料；当前没有运行记录和本人贡献核验。",
+      "aiSuggestion": "提交具名的异常回滚实现及对应测试输入、结果与未覆盖情况。",
+      "aiTaskPlan": null,
+      "aiTaskPlanWarning": null,
+      "aiSuggestionRedundant": false,
+      "aiStatus": "validated",
+      "aiOrigin": null,
+      "functionSourceCoverage": [
+        {
+          "file_path": "6616e705-3d97-4730-93ef-273adba1ed52/project/order.py",
+          "function_line_start": 5,
+          "function_line_end": 7,
+          "covered_line_count": 3,
+          "fully_covered": true,
+          "citation_ids": [
+            "R1-E1"
+          ]
+        }
+      ],
+      "fileSourceCoverage": [
+        {
+          "file_path": "6616e705-3d97-4730-93ef-273adba1ed52/project/order.py",
+          "source_line_count": 14,
+          "covered_line_count": 3,
+          "fully_covered": false,
+          "citation_ids": [
+            "R1-E1"
+          ]
+        }
+      ]
+    }
+  ],
+  "aiUsage": null,
+  "aiToolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "4b065df1-9844-4804-8942-905e2660bbc7",
+      "query": "rollback",
+      "resultCount": 1,
+      "status": "completed",
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    }
+  ],
+  "aiProcess": {
+    "planningSkippedReason": null,
+    "skippedReason": null,
+    "fallbackReason": null,
+    "failureStage": null
+  },
+  "actionPlan": [
+    {
+      "requirementId": "4b065df1-9844-4804-8942-905e2660bbc7",
+      "requirementTitle": "实现带回滚的订单处理",
+      "skill": "Python",
+      "weight": 5,
+      "currentLevel": 1,
+      "source": "ai_suggestion",
+      "evidenceGap": "补充订单写入失败时触发回滚的完整实现与验证材料；当前没有运行记录和本人贡献核验。",
+      "action": "提交具名的异常回滚实现及对应测试输入、结果与未覆盖情况。",
+      "citationIds": [
+        "R1-E3"
+      ]
+    }
+  ]
+}

@@ -604,6 +604,13 @@ class AnalysisService:
             items=item_views,
             ai_usage=(report.analysis_metadata or {}).get("usage"),
             ai_tool_calls=(report.analysis_metadata or {}).get("modelToolCalls") or [],
+            ai_process={
+                key: value if isinstance(value, str) else None
+                for key in (
+                    "planningSkippedReason", "skippedReason", "fallbackReason", "failureStage",
+                )
+                for value in [(report.analysis_metadata or {}).get(key)]
+            },
             action_plan=build_action_plan(item_views),
             visual_claims=(report.analysis_metadata or {}).get("visualClaims", []),
         )

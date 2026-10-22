@@ -1,0 +1,40 @@
+{
+  "baseCommit": "5cf792927a1b2b6e5fb72b9ef3c118f021dcac21",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-result-20261022\\source",
+  "container": "careerproof-agent-display-20261021",
+  "initialContainerRunning": false,
+  "database": "cp_agent_display_20261021",
+  "dbPort": 55442,
+  "storage": "backend/.tmp/agent-display-20261021/storage",
+  "apiPort": 8112,
+  "frontendPort": 3133,
+  "externalAi": false,
+  "acceptedPaths": [
+    "backend/app/schemas/analysis.py",
+    "backend/app/services/analysis.py",
+    "backend/app/tests/test_agent_process_display.py",
+    "jianli/src/lib/api/domain.ts",
+    "jianli/src/lib/report-display.ts",
+    "jianli/src/components/ReportDetail.tsx",
+    "jianli/src/components/ReportAgentEvidence.tsx",
+    "jianli/src/lib/agent-evidence.ts",
+    "jianli/tests/agent-evidence.test.mjs",
+    "jianli/tests/agent-evidence-render.test.mjs",
+    "jianli/tests/fixtures/agent-evidence-report.json"
+  ],
+  "buildId": "B8CG2lzV2Ru6v8lFe1Dpk",
+  "files": {
+    "backend/app/schemas/analysis.py": "8ecce6ea35d742cecefdfe28d34335cbead6fd29cc96d1d5ba8bebd02b47e386",
+    "backend/app/services/analysis.py": "d7e366a4aaa84391152a1337bfe1892f107c5323a50b775b9a9ccdc04f1c297c",
+    "backend/app/tests/test_agent_process_display.py": "fb9397bae628f29a313e74e9d2dee9c00d28551b1fc316b4f069a21025b0d636",
+    "jianli/src/lib/api/domain.ts": "c4e3c8678ca291c7519c67167677b0e9da769815fee02d686cba424f89a1ff12",
+    "jianli/src/lib/report-display.ts": "23150fc42fc524087c7f79240342422ab1f1c5fc7a822d0857673ebe50090d11",
+    "jianli/src/components/ReportDetail.tsx": "67eb7b7a2e2d177faff9683797da9b0b827861e5c25c052b39da12eda040e3d2",
+    "jianli/src/components/ReportAgentEvidence.tsx": "b350ea896f0c2304e812c7eb616aa658df6ef4a5edce6482feedb46415a46d7b",
+    "jianli/src/lib/agent-evidence.ts": "8b0f3aa752c3b043d97dc292a1ecdee564fc9785bcecf6d623593100ab7d4b85",
+    "jianli/tests/agent-evidence.test.mjs": "f49e8b079d973f61ce50daf442243a3b1d3b8e9d3cc19a284742793f0ca64332",
+    "jianli/tests/agent-evidence-render.test.mjs": "94ee7ad77dde165c67c4ecf86265c60cd02cf1d47f6753d14248fd51df07585c",
+    "jianli/tests/fixtures/agent-evidence-report.json": "984e7d26a657c4f48d5680fa3758915b3adea334a847e9d2f7c8c5b5b7ebfd1c"
+  },
+  "backendPostRenderChange": "Ruff line wrap only; AST identical to loaded projection"
+}

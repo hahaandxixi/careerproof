@@ -1,0 +1,14 @@
+{
+  "existingReportItemApplicationAndModelLedgerMapsUnchanged": true,
+  "uploadedV3": {
+    "id": "9c90c38b-87f6-4bff-b1b1-d5e58d46bbbb",
+    "hash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "number": 3,
+    "status": "completed"
+  },
+  "v2AndV3HashIdentical": true,
+  "newGrowthTaskId": "a279d747-3766-4a8e-b4db-bf8435172298",
+  "identicalContentAssociationRejected": true,
+  "newGrowthTargetReportId": null,
+  "physicalModelRequestsAdded": 0
+}

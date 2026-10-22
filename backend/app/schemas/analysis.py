@@ -273,4 +273,5 @@ class MatchReportView(MatchReportSummary):
     items: list[MatchItemView]
     ai_usage: dict | None = None
     ai_tool_calls: list[dict] = Field(default_factory=list)
+    ai_process: dict[str, str | None] = Field(default_factory=dict)
     action_plan: list[EvidenceActionView] = Field(default_factory=list)

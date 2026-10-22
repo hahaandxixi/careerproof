@@ -1,0 +1,26 @@
+{
+  "frontend": "http://127.0.0.1:3133",
+  "api": "http://127.0.0.1:8112",
+  "source": "D:/jbcode/web ai/jianli/backend/.tmp/agent-result-20261022/source",
+  "buildId": "B8CG2lzV2Ru6v8lFe1Dpk",
+  "container": "careerproof-agent-display-20261021",
+  "containerInitialRunning": false,
+  "containerFinalRunning": true,
+  "previewKeptRunningForUser": true,
+  "externalAiEnabled": false,
+  "normalServiceListeners": [],
+  "processes": [
+    {
+      "ProcessId": 173416,
+      "ParentProcessId": 173356,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8112 --no-proxy-headers"
+    },
+    {
+      "ProcessId": 217680,
+      "ParentProcessId": 179816,
+      "Name": "node.exe",
+      "CommandLine": "\"C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe\" node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3133"
+    }
+  ]
+}

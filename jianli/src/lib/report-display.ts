@@ -12,8 +12,9 @@ export function reportAiRatedCount(report: Pick<MatchReport, "items">): number {
  * A fallback is a rules result even when the configured provider was external AI.
  */
 export function reportModeLabel(
-  report: Pick<MatchReport, "analysisMode" | "aiFallbackUsed" | "items">,
+  report: Pick<MatchReport, "analysisMode" | "aiFallbackUsed" | "items"> & { aiProvider?: string | null },
 ): string {
+  if (report.aiProvider?.startsWith("mock")) return "Mock 界面验证 · 非真实模型报告";
   if (report.aiFallbackUsed) return "规则报告 · 模型已降级";
   if (report.analysisMode === "rules") return "规则证据报告";
   if (!AI_MODES.has(report.analysisMode)) return "未知报告模式";

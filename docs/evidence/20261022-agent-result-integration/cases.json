@@ -1,0 +1,121 @@
+{
+  "cases": [
+    {
+      "label": "actual-stop",
+      "reportId": "f918f3d7-c4b3-4ae3-b48e-6c119e030628",
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "createdAt": "2026-10-21T10:47:01.135075Z",
+      "toolCalls": [
+        {
+          "tool": "retrieve_more_evidence",
+          "round": 1,
+          "status": "not_requested",
+          "reason": "planner_declined",
+          "scope": "current-upload-index"
+        }
+      ],
+      "process": {
+        "planningSkippedReason": null,
+        "skippedReason": null,
+        "fallbackReason": null,
+        "failureStage": null
+      },
+      "requirement": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+      "savedExplanation": "材料展示重复报名与满额返回409、取消后名额加一、已取消再取消返回409，均在事务中执行。",
+      "savedGap": "未展示运行结果、并发竞争验证及本人贡献。",
+      "savedSuggestion": "补充满额、重复、重复取消场景的运行记录与并发验证材料。",
+      "aiCitationIds": [
+        "R3-E1",
+        "R3-E2",
+        "R3-E3"
+      ],
+      "sources": [
+        {
+          "citationId": "R3-E1",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py",
+          "start": 21,
+          "end": 30,
+          "snippet": "    @contextmanager\n    def transaction(self):\n        with closing(self.connect()) as connection:\n            connection.execute(\"BEGIN IMMEDIATE\")\n            try:\n                yield connection\n                connection.commit()\n            except Exception:\n                connection.rollback()\n                raise",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014"
+        },
+        {
+          "citationId": "R3-E2",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+          "start": 25,
+          "end": 54,
+          "snippet": "    def register(self, event_id: int, student_code: str):\n        with self.store.transaction() as connection:\n            event = connection.execute(\n                \"SELECT id, remaining FROM events WHERE id = ?\", (event_id,)\n            ).fetchone()\n            if event is None:\n                raise RegistrationError(\"Event not found\", 404)\n            previous = connection.execute(\n                \"SELECT id FROM registrations WHERE event_id = ? AND student_code = ?\",\n                (event_id, student_code),\n            ).fetchone()\n            if previous is not None:\n                raise RegistrationError(\"Registration already exists\", 409)\n            updated = connection.execute(\n                \"UPDATE events SET remaining = remaining - 1 WHERE id = ? AND remaining > 0\",\n                (event_id,),\n            )\n            if updated.rowcount != 1:\n                raise RegistrationError(\"Event full\", 409)\n            cursor = connection.execute(\n                \"INSERT INTO registrations(event_id, student_code, status) VALUES (?, ?, 'active')\",\n                (event_id, student_code),\n            )\n            registration_id = cursor.lastrowid\n            connection.execute(\n                \"INSERT INTO audit_log(registration_id, action) VALUES (?, 'register')\",\n                (registration_id,),\n            )\n            return {\"id\": registration_id, \"event_id\": event_id,\n                    \"student_code\": student_code, \"status\": \"active\"}",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014"
+        },
+        {
+          "citationId": "R3-E3",
+          "path": "6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py",
+          "start": 56,
+          "end": 77,
+          "snippet": "    def cancel(self, registration_id: int):\n        with self.store.transaction() as connection:\n            row = connection.execute(\n                \"SELECT event_id, student_code, status FROM registrations WHERE id = ?\",\n                (registration_id,),\n            ).fetchone()\n            if row is None:\n                raise RegistrationError(\"Registration not found\", 404)\n            if row[\"status\"] != \"active\":\n                raise RegistrationError(\"Registration already cancelled\", 409)\n            connection.execute(\n                \"UPDATE registrations SET status = 'cancelled' WHERE id = ?\", (registration_id,)\n            )\n            connection.execute(\n                \"UPDATE events SET remaining = remaining + 1 WHERE id = ?\", (row[\"event_id\"],)\n            )\n            connection.execute(\n                \"INSERT INTO audit_log(registration_id, action) VALUES (?, 'cancel')\",\n                (registration_id,),\n            )\n            return {\"id\": registration_id, \"event_id\": row[\"event_id\"],\n                    \"student_code\": row[\"student_code\"], \"status\": \"cancelled\"}",
+          "projectVersionId": "6db170c9-ea2b-4036-84d1-47260c687014"
+        }
+      ]
+    },
+    {
+      "label": "mock-supplement",
+      "reportId": "ac09d831-073b-4d9e-8799-3b4971716562",
+      "provider": "mock-ui",
+      "model": "MockTransport预设（非真实模型）",
+      "createdAt": "2026-10-21T03:19:56.588922Z",
+      "toolCalls": [
+        {
+          "tool": "retrieve_more_evidence",
+          "requirementId": "4b065df1-9844-4804-8942-905e2660bbc7",
+          "query": "rollback",
+          "resultCount": 1,
+          "status": "completed",
+          "scope": "current-upload-index",
+          "citationId": "R1-E3",
+          "round": 1
+        }
+      ],
+      "process": {
+        "planningSkippedReason": null,
+        "skippedReason": null,
+        "fallbackReason": null,
+        "failureStage": null
+      },
+      "requirement": "实现带回滚的订单处理",
+      "savedExplanation": "预设界面输出：补充片段中可见 store.rollback() 调用；未展示它与订单写入失败的完整联动。",
+      "savedGap": "补充订单写入失败时触发回滚的完整实现与验证材料；当前没有运行记录和本人贡献核验。",
+      "savedSuggestion": "提交具名的异常回滚实现及对应测试输入、结果与未覆盖情况。",
+      "aiCitationIds": [
+        "R1-E3"
+      ],
+      "sources": [
+        {
+          "citationId": "R1-E1",
+          "path": "project/order.py",
+          "start": 1,
+          "end": 3,
+          "snippet": "def process_order(payload):\n    if not payload.get('id'):\n        raise ValueError('id required')",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52"
+        },
+        {
+          "citationId": "R1-E2",
+          "path": "project/order.py",
+          "start": 5,
+          "end": 7,
+          "snippet": "def persist(store, payload):\n    store.write(payload)\n    return payload",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52"
+        },
+        {
+          "citationId": "R1-E3",
+          "path": "project/order.py",
+          "start": 10,
+          "end": 14,
+          "snippet": "def rollback(store):\n    try:\n        store.rollback()\n    except Exception:\n        raise",
+          "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52"
+        }
+      ]
+    }
+  ],
+  "selectionOnly": true,
+  "newPhysicalModelRequests": 0
+}

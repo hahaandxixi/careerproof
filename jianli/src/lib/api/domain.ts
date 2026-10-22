@@ -66,6 +66,7 @@ export interface ReportItem {
   aiSuggestionRedundant?: boolean; aiStatus: string; aiOrigin?: string | null;
 }
 export interface MatchReport extends ReportSummary {
+  aiProcess?: { planningSkippedReason?: string | null; skippedReason?: string | null; fallbackReason?: string | null; failureStage?: string | null };
   visualClaims?: VisualReview[];
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
   gaps: string[]; claimedOnly: string[]; items: ReportItem[];
