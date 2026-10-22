@@ -3,6 +3,7 @@ import base64
 import hashlib
 import io
 import json
+from contextlib import suppress
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
@@ -404,8 +405,34 @@ async def test_visual_provider_app_error_keeps_attempted_usage(matching_db, monk
 
 
 async def test_visual_workflow_timeout_includes_global_model_queue(matching_db, monkeypatch):  # noqa: F811
+    from app.services import visual_evidence
+
     app, factory = matching_db
-    gate = asyncio.Semaphore(0)
+    waiting = asyncio.Event()
+    timeouts = []
+    queue_cancellations = []
+
+    def observed_timeout(delay):
+        assert delay == 0.05
+        context = asyncio.timeout(delay)
+        timeouts.append(context)
+        return context
+
+    class ObservedSemaphore(asyncio.Semaphore):
+        async def acquire(self):
+            waiting.set()
+            try:
+                return await super().acquire()
+            except asyncio.CancelledError:
+                queue_cancellations.append(bool(timeouts and timeouts[-1].expired()))
+                raise
+
+    gate = ObservedSemaphore(0)
+    # Observe the real deadline without changing asyncio globally or simulating
+    # expiry. The HTTP request also does auth, image checks and SQL outside it.
+    monkeypatch.setattr(visual_evidence, "asyncio", SimpleNamespace(
+        timeout=observed_timeout, to_thread=asyncio.to_thread,
+    ))
     monkeypatch.setattr("app.services.visual_evidence._model_semaphore", lambda: gate)
     monkeypatch.setattr(settings, "ai_workflow_timeout_seconds", 0.05)
 
@@ -416,13 +443,25 @@ async def test_visual_workflow_timeout_includes_global_model_queue(matching_db, 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         user = await register(client, uuid4().hex + "@example.com", "student")
         version = await image_version(factory, UUID(user["id"]))
-        response = await asyncio.wait_for(
+        pending = asyncio.create_task(
             client.post(
                 f"/api/v1/project-versions/{version.id}/visual-review",
                 json={"externalImageConsent": True},
-            ),
-            timeout=1,
+            )
         )
+        try:
+            # Readiness and deadlock watchdogs are not the asserted model budget.
+            # The real 50ms context must expire while the zero-slot queue is held.
+            await asyncio.wait_for(waiting.wait(), timeout=5)
+            assert len(timeouts) == 1
+            response = await asyncio.wait_for(pending, timeout=5)
+        finally:
+            if not pending.done():
+                pending.cancel()
+                with suppress(asyncio.CancelledError):
+                    await pending
+        assert queue_cancellations == [True]
+        assert timeouts[0].expired() and gate.locked()
         assert response.status_code == 200
         result = response.json()["data"]
         assert result["status"] == "unavailable" and result["failureKind"] == "workflow_timeout"
