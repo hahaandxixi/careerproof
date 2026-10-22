@@ -164,3 +164,68 @@ test("window cleanup triggered by browser download cannot restore the old report
   assert.equal(h.state().selected, null);
   assert.equal(h.state().notice, "");
 });
+
+
+test("server filtering retains an opened snapshot only after fresh exact authorization", async () => {
+  let filtered = false, checks = 0;
+  const h = setup({
+    list: async () => filtered ? [] : [{ id: "a" }],
+    detail: async id => { checks += 1; assert.equal(id, "a"); return { id, status: "viewed" }; },
+  });
+  await h.session.open("a");
+  filtered = true;
+  assert.equal(await h.session.filter(), true);
+  assert.equal(checks, 1);
+  assert.equal(h.state().selected.report.summary, candidate.report.summary);
+  assert.deepEqual(h.state().items, []);
+});
+test("filter absence cannot retain a revoked snapshot or restore after tab hiding", async () => {
+  let filtered = false;
+  const auth = deferred();
+  const h = setup({ list: async () => filtered ? [] : [{id:"a"}], detail: () => auth.promise });
+  await h.session.open("a");
+  filtered = true;
+  const filtering = h.session.filter();
+  await Promise.resolve(); await Promise.resolve();
+  h.session.clear();
+  auth.resolve({id:"a"});
+  assert.equal(await filtering, false);
+  assert.equal(h.state().selected, null);
+  const revoked = setup({ list: async () => filtered ? [] : [{id:"a"}], detail: async () => { throw new Error("授权已撤回"); } });
+  filtered = false;
+  await revoked.session.open("a");
+  filtered = true;
+  assert.equal(await revoked.session.filter(), false);
+  assert.equal(revoked.state().selected, null);
+  assert.equal(revoked.state().error, "授权已撤回");
+});
+
+
+for (const presentInList of [true, false]) {
+  test(`filter refreshes authoritative reply metadata while preserving only fixed report (present=${presentInList})`, async () => {
+    let replied = false;
+    const fixedReport = { id: "fixed-report", summary: "immutable authorization snapshot" };
+    const references = [{ requirementId: "requirement-a", citationIds: ["R1-E1"] }];
+    const remote = () => ({ id: "a", jobId: "job-a", status: replied ? "replied" : "viewed",
+      replyKind: replied ? "continue" : null, replyText: replied ? "企业在另一窗口已回复" : null,
+      replyReferences: replied ? references : [], events: replied ? [{ type: "replied", at: "2026-10-22T10:00:00Z", detail: "已回复" }] : [],
+    });
+    let checks = 0;
+    const h = setup({
+      list: async () => replied && !presentInList ? [] : [remote()],
+      open: async () => ({...remote(), report: fixedReport}),
+      detail: async () => { checks++; return remote(); },
+    });
+    await h.session.open("a");
+    replied = true;
+    assert.equal(await h.session.filter(), true);
+    const selected = h.state().selected;
+    assert.equal(selected.status, "replied");
+    assert.equal(selected.replyKind, "continue");
+    assert.equal(selected.replyText, "企业在另一窗口已回复");
+    assert.deepEqual(selected.replyReferences, references);
+    assert.equal(selected.events[0].type, "replied");
+    assert.equal(selected.report, fixedReport);
+    assert.equal(checks, presentInList ? 0 : 1);
+  });
+}

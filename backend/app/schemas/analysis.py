@@ -253,6 +253,14 @@ class MatchReportSummary(APIModel):
     created_at: datetime
 
 
+class MatchReportHistorySummary(MatchReportSummary):
+    """List-only facts; do not add new fields to old application snapshots."""
+
+    materials: list[ReportMaterial] = Field(default_factory=list)
+    job_report_count: int
+    is_latest_for_job: bool
+
+
 class EvidenceActionView(APIModel):
     requirement_id: UUID
     requirement_title: str

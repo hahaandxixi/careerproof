@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from uuid import UUID
 
+from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import AppError
 from app.models.enums import UserRole
 from app.models.identity import User
-from app.models.recruitment import Job, JobRequirement
+from app.models.recruitment import Application, Job, JobRequirement
 from app.repositories.jobs import JobRepository
 from app.schemas.common import PaginatedData
 from app.schemas.jobs import (
@@ -45,6 +46,34 @@ class JobService:
             include_all=admin,
             **filters,
         )
+        last_page = max(1, (total + page_size - 1) // page_size)
+        if page > last_page:
+            page = last_page
+            rows, total = await self.jobs.list(
+                page=page, page_size=page_size,
+                manager_id=current_user.id if mine and not admin else None,
+                include_all=admin, **filters,
+            )
+        # One aggregate over this authorized page; public listings expose no
+        # candidate counts and no per-job candidate-query N+1 is introduced.
+        application_counts = {}
+        if mine and rows:
+            counts = await self.session.execute(
+                select(
+                    Application.job_id,
+                    func.count(),
+                    func.sum(case((Application.status.in_(
+                        ("submitted", "viewed", "downloaded"),
+                    ), 1), else_=0)),
+                )
+                .where(
+                    Application.job_id.in_([job.id for job, _ in rows]),
+                    Application.consent_at.is_not(None),
+                    Application.status != "withdrawn",
+                )
+                .group_by(Application.job_id)
+            )
+            application_counts = {job_id: (count, pending) for job_id, count, pending in counts}
         return PaginatedData(
             items=[
                 JobSummary(
@@ -60,6 +89,10 @@ class JobService:
                     created_at=job.created_at,
                     is_demo=job.is_demo,
                     discovery_visible=job.discovery_visible,
+                    application_count=application_counts.get(job.id, (0, 0))[0] if mine else None,
+                    pending_application_count=(
+                        application_counts.get(job.id, (0, 0))[1] if mine else None
+                    ),
                 )
                 for job, requirement_count in rows
             ],

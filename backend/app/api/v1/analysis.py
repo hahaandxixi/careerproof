@@ -22,7 +22,7 @@ from app.schemas.analysis import (
     JobRecommendationResult,
     MatchCreate,
     MatchItemView,
-    MatchReportSummary,
+    MatchReportHistorySummary,
     MatchReportView,
     TaskAccepted,
 )
@@ -102,14 +102,18 @@ async def retry_task(
     return success(accepted, message="accepted")
 
 
-@router.get("/match-reports", response_model=ApiResponse[PaginatedData[MatchReportSummary]])
+@router.get("/match-reports", response_model=ApiResponse[PaginatedData[MatchReportHistorySummary]])
 async def list_match_reports(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
+    q: str | None = Query(default=None, max_length=200),
+    job_id: UUID | None = Query(default=None, alias="jobId"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-) -> ApiResponse[PaginatedData[MatchReportSummary]]:
-    return success(await AnalysisService(session).list_reports(current_user, page, page_size))
+) -> ApiResponse[PaginatedData[MatchReportHistorySummary]]:
+    return success(await AnalysisService(session).list_reports(
+        current_user, page, page_size, q=q, job_id=job_id,
+    ))
 
 
 @router.get("/analysis-tasks/{task_id}", response_model=ApiResponse[AnalysisTaskView])

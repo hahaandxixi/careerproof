@@ -18,6 +18,7 @@ export interface JobSummary {
   category: string; city: string; employmentType: string; requirementCount: number; createdAt: string;
   // Curated experience sample rather than a real vacancy; the flag comes from the server.
   isDemo?: boolean; discoveryVisible?: boolean;
+  applicationCount?: number | null; pendingApplicationCount?: number | null;
 }
 export interface JobDetail extends JobSummary { enterpriseId: string | null; createdBy: string; requirements: JobRequirement[] }
 export interface JobInput {
@@ -32,6 +33,8 @@ export interface ReportSummary {
   overallScore: number | null; summary: string; createdAt: string; taskId: string; jobCategory: string;
   analysisMode: string; aiProvider: string | null; aiModel: string | null; aiFallbackUsed: boolean;
   evidenceContextVersion: string | null;
+  materials?: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
+  jobReportCount?: number; isLatestForJob?: boolean;
 }
 export interface ReportEvidence {
   citationId: string | null;

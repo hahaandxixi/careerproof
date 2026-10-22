@@ -17,6 +17,7 @@ export const initialApplicationBoardState: ApplicationBoardState = {
 interface Dependencies {
   list(): Promise<ApplicationView[] | ListPage<ApplicationView>>;
   open(id: string): Promise<ApplicationView>;
+  detail?(id: string): Promise<ApplicationView>;
   download(id: string): Promise<{ blob: Blob; filename: string }>;
   reply(id: string, kind: string, text: string, references: ApplicationView["replyReferences"]): Promise<ApplicationView>;
   errorMessage(error: unknown): string;
@@ -36,6 +37,7 @@ export function createApplicationBoardSession(
   async function run(
     operation: () => Promise<{ selected?: ApplicationView; deliver?: () => void; notice?: string }>,
     selectedId?: string,
+    refreshSelectedMetadata = false,
   ) {
     if (!active) return false;
     const ticket = ++generation;
@@ -46,11 +48,24 @@ export function createApplicationBoardSession(
       const list = unpackList(await api.list());
       const { items } = list;
       if (!current(ticket)) return false;
-      const stillAuthorized = !selectedId || items.some(item => item.id === selectedId);
+      let authoritative = items.find(item => item.id === selectedId);
+      let stillAuthorized = !selectedId || !!authoritative;
+      // Filter/page absence is not revocation. Recheck the exact application
+      // through the permissioned detail endpoint before retaining its snapshot.
+      if (!stillAuthorized && selectedId && api.detail) {
+        authoritative = await api.detail(selectedId);
+        if (!current(ticket)) return false;
+        if (authoritative.id !== selectedId) throw new Error("投递授权核对结果不一致");
+        stillAuthorized = true;
+      }
       if (stillAuthorized) result.deliver?.();
       if (!current(ticket)) return false;
       set({
-        ...list, selected: stillAuthorized ? result.selected ?? null : null,
+        ...list, selected: stillAuthorized
+          ? refreshSelectedMetadata && result.selected && authoritative
+            ? { ...authoritative, report: result.selected.report }
+            : result.selected ?? null
+          : null,
         loading: false, error: "",
         notice: stillAuthorized ? result.notice ?? "" : "该投递已不在当前列表，已清除打开的报告。请刷新或翻页重新核对授权。",
       });
@@ -69,6 +84,12 @@ export function createApplicationBoardSession(
     },
     dispose() { active = false; ++generation; },
     refresh() { return run(async () => ({})); },
+    filter() {
+      const selected = state.selected;
+      // Only the immutable report survives filtering. Status, reply, events and
+      // other mutable fields come from the fresh authorized row/detail.
+      return run(async () => ({ selected: selected ?? undefined }), selected?.id, true);
+    },
     open(id: string) { return run(async () => ({ selected: await api.open(id) }), id); },
     download(deliver: (file: { blob: Blob; filename: string }) => void) {
       const id = state.selected?.id;

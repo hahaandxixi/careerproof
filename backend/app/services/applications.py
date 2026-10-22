@@ -8,7 +8,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import JSON, func, or_, select, type_coerce
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -355,7 +355,10 @@ class ApplicationService:
         """Keep callers on the last available page; an empty dataset stays page 1."""
         return min(page, max(1, (total + page_size - 1) // page_size))
 
-    async def mine(self, user, page: int = 1, page_size: int = 20, job_id=None):
+    async def mine(
+        self, user, page: int = 1, page_size: int = 20, job_id=None,
+        *, q: str | None = None, view: str = "all",
+    ):
         student = await self._student(user)
         # The count and the page slice share one predicate, so a caller can never see a
         # total or a row it is not entitled to. jobId is applied inside the current
@@ -366,6 +369,17 @@ class ApplicationService:
         ]
         if job_id is not None:
             conditions.append(Application.job_id == job_id)
+        if view == "waiting":
+            conditions.append(Application.status.in_(("submitted", "viewed", "downloaded")))
+        elif view == "action":
+            conditions.append(Application.status == "replied")
+        elif view == "withdrawn":
+            conditions.append(Application.status == "withdrawn")
+        if q and q.strip():
+            conditions.append(Application.job_id.in_(select(Job.id).where(or_(
+                Job.title.icontains(q.strip(), autoescape=True),
+                Job.company_name.icontains(q.strip(), autoescape=True),
+            ))))
         total = int(
             await self.session.scalar(
                 select(func.count()).select_from(Application).where(*conditions)
@@ -389,7 +403,11 @@ class ApplicationService:
             page_size=page_size,
         )
 
-    async def candidates(self, job_id, user, page: int = 1, page_size: int = 20):
+    async def candidates(
+        self, job_id, user, page: int = 1, page_size: int = 20,
+        *, q: str | None = None, status: str | None = None,
+        requirement_id: UUID | None = None, verdict: str | None = None,
+    ):
         job = await self.session.get(Job, job_id)
         if (
             not job
@@ -402,6 +420,47 @@ class ApplicationService:
             Application.consent_at.is_not(None),
             Application.status != "withdrawn",
         ]
+        if status:
+            conditions.append(Application.status == status)
+        if (q and q.strip()) or requirement_id is not None or verdict:
+            if self.session.bind.dialect.name == "postgresql":
+                entries = func.json_array_elements(
+                    Application.report_snapshot["items"],
+                ).table_valued("value").alias("saved_requirement")
+            else:
+                entries = func.json_each(
+                    Application.report_snapshot, "$.items",
+                ).table_valued("key", "value").alias("saved_requirement")
+            saved = type_coerce(entries.c.value, JSON)
+        if q and q.strip():
+            keyword = q.strip()
+            names = (select(StudentProfile.id)
+                     .join(User, User.id == StudentProfile.user_id)
+                     .where(User.display_name.icontains(keyword, autoescape=True)))
+            conditions.append(or_(
+                Application.student_id.in_(names),
+                Application.report_snapshot["summary"].as_string().icontains(
+                    keyword, autoescape=True,
+                ),
+                select(1).select_from(entries).where(or_(*(
+                    saved[field].as_string().icontains(keyword, autoescape=True)
+                    for field in (
+                        "requirementTitle", "skill", "explanation", "aiExplanation",
+                    )
+                ))).exists(),
+            ))
+        if requirement_id is not None or verdict:
+            # A focused requirement and verdict must belong to the same saved
+            # item. Do not page first or combine two different requirements.
+            item_conditions = []
+            if requirement_id is not None:
+                item_conditions.append(saved["requirementId"].as_string() == str(requirement_id))
+            if verdict:
+                accepted = ("supported", "partial", "verified") if verdict == "supported" else (
+                    verdict,
+                )
+                item_conditions.append(saved["verdict"].as_string().in_(accepted))
+            conditions.append(select(1).select_from(entries).where(*item_conditions).exists())
         total = int(
             await self.session.scalar(
                 select(func.count()).select_from(Application).where(*conditions)

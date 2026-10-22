@@ -43,6 +43,7 @@ from app.schemas.analysis import (
     EvidenceReviewUpdate,
     MatchCreate,
     MatchItemView,
+    MatchReportHistorySummary,
     MatchReportSummary,
     MatchReportView,
     TaskAccepted,
@@ -553,30 +554,59 @@ class AnalysisService:
             created_at=report.created_at,
         )
 
-    async def list_reports(self, user: User, page: int = 1, page_size: int = 20):
+    async def list_reports(
+        self, user: User, page: int = 1, page_size: int = 20,
+        *, q: str | None = None, job_id: UUID | None = None,
+    ):
         # The count and the page slice share the same ownership predicate, and a
         # caller is clamped to the last available page instead of an empty page.
-        conditions = [AnalysisTask.created_by == user.id]
+        # Rank the full owned history first, so a search/page never makes an old
+        # report appear to be the latest or leaks another student's report count.
+        history = (
+            select(
+                MatchReport.id.label("report_id"),
+                func.count().over(partition_by=MatchReport.job_id).label("job_count"),
+                func.row_number().over(
+                    partition_by=MatchReport.job_id,
+                    order_by=(MatchReport.created_at.desc(), MatchReport.id.desc()),
+                ).label("job_order"),
+            )
+            .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+            .where(AnalysisTask.created_by == user.id)
+            .cte("owned_report_history")
+        )
+        conditions = []
+        if q and q.strip():
+            conditions.append(MatchReport.job_snapshot["title"].as_string().icontains(
+                q.strip(), autoescape=True,
+            ))
+        if job_id is not None:
+            conditions.append(MatchReport.job_id == job_id)
         total = int(
             await self.session.scalar(
                 select(func.count())
                 .select_from(MatchReport)
-                .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+                .join(history, history.c.report_id == MatchReport.id)
                 .where(*conditions)
             )
             or 0
         )
         page = min(page, max(1, (total + page_size - 1) // page_size))
-        rows = await self.session.scalars(
-            select(MatchReport)
-            .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+        rows = await self.session.execute(
+            select(MatchReport, history.c.job_count, history.c.job_order)
+            .join(history, history.c.report_id == MatchReport.id)
             .where(*conditions)
             .order_by(MatchReport.created_at.desc(), MatchReport.id.desc())
             .offset((page - 1) * page_size)
             .limit(page_size)
         )
         return PaginatedData(
-            items=[self.summary(row) for row in rows],
+            items=[MatchReportHistorySummary(
+                **self.summary(row).model_dump(),
+                materials=row.materials_snapshot,
+                job_report_count=count,
+                is_latest_for_job=order == 1,
+            ) for row, count, order in rows],
             total=total,
             page=page,
             page_size=page_size,

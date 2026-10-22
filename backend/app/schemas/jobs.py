@@ -132,3 +132,5 @@ class JobSummary(APIModel):
     created_at: datetime
     is_demo: bool = False
     discovery_visible: bool = True
+    application_count: int | None = None
+    pending_application_count: int | None = None

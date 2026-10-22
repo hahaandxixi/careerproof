@@ -1,3 +1,4 @@
+from typing import Literal
 from urllib.parse import quote
 from uuid import UUID
 
@@ -35,10 +36,14 @@ async def mine(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
     job_id: UUID | None = Query(default=None, alias="jobId"),
+    q: str | None = Query(default=None, max_length=200),
+    view: Literal["all", "waiting", "action", "withdrawn"] = "all",
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
-    return success(await ApplicationService(session).mine(user, page, page_size, job_id))
+    return success(await ApplicationService(session).mine(
+        user, page, page_size, job_id, q=q, view=view,
+    ))
 
 
 @router.get("/jobs/{job_id}/applications", response_model=ApiResponse[PaginatedData[dict]])
@@ -46,10 +51,17 @@ async def candidates(
     job_id: UUID,
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
+    q: str | None = Query(default=None, max_length=200),
+    status: Literal["submitted", "viewed", "downloaded", "replied"] | None = None,
+    requirement_id: UUID | None = Query(default=None, alias="requirementId"),
+    verdict: Literal["supported", "claimed_only", "gap", "unsupported"] | None = None,
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
-    return success(await ApplicationService(session).candidates(job_id, user, page, page_size))
+    return success(await ApplicationService(session).candidates(
+        job_id, user, page, page_size, q=q, status=status,
+        requirement_id=requirement_id, verdict=verdict,
+    ))
 
 
 @router.get("/applications/{application_id}", response_model=ApiResponse[dict])
