@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="141" time="147.369" timestamp="2026-10-22T18:49:57.794057+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_ai_budget_production_race" name="test_matching_entry_same_owner_dual_task_last_slot_race" time="3.735" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_verification_entry_same_owner_dual_task_last_slot_race" time="1.413" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_cross_role_owner_isolation_and_entry_role_walls" time="3.954" /><testcase classname="app.tests.test_ai_budget_production_race" name="test_offline_fixture_contract_dual_pending_and_single_chain_booking" time="3.404" /><testcase classname="app.tests.test_durable_matching" name="test_every_physical_matching_request_is_durable_attempted_and_booked" time="3.472" /><testcase classname="app.tests.test_durable_matching" name="test_fallback_after_invalid_repair_still_books_persisted_receipts" time="3.529" /><testcase classname="app.tests.test_durable_matching" name="test_booking_failure_recovers_without_extra_http" time="3.447" /><testcase classname="app.tests.test_durable_matching" name="test_report_save_failure_keeps_booked_receipts" time="3.500" /><testcase classname="app.tests.test_durable_matching" name="test_owner_deactivation_and_material_replacement_send_nothing" time="5.932" /><testcase classname="app.tests.test_durable_matching" name="test_concurrent_duplicate_booking_writes_one_ledger_row" time="0.545" /><testcase classname="app.tests.test_durable_matching" name="test_history_read_releases_borrowed_transaction_during_http" time="4.589" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[disabled]" time="0.717" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[role_changed]" time="0.636" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[missing]" time="0.752" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_wait_rechecks_identity_and_source_before_spending[changed]" time="0.719" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[True-True]" time="0.976" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[True-False]" time="0.707" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[False-True]" time="0.721" /><testcase classname="app.tests.test_visual_postgres_concurrency" name="test_postgres_visual_cache_recheck_after_observed_account_lock[False-False]" time="0.780" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_pending_revocation_does_not_block_other_grants" time="1.336" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_four_grants_have_independent_caps_and_private_audits" time="3.364" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-disabled]" time="1.054" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-role_changed]" time="1.042" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-disabled]" time="0.857" /><testcase classname="app.tests.test_mcp_postgres_isolation" name="test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-role_changed]" time="0.852" /><testcase classname="app.tests.test_real_matching" name="test_rules_explain_selected_source_without_requesting_duplicate_upload" time="3.288" /><testcase classname="app.tests.test_real_matching" name="test_real_report_survives_login_and_preserves_sources_and_snapshots" time="4.073" /><testcase classname="app.tests.test_real_matching" name="test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test]" time="4.749" /><testcase classname="app.tests.test_real_matching" name="test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash]" time="4.462" /><testcase classname="app.tests.test_real_matching" name="test_daily_ai_budget_uses_persisted_usage" time="0.491" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[context]" time="3.151" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[configuration]" time="3.425" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[request]" time="3.360" /><testcase classname="app.tests.test_real_matching" name="test_model_stage_failure_still_persists_rule_report[validation]" time="3.144" /><testcase classname="app.tests.test_real_matching" name="test_matching_materials_and_reports_are_owner_scoped" time="4.643" /><testcase classname="app.tests.test_real_matching" name="test_pending_materials_are_rejected_and_operations_documents_are_evaluated" time="2.947" /><testcase classname="app.tests.test_real_matching" name="test_pending_and_running_matches_coalesce_and_use_frozen_inputs" time="3.872" /><testcase classname="app.tests.test_real_matching" name="test_failed_match_retry_is_owner_only_atomic_and_not_duplicated" time="3.013" /><testcase classname="app.tests.test_real_matching" name="test_entirely_unsupported_job_has_null_overall_score" time="3.100" /><testcase classname="app.tests.test_real_matching" name="test_evidence_review_is_owner_scoped_and_persisted" time="3.026" /><testcase classname="app.tests.test_real_matching" name="test_job_recommendations_rank_owned_material_evidence" time="3.306" /><testcase classname="app.tests.test_real_matching" name="test_career_plan_cites_shortlist_and_tracks_new_material" time="3.853"><failure message="PermissionError: [Errno 13] Permission denied: 'C:\\Users\\江博\\AppData\\Local\\Temp\\careerproof-parser-vlyzo_g3\\worker.json'">matching_db = (&lt;fastapi.applications.FastAPI object at 0x000002342C2F5E20&gt;, async_sessionmaker(class_='AsyncSession', bind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002342C4E5F10&gt;, autoflush=True, expire_on_commit=False))
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002342C4D98B0&gt;
+
+    async def test_career_plan_cites_shortlist_and_tracks_new_material(matching_db, monkeypatch):
+        from app.services import career_planning
+    
+        async def handler(request):
+            body = json.loads(request.content)
+            supplied = json.loads(body["messages"][1]["content"])
+            jobs = supplied["jobs"]
+            assert all(job["requirements"] for job in jobs)
+            answer = {
+                "comparison": "软件岗位已有可定位的 Python 代码线索；运营岗位尚待补充材料。",
+                "focusJobId": jobs[0]["jobId"],
+                "advice": [{
+                    "jobId": job["jobId"],
+                    "reason": (
+                        "材料中有可定位代码片段。"
+                        if job["evidence"] else "当前材料未展示可定位项目证据。"
+                    ),
+                    "keyGap": "仍需核验运行结果与本人贡献。",
+                    "nextTask": "上传带断言的测试代码和运行记录。",
+                    "taskPlan": {"deliverable": "测试代码和运行记录",
+                                 "steps": ["补充正常与异常请求断言", "保存测试运行记录"],
+                                 "acceptanceChecks": ["可定位到断言及对应请求", "记录包含命令和结果"]},
+                    "citationIds": [item["citationId"] for item in job["evidence"][:1]],
+                } for job in jobs],
+            }
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": json.dumps(answer, ensure_ascii=False)}}],
+                "usage": {"prompt_tokens": 90, "completion_tokens": 50},
+            })
+    
+        monkeypatch.setattr(career_planning, "get_ai_provider", lambda: DeepSeekProvider(
+            api_key="synthetic-key", base_url="https://api.deepseek.com",
+            model="deepseek-flash", timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        ))
+        app, _factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "career-owner@example.com")
+            await create_job(owner, category="operations", skills=("活动策划",))
+            await create_job(owner, category="software", skills=("Python",))
+            await register(student, "career-student@example.com", "student")
+            resume, project, version = await upload_materials(student)
+            payload = {
+                "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]],
+                "externalAiConsent": True,
+            }
+            assert (await student.post("/api/v1/career-plans", json={
+                **payload, "externalAiConsent": False,
+            })).status_code == 422
+            first_response = await student.post("/api/v1/career-plans", json=payload)
+            assert first_response.status_code == 200, first_response.text
+            first = first_response.json()["data"]
+            assert first["aiStatus"] == "validated"
+            assert first["aiPlan"] is not None
+            assert first["aiPlan"]["advice"][0]["citationIds"]
+            assert (await student.get("/api/v1/career-plans/latest")).json()["data"] == first
+    
+            newer = await student.post(
+                f"/api/v1/projects/{project['id']}/versions",
+                data={"requestId": str(uuid4())},
+                files={"file": ("source.zip", source_archive(), "application/zip")},
+            )
+            assert newer.status_code == 202, newer.text
+            new_version = newer.json()["data"]
+            task = await student.get(f"/api/v1/analysis-tasks/{new_version['taskId']}")
+            assert task.json()["data"]["status"] == "completed"
+&gt;           second_response = await student.post("/api/v1/career-plans", json={
+                **payload, "projectVersionIds": [new_version["versionId"]],
+            })
+
+app\tests\test_real_matching.py:1069: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\applications.py:1216: in __call__
+    await super().__call__(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\telemetry\_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+app\core\security_headers.py:20: in __call__
+    await self.app(scope, receive, send_with_headers if scope["type"] == "http" else send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\cors.py:88: in __call__
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\core\request_context.py:20: in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:168: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:144: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\routing.py:660: in __call__
+    await self.middleware_stack(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2786: in app
+    await route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1828: in _handle_selected
+    await route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:727: in app
+    raw_response = await run_endpoint_function(
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:360: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\v1\analysis.py:47: in create_career_plan_endpoint
+    return success(await create_career_plan(session, payload, current_user))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\career_planning.py:529: in create_career_plan
+    ranked = await recommend_jobs(session, request, user)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\recommendations.py:71: in recommend_jobs
+    result = await run_isolated(
+app\services\task_runner.py:120: in shutdown
+    worker, _ = await asyncio.wait_for(asyncio.shield(identity_task), 1)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+app\services\task_runner.py:84: in retain_worker
+    identity = json.loads(identity_path.read_text(encoding="utf-8"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/江博/AppData/Local/Temp/careerproof-parser-vlyzo_g3/worker.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+&gt;       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: 'C:\\Users\\江博\\AppData\\Local\\Temp\\careerproof-parser-vlyzo_g3\\worker.json'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: PermissionError</failure></testcase><testcase classname="app.tests.test_real_matching" name="test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3]" time="3.099" /><testcase classname="app.tests.test_real_matching" name="test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3]" time="3.007" /><testcase classname="app.tests.test_durable_attempt_service" name="test_recovery_books_receipt_once_without_restoring_old_result" time="0.215" /><testcase classname="app.tests.test_durable_attempt_service" name="test_late_receipt_can_settle_unknown_old_claim" time="0.242" /><testcase classname="app.tests.test_durable_attempt_service" name="test_no_receipt_is_unknown_and_never_a_zero_ledger" time="0.205" /><testcase classname="app.tests.test_durable_attempt_service" name="test_prepared_unsent_is_closed_without_billing_after_claim_loss" time="0.197" /><testcase classname="app.tests.test_durable_attempt_service" name="test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts" time="0.228" /><testcase classname="app.tests.test_durable_attempt_service" name="test_legacy_claim_cannot_switch_to_attempt_accounting" time="0.151" /><testcase classname="app.tests.test_durable_attempt_service" name="test_invalid_persisted_receipt_is_not_booked" time="0.207" /><testcase classname="app.tests.test_durable_attempt_service" name="test_live_claim_reconciliation_does_not_steal_slow_request" time="0.217" /><testcase classname="app.tests.test_durable_attempt_service" name="test_concurrent_pg_booking_records_one_fact" time="0.371" /><testcase classname="app.tests.test_durable_attempt_service" name="test_concurrent_pg_preparation_allocates_distinct_physical_numbers" time="0.286" /><testcase classname="app.tests.test_durable_attempt_service" name="test_ledger_commit_failure_is_recoverable_without_more_http" time="0.241" /><testcase classname="app.tests.test_durable_attempt_service" name="test_send_intent_commit_failure_prevents_any_http" time="0.171" /><testcase classname="app.tests.test_ai_request_attempt_migration" name="test_sqlite_0016_upgrade_downgrade_preserves_legacy_ledger" time="0.036" /><testcase classname="app.tests.test_ai_request_attempt_migration" name="test_postgres_0016_migration_inside_own_cp_test_schema" time="0.150" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_semantic_index_and_search_flow" time="0.220" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_mixed_engines_and_unavailable_model_skip" time="0.260" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_engine_inventory_includes_chunks_older_than_newest_fifty" time="0.273" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_semantic_query_excludes_hash_unknown_archived_and_other_owner" time="0.232" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_legacy_unlabelled_chunks_are_not_assumed_hash" time="0.202" /><testcase classname="app.tests.test_knowledge_semantic_postgres" name="test_query_inference_failure_never_uses_hash_against_semantic_index" time="0.202" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily0-report0-100-700-500]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily1-report1-100-300-50]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily2-report2-100-300-10]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily3-report3-100-300-daily_input]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily4-report4-100-300-report_input]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_grant_is_bounded_by_daily_and_entire_report[daily5-report5-100-300-output_token]" time="0.001" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_hold_and_cross_run_grant_do_not_reset_report_capacity" time="0.433" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_disabled_gate_or_unreserved_old_attempt_cannot_admit" time="0.396" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_midnight_transfer_moves_only_unsent_hold" time="0.441" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_late_actual_over_bound_stays_original_day_and_blocks_new_admission" time="0.412" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_pre_budget_known_unknown_and_not_sent_strict_backfill" time="0.456" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_backfill_missing_day_rejects_without_capacity_rows" time="0.450" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_pg_cross_chain_last_slot_real_concurrent_sessions" time="0.607" /><testcase classname="app.tests.test_ai_shared_budget_service" name="test_committed_session_cannot_reuse_stale_day_lock_marker" time="0.514" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_empty_roundtrip_preserves_legacy_and_attempt" time="0.381" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes0]" time="0.026" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes1]" time="0.027" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes2]" time="0.025" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes3]" time="0.026" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_rejects_negative_or_fabricated_receipt[changes4]" time="0.025" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_budget_one_reservation_and_real_zero_receipt" time="0.026" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_cutover_is_disabled_without_activation_evidence" time="0.028" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_owner_day_serialization_identity_unique" time="0.026" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_adjustment_reason_and_operation_identity" time="0.025" /><testcase classname="app.tests.test_ai_shared_budget_migration" name="test_postgres_budget_roundtrip_and_unknown_downgrade_guard" time="0.192" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_reconsent_migration_preserves_history" time="0.018" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_postgres_reconsent_migration_preserves_history" time="0.146" /><testcase classname="app.tests.test_application_reconsent_migration" name="test_sqlite_migration_rejects_cascading_batch_rebuild" time="0.003" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_integrity_roundtrip" time="0.057" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_integrity_roundtrip" time="0.327" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_invalid_legacy_refused_before_ddl[applications-status]" time="0.023" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_invalid_legacy_refused_before_ddl[applications-reply_kind]" time="0.022" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_invalid_legacy_refused_before_ddl[jobs-status]" time="0.019" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_invalid_legacy_refused_before_ddl[job_requirements-normalized_status]" time="0.024" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_invalid_legacy_refused_before_ddl[match_items-verdict]" time="0.022" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_duplicate_legacy_refused_before_ddl" time="0.023" /><testcase classname="app.tests.test_data_integrity_migration" name="test_sqlite_foreign_keys_guard" time="0.003" /><testcase classname="app.tests.test_data_integrity_migration" name="test_model_verdict_constraint_matches_enum_and_writer_contract" time="0.001" /><testcase classname="app.tests.test_data_integrity_migration" name="test_model_checks_and_index_columns_match_revision" time="0.001" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[applications-status]" time="0.145" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[applications-reply_kind]" time="0.133" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[jobs-status]" time="0.117" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[job_requirements-normalized_status]" time="0.127" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[match_items-verdict]" time="0.127" /><testcase classname="app.tests.test_data_integrity_migration" name="test_postgres_invalid_legacy_refused_before_ddl[match_items-None]" time="0.130" /><testcase classname="app.tests.test_refresh_atomicity" name="test_sqlite_refresh_one_successor_and_other_device_survives" time="0.250" /><testcase classname="app.tests.test_refresh_atomicity" name="test_pg_refresh_one_successor_and_other_device_survives" time="0.212" /><testcase classname="app.tests.test_refresh_atomicity" name="test_failed_issue_rolls_back_consumption" time="0.245" /><testcase classname="app.tests.test_login_rate_limit" name="test_http_repeated_login_is_temporarily_limited" time="0.274" /><testcase classname="app.tests.test_login_rate_limit" name="test_success_clears_pair_but_not_source_and_does_not_disable_user" time="0.753" /><testcase classname="app.tests.test_login_rate_limit" name="test_forged_forwarded_headers_cannot_change_application_bucket" time="0.265" /><testcase classname="app.tests.test_login_rate_limit" name="test_source_bucket_limits_rotating_emails_and_unknown_client" time="0.253" /><testcase classname="app.tests.test_login_rate_limit" name="test_database_failure_does_not_bypass_admission_or_leak_sql" time="0.226" /><testcase classname="app.tests.test_login_rate_limit" name="test_source_cap_is_atomic_and_does_not_reserve_extra_pairs" time="0.370" /><testcase classname="app.tests.test_login_rate_limit" name="test_sqlite_independent_sessions_share_limit_and_expiry" time="0.538" /><testcase classname="app.tests.test_login_rate_limit" name="test_pg_independent_sessions_share_limit_and_expiry" time="0.409" /><testcase classname="app.tests.test_login_rate_limit" name="test_pg_separate_processes_share_admission" time="1.237" /><testcase classname="app.tests.test_login_rate_limit" name="test_client_identity_normalization_and_no_proxy_header_launchers" time="0.001" /><testcase classname="app.tests.test_login_limit_migration" name="test_sqlite_login_limit_migration_roundtrip" time="0.013" /><testcase classname="app.tests.test_login_limit_migration" name="test_pg_login_limit_migration_roundtrip" time="0.171" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_equal_timestamps_order_stably_without_duplicates" time="0.803" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_exact_last_page_clamping_empty_and_query_bounds" time="0.895" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_growth_page_counts_rows_it_could_not_read_without_widening_catches" time="2.838" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_job_candidates_page_excludes_withdrawn_and_denies_non_managers" time="0.875" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_job_filter_applies_before_count_and_stays_owner_scoped" time="1.040" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_match_report_history_pages_with_default_twenty" time="0.744" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_notification_page_size_aliases_and_conflict" time="0.854" /><testcase classname="app.tests.test_paginated_lists_postgres" name="test_owned_applications_page_reaches_past_the_first_hundred" time="0.904" /><testcase classname="app.tests.test_material_admission_postgres" name="test_owner_quota_serializes_different_upload_targets[different-projects-pending]" time="0.500" /><testcase classname="app.tests.test_material_admission_postgres" name="test_owner_quota_serializes_different_upload_targets[different-projects-storage]" time="0.825" /><testcase classname="app.tests.test_material_admission_postgres" name="test_owner_quota_serializes_different_upload_targets[resume-and-project-pending]" time="0.522" /><testcase classname="app.tests.test_material_admission_postgres" name="test_owner_quota_serializes_different_upload_targets[resume-and-project-storage]" time="0.545" /><testcase classname="app.tests.test_material_admission_postgres" name="test_same_request_replay_at_both_limits_adds_no_reservation" time="0.484" /><testcase classname="app.tests.test_material_admission_postgres" name="test_retry_and_new_upload_compete_for_one_owner_slot" time="0.503" /><testcase classname="app.tests.test_material_admission_postgres" name="test_failure_releases_pending_and_extraction_but_keeps_original_bytes" time="0.485" /><testcase classname="app.tests.test_material_admission_postgres" name="test_successful_extracted_bytes_remain_charged_and_files_preserved" time="0.518" /><testcase classname="app.tests.test_material_admission_postgres" name="test_archive_audit_and_upload_do_not_deadlock_on_owner_lock" time="0.470" /></testsuite></testsuites>

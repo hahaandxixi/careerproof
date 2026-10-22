@@ -1,0 +1,47 @@
+{
+  "testContainer": {
+    "id": "526edce0bdb138d202eded803e59c2fea64ffeac22eb04decaefdbd697894e40",
+    "name": "careerproof-core-acceptance-20261022",
+    "scope": "core-acceptance-20261022",
+    "host": "127.0.0.1",
+    "port": 55445,
+    "finalState": "exited",
+    "remainingTestSchemas": {
+      "cp_ci": 0,
+      "careerproof": 0
+    },
+    "dataVolumePreserved": true
+  },
+  "previewListeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 8112,
+      "OwningProcess": 173416
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3134,
+      "OwningProcess": 229900
+    }
+  ],
+  "previewProcesses": [
+    {
+      "ProcessId": 173416,
+      "ParentProcessId": 173356,
+      "ExecutablePath": "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "CommandLine": "\"C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8112 --no-proxy-headers"
+    },
+    {
+      "ProcessId": 229900,
+      "ParentProcessId": 287504,
+      "ExecutablePath": "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe",
+      "CommandLine": "\"C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe\" .\\node_modules\\next\\dist\\bin\\next start --hostname 127.0.0.1 --port 3134"
+    }
+  ],
+  "frontendBuildId": "BSPYXVhgdOQqMg9TMPvW-",
+  "frontendSource": "accepted snapshot; frontend unchanged after build",
+  "backendSource": "previous agent-result-20261022/source; not this backend acceptance commit",
+  "normalServicesOperated": false,
+  "existingPreviewContainerOperated": false,
+  "externalAIRequests": 0
+}

@@ -1,0 +1,84 @@
+.....F......                                                             [100%]
+================================== FAILURES ===================================
+__________ test_job_recommendations_rank_owned_material_evidence[5] ___________
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000012E1979B4D0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000012E194489D0>, autoflush=True, expire_on_commit=False))
+
+    async def test_job_recommendations_rank_owned_material_evidence(matching_db):
+        app, _factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "recommend-owner@example.com")
+            await create_job(owner, category="operations", skills=("��߻�",))
+            await create_job(owner, category="software", skills=("Python",))
+            await register(student, "recommend-student@example.com", "student")
+>           resume, _project, version = await upload_materials(student)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_real_matching.py:970: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+student = <httpx.AsyncClient object at 0x0000012E19B03860>
+
+    async def upload_materials(student, *, document: str | None = None):
+        response = await student.post(
+            "/api/v1/resumes",
+            data={"title": "���˼���"},
+            files={
+                "file": (
+                    "resume.txt",
+                    "�������Python�γ���Ŀ��Ҳ�����߻�ʵ����".encode(),
+                    "text/plain",
+                )
+            },
+        )
+        assert response.status_code == 202, response.text
+        resume = response.json()["data"]
+        project_response = await student.post(
+            "/api/v1/projects", json={"name": "���˿γ�ʵ��", "requestId": str(uuid4())}
+        )
+        assert project_response.status_code == 201, project_response.text
+        project = project_response.json()["data"]
+        file = (
+            ("campaign.txt", document.encode(), "text/plain")
+            if document is not None
+            else ("source.zip", source_archive(), "application/zip")
+        )
+        response = await student.post(
+            f"/api/v1/projects/{project['id']}/versions",
+            data={"requestId": str(uuid4())},
+            files={"file": file},
+        )
+        assert response.status_code == 202, response.text
+        version = response.json()["data"]
+        for upload in (resume, version):
+            task = await student.get(f"/api/v1/analysis-tasks/{upload['taskId']}")
+            assert task.status_code == 200, task.text
+>           assert task.json()["data"]["status"] == "completed", task.text
+E           AssertionError: {"code":0,"message":"success","data":{"id":"7d7de3b4-9149-44fd-89ff-77300b6a607a","taskType":"resume_parse","status":"failed","progress":0,"currentStep":"��������ʧ��","errorMessage":"�ļ����������쳣�˳������Ժ�����","totalCostRmb":"0.000000","createdAt":"2026-10-22T10:50:29.477897","startedAt":"2026-10-22T10:50:29.481206","completedAt":"2026-10-22T10:50:29.933575","reportId":null,"steps":[]},"requestId":"28672bf1-e69c-48ab-b6df-05eab7425d40"}
+E           assert 'failed' == 'completed'
+E             
+E             - completed
+E             + failed
+
+app\tests\test_real_matching.py:190: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_real_matching.py::test_job_recommendations_rank_owned_material_evidence[5]
+1 failed, 11 passed, 5 warnings in 33.84s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

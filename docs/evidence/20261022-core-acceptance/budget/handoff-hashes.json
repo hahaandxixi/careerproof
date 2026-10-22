@@ -1,0 +1,8 @@
+{
+  "scope": "Budget agent owned files; config.py shared with root and AI default40000 only owned here",
+  "files": {
+    "backend/app/agents/provider.py": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "backend/app/tests/test_report_input_budget.py": "2d254c89fab940b7f5f06cf1ef1befd0aa5f55204be43a30cc883903b5596101",
+    "backend/app/tests/fixtures/complete-project-budget-contexts.json": "c35635fdc68b6813bd17f55d90bcf918146be70e1627ab1ab51eb4628eefe238"
+  }
+}

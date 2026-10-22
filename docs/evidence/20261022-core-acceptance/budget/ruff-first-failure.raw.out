@@ -1,0 +1,23 @@
+E501 Line too long (101 > 100)
+   --> app\agents\provider.py:519:101
+    |
+517 |         self.last_finish_reason = None
+518 |         if input_limit < 1:
+519 |             raise ProviderInputBudgetError("No local input admission budget remains for this report")
+    |                                                                                                     ^
+520 |         if "max_tokens" in request and request["max_tokens"] < 1:
+521 |             raise ProviderOutputBudgetError("No output token budget remains for this report")
+    |
+
+E501 Line too long (101 > 100)
+   --> app\agents\provider.py:760:101
+    |
+758 |         )
+759 |         if bounded_input < 1:
+760 |             raise ProviderInputBudgetError("No local input admission budget remains for this report")
+    |                                                                                                     ^
+761 |         request = {
+762 |             "_local_input_token_limit": bounded_input,
+    |
+
+Found 2 errors.

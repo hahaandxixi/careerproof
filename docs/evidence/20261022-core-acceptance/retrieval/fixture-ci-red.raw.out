@@ -1,0 +1,385 @@
+EEEEEEEE                                                                 [100%]
+=================================== ERRORS ====================================
+___ ERROR at setup of test_equal_timestamps_order_stably_without_duplicates ___
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 131
+  async def test_equal_timestamps_order_stably_without_duplicates(jobs_db, tmp_path, monkeypatch):
+      hr, student, other, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          same = datetime(2026, 2, 1, tzinfo=UTC)
+          seeded = await seed_owned_applications(factory, scope, count=45, created=[same] * 45)
+          seen = []
+          for page in (1, 2, 3):
+              data = await fetch_page(student, "/applications/mine", page=page)
+              assert data["total"] == 45
+              seen.extend(row["id"] for row in data["items"])
+          # created_at ties must fall back to id DESC, so pages partition the rows exactly.
+          assert len(seen) == 45 and len(set(seen)) == 45
+          assert set(seen) == {row["application_id"] for row in seeded}
+      finally:
+          await close(hr, student, other)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+___ ERROR at setup of test_exact_last_page_clamping_empty_and_query_bounds ____
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 151
+  async def test_exact_last_page_clamping_empty_and_query_bounds(jobs_db, tmp_path, monkeypatch):
+      hr, student, other, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      empty = AsyncClient(transport=ASGITransport(app=jobs_db[0]), base_url="http://test")
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          await seed_owned_applications(
+              factory, scope, count=40, created=ascending(datetime(2026, 3, 1, tzinfo=UTC), 40)
+          )
+          exact = await fetch_page(student, "/applications/mine", page=2)
+          assert exact["page"] == 2 and len(exact["items"]) == 20 and exact["total"] == 40
+          clamped = await fetch_page(student, "/applications/mine", page=3)
+          assert clamped["page"] == 2 and len(clamped["items"]) == 20
+          # An empty owned dataset still reports page 1, never page 0 or a missing page.
+          await register(empty, "z57-empty@example.com", "student")
+          none = await fetch_page(empty, "/applications/mine", page=7)
+          assert none == {"items": [], "total": 0, "page": 1, "pageSize": 20}
+          for bad in ("page=0", "pageSize=0", "pageSize=101"):
+              response = await student.get(f"{API}/applications/mine?{bad}")
+              assert response.status_code == 422, f"{bad} -> {response.status_code}"
+      finally:
+          await empty.aclose()
+          await close(hr, student, other)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+_ ERROR at setup of test_growth_page_counts_rows_it_could_not_read_without_widening_catches _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 311
+  async def test_growth_page_counts_rows_it_could_not_read_without_widening_catches(
+      matching_db,
+  ):
+      app, factory = matching_db
+      transport = ASGITransport(app=app)
+      async with (
+          AsyncClient(transport=transport, base_url="http://test") as hr,
+          AsyncClient(transport=transport, base_url="http://test") as student,
+      ):
+          await register(hr, "z57-growth-hr@example.com")
+          job = await create_job(hr)
+          await register(student, "z57-growth-owner@example.com", "student")
+          resume, project, version = await upload_materials(student)
+          base = await match_report(student, job, resume, version)
+          healthy = (
+              await student.post(
+                  f"{API}/match-reports/{base['id']}/growth-tasks", json=plan(base)
+              )
+          ).json()["data"]
+          base_time = datetime(2026, 7, 1, tzinfo=UTC)
+          async with factory() as session:
+              owner_id = await session.scalar(
+                  select(User.id).where(User.email == "z57-growth-owner@example.com")
+              )
+              healthy_row = await session.get(EvidenceGrowthTask, UUID(healthy["id"]))
+              snapshot = deepcopy(healthy_row.base_snapshot)
+          seeded = []
+          async with factory() as session:
+              for index in range(23):
+                  drifted = deepcopy(snapshot)
+                  requirement_id = str(uuid4())
+                  extra_item = deepcopy(drifted["report"]["items"][0])
+                  extra_item["requirementId"] = requirement_id
+                  drifted["report"]["items"].append(extra_item)
+                  row = EvidenceGrowthTask(
+                      created_by=owner_id,
+                      base_report_id=UUID(base["id"]),
+                      requirement_id=UUID(requirement_id),
+                      base_snapshot=drifted,
+                      plan=plan(base),
+                      materials=[],
+                      status="planned",
+                      created_at=base_time + timedelta(minutes=index),
+                  )
+                  session.add(row)
+                  await session.flush()
+                  seeded.append(str(row.id))
+              corrupted = deepcopy(snapshot)
+              corrupted["report"]["items"][0]["requirementId"] = "not-a-uuid"
+              broken = EvidenceGrowthTask(
+                  created_by=owner_id,
+                  base_report_id=UUID(base["id"]),
+                  requirement_id=uuid4(),
+                  base_snapshot=corrupted,
+                  plan=plan(base),
+                  materials=[],
+                  status="planned",
+                  created_at=base_time + timedelta(minutes=60),
+              )
+              session.add(broken)
+              await session.flush()
+              broken_id = str(broken.id)
+              await session.commit()
+          first = await fetch_page(student, "/growth-tasks")
+          assert first["total"] == 25 and first["pageSize"] == 20
+          # One owned row on this page drifted out of a readable shape: it is counted,
+          # never silently replaced by scanning deeper history.
+          assert first["unavailableCount"] == 1 and len(first["items"]) == 19
+          second = await fetch_page(student, "/growth-tasks", page=2)
+          assert second["unavailableCount"] == 0 and len(second["items"]) == 5
+          seen = {row["id"] for row in first["items"]} | {row["id"] for row in second["items"]}
+          assert seen == {healthy["id"], *seeded}
+          assert broken_id not in seen
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py:311
+_ ERROR at setup of test_job_candidates_page_excludes_withdrawn_and_denies_non_managers _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 206
+  async def test_job_candidates_page_excludes_withdrawn_and_denies_non_managers(
+      jobs_db, tmp_path, monkeypatch
+  ):
+      hr, student, outsider, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          candidate_ids = []
+          async with factory() as session:
+              for index in range(23):
+                  user = User(
+                      email=f"z57-candidate-{index}@example.com",
+                      password_hash="synthetic",
+                      display_name=f"��ѡ�� {index}",
+                      role=UserRole.STUDENT,
+                  )
+                  session.add(user)
+                  await session.flush()
+                  profile = StudentProfile(user_id=user.id)
+                  session.add(profile)
+                  await session.flush()
+                  candidate_ids.append(profile.id)
+              await session.commit()
+          statuses = ["submitted"] * 20 + ["withdrawn"] * 3
+          async with factory() as session:
+              for index, (candidate_id, status) in enumerate(
+                  zip(candidate_ids, statuses, strict=True)
+              ):
+                  session.add(
+                      Application(
+                          job_id=UUID(job["id"]),
+                          student_id=candidate_id,
+                          report_id=scope["report_id"],
+                          report_snapshot={"items": [], "summary": f"Z57 ӦƸ {index}"},
+                          status=status,
+                          consent_at=datetime.now(UTC),
+                          consent_version="application-report-v1",
+                          created_at=datetime(2026, 5, 1, tzinfo=UTC) - timedelta(minutes=index),
+                      )
+                  )
+              await session.commit()
+          default_view = await fetch_page(hr, f"/jobs/{job['id']}/applications")
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+_ ERROR at setup of test_job_filter_applies_before_count_and_stays_owner_scoped _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 177
+  async def test_job_filter_applies_before_count_and_stays_owner_scoped(
+      jobs_db, tmp_path, monkeypatch
+  ):
+      hr, student, other, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      outsider = AsyncClient(transport=ASGITransport(app=jobs_db[0]), base_url="http://test")
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          seeded = await seed_owned_applications(
+              factory, scope, count=105, created=ascending(datetime(2026, 4, 1, tzinfo=UTC), 105)
+          )
+          oldest = seeded[0]
+          filtered = await fetch_page(student, "/applications/mine", jobId=oldest["job_id"])
+          assert filtered["total"] == 1 and filtered["page"] == 1
+          assert [row["id"] for row in filtered["items"]] == [oldest["application_id"]]
+          await register(outsider, "z57-outsider@example.com", "student")
+          assert (await fetch_page(outsider, "/applications/mine", jobId=oldest["job_id"]))[
+              "total"
+          ] == 0
+          assert (await fetch_page(outsider, "/applications/mine"))["total"] == 0
+          assert (
+              await student.get(f"{API}/applications/mine?jobId=not-a-uuid")
+          ).status_code == 422
+      finally:
+          await outsider.aclose()
+          await close(hr, student, other)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+____ ERROR at setup of test_match_report_history_pages_with_default_twenty ____
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 263
+  async def test_match_report_history_pages_with_default_twenty(jobs_db, tmp_path, monkeypatch):
+      hr, student, other, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          base = datetime(2026, 6, 1, tzinfo=UTC)
+          seeded = []
+          async with factory() as session:
+              for index in range(25):
+                  task = AnalysisTask(
+                      created_by=scope["user_id"],
+                      task_type="job_match",
+                      status=TaskStatus.COMPLETED,
+                  )
+                  session.add(task)
+                  await session.flush()
+                  report = MatchReport(
+                      analysis_task_id=task.id,
+                      job_id=UUID(job["id"]),
+                      candidate_ref=str(scope["student_id"]),
+                      candidate_name="�����û�",
+                      summary=f"Z57 ��ҳ���� {index}",
+                      overall_score=50,
+                      job_snapshot={"title": "��ҳ��λ", "category": "software"},
+                      materials_snapshot=[],
+                      created_at=base + timedelta(minutes=index),
+                  )
+                  session.add(report)
+                  await session.flush()
+                  seeded.append(str(report.id))
+              await session.commit()
+          first = await fetch_page(student, "/match-reports")
+          assert first["total"] == 26 and first["page"] == 1 and first["pageSize"] == 20
+          assert len(first["items"]) == 20
+          second = await fetch_page(student, "/match-reports", page=2)
+          assert second["page"] == 2 and len(second["items"]) == 6
+          # The fixture's own report is newest; seeded reports follow created_at DESC.
+          assert [row["id"] for row in first["items"] + second["items"]] == [
+              str(rid),
+              *reversed(seeded),
+          ]
+          assert (await fetch_page(student, "/match-reports", page=99))["page"] == 2
+          assert (await fetch_page(other, "/match-reports"))["total"] == 0
+      finally:
+          await close(hr, student, other)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+_____ ERROR at setup of test_notification_page_size_aliases_and_conflict ______
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 386
+  async def test_notification_page_size_aliases_and_conflict(jobs_db, tmp_path, monkeypatch):
+      hr, student, other, job, rid, _resume, _raw, _factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      try:
+          created = await student.post(
+              f"{API}/applications", json={"reportId": str(rid), "shareConsent": True}
+          )
+          assert created.status_code == 201, created.text
+          aid = created.json()["data"]["id"]
+          assert (await hr.post(f"{API}/applications/{aid}/view")).status_code == 200
+          default_view = await fetch_page(student, "/notifications")
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+_ ERROR at setup of test_owned_applications_page_reaches_past_the_first_hundred _
+file D:\jbcode\web ai\jianli\backend\app\tests\test_z57_pagination.py, line 104
+  async def test_owned_applications_page_reaches_past_the_first_hundred(
+      jobs_db, tmp_path, monkeypatch
+  ):
+      hr, student, other, job, rid, _resume, _raw, factory = await setup(
+          jobs_db, tmp_path, monkeypatch
+      )
+      try:
+          scope = await source_scope(factory, job["id"], str(rid))
+          seeded = await seed_owned_applications(
+              factory, scope, count=105, created=ascending(datetime(2026, 1, 1, tzinfo=UTC), 105)
+          )
+          first = await fetch_page(student, "/applications/mine")
+          assert first["total"] == 105 and first["page"] == 1 and first["pageSize"] == 20
+          assert len(first["items"]) == 20
+          assert [row["id"] for row in first["items"]] == [
+              row["application_id"] for row in reversed(seeded)
+          ][:20]
+          # The 101st owned record only exists on the last page; the old fixed 100-row
+          # list could never return it.
+          last = await fetch_page(student, "/applications/mine", page=6)
+          assert last["page"] == 6 and len(last["items"]) == 5 and last["total"] == 105
+          assert last["items"][0]["id"] == seeded[4]["application_id"]
+          assert (await fetch_page(student, "/applications/mine", page=99))["page"] == 6
+      finally:
+          await close(hr, student, other)
+file D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py, line 29
+  @pytest.fixture
+  async def jobs_db(matching_db):
+      # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+      return matching_db
+E       fixture 'matching_db' not found
+>       available fixtures: _asyncio_loop_factory, _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, disable_external_ai_for_tests, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, jobs_db, monkeypatch, platformdirs_isolated, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+D:\jbcode\web ai\jianli\backend\app\tests\test_paginated_lists_postgres.py:29
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR app/tests/test_paginated_lists_postgres.py::test_equal_timestamps_order_stably_without_duplicates
+ERROR app/tests/test_paginated_lists_postgres.py::test_exact_last_page_clamping_empty_and_query_bounds
+ERROR app/tests/test_paginated_lists_postgres.py::test_growth_page_counts_rows_it_could_not_read_without_widening_catches
+ERROR app/tests/test_paginated_lists_postgres.py::test_job_candidates_page_excludes_withdrawn_and_denies_non_managers
+ERROR app/tests/test_paginated_lists_postgres.py::test_job_filter_applies_before_count_and_stays_owner_scoped
+ERROR app/tests/test_paginated_lists_postgres.py::test_match_report_history_pages_with_default_twenty
+ERROR app/tests/test_paginated_lists_postgres.py::test_notification_page_size_aliases_and_conflict
+ERROR app/tests/test_paginated_lists_postgres.py::test_owned_applications_page_reaches_past_the_first_hundred
+120 deselected, 5 warnings, 8 errors in 1.92s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,73 @@
+[
+  {
+    "requirements": 0,
+    "before": {
+      "wireBytes": 12900,
+      "admissionBound": 13924,
+      "systemBytes": 12607
+    },
+    "after": {
+      "wireBytes": 11298,
+      "admissionBound": 12322,
+      "systemBytes": 11005
+    }
+  },
+  {
+    "requirements": 1,
+    "before": {
+      "wireBytes": 15098,
+      "admissionBound": 16122,
+      "systemBytes": 12607
+    },
+    "after": {
+      "wireBytes": 13496,
+      "admissionBound": 14520,
+      "systemBytes": 11005
+    },
+    "plannerBound": 9233
+  },
+  {
+    "requirements": 5,
+    "before": {
+      "wireBytes": 23894,
+      "admissionBound": 24918,
+      "systemBytes": 12607
+    },
+    "after": {
+      "wireBytes": 22292,
+      "admissionBound": 23316,
+      "systemBytes": 11005
+    },
+    "plannerBound": 12313
+  },
+  {
+    "requirements": 8,
+    "before": {
+      "wireBytes": 30491,
+      "admissionBound": 31515,
+      "systemBytes": 12607
+    },
+    "after": {
+      "wireBytes": 28889,
+      "admissionBound": 29913,
+      "systemBytes": 11005
+    },
+    "plannerBound": 14623
+  },
+  {
+    "requirements": 5,
+    "kind": "frozen-complete-campus-project",
+    "syntheticOnly": true,
+    "materialSha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "before": {
+      "wireBytes": 38324,
+      "admissionBound": 39348,
+      "systemBytes": 12607
+    },
+    "after": {
+      "wireBytes": 36722,
+      "admissionBound": 37746,
+      "systemBytes": 11005
+    }
+  }
+]

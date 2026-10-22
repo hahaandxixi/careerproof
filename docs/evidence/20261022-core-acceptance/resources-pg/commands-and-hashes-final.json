@@ -1,0 +1,19 @@
+{
+  "databasePort": 55445,
+  "databaseName": "cp_ci",
+  "externalAi": false,
+  "sourceSha256": {
+    "backend/app/services/material_admission.py": "e2c82e7f8393e265084fabb6800fd0e53a50b138f8a326fd0af992b11c6262ff",
+    "backend/app/services/portfolio.py": "8e14f951c3d7e6468b348a4fee37f633fb91a3061587f7b077c2546ecaad7886",
+    "backend/app/services/task_lifecycle.py": "33af4c90ba4f8aec720f7e7303d9d3e8f1b7f953e1e6457e99dc8f6d5fec2599",
+    "backend/app/tests/test_material_admission_postgres.py": "dbe5509b97e960c2880e55912f108a9f04e90fa58b04bd959a4e149f3bcd2a51"
+  },
+  "command": "python -m pytest app/tests/test_material_admission_postgres.py -q -p no:cacheprovider --basetemp=.tmp/material-admission-pg-final",
+  "cwd": "backend",
+  "exit": 0,
+  "result": "9 passed",
+  "log": "pytest-final.raw.out",
+  "lockMode": "FOR NO KEY UPDATE (verified native PostgreSQL SQLAlchemy compilation)",
+  "unchangedPriorTests": 8,
+  "productionLockChangeOwner": "root"
+}

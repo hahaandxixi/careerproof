@@ -1,0 +1,228 @@
+{
+  "source": "unit-baseline.raw.out",
+  "baseline": "ba0c970 tracked-only stage",
+  "counts": {
+    "passed": 1500,
+    "failed": 43,
+    "skipped": 75,
+    "obsoleteFrozenSource": 12,
+    "budgetRelated": 31
+  },
+  "failures": [
+    {
+      "test": "app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-repeat_source]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-internal_reason]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-repeat_source]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-internal_reason]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_packet_and_guard_limits_are_fixed_before_any_send",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_workflow_uses_explicit_provider_override",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_agent_model_stop_is_not_labeled_program_skip",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_full_agent_chain_uses_mock_transport_and_real_workflow",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_agent_source_mismatch_becomes_hard_stop_without_post",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_evidence_smoke.py::test_offline_agent_cli_does_not_construct_provider",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_receipt_checkpoint_failure_stops_real_executor_after_one_post",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_final_log_write_failure_exits_without_success_summary",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]",
+      "classification": "obsolete-historical-agent-source-packet",
+      "remainingValidation": "current-source MockTransport recheck"
+    },
+    {
+      "test": "app/tests/test_career_change_attribution.py::test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_deepseek_provider.py::test_deepseek_json_evidence_request_uses_non_thinking_mode",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_deepseek_provider.py::test_single_missing_item_brace_is_repaired_and_recorded",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_deepseek_provider.py::test_truncated_json_keeps_usage_and_reports_token_limit",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[None]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[hash]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[sensitive]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_directed_retrieval.py::test_directed_source_persists_and_other_owner_cannot_read",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[current]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[history]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[repair]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_function_coverage.py::test_joint_coverage_conflict_is_repaired_once_or_falls_back[False]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_function_coverage.py::test_joint_coverage_conflict_is_repaired_once_or_falls_back[True]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[None-False]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[None-True]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[historical_citation-False]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[historical_citation-True]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[old_level-False]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[old_level-True]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_report_history.py::test_ineligible_second_retrieval_is_rejected_without_losing_analysis",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_zhipu_json_evidence_protocol_and_usage",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_zhipu_rate_limit_uses_rule_fallback_without_retry[1302-rate_limit]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_zhipu_rate_limit_uses_rule_fallback_without_retry[1305-provider_busy]",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_invalid_output_is_repaired_once",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_retrieval_replans_once_from_previous_result_and_counts_usage",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    },
+    {
+      "test": "app/tests/test_zhipu_provider.py::test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis",
+      "classification": "default-input-budget-or-planning-reservation",
+      "remainingValidation": "budget owner targeted recheck"
+    }
+  ]
+}

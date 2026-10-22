@@ -1,0 +1,124 @@
+F
+================================== FAILURES ===================================
+_______ test_cancel_joins_real_worker_before_removing_only_its_attempt ________
+
+student = <httpx.AsyncClient object at 0x000002B25E909460>
+app_database = <fastapi.applications.FastAPI object at 0x000002B25E7F67B0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002B25E8D1D30>
+
+    @pytest.mark.asyncio
+    async def test_cancel_joins_real_worker_before_removing_only_its_attempt(
+        student, app_database, monkeypatch,
+    ):
+        assert Path(portfolio_service.__file__).resolve().is_relative_to(ACCEPTED_BACKEND)
+        assert settings.ai_external_enabled is False and settings.ai_provider == "mock"
+        submitted = []
+    
+        def queue_only(self, background_tasks, function, *args):
+            submitted.append((function, args))
+    
+        monkeypatch.setattr(task_runner.FastAPIBackgroundTaskRunner, "submit", queue_only)
+        project = (await student.post("/api/v1/projects", json={"name": "cancel-cleanup-probe"}))
+        assert project.status_code == 201, project.text
+        project_id = project.json()["data"]["id"]
+    
+        async def upload(filename):
+            response = await student.post(
+                f"/api/v1/projects/{project_id}/versions",
+                data={"requestId": str(uuid4())},
+                files={"file": (filename, project_zip(), "application/zip")},
+            )
+            assert response.status_code == 202, response.text
+            return response.json()["data"]
+    
+        # A real successful material has persisted ProjectFile references; it is not
+        # just a similarly named directory pretending to be an accepted version.
+        successful = await upload("successful.zip")
+        await portfolio_service.execute_project_scan_task(
+            UUID(successful["taskId"]), UUID(successful["versionId"])
+        )
+        async with portfolio_service.async_session_factory() as session:
+            version = await session.get(ProjectVersion, UUID(successful["versionId"]))
+            assert version.analysis_status == "completed"
+            files = list(await session.scalars(select(ProjectFile).where(
+                ProjectFile.project_version_id == version.id
+            )))
+            assert files
+            successful_keys = [entry.storage_key for entry in files]
+        storage = LocalStorage(settings.storage_base_dir)
+        successful_bytes = {
+            key: storage.resolve(key).read_bytes() for key in successful_keys
+        }
+    
+        target = await upload("cancelled.zip")
+        version_id = UUID(target["versionId"])
+        task_id = UUID(target["taskId"])
+        async with portfolio_service.async_session_factory() as session:
+            target_version = await session.get(ProjectVersion, version_id)
+            raw_key = target_version.archive_storage_key
+        raw_bytes = storage.resolve(raw_key).read_bytes()
+        target_parent = storage.resolve(f"projects/extracted/{version_id}")
+        captured = []
+        real_popen = task_runner.subprocess.Popen
+    
+        def capture_popen(*args, **kwargs):
+            assert args[0][-2:] == ["-m", "app.services.isolated_worker"]
+            process = real_popen(*args, **kwargs)
+            captured.append(process)
+            return process
+    
+        cleanup_events = []
+        original_cleanup = portfolio_service.cleanup_attempt
+    
+        async def audited_cleanup(session, current_storage, current_version_id, token, **kwargs):
+            if current_version_id == version_id:
+                assert len(captured) == 1
+                child = captured[0]
+                assert child.poll() is not None, "cleanup raced a still-running parser"
+                attempt = current_storage.resolve(f"projects/extracted/{version_id}/{token}")
+                assert attempt.exists(), "worker must have written partial output before cancellation"
+                cleanup_events.append({
+                    "pid": child.pid, "childReturnCodeBeforeCleanup": child.returncode,
+                    "attemptExistedBeforeCleanup": True,
+                })
+            result = await original_cleanup(
+                session, current_storage, current_version_id, token, **kwargs
+            )
+            if current_version_id == version_id:
+                cleanup_events[-1]["result"] = result
+                cleanup_events[-1]["attemptExistsAfterCleanup"] = attempt.exists()
+            return result
+    
+        monkeypatch.setattr(task_runner.subprocess, "Popen", capture_popen)
+        monkeypatch.setattr(portfolio_service, "cleanup_attempt", audited_cleanup)
+        monkeypatch.setattr(portfolio_service, "process_project", blocking_project_processor)
+        execution = asyncio.create_task(portfolio_service.execute_project_scan_task(task_id, version_id))
+        try:
+            await wait_until(lambda: target_parent.exists() and any(target_parent.glob("*/partial.txt")))
+            assert len(captured) == 1 and captured[0].poll() is None
+            partial = next(target_parent.glob("*/partial.txt"))
+            worker_metadata = json.loads(
+                (target_parent / f".{partial.parent.name}.worker.json").read_text(encoding="utf-8")
+            )
+>           assert worker_metadata["pid"] == captured[0].pid
+E           AssertionError: assert 339724 == 339580
+E            +  where 339580 = <Popen: returncode: None args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-...>.pid
+
+..\..\..\..\..\docs\evidence\20261022-core-acceptance\resources\test_cancel_cleanup.py:145: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED ::test_cancel_joins_real_worker_before_removing_only_its_attempt - Ass...
+1 failed, 5 warnings in 3.33s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

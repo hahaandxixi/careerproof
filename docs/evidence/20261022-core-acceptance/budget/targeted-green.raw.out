@@ -1,0 +1,4 @@
+............{'requirements': 1, 'limit': 32000, 'preflight': {'requestKind': 'structured_output', 'estimatedInputBound': 14238, 'remainingInputBudget': 32000, 'estimateMethod': 'utf8-wire-bytes-plus-safety-margin', 'safetyMarginBytes': 1024, 'allowed': True}}
+.{'requirements': 5, 'limit': 32000, 'preflight': {'requestKind': 'structured_output', 'estimatedInputBound': 23034, 'remainingInputBudget': 32000, 'estimateMethod': 'utf8-wire-bytes-plus-safety-margin', 'safetyMarginBytes': 1024, 'allowed': True}}
+.......................................................................................
+100 passed in 1.55s

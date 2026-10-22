@@ -1,0 +1,30 @@
+{
+  "testFile": "backend/app/tests/test_visual_evidence.py",
+  "testSha256": "eaa74135adb21b041d7aebfe1b944e326c9bac6abe3a9b717a75aaf8c781b7fb",
+  "acceptedStageSameTest": true,
+  "productionFile": "backend/app/services/visual_evidence.py",
+  "productionSha256": "365ceb79b7016eb915694e88f0728679e5937cead774da848af8a8dbe3af1900",
+  "productionChanged": false,
+  "results": {
+    "originalSingle": {
+      "passed": 1,
+      "exitCode": 0
+    },
+    "acceptedModule": {
+      "passed": 48,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "removeTimeoutMutation": {
+      "failed": 1,
+      "exitCode": 1
+    },
+    "moveTimeoutAfterQueueMutation": {
+      "failed": 1,
+      "exitCode": 1
+    }
+  },
+  "timeoutSeconds": 0.05,
+  "watchdogSeconds": 5
+}

@@ -1,0 +1,258 @@
+.........FF.......FF..FF                                                 [100%]
+================================== FAILURES ===================================
+______________ test_agent_model_stop_is_not_labeled_program_skip ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018F1DD2BAD0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_agent_model_stop_is_not_l0')
+
+    def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
+        data = packet()
+        guard_holder = {}
+    
+        def handler(request):
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            if "tools" in body:
+                return httpx.Response(
+                    200,
+                    json={
+                        "choices": [{"message": {"content": ""}}],
+                        "usage": {"prompt_tokens": 100, "completion_tokens": 5},
+                    },
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, "R1-E1"), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+        report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "model-stop.json", (Decimal(2), Decimal(8)))
+        )
+    
+>       assert report["externalRequests"] == 5
+E       assert 3 == 5
+
+app\tests\test_agent_evidence_smoke.py:392: AssertionError
+_________ test_full_agent_chain_uses_mock_transport_and_real_workflow _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018F1DD2AFC0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_full_agent_chain_uses_moc0')
+
+    def test_full_agent_chain_uses_mock_transport_and_real_workflow(monkeypatch, tmp_path):
+        data = packet()
+        calls = []
+        guard_holder = {}
+    
+        def handler(request):
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            calls.append((guard.case_id, guard.stage, body))
+            if "tools" in body:
+                if guard.case_id == "AG-01":
+                    return tool_response("retrieve_more_evidence", case)
+                if guard.case_id == "AG-03":
+                    return tool_response("get_previous_report_context", case)
+                raise AssertionError("AG-02 must be program-skipped before planning")
+            citation = "R1-E3" if guard.case_id == "AG-01" else "R1-E1"
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, citation), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        other_calls = []
+        other = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: other_calls.append(request)),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: other)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    
+        report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "agent-report.json", (Decimal(2), Decimal(8)))
+        )
+    
+>       assert report["status"] == "structural_checks_complete_human_review_pending", report
+E       AssertionError: {'attempts': [{'case': 'AG-01', 'latencyMs': 0, 'requestSha256': 'b54d423870f52047c41c53faa5812316a23dd13ec4fb21f4624e...mpt_tokens': 150}}, ...}], 'batch': 'agent-live-20261020-three-cases', 'externalRequests': 4, 'humanReview': None, ...}
+E       assert 'completed_wi...ules_fallback' == 'structural_c...eview_pending'
+E         
+E         - structural_checks_complete_human_review_pending
+E         + completed_with_rules_fallback
+
+app\tests\test_agent_evidence_smoke.py:462: AssertionError
+_____ test_receipt_checkpoint_failure_stops_real_executor_after_one_post ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018F1DDB0110>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_receipt_checkpoint_failur0')
+
+    def test_receipt_checkpoint_failure_stops_real_executor_after_one_post(monkeypatch, tmp_path):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path)
+        output = tmp_path / "receipt.json"
+        fault = fail_receipt_write(monkeypatch, output, persistent=False)
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+        assert fault["fired"]
+>       assert calls == [("POST", "AG-01", "planning_1")]
+E       AssertionError: assert [('POST', 'AG..., 'analysis')] == [('POST', 'AG...'planning_1')]
+E         
+E         At index 0 diff: ('POST', 'AG-01', 'analysis') != ('POST', 'AG-01', 'planning_1')
+E         Use -v to get more diff
+
+app\tests\test_agent_smoke_hard_stop.py:84: AssertionError
+_________ test_final_log_write_failure_exits_without_success_summary __________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_final_log_write_failure_e0')
+
+    def test_final_log_write_failure_exits_without_success_summary(tmp_path):
+        code = textwrap.dedent("""
+            import json, sys
+            from pathlib import Path
+            from decimal import Decimal
+            import pytest
+            from app.tests.test_agent_smoke_hard_stop import setup_batch, fail_receipt_write
+            from evals import bounded_evidence_smoke as smoke
+            root = Path(sys.argv[1])
+            patch = pytest.MonkeyPatch()
+            data, calls, holder = setup_batch(patch, root)
+            output = root / "unsaved.json"
+            fail_receipt_write(patch, output, persistent=True)
+            patch.setattr(smoke, "checked_prices", lambda _: (Decimal(2), Decimal(8)))
+            packet_path = root / "packet.json"
+            packet_path.write_text(json.dumps(data), encoding="utf-8")
+            sys.argv = ["smoke", "--agent", "--live", "--packet", str(packet_path),
+                        "--output", str(output), "--prices", str(root / "synthetic-price.json")]
+            try:
+                smoke.main()
+            finally:
+                print(json.dumps({"calls": calls, "stopped": holder["guard"].stopped}))
+        """)
+        child = subprocess.run(
+            [sys.executable, "-c", code, str(tmp_path)],
+            cwd=smoke.ROOT / "backend",
+            capture_output=True,
+            timeout=30,
+        )
+        assert child.returncode != 0
+        assert b"Agent final report persistence failed" in child.stderr
+        assert b"structural_checks_complete" not in child.stdout
+        trace = json.loads(child.stdout.decode().splitlines()[-1])
+>       assert trace == {"calls": [["POST", "AG-01", "planning_1"]], "stopped": True}
+E       AssertionError: assert {'calls': [['...topped': True} == {'calls': [['...topped': True}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'calls': [['POST', 'AG-01', 'analysis']]} != {'calls': [['POST', 'AG-01', 'planning_1']]}
+E         Use -v to get more diff
+
+app\tests\test_agent_smoke_hard_stop.py:128: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018F1DDB0950>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_nonretry_http_error_with_2')
+status = 400, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (1 == 2)
+E        +  where 1 = len([('POST', 'AG-01', 'analysis')])
+
+app\tests\test_agent_smoke_hard_stop.py:141: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018F1DDB1730>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-20261022-frozen-approved/test_nonretry_http_error_with_3')
+status = 401, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+        report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+>       assert len(calls) == expected_posts and all(c[0:2] == ("POST", "AG-01") for c in calls)
+E       AssertionError: assert (1 == 2)
+E        +  where 1 = len([('POST', 'AG-01', 'analysis')])
+
+app\tests\test_agent_smoke_hard_stop.py:141: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_model_stop_is_not_labeled_program_skip
+FAILED app/tests/test_agent_evidence_smoke.py::test_full_agent_chain_uses_mock_transport_and_real_workflow
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_receipt_checkpoint_failure_stops_real_executor_after_one_post
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_final_log_write_failure_exits_without_success_summary
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]
+6 failed, 18 passed, 2 warnings in 1.87s

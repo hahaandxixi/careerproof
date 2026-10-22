@@ -1,0 +1,109 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__ test_second_cancellation_waits_for_complete_teardown_and_preserves_first ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002365BBBEE70>
+
+    async def test_second_cancellation_waits_for_complete_teardown_and_preserves_first(monkeypatch):
+        """Deterministic control-flow test; native-process proof is a separate probe."""
+        events = []
+        launcher_wait_started = asyncio.Event()
+        launcher_release = asyncio.Event()
+        communication_release = asyncio.Event()
+    
+        class MemoryPath:
+            def __init__(self, *args):
+                pass
+    
+            def __truediv__(self, value):
+                return self
+    
+            def exists(self):
+                return True
+    
+            def read_text(self, **kwargs):
+                return '{"nonce":"expected"}'
+    
+            def with_suffix(self, value):
+                return self
+    
+            def __str__(self):
+                return "memory-only"
+    
+        class Process:
+            returncode = None
+    
+            def poll(self):
+                return self.returncode
+    
+            def kill(self):
+                events.append("launcher_killed")
+                self.returncode = 1
+    
+            def communicate(self, *args, **kwargs):
+                raise AssertionError("No actual I/O in memory control-flow test")
+    
+            def wait(self):
+                raise AssertionError("No actual I/O in memory control-flow test")
+    
+        process = Process()
+    
+        class Worker:
+            def __init__(self, *args):
+                events.append("worker_retained")
+    
+            def terminate_and_wait(self):
+                events.append("actual_worker_joined")
+                communication_release.set()
+    
+            def close(self):
+                events.append("handle_closed")
+    
+        async def fake_thread(function, *args, **kwargs):
+            if function == process.communicate:
+                await communication_release.wait()
+                return b"", None
+            if function == process.wait:
+                events.append("launcher_wait_started")
+                launcher_wait_started.set()
+                await launcher_release.wait()
+                return 1
+            return function(*args, **kwargs)
+    
+        asynchronous = SimpleNamespace(**{
+            name: getattr(asyncio, name) for name in (
+                "get_running_loop", "create_task", "shield", "wait_for", "sleep", "CancelledError"
+            )
+        }, to_thread=fake_thread)
+        monkeypatch.setattr(task_runner, "asyncio", asynchronous)
+        monkeypatch.setattr(task_runner, "os", SimpleNamespace(name="nt"))
+        monkeypatch.setattr(task_runner, "Path", MemoryPath)
+        monkeypatch.setattr(task_runner, "uuid4", lambda: SimpleNamespace(hex="expected"))
+        monkeypatch.setattr(task_runner, "tempfile", SimpleNamespace(
+            TemporaryDirectory=lambda **kwargs: SimpleNamespace(
+                name="memory-only", cleanup=lambda: events.append("identity_removed")
+            )
+        ))
+        monkeypatch.setattr(task_runner.subprocess, "Popen", lambda *args, **kwargs: process)
+        monkeypatch.setattr(task_runner, "WindowsWorkerHandle", Worker)
+        monkeypatch.setattr(task_runner, "publish_identity", lambda *args: events.append("admitted"))
+        task = asyncio.create_task(task_runner.run_isolated(str, 1, timeout_seconds=5))
+        try:
+            async with asyncio.timeout(1):
+                while "admitted" not in events:
+                    await asyncio.sleep(0)
+            task.cancel("first cancellation")
+            await asyncio.wait_for(launcher_wait_started.wait(), 1)
+            task.cancel("second cancellation")
+            await asyncio.sleep(0)
+            await asyncio.sleep(0)
+>           assert not task.done(), "second cancellation interrupted teardown"
+E           AssertionError: second cancellation interrupted teardown
+E           assert not True
+E            +  where True = <built-in method done of _asyncio.Task object at 0x000002365BA2F700>()
+E            +    where <built-in method done of _asyncio.Task object at 0x000002365BA2F700> = <Task cancelled name='Task-2' coro=<run_isolated() done, defined at D:\jbcode\web ai\jianli\backend\app\services\task_runner.py:33>>.done
+
+app\tests\test_worker_identity.py:194: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_worker_identity.py::test_second_cancellation_waits_for_complete_teardown_and_preserves_first
+1 failed, 9 deselected in 0.27s

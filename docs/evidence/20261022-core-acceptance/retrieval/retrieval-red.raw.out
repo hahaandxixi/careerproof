@@ -1,0 +1,220 @@
+.FFFFF                                                                   [100%]
+================================== FAILURES ===================================
+________________ test_mixed_engines_and_unavailable_model_skip ________________
+
+knowledge_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000280FEB0BC90>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000280FF11F530>
+
+    async def test_mixed_engines_and_unavailable_model_skip(knowledge_db, monkeypatch):
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FakeSemanticEmbedder())
+        # ���θ�Լ 900 �ֵ����ݱ�֤���� >=2 �� chunk�����ܹ�����ʵ�Ļ������������
+        content = "\n".join(
+            [
+                ("�������ݿ��ӻ�ƽ̨�������Ż��뻺����죬����ͼ����Ⱦ��·�����ݾۺϽӿڡ�") * 30,
+                ("ά�� PostgreSQL ���ݿ���������������ѯ��������д�Զ���Ѳ��ű���") * 30,
+            ]
+        )
+        user_id, section_id, version_id = await _seed_resume(
+            knowledge_db, suffix="two", content=content, content_hash="b" * 64
+        )
+        assert await _index_section(knowledge_db, section_id, version_id, content) >= 2
+    
+        async with knowledge_db() as session:
+            user = await session.scalar(select(User).where(User.id == user_id))
+            results = await search_owned_chunks(session, user, "���ݿ��ӻ� �����Ż�", 10)
+            assert results
+    
+            # ��ʽ������״̬�����¿��ϣ���桢�����������棻ʱ����ֶ�������֤ȷ���ԡ�
+            chunks = list(
+                await session.scalars(
+                    select(KnowledgeChunk).order_by(KnowledgeChunk.created_at.asc())
+                )
+            )
+            assert len(chunks) >= 2
+            base = datetime.now(UTC) - timedelta(hours=1)
+            for offset, chunk in enumerate(chunks):
+                chunk.created_at = base + timedelta(seconds=offset)
+                chunk.updated_at = chunk.created_at
+                chunk.chunk_metadata = {
+                    **chunk.chunk_metadata,
+                    "embeddingEngine": HASH_ENGINE if offset == len(chunks) - 1 else SEMANTIC_ENGINE,
+                }
+                if offset == len(chunks) - 1:
+                    chunk.embedding = retrieval.local_embedding(chunk.content)
+            await session.commit()
+    
+            mixed_results = await search_owned_chunks(session, user, "���ݿ��ӻ� �����Ż�", 10)
+            assert mixed_results
+            assert all(result["metadata"]["queryEngine"] == HASH_ENGINE for result in mixed_results)
+            assert all(result["metadata"]["mixedEngines"] for result in mixed_results)
+>           assert len(mixed_results) == 1
+E           AssertionError: assert 2 == 1
+E            +  where 2 = len([{'content': 'ά�� PostgreSQL ���ݿ���������������ѯ��������д�Զ���Ѳ��ű���ά�� PostgreSQL ���ݿ���������������ѯ��������д�Զ���Ѳ��ű���ά�� PostgreSQL ���ݿ���������������ѯ...ddingEngine': 'minilm-l12-v2-onnx', 'lineEnd': 1, ...}, 'sourceId': UUID('d982f1fe-6937-4f85-83a5-7398c40e5b3e'), ...}])
+
+app\tests\test_knowledge_semantic_postgres.py:228: AssertionError
+________ test_engine_inventory_includes_chunks_older_than_newest_fifty ________
+
+knowledge_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000280FEB5FD50>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000280E884A4B0>
+
+    async def test_engine_inventory_includes_chunks_older_than_newest_fifty(knowledge_db, monkeypatch):
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FakeSemanticEmbedder())
+        content = "FastAPI database rollback"
+        user_id, section_id, _ = await _seed_resume(
+            knowledge_db, suffix="over-fifty", content=content, content_hash="d" * 64
+        )
+        base = datetime.now(UTC) - timedelta(hours=1)
+        async with knowledge_db() as session:
+            older = await _add_chunk(session, section_id, content, SEMANTIC_ENGINE, base)
+            for offset in range(51):
+                await _add_chunk(
+                    session, section_id, f"hash material {offset}", HASH_ENGINE,
+                    base + timedelta(seconds=offset + 1),
+                )
+            await session.commit()
+            user = await session.get(User, user_id)
+            results = await search_owned_chunks(session, user, content, 100)
+>           assert len(results) == 51
+E           AssertionError: assert 52 == 51
+E            +  where 52 = len([{'content': 'FastAPI database rollback', 'id': UUID('7b8162c3-5a83-4547-88f0-e36088e9afe7'), 'metadata': {'delivered'..., 'mixedEngines': False, 'ownedMatches': 52, ...}, 'sourceId': UUID('5aaf1d94-86b4-497a-b23a-6bdd0d3ea3d1'), ...}, ...])
+
+app\tests\test_knowledge_semantic_postgres.py:281: AssertionError
+_____ test_semantic_query_excludes_hash_unknown_archived_and_other_owner ______
+
+knowledge_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000280E87FF690>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000280FF1C6690>
+
+    async def test_semantic_query_excludes_hash_unknown_archived_and_other_owner(
+        knowledge_db, monkeypatch,
+    ):
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FakeSemanticEmbedder())
+        content = "FastAPI database rollback"
+        user_id, section_id, _ = await _seed_resume(
+            knowledge_db, suffix="own", content=content, content_hash="e" * 64
+        )
+        _, other_id, _ = await _seed_resume(
+            knowledge_db, suffix="other", content=content, content_hash="f" * 64
+        )
+        archived_user, archived_id, _ = await _seed_resume(
+            knowledge_db, suffix="archived", content=content, content_hash="1" * 64
+        )
+        base = datetime.now(UTC) - timedelta(hours=1)
+        async with knowledge_db() as session:
+            own_profile = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == user_id)
+            )
+            archived_profile = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == archived_user)
+            )
+            archived_resume = await session.scalar(
+                select(Resume).where(Resume.student_id == archived_profile)
+            )
+            archived_resume.student_id = own_profile
+            archived_resume.is_archived = True
+            await _add_chunk(session, section_id, content, HASH_ENGINE, base)
+            await _add_chunk(session, section_id, content, None, base + timedelta(seconds=1))
+            chosen = await _add_chunk(
+                session, section_id, content, SEMANTIC_ENGINE, base + timedelta(seconds=2)
+            )
+            await _add_chunk(
+                session, other_id, content, HASH_ENGINE, base + timedelta(seconds=3)
+            )
+            await _add_chunk(
+                session, archived_id, content, HASH_ENGINE, base + timedelta(seconds=4)
+            )
+            await session.commit()
+            assert next(FakeSemanticEmbedder().embed([content])) != retrieval.local_embedding(content)
+            user = await session.get(User, user_id)
+            results = await search_owned_chunks(session, user, content, 10)
+>           assert [row["id"] for row in results] == [chosen.id]
+E           AssertionError: assert [UUID('491a8a...76706515ec3')] == [UUID('491a8a...8679423c1ba')]
+E             
+E             Left contains 2 more items, first extra item: UUID('cddb83a3-27eb-4187-98e5-3a9885b99f6b')
+E             Use -v to get more diff
+
+app\tests\test_knowledge_semantic_postgres.py:330: AssertionError
+_____________ test_legacy_unlabelled_chunks_are_not_assumed_hash ______________
+
+knowledge_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000280FF210550>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000280FF1C5CA0>
+
+    async def test_legacy_unlabelled_chunks_are_not_assumed_hash(knowledge_db, monkeypatch):
+        monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: None)
+        content = "database material"
+        user_id, section_id, _ = await _seed_resume(
+            knowledge_db, suffix="legacy", content=content, content_hash="2" * 64
+        )
+        base = datetime.now(UTC) - timedelta(hours=1)
+        async with knowledge_db() as session:
+            await _add_chunk(session, section_id, content, None, base)
+            await session.commit()
+            user = await session.get(User, user_id)
+            assert await search_owned_chunks(session, user, content, 10) == []
+            compatible = await _add_chunk(
+                session, section_id, content, HASH_ENGINE, base + timedelta(seconds=1)
+            )
+            await session.commit()
+            results = await search_owned_chunks(session, user, content, 10)
+>           assert [row["id"] for row in results] == [compatible.id]
+E           AssertionError: assert [UUID('52c8a3...43d0d3d7dbe')] == [UUID('17cea7...43d0d3d7dbe')]
+E             
+E             At index 0 diff: UUID('52c8a39e-0619-4938-826b-4720f018a47e') != UUID('17cea7c2-60f1-4110-8342-143d0d3d7dbe')
+E             Left contains one more item: UUID('17cea7c2-60f1-4110-8342-143d0d3d7dbe')
+E             Use -v to get more diff
+
+app\tests\test_knowledge_semantic_postgres.py:355: AssertionError
+_____ test_query_inference_failure_never_uses_hash_against_semantic_index _____
+
+knowledge_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000280FF24D710>, autoflush=True, expire_on_commit=False)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000280FF244DD0>
+
+    async def test_query_inference_failure_never_uses_hash_against_semantic_index(
+        knowledge_db, monkeypatch,
+    ):
+        content = "database material"
+        user_id, section_id, _ = await _seed_resume(
+            knowledge_db, suffix="inference", content=content, content_hash="3" * 64
+        )
+        async with knowledge_db() as session:
+            await _add_chunk(session, section_id, content, SEMANTIC_ENGINE, datetime.now(UTC))
+            await session.commit()
+    
+            class FailingEmbedder:
+                def embed(self, documents):
+                    raise RuntimeError("synthetic inference unavailable")
+    
+            monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FailingEmbedder())
+            user = await session.get(User, user_id)
+>           assert await search_owned_chunks(session, user, content, 10) == []
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_knowledge_semantic_postgres.py:376: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\retrieval.py:304: in search_owned_chunks
+    query_vector = await asyncio.to_thread(
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\threads.py:25: in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\concurrent\futures\thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\retrieval.py:305: in <lambda>
+    lambda: [float(value) for value in next(iter(embedder.embed([query])))]
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.tests.test_knowledge_semantic_postgres.test_query_inference_failure_never_uses_hash_against_semantic_index.<locals>.FailingEmbedder object at 0x00000280FF2B0EC0>
+documents = ['database material']
+
+    def embed(self, documents):
+>       raise RuntimeError("synthetic inference unavailable")
+E       RuntimeError: synthetic inference unavailable
+
+app\tests\test_knowledge_semantic_postgres.py:372: RuntimeError
+=========================== short test summary info ===========================
+FAILED app/tests/test_knowledge_semantic_postgres.py::test_mixed_engines_and_unavailable_model_skip
+FAILED app/tests/test_knowledge_semantic_postgres.py::test_engine_inventory_includes_chunks_older_than_newest_fifty
+FAILED app/tests/test_knowledge_semantic_postgres.py::test_semantic_query_excludes_hash_unknown_archived_and_other_owner
+FAILED app/tests/test_knowledge_semantic_postgres.py::test_legacy_unlabelled_chunks_are_not_assumed_hash
+FAILED app/tests/test_knowledge_semantic_postgres.py::test_query_inference_failure_never_uses_hash_against_semantic_index
+5 failed, 1 passed in 2.12s

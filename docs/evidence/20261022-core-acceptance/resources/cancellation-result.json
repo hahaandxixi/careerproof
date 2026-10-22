@@ -1,0 +1,24 @@
+{
+  "acceptedBackend": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend",
+  "portfolioSourceSha256": "8e14f951c3d7e6468b348a4fee37f633fb91a3061587f7b077c2546ecaad7886",
+  "actualWorkerHandleFromOwnedMarker": true,
+  "stopMode": "cancel",
+  "cancellationPropagated": true,
+  "timeoutPersistedAsFailedTask": false,
+  "cleanupEvents": [
+    {
+      "launcherPid": 412028,
+      "launcherReturnCodeBeforeCleanup": 1,
+      "workerPid": 413460,
+      "workerCreationTicks": 134371402815167748,
+      "actualWorkerExitCodeBeforeCleanup": 0,
+      "attemptExistedBeforeCleanup": true,
+      "result": "removed",
+      "attemptExistsAfterCleanup": false
+    }
+  ],
+  "rawArchivePreserved": true,
+  "successfulReferencedFilesPreserved": 1,
+  "externalModelRequests": 0,
+  "database": "fixture-owned temporary SQLite"
+}

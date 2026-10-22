@@ -1,0 +1,1 @@
+Initial targeted pytest, own session20573, sandbox default: no stdout/stderr or completion observed for several minutes (target.raw.out stayed0bytes). Interrupted only this session with Ctrl-C; no testresult inferred. Next run uses reviewed elevated command for these two offline MockTransport modules. No dependency install/service or DB operation.

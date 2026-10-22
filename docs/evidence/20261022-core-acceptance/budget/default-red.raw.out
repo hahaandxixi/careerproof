@@ -1,0 +1,172 @@
+FF
+================================== FAILURES ===================================
+_____ test_default_budget_admits_complete_minimum_and_typical_request[1] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002479B551280>
+requirement_count = 1
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("requirement_count", [1, 5])
+    async def test_default_budget_admits_complete_minimum_and_typical_request(
+        monkeypatch, requirement_count,
+    ):
+        """Default admission includes policy, rubric, evidence and complete wire shape."""
+        default_limit = type(settings).model_fields["ai_per_report_input_token_limit"].default
+        monkeypatch.setattr(settings, "ai_per_report_input_token_limit", default_limit)
+        original = build_evidence_contexts(evidenced_result())[0]
+        contexts = [
+            original.model_copy(update={"requirement_id": str(index)})
+            for index in range(requirement_count)
+        ]
+        sent = []
+    
+        def handler(request):
+            sent.append(json.loads(request.content))
+            payload = response(contexts[0]).json()
+            content = answer(contexts[0])
+            content["items"] = [answer(context)["items"][0] for context in contexts]
+            payload["choices"][0]["message"]["content"] = json.dumps(content, ensure_ascii=False)
+            return httpx.Response(200, json=payload)
+    
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+>       analysis = await instance.analyze_evidence(contexts=contexts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_report_input_budget.py:253: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:774: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:983: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x000002479B815280>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (14238>12000)
+
+app\agents\provider.py:536: ProviderInputBudgetError
+_____ test_default_budget_admits_complete_minimum_and_typical_request[5] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002479BA82150>
+requirement_count = 5
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("requirement_count", [1, 5])
+    async def test_default_budget_admits_complete_minimum_and_typical_request(
+        monkeypatch, requirement_count,
+    ):
+        """Default admission includes policy, rubric, evidence and complete wire shape."""
+        default_limit = type(settings).model_fields["ai_per_report_input_token_limit"].default
+        monkeypatch.setattr(settings, "ai_per_report_input_token_limit", default_limit)
+        original = build_evidence_contexts(evidenced_result())[0]
+        contexts = [
+            original.model_copy(update={"requirement_id": str(index)})
+            for index in range(requirement_count)
+        ]
+        sent = []
+    
+        def handler(request):
+            sent.append(json.loads(request.content))
+            payload = response(contexts[0]).json()
+            content = answer(contexts[0])
+            content["items"] = [answer(context)["items"][0] for context in contexts]
+            payload["choices"][0]["message"]["content"] = json.dumps(content, ensure_ascii=False)
+            return httpx.Response(200, json=payload)
+    
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+>       analysis = await instance.analyze_evidence(contexts=contexts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_report_input_budget.py:253: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:774: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:983: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x000002479BA82090>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (23034>12000)
+
+app\agents\provider.py:536: ProviderInputBudgetError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_report_input_budget.py::test_default_budget_admits_complete_minimum_and_typical_request[1]
+FAILED app/tests/test_report_input_budget.py::test_default_budget_admits_complete_minimum_and_typical_request[5]
+2 failed, 12 deselected, 2 warnings in 0.26s

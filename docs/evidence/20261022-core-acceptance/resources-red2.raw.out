@@ -1,0 +1,112 @@
+FF.FF.                                                                   [100%]
+================================== FAILURES ===================================
+____________ test_pending_admission_and_failed_reservation_release ____________
+
+student = <httpx.AsyncClient object at 0x0000026D827CC710>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000026D8275BE90>
+
+    async def test_pending_admission_and_failed_reservation_release(student, monkeypatch):  # noqa: F811
+        monkeypatch.setattr(settings, 'material_pending_task_limit', 1)
+        monkeypatch.setattr('app.services.task_runner.FastAPIBackgroundTaskRunner.submit',
+                            lambda *args: None)
+        first = await upload(student)
+        assert first.status_code == 202
+        task_id = UUID(first.json()['data']['taskId'])
+        second = await upload(student)
+>       assert second.status_code == 429
+E       assert 202 == 429
+E        +  where 202 = <Response [202 Accepted]>.status_code
+
+app\tests\test_material_resources.py:35: AssertionError
+______________ test_storage_reserves_extraction_across_projects _______________
+
+student = <httpx.AsyncClient object at 0x0000026D82A8F2C0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000026D82788D40>
+
+    async def test_storage_reserves_extraction_across_projects(student, monkeypatch):  # noqa: F811
+        monkeypatch.setattr('app.services.task_runner.FastAPIBackgroundTaskRunner.submit',
+                            lambda *args: None)
+        monkeypatch.setattr(settings, 'max_extracted_bytes', 1000)
+        monkeypatch.setattr(settings, 'material_storage_limit_bytes', 1600)
+        first = await upload(student)
+        assert first.status_code == 202
+        second = await upload(student)
+>       assert second.status_code == 413
+E       assert 202 == 413
+E        +  where 202 = <Response [202 Accepted]>.status_code
+
+app\tests\test_material_resources.py:51: AssertionError
+_________ test_failed_attempt_removes_only_its_extraction[lost-lease] _________
+
+student = <httpx.AsyncClient object at 0x0000026D82C3D400>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000026D82B75CD0>
+failure = 'lost-lease'
+
+    @pytest.mark.parametrize('failure', ['corrupt', 'lost-lease', 'commit'])
+    async def test_failed_attempt_removes_only_its_extraction(student, monkeypatch, failure):  # noqa: F811
+        if failure == 'lost-lease':
+            monkeypatch.setattr(portfolio, 'finish_task', _lost_lease)
+        if failure == 'commit':
+            async def fail_index(*args, **kwargs):
+                raise RuntimeError('index/transaction rejected')
+            monkeypatch.setattr(portfolio, 'index_sources', fail_index)
+        response = await upload(student, b'not a zip' if failure == 'corrupt' else None)
+        assert response.status_code == 202
+        version_id = UUID(response.json()['data']['versionId'])
+        root = settings.storage_base_dir / 'projects' / 'extracted' / str(version_id)
+>       assert not root.exists() or list(root.iterdir()) == []
+E       AssertionError: assert (not True or [WindowsPath(...4fcdd18f77b')] == []
+E        +  where True = exists()
+E        +    where exists = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red2/test_failed_attempt_removes_on1/storage/projects/extracted/e135eac7-1866-4543-a10b-2cf9d777e63a').exists
+E         
+E         Left contains one more item: WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red2/test_failed_attempt_removes_on1/storage/projects/extracted/e135eac7-1866-4543-a10b-2cf9d777e63a/28d5e5f7-2eeb-4c7a-a8d6-24fcdd18f77b')
+E         Use -v to get more diff)
+
+app\tests\test_material_resources.py:71: AssertionError
+___________ test_failed_attempt_removes_only_its_extraction[commit] ___________
+
+student = <httpx.AsyncClient object at 0x0000026D82D36A80>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000026D82A8E420>
+failure = 'commit'
+
+    @pytest.mark.parametrize('failure', ['corrupt', 'lost-lease', 'commit'])
+    async def test_failed_attempt_removes_only_its_extraction(student, monkeypatch, failure):  # noqa: F811
+        if failure == 'lost-lease':
+            monkeypatch.setattr(portfolio, 'finish_task', _lost_lease)
+        if failure == 'commit':
+            async def fail_index(*args, **kwargs):
+                raise RuntimeError('index/transaction rejected')
+            monkeypatch.setattr(portfolio, 'index_sources', fail_index)
+        response = await upload(student, b'not a zip' if failure == 'corrupt' else None)
+        assert response.status_code == 202
+        version_id = UUID(response.json()['data']['versionId'])
+        root = settings.storage_base_dir / 'projects' / 'extracted' / str(version_id)
+>       assert not root.exists() or list(root.iterdir()) == []
+E       AssertionError: assert (not True or [WindowsPath(...cef0f207ce7')] == []
+E        +  where True = exists()
+E        +    where exists = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red2/test_failed_attempt_removes_on2/storage/projects/extracted/6c5f0330-af24-4ae7-9b09-c0cb89f2efce').exists
+E         
+E         Left contains one more item: WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red2/test_failed_attempt_removes_on2/storage/projects/extracted/6c5f0330-af24-4ae7-9b09-c0cb89f2efce/3ea2ecda-1e8b-4fd6-bad7-fcef0f207ce7')
+E         Use -v to get more diff)
+
+app\tests\test_material_resources.py:71: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_material_resources.py::test_pending_admission_and_failed_reservation_release
+FAILED app/tests/test_material_resources.py::test_storage_reserves_extraction_across_projects
+FAILED app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[lost-lease]
+FAILED app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[commit]
+4 failed, 2 passed, 5 warnings in 4.85s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

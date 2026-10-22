@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="12" failures="0" skipped="0" tests="25" time="1.547" timestamp="2026-10-22T18:13:23.476772+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_agent_evidence_smoke" name="test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them" time="0.003" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_historical_agent_packet_is_rejected_after_reviewed_source_changes" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_packet_and_guard_limits_are_fixed_before_any_send" time="0.002"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_packet_and_guard_limits_are_fixed_before_any_send&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_batch_limit_is_twelve_across_cases" time="0.007" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_dynamic_request_hashes_are_recorded_and_context_source_is_guarded" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_rejects_same_path_snippet_and_citation_mismatch" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_history_identity_and_content_must_match_packet" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_workflow_uses_explicit_provider_override" time="0.006" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_model_stop_is_not_labeled_program_skip" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_agent_model_stop_is_not_labeled_program_skip&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_full_request_cap_includes_tool_schema_before_reservation" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_full_agent_chain_uses_mock_transport_and_real_workflow" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_full_agent_chain_uses_mock_transport_and_real_workflow&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_checkpoint_failure_is_hard_stop_before_post" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_source_mismatch_becomes_hard_stop_without_post" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_agent_source_mismatch_becomes_hard_stop_without_post&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_missing_usage_stops_and_keeps_reservation" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_provider_retry_cannot_bypass_guard" time="1.006" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_packet_source_drift_is_rejected" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_batch_claim_is_exclusive" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_agent_batch_claim_is_exclusive&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_offline_agent_cli_does_not_construct_provider" time="0.003" /><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_receipt_checkpoint_failure_stops_real_executor_after_one_post" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_receipt_checkpoint_failure_stops_real_executor_after_one_post&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_final_log_write_failure_exits_without_success_summary" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_final_log_write_failure_exits_without_success_summary&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]" time="0.001"><error message="failed on setup with &quot;FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'&quot;">fixturedef = &lt;FixtureDef argname='tmp_path' scope='function' baseid=''&gt;
+request = &lt;SubRequest 'tmp_path' for &lt;Function test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]&gt;&gt;
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -&gt; object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+&gt;               return (yield)
+                        ^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp/core-20261022-frozen-stage')
+mode = 448, parents = False, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend\\.tmp\\core-20261022-frozen-stage'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1311: FileNotFoundError</error></testcase></testsuite></testsuites>

@@ -1,0 +1,77 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\anyio\_core\_eventloop.py", line 204, in get_async_backend
+    return loaded_backends[asynclib_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'asyncio'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 28, in <module>
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py", line 193, in main
+    config = _prepareconfig(new_args, plugins)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py", line 361, in _prepareconfig
+    config: Config = pluginmanager.hook.pytest_cmdline_parse(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\helpconfig.py", line 124, in pytest_cmdline_parse
+    config = yield
+             ^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py", line 1192, in pytest_cmdline_parse
+    self.parse(args)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py", line 1545, in parse
+    self.pluginmanager.load_setuptools_entrypoints("pytest11")
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\pluggy\_manager.py", line 416, in load_setuptools_entrypoints
+    plugin = ep.load()
+             ^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\importlib\metadata\__init__.py", line 205, in load
+    module = import_module(match.group('module'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\assertion\rewrite.py", line 197, in exec_module
+    exec(co, module.__dict__)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\anyio\pytest_plugin.py", line 305, in <module>
+    @pytest.fixture(scope="module", params=get_available_backends())
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\anyio\_core\_eventloop.py", line 153, in get_available_backends
+    get_async_backend(backend_name)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\anyio\_core\_eventloop.py", line 206, in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\assertion\rewrite.py", line 197, in exec_module
+    exec(co, module.__dict__)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\anyio\_backends\_asyncio.py", line 4, in <module>
+    import asyncio
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\__init__.py", line 43, in <module>
+    from .windows_events import *
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\windows_events.py", line 26, in <module>
+    from . import windows_utils
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\windows_utils.py", line 125, in <module>
+    class Popen(subprocess.Popen):
+TypeError: function() argument 'code' must be code, not str

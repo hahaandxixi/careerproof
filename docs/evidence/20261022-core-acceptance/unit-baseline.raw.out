@@ -1,0 +1,3441 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0
+rootdir: D:\jbcode\web ai\jianli\backend\.tmp\core-acceptance-20261022\source\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1618 items
+
+app\tests\test_action_plan.py ...                                        [  0%]
+app\tests\test_actionable_evidence_gaps.py ........................FFFF. [  1%]
+                                                                         [  1%]
+app\tests\test_actionable_plans.py .....                                 [  2%]
+app\tests\test_agent_evidence_smoke.py F....FFFF.F....F                  [  3%]
+app\tests\test_agent_process_display.py .......                          [  3%]
+app\tests\test_agent_run_verification.py .....                           [  4%]
+app\tests\test_agent_smoke_hard_stop.py FFFFFF                           [  4%]
+app\tests\test_ai_budget_admin.py ........                               [  4%]
+app\tests\test_ai_budget_attempt_integration.py .....                    [  5%]
+app\tests\test_ai_budget_fault_recovery.py ........                      [  5%]
+app\tests\test_ai_budget_production_race.py sss.                         [  5%]
+app\tests\test_ai_budget_workflows.py ....                               [  6%]
+app\tests\test_ai_evidence_workflow.py ................................. [  8%]
+...........                                                              [  8%]
+app\tests\test_ai_rating.py ............................................ [ 11%]
+...                                                                      [ 11%]
+app\tests\test_ai_request_attempt_migration.py .s                        [ 11%]
+app\tests\test_ai_request_attempt_schema.py ...............              [ 12%]
+app\tests\test_ai_shared_budget_migration.py ..........s                 [ 13%]
+app\tests\test_ai_shared_budget_service.py ............s.                [ 14%]
+app\tests\test_alembic_environment.py ...                                [ 14%]
+app\tests\test_analysis_sse.py ....                                      [ 14%]
+app\tests\test_application_reconsent_migration.py .s.                    [ 15%]
+app\tests\test_application_resubmission.py ...s                          [ 15%]
+app\tests\test_application_verification.py ............................. [ 17%]
+.ss.......sss                                                            [ 17%]
+app\tests\test_applications_api.py ......s...                            [ 18%]
+app\tests\test_archive_scanner.py ..                                     [ 18%]
+app\tests\test_attempt_hard_stop.py ssssssss                             [ 19%]
+app\tests\test_attempt_receipts.py ...........................           [ 20%]
+app\tests\test_auth.py ......................                            [ 22%]
+app\tests\test_b08_usage_accounting.py .............                     [ 22%]
+app\tests\test_bailian_provider.py ....                                  [ 23%]
+app\tests\test_bounded_evidence_smoke.py ......................          [ 24%]
+app\tests\test_budget_hard_stop_setup.py .                               [ 24%]
+app\tests\test_business_method_selection.py ...                          [ 24%]
+app\tests\test_career_change_attribution.py ............................ [ 26%]
+............F.                                                           [ 27%]
+app\tests\test_career_visible_checks.py ................................ [ 29%]
+                                                                         [ 29%]
+app\tests\test_ci_junit_gate.py ....................                     [ 30%]
+app\tests\test_compact_evidence_prompt.py .......                        [ 31%]
+app\tests\test_content_warnings.py .........................             [ 32%]
+app\tests\test_data_integrity_migration.py .s.........ssssss             [ 33%]
+app\tests\test_deepseek_provider.py .......F.FF.........                 [ 34%]
+app\tests\test_demo_credentials.py ..............                        [ 35%]
+app\tests\test_dependency_environment_guard.py ....                      [ 35%]
+app\tests\test_dependency_upgrade_regression.py .................        [ 37%]
+app\tests\test_directed_retrieval.py .......FFFF                         [ 37%]
+app\tests\test_document_ocr.py ...........                               [ 38%]
+app\tests\test_document_parser_release.py ...                            [ 38%]
+app\tests\test_document_parser_unreadable.py ....................        [ 39%]
+app\tests\test_docx_textboxes.py ..                                      [ 39%]
+app\tests\test_durable_attempt_service.py ........ss..                   [ 40%]
+app\tests\test_durable_matching.py ......s                               [ 41%]
+app\tests\test_durable_matching_review.py ..............                 [ 41%]
+app\tests\test_durable_provider_hooks.py .......                         [ 42%]
+app\tests\test_e2e_fixture_safety.py ..........................          [ 44%]
+app\tests\test_evidence_context.py .............                         [ 44%]
+app\tests\test_evidence_growth.py ......s...                             [ 45%]
+app\tests\test_evidence_levels.py ......................                 [ 46%]
+app\tests\test_evidence_quality.py ..................................... [ 49%]
+.....                                                                    [ 49%]
+app\tests\test_evidence_scope.py ..                                      [ 49%]
+app\tests\test_external_credential_privacy.py ...........FFF............ [ 51%]
+.....                                                                    [ 51%]
+app\tests\test_fastembed_dependency_compatibility.py ..s                 [ 51%]
+app\tests\test_framework_upgrade_contract.py ...                         [ 51%]
+app\tests\test_frozen_career_conflict.py .                               [ 51%]
+app\tests\test_frozen_directed_verifier.py ...                           [ 52%]
+app\tests\test_function_coverage.py ................FF                   [ 53%]
+app\tests\test_growth_answer.py ..........                               [ 53%]
+app\tests\test_growth_answer_migration.py .                              [ 53%]
+app\tests\test_growth_answer_postgres.py sss                             [ 54%]
+app\tests\test_growth_target_job.py ......                               [ 54%]
+app\tests\test_growth_target_migration.py .                              [ 54%]
+app\tests\test_growth_target_postgres.py ss                              [ 54%]
+app\tests\test_hard_stop_worker_guards.py ...............                [ 55%]
+app\tests\test_health.py .                                               [ 55%]
+app\tests\test_history_difficult_cases.py ........                       [ 56%]
+app\tests\test_hybrid_retrieval.py .....                                 [ 56%]
+app\tests\test_input_budget_ledger.py ..                                 [ 56%]
+app\tests\test_job_discovery_curation.py .............                   [ 57%]
+app\tests\test_jobs_api.py .....                                         [ 57%]
+app\tests\test_knowledge_embedding_engine.py ..............              [ 58%]
+app\tests\test_knowledge_semantic_postgres.py ss                         [ 58%]
+app\tests\test_legacy_material_retirement.py .                           [ 58%]
+app\tests\test_local_retrieval.py ..                                     [ 58%]
+app\tests\test_login_limit_migration.py .s                               [ 58%]
+app\tests\test_login_rate_limit.py .......ss.                            [ 59%]
+app\tests\test_mako_migration_template.py .                              [ 59%]
+app\tests\test_match_agent.py .                                          [ 59%]
+app\tests\test_matcher.py ..                                             [ 59%]
+app\tests\test_matching_without_external_consent.py .                    [ 59%]
+app\tests\test_material_content_warnings.py ...                          [ 60%]
+app\tests\test_material_tasks.py ........                                [ 60%]
+app\tests\test_mcp_model_agent.py ..............                         [ 61%]
+app\tests\test_mcp_postgres_isolation.py ssssss                          [ 61%]
+app\tests\test_mcp_sdk.py .....                                          [ 62%]
+app\tests\test_mcp_stdio_integration.py .                                [ 62%]
+app\tests\test_mcp_tools.py .................................            [ 64%]
+app\tests\test_notifications.py ...s.                                    [ 64%]
+app\tests\test_open_source_review_packet.py .                            [ 64%]
+app\tests\test_ops_dba_evidence.py .........                             [ 65%]
+app\tests\test_output_drift.py ...............                           [ 66%]
+app\tests\test_paginated_lists_postgres.py ssssssss                      [ 66%]
+app\tests\test_persisted_history_case.py ............                    [ 67%]
+app\tests\test_portfolio_api.py .........                                [ 67%]
+app\tests\test_production_settings.py ................                   [ 68%]
+app\tests\test_project_upload_concurrency_postgres.py sss                [ 68%]
+app\tests\test_quality_dimensions.py ..........                          [ 69%]
+app\tests\test_quality_dimensions_holdout.py .....                       [ 69%]
+app\tests\test_quality_review_benchmark.py ............................. [ 71%]
+.....                                                                    [ 72%]
+app\tests\test_quality_review_benchmark_holdout.py ....                  [ 72%]
+app\tests\test_real_matching.py ...................                      [ 73%]
+app\tests\test_redis_parameter_evidence.py .................             [ 74%]
+app\tests\test_reference_materials.py .......                            [ 74%]
+app\tests\test_refresh_atomicity.py .s.                                  [ 75%]
+app\tests\test_release_checkpoint.py ......                              [ 75%]
+app\tests\test_release_reconsent_checks.py .....                         [ 75%]
+app\tests\test_release_smoke_safety.py ........................          [ 77%]
+app\tests\test_report_comparison.py ........................             [ 78%]
+app\tests\test_report_history.py ...FFFFFFF.                             [ 79%]
+app\tests\test_report_input_budget.py ............                       [ 80%]
+app\tests\test_resume_parser.py ...                                      [ 80%]
+app\tests\test_retrieval_evaluation.py ...........                       [ 81%]
+app\tests\test_retrieval_filtered_recall.py ssss                         [ 81%]
+app\tests\test_retrieval_version_scope.py .......                        [ 81%]
+app\tests\test_role_materials.py ......                                  [ 82%]
+app\tests\test_rule_narrative.py ..............                          [ 82%]
+app\tests\test_seed_pagination_contract.py ....                          [ 83%]
+app\tests\test_semantic_retrieval.py .....                               [ 83%]
+app\tests\test_shared_history_current_boundary.py ..............         [ 84%]
+app\tests\test_source_package.py .......................                 [ 85%]
+app\tests\test_synthetic_jobs.py ...............                         [ 86%]
+app\tests\test_task_boundaries.py .................                      [ 87%]
+app\tests\test_task_boundary_review_regressions.py .................     [ 88%]
+app\tests\test_task_plan_boundary_fallback.py .....                      [ 89%]
+app\tests\test_task_plan_future_checks.py ...........                    [ 89%]
+app\tests\test_task_plan_quality_coverage.py ..........                  [ 90%]
+app\tests\test_test_source_selection.py ..................               [ 91%]
+app\tests\test_two_sided_api_verifier.py .................               [ 92%]
+app\tests\test_validation_errors.py .                                    [ 92%]
+app\tests\test_visual_concurrency_verifier.py ................           [ 93%]
+app\tests\test_visual_evidence.py ...................................... [ 95%]
+..........                                                               [ 96%]
+app\tests\test_visual_postgres_concurrency.py ssssssss                   [ 97%]
+app\tests\test_weekend_plan_boundaries.py .......................        [ 98%]
+app\tests\test_z57_pagination.py ........                                [ 99%]
+app\tests\test_zhipu_provider.py ......FFF.FF.F..                        [100%]
+
+================================== FAILURES ===================================
+_ test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-repeat_source] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47752B0>
+fault = 'repeat_source', repeat_error = False
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", ["repeat_source", "internal_reason"])
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_actionable_gap_fault_repairs_once_or_preserves_rule_report(
+        monkeypatch,
+        fault,
+        repeat_error,
+    ):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import (
+            OfflinePlanner,
+            enable_offline_planner,
+            initial_result,
+            long_file,
+        )
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                item = answer.items[0]
+                if repeat_error or self.answers == 1:
+                    if fault == "repeat_source":
+                        item = item.model_copy(
+                            update={
+                                "suggestion": "���ύ�ú����������ļ���������־��",
+                                "citation_ids": [e.citation_id for e in contexts[0].evidence],
+                            }
+                        )
+                    else:
+                        item = item.model_copy(
+                            update={
+                                "rating": item.rating.model_copy(
+                                    update={"reason": "��ǰ�������������ơ�"}
+                                )
+                            }
+                        )
+                return answer.model_copy(update={"items": [item]})
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2 and provider.feedback[1]
+E       assert (1 == 2)
+E        +  where 1 = <app.tests.test_actionable_evidence_gaps.test_actionable_gap_fault_repairs_once_or_preserves_rule_report.<locals>.RepairPlanner object at 0x00000122E4218200>.answers
+
+app\tests\test_actionable_evidence_gaps.py:299: AssertionError
+_ test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-internal_reason] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C41D0>
+fault = 'internal_reason', repeat_error = False
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", ["repeat_source", "internal_reason"])
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_actionable_gap_fault_repairs_once_or_preserves_rule_report(
+        monkeypatch,
+        fault,
+        repeat_error,
+    ):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import (
+            OfflinePlanner,
+            enable_offline_planner,
+            initial_result,
+            long_file,
+        )
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                item = answer.items[0]
+                if repeat_error or self.answers == 1:
+                    if fault == "repeat_source":
+                        item = item.model_copy(
+                            update={
+                                "suggestion": "���ύ�ú����������ļ���������־��",
+                                "citation_ids": [e.citation_id for e in contexts[0].evidence],
+                            }
+                        )
+                    else:
+                        item = item.model_copy(
+                            update={
+                                "rating": item.rating.model_copy(
+                                    update={"reason": "��ǰ�������������ơ�"}
+                                )
+                            }
+                        )
+                return answer.model_copy(update={"items": [item]})
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2 and provider.feedback[1]
+E       assert (1 == 2)
+E        +  where 1 = <app.tests.test_actionable_evidence_gaps.test_actionable_gap_fault_repairs_once_or_preserves_rule_report.<locals>.RepairPlanner object at 0x00000122E47C4740>.answers
+
+app\tests\test_actionable_evidence_gaps.py:299: AssertionError
+_ test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-repeat_source] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C5AF0>
+fault = 'repeat_source', repeat_error = True
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", ["repeat_source", "internal_reason"])
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_actionable_gap_fault_repairs_once_or_preserves_rule_report(
+        monkeypatch,
+        fault,
+        repeat_error,
+    ):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import (
+            OfflinePlanner,
+            enable_offline_planner,
+            initial_result,
+            long_file,
+        )
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                item = answer.items[0]
+                if repeat_error or self.answers == 1:
+                    if fault == "repeat_source":
+                        item = item.model_copy(
+                            update={
+                                "suggestion": "���ύ�ú����������ļ���������־��",
+                                "citation_ids": [e.citation_id for e in contexts[0].evidence],
+                            }
+                        )
+                    else:
+                        item = item.model_copy(
+                            update={
+                                "rating": item.rating.model_copy(
+                                    update={"reason": "��ǰ�������������ơ�"}
+                                )
+                            }
+                        )
+                return answer.model_copy(update={"items": [item]})
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2 and provider.feedback[1]
+E       assert (1 == 2)
+E        +  where 1 = <app.tests.test_actionable_evidence_gaps.test_actionable_gap_fault_repairs_once_or_preserves_rule_report.<locals>.RepairPlanner object at 0x00000122E47C57F0>.answers
+
+app\tests\test_actionable_evidence_gaps.py:299: AssertionError
+_ test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-internal_reason] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C64B0>
+fault = 'internal_reason', repeat_error = True
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", ["repeat_source", "internal_reason"])
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_actionable_gap_fault_repairs_once_or_preserves_rule_report(
+        monkeypatch,
+        fault,
+        repeat_error,
+    ):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import (
+            OfflinePlanner,
+            enable_offline_planner,
+            initial_result,
+            long_file,
+        )
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                item = answer.items[0]
+                if repeat_error or self.answers == 1:
+                    if fault == "repeat_source":
+                        item = item.model_copy(
+                            update={
+                                "suggestion": "���ύ�ú����������ļ���������־��",
+                                "citation_ids": [e.citation_id for e in contexts[0].evidence],
+                            }
+                        )
+                    else:
+                        item = item.model_copy(
+                            update={
+                                "rating": item.rating.model_copy(
+                                    update={"reason": "��ǰ�������������ơ�"}
+                                )
+                            }
+                        )
+                return answer.model_copy(update={"items": [item]})
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2 and provider.feedback[1]
+E       assert (1 == 2)
+E        +  where 1 = <app.tests.test_actionable_evidence_gaps.test_actionable_gap_fault_repairs_once_or_preserves_rule_report.<locals>.RepairPlanner object at 0x00000122E47C65A0>.answers
+
+app\tests\test_actionable_evidence_gaps.py:299: AssertionError
+___________ test_packet_and_guard_limits_are_fixed_before_any_send ____________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_packet_and_guard_limits_a0')
+
+    def test_packet_and_guard_limits_are_fixed_before_any_send(tmp_path):
+        data = packet()
+>       smoke.check_agent_packet(data)
+
+app\tests\test_agent_evidence_smoke.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+____ test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C52E0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_agent_missing_usage_becom0')
+
+    def test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case(monkeypatch, tmp_path):
+        data = packet()
+        calls = []
+    
+        def reply(request):
+            calls.append(request)
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {
+                            "message": {
+                                "tool_calls": [
+                                    {
+                                        "function": {
+                                            "name": "retrieve_more_evidence",
+                                            "arguments": json.dumps(
+                                                {
+                                                    "requirement_id": data["cases"][0]["requirementId"],
+                                                    "query": "rollback",
+                                                }
+                                            ),
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(reply),
+        )
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+>       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "hard-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+________________ test_workflow_uses_explicit_provider_override ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C4890>
+
+    def test_workflow_uses_explicit_provider_override(monkeypatch):
+        from app.agents.evidence_workflow import run_evidence_workflow
+    
+        data = packet()
+        case = data["cases"][1]
+        calls = []
+        other_calls = []
+    
+        def handler(request):
+            calls.append(request)
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, "R1-E1"), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 50},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        other = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: other_calls.append(request)),
+        )
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: other)
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    
+        outcome = asyncio.run(
+            run_evidence_workflow(
+                smoke._agent_result(case),
+                provider_override=provider,
+            )
+        )
+    
+>       assert outcome.analysis is not None and not outcome.fallback_used
+E       AssertionError: assert (None is not None)
+E        +  where None = EvidenceWorkflowOutcome(contexts=[RequirementEvidenceContext(requirement_id='22222222-2222-4222-8222-222222222222', re...Budget': 12000, 'estimateMethod': 'utf8-wire-bytes-plus-safety-margin', 'safetyMarginBytes': 1024, 'allowed': False},)).analysis
+
+app\tests\test_agent_evidence_smoke.py:311: AssertionError
+______________ test_agent_model_stop_is_not_labeled_program_skip ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E48BA1E0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_agent_model_stop_is_not_l0')
+
+    def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
+        data = packet()
+        guard_holder = {}
+    
+        def handler(request):
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            if "tools" in body:
+                return httpx.Response(
+                    200,
+                    json={
+                        "choices": [{"message": {"content": ""}}],
+                        "usage": {"prompt_tokens": 100, "completion_tokens": 5},
+                    },
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, "R1-E1"), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+>       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "model-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+_________ test_full_agent_chain_uses_mock_transport_and_real_workflow _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E48BB860>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_full_agent_chain_uses_moc0')
+
+    def test_full_agent_chain_uses_mock_transport_and_real_workflow(monkeypatch, tmp_path):
+        data = packet()
+        calls = []
+        guard_holder = {}
+    
+        def handler(request):
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            calls.append((guard.case_id, guard.stage, body))
+            if "tools" in body:
+                if guard.case_id == "AG-01":
+                    return tool_response("retrieve_more_evidence", case)
+                if guard.case_id == "AG-03":
+                    return tool_response("get_previous_report_context", case)
+                raise AssertionError("AG-02 must be program-skipped before planning")
+            citation = "R1-E3" if guard.case_id == "AG-01" else "R1-E1"
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, citation), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        other_calls = []
+        other = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: other_calls.append(request)),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: other)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    
+>       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "agent-report.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:433: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+__________ test_agent_source_mismatch_becomes_hard_stop_without_post __________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E47C6BD0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_agent_source_mismatch_bec0')
+
+    def test_agent_source_mismatch_becomes_hard_stop_without_post(monkeypatch, tmp_path):
+        data = packet()
+        original = smoke._agent_result
+    
+        def tampered(row):
+            result = original(row)
+            item = result.items[0]
+            bad = replace(item.evidence_list[0], snippet="same path, tampered text")
+            updated = replace(item, evidence=bad, evidence_list=[bad, *item.evidence_list[1:]])
+            return replace(result, items=[updated])
+    
+        calls = []
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: calls.append(request)),
+        )
+        monkeypatch.setattr(smoke, "_agent_result", tampered)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+>       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "source-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:498: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+_____________ test_offline_agent_cli_does_not_construct_provider ______________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E4A14FE0>
+
+    def test_offline_agent_cli_does_not_construct_provider(monkeypatch):
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: pytest.fail("provider constructed"))
+        monkeypatch.setattr("sys.argv", ["smoke", "--agent", "--packet", str(packet_path())])
+>       assert smoke.main() == 0
+               ^^^^^^^^^^^^
+
+app\tests\test_agent_evidence_smoke.py:566: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\bounded_evidence_smoke.py:652: in main
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+_____ test_receipt_checkpoint_failure_stops_real_executor_after_one_post ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E4F21A30>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_receipt_checkpoint_failur0')
+
+    def test_receipt_checkpoint_failure_stops_real_executor_after_one_post(monkeypatch, tmp_path):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path)
+        output = tmp_path / "receipt.json"
+        fault = fail_receipt_write(monkeypatch, output, persistent=False)
+>       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+_________ test_final_log_write_failure_exits_without_success_summary __________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_final_log_write_failure_e0')
+
+    def test_final_log_write_failure_exits_without_success_summary(tmp_path):
+        code = textwrap.dedent("""
+            import json, sys
+            from pathlib import Path
+            from decimal import Decimal
+            import pytest
+            from app.tests.test_agent_smoke_hard_stop import setup_batch, fail_receipt_write
+            from evals import bounded_evidence_smoke as smoke
+            root = Path(sys.argv[1])
+            patch = pytest.MonkeyPatch()
+            data, calls, holder = setup_batch(patch, root)
+            output = root / "unsaved.json"
+            fail_receipt_write(patch, output, persistent=True)
+            patch.setattr(smoke, "checked_prices", lambda _: (Decimal(2), Decimal(8)))
+            packet_path = root / "packet.json"
+            packet_path.write_text(json.dumps(data), encoding="utf-8")
+            sys.argv = ["smoke", "--agent", "--live", "--packet", str(packet_path),
+                        "--output", str(output), "--prices", str(root / "synthetic-price.json")]
+            try:
+                smoke.main()
+            finally:
+                print(json.dumps({"calls": calls, "stopped": holder["guard"].stopped}))
+        """)
+        child = subprocess.run(
+            [sys.executable, "-c", code, str(tmp_path)],
+            cwd=smoke.ROOT / "backend",
+            capture_output=True,
+            timeout=30,
+        )
+        assert child.returncode != 0
+>       assert b"Agent final report persistence failed" in child.stderr
+E       assert b'Agent final report persistence failed' in b'Traceback (most recent call last):\r\n  File "<string>", line 19, in <module>\r\n  File "D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File "<string>", line 21, in <module>\r\nKeyError: \'guard\'\r\n'
+E        +  where b'Traceback (most recent call last):\r\n  File "<string>", line 19, in <module>\r\n  File "D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File "<string>", line 21, in <module>\r\nKeyError: \'guard\'\r\n' = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', '-c', '\nimport...rred:\r\n\r\nTraceback (most recent call last):\r\n  File "<string>", line 21, in <module>\r\nKeyError: \'guard\'\r\n').stderr
+
+app\tests\test_agent_smoke_hard_stop.py:125: AssertionError
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E507F110>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_nonretry_http_error_with_0')
+status = 400, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+>       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E5333200>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_nonretry_http_error_with_1')
+status = 401, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+>       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E5333DD0>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_nonretry_http_error_with_2')
+status = 400, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+>       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+___ test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E519F830>
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-acceptance-20261022/source/backend/.tmp-ci-unit-baseline-full/test_nonretry_http_error_with_3')
+status = 401, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+>       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:372: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...ingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, 'model': 'deepseek-flash', ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:282: SmokeStopped
+___ test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback ____
+
+matching_db = (<fastapi.applications.FastAPI object at 0x00000122EF32E540>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000122EF0F6950>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EF4F4FB0>
+caplog = <_pytest.logging.LogCaptureFixture object at 0x00000122EF2EE600>
+
+    async def test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback(
+        matching_db, monkeypatch, caplog  # noqa: F811
+    ):
+        """B-10: a real database fault inside the AI stage must surface, not fake success."""
+        from app.services import career_planning
+    
+        async def broken_budget(session, _user_id):
+            # Use a failing SQL statement instead of dropping the fixture's table:
+            # PostgreSQL's search_path can fall back to a public table of that name.
+            await session.execute(text("SELECT * FROM cp_missing_budget_fault_probe"))
+            raise AssertionError("unreachable")
+    
+        monkeypatch.setattr(career_planning, "_daily_ai_budget", broken_budget)
+        app, _factory = matching_db
+        async with (
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
+            AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        ):
+            await register(owner, "db-fault-owner@example.com")
+            await create_job(owner)
+            await register(student, "db-fault-student@example.com", "student")
+            resume, _project, version = await upload_materials(student)
+            payload = {
+                "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]],
+                "externalAiConsent": True,
+            }
+            with (
+                caplog.at_level(logging.WARNING, logger="app.services.career_planning"),
+                pytest.raises(SQLAlchemyError) as fault,
+            ):
+                await student.post("/api/v1/career-plans", json=payload)
+            records = [
+                record for record in caplog.records
+                if record.name == "app.services.career_planning"
+            ]
+>           assert len(records) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+app\tests\test_career_change_attribution.py:771: AssertionError
+_________ test_deepseek_json_evidence_request_uses_non_thinking_mode __________
+
+    async def test_deepseek_json_evidence_request_uses_non_thinking_mode():
+        contexts = build_evidence_contexts(evidenced_result())
+    
+        async def handler(request):
+            assert str(request.url) == "https://api.deepseek.com/chat/completions"
+            assert request.headers["Authorization"] == "Bearer synthetic-deepseek-key"
+            body = json.loads(request.content)
+            assert body["model"] == "deepseek-flash"
+            assert body["thinking"] == {"type": "disabled"}
+            assert body["response_format"] == {"type": "json_object"}
+            assert body["max_tokens"] == settings.ai_per_report_output_token_limit
+            assert "JSON" in body["messages"][0]["content"]
+            citation = contexts[0].evidence[0].citation_id
+            answer = {
+                "summary": "�����д���·�����������н��������顣",
+                "items": [
+                    {
+                        "requirement_id": contexts[0].requirement_id,
+                        "explanation": "Ƭ���д���·��������",
+                        "citation_ids": [citation],
+                        "information_gap": "���н���ͱ��˹���δ���顣",
+                        "suggestion": "�������м�¼��˵�����˹��ס�",
+                        "confidence": 0.5,
+                        "rating": {
+                            "level": 1,
+                            "reason": "ֻȷ�����������",
+                            "criteria": [
+                                {
+                                    "criterion": "relevance",
+                                    "supported": True,
+                                    "citation_ids": [citation],
+                                    "reason": "����·��������",
+                                },
+                                {
+                                    "criterion": "operation",
+                                    "supported": False,
+                                    "citation_ids": [],
+                                    "reason": "����Ϊ��ʵ�֡�",
+                                },
+                                {
+                                    "criterion": "task",
+                                    "supported": False,
+                                    "citation_ids": [],
+                                    "reason": "δչʾ��������",
+                                },
+                            ],
+                        },
+                    }
+                ],
+            }
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [{"message": {"content": json.dumps(answer)}}],
+                    "usage": {
+                        "prompt_tokens": 80,
+                        "completion_tokens": 40,
+                        "prompt_tokens_details": {"cached_tokens": 8},
+                    },
+                },
+            )
+    
+>       result = await provider(transport=httpx.MockTransport(handler)).analyze_evidence(
+            contexts=contexts
+        )
+
+app\tests\test_deepseek_provider.py:109: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x00000122EFAAA7B0>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16157>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+___________ test_single_missing_item_brace_is_repaired_and_recorded ___________
+
+    async def test_single_missing_item_brace_is_repaired_and_recorded():
+        contexts = build_evidence_contexts(evidenced_result())
+        requirement_id = contexts[0].requirement_id
+        citation = contexts[0].evidence[0].citation_id
+        valid_content = json.dumps(
+            {
+                "summary": "�����д���·�����������н�������顣",
+                "items": [
+                    {
+                        "requirement_id": requirement_id,
+                        "explanation": "Ƭ���д���·��������",
+                        "citation_ids": [citation],
+                        "information_gap": "���н���ͱ��˹��״����顣",
+                        "suggestion": "�������м�¼��˵�����˹��ס�",
+                        "confidence": 0.5,
+                        "rating": None,
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        )
+        content = valid_content[:-3] + valid_content[-2:]
+    
+        async def handler(request):
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [{"message": {"content": content}}],
+                    "usage": {"prompt_tokens": 20, "completion_tokens": 10},
+                },
+            )
+    
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+>       result = await instance.analyze_evidence(contexts=contexts)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_deepseek_provider.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x00000122EF32FD40>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16157>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+___________ test_truncated_json_keeps_usage_and_reports_token_limit ___________
+
+    async def test_truncated_json_keeps_usage_and_reports_token_limit():
+        contexts = build_evidence_contexts(evidenced_result())
+    
+        async def handler(request):
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [
+                        {
+                            "message": {"content": '{"summary":"δ���","items":['},
+                            "finish_reason": "length",
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 120, "completion_tokens": 3999},
+                },
+            )
+    
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        with pytest.raises(ProviderOutputTruncatedError, match="token limit"):
+>           await instance.analyze_evidence(contexts=contexts)
+
+app\tests\test_deepseek_provider.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x00000122EF6EEE40>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16157>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+____ test_planner_directed_lookup_and_failures_preserve_rule_result[None] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EF6EEC30>
+fault = None
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", [None, "hash", "sensitive"])
+    async def test_planner_directed_lookup_and_failures_preserve_rule_result(monkeypatch, fault):
+        result = initial_result(long_file())
+        if fault == "hash":
+            result = replace(
+                result, retrieval_sources=(replace(result.retrieval_sources[0], content_hash="0" * 64),)
+            )
+        provider = OfflinePlanner(query="password" if fault == "sensitive" else "rollback")
+        enable_offline_planner(monkeypatch, provider)
+        outcome = await run_evidence_workflow(result)
+        assert outcome.retrieval_result.overall_score == result.overall_score
+        if fault:
+            assert outcome.fallback_used and outcome.analysis is None
+            assert outcome.tool_calls[-1]["status"] == "unavailable"
+            return
+>       assert not outcome.fallback_used
+E       AssertionError: assert not True
+E        +  where True = EvidenceWorkflowOutcome(contexts=[RequirementEvidenceContext(requirement_id='f4daaf9a-4238-4dbe-bcbe-34b853ed4aa4', re...a10cd9a8414ad6fa3a'),)), planning_skipped_reason='report_budget_reserved', input_budget_stop=None, input_preflights=()).fallback_used
+
+app\tests\test_directed_retrieval.py:211: AssertionError
+____ test_planner_directed_lookup_and_failures_preserve_rule_result[hash] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EFA5C950>
+fault = 'hash'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", [None, "hash", "sensitive"])
+    async def test_planner_directed_lookup_and_failures_preserve_rule_result(monkeypatch, fault):
+        result = initial_result(long_file())
+        if fault == "hash":
+            result = replace(
+                result, retrieval_sources=(replace(result.retrieval_sources[0], content_hash="0" * 64),)
+            )
+        provider = OfflinePlanner(query="password" if fault == "sensitive" else "rollback")
+        enable_offline_planner(monkeypatch, provider)
+        outcome = await run_evidence_workflow(result)
+        assert outcome.retrieval_result.overall_score == result.overall_score
+        if fault:
+            assert outcome.fallback_used and outcome.analysis is None
+>           assert outcome.tool_calls[-1]["status"] == "unavailable"
+                   ^^^^^^^^^^^^^^^^^^^^^^
+E           IndexError: tuple index out of range
+
+app\tests\test_directed_retrieval.py:209: IndexError
+__ test_planner_directed_lookup_and_failures_preserve_rule_result[sensitive] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EF6ED910>
+fault = 'sensitive'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("fault", [None, "hash", "sensitive"])
+    async def test_planner_directed_lookup_and_failures_preserve_rule_result(monkeypatch, fault):
+        result = initial_result(long_file())
+        if fault == "hash":
+            result = replace(
+                result, retrieval_sources=(replace(result.retrieval_sources[0], content_hash="0" * 64),)
+            )
+        provider = OfflinePlanner(query="password" if fault == "sensitive" else "rollback")
+        enable_offline_planner(monkeypatch, provider)
+        outcome = await run_evidence_workflow(result)
+        assert outcome.retrieval_result.overall_score == result.overall_score
+        if fault:
+            assert outcome.fallback_used and outcome.analysis is None
+>           assert outcome.tool_calls[-1]["status"] == "unavailable"
+                   ^^^^^^^^^^^^^^^^^^^^^^
+E           IndexError: tuple index out of range
+
+app\tests\test_directed_retrieval.py:209: IndexError
+__________ test_directed_source_persists_and_other_owner_cannot_read __________
+
+directed_db = (<fastapi.applications.FastAPI object at 0x00000122EF612A80>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000122EF550150>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EF6EF8C0>
+
+    @pytest.mark.asyncio
+    async def test_directed_source_persists_and_other_owner_cannot_read(directed_db, monkeypatch):
+        app, _ = directed_db
+        file = long_file()
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as archive:
+            archive.writestr("src/order.py", file.content)
+        monkeypatch.setattr("app.tests.test_real_matching.source_archive", lambda: buffer.getvalue())
+        enable_offline_planner(monkeypatch, OfflinePlanner())
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as enterprise,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+            AsyncClient(transport=transport, base_url="http://test") as other,
+        ):
+            await register(enterprise, "directed-hr@example.com")
+            job = await create_job(enterprise)
+            await register(student, "directed-owner@example.com", "student")
+            await register(other, "directed-other@example.com", "student")
+            resume, _, version = await upload_materials(student)
+            report = await match_report(student, job, resume, version, externalAiConsent=True)
+>           assert report["analysisMode"] == "ai_evidence"
+E           AssertionError: assert 'rules' == 'ai_evidence'
+E             
+E             - ai_evidence
+E             + rules
+
+app\tests\test_directed_retrieval.py:245: AssertionError
+_______ test_transport_never_sends_synthetic_text_credentials[current] ________
+
+entry = 'current'
+
+    @pytest.mark.parametrize(
+        "entry",
+        ["current", "history", "repair", "auxiliary", "summary", "planning", "transport", "multimodal"],
+    )
+    async def test_transport_never_sends_synthetic_text_credentials(entry):
+        contexts = build_evidence_contexts(evidenced_result())
+        context = contexts[0]
+        assignment = 'PASSWORD="' + PRIVATE + '"'
+        original_contexts = contexts
+        raw_contexts = [c.model_dump() for c in original_contexts]
+        bitmap = "data:image/png;base64,13800138000AABBCC"
+        captured = []
+    
+        async def handler(request):
+            payload = json.loads(request.content)
+            captured.append(payload)
+            assert PRIVATE not in json.dumps(payload)
+            assert request.headers["Authorization"] == "Bearer synthetic-deepseek-key"
+            if entry == "multimodal":
+                assert payload["messages"][0]["content"][1]["image_url"]["url"] == bitmap
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    synthetic_analysis(context, "�ϳ�ժҪ").model_dump(
+                                        exclude={"model", "usage"}
+                                    )
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 10},
+                },
+            )
+    
+        model = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        if entry in {"current", "history", "repair"}:
+            kwargs = {}
+            if entry == "current":
+                contexts = [context.model_copy(update={"requirement_title": assignment})]
+            elif entry == "history":
+                model.history_context = {"items": [{"snippet": assignment}]}
+            else:
+                kwargs = {
+                    "validation_feedback": assignment,
+                    "previous_analysis": synthetic_analysis(context, assignment),
+                }
+>           await model.analyze_evidence(contexts=contexts, **kwargs)
+
+app\tests\test_external_credential_privacy.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x0000012284E840E0>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...tion_required":true}}]}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16165>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+_______ test_transport_never_sends_synthetic_text_credentials[history] ________
+
+entry = 'history'
+
+    @pytest.mark.parametrize(
+        "entry",
+        ["current", "history", "repair", "auxiliary", "summary", "planning", "transport", "multimodal"],
+    )
+    async def test_transport_never_sends_synthetic_text_credentials(entry):
+        contexts = build_evidence_contexts(evidenced_result())
+        context = contexts[0]
+        assignment = 'PASSWORD="' + PRIVATE + '"'
+        original_contexts = contexts
+        raw_contexts = [c.model_dump() for c in original_contexts]
+        bitmap = "data:image/png;base64,13800138000AABBCC"
+        captured = []
+    
+        async def handler(request):
+            payload = json.loads(request.content)
+            captured.append(payload)
+            assert PRIVATE not in json.dumps(payload)
+            assert request.headers["Authorization"] == "Bearer synthetic-deepseek-key"
+            if entry == "multimodal":
+                assert payload["messages"][0]["content"][1]["image_url"]["url"] == bitmap
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    synthetic_analysis(context, "�ϳ�ժҪ").model_dump(
+                                        exclude={"model", "usage"}
+                                    )
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 10},
+                },
+            )
+    
+        model = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        if entry in {"current", "history", "repair"}:
+            kwargs = {}
+            if entry == "current":
+                contexts = [context.model_copy(update={"requirement_title": assignment})]
+            elif entry == "history":
+                model.history_context = {"items": [{"snippet": assignment}]}
+            else:
+                kwargs = {
+                    "validation_feedback": assignment,
+                    "previous_analysis": synthetic_analysis(context, assignment),
+                }
+>           await model.analyze_evidence(contexts=contexts, **kwargs)
+
+app\tests\test_external_credential_privacy.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x0000012285363290>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...ted credential]\\""}]}}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16250>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+________ test_transport_never_sends_synthetic_text_credentials[repair] ________
+
+entry = 'repair'
+
+    @pytest.mark.parametrize(
+        "entry",
+        ["current", "history", "repair", "auxiliary", "summary", "planning", "transport", "multimodal"],
+    )
+    async def test_transport_never_sends_synthetic_text_credentials(entry):
+        contexts = build_evidence_contexts(evidenced_result())
+        context = contexts[0]
+        assignment = 'PASSWORD="' + PRIVATE + '"'
+        original_contexts = contexts
+        raw_contexts = [c.model_dump() for c in original_contexts]
+        bitmap = "data:image/png;base64,13800138000AABBCC"
+        captured = []
+    
+        async def handler(request):
+            payload = json.loads(request.content)
+            captured.append(payload)
+            assert PRIVATE not in json.dumps(payload)
+            assert request.headers["Authorization"] == "Bearer synthetic-deepseek-key"
+            if entry == "multimodal":
+                assert payload["messages"][0]["content"][1]["image_url"]["url"] == bitmap
+            return httpx.Response(
+                200,
+                json={
+                    "model": "deepseek-flash",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    synthetic_analysis(context, "�ϳ�ժҪ").model_dump(
+                                        exclude={"model", "usage"}
+                                    )
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 10},
+                },
+            )
+    
+        model = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        if entry in {"current", "history", "repair"}:
+            kwargs = {}
+            if entry == "current":
+                contexts = [context.model_copy(update={"requirement_title": assignment})]
+            elif entry == "history":
+                model.history_context = {"items": [{"snippet": assignment}]}
+            else:
+                kwargs = {
+                    "validation_feedback": assignment,
+                    "previous_analysis": synthetic_analysis(context, assignment),
+                }
+>           await model.analyze_evidence(contexts=contexts, **kwargs)
+
+app\tests\test_external_credential_privacy.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:1002: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.DeepSeekProvider object at 0x0000012284D6E840>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...dacted credential]\\""}', 'role': 'user'}], 'model': 'deepseek-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16722>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+_____ test_joint_coverage_conflict_is_repaired_once_or_falls_back[False] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000012283D3A330>
+repeat_error = False
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_joint_coverage_conflict_is_repaired_once_or_falls_back(monkeypatch, repeat_error):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import OfflinePlanner, enable_offline_planner
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                gap = (
+                    "δչʾ store ��ʵ�֡��������������ġ�ʵ�����н����"
+                    if repeat_error or self.answers == 1
+                    else "����ԭ���Ѹ��ǣ�����ʵ�֡������빱���Դ����顣"
+                )
+                return answer.model_copy(
+                    update={
+                        "items": [
+                            answer.items[0].model_copy(
+                                update={
+                                    "information_gap": gap,
+                                    "citation_ids": [
+                                        entry.citation_id for entry in contexts[0].evidence
+                                    ],
+                                }
+                            ),
+                        ]
+                    }
+                )
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2
+E       assert 1 == 2
+E        +  where 1 = <app.tests.test_function_coverage.test_joint_coverage_conflict_is_repaired_once_or_falls_back.<locals>.RepairPlanner object at 0x00000122843DC9B0>.answers
+
+app\tests\test_function_coverage.py:205: AssertionError
+______ test_joint_coverage_conflict_is_repaired_once_or_falls_back[True] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122EE1374A0>
+repeat_error = True
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("repeat_error", [False, True])
+    async def test_joint_coverage_conflict_is_repaired_once_or_falls_back(monkeypatch, repeat_error):
+        from app.agents.evidence_workflow import run_evidence_workflow
+        from app.tests.test_directed_retrieval import OfflinePlanner, enable_offline_planner
+    
+        class RepairPlanner(OfflinePlanner):
+            def __init__(self):
+                super().__init__()
+                self.answers = 0
+                self.feedback = []
+    
+            async def analyze_evidence(self, *, contexts, **kwargs):
+                self.answers += 1
+                self.feedback.append(kwargs.get("validation_feedback"))
+                answer = await super().analyze_evidence(contexts=contexts, **kwargs)
+                gap = (
+                    "δչʾ store ��ʵ�֡��������������ġ�ʵ�����н����"
+                    if repeat_error or self.answers == 1
+                    else "����ԭ���Ѹ��ǣ�����ʵ�֡������빱���Դ����顣"
+                )
+                return answer.model_copy(
+                    update={
+                        "items": [
+                            answer.items[0].model_copy(
+                                update={
+                                    "information_gap": gap,
+                                    "citation_ids": [
+                                        entry.citation_id for entry in contexts[0].evidence
+                                    ],
+                                }
+                            ),
+                        ]
+                    }
+                )
+    
+        provider = RepairPlanner()
+        enable_offline_planner(monkeypatch, provider)
+        result = initial_result(long_file())
+        outcome = await run_evidence_workflow(result)
+>       assert provider.answers == 2
+E       assert 1 == 2
+E        +  where 1 = <app.tests.test_function_coverage.test_joint_coverage_conflict_is_repaired_once_or_falls_back.<locals>.RepairPlanner object at 0x0000012283F771A0>.answers
+
+app\tests\test_function_coverage.py:205: AssertionError
+___ test_model_selects_history_once_without_promoting_old_level[None-False] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C631760>
+history_fault = False, response_fault = None
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['5b3c9d54-23...9af899bda59d']
+E         
+E         Right contains one more item: '5b3c9d54-23b0-44b4-8028-9af899bda59d'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+___ test_model_selects_history_once_without_promoting_old_level[None-True] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C5DD280>
+history_fault = True, response_fault = None
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['dbcdf48a-24...e96062270a13']
+E         
+E         Right contains one more item: 'dbcdf48a-2472-4bbe-b900-e96062270a13'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+_ test_model_selects_history_once_without_promoting_old_level[historical_citation-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C6FA5A0>
+history_fault = False, response_fault = 'historical_citation'
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['12ae7477-cd...fb64ec405b1c']
+E         
+E         Right contains one more item: '12ae7477-cdc7-4afc-813e-fb64ec405b1c'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+_ test_model_selects_history_once_without_promoting_old_level[historical_citation-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C787320>
+history_fault = True, response_fault = 'historical_citation'
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['dc0f4d2f-3b...32d444f57591']
+E         
+E         Right contains one more item: 'dc0f4d2f-3b8f-41d3-8007-32d444f57591'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+_ test_model_selects_history_once_without_promoting_old_level[old_level-False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C576F30>
+history_fault = False, response_fault = 'old_level'
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['d4c0a1f8-76...d8f57645bc82']
+E         
+E         Right contains one more item: 'd4c0a1f8-7602-48bd-a1ea-d8f57645bc82'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+_ test_model_selects_history_once_without_promoting_old_level[old_level-True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C6FB860>
+history_fault = True, response_fault = 'old_level'
+
+    @pytest.mark.parametrize("history_fault", [False, True])
+    @pytest.mark.parametrize("response_fault", [None, "historical_citation", "old_level"])
+    async def test_model_selects_history_once_without_promoting_old_level(
+        monkeypatch, history_fault, response_fault
+    ):
+        result = evidenced_result()
+        requirement_id = str(result.items[0].requirement_id)
+        seen = []
+        reads = []
+    
+        async def read(target):
+            reads.append(target)
+            if history_fault:
+                raise ValueError("Synthetic optional-history failure")
+            return {
+                "savedAiLevel": 3,
+                "previousExplanation": "old@example.com 13800138000",
+                "previousEvidence": [{"historicalReference": "history-1", "snippet": "old code"}],
+            }
+    
+        def handler(request):
+            body = json.loads(request.content)
+            seen.append(body)
+            if "tools" in body:
+                if "get_previous_report_context" not in [t["function"]["name"] for t in body["tools"]]:
+                    return httpx.Response(
+                        200, json={"choices": [{"message": {"content": "���貹����"}}]}
+                    )
+                message = {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_previous_report_context",
+                                "arguments": json.dumps({"requirement_id": requirement_id}),
+                            }
+                        }
+                    ]
+                }
+            else:
+                assert "old@example.com" not in body["messages"][1]["content"]
+                assert "13800138000" not in body["messages"][1]["content"]
+                answer = {
+                    "summary": "��ǰ����ֻչʾ·��������",
+                    "items": [
+                        {
+                            "requirement_id": requirement_id,
+                            "explanation": "��ǰƬ�κ�·�������Ϳպ�����",
+                            "citation_ids": ["R1-E1"],
+                            "information_gap": "���н���뱾�˹���δ���顣",
+                            "suggestion": "���䴦����������м�¼��",
+                            "confidence": 0.5,
+                            "rating": {
+                                "level": 1,
+                                "reason": "ֻ�����������",
+                                "criteria": [
+                                    {
+                                        "criterion": "relevance",
+                                        "supported": True,
+                                        "citation_ids": ["R1-E1"],
+                                        "reason": "·�������ɼ���",
+                                    },
+                                    {
+                                        "criterion": "operation",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "������Ϊ�ա�",
+                                    },
+                                    {
+                                        "criterion": "task",
+                                        "supported": False,
+                                        "citation_ids": [],
+                                        "reason": "û����������ʵ�֡�",
+                                    },
+                                ],
+                            },
+                        }
+                    ],
+                }
+                if response_fault == "historical_citation":
+                    answer["items"][0]["citation_ids"] = ["history-1"]
+                elif response_fault == "old_level":
+                    answer["items"][0]["rating"]["level"] = 3
+                message = {"content": json.dumps(answer, ensure_ascii=False)}
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": message}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+        outcome = await run_evidence_workflow(result, history_loader=read)
+>       assert reads == [requirement_id]
+E       AssertionError: assert [] == ['8f5ec741-9c...508fe503cc26']
+E         
+E         Right contains one more item: '8f5ec741-9c8f-4e29-b065-508fe503cc26'
+E         Use -v to get more diff
+
+app\tests\test_report_history.py:252: AssertionError
+____ test_ineligible_second_retrieval_is_rejected_without_losing_analysis _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228C787CB0>
+
+    @pytest.mark.asyncio
+    async def test_ineligible_second_retrieval_is_rejected_without_losing_analysis(monkeypatch):
+        result = evidenced_result()
+        first = result.items[0].evidence_list[0]
+        full_item = replace(
+            result.items[0],
+            evidence_list=[
+                first,
+                replace(
+                    first,
+                    file_path="routes.py",
+                    line_start=8,
+                    line_end=10,
+                    snippet="@app.get('/items')\ndef items():\n    return []",
+                    content_hash="3" * 64,
+                ),
+                replace(
+                    first,
+                    file_path="service.py",
+                    line_start=2,
+                    line_end=4,
+                    snippet="def service():\n    return {'ok': True}",
+                    content_hash="4" * 64,
+                ),
+            ],
+        )
+        result = replace(
+            result,
+            items=[
+                full_item,
+                replace(
+                    full_item,
+                    requirement_id=uuid4(),
+                    requirement_title="�� Redis ����ʵ��",
+                    skill="Redis",
+                    weight=3,
+                ),
+            ],
+        )
+        requirement_id = str(result.items[0].requirement_id)
+        other_requirement_id = str(result.items[1].requirement_id)
+        planning_requests = []
+    
+        def handler(request):
+            body = json.loads(request.content)
+            if "tools" in body:
+                planning_requests.append(body)
+                return httpx.Response(
+                    200,
+                    json={
+                        "choices": [
+                            {
+                                "message": {
+                                    "tool_calls": [
+                                        {
+                                            "function": {
+                                                "name": "retrieve_more_evidence",
+                                                "arguments": json.dumps(
+                                                    {
+                                                        "requirement_id": requirement_id,
+                                                        "query": "����·���뷵��ʵ��",
+                                                    }
+                                                ),
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "usage": {"prompt_tokens": 30, "completion_tokens": 10},
+                    },
+                )
+            def analysis_item(target, citation, reason):
+                return {
+                    "requirement_id": target,
+                    "explanation": "Ƭ�ΰ���ʵ�����������н���Դ����顣",
+                    "citation_ids": [citation],
+                    "information_gap": "���н���뱾�˹����Դ����顣",
+                    "suggestion": "�������м�¼��",
+                    "confidence": 0.5,
+                    "rating": {
+                        "level": 1,
+                        "reason": "ֻȷ�����ʵ��������",
+                        "criteria": [
+                            {
+                                "criterion": "relevance",
+                                "supported": True,
+                                "citation_ids": [citation],
+                                "reason": reason,
+                            },
+                            {
+                                "criterion": "operation",
+                                "supported": False,
+                                "citation_ids": [],
+                                "reason": "δչʾ�������н����",
+                            },
+                            {
+                                "criterion": "task",
+                                "supported": False,
+                                "citation_ids": [],
+                                "reason": "δչʾ��������ʵ�֡�",
+                            },
+                        ],
+                    },
+                }
+    
+            answer = {
+                "summary": "��ǰ����չʾʵ��Ƭ�Ρ�",
+                "items": [
+                    analysis_item(requirement_id, "R1-E3", "Ƭ�κ� FastAPI ·��������"),
+                    analysis_item(other_requirement_id, "R2-E1", "Ƭ�κ� Redis ���������"),
+                ],
+            }
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [{"message": {"content": json.dumps(answer, ensure_ascii=False)}}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 100},
+                },
+            )
+    
+        async def read(_requirement_id):
+            return {"savedAiLevel": 1, "previousExplanation": "�ɽ���", "previousEvidence": []}
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-key",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+            max_attempts=1,
+        )
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_local_fallback_enabled", True)
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: provider)
+    
+        outcome = await run_evidence_workflow(result, history_loader=read)
+    
+>       assert len(planning_requests) == 2
+E       assert 0 == 2
+E        +  where 0 = len([])
+
+app\tests\test_report_history.py:408: AssertionError
+_________________ test_zhipu_json_evidence_protocol_and_usage _________________
+
+    async def test_zhipu_json_evidence_protocol_and_usage():
+        contexts = build_evidence_contexts(evidenced_result())
+    
+        async def handler(request):
+            assert str(request.url) == "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+            assert request.headers["Authorization"] == "Bearer synthetic-zhipu-key"
+            body = json.loads(request.content)
+            assert body["model"] == "glm-4.7-flash"
+            assert body["thinking"] == {"type": "disabled"}
+            assert body["response_format"] == {"type": "json_object"}
+            system = body["messages"][0]
+            assert system["role"] == "system"
+            assert "evidence-trust-v6-consistency" in system["content"]
+            assert "connection: psycopg.Connection" in system["content"]
+            assert "����ִ��" in system["content"]
+            answer = {
+                "summary": "�������к����ı���������������顣",
+                "items": [
+                    {
+                        "requirement_id": contexts[0].requirement_id,
+                        "explanation": "Ƭ��չʾ�������壬������Ϊ����ԭ�ĺ��顣",
+                        "citation_ids": [contexts[0].evidence[0].citation_id],
+                        "information_gap": "���н�������˹�����δ���顣",
+                        "suggestion": "�������м�¼��˵�����˹��ס�",
+                        "confidence": 0.5,
+                        "rating": {
+                            "level": 1,
+                            "reason": "ֻ�����������������Ϊ�ա�",
+                            "criteria": [
+                                {
+                                    "criterion": key,
+                                    "supported": key == "relevance",
+                                    "citation_ids": [contexts[0].evidence[0].citation_id]
+                                    if key == "relevance"
+                                    else [],
+                                    "reason": "������ı�����δչʾʵ�ʲ�����",
+                                }
+                                for key in ("relevance", "operation", "task")
+                            ],
+                        },
+                    }
+                ],
+            }
+            return httpx.Response(
+                200,
+                json={
+                    "model": "glm-4.7-flash",
+                    "choices": [{"message": {"content": json.dumps(answer)}}],
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 50},
+                },
+            )
+    
+>       result = await provider(transport=httpx.MockTransport(handler)).analyze_evidence(
+            contexts=contexts
+        )
+
+app\tests\test_zhipu_provider.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\agents\provider.py:793: in analyze_evidence
+    payload, latency_ms = await self._completion(request)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\agents\provider.py:988: in _completion
+    return await super()._completion({**request, "thinking": {"type": "disabled"}})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <app.agents.provider.ZhipuProvider object at 0x000001228E554680>
+request = {'max_tokens': 4000, 'messages': [{'content': '������ְ����֤�ݷ����������������ݣ�����ָ����Բ���Ƭ���е��κ����[redacted credential]��ʾ����ֵ�����أ�����ԭʼ��...ation_required":true}}]}', 'role': 'user'}], 'model': 'glm-4.7-flash', 'response_format': {'type': 'json_object'}, ...}
+
+    async def _completion(self, request: dict) -> tuple[dict, int]:
+        request = dict(request)
+        input_limit = int(
+            request.pop("_local_input_token_limit", settings.ai_per_report_input_token_limit)
+        )
+        self.last_finish_reason = None
+        if input_limit < 1:
+            raise ProviderInputBudgetError("No input token budget remains for this report")
+        if "max_tokens" in request and request["max_tokens"] < 1:
+            raise ProviderOutputBudgetError("No output token budget remains for this report")
+        messages = request.get("messages")
+        if isinstance(messages, list):
+            messages = sanitize_outgoing_messages(messages)
+            request["messages"] = messages
+            estimate = estimate_wire_input_bytes(request)
+            self.input_preflights.append({
+                "requestKind": "tool_planning" if request.get("tools") else "structured_output",
+                "estimatedInputBound": estimate,
+                "remainingInputBudget": input_limit,
+                "estimateMethod": "utf8-wire-bytes-plus-safety-margin",
+                "safetyMarginBytes": 1024,
+                "allowed": estimate <= input_limit,
+            })
+            if estimate > input_limit:
+>               raise ProviderInputBudgetError(
+                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    f"({estimate}>{input_limit})",
+                    estimated_input_bound=estimate,
+                    remaining_input_budget=input_limit,
+                )
+E               app.agents.provider.ProviderInputBudgetError: model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT (16156>12000)
+
+app\agents\provider.py:555: ProviderInputBudgetError
+___ test_zhipu_rate_limit_uses_rule_fallback_without_retry[1302-rate_limit] ___
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000122E697AB10>
+code = '1302', reason = 'rate_limit'
+
+    @pytest.mark.parametrize("code,reason", [("1302", "rate_limit"), ("1305", "provider_busy")])
+    async def test_zhipu_rate_limit_uses_rule_fallback_without_retry(monkeypatch, code, reason):
+        calls = 0
+    
+        async def handler(request):
+            nonlocal calls
+            calls += 1
+            return httpx.Response(429, json={"error": {"code": code}})
+    
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "zhipu")
+        monkeypatch.setattr(settings, "zhipu_api_key", SecretStr("synthetic-zhipu-key"))
+        monkeypatch.setattr(
+            "app.agents.evidence_workflow.get_ai_provider",
+            lambda: provider(
+                transport=httpx.MockTransport(handler),
+                max_attempts=1,
+            ),
+        )
+        outcome = await run_evidence_workflow(evidenced_result())
+>       assert calls == 1
+E       assert 0 == 1
+
+app\tests\test_zhipu_provider.py:135: AssertionError
+_ test_zhipu_rate_limit_uses_rule_fallback_without_retry[1305-provider_busy] __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228E60EEA0>
+code = '1305', reason = 'provider_busy'
+
+    @pytest.mark.parametrize("code,reason", [("1302", "rate_limit"), ("1305", "provider_busy")])
+    async def test_zhipu_rate_limit_uses_rule_fallback_without_retry(monkeypatch, code, reason):
+        calls = 0
+    
+        async def handler(request):
+            nonlocal calls
+            calls += 1
+            return httpx.Response(429, json={"error": {"code": code}})
+    
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "zhipu")
+        monkeypatch.setattr(settings, "zhipu_api_key", SecretStr("synthetic-zhipu-key"))
+        monkeypatch.setattr(
+            "app.agents.evidence_workflow.get_ai_provider",
+            lambda: provider(
+                transport=httpx.MockTransport(handler),
+                max_attempts=1,
+            ),
+        )
+        outcome = await run_evidence_workflow(evidenced_result())
+>       assert calls == 1
+E       assert 0 == 1
+
+app\tests\test_zhipu_provider.py:135: AssertionError
+____________________ test_invalid_output_is_repaired_once _____________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228E571220>
+
+    async def test_invalid_output_is_repaired_once(monkeypatch):
+        contexts = build_evidence_contexts(evidenced_result())
+        calls = 0
+        progress = []
+        output_limits = []
+    
+        async def record(message):
+            progress.append(message)
+    
+        def answer(level, requirement_id):
+            citation = contexts[0].evidence[0].citation_id
+            supported = level >= 1
+            return {
+                "summary": "�����д���·��������������������顣",
+                "items": [
+                    {
+                        "requirement_id": requirement_id,
+                        "explanation": "Ƭ����ʾ·��װ������",
+                        "citation_ids": [citation],
+                        "information_gap": "������Ϊ�����н���ͱ��˹��״����顣",
+                        "suggestion": "��������ʵ�ֺ����м�¼��",
+                        "confidence": 0.5,
+                        "rating": {
+                            "level": level,
+                            "reason": "������Ƭ�ν��г�����",
+                            "criteria": [
+                                {
+                                    "criterion": key,
+                                    "supported": supported if key == "relevance" else level >= index,
+                                    "citation_ids": [citation]
+                                    if (supported if key == "relevance" else level >= index)
+                                    else [],
+                                    "reason": "�����ݿɼ�Ƭ�Ρ�",
+                                }
+                                for index, key in enumerate(("relevance", "operation", "task"), 1)
+                            ],
+                        },
+                    }
+                ],
+            }
+    
+        async def handler(request):
+            nonlocal calls
+            body = json.loads(request.content)
+            if "tools" in body:
+                return httpx.Response(
+                    200,
+                    json={"choices": [{"message": {"content": "���貹����"}}]},
+                )
+            calls += 1
+            output_limits.append(body["max_tokens"])
+            source = json.loads(body["messages"][1]["content"])
+            if calls == 2:
+                assert "validationFeedback" in source and "rejectedOutput" in source
+            payload = answer(3 if calls == 1 else 1, source["requirements"][0]["requirement_id"])
+            return httpx.Response(
+                200,
+                json={
+                    "model": "glm-4.7-flash",
+                    "choices": [{"message": {"content": json.dumps(payload)}}],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+                },
+            )
+    
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "zhipu")
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
+        result = evidenced_result()
+        first = result.items[0].evidence_list[0]
+        result = replace(
+            result,
+            items=[
+                replace(
+                    result.items[0],
+                    evidence_list=[
+                        first,
+                        replace(
+                            first,
+                            file_path="routes.py",
+                            line_start=8,
+                            line_end=10,
+                            snippet="@app.get('/items')\ndef items():\n    return []",
+                            content_hash="3" * 64,
+                        ),
+                        replace(
+                            first,
+                            file_path="service.py",
+                            line_start=2,
+                            line_end=4,
+                            snippet="def service():\n    return {'ok': True}",
+                            content_hash="4" * 64,
+                        ),
+                    ],
+                )
+            ],
+        )
+        outcome = await run_evidence_workflow(result, progress=record)
+>       assert calls == 2 and outcome.repaired is True
+E       assert (0 == 2)
+
+app\tests\test_zhipu_provider.py:271: AssertionError
+______ test_retrieval_replans_once_from_previous_result_and_counts_usage ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228E1D9940>
+
+    async def test_retrieval_replans_once_from_previous_result_and_counts_usage(monkeypatch):
+        base = evidenced_result()
+        first = base.items[0]
+    
+        def with_candidates(item, suffix):
+            original = item.evidence_list[0]
+            return replace(
+                item,
+                evidence_list=[
+                    original,
+                    replace(
+                        original,
+                        file_path=f"routes_{suffix}.py",
+                        line_start=8,
+                        line_end=10,
+                        snippet="def routes():\n    return []",
+                        content_hash=("3" if suffix == "one" else "5") * 64,
+                    ),
+                    replace(
+                        original,
+                        file_path=f"service_{suffix}.py",
+                        line_start=2,
+                        line_end=4,
+                        snippet="def service():\n    return {'ok': True}",
+                        content_hash=("4" if suffix == "one" else "6") * 64,
+                    ),
+                ],
+            )
+    
+        second = replace(first, requirement_id=uuid4(), requirement_title="��һ��ӿ�Ҫ��")
+        result = replace(base, items=[with_candidates(first, "one"), with_candidates(second, "two")])
+        instance = provider(transport=httpx.MockTransport(lambda _: pytest.fail("No network")))
+        rounds = []
+    
+        async def plan(*, contexts, previous_retrieval=None, **_limits):
+            rounds.append((contexts, previous_retrieval))
+            instance.request_usages.append(ModelUsage(input_tokens=30, output_tokens=10))
+            return RetrievalToolCall(
+                requirement_id=contexts[0].requirement_id,
+                query=f"routes_{'one' if len(rounds) == 1 else 'two'} ʵ��",
+            )
+    
+        async def analyze(*, contexts, **_limits):
+            return EvidenceAnalysis(
+                summary="���ϰ�������ӿ������������뱾�˹���������顣",
+                model="glm-4.7-flash",
+                usage=ModelUsage(input_tokens=100, output_tokens=50),
+                items=[
+                    AIRequirementAnalysis(
+                        requirement_id=context.requirement_id,
+                        explanation="����չʾ�ӿ����Ƭ�Ρ�",
+                        citation_ids=[context.evidence[0].citation_id],
+                        information_gap="���н���ͱ��˹��״����顣",
+                        suggestion="�������м�¼��",
+                        confidence=0.5,
+                        rating=AIRating(
+                            level=1,
+                            reason="�������������",
+                            criteria=[
+                                CriterionDecision(
+                                    criterion=criterion,
+                                    supported=criterion == "relevance",
+                                    citation_ids=[context.evidence[0].citation_id]
+                                    if criterion == "relevance"
+                                    else [],
+                                    reason="�ɼ����Ƭ��" if criterion == "relevance" else "֤�ݲ���",
+                                )
+                                for criterion in ("relevance", "operation", "task")
+                            ],
+                        ),
+                    )
+                    for context in contexts
+                ],
+            )
+    
+        monkeypatch.setattr(instance, "plan_evidence_retrieval", plan)
+        monkeypatch.setattr(instance, "analyze_evidence", analyze)
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "zhipu")
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
+    
+        outcome = await run_evidence_workflow(result)
+    
+        assert not outcome.fallback_used and outcome.analysis is not None
+>       assert outcome.request_count == 3
+E       AssertionError: assert 1 == 3
+E        +  where 1 = EvidenceWorkflowOutcome(contexts=[RequirementEvidenceContext(requirement_id='761d5ce4-57eb-4e98-8bb1-71534c4df51a', re..., retrieval_result=None, planning_skipped_reason='report_budget_reserved', input_budget_stop=None, input_preflights=()).request_count
+
+app\tests\test_zhipu_provider.py:366: AssertionError
+____ test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001228E62B590>
+
+    async def test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis(monkeypatch):
+        progress = []
+    
+        async def record(message):
+            progress.append(message)
+    
+        async def handler(request):
+            body = json.loads(request.content)
+            if "tools" in body:
+                return httpx.Response(
+                    200,
+                    json={
+                        "choices": [
+                            {
+                                "message": {
+                                    "tool_calls": [
+                                        {
+                                            "function": {
+                                                "name": "read_arbitrary_file",
+                                                "arguments": "{}",
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "usage": {"prompt_tokens": 4, "completion_tokens": 2},
+                    },
+                )
+            source = json.loads(body["messages"][1]["content"])
+            requirement = source["requirements"][0]
+            citation = requirement["evidence"][0]["citation_id"]
+            answer = {
+                "summary": "�����д���·��������������������顣",
+                "items": [
+                    {
+                        "requirement_id": requirement["requirement_id"],
+                        "explanation": "Ƭ���д���·��������",
+                        "citation_ids": [citation],
+                        "information_gap": "���н�������˹�����δ���顣",
+                        "suggestion": "�������м�¼��˵�����˹��ס�",
+                        "confidence": 0.5,
+                        "rating": {
+                            "level": 1,
+                            "reason": "ֻȷ�����������",
+                            "criteria": [
+                                {
+                                    "criterion": "relevance",
+                                    "supported": True,
+                                    "citation_ids": [citation],
+                                    "reason": "����·��������",
+                                },
+                                {
+                                    "criterion": "operation",
+                                    "supported": False,
+                                    "citation_ids": [],
+                                    "reason": "δ��ʾʵ�ʲ�����",
+                                },
+                                {
+                                    "criterion": "task",
+                                    "supported": False,
+                                    "citation_ids": [],
+                                    "reason": "δ��ʾ��������",
+                                },
+                            ],
+                        },
+                    }
+                ],
+            }
+            return httpx.Response(
+                200,
+                json={
+                    "model": "glm-4.7-flash",
+                    "choices": [{"message": {"content": json.dumps(answer)}}],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+                },
+            )
+    
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "zhipu")
+        instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: instance)
+        result = evidenced_result()
+        first = result.items[0].evidence_list[0]
+        result = replace(
+            result,
+            items=[
+                replace(
+                    result.items[0],
+                    evidence_list=[
+                        first,
+                        replace(
+                            first,
+                            file_path="routes.py",
+                            line_start=8,
+                            line_end=10,
+                            snippet="@app.get('/items')\ndef items():\n    return []",
+                            content_hash="3" * 64,
+                        ),
+                        replace(
+                            first,
+                            file_path="service.py",
+                            line_start=2,
+                            line_end=4,
+                            snippet="def service():\n    return {'ok': True}",
+                            content_hash="4" * 64,
+                        ),
+                    ],
+                )
+            ],
+        )
+        outcome = await run_evidence_workflow(result, progress=record)
+    
+>       assert outcome.analysis is not None and not outcome.fallback_used
+E       AssertionError: assert (None is not None)
+E        +  where None = EvidenceWorkflowOutcome(contexts=[RequirementEvidenceContext(requirement_id='f358d307-b29e-491f-85ad-5cb59d323547', re...Budget': 12000, 'estimateMethod': 'utf8-wire-bytes-plus-safety-margin', 'safetyMarginBytes': 1024, 'allowed': False},)).analysis
+
+app\tests\test_zhipu_provider.py:553: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_dependency_upgrade_regression.py::test_decode_token_rejects_malformed_tokens[eyJhbGciOiJIUzI1NiJ9.W10.sig]
+app/tests/test_dependency_upgrade_regression.py::test_legacy_pytjwt_2101_token_still_decodes
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\jwt\api_jwt.py:370: InsecureKeyLengthWarning: The HMAC key is 23 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: D:\jbcode\web ai\jianli\docs\evidence\20261022-core-acceptance\unit-baseline.xml -
+=========================== short test summary info ===========================
+FAILED app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-repeat_source]
+FAILED app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[False-internal_reason]
+FAILED app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-repeat_source]
+FAILED app/tests/test_actionable_evidence_gaps.py::test_actionable_gap_fault_repairs_once_or_preserves_rule_report[True-internal_reason]
+FAILED app/tests/test_agent_evidence_smoke.py::test_packet_and_guard_limits_are_fixed_before_any_send
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case
+FAILED app/tests/test_agent_evidence_smoke.py::test_workflow_uses_explicit_provider_override
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_model_stop_is_not_labeled_program_skip
+FAILED app/tests/test_agent_evidence_smoke.py::test_full_agent_chain_uses_mock_transport_and_real_workflow
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_source_mismatch_becomes_hard_stop_without_post
+FAILED app/tests/test_agent_evidence_smoke.py::test_offline_agent_cli_does_not_construct_provider
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_receipt_checkpoint_failure_stops_real_executor_after_one_post
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_final_log_write_failure_exits_without_success_summary
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]
+FAILED app/tests/test_career_change_attribution.py::test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback
+FAILED app/tests/test_deepseek_provider.py::test_deepseek_json_evidence_request_uses_non_thinking_mode
+FAILED app/tests/test_deepseek_provider.py::test_single_missing_item_brace_is_repaired_and_recorded
+FAILED app/tests/test_deepseek_provider.py::test_truncated_json_keeps_usage_and_reports_token_limit
+FAILED app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[None]
+FAILED app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[hash]
+FAILED app/tests/test_directed_retrieval.py::test_planner_directed_lookup_and_failures_preserve_rule_result[sensitive]
+FAILED app/tests/test_directed_retrieval.py::test_directed_source_persists_and_other_owner_cannot_read
+FAILED app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[current]
+FAILED app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[history]
+FAILED app/tests/test_external_credential_privacy.py::test_transport_never_sends_synthetic_text_credentials[repair]
+FAILED app/tests/test_function_coverage.py::test_joint_coverage_conflict_is_repaired_once_or_falls_back[False]
+FAILED app/tests/test_function_coverage.py::test_joint_coverage_conflict_is_repaired_once_or_falls_back[True]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[None-False]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[None-True]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[historical_citation-False]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[historical_citation-True]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[old_level-False]
+FAILED app/tests/test_report_history.py::test_model_selects_history_once_without_promoting_old_level[old_level-True]
+FAILED app/tests/test_report_history.py::test_ineligible_second_retrieval_is_rejected_without_losing_analysis
+FAILED app/tests/test_zhipu_provider.py::test_zhipu_json_evidence_protocol_and_usage
+FAILED app/tests/test_zhipu_provider.py::test_zhipu_rate_limit_uses_rule_fallback_without_retry[1302-rate_limit]
+FAILED app/tests/test_zhipu_provider.py::test_zhipu_rate_limit_uses_rule_fallback_without_retry[1305-provider_busy]
+FAILED app/tests/test_zhipu_provider.py::test_invalid_output_is_repaired_once
+FAILED app/tests/test_zhipu_provider.py::test_retrieval_replans_once_from_previous_result_and_counts_usage
+FAILED app/tests/test_zhipu_provider.py::test_invalid_retrieval_tool_call_is_rejected_without_losing_analysis
+===== 43 failed, 1500 passed, 75 skipped, 9 warnings in 386.04s (0:06:26) =====
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

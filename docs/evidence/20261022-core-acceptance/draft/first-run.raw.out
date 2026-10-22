@@ -1,0 +1,374 @@
+TAP version 13
+# Subtest: 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+ok 1 - 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+  ---
+  duration_ms: 2.3725
+  type: 'test'
+  ...
+# Subtest: 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+ok 2 - 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+  ---
+  duration_ms: 0.3889
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败：错误可见且丢弃提示仍可见
+ok 3 - 恢复读取失败：错误可见且丢弃提示仍可见
+  ---
+  duration_ms: 0.2952
+  type: 'test'
+  ...
+# Subtest: 没有未保存编辑时，清除提示不得声称丢弃了编辑
+ok 4 - 没有未保存编辑时，清除提示不得声称丢弃了编辑
+  ---
+  duration_ms: 0.2378
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：再次编辑后丢弃提示结束
+ok 5 - 提示生命周期：再次编辑后丢弃提示结束
+  ---
+  duration_ms: 1.2377
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：显式保存或复制后丢弃提示结束
+ok 6 - 提示生命周期：显式保存或复制后丢弃提示结束
+  ---
+  duration_ms: 0.8765
+  type: 'test'
+  ...
+# Subtest: 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+ok 7 - 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+  ---
+  duration_ms: 0.3426
+  type: 'test'
+  ...
+# Subtest: 清除提示是固定文案：不携带旧草稿文字等用户数据
+ok 8 - 清除提示是固定文案：不携带旧草稿文字等用户数据
+  ---
+  duration_ms: 0.5161
+  type: 'test'
+  ...
+# Subtest: 新会话不承接旧会话通知；dispose后旧回执不复活
+ok 9 - 新会话不承接旧会话通知；dispose后旧回执不复活
+  ---
+  duration_ms: 4.5481
+  type: 'test'
+  ...
+# Subtest: clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+ok 10 - clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+  ---
+  duration_ms: 0.8069
+  type: 'test'
+  ...
+# Subtest: clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+ok 11 - clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+  ---
+  duration_ms: 0.2809
+  type: 'test'
+  ...
+# Subtest: 恢复后来源重验失败仍拒复制；门禁语义不变
+ok 12 - 恢复后来源重验失败仍拒复制；门禁语义不变
+  ---
+  duration_ms: 0.4342
+  type: 'test'
+  ...
+# Subtest: 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+not ok 13 - 面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业
+  ---
+  duration_ms: 6.9319
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\private-answer-recovery-notice.test.mjs:347:1'
+  failureType: 'testCodeFailure'
+  error: '常驻警告必须始终渲染（不依赖任何状态）'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-4"><h2 class="text-lg font-semibold">私人回答草稿（仅本人可见）</h2><p class="text-sm leading-6 text-amber-800">切换标签页或最小化窗口会暂存当前任务的本机编辑，返回后可继续。刷新页面、退出账号或切换任务前请先点击“保存草稿”；未保存内容不会跨身份或任务保留，也不会发送给企业。</p><p class="text-sm leading-6 text-slate-600">在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。</p><p class="text-sm text-slate-600">尚未保存过草稿；首次保存从版本 0 开始。</p><div class="space-y-2"><label class="text-sm font-medium" for="private-answer-text">回答草稿正文</label><textarea id="private-answer-text" class="field min-h-32 w-full" aria-label="私人回答草稿正文" maxLength="6000" placeholder="写下你自己的回答草稿…（仅本人可见，不会发送给企业）"></textarea><p class="text-xs text-slate-500">最多 6000 字；换行按原样保存。清空内容也需要明确点击“保存草稿”才会替换服务器上的草稿。</p></div><fieldset class="space-y-2 rounded-xl border border-indigo-200 p-3"><legend class="px-1 text-sm font-medium">从服务端可选引用中选择证据（原要求：异常处理）</legend><p class="text-xs leading-6 text-slate-600">本任务当前没有可选引用；没有草稿也可以先选择，保存时一并提交。</p><ul class="space-y-1"></ul><p class="text-xs text-slate-500">最多选择 20 条引用；引用键由报告、要求与引用编号共同确定。</p></fieldset><div class="flex flex-wrap items-center gap-2"><button class="btn-secondary">保存草稿</button><button class="btn-secondary">重读已保存草稿</button></div><details class="rounded-xl border p-3"><summary class="cursor-pointer text-sm font-medium text-indigo-700">预览已保存草稿（先查看，再确认复制）</summary><div class="mt-2 space-y-2"><p role="status" class="text-sm leading-6 text-amber-800">尚无已保存草稿；请先保存后再预览与复制。</p></div></details></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/private-answer-recovery-notice.test.mjs:349:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+ok 14 - 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+  ---
+  duration_ms: 1.3237
+  type: 'test'
+  ...
+# Subtest: 恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
+ok 15 - 恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示
+  ---
+  duration_ms: 0.2641
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败后再次hidden：丢弃提示仍保持
+ok 16 - 恢复读取失败后再次hidden：丢弃提示仍保持
+  ---
+  duration_ms: 0.2444
+  type: 'test'
+  ...
+# Subtest: 成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+ok 17 - 成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+  ---
+  duration_ms: 0.1656
+  type: 'test'
+  ...
+# Subtest: ordinary hidden/visible preserves unsaved text and selected references
+ok 18 - ordinary hidden/visible preserves unsaved text and selected references
+  ---
+  duration_ms: 2.1938
+  type: 'test'
+  ...
+# Subtest: 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+ok 19 - 读取：无草稿也能先选原要求引用，首存 expectedRevision=0
+  ---
+  duration_ms: 4.7346
+  type: 'test'
+  ...
+# Subtest: 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+ok 20 - 保存期间继续编辑：旧回执只更新已存基线，不覆盖后来的文字
+  ---
+  duration_ms: 0.5501
+  type: 'test'
+  ...
+# Subtest: 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+ok 21 - 隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态
+  ---
+  duration_ms: 4.5386
+  type: 'test'
+  ...
+# Subtest: 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+ok 22 - 409：保留本人编辑；读服务器仅作对照不改基线；明确重存才用新 revision
+  ---
+  duration_ms: 0.6972
+  type: 'test'
+  ...
+# Subtest: 网络失败：保留文字与选择，不自动重试
+ok 23 - 网络失败：保留文字与选择，不自动重试
+  ---
+  duration_ms: 0.7908
+  type: 'test'
+  ...
+# Subtest: 重复点击：保存进行中再次保存不发出第二个 PUT
+ok 24 - 重复点击：保存进行中再次保存不发出第二个 PUT
+  ---
+  duration_ms: 0.3456
+  type: 'test'
+  ...
+# Subtest: 刷新重读已保存内容：显式读取替换本地编辑
+ok 25 - 刷新重读已保存内容：显式读取替换本地编辑
+  ---
+  duration_ms: 0.2264
+  type: 'test'
+  ...
+# Subtest: 清空内容也需明确保存；仅清空不删除服务端记录
+ok 26 - 清空内容也需明确保存；仅清空不删除服务端记录
+  ---
+  duration_ms: 0.3297
+  type: 'test'
+  ...
+# Subtest: 引用键为三元组：两个报告同 citationId 不合并
+ok 27 - 引用键为三元组：两个报告同 citationId 不合并
+  ---
+  duration_ms: 0.5577
+  type: 'test'
+  ...
+# Subtest: 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+ok 28 - 跨岗位目标没有原要求：解释为何不能用新要求回答原问题
+  ---
+  duration_ms: 0.3707
+  type: 'test'
+  ...
+# Subtest: 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+ok 29 - 预览只用保存回执的 snippet；失效引用不作为有效来源复制
+  ---
+  duration_ms: 0.3421
+  type: 'test'
+  ...
+# Subtest: 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+ok 30 - 复制：未保存编辑要求先保存；成功只写本机剪贴板一次；失败不自动重试
+  ---
+  duration_ms: 1.5486
+  type: 'test'
+  ...
+# Subtest: 重复点击复制：上一次写入未完成时拒绝第二次
+ok 31 - 重复点击复制：上一次写入未完成时拒绝第二次
+  ---
+  duration_ms: 0.241
+  type: 'test'
+  ...
+# Subtest: 422 来源不可用：保留编辑并提示，不进入冲突态
+ok 32 - 422 来源不可用：保留编辑并提示，不进入冲突态
+  ---
+  duration_ms: 0.2172
+  type: 'test'
+  ...
+# Subtest: 读取失败：错误可见且不清空已有本地输入
+ok 33 - 读取失败：错误可见且不清空已有本地输入
+  ---
+  duration_ms: 0.221
+  type: 'test'
+  ...
+# Subtest: 本地限制：6000 字与 20 条引用在保存前被拦截
+ok 34 - 本地限制：6000 字与 20 条引用在保存前被拦截
+  ---
+  duration_ms: 0.0838
+  type: 'test'
+  ...
+# Subtest: api client：三个调用的路径、方法与载荷完全匹配协议
+ok 35 - api client：三个调用的路径、方法与载荷完全匹配协议
+  ---
+  duration_ms: 15.398
+  type: 'test'
+  ...
+# Subtest: 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+ok 36 - 复现1：clear后旧save/compare/copy不得发请求或复活会话，直到显式activate
+  ---
+  duration_ms: 0.2369
+  type: 'test'
+  ...
+# Subtest: 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+ok 37 - 复现2：读取期间新输入保留，GET回执不覆盖请求发起后的编辑
+  ---
+  duration_ms: 0.1713
+  type: 'test'
+  ...
+# Subtest: 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+ok 38 - 复现3：reload不废弃在途save，回执照常落账且busy正常复位
+  ---
+  duration_ms: 0.202
+  type: 'test'
+  ...
+# Subtest: 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+ok 39 - 复现3b：save回执先于reload的GET到达时，旧GET不得降级基线或覆盖文字
+  ---
+  duration_ms: 0.2224
+  type: 'test'
+  ...
+# Subtest: 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+ok 40 - 回归：copy与在途save交错互不废弃（Codex快照通过项保持）
+  ---
+  duration_ms: 0.2596
+  type: 'test'
+  ...
+# Subtest: 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+ok 41 - 回归：clear后迟到的读取回执不得恢复状态或搁浅读取busy
+  ---
+  duration_ms: 0.1174
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+ok 42 - 目标绑定变化：refreshReferences只刷新可选引用与scope提示，不重置未存编辑
+  ---
+  duration_ms: 0.2536
+  type: 'test'
+  ...
+# Subtest: 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+ok 43 - 目标绑定变化与在途读取交错：最后发起的引用请求生效，读取回执不覆盖新options
+  ---
+  duration_ms: 0.2412
+  type: 'test'
+  ...
+# Subtest: 目标绑定刷新失败：错误可见且不清空已有options与编辑
+ok 44 - 目标绑定刷新失败：错误可见且不清空已有options与编辑
+  ---
+  duration_ms: 0.1972
+  type: 'test'
+  ...
+# Subtest: 来源重验成功：旧目标引用降级失效但保留身份，预览/复制不再含其原文
+ok 45 - 来源重验成功：旧目标引用降级失效但保留身份，预览/复制不再含其原文
+  ---
+  duration_ms: 0.247
+  type: 'test'
+  ...
+# Subtest: 来源重验 pending：旧预览确认被拒绝，不写剪贴板
+ok 46 - 来源重验 pending：旧预览确认被拒绝，不写剪贴板
+  ---
+  duration_ms: 0.1738
+  type: 'test'
+  ...
+# Subtest: 来源重验失败：复制被拒；保存回执或重验成功恢复确认资格
+ok 47 - 来源重验失败：复制被拒；保存回执或重验成功恢复确认资格
+  ---
+  duration_ms: 0.3121
+  type: 'test'
+  ...
+# Subtest: 迟到保存回执：不降级已读取的新基线，saving正常结束，读取期间编辑保留
+ok 48 - 迟到保存回执：不降级已读取的新基线，saving正常结束，读取期间编辑保留
+  ---
+  duration_ms: 1.4413
+  type: 'test'
+  ...
+# Subtest: 旧GET回执不得恢复较新重验判失效的引用
+ok 49 - 旧GET回执不得恢复较新重验判失效的引用
+  ---
+  duration_ms: 0.3446
+  type: 'test'
+  ...
+# Subtest: 旧PUT回执不得恢复较新重验判失效的引用；新revision与saving复位照常
+ok 50 - 旧PUT回执不得恢复较新重验判失效的引用；新revision与saving复位照常
+  ---
+  duration_ms: 0.2292
+  type: 'test'
+  ...
+# Subtest: 重验pending期间旧GET回执不得解除门禁放行旧预览复制
+ok 51 - 重验pending期间旧GET回执不得解除门禁放行旧预览复制
+  ---
+  duration_ms: 0.3401
+  type: 'test'
+  ...
+# Subtest: 较新重验failed后旧GET/PUT回执不得解除失败门禁
+ok 52 - 较新重验failed后旧GET/PUT回执不得解除失败门禁
+  ---
+  duration_ms: 0.3282
+  type: 'test'
+  ...
+# Subtest: 面板：来源重验 pending/failed 状态可见且复制确认被禁用
+ok 53 - 面板：来源重验 pending/failed 状态可见且复制确认被禁用
+  ---
+  duration_ms: 7.0254
+  type: 'test'
+  ...
+# Subtest: 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+ok 54 - 面板：正文可编辑不受保存忙态锁死，边界说明不含任何发送入口
+  ---
+  duration_ms: 0.5748
+  type: 'test'
+  ...
+# Subtest: 面板：引用列表区分基准/目标与第三方参考，选中可切换
+ok 55 - 面板：引用列表区分基准/目标与第三方参考，选中可切换
+  ---
+  duration_ms: 0.8399
+  type: 'test'
+  ...
+# Subtest: 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+ok 56 - 面板：409 冲突块提供读取对照与以本人编辑重存，且不自动覆盖
+  ---
+  duration_ms: 0.48
+  type: 'test'
+  ...
+# Subtest: 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+ok 57 - 面板：预览先看后复制；未保存编辑时明确要求先保存且不出复制按钮
+  ---
+  duration_ms: 1.0928
+  type: 'test'
+  ...
+# Subtest: 面板：正文输入与失效引用移除走真实回调
+ok 58 - 面板：正文输入与失效引用移除走真实回调
+  ---
+  duration_ms: 0.5364
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 57
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 359.6942

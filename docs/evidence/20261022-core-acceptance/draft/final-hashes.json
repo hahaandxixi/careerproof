@@ -1,0 +1,10 @@
+{
+  "files": {
+    "jianli/src/components/PrivateAnswerDraft.tsx": "1965a22ceb6c2887e16f631c54243bd2b989c173d608a63464fbb12fa09524f8",
+    "jianli/src/components/GrowthWorkspace.tsx": "620d6256195990dee85094973c8b51d722601b1343e3b38feb2f4ab5f154a245",
+    "jianli/src/lib/private-answer-workflow.ts": "2c2ec87ce6ba54aba4311c712f79e0bf7f9bc403d3903b6130bd45bad5d7ec88",
+    "jianli/tests/private-answer-workflow.test.mjs": "7f5480e8d6eed2fa2787d326409f66bd91c0fd7321796837a3e6c299e724c18a",
+    "jianli/tests/private-answer-recovery-notice.test.mjs": "05f995d4a2ef5f2125bce1343b466a1818b39665e2b51bc1fba61f31bc724cea",
+    "jianli/tests/private-answer-visibility.test.mjs": "e593bf2a1ff3c8622c4becb625e172fd202e604887f23aaaa8af7edaa9b2b354"
+  }
+}

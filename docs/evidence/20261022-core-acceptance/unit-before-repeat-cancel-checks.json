@@ -1,0 +1,31 @@
+[
+  {
+    "name": "backend-ruff",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend",
+    "exit": 0,
+    "seconds": 0.11
+  },
+  {
+    "name": "unit-final",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests",
+      "--basetemp=.tmp-ci-unit-final3",
+      "-o",
+      "cache_dir=.tmp-ci/cache",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\docs\\evidence\\20261022-core-acceptance\\unit-final.xml"
+    ],
+    "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend",
+    "exit": 1,
+    "seconds": 438.39
+  }
+]

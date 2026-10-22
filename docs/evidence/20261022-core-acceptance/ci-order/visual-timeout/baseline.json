@@ -1,0 +1,9 @@
+{
+  "fullUnitResult": "1576passed/1failed/88skipped",
+  "failure": {
+    "classname": "app.tests.test_visual_evidence",
+    "name": "test_visual_workflow_timeout_includes_global_model_queue",
+    "time": "1.741"
+  },
+  "fileSha256": "e1eec34d822e3777b076787ac36668eb6a6e7c8422ea315722715ea23ce3c0e6"
+}

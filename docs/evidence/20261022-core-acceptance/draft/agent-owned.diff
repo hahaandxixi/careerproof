@@ -1,0 +1,498 @@
+--- a/jianli/src/components/PrivateAnswerDraft.tsx
++++ b/jianli/src/components/PrivateAnswerDraft.tsx
+@@ -26,8 +26,7 @@
+ }
+ 
+ // 私人草稿会话不与分析轮询争代际：分析轮询的 setTask 只更新展示信息，effect 仅依赖 taskId；
+-// 身份切换由父组件 key 重挂载；隐藏/卸载在自身 effect 内 clear/dispose 并废弃迟到回执。
+-// clear 已使会话失活：恢复可见必须由本 effect 重新 activate 后再读取，旧DOM按钮无法复活会话。
++// 身份切换由父组件 key 重挂载；卸载使会话失效，普通隐藏仅暂停并保留当前任务的本机编辑。
+ export default function PrivateAnswerDraft(props: PrivateAnswerDraftProps) {
+   const { taskId, targetReportId, crossJob } = props;
+   const [state, setState] = useState(initialPrivateAnswerState);
+@@ -50,12 +49,11 @@
+     void session.load(taskId, { crossJob: infoRef.current.crossJob, hasTargetReport: !!infoRef.current.targetReportId });
+     const visibility = () => {
+       if (document.visibilityState === "hidden") {
+-        session.clear();
+         setPreviewOpen(false);
+-      } else {
+-        session.activate();
+-        void session.load(taskId, { crossJob: infoRef.current.crossJob, hasTargetReport: !!infoRef.current.targetReportId });
+       }
++      void session.visibilityChanged(document.visibilityState !== "hidden", taskId, {
++        crossJob: infoRef.current.crossJob, hasTargetReport: !!infoRef.current.targetReportId,
++      });
+     };
+     document.addEventListener("visibilitychange", visibility);
+     return () => {
+@@ -138,7 +136,7 @@
+     : "";
+   return <section className="panel space-y-4">
+     <h2 className="text-lg font-semibold">私人回答草稿（仅本人可见）</h2>
+-    <p className="text-sm leading-6 text-amber-800">离开或最小化窗口会清除未保存的编辑：请先点击“保存草稿”再离开窗口。私人草稿只保存在你的账号下，没有发送给企业。</p>
++    <p className="text-sm leading-6 text-amber-800">切换标签页或最小化窗口会暂存当前任务的本机编辑，返回后可继续。刷新页面、退出账号或切换任务前请先点击“保存草稿”；未保存内容不会跨身份或任务保留，也不会发送给企业。</p>
+     <p className="text-sm leading-6 text-slate-600">在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。</p>
+     <p className="text-sm text-slate-600">{state.saved
+       ? `已保存：版本 ${state.saved.revision} · ${state.saved.updatedAt ?? "保存时间未知"} · ${dirty ? "有未保存修改" : "与已保存内容一致"}`
+@@ -150,7 +148,7 @@
+     {state.sourceCheck === "failed" && <p role="alert" className="text-sm text-rose-700">引用来源重验失败，暂不能确认复制旧来源；可重试重验，或重读/保存以重新建立验证。</p>}
+     {state.error && <p role="alert" className="text-sm text-rose-700">{state.error}</p>}
+     {state.notice && <p role="status" className="text-sm leading-6 text-amber-800">{state.notice}</p>}
+-    {/* hidden/切身份的丢弃提示：独立于 notice 生命周期，恢复读取中/成功/失败后都保持可见；
++    {/* 退出身份/任务的丢弃提示：独立于 notice 生命周期，恢复读取中/成功/失败后都保持可见；
+         与 notice 内容相同时不重复渲染（clear 刚发布时两者同文，恢复 load 启动后 notice 被清空）。 */}
+     {state.lossNotice && state.lossNotice !== state.notice && <p role="alert" className="text-sm leading-6 text-amber-800">{state.lossNotice}</p>}
+     <div className="space-y-2">
+--- a/jianli/src/components/GrowthWorkspace.tsx
++++ b/jianli/src/components/GrowthWorkspace.tsx
+@@ -45,12 +45,14 @@
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState("");
+   const [notice, setNotice] = useState("");
++  const [pageHidden, setPageHidden] = useState(false);
+   const [revision, setRevision] = useState(0);
+   const polls = useRef(0);
+   const locked = useRef(false);
+   useEffect(() => {
+     const ticket = guard.start(); jobGuard.clear();
+-    setTask(null); setTasks([]); setTaskData(null); setError(""); setBusy(true);
++    // 当前身份/任务由外层key隔离；同任务恢复读取不卸载私人草稿，避免丢失本机编辑。
++    setTasks([]); setTaskData(null); setError(""); setBusy(true);
+     setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError("");
+     polls.current = 0;
+     const load = id ? Promise.all([api.growthTask(id), api.listResumes(), api.listProjects()]).then(([value, r, p]) => {
+@@ -64,9 +66,10 @@
+     void load.catch(reason => { if (guard.accepts(ticket)) setError(errorMessage(reason)); }).finally(() => { if (guard.accepts(ticket)) setBusy(false); });
+     const visibility = () => {
+       if (document.visibilityState === "hidden") {
++        setPageHidden(true);
+         guard.clear(); jobGuard.clear(); setTaskData(null);
+-        setTask(null); setTasks([]); setResumes([]); setProjects([]); setResumeId(""); setProjectIds([]); setTargetJobId(""); setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError(""); setConsent(false); setBusy(false);
+-      } else { setRevision(v => v + 1); }
++        setTasks([]); setResumes([]); setProjects([]); setResumeId(""); setProjectIds([]); setTargetJobId(""); setJobItems([]); setJobTotal(0); setJobPickerOpen(false); setJobBusy(false); setJobError(""); setConsent(false); setBusy(false);
++      } else { setPageHidden(false); setRevision(v => v + 1); }
+     };
+     document.addEventListener("visibilitychange", visibility);
+     return () => { guard.clear(); jobGuard.clear(); document.removeEventListener("visibilitychange", visibility); };
+@@ -103,7 +106,7 @@
+     } catch (reason) { if (jobGuard.accepts(ticket)) setJobError(errorMessage(reason)); }
+     finally { if (jobGuard.accepts(ticket)) setJobBusy(false); }
+   }
+-  return <div className="space-y-6">
++  return <div className="space-y-6" hidden={pageHidden}>
+     <div><Link className="text-sm text-indigo-700 underline" href="/reports">← 我的报告</Link><h1 className="mt-3 text-2xl font-bold">{id ? "从缺口到新证据" : "我的补证任务"}</h1><p className="mt-2 text-sm leading-6 text-slate-600">上传与分析是行动进度，不等于能力认证；企业原投递保持固定。</p></div>
+     <button className="btn-secondary" disabled={busy} onClick={() => { setConsent(false); setRevision(v => v + 1); }}>读取已保存任务</button>
+     {busy && <p role="status">正在处理…</p>}{error && <p role="alert" className="text-sm text-rose-700">{error}</p>}{notice && <p role="status" className="text-sm text-amber-800">{notice}</p>}
+--- a/jianli/src/lib/private-answer-workflow.ts
++++ b/jianli/src/lib/private-answer-workflow.ts
+@@ -46,7 +46,7 @@
+   conflict: boolean;
+   error: string;
+   notice: string;
+-  // hidden/切身份清除的丢弃提示（固定文案，不含用户数据）：独立于 notice 生命周期，
++  // 退出身份/任务清除的丢弃提示（固定文案，不含用户数据）：独立于 notice 生命周期，
+   // 恢复 load 的读取中、成功、失败全程保持可见，不被 load 首段同步清掉的 notice 影响；
+   // 再次编辑或显式保存/对照/复制时结束；重复 clear（无新丢弃）保留既有提示。
+   lossNotice: string;
+@@ -60,9 +60,9 @@
+ 
+ // clear 的固定文案（31号审查P1-1）：只携带"是否有未保存编辑"这一个布尔事实，不携带任何草稿内容。
+ export const PRIVATE_ANSWER_CLEAR_DISCARD_NOTICE =
+-  "页面已隐藏或切换身份：私人草稿状态已清除，未保存的修改已丢弃（草稿没有发送给企业）；恢复可见后将重新读取已保存草稿。";
++  "已退出当前身份或任务：私人草稿状态已清除，未保存的修改已丢弃（草稿没有发送给企业）。";
+ export const PRIVATE_ANSWER_CLEAR_CLEAN_NOTICE =
+-  "页面已隐藏或切换身份：私人草稿状态已清除；没有未保存的编辑，恢复可见后将重新读取。";
++  "已退出当前身份或任务：私人草稿状态已清除；没有未保存的编辑。";
+ 
+ /** 引用键是三元组：两个报告出现相同 citationId 也不能合并。 */
+ export function privateAnswerReferenceKey(reportId: string, requirementId: string, citationId: string): string {
+@@ -159,7 +159,8 @@
+ // 会话并发模型（对应Codex固定快照20261006三项实测复现的修复）：
+ // - 只有 clear/dispose 递增会话纪元并使全部在途回执失效；load/save/compare/copy 互不废弃对方，
+ //   各自用独立busy互斥防重复提交，回执只写自己负责的字段，busy由各自回执复位，不会搁浅。
+-// - clear 同时使会话失活：隐藏/切身份后旧按钮的 save/compare/copy/setText 全部拒绝，
++// - 普通隐藏只暂停会话、保留本机编辑，恢复读取保护隐藏前的编辑；不写浏览器持久存储或自动保存。
++// - clear 同时使会话失活：退出身份/任务后旧按钮的 save/compare/copy/setText 全部拒绝，
+ //   只有当前身份/任务effect重新 activate 才恢复（DOM按钮不能复活失效会话）。
+ // - 丢弃提示（lossNotice，P1-1）：clear 按清除前状态布尔判定"是否真的丢弃了未保存编辑"，
+ //   只发布固定文案；该字段独立于 notice 生命周期——load 读取中/成功/失败全程不动它，
+@@ -185,6 +186,7 @@
+   publish: (state: PrivateAnswerState) => void,
+ ) {
+   let active = false;
++  let disposed = false;
+   let epoch = 0;
+   let editSeq = 0;
+   let optionsRun = 0;
+@@ -215,10 +217,15 @@
+         : ref);
+   }
+ 
+-  async function load(taskId: string, scope?: { crossJob: boolean; hasTargetReport: boolean }): Promise<boolean> {
++  async function load(
++    taskId: string,
++    scope?: { crossJob: boolean; hasTargetReport: boolean },
++    preserveExistingEdits = false,
++  ): Promise<boolean> {
+     if (!active || state.reading) return false;
+     const capturedEpoch = epoch;
+     const editMark = editSeq;
++    const retainedEdits = preserveExistingEdits && privateAnswerIsDirty(state);
+     const capturedSourceRun = sourceRun;
+     const optionsTicket = ++optionsRun;
+     set({ reading: true, error: "", notice: "", conflict: false, serverCopy: null });
+@@ -229,7 +236,7 @@
+       const draftApplies = draft === null
+         ? state.saved === null
+         : state.saved === null || draft.revision >= state.saved.revision;
+-      const editsProtected = editSeq !== editMark;
++      const editsProtected = retainedEdits || editSeq !== editMark;
+       // 发起后已有更新的来源重验：来源可信度由该重验决定（pending/failed/current），本回执不改回current。
+       const staleSources = capturedSourceRun !== sourceRun;
+       const next: PrivateAnswerState = { ...state, phase: "ready", reading: false };
+@@ -251,7 +258,11 @@
+       if (editsProtected && !draftApplies) {
+         next.notice = "读取完成：保留了你读取期间的新输入；本地已有更新的保存结果，未用读取结果覆盖。";
+       } else if (editsProtected) {
+-        next.notice = "读取完成：保留了你读取期间的新输入。";
++        next.notice = retainedEdits
++          ? privateAnswerIsDirty(next)
++            ? "已恢复本机暂存的编辑；未保存内容仍保留，请核对后明确点击保存草稿。"
++            : "已保留本机编辑，并确认与当前已保存版本一致。"
++          : "读取完成：保留了你读取期间的新输入。";
+       } else if (!draftApplies) {
+         next.notice = "读取完成：本地已有更新的保存结果，未用读取结果覆盖。";
+       }
+@@ -259,7 +270,10 @@
+       publish(state);
+       return true;
+     } catch (error) {
+-      if (live(capturedEpoch)) set({ phase: "ready", reading: false, error: apiDeps.errorMessage(error) });
++      if (live(capturedEpoch)) set({
++        phase: "ready", reading: false, error: apiDeps.errorMessage(error),
++        ...(preserveExistingEdits ? { sourceCheck: "failed" as const } : {}),
++      });
+       return false;
+     }
+   }
+@@ -467,9 +481,26 @@
+   }
+ 
+   return {
+-    activate() { active = true; },
++    activate() { if (!disposed) active = true; },
++    visibilityChanged(visible: boolean, taskId: string, scope?: { crossJob: boolean; hasTargetReport: boolean }) {
++      if (disposed) return Promise.resolve(false);
++      if (visible) {
++        active = true;
++        return load(taskId, scope, true);
++      }
++      // 在途保存可能已提交但未收到回执：仅使旧回执失效，恢复时读取版本核对；
++      // 保留文字和引用选择，不把不确定结果宣称为成功，也不在隐藏时自动发请求。
++      active = false;
++      ++epoch;
++      set({
++        reading: false, saving: false, comparing: false, copying: false,
++        sourceCheck: "pending",
++        notice: "本机编辑已暂存；返回此任务后核对已保存版本。未发送给企业。",
++      });
++      return Promise.resolve(false);
++    },
+     clear() {
+-      // hidden/切身份：按清除前的本地状态判定是否真的存在未保存编辑（布尔驱动固定文案，
++      // 退出身份/任务：按清除前的本地状态判定是否真的存在未保存编辑（布尔驱动固定文案，
+       // 不携带任何草稿内容或身份数据）；丢弃事实写入独立的 lossNotice，恢复 load 读取中/
+       // 成功/失败全程保持可见（P1-1：此前该声明被恢复 load 首段同步清空，用户永远看不到）。
+       // 第二次 clear（读取中/失败后/成功后再次隐藏，此时状态已干净、无新丢弃）不得抹去
+@@ -487,7 +518,7 @@
+       };
+       publish(state);
+     },
+-    dispose() { active = false; ++epoch; },
++    dispose() { disposed = true; active = false; ++epoch; },
+     load,
+     refreshReferences,
+     setText,
+--- a/jianli/tests/private-answer-workflow.test.mjs
++++ b/jianli/tests/private-answer-workflow.test.mjs
+@@ -143,7 +143,7 @@
+   assert.equal(h.calls.saveDraft[0].payload.text, "第一版文字", "保存快照应是发起时的文字");
+ });
+ 
+-test("隐藏/清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态", async () => {
++test("退出身份/任务清理：未保存内容丢弃，迟到的保存回执不得恢复任何状态", async () => {
+   let send;
+   const pending = new Promise(resolve => { send = resolve; });
+   const h = setup({ saveDraft: () => pending.then(() => savedView({ text: "迟到的保存结果", revision: 2 })) });
+--- a/jianli/tests/private-answer-recovery-notice.test.mjs
++++ b/jianli/tests/private-answer-recovery-notice.test.mjs
+@@ -344,9 +344,11 @@
+   };
+ }
+ 
+-test("面板：常驻警告——离开窗口会清除未保存编辑请先保存，且草稿没有发送给企业", () => {
++test("面板：普通切标签页保留编辑，刷新/切身份或任务前须保存，且不发送给企业", () => {
+   const html = renderToStaticMarkup(React.createElement(draftComponent.PrivateAnswerDraftPanel, panelProps()));
+-  assert.match(html, /离开[^<]*窗口/, "常驻警告必须始终渲染（不依赖任何状态）");
++  assert.match(html, /切换标签页[^<]*暂存/, "切标签页应保留当前任务编辑");
++  assert.match(html, /刷新页面、退出账号或切换任务前请先/, "身份和任务边界仍需明确保存");
++  assert.doesNotMatch(html, /离开或最小化窗口会清除未保存/, "不得继续宣称普通隐藏会丢弃");
+   assert.match(html, /未保存/);
+   assert.match(html, /先保存|保存草稿/);
+   assert.match(html, /没有发送给企业|不会发送给企业|未发送给企业/);
+@@ -379,10 +381,9 @@
+ });
+ 
+ // ---- 传智杯38：二次clear不得抹去仍然存活的丢弃提示 ----
+-// 以下场景全部复刻组件 visibilitychange 处理器的真实序列（hidden→clear；visible→activate+load）：
+-// PrivateAnswerDraft.tsx 中 clear() 只在该分支被调用。
+-
+-test("恢复读取进行中再次hidden：第二次clear不得抹去丢弃提示", async () => {
++// 以下保留显式身份/任务清理的提示和旧回执隔离边界；普通visibilitychange另由visibility测试覆盖。
++
++test("恢复读取进行中再次清理身份/任务：第二次clear不得抹去丢弃提示", async () => {
+   const gate = deferred();
+   let reads = 0;
+   const h = setup({
+@@ -391,12 +392,12 @@
+   });
+   await h.session.load("task-1");
+   h.session.setText("未保存就要被丢弃的文字");
+-  h.session.clear(); // hidden #1：丢弃提示发布
++  h.session.clear(); // 显式clear #1：丢弃提示发布
+   assert.match(h.state().lossNotice, /丢弃/);
+   h.session.activate(); // visible #1：恢复读取开始
+   const reading = h.session.load("task-1");
+   assert.equal(h.state().reading, true);
+-  h.session.clear(); // hidden #2：读取进行中再次隐藏（此时状态已干净）
++  h.session.clear(); // 显式clear #2：读取进行中再次隐藏（此时状态已干净）
+   assert.match(h.state().lossNotice, /丢弃/, "第二次clear不得抹去已发布的丢弃提示");
+   h.session.activate(); // visible #2：重新恢复
+   gate.resolve(null);
+@@ -407,7 +408,7 @@
+   assert.equal(state.text, "已保存的正文", "恢复读取以服务器内容为准");
+ });
+ 
+-test("恢复读取失败后再次hidden：丢弃提示仍保持", async () => {
++test("恢复读取失败后再次清理身份/任务：丢弃提示仍保持", async () => {
+   let reads = 0;
+   const h = setup({
+     getDraft: async () => { reads += 1; if (reads === 2) throw new Error("读取失败（合成）"); return savedView(); },
+@@ -427,7 +428,7 @@
+   assert.match(h.state().lossNotice, /丢弃/, "再次成功恢复后丢弃提示仍可见");
+ });
+ 
+-test("成功恢复后再次hidden（无新编辑）：丢弃提示保持，编辑仍按生命周期结束", async () => {
++test("成功恢复后再次清理身份/任务（无新编辑）：丢弃提示保持，编辑仍按生命周期结束", async () => {
+   const h = setup();
+   await h.session.load("task-1");
+   h.session.setText("未保存的编辑");
+--- /dev/null
++++ b/jianli/tests/private-answer-visibility.test.mjs
+@@ -0,0 +1,205 @@
++// Actual production session regression: tab hiding must not discard private edits.
++// PRODUCT-01 前端回归：私人回答草稿的保存/刷新/冲突/身份清理/引用选择/预览复制。
++// 无浏览器依赖：注入合成 API 驱动真实 workflow 会话；组件面板用 sucrase 转译后做 SSR 与直接 props 断言。
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { registerHooks } from "node:module";
++import { readFileSync } from "node:fs";
++import { pathToFileURL, fileURLToPath } from "node:url";
++import path from "node:path";
++import { createRequire } from "node:module";
++
++const here = path.dirname(fileURLToPath(import.meta.url));
++const SRC = path.resolve(here, "../src");
++const require = createRequire(import.meta.url);
++const { transform } = require("sucrase");
++
++registerHooks({
++  resolve(specifier, context, nextResolve) {
++    if (specifier.startsWith("next/") && !specifier.endsWith(".js")) {
++      try { return nextResolve(specifier + ".js", context); } catch {}
++      return nextResolve(specifier, context);
++    }
++    if (specifier.startsWith("@/")) {
++      const base = path.join(SRC, specifier.slice(2));
++      for (const candidate of [base, base + ".ts", base + ".tsx", path.join(base, "index.ts"), path.join(base, "index.tsx")]) {
++        try { return nextResolve(pathToFileURL(candidate).href, context); } catch {}
++      }
++      throw new Error(`无法解析别名导入：${specifier}`);
++    }
++    if ((specifier.startsWith("./") || specifier.startsWith("../")) && !path.extname(specifier)) {
++      for (const suffix of ["", ".ts", ".tsx", "/index.ts", "/index.tsx", ".js", "/index.js"]) {
++        try { return nextResolve(new URL(specifier + suffix, context.parentURL).href, context); } catch {}
++      }
++      return nextResolve(specifier, context);
++    }
++    return nextResolve(specifier, context);
++  },
++  load(url, context, nextLoad) {
++    if (url.endsWith(".ts") || url.endsWith(".tsx")) {
++      const out = transform(readFileSync(fileURLToPath(url), "utf8"), {
++        transforms: ["typescript", "jsx"], jsxRuntime: "automatic", production: false, filePath: url,
++      });
++      return { format: "module", source: out.code, shortCircuit: true };
++    }
++    return nextLoad(url, context);
++  },
++});
++
++const { createPrivateAnswerSession, initialPrivateAnswerState, privateAnswerIsDirty } =
++  await import(pathToFileURL(path.join(SRC, "lib/private-answer-workflow.ts")).href);
++
++const BASE_REPORT = "11111111-1111-1111-1111-111111111111";
++const TARGET_REPORT = "22222222-2222-2222-2222-222222222222";
++const REQUIREMENT = "99999999-9999-9999-9999-999999999999";
++
++const baseOption = (over = {}) => ({
++  reportId: BASE_REPORT, requirementId: REQUIREMENT, citationId: "R1-E1", reportKind: "base",
++  filePath: "src/retry.ts", lineStart: 10, lineEnd: 20, provenance: "portfolio", ...over,
++});
++const targetOption = (over = {}) => baseOption({
++  reportId: TARGET_REPORT, citationId: "T9-E1", reportKind: "target",
++  filePath: "src/target.py", lineStart: 5, lineEnd: 9, provenance: "reference", ...over,
++});
++const savedView = (over = {}) => ({
++  taskId: "task-1", requirementId: REQUIREMENT, text: "已保存的正文", revision: 1,
++  updatedAt: "2026-10-06T01:02:03+00:00", boundary: "私人草稿仅本人可见。", references: [], ...over,
++});
++const savedReference = (over = {}) => ({
++  reportId: BASE_REPORT, requirementId: REQUIREMENT, citationId: "R1-E1", available: true,
++  snippet: "保存回执里的真实片段", filePath: "src/retry.ts", lineStart: 10, lineEnd: 20,
++  provenance: "portfolio", ...over,
++});
++
++function deferred() {
++  let resolve, reject;
++  const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
++  return { promise, resolve, reject };
++}
++
++function setup(overrides = {}) {
++  const states = [];
++  const calls = { getDraft: [], saveDraft: [], listReferences: [] };
++  const defaults = {
++    getDraft: async () => savedView(),
++    saveDraft: async (id, payload) => savedView({
++      text: payload.text, revision: payload.expectedRevision + 1,
++      references: payload.references.map(r => savedReference({ ...r })),
++    }),
++    listReferences: async () => [baseOption(), targetOption()],
++    errorMessage: error => (error instanceof Error ? error.message : String(error)),
++  };
++  const merged = { ...defaults, ...overrides };
++  // 调用记录独立于替身实现：overrides 只替换行为，不得丢失请求计数（否则409等流程无法断言）。
++  const session = createPrivateAnswerSession({
++    getDraft: async id => { calls.getDraft.push(id); return merged.getDraft(id); },
++    saveDraft: async (id, payload) => { calls.saveDraft.push({ id, payload }); return merged.saveDraft(id, payload); },
++    listReferences: async id => { calls.listReferences.push(id); return merged.listReferences(id); },
++    errorMessage: merged.errorMessage,
++  }, state => states.push(state));
++  session.activate();
++  return { session, state: () => states.at(-1) ?? initialPrivateAnswerState, calls };
++}
++
++
++test("ordinary hidden/visible preserves unsaved text and selected references", async () => {
++  const h = setup();
++  await h.session.load("task-1");
++  h.session.setText("查询代码前的未保存编辑");
++  h.session.toggleReference(baseOption());
++  await h.session.visibilityChanged(false, "task-1");
++  await h.session.visibilityChanged(true, "task-1");
++  assert.equal(h.state().text, "查询代码前的未保存编辑");
++  assert.equal(h.state().selected.length, 1);
++  assert.equal(privateAnswerIsDirty(h.state()), true);
++  assert.equal(h.calls.saveDraft.length, 0, "切标签页不自动发出保存或企业消息");
++});
++
++test("failed explicit save survives hide/resume and only explicit retry sends PUT", async () => {
++  let saves = 0;
++  const h = setup({ saveDraft: async (_id, payload) => {
++    if (++saves === 1) throw new Error("保存失败（合成）");
++    return savedView({ text: payload.text, revision: payload.expectedRevision + 1 });
++  }});
++  await h.session.load("task-1");
++  h.session.setText("保存失败后不能丢弃"); h.session.toggleReference(baseOption());
++  assert.equal(await h.session.save("task-1"), false);
++  assert.match(h.state().error, /保存失败/);
++  await h.session.visibilityChanged(false, "task-1");
++  await h.session.visibilityChanged(true, "task-1");
++  assert.equal(h.state().text, "保存失败后不能丢弃");
++  assert.equal(h.state().selected.length, 1);
++  assert.equal(saves, 1);
++  assert.equal(h.state().saving, false);
++  assert.ok(await h.session.save("task-1"));
++  assert.equal(saves, 2);
++});
++
++test("hide invalidates pending save response; resume reconciles server revision without replacing edit", async () => {
++  const gate = deferred(); let stored = savedView();
++  const h = setup({ getDraft: async () => stored, saveDraft: () => gate.promise });
++  await h.session.load("task-1"); h.session.setText("发起保存的文字");
++  const pending = h.session.save("task-1");
++  h.session.setText("保存期间继续编辑的文字");
++  await h.session.visibilityChanged(false, "task-1");
++  assert.equal(await h.session.save("task-1"), false, "隐藏期间拒绝旧DOM动作");
++  stored = savedView({ text: "发起保存的文字", revision: 2 }); gate.resolve(stored);
++  assert.equal(await pending, false);
++  assert.equal(h.state().saved.revision, 1, "迟到回执不得更新暂停会话");
++  await h.session.visibilityChanged(true, "task-1");
++  assert.equal(h.state().saved.revision, 2);
++  assert.equal(h.state().text, "保存期间继续编辑的文字");
++  assert.equal(privateAnswerIsDirty(h.state()), true);
++  assert.equal(h.state().saving, false);
++});
++
++test("second hide invalidates old resume read and later recovery still preserves local edits", async () => {
++  const oldRead = deferred(); let reads = 0;
++  const h = setup({ getDraft: async () => ++reads === 2 ? oldRead.promise : savedView({ revision: reads }) });
++  await h.session.load("task-1"); h.session.setText("两个恢复请求之间的编辑");
++  await h.session.visibilityChanged(false, "task-1");
++  const firstResume = h.session.visibilityChanged(true, "task-1");
++  await h.session.visibilityChanged(false, "task-1");
++  assert.ok(await h.session.visibilityChanged(true, "task-1"));
++  oldRead.resolve(savedView({ text: "旧读取结果", revision: 9 }));
++  assert.equal(await firstResume, false);
++  assert.equal(h.state().text, "两个恢复请求之间的编辑");
++  assert.equal(h.state().saved.revision, 3);
++  assert.equal(h.state().reading, false);
++});
++
++test("task/account disposal prevents old save/load and visibility callbacks from reaching new session", async () => {
++  const oldSave = deferred(); const oldLoad = deferred();
++  const alice = setup({ saveDraft: () => oldSave.promise, getDraft: async () => oldLoad.promise });
++  const reading = alice.session.load("task-A");
++  alice.session.setText("A的私有编辑");
++  const saving = alice.session.save("task-A");
++  alice.session.dispose();
++  const bob = setup({ getDraft: async () => savedView({ taskId:"task-B", text:"B的已保存内容" }) });
++  await bob.session.load("task-B");
++  assert.equal(await alice.session.visibilityChanged(true, "task-A"), false);
++  alice.session.activate();
++  assert.equal(await alice.session.save("task-A"), false);
++  oldLoad.resolve(savedView({text:"A的迟到读取"})); oldSave.resolve(savedView({ text:"A的迟到保存", revision:2 }));
++  assert.equal(await reading, false); assert.equal(await saving, false);
++  assert.equal(bob.state().text, "B的已保存内容");
++  assert.equal(bob.calls.getDraft.length, 1);
++  assert.equal(bob.calls.saveDraft.length, 0);
++});
++
++test("restore read failure keeps local draft recoverable and copy remains blocked until source check succeeds", async () => {
++  let fail = false;
++  const h = setup({ listReferences: async () => { if (fail) throw new Error("重读失败"); return [baseOption()]; } });
++  await h.session.load("task-1"); h.session.setText("恢复失败仍应保留的文字");
++  await h.session.visibilityChanged(false,"task-1"); fail=true;
++  assert.equal(await h.session.visibilityChanged(true,"task-1"),false);
++  assert.equal(h.state().text,"恢复失败仍应保留的文字");
++  assert.match(h.state().error,/重读失败/);
++  assert.equal(h.state().sourceCheck,"failed");
++  const copies=[];
++  assert.equal(await h.session.copy("不能发送",async t=>copies.push(t)),false);
++  assert.deepEqual(copies,[]);
++  fail=false;
++  assert.ok(await h.session.visibilityChanged(true,"task-1"));
++  assert.equal(h.state().text,"恢复失败仍应保留的文字");
++});

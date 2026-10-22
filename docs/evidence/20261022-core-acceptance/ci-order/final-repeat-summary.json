@@ -1,0 +1,28 @@
+{
+  "command": "python <evidence>/ci-order/capture_worker_case.py --repeats 12 --log <evidence>/ci-order/worker-final12.jsonl --basetemp .tmp-ci-order-final12",
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend",
+  "exit": 0,
+  "testsPassed": 12,
+  "physicalWorkers": 36,
+  "workerNonzeroExit": 0,
+  "workerNonemptyStderr": 0,
+  "distinctIterations": 12,
+  "sourceChecks": {
+    "backend/app/services/task_runner.py": {
+      "recordedAtRunStart": "65ee927f01cb9a2d8273d6c5b66d29c73d8be907f4e733ce446556accffb661f",
+      "stageNowMatches": true,
+      "acceptedManifestMatches": true
+    },
+    "backend/app/services/worker_identity.py": {
+      "recordedAtRunStart": "bfa10f6c74120393b653b9a516b34991f3dc8f1fbbd4a455c2e73958fa396b4c",
+      "stageNowMatches": true,
+      "acceptedManifestMatches": true
+    },
+    "backend/app/services/isolated_worker.py": {
+      "recordedAtRunStart": "244342ec555ee90d99314164088aacb55ef1cc0856d3dce1b4f8ba7a663380d8",
+      "stageNowMatches": true,
+      "acceptedManifestMatches": true
+    }
+  },
+  "scope": "one unchanged real API case parameterized12; does not replace fullCI"
+}

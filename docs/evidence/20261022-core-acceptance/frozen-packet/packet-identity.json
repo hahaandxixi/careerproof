@@ -1,0 +1,38 @@
+{
+  "currentFixture": "backend/app/tests/fixtures/current-20261022/agent-offline-input.json",
+  "currentFixtureSha256": "59720f45e9cd55b338643f05dd7a77fcb82c25072be03b00c970828afab659a7",
+  "historicalPacket": {
+    "path": "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json",
+    "sha256": "930bc0001e76965dc4c8fc1dd4573a7cd3edd6bd8fca45b108c20926fef431da",
+    "casesUnchanged": true
+  },
+  "sourceHashes": {
+    "backend/evals/bounded_evidence_smoke.py": "606d7e3b9f70539ce04319f0e563b592b55ba0d772307c53486187a78157951e",
+    "backend/app/agents/evidence_workflow.py": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "backend/app/agents/provider.py": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "backend/app/agents/contracts.py": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "backend/app/tools/matcher.py": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "backend/app/tools/code_analyzer.py": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+    "backend/app/agents/evidence_policy.md": "1f95f2943b828ea63c933ea462b5b381d334cb1af9c01ed387a51576eca28eb7",
+    "backend/app/agents/input_budget.py": "ebc47ba41cbfb28dcbf0003ab3475c2d8ca895cf1a97bf297efdffec80cb8e0e"
+  },
+  "sourceRoot": "backend/.tmp/core-acceptance-20261022/source",
+  "acceptedStageSourceHashesMatch": {
+    "backend/evals/bounded_evidence_smoke.py": true,
+    "backend/app/agents/evidence_workflow.py": true,
+    "backend/app/agents/provider.py": true,
+    "backend/app/agents/contracts.py": true,
+    "backend/app/tools/matcher.py": true,
+    "backend/app/tools/code_analyzer.py": true,
+    "backend/app/agents/evidence_policy.md": true,
+    "backend/app/agents/input_budget.py": true
+  },
+  "executedOnAcceptedStage": true,
+  "command": "python -m pytest app/tests/test_agent_evidence_smoke.py app/tests/test_agent_smoke_hard_stop.py --basetemp=<dedicated existing-parent temp> -o cache_dir=<dedicated temp> --junitxml=<evidence>/junit-stage-green.xml -q",
+  "result": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  }
+}

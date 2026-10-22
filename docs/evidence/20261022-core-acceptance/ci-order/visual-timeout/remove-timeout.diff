@@ -1,0 +1,11 @@
+--- accepted/visual_evidence.py
++++ temp-mutant/visual_evidence.py
+@@ -204,7 +204,7 @@
+     observations = None
+     failure_kind = None
+     try:
+-        async with asyncio.timeout(settings.ai_workflow_timeout_seconds), _model_semaphore():
++        async with _model_semaphore():
+             # Account-budget and global-model queues can wait after the first
+             # validation. Recheck the actual source before creating a provider;
+             # never spend on bytes from an invalidated queued material version.

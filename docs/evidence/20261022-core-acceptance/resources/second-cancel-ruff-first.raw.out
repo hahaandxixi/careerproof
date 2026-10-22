@@ -1,0 +1,15 @@
+SIM105 Use `contextlib.suppress(asyncio.CancelledError)` instead of `try`-`except`-`pass`
+   --> app\tests\test_worker_identity.py:210:13
+    |
+208 |           if not task.done():
+209 |               task.cancel()
+210 | /             try:
+211 | |                 await task
+212 | |             except asyncio.CancelledError:
+213 | |                 pass
+    | |____________________^
+    |
+help: Replace with `contextlib.suppress(asyncio.CancelledError)`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

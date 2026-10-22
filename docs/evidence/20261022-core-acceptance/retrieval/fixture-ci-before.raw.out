@@ -1,0 +1,2509 @@
+
+-- fixtures used by test_matching_entry_same_owner_dual_task_last_slot_race ---
+-------------- (app\tests\test_ai_budget_production_race.py:563) --------------
+case -- app\tests\test_application_verification.py:151
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_verification_entry_same_owner_dual_task_last_slot_race -
+-------------- (app\tests\test_ai_budget_production_race.py:654) --------------
+case -- app\tests\test_application_verification.py:151
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_cross_role_owner_isolation_and_entry_role_walls ----
+-------------- (app\tests\test_ai_budget_production_race.py:740) --------------
+case -- app\tests\test_application_verification.py:151
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_offline_fixture_contract_dual_pending_and_single_chain_booking -
+-------------- (app\tests\test_ai_budget_production_race.py:822) --------------
+case -- app\tests\test_application_verification.py:151
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_every_physical_matching_request_is_durable_attempted_and_booked -
+------------------ (app\tests\test_durable_matching.py:246) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_fallback_after_invalid_repair_still_books_persisted_receipts -
+------------------ (app\tests\test_durable_matching.py:398) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------ fixtures used by test_booking_failure_recovers_without_extra_http ------
+------------------ (app\tests\test_durable_matching.py:443) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------- fixtures used by test_report_save_failure_keeps_booked_receipts -------
+------------------ (app\tests\test_durable_matching.py:502) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_owner_deactivation_and_material_replacement_send_nothing -
+------------------ (app\tests\test_durable_matching.py:553) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_concurrent_duplicate_booking_writes_one_ledger_row ---
+------------------ (app\tests\test_durable_matching.py:653) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_history_read_releases_borrowed_transaction_during_http -
+------------------ (app\tests\test_durable_matching.py:733) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_wait_rechecks_identity_and_source_before_spending[disabled] -
+------------- (app\tests\test_visual_postgres_concurrency.py:30) --------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_wait_rechecks_identity_and_source_before_spending[role_changed] -
+------------- (app\tests\test_visual_postgres_concurrency.py:30) --------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_wait_rechecks_identity_and_source_before_spending[missing] -
+------------- (app\tests\test_visual_postgres_concurrency.py:30) --------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_wait_rechecks_identity_and_source_before_spending[changed] -
+------------- (app\tests\test_visual_postgres_concurrency.py:30) --------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_cache_recheck_after_observed_account_lock[True-True] -
+------------- (app\tests\test_visual_postgres_concurrency.py:126) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+first_failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+same_version -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_cache_recheck_after_observed_account_lock[True-False] -
+------------- (app\tests\test_visual_postgres_concurrency.py:126) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+first_failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+same_version -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_cache_recheck_after_observed_account_lock[False-True] -
+------------- (app\tests\test_visual_postgres_concurrency.py:126) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+first_failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+same_version -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_visual_cache_recheck_after_observed_account_lock[False-False] -
+------------- (app\tests\test_visual_postgres_concurrency.py:126) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+first_failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+same_version -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_pending_revocation_does_not_block_other_grants -
+--------------- (app\tests\test_mcp_postgres_isolation.py:148) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_four_grants_have_independent_caps_and_private_audits -
+--------------- (app\tests\test_mcp_postgres_isolation.py:225) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-disabled] -
+--------------- (app\tests\test_mcp_postgres_isolation.py:291) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+stage -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_changed_identity_cannot_export_after_wait_or_read[lock_wait-role_changed] -
+--------------- (app\tests\test_mcp_postgres_isolation.py:291) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+stage -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-disabled] -
+--------------- (app\tests\test_mcp_postgres_isolation.py:291) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+stage -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_changed_identity_cannot_export_after_wait_or_read[after_dispatch-role_changed] -
+--------------- (app\tests\test_mcp_postgres_isolation.py:291) ----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+fault -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+pg_world -- app\tests\test_mcp_postgres_isolation.py:40
+    no docstring available
+stage -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_rules_explain_selected_source_without_requesting_duplicate_upload -
+-------------------- (app\tests\test_real_matching.py:216) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_real_report_survives_login_and_preserves_sources_and_snapshots -
+-------------------- (app\tests\test_real_matching.py:255) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_validated_ai_explanations_and_citations_are_persisted[bailian-qwen-plus-test] -
+-------------------- (app\tests\test_real_matching.py:339) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+model_name -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+provider_name -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_validated_ai_explanations_and_citations_are_persisted[zhipu-glm-4.7-flash] -
+-------------------- (app\tests\test_real_matching.py:339) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+model_name -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+provider_name -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--------- fixtures used by test_daily_ai_budget_uses_persisted_usage ----------
+-------------------- (app\tests\test_real_matching.py:585) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_model_stage_failure_still_persists_rule_report[context] -
+-------------------- (app\tests\test_real_matching.py:620) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_model_stage_failure_still_persists_rule_report[configuration] -
+-------------------- (app\tests\test_real_matching.py:620) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_model_stage_failure_still_persists_rule_report[request] -
+-------------------- (app\tests\test_real_matching.py:620) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_model_stage_failure_still_persists_rule_report[validation] -
+-------------------- (app\tests\test_real_matching.py:620) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+failure -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_matching_materials_and_reports_are_owner_scoped ----
+-------------------- (app\tests\test_real_matching.py:677) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_pending_materials_are_rejected_and_operations_documents_are_evaluated -
+-------------------- (app\tests\test_real_matching.py:719) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_pending_and_running_matches_coalesce_and_use_frozen_inputs -
+-------------------- (app\tests\test_real_matching.py:768) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_failed_match_retry_is_owner_only_atomic_and_not_duplicated -
+-------------------- (app\tests\test_real_matching.py:858) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_entirely_unsupported_job_has_null_overall_score ----
+-------------------- (app\tests\test_real_matching.py:912) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+----- fixtures used by test_evidence_review_is_owner_scoped_and_persisted -----
+-------------------- (app\tests\test_real_matching.py:930) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_job_recommendations_rank_owned_material_evidence ----
+-------------------- (app\tests\test_real_matching.py:960) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_career_plan_cites_shortlist_and_tracks_new_material --
+-------------------- (app\tests\test_real_matching.py:999) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_local_report_budget_reason_survives_report_and_task_read[input_token_limit-\u8f93\u5165\u7528\u91cf\u4e0d\u8db3] -
+------------------- (app\tests\test_real_matching.py:1115) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+label -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+reason -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_local_report_budget_reason_survives_report_and_task_read[output_token_limit-\u8f93\u51fa\u7528\u91cf\u4e0d\u8db3] -
+------------------- (app\tests\test_real_matching.py:1115) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+label -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+matching_db -- app\tests\test_real_matching.py:53
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+reason -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_recovery_books_receipt_once_without_restoring_old_result -
+--------------- (app\tests\test_durable_attempt_service.py:100) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------- fixtures used by test_late_receipt_can_settle_unknown_old_claim -------
+--------------- (app\tests\test_durable_attempt_service.py:118) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+----- fixtures used by test_no_receipt_is_unknown_and_never_a_zero_ledger -----
+--------------- (app\tests\test_durable_attempt_service.py:129) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_prepared_unsent_is_closed_without_billing_after_claim_loss -
+--------------- (app\tests\test_durable_attempt_service.py:141) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_conflicting_receipt_and_wrong_owner_do_not_rewrite_facts -
+--------------- (app\tests\test_durable_attempt_service.py:153) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_legacy_claim_cannot_switch_to_attempt_accounting ----
+--------------- (app\tests\test_durable_attempt_service.py:172) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-------- fixtures used by test_invalid_persisted_receipt_is_not_booked --------
+--------------- (app\tests\test_durable_attempt_service.py:183) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_live_claim_reconciliation_does_not_steal_slow_request -
+--------------- (app\tests\test_durable_attempt_service.py:197) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-------- fixtures used by test_concurrent_pg_booking_records_one_fact ---------
+--------------- (app\tests\test_durable_attempt_service.py:210) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_concurrent_pg_preparation_allocates_distinct_physical_numbers -
+--------------- (app\tests\test_durable_attempt_service.py:223) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_ledger_commit_failure_is_recoverable_without_more_http -
+--------------- (app\tests\test_durable_attempt_service.py:237) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+----- fixtures used by test_send_intent_commit_failure_prevents_any_http ------
+--------------- (app\tests\test_durable_attempt_service.py:279) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_case -- app\tests\test_durable_attempt_service.py:29
+    no docstring available
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_0016_upgrade_downgrade_preserves_legacy_ledger -
+------------ (app\tests\test_ai_request_attempt_migration.py:110) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_postgres_0016_migration_inside_own_cp_test_schema ---
+------------ (app\tests\test_ai_request_attempt_migration.py:254) -------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------------ fixtures used by test_semantic_index_and_search_flow -------------
+------------- (app\tests\test_knowledge_semantic_postgres.py:161) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+knowledge_db -- app\tests\test_knowledge_semantic_postgres.py:52
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+------- fixtures used by test_mixed_engines_and_unavailable_model_skip --------
+------------- (app\tests\test_knowledge_semantic_postgres.py:182) -------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+knowledge_db -- app\tests\test_knowledge_semantic_postgres.py:52
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily0-report0-100-700-500] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily1-report1-100-300-50] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily2-report2-100-300-10] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily3-report3-100-300-daily_input] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily4-report4-100-300-report_input] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_grant_is_bounded_by_daily_and_entire_report[daily5-report5-100-300-output_token] -
+-------------- (app\tests\test_ai_shared_budget_service.py:103) ---------------
+daily -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+expected -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+inputs -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+report -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+requested -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+
+- fixtures used by test_hold_and_cross_run_grant_do_not_reset_report_capacity -
+-------------- (app\tests\test_ai_shared_budget_service.py:122) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_disabled_gate_or_unreserved_old_attempt_cannot_admit --
+-------------- (app\tests\test_ai_shared_budget_service.py:146) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------- fixtures used by test_midnight_transfer_moves_only_unsent_hold --------
+-------------- (app\tests\test_ai_shared_budget_service.py:166) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_late_actual_over_bound_stays_original_day_and_blocks_new_admission -
+-------------- (app\tests\test_ai_shared_budget_service.py:188) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_pre_budget_known_unknown_and_not_sent_strict_backfill -
+-------------- (app\tests\test_ai_shared_budget_service.py:215) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_backfill_missing_day_rejects_without_capacity_rows ---
+-------------- (app\tests\test_ai_shared_budget_service.py:267) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_pg_cross_chain_last_slot_real_concurrent_sessions ---
+-------------- (app\tests\test_ai_shared_budget_service.py:281) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_committed_session_cannot_reuse_stale_day_lock_marker --
+-------------- (app\tests\test_ai_shared_budget_service.py:311) ---------------
+budget_data -- app\tests\test_ai_shared_budget_service.py:30
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+durable_db -- app\tests\test_durable_matching.py:43
+    Own cp_test schema with pre-write namespace verification, or temp SQLite.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_budget_empty_roundtrip_preserves_legacy_and_attempt --
+-------------- (app\tests\test_ai_shared_budget_migration.py:69) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_budget_rejects_negative_or_fabricated_receipt[changes0] -
+-------------- (app\tests\test_ai_shared_budget_migration.py:90) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+changes -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_budget_rejects_negative_or_fabricated_receipt[changes1] -
+-------------- (app\tests\test_ai_shared_budget_migration.py:90) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+changes -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_budget_rejects_negative_or_fabricated_receipt[changes2] -
+-------------- (app\tests\test_ai_shared_budget_migration.py:90) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+changes -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_budget_rejects_negative_or_fabricated_receipt[changes3] -
+-------------- (app\tests\test_ai_shared_budget_migration.py:90) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+changes -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_budget_rejects_negative_or_fabricated_receipt[changes4] -
+-------------- (app\tests\test_ai_shared_budget_migration.py:90) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+changes -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+----- fixtures used by test_budget_one_reservation_and_real_zero_receipt ------
+------------- (app\tests\test_ai_shared_budget_migration.py:108) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_cutover_is_disabled_without_activation_evidence ----
+------------- (app\tests\test_ai_shared_budget_migration.py:128) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-------- fixtures used by test_owner_day_serialization_identity_unique --------
+------------- (app\tests\test_ai_shared_budget_migration.py:158) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------- fixtures used by test_adjustment_reason_and_operation_identity --------
+------------- (app\tests\test_ai_shared_budget_migration.py:172) --------------
+budget_schema -- app\tests\test_ai_shared_budget_migration.py:32
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_budget_roundtrip_and_unknown_downgrade_guard -
+------------- (app\tests\test_ai_shared_budget_migration.py:201) --------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+----- fixtures used by test_sqlite_reconsent_migration_preserves_history ------
+----------- (app\tests\test_application_reconsent_migration.py:56) ------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_postgres_reconsent_migration_preserves_history -----
+----------- (app\tests\test_application_reconsent_migration.py:65) ------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_sqlite_migration_rejects_cascading_batch_rebuild ----
+----------- (app\tests\test_application_reconsent_migration.py:72) ------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-------------- fixtures used by test_sqlite_integrity_roundtrip ---------------
+-------------- (app\tests\test_data_integrity_migration.py:108) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------------- fixtures used by test_postgres_integrity_roundtrip --------------
+-------------- (app\tests\test_data_integrity_migration.py:117) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_invalid_legacy_refused_before_ddl[applications-status] -
+-------------- (app\tests\test_data_integrity_migration.py:124) ---------------
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_invalid_legacy_refused_before_ddl[applications-reply_kind] -
+-------------- (app\tests\test_data_integrity_migration.py:124) ---------------
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_invalid_legacy_refused_before_ddl[jobs-status] -
+-------------- (app\tests\test_data_integrity_migration.py:124) ---------------
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_invalid_legacy_refused_before_ddl[job_requirements-normalized_status] -
+-------------- (app\tests\test_data_integrity_migration.py:124) ---------------
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_invalid_legacy_refused_before_ddl[match_items-verdict] -
+-------------- (app\tests\test_data_integrity_migration.py:124) ---------------
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------ fixtures used by test_sqlite_duplicate_legacy_refused_before_ddl -------
+-------------- (app\tests\test_data_integrity_migration.py:142) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--------------- fixtures used by test_sqlite_foreign_keys_guard ---------------
+-------------- (app\tests\test_data_integrity_migration.py:159) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_model_verdict_constraint_matches_enum_and_writer_contract -
+-------------- (app\tests\test_data_integrity_migration.py:172) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+----- fixtures used by test_model_checks_and_index_columns_match_revision -----
+-------------- (app\tests\test_data_integrity_migration.py:179) ---------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[applications-status] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[applications-reply_kind] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[jobs-status] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[job_requirements-normalized_status] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[match_items-verdict] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_postgres_invalid_legacy_refused_before_ddl[match_items-None] -
+-------------- (app\tests\test_data_integrity_migration.py:194) ---------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+column -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+table -- .venv-dependency23\Lib\site-packages\_pytest\python.py:1159
+    no docstring available
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_sqlite_refresh_one_successor_and_other_device_survives -
+------------------ (app\tests\test_refresh_atomicity.py:65) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_pg_refresh_one_successor_and_other_device_survives ---
+------------------ (app\tests\test_refresh_atomicity.py:70) -------------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---------- fixtures used by test_failed_issue_rolls_back_consumption ----------
+------------------ (app\tests\test_refresh_atomicity.py:78) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------ fixtures used by test_http_repeated_login_is_temporarily_limited -------
+------------------- (app\tests\test_login_rate_limit.py:20) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_success_clears_pair_but_not_source_and_does_not_disable_user -
+------------------- (app\tests\test_login_rate_limit.py:33) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_forged_forwarded_headers_cannot_change_application_bucket -
+------------------- (app\tests\test_login_rate_limit.py:63) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_source_bucket_limits_rotating_emails_and_unknown_client -
+------------------- (app\tests\test_login_rate_limit.py:73) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_database_failure_does_not_bypass_admission_or_leak_sql -
+------------------- (app\tests\test_login_rate_limit.py:85) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_source_cap_is_atomic_and_does_not_reserve_extra_pairs -
+------------------ (app\tests\test_login_rate_limit.py:139) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+-- fixtures used by test_sqlite_independent_sessions_share_limit_and_expiry ---
+------------------ (app\tests\test_login_rate_limit.py:160) -------------------
+auth_db -- app\tests\test_auth.py:31
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_pg_independent_sessions_share_limit_and_expiry -----
+------------------ (app\tests\test_login_rate_limit.py:165) -------------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--------- fixtures used by test_pg_separate_processes_share_admission ---------
+------------------ (app\tests\test_login_rate_limit.py:174) -------------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_client_identity_normalization_and_no_proxy_header_launchers -
+------------------ (app\tests\test_login_rate_limit.py:227) -------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+-------- fixtures used by test_sqlite_login_limit_migration_roundtrip ---------
+---------------- (app\tests\test_login_limit_migration.py:47) -----------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---------- fixtures used by test_pg_login_limit_migration_roundtrip -----------
+---------------- (app\tests\test_login_limit_migration.py:56) -----------------
+attempt_pg -- app\tests\test_ai_request_attempt_migration.py:210
+    no docstring available
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+--- fixtures used by test_equal_timestamps_order_stably_without_duplicates ----
+------------------- (app\tests\test_z57_pagination.py:132) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_exact_last_page_clamping_empty_and_query_bounds ----
+------------------- (app\tests\test_z57_pagination.py:152) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_growth_page_counts_rows_it_could_not_read_without_widening_catches -
+------------------- (app\tests\test_z57_pagination.py:312) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+
+- fixtures used by test_job_candidates_page_excludes_withdrawn_and_denies_non_managers -
+------------------- (app\tests\test_z57_pagination.py:207) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_job_filter_applies_before_count_and_stays_owner_scoped -
+------------------- (app\tests\test_z57_pagination.py:178) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+---- fixtures used by test_match_report_history_pages_with_default_twenty -----
+------------------- (app\tests\test_z57_pagination.py:264) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+------ fixtures used by test_notification_page_size_aliases_and_conflict ------
+------------------- (app\tests\test_z57_pagination.py:387) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+- fixtures used by test_owned_applications_page_reaches_past_the_first_hundred -
+------------------- (app\tests\test_z57_pagination.py:105) --------------------
+disable_external_ai_for_tests -- app\tests\conftest.py:7
+    Automated tests never consume a developer's real model quota from .env.
+event_loop_policy -- .venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:1077
+    Return an instance of the policy used to create asyncio event loops.
+jobs_db -- app\tests\test_paginated_lists_postgres.py:30
+    no docstring available
+monkeypatch -- .venv-dependency23\Lib\site-packages\_pytest\monkeypatch.py:33
+    A convenient fixture for monkey-patching.
+tmp_path -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:280
+    Return a temporary directory (as :class:`pathlib.Path` object)
+    which is unique to each test function invocation.
+    The temporary directory is created as a subdirectory
+    of the base temporary directory, with configurable retention,
+    as discussed in :ref:`temporary directory location and retention`.
+tmp_path_factory -- .venv-dependency23\Lib\site-packages\_pytest\tmpdir.py:265
+    Return a :class:`pytest.TempPathFactory` instance for the test session.
+
+no tests ran in 2.35s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

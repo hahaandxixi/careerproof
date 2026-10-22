@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.853" timestamp="2026-10-22T19:11:06.379949+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_visual_evidence" name="test_visual_workflow_timeout_includes_global_model_queue" time="0.364"><failure message="assert 0 == 1&#10; +  where 0 = len([])">matching_db = (&lt;fastapi.applications.FastAPI object at 0x0000023EAEDBDF10&gt;, async_sessionmaker(class_='AsyncSession', bind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000023EAED9BB50&gt;, autoflush=True, expire_on_commit=False))
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000023EAEDBC110&gt;
+
+    async def test_visual_workflow_timeout_includes_global_model_queue(matching_db, monkeypatch):  # noqa: F811
+        from app.services import visual_evidence
+    
+        app, factory = matching_db
+        waiting = asyncio.Event()
+        timeouts = []
+        queue_cancellations = []
+    
+        def observed_timeout(delay):
+            assert delay == 0.05
+            context = asyncio.timeout(delay)
+            timeouts.append(context)
+            return context
+    
+        class ObservedSemaphore(asyncio.Semaphore):
+            async def acquire(self):
+                waiting.set()
+                try:
+                    return await super().acquire()
+                except asyncio.CancelledError:
+                    queue_cancellations.append(bool(timeouts and timeouts[-1].expired()))
+                    raise
+    
+        gate = ObservedSemaphore(0)
+        # Observe the real deadline without changing asyncio globally or simulating
+        # expiry. The HTTP request also does auth, image checks and SQL outside it.
+        monkeypatch.setattr(visual_evidence, "asyncio", SimpleNamespace(
+            timeout=observed_timeout, to_thread=asyncio.to_thread,
+        ))
+        monkeypatch.setattr("app.services.visual_evidence._model_semaphore", lambda: gate)
+        monkeypatch.setattr(settings, "ai_workflow_timeout_seconds", 0.05)
+    
+        def forbidden():
+            pytest.fail("Queue timeout must not create a provider or send an image")
+    
+        monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden)
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            user = await register(client, uuid4().hex + "@example.com", "student")
+            version = await image_version(factory, UUID(user["id"]))
+            pending = asyncio.create_task(
+                client.post(
+                    f"/api/v1/project-versions/{version.id}/visual-review",
+                    json={"externalImageConsent": True},
+                )
+            )
+            try:
+                # Readiness and deadlock watchdogs are not the asserted model budget.
+                # The real 50ms context must expire while the zero-slot queue is held.
+                await asyncio.wait_for(waiting.wait(), timeout=5)
+&gt;               assert len(timeouts) == 1
+E               assert 0 == 1
+E                +  where 0 = len([])
+
+app\tests\test_visual_evidence.py:456: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,261 @@
+F
+================================== FAILURES ===================================
+_______ test_cancel_joins_real_worker_before_removing_only_its_attempt ________
+
+task_id = UUID('8ff81160-7f9e-4d55-ac63-cd1ce11b4402')
+version_id = UUID('1c361046-8b1c-4280-a1c3-b3ccf3499a7e')
+
+    async def execute_project_scan_task(task_id: UUID, version_id: UUID) -> None:
+        async with async_session_factory() as session:
+            token = await claim_task(session, task_id, step="解析项目文件")
+            if token is None:
+                return
+            heartbeat = asyncio.create_task(heartbeat_task(task_id, token, async_session_factory))
+            storage = None
+            completed = False
+            try:
+                version = await session.get(ProjectVersion, version_id)
+                if not version or version.analysis_task_id != task_id:
+                    raise AppError("项目版本已不存在", code=4043)
+                storage = LocalStorage(settings.storage_base_dir)
+                archive_path = storage.resolve(version.archive_storage_key)
+                destination = storage.resolve(f"projects/extracted/{version.id}/{token}")
+>               records = await run_isolated(
+                    process_project,
+                    archive_path,
+                    destination,
+                    storage.base_dir,
+                    version.original_filename or "document",
+                    ArchiveLimits(
+                        settings.max_archive_bytes,
+                        settings.max_extracted_bytes,
+                        settings.max_file_bytes,
+                        settings.max_archive_files,
+                    ),
+                    settings.max_document_characters,
+                    run_context={"versionId": str(version_id), "runToken": str(token)},
+                )
+
+app\services\portfolio.py:546: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+function = <function blocking_project_processor at 0x0000022AC6338220>
+timeout_seconds = None
+args = (WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-cancel-probe-20261022-native-observed/test_cancel_joins_real_w...chiveLimits(max_archive_bytes=31457280, max_extracted_bytes=104857600, max_file_bytes=1048576, max_files=2000), 500000)
+kwargs = {'run_context': {'runToken': 'd9f8f069-edf0-4ff5-9775-0a4f3ce14bcb', 'versionId': '1c361046-8b1c-4280-a1c3-b3ccf3499a7e'}}
+payload = b'\x80\x04\x95\xba\x02\x00\x00\x00\x00\x00\x00\x8c\x13test_cancel_cleanup\x94\x8c\x1ablocking_project_processor\x94\x9...c$1c361046-8b1c-4280-a1c3-b3ccf3499a7e\x94\x8c\x08runToken\x94\x8c$d9f8f069-edf0-4ff5-9775-0a4f3ce14bcb\x94us\x87\x94.'
+process = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+communication = <Task finished name='Task-41' coro=<to_thread() done, defined at C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\threads.py:12> result=(b'', None)>
+
+    async def run_isolated(
+        function: Callable[..., Any],
+        *args: Any,
+        timeout_seconds: float | None = None,
+        **kwargs: Any,
+    ) -> Any:
+        """Run trusted parsing code in a killable process; never execute uploaded code.
+    
+        Only top-level Python callables are supported. The pickle IPC is private and
+        contains server-generated arguments, not a client-supplied pickle payload.
+        """
+        payload = pickle.dumps((function, args, kwargs))
+        # Uvicorn --reload uses Windows' SelectorEventLoop, which cannot create
+        # asyncio subprocesses. Popen + a bounded background thread works on both
+        # event-loop policies; the parser itself still runs in a separate process.
+        process = subprocess.Popen(
+            [sys.executable, "-m", "app.services.isolated_worker"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+        communication = asyncio.create_task(
+            asyncio.to_thread(
+                process.communicate,
+                payload,
+                timeout=timeout_seconds or settings.task_timeout_seconds,
+            )
+        )
+        try:
+>           stdout, _ = await asyncio.shield(communication)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           asyncio.exceptions.CancelledError
+
+app\services\task_runner.py:58: CancelledError
+
+During handling of the above exception, another exception occurred:
+
+student = <httpx.AsyncClient object at 0x0000022AF98F9C40>
+app_database = <fastapi.applications.FastAPI object at 0x0000022AF93C9130>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000022AF98C6210>
+
+    @pytest.mark.asyncio
+    async def test_cancel_joins_real_worker_before_removing_only_its_attempt(
+        student, app_database, monkeypatch,
+    ):
+        assert Path(portfolio_service.__file__).resolve().is_relative_to(ACCEPTED_BACKEND)
+        assert settings.ai_external_enabled is False and settings.ai_provider == "mock"
+        submitted = []
+    
+        def queue_only(self, background_tasks, function, *args):
+            submitted.append((function, args))
+    
+        monkeypatch.setattr(task_runner.FastAPIBackgroundTaskRunner, "submit", queue_only)
+        project = (await student.post("/api/v1/projects", json={"name": "cancel-cleanup-probe"}))
+        assert project.status_code == 201, project.text
+        project_id = project.json()["data"]["id"]
+    
+        async def upload(filename):
+            response = await student.post(
+                f"/api/v1/projects/{project_id}/versions",
+                data={"requestId": str(uuid4())},
+                files={"file": (filename, project_zip(), "application/zip")},
+            )
+            assert response.status_code == 202, response.text
+            return response.json()["data"]
+    
+        # A real successful material has persisted ProjectFile references; it is not
+        # just a similarly named directory pretending to be an accepted version.
+        successful = await upload("successful.zip")
+        await portfolio_service.execute_project_scan_task(
+            UUID(successful["taskId"]), UUID(successful["versionId"])
+        )
+        async with portfolio_service.async_session_factory() as session:
+            version = await session.get(ProjectVersion, UUID(successful["versionId"]))
+            assert version.analysis_status == "completed"
+            files = list(await session.scalars(select(ProjectFile).where(
+                ProjectFile.project_version_id == version.id
+            )))
+            assert files
+            successful_keys = [entry.storage_key for entry in files]
+        storage = LocalStorage(settings.storage_base_dir)
+        successful_bytes = {
+            key: storage.resolve(key).read_bytes() for key in successful_keys
+        }
+    
+        target = await upload("cancelled.zip")
+        version_id = UUID(target["versionId"])
+        task_id = UUID(target["taskId"])
+        async with portfolio_service.async_session_factory() as session:
+            target_version = await session.get(ProjectVersion, version_id)
+            raw_key = target_version.archive_storage_key
+        raw_bytes = storage.resolve(raw_key).read_bytes()
+        target_parent = storage.resolve(f"projects/extracted/{version_id}")
+        captured = []
+        real_popen = task_runner.subprocess.Popen
+    
+        def capture_popen(*args, **kwargs):
+            assert args[0][-2:] == ["-m", "app.services.isolated_worker"]
+            process = real_popen(*args, **kwargs)
+            captured.append(process)
+            return process
+    
+        cleanup_events = []
+        worker_handle = None
+        original_cleanup = portfolio_service.cleanup_attempt
+    
+        async def audited_cleanup(session, current_storage, current_version_id, token, **kwargs):
+            if current_version_id == version_id:
+                assert len(captured) == 1
+                child = captured[0]
+                assert child.poll() is not None, "cleanup raced a still-running parser"
+                assert worker_handle is not None, "actual child identity must be observed first"
+                real_exit_code = worker_handle.exit_code()
+                attempt = current_storage.resolve(f"projects/extracted/{version_id}/{token}")
+                cleanup_events.append({
+                    "launcherPid": child.pid, "launcherReturnCodeBeforeCleanup": child.returncode,
+                    "workerPid": worker_handle.pid,
+                    "workerCreationTicks": worker_handle.creation_ticks,
+                    "actualWorkerExitCodeBeforeCleanup": real_exit_code,
+                    "attemptExistedBeforeCleanup": attempt.exists(),
+                })
+                Path(__file__).with_name("cancellation-observation.json").write_text(
+                    json.dumps(cleanup_events[-1], indent=2) + "\n", encoding="utf-8"
+                )
+                assert real_exit_code is not None, "cleanup raced the actual worker behind venv launcher"
+                assert attempt.exists(), "worker must have written partial output before cancellation"
+            result = await original_cleanup(
+                session, current_storage, current_version_id, token, **kwargs
+            )
+            if current_version_id == version_id:
+                cleanup_events[-1]["result"] = result
+                cleanup_events[-1]["attemptExistsAfterCleanup"] = attempt.exists()
+            return result
+    
+        monkeypatch.setattr(task_runner.subprocess, "Popen", capture_popen)
+        monkeypatch.setattr(portfolio_service, "cleanup_attempt", audited_cleanup)
+        monkeypatch.setattr(portfolio_service, "process_project", blocking_project_processor)
+        execution = asyncio.create_task(portfolio_service.execute_project_scan_task(task_id, version_id))
+        try:
+            await wait_until(lambda: target_parent.exists() and any(target_parent.glob("*/partial.txt")))
+            assert len(captured) == 1 and captured[0].poll() is None
+            partial = next(target_parent.glob("*/partial.txt"))
+            worker_metadata = json.loads(
+                (target_parent / f".{partial.parent.name}.worker.json").read_text(encoding="utf-8")
+            )
+            assert worker_metadata["versionId"] == str(version_id)
+            assert worker_metadata["runToken"] == partial.parent.name
+            worker_handle = NativeWorkerHandle(worker_metadata["pid"])
+            assert worker_handle.exit_code() is None
+            execution.cancel()
+            with pytest.raises(asyncio.CancelledError):
+>               await asyncio.wait_for(execution, timeout=15)
+
+..\..\..\..\..\docs\evidence\20261022-core-acceptance\resources\test_cancel_cleanup.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+app\services\portfolio.py:638: in execute_project_scan_task
+    await cleanup_attempt(cleanup_session, storage, version_id, token,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.ext.asyncio.session.AsyncSession object at 0x0000022AF9C45D00>
+current_storage = <app.tools.storage.LocalStorage object at 0x0000022AF991CC50>
+current_version_id = UUID('1c361046-8b1c-4280-a1c3-b3ccf3499a7e')
+token = UUID('d9f8f069-edf0-4ff5-9775-0a4f3ce14bcb')
+kwargs = {'worker_exited': True}, @py_assert2 = None, @py_assert5 = None
+@py_assert4 = None
+child = <Popen: returncode: 1 args: ['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dep...>
+@py_assert1 = False
+
+    async def audited_cleanup(session, current_storage, current_version_id, token, **kwargs):
+        if current_version_id == version_id:
+            assert len(captured) == 1
+            child = captured[0]
+            assert child.poll() is not None, "cleanup raced a still-running parser"
+            assert worker_handle is not None, "actual child identity must be observed first"
+            real_exit_code = worker_handle.exit_code()
+            attempt = current_storage.resolve(f"projects/extracted/{version_id}/{token}")
+            cleanup_events.append({
+                "launcherPid": child.pid, "launcherReturnCodeBeforeCleanup": child.returncode,
+                "workerPid": worker_handle.pid,
+                "workerCreationTicks": worker_handle.creation_ticks,
+                "actualWorkerExitCodeBeforeCleanup": real_exit_code,
+                "attemptExistedBeforeCleanup": attempt.exists(),
+            })
+            Path(__file__).with_name("cancellation-observation.json").write_text(
+                json.dumps(cleanup_events[-1], indent=2) + "\n", encoding="utf-8"
+            )
+>           assert real_exit_code is not None, "cleanup raced the actual worker behind venv launcher"
+E           AssertionError: cleanup raced the actual worker behind venv launcher
+E           assert None is not None
+
+..\..\..\..\..\docs\evidence\20261022-core-acceptance\resources\test_cancel_cleanup.py:177: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED ::test_cancel_joins_real_worker_before_removing_only_its_attempt - Ass...
+1 failed, 5 warnings in 2.97s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

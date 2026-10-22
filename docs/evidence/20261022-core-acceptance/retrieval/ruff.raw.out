@@ -1,0 +1,21 @@
+F811 Redefinition of unused `matching_db` from line 11
+  --> app\tests\test_paginated_lists_postgres.py:30:19
+   |
+29 | @pytest.fixture
+30 | async def jobs_db(matching_db):
+   |                   ^^^^^^^^^^^ `matching_db` redefined here
+31 |     # Override Z57's SQLite fixture for the seven cases that use jobs_db.
+32 |     return matching_db
+   |
+  ::: app\tests\test_paginated_lists_postgres.py:11:42
+   |
+ 9 | import pytest
+10 |
+11 | from app.tests.test_real_matching import matching_db  # noqa: F401 - explicit shared fixture
+   |                                          ----------- previous definition of `matching_db` here
+12 | from app.tests.test_z57_pagination import (  # noqa: F401 - pytest collects these cases
+13 |     test_equal_timestamps_order_stably_without_duplicates,
+   |
+help: Remove definition: `matching_db`
+
+Found 1 error.

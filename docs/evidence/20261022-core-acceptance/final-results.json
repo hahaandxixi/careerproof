@@ -1,0 +1,65 @@
+{
+  "acceptedCommit": "ec1e5e5ffec7a70e6a4a932178ca7746b9a1ba0d",
+  "acceptedFiles": 37,
+  "unit": {
+    "passed": 1577,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 88,
+    "skipReasons": {
+      "The production-entry last-slot race needs real PostgreSQL row locks; set CAREERPROOF_TEST_DATABASE_URL to an isolated cp_test schema": 3,
+      "Requires explicit PostgreSQL cp_test schema": 16,
+      "Requires actual PostgreSQL row locks": 1,
+      "Requires PostgreSQL row locks": 1,
+      "Requires an explicitly configured isolated PostgreSQL schema": 24,
+      "A real child-process hard stop needs an explicitly configured isolated PostgreSQL schema; SQLite cannot prove row-lock release across processes": 8,
+      "Row-lock concurrent booking requires dedicated PostgreSQL": 1,
+      "Serialized identity allocation requires dedicated PostgreSQL": 1,
+      "The borrowed-transaction probe needs the PostgreSQL integration database": 1,
+      "Real PostgreSQL row-lock concurrency requires the integration database": 1,
+      "local semantic weights not installed; see probe evidence instead": 1,
+      "Requires explicit PostgreSQL row locks": 3,
+      "requires an explicit isolated PostgreSQL integration database": 20,
+      "Requires explicit local PostgreSQL test database and real row locks": 6,
+      "PostgreSQL row lock integration only": 1
+    }
+  },
+  "strictPostgres": {
+    "passed": 141,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "skipReasons": {}
+  },
+  "hardstop": {
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "skipReasons": {}
+  },
+  "frontend": {
+    "passed": 382,
+    "failed": 0,
+    "skipped": 0,
+    "lint": 0,
+    "typecheck": 0,
+    "build": 0,
+    "buildId": "BSPYXVhgdOQqMg9TMPvW-"
+  },
+  "gate": "CI-JUNIT-GATE result=PASS modules=18 testcases=149 hardstop_windows=8",
+  "externalModelRequests": 0,
+  "realBrowserVisibility": "pending user check",
+  "normalServicesChanged": false,
+  "historicalRemoteCI": "not rerun or pushed",
+  "validationScopes": {
+    "unit": "ec1e5e5ffec7a70e6a4a932178ca7746b9a1ba0d",
+    "strictPostgres": {
+      "testedCommit": "7a76dd9e2629319b533479c8320227158efc9c7a",
+      "unchangedAcceptedFiles": 36,
+      "onlyLaterChange": "backend/app/tests/test_visual_evidence.py",
+      "scope": "Nonselected test body and stdlib suppress import; production, fixture definitions and strict PG cases unchanged"
+    },
+    "frontendBuild": "BSPYXVhgdOQqMg9TMPvW-"
+  }
+}

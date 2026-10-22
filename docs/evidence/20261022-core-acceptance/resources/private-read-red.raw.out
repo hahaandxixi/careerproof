@@ -1,0 +1,208 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_transient_acknowledgment_read_retries_within_existing_deadline[PermissionError] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_transient_acknowledgment_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029FA7BEF7D0>
+read_error = <class 'PermissionError'>
+
+    @pytest.mark.parametrize("read_error", [PermissionError, FileNotFoundError])
+    def test_transient_acknowledgment_read_retries_within_existing_deadline(
+        tmp_path, monkeypatch, read_error,
+    ):
+        fake = SimpleNamespace(GetCurrentProcess=lambda: 7)
+        monkeypatch.setattr(worker_identity, "_kernel", lambda: fake)
+        monkeypatch.setattr(worker_identity, "_creation_ticks", lambda *args: 123)
+        destination = tmp_path / "worker.json"
+        acknowledgment = destination.with_suffix(".ack")
+        acknowledgment.write_text(json.dumps({
+            "pid": os.getpid(), "creationTicks": 123, "nonce": "current"
+        }))
+        original_read = Path.read_text
+        reads = []
+        clock = [0.0]
+    
+        def read(path, **kwargs):
+            if path == acknowledgment:
+                reads.append(True)
+                if len(reads) <= 2:
+                    raise read_error("synthetic transient private ack read")
+            return original_read(path, **kwargs)
+    
+        monkeypatch.setattr(Path, "read_text", read)
+        monkeypatch.setattr(worker_identity, "time", SimpleNamespace(
+            monotonic=lambda: clock[0], sleep=lambda delay: clock.__setitem__(0, clock[0] + delay)
+        ))
+>       worker_identity.await_parent_admission(destination, "current")
+
+app\tests\test_worker_identity.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\worker_identity.py:96: in await_parent_admission
+    if json.loads(acknowledgment.read_text(encoding="utf-8")) != identity:
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_transient_acknowledgment_0/worker.ack')
+kwargs = {'encoding': 'utf-8'}
+
+    def read(path, **kwargs):
+        if path == acknowledgment:
+            reads.append(True)
+            if len(reads) <= 2:
+>               raise read_error("synthetic transient private ack read")
+E               PermissionError: synthetic transient private ack read
+
+app\tests\test_worker_identity.py:243: PermissionError
+_ test_transient_acknowledgment_read_retries_within_existing_deadline[FileNotFoundError] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_transient_acknowledgment_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029FA7BEE420>
+read_error = <class 'FileNotFoundError'>
+
+    @pytest.mark.parametrize("read_error", [PermissionError, FileNotFoundError])
+    def test_transient_acknowledgment_read_retries_within_existing_deadline(
+        tmp_path, monkeypatch, read_error,
+    ):
+        fake = SimpleNamespace(GetCurrentProcess=lambda: 7)
+        monkeypatch.setattr(worker_identity, "_kernel", lambda: fake)
+        monkeypatch.setattr(worker_identity, "_creation_ticks", lambda *args: 123)
+        destination = tmp_path / "worker.json"
+        acknowledgment = destination.with_suffix(".ack")
+        acknowledgment.write_text(json.dumps({
+            "pid": os.getpid(), "creationTicks": 123, "nonce": "current"
+        }))
+        original_read = Path.read_text
+        reads = []
+        clock = [0.0]
+    
+        def read(path, **kwargs):
+            if path == acknowledgment:
+                reads.append(True)
+                if len(reads) <= 2:
+                    raise read_error("synthetic transient private ack read")
+            return original_read(path, **kwargs)
+    
+        monkeypatch.setattr(Path, "read_text", read)
+        monkeypatch.setattr(worker_identity, "time", SimpleNamespace(
+            monotonic=lambda: clock[0], sleep=lambda delay: clock.__setitem__(0, clock[0] + delay)
+        ))
+>       worker_identity.await_parent_admission(destination, "current")
+
+app\tests\test_worker_identity.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\worker_identity.py:96: in await_parent_admission
+    if json.loads(acknowledgment.read_text(encoding="utf-8")) != identity:
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_transient_acknowledgment_1/worker.ack')
+kwargs = {'encoding': 'utf-8'}
+
+    def read(path, **kwargs):
+        if path == acknowledgment:
+            reads.append(True)
+            if len(reads) <= 2:
+>               raise read_error("synthetic transient private ack read")
+E               FileNotFoundError: synthetic transient private ack read
+
+app\tests\test_worker_identity.py:243: FileNotFoundError
+_ test_permanent_acknowledgment_read_cannot_extend_deadline[PermissionError] __
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_permanent_acknowledgment_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029FA7C4E6F0>
+read_error = <class 'PermissionError'>
+
+    @pytest.mark.parametrize("read_error", [PermissionError, FileNotFoundError])
+    def test_permanent_acknowledgment_read_cannot_extend_deadline(
+        tmp_path, monkeypatch, read_error,
+    ):
+        fake = SimpleNamespace(GetCurrentProcess=lambda: 7)
+        monkeypatch.setattr(worker_identity, "_kernel", lambda: fake)
+        monkeypatch.setattr(worker_identity, "_creation_ticks", lambda *args: 123)
+        destination = tmp_path / "worker.json"
+        acknowledgment = destination.with_suffix(".ack")
+        acknowledgment.write_text("{}")
+        original_read = Path.read_text
+        clock = [0.0]
+    
+        def read(path, **kwargs):
+            if path == acknowledgment:
+                raise read_error("synthetic permanent private ack read")
+            return original_read(path, **kwargs)
+    
+        monkeypatch.setattr(Path, "read_text", read)
+        monkeypatch.setattr(worker_identity, "time", SimpleNamespace(
+            monotonic=lambda: clock[0], sleep=lambda delay: clock.__setitem__(0, clock[0] + delay)
+        ))
+        with pytest.raises(TimeoutError, match="parent admission timed out"):
+>           worker_identity.await_parent_admission(destination, "current")
+
+app\tests\test_worker_identity.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\worker_identity.py:96: in await_parent_admission
+    if json.loads(acknowledgment.read_text(encoding="utf-8")) != identity:
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_permanent_acknowledgment_0/worker.ack')
+kwargs = {'encoding': 'utf-8'}
+
+    def read(path, **kwargs):
+        if path == acknowledgment:
+>           raise read_error("synthetic permanent private ack read")
+E           PermissionError: synthetic permanent private ack read
+
+app\tests\test_worker_identity.py:270: PermissionError
+_ test_permanent_acknowledgment_read_cannot_extend_deadline[FileNotFoundError] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_permanent_acknowledgment_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000029FA7C4F320>
+read_error = <class 'FileNotFoundError'>
+
+    @pytest.mark.parametrize("read_error", [PermissionError, FileNotFoundError])
+    def test_permanent_acknowledgment_read_cannot_extend_deadline(
+        tmp_path, monkeypatch, read_error,
+    ):
+        fake = SimpleNamespace(GetCurrentProcess=lambda: 7)
+        monkeypatch.setattr(worker_identity, "_kernel", lambda: fake)
+        monkeypatch.setattr(worker_identity, "_creation_ticks", lambda *args: 123)
+        destination = tmp_path / "worker.json"
+        acknowledgment = destination.with_suffix(".ack")
+        acknowledgment.write_text("{}")
+        original_read = Path.read_text
+        clock = [0.0]
+    
+        def read(path, **kwargs):
+            if path == acknowledgment:
+                raise read_error("synthetic permanent private ack read")
+            return original_read(path, **kwargs)
+    
+        monkeypatch.setattr(Path, "read_text", read)
+        monkeypatch.setattr(worker_identity, "time", SimpleNamespace(
+            monotonic=lambda: clock[0], sleep=lambda delay: clock.__setitem__(0, clock[0] + delay)
+        ))
+        with pytest.raises(TimeoutError, match="parent admission timed out"):
+>           worker_identity.await_parent_admission(destination, "current")
+
+app\tests\test_worker_identity.py:278: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\worker_identity.py:96: in await_parent_admission
+    if json.loads(acknowledgment.read_text(encoding="utf-8")) != identity:
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-worker-private-read-red/test_permanent_acknowledgment_1/worker.ack')
+kwargs = {'encoding': 'utf-8'}
+
+    def read(path, **kwargs):
+        if path == acknowledgment:
+>           raise read_error("synthetic permanent private ack read")
+E           FileNotFoundError: synthetic permanent private ack read
+
+app\tests\test_worker_identity.py:270: FileNotFoundError
+=========================== short test summary info ===========================
+FAILED app/tests/test_worker_identity.py::test_transient_acknowledgment_read_retries_within_existing_deadline[PermissionError]
+FAILED app/tests/test_worker_identity.py::test_transient_acknowledgment_read_retries_within_existing_deadline[FileNotFoundError]
+FAILED app/tests/test_worker_identity.py::test_permanent_acknowledgment_read_cannot_extend_deadline[PermissionError]
+FAILED app/tests/test_worker_identity.py::test_permanent_acknowledgment_read_cannot_extend_deadline[FileNotFoundError]
+4 failed, 13 deselected in 0.29s

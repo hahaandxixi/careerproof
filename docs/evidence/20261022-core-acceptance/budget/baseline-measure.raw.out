@@ -1,0 +1,3 @@
+fixed {'system_utf8': 12607, 'user_utf8': 19, 'bound': 13924, 'default': 12000}
+minimum {'system_utf8': 12607, 'user_utf8': 2054, 'bound': 16157, 'default': 12000}
+typical-five {'system_utf8': 12607, 'user_utf8': 10133, 'bound': 25028, 'default': 12000}

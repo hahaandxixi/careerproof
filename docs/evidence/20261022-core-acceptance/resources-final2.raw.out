@@ -1,0 +1,240 @@
+...........FFFFF.......FFFFFFF                                           [100%]
+================================== FAILURES ===================================
+______________________ test_green_strict_run_exits_zero _______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_green_strict_run_exits_ze0')
+
+    def test_green_strict_run_exits_zero(tmp_path):
+        result = run_gate(tmp_path, [build_junit(green_cases())])
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 0
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:117: AssertionError
+_____ test_same_parameters_on_unrelated_function_do_not_prove_hard_stops ______
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_same_parameters_on_unrela0')
+
+    def test_same_parameters_on_unrelated_function_do_not_prove_hard_stops(tmp_path):
+        names = [name.replace('test_real_child_hard_stop_then_database_only_recovery',
+                              'test_unrelated_helper') for name in hardstop_case_names()]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 6
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:124: AssertionError
+________ test_repeated_parameter_tokens_do_not_prove_the_exact_matrix _________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_repeated_parameter_tokens0')
+
+    def test_repeated_parameter_tokens_do_not_prove_the_exact_matrix(tmp_path):
+        names = [name[:-1] + '-' + name[:-1].rsplit('-', 1)[-1] + ']'
+                 for name in hardstop_case_names()]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 6
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:131: AssertionError
+___________________ test_split_junit_files_still_exits_zero ___________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_split_junit_files_still_e0')
+
+    def test_split_junit_files_still_exits_zero(tmp_path):
+        """CI feeds the strict file and the hard-stop file to one gate call."""
+        rest = [case for case in green_cases() if case[0] != HARD_STOP_MODULE]
+        hardstop = [
+            (module, name, status)
+            for module, name, status in green_cases()
+            if module == HARD_STOP_MODULE
+        ]
+        result = run_gate(
+            tmp_path, [build_junit(rest), build_junit(hardstop)]
+        )
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 0
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:145: AssertionError
+___________________ test_extra_unknown_module_does_not_fail ___________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_extra_unknown_module_does0')
+
+    def test_extra_unknown_module_does_not_fail(tmp_path):
+        cases = green_cases() + [("test_ci_junit_gate", "test_sample", "passed")]
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 0
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:151: AssertionError
+____ test_missing_hardstop_window_exits_nonzero[ledger_committed-matching] ____
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_missing_hardstop_window_e0')
+dropped_phase = 'ledger_committed', dropped_chain = 'matching'
+
+    @pytest.mark.parametrize("dropped_phase,dropped_chain", [
+        ("ledger_committed", "matching"),
+        ("send_intent_committed", "verification"),
+    ])
+    def test_missing_hardstop_window_exits_nonzero(
+            tmp_path, dropped_phase, dropped_chain):
+        names = [
+            name for name in hardstop_case_names()
+            if f"[{dropped_phase}-{dropped_chain}]" not in name
+        ]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 6
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:216: AssertionError
+_ test_missing_hardstop_window_exits_nonzero[send_intent_committed-verification] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_missing_hardstop_window_e1')
+dropped_phase = 'send_intent_committed', dropped_chain = 'verification'
+
+    @pytest.mark.parametrize("dropped_phase,dropped_chain", [
+        ("ledger_committed", "matching"),
+        ("send_intent_committed", "verification"),
+    ])
+    def test_missing_hardstop_window_exits_nonzero(
+            tmp_path, dropped_phase, dropped_chain):
+        names = [
+            name for name in hardstop_case_names()
+            if f"[{dropped_phase}-{dropped_chain}]" not in name
+        ]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 6
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:216: AssertionError
+___________ test_hardstop_without_parametrised_names_exits_nonzero ____________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_hardstop_without_parametr0')
+
+    def test_hardstop_without_parametrised_names_exits_nonzero(tmp_path):
+        """One flat case name cannot stand in for the two-chain four-window matrix."""
+        cases = green_cases(hardstop_names=["test_only_one_flat_case"])
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 6
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:225: AssertionError
+_________________ test_not_passed_case_exits_nonzero[failure] _________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_not_passed_case_exits_non0')
+status = 'failure'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 7
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:233: AssertionError
+__________________ test_not_passed_case_exits_nonzero[error] __________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_not_passed_case_exits_non1')
+status = 'error'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 7
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:233: AssertionError
+_________________ test_not_passed_case_exits_nonzero[skipped] _________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_not_passed_case_exits_non2')
+status = 'skipped'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 7
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:233: AssertionError
+_________________ test_skipped_hardstop_window_exits_nonzero __________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-final2/test_skipped_hardstop_window_e0')
+
+    def test_skipped_hardstop_window_exits_nonzero(tmp_path):
+        """A skipped window counts as not actually passed even though it is present."""
+        cases = [
+            (module, name, "skipped" if name.endswith("[receipt_committed-matching]")
+             else status)
+            for module, name, status in green_cases()
+        ]
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: CI-JUNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres
+E         
+E       assert 5 == 7
+E        +  where 5 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', 'D:\\jbcode\\we...UNIT-GATE result=FAIL category=5 reason=module(s) without any testcase: test_material_admission_postgres\n', stderr='').returncode
+
+app\tests\test_ci_junit_gate.py:245: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_ci_junit_gate.py::test_green_strict_run_exits_zero - As...
+FAILED app/tests/test_ci_junit_gate.py::test_same_parameters_on_unrelated_function_do_not_prove_hard_stops
+FAILED app/tests/test_ci_junit_gate.py::test_repeated_parameter_tokens_do_not_prove_the_exact_matrix
+FAILED app/tests/test_ci_junit_gate.py::test_split_junit_files_still_exits_zero
+FAILED app/tests/test_ci_junit_gate.py::test_extra_unknown_module_does_not_fail
+FAILED app/tests/test_ci_junit_gate.py::test_missing_hardstop_window_exits_nonzero[ledger_committed-matching]
+FAILED app/tests/test_ci_junit_gate.py::test_missing_hardstop_window_exits_nonzero[send_intent_committed-verification]
+FAILED app/tests/test_ci_junit_gate.py::test_hardstop_without_parametrised_names_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[failure]
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[error]
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[skipped]
+FAILED app/tests/test_ci_junit_gate.py::test_skipped_hardstop_window_exits_nonzero
+12 failed, 18 passed, 5 warnings in 7.99s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

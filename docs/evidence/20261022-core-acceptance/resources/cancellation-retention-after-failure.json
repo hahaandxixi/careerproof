@@ -1,0 +1,23 @@
+{
+  "rawArchives": [
+    {
+      "filename": "successful.zip",
+      "status": "completed",
+      "rawExists": true,
+      "hashMatchesSavedVersion": true
+    },
+    {
+      "filename": "cancelled.zip",
+      "status": "pending",
+      "rawExists": true,
+      "hashMatchesSavedVersion": true
+    }
+  ],
+  "successfulPersistedSources": [
+    {
+      "sourceExists": true,
+      "hashMatchesSavedSource": true
+    }
+  ],
+  "partialDirectoriesRetainedBecauseProbeAssertionPreventedDeletion": 1
+}

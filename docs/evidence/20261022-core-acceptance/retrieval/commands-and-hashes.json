@@ -1,0 +1,134 @@
+{
+  "baseCommit": "ba0c970ba39e3823c2c4bcf4ca58fdba4c587e0a",
+  "database": {
+    "container": "careerproof-core-acceptance-20261022",
+    "port": 55445,
+    "name": "cp_ci",
+    "schemas": "generated cp_test_<32hex>; each fixture drops only its schema"
+  },
+  "externalAi": false,
+  "files": {
+    "backend/app/services/retrieval.py": "57f77de26b359bcbcefec0c6678ace3574aa25d854b916e984c0a7f5d00bb3fb",
+    "backend/app/tests/test_knowledge_semantic_postgres.py": "4b7139064b0445cb5d8099d8111967ebc4b5b0365bfc140aff22ca8d7fac4789",
+    "backend/app/tests/test_paginated_lists_postgres.py": "0e656d7eec195065190767c356b6ce5edcc878dbcebf5cd009c0333f386af0c4"
+  },
+  "commands": [
+    {
+      "cwd": "backend",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_ai_budget_production_race.py",
+        "app/tests/test_durable_matching.py",
+        "app/tests/test_visual_postgres_concurrency.py",
+        "app/tests/test_mcp_postgres_isolation.py",
+        "app/tests/test_real_matching.py",
+        "app/tests/test_durable_attempt_service.py",
+        "app/tests/test_ai_request_attempt_migration.py",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_ai_shared_budget_service.py",
+        "app/tests/test_ai_shared_budget_migration.py",
+        "app/tests/test_application_reconsent_migration.py",
+        "app/tests/test_data_integrity_migration.py",
+        "app/tests/test_refresh_atomicity.py",
+        "app/tests/test_login_rate_limit.py",
+        "app/tests/test_login_limit_migration.py",
+        "app/tests/test_paginated_lists_postgres.py",
+        "-k",
+        "test_paginated_lists_postgres",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "phase": "before fixture fix",
+      "exit": 1,
+      "result": "120 deselected, 8 setup errors matching_db not found",
+      "log": "fixture-ci-red.raw.out"
+    },
+    {
+      "cwd": "backend",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "phase": "new regressions before source fix",
+      "exit": 1,
+      "result": "5 failed, 1 passed",
+      "log": "retrieval-red.raw.out"
+    },
+    {
+      "cwd": "backend",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_knowledge_embedding_engine.py",
+        "app/tests/test_retrieval_version_scope.py",
+        "app/tests/test_retrieval_filtered_recall.py",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "phase": "after source fix",
+      "exit": 0,
+      "result": "31 passed",
+      "log": "retrieval-green.raw.out"
+    },
+    {
+      "cwd": "backend",
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "app/tests/test_ai_budget_production_race.py",
+        "app/tests/test_durable_matching.py",
+        "app/tests/test_visual_postgres_concurrency.py",
+        "app/tests/test_mcp_postgres_isolation.py",
+        "app/tests/test_real_matching.py",
+        "app/tests/test_durable_attempt_service.py",
+        "app/tests/test_ai_request_attempt_migration.py",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_ai_shared_budget_service.py",
+        "app/tests/test_ai_shared_budget_migration.py",
+        "app/tests/test_application_reconsent_migration.py",
+        "app/tests/test_data_integrity_migration.py",
+        "app/tests/test_refresh_atomicity.py",
+        "app/tests/test_login_rate_limit.py",
+        "app/tests/test_login_limit_migration.py",
+        "app/tests/test_paginated_lists_postgres.py",
+        "-k",
+        "test_paginated_lists_postgres",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "phase": "after fixture fix",
+      "exit": 0,
+      "result": "8 passed, 124 deselected",
+      "log": "fixture-ci-green.raw.out"
+    },
+    {
+      "cwd": "backend",
+      "command": [
+        "python",
+        "-m",
+        "ruff",
+        "check",
+        "app/services/retrieval.py",
+        "app/tests/test_knowledge_semantic_postgres.py",
+        "app/tests/test_paginated_lists_postgres.py"
+      ],
+      "phase": "after fixture alias correction",
+      "exit": 0,
+      "result": "All checks passed",
+      "log": "ruff-green.raw.out"
+    }
+  ]
+}

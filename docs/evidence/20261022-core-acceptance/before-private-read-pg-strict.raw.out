@@ -1,0 +1,247 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0
+cachedir: .tmp-ci\cache
+rootdir: D:\jbcode\web ai\jianli\backend\.tmp\core-acceptance-20261022\source\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 141 items
+
+app\tests\test_ai_budget_production_race.py ....                         [  2%]
+app\tests\test_durable_matching.py .......                               [  7%]
+app\tests\test_visual_postgres_concurrency.py ........                   [ 13%]
+app\tests\test_mcp_postgres_isolation.py ......                          [ 17%]
+app\tests\test_real_matching.py ................F..                      [ 31%]
+app\tests\test_durable_attempt_service.py ............                   [ 39%]
+app\tests\test_ai_request_attempt_migration.py ..                        [ 41%]
+app\tests\test_knowledge_semantic_postgres.py ......                     [ 45%]
+app\tests\test_ai_shared_budget_service.py ..............                [ 55%]
+app\tests\test_ai_shared_budget_migration.py ...........                 [ 63%]
+app\tests\test_application_reconsent_migration.py ...                    [ 65%]
+app\tests\test_data_integrity_migration.py .................             [ 77%]
+app\tests\test_refresh_atomicity.py ...                                  [ 79%]
+app\tests\test_login_rate_limit.py ..........                            [ 86%]
+app\tests\test_login_limit_migration.py ..                               [ 87%]
+app\tests\test_paginated_lists_postgres.py ........                      [ 93%]
+app\tests\test_material_admission_postgres.py .........                  [100%]
+
+================================== FAILURES ===================================
+__________ test_career_plan_cites_shortlist_and_tracks_new_material ___________
+
+matching_db = (<fastapi.applications.FastAPI object at 0x000002342C2F5E20>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000002342C4E5F10>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002342C4D98B0>
+
+    async def test_career_plan_cites_shortlist_and_tracks_new_material(matching_db, monkeypatch):
+        from app.services import career_planning
+    
+        async def handler(request):
+            body = json.loads(request.content)
+            supplied = json.loads(body["messages"][1]["content"])
+            jobs = supplied["jobs"]
+            assert all(job["requirements"] for job in jobs)
+            answer = {
+                "comparison": "软件岗位已有可定位的 Python 代码线索；运营岗位尚待补充材料。",
+                "focusJobId": jobs[0]["jobId"],
+                "advice": [{
+                    "jobId": job["jobId"],
+                    "reason": (
+                        "材料中有可定位代码片段。"
+                        if job["evidence"] else "当前材料未展示可定位项目证据。"
+                    ),
+                    "keyGap": "仍需核验运行结果与本人贡献。",
+                    "nextTask": "上传带断言的测试代码和运行记录。",
+                    "taskPlan": {"deliverable": "测试代码和运行记录",
+                                 "steps": ["补充正常与异常请求断言", "保存测试运行记录"],
+                                 "acceptanceChecks": ["可定位到断言及对应请求", "记录包含命令和结果"]},
+                    "citationIds": [item["citationId"] for item in job["evidence"][:1]],
+                } for job in jobs],
+            }
+            return httpx.Response(200, json={
+                "choices": [{"message": {"content": json.dumps(answer, ensure_ascii=False)}}],
+                "usage": {"prompt_tokens": 90, "completion_tokens": 50},
+            })
+    
+        monkeypatch.setattr(career_planning, "get_ai_provider", lambda: DeepSeekProvider(
+            api_key="synthetic-key", base_url="https://api.deepseek.com",
+            model="deepseek-flash", timeout_seconds=5,
+            transport=httpx.MockTransport(handler),
+        ))
+        app, _factory = matching_db
+        transport = ASGITransport(app=app)
+        async with (
+            AsyncClient(transport=transport, base_url="http://test") as owner,
+            AsyncClient(transport=transport, base_url="http://test") as student,
+        ):
+            await register(owner, "career-owner@example.com")
+            await create_job(owner, category="operations", skills=("活动策划",))
+            await create_job(owner, category="software", skills=("Python",))
+            await register(student, "career-student@example.com", "student")
+            resume, project, version = await upload_materials(student)
+            payload = {
+                "resumeVersionId": resume["versionId"],
+                "projectVersionIds": [version["versionId"]],
+                "externalAiConsent": True,
+            }
+            assert (await student.post("/api/v1/career-plans", json={
+                **payload, "externalAiConsent": False,
+            })).status_code == 422
+            first_response = await student.post("/api/v1/career-plans", json=payload)
+            assert first_response.status_code == 200, first_response.text
+            first = first_response.json()["data"]
+            assert first["aiStatus"] == "validated"
+            assert first["aiPlan"] is not None
+            assert first["aiPlan"]["advice"][0]["citationIds"]
+            assert (await student.get("/api/v1/career-plans/latest")).json()["data"] == first
+    
+            newer = await student.post(
+                f"/api/v1/projects/{project['id']}/versions",
+                data={"requestId": str(uuid4())},
+                files={"file": ("source.zip", source_archive(), "application/zip")},
+            )
+            assert newer.status_code == 202, newer.text
+            new_version = newer.json()["data"]
+            task = await student.get(f"/api/v1/analysis-tasks/{new_version['taskId']}")
+            assert task.json()["data"]["status"] == "completed"
+>           second_response = await student.post("/api/v1/career-plans", json={
+                **payload, "projectVersionIds": [new_version["versionId"]],
+            })
+
+app\tests\test_real_matching.py:1069: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\applications.py:1216: in __call__
+    await super().__call__(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\telemetry\_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+app\core\security_headers.py:20: in __call__
+    await self.app(scope, receive, send_with_headers if scope["type"] == "http" else send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\cors.py:88: in __call__
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\core\request_context.py:20: in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:168: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:144: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\routing.py:660: in __call__
+    await self.middleware_stack(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2786: in app
+    await route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1828: in _handle_selected
+    await route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:727: in app
+    raw_response = await run_endpoint_function(
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\routing.py:360: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\v1\analysis.py:47: in create_career_plan_endpoint
+    return success(await create_career_plan(session, payload, current_user))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\career_planning.py:529: in create_career_plan
+    ranked = await recommend_jobs(session, request, user)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\recommendations.py:71: in recommend_jobs
+    result = await run_isolated(
+app\services\task_runner.py:120: in shutdown
+    worker, _ = await asyncio.wait_for(asyncio.shield(identity_task), 1)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+app\services\task_runner.py:84: in retain_worker
+    identity = json.loads(identity_path.read_text(encoding="utf-8"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/江博/AppData/Local/Temp/careerproof-parser-vlyzo_g3/worker.json')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       PermissionError: [Errno 13] Permission denied: 'C:\\Users\\江博\\AppData\\Local\\Temp\\careerproof-parser-vlyzo_g3\\worker.json'
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py:1013: PermissionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: D:\jbcode\web ai\jianli\docs\evidence\20261022-core-acceptance\pg-strict.xml -
+=========================== short test summary info ===========================
+FAILED app/tests/test_real_matching.py::test_career_plan_cites_shortlist_and_tracks_new_material
+============ 1 failed, 140 passed, 5 warnings in 147.37s (0:02:27) ============
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

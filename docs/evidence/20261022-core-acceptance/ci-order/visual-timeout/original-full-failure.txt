@@ -1,0 +1,224 @@
+self = MemoryObjectReceiveStream(_state=_MemoryObjectStreamState(max_buffer_size=0, buffer=deque([]), open_send_channels=0, open_receive_channels=0, waiting_receivers=OrderedDict(), waiting_senders=OrderedDict()), _closed=True)
+
+    async def receive(self) -> T_co:
+        await checkpoint()
+        try:
+>           return self.receive_nowait()
+                   ^^^^^^^^^^^^^^^^^^^^^
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\anyio\streams\memory.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = MemoryObjectReceiveStream(_state=_MemoryObjectStreamState(max_buffer_size=0, buffer=deque([]), open_send_channels=0, open_receive_channels=0, waiting_receivers=OrderedDict(), waiting_senders=OrderedDict()), _closed=True)
+
+    def receive_nowait(self) -> T_co:
+        """
+        Receive the next item if it can be done without waiting.
+    
+        :return: the received item
+        :raises ~anyio.ClosedResourceError: if this send stream has been closed
+        :raises ~anyio.EndOfStream: if the buffer is empty and this stream has been
+            closed from the sending end
+        :raises ~anyio.WouldBlock: if there are no items in the buffer and no tasks
+            waiting to send
+    
+        """
+        if self._closed:
+            raise ClosedResourceError
+    
+        if self._state.waiting_senders:
+            # Get the item from the next sender
+            send_event, item = self._state.waiting_senders.popitem(last=False)
+            self._state.buffer.append(item)
+            send_event.set()
+    
+        if self._state.buffer:
+            return self._state.buffer.popleft()
+        elif not self._state.open_send_channels:
+            raise EndOfStream
+    
+>       raise WouldBlock
+E       anyio._core._exceptions.WouldBlock
+
+..\..\..\..\.venv-dependency23\Lib\site-packages\anyio\streams\memory.py:113: WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+fut = <coroutine object AsyncClient.post at 0x0000014DA6B17C40>, timeout = 1
+
+    async def wait_for(fut, timeout):
+        """Wait for the single Future or coroutine to complete, with timeout.
+    
+        Coroutine will be wrapped in Task.
+    
+        Returns result of the Future or coroutine.  When a timeout occurs,
+        it cancels the task and raises TimeoutError.  To avoid the task
+        cancellation, wrap it in shield().
+    
+        If the wait is cancelled, the task is also cancelled.
+    
+        If the task suppresses the cancellation and returns a value instead,
+        that value is returned.
+    
+        This function is a coroutine.
+        """
+        # The special case for timeout <= 0 is for the following case:
+        #
+        # async def test_waitfor():
+        #     func_started = False
+        #
+        #     async def func():
+        #         nonlocal func_started
+        #         func_started = True
+        #
+        #     try:
+        #         await asyncio.wait_for(func(), 0)
+        #     except asyncio.TimeoutError:
+        #         assert not func_started
+        #     else:
+        #         assert False
+        #
+        # asyncio.run(test_waitfor())
+    
+    
+        if timeout is not None and timeout <= 0:
+            fut = ensure_future(fut)
+    
+            if fut.done():
+                return fut.result()
+    
+            await _cancel_and_wait(fut)
+            try:
+                return fut.result()
+            except exceptions.CancelledError as exc:
+                raise TimeoutError from exc
+    
+        async with timeouts.timeout(timeout):
+>           return await fut
+                   ^^^^^^^^^
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\applications.py:1216: in __call__
+    await super().__call__(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\applications.py:90: in __call__
+    await self.middleware_stack(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\fastapi\telemetry\_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+app\core\security_headers.py:20: in __call__
+    await self.app(scope, receive, send_with_headers if scope["type"] == "http" else send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\cors.py:88: in __call__
+    await self.app(scope, receive, send)
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:193: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\core\request_context.py:20: in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\starlette\middleware\base.py:151: in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\.venv-dependency23\Lib\site-packages\anyio\streams\memory.py:126: in receive
+    await receive_event.wait()
+..\..\..\..\.venv-dependency23\Lib\site-packages\anyio\_backends\_asyncio.py:1936: in wait
+    await self._event.wait()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <asyncio.locks.Event object at 0x0000014DA9D41B50 [unset]>
+
+    async def wait(self):
+        """Block until the internal flag is true.
+    
+        If the internal flag is true on entry, return True
+        immediately.  Otherwise, block until another coroutine calls
+        set() to set the flag to true, then return True.
+        """
+        if self._value:
+            return True
+    
+        fut = self._get_loop().create_future()
+        self._waiters.append(fut)
+        try:
+>           await fut
+E           asyncio.exceptions.CancelledError
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\locks.py:212: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000014DA98BD490>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000014DA9100790>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000014DA9A4C4A0>
+
+    async def test_visual_workflow_timeout_includes_global_model_queue(matching_db, monkeypatch):  # noqa: F811
+        app, factory = matching_db
+        gate = asyncio.Semaphore(0)
+        monkeypatch.setattr("app.services.visual_evidence._model_semaphore", lambda: gate)
+        monkeypatch.setattr(settings, "ai_workflow_timeout_seconds", 0.05)
+    
+        def forbidden():
+            pytest.fail("Queue timeout must not create a provider or send an image")
+    
+        monkeypatch.setattr("app.services.visual_evidence.get_vision_provider", forbidden)
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            user = await register(client, uuid4().hex + "@example.com", "student")
+            version = await image_version(factory, UUID(user["id"]))
+>           response = await asyncio.wait_for(
+                client.post(
+                    f"/api/v1/project-versions/{version.id}/visual-review",
+                    json={"externalImageConsent": True},
+                ),
+                timeout=1,
+            )
+
+app\tests\test_visual_evidence.py:419: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <Timeout [expired]>
+exc_type = <class 'asyncio.exceptions.CancelledError'>
+exc_val = CancelledError(), exc_tb = <traceback object at 0x0000014DA9D60E80>
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() <= self._cancelling and exc_type is exceptions.CancelledError:
+                # Since there are no new cancel requests, we're
+                # handling this.
+>               raise TimeoutError from exc_val
+E               TimeoutError
+
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\timeouts.py:115: TimeoutError

@@ -1,0 +1,24 @@
+--- accepted/visual_evidence.py
++++ temp-mutant/visual_evidence.py
+@@ -204,13 +204,14 @@
+     observations = None
+     failure_kind = None
+     try:
+-        async with asyncio.timeout(settings.ai_workflow_timeout_seconds), _model_semaphore():
+-            # Account-budget and global-model queues can wait after the first
+-            # validation. Recheck the actual source before creating a provider;
+-            # never spend on bytes from an invalidated queued material version.
+-            png = await asyncio.to_thread(safe_png, row)
+-            provider = get_vision_provider()
+-            observations = validate_observations(await provider.observe(png))
++        async with _model_semaphore():
++            async with asyncio.timeout(settings.ai_workflow_timeout_seconds):
++                # Account-budget and global-model queues can wait after the first
++                # validation. Recheck the actual source before creating a provider;
++                # never spend on bytes from an invalidated queued material version.
++                png = await asyncio.to_thread(safe_png, row)
++                provider = get_vision_provider()
++                observations = validate_observations(await provider.observe(png))
+     except AppError:
+         if provider is None:
+             # Source rejection precedes provider creation: no paid attempt,

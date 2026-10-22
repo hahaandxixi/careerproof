@@ -1,0 +1,180 @@
+{
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "pins": [
+    {
+      "name": "fastapi",
+      "expected": "0.143.0",
+      "installed": "0.143.0",
+      "match": true
+    },
+    {
+      "name": "starlette",
+      "expected": "1.3.1",
+      "installed": "1.3.1",
+      "match": true
+    },
+    {
+      "name": "uvicorn",
+      "expected": "0.35.0",
+      "installed": "0.35.0",
+      "match": true
+    },
+    {
+      "name": "pydantic",
+      "expected": "2.11.7",
+      "installed": "2.11.7",
+      "match": true
+    },
+    {
+      "name": "pydantic-settings",
+      "expected": "2.10.1",
+      "installed": "2.10.1",
+      "match": true
+    },
+    {
+      "name": "sqlalchemy",
+      "expected": "2.0.43",
+      "installed": "2.0.43",
+      "match": true
+    },
+    {
+      "name": "alembic",
+      "expected": "1.16.5",
+      "installed": "1.16.5",
+      "match": true
+    },
+    {
+      "name": "Mako",
+      "expected": "1.4.2",
+      "installed": "1.4.2",
+      "match": true
+    },
+    {
+      "name": "asyncpg",
+      "expected": "0.30.0",
+      "installed": "0.30.0",
+      "match": true
+    },
+    {
+      "name": "pgvector",
+      "expected": "0.4.1",
+      "installed": "0.4.1",
+      "match": true
+    },
+    {
+      "name": "PyJWT",
+      "expected": "2.15.0",
+      "installed": "2.15.0",
+      "match": true
+    },
+    {
+      "name": "pwdlib",
+      "expected": "0.2.1",
+      "installed": "0.2.1",
+      "match": true
+    },
+    {
+      "name": "python-multipart",
+      "expected": "0.0.31",
+      "installed": "0.0.31",
+      "match": true
+    },
+    {
+      "name": "email-validator",
+      "expected": "2.2.0",
+      "installed": "2.2.0",
+      "match": true
+    },
+    {
+      "name": "httpx",
+      "expected": "0.28.1",
+      "installed": "0.28.1",
+      "match": true
+    },
+    {
+      "name": "PyMuPDF",
+      "expected": "1.26.4",
+      "installed": "1.26.4",
+      "match": true
+    },
+    {
+      "name": "python-docx",
+      "expected": "1.2.0",
+      "installed": "1.2.0",
+      "match": true
+    },
+    {
+      "name": "rapidocr",
+      "expected": "3.9.2",
+      "installed": "3.9.2",
+      "match": true
+    },
+    {
+      "name": "onnxruntime",
+      "expected": "1.30.0",
+      "installed": "1.30.0",
+      "match": true
+    },
+    {
+      "name": "Pillow",
+      "expected": "12.3.0",
+      "installed": "12.3.0",
+      "match": true
+    },
+    {
+      "name": "fastembed",
+      "expected": "0.8.1",
+      "installed": "0.8.1",
+      "match": true
+    },
+    {
+      "name": "mcp",
+      "expected": "1.30.0",
+      "installed": "1.30.0",
+      "match": true
+    },
+    {
+      "name": "sse-starlette",
+      "expected": "3.0.3",
+      "installed": "3.0.3",
+      "match": true
+    },
+    {
+      "name": "starlette",
+      "expected": "1.3.1",
+      "installed": "1.3.1",
+      "match": true
+    },
+    {
+      "name": "aiosqlite",
+      "expected": "0.21.0",
+      "installed": "0.21.0",
+      "match": true
+    },
+    {
+      "name": "pytest",
+      "expected": "9.0.3",
+      "installed": "9.0.3",
+      "match": true
+    },
+    {
+      "name": "pytest-asyncio",
+      "expected": "1.4.0",
+      "installed": "1.4.0",
+      "match": true
+    },
+    {
+      "name": "pip",
+      "expected": "26.2.1",
+      "installed": "26.2.1",
+      "match": true
+    },
+    {
+      "name": "ruff",
+      "expected": "0.12.12",
+      "installed": "0.12.12",
+      "match": true
+    }
+  ],
+  "allMatch": true
+}

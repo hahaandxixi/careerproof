@@ -1,0 +1,17 @@
+{"cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend", "sourceSha256": {"app\\services\\task_runner.py": "65ee927f01cb9a2d8273d6c5b66d29c73d8be907f4e733ce446556accffb661f", "app\\services\\worker_identity.py": "bfa10f6c74120393b653b9a516b34991f3dc8f1fbbd4a455c2e73958fa396b4c", "app\\services\\isolated_worker.py": "244342ec555ee90d99314164088aacb55ef1cc0856d3dce1b4f8ba7a663380d8"}}
+............                                                             [100%]
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+12 passed, 5 warnings in 30.43s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

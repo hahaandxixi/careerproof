@@ -1,0 +1,18 @@
+{"acceptedBackend": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend", "portfolioSourceSha256": "8e14f951c3d7e6468b348a4fee37f633fb91a3061587f7b077c2546ecaad7886", "actualWorkerHandleFromOwnedMarker": true, "stopMode": "cancel", "cancellationPropagated": true, "timeoutPersistedAsFailedTask": false, "cleanupEvents": [{"launcherPid": 348048, "launcherReturnCodeBeforeCleanup": 1, "workerPid": 348144, "workerCreationTicks": 134371391383283359, "actualWorkerExitCodeBeforeCleanup": 0, "attemptExistedBeforeCleanup": true, "result": "removed", "attemptExistsAfterCleanup": false}], "rawArchivePreserved": true, "successfulReferencedFilesPreserved": 1, "externalModelRequests": 0, "database": "fixture-owned temporary SQLite"}
+.{"acceptedBackend": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\core-acceptance-20261022\\source\\backend", "portfolioSourceSha256": "8e14f951c3d7e6468b348a4fee37f633fb91a3061587f7b077c2546ecaad7886", "actualWorkerHandleFromOwnedMarker": true, "stopMode": "timeout", "cancellationPropagated": false, "timeoutPersistedAsFailedTask": true, "cleanupEvents": [{"launcherPid": 347776, "launcherReturnCodeBeforeCleanup": 1, "workerPid": 342696, "workerCreationTicks": 134371391400738120, "actualWorkerExitCodeBeforeCleanup": 0, "attemptExistedBeforeCleanup": true, "result": "removed", "attemptExistsAfterCleanup": false}], "rawArchivePreserved": true, "successfulReferencedFilesPreserved": 1, "externalModelRequests": 0, "database": "fixture-owned temporary SQLite"}
+..
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 5 warnings in 7.18s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

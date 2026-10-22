@@ -1,0 +1,14 @@
+[
+  {
+    "name": "backend-ruff",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "exit": 0,
+    "seconds": 0.14
+  }
+]

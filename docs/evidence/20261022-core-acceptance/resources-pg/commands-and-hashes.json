@@ -1,0 +1,38 @@
+{
+  "database": {
+    "port": 55445,
+    "name": "cp_ci",
+    "container": "careerproof-core-acceptance-20261022",
+    "schemas": "independent cp_test_<32hex> per fixture"
+  },
+  "externalAi": false,
+  "owns": [
+    "backend/app/tests/test_material_admission_postgres.py"
+  ],
+  "sourceSha256AtVerification": {
+    "backend/app/services/material_admission.py": "3d0ccc2a3ba54b3c955baff1b02fe07dc47a4d8a01a0801c02ee5f80c58b499a",
+    "backend/app/services/portfolio.py": "37ac2ea7eead96d91ea05025c005ad93c7d134b56a61c7ed9ed7a34e646354fb",
+    "backend/app/services/task_lifecycle.py": "33af4c90ba4f8aec720f7e7303d9d3e8f1b7f953e1e6457e99dc8f6d5fec2599",
+    "backend/app/tests/test_material_admission_postgres.py": "ba2f212645d67810f6169939e177372e0e70cbe7eff51bf851cbf5a8795c00c3"
+  },
+  "runs": [
+    {
+      "command": "python -m pytest app/tests/test_material_admission_postgres.py -q -p no:cacheprovider --basetemp=.tmp/material-admission-pg",
+      "exit": 0,
+      "result": "8 passed",
+      "log": "pytest-first.raw.out"
+    },
+    {
+      "command": "PYTHONPATH=<backend> python ../docs/evidence/20261022-core-acceptance/resources-pg/mutate-no-owner-lock.py",
+      "exit": 1,
+      "result": "4 failed, 4 deselected; both uploads improperly admitted without owner lock",
+      "log": "mutation.raw.out"
+    },
+    {
+      "command": "python -m ruff check app/tests/test_material_admission_postgres.py",
+      "exit": 0,
+      "result": "All checks passed",
+      "log": "ruff.raw.out"
+    }
+  ]
+}

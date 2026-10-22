@@ -1,0 +1,184 @@
+[Sanitized public excerpt: JWT and database userinfo redacted; original retained outside evidence in private task temporary storage.]
+Test construction failures before red2; JWT value redacted. Unredacted local log is excluded from Git.
+FFFFFF                                                                   [100%]
+================================== FAILURES ===================================
+____________ test_pending_admission_and_failed_reservation_release ____________
+
+student = <httpx.AsyncClient object at 0x000001D51127DFA0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D511223320>
+
+    async def test_pending_admission_and_failed_reservation_release(student, monkeypatch):  # noqa: F811
+>       monkeypatch.setattr(settings, 'material_pending_task_limit', 1)
+E       AttributeError: Settings(app_name='CareerProof API', app_env='test', debug=False, api_v1_prefix='/api/v1', database_url='postgresql+asyncpg://<redacted-userinfo>@127.0.0.1:5432/careerproof', jwt_secret='<redacted>', jwt_algorithm='HS256', access_token_minutes=30, refresh_token_days=7, login_pair_limit=5, login_pair_window_seconds=300, login_source_limit=120, login_source_window_seconds=60, frontend_origins=['http://127.0.0.1:3000', 'http://localhost:3000'], storage_base_dir=WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red/test_pending_admission_and_fai0/storage'), max_archive_bytes=31457280, max_extracted_bytes=104857600, max_file_bytes=1048576, max_archive_files=2000, task_concurrency=2, task_timeout_seconds=90.0, task_lease_seconds=120, task_pending_timeout_seconds=600, task_dispatch_interval_seconds=2.0, max_document_characters=500000, ocr_enabled=True, ocr_max_pages=10, ocr_min_confidence=0.5, ocr_max_image_pixels=20000000, ai_provider='mock', ai_external_enabled=False, dashscope_api_key=SecretStr('**********'), bailian_base_url='https://dashscope.aliyuncs.com/compatible-mode/v1', bailian_model='qwen-plus', bailian_timeout_seconds=30.0, bailian_max_attempts=2, zhipu_api_key=SecretStr('**********'), zhipu_base_url='https://open.bigmodel.cn/api/paas/v4', zhipu_model='glm-4.7-flash', zhipu_timeout_seconds=90.0, zhipu_max_attempts=2, deepseek_api_key=SecretStr('**********'), deepseek_base_url='https://api.deepseek.com', deepseek_model='deepseek-flash', deepseek_timeout_seconds=90.0, deepseek_max_attempts=2, ai_model_concurrency=1, ai_workflow_timeout_seconds=180.0, ai_max_requirements=8, ai_max_retrieval_calls=2, ai_context_evidence_limit=2, ai_per_report_input_token_limit=40000, ai_per_report_output_token_limit=4000, ai_daily_report_limit=20, ai_daily_input_token_limit=200000, ai_daily_output_token_limit=40000, ai_skip_when_no_evidence=True, ai_local_fallback_enabled=True, semantic_retrieval_enabled=True, semantic_model_cache_dir=WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/models')) has no attribute 'material_pending_task_limit'
+
+app\tests\test_material_resources.py:28: AttributeError
+______________ test_storage_reserves_extraction_across_projects _______________
+
+student = <httpx.AsyncClient object at 0x000001D511554140>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D51124F350>
+
+    async def test_storage_reserves_extraction_across_projects(student, monkeypatch):  # noqa: F811
+        monkeypatch.setattr('app.services.task_runner.FastAPIBackgroundTaskRunner.submit',
+                            lambda *args: None)
+        monkeypatch.setattr(settings, 'max_extracted_bytes', 1000)
+>       monkeypatch.setattr(settings, 'material_storage_limit_bytes', 1600)
+E       AttributeError: Settings(app_name='CareerProof API', app_env='test', debug=False, api_v1_prefix='/api/v1', database_url='postgresql+asyncpg://<redacted-userinfo>@127.0.0.1:5432/careerproof', jwt_secret='<redacted>', jwt_algorithm='HS256', access_token_minutes=30, refresh_token_days=7, login_pair_limit=5, login_pair_window_seconds=300, login_source_limit=120, login_source_window_seconds=60, frontend_origins=['http://127.0.0.1:3000', 'http://localhost:3000'], storage_base_dir=WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/core-resources-red/test_storage_reserves_extracti0/storage'), max_archive_bytes=31457280, max_extracted_bytes=1000, max_file_bytes=1048576, max_archive_files=2000, task_concurrency=2, task_timeout_seconds=90.0, task_lease_seconds=120, task_pending_timeout_seconds=600, task_dispatch_interval_seconds=2.0, max_document_characters=500000, ocr_enabled=True, ocr_max_pages=10, ocr_min_confidence=0.5, ocr_max_image_pixels=20000000, ai_provider='mock', ai_external_enabled=False, dashscope_api_key=SecretStr('**********'), bailian_base_url='https://dashscope.aliyuncs.com/compatible-mode/v1', bailian_model='qwen-plus', bailian_timeout_seconds=30.0, bailian_max_attempts=2, zhipu_api_key=SecretStr('**********'), zhipu_base_url='https://open.bigmodel.cn/api/paas/v4', zhipu_model='glm-4.7-flash', zhipu_timeout_seconds=90.0, zhipu_max_attempts=2, deepseek_api_key=SecretStr('**********'), deepseek_base_url='https://api.deepseek.com', deepseek_model='deepseek-flash', deepseek_timeout_seconds=90.0, deepseek_max_attempts=2, ai_model_concurrency=1, ai_workflow_timeout_seconds=180.0, ai_max_requirements=8, ai_max_retrieval_calls=2, ai_context_evidence_limit=2, ai_per_report_input_token_limit=40000, ai_per_report_output_token_limit=4000, ai_daily_report_limit=20, ai_daily_input_token_limit=200000, ai_daily_output_token_limit=40000, ai_skip_when_no_evidence=True, ai_local_fallback_enabled=True, semantic_retrieval_enabled=True, semantic_model_cache_dir=WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/models')) has no attribute 'material_storage_limit_bytes'
+
+app\tests\test_material_resources.py:47: AttributeError
+__________ test_failed_attempt_removes_only_its_extraction[corrupt] ___________
+
+student = <httpx.AsyncClient object at 0x000001D51156E7B0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D5112AAA50>
+failure = 'corrupt'
+
+    @pytest.mark.parametrize('failure', ['corrupt', 'lost-lease', 'commit'])
+    async def test_failed_attempt_removes_only_its_extraction(student, monkeypatch, failure):  # noqa: F811
+        if failure == 'lost-lease':
+            monkeypatch.setattr(portfolio, 'finish_task', _lost_lease)
+        if failure == 'commit':
+            async def fail_index(*args, **kwargs):
+                raise RuntimeError('index/transaction rejected')
+            monkeypatch.setattr(portfolio, 'index_sources', fail_index)
+        response = await upload(student, b'not a zip' if failure == 'corrupt' else None)
+>       assert response.status_code == 200
+E       assert 202 == 200
+E        +  where 202 = <Response [202 Accepted]>.status_code
+
+app\tests\test_material_resources.py:68: AssertionError
+_________ test_failed_attempt_removes_only_its_extraction[lost-lease] _________
+
+student = <httpx.AsyncClient object at 0x000001D511635EB0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D511554FB0>
+failure = 'lost-lease'
+
+    @pytest.mark.parametrize('failure', ['corrupt', 'lost-lease', 'commit'])
+    async def test_failed_attempt_removes_only_its_extraction(student, monkeypatch, failure):  # noqa: F811
+        if failure == 'lost-lease':
+            monkeypatch.setattr(portfolio, 'finish_task', _lost_lease)
+        if failure == 'commit':
+            async def fail_index(*args, **kwargs):
+                raise RuntimeError('index/transaction rejected')
+            monkeypatch.setattr(portfolio, 'index_sources', fail_index)
+        response = await upload(student, b'not a zip' if failure == 'corrupt' else None)
+>       assert response.status_code == 200
+E       assert 202 == 200
+E        +  where 202 = <Response [202 Accepted]>.status_code
+
+app\tests\test_material_resources.py:68: AssertionError
+___________ test_failed_attempt_removes_only_its_extraction[commit] ___________
+
+student = <httpx.AsyncClient object at 0x000001D5116E76E0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D51127EEA0>
+failure = 'commit'
+
+    @pytest.mark.parametrize('failure', ['corrupt', 'lost-lease', 'commit'])
+    async def test_failed_attempt_removes_only_its_extraction(student, monkeypatch, failure):  # noqa: F811
+        if failure == 'lost-lease':
+            monkeypatch.setattr(portfolio, 'finish_task', _lost_lease)
+        if failure == 'commit':
+            async def fail_index(*args, **kwargs):
+                raise RuntimeError('index/transaction rejected')
+            monkeypatch.setattr(portfolio, 'index_sources', fail_index)
+        response = await upload(student, b'not a zip' if failure == 'corrupt' else None)
+>       assert response.status_code == 200
+E       assert 202 == 200
+E        +  where 202 = <Response [202 Accepted]>.status_code
+
+app\tests\test_material_resources.py:68: AssertionError
+________ test_orphan_recovery_protects_live_workers_and_saved_sources _________
+
+student = <httpx.AsyncClient object at 0x000001D5117B8290>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001D5116C7FB0>
+
+    async def test_orphan_recovery_protects_live_workers_and_saved_sources(student, monkeypatch):  # noqa: F811
+        response = await upload(student)
+        version_id = UUID(response.json()['data']['versionId'])
+        storage = LocalStorage(settings.storage_base_dir)
+        async with portfolio.async_session_factory() as session:
+            source = await session.scalar(select(ProjectFile).where(
+                ProjectFile.project_version_id == version_id))
+            assert source and storage.resolve(source.storage_key).is_file()
+            kept = storage.resolve(source.storage_key)
+>           token = UUID(kept.parent.name)
+                    ^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_material_resources.py:90: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <[AttributeError("'UUID' object has no attribute 'int'") raised in repr()] UUID object at 0x1d5118bff90>
+hex = 'src', bytes = None, bytes_le = None, fields = None, int = None
+version = None
+
+    def __init__(self, hex=None, bytes=None, bytes_le=None, fields=None,
+                       int=None, version=None,
+                       *, is_safe=SafeUUID.unknown):
+        r"""Create a UUID from either a string of 32 hexadecimal digits,
+        a string of 16 bytes as the 'bytes' argument, a string of 16 bytes
+        in little-endian order as the 'bytes_le' argument, a tuple of six
+        integers (32-bit time_low, 16-bit time_mid, 16-bit time_hi_version,
+        8-bit clock_seq_hi_variant, 8-bit clock_seq_low, 48-bit node) as
+        the 'fields' argument, or a single 128-bit integer as the 'int'
+        argument.  When a string of hex digits is given, curly braces,
+        hyphens, and a URN prefix are all optional.  For example, these
+        expressions all yield the same UUID:
+    
+        UUID('{12345678-1234-5678-1234-567812345678}')
+        UUID('12345678123456781234567812345678')
+        UUID('urn:uuid:12345678-1234-5678-1234-567812345678')
+        UUID(bytes='\x12\x34\x56\x78'*4)
+        UUID(bytes_le='\x78\x56\x34\x12\x34\x12\x78\x56' +
+                      '\x12\x34\x56\x78\x12\x34\x56\x78')
+        UUID(fields=(0x12345678, 0x1234, 0x5678, 0x12, 0x34, 0x567812345678))
+        UUID(int=0x12345678123456781234567812345678)
+    
+        Exactly one of 'hex', 'bytes', 'bytes_le', 'fields', or 'int' must
+        be given.  The 'version' argument is optional; if given, the resulting
+        UUID will have its variant and version set according to RFC 4122,
+        overriding the given 'hex', 'bytes', 'bytes_le', 'fields', or 'int'.
+    
+        is_safe is an enum exposed as an attribute on the instance.  It
+        indicates whether the UUID has been generated in a way that is safe
+        for multiprocessing applications, via uuid_generate_time_safe(3).
+        """
+    
+        if [hex, bytes, bytes_le, fields, int].count(None) != 4:
+            raise TypeError('one of the hex, bytes, bytes_le, fields, '
+                            'or int arguments must be given')
+        if hex is not None:
+            hex = hex.replace('urn:', '').replace('uuid:', '')
+            hex = hex.strip('{}').replace('-', '')
+            if len(hex) != 32:
+>               raise ValueError('badly formed hexadecimal UUID string')
+E               ValueError: badly formed hexadecimal UUID string
+
+C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\uuid.py:178: ValueError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_material_resources.py::test_pending_admission_and_failed_reservation_release
+FAILED app/tests/test_material_resources.py::test_storage_reserves_extraction_across_projects
+FAILED app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[corrupt]
+FAILED app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[lost-lease]
+FAILED app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[commit]
+FAILED app/tests/test_material_resources.py::test_orphan_recovery_protects_live_workers_and_saved_sources
+6 failed, 7 warnings in 4.70s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

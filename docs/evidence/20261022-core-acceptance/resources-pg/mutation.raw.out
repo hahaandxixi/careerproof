@@ -1,0 +1,150 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_owner_quota_serializes_different_upload_targets[different-projects-pending] _
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000016630698F50>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x0000016630B691D0>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016630C952B0>
+constraint = 'pending', mixed = False
+
+    @pytest.mark.parametrize("constraint", ["pending", "storage"])
+    @pytest.mark.parametrize("mixed", [False, True], ids=["different-projects", "resume-and-project"])
+    async def test_owner_quota_serializes_different_upload_targets(
+        matching_db, monkeypatch, constraint, mixed,
+    ):
+        _, factory = matching_db
+        owner, projects = await _owner(factory)
+        # Every individual upload fits. Both together exceed exactly one quota.
+        _limits(
+            monkeypatch,
+            pending=1 if constraint == "pending" else 10,
+            storage=(179 if mixed else 279) if constraint == "storage" else 10000,
+        )
+        barrier = asyncio.Barrier(2)
+        outcomes = await asyncio.gather(
+            _upload(factory, owner, projects[0], barrier=barrier),
+            _upload(factory, owner, None if mixed else projects[1], barrier=barrier),
+            return_exceptions=True,
+        )
+        errors = [result for result in outcomes if isinstance(result, AppError)]
+        winners = [result for result in outcomes if not isinstance(result, BaseException)]
+>       assert len(errors) == len(winners) == 1, outcomes
+E       AssertionError: [(ProjectVersionUploadData(project_id=UUID('ad784aac-2a4c-4cae-a6be-0587129a698c'), version_id=UUID('f03cdc5b-9b32-4a2...7-9b256b31b3ba'), task_id=UUID('4c2fcd01-ed3b-4840-b46c-8f229556fd0d'), status=<TaskStatus.PENDING: 'pending'>), True)]
+E       assert 0 == 2
+E        +  where 0 = len([])
+E        +  and   2 = len([(ProjectVersionUploadData(project_id=UUID('ad784aac-2a4c-4cae-a6be-0587129a698c'), version_id=UUID('f03cdc5b-9b32-4a2...7-9b256b31b3ba'), task_id=UUID('4c2fcd01-ed3b-4840-b46c-8f229556fd0d'), status=<TaskStatus.PENDING: 'pending'>), True)])
+
+app\tests\test_material_admission_postgres.py:124: AssertionError
+_ test_owner_quota_serializes_different_upload_targets[different-projects-storage] _
+
+matching_db = (<fastapi.applications.FastAPI object at 0x000001663129AC00>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000166312C52D0>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016631298140>
+constraint = 'storage', mixed = False
+
+    @pytest.mark.parametrize("constraint", ["pending", "storage"])
+    @pytest.mark.parametrize("mixed", [False, True], ids=["different-projects", "resume-and-project"])
+    async def test_owner_quota_serializes_different_upload_targets(
+        matching_db, monkeypatch, constraint, mixed,
+    ):
+        _, factory = matching_db
+        owner, projects = await _owner(factory)
+        # Every individual upload fits. Both together exceed exactly one quota.
+        _limits(
+            monkeypatch,
+            pending=1 if constraint == "pending" else 10,
+            storage=(179 if mixed else 279) if constraint == "storage" else 10000,
+        )
+        barrier = asyncio.Barrier(2)
+        outcomes = await asyncio.gather(
+            _upload(factory, owner, projects[0], barrier=barrier),
+            _upload(factory, owner, None if mixed else projects[1], barrier=barrier),
+            return_exceptions=True,
+        )
+        errors = [result for result in outcomes if isinstance(result, AppError)]
+        winners = [result for result in outcomes if not isinstance(result, BaseException)]
+>       assert len(errors) == len(winners) == 1, outcomes
+E       AssertionError: [(ProjectVersionUploadData(project_id=UUID('1ed2ad93-703c-4b71-add5-7551cbd2eb22'), version_id=UUID('eaef3df8-aaa7-4a3...0-18dc2edae303'), task_id=UUID('00830c67-80c6-446e-a098-3326d9d393a0'), status=<TaskStatus.PENDING: 'pending'>), True)]
+E       assert 0 == 2
+E        +  where 0 = len([])
+E        +  and   2 = len([(ProjectVersionUploadData(project_id=UUID('1ed2ad93-703c-4b71-add5-7551cbd2eb22'), version_id=UUID('eaef3df8-aaa7-4a3...0-18dc2edae303'), task_id=UUID('00830c67-80c6-446e-a098-3326d9d393a0'), status=<TaskStatus.PENDING: 'pending'>), True)])
+
+app\tests\test_material_admission_postgres.py:124: AssertionError
+_ test_owner_quota_serializes_different_upload_targets[resume-and-project-pending] _
+
+matching_db = (<fastapi.applications.FastAPI object at 0x0000016630CD04A0>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001663140DB90>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016630D28380>
+constraint = 'pending', mixed = True
+
+    @pytest.mark.parametrize("constraint", ["pending", "storage"])
+    @pytest.mark.parametrize("mixed", [False, True], ids=["different-projects", "resume-and-project"])
+    async def test_owner_quota_serializes_different_upload_targets(
+        matching_db, monkeypatch, constraint, mixed,
+    ):
+        _, factory = matching_db
+        owner, projects = await _owner(factory)
+        # Every individual upload fits. Both together exceed exactly one quota.
+        _limits(
+            monkeypatch,
+            pending=1 if constraint == "pending" else 10,
+            storage=(179 if mixed else 279) if constraint == "storage" else 10000,
+        )
+        barrier = asyncio.Barrier(2)
+        outcomes = await asyncio.gather(
+            _upload(factory, owner, projects[0], barrier=barrier),
+            _upload(factory, owner, None if mixed else projects[1], barrier=barrier),
+            return_exceptions=True,
+        )
+        errors = [result for result in outcomes if isinstance(result, AppError)]
+        winners = [result for result in outcomes if not isinstance(result, BaseException)]
+>       assert len(errors) == len(winners) == 1, outcomes
+E       AssertionError: [(ProjectVersionUploadData(project_id=UUID('c35a15f4-a61e-4f29-9165-5f60b29e1d89'), version_id=UUID('4aa8c48d-0f82-472...294-a5df-8811208c5f77'), task_id=UUID('5bf5656b-71fb-4883-9f0b-1d6d8d8c5cf3'), status=<TaskStatus.PENDING: 'pending'>)]
+E       assert 0 == 2
+E        +  where 0 = len([])
+E        +  and   2 = len([(ProjectVersionUploadData(project_id=UUID('c35a15f4-a61e-4f29-9165-5f60b29e1d89'), version_id=UUID('4aa8c48d-0f82-472...294-a5df-8811208c5f77'), task_id=UUID('5bf5656b-71fb-4883-9f0b-1d6d8d8c5cf3'), status=<TaskStatus.PENDING: 'pending'>)])
+
+app\tests\test_material_admission_postgres.py:124: AssertionError
+_ test_owner_quota_serializes_different_upload_targets[resume-and-project-storage] _
+
+matching_db = (<fastapi.applications.FastAPI object at 0x000001663133FC20>, async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x00000166312E8F50>, autoflush=True, expire_on_commit=False))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000016631404DA0>
+constraint = 'storage', mixed = True
+
+    @pytest.mark.parametrize("constraint", ["pending", "storage"])
+    @pytest.mark.parametrize("mixed", [False, True], ids=["different-projects", "resume-and-project"])
+    async def test_owner_quota_serializes_different_upload_targets(
+        matching_db, monkeypatch, constraint, mixed,
+    ):
+        _, factory = matching_db
+        owner, projects = await _owner(factory)
+        # Every individual upload fits. Both together exceed exactly one quota.
+        _limits(
+            monkeypatch,
+            pending=1 if constraint == "pending" else 10,
+            storage=(179 if mixed else 279) if constraint == "storage" else 10000,
+        )
+        barrier = asyncio.Barrier(2)
+        outcomes = await asyncio.gather(
+            _upload(factory, owner, projects[0], barrier=barrier),
+            _upload(factory, owner, None if mixed else projects[1], barrier=barrier),
+            return_exceptions=True,
+        )
+        errors = [result for result in outcomes if isinstance(result, AppError)]
+        winners = [result for result in outcomes if not isinstance(result, BaseException)]
+>       assert len(errors) == len(winners) == 1, outcomes
+E       AssertionError: [(ProjectVersionUploadData(project_id=UUID('bfc720dc-975e-4a7d-97fd-b2d9d81864d7'), version_id=UUID('00b0dd8b-2973-49d...077-8d45-a445286ae859'), task_id=UUID('efeb4cf0-6e42-4166-9ab1-2583f3c4bfbf'), status=<TaskStatus.PENDING: 'pending'>)]
+E       assert 0 == 2
+E        +  where 0 = len([])
+E        +  and   2 = len([(ProjectVersionUploadData(project_id=UUID('bfc720dc-975e-4a7d-97fd-b2d9d81864d7'), version_id=UUID('00b0dd8b-2973-49d...077-8d45-a445286ae859'), task_id=UUID('efeb4cf0-6e42-4166-9ab1-2583f3c4bfbf'), status=<TaskStatus.PENDING: 'pending'>)])
+
+app\tests\test_material_admission_postgres.py:124: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py:1309
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\config\__init__.py:1309: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; anyio
+    self._mark_plugins_for_rewrite(hook, disable_autoload)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_material_admission_postgres.py::test_owner_quota_serializes_different_upload_targets[different-projects-pending]
+FAILED app/tests/test_material_admission_postgres.py::test_owner_quota_serializes_different_upload_targets[different-projects-storage]
+FAILED app/tests/test_material_admission_postgres.py::test_owner_quota_serializes_different_upload_targets[resume-and-project-pending]
+FAILED app/tests/test_material_admission_postgres.py::test_owner_quota_serializes_different_upload_targets[resume-and-project-storage]
+4 failed, 4 deselected, 1 warning in 2.22s
