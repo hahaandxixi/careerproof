@@ -8,6 +8,7 @@ import os
 
 import pytest
 
+from app.tests import test_real_matching as matching_fixtures
 from app.tests.test_z57_pagination import (  # noqa: F401 - pytest collects these cases
     test_equal_timestamps_order_stably_without_duplicates,
     test_exact_last_page_clamping_empty_and_query_bounds,
@@ -19,7 +20,9 @@ from app.tests.test_z57_pagination import (  # noqa: F401 - pytest collects thes
     test_owned_applications_page_reaches_past_the_first_hundred,
 )
 
-pytest_plugins = ["app.tests.test_real_matching"]
+# Explicit fixture export is independent of whether pytest first collected the
+# shared module as an ordinary test module or imported it as a plugin.
+matching_db = matching_fixtures.matching_db
 pytestmark = pytest.mark.skipif(
     not os.environ.get("CAREERPROOF_TEST_DATABASE_URL", "").startswith("postgresql+asyncpg://"),
     reason="requires an explicit isolated PostgreSQL integration database",

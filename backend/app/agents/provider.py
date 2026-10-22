@@ -41,7 +41,7 @@ class UsageRecord(NamedTuple):
     usage: ModelUsage
 
 
-EVIDENCE_PROMPT_VERSION = "evidence-trust-v29-implementation-first-plan"
+EVIDENCE_PROMPT_VERSION = "evidence-trust-v30-budget-deduplication"
 logger = logging.getLogger(__name__)
 
 _EXTERNAL_TEXT_REDACTIONS = (
@@ -276,24 +276,11 @@ def evidence_analysis_messages(
         "岗位要求变化或当前证据撤回时，不沿用旧等级、不宣称能力下降或成长。"
         "不得修改规则分数或判定，不得推断身份、能力等级或录用概率。"
         "只描述材料里明确可见的事实，禁止写证明具备能力、胜任、满足岗位要求。"
-        "未执行上传代码，不能断言测试通过、服务运行成功或本人完成开发。"
-        "代码里的断言只证明断言存在，不能证明测试已经执行或通过。"
-        "只能说材料中存在代码，不能说候选人编写、实现或完成了代码。"
         "provenance=reference表示第三方参考源码，可引用其中可见行为作为学习范例，"
         "但不能用于证明候选人的实践、满足任何评级判据或提高材料分数。"
         "对用户只说第三方参考材料，不输出provenance等内部字段名。"
-        "建议仅提出补充材料和核验事项，不生成新代码、启动命令或库API用法。"
-        "每项suggestion应写明一种可提交的具体材料及要核对的事实；"
-        "不要只写笼统的补充项目材料，也不要承诺补充后一定升等级。"
-        "先检查已给出的全部片段；已经可见的内容不得被列为缺失。"
-        "claim_text是未经验证的简历自述；如与代码矛盾，应指出具体差异，不推断动机。"
-        "context_complete=false仅表示该片段被截取，不等于所有引用合起来仍缺少函数原文。"
-        "function_source_coverage是程序按同一来源函数边界和当前引用行区间计算的覆盖事实；"
-        "fully_covered=true表示这些引用合起来覆盖该函数原文，不得再写该函数上下文缺失。"
-        "描述联合覆盖时应引用覆盖所需的片段；未给的外部依赖、运行结果和贡献仍需核验。"
-        "file_source_coverage单独记录当前引用对整文件的覆盖；函数覆盖完整不等于文件完整。"
-        "已覆盖完整的该函数原文/该文件不要建议重复提交；优先补依赖实现、运行记录或贡献记录。"
-        "不得把同一源码改写成再次、重新或重复上传；修改后新版本应明确写出修改内容。"
+        "代码未执行，测试通过、服务运行和本人贡献均未核实。"
+        "建议只提具体材料与核验点，不生成代码、启动命令或库API用法。"
         "可为每项输出task_plan草稿：一项具体交付物、1至3步执行动作、1至3条可观察核验条件；"
         "草稿必须具体对应该项information_gap，写明具名材料、动作与可观察核验，"
         "对应不上时返回null。草稿不得声称测试已通过或本人贡献已证实，"
@@ -304,7 +291,6 @@ def evidence_analysis_messages(
         "应改为补交独立具名的贡献证明或分工确认，并注明核验前仍待核验。"
         "计划涉及缓存失效或写路径时，必须写明失效机制与期望观测，供人工核对。"
         "gap或claimed_only项的计划应显式对应要求标题的各要素，或写明不覆盖的理由。"
-        "缺少文件外围导入、配置等上下文时可以建议补完整文件，不猜测整文件已给。"
         "评级理由必须说明引用支持的操作及真正未知的任务环节，不能只说受上限限制，"
         "也不向用户输出rating_ceiling、context_complete、provenance等内部字段。"
         "源码范围完整不等于完整任务实现，不自动提高rating_ceiling或等级。"
@@ -336,8 +322,6 @@ def evidence_analysis_messages(
         "后项成立必须前项成立。level等于连续成立项数，无成立项为null。"
         "level不得超过rating_ceiling；上限为null必须全部不成立、level为null。"
         "上限仅是限制，不是答案；必须审查空实现、矛盾与片段是否真正支撑要求。"
-        "information_gap只能写证据没有展示或无法由静态材料确认的事项；"
-        "已展示的完整函数体、空实现或明确语句不得再次写成未核验。"
         + (
             "上一次输出未通过本地校验。根据validationFeedback只修正冲突字段，"
             "重新检查rejectedOutput，仍须完整返回全部要求。"
@@ -535,7 +519,9 @@ class OpenAICompatibleProvider:
         )
         self.last_finish_reason = None
         if input_limit < 1:
-            raise ProviderInputBudgetError("No input token budget remains for this report")
+            raise ProviderInputBudgetError(
+                "No local input admission budget remains for this report"
+            )
         if "max_tokens" in request and request["max_tokens"] < 1:
             raise ProviderOutputBudgetError("No output token budget remains for this report")
         messages = request.get("messages")
@@ -553,7 +539,7 @@ class OpenAICompatibleProvider:
             })
             if estimate > input_limit:
                 raise ProviderInputBudgetError(
-                    "model input exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
+                    "model input UTF-8 byte bound exceeds AI_PER_REPORT_INPUT_TOKEN_LIMIT "
                     f"({estimate}>{input_limit})",
                     estimated_input_bound=estimate,
                     remaining_input_budget=input_limit,
@@ -776,7 +762,9 @@ class OpenAICompatibleProvider:
             if input_token_limit is None else input_token_limit,
         )
         if bounded_input < 1:
-            raise ProviderInputBudgetError("No input token budget remains for this report")
+            raise ProviderInputBudgetError(
+                "No local input admission budget remains for this report"
+            )
         request = {
             "_local_input_token_limit": bounded_input,
             "model": self.model,

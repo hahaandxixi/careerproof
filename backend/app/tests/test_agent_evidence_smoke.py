@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import json
 from dataclasses import replace
 from decimal import Decimal
@@ -8,17 +9,41 @@ import httpx
 import pytest
 
 from app.agents.evidence_workflow import build_evidence_contexts
-from app.agents.provider import DeepSeekProvider
+from app.agents.provider import EVIDENCE_PROMPT_VERSION, DeepSeekProvider
 from app.core.config import settings
 from evals import bounded_evidence_smoke as smoke
 
 
 def packet_path() -> Path:
-    return smoke.ROOT / "docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json"
+    # Current-source offline regression input is separate from immutable live preflights.
+    return Path(__file__).parent / "fixtures/current-20261022/agent-offline-input.json"
 
 
 def packet() -> dict:
     return json.loads(packet_path().read_text(encoding="utf-8"))
+
+
+def test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them():
+    data = packet()
+    historical = smoke.ROOT / data["historicalPacket"]["path"]
+    assert data["offlineOnly"] is True
+    assert data["promptVersion"] == EVIDENCE_PROMPT_VERSION
+    assert hashlib.sha256(historical.read_bytes()).hexdigest() == data["historicalPacket"]["sha256"]
+    original = json.loads(historical.read_text(encoding="utf-8"))
+    assert data["cases"] == original["cases"]
+    assert data["limits"] == original["limits"]
+    assert set(data["sourceHashes"]) == {
+        *original["sourceHashes"],
+        "backend/app/agents/evidence_policy.md",
+        "backend/app/agents/input_budget.py",
+    }
+    smoke.check_agent_packet(data)
+
+
+def test_historical_agent_packet_is_rejected_after_reviewed_source_changes():
+    historical = smoke.ROOT / packet()["historicalPacket"]["path"]
+    with pytest.raises(smoke.SmokeStopped, match="source changed"):
+        smoke.check_agent_packet(json.loads(historical.read_text(encoding="utf-8")))
 
 
 def planning_request() -> dict:
@@ -318,6 +343,7 @@ def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
     guard_holder = {}
 
     def handler(request):
+        assert settings.ai_per_report_input_token_limit == 40_000
         body = json.loads(request.content)
         guard = guard_holder["guard"]
         case = next(row for row in data["cases"] if row["id"] == guard.case_id)
@@ -359,6 +385,7 @@ def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
     monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
     monkeypatch.setattr(settings, "ai_external_enabled", True)
     monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    monkeypatch.setattr(settings, "ai_per_report_input_token_limit", 40_000)
 
     report = asyncio.run(
         smoke.execute_agent(data, tmp_path / "model-stop.json", (Decimal(2), Decimal(8)))
@@ -369,6 +396,20 @@ def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
     assert report["results"][1]["status"] == "program_skipped_planning"
     assert report["results"][2]["status"] == "model_stopped"
     assert all(row["accepted"] for row in report["results"])
+    assert settings.ai_per_report_input_token_limit == 40_000
+
+
+def test_agent_full_request_cap_includes_tool_schema_before_reservation():
+    data = packet()
+    guard = smoke.AgentRequestGuard(Decimal(2), Decimal(8))
+    guard.begin_case(data["cases"][0])
+    guard.stage = "planning_1"
+    request = planning_request()
+    request["tools"][0]["function"]["parameters"]["description"] = "x" * smoke.AGENT_INPUT_LIMIT
+    with pytest.raises(smoke.SmokeStopped, match="input contract"):
+        asyncio.run(guard.before_send(request))
+    assert guard.attempts == []
+    assert guard.reserved == 0
 
 
 def test_full_agent_chain_uses_mock_transport_and_real_workflow(monkeypatch, tmp_path):

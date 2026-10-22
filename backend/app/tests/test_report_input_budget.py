@@ -1,8 +1,10 @@
 import json
+from pathlib import Path
 
 import httpx
 import pytest
 
+from app.agents.contracts import RequirementEvidenceContext
 from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
 from app.agents.provider import (
     ProviderInputBudgetError,
@@ -224,3 +226,100 @@ async def test_explicit_empty_limits_do_not_restore_default_budget(method, limit
         )
     assert instance.request_usages == []
     assert instance.last_finish_reason is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("requirement_count", [1, 5])
+async def test_default_budget_admits_complete_minimum_and_typical_request(
+    monkeypatch, requirement_count,
+):
+    """Default admission includes policy, rubric, evidence and complete wire shape."""
+    default_limit = type(settings).model_fields["ai_per_report_input_token_limit"].default
+    monkeypatch.setattr(settings, "ai_per_report_input_token_limit", default_limit)
+    original = build_evidence_contexts(evidenced_result())[0]
+    contexts = [
+        original.model_copy(update={"requirement_id": str(index)})
+        for index in range(requirement_count)
+    ]
+    sent = []
+
+    def handler(request):
+        sent.append(json.loads(request.content))
+        payload = response(contexts[0]).json()
+        content = answer(contexts[0])
+        content["items"] = [answer(context)["items"][0] for context in contexts]
+        payload["choices"][0]["message"]["content"] = json.dumps(content, ensure_ascii=False)
+        return httpx.Response(200, json=payload)
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    analysis = await instance.analyze_evidence(contexts=contexts)
+    assert len(sent) == 1
+    assert len(analysis.items) == requirement_count
+    assert instance.input_preflights[0]["allowed"] is True
+    assert instance.input_preflights[0]["estimatedInputBound"] <= default_limit
+    assert analysis.usage.input_tokens == 80  # Provider receipt, not byte estimate.
+    print({"requirements": requirement_count, "limit": default_limit,
+           "preflight": instance.input_preflights[0]})
+
+
+@pytest.mark.asyncio
+async def test_default_workflow_reserves_final_request_before_mock_planning(monkeypatch):
+    result = evidenced_result()
+    context = build_evidence_contexts(result, max_evidence=2)[0]
+    calls = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        calls.append(body)
+        if "tools" in body:
+            return httpx.Response(200, json={
+                "choices": [{"finish_reason": "stop", "message": {"content": "stop"}}],
+                "usage": {"prompt_tokens": 100, "completion_tokens": 10},
+            })
+        return response(context)
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    limit = type(settings).model_fields["ai_per_report_input_token_limit"].default
+    enable(monkeypatch, instance, limit)
+    outcome = await run_evidence_workflow(result)
+    assert not outcome.fallback_used
+    assert outcome.analysis is not None
+    assert len(calls) == 2
+    assert "tools" in calls[0] and "tools" not in calls[1]
+    assert outcome.analysis.usage.input_tokens == 180
+    assert outcome.analysis.usage.output_tokens == 50
+    assert outcome.tool_calls[0]["reason"] == "planner_declined"
+    assert all(entry["allowed"] for entry in outcome.input_preflights)
+
+
+@pytest.mark.asyncio
+async def test_default_budget_admits_frozen_complete_project_request(monkeypatch):
+    """Admission only: fixed real synthetic project, never a semantic model verdict."""
+    fixture = json.loads(
+        Path(__file__).with_name("fixtures").joinpath(
+            "complete-project-budget-contexts.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert fixture["syntheticOnly"] is True
+    contexts = [RequirementEvidenceContext.model_validate(row) for row in fixture["contexts"]]
+    assert len(contexts) == 5
+    assert len({e.file_path for c in contexts for e in c.evidence}) >= 5
+    default_limit = type(settings).model_fields["ai_per_report_input_token_limit"].default
+    monkeypatch.setattr(settings, "ai_per_report_input_token_limit", default_limit)
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        payload = response(contexts[0]).json()
+        content = answer(contexts[0])
+        content["items"] = [answer(context)["items"][0] for context in contexts]
+        payload["choices"][0]["message"]["content"] = json.dumps(content, ensure_ascii=False)
+        return httpx.Response(200, json=payload)
+
+    instance = provider(transport=httpx.MockTransport(handler), max_attempts=1)
+    await instance.analyze_evidence(contexts=contexts)
+    assert len(requests) == 1
+    assert instance.input_preflights[0]["allowed"] is True
+    assert instance.input_preflights[0]["estimatedInputBound"] <= default_limit
+    print({"completeProjectRequirements": 5, "limit": default_limit,
+           "preflight": instance.input_preflights[0]})

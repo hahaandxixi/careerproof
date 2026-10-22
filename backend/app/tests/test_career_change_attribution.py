@@ -738,10 +738,14 @@ async def test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback
     """B-10: a real database fault inside the AI stage must surface, not fake success."""
     from app.services import career_planning
 
+    budget_entries = []
+    failing_statement = "SELECT * FROM cp_missing_budget_fault_probe"
+
     async def broken_budget(session, _user_id):
         # Use a failing SQL statement instead of dropping the fixture's table:
         # PostgreSQL's search_path can fall back to a public table of that name.
-        await session.execute(text("SELECT * FROM cp_missing_budget_fault_probe"))
+        budget_entries.append(True)
+        await session.execute(text(failing_statement))
         raise AssertionError("unreachable")
 
     monkeypatch.setattr(career_planning, "_daily_ai_budget", broken_budget)
@@ -764,6 +768,8 @@ async def test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback
             pytest.raises(SQLAlchemyError) as fault,
         ):
             await student.post("/api/v1/career-plans", json=payload)
+        assert budget_entries == [True], "the injected AI budget check must be reached exactly once"
+        assert fault.value.statement == failing_statement
         records = [
             record for record in caplog.records
             if record.name == "app.services.career_planning"

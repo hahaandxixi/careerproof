@@ -1,5 +1,7 @@
 """Execute the real Alembic env while trapping engine creation before any I/O."""
 
+import logging
+import logging.config
 import runpy
 from pathlib import Path
 
@@ -16,6 +18,13 @@ def prepare(monkeypatch, options):
     monkeypatch.setattr(context, "config", Config(str(BACKEND / "alembic.ini")), raising=False)
     monkeypatch.setattr(context, "get_x_argument", lambda: options)
     monkeypatch.setattr(context, "is_offline_mode", lambda: False)
+    # This test executes the migration entry point only up to its engine
+    # boundary. Applying Alembic's fileConfig to the pytest process would
+    # disable application loggers imported during collection, leaking state
+    # into later tests. Record that boundary without reconfiguring pytest.
+    logging_calls = []
+    monkeypatch.setattr(logging.config, "fileConfig", logging_calls.append)
+    return logging_calls
 
 
 @pytest.mark.parametrize("option", [
@@ -38,7 +47,9 @@ def test_unsupported_x_option_rejected_before_engine_creation(monkeypatch, optio
 
 
 def test_no_x_option_still_reaches_existing_engine_boundary(monkeypatch):
-    prepare(monkeypatch, [])
+    logging_calls = prepare(monkeypatch, [])
+    application_logger = logging.getLogger("app.services.career_planning")
+    disabled_before = application_logger.disabled
 
     def observed_engine(*args, **kwargs):
         raise RuntimeError("expected-engine-boundary-no-connection")
@@ -46,3 +57,5 @@ def test_no_x_option_still_reaches_existing_engine_boundary(monkeypatch):
     monkeypatch.setattr(sa_async, "async_engine_from_config", observed_engine)
     with pytest.raises(RuntimeError, match="expected-engine-boundary-no-connection"):
         runpy.run_path(str(BACKEND / "alembic/env.py"))
+    assert logging_calls == [str(BACKEND / "alembic.ini")]
+    assert application_logger.disabled is disabled_before

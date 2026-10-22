@@ -69,7 +69,10 @@ class Settings(BaseSettings):
     ai_max_requirements: int = Field(default=8, ge=1, le=50)
     ai_max_retrieval_calls: int = Field(default=2, ge=0, le=2)
     ai_context_evidence_limit: int = Field(default=2, ge=1, le=3)
-    ai_per_report_input_token_limit: int = Field(default=12_000, ge=1000, le=100_000)
+    # Legacy setting name: also caps the conservative full-request UTF-8 byte
+    # preflight, independently of provider-reported cumulative input tokens.
+    # 40k admits the frozen five-requirement full-project prompt (~37.5k bytes).
+    ai_per_report_input_token_limit: int = Field(default=40_000, ge=1000, le=100_000)
     ai_per_report_output_token_limit: int = Field(default=4000, ge=200, le=10_000)
     ai_daily_report_limit: int = Field(default=20, ge=1, le=1000)
     ai_daily_input_token_limit: int = Field(default=200_000, ge=1000, le=10_000_000)

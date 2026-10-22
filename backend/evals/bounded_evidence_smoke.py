@@ -15,6 +15,7 @@ import httpx
 
 from app.agents.contracts import validate_grounded_analysis
 from app.agents.evidence_workflow import build_evidence_contexts, run_evidence_workflow
+from app.agents.input_budget import estimate_wire_input_bytes
 from app.agents.provider import (
     DeepSeekProvider,
     conservative_input_token_estimate,
@@ -216,7 +217,7 @@ class AgentRequestGuard(RequestGuard):
             or request.get("thinking") != {"type": "disabled"}
             or type(request.get("max_tokens")) is not int
             or not 1 <= request["max_tokens"] <= AGENT_OUTPUT_LIMIT
-            or conservative_input_token_estimate(request["messages"]) > AGENT_INPUT_LIMIT
+            or estimate_wire_input_bytes(request) > AGENT_INPUT_LIMIT
         ):
             raise SmokeStopped("Agent request exceeds the fixed model/input contract")
         tools = request.get("tools")
@@ -404,7 +405,13 @@ async def execute_agent(packet: dict, output: Path, prices: tuple[Decimal, Decim
 
     old_input_limit = settings.ai_per_report_input_token_limit
     old_output_limit = settings.ai_per_report_output_token_limit
-    settings.ai_per_report_input_token_limit = min(old_input_limit, AGENT_INPUT_LIMIT)
+    # The packet's input bound is per physical request, not the cumulative
+    # report allowance. Keep the production report cap and the case's maximum
+    # aggregate allowance; AgentRequestGuard still checks every POST against
+    # AGENT_INPUT_LIMIT before reservation or HTTP.
+    settings.ai_per_report_input_token_limit = min(
+        old_input_limit, AGENT_INPUT_LIMIT * AGENT_MAX_PER_CASE
+    )
     settings.ai_per_report_output_token_limit = min(old_output_limit, AGENT_OUTPUT_LIMIT)
     try:
         batch_path = claim_batch(STATE_ROOT, AGENT_BATCH_ID)
