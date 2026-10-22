@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ProjectHistory } from "@/lib/api/client";
+import { materialVersionTime } from "@/lib/material-upload";
 import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "@/lib/material-picker";
 import cases from "@/app/demo/samples.json";
 
@@ -13,15 +14,25 @@ const GROUPS = [
   { key: "history", label: "历史验收材料 · 按名称归类" },
 ] as const;
 
-export default function ProjectVersionPicker({ projects, selectedIds, onChange }: {
+export default function ProjectVersionPicker({ projects, selectedIds, onChange, highlightedVersionId }: {
   projects: ProjectHistory[];
   selectedIds: string[];
   onChange: (ids: string[]) => void;
+  highlightedVersionId?: string;
 }) {
   const [query, setQuery] = useState("");
   const [includeHistory, setIncludeHistory] = useState(false);
   const visibleProjects = groupMaterialProjects(projects, query, includeHistory, DEMO_NAMES);
   const selectableProjects = filterMaterialProjects(projects, "");
+  // Make just the returned project's completed versions discoverable, without
+  // opening every old acceptance fixture or changing the user's selection.
+  if (!query.trim() && highlightedVersionId) {
+    const returned = selectableProjects.find(project => project.versions.some(version => version.id === highlightedVersionId));
+    if (returned && !visibleProjects.some(project => project.id === returned.id)) {
+      visibleProjects.push(...groupMaterialProjects([returned], "", true, DEMO_NAMES));
+    }
+  }
+  const latestAvailable = new Map(selectableProjects.map(project => [project.id, project.versions[0]?.id]));
   const historyCount = selectableProjects.filter(project => projectDisplayCategory(project.name, DEMO_NAMES) === "history").length;
   const selected = selectableProjects.flatMap(project => project.versions
     .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: project.name })));
@@ -35,11 +46,12 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
       {selected.map(version => <li key={version.id} className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
         <span className="min-w-0 break-words">{version.name} · 第 {version.versionNumber} 版
           <span className="mt-1 block text-xs text-slate-600">{version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
+          <span className="mt-1 block text-xs text-slate-600">已解析{materialVersionTime(version.createdAt) && <> · <time dateTime={version.createdAt}>上传于 {materialVersionTime(version.createdAt)}</time></>}</span>
         </span>
         <button type="button" className="shrink-0 text-xs text-indigo-700 underline" aria-label={`移除 ${version.name} 第 ${version.versionNumber} 版`} onClick={() => onChange(toggleMaterialVersion(selectedIds, version.id, false))}>移除</button>
       </li>)}
     </ul> : <p className="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p>}
-    {selectableProjects.length > 0 ? <details className="rounded-xl border border-slate-200">
+    {selectableProjects.length > 0 ? <details key={highlightedVersionId || "projects"} open={!!highlightedVersionId} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
         <label className="block text-xs text-slate-600">搜索项目名称或文件名
@@ -57,14 +69,18 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange }
             if (group.key === "demo") rows.sort((left, right) => left.name.localeCompare(right.name));
             return rows.length ? <section key={group.key} aria-label={group.label} className="space-y-2">
               <h3 className="text-xs font-semibold text-slate-500">{group.label} · {rows.length} 个项目</h3>
-              {rows.map(project => <details key={project.id} className="rounded-lg bg-slate-50">
+              {rows.map(project => <details key={project.id} open={project.versions.some(version => version.id === highlightedVersionId)} className="rounded-lg bg-slate-50">
             <summary className="cursor-pointer p-3 text-sm font-medium break-words">{project.name}
               <span className="ml-2 text-xs font-normal text-slate-500">{project.versions.length} 个版本 · 已选 {project.versions.filter(version => selectedIds.includes(version.id)).length}</span>
             </summary>
             <div className="space-y-2 px-3 pb-3">
-              {project.versions.map(version => <label key={version.id} className="material-version flex items-start gap-2 rounded-lg bg-white p-2 text-sm">
+              {project.versions.map(version => <label key={version.id} className={`material-version flex items-start gap-2 rounded-lg border p-2 text-sm ${version.id === highlightedVersionId ? "border-indigo-400 bg-indigo-50" : "border-transparent bg-white"}`}>
                 <input className="mt-1 shrink-0" type="checkbox" checked={selectedIds.includes(version.id)} disabled={!selectedIds.includes(version.id) && selectedIds.length >= 10} onChange={event => onChange(toggleMaterialVersion(selectedIds, version.id, event.target.checked))} />
-                <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
+                <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}
+                  <span className="mt-1 block text-xs text-slate-600">已解析{materialVersionTime(version.createdAt) && <> · <time dateTime={version.createdAt}>上传于 {materialVersionTime(version.createdAt)}</time></>}</span>
+                  {version.id === latestAvailable.get(project.id) && <span className="ml-2 text-xs text-slate-600">最新可用版本</span>}
+                  {version.id === highlightedVersionId && <span className="mt-1 block text-xs font-medium text-indigo-800">刚上传 · {selectedIds.includes(version.id) ? "已加入当前选择，保存后生效" : "尚未选择"}</span>}
+                </span>
               </label>)}
             </div>
           </details>)}

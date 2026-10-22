@@ -13,6 +13,17 @@ const projects = [
   ] },
 ];
 
+test("completed versions are newest-first without mutating saved order or choosing one", () => {
+  const unordered = [{ id: "p", name: "作品", versions: [
+    { id: "v1", versionNumber: 1, status: "completed", originalFilename: "same.zip" },
+    { id: "v3", versionNumber: 3, status: "running", originalFilename: "same.zip" },
+    { id: "v2", versionNumber: 2, status: "completed", originalFilename: "same.zip" },
+  ] }];
+  const original = structuredClone(unordered);
+  assert.deepEqual(filterMaterialProjects(unordered, "")[0].versions.map(value => value.id), ["v2", "v1"]);
+  assert.deepEqual(unordered, original);
+});
+
 test("search excludes unfinished versions and finds historical filenames without mutating history", () => {
   const original = structuredClone(projects);
   assert.deepEqual(filterMaterialProjects(projects, " API.ZIP ")[0].versions.map(v => v.id), ["v2"]);

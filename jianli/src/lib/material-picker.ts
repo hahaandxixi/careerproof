@@ -19,7 +19,7 @@ export function filterMaterialProjects<V extends Version>(projects: Project<V>[]
     const versions = project.versions.filter(version => version.status === "completed" && (
       !search || nameMatches || `${version.originalFilename ?? ""} 第 ${version.versionNumber} 版`
         .toLocaleLowerCase().includes(search)
-    ));
+    )).sort((left, right) => right.versionNumber - left.versionNumber);
     return versions.length ? [{ ...project, versions }] : [];
   });
 }

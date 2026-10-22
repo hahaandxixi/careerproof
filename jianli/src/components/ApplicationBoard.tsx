@@ -5,6 +5,7 @@ import Link from "next/link";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import ListPagination from "./ListPagination";
 import { api, errorMessage } from "@/lib/api/client";
+import type { ApplicationView } from "@/lib/api/client";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
 import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
 import AccessGate from "./AccessGate";
@@ -31,11 +32,13 @@ export default function ApplicationBoard({jobId}:{jobId:string}){
 }
 function Workspace({jobId}:{jobId:string}){
   const page=useRef(1);
+  const filters=useRef({q:"",status:"",requirementId:"",verdict:""});
   const [state,setState]=useState(initialApplicationBoardState);
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,selected,error,notice,loading:busy}=state;
   const session=useMemo(()=>createApplicationBoardSession({
-    list:async()=>{const id=applicationAnchorId();const result=await api.jobApplications(jobId,page.current,20);const items=await includeApplicationTarget(result.items, api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});return {...result,items,pageItemCount:result.items.length};}, open:api.openApplication,
+    list:async()=>{const id=applicationAnchorId();const result=await api.jobApplications(jobId,page.current,20,filters.current);const items=await includeApplicationTarget(result.items, api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});return {...result,items,pageItemCount:result.items.length};}, open:api.openApplication,
+    detail:async id=>{const item=await api.applicationDetail(id);if(item.jobId!==jobId)throw new Error("投递不属于当前岗位");return item;},
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
   },value=>{if(value.pagination)page.current=value.pagination.page;setState(value);}),[jobId]);
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；目标被筛选条件排除时给出可执行提示，不静默失败。
@@ -48,6 +51,10 @@ function Workspace({jobId}:{jobId:string}){
     return outcome;
   },[anchor]);
   const [query,setQuery]=useState(""),[focus,setFocus]=useState("");
+  const [focusLabel,setFocusLabel]=useState("");
+  const [status,setStatus]=useState("");
+  const [compareIds,setCompareIds]=useState<string[]>([]);
+  const [compareMode,setCompareMode]=useState(false);
   const [radarRequirement,setRadarRequirement]=useState("");
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
@@ -73,11 +80,12 @@ function Workspace({jobId}:{jobId:string}){
   }
   useEffect(()=>{
     session.activate();
-    const refresh=()=>{resetReply();void session.refresh();};
+    const refresh=()=>{resetReply();setCompareIds([]);setCompareMode(false);void session.refresh();};
     // B-06：返回页面时 visibilitychange、focus、pageshow 紧邻触发，合并为一次刷新。
     const gate=createRefreshGate(refresh);
     const visibility=()=>{
       resetReply();
+      setCompareIds([]);setCompareMode(false);
       if(document.visibilityState==="hidden"){session.clear();gate.reset();}else gate.trigger();
     };
     const focusWindow=()=>{if(document.visibilityState==="visible"){resetReply();gate.trigger();}};
@@ -93,11 +101,15 @@ function Workspace({jobId}:{jobId:string}){
     return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
   },[session]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
-  const mixedBasis=mixedComparisonBasis(items);
-  const filterView=applicationFilterView(items,query,focus,verdict,selected?.id);
+  // Predicates are applied before server counting/pagination; local sorting must
+  // not drop matches found in the fixed report's text outside visible labels.
+  const filterView=applicationFilterView(items,"","","",selected?.id);
   const visible=filterView.visible;
+  const matrixItems=compareMode ? visible.filter(item=>compareIds.includes(item.id)) : visible;
+  const mixedBasis=mixedComparisonBasis(matrixItems);
   const selectedOutside=filterView.selectedOutside;
-  function clearFilters(){setQuery("");setFocus("");setVerdict("");}
+  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){filters.current=next;page.current=1;setCompareIds([]);setCompareMode(false);void session.filter();}
+  function clearFilters(){setQuery("");setFocus("");setFocusLabel("");setVerdict("");setStatus("");applyFilters({q:"",status:"",requirementId:"",verdict:""});}
   // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
   // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
   useEffect(()=>{applyAnchor(items.map(i=>i.id),visible.map(i=>i.id));},[applyAnchor,items,visible]);
@@ -105,21 +117,21 @@ function Workspace({jobId}:{jobId:string}){
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
   return <div className="space-y-5"><h1 className="text-3xl font-bold">已授权投递 · 岗位匹配对照</h1><p className="text-sm leading-6 text-slate-600">查看学生向本岗位授权的固定报告，点选格子即可联动要求与证据。分数仅辅助核对，不代表录用顺序。</p>
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{resetReply();void session.refresh();}}>刷新授权投递</button>
-    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；下方筛选仅作用于当前页及额外核对的通知目标，不代表所有候选人的检索结果。通知目标会单独核对授权后补入。刷新、翻页或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
-    {state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的候选人，不计入本页记录数。</p>}</>}
+    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。刷新、翻页或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
+    {state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();setCompareIds([]);setCompareMode(false);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的候选人，不计入本页记录数。</p>}</>}
     {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
-    {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="text-indigo-700 underline" onClick={()=>{setQuery("");setFocus("");setVerdict("");}}>清除筛选并定位</button><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="text-sm underline" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
+    {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="text-indigo-700 underline" onClick={clearFilters}>清除筛选并定位</button><button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="text-sm underline" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
     {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
     {unconfirmedReply&&<UnconfirmedReplyDraft text={replyText} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
-    <p className="text-xs text-slate-600">以下筛选仅作用于当前页及通知补入的候选人；查看更早投递请先翻页。</p>
-    <div className="panel grid gap-3 sm:grid-cols-3"><label className="text-sm">关键词（姓名、技能或要求）<input type="search" className="field mt-2" value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">聚焦岗位要求<select className="field mt-2" value={focus} onChange={e=>setFocus(e.target.value)}><option value="">全部要求</option>{dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label></div>
+    <form className="panel grid gap-3 sm:grid-cols-2 lg:grid-cols-4" onSubmit={event=>{event.preventDefault();applyFilters();}}><label className="text-sm">姓名或报告摘要、要求、说明<input type="search" className="field mt-2" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)}/></label><label className="text-sm">投递状态<select className="field mt-2" value={status} onChange={e=>setStatus(e.target.value)}><option value="">全部状态</option><option value="submitted">尚未查看</option><option value="viewed">已查看，未回复</option><option value="downloaded">已下载，未回复</option><option value="replied">已回复</option></select></label><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);}}/><label className="text-sm">证据状态筛选<select className="field mt-2" value={verdict} onChange={e=>setVerdict(e.target.value)}><option value="">全部证据状态</option><option value="supported">有证据或部分支持</option><option value="claimed_only">仅简历自述</option><option value="gap">缺少材料</option><option value="unsupported">暂不可评</option></select></label><div className="flex flex-wrap gap-3 sm:col-span-2 lg:col-span-4"><button className="btn" disabled={busy}>筛选全部授权投递</button><button className="btn-secondary" type="button" disabled={busy} onClick={clearFilters}>清除筛选</button><p className="self-center text-xs text-slate-600">关键词、状态与同一条要求的证据条件共同筛选；总数包含所有页。</p></div></form>
     {mixedBasis&&<p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">投递报告的岗位要求、权重或规则版本不同，当前按投递时间排列，不按分数排名。请打开每份报告核对其原始要求；表格行名仅作定位，格子中的说明来自各自快照。</p>}
-    {!items.length&&!busy&&!error&&<p className="panel">暂无已授权投递，请由学生从该岗位的完整报告中确认投递。平台不会从学生库导出未经授权的简历。<Link className="mt-3 block text-indigo-700 underline" href="/demo/heatmap">先查看合成热力图交互示例 →</Link></p>}
+    {!items.length&&!busy&&!error&&<p className="panel">当前范围没有已授权投递，可以清除筛选或由学生从该岗位的完整报告中确认投递。平台不会从学生库导出未经授权的简历。<Link className="mt-3 block text-indigo-700 underline" href="/demo/heatmap">先查看合成热力图交互示例 →</Link></p>}
     {!!items.length&&filterView.empty&&<CandidateFilterNotice empty selectedName={selectedOutside?selected?.candidateName:undefined} onClear={clearFilters}/>}
-    {!!visible.length&&<section className="panel space-y-3"><h2 className="font-semibold">岗位要求 × 投递候选人</h2><p className="text-xs text-slate-500">绿色：{VERDICT.supported}；靛蓝：{VERDICT.partial}；虚线：{VERDICT.gap}或{VERDICT.claimed_only}；灰色：{VERDICT.unsupported}。颜色表示原报告证据状态，不按分数深浅排名。数值为原报告分数，{RULE_SCORE_CAP_NOTE}权重沿用原报告。点击姓名或格子查看固定报告。</p><div className="overflow-x-auto"><table className="w-full text-xs"><thead><tr><th className="p-3 text-left">岗位要求</th>{visible.map(i=><th id={`application-${i.id}`} key={i.id} className={`min-w-36 p-2 ${selected?.id===i.id ? "bg-indigo-50/70" : ""}`}><button type="button" className="candidate-select" aria-pressed={selected?.id===i.id} disabled={busy} onClick={()=>void open(i.id)}>{i.candidateName}{selected?.id===i.id&&<span className="mt-1 block text-xs">当前候选人</span>}</button><p className="mt-1 font-normal">{i.overallScore??"不可评"} · {STATUS[i.status]??i.status}</p></th>)}</tr></thead><tbody>{dimensions.map(d=><tr key={d.requirementId}><th className="min-w-40 p-3 text-left font-normal">{d.title} · 权重{d.weight}</th>{visible.map(i=>{const value=i.dimensions.find(v=>v.requirementId===d.requirementId);return <td key={i.id} className={`p-1 ${selected?.id===i.id ? "bg-indigo-50/70" : ""}`}><button type="button" disabled={busy} title={value ? value.title + " · 权重" + value.weight : "本报告没有这条要求"} className={`w-full rounded-lg border p-3 ${cellClass(value?.verdict??"unsupported",value?.score??null)}`} onClick={()=>void open(i.id,d.requirementId)}>{value?.score??"—"}<span className="mt-1 block">{VERDICT[value?.verdict??"unsupported"]??value?.verdict}</span>{value?.evidenceLevel!=null&&<span className="mt-1 block">实践证据 {evidenceLevelName(value.evidenceLevel)}</span>}</button></td>;})}</tr>)}</tbody></table></div></section>}
-    {selected?.report&&<section className="panel space-y-4">{selectedOutside&&!!visible.length&&<CandidateFilterNotice empty={false} selectedName={selected.candidateName} onClear={clearFilters}/>}<h2 className="text-xl font-semibold">{selected.candidateName} · 投递时固定报告</h2><p className="text-xs leading-5 text-slate-500">岗位：{selected.report.jobTitle || selected.jobTitle} · 报告生成于 {new Date(selected.report.createdAt).toLocaleString("zh-CN")} · 后续新版不会改写本次投递</p><p className="text-sm leading-6">{reportSummaryText(selected.report.summary)}</p><p className="text-xs text-slate-500">报告模式：{reportModeLabel(selected.report)}；查看与下载不等于通过面试。</p><button type="button" className="btn" disabled={busy} onClick={()=>void download()}>下载本次授权简历</button>
+    {!!visible.length&&<section className="panel space-y-3"><h2 className="font-semibold">岗位要求 × 投递候选人</h2><p className="text-xs leading-5 text-slate-600">可勾选本页2–4位候选人并排核对；对照仅使用各自已授权的固定报告。状态色不代表录用顺序。{RULE_SCORE_CAP_NOTE}</p><div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary" disabled={compareIds.length<2||compareIds.length>4} aria-pressed={compareMode} onClick={()=>setCompareMode(!compareMode)}>{compareMode?"返回本页全部候选人":`并排核对 ${compareIds.length} 位`}</button><span className="text-xs text-slate-600">已选 {compareIds.length}/4 位</span>{!!compareIds.length&&<button type="button" className="text-sm text-indigo-700 underline" onClick={()=>{setCompareIds([]);setCompareMode(false);}}>清除对照选择</button>}</div>{matrixItems.length>1&&<p className="text-xs text-indigo-700 sm:hidden">表格可左右滑动查看各位候选人。</p>}<div className="max-h-[60vh] overflow-auto rounded-lg border border-slate-200" role="region" aria-label="可滚动的授权候选人对照表" tabIndex={0}><table className="w-full border-separate border-spacing-0 text-xs"><thead className="sticky top-0 z-20 bg-white"><tr><th className="sticky left-0 z-30 min-w-40 bg-white p-3 text-left">岗位要求</th>{matrixItems.map(i=><th id={`application-${i.id}`} key={i.id} className={`min-w-36 p-2 ${selected?.id===i.id ? "bg-indigo-50" : "bg-white"}`}><button type="button" className="candidate-select" aria-pressed={selected?.id===i.id} disabled={busy} onClick={()=>void open(i.id)}>{i.candidateName}{selected?.id===i.id&&<span className="mt-1 block text-xs">当前候选人</span>}</button><p className="mt-1 font-normal">{i.overallScore??"不可评"} · {STATUS[i.status]??i.status}</p><label className="mt-2 flex items-center justify-center gap-1 font-normal"><input type="checkbox" checked={compareIds.includes(i.id)} disabled={!compareIds.includes(i.id)&&compareIds.length>=4} onChange={()=>{setCompareMode(false);setCompareIds(previous=>toggleComparisonCandidate(previous,i.id));}}/>加入对照</label></th>)}</tr></thead><tbody>{dimensions.map(d=><tr key={d.requirementId}><th className="sticky left-0 z-10 min-w-40 border-t border-slate-100 bg-white p-3 text-left font-normal">{d.title} · 权重{d.weight}</th>{matrixItems.map(i=>{const value=i.dimensions.find(v=>v.requirementId===d.requirementId);return <td key={i.id} className={`border-t border-slate-100 p-1 ${selected?.id===i.id ? "bg-indigo-50/70" : ""}`}><button type="button" disabled={busy} title={value ? value.title + " · 权重" + value.weight : "本报告没有这条要求"} className={`w-full rounded-lg border p-3 ${cellClass(value?.verdict??"unsupported",value?.score??null)}`} onClick={()=>void open(i.id,d.requirementId)}>{value?.score??"—"}<span className="mt-1 block">{VERDICT[value?.verdict??"unsupported"]??value?.verdict}</span>{value?.evidenceLevel!=null&&<span className="mt-1 block">实践证据 {evidenceLevelName(value.evidenceLevel)}</span>}</button></td>;})}</tr>)}</tbody></table></div></section>}
+    {selected?.report&&radarRequirement&&<SelectedRequirementEvidence application={selected} requirementId={radarRequirement}/>}
+    {selected?.report&&<section id="selected-application-report" className="panel space-y-4">{selectedOutside&&<CandidateFilterNotice empty={false} selectedName={selected.candidateName} onClear={clearFilters}/>}<h2 className="text-xl font-semibold">{selected.candidateName} · 投递时固定报告</h2><p className="text-xs leading-5 text-slate-500">岗位：{selected.report.jobTitle || selected.jobTitle} · 报告生成于 {new Date(selected.report.createdAt).toLocaleString("zh-CN")} · 后续新版不会改写本次投递</p><p className="text-sm leading-6">{reportSummaryText(selected.report.summary)}</p><p className="text-xs text-slate-500">报告模式：{reportModeLabel(selected.report)}；查看与下载不等于通过面试。</p><button type="button" className="btn" disabled={busy} onClick={()=>void download()}>下载本次授权简历</button>
       <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarRequirement} materials={selected.report.materials}/>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">AI核验建议与沟通问题（按需查看）</summary><div className="mt-4"><ApplicationVerification key={`${selected.id}:${selected.report.id}`} applicationId={selected.id} report={selected.report} onUnavailable={verificationUnavailable} onUseQuestion={selected.status!=="replied"&&!busy ? useVerificationQuestion : undefined}/></div></details>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><p className="mt-2 text-xs text-slate-500">数值为材料支持度。{RULE_SCORE_CAP_NOTE}历史投递按原报告数值显示，不限制到 65。</p><ul className="mt-4 space-y-3">{selected.report.items.map(item=><li key={item.requirementId} className="rounded-lg border border-slate-200 p-3 text-sm"><strong>{item.requirementTitle||item.skill}</strong><p>{VERDICT[item.verdict]??item.verdict} · 材料支持度 {item.finalScore??"不可评"}</p><p>实践证据：{item.evidenceLevelLabel ?? (item.evidenceLevel!=null ? evidenceLevelName(item.evidenceLevel) : "待评估")} · {item.evidenceLevelSource==="ai_preliminary" ? "AI 初评，待独立核验" : "规则或复核结果"}</p><p className="break-words">{item.evidenceLevelReason}</p><p className="mt-2 break-words">{item.aiExplanation||item.explanation}</p>{item.aiInformationGap&&<p className="mt-2 text-amber-800">待核验：{item.aiInformationGap}</p>}<details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((e,index)=><div key={index} className="mt-2 text-xs"><p className="break-all">{e.citationId??"引用"} · <SourceIdentity source={e} materials={selected.report?.materials ?? []} /> · 第{e.lineStart}—{e.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{e.snippet}</pre><SourceIdentityDetails source={e} /></div>)}</details></li>)}</ul></details>
@@ -139,6 +151,29 @@ function Workspace({jobId}:{jobId:string}){
   </div>;
 }
 
+type RequirementOption = { requirementId: string; title: string; skill: string };
+export function RequirementFocusSelect({ dimensions, value, selectedLabel, onChange }: {
+  dimensions: RequirementOption[]; value: string; selectedLabel: string;
+  onChange: (id: string, label: string) => void;
+}) {
+  // A zero-result filter cannot discard its selected option. Its label was
+  // captured from an already authorized row; no broader metadata is fetched.
+  const selectedMissing = !!value && !dimensions.some(item => item.requirementId === value);
+  return <label className="text-sm">聚焦岗位要求<select className="field mt-2" value={value} onChange={event => onChange(event.target.value, event.target.selectedOptions[0]?.textContent ?? "")}><option value="">全部要求</option>{selectedMissing && <option value={value}>{selectedLabel || "已选要求（当前结果未包含）"}</option>}{dimensions.map(item => <option key={item.requirementId} value={item.requirementId}>{item.skill || item.title}</option>)}</select></label>;
+}
+
+export function toggleComparisonCandidate(ids: string[], id: string): string[] {
+  if (ids.includes(id)) return ids.filter(value => value !== id);
+  return ids.length < 4 ? [...ids, id] : ids;
+}
+
+export function SelectedRequirementEvidence({ application, requirementId }: { application: ApplicationView; requirementId: string }) {
+  const report = application.report;
+  const item = report?.items.find(value => value.requirementId === requirementId);
+  if (!report) return null;
+  return <section className="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 className="font-semibold">{application.candidateName} · {item?.requirementTitle || "该报告未包含这条要求"}</h2>{item ? <><p className="text-sm">{VERDICT[item.verdict] ?? item.verdict} · {item.aiExplanation || item.explanation}</p>{item.aiInformationGap && <p className="text-sm text-slate-700">待核对：{item.aiInformationGap}</p>}{item.evidenceList.slice(0, 2).map((source, index) => <div key={`${source.citationId}-${index}`} className="rounded-lg bg-slate-50 p-3 text-xs"><p><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId || "规则引用"}</p><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}{!item.evidenceList.length && <p className="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p>}</> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}<a className="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>;
+}
+
 // 回复失败（请求失败或响应丢失）后的唯一编辑规则：正文可继续修改，任何编辑都撤销人工发送确认，
 // 使已勾选的确认不会被带进下一次核对。正常编辑与失败草稿共用，避免两处行为漂移。
 export function applyReplyDraftEdit(text:string,edit:(text:string)=>void,confirm:(on:boolean)=>void){
@@ -155,8 +190,8 @@ export function replySendOutcome(sent:boolean,generationUnchanged:boolean):Reply
 export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolean;selectedName?:string;onClear:()=>void}){
   if(!empty&&!selectedName)return null;
   const text=empty
-    ? `当前页没有符合关键词、岗位要求和证据状态组合的候选人。筛选只作用于当前页及通知补入的候选人。${selectedName?` 当前打开的 ${selectedName} 不在筛选结果中；报告与未发送草稿仍保留。`:""}`
-    : `当前打开的 ${selectedName} 不在筛选结果中。筛选只影响上方候选列表，报告与未发送草稿不会被清空。`;
+    ? `本岗位没有符合关键词、状态、岗位要求和证据状态组合的候选人。${selectedName?` 当前打开的 ${selectedName} 不在筛选结果中；报告与未发送草稿仍保留。`:""}`
+    : `当前打开的 ${selectedName} 不在本页筛选结果中。以下保留先前选中的固定报告与未发送草稿；回复仍指向 ${selectedName} 对应的投递，不会因筛选改变收件人。`;
   return <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900"><p>{text}</p><button type="button" className="mt-2 text-indigo-700 underline" onClick={onClear}>清除全部筛选</button></div>;
 }
 // 会话失败清空列表与旧报告后，草稿只保留在本页组件状态：可编辑、可复制、仍限2000字；

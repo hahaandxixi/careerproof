@@ -2,14 +2,18 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { errorMessage, type UserRole } from "@/lib/api/client";
+import { api, errorMessage, type UserRole } from "@/lib/api/client";
 
 type PublicRole = Exclude<UserRole, "admin">;
 
+import { authEntry, checkedReturnPath, safeReturnPath } from "@/lib/auth-return";
+
 export default function RegisterPage() {
   const router = useRouter();
+  const [returnTo, setReturnTo] = useState<string | null>(null);
+  useEffect(() => { setReturnTo(safeReturnPath(new URLSearchParams(window.location.search).get("next"))); }, []);
   const { register } = useAuth();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +42,7 @@ export default function RegisterPage() {
         password,
         role,
       });
-      router.push(user.role === "student" ? "/portfolio" : "/jobs");
+      router.replace(await checkedReturnPath(returnTo, user.role, api));
       router.refresh();
     } catch (reason) {
       setError(errorMessage(reason));
@@ -51,10 +55,11 @@ export default function RegisterPage() {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6">
           <p className="text-sm font-medium text-indigo-600">创建账号</p>
-          <h1 className="mt-1 text-2xl font-bold text-slate-900">加入职证 CareerProof</h1>
+          <h1 className="page-title mt-1">加入职证 CareerProof</h1>
           <p className="mt-2 text-sm text-slate-500">学生账号可以上传简历与项目，企业账号用于发布岗位。</p>
         </div>
 
+        {returnTo && <p className="mb-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">登录后返回刚才的页面；仅继续你有权访问的内容。</p>}
         <form onSubmit={onSubmit} className="space-y-4">
           <fieldset>
             <legend className="text-sm font-medium text-slate-700">账号类型</legend>
@@ -148,7 +153,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn w-full"
           >
             {submitting ? "注册中…" : "注册并登录"}
           </button>
@@ -156,7 +161,7 @@ export default function RegisterPage() {
 
         <p className="mt-5 text-center text-sm text-slate-500">
           已有账号？
-          <Link href="/login" className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
+          <Link href={authEntry("/login", returnTo)} className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
             返回登录
           </Link>
         </p>

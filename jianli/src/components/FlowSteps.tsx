@@ -5,7 +5,8 @@ export default function FlowSteps({ steps, currentKey }: {
   steps: readonly { key: FlowStepKey; label: string; href: string | null }[];
   currentKey: FlowStepKey;
 }) {
-  return <div className="mb-6">
+  return <div className="flow-guide mb-5">
+    <p className="mb-1 text-xs font-medium text-indigo-800 sm:hidden">当前位置：{steps.find(step => step.key === currentKey)?.label}</p>
     <nav aria-label="学生操作指南" className="student-flow">
       <ol>{steps.map((step, index) => <li key={step.key} aria-current={step.key === currentKey ? "step" : undefined}>
         {index > 0 && <span className="flow-arrow" aria-hidden="true">→</span>}
@@ -16,6 +17,6 @@ export default function FlowSteps({ steps, currentKey }: {
         </span>}
       </li>)}</ol>
     </nav>
-    <p className="mt-1 text-xs leading-5 text-slate-500 sm:hidden">左右滑动查看全部 {steps.length} 步。</p>
+    <p className="mt-1 text-xs leading-5 text-slate-500 sm:hidden">可往返操作 · 左右滑动查看全部 {steps.length} 步。</p>
   </div>;
 }

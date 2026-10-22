@@ -28,6 +28,18 @@ body {
 }
 
 @layer components {
+  .work-row { @apply block rounded-lg py-4 outline-offset-4 hover:bg-indigo-50 focus-visible:bg-indigo-50; }
+  .page-title { @apply text-2xl font-bold leading-tight tracking-tight text-slate-950 sm:text-3xl; }
+  .section-title { @apply text-lg font-semibold leading-7 text-slate-900; }
+  .surface-muted { @apply rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600; }
+  .site-header-inner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 68px; }
+  .site-primary-nav { display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 0; }
+  .site-primary-nav > a { flex-shrink: 0; }
+  .site-account > details > summary { color: #e2e8f0; border-color: #64748b; background: rgb(255 255 255 / 4%); }
+  .site-account > details > summary:hover { background: rgb(255 255 255 / 10%); }
+  .site-account :focus-visible { outline-color: #a5b4fc; }
+  .site-account > details nav :focus-visible { outline-color: #4f46e5; }
+
   .site-header { color: #e2e8f0; border-color: #334155; background: linear-gradient(110deg, #1e293b 0%, #252642 100%); }
   .site-header .site-brand { color: #c7d2fe; }
   .site-primary-nav > a { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 10px; border-radius: 8px; color: #e2e8f0; }
@@ -80,3 +92,22 @@ body {
   /* Reduced motion: the stage dot stays visible but never pulses. */
   .task-stage-dot { animation: none; }
 }
+
+@media (max-width: 1023px) {
+  .site-header-inner { grid-template-columns: minmax(0, 1fr) auto; gap: 0 8px; padding-top: 6px; }
+  .site-account { grid-column: 2; grid-row: 1; }
+  .site-primary-nav { grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+  .site-primary-nav > a { min-height: 40px; padding: 4px 10px; }
+}
+@media (max-width: 639px) {
+  .site-brand { font-size: 14px; }
+  .site-primary-nav > a { padding-inline: 8px; font-size: 12px; }
+  .flow-guide .student-flow { padding-bottom: 4px; }
+  .flow-guide .student-flow ol, .flow-guide .student-flow li { gap: 10px; }
+  .flow-guide .flow-step { min-height: 36px; font-size: 12px; }
+  .flow-guide .flow-step small { display: none; }
+  .flow-guide .flow-number { width: 22px; height: 22px; }
+}
+
+/* Keep deep links below the two-row mobile header, including utility-styled anchors. */
+main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], main [id^="growth-"], #application-submit, #report-materials, #report-comparison { scroll-margin-top: 120px; }

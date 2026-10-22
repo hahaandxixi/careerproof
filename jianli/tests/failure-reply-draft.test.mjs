@@ -131,7 +131,8 @@ test("筛选空结果或已打开报告在筛选外时，提示原因、保留�
   const emptyHtml = renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
     empty: true, selectedName: "合成候选人乙", onClear: () => { cleared += 1; },
   }));
-  assert.match(emptyHtml, /当前页没有符合关键词、岗位要求和证据状态组合的候选人/);
+  assert.match(emptyHtml, /本岗位没有符合关键词、状态、岗位要求和证据状态组合的候选人/);
+  assert.doesNotMatch(emptyHtml, /只作用于当前页/);
   assert.match(emptyHtml, /合成候选人乙 不在筛选结果中/);
   assert.match(emptyHtml, /报告与未发送草稿仍保留/);
   const emptyButton = board.CandidateFilterNotice({
@@ -151,7 +152,10 @@ test("筛选空结果或已打开报告在筛选外时，提示原因、保留�
   const outsideHtml = renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
     empty: false, selectedName: "合成候选人乙", onClear: () => {},
   }));
-  assert.match(outsideHtml, /当前打开的 合成候选人乙 不在筛选结果中/);
+  assert.match(outsideHtml, /当前打开的 合成候选人乙 不在本页筛选结果中/);
+  assert.match(outsideHtml, /以下保留先前选中的固定报告与未发送草稿/);
+  assert.match(outsideHtml, /回复仍指向 合成候选人乙 对应的投递/);
+  assert.match(outsideHtml, /不会因筛选改变收件人/);
   assert.equal(renderToStaticMarkup(React.createElement(board.CandidateFilterNotice, {
     empty: false, onClear: () => {},
   })), "");

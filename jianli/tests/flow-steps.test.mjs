@@ -62,7 +62,9 @@ test("navigation retains all five ordered steps and only one current location", 
   assert.equal((html.match(/aria-current="step"/g) || []).length, 1);
   assert.ok(html.includes("当前位置"));
   let previous = -1;
-  for (const step of FLOW_STEPS) { const position = html.indexOf(step.label); assert.ok(position > previous); previous = position; }
+  const orderedSteps = html.match(/<ol>([\s\S]*?)<\/ol>/)?.[1];
+  assert.ok(orderedSteps, "the five-step ordered list exists");
+  for (const step of FLOW_STEPS) { const position = orderedSteps.indexOf(step.label); assert.ok(position > previous); previous = position; }
   assert.ok(!/已完成|✓|aria-disabled|emerald|amber|rose|sky/.test(html));
   assert.ok(!html.includes('href="#"'));
   assert.ok(!html.includes('href="/applications"'));

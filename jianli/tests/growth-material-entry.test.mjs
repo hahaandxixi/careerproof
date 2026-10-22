@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import * as workflow from "../src/lib/growth-workflow.ts";
+import * as materialUpload from "../src/lib/material-upload.ts";
 
 const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
@@ -25,11 +26,13 @@ function renderTask(status, extra = {}) {
   let stateIndex = 0;
   const picker = label => ({ __esModule: true, default: () => jsx("div", { children: label }) });
   const modules = {
-    react: { useEffect() {}, useRef: current => ({ current }), useState: value => [stateIndex++ === 0 ? task : typeof value === "function" ? value() : value, () => {}] },
+    react: { Suspense: props => props.children, useEffect() {}, useRef: current => ({ current }), useState: value => [stateIndex++ === 0 ? task : typeof value === "function" ? value() : value, () => {}] },
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: props => jsx("a", props) },
     "@/lib/api/client": { api: new Proxy({}, { get() { return () => { throw Error("unexpected API call"); }; } }), errorMessage: String },
     "@/lib/growth-workflow": workflow,
+    "@/lib/material-upload": materialUpload,
+    "./GrowthUploadReturn": { GrowthMaterialReview: () => jsx("div", { children: "resume-picker project-picker" }) },
     "./AuthProvider": { useAuth: () => ({ user: { id: "owner", role: "student" } }) },
     "./ResumeVersionPicker": picker("resume-picker"),
     "./ProjectVersionPicker": picker("project-picker"),

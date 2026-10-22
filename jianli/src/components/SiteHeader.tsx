@@ -6,14 +6,18 @@ import { useState } from "react";
 import { useAuth } from "./AuthProvider";
 import NotificationLink from "./NotificationLink";
 import StudentAccountMenu from "./StudentAccountMenu";
+import LoginLink from "./LoginLink";
 import { errorMessage } from "@/lib/api/client";
 
 export default function SiteHeader() {
   const { user, status, logout, reload } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const current = (href: string) => pathname === href || (href === "/reports" && pathname.startsWith("/reports/"))
-    || (href === "/jobs" && /^\/jobs\/(?!new$|mine$|manage$)[^/]+$/.test(pathname)) ? "page" as const : undefined;
+  const current = (href: string) => pathname === href ||
+    (href === "/portfolio" && pathname.startsWith("/materials/")) ||
+    (href === "/jobs/mine" && /^\/jobs\/[^/]+\/applications$/.test(pathname)) ||
+    (["/portfolio", "/reports", "/growth", "/applications"].includes(href) && pathname.startsWith(`${href}/`)) ||
+    (href === "/jobs" && (pathname === "/recommendations" || /^\/jobs\/(?!new$|mine$|manage$)[^/]+$/.test(pathname))) ? "page" as const : undefined;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function handleLogout() {
@@ -23,22 +27,33 @@ export default function SiteHeader() {
     finally { setBusy(false); }
   }
   return <header className="site-header sticky top-0 z-10 border-b">
-    <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-      <Link href="/" className="site-brand font-semibold">职证 CareerProof</Link>
-      <nav aria-label="主导航" className="site-primary-nav flex flex-wrap items-center gap-3 text-sm">
-        <Link href="/jobs" aria-current={current("/jobs")}>岗位发现</Link>
-        {user?.role === "student" && <Link href="/recommendations" aria-current={current("/recommendations")}>职业推荐</Link>}
-        {(user?.role === "student" || user?.role === "admin") && <Link href="/reports" aria-current={current("/reports")}>我的匹配报告</Link>}
-        {(user?.role === "enterprise" || user?.role === "admin") && <>
-          <Link href="/jobs/mine" aria-current={current("/jobs/mine")}>岗位管理</Link><Link href="/jobs/new" aria-current={current("/jobs/new")}>发布岗位</Link>
+    <div className="site-header-inner mx-auto max-w-6xl px-4">
+      <Link href="/" className="site-brand shrink-0 py-2 font-semibold">职证 CareerProof</Link>
+      <nav aria-label="主导航" className="site-primary-nav text-sm">
+        {user?.role === "student" ? <>
+          <Link href="/portfolio" aria-current={current("/portfolio")}>我的材料</Link>
+          <Link href="/jobs" aria-current={current("/jobs")}>发现岗位</Link>
+          <Link href="/reports" aria-current={current("/reports")}>我的报告</Link>
+          <Link href="/growth" aria-current={current("/growth")}>补证任务</Link>
+          <Link href="/applications" aria-current={current("/applications")}>我的投递</Link>
+        </> : <>
+          <Link href="/jobs" aria-current={current("/jobs")}>岗位发现</Link>
+          {(user?.role === "enterprise" || user?.role === "admin") && <>
+            <Link href="/jobs/mine" aria-current={current("/jobs/mine")}>岗位管理</Link>
+            <Link href="/jobs/new" aria-current={current("/jobs/new")}>发布岗位</Link>
+          </>}
+          {user?.role === "admin" && <Link href="/reports" aria-current={current("/reports")}>匹配报告</Link>}
+          {!user && <Link href="/demo/heatmap">交互示例</Link>}
         </>}
-        {user?.role !== "student" && <NotificationLink />}
-        {status === "loading" ? <span className="text-slate-300">确认会话中…</span> :
-          status === "error" ? <button onClick={() => void reload()} className="text-amber-200">服务连接异常 · 重试</button> :
-          user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
-          user ? <><span className="max-w-28 truncate text-slate-300">{user.displayName}</span><button disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :
-          <><Link href="/login" aria-current={current("/login")}>登录</Link><Link href="/register" aria-current={current("/register")}>注册</Link></>}
       </nav>
+      <div className="site-account flex min-w-0 items-center justify-end gap-3 text-sm">
+        {user?.role !== "student" && <NotificationLink />}
+        {status === "loading" ? <span className="text-xs text-slate-300">确认会话中…</span> :
+          status === "error" ? <button onClick={() => void reload()} className="min-h-11 text-amber-200">连接异常 · 重试</button> :
+          user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
+          user ? <><span className="max-w-28 truncate text-slate-300" title={user.displayName}>{user.displayName}</span><button className="min-h-11" disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :
+          <><LoginLink className="inline-flex min-h-11 items-center">登录</LoginLink><LoginLink register className="inline-flex min-h-11 items-center rounded-lg bg-indigo-600 px-3 text-white hover:bg-indigo-500">注册</LoginLink></>}
+      </div>
     </div>
     {error && <p role="alert" className="mx-auto max-w-6xl px-4 pb-3 text-sm text-rose-200">{error}</p>}
   </header>;

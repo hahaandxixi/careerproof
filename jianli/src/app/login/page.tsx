@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { errorMessage } from "@/lib/api/client";
+import { api, errorMessage } from "@/lib/api/client";
+
+import { authEntry, checkedReturnPath, safeReturnPath } from "@/lib/auth-return";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [returnTo, setReturnTo] = useState<string | null>(null);
+  useEffect(() => { setReturnTo(safeReturnPath(new URLSearchParams(window.location.search).get("next"))); }, []);
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +24,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       const user = await login(email.trim(), password);
-      router.push(user.role === "student" ? "/portfolio" : "/jobs");
+      router.replace(await checkedReturnPath(returnTo, user.role, api));
       router.refresh();
     } catch (reason) {
       setError(errorMessage(reason));
@@ -33,11 +37,12 @@ export default function LoginPage() {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6">
           <p className="text-sm font-medium text-indigo-600">欢迎回来</p>
-          <h1 className="mt-1 text-2xl font-bold text-slate-900">登录职证 CareerProof</h1>
+          <h1 className="page-title mt-1">登录职证 CareerProof</h1>
           <p className="mt-2 text-sm text-slate-500">继续整理材料，查看属于你的匹配报告。</p>
         </div>
 
         <Link href="/demo" className="mb-5 block rounded-lg bg-indigo-50 p-3 text-sm text-indigo-700">首次测试？查看演示账号、样例下载和操作指南 →</Link>
+        {returnTo && <p className="mb-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">登录后返回刚才的页面；仅继续你有权访问的内容。</p>}
         <form onSubmit={onSubmit} className="space-y-4">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">邮箱</span>
@@ -74,7 +79,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn w-full"
           >
             {submitting ? "登录中…" : "登录"}
           </button>
@@ -82,7 +87,7 @@ export default function LoginPage() {
 
         <p className="mt-5 text-center text-sm text-slate-500">
           还没有账号？
-          <Link href="/register" className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
+          <Link href={authEntry("/register", returnTo)} className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
             立即注册
           </Link>
         </p>

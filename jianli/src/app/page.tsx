@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HomeWorkspace from "@/components/HomeWorkspace";
 import { HEATMAP_DEMO, DEMO_LABELS, demoCellClass } from "@/lib/heatmap-demo";
 
 const heroActions = "btn min-h-[44px] flex-1 px-5 sm:flex-none";
@@ -13,7 +14,7 @@ const steps: [string, string][] = [
 ];
 
 export default function HomePage() {
-  return <div className="space-y-8">
+  return <HomeWorkspace><div className="space-y-8">
     <section className="panel overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-white py-8 sm:p-10">
       <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
         <div>
@@ -83,5 +84,5 @@ export default function HomePage() {
     <aside className="rounded-xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
       AI 负责证据解释与逐项初评，本地规则负责检索边界、引用校验和评级上限；模型断链、限流、超时或输出未通过校验时会保留本地兜底报告。材料有证据支持不等于个人能力认证，未找到证据也不等于没有能力。
     </aside>
-  </div>;
+  </div></HomeWorkspace>;
 }

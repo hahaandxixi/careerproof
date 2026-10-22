@@ -55,15 +55,15 @@ export default function DemoPage() {
     <section className="rounded-2xl border border-slate-200 bg-white p-6">
       <h2 className="text-xl font-bold">3. 上传并选择同一套版本</h2>
       <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-600">
-        <li>从顶部“学生账户”打开“个人材料”，照卡片填写简历名称和项目名称，分别上传同编号 TXT、ZIP。</li>
+        <li>从顶部“我的材料”打开材料工作台，照卡片填写简历名称和项目名称，分别上传同编号 TXT、ZIP。</li>
         <li>项目说明填写“合成静态测试作品，未执行，不代表本人贡献。”等待两份材料均解析完成。</li>
         <li>在岗位发现打开对应岗位；简历和项目都选择同编号、同版本的文件，例如 CP08 的简历只配 CP08 的数据库项目。</li>
         <li>先体验本地规则报告：不勾选外部 AI 同意，直接点击“生成我的匹配报告”，材料不会外发。需要 AI 解释时，再阅读发送范围和费用说明，明确同意后生成；职业规划和视觉观察另按各自提示确认。</li>
         <li>按需展开引用核对源码或文档，记录缺口；本人核对备注可选，不是投递前置条件。无需追求固定分数，本人采纳不是独立认证。</li>
-        <li>决定投递时，在报告页阅读分享范围、勾选同意并确认投递，再从账户菜单查看“个人投递”和“通知”。生成报告不会自动投递。</li>
+        <li>决定投递时，在报告页阅读分享范围、勾选同意并确认投递，再从顶部“我的投递”查看进度，从账户菜单查看“通知”。生成报告不会自动投递。</li>
       </ol>
       <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">代码和方案不等于执行成功；材料缺失不代表没有能力。AI 不可用时自动生成本地兜底报告，并明确显示降级。</p>
-      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入个人材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
+      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入我的材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
     </section>
     <details className="rounded-2xl border border-slate-200 bg-white p-6">
       <summary className="cursor-pointer font-semibold">查看规则覆盖范围与源码引用演示</summary>

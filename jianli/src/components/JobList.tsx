@@ -19,7 +19,7 @@ export default function JobList({ mine = false, initialQuery = "" }: { mine?: bo
   useEffect(() => {
     let current = true;
     setBusy(true); setError("");
-    api.listJobs({ ...filter, page, pageSize: 12 }, mine).then(value => { if (current) setData(value); })
+    api.listJobs({ ...filter, page, pageSize: 12 }, mine).then(value => { if (current) { setData(value); if (value.page !== page) setPage(value.page); } })
       .catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setBusy(false); });
     return () => { current = false; };
@@ -32,7 +32,7 @@ export default function JobList({ mine = false, initialQuery = "" }: { mine?: bo
     finally { setChanging(""); }
   }
   return <div className="space-y-6">
-    <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-sm text-indigo-600">{mine ? "企业工作台" : "职业与岗位探索"}</p><h1 className="mt-1 text-3xl font-bold">{mine ? "我的岗位" : "岗位发现"}</h1></div>{mine && <Link className="btn" href="/jobs/new">发布新岗位</Link>}</div>
+    <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-sm text-indigo-600">{mine ? "企业工作台" : "职业与岗位探索"}</p><h1 className="mt-1 text-3xl font-bold">{mine ? "我的岗位" : "岗位发现"}</h1></div>{mine ? <Link className="btn" href="/jobs/new">发布新岗位</Link> : <Link className="btn-secondary" href="/recommendations">按材料推荐职业</Link>}</div>
     <form className="panel grid gap-3 sm:grid-cols-2 lg:grid-cols-5" onSubmit={event => { event.preventDefault(); setPage(1); setFilter({ ...draft }); }}>
       <label className="space-y-1 text-sm">关键词<input className="field" value={draft.q} maxLength={200} placeholder="岗位、企业或描述" onChange={e => setDraft({ ...draft, q: e.target.value })} /></label>
       <label className="space-y-1 text-sm">方向<select className="field" value={draft.category} onChange={e => setDraft({ ...draft, category: e.target.value })}><option value="">全部方向</option>{Object.entries(CATEGORY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
@@ -46,6 +46,7 @@ export default function JobList({ mine = false, initialQuery = "" }: { mine?: bo
     {!error && <div className="grid gap-4 md:grid-cols-2">{data?.items.map(job => <article key={job.id} className="panel">
       <div className="flex items-start justify-between gap-3"><div className="flex flex-wrap items-center gap-2"><Link className="text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{job.title}</Link>{job.isDemo && <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">体验样例 · 虚构企业</span>}</div><span className="text-xs text-slate-500">{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span></div>
       <p className="mt-1 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p><p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">{job.description || "暂无描述"}</p>
+      {mine && job.applicationCount != null && <Link className="mt-3 block text-sm text-indigo-700 underline" href={`/jobs/${job.id}/applications`}>已授权投递 {job.applicationCount} 份 · 待回复 {job.pendingApplicationCount ?? 0} 份 →</Link>}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2"><span className="rounded bg-indigo-50 px-2 py-1 text-xs text-indigo-700">{CATEGORY_LABELS[job.category] ?? job.category} · {job.requirementCount} 项要求</span><Link href={`/jobs/${job.id}`} className="text-sm text-indigo-600">查看岗位 →</Link></div>
       {mine && <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-3 text-sm"><span>{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status]}</span><Link className="text-indigo-600" href={`/jobs/${job.id}/edit`}>编辑</Link><button className="text-indigo-600 disabled:opacity-50" disabled={!!changing} onClick={() => void changeStatus(job)}>{changing === job.id ? "更新中…" : job.status === "published" ? "关闭岗位" : "发布岗位"}</button></div>}
     </article>)}</div>}

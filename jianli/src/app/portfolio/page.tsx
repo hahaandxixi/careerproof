@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import ArchivedMaterials from "@/components/ArchivedMaterials";
+import LoginLink from "@/components/LoginLink";
+import MaterialFileDropzone from "@/components/MaterialFileDropzone";
+import { latestMaterialVersions, materialFileError, materialFileSize, type UploadedMaterial } from "@/lib/material-upload";
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
@@ -32,6 +35,7 @@ interface UploadRecord {
   progress: number;
   currentStep: string;
   errorMessage?: string;
+  sizeBytes?: number | null;
 }
 
 const TERMINAL_STATUSES = new Set(["completed", "failed", "cancelled"]);
@@ -47,27 +51,24 @@ function statusText(status: string): string {
   return labels[status] ?? "历史处理状态待确认";
 }
 
-function UploadProgress({ item }: { item: UploadRecord }) {
+function UploadProgress({ item, latest = false, onUploadVersion }: { item: UploadRecord; latest?: boolean; onUploadVersion?: () => void }) {
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                item.kind === "resume"
-                  ? "bg-indigo-50 text-indigo-700"
-                  : "bg-emerald-50 text-emerald-700"
-              }`}
+              className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700"
             >
               {item.kind === "resume" ? "简历" : "项目"}
             </span>
-            <h3 className="font-semibold text-slate-800">{item.title}</h3>
+            <h3 className="min-w-0 break-words font-semibold text-slate-800">{item.title}</h3>{latest && <span className="text-xs text-slate-600">最新上传</span>}
           </div>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 break-words text-xs leading-6 text-slate-600">
             {item.filename} · 第 {item.versionNumber} 版 · {new Date(item.createdAt).toLocaleString("zh-CN")}
+            {item.sizeBytes != null && ` · ${materialFileSize(item.sizeBytes)}`}
             {item.kind === "project" && ` · ${item.materialRole === "reference" ? "第三方参考" : "个人作品"}`}
           </p>
         </div>
@@ -93,7 +94,8 @@ function UploadProgress({ item }: { item: UploadRecord }) {
       {!item.taskId && !complete && (
         <p className="mt-2 text-xs text-amber-700">历史版本未关联任务，无法恢复实时进度。</p>
       )}
-      <div className="mt-4 flex flex-wrap gap-4 text-sm text-indigo-600">
+      <div className="mt-4 flex flex-wrap gap-4 text-sm text-indigo-700">
+        {onUploadVersion && <button type="button" className="underline" onClick={onUploadVersion}>给这个项目上传新版本</button>}
         {complete && <Link href={`/materials/${item.kind}/${item.versionId}`}>预览解析内容</Link>}
         {item.taskId && <Link href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
         {complete && <Link href="/recommendations">获取职业推荐</Link>}
@@ -114,9 +116,7 @@ export default function PortfolioPage() {
       <div className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center">
         <h1 className="text-xl font-bold text-slate-900">请先登录</h1>
         <p className="mt-2 text-sm text-slate-500">登录学生账号后才能查看和上传自己的材料。</p>
-        <Link href="/login" className="mt-5 inline-flex rounded-lg bg-indigo-600 px-5 py-2.5 text-sm text-white">
-          前往登录
-        </Link>
+        <LoginLink className="btn mt-5 inline-flex">前往登录</LoginLink>
       </div>
     );
   }
@@ -148,6 +148,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const projectSubmitting = useRef(false);
   const [attemptReady, setAttemptReady] = useState(false);
   const historyRequest = useRef(0);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [recentUpload, setRecentUpload] = useState<UploadedMaterial | null>(null);
 
   const rememberAttempt = useCallback((next: ProjectAttempt | null) => {
     attemptRef.current = next;
@@ -162,6 +164,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     if (saved) {
       setProjectName(saved.name);
       setProjectDescription(saved.description);
+      setProjectRole(saved.materialRole);
     }
     setAttemptReady(true);
   }, [userId]);
@@ -199,6 +202,9 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     }))),
   ].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [resumes, projects]);
 
+  const newestUploads = useMemo(() => latestMaterialVersions(uploads), [uploads]);
+  const historicalUploads = uploads.filter(item => !newestUploads.includes(item));
+
   const activeTaskIds = useMemo(
     () => uploads.filter((item) => item.taskId && !TERMINAL_STATUSES.has(item.status)).map((item) => item.taskId),
     [uploads]
@@ -227,18 +233,12 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       setResumeError("请选择简历文件");
       return;
     }
-    const extension = resumeFile.name.split(".").pop()?.toLowerCase();
-    if (!extension || !["pdf", "docx", "txt"].includes(extension)) {
-      setResumeError("简历仅支持 PDF、DOCX 或 TXT");
-      return;
-    }
-    if (resumeFile.size > 10 * 1024 * 1024) {
-      setResumeError("简历文件不得超过10MB");
-      return;
-    }
+    const invalid = materialFileError("resume", resumeFile);
+    if (invalid) { setResumeError(invalid); return; }
     setResumeBusy(true);
     try {
-      await api.uploadResume(resumeTitle.trim(), resumeFile);
+      const saved = await api.uploadResume(resumeTitle.trim(), resumeFile);
+      setRecentUpload({ kind: "resume", versionId: saved.versionId });
       setNotice("简历已保存，可以在下方查看处理状态。");
       await loadHistory();
       setResumeFile(null);
@@ -259,19 +259,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       setProjectError("请选择项目压缩包或作品文档");
       return;
     }
-    const extension = projectFile.name.split(".").pop()?.toLowerCase();
-    if (!extension || !["zip", "pdf", "docx", "txt"].includes(extension)) {
-      setProjectError("项目或作品支持 ZIP、PDF、DOCX、TXT");
-      return;
-    }
-    if (projectFile.size > 30 * 1024 * 1024) {
-      setProjectError("项目或作品文件不得超过30MB");
-      return;
-    }
-    if (extension !== "zip" && projectFile.size > 10 * 1024 * 1024) {
-      setProjectError("PDF、DOCX、TXT作品文档不得超过10MB");
-      return;
-    }
+    const invalid = materialFileError("project", projectFile);
+    if (invalid) { setProjectError(invalid); return; }
     if (!projectName.trim()) {
       setProjectError("请填写项目名称");
       return;
@@ -281,7 +270,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     try {
       const current = attemptRef.current ?? newProjectAttempt(projectName.trim(), projectDescription.trim(), null, projectRole);
       rememberAttempt(current);
-      await submitProjectAttempt(api, current, projectFile, rememberAttempt);
+      const saved = await submitProjectAttempt(api, current, projectFile, rememberAttempt);
+      setRecentUpload({ kind: "project", versionId: saved.versionId });
       rememberAttempt(null);
       setNotice("项目文件已保存，可以在下方查看处理状态。");
       setProjectName("");
@@ -303,6 +293,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
   function selectProject(project: ProjectView | null) {
     if (projectSubmitting.current) return;
+    setUploadOpen(true);
     rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, projectRole) : null);
     setProjectName(project?.name ?? "");
     setProjectDescription(project?.description ?? "");
@@ -314,24 +305,55 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-8">
-      <Suspense fallback={null}><GrowthUploadReturn /></Suspense>
+      <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <div>
         <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
-        <h1 className="mt-1 text-3xl font-bold text-slate-900">上传真实能力证据</h1>
+        <h1 className="page-title mt-1">我的材料工作台</h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-          简历由后端解析，扫描件和图片使用本地 OCR，项目压缩包会经过安全检查和静态扫描。系统不会执行你上传的代码。
+          先核对已保存材料，再按需要添加简历、项目或新版本。扫描件和图片由本地 OCR 识别，项目只做安全检查和静态扫描，不执行上传的代码。
         </p>
       </div>
 
       <Link href="/demo" className="block rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">没有测试材料？下载合成简历和项目 ZIP，按演示指南完成匹配 →</Link>
-      {notice && <p role="status" className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-800">{notice}</p>}
+      {notice && <p role="status" className="rounded-xl bg-indigo-50 p-3 text-sm text-indigo-800">{notice}</p>}
 
+      <section>
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <h2 className="section-title">已保存材料</h2>
+            <p className="mt-1 text-sm text-slate-500">默认显示每份材料的最新上传；历史版本保留，生成报告时仍需明确选择。</p>
+          </div>
+          <button type="button" onClick={() => void loadHistory()} className="text-sm text-indigo-600">刷新列表</button>
+        </div>
+        {historyError && (
+          <p role="alert" className="mb-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
+            材料列表暂时无法更新：{historyError}。请点击“刷新列表”重试。
+          </p>
+        )}
+        {!historyLoaded && !historyError && <p className="py-6 text-sm text-slate-500">正在加载已保存材料…</p>}
+        {projects.filter(project => !project.versions.length).map(project => <div key={project.id} className="surface-muted mb-3 flex flex-wrap items-center justify-between gap-3 p-4"><div><p className="break-words font-medium">{project.name}</p><p className="text-xs text-slate-600">项目已创建，尚未保存文件。</p></div><button type="button" className="btn-secondary" disabled={projectBusy} onClick={() => selectProject(project)}>继续上传</button></div>)}
+        {uploads.length > 0 && (
+          <div className="grid gap-3 md:grid-cols-2">
+            {newestUploads.map(item => <UploadProgress key={item.key} item={item} latest onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} />)}
+          </div>
+        )}
+        {historicalUploads.length > 0 && <details className="mt-4 rounded-xl border border-slate-200 bg-white"><summary className="cursor-pointer p-4 text-sm font-medium text-indigo-700">查看历史版本 · {historicalUploads.length} 项</summary><div className="grid gap-3 border-t border-slate-200 p-4 md:grid-cols-2">{historicalUploads.map(item => <UploadProgress key={item.key} item={item} />)}</div></details>}
+        {historyLoaded && !historyError && !uploads.length && !projects.length && (
+          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center text-sm text-slate-500">
+            还没有保存的材料。从下方上传一份简历或一个项目；两类材料可分别准备，不是强制闯关顺序。
+          </div>
+        )}
+      </section>
+      <details id="add-materials" open={uploadOpen || !!attempt || (historyLoaded && !uploads.length && !projects.length)} onToggle={event => setUploadOpen(event.currentTarget.open)} className="rounded-2xl border border-slate-200 bg-white">
+        <summary className="cursor-pointer p-5 text-base font-semibold text-indigo-700">{uploads.length || projects.length ? "添加材料或上传新版本" : "开始准备材料"}</summary>
+        <div className="border-t border-slate-200 p-4 sm:p-5">
+          <p className="mb-4 text-sm leading-6 text-slate-600">上传前可核对文件、大小、类型和目标。选择文件不会自动提交；解析完成也不会自动加入报告。</p>
       <div className="grid gap-6 lg:grid-cols-2">
         <form onSubmit={submitResume} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
-            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">步骤 1</span>
+            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">简历材料</span>
             <h2 className="mt-3 text-xl font-bold text-slate-900">上传简历</h2>
-            <p className="mt-1 text-sm text-slate-500">支持 PDF、DOCX、TXT、PNG、JPG、WEBP、BMP，最大10MB。OCR 结果需对照原图复核。</p>
+            <p className="mt-1 text-sm text-slate-500">支持 PDF、DOCX、TXT、PNG、JPG/JPEG、WEBP、BMP，最大10MB。OCR 结果需对照原图复核。</p>
           </div>
           <div className="space-y-4">
             <label className="block">
@@ -344,17 +366,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
               />
             </label>
-            <label className="block">
-              <span className="text-sm font-medium text-slate-700">选择文件</span>
-              <input
-                id="resume-file"
-                type="file"
-                accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.bmp,application/pdf,text/plain,image/png,image/jpeg,image/webp,image/bmp,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                required
-                onChange={(event) => setResumeFile(event.target.files?.[0] ?? null)}
-                className="mt-1 block w-full rounded-lg border border-dashed border-slate-300 px-3 py-6 text-sm text-slate-500 file:mr-3 file:rounded-md file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:border-indigo-300"
-              />
-            </label>
+            <MaterialFileDropzone id="resume-file" kind="resume" file={resumeFile} target={resumeTitle.trim() || "新简历"} disabled={resumeBusy} onChange={setResumeFile} onError={setResumeError} />
           </div>
           {resumeError && <p className="mt-3 text-sm text-rose-600">{resumeError}</p>}
           <button
@@ -368,7 +380,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
         <form onSubmit={submitProject} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">步骤 2</span>
+            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">项目材料</span>
             <h2 className="mt-3 text-xl font-bold text-slate-900">{attempt?.project ? "继续上传项目" : "上传项目"}</h2>
             <p className="mt-1 text-sm leading-6 text-slate-500">代码项目使用 ZIP（最大30MB），打包前删除 node_modules；作品支持 PDF、DOCX、TXT 和常见图片（最大10MB）。扫描件由本地 OCR 识别，结果需人工核对。</p>
           </div>
@@ -390,7 +402,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectName}
                 disabled={projectBusy || !!attempt}
                 onChange={(event) => setProjectName(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                 placeholder="如：校园二手交易平台"
               />
             </label>
@@ -402,22 +414,11 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectDescription}
                 disabled={projectBusy || !!attempt}
                 onChange={(event) => setProjectDescription(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
                 placeholder="你负责了什么，解决了什么问题"
               />
             </label>
-            <label className="block">
-              <span className="text-sm font-medium text-slate-700">项目压缩包或作品文档</span>
-              <input
-                id="project-file"
-                type="file"
-                accept=".zip,.pdf,.docx,.txt,.png,.jpg,.jpeg,.webp,.bmp,application/zip,application/pdf,text/plain,image/png,image/jpeg,image/webp,image/bmp,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                required
-                disabled={projectBusy}
-                onChange={(event) => setProjectFile(event.target.files?.[0] ?? null)}
-                className="mt-1 block w-full rounded-lg border border-dashed border-slate-300 px-3 py-4 text-sm text-slate-500 file:mr-3 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-emerald-700 hover:border-emerald-300"
-              />
-            </label>
+            <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={attempt?.project ? `${attempt.project.name} · 新版本` : projectName.trim() ? `${projectName.trim()} · 新项目` : "新项目（请先填写名称）"} disabled={projectBusy} onChange={setProjectFile} onError={setProjectError} />
             <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
               <legend className="px-1 font-medium text-slate-700">材料归属</legend>
               <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(attempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("portfolio")} /><span>个人作品：可用于实践证据初评，本人贡献仍需核验</span></label>
@@ -428,55 +429,16 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <button
             type="submit"
             disabled={projectBusy || !attemptReady}
-            className="mt-5 w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60"
+            className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
             {projectBusy ? "正在提交…" : attempt ? "继续上传（复用原项目）" : "创建项目并开始扫描"}
           </button>
         </form>
       </div>
 
-      <section>
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">我的材料</h2>
-            <p className="mt-1 text-sm text-slate-500">已保存的简历和项目版本，刷新或重新登录后仍可查看。</p>
-          </div>
-          <button type="button" onClick={() => void loadHistory()} className="text-sm text-indigo-600">刷新列表</button>
         </div>
-        {historyError && (
-          <p role="alert" className="mb-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
-            材料列表暂时无法更新：{historyError}。请点击“刷新列表”重试。
-          </p>
-        )}
-        {!historyLoaded && !historyError && <p className="py-6 text-sm text-slate-500">正在加载已保存材料…</p>}
-        {projects.length > 0 && (
-          <div className="mb-4 space-y-2">
-            {projects.map((project) => (
-              <div key={project.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4">
-                <div>
-                  <p className="font-medium text-slate-800">{project.name}</p>
-                  <p className="text-xs text-slate-500">{project.versions.length ? `${project.versions.length} 个版本` : "项目已创建，尚未上传文件"}</p>
-                </div>
-                <button type="button" disabled={projectBusy} onClick={() => selectProject(project)} className="text-sm text-indigo-600 disabled:opacity-50">
-                  {project.versions.length ? "上传新版本" : "继续上传"}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {uploads.length > 0 && (
-          <div className="grid gap-3 md:grid-cols-2">
-            {uploads.map((item) => (
-              <UploadProgress key={item.key} item={item} />
-            ))}
-          </div>
-        )}
-        {historyLoaded && !historyError && !uploads.length && !projects.length && (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center text-sm text-slate-500">
-            还没有保存的材料。先提交一份简历或一个项目。
-          </div>
-        )}
-      </section>
+      </details>
+
       <ArchivedMaterials onRestore={()=>void loadHistory()} />
     </div>
   );
