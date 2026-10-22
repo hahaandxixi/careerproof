@@ -140,3 +140,26 @@ def test_other_skills_preserve_source_order_and_citation_identity():
     assert [(e.file_path, e.line_start, e.snippet) for e in context.evidence] == [
         (e.file_path, e.line_start, e.snippet) for e in sources[:3]
     ]
+
+
+@pytest.mark.parametrize("statement", [
+    "pytest.raises(ValueError)",
+    "unused = pytest.raises(ValueError)",
+    "pytest.raises(ValueError, match='invalid')",
+    "pytest.raises(ValueError, None)",
+])
+def test_unused_raises_factory_is_not_test_implementation(statement):
+    content = f"import pytest\ndef test_empty():\n    {statement}\n"
+    assert _test_candidates(content) == []
+
+
+@pytest.mark.parametrize("statement", [
+    "with pytest.raises(ValueError):\n        reject()",
+    "pytest.raises(ValueError, reject)",
+    "caught = pytest.raises(ValueError, service.reject, 1, strict=True)",
+    "pytest.raises(ValueError, lambda: reject())",
+    "assert reject() == 400",
+])
+def test_raises_context_and_function_forms_remain_candidates(statement):
+    content = f"import pytest\ndef test_reject():\n    {statement}\n"
+    assert [e.line_start for e in _test_candidates(content)] == [2]

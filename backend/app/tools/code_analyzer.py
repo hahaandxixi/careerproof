@@ -509,6 +509,12 @@ MAX_PYTHON_SOURCE_LINES = 80
 MAX_PYTEST_FUNCTIONS_PER_FILE = 6
 
 
+def _is_pytest_raises_call(node: ast.AST) -> bool:
+    return (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name) and node.func.value.id == "pytest"
+            and node.func.attr == "raises")
+
+
 def _pytest_implementation_lines(content: str) -> list[int]:
     lines = []
     for function in _python_function_nodes(content):
@@ -522,9 +528,15 @@ def _pytest_implementation_lines(content: str) -> list[int]:
                 continue
             if isinstance(node, ast.Assert):
                 has_assertion = True
-            if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
-                and isinstance(node.func.value, ast.Name) and node.func.value.id == "pytest"
-                and node.func.attr == "raises"):
+            if isinstance(node, ast.With) and any(
+                _is_pytest_raises_call(item.context_expr) for item in node.items
+            ):
+                has_assertion = True
+            # A one-argument call only constructs a context manager. Function-form
+            # raises needs a callable argument; static detection does not execute it.
+            if (_is_pytest_raises_call(node) and len(node.args) >= 2
+                and isinstance(node.args[1], ast.Name | ast.Attribute | ast.Lambda
+                               | ast.Subscript | ast.Call)):
                 has_assertion = True
             pending.extend(ast.iter_child_nodes(node))
         if has_assertion:

@@ -1,0 +1,94 @@
+FFFF.....                                                                [100%]
+================================== FAILURES ===================================
+_ test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError)] _
+
+statement = 'pytest.raises(ValueError)'
+
+    @pytest.mark.parametrize("statement", [
+        "pytest.raises(ValueError)",
+        "unused = pytest.raises(ValueError)",
+        "pytest.raises(ValueError, match='invalid')",
+        "pytest.raises(ValueError, None)",
+    ])
+    def test_unused_raises_factory_is_not_test_implementation(statement):
+        content = f"import pytest\ndef test_empty():\n    {statement}\n"
+>       assert _test_candidates(content) == []
+E       AssertionError: assert [CodeEvidence...e_count=None)] == []
+E         
+E         Left contains one more item: CodeEvidence(skill='pytest', evidence_type='pytest_test', file_path='tests/test_orders.py', line_start=2, line_end=2, ..._note='����λ�У���δ��ȡ������', provenance='portfolio', function_line_start=None, function_line_end=None, source_line_count=None)
+E         Use -v to get more diff
+
+app\tests\test_test_source_selection.py:153: AssertionError
+_ test_unused_raises_factory_is_not_test_implementation[unused = pytest.raises(ValueError)] _
+
+statement = 'unused = pytest.raises(ValueError)'
+
+    @pytest.mark.parametrize("statement", [
+        "pytest.raises(ValueError)",
+        "unused = pytest.raises(ValueError)",
+        "pytest.raises(ValueError, match='invalid')",
+        "pytest.raises(ValueError, None)",
+    ])
+    def test_unused_raises_factory_is_not_test_implementation(statement):
+        content = f"import pytest\ndef test_empty():\n    {statement}\n"
+>       assert _test_candidates(content) == []
+E       AssertionError: assert [CodeEvidence...e_count=None)] == []
+E         
+E         Left contains one more item: CodeEvidence(skill='pytest', evidence_type='pytest_test', file_path='tests/test_orders.py', line_start=2, line_end=2, ..._note='����λ�У���δ��ȡ������', provenance='portfolio', function_line_start=None, function_line_end=None, source_line_count=None)
+E         Use -v to get more diff
+
+app\tests\test_test_source_selection.py:153: AssertionError
+_ test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError, match='invalid')] _
+
+statement = "pytest.raises(ValueError, match='invalid')"
+
+    @pytest.mark.parametrize("statement", [
+        "pytest.raises(ValueError)",
+        "unused = pytest.raises(ValueError)",
+        "pytest.raises(ValueError, match='invalid')",
+        "pytest.raises(ValueError, None)",
+    ])
+    def test_unused_raises_factory_is_not_test_implementation(statement):
+        content = f"import pytest\ndef test_empty():\n    {statement}\n"
+>       assert _test_candidates(content) == []
+E       AssertionError: assert [CodeEvidence...e_count=None)] == []
+E         
+E         Left contains one more item: CodeEvidence(skill='pytest', evidence_type='pytest_test', file_path='tests/test_orders.py', line_start=2, line_end=2, ..._note='����λ�У���δ��ȡ������', provenance='portfolio', function_line_start=None, function_line_end=None, source_line_count=None)
+E         Use -v to get more diff
+
+app\tests\test_test_source_selection.py:153: AssertionError
+_ test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError, None)] _
+
+statement = 'pytest.raises(ValueError, None)'
+
+    @pytest.mark.parametrize("statement", [
+        "pytest.raises(ValueError)",
+        "unused = pytest.raises(ValueError)",
+        "pytest.raises(ValueError, match='invalid')",
+        "pytest.raises(ValueError, None)",
+    ])
+    def test_unused_raises_factory_is_not_test_implementation(statement):
+        content = f"import pytest\ndef test_empty():\n    {statement}\n"
+>       assert _test_candidates(content) == []
+E       AssertionError: assert [CodeEvidence...e_count=None)] == []
+E         
+E         Left contains one more item: CodeEvidence(skill='pytest', evidence_type='pytest_test', file_path='tests/test_orders.py', line_start=2, line_end=2, ..._note='����λ�У���δ��ȡ������', provenance='portfolio', function_line_start=None, function_line_end=None, source_line_count=None)
+E         Use -v to get more diff
+
+app\tests\test_test_source_selection.py:153: AssertionError
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] �ܾ����ʡ�: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_test_source_selection.py::test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError)]
+FAILED app/tests/test_test_source_selection.py::test_unused_raises_factory_is_not_test_implementation[unused = pytest.raises(ValueError)]
+FAILED app/tests/test_test_source_selection.py::test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError, match='invalid')]
+FAILED app/tests/test_test_source_selection.py::test_unused_raises_factory_is_not_test_implementation[pytest.raises(ValueError, None)]
+4 failed, 5 passed, 9 deselected, 2 warnings in 0.33s
