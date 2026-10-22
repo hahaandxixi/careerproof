@@ -5,3 +5,4 @@ export function unpackList<T>(value: T[] | ListPage<T>): { items: T[]; paginatio
 export function pageBounds(value: Pick<PaginationInfo, "total" | "page" | "pageSize">): {
   pages: number; previous: boolean; next: boolean; start: number; end: number;
 };
+export function paginationSummary(value: Pick<PaginationInfo, "total" | "page" | "pageSize">): string;

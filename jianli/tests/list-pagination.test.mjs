@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { pageBounds, unpackList } from "../src/lib/list-pagination.js";
+import { pageBounds, paginationSummary, unpackList } from "../src/lib/list-pagination.js";
 import { createApplicationListSession } from "../src/lib/application-list-session.ts";
 import { createApplicationBoardSession } from "../src/lib/application-board-session.ts";
 import { api } from "../src/lib/api/client.ts";
@@ -9,6 +9,21 @@ test("exactly twenty final rows disable next; page six reaches row 101", () => {
   assert.equal(pageBounds({ total: 40, page: 2, pageSize: 20 }).next, false);
   assert.deepEqual(pageBounds({ total: 101, page: 6, pageSize: 20 }), { pages: 6, previous: true, next: false, start: 101, end: 101 });
   assert.deepEqual(pageBounds({ total: 0, page: 1, pageSize: 20 }), { pages: 1, previous: false, next: false, start: 0, end: 0 });
+});
+
+// 末页记录被撤回后列表仍可能停在原页码；此时旧实现给出倒置区间「21–5」，读起来像坏掉了。
+test("页码越界时不报倒置区间，且仍可返回上一页", () => {
+  assert.deepEqual(pageBounds({ total: 5, page: 2, pageSize: 20 }), { pages: 1, previous: true, next: false, start: 0, end: 0 });
+  assert.deepEqual(pageBounds({ total: 0, page: 3, pageSize: 20 }), { pages: 1, previous: true, next: false, start: 0, end: 0 });
+  const bounds = pageBounds({ total: 5, page: 2, pageSize: 20 });
+  assert.ok(bounds.start <= bounds.end, "区间不得倒置");
+});
+
+test("分页读数自洽：越界时说明需返回上一页，正常页不加提示", () => {
+  assert.equal(paginationSummary({ total: 5, page: 2, pageSize: 20 }),
+    "共 5 条 · 第 2 / 1 页 · 本页记录 0–0（当前页已超出范围，请返回上一页）");
+  assert.equal(paginationSummary({ total: 101, page: 6, pageSize: 20 }), "共 101 条 · 第 6 / 6 页 · 本页记录 101–101");
+  assert.equal(paginationSummary({ total: 0, page: 1, pageSize: 20 }), "共 0 条 · 第 1 / 1 页 · 本页记录 0–0");
 });
 
 test("notification target is visible without inflating page membership or totals", () => {

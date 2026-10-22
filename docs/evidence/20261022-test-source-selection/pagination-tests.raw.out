@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: exactly twenty final rows disable next; page six reaches row 101
+ok 1 - exactly twenty final rows disable next; page six reaches row 101
+  ---
+  duration_ms: 1.5868
+  type: 'test'
+  ...
+# Subtest: 页码越界时不报倒置区间，且仍可返回上一页
+ok 2 - 页码越界时不报倒置区间，且仍可返回上一页
+  ---
+  duration_ms: 0.1441
+  type: 'test'
+  ...
+# Subtest: 分页读数自洽：越界时说明需返回上一页，正常页不加提示
+ok 3 - 分页读数自洽：越界时说明需返回上一页，正常页不加提示
+  ---
+  duration_ms: 0.1594
+  type: 'test'
+  ...
+# Subtest: notification target is visible without inflating page membership or totals
+ok 4 - notification target is visible without inflating page membership or totals
+  ---
+  duration_ms: 0.1012
+  type: 'test'
+  ...
+# Subtest: late old page cannot overwrite new page, its metadata, or hidden state
+ok 5 - late old page cannot overwrite new page, its metadata, or hidden state
+  ---
+  duration_ms: 0.2455
+  type: 'test'
+  ...
+# Subtest: candidate page change clears opened report and cannot deliver an out-of-page download
+ok 6 - candidate page change clears opened report and cannot deliver an out-of-page download
+  ---
+  duration_ms: 0.9412
+  type: 'test'
+  ...
+# Subtest: HTTP adapters pass canonical paging and filter job status before pagination
+ok 7 - HTTP adapters pass canonical paging and filter job status before pagination
+  ---
+  duration_ms: 15.3658
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132.1976
