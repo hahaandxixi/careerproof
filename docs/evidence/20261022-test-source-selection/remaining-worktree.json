@@ -1,0 +1,1001 @@
+{
+  "codeCommit": "4ba1ccd",
+  "capturedBeforeStateDocCommit": true,
+  "acceptedBackendHashesMatchCommit": true,
+  "credentialValuesAbsentFromThisEvidence": true,
+  "remaining": [
+    {
+      "status": " M",
+      "path": ".gitignore"
+    },
+    {
+      "status": " M",
+      "path": "README.md"
+    },
+    {
+      "status": " M",
+      "path": "THIRD_PARTY_NOTICES.md"
+    },
+    {
+      "status": " M",
+      "path": "backend/.env.example"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/agents/evidence_scope.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/schemas/analysis.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/services/analysis.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/tests/test_evidence_scope.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/tests/test_rule_narrative.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/tools/rule_narrative.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/evals/check_run_paths.py"
+    },
+    {
+      "status": " M",
+      "path": "demo/README.md"
+    },
+    {
+      "status": " M",
+      "path": "demo/market-scenarios/README.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261019-enterprise-filter-state/isolated-two-candidate.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261019-role-consistency/local-run-processes.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261019-task82-job-discovery/import-plan-no-db.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261021-agent-verification/claims.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261021-source-equivalence/path-check.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261021-source-equivalence/source-equivalence.json"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261021-source-staging/README.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261021-tool-choice/README.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/evidence/20261022-ui-accepted/README.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/guides/使用与启动.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/guides/功能演示.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/guides/比赛交付.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/guides/证据与产品能力.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/guides/评测与人工复核.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/任务清单.md"
+    },
+    {
+      "status": " M",
+      "path": "docs/当前接力.md"
+    },
+    {
+      "status": " M",
+      "path": "jianli/.gitignore"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/app/demo/page.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/app/globals.css"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ApplicationBoard.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ApplicationList.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ApplicationVerification.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/CareerRecommendations.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/EvidenceCard.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/EvidenceSnippet.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/GrowthComparison.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/JobDetailView.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/PrivateAnswerDraft.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ProjectVersionPicker.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ReportComparisonPanel.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ReportDetail.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ReportItemExplanation.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/ResumeVersionPicker.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/SiteHeader.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/SkillRadar.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/SourceCoverage.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/StudentAccountMenu.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/components/TaskView.tsx"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/lib/api/domain.ts"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/lib/material-picker.ts"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/lib/report-display.ts"
+    },
+    {
+      "status": " M",
+      "path": "jianli/src/lib/resume-picker.ts"
+    },
+    {
+      "status": " M",
+      "path": "jianli/tests/application-list.test.mjs"
+    },
+    {
+      "status": " M",
+      "path": "jianli/tests/career-retry.test.mjs"
+    },
+    {
+      "status": " M",
+      "path": "jianli/tests/material-picker.test.mjs"
+    },
+    {
+      "status": " M",
+      "path": "jianli/tests/resume-picker.test.mjs"
+    },
+    {
+      "status": " M",
+      "path": "output/pdf/CareerProof-技术文档-提交候选稿.pdf"
+    },
+    {
+      "status": " M",
+      "path": "scripts/build_submission_pdf.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/tests/test_agent_process_display.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/tests/test_display_path.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/tools/display_path.py"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/SCENARIO-SUMMARY.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/codex-audit.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/codex-closure-startup-approved.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/codex-closure-startup.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification-complete.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/codex-post-withdraw-verification.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-37-06-778Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-38-08-476Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-39-09-138Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/download-withdraw-2026-10-05T04-40-31-640Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-35-26-992Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/late-response-2026-10-05T04-47-32-809Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-33-52-755Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/notification-filter-2026-10-05T04-46-24-040Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/reply-failure-2026-10-05T04-26-18-917Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/skeleton-2026-10-05T04-25-36-108Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-10-983Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/viewport390-2026-10-05T04-48-39-049Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T04-44-03-901Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-01-22-716Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-02-47-389Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-04-55-671Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261004-E2E-enterprise/withdraw-verify-2026-10-05T10-07-02-808Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/RETEST-SUMMARY.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-48-51-153Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T10-49-31-566Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/late-response-2026-10-05T11-21-36-586Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-19-466Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T10-48-40-032Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-04-402Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-enterprise-retest/viewport390-2026-10-05T12-55-27-907Z/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/codex-input-guards-final.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes-output.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-paths-exitcodes.mjs"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-original.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output-v3.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-pid-ownership-output.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/probe-pid-ownership.mjs"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-E2E-runner-review/report.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-PRODUCT-01-codex/alembic-full-chain.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-PRODUCT-01-codex/independent-pg.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-PRODUCT-01-codex/independent-sqlite-config.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-PRODUCT-01-codex/independent-sqlite.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-PRODUCT-01-codex/s9-provenance-readonly.raw.err"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-growth-job-selection-ui/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-growth-protocol-review/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261005-phase-sqlite/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01B-codex/provider-hooks-target.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01B-codex/provider-hooks.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01B-codex/service-ruff.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z19-observation-2308.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z19-observation-2313.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z19-observation-continuation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress2-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress3-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress4-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress5-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress6-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z21-audit-progress7-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-dispatch-observation-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check10-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check11-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check12-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check13-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check14-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check2-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check3-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check4-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check5-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check6-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check7-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check8-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-check9-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-review15-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z22-progress-role-correction-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z23-progress1-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z23-progress2-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261007-OPS-01C-codex/z23-progress3-20261009.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal33/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal35/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal36/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal37/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal39/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal40/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal41/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal42-design-review/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-GLM-goal43-workspace-implementation/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-design-color-comparison/previous-process-manifest.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-design-color-comparison/workspace-start.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261011-design-color-comparison/workspace-tests.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-ci-independent/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-enterprise-release/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-harness50-home/PROBE.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-harness50-home/page.syntax-check.mjs"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-z47-risk-review/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261013-z49-ci/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261015-harness55-pdfium-prototype/_probe.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-Z56-codex/public-sync.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-Z56-codex/source-sync.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-candidate-selection/build.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-candidate-selection/preview-process.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-candidate-selection/preview.raw.err"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-candidate-selection/preview.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-candidate-selection/typecheck.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-demo-growth-download/preview-process.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-demo-growth-download/preview.raw.err"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261016-demo-growth-download/preview.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-68-upload-idempotency/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-Z61-vector-retrieval/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task62-lint-warnings/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task63-pagination-ui/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task64-recommendation-polish/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task65-navigation-a11y/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task66-report-readability/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task67-upload-recovery/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task68-growth-chain/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task69-retrieval-review/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task70-semantic-review-packet/build.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task70-semantic-review-packet/build_packet.py"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task70-semantic-review-packet/input-hashes.txt"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task70-semantic-review-packet/reference-criteria.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task70-semantic-review-packet/sample-table.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task71-parser-boundaries/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task72-pdfium-ab/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task73-guide-consolidation/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task76-release-package/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task77-student-experience/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261017-task78-launcher-unification/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261018-growth-completion/voiced-clip-12-frame.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261018-growth-completion/voiced-intro-frame.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261018-growth-completion/voiced-outro-frame.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261018-growth-completion/voiced-technology-frame.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261018-task80-integration-fixes/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-all-tests.exit"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-all-tests.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-offline.exit"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-offline.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-red-before-fix.exit"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-red-before-fix.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-ruff.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-tests.exit"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-agent-boundary/agent-preflight-tests.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-harness83-first-use-readiness/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-role-consistency/managed-start.err"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261019-role-consistency/managed-start.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-agent-evidence-display/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-complete-project-validation/rule-narrative-fix/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-misleading-content-cleanup/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/after-student-report-1280-200pct.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/after-student-report-1280.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/after-student-report-390-steps-end.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/after-student-report-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/before-student-report-1280.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/before-student-report-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/codex-build.raw.out"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/interaction-check.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/state-check.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/state-failure.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/state-loading.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261021-ui-report-guidance/state-recovered.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261022-report-uuid-display/"
+    },
+    {
+      "status": "??",
+      "path": "docs/evidence/20261022-submission-pdf/"
+    },
+    {
+      "status": "??",
+      "path": "docs/task-cards/20261013-ZCODE47-pending-risk-review.md"
+    },
+    {
+      "status": "??",
+      "path": "jianli/src/components/ReportAgentEvidence.tsx"
+    },
+    {
+      "status": "??",
+      "path": "jianli/src/lib/agent-evidence.ts"
+    },
+    {
+      "status": "??",
+      "path": "jianli/src/lib/display-path.ts"
+    },
+    {
+      "status": "??",
+      "path": "jianli/src/lib/match-readiness.ts"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/agent-evidence-render.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/agent-evidence.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/display-path.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/enterprise-report-details.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/fixtures/"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/keyboard-focus.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/match-readiness.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "jianli/tests/touch-targets.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "output/demo/"
+    },
+    {
+      "status": "??",
+      "path": "output/picker-search-20261019.png"
+    },
+    {
+      "status": "??",
+      "path": "output/review/"
+    },
+    {
+      "status": "??",
+      "path": "scripts/check_evidence_json_bom.py"
+    },
+    {
+      "status": "??",
+      "path": "scripts/e2e/private-recovery-notice-runner.mjs"
+    },
+    {
+      "status": "??",
+      "path": "scripts/e2e/private-recovery-notice.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "scripts/normalize_evidence_json.py"
+    },
+    {
+      "status": "??",
+      "path": "tmp/"
+    }
+  ],
+  "note": "Preserved, not accepted wholesale; current handoff retains peer additions outside this state commit. No staged unrelated files."
+}
