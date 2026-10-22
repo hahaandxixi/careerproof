@@ -1,0 +1,1098 @@
+{
+  "date": "2026-10-22",
+  "baselineCommit": "2734621cf77ca31692e5c0014b70e2b4df17a45f",
+  "directoriesDeleted": 74,
+  "filesRemoved": 51338,
+  "bytesRemoved": 3249871397,
+  "archivedUniqueFiles": 39,
+  "archive": {
+    "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\workspace-cleanup-20261022\\retired-files.zip",
+    "sha256": "d0d5ce1e2acf905fe25b38738330730fcf1a833d4374a4cc085d95eb651c9547",
+    "files": {
+      ".trae-html-share-packages/docs/competition-compliance-ai-depth/competition-compliance-ai-depth.html.zip": "cfb2ce51ae7588ae1c193d5e2f67a997599ee2780e9cfc5c9fbf5767219bc634",
+      "tmp/s10-new-func.txt": "e828d7854f3b256026e3f876465c25b9afa53ab3080ec42d9f697d5ab4fa8e6b",
+      "tmp/s6b-s8-new-funcs.txt": "4856540a2c3bfa2cba12fa5ee0c009cbcde533c5adba3b7a658fb92063ae9b31",
+      "tmp/splice_s10.py": "cc66b51d4cdd50b983152b85efd438ed8acf907d5e7da48053471c63701b1a93",
+      "tmp/splice_s6b_s8.py": "73f3c6a2707710dcf55fe25714ec098f64e3707acf2ea85071a68ce8e480d71a",
+      "tmp/pdfs/careerproof-1.png": "b217ab6ece5d972bdbdde704a4081617bad69bc7dfe0f5394b1fdb7b4f64d0d6",
+      "tmp/pdfs/careerproof-2.png": "0a5ffef8c41ccb57bf933cb2435d346fd7d9359f7b7ff69f3e430cf9526b1f16",
+      "tmp/pdfs/careerproof-3.png": "b910b34f3bdb1ef0cf5c240f001400aee19311c0c0fdb4134e9ecc12a457be84",
+      "tmp/pdfs/careerproof-4.png": "212e13bec853a65218a38242eec6b91b25ddd70b05d13b683aef9c187af02cce",
+      "tmp/pdfs/careerproof-5.png": "2c8947805671b4c46ffd3f2be17d2984f98b2ec09463022130888401f4d157c1",
+      "tmp/pdfs/careerproof-6.png": "c846c3200cc8505863e432b11028fafee5a6cc5b251a42afc464b4b3df2d2405",
+      "tmp/pdfs/careerproof-credential-update-5.png": "a340ab22375592980b89305496ddba183eb43fa0002cace35e06e2a38d2cca4e",
+      "tmp/pdfs/careerproof-credential-update-6.png": "ff6fd63736b2b8ce7e1e0f3d71aaac17d69f09ea11e1a0293c44dff588f26ed0",
+      "tmp/pdfs/careerproof-final-6.png": "591a0a8802bc267e11968219c97f486c57e43607144edca85c9da7c560008910",
+      "tmp/pdfs/submission-20261015/final-1.png": "f5b6eacb675196d60cede12b469099562139474bb4b1eb864d69d5fed0b13473",
+      "tmp/pdfs/submission-20261015/final-2.png": "8a65c05ce22448c6d8d49e9beb4e139cc0b9de4694c032275ce0d45f280690ec",
+      "tmp/pdfs/submission-20261015/final-3.png": "53820aef53894883fa009ef29dc9835650eb060446b702985b30bab3683e45d0",
+      "tmp/pdfs/submission-20261015/final-4.png": "20169e0c5e754d6b7c40634c4a57f9636c4e7784567c20bc8f6607e39790e552",
+      "tmp/pdfs/submission-20261015/final-5.png": "c76737bd71fb62de26147dd7f7a93ed288b34324cc49f55e862b752058c79f7d",
+      "tmp/pdfs/submission-20261015/final-6.png": "332b5e4d71d7e9b395d52fbd4d472ec829a2b921bac492b15c5403e75de96082",
+      "tmp/pdfs/submission-20261015/final-7.png": "cb1a158b9ca763e41b28690d49550784c0a20e5dbb5fb7cb39c408775abf1583",
+      "tmp/pdfs/submission-20261015/final-8.png": "08d87ea1c8d9d612fbf8db7b2d049c8c70625c75865368d0d401a8cd0e9040be",
+      "tmp/pdfs/submission-20261015/page-1.png": "f5b6eacb675196d60cede12b469099562139474bb4b1eb864d69d5fed0b13473",
+      "tmp/pdfs/submission-20261015/page-2.png": "8a65c05ce22448c6d8d49e9beb4e139cc0b9de4694c032275ce0d45f280690ec",
+      "tmp/pdfs/submission-20261015/page-3.png": "53820aef53894883fa009ef29dc9835650eb060446b702985b30bab3683e45d0",
+      "tmp/pdfs/submission-20261015/page-4.png": "20169e0c5e754d6b7c40634c4a57f9636c4e7784567c20bc8f6607e39790e552",
+      "tmp/pdfs/submission-20261015/page-5.png": "1c9210c6d6f552a6f5f6b8f51bf2d94b48b2f9a4724c9429f7962ea32a5cb11d",
+      "tmp/pdfs/submission-20261015/page-6.png": "332b5e4d71d7e9b395d52fbd4d472ec829a2b921bac492b15c5403e75de96082",
+      "tmp/pdfs/submission-20261015/page-7.png": "cb1a158b9ca763e41b28690d49550784c0a20e5dbb5fb7cb39c408775abf1583",
+      "tmp/pdfs/submission-20261015/page-8.png": "08d87ea1c8d9d612fbf8db7b2d049c8c70625c75865368d0d401a8cd0e9040be",
+      "tmp/pdfs/submission-20261015/render-final-all.raw.out": "775616b17b84c68a7e02bab561321f56165b55c177db2114ee14e0c07926c5c2",
+      "tmp/pdfs/submission-20261015/render-final.raw.out": "775616b17b84c68a7e02bab561321f56165b55c177db2114ee14e0c07926c5c2",
+      "tmp/pdfs/submission-20261015/render.raw.out": "775616b17b84c68a7e02bab561321f56165b55c177db2114ee14e0c07926c5c2",
+      "backend/.tmp/e2e-browser/upgrade-budget-20261010/downloads-enterprise/e2e-合成简历.txt": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b",
+      "backend/.tmp/e2e-browser/upgrade-20261010/downloads-enterprise-desktop/downloads.htm": "4e8704b29e249c67afcc8e5614d165a3f5781746135116d08a6833b36fc1c614",
+      "backend/.tmp/e2e-browser/matcmp/report-materials.json": "b2d5c26bb37e5ba49421a73883941bcb62056fc39fb69074a28b1a5c4127f32d",
+      "backend/.tmp/e2e-browser/matcmp/task-materials.json": "b2d5c26bb37e5ba49421a73883941bcb62056fc39fb69074a28b1a5c4127f32d",
+      "backend/.tmp/e2e-browser/closure-20261005/downloads-enterprise/e2e-合成简历.txt": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b",
+      "backend/.tmp/e2e-browser/audit-20261005/downloads-enterprise/e2e-合成简历.txt": "a0149d5a113b3432d86c5cf235e26aa8283b37b6ac2550ba704432a75c1c6b6b"
+    }
+  },
+  "deletions": [
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\.ruff_cache",
+      "files": 5,
+      "bytes": 499,
+      "reason": "regenerable lint cache",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\.tmp\\ruff-cache",
+      "files": 4,
+      "bytes": 241,
+      "reason": "regenerable lint cache",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\.trae-html-share-packages",
+      "files": 1,
+      "bytes": 1243196,
+      "reason": "retired editor export / one-off patch and PDF previews; all files archived",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pg-skips-20261019-hardstop-40ae51028dc04bef863d4e74c26479d7",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-pg-skips-20261019-regular-ee7e378dc8bc4277ac41a53bcce6acb7",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-20261019",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-20261019-final",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-20261019-final2",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-20261019-final3",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-evidence",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-boundary-final",
+      "files": 9,
+      "bytes": 1283247,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-closeout-green-20261020",
+      "files": 27,
+      "bytes": 75577,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-closeout-red-20261020",
+      "files": 13,
+      "bytes": 50007,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-test-20261021",
+      "files": 1,
+      "bytes": 634880,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-integration-20261020",
+      "files": 28,
+      "bytes": 75752,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-integration-final-20261020",
+      "files": 28,
+      "bytes": 75752,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all",
+      "files": 4,
+      "bytes": 25222,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all2",
+      "files": 4,
+      "bytes": 25222,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all4",
+      "files": 8,
+      "bytes": 28922,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all5",
+      "files": 10,
+      "bytes": 52484,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all6",
+      "files": 12,
+      "bytes": 54384,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-all7",
+      "files": 14,
+      "bytes": 55604,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-debug",
+      "files": 2,
+      "bytes": 9924,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-debug2",
+      "files": 2,
+      "bytes": 10238,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-debug3",
+      "files": 2,
+      "bytes": 10242,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-debug4",
+      "files": 2,
+      "bytes": 7386,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-final",
+      "files": 2,
+      "bytes": 25112,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-final2",
+      "files": 4,
+      "bytes": 25222,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-final3",
+      "files": 5,
+      "bytes": 25299,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-fix1",
+      "files": 5,
+      "bytes": 27999,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-fix2",
+      "files": 5,
+      "bytes": 27999,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-tests",
+      "files": 2,
+      "bytes": 2408,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-tests2",
+      "files": 0,
+      "bytes": 0,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-tests3",
+      "files": 2,
+      "bytes": 10138,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-tests5",
+      "files": 2,
+      "bytes": 25364,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-preflight-tests6",
+      "files": 2,
+      "bytes": 25112,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\budget-ledger-a",
+      "files": 164,
+      "bytes": 38957961,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\budget-ledger-a2",
+      "files": 164,
+      "bytes": 38957961,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\budget-ledger-a3",
+      "files": 164,
+      "bytes": 38957961,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\budget-ledger-final",
+      "files": 164,
+      "bytes": 38957961,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\cleanup-package-20261021",
+      "files": 682,
+      "bytes": 333503,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\e2e-browser",
+      "files": 40254,
+      "bytes": 2607615434,
+      "reason": "inactive synthetic E2E browser profiles; six non-profile artifacts archived",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\integrated-20261019-48701787ebe14f088437d01d763b66d1",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\integrated-20261019-9febb41055fb4e6e837d5b8257e4c889",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-stdio-20261019",
+      "files": 1,
+      "bytes": 651264,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-stdio-evidence",
+      "files": 1,
+      "bytes": 651264,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-stdio-evidence-clean",
+      "files": 1,
+      "bytes": 651264,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\narrative-affected",
+      "files": 13,
+      "bytes": 2548964,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\package-exclusion-check",
+      "files": 682,
+      "bytes": 333513,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pdf-review-20261014",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\rule-narrative-api",
+      "files": 5,
+      "bytes": 639723,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\rule-narrative-green",
+      "files": 0,
+      "bytes": 0,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\rule-narrative-red",
+      "files": 0,
+      "bytes": 0,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\selection-affected",
+      "files": 11,
+      "bytes": 670,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\selection-affected2",
+      "files": 11,
+      "bytes": 670,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\selection-levels-budget",
+      "files": 48,
+      "bytes": 6566126,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-package-20261020",
+      "files": 596,
+      "bytes": 291780,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-package-final-20261020",
+      "files": 596,
+      "bytes": 291768,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-review-r7-tests-20261020",
+      "files": 596,
+      "bytes": 291771,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-review-tests-20261020",
+      "files": 624,
+      "bytes": 367517,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verifier-b",
+      "files": 5,
+      "bytes": 770,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\verifier-b2",
+      "files": 5,
+      "bytes": 770,
+      "reason": "pytest-owned basetemp; synthetic generated fixtures, canonical logs retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z48-score-labels",
+      "files": 0,
+      "bytes": 0,
+      "reason": "empty retired scratch directory",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\jianli\\.next-e2e",
+      "files": 262,
+      "bytes": 119223915,
+      "reason": "retired reproducible preview build; source, dependencies and accepted build retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\jianli\\.next-ui-audit-20261021",
+      "files": 58,
+      "bytes": 43179991,
+      "reason": "retired reproducible preview build; source, dependencies and accepted build retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\jianli\\.next-ui-audit-build",
+      "files": 259,
+      "bytes": 114739574,
+      "reason": "retired reproducible preview build; source, dependencies and accepted build retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\jianli\\.next-ui-audit-build2",
+      "files": 259,
+      "bytes": 114733478,
+      "reason": "retired reproducible preview build; source, dependencies and accepted build retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\tmp",
+      "files": 32,
+      "bytes": 3966789,
+      "reason": "retired editor export / one-off patch and PDF previews; all files archived",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-preview-20261014",
+      "files": 808,
+      "bytes": 10191852,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-preview-20261014-r2",
+      "files": 746,
+      "bytes": 9523134,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-preview-20261014-r3",
+      "files": 1060,
+      "bytes": 15092017,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-r5-20261015",
+      "files": 1085,
+      "bytes": 10622125,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-review-r6-20261020",
+      "files": 869,
+      "bytes": 10687749,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-review-r7-20261020",
+      "files": 863,
+      "bytes": 10512491,
+      "reason": "verified byte-identical extracted historical source package; original ZIP retained",
+      "status": "deleted",
+      "detail": ""
+    }
+  ],
+  "retainedSourcePackages": {
+    "output/source/CareerProof-source-preview-20261014.zip": "113268acd3c93322ba43cfba4d881a56a3ec5ce8021c5574be05246f3600f9a0",
+    "output/source/CareerProof-source-preview-20261014-r2.zip": "bd1cf0aa7e9102efaf80d0e50da70b58a4647720b03e85e724be373791a3e1ee",
+    "output/source/CareerProof-source-preview-20261014-r3.zip": "a5d5a1db9e93cbcf1078646db37b7cc1971a9ab2f9ef7ef36739a71305ce06df",
+    "output/source/CareerProof-source-preview-20261015-r5.zip": "8bec5ab7429ee8ddf422210a90eeb694d715e4858458c2a4e0b9ba9932d4a0b3",
+    "output/source/CareerProof-source-review-20261020-r6.zip": "4b6d2771ce11fb369c34a9d7be8bad0018ac7b90efd938441588686d6a344200",
+    "output/source/CareerProof-source-review-20261020-r7.zip": "5b0169c10daca3b766c1a6085b6a379f614676e715da5663567c19f76df90ea2"
+  },
+  "protectedAnchors": {
+    "backend/pyproject.toml": {
+      "sha256": "3ed1a37afaf403505b78b87e4b9b72190b779b9c84393fd77a5d8db4d6ec7478",
+      "unchanged": true
+    },
+    "jianli/package-lock.json": {
+      "sha256": "b95bf8852e451fcc81087efb22cf0752e66583b3ad3ceba804ac27aee37cbb7c",
+      "unchanged": true
+    },
+    "backend/.tmp/local-run/processes.json": {
+      "sha256": "31e1af455d7719c72297485c7f9cf82478cadf7352ac9b624243d4f337a21244",
+      "unchanged": true
+    }
+  },
+  "directoryLinksVerified": [
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-ui-20261018\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-enterprise-filter\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\dep-frontend-20261019-picker\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\rule-narrative-20261021\\ui\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\source-identity-20261022\\source\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task62-lint\\stage\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task64-render\\stage\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\test-source-accepted-20261022\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\z58-lint-20261016\\stage\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ui-accepted-worktree\\jianli\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\jianli\\node_modules",
+      "present": true
+    },
+    {
+      "link": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ui-lint-project-20261021\\node_modules",
+      "target": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source\\jianli\\node_modules",
+      "present": true
+    }
+  ],
+  "stashUnchanged": true,
+  "navigationValidation": {
+    "scope": "committed export document set plus this change to docs/README.md; local links in the two edited documents",
+    "documents": 21,
+    "passed": true,
+    "zipRebuilt": false
+  },
+  "protectedNotes": [
+    "Current source-identity/agent-display acceptance directories and dependencies retained",
+    "Both Python environments, default Next build, managed production stages and R7 clean-install environment retained",
+    "No canonical database, uploaded storage, live budget claim, review answers, video, PDF or source ZIP deleted",
+    "Referenced historical docs, task cards, templates, prototype assets and evidence retained",
+    "Concurrent main-task source edits are outside this cleanup; no whole-worktree hash stability claim"
+  ],
+  "inaccessibleDirectoriesSkipped": [
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-b11-rerun-20261004-01",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\codex-b11-rerun-20261004-02",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\history-focused-final-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\history-isolation-full-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\history-refs-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\mcp-deadlines-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-ai-advice-comparison-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-ai-draft-adoption-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-b07-b10-confirm",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-b07-b10-final",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-b10-pg-fix",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-b10-sqlite-fix",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-candidate-final-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-candidate-level-boundary-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-citation-policy-20260929-0004",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-bug-baseline-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-bug-final-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-bug-targeted-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-e2e-audit-01",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-e2e-audit-02",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-e2e-audit-20261005",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-codex-e2e-final-20261005",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-combined-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-comparison-rechecked-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-deepseek-unified-20260926-2",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-enterprise-final-20260929-110816",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-enterprise-full-20260929-110035",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-full-ai-comparison-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-full-candidate-level-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-full-v28-candidate-20260930",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-full-v29-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-full-v29-saved-plan-20261001",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-input-diagnostics-20260928-2350",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-preflight-complete-20260928-2353",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-real-saved-plan",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-retrieval-empty-corpus-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-retrieval-evaluation-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-retrieval-release-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-retrieval-review-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-saved-plan",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-unified-final-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-unified-ui-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-v25-resume-20260929-105428",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-v29-final-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-v29-legacy-compare-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-v29-legacy-compare-rerun-20261002",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-backend-base2",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-lifecycle",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-pg-20260929-110056",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-pg-final-20260929-110625",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-race-20260929-110517",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-race-fixed-20260929-110559",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-unit-20260929",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\pytest-verification-unit-final-20260929",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\retrieval-final-check-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\retrieval-separation-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\unified-deepseek-20260926",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-independent",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-independent-config",
+      "errors": [
+        ".:PermissionError"
+      ]
+    },
+    {
+      "path": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp-product01-codex-pg",
+      "errors": [
+        ".:PermissionError"
+      ]
+    }
+  ]
+}
