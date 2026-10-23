@@ -1,0 +1,61 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0 -- D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\jbcode\web ai\jianli\backend\.tmp\ci-hash-20261023\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+app/tests/test_agent_evidence_smoke.py::test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them FAILED
+
+================================== FAILURES ===================================
+_ test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them _
+
+    def test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them():
+        data = packet()
+        historical = smoke.ROOT / data["historicalPacket"]["path"]
+        assert data["offlineOnly"] is True
+        assert data["promptVersion"] == EVIDENCE_PROMPT_VERSION
+        assert hashlib.sha256(historical.read_bytes()).hexdigest() == data["historicalPacket"]["sha256"]
+        original = json.loads(historical.read_text(encoding="utf-8"))
+        assert data["cases"] == original["cases"]
+        assert data["limits"] == original["limits"]
+        assert set(data["sourceHashes"]) == {
+            *original["sourceHashes"],
+            "backend/app/agents/evidence_policy.md",
+            "backend/app/agents/input_budget.py",
+        }
+>       smoke.check_agent_packet(data)
+
+app\tests\test_agent_evidence_smoke.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -> None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+>               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped
+=========================== short test summary info ===========================
+FAILED app/tests/test_agent_evidence_smoke.py::test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+============================== 1 failed in 0.35s ==============================

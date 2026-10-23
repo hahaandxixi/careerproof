@@ -1,0 +1,13 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0
+rootdir: D:\jbcode\web ai\jianli\backend\.tmp\ci-hash-20261023\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 27 items
+
+app\tests\test_agent_evidence_smoke.py .....................             [ 77%]
+app\tests\test_agent_smoke_hard_stop.py ......                           [100%]
+
+- generated xml file: D:\jbcode\web ai\jianli\backend\.tmp\ci-hash-20261023\docs\evidence\20261023-ci-repair\hash\green.xml -
+============================= 27 passed in 1.73s ==============================

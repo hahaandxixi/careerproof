@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="13" skipped="0" tests="25" time="1.946" timestamp="2026-10-23T09:49:33.474917+08:00" hostname="LAPTOP-K7CHVGTD"><testcase classname="app.tests.test_agent_evidence_smoke" name="test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">def test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them():
+        data = packet()
+        historical = smoke.ROOT / data["historicalPacket"]["path"]
+        assert data["offlineOnly"] is True
+        assert data["promptVersion"] == EVIDENCE_PROMPT_VERSION
+        assert hashlib.sha256(historical.read_bytes()).hexdigest() == data["historicalPacket"]["sha256"]
+        original = json.loads(historical.read_text(encoding="utf-8"))
+        assert data["cases"] == original["cases"]
+        assert data["limits"] == original["limits"]
+        assert set(data["sourceHashes"]) == {
+            *original["sourceHashes"],
+            "backend/app/agents/evidence_policy.md",
+            "backend/app/agents/input_budget.py",
+        }
+&gt;       smoke.check_agent_packet(data)
+
+app\tests\test_agent_evidence_smoke.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_historical_agent_packet_is_rejected_after_reviewed_source_changes" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_packet_and_guard_limits_are_fixed_before_any_send" time="0.004"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_packet_and_guard_limits_a0')
+
+    def test_packet_and_guard_limits_are_fixed_before_any_send(tmp_path):
+        data = packet()
+&gt;       smoke.check_agent_packet(data)
+
+app\tests\test_agent_evidence_smoke.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_batch_limit_is_twelve_across_cases" time="0.006" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_dynamic_request_hashes_are_recorded_and_context_source_is_guarded" time="0.003" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_rejects_same_path_snippet_and_citation_mismatch" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_history_identity_and_content_must_match_packet" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E842B40&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_agent_missing_usage_becom0')
+
+    def test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case(monkeypatch, tmp_path):
+        data = packet()
+        calls = []
+    
+        def reply(request):
+            calls.append(request)
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {
+                            "message": {
+                                "tool_calls": [
+                                    {
+                                        "function": {
+                                            "name": "retrieve_more_evidence",
+                                            "arguments": json.dumps(
+                                                {
+                                                    "requirement_id": data["cases"][0]["requirementId"],
+                                                    "query": "rollback",
+                                                }
+                                            ),
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(reply),
+        )
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+&gt;       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "hard-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:274: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_workflow_uses_explicit_provider_override" time="0.006" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_model_stop_is_not_labeled_program_skip" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E80BF80&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_agent_model_stop_is_not_l0')
+
+    def test_agent_model_stop_is_not_labeled_program_skip(monkeypatch, tmp_path):
+        data = packet()
+        guard_holder = {}
+    
+        def handler(request):
+            assert settings.ai_per_report_input_token_limit == 40_000
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            if "tools" in body:
+                return httpx.Response(
+                    200,
+                    json={
+                        "choices": [{"message": {"content": ""}}],
+                        "usage": {"prompt_tokens": 100, "completion_tokens": 5},
+                    },
+                )
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, "R1-E1"), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_per_report_input_token_limit", 40_000)
+    
+&gt;       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "model-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:390: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_full_request_cap_includes_tool_schema_before_reservation" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_full_agent_chain_uses_mock_transport_and_real_workflow" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E8B27E0&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_full_agent_chain_uses_moc0')
+
+    def test_full_agent_chain_uses_mock_transport_and_real_workflow(monkeypatch, tmp_path):
+        data = packet()
+        calls = []
+        guard_holder = {}
+    
+        def handler(request):
+            body = json.loads(request.content)
+            guard = guard_holder["guard"]
+            case = next(row for row in data["cases"] if row["id"] == guard.case_id)
+            calls.append((guard.case_id, guard.stage, body))
+            if "tools" in body:
+                if guard.case_id == "AG-01":
+                    return tool_response("retrieve_more_evidence", case)
+                if guard.case_id == "AG-03":
+                    return tool_response("get_previous_report_context", case)
+                raise AssertionError("AG-02 must be program-skipped before planning")
+            citation = "R1-E3" if guard.case_id == "AG-01" else "R1-E1"
+            return httpx.Response(
+                200,
+                json={
+                    "choices": [
+                        {"message": {"content": json.dumps(answer(case, citation), ensure_ascii=False)}}
+                    ],
+                    "usage": {"prompt_tokens": 150, "completion_tokens": 100},
+                },
+            )
+    
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(handler),
+        )
+        other_calls = []
+        other = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: other_calls.append(request)),
+        )
+        original_guard = smoke.AgentRequestGuard
+    
+        def make_guard(*args, **kwargs):
+            guard = original_guard(*args, **kwargs)
+            guard_holder["guard"] = guard
+            return guard
+    
+        monkeypatch.setattr(smoke, "AgentRequestGuard", make_guard)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr("app.agents.evidence_workflow.get_ai_provider", lambda: other)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+        monkeypatch.setattr(settings, "ai_max_retrieval_calls", 2)
+    
+&gt;       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "agent-report.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:474: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_checkpoint_failure_is_hard_stop_before_post" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_source_mismatch_becomes_hard_stop_without_post" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E8B3920&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_agent_source_mismatch_bec0')
+
+    def test_agent_source_mismatch_becomes_hard_stop_without_post(monkeypatch, tmp_path):
+        data = packet()
+        original = smoke._agent_result
+    
+        def tampered(row):
+            result = original(row)
+            item = result.items[0]
+            bad = replace(item.evidence_list[0], snippet="same path, tampered text")
+            updated = replace(item, evidence=bad, evidence_list=[bad, *item.evidence_list[1:]])
+            return replace(result, items=[updated])
+    
+        calls = []
+        provider = DeepSeekProvider(
+            api_key="synthetic-not-real",
+            base_url="https://api.deepseek.com",
+            model="deepseek-flash",
+            timeout_seconds=5,
+            max_attempts=1,
+            transport=httpx.MockTransport(lambda request: calls.append(request)),
+        )
+        monkeypatch.setattr(smoke, "_agent_result", tampered)
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: provider)
+        monkeypatch.setattr(smoke, "STATE_ROOT", tmp_path / "state")
+        monkeypatch.setattr(settings, "ai_external_enabled", True)
+        monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    
+&gt;       report = asyncio.run(
+            smoke.execute_agent(data, tmp_path / "source-stop.json", (Decimal(2), Decimal(8)))
+        )
+
+app\tests\test_agent_evidence_smoke.py:539: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_missing_usage_stops_and_keeps_reservation" time="0.002" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_provider_retry_cannot_bypass_guard" time="1.015" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_packet_source_drift_is_rejected" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_agent_batch_claim_is_exclusive" time="0.001" /><testcase classname="app.tests.test_agent_evidence_smoke" name="test_offline_agent_cli_does_not_construct_provider" time="0.002"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E8B0A40&gt;
+
+    def test_offline_agent_cli_does_not_construct_provider(monkeypatch):
+        monkeypatch.setattr(smoke, "get_ai_provider", lambda: pytest.fail("provider constructed"))
+        monkeypatch.setattr("sys.argv", ["smoke", "--agent", "--packet", str(packet_path())])
+&gt;       assert smoke.main() == 0
+               ^^^^^^^^^^^^
+
+app\tests\test_agent_evidence_smoke.py:607: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+evals\bounded_evidence_smoke.py:659: in main
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_receipt_checkpoint_failure_stops_real_executor_after_one_post" time="0.003"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E8B3E60&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_receipt_checkpoint_failur0')
+
+    def test_receipt_checkpoint_failure_stops_real_executor_after_one_post(monkeypatch, tmp_path):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path)
+        output = tmp_path / "receipt.json"
+        fault = fail_receipt_write(monkeypatch, output, persistent=False)
+&gt;       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_final_log_write_failure_exits_without_success_summary" time="0.344"><failure message="assert b'Agent final report persistence failed' in b'Traceback (most recent call last):\r\n  File &quot;&lt;string&gt;&quot;, line 19, in &lt;module&gt;\r\n  File &quot;D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File &quot;&lt;string&gt;&quot;, line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n'&#10; +  where b'Traceback (most recent call last):\r\n  File &quot;&lt;string&gt;&quot;, line 19, in &lt;module&gt;\r\n  File &quot;D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File &quot;&lt;string&gt;&quot;, line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n' = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', '-c', '\nimport...rred:\r\n\r\nTraceback (most recent call last):\r\n  File &quot;&lt;string&gt;&quot;, line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n').stderr">tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_final_log_write_failure_e0')
+
+    def test_final_log_write_failure_exits_without_success_summary(tmp_path):
+        code = textwrap.dedent("""
+            import json, sys
+            from pathlib import Path
+            from decimal import Decimal
+            import pytest
+            from app.tests.test_agent_smoke_hard_stop import setup_batch, fail_receipt_write
+            from evals import bounded_evidence_smoke as smoke
+            root = Path(sys.argv[1])
+            patch = pytest.MonkeyPatch()
+            data, calls, holder = setup_batch(patch, root)
+            output = root / "unsaved.json"
+            fail_receipt_write(patch, output, persistent=True)
+            patch.setattr(smoke, "checked_prices", lambda _: (Decimal(2), Decimal(8)))
+            packet_path = root / "packet.json"
+            packet_path.write_text(json.dumps(data), encoding="utf-8")
+            sys.argv = ["smoke", "--agent", "--live", "--packet", str(packet_path),
+                        "--output", str(output), "--prices", str(root / "synthetic-price.json")]
+            try:
+                smoke.main()
+            finally:
+                print(json.dumps({"calls": calls, "stopped": holder["guard"].stopped}))
+        """)
+        child = subprocess.run(
+            [sys.executable, "-c", code, str(tmp_path)],
+            cwd=smoke.ROOT / "backend",
+            capture_output=True,
+            timeout=30,
+        )
+        assert child.returncode != 0
+&gt;       assert b"Agent final report persistence failed" in child.stderr
+E       assert b'Agent final report persistence failed' in b'Traceback (most recent call last):\r\n  File "&lt;string&gt;", line 19, in &lt;module&gt;\r\n  File "D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File "&lt;string&gt;", line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n'
+E        +  where b'Traceback (most recent call last):\r\n  File "&lt;string&gt;", line 19, in &lt;module&gt;\r\n  File "D:\\jbcode\\web ai\\jianli\...urred:\r\n\r\nTraceback (most recent call last):\r\n  File "&lt;string&gt;", line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n' = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe', '-c', '\nimport...rred:\r\n\r\nTraceback (most recent call last):\r\n  File "&lt;string&gt;", line 21, in &lt;module&gt;\r\nKeyError: \'guard\'\r\n').stderr
+
+app\tests\test_agent_smoke_hard_stop.py:125: AssertionError</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400]" time="0.004"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065EACBB90&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_nonretry_http_error_with_0')
+status = 400, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+&gt;       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401]" time="0.004"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E80B200&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_nonretry_http_error_with_1')
+status = 401, stage = 'planning', expected_posts = 1
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+&gt;       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400]" time="0.004"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065E8B3FB0&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_nonretry_http_error_with_2')
+status = 400, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+&gt;       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase><testcase classname="app.tests.test_agent_smoke_hard_stop" name="test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401]" time="0.004"><failure message="evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000002065EACAAE0&gt;
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023/backend/.tmp/hash-red-approved/test_nonretry_http_error_with_3')
+status = 401, stage = 'analysis', expected_posts = 2
+
+    @pytest.mark.parametrize("status", [400, 401])
+    @pytest.mark.parametrize("stage,expected_posts", [("planning", 1), ("analysis", 2)])
+    def test_nonretry_http_error_with_trusted_usage_stops_batch(
+        monkeypatch, tmp_path, status, stage, expected_posts
+    ):
+        data, calls, holder = setup_batch(monkeypatch, tmp_path, status, stage)
+        output = tmp_path / "http-error.json"
+&gt;       report = asyncio.run(smoke.execute_agent(data, output, (Decimal(2), Decimal(8))))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+app\tests\test_agent_smoke_hard_stop.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+evals\bounded_evidence_smoke.py:373: in execute_agent
+    check_agent_packet(packet)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+packet = {'batchId': 'agent-live-20261020-three-cases', 'cases': [{'allowedPaths': ['project/order.py'], 'evidence': [{'context...hysicalRequests': 12, 'ceilingYuan': '2', 'inputUpperBoundPerRequest': 20000, 'outputLimitPerRequest': 1200, ...}, ...}
+
+    def check_agent_packet(packet: dict) -&gt; None:
+        if tuple(row["id"] for row in packet["cases"]) != AGENT_CASE_IDS:
+            raise SmokeStopped("Only AG-01/AG-02/AG-03 are permitted")
+        if packet.get("batchId") != AGENT_BATCH_ID:
+            raise SmokeStopped("Agent packet batch id mismatch")
+        if packet.get("limits") != {
+            "perCasePhysicalRequests": AGENT_MAX_PER_CASE,
+            "batchPhysicalRequests": AGENT_MAX_BATCH,
+            "inputUpperBoundPerRequest": AGENT_INPUT_LIMIT,
+            "outputLimitPerRequest": AGENT_OUTPUT_LIMIT,
+            "ceilingYuan": str(AGENT_CEILING_YUAN),
+        }:
+            raise SmokeStopped("Agent packet limits do not match the reviewed contract")
+        for relative, expected in packet["sourceHashes"].items():
+            path = (ROOT / relative).resolve()
+            if (
+                not path.is_relative_to(ROOT)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != expected
+            ):
+&gt;               raise SmokeStopped("Agent reviewed source changed")
+E               evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+
+evals\bounded_evidence_smoke.py:283: SmokeStopped</failure></testcase></testsuite></testsuites>

@@ -40,6 +40,24 @@ def test_current_offline_packet_keeps_historical_cases_without_reauthorizing_the
     smoke.check_agent_packet(data)
 
 
+@pytest.mark.parametrize("relative", [
+    "backend/app/agents/evidence_policy.md",
+    "backend/app/agents/input_budget.py",
+])
+def test_reviewed_policy_and_budget_content_mutation_is_rejected(monkeypatch, tmp_path, relative):
+    data = packet()
+    source = (smoke.ROOT / relative).read_bytes()
+    target = tmp_path / relative
+    target.parent.mkdir(parents=True)
+    target.write_bytes(source)
+    data["sourceHashes"] = {relative: data["sourceHashes"][relative]}
+    monkeypatch.setattr(smoke, "ROOT", tmp_path)
+    smoke.check_agent_packet(data)
+    target.write_bytes(source + b"\n# actual content mutation\n")
+    with pytest.raises(smoke.SmokeStopped, match="source changed"):
+        smoke.check_agent_packet(data)
+
+
 def test_historical_agent_packet_is_rejected_after_reviewed_source_changes():
     historical = smoke.ROOT / packet()["historicalPacket"]["path"]
     with pytest.raises(smoke.SmokeStopped, match="source changed"):
