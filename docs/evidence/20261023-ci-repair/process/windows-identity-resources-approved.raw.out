@@ -1,0 +1,684 @@
+........EEEEEEEEEE......EEE...EEEEE                                      [100%]
+=================================== ERRORS ====================================
+___ ERROR at setup of test_pending_admission_and_failed_reservation_release ___
+
+self = <Coroutine test_pending_admission_and_failed_reservation_release>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_pending_admission_and_failed_reservation_release>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_____ ERROR at setup of test_storage_reserves_extraction_across_projects ______
+
+self = <Coroutine test_storage_reserves_extraction_across_projects>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_storage_reserves_extraction_across_projects>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_failed_attempt_removes_only_its_extraction[corrupt] __
+
+self = <Coroutine test_failed_attempt_removes_only_its_extraction[corrupt]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_failed_attempt_removes_only_its_extraction[corrupt]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_failed_attempt_removes_only_its_extraction[lost-lease] _
+
+self = <Coroutine test_failed_attempt_removes_only_its_extraction[lost-lease]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_failed_attempt_removes_only_its_extraction[lost-lease]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+__ ERROR at setup of test_failed_attempt_removes_only_its_extraction[index] ___
+
+self = <Coroutine test_failed_attempt_removes_only_its_extraction[index]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_failed_attempt_removes_only_its_extraction[index]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+__ ERROR at setup of test_failed_attempt_removes_only_its_extraction[commit] __
+
+self = <Coroutine test_failed_attempt_removes_only_its_extraction[commit]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_failed_attempt_removes_only_its_extraction[commit]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_failed_attempt_removes_only_its_extraction[timeout] __
+
+self = <Coroutine test_failed_attempt_removes_only_its_extraction[timeout]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_failed_attempt_removes_only_its_extraction[timeout]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_upload_commit_failure_preserves_only_committed_originals[False] _
+
+self = <Coroutine test_upload_commit_failure_preserves_only_committed_originals[False]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_upload_commit_failure_preserves_only_committed_originals[False]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_upload_commit_failure_preserves_only_committed_originals[True] _
+
+self = <Coroutine test_upload_commit_failure_preserves_only_committed_originals[True]>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_upload_commit_failure_preserves_only_committed_originals[True]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_orphan_recovery_protects_live_workers_and_saved_sources _
+
+self = <Coroutine test_orphan_recovery_protects_live_workers_and_saved_sources>
+
+    def setup(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        if runner_fixture_id not in self.fixturenames:
+            self.fixturenames.append(runner_fixture_id)
+        # When loop factories are configured, resolve the loop factory
+        # fixture early so that a factory variant change cascades cache
+        # invalidation before any async fixture checks its cache.
+        hook_caller = self.config.hook.pytest_asyncio_loop_factories
+        if hook_caller.get_hookimpls():
+            _ = self._request.getfixturevalue(_asyncio_loop_factory.__name__)
+>       return super().setup()
+               ^^^^^^^^^^^^^^^
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:558: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Coroutine test_orphan_recovery_protects_live_workers_and_saved_sources>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_______ ERROR at setup of test_stale_acknowledgment_cannot_admit_worker _______
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_stale_acknowledgment_cannot_admit_worker>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_failed_identity_publication_cannot_execute_even_trusted_callable _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_failed_identity_publication_cannot_execute_even_trusted_callable>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_private_identity_publication_is_atomic_and_leaves_no_temporary_file _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_private_identity_publication_is_atomic_and_leaves_no_temporary_file>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_transient_acknowledgment_read_retries_within_existing_deadline[PermissionError] _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_transient_acknowledgment_read_retries_within_existing_deadline[PermissionError]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_transient_acknowledgment_read_retries_within_existing_deadline[FileNotFoundError] _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_transient_acknowledgment_read_retries_within_existing_deadline[FileNotFoundError]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_permanent_acknowledgment_read_cannot_extend_deadline[PermissionError] _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_permanent_acknowledgment_read_cannot_extend_deadline[PermissionError]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+_ ERROR at setup of test_permanent_acknowledgment_read_cannot_extend_deadline[FileNotFoundError] _
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_permanent_acknowledgment_read_cannot_extend_deadline[FileNotFoundError]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+__ ERROR at setup of test_corrupt_acknowledgment_is_not_retried_as_transient __
+
+fixturedef = <FixtureDef argname='tmp_path' scope='function' baseid=''>
+request = <SubRequest 'tmp_path' for <Function test_corrupt_acknowledgment_is_not_retried_as_transient>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        if (
+            fixturedef.argname == "event_loop_policy"
+            and fixturedef.func.__module__ != __name__
+        ):
+            warnings.warn(
+                PytestDeprecationWarning(_EVENT_LOOP_POLICY_FIXTURE_DEPRECATION_WARNING),
+            )
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+                return (yield)
+            if not _is_coroutine_or_asyncgen(fixturedef.func):
+>               return (yield)
+                        ^^^^^
+E               PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\����\\AppData\\Local\\Temp\\pytest-of-����'
+
+..\..\..\.venv-dependency23\Lib\site-packages\pytest_asyncio\plugin.py:926: PermissionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR app/tests/test_material_resources.py::test_pending_admission_and_failed_reservation_release
+ERROR app/tests/test_material_resources.py::test_storage_reserves_extraction_across_projects
+ERROR app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[corrupt]
+ERROR app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[lost-lease]
+ERROR app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[index]
+ERROR app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[commit]
+ERROR app/tests/test_material_resources.py::test_failed_attempt_removes_only_its_extraction[timeout]
+ERROR app/tests/test_material_resources.py::test_upload_commit_failure_preserves_only_committed_originals[False]
+ERROR app/tests/test_material_resources.py::test_upload_commit_failure_preserves_only_committed_originals[True]
+ERROR app/tests/test_material_resources.py::test_orphan_recovery_protects_live_workers_and_saved_sources
+ERROR app/tests/test_worker_identity.py::test_stale_acknowledgment_cannot_admit_worker
+ERROR app/tests/test_worker_identity.py::test_failed_identity_publication_cannot_execute_even_trusted_callable
+ERROR app/tests/test_worker_identity.py::test_private_identity_publication_is_atomic_and_leaves_no_temporary_file
+ERROR app/tests/test_worker_identity.py::test_transient_acknowledgment_read_retries_within_existing_deadline[PermissionError]
+ERROR app/tests/test_worker_identity.py::test_transient_acknowledgment_read_retries_within_existing_deadline[FileNotFoundError]
+ERROR app/tests/test_worker_identity.py::test_permanent_acknowledgment_read_cannot_extend_deadline[PermissionError]
+ERROR app/tests/test_worker_identity.py::test_permanent_acknowledgment_read_cannot_extend_deadline[FileNotFoundError]
+ERROR app/tests/test_worker_identity.py::test_corrupt_acknowledgment_is_not_retried_as_transient
+17 passed, 5 warnings, 18 errors in 2.01s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

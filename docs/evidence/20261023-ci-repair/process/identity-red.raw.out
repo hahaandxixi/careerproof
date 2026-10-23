@@ -1,0 +1,85 @@
+F.....F.                                                                 [100%]
+================================== FAILURES ===================================
+_________________ test_spawned_worker_identity[200-100-True] __________________
+
+worker_pid = 200, parent_pid = 100, accepted = True
+
+    @pytest.mark.parametrize(("worker_pid", "parent_pid", "accepted"), [
+        (200, 100, True),   # Direct Linux interpreter: worker is Popen child.
+        (201, 200, True),   # Windows venv launcher -> worker interpreter.
+        (200, 999, False),  # Reused child pid with unrelated parent.
+        (999, 100, False),  # Sibling process, not the launched child.
+        (999, 888, False),  # Unrelated process.
+    ])
+    def test_spawned_worker_identity(worker_pid, parent_pid, accepted):
+        worker = SimpleNamespace(pid=worker_pid, parent_pid=parent_pid)
+        child = SimpleNamespace(pid=200, poll=lambda: None)
+        if accepted:
+>           assert_spawned_worker(worker, child, spawning_pid=100)
+
+app\tests\test_hard_stop_process_identity.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+worker = namespace(pid=200, parent_pid=100)
+child = namespace(pid=200, poll=<function test_spawned_worker_identity.<locals>.<lambda> at 0x000002942670BD80>)
+
+    def assert_spawned_worker(worker, child, *, spawning_pid: int) -> None:
+        """Verify direct interpreter or its immediate launcher child before killing."""
+        assert child.poll() is None, "spawned interpreter has already exited"
+>       assert worker.parent_pid == child.pid, "worker does not belong to spawned interpreter"
+E       AssertionError: worker does not belong to spawned interpreter
+E       assert 100 == 200
+E        +  where 100 = namespace(pid=200, parent_pid=100).parent_pid
+E        +  and   200 = namespace(pid=200, poll=<function test_spawned_worker_identity.<locals>.<lambda> at 0x000002942670BD80>).pid
+
+app\tests\test_attempt_hard_stop.py:205: AssertionError
+_ test_actual_interpreter_relationship[C:\\Users\\\u6c5f\u535a\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe] _
+
+executable = 'C:\\Users\\����\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe'
+
+    @pytest.mark.parametrize("executable", sorted({sys.executable, sys._base_executable}))
+    def test_actual_interpreter_relationship(executable):
+        child = subprocess.Popen([
+            executable, "-u", "-c",
+            "import json,os,time;print(json.dumps({'pid':os.getpid()}),flush=True);time.sleep(60)",
+        ], stdout=subprocess.PIPE, text=True)
+        worker = None
+        try:
+            identity = json.loads(child.stdout.readline())
+            worker = WorkerProcess(identity["pid"])
+>           assert_spawned_worker(worker, child, spawning_pid=os.getpid())
+
+app\tests\test_hard_stop_process_identity.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+worker = <app.tests.test_attempt_hard_stop.WorkerProcess object at 0x00000294266BC110>
+child = <Popen: returncode: 1 args: ['C:\\Users\\����\\.cache\\codex-runtimes\\codex-p...>
+
+    def assert_spawned_worker(worker, child, *, spawning_pid: int) -> None:
+        """Verify direct interpreter or its immediate launcher child before killing."""
+        assert child.poll() is None, "spawned interpreter has already exited"
+>       assert worker.parent_pid == child.pid, "worker does not belong to spawned interpreter"
+E       AssertionError: worker does not belong to spawned interpreter
+E       assert 67768 == 79628
+E        +  where 67768 = <app.tests.test_attempt_hard_stop.WorkerProcess object at 0x00000294266BC110>.parent_pid
+E        +  and   79628 = <Popen: returncode: None args: ['C:\\Users\\����\\.cache\\codex-runtimes\\code...>.pid
+
+app\tests\test_attempt_hard_stop.py:205: AssertionError
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_hard_stop_process_identity.py::test_spawned_worker_identity[200-100-True]
+FAILED app/tests/test_hard_stop_process_identity.py::test_actual_interpreter_relationship[C:\\Users\\\u6c5f\u535a\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe]
+2 failed, 6 passed, 5 warnings in 2.11s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

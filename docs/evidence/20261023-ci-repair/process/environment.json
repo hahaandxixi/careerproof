@@ -1,0 +1,12 @@
+{
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "executable": "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "careerproof",
+    "isolation": "fixture-owned cp_test_<uuid> schema only"
+  },
+  "sourceBase": "5a6b9c821c9e7de1cc79b90f7e35a93142e74148"
+}
