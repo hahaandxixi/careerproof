@@ -27,3 +27,7 @@ backend/app/tools/code_analyzer.py text eol=lf
 docs/evidence/20261019-agent-boundary/agent-live-preflight-20261020.json -text
 docs/evidence/20261020-agent-integration/historical-v2/* -text
 docs/evidence/20261020-agent-smoke-closeout/historical-package/* -text
+
+# Reviewed policy/budget bytes must match Git blobs on every platform.
+backend/app/agents/evidence_policy.md text eol=lf
+backend/app/agents/input_budget.py text eol=lf

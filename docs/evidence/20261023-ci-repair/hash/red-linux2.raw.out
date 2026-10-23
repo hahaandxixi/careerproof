@@ -1,0 +1,12 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0 -- D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\jbcode\web ai\jianli\backend\.tmp\ci-hash-20261023\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 25 items
+
+app/tests/test_agent_evidence_smoke.py::test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them FAILED
+app/tests/test_agent_evidence_smoke.py::test_historical_agent_packet_is_rejected_after_reviewed_source_changes PASSED
+app/tests/test_agent_evidence_smoke.py::test_packet_and_guard_limits_are_fixed_before_any_send ERROR

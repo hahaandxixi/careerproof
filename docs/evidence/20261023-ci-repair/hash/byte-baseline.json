@@ -1,0 +1,82 @@
+[
+  {
+    "path": "backend/evals/bounded_evidence_smoke.py",
+    "expected": "606d7e3b9f70539ce04319f0e563b592b55ba0d772307c53486187a78157951e",
+    "checkout": "606d7e3b9f70539ce04319f0e563b592b55ba0d772307c53486187a78157951e",
+    "gitBlob": "606d7e3b9f70539ce04319f0e563b592b55ba0d772307c53486187a78157951e",
+    "lf": "606d7e3b9f70539ce04319f0e563b592b55ba0d772307c53486187a78157951e",
+    "crlf": "7a97cfdac5a6a21fd397bfe2c2419b3604e20500e313815f3f535466781de9ca",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/agents/evidence_workflow.py",
+    "expected": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "checkout": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "gitBlob": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "lf": "ee2b05d02118793a53ee482b2fb270ea895a00b4dca87f0fbe540a574220e831",
+    "crlf": "dd9cd556c0dd5cbf09e421ff0a9b85357a38d664878f452ac8e21849d834226a",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/agents/provider.py",
+    "expected": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "checkout": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "gitBlob": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "lf": "9966c271558367e2ad5fdb727daa4c64e5bd7964115c8e8fb87fd81ab5daab27",
+    "crlf": "012df9a4fd5d1ce737b6711e25fde4af37ee2f3f6a86079c2d85ef7fc3de2d2f",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/agents/contracts.py",
+    "expected": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "checkout": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "gitBlob": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "lf": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+    "crlf": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/tools/matcher.py",
+    "expected": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "checkout": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "gitBlob": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "lf": "1b1d966dd7ad1120ca93bd1daf81bc90b95e05124bd862dab009f2e67f89b38c",
+    "crlf": "4cf1ee000001bd3ded510fdf45d05af81ad909b2e8337370817a9d498b596273",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/tools/code_analyzer.py",
+    "expected": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+    "checkout": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+    "gitBlob": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+    "lf": "2f15648a307ba7fcfc7bd53ee1a7a982534e7d09812b6a78a85c294f692615cc",
+    "crlf": "c99cc9b19e012ec39c537094c6b66e721fab2c027932d83c69c7a491374cfa48",
+    "checkoutCRLF": 0,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/agents/evidence_policy.md",
+    "expected": "1f95f2943b828ea63c933ea462b5b381d334cb1af9c01ed387a51576eca28eb7",
+    "checkout": "1f95f2943b828ea63c933ea462b5b381d334cb1af9c01ed387a51576eca28eb7",
+    "gitBlob": "7b237acf6084e0ddc5368d56cfddeac16436cc407dee48f87a81bba1a7617d8e",
+    "lf": "7b237acf6084e0ddc5368d56cfddeac16436cc407dee48f87a81bba1a7617d8e",
+    "crlf": "1f95f2943b828ea63c933ea462b5b381d334cb1af9c01ed387a51576eca28eb7",
+    "checkoutCRLF": 43,
+    "blobCRLF": 0
+  },
+  {
+    "path": "backend/app/agents/input_budget.py",
+    "expected": "ebc47ba41cbfb28dcbf0003ab3475c2d8ca895cf1a97bf297efdffec80cb8e0e",
+    "checkout": "ebc47ba41cbfb28dcbf0003ab3475c2d8ca895cf1a97bf297efdffec80cb8e0e",
+    "gitBlob": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
+    "lf": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
+    "crlf": "ebc47ba41cbfb28dcbf0003ab3475c2d8ca895cf1a97bf297efdffec80cb8e0e",
+    "checkoutCRLF": 27,
+    "blobCRLF": 0
+  }
+]
