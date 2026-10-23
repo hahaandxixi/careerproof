@@ -317,16 +317,18 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         </p>
       </div>
 
-      <Link href="/demo" className="block rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">没有测试材料？下载合成简历和项目 ZIP，按演示指南完成匹配 →</Link>
+      {historyLoaded && !uploads.length && !projects.length && !historyError
+        ? <Link href="/demo" className="block rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">没有测试材料？下载合成简历和项目 ZIP，按演示指南完成匹配 →</Link>
+        : <Link href="/demo" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">需要练习材料？查看合成示例与下载 →</Link>}
       {notice && <p role="status" className="rounded-xl bg-indigo-50 p-3 text-sm text-indigo-800">{notice}</p>}
 
       <section>
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <div>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div className="min-w-0 flex-1 basis-48">
             <h2 className="section-title">已保存材料</h2>
             <p className="mt-1 text-sm text-slate-500">默认显示每份材料的最新上传；历史版本保留，生成报告时仍需明确选择。</p>
           </div>
-          <button type="button" onClick={() => void loadHistory()} className="text-sm text-indigo-600">刷新列表</button>
+          <button type="button" onClick={() => void loadHistory()} className="min-h-11 shrink-0 whitespace-nowrap text-sm text-indigo-600">刷新列表</button>
         </div>
         {historyError && (
           <p role="alert" className="mb-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
