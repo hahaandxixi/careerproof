@@ -118,5 +118,25 @@
     "untrackedFiles": 660,
     "scope": "other source, paused Agent, UUID/display, guides/PDF and historical evidence; no cleanup or bulk stage"
   },
-  "finalStatus": "local code and normal viewport checks accepted; demo freeze awaits native browser scenarios; artifacts not synchronized"
+  "finalStatus": "local code and normal viewport checks accepted; demo freeze awaits native browser scenarios; artifacts not synchronized",
+  "latestRecheck": {
+    "checkedAt": "2026-10-23T20:04:16.491345+08:00",
+    "checkedHead": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+    "acceptedProductSourceUnchanged": true,
+    "record": "recheck-20261023.json",
+    "reusedAutomaticChecks": "41 targeted / 442 full frontend, typecheck, lint, build; source, tests, dependencies and config unchanged",
+    "verifiedCI": {
+      "head": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+      "runId": 39947184769,
+      "url": "https://github.com/hahaandxixi/careerproof/actions/runs/39947184769",
+      "conclusion": "success",
+      "record": "recheck-ci-result.json"
+    },
+    "servedBuildMatchesDisk": true,
+    "newNativeScreenshots": 0,
+    "nativeBrowser": "one capability attempt stopped by current-URL policy check; no further native inputs",
+    "saveRefreshAccountBoundary": "prior accepted browser checks reused; no draft edited this round",
+    "deliveryArtifacts": "all three hashes unchanged; still not synchronized to accepted candidate",
+    "freeze": "pending native 200%, hidden-tab, minimize/restore and outside-click acceptance; no new production defect established"
+  }
 }

@@ -1,0 +1,149 @@
+{
+  "checkedAt": "2026-10-23T20:04:16.491345+08:00",
+  "git": {
+    "head": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+    "branch": "main",
+    "acceptedProductSource": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "productionDiffSinceAccepted": "",
+    "stageHead": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+    "stageTreeEqualsAccepted": true,
+    "stageTrackedDiff": ""
+  },
+  "buildId": "HNdt9SK706tuGRbc0NPbL",
+  "httpReadOnly": [
+    {
+      "url": "http://127.0.0.1:3138/",
+      "status": 200,
+      "sha256": "9c768de986ff33d6561e068d2a817b4843b6d51e77a5485b4541630fda90abaf"
+    },
+    {
+      "url": "http://127.0.0.1:3138/_next/static/HNdt9SK706tuGRbc0NPbL/_buildManifest.js",
+      "status": 200,
+      "sha256": "a82c9bee88ca80b795ad8762b462fc5e8c25973296a76aafce975bc838bb91f5",
+      "matchesBuildOnDisk": true
+    },
+    {
+      "url": "http://127.0.0.1:8114/api/v1/health",
+      "status": 200,
+      "sha256": "001aeb25fe8e97a0fd32360811aea8759ef1aad45ec26d43b9169f6eb9726832",
+      "response": {
+        "code": 0,
+        "message": "success",
+        "data": {
+          "status": "ok",
+          "service": "CareerProof API",
+          "timestamp": "2026-10-23T12:04:16.488315Z"
+        },
+        "requestId": "059d813c-a810-4c35-aeb2-db7334cfcdb8"
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "kind": "PDF",
+      "path": "output/pdf/CareerProof-技术文档-提交候选稿.pdf",
+      "sha256": "40785dfc767acd8754e3fc33eb40b9926e177654faf387102e4c346cdc9d4a50",
+      "matchesPriorArtifact": true,
+      "status": "old 23-page draft; not this candidate"
+    },
+    {
+      "kind": "source ZIP",
+      "path": "output/source/CareerProof-source-review-20261021-r9-staging.zip",
+      "sha256": "44c8e634269c635a6152795e05085e686ee8ae03a6aa4b9f4ddeef69c755e4d7",
+      "matchesPriorArtifact": true,
+      "status": "not this candidate; do not package dirty workspace"
+    },
+    {
+      "kind": "video",
+      "path": "output/video/archive/20261021-old-drafts/CareerProof-voiced-draft-20261018-r1.mp4",
+      "sha256": "8b615651f363fe3dbcdb672508c722e1ccba418356c4f8441a9eddb7e1330a82",
+      "matchesPriorArtifact": true,
+      "status": "archived old draft; no selected current video"
+    }
+  ],
+  "screenshots": {
+    "reusedCount": 16,
+    "allMatchManifest": true,
+    "newNativeScreenshots": 0
+  },
+  "workspaceBefore": {
+    "tracked": 47,
+    "untracked": 660
+  },
+  "nativeBrowser": {
+    "app": "Microsoft Edge",
+    "windowId": 722390,
+    "initialState": "minimized",
+    "attempt": "selected unique returned window; activated it as instructed; state capture stopped before any page input",
+    "stopReason": "Computer Use has been stopped for this turn because it could not determine the current browser URL on Windows with enough confidence to enforce policy.",
+    "continuedNativeInput": false,
+    "real200Percent": "pending manual",
+    "realHiddenTab": "pending manual",
+    "realMinimizeRestore": "pending manual",
+    "realOutsideClick": "pending manual",
+    "zoomChanged": false
+  },
+  "limits": "HTTP and process/source checks do not replace browser interaction. No new drafts, reports, viewed events, database writes, service restarts, or model requests. Prior save/refresh/account-boundary results are reused because their accepted code and build are unchanged.",
+  "runtimeProcessObservation": {
+    "method": "Get-NetTCPConnection and Get-CimInstance; only allowlisted booleans emitted from parent command lines; docker inspect state/ports only",
+    "frontend": {
+      "pid": 211484,
+      "parentPid": 202132,
+      "created": "2026-10-23T16:04:40.933944+08:00",
+      "sameAsAcceptedRecord": true
+    },
+    "api": {
+      "pid": 75984,
+      "launcherPid": 74004,
+      "ownerShellPid": 76524,
+      "created": "2026-10-23T09:45:16.067269+08:00",
+      "sameAsAcceptedRecord": true,
+      "ownerShellDatabaseMarkerMatched": true,
+      "ownerShellStorageMarkerMatched": true,
+      "ownerShellExternalAIDisabledMatched": true
+    },
+    "container": {
+      "id": "526edce0bdb138d202eded803e59c2fea64ffeac22eb04decaefdbd697894e40",
+      "name": "careerproof-core-acceptance-20261022",
+      "state": "running",
+      "hostIp": "127.0.0.1",
+      "hostPort": 55445,
+      "containerPort": 5432
+    },
+    "limits": "No new authenticated DB query. Process working directory was not independently retrieved; identity uses same previously bound processes plus source-tree comparison and served build-manifest bytes. Optional psutil unavailable, not installed."
+  },
+  "documentValidation": {
+    "command": "python docs/evidence/20261023-doc-governance/verify.py --output backend/.tmp/page-final-20261023/recheck-links.json",
+    "exitCode": 0,
+    "result": {
+      "history": [
+        {
+          "source": "阶段1-比赛需求拆解与项目总控.md",
+          "lines": 281,
+          "normalizedAndOriginalBytesMatch": true
+        },
+        {
+          "source": "docs/当前接力.md",
+          "lines": 263,
+          "normalizedAndOriginalBytesMatch": true
+        },
+        {
+          "source": "docs/任务清单.md",
+          "lines": 377,
+          "normalizedAndOriginalBytesMatch": true
+        }
+      ],
+      "documentsChecked": 20,
+      "localLinksChecked": 391,
+      "repositoryHostedLinksCheckedAgainstTree": 8,
+      "markdownFragmentsChecked": 41,
+      "openTasks": 10,
+      "handoffLines": 85,
+      "failures": [],
+      "warnings": [],
+      "limits": "No general external URL availability check, live application test, or new CI/model execution. GitHub main document URLs validated against this tree."
+    },
+    "scopedGitDiffCheckExitCode": 0,
+    "preExistingFilesByteIdentical": 707
+  }
+}
