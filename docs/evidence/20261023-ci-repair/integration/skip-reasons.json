@@ -1,0 +1,17 @@
+{
+  "The production-entry last-slot race needs real PostgreSQL row locks; set CAREERPROOF_TEST_DATABASE_URL to an isolated cp_test schema": 3,
+  "Requires explicit PostgreSQL cp_test schema": 16,
+  "Requires actual PostgreSQL row locks": 1,
+  "Requires PostgreSQL row locks": 1,
+  "Requires an explicitly configured isolated PostgreSQL schema": 24,
+  "A real child-process hard stop needs an explicitly configured isolated PostgreSQL schema; SQLite cannot prove row-lock release across processes": 8,
+  "Row-lock concurrent booking requires dedicated PostgreSQL": 1,
+  "Serialized identity allocation requires dedicated PostgreSQL": 1,
+  "The borrowed-transaction probe needs the PostgreSQL integration database": 1,
+  "Real PostgreSQL row-lock concurrency requires the integration database": 1,
+  "local semantic weights not installed; see probe evidence instead": 1,
+  "Requires explicit PostgreSQL row locks": 3,
+  "requires an explicit isolated PostgreSQL integration database": 23,
+  "Requires explicit local PostgreSQL test database and real row locks": 6,
+  "PostgreSQL row lock integration only": 1
+}
