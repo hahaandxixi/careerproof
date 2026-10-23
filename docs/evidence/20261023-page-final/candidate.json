@@ -1,0 +1,122 @@
+{
+  "acceptedSourceCommit": "e95504feed306e5cf5ee013a6e546976013639c0",
+  "isolatedBuildWorktreeCommit": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+  "commitsHaveSameTree": true,
+  "sourceScope": "six files in accepted-files.json; no backend or draft state changes",
+  "frontend": {
+    "url": "http://127.0.0.1:3138",
+    "directory": "D:/jbcode/web ai/jianli/backend/.tmp/page-final-20261023/jianli",
+    "buildId": "HNdt9SK706tuGRbc0NPbL",
+    "pid": 211484,
+    "parentPid": 202132,
+    "servedBuildManifestHTTPStatus": 200
+  },
+  "api": {
+    "url": "http://127.0.0.1:8114",
+    "directory": "D:/jbcode/web ai/jianli/backend/.tmp/ci-integration-20261023/backend",
+    "pid": 75984,
+    "launcherPid": 74004,
+    "ownerShellPid": 76524,
+    "sourceComparison": "git diff e95504f -- backend/app backend/alembic backend/pyproject.toml empty; only line-ending checkout metadata in old worktree"
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022",
+    "container": "careerproof-core-acceptance-20261022",
+    "containerId": "526edce0bdb138d202eded803e59c2fea64ffeac22eb04decaefdbd697894e40"
+  },
+  "storage": "D:/jbcode/web ai/jianli/backend/.tmp/product-polish-20261022/storage",
+  "runtimeIdentityEvidence": "same API process and launcher; sanitized owner shell config selects test PG and synthetic storage; container and listeners rechecked",
+  "externalAI": false,
+  "provider": "mock",
+  "platform": {
+    "os": "Windows 11 10.0.26200",
+    "node": "22.23.1",
+    "next": "15.5.27",
+    "react": "19.0.0",
+    "python": "3.12.14"
+  },
+  "browser": {
+    "verified": "Codex in-app Chromium",
+    "cssViewports": [
+      [
+        1280,
+        900
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "nativeWindows": "Edge inventory found; window observation blocked because current URL could not be reliably determined; stopped all native input",
+    "real200Percent": "pending manual",
+    "realHiddenTab": "pending manual",
+    "realMinimizeRestore": "pending manual"
+  },
+  "draft": {
+    "task": "3b9ba85b-aed3-4e1f-9e17-6ced074828c5",
+    "owner": "林舟（虚构项目验证）",
+    "other": "林禾（界面对照合成）",
+    "explicitSaveRefresh": "passed",
+    "accountBoundary": "passed",
+    "originalTextRestoredAndReloaded": true,
+    "backupLocalOnly": "backend/.tmp/page-final-20261023/draft-before.json"
+  },
+  "checks": {
+    "targetTests": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "frontendTests": {
+      "passed": 442,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    "lint": {
+      "errors": 0,
+      "warnings": 1,
+      "exitCode": 0
+    },
+    "typecheckExitCode": 0,
+    "buildExitCode": 0
+  },
+  "ci": {
+    "sourceCommit": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "runId": 39924460130,
+    "url": "https://github.com/hahaandxixi/careerproof/actions/runs/39924460130",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "deliveryArtifacts": [
+    {
+      "kind": "PDF",
+      "path": "output/pdf/CareerProof-技术文档-提交候选稿.pdf",
+      "recordedBaseline": "7a19e6b872c8df1a9b74c6e912f0488e43fbe203",
+      "sha256": "40785dfc767acd8754e3fc33eb40b9926e177654faf387102e4c346cdc9d4a50",
+      "status": "old 23-page draft; not this candidate"
+    },
+    {
+      "kind": "source ZIP",
+      "path": "output/source/CareerProof-source-review-20261021-r9-staging.zip",
+      "manifestCommit": "6f6a1b1de0cf8117ff5f096932a7945c2aada92d",
+      "sha256": "44c8e634269c635a6152795e05085e686ee8ae03a6aa4b9f4ddeef69c755e4d7",
+      "status": "not this candidate; do not package dirty workspace"
+    },
+    {
+      "kind": "video",
+      "path": "output/video/archive/20261021-old-drafts/CareerProof-voiced-draft-20261018-r1.mp4",
+      "sha256": "8b615651f363fe3dbcdb672508c722e1ccba418356c4f8441a9eddb7e1330a82",
+      "status": "archived old draft; no selected current video"
+    }
+  ],
+  "preservedWorkspace": {
+    "trackedChanges": 48,
+    "untrackedFiles": 660,
+    "scope": "other source, paused Agent, UUID/display, guides/PDF and historical evidence; no cleanup or bulk stage"
+  },
+  "finalStatus": "local code and normal viewport checks accepted; demo freeze awaits native browser scenarios; artifacts not synchronized"
+}

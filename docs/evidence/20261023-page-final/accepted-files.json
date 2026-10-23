@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "e95504feed306e5cf5ee013a6e546976013639c0",
+  "buildWorktreeCommit": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+  "tree": "97b9a181b386ac25fb60d2646fac0829611feb89",
+  "files": [
+    {
+      "path": "jianli/src/app/portfolio/page.tsx",
+      "sha256GitLF": "0f4c57a8ba4a4915a57740ccbbe5e3a8dba8ae5425108507a924753e545463c3"
+    },
+    {
+      "path": "jianli/src/components/AccountMenu.tsx",
+      "sha256GitLF": "40c28052502a1d57b96ab0ee9719bc26f41411809cce91e1bc7def106f2d187e"
+    },
+    {
+      "path": "jianli/src/components/GrowthWorkspace.tsx",
+      "sha256GitLF": "e0c40298c540371ff1e9f4e4b03566e5333dae4fc25028b5a2d15c51e868882c"
+    },
+    {
+      "path": "jianli/src/components/SiteHeader.tsx",
+      "sha256GitLF": "58110c7e30f97e8779cbd129803564de999ff9c235142c8a1037b3b3bb022fc0"
+    },
+    {
+      "path": "jianli/src/components/StudentAccountMenu.tsx",
+      "sha256GitLF": "7a6bf80151af2443f4bd177d84455d21e22b7690aeb4e16ec03176c0366f0d24"
+    },
+    {
+      "path": "jianli/tests/account-menu.test.mjs",
+      "sha256GitLF": "4c9a5da9f58addf4dc1fe49daf4746976d97548e624758fcb6d9765ed6ab76e4"
+    }
+  ]
+}

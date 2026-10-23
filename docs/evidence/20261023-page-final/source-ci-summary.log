@@ -1,0 +1,9 @@
+backend-postgres (strict 18 modules, JUnit gate)	Verify full migration chain and model alignment	2026-10-23T08:25:54.5774435Z No new upgrade operations detected.
+backend-postgres (strict 18 modules, JUnit gate)	Run the strict PostgreSQL set on cp_ci	2026-10-23T08:28:11.5722263Z ================= 141 passed, 5 warnings in 134.30s (0:02:14) ==================
+backend-postgres (strict 18 modules, JUnit gate)	Run the hard-stop module on the CI-internal database	2026-10-23T08:28:40.4641366Z ======================== 8 passed, 5 warnings in 25.81s ========================
+backend-postgres (strict 18 modules, JUnit gate)	Enforce the JUnit gate on the strict set	2026-10-23T08:28:41.2295910Z CI-JUNIT-GATE result=PASS modules=18 testcases=149 hardstop_windows=8
+frontend (node 22.23.1, npm ci / test / typecheck / build)	UNKNOWN STEP	2026-10-23T08:25:52.2531233Z # tests 442
+frontend (node 22.23.1, npm ci / test / typecheck / build)	UNKNOWN STEP	2026-10-23T08:25:52.2531953Z # pass 442
+frontend (node 22.23.1, npm ci / test / typecheck / build)	UNKNOWN STEP	2026-10-23T08:25:52.2532289Z # fail 0
+frontend (node 22.23.1, npm ci / test / typecheck / build)	UNKNOWN STEP	2026-10-23T08:25:52.2532949Z # skipped 0
+backend-unit (python 3.12, ruff, full SQLite suite)	Run the full SQLite test suite	2026-10-23T08:31:12.9563955Z =========== 1586 passed, 94 skipped, 9 warnings in 330.87s (0:05:30) ===========

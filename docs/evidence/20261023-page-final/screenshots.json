@@ -1,0 +1,146 @@
+[
+  {
+    "file": "after-enterprise-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "556408af338c85548619d86de58038cb97755893d1edc6466481666739c51914"
+  },
+  {
+    "file": "after-enterprise-menu-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "7b7d1ae703c2af8c821ea3749aa0ba217d20b6e3d49fadf4ace6e5521d8999be"
+  },
+  {
+    "file": "after-growth-1280.png",
+    "format": "JPEG",
+    "pixels": [
+      1265,
+      889
+    ],
+    "sha256": "407a4bc019f0f00ea9e017c72bcd294b211cbe725f1d03858e0b8caf3e0fcf90"
+  },
+  {
+    "file": "after-growth-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "22b1286a9f385f9b4c766cad3cacff832e151d4f7b84e23af0253fb9ed2f89d3"
+  },
+  {
+    "file": "after-materials-1280.png",
+    "format": "JPEG",
+    "pixels": [
+      1265,
+      889
+    ],
+    "sha256": "c20e53a6b97cb5ead0b241fe3aed29b86daa86a85386845f3f247709315c4ec7"
+  },
+  {
+    "file": "after-materials-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "0d1ad6ca72141378c34567e6c08cebe02e0ed4930bbc2f30c756aeb757f42284"
+  },
+  {
+    "file": "after-upload-form-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "1e9ee305a3bc62433ded64d509459e7e7596d7a96d8e9b6087567a0b56c740ec"
+  },
+  {
+    "file": "before-enterprise-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "b4a157eb162286a8010cfc6bf8200cde4e4d54ff2e5a5bf8ac9cf25deb57cf2a"
+  },
+  {
+    "file": "before-growth-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "31afa3e9f1f31294b014b29f1cfa64ac6687248538978b1627717e27dc024b6d"
+  },
+  {
+    "file": "before-materials-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "089b01bbe55e9deefbec946f83def0651d36beb3708ff0722da09560711c1e9b"
+  },
+  {
+    "file": "draft-other-account-denied.png",
+    "format": "JPEG",
+    "pixels": [
+      1280,
+      900
+    ],
+    "sha256": "5b56becf3c6a7e79eda8a6c76357fdaf1a3eea8cfa79119189d1315680072696"
+  },
+  {
+    "file": "draft-saved-refreshed-1280.png",
+    "format": "JPEG",
+    "pixels": [
+      1265,
+      889
+    ],
+    "sha256": "1022fd3710dc6d996024f238e184b569f6cffe9d7323de3b6a077a5b671c52de"
+  },
+  {
+    "file": "enterprise-evidence-1280.png",
+    "format": "JPEG",
+    "pixels": [
+      1265,
+      889
+    ],
+    "sha256": "4afadfd41d5d53248088f61721511639f4d5f6bee44b6b2d4d5767cd732df39f"
+  },
+  {
+    "file": "enterprise-evidence-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "d08d32dfd85c4bd6b64fb07293120a7f0f3dbf56c3db8dbece50578ccdd21c1b"
+  },
+  {
+    "file": "report-citation-1280.png",
+    "format": "JPEG",
+    "pixels": [
+      1265,
+      889
+    ],
+    "sha256": "673909b41e0c246df63c49ba647e64b7da874ef777c386d6b7398dd8c0a9e049"
+  },
+  {
+    "file": "report-reader-390.png",
+    "format": "JPEG",
+    "pixels": [
+      375,
+      811
+    ],
+    "sha256": "3aef1cad463e40d8de3369b97428e7d112c8f70dd35aa49a0a776864e1f67c2d"
+  }
+]

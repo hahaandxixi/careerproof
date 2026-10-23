@@ -1,0 +1,256 @@
+TAP version 13
+# Subtest: enterprise menu preserves exact unread count and identity without student-only routes
+ok 1 - enterprise menu preserves exact unread count and identity without student-only routes
+  ---
+  duration_ms: 6.7047
+  type: 'test'
+  ...
+# Subtest: unknown and zero unread counts do not fabricate a badge
+ok 2 - unknown and zero unread counts do not fabricate a badge
+  ---
+  duration_ms: 0.731
+  type: 'test'
+  ...
+# Subtest: header keeps each role's original navigation, including admin logout without notification support
+ok 3 - header keeps each role's original navigation, including admin logout without notification support
+  ---
+  duration_ms: 2.6415
+  type: 'test'
+  ...
+# Subtest: finished task does not send students to an upload they cannot save
+ok 4 - finished task does not send students to an upload they cannot save
+  ---
+  duration_ms: 34.3427
+  type: 'test'
+  ...
+# Subtest: in-flight task keeps the processing route without an upload dead end
+ok 5 - in-flight task keeps the processing route without an upload dead end
+  ---
+  duration_ms: 15.2934
+  type: 'test'
+  ...
+# Subtest: planned, selected and failed tasks retain explicit upload and save
+ok 6 - planned, selected and failed tasks retain explicit upload and save
+  ---
+  duration_ms: 20.0118
+  type: 'test'
+  ...
+# Subtest: next action is navigation only and prioritizes saved task facts
+ok 7 - next action is navigation only and prioritizes saved task facts
+  ---
+  duration_ms: 0.6333
+  type: 'test'
+  ...
+# Subtest: 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+ok 8 - 丢弃提示：clear后恢复读取中与成功后都可见，不被同步notice清空
+  ---
+  duration_ms: 2.2531
+  type: 'test'
+  ...
+# Subtest: 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+ok 9 - 未保存的引用选择被清除后，恢复成功也可见丢弃提示
+  ---
+  duration_ms: 0.3604
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败：错误可见且丢弃提示仍可见
+ok 10 - 恢复读取失败：错误可见且丢弃提示仍可见
+  ---
+  duration_ms: 0.2677
+  type: 'test'
+  ...
+# Subtest: 没有未保存编辑时，清除提示不得声称丢弃了编辑
+ok 11 - 没有未保存编辑时，清除提示不得声称丢弃了编辑
+  ---
+  duration_ms: 0.2206
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：再次编辑后丢弃提示结束
+ok 12 - 提示生命周期：再次编辑后丢弃提示结束
+  ---
+  duration_ms: 0.265
+  type: 'test'
+  ...
+# Subtest: 提示生命周期：显式保存或复制后丢弃提示结束
+ok 13 - 提示生命周期：显式保存或复制后丢弃提示结束
+  ---
+  duration_ms: 0.5493
+  type: 'test'
+  ...
+# Subtest: 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+ok 14 - 恢复读取期间的输入保护不变，编辑开始即结束丢弃提示
+  ---
+  duration_ms: 0.272
+  type: 'test'
+  ...
+# Subtest: 清除提示是固定文案：不携带旧草稿文字等用户数据
+ok 15 - 清除提示是固定文案：不携带旧草稿文字等用户数据
+  ---
+  duration_ms: 0.2376
+  type: 'test'
+  ...
+# Subtest: 新会话不承接旧会话通知；dispose后旧回执不复活
+ok 16 - 新会话不承接旧会话通知；dispose后旧回执不复活
+  ---
+  duration_ms: 4.9923
+  type: 'test'
+  ...
+# Subtest: clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+ok 17 - clear时在途保存：迟到回执不复活任何状态，丢弃提示保持可见
+  ---
+  duration_ms: 0.7257
+  type: 'test'
+  ...
+# Subtest: clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+ok 18 - clear后旧DOM操作全部拒绝，恢复必须显式activate+load
+  ---
+  duration_ms: 0.2471
+  type: 'test'
+  ...
+# Subtest: 恢复后来源重验失败仍拒复制；门禁语义不变
+ok 19 - 恢复后来源重验失败仍拒复制；门禁语义不变
+  ---
+  duration_ms: 0.363
+  type: 'test'
+  ...
+# Subtest: 面板：普通切标签页保留编辑，刷新/切身份或任务前须保存，且不发送给企业
+ok 20 - 面板：普通切标签页保留编辑，刷新/切身份或任务前须保存，且不发送给企业
+  ---
+  duration_ms: 6.1365
+  type: 'test'
+  ...
+# Subtest: 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+ok 21 - 面板：丢弃提示独立渲染且读取中可见；与notice相同内容不重复
+  ---
+  duration_ms: 1.2058
+  type: 'test'
+  ...
+# Subtest: 恢复读取进行中再次清理身份/任务：第二次clear不得抹去丢弃提示
+ok 22 - 恢复读取进行中再次清理身份/任务：第二次clear不得抹去丢弃提示
+  ---
+  duration_ms: 0.2333
+  type: 'test'
+  ...
+# Subtest: 恢复读取失败后再次清理身份/任务：丢弃提示仍保持
+ok 23 - 恢复读取失败后再次清理身份/任务：丢弃提示仍保持
+  ---
+  duration_ms: 0.2278
+  type: 'test'
+  ...
+# Subtest: 成功恢复后再次清理身份/任务（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+ok 24 - 成功恢复后再次清理身份/任务（无新编辑）：丢弃提示保持，编辑仍按生命周期结束
+  ---
+  duration_ms: 0.148
+  type: 'test'
+  ...
+# Subtest: explicit save stays next to editor before collapsed reference candidates
+ok 25 - explicit save stays next to editor before collapsed reference candidates
+  ---
+  duration_ms: 0.3804
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 26 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 1.0832
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 27 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.3184
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 28 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.1572
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 29 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 7.5267
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 30 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 14.8922
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 31 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 10.0716
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 32 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 7.6678
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 33 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.7462
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 34 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 2.9987
+  type: 'test'
+  ...
+# Subtest: linked detail renders only selected requirement citations and keeps sources collapsed
+ok 35 - linked detail renders only selected requirement citations and keeps sources collapsed
+  ---
+  duration_ms: 9.3078
+  type: 'test'
+  ...
+# Subtest: synthetic radar never fabricates citations and supports fewer than three requirements
+ok 36 - synthetic radar never fabricates citations and supports fewer than three requirements
+  ---
+  duration_ms: 0.5373
+  type: 'test'
+  ...
+# Subtest: reference source cannot be presented as personal contribution
+ok 37 - reference source cannot be presented as personal contribution
+  ---
+  duration_ms: 0.6328
+  type: 'test'
+  ...
+# Subtest: radar adopted interpretation validated/false
+ok 38 - radar adopted interpretation validated/false
+  ---
+  duration_ms: 0.7143
+  type: 'test'
+  ...
+# Subtest: radar adopted interpretation rejected/false
+ok 39 - radar adopted interpretation rejected/false
+  ---
+  duration_ms: 0.4731
+  type: 'test'
+  ...
+# Subtest: radar adopted interpretation invalid_citations/false
+ok 40 - radar adopted interpretation invalid_citations/false
+  ---
+  duration_ms: 0.3757
+  type: 'test'
+  ...
+# Subtest: radar adopted interpretation validated/true
+ok 41 - radar adopted interpretation validated/true
+  ---
+  duration_ms: 0.4418
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 329.4049

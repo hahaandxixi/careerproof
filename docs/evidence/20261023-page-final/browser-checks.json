@@ -1,0 +1,88 @@
+{
+  "enterprise390": {
+    "before": {
+      "brandWidth": 74.8375,
+      "accountWidth": 260.3625
+    },
+    "after": {
+      "brandWidth": 147.8125,
+      "accountWidth": 187.3875
+    },
+    "pageOverflow": false,
+    "enterOpens": true,
+    "escapeClosesAndFocusesSummary": true,
+    "shiftTabCloses": true,
+    "logoutWorks": true,
+    "mouseOutside": "not verified; locator click did not trigger pointerdown close"
+  },
+  "materials": {
+    "existingMaterialsHelp": "concise download link",
+    "refreshWrap": "one line at 390",
+    "addFocus": "upload-workspace-title",
+    "newVersionFocus": "project-upload-title",
+    "projectTarget": "Campus Signup: 完整业务实现",
+    "fileSelectedOrUploaded": false,
+    "emptyState": "code reviewed only; no empty account created"
+  },
+  "growth": {
+    "refreshInTitle": true,
+    "refreshError": null,
+    "overflow390": false
+  },
+  "draft": {
+    "initialStatusAfterEdit": "有未保存修改",
+    "explicitSaveStatus": "已保存",
+    "saveVersionObserved": 4,
+    "refreshScreenshot": "draft-saved-refreshed-1280.png",
+    "savedContentAfterSwitchBack": true,
+    "unsavedDidNotReturn": true,
+    "otherAccountTaskDenied": true,
+    "otherAccountDraftFields": 0,
+    "otherAccountLeakedText": false,
+    "originalRestoredAfterReload": true,
+    "realHiddenTab": "pending native browser capability",
+    "realMinimize": "pending native browser capability"
+  },
+  "report": {
+    "sourceCitation": "R2-E2",
+    "citationTop1280": 120.2,
+    "headerBottom1280": 68.8,
+    "singleStepSequence": [
+      2,
+      3,
+      2
+    ],
+    "focusAfterNext": "H3",
+    "articleCountAfterEdit": 5,
+    "readerCountAfterEdit": 1,
+    "unsavedReviewRetainedAcrossSelection": true,
+    "allRequirementsEnterOpens": true,
+    "temporaryReviewSubmitted": false,
+    "overflow390": false
+  },
+  "enterpriseEvidence": {
+    "candidate": "林舟（虚构项目验证）",
+    "fixedMaterialVersion": 2,
+    "studentReportMaterialVersion": 4,
+    "selectedRequirement": "SQL",
+    "radarExpandedAndCollapsed": true,
+    "selectorRemainsAfterCollapse": true,
+    "overflow390": false
+  },
+  "console": {
+    "observedErrorsAndWarnings": []
+  },
+  "native": {
+    "browser": "Microsoft Edge",
+    "inventorySucceeded": true,
+    "windowState": "blocked: could not reliably determine current URL",
+    "inputsPerformed": false,
+    "zoomChanged": false,
+    "noVisibilitySimulation": true
+  },
+  "limitations": [
+    "Normal IAB viewport checks are not Windows native 200% zoom or hidden-tab/minimize acceptance.",
+    "No artificial unread count or long-company data injected into real account; 1200 unread and long name only static real-component test.",
+    "No new real AI calls, no independent user acceptance."
+  ]
+}
