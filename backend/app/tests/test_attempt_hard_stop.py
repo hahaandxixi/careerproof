@@ -199,6 +199,17 @@ async def wait_for_child_state(state_file: Path, wanted: str, child, log_file: P
         await asyncio.sleep(0.05)
 
 
+def assert_spawned_worker(worker, child, *, spawning_pid: int) -> None:
+    """Verify direct interpreter or its immediate launcher child before killing."""
+    assert child.poll() is None, "spawned interpreter has already exited"
+    if worker.pid == child.pid:
+        # Linux/base Python execute directly: its parent must be this pytest process.
+        assert worker.parent_pid == spawning_pid, "direct worker has unrelated parent"
+    else:
+        # Windows venv python.exe is a launcher; the marker names its real child.
+        assert worker.parent_pid == child.pid, "worker does not belong to spawned interpreter"
+
+
 def http_count(counter_file: Path) -> int:
     return int(counter_file.read_text(encoding="utf-8")) if counter_file.exists() else 0
 
@@ -301,12 +312,11 @@ async def test_real_child_hard_stop_then_database_only_recovery(
         state = await wait_for_child_state(state_file, "hanging", child, log_file)
 
         # Identity checks before the hard stop: the reported pid must be the live
-        # worker we spawned (child of the interpreter process on Windows), with the
+        # worker we spawned (direct interpreter or its launcher child), with the
         # right nonce, phase, task, schema, creation time and physical HTTP count.
         worker = WorkerProcess(state["pid"])
         try:
-            assert child.poll() is None
-            assert worker.parent_pid == child.pid
+            assert_spawned_worker(worker, child, spawning_pid=os.getpid())
             assert state["phase"] == phase and state["nonce"] == nonce
             assert state["task_id"] == str(task_id) and state["schema"] == schema
             creation = worker.creation_seconds
