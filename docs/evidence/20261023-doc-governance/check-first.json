@@ -1,0 +1,57 @@
+{
+  "history": [
+    {
+      "source": "阶段1-比赛需求拆解与项目总控.md",
+      "lines": 281,
+      "normalizedAndOriginalBytesMatch": true
+    },
+    {
+      "source": "docs/当前接力.md",
+      "lines": 263,
+      "normalizedAndOriginalBytesMatch": true
+    },
+    {
+      "source": "docs/任务清单.md",
+      "lines": 377,
+      "normalizedAndOriginalBytesMatch": true
+    }
+  ],
+  "documentsChecked": 19,
+  "localLinksChecked": 373,
+  "repositoryHostedLinksCheckedAgainstTree": 8,
+  "markdownFragmentsChecked": 40,
+  "openTasks": 10,
+  "handoffLines": 85,
+  "failures": [
+    {
+      "source": "docs/history/README.md",
+      "line": 15,
+      "destination": "../evidence/20261023-doc-governance/README.md",
+      "target": "docs/evidence/20261023-doc-governance/README.md",
+      "kind": "missing-path"
+    },
+    {
+      "source": "docs/任务清单.md",
+      "line": 16,
+      "destination": "evidence/20261023-doc-governance/workspace-before.json",
+      "target": "docs/evidence/20261023-doc-governance/workspace-before.json",
+      "kind": "missing-path"
+    },
+    {
+      "source": "docs/当前接力.md",
+      "line": 18,
+      "destination": "evidence/20261023-doc-governance/README.md",
+      "target": "docs/evidence/20261023-doc-governance/README.md",
+      "kind": "missing-path"
+    },
+    {
+      "source": "docs/当前接力.md",
+      "line": 34,
+      "destination": "evidence/20261023-doc-governance/verified-ci-summary.txt",
+      "target": "docs/evidence/20261023-doc-governance/verified-ci-summary.txt",
+      "kind": "missing-path"
+    }
+  ],
+  "warnings": [],
+  "limits": "No general external URL availability check, live application test, or new CI/model execution. GitHub main document URLs validated against this tree."
+}

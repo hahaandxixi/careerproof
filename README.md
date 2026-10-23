@@ -8,6 +8,7 @@ CareerProof 面向准备实习/校招、拥有本人简历与项目材料的学�
 - [功能演示文档](docs/guides/功能演示.md)：5分钟预览、双端投递与通知、缺口补证、撤回后重新投递的逐步演示。
 - [评审范围与交付限制](docs/guides/比赛交付.md)：核心链路、验收边界与待办。
 - [全部当前文档](docs/README.md)：按使用目的查找，历史证据统一分类。
+- 开发接管只先读仓库的[当前接力](https://github.com/hahaandxixi/careerproof/blob/main/docs/当前接力.md)与[任务清单](https://github.com/hahaandxixi/careerproof/blob/main/docs/任务清单.md)；历史设计不作为执行指令。这两个内部入口不随评审源码ZIP分发。
 
 ## 当前实现与边界
 

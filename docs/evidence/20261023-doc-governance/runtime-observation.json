@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-23T19:25:23.945224+08:00",
+  "readOnly": true,
+  "ports": {
+    "3138": {
+      "tcpReachable": true
+    },
+    "8114": {
+      "tcpReachable": true
+    },
+    "55445": {
+      "tcpReachable": true
+    }
+  },
+  "note": "TCP only; no database authentication, service mutation or runtime identity inference."
+}

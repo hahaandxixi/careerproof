@@ -1,0 +1,974 @@
+{
+  "baseCommit": "88e97736396a6c7e5f539a903cde91a34e14d65a",
+  "date": "2026-10-23",
+  "scope": "Full historical snapshots; only navigation, links and archive markers changed.",
+  "sources": [
+    {
+      "source": "阶段1-比赛需求拆解与项目总控.md",
+      "archive": "docs/history/阶段1-比赛需求拆解与产品设计基线.md",
+      "marker": "stage1",
+      "originalBytes": 37084,
+      "originalLines": 281,
+      "originalSha256": "8481749b82d724a578fb5c85882431e1b09bb0b233c81da1b807b93fb6615d8d",
+      "originalNormalizedSha256": "8d04fa3c3fb5f700da5830d7f38950c3a261544195f256b84db2c416d933928b",
+      "originalLineEndings": "CRLF",
+      "headNormalizedSha256": "8d04fa3c3fb5f700da5830d7f38950c3a261544195f256b84db2c416d933928b",
+      "includedPreexistingUncommittedText": false,
+      "linkEdits": [
+        {
+          "line": 3,
+          "before": "> 本文件为历史需求基线，章节中的阶段状态不代表当前实现。当前进度见[任务清单](docs/任务清单.md)，启动与演示见[使用与启动](docs/guides/使用与启动.md)。",
+          "after": "> 本文件为历史需求基线，章节中的阶段状态不代表当前实现。当前进度见[任务清单](../任务清单.md)，启动与演示见[使用与启动](../guides/使用与启动.md)。"
+        },
+        {
+          "line": 5,
+          "before": "2026-09-26 当前方向：**全部产品外部生成调用统一DeepSeek官方API**，学生报告/职业规划、企业岗位拆解与截图观察共用现有Key及`deepseek-flash`；不再要求更新智谱Key。合成截图真实回答、保存、缓存、本人核对与企业越权拒绝已验收；图片不参与评级，独立语义/区域验收仍待完成。历史工具完整报告与本机只读MCP已有真实记录。私有远程仓库已建立，技术PDF候选已生成；早期“远程仓库/PDF未完成”表述是历史，最终提交仍待复核。阶段4仍未全部通过，后续按[DeepSeek统一路线与能力验收](docs/guides/AI与数据边界.md)推进，不再用自估比例预测得分。",
+          "after": "2026-09-26 当前方向：**全部产品外部生成调用统一DeepSeek官方API**，学生报告/职业规划、企业岗位拆解与截图观察共用现有Key及`deepseek-flash`；不再要求更新智谱Key。合成截图真实回答、保存、缓存、本人核对与企业越权拒绝已验收；图片不参与评级，独立语义/区域验收仍待完成。历史工具完整报告与本机只读MCP已有真实记录。私有远程仓库已建立，技术PDF候选已生成；早期“远程仓库/PDF未完成”表述是历史，最终提交仍待复核。阶段4仍未全部通过，后续按[DeepSeek统一路线与能力验收](../guides/AI与数据边界.md)推进，不再用自估比例预测得分。"
+        },
+        {
+          "line": 7,
+          "before": "最新赛事对照：[赛事要求符合性对照（2026-09-17）](docs/evidence/历史验收汇编.md#record-089)。按用户提供的完整规则文本核验，项目选题与 Web 技术栈符合；独立 Git 历史、本地 OCR 和一次白名单 Function Calling 已落地。团队信息、远程仓库、正式视频和 30 页内 PDF 等提交项仍未完成。附件自身存在国赛奖项比例等矛盾，须以赛事个人中心最终规则复核。",
+          "after": "最新赛事对照：[赛事要求符合性对照（2026-09-17）](../evidence/历史验收汇编.md#record-089)。按用户提供的完整规则文本核验，项目选题与 Web 技术栈符合；独立 Git 历史、本地 OCR 和一次白名单 Function Calling 已落地。团队信息、远程仓库、正式视频和 30 页内 PDF 等提交项仍未完成。附件自身存在国赛奖项比例等矛盾，须以赛事个人中心最终规则复核。"
+        },
+        {
+          "line": 17,
+          "before": "2026-09-17 最新工程增量：项目已初始化为独立 Git 仓库，真实提交依次为当前基线、受控 Function Calling、本地 OCR 和真实模型对照。RapidOCR + ONNX Runtime 已支持扫描 PDF 与 PNG/JPG/WEBP/BMP，合成图片模型烟测识别三行预期文字，平均置信度 98.8%、耗时 1.203 秒；重启后的真实本地 API 上传任务完成、预览置信度 99%、四个预期词齐全。后端 180 项、前端 11 项、TypeScript 与 Next.js 生产构建通过。详见 [开发记录](docs/evidence/历史验收汇编.md#历史范围说明)、[OCR 说明](docs/guides/证据与产品能力.md) 与 [真实模型对照](docs/evidence/历史验收汇编.md#record-063)。",
+          "after": "2026-09-17 最新工程增量：项目已初始化为独立 Git 仓库，真实提交依次为当前基线、受控 Function Calling、本地 OCR 和真实模型对照。RapidOCR + ONNX Runtime 已支持扫描 PDF 与 PNG/JPG/WEBP/BMP，合成图片模型烟测识别三行预期文字，平均置信度 98.8%、耗时 1.203 秒；重启后的真实本地 API 上传任务完成、预览置信度 99%、四个预期词齐全。后端 180 项、前端 11 项、TypeScript 与 Next.js 生产构建通过。详见 [开发记录](../evidence/历史验收汇编.md#历史范围说明)、[OCR 说明](../guides/证据与产品能力.md) 与 [真实模型对照](../evidence/历史验收汇编.md#record-063)。"
+        },
+        {
+          "line": 19,
+          "before": "最新补测：[证据规则 v4 验收](docs/evidence/历史验收汇编.md#record-087)。规则文档已接入系统提示词；伪造声明与提示注入获得真实回答，前者误拦截已修复并离线复验。矛盾案例和新版数据库措辞报告仍因过载待验收，阶段状态不变。",
+          "after": "最新补测：[证据规则 v4 验收](../evidence/历史验收汇编.md#record-087)。规则文档已接入系统提示词；伪造声明与提示注入获得真实回答，前者误拦截已修复并离线复验。矛盾案例和新版数据库措辞报告仍因过载待验收，阶段状态不变。"
+        },
+        {
+          "line": 21,
+          "before": "最新规则对照：[九岗位 × 九材料的 81 组结果](backend/evals/role-matrix-20260916-run1.md)。45 项要求中仅 16 项有规则覆盖；后端 5/5、前端 2/5、测试 1/5、分析 1/5、产品 1/5、运营 3/5、运维 2/5、DBA 1/5、数据工程 0/5。报告页已展示实际覆盖，不能将跨岗位分数当作职业适合度排名。新增 TXT 样例多数不触发代码检测，需补齐工程样例与规则后再验收。",
+          "after": "最新规则对照：[九岗位 × 九材料的 81 组结果](../../backend/evals/role-matrix-20260916-run1.md)。45 项要求中仅 16 项有规则覆盖；后端 5/5、前端 2/5、测试 1/5、分析 1/5、产品 1/5、运营 3/5、运维 2/5、DBA 1/5、数据工程 0/5。报告页已展示实际覆盖，不能将跨岗位分数当作职业适合度排名。新增 TXT 样例多数不触发代码检测，需补齐工程样例与规则后再验收。"
+        },
+        {
+          "line": 23,
+          "before": "运维/DBA 续进：[第二轮 81 组规则对照](backend/evals/role-matrix-20260916-run2.md)。新增七类有限静态检测，规则入口覆盖提高到 23/45，运维及 DBA 均 5/5；这仅表示可寻找对应证据，不等于完整能力验证。新增可下载的运维、DBA 工程 ZIP，未执行脚本；缺少生产运行、性能对比和恢复演练仍明确标注。第一轮 16/45 与 TXT 基线保留为历史。",
+          "after": "运维/DBA 续进：[第二轮 81 组规则对照](../../backend/evals/role-matrix-20260916-run2.md)。新增七类有限静态检测，规则入口覆盖提高到 23/45，运维及 DBA 均 5/5；这仅表示可寻找对应证据，不等于完整能力验证。新增可下载的运维、DBA 工程 ZIP，未执行脚本；缺少生产运行、性能对比和恢复演练仍明确标注。第一轮 16/45 与 TXT 基线保留为历史。"
+        },
+        {
+          "line": 25,
+          "before": "运行补充：[运维/DBA 验收记录](docs/evidence/历史验收汇编.md#record-090)。9 月 16 日新规则、样例和类型检查已验证，但当时构建重启被审批额度限制拒绝；该阻塞已在 9 月 17 日通过正常构建重启解除。",
+          "after": "运行补充：[运维/DBA 验收记录](../evidence/历史验收汇编.md#record-090)。9 月 16 日新规则、样例和类型检查已验证，但当时构建重启被审批额度限制拒绝；该阻塞已在 9 月 17 日通过正常构建重启解除。"
+        },
+        {
+          "line": 27,
+          "before": "2026-09-17 运行更新：前次审批限制已解除，生产构建与正常重启成功，新规则已加载。两个工程 ZIP 经演示账号真实上传、解析、匹配、终态 SSE、报告读取和复核备注持久化均通过，详见 [9 月 17 日接口记录](backend/evals/ops-api-20260917.json)。这是规则模式 API 验收，不是浏览器点击或人工语义验收；阶段 4 仍未通过。",
+          "after": "2026-09-17 运行更新：前次审批限制已解除，生产构建与正常重启成功，新规则已加载。两个工程 ZIP 经演示账号真实上传、解析、匹配、终态 SSE、报告读取和复核备注持久化均通过，详见 [9 月 17 日接口记录](../../backend/evals/ops-api-20260917.json)。这是规则模式 API 验收，不是浏览器点击或人工语义验收；阶段 4 仍未通过。"
+        },
+        {
+          "line": 29,
+          "before": "新增 [逐项证据等级 v1](docs/guides/证据与产品能力.md)：等级与岗位权重独立，未找到证据及暂不支持不赋级；当前自动授予 1–3 级，4–5 级仅定义、未开放授予。旧报告按保存证据解读，不改写历史分数。后端完整回归 149 项通过，生产构建与重启完成，DBA 实际接口复核通过。",
+          "after": "新增 [逐项证据等级 v1](../guides/证据与产品能力.md)：等级与岗位权重独立，未找到证据及暂不支持不赋级；当前自动授予 1–3 级，4–5 级仅定义、未开放授予。旧报告按保存证据解读，不改写历史分数。后端完整回归 149 项通过，生产构建与重启完成，DBA 实际接口复核通过。"
+        },
+        {
+          "line": 31,
+          "before": "当前统一评级：[实践证据等级 v2](docs/guides/证据与产品能力.md)。已核对软考及 NCRE 官方说明，参考能力维度，自定义五档证据标准，不作考试等级映射。报告详情与列表移除旧分数，仅展示逐项评级；仅声明不再赋1级。此前 v1 和分数记录为历史，4–5级授予仍未开放。",
+          "after": "当前统一评级：[实践证据等级 v2](../guides/证据与产品能力.md)。已核对软考及 NCRE 官方说明，参考能力维度，自定义五档证据标准，不作考试等级映射。报告详情与列表移除旧分数，仅展示逐项评级；仅声明不再赋1级。此前 v1 和分数记录为历史，4–5级授予仍未开放。"
+        },
+        {
+          "line": 33,
+          "before": "2026-09-17 AI 评级升级：借鉴用户提供的技能图谱分层，新增“相关性、实质操作、完整任务”三项引用判据，让 AI 在证据上限内决定初评等级；规则降级与人工驳回保护保留。旧报告不回填 AI 评级。当前仍处于阶段4，详见 [AI评级验收](docs/evidence/历史验收汇编.md#record-003) 与 [统一评级规则](docs/guides/证据与产品能力.md)。",
+          "after": "2026-09-17 AI 评级升级：借鉴用户提供的技能图谱分层，新增“相关性、实质操作、完整任务”三项引用判据，让 AI 在证据上限内决定初评等级；规则降级与人工驳回保护保留。旧报告不回填 AI 评级。当前仍处于阶段4，详见 [AI评级验收](../evidence/历史验收汇编.md#record-003) 与 [统一评级规则](../guides/证据与产品能力.md)。"
+        },
+        {
+          "line": 41,
+          "before": "2026-09-22 职业推荐完成浏览器验收：合成材料得到软件开发方向和5个岗位，推荐依据可展开到源文件行号；390 × 844 无横向溢出，控制台无错误或警告。验收发现并修复了“推荐所选材料在岗位页丢失”的连续性问题，当前岗位入口会携带版本编号，岗位页只接受当前账号中解析完成的材料。前端16项、TypeScript与生产构建通过；推荐阶段未调用外部模型。详见 [职业推荐浏览器验收](docs/evidence/历史验收汇编.md#record-067)。",
+          "after": "2026-09-22 职业推荐完成浏览器验收：合成材料得到软件开发方向和5个岗位，推荐依据可展开到源文件行号；390 × 844 无横向溢出，控制台无错误或警告。验收发现并修复了“推荐所选材料在岗位页丢失”的连续性问题，当前岗位入口会携带版本编号，岗位页只接受当前账号中解析完成的材料。前端16项、TypeScript与生产构建通过；推荐阶段未调用外部模型。详见 [职业推荐浏览器验收](../evidence/历史验收汇编.md#record-067)。"
+        },
+        {
+          "line": 43,
+          "before": "2026-09-23 AI检索增量：真实报告主链路增加 `hybrid-lexical-v1`，固定检测器之后用有界词法排序补充低强度、源文件精确的候选，再交给既有上下文扩展和AI引用校验。候选不提高规则分数，注释行不进入候选；3个固定场景的路径与分数边界均通过。后端全量210项和Ruff通过。该实现不是语义embedding，下一阶段仍需接入本地语义模型并完成融合检索对照。详见[混合检索验收](docs/evidence/历史验收汇编.md#record-059)。",
+          "after": "2026-09-23 AI检索增量：真实报告主链路增加 `hybrid-lexical-v1`，固定检测器之后用有界词法排序补充低强度、源文件精确的候选，再交给既有上下文扩展和AI引用校验。候选不提高规则分数，注释行不进入候选；3个固定场景的路径与分数边界均通过。后端全量210项和Ruff通过。该实现不是语义embedding，下一阶段仍需接入本地语义模型并完成融合检索对照。详见[混合检索验收](../evidence/历史验收汇编.md#record-059)。"
+        },
+        {
+          "line": 60,
+          "before": "证据入口：[演示测试指南](docs/guides/使用与启动.md)、[九岗位配置](demo/jobs.json)、[演示初始化脚本](backend/evals/seed_demo.py)、[演示页面](jianli/src/app/demo/page.tsx)、[DOCX 解析器](backend/app/tools/document_parser.py)、[解析回归用例](backend/app/tests/test_docx_textboxes.py)。最新模型结果见 [DeepSeek 可信度验收](docs/evidence/历史验收汇编.md#record-010)；智谱记录保留为历史，不覆盖失败原文。",
+          "after": "证据入口：[演示测试指南](../guides/使用与启动.md)、[九岗位配置](../../demo/jobs.json)、[演示初始化脚本](../../backend/evals/seed_demo.py)、[演示页面](../../jianli/src/app/demo/page.tsx)、[DOCX 解析器](../../backend/app/tools/document_parser.py)、[解析回归用例](../../backend/app/tests/test_docx_textboxes.py)。最新模型结果见 [DeepSeek 可信度验收](../evidence/历史验收汇编.md#record-010)；智谱记录保留为历史，不覆盖失败原文。"
+        },
+        {
+          "line": 238,
+          "before": "- [项目 README](README.md)：项目名称、当前能力、限制和使用主线。",
+          "after": "- [项目 README](../../README.md)：项目名称、当前能力、限制和使用主线。"
+        },
+        {
+          "line": 239,
+          "before": "- [前端依赖与脚本](jianli/package.json)、[后端依赖与检查配置](backend/pyproject.toml)：技术栈及核验入口。",
+          "after": "- [前端依赖与脚本](../../jianli/package.json)、[后端依赖与检查配置](../../backend/pyproject.toml)：技术栈及核验入口。"
+        },
+        {
+          "line": 240,
+          "before": "- [真实匹配服务](backend/app/services/analysis.py)、[材料分析入口](backend/app/services/matching_materials.py)：规则分析、版本引用与报告持久化实际路径。",
+          "after": "- [真实匹配服务](../../backend/app/services/analysis.py)、[材料分析入口](../../backend/app/services/matching_materials.py)：规则分析、版本引用与报告持久化实际路径。"
+        },
+        {
+          "line": 241,
+          "before": "- [模型 Provider](backend/app/agents/provider.py)、[证据工作流](backend/app/agents/evidence_workflow.py)：千问调用、严格合约、引用校验和降级边界。",
+          "after": "- [模型 Provider](../../backend/app/agents/provider.py)、[证据工作流](../../backend/app/agents/evidence_workflow.py)：千问调用、严格合约、引用校验和降级边界。"
+        },
+        {
+          "line": 242,
+          "before": "- [任务页面](jianli/src/components/TaskView.tsx)、[报告页面](jianli/src/components/ReportDetail.tsx)：轮询状态、失败重试及来源展示。",
+          "after": "- [任务页面](../../jianli/src/components/TaskView.tsx)、[报告页面](../../jianli/src/components/ReportDetail.tsx)：轮询状态、失败重试及来源展示。"
+        },
+        {
+          "line": 243,
+          "before": "- [本地检索实现](backend/app/services/retrieval.py)、[分析数据模型](backend/app/models/analysis.py)：可复现的本地分块与向量检索基础，不作为已完成生成式 RAG 的证据。",
+          "after": "- [本地检索实现](../../backend/app/services/retrieval.py)、[分析数据模型](../../backend/app/models/analysis.py)：可复现的本地分块与向量检索基础，不作为已完成生成式 RAG 的证据。"
+        },
+        {
+          "line": 244,
+          "before": "- [规则评测基线](backend/evals/baseline-evidence-v3.json)、[隐私边界](docs/guides/AI与数据边界.md)、[赛前验收清单](docs/guides/比赛交付.md)：非外部模型 API 阶段的交付证据。",
+          "after": "- [规则评测基线](../../backend/evals/baseline-evidence-v3.json)、[隐私边界](../guides/AI与数据边界.md)、[赛前验收清单](../guides/比赛交付.md)：非外部模型 API 阶段的交付证据。"
+        },
+        {
+          "line": 245,
+          "before": "- [后端说明](backend/README.md)、[前端说明](jianli/README.md)：功能与已知限制的交叉核对。",
+          "after": "- [后端说明](../../backend/README.md)、[前端说明](../../jianli/README.md)：功能与已知限制的交叉核对。"
+        }
+      ]
+    },
+    {
+      "source": "docs/当前接力.md",
+      "archive": "docs/history/202610-开发历程.md",
+      "marker": "handoff",
+      "originalBytes": 57533,
+      "originalLines": 263,
+      "originalSha256": "125bc0d47fcb33789d983a65c7a2395741ceb9231b97e4175dba6537ffe6aae2",
+      "originalNormalizedSha256": "125bc0d47fcb33789d983a65c7a2395741ceb9231b97e4175dba6537ffe6aae2",
+      "originalLineEndings": "LF",
+      "headNormalizedSha256": "9f8f521a16097f474cd87d6fbdb7b80eeda8efcd144c64183f0681e80d5187e4",
+      "includedPreexistingUncommittedText": true,
+      "linkEdits": [
+        {
+          "line": 6,
+          "before": "- 独立前端3138构建 `HNdt9SK706tuGRbc0NPbL` 与接受源码一致，继续使用既有合成API8114、PG55445；3136/3137与正常站未启停。[候选、截图、命令与待验](evidence/20261023-page-final/README.md)。",
+          "after": "- 独立前端3138构建 `HNdt9SK706tuGRbc0NPbL` 与接受源码一致，继续使用既有合成API8114、PG55445；3136/3137与正常站未启停。[候选、截图、命令与待验](../evidence/20261023-page-final/README.md)。"
+        },
+        {
+          "line": 16,
+          "before": "- 独立3137/既有合成API8114，构建E_NOkpjgVH-G2jRhfgdvS；明确接受文件集验收，原工作树48项其他修改保留。前端439通过，类型/lint/构建通过，既有img警告保留。[版本、截图、命令和边界](evidence/20261023-layout-closeout/README.md)。",
+          "after": "- 独立3137/既有合成API8114，构建E_NOkpjgVH-G2jRhfgdvS；明确接受文件集验收，原工作树48项其他修改保留。前端439通过，类型/lint/构建通过，既有img警告保留。[版本、截图、命令和边界](../evidence/20261023-layout-closeout/README.md)。"
+        },
+        {
+          "line": 25,
+          "before": "- 集成后本地SQLite 1590通过/91跳过/0失败；严格PG141、真实强停8及JUnit门禁通过；Ruff、迁移/模型对齐及前端构建通过。[命令、证据和当前CI入口](evidence/20261023-ci-repair/README.md)。远端Linux结论以实际main对应CI为准，旧Windows结果不替代。",
+          "after": "- 集成后本地SQLite 1590通过/91跳过/0失败；严格PG141、真实强停8及JUnit门禁通过；Ruff、迁移/模型对齐及前端构建通过。[命令、证据和当前CI入口](../evidence/20261023-ci-repair/README.md)。远端Linux结论以实际main对应CI为准，旧Windows结果不替代。"
+        },
+        {
+          "line": 33,
+          "before": "- 工程接受版本为本地提交`ec1e5e5`；产品修复`9f7b398`、`7a76dd9`。37份明确接受文件与验收副本、提交内容逐项一致，未混入UUID旧helper、其他页面/指南/PDF等工作区成果。[根因、实际红绿与源码清单](evidence/20261022-core-acceptance/README.md)。",
+          "after": "- 工程接受版本为本地提交`ec1e5e5`；产品修复`9f7b398`、`7a76dd9`。37份明确接受文件与验收副本、提交内容逐项一致，未混入UUID旧helper、其他页面/指南/PDF等工作区成果。[根因、实际红绿与源码清单](../evidence/20261022-core-acceptance/README.md)。"
+        },
+        {
+          "line": 49,
+          "before": "- 当前接受副本 `backend/.tmp/agent-result-20261022/source`，基线5cf7929加11个文件，构建 `B8CG2lzV2Ru6v8lFe1Dpk`。8112 API、3133前端与专属55442合成PG保留运行供用户查看，禁外部AI；正常3000/3001/3108/8108未启停。账号查找、页面入口、文件哈希及范围见[本轮记录](evidence/20261022-agent-result-integration/README.md)。",
+          "after": "- 当前接受副本 `backend/.tmp/agent-result-20261022/source`，基线5cf7929加11个文件，构建 `B8CG2lzV2Ru6v8lFe1Dpk`。8112 API、3133前端与专属55442合成PG保留运行供用户查看，禁外部AI；正常3000/3001/3108/8108未启停。账号查找、页面入口、文件哈希及范围见[本轮记录](../evidence/20261022-agent-result-integration/README.md)。"
+        },
+        {
+          "line": 53,
+          "before": "- 人工复核新增收件：已收到一位独立评审者填写的三例、12项判断；用户确认日期为2026-10-22、未参与实现且先读标准。输入、引用映射和模型原文与v2交付包一致。M01整文件覆盖理由和M03仅指向M02的行号仍待本人澄清，不代改结论、不汇总通过率；原表按字节保留在本机review目录，未纳入源码提交。旧0/3或江博未填项仅对应当时记录，不能覆盖此次收件。[收件事实与限制](evidence/20261022-agent-result-integration/README.md#人工复核新收件)。",
+          "after": "- 人工复核新增收件：已收到一位独立评审者填写的三例、12项判断；用户确认日期为2026-10-22、未参与实现且先读标准。输入、引用映射和模型原文与v2交付包一致。M01整文件覆盖理由和M03仅指向M02的行号仍待本人澄清，不代改结论、不汇总通过率；原表按字节保留在本机review目录，未纳入源码提交。旧0/3或江博未填项仅对应当时记录，不能覆盖此次收件。[收件事实与限制](../evidence/20261022-agent-result-integration/README.md#人工复核新收件)。"
+        },
+        {
+          "line": 60,
+          "before": "- 实际接受源码副本为 `backend/.tmp/source-identity-20261022/source`，基线2734621加明确文件集；构建 `HcR0P85IxK-L4gqVCIZbk`，各文件哈希及桌面/390px记录见[来源验收](evidence/20261022-report-uuid-display/accepted/README.md)。3108/8108不是这份构建，未重启正常站。新规则报告fdd97afc…用于两个项目同名文件；旧fda4ec24…投递保持固定，新增专属合成投递/viewed事件，不改正常库。补证既有任务仍指向其历史5960cf5d…，没有替换目标或抬级。",
+          "after": "- 实际接受源码副本为 `backend/.tmp/source-identity-20261022/source`，基线2734621加明确文件集；构建 `HcR0P85IxK-L4gqVCIZbk`，各文件哈希及桌面/390px记录见[来源验收](../evidence/20261022-report-uuid-display/accepted/README.md)。3108/8108不是这份构建，未重启正常站。新规则报告fdd97afc…用于两个项目同名文件；旧fda4ec24…投递保持固定，新增专属合成投递/viewed事件，不改正常库。补证既有任务仍指向其历史5960cf5d…，没有替换目标或抬级。"
+        },
+        {
+          "line": 61,
+          "before": "- 用户追加的上传内容核对已接入：本地短语/组合提示四类风险，解析后在任务页展示位置与上传修正版入口；不是上传阻断或违规判定，源码/测试/引用可误命中，不改评级。真实上传任务与边界见[内容提示验收](evidence/20261022-content-warnings/README.md)。检测载荷不包含命中原文，也不注入模型或索引文本。",
+          "after": "- 用户追加的上传内容核对已接入：本地短语/组合提示四类风险，解析后在任务页展示位置与上传修正版入口；不是上传阻断或违规判定，源码/测试/引用可误命中，不改评级。真实上传任务与边界见[内容提示验收](../evidence/20261022-content-warnings/README.md)。检测载荷不包含命中原文，也不注入模型或索引文本。"
+        },
+        {
+          "line": 71,
+          "before": "- 最终规则报告 `fda4ec24-3534-4a4e-80aa-2d5959b0c87e` 明确列出函数与行号，识别已有测试和运行材料，建议先核验输入/输出/版本，只补未覆盖场景，不重复上传。旧报告、投递、通知和AI表未改；初版新报告也保留。[结果/命令/限制](evidence/20261022-test-source-selection/README.md)。",
+          "after": "- 最终规则报告 `fda4ec24-3534-4a4e-80aa-2d5959b0c87e` 明确列出函数与行号，识别已有测试和运行材料，建议先核验输入/输出/版本，只补未覆盖场景，不重复上传。旧报告、投递、通知和AI表未改；初版新报告也保留。[结果/命令/限制](../evidence/20261022-test-source-selection/README.md)。"
+        },
+        {
+          "line": 137,
+          "before": "- 临时文件首批清理完成：255目录/25,330文件/4.516 GiB（pytest生成物、旧Next编译cache及可读Ruff缓存）。当前构建/依赖、材料、全部历史证据及P2保留；1626个受保护文件删除前后hash相同，正常站/API与日常启动预检通过。60处不可读目录跳过、不改权限。未执行79号文档/任务卡删除部分。[精确清单](evidence/20261019-cleanup-pass1/README.md)。",
+          "after": "- 临时文件首批清理完成：255目录/25,330文件/4.516 GiB（pytest生成物、旧Next编译cache及可读Ruff缓存）。当前构建/依赖、材料、全部历史证据及P2保留；1626个受保护文件删除前后hash相同，正常站/API与日常启动预检通过。60处不可读目录跳过、不改权限。未执行79号文档/任务卡删除部分。[精确清单](../evidence/20261019-cleanup-pass1/README.md)。"
+        },
+        {
+          "line": 139,
+          "before": "- 82号剩余修复已接入：新旧企业分离、有效唯一owner、来源全项核对、重跑不复活、并发3/0；正常新增3个精选岗位、收起9个旧目录岗位但原36岗位/报告/投递/快照保留，二次重跑39表完全不变。18后端/49前端目标测试、type/lint/build通过；真实1280/390页面及6下载hash通过。正常列表4条（另外1条企业原有岗位缺本轮来源依据，保留），日常cmd当前自动选dep-frontend-20261019-picker；后续已去掉材料搜索栏CP示例和旧编号指引（8项相关测试、目标lint/构建及实际页面通过）。使用指南改走三套场景。[证据与未验范围](evidence/20261019-task82-fixes/README.md)。",
+          "after": "- 82号剩余修复已接入：新旧企业分离、有效唯一owner、来源全项核对、重跑不复活、并发3/0；正常新增3个精选岗位、收起9个旧目录岗位但原36岗位/报告/投递/快照保留，二次重跑39表完全不变。18后端/49前端目标测试、type/lint/build通过；真实1280/390页面及6下载hash通过。正常列表4条（另外1条企业原有岗位缺本轮来源依据，保留），日常cmd当前自动选dep-frontend-20261019-picker；后续已去掉材料搜索栏CP示例和旧编号指引（8项相关测试、目标lint/构建及实际页面通过）。使用指南改走三套场景。[证据与未验范围](../evidence/20261019-task82-fixes/README.md)。"
+        },
+        {
+          "line": 141,
+          "before": "- 82误迁移已核：正常库0021两列默认false/true，36岗位原字段及报告/投递/快照等不变，另有refresh_tokens摘要变化不归因。保留0021，不在正常库downgrade；专属55437往返/模型check/发现谓词通过，防误-x红2→绿3、相关15通过。[处置](evidence/20261019-task82-integration/README.md)。代码库仅先签收兼容迁移/模型与安全拦截；后续修复与正常站验收已完成，见下条。",
+          "after": "- 82误迁移已核：正常库0021两列默认false/true，36岗位原字段及报告/投递/快照等不变，另有refresh_tokens摘要变化不归因。保留0021，不在正常库downgrade；专属55437往返/模型check/发现谓词通过，防误-x红2→绿3、相关15通过。[处置](../evidence/20261019-task82-integration/README.md)。代码库仅先签收兼容迁移/模型与安全拦截；后续修复与正常站验收已完成，见下条。"
+        },
+        {
+          "line": 142,
+          "before": "- dece154专属PG补验67通过/0失败/0跳过（59常规＋8真实硬停）；原7项PG未变不重跑。源码hash前后一致，正常39表摘要相同，测试库0残留schema、容器已移除。[证据](evidence/20261019-postgres-skipped-coverage/README.md)。仍非冻结候选或远端CI。",
+          "after": "- dece154专属PG补验67通过/0失败/0跳过（59常规＋8真实硬停）；原7项PG未变不重跑。源码hash前后一致，正常39表摘要相同，测试库0残留schema、容器已移除。[证据](../evidence/20261019-postgres-skipped-coverage/README.md)。仍非冻结候选或远端CI。"
+        },
+        {
+          "line": 143,
+          "before": "- 81号M03经生产rubric核对：名称相似不够，不能把算法函数名等同FastAPI路由结构。未证实需改级，不采纳自动改1级；离线真实展示函数保持null/AI未确认相关实践证据，不变零分。反事实也能通过结构校验，说明其不代语义裁判；人工0、不外发、不改历史。[核对依据](evidence/20261019-harness81-ai-output-review/codex-adjudication.md)。82现已交回，见顶部处置，不覆盖原始交棒。",
+          "after": "- 81号M03经生产rubric核对：名称相似不够，不能把算法函数名等同FastAPI路由结构。未证实需改级，不采纳自动改1级；离线真实展示函数保持null/AI未确认相关实践证据，不变零分。反事实也能通过结构校验，说明其不代语义裁判；人工0、不外发、不改历史。[核对依据](../evidence/20261019-harness81-ai-output-review/codex-adjudication.md)。82现已交回，见顶部处置，不覆盖原始交棒。"
+        },
+        {
+          "line": 144,
+          "before": "- 用户明确岗位发现不应堆满合成测试岗位。三套原创市场场景已接入，9个旧目录岗位从发现收起但保持published；82号本轮范围已验收，不能删除旧报告/投递或关闭旧岗位破坏成长链。[资料](../demo/market-scenarios/README.md)/[任务](task-cards/20261019-HARNESS82-job-discovery-curation.md)。81号辅助复核已回，人工0；用量在嵌套response.usage，已核9496/1315不缺失。",
+          "after": "- 用户明确岗位发现不应堆满合成测试岗位。三套原创市场场景已接入，9个旧目录岗位从发现收起但保持published；82号本轮范围已验收，不能删除旧报告/投递或关闭旧岗位破坏成长链。[资料](../../demo/market-scenarios/README.md)/[任务](../task-cards/20261019-HARNESS82-job-discovery-curation.md)。81号辅助复核已回，人工0；用量在嵌套response.usage，已核9496/1315不缺失。"
+        },
+        {
+          "line": 145,
+          "before": "- 58491a6真实规则任务ec7c7076…：25%实时SSE→完成2.4秒，模型未调用、AI表与旧投递/快照/通知不变；390px/键盘历史通过。仍未验真实断线、hidden、reduced-motion偏好。[证据](evidence/20261019-normal-task-progress/README.md)。",
+          "after": "- 58491a6真实规则任务ec7c7076…：25%实时SSE→完成2.4秒，模型未调用、AI表与旧投递/快照/通知不变；390px/键盘历史通过。仍未验真实断线、hidden、reduced-motion偏好。[证据](../evidence/20261019-normal-task-progress/README.md)。"
+        },
+        {
+          "line": 146,
+          "before": "- 26a64b9后端完整SQLite单次1404通过/0失败/74专属PG跳过，Ruff与28项pin核对通过；不再沿用10/17全量8失败作为当前故障。无业务改动/安装，不代冻结候选或完整PG验收。[原始JUnit与范围](evidence/20261019-backend-integrated-regression/README.md)。",
+          "after": "- 26a64b9后端完整SQLite单次1404通过/0失败/74专属PG跳过，Ruff与28项pin核对通过；不再沿用10/17全量8失败作为当前故障。无业务改动/安装，不代冻结候选或完整PG验收。[原始JUnit与范围](../evidence/20261019-backend-integrated-regression/README.md)。"
+        },
+        {
+          "line": 147,
+          "before": "- 26a64b9已记录已有报告三步投递实测：默认未授权→定位→明确勾选→提交成功；只新增合成DBA投递83178baf…，原四投递/快照及报告不变。正常站恢复沿用原卷，启动前后39表摘要一致。[证据](evidence/20261019-report-submit-walkthrough/README.md)。81号三例AI辅助复核现已回，见顶部最新状态，不代人工评分。",
+          "after": "- 26a64b9已记录已有报告三步投递实测：默认未授权→定位→明确勾选→提交成功；只新增合成DBA投递83178baf…，原四投递/快照及报告不变。正常站恢复沿用原卷，启动前后39表摘要一致。[证据](../evidence/20261019-report-submit-walkthrough/README.md)。81号三例AI辅助复核现已回，见顶部最新状态，不代人工评分。"
+        },
+        {
+          "line": 148,
+          "before": "- 用户明确授权后，10/18 23:57:55—23:58:00完成首批3次DeepSeek真实调用，结构/引用校验3通过，无重试/修复外发；回执9496输入/1315输出，按当日周末价估算约0.01元（非账单）。实际claim已用满且保留，不重跑/不删claim。人工评审数仍0，三例不代12例或整站真实AI链；[原响应与三例人工表](evidence/20261017-task70-semantic-review-packet/review.md)。执行器d31e01d，执行源码7197f35。",
+          "after": "- 用户明确授权后，10/18 23:57:55—23:58:00完成首批3次DeepSeek真实调用，结构/引用校验3通过，无重试/修复外发；回执9496输入/1315输出，按当日周末价估算约0.01元（非账单）。实际claim已用满且保留，不重跑/不删claim。人工评审数仍0，三例不代12例或整站真实AI链；[原响应与三例人工表](../evidence/20261017-task70-semantic-review-packet/review.md)。执行器d31e01d，执行源码7197f35。"
+        },
+        {
+          "line": 149,
+          "before": "- 7197f35新增6分22秒普通话合成配音草稿，1080p编码/AAC、解码通过/关键帧目检；原片低帧率/跨日期，35段末帧合计延长23秒。人工完整试听、候选同步与新AI段仍待；片尾待授权是生成时旧状态。MP4/WAV/原帧在ignored output/video，勿清理。[记录与指纹](evidence/20261018-growth-completion/README.md)。",
+          "after": "- 7197f35新增6分22秒普通话合成配音草稿，1080p编码/AAC、解码通过/关键帧目检；原片低帧率/跨日期，35段末帧合计延长23秒。人工完整试听、候选同步与新AI段仍待；片尾待授权是生成时旧状态。MP4/WAV/原帧在ignored output/video，勿清理。[记录与指纹](../evidence/20261018-growth-completion/README.md)。"
+        },
+        {
+          "line": 154,
+          "before": "- 历史记录（旧目标）：10/22停新增、10/26冻结、10/29准备交付，已标为 11/15 截止下待重排；用户新赛道原文省赛11/18，校内截止已确认为 2026-11-15，旧11/23、29仅历史。视频需5—8分钟/普通话/≥1080p，当前4分21无声不合要求。d31e01d已交AI发送前守卫与21离线检查（含重启/独立进程争抢），真实调用0、三例授权待确认；不得删除批次claim续额度。使用文档479971d已从启动重排。[材料要求](guides/比赛交付.md)/[AI证据](evidence/20261017-task70-semantic-review-packet/review.md)。",
+          "after": "- 历史记录（旧目标）：10/22停新增、10/26冻结、10/29准备交付，已标为 11/15 截止下待重排；用户新赛道原文省赛11/18，校内截止已确认为 2026-11-15，旧11/23、29仅历史。视频需5—8分钟/普通话/≥1080p，当前4分21无声不合要求。d31e01d已交AI发送前守卫与21离线检查（含重启/独立进程争抢），真实调用0、三例授权待确认；不得删除批次claim续额度。使用文档479971d已从启动重排。[材料要求](../guides/比赛交付.md)/[AI证据](../evidence/20261017-task70-semantic-review-packet/review.md)。"
+        },
+        {
+          "line": 156,
+          "before": "- 本地已提交5714f55（独立PG并发测试）、fa8fbbd（检索/解析/上传回归）、00c74cc（前端异步与真实进度）。PG7、解析31、相邻19、前端335/类型/构建通过，lint保留1图片警告；不是后端全量或冻结候选。[当前证据](evidence/20261018-codex-ui-integration/README.md)。",
+          "after": "- 本地已提交5714f55（独立PG并发测试）、fa8fbbd（检索/解析/上传回归）、00c74cc（前端异步与真实进度）。PG7、解析31、相邻19、前端335/类型/构建通过，lint保留1图片警告；不是后端全量或冻结候选。[当前证据](../evidence/20261018-codex-ui-integration/README.md)。"
+        },
+        {
+          "line": 157,
+          "before": "- 正常3000/8000已沿原库恢复，78号加总控补充已提交1d36141；日常双击Start-Local.cmd/Stop-Local.cmd。实体前端dep-frontend-20261018与.venv-dependency23正常服务，重复启动进程不变，实际stop/restart后全表摘要一致、0020不变；3106已停，3001/P2不动。[恢复与正常任务页](evidence/20261018-launcher-recovery/README.md)。",
+          "after": "- 正常3000/8000已沿原库恢复，78号加总控补充已提交1d36141；日常双击Start-Local.cmd/Stop-Local.cmd。实体前端dep-frontend-20261018与.venv-dependency23正常服务，重复启动进程不变，实际stop/restart后全表摘要一致、0020不变；3106已停，3001/P2不动。[恢复与正常任务页](../evidence/20261018-launcher-recovery/README.md)。"
+        },
+        {
+          "line": 158,
+          "before": "- 10/18已完成既有补证任务0c67132f…：保留原简历、原项目v2→规则新报告bf856aaa…→Redis局部操作与5—10行来源；原投递/事件/通知/AI表摘要均不变。35段4分21秒双端＋补证视频草稿已有，原帧与MP4留在ignored output/video，勿清理；缺配音/完整人工审片。[证据](evidence/20261018-growth-completion/README.md)。下一步通知完整离窗、五步首次路线、reduced-motion真实偏好；真人首次用户、真实AI语义、许可/签署/评审访问/冻结材料仍待。79未开始。",
+          "after": "- 10/18已完成既有补证任务0c67132f…：保留原简历、原项目v2→规则新报告bf856aaa…→Redis局部操作与5—10行来源；原投递/事件/通知/AI表摘要均不变。35段4分21秒双端＋补证视频草稿已有，原帧与MP4留在ignored output/video，勿清理；缺配音/完整人工审片。[证据](../evidence/20261018-growth-completion/README.md)。下一步通知完整离窗、五步首次路线、reduced-motion真实偏好；真人首次用户、真实AI语义、许可/签署/评审访问/冻结材料仍待。79未开始。"
+        },
+        {
+          "line": 161,
+          "before": "更新：2026-10-17。实际Git根 `D:\\jbcode\\web ai\\jianli`，main；当前HEAD以 `git log -1` 为准。入口只读本页、[任务清单](任务清单.md)和下一任务卡；职责见[协作规则](协作规则.md)。",
+          "after": "更新：2026-10-17。实际Git根 `D:\\jbcode\\web ai\\jianli`，main；当前HEAD以 `git log -1` 为准。入口只读本页、[任务清单](../任务清单.md)和下一任务卡；职责见[协作规则](../协作规则.md)。"
+        },
+        {
+          "line": 165,
+          "before": "- ca911fd已集成Z57分页后端、Codex分页前端、Z58 lint；Z59/Harness60独立审查已返回。四类列表分页、通知pageSize兼容、播种/冒烟调用者适配已落地。前端316/类型/构建/lint通过（7警告保留），专属PG8通过。全量SQLite首跑1340通过/8失败/67跳过；修后受影响55通过，未重跑全量，不拼成单次全绿。[集成与边界](evidence/20261017-pagination-integration/README.md)",
+          "after": "- ca911fd已集成Z57分页后端、Codex分页前端、Z58 lint；Z59/Harness60独立审查已返回。四类列表分页、通知pageSize兼容、播种/冒烟调用者适配已落地。前端316/类型/构建/lint通过（7警告保留），专属PG8通过。全量SQLite首跑1340通过/8失败/67跳过；修后受影响55通过，未重跑全量，不拼成单次全绿。[集成与边界](../evidence/20261017-pagination-integration/README.md)"
+        },
+        {
+          "line": 173,
+          "before": "- 本轮正常站新CP01合成材料→规则报告 `1b6c0425-848a-4229-8cc8-cc4d4447ba54`。旧有效投递阻止覆盖，明确撤回旧授权后创建新投递 `b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3`；企业已站内测试回复，学生通知定位正确，最终恢复合成学生会话。原8快照内容哈希不变，旧详情/查看/下载404，新详情200，0外部模型请求。[实测与3分18秒视频](evidence/20261016-video-student-chain/summary.json)。",
+          "after": "- 本轮正常站新CP01合成材料→规则报告 `1b6c0425-848a-4229-8cc8-cc4d4447ba54`。旧有效投递阻止覆盖，明确撤回旧授权后创建新投递 `b756d9c2-f7e9-47d4-a12c-8e1bc61a54f3`；企业已站内测试回复，学生通知定位正确，最终恢复合成学生会话。原8快照内容哈希不变，旧详情/查看/下载404，新详情200，0外部模型请求。[实测与3分18秒视频](../evidence/20261016-video-student-chain/summary.json)。"
+        },
+        {
+          "line": 179,
+          "before": "- 已增加一次性隔离HTTP演示：`backend` 下升级Python运行 `-m evals.release_smoke --run-id <新run> --prepare`，复用Start-E2E，不改普通启动入口；四新run通过、隔离守卫22通过、46权限/成长/通知专项通过（PG/临时SQLite分列）。[证据](evidence/20261012-release-gate/README.md)。",
+          "after": "- 已增加一次性隔离HTTP演示：`backend` 下升级Python运行 `-m evals.release_smoke --run-id <新run> --prepare`，复用Start-E2E，不改普通启动入口；四新run通过、隔离守卫22通过、46权限/成长/通知专项通过（PG/临时SQLite分列）。[证据](../evidence/20261012-release-gate/README.md)。"
+        },
+        {
+          "line": 183,
+          "before": "- 执行端已按用户要求从Trae改为DeepSeek Harness；jbcode工作区Flash High已于22:30执行Harness50首页任务，22:33交棒，Codex集成修正与验证。DeepSeek工作日北京时间09—12/14—18避峰；46号独立审查仍未执行。ZCode当前无额度，暂停调用；旧每周90%规划不代表当前有可用额度。任务卡见[Harness46](task-cards/20261013-HARNESS46-release-smoke-review.md)。",
+          "after": "- 执行端已按用户要求从Trae改为DeepSeek Harness；jbcode工作区Flash High已于22:30执行Harness50首页任务，22:33交棒，Codex集成修正与验证。DeepSeek工作日北京时间09—12/14—18避峰；46号独立审查仍未执行。ZCode当前无额度，暂停调用；旧每周90%规划不代表当前有可用额度。任务卡见[Harness46](../task-cards/20261013-HARNESS46-release-smoke-review.md)。"
+        },
+        {
+          "line": 188,
+          "before": "用户提供仓库外CareerProof整改清单。a1caa83已修生产默认密钥/Debug/API文档、Ruff与过期说明；配置+认证33通过、新配置独立16，529本地文件链接无缺失。ZCode48交付6组件标签；Codex补演示可达分数与去重，目标20、最终全量250/类型/独立Next15.5.27构建通过。不改公式/历史值，65非能力满分。新标签浏览器验收待补：额外3088服务启动自动审批拒绝，未绕过。见[整改处置](evidence/20261013-remediation/README.md)。原guard/launcher修改、P2和用户空白继续保留。",
+          "after": "用户提供仓库外CareerProof整改清单。a1caa83已修生产默认密钥/Debug/API文档、Ruff与过期说明；配置+认证33通过、新配置独立16，529本地文件链接无缺失。ZCode48交付6组件标签；Codex补演示可达分数与去重，目标20、最终全量250/类型/独立Next15.5.27构建通过。不改公式/历史值，65非能力满分。新标签浏览器验收待补：额外3088服务启动自动审批拒绝，未绕过。见[整改处置](../evidence/20261013-remediation/README.md)。原guard/launcher修改、P2和用户空白继续保留。"
+        },
+        {
+          "line": 192,
+          "before": "删除过期供应商/GOAL/接力及旧赛事可视化；历史验收和已结束任务协议集中在 evidence，未签收的 33/35/36/37/39/40/41 与待发送 Harness46 保留。分类指南不再混入旧配置、余额及待开发规划；详见[文档入口](README.md)。本轮仅文档，不签收 guard/launcher，也不新增网站功能完成结论。",
+          "after": "删除过期供应商/GOAL/接力及旧赛事可视化；历史验收和已结束任务协议集中在 evidence，未签收的 33/35/36/37/39/40/41 与待发送 Harness46 保留。分类指南不再混入旧配置、余额及待开发规划；详见[文档入口](../README.md)。本轮仅文档，不签收 guard/launcher，也不新增网站功能完成结论。"
+        },
+        {
+          "line": 196,
+          "before": "用户转向完善度与美观度。首页明确两角色/合成预览/三步路线，雷达图例与要求选择分层、来源默认收起；真实热力图用证据状态配色，与合成示例一致，原阈值75无法让当前上限65显示绿色。最终前端251、升级类型/独立生产构建通过，未改评分或数据库。file://浏览器预览被安全策略拒绝，未绕过；真实新版页面验收待补。[证据](evidence/20261013-experience-polish/README.md)。Z49 CI草案18自测已交付但干净快照暴露SQLite20失败/1错误及PG34失败/3错误，尚未签收；失败保留，未放宽门禁。",
+          "after": "用户转向完善度与美观度。首页明确两角色/合成预览/三步路线，雷达图例与要求选择分层、来源默认收起；真实热力图用证据状态配色，与合成示例一致，原阈值75无法让当前上限65显示绿色。最终前端251、升级类型/独立生产构建通过，未改评分或数据库。file://浏览器预览被安全策略拒绝，未绕过；真实新版页面验收待补。[证据](../evidence/20261013-experience-polish/README.md)。Z49 CI草案18自测已交付但干净快照暴露SQLite20失败/1错误及PG34失败/3错误，尚未签收；失败保留，未放宽门禁。"
+        },
+        {
+          "line": 201,
+          "before": "- dc5cfb9报告页动作层第一、二项已实施：四组从完整items派生，建议仅附加，同句去重，管理员兜底；前端262/升级类型/独立生产构建通过。第三项推荐为主未实施，真实点击/390px/同学前后对比仍待验。[记录](evidence/20261014-report-action-layer/README.md)",
+          "after": "- dc5cfb9报告页动作层第一、二项已实施：四组从完整items派生，建议仅附加，同句去重，管理员兜底；前端262/升级类型/独立生产构建通过。第三项推荐为主未实施，真实点击/390px/同学前后对比仍待验。[记录](../evidence/20261014-report-action-layer/README.md)"
+        },
+        {
+          "line": 202,
+          "before": "- 四个测试夹具修正与独立26专项通过；完整SQLite首跑遗漏评测JSON造成5失败/10错误，补齐Git资源后两个评测模块38通过，完整未再次重跑。Docker Engine不可用，PG与CI草案未签收；不改产品默认预算。[记录](evidence/20261014-ci-fixture-repair/README.md)",
+          "after": "- 四个测试夹具修正与独立26专项通过；完整SQLite首跑遗漏评测JSON造成5失败/10错误，补齐Git资源后两个评测模块38通过，完整未再次重跑。Docker Engine不可用，PG与CI草案未签收；不改产品默认预算。[记录](../evidence/20261014-ci-fixture-repair/README.md)"
+        },
+        {
+          "line": 203,
+          "before": "- 技术PDF已更新为8页评审预备稿，仍沿用原文件；逐页渲染核查通过，当前功能基线5f5cd36。384维、可选本人核对、撤回重投及待验范围同步；不代替最终候选验收/视频/许可/签署。[检查](evidence/20261014-submission-pdf.json)",
+          "after": "- 技术PDF已更新为8页评审预备稿，仍沿用原文件；逐页渲染核查通过，当前功能基线5f5cd36。384维、可选本人核对、撤回重投及待验范围同步；不代替最终候选验收/视频/许可/签署。[检查](../evidence/20261014-submission-pdf.json)"
+        },
+        {
+          "line": 204,
+          "before": "- 源码预审包r3来源4c8c414，744文件哈希及冻结评测输入身份核对通过，解包47专项通过。初包发现Git LF与原冻结CRLF不一致，已保存原字节，不放宽校验；未提交guard/launcher/CI不混入。包与再生入口见比赛交付，失败/许可/未验范围见[检查](evidence/20261014-source-preview.json)。",
+          "after": "- 源码预审包r3来源4c8c414，744文件哈希及冻结评测输入身份核对通过，解包47专项通过。初包发现Git LF与原冻结CRLF不一致，已保存原字节，不放宽校验；未提交guard/launcher/CI不混入。包与再生入口见比赛交付，失败/许可/未验范围见[检查](../evidence/20261014-source-preview.json)。"
+        },
+        {
+          "line": 205,
+          "before": "- r3解包全量SQLite单次1203通过/49跳过，零失败错误。专用PG容器55432、vector启用：11风险模块87通过；首轮含硬停合计91通过/4失败，失败为Codex将材料临时目录放到解包仓库外，被守卫拒绝。改为解包backend内.tmp目录后8硬停窗口全过，未改源码或守卫。0遗留cp_test schema，测试容器已停止，3000/3001登录200。原始失败/成功/JUnit见[回归记录](evidence/20261014-source-regression/summary.json)；CI草案、未提交guard与真实页面仍不因此签收。",
+          "after": "- r3解包全量SQLite单次1203通过/49跳过，零失败错误。专用PG容器55432、vector启用：11风险模块87通过；首轮含硬停合计91通过/4失败，失败为Codex将材料临时目录放到解包仓库外，被守卫拒绝。改为解包backend内.tmp目录后8硬停窗口全过，未改源码或守卫。0遗留cp_test schema，测试容器已停止，3000/3001登录200。原始失败/成功/JUnit见[回归记录](../evidence/20261014-source-regression/summary.json)；CI草案、未提交guard与真实页面仍不因此签收。"
+        },
+        {
+          "line": 206,
+          "before": "- launcher三文件已独立复核，修正父进程消失/可能存活子进程时保留记录并报错，避免失管且不按旧PPID强杀。34离线断言、7真实身份、真实自有短命进程树停止通过；初次停止测试保护拒绝控制台子进程及最终复跑均保留。现有启动/停止CheckOnly通过，网站未停止。代码可提交，完整网站stop/restart仍待结束手动测试；guard/CI不混入。[证据](evidence/20261014-launcher-review/summary.json)",
+          "after": "- launcher三文件已独立复核，修正父进程消失/可能存活子进程时保留记录并报错，避免失管且不按旧PPID强杀。34离线断言、7真实身份、真实自有短命进程树停止通过；初次停止测试保护拒绝控制台子进程及最终复跑均保留。现有启动/停止CheckOnly通过，网站未停止。代码可提交，完整网站stop/restart仍待结束手动测试；guard/CI不混入。[证据](../evidence/20261014-launcher-review/summary.json)"
+        },
+        {
+          "line": 207,
+          "before": "- AI guard旧三文件已按Z47发现独立复核，补修无关已解决/历史子句吞掉当前归属缺口，以及明确未来新增个人提交被误拒；不允许独立历史提取步骤借未来新提交豁免。新增反例先4失败、修后37目标/138受影响通过，Ruff通过；规则仍不能证明贡献或部署。未重启当前后端，页面尚未加载最新修正，r3全量/PG只代表旧包。[证据](evidence/20261014-plan-guard-review/summary.json)",
+          "after": "- AI guard旧三文件已按Z47发现独立复核，补修无关已解决/历史子句吞掉当前归属缺口，以及明确未来新增个人提交被误拒；不允许独立历史提取步骤借未来新提交豁免。新增反例先4失败、修后37目标/138受影响通过，Ruff通过；规则仍不能证明贡献或部署。未重启当前后端，页面尚未加载最新修正，r3全量/PG只代表旧包。[证据](../evidence/20261014-plan-guard-review/summary.json)"
+        },
+        {
+          "line": 208,
+          "before": "- CI49本地配置已复核：门禁锁定真实硬停函数及恰好两个参数，防止无关函数/重复参数伪造矩阵；20门禁/合并工具30通过。工作流实际bootstrap在专用55433容器启用两库vector，当前99bd202干净后端快照11模块87+硬停8全过，真实JUnit门禁PASS/0跳过。前端Node22的262/类型通过，sucrase直接依赖声明无其他升级；源码导出纳入workflow。两库0遗留测试schema，测试容器已停止。远端Actions/保护、干净npm ci构建及最新全量仍待验。[证据](evidence/20261014-ci49-review/summary.json)",
+          "after": "- CI49本地配置已复核：门禁锁定真实硬停函数及恰好两个参数，防止无关函数/重复参数伪造矩阵；20门禁/合并工具30通过。工作流实际bootstrap在专用55433容器启用两库vector，当前99bd202干净后端快照11模块87+硬停8全过，真实JUnit门禁PASS/0跳过。前端Node22的262/类型通过，sucrase直接依赖声明无其他升级；源码导出纳入workflow。两库0遗留测试schema，测试容器已停止。远端Actions/保护、干净npm ci构建及最新全量仍待验。[证据](../evidence/20261014-ci49-review/summary.json)"
+        },
+        {
+          "line": 209,
+          "before": "- 21:35已在jbcode新建并发送“传智杯52：隔离演示独立审查”，Harness界面Flash High；实际确认8f40ca8并开始读原46卡。唯一写原独立审查证据目录，禁止凭据/DB/服务/用户数据，结果待签收。Codex另在真实3001公共热力图实测空筛选恢复、B/SQL雷达联动，保存实际视口截图；发现demo把可选本人备注写成流程必填并用旧菜单名，源文字已修、类型通过，未重启加载。首次使用指南补5步路线，390px/真实投递/独立用户仍待验。[记录](evidence/20261014-public-heatmap-page/summary.json)",
+          "after": "- 21:35已在jbcode新建并发送“传智杯52：隔离演示独立审查”，Harness界面Flash High；实际确认8f40ca8并开始读原46卡。唯一写原独立审查证据目录，禁止凭据/DB/服务/用户数据，结果待签收。Codex另在真实3001公共热力图实测空筛选恢复、B/SQL雷达联动，保存实际视口截图；发现demo把可选本人备注写成流程必填并用旧菜单名，源文字已修、类型通过，未重启加载。首次使用指南补5步路线，390px/真实投递/独立用户仍待验。[记录](../evidence/20261014-public-heatmap-page/summary.json)"
+        },
+        {
+          "line": 210,
+          "before": "- 用户已确认手动测试结束。核对并停止两站自有进程、备份旧记录，再以原库恢复3000及SkipSeed/SyntheticVerification恢复3001，新生产构建成功；账号/投递/通知计数与隔离库6个投递快照恢复前后一致。首次Windows PowerShell缺Get-FileHash失败保留，PowerShell7恢复通过。新版demo可选备注及390px报告默认待补1项/切换支持2项/无横向溢出实测通过；未操作用户注册账号。完整撤回重投双端页面随后已通过，见下条。[恢复与页面](evidence/20261014-current-service-recovery/summary.json)。当前接力原空白行继续保留。",
+          "after": "- 用户已确认手动测试结束。核对并停止两站自有进程、备份旧记录，再以原库恢复3000及SkipSeed/SyntheticVerification恢复3001，新生产构建成功；账号/投递/通知计数与隔离库6个投递快照恢复前后一致。首次Windows PowerShell缺Get-FileHash失败保留，PowerShell7恢复通过。新版demo可选备注及390px报告默认待补1项/切换支持2项/无横向溢出实测通过；未操作用户注册账号。完整撤回重投双端页面随后已通过，见下条。[恢复与页面](../evidence/20261014-current-service-recovery/summary.json)。当前接力原空白行继续保留。"
+        },
+        {
+          "line": 212,
+          "before": "- 首次使用路线发现并修复：示例导入成功提示仍称“我的材料”且无直接后续入口，现统一“个人材料”并在成功/失败提示旁直达解析进度。3001合成学生实际导入CP01；类型检查及两站生产构建/原库恢复通过。3000演示学生复用CP01完成版本，新提示→个人材料→简历/项目均100%实测；不将复用材料冒充首次新上传。未真实模型调用，原7隔离快照及账号/投递/通知计数恢复前后一致。[记录](evidence/20261014-demo-import-navigation/summary.json)。",
+          "after": "- 首次使用路线发现并修复：示例导入成功提示仍称“我的材料”且无直接后续入口，现统一“个人材料”并在成功/失败提示旁直达解析进度。3001合成学生实际导入CP01；类型检查及两站生产构建/原库恢复通过。3000演示学生复用CP01完成版本，新提示→个人材料→简历/项目均100%实测；不将复用材料冒充首次新上传。未真实模型调用，原7隔离快照及账号/投递/通知计数恢复前后一致。[记录](../evidence/20261014-demo-import-navigation/summary.json)。"
+        },
+        {
+          "line": 214,
+          "before": "- 正常3000首次链已补实际新上传：CP01本轮新命名TXT/ZIP上传→解析100%→选择新版本→规则报告→Python源码引用→明确投递新记录。发现外部AI同意被前端误设为报告必填，现允许未同意生成规则报告（不改后端/默认同意/授权payload）。实际任务未授权外发、0物理请求，旧7份日常投递快照哈希未变；后端拦截外部发送的1回归/类型/Ruff/两站生产构建恢复通过。未真实AI，独立首次用户反馈仍待。[记录](evidence/20261014-match-without-external-consent/summary.json)。",
+          "after": "- 正常3000首次链已补实际新上传：CP01本轮新命名TXT/ZIP上传→解析100%→选择新版本→规则报告→Python源码引用→明确投递新记录。发现外部AI同意被前端误设为报告必填，现允许未同意生成规则报告（不改后端/默认同意/授权payload）。实际任务未授权外发、0物理请求，旧7份日常投递快照哈希未变；后端拦截外部发送的1回归/类型/Ruff/两站生产构建恢复通过。未真实AI，独立首次用户反馈仍待。[记录](../evidence/20261014-match-without-external-consent/summary.json)。"
+        },
+        {
+          "line": 216,
+          "before": "- 10/15正常站补证实测：从Redis缺口保存任务→原项目上传具名v2→解析→返回任务去掉v1/选择v2→保存→未外发生成新报告及5项变化，原结果保留。发现Redis类型参数client.setex/get漏识别，AST有界修复（5红/10反例通过→114相关通过、Ruff）并升级evidence-v4，权重不变、缓存与对比标记规则变化。相同v2新报告可定位Redis原函数5—10行，旧8投递快照哈希未变，旧报告仍v3、零物理模型请求。Redis读写未纳入局部操作等级映射，仍显示基础线索，须单独修复历史口径边界，不能宣布整条质量完成。服务记录进程均已退出且库容器停止，已沿原库/SkipSeed恢复两站，原因未定。[修复](evidence/20261015-redis-parameter/summary.json) / [补证过程](evidence/20261014-normal-growth/summary.json)。",
+          "after": "- 10/15正常站补证实测：从Redis缺口保存任务→原项目上传具名v2→解析→返回任务去掉v1/选择v2→保存→未外发生成新报告及5项变化，原结果保留。发现Redis类型参数client.setex/get漏识别，AST有界修复（5红/10反例通过→114相关通过、Ruff）并升级evidence-v4，权重不变、缓存与对比标记规则变化。相同v2新报告可定位Redis原函数5—10行，旧8投递快照哈希未变，旧报告仍v3、零物理模型请求。Redis读写未纳入局部操作等级映射，仍显示基础线索，须单独修复历史口径边界，不能宣布整条质量完成。服务记录进程均已退出且库容器停止，已沿原库/SkipSeed恢复两站，原因未定。[修复](../evidence/20261015-redis-parameter/summary.json) / [补证过程](../evidence/20261014-normal-growth/summary.json)。"
+        },
+        {
+          "line": 218,
+          "before": "- 10/15Redis等级映射后续已修：新报告逐项保存practice-evidence-v5-redis-operation，Redis读写最高归局部操作，不提升为任务实现；缺少标记的旧报告仍v4，缓存按评级口径隔离。2红/20通过→128相关通过、Ruff通过；正常3000同v2新报告显示局部操作与原函数引用。两份旧报告逐项API哈希/Redis等级完全不变，原8投递快照哈希不变，0物理模型请求。两站原库恢复通过，前端构建复用，不重播种。此项P2关闭；首次独立用户、真实AI与候选材料仍未完成。[记录](evidence/20261015-redis-level-version/summary.json)。",
+          "after": "- 10/15Redis等级映射后续已修：新报告逐项保存practice-evidence-v5-redis-operation，Redis读写最高归局部操作，不提升为任务实现；缺少标记的旧报告仍v4，缓存按评级口径隔离。2红/20通过→128相关通过、Ruff通过；正常3000同v2新报告显示局部操作与原函数引用。两份旧报告逐项API哈希/Redis等级完全不变，原8投递快照哈希不变，0物理模型请求。两站原库恢复通过，前端构建复用，不重播种。此项P2关闭；首次独立用户、真实AI与候选材料仍未完成。[记录](../evidence/20261015-redis-level-version/summary.json)。"
+        },
+        {
+          "line": 222,
+          "before": "10/15安全头/角色已实现：Next与纯ASGI双层，主页/登录/代理health及代理404三头实测通过，HTTP不启HSTS，HTTPS生产需显式CAREERPROOF_HTTPS=true。首次Next单层代理头缺失已留证，补API后后端40/前端271/类型/构建通过；正常站沿dep-frontend-20261010恢复且全表摘要不变。Harness53于18:05非高峰发送只读审查并已产出两文件；test_auth由Codex追加角色用例时被其读取，后又追加头用例，故该hash变化已登记。F1由Codex独立PG两会话屏障实测双成功/2有效后继，仍未修；schema清理、容器停止，未改原会话。下一项优先原子refresh与跨标签/网络重试恢复一起做，不能只将竞争输家401登出或重放全用户撤销。之后持久限流；Harness关于uvicorn默认代理关闭及IP分桶减少连坐的建议不直接采用，已审计修正。安全项未全部闭合。[当前检查](evidence/20261015-security-headers-role/summary.json) / [竞态](evidence/20261015-security-headers-role/refresh-race.json)。",
+          "after": "10/15安全头/角色已实现：Next与纯ASGI双层，主页/登录/代理health及代理404三头实测通过，HTTP不启HSTS，HTTPS生产需显式CAREERPROOF_HTTPS=true。首次Next单层代理头缺失已留证，补API后后端40/前端271/类型/构建通过；正常站沿dep-frontend-20261010恢复且全表摘要不变。Harness53于18:05非高峰发送只读审查并已产出两文件；test_auth由Codex追加角色用例时被其读取，后又追加头用例，故该hash变化已登记。F1由Codex独立PG两会话屏障实测双成功/2有效后继，仍未修；schema清理、容器停止，未改原会话。下一项优先原子refresh与跨标签/网络重试恢复一起做，不能只将竞争输家401登出或重放全用户撤销。之后持久限流；Harness关于uvicorn默认代理关闭及IP分桶减少连坐的建议不直接采用，已审计修正。安全项未全部闭合。[当前检查](../evidence/20261015-security-headers-role/summary.json) / [竞态](../evidence/20261015-security-headers-role/refresh-race.json)。"
+        },
+        {
+          "line": 224,
+          "before": "10/15统一判定文案已实现并加载正常3000：verdict-display.js供报告/看板/雷达/演示/规划/徽标共用，历史verified不改值；尚未评估不冒充unsupported，企业看板含已撤回授权。最终269/类型/构建通过，早期3类导入/断言失败保留。合成热力图C联动、390px无页面横向溢出、正常已存报告显示统一状态且5组来源默认折叠通过。两次恢复全表摘要不变，最终运行目录回到dep-frontend-20261010，默认Start-Local CheckOnly通过；3001运行未重启。企业真实列表/职业规划本轮未逐页实测。下一项安全头/角色枚举先做低影响修正，限流/refresh先定并发与误锁协议；独立首次用户、AI语义、视频/许可/最终材料仍待。[本轮](evidence/20261015-verdict-wording/final-v3.json)。",
+          "after": "10/15统一判定文案已实现并加载正常3000：verdict-display.js供报告/看板/雷达/演示/规划/徽标共用，历史verified不改值；尚未评估不冒充unsupported，企业看板含已撤回授权。最终269/类型/构建通过，早期3类导入/断言失败保留。合成热力图C联动、390px无页面横向溢出、正常已存报告显示统一状态且5组来源默认折叠通过。两次恢复全表摘要不变，最终运行目录回到dep-frontend-20261010，默认Start-Local CheckOnly通过；3001运行未重启。企业真实列表/职业规划本轮未逐页实测。下一项安全头/角色枚举先做低影响修正，限流/refresh先定并发与误锁协议；独立首次用户、AI语义、视频/许可/最终材料仍待。[本轮](../evidence/20261015-verdict-wording/final-v3.json)。"
+        },
+        {
+          "line": 226,
+          "before": "10/15正常库0019已启用：一致性快照私有备份→专属测试库恢复全表摘要一致→克隆升级保留全部数据通过；原库六项预检均0。自有正常站进程安全停止并原库恢复，0018→0019成功，升级前后全表摘要除alembic_version外不变，3000/login与8000/health均200。备份在backend/.tmp/private-backup-0019-20261015，仅本机保存，不复制到证据或源码包；两测试克隆库均已删除、专属容器停止。3001仍原0018环境，不重启/迁移。下一项标签统一，再做安全项协议；新版页面交互和独立首次用户仍须验收。[启用结果](evidence/20261015-backup-rehearsal/normal-activation.json)。下方“正常库预检/迁移待做”是此条以前的阶段记录。",
+          "after": "10/15正常库0019已启用：一致性快照私有备份→专属测试库恢复全表摘要一致→克隆升级保留全部数据通过；原库六项预检均0。自有正常站进程安全停止并原库恢复，0018→0019成功，升级前后全表摘要除alembic_version外不变，3000/login与8000/health均200。备份在backend/.tmp/private-backup-0019-20261015，仅本机保存，不复制到证据或源码包；两测试克隆库均已删除、专属容器停止。3001仍原0018环境，不重启/迁移。下一项标签统一，再做安全项协议；新版页面交互和独立首次用户仍须验收。[启用结果](../evidence/20261015-backup-rehearsal/normal-activation.json)。下方“正常库预检/迁移待做”是此条以前的阶段记录。"
+        },
+        {
+          "line": 228,
+          "before": "10/15 0019索引查询计划补验完成：在专属55433容器新建完整迁移空库，5000行合成事实表；均衡与热岗位两分布不关闭seqscan，合计5新索引均有实际选用。企业小结果集选择旧有效投递唯一索引，热岗位1250条/取最近100条才选新岗位排序索引，两种结果都保留。仅合成分布，不作真实延迟承诺；两临时库删除、容器停止，原网站/数据不动。[计划](evidence/20261015-index-plans/summary.json)。下一步正常库只读预检及本机私有备份/恢复演练，再安排迁移和新版页面；标签统一可在不重启现场下实现。r4仍为9a710d5，不包含0019，最终包需重制。",
+          "after": "10/15 0019索引查询计划补验完成：在专属55433容器新建完整迁移空库，5000行合成事实表；均衡与热岗位两分布不关闭seqscan，合计5新索引均有实际选用。企业小结果集选择旧有效投递唯一索引，热岗位1250条/取最近100条才选新岗位排序索引，两种结果都保留。仅合成分布，不作真实延迟承诺；两临时库删除、容器停止，原网站/数据不动。[计划](../evidence/20261015-index-plans/summary.json)。下一步正常库只读预检及本机私有备份/恢复演练，再安排迁移和新版页面；标签统一可在不重启现场下实现。r4仍为9a710d5，不包含0019，最终包需重制。"
+        },
+        {
+          "line": 230,
+          "before": "10/15用户补充W1—W5整改方案已收敛到任务清单，不另建总控文档。全新解包venv安装dev/mcp、pip check/生产pin/应用导入通过。0019已实现5 CHECK/1 UNIQUE/5索引与模型/枚举同步，非法旧值/重复拒绝且不清理历史；SQLite/PG往返与全链迁移/漂移通过。新Python全量1310通过/55跳过，PG严格103+8硬停零跳过；初次70 setup错误为合成夹具missing旧值，已只修测试且保留日志。后续新增模型一致性/门禁检查30通过、7 PG跳过；CI门禁新增0019模块，远端尚未运行。两测试库0遗留schema、临时迁移库删除、容器停止；现有网站/业务库未迁移或重启。索引补验见上条，下一步正常库迁移前只读预检与备份演练，再做标签统一和安全项。不能把结构索引存在写成绩效通过。不照搬演示账号永久限流豁免或refresh重放全账号撤销；许可不因私有而视为完成。[结果](evidence/20261015-data-integrity/final.json)；[修正后次序](任务清单.md#10月15日补充整改次序)。",
+          "after": "10/15用户补充W1—W5整改方案已收敛到任务清单，不另建总控文档。全新解包venv安装dev/mcp、pip check/生产pin/应用导入通过。0019已实现5 CHECK/1 UNIQUE/5索引与模型/枚举同步，非法旧值/重复拒绝且不清理历史；SQLite/PG往返与全链迁移/漂移通过。新Python全量1310通过/55跳过，PG严格103+8硬停零跳过；初次70 setup错误为合成夹具missing旧值，已只修测试且保留日志。后续新增模型一致性/门禁检查30通过、7 PG跳过；CI门禁新增0019模块，远端尚未运行。两测试库0遗留schema、临时迁移库删除、容器停止；现有网站/业务库未迁移或重启。索引补验见上条，下一步正常库迁移前只读预检与备份演练，再做标签统一和安全项。不能把结构索引存在写成绩效通过。不照搬演示账号永久限流豁免或refresh重放全账号撤销；许可不因私有而视为完成。[结果](../evidence/20261015-data-integrity/final.json)；[修正后次序](#tasks-10月15日补充整改次序)。"
+        },
+        {
+          "line": 234,
+          "before": "**截止口径**：见[任务清单顶部权威表述](任务清单.md#1020-当前开放验收范围)。旧 10/22、10/24、10/25 节点均已作废，不再作为当前排期；10/22、10/26、10/29 为按旧目标排定，11/15 截止下待重排。GLM截图周剩8%/显示16日刷新，刷新前保留余额；Codex每日工具重查，20日15:20周重置，留最终复验量；Harness非高峰辅助。现场额度每日重查，不把计划当已验收。",
+          "after": "**截止口径**：见[任务清单顶部权威表述](#tasks-1020-当前开放验收范围)。旧 10/22、10/24、10/25 节点均已作废，不再作为当前排期；10/22、10/26、10/29 为按旧目标排定，11/15 截止下待重排。GLM截图周剩8%/显示16日刷新，刷新前保留余额；Codex每日工具重查，20日15:20周重置，留最终复验量；Harness非高峰辅助。现场额度每日重查，不把计划当已验收。"
+        },
+        {
+          "line": 236,
+          "before": "1. 新版原隔离站已实测撤回v2→明确投递v3（勾选+确认2操作）→企业SQL联动原引用/回复→学生最新通知定位新记录。重投后旧详情/查看/下载/回复及2旧企业通知均404；原6快照未变，新快照等于保存v3报告。[双端页面](evidence/20261014-browser-reconsent/summary.json)。首次独立用户按简短说明从上传开始仍待验，不把现成报告链替代该要求。",
+          "after": "1. 新版原隔离站已实测撤回v2→明确投递v3（勾选+确认2操作）→企业SQL联动原引用/回复→学生最新通知定位新记录。重投后旧详情/查看/下载/回复及2旧企业通知均404；原6快照未变，新快照等于保存v3报告。[双端页面](../evidence/20261014-browser-reconsent/summary.json)。首次独立用户按简短说明从上传开始仍待验，不把现成报告链替代该要求。"
+        },
+        {
+          "line": 238,
+          "before": "3. Harness52已交棒原46卡审查；目录联接绕过修复43专项通过。重投检查随后增强：新同意/新版全快照/幂等/看板/跨用户拒绝/重投后旧入口持续拒绝，最终DB哈希也覆盖测试自己旧/新投递。ASGI临时SQLite32通过/1PG跳过，专用55433 PG9通过零跳过，4类坏响应变异被拒，Ruff通过。独立进程HTTP/页面仍待验，状态原子保存随后已修：6类检查点反例及原守卫合计30通过，Ruff通过；系统TEMP拒绝访问的首轮28 setup错误未执行测试，专属仓库临时目录复跑通过。[检查点](evidence/20261014-release-checkpoint/summary.json)；企业二次授权建议不采纳。[重投检查](evidence/20261014-release-reconsent-checks/summary.json)。测试容器已停止，现有3000/3001/账号未改。ZCode无额度期间暂停。",
+          "after": "3. Harness52已交棒原46卡审查；目录联接绕过修复43专项通过。重投检查随后增强：新同意/新版全快照/幂等/看板/跨用户拒绝/重投后旧入口持续拒绝，最终DB哈希也覆盖测试自己旧/新投递。ASGI临时SQLite32通过/1PG跳过，专用55433 PG9通过零跳过，4类坏响应变异被拒，Ruff通过。独立进程HTTP/页面仍待验，状态原子保存随后已修：6类检查点反例及原守卫合计30通过，Ruff通过；系统TEMP拒绝访问的首轮28 setup错误未执行测试，专属仓库临时目录复跑通过。[检查点](../evidence/20261014-release-checkpoint/summary.json)；企业二次授权建议不采纳。[重投检查](../evidence/20261014-release-reconsent-checks/summary.json)。测试容器已停止，现有3000/3001/账号未改。ZCode无额度期间暂停。"
+        },
+        {
+          "line": 239,
+          "before": "4. 10/15源码包r4对应9a710d5，756文件/冻结输入哈希通过；解包Ruff、全量SQLite1300通过/49跳过，专属PG87+8硬停零跳过、JUnit门禁通过，0遗留测试schema且容器停止。前端全新npm ci后262/类型/生产构建通过。后端依赖仍复用，下一步补全新Python安装与首次独立用户/评审材料；远端Actions未执行、未推送或设置保护。两份README外发同意说明同步修正，r4不包含后续文档修订。PDF/最终源码包需对齐冻结候选，视频/许可/评审访问/人员签署及正式提交仍未完成。[结果](evidence/20261015-source-regression/summary.json)。",
+          "after": "4. 10/15源码包r4对应9a710d5，756文件/冻结输入哈希通过；解包Ruff、全量SQLite1300通过/49跳过，专属PG87+8硬停零跳过、JUnit门禁通过，0遗留测试schema且容器停止。前端全新npm ci后262/类型/生产构建通过。后端依赖仍复用，下一步补全新Python安装与首次独立用户/评审材料；远端Actions未执行、未推送或设置保护。两份README外发同意说明同步修正，r4不包含后续文档修订。PDF/最终源码包需对齐冻结候选，视频/许可/评审访问/人员签署及正式提交仍未完成。[结果](../evidence/20261015-source-regression/summary.json)。"
+        },
+        {
+          "line": 241,
+          "before": "10/15会话刷新已启用正常3000/8000：原子消费与后继签发同事务，同源标签协调及网络失败恢复；SQLite1318通过/56跳过，专属PG107与硬停8均零跳过，前端275/类型/生产构建通过。重启前后全表摘要一致、版本仍0019，3001未动。真实浏览器双标签仍待验，近期旧凭证4015仍拒绝，不是宽限授权。持久限流/完整重放链仍开放。首次独立试用者用户暂无法安排，保留未验证，继续推进交付材料，不以自动测试替代。[证据](evidence/20261015-refresh-atomicity/README.md)。",
+          "after": "10/15会话刷新已启用正常3000/8000：原子消费与后继签发同事务，同源标签协调及网络失败恢复；SQLite1318通过/56跳过，专属PG107与硬停8均零跳过，前端275/类型/生产构建通过。重启前后全表摘要一致、版本仍0019，3001未动。真实浏览器双标签仍待验，近期旧凭证4015仍拒绝，不是宽限授权。持久限流/完整重放链仍开放。首次独立试用者用户暂无法安排，保留未验证，继续推进交付材料，不以自动测试替代。[证据](../evidence/20261015-refresh-atomicity/README.md)。"
+        },
+        {
+          "line": 243,
+          "before": "10/15首次使用说明已修真实障碍：演示网页、功能演示与九份下载步骤不再把模型费用同意作为报告前置；先走不外发规则报告，AI按需明确同意。下载步骤同步当前账户菜单、本人核对可选，使用指南注明已导入无需重复上传；简历/项目ZIP/catalog字节未改。材料6测试、类型/最终生产构建、九份真实HTTP下载与网页截图通过；正常站恢复前后全表摘要一致，3001未动。浏览器双标签加载/并行刷新同一学生可见，token数量未增加，不冒充同时过期轮换通过。首次独立用户仍未验证。[说明检查](evidence/20261015-demo-instructions/summary.json)。",
+          "after": "10/15首次使用说明已修真实障碍：演示网页、功能演示与九份下载步骤不再把模型费用同意作为报告前置；先走不外发规则报告，AI按需明确同意。下载步骤同步当前账户菜单、本人核对可选，使用指南注明已导入无需重复上传；简历/项目ZIP/catalog字节未改。材料6测试、类型/最终生产构建、九份真实HTTP下载与网页截图通过；正常站恢复前后全表摘要一致，3001未动。浏览器双标签加载/并行刷新同一学生可见，token数量未增加，不冒充同时过期轮换通过。首次独立用户仍未验证。[说明检查](../evidence/20261015-demo-instructions/summary.json)。"
+        },
+        {
+          "line": 245,
+          "before": "10/15报告初始分组修复：真实报告待补0项、部分支持2项时不再默认展示空列表；按待补→部分支持→未覆盖/复核→支持选择首个非空分组，用户切换/收起保持自主。3个红测修后10目标/277全前端、类型/生产构建通过。正常3000真实320px显示2项缺口、键盘切换支持3项及收起通过，5组来源默认关闭、未勾选投递不可提交；无页面横向溢出。恢复前后全表摘要一致，未改已保存报告或原投递，3001未动；实际200%缩放仍未验。[检查](evidence/20261015-report-initial-group/summary.json)。接下来优先对齐技术PDF与当前候选状态、推进视频和许可方案；首次独立用户暂无法安排，仍待真实反馈。",
+          "after": "10/15报告初始分组修复：真实报告待补0项、部分支持2项时不再默认展示空列表；按待补→部分支持→未覆盖/复核→支持选择首个非空分组，用户切换/收起保持自主。3个红测修后10目标/277全前端、类型/生产构建通过。正常3000真实320px显示2项缺口、键盘切换支持3项及收起通过，5组来源默认关闭、未勾选投递不可提交；无页面横向溢出。恢复前后全表摘要一致，未改已保存报告或原投递，3001未动；实际200%缩放仍未验。[检查](../evidence/20261015-report-initial-group/summary.json)。接下来优先对齐技术PDF与当前候选状态、推进视频和许可方案；首次独立用户暂无法安排，仍待真实反馈。"
+        },
+        {
+          "line": 247,
+          "before": "10/15技术PDF已更新为8页，功能基线f095d94：同步规则报告无需外发同意、报告非空分组、320px/键盘、补证与双端撤回重投、0019恢复及当前源码检查；保留首次独立用户/真实AI语义/200%缩放/视频/许可/评审访问/签署缺口。Poppler最终8页渲染，7页与已检查图像一致，改动第5页重新目检；字框均在A4内。Harness54在jbcode的Flash High非高峰独立核对7份来源，输出已交回；Codex核对提交blob并纠正“删历史签收”等无依据建议，不把其工作区中途读取当最终PDF签收。最终稿仍需冻结提交重建，旧r4不是最新候选。[PDF检查](evidence/20261015-submission-pdf.json)。本轮未改网站、数据或服务。",
+          "after": "10/15技术PDF已更新为8页，功能基线f095d94：同步规则报告无需外发同意、报告非空分组、320px/键盘、补证与双端撤回重投、0019恢复及当前源码检查；保留首次独立用户/真实AI语义/200%缩放/视频/许可/评审访问/签署缺口。Poppler最终8页渲染，7页与已检查图像一致，改动第5页重新目检；字框均在A4内。Harness54在jbcode的Flash High非高峰独立核对7份来源，输出已交回；Codex核对提交blob并纠正“删历史签收”等无依据建议，不把其工作区中途读取当最终PDF签收。最终稿仍需冻结提交重建，旧r4不是最新候选。[PDF检查](../evidence/20261015-submission-pdf.json)。本轮未改网站、数据或服务。"
+        },
+        {
+          "line": 249,
+          "before": "10/15源码预审包r5已生成，来源8917814、762文件逐项哈希与当前技术PDF一致；冻结输入/评审各自原始字节通过，解包打包/评测48专项零跳过。首个脚本误用输入哈希比较评审文件，纠正后通过，不是打包器缺陷，未修改冻结输入或校验条件。r5只复用依赖做专项，未重跑全量/PG/前端全新安装，仍有PyMuPDF/根许可阻断，不是最终候选。[包检查](evidence/20261015-source-preview-r5.json)。Harness55已在jbcode/Flash High非高峰委派PDFium独立原型，唯一写evidence/20261015-harness55-pdfium-prototype，合成夹具仅backend/.tmp/pdfium55-fixtures，使用bundled Python已有pypdfium2 5.14.0，不允许安装或改生产parser/pyproject/数据/服务。22:51窗口最小化且恢复检测人工输入，停止进一步键鼠操作，未确认任务终态，未重发；仅_probe.txt不算交付。后续先核对原55会话/结果再独立复验。Jina读取超时，已通过官方文档直接核对许可与非线程安全约束，只能做进程隔离原型，尚未替换或解除许可阻断。根LICENSE发布方向随后由用户确认暂时私有、以后再定，不代选开源许可。",
+          "after": "10/15源码预审包r5已生成，来源8917814、762文件逐项哈希与当前技术PDF一致；冻结输入/评审各自原始字节通过，解包打包/评测48专项零跳过。首个脚本误用输入哈希比较评审文件，纠正后通过，不是打包器缺陷，未修改冻结输入或校验条件。r5只复用依赖做专项，未重跑全量/PG/前端全新安装，仍有PyMuPDF/根许可阻断，不是最终候选。[包检查](../evidence/20261015-source-preview-r5.json)。Harness55已在jbcode/Flash High非高峰委派PDFium独立原型，唯一写evidence/20261015-harness55-pdfium-prototype，合成夹具仅backend/.tmp/pdfium55-fixtures，使用bundled Python已有pypdfium2 5.14.0，不允许安装或改生产parser/pyproject/数据/服务。22:51窗口最小化且恢复检测人工输入，停止进一步键鼠操作，未确认任务终态，未重发；仅_probe.txt不算交付。后续先核对原55会话/结果再独立复验。Jina读取超时，已通过官方文档直接核对许可与非线程安全约束，只能做进程隔离原型，尚未替换或解除许可阻断。根LICENSE发布方向随后由用户确认暂时私有、以后再定，不代选开源许可。"
+        },
+        {
+          "line": 251,
+          "before": "10/15自然过期双标签补验：最近签发37分钟后并行打开正常站个人投递/报告，两页同一演示学生可见原记录，刷新凭证81→82、有效6→6；未改Cookie、不操作用户账号。[页面核对](evidence/20261015-refresh-atomicity/browser-expired-summary.json)。Harness55独立PDFium原型已交回，Codex固定源码快照实跑19项零失败跳过；仅合成OCR回调，不是网站集成。线程亲和不保证进程全局安全，真实OCR/worker/文本A-B/跨平台及许可待验，生产parser/依赖未改。执行端自报尝试完整性标签调整不采纳、不代行，后续禁止改ACL/权限，原始说明与独立审查分别保留。[独立复验](evidence/20261015-harness55-pdfium-prototype/codex-final.json)。当前PDF稍早快照尚未纳入此次双标签证据，冻结后重建；用户已确认暂时保持私有、根许可证以后再定；依赖许可与赛事交付条件仍需核对。",
+          "after": "10/15自然过期双标签补验：最近签发37分钟后并行打开正常站个人投递/报告，两页同一演示学生可见原记录，刷新凭证81→82、有效6→6；未改Cookie、不操作用户账号。[页面核对](../evidence/20261015-refresh-atomicity/browser-expired-summary.json)。Harness55独立PDFium原型已交回，Codex固定源码快照实跑19项零失败跳过；仅合成OCR回调，不是网站集成。线程亲和不保证进程全局安全，真实OCR/worker/文本A-B/跨平台及许可待验，生产parser/依赖未改。执行端自报尝试完整性标签调整不采纳、不代行，后续禁止改ACL/权限，原始说明与独立审查分别保留。[独立复验](../evidence/20261015-harness55-pdfium-prototype/codex-final.json)。当前PDF稍早快照尚未纳入此次双标签证据，冻结后重建；用户已确认暂时保持私有、根许可证以后再定；依赖许可与赛事交付条件仍需核对。"
+        },
+        {
+          "line": 253,
+          "before": "10/16扫描PDF像素预检已加载正常3000/8000：先预算旋转后像素，超限在get_pixmap分配前拒绝，保留渲染后防线。旧实现3红测，修后11目标/29解析上传相关通过、Ruff通过，含真实隔离worker；允许页OCR回调仍为合成，不冒充真实OCR质量。首轮因原PostgreSQL容器停止而连接拒绝，尚未停止服务；核对容器归属并恢复后重试，正常库全表摘要不变、0019未变，3001未动。[证据](evidence/20261015-pdf-pixel-preflight/summary.json)。下一项独立处理S2登录限流，再复核HARNESS46 B3/B4/B7，不混改。Uvicorn本地安装默认proxy_headers=True、默认信任127.0.0.1，旧审查“未显式开即关闭”不成立，限流设计须先明确入口信任；共享IP不做小额度永久封禁。用户确认暂时私有、根许可证以后再定，第三方许可与评审访问仍待核对。",
+          "after": "10/16扫描PDF像素预检已加载正常3000/8000：先预算旋转后像素，超限在get_pixmap分配前拒绝，保留渲染后防线。旧实现3红测，修后11目标/29解析上传相关通过、Ruff通过，含真实隔离worker；允许页OCR回调仍为合成，不冒充真实OCR质量。首轮因原PostgreSQL容器停止而连接拒绝，尚未停止服务；核对容器归属并恢复后重试，正常库全表摘要不变、0019未变，3001未动。[证据](../evidence/20261015-pdf-pixel-preflight/summary.json)。下一项独立处理S2登录限流，再复核HARNESS46 B3/B4/B7，不混改。Uvicorn本地安装默认proxy_headers=True、默认信任127.0.0.1，旧审查“未显式开即关闭”不成立，限流设计须先明确入口信任；共享IP不做小额度永久封禁。用户确认暂时私有、根许可证以后再定，第三方许可与评审访问仍待核对。"
+        },
+        {
+          "line": 255,
+          "before": "10/16 S2登录限流已启用正常3000/8000、版本0020：数据库原子准入，同邮箱＋来源5次/300秒、来源120次/60秒；成功签发同事务清组合计数，来源计数保留，短时限制不等于停用账号。HMAC键不存原邮箱/IP，IPv6按/64、缺失来源共用unknown，不设演示账号豁免；Local/E2E/Docker入口明确no-proxy-headers。最终SQLite1333通过/59跳过，专属PG119及硬停8零跳过、16模块门禁通过；独立HTTP验证重启不丢限制、到期可登录，正常Next转发六次合成错误为5个401+429、伪造XFF不换桶。首轮旧portfolio夹具缺表与次轮检查脚本误留PG环境的失败均保留并已修正复跑；过期清理与准入分开持锁。私有备份恢复/克隆升级/alembic check通过，正常升级既有业务表摘要不变，新增限流探针计数属于预期；3001未动、测试容器停止/0遗留schema。分布式换源、注册及公网容量保护未覆盖，不作公网安全签收。[结果](evidence/20261016-login-rate-limit/summary.json)。下一步独立复核HARNESS46 B3/B4/B7，再继续视频与最终候选材料；首次独立人员和许可/评审访问仍按原缺口保留。本轮Codex额度实查5小时已用9%/周33%，Harness避峰暂停，GLM未重新确认余额不擅自调用。",
+          "after": "10/16 S2登录限流已启用正常3000/8000、版本0020：数据库原子准入，同邮箱＋来源5次/300秒、来源120次/60秒；成功签发同事务清组合计数，来源计数保留，短时限制不等于停用账号。HMAC键不存原邮箱/IP，IPv6按/64、缺失来源共用unknown，不设演示账号豁免；Local/E2E/Docker入口明确no-proxy-headers。最终SQLite1333通过/59跳过，专属PG119及硬停8零跳过、16模块门禁通过；独立HTTP验证重启不丢限制、到期可登录，正常Next转发六次合成错误为5个401+429、伪造XFF不换桶。首轮旧portfolio夹具缺表与次轮检查脚本误留PG环境的失败均保留并已修正复跑；过期清理与准入分开持锁。私有备份恢复/克隆升级/alembic check通过，正常升级既有业务表摘要不变，新增限流探针计数属于预期；3001未动、测试容器停止/0遗留schema。分布式换源、注册及公网容量保护未覆盖，不作公网安全签收。[结果](../evidence/20261016-login-rate-limit/summary.json)。下一步独立复核HARNESS46 B3/B4/B7，再继续视频与最终候选材料；首次独立人员和许可/评审访问仍按原缺口保留。本轮Codex额度实查5小时已用9%/周33%，Harness避峰暂停，GLM未重新确认余额不擅自调用。"
+        },
+        {
+          "line": 257,
+          "before": "10/16 HARNESS46 B3/B4/B7已收尾：E2E数据库URL必须显式本机5432；播种清单同时要求布尔true合成标志与指定factory入口，PS缺-SyntheticVerification在任何启动/建库前拒绝。撤回输出由事件/当前状态/企业看板派生并报告实际检查数，保留撤回历史却恢复有效状态会拒绝验证；认证会写会话/限流记录，不再把夹具复核泛称数据库只读。9红测修后61专项零跳过、Ruff通过；真实PS错误标志/错误端口拒绝与合法CheckOnly通过，未创建运行清单；首轮写错测试文件名的0用例失败保留。[检查](evidence/20261016-e2e-remaining-guards/summary.json)。未重播种、重启或迁移3000/3001，也未跑新的PG整链。下一步转向视频实稿及候选交付材料，不重复增加治理文档；首次独立用户、真实AI语义与最终访问/签署缺口仍保留。",
+          "after": "10/16 HARNESS46 B3/B4/B7已收尾：E2E数据库URL必须显式本机5432；播种清单同时要求布尔true合成标志与指定factory入口，PS缺-SyntheticVerification在任何启动/建库前拒绝。撤回输出由事件/当前状态/企业看板派生并报告实际检查数，保留撤回历史却恢复有效状态会拒绝验证；认证会写会话/限流记录，不再把夹具复核泛称数据库只读。9红测修后61专项零跳过、Ruff通过；真实PS错误标志/错误端口拒绝与合法CheckOnly通过，未创建运行清单；首轮写错测试文件名的0用例失败保留。[检查](../evidence/20261016-e2e-remaining-guards/summary.json)。未重播种、重启或迁移3000/3001，也未跑新的PG整链。下一步转向视频实稿及候选交付材料，不重复增加治理文档；首次独立用户、真实AI语义与最终访问/签署缺口仍保留。"
+        },
+        {
+          "line": 259,
+          "before": "10/16已生成80.08秒中文字幕无配音视频初稿，11段实际浏览器操作/286原帧：账户入口、既有合成材料/原文、保存规则报告/来源展开、状态分组、预设热力图/雷达联动。原采集1265×712、约4.2fps，编码1080p/25fps不是原生高帧率录屏；段间剪切与未录链路全片标清。完整解码通过并目检字幕/原文/证据/雷达，r2补录下部标签；跨调用后台首帧中断未采用。未重新上传/生成报告/投递或调用模型；本轮仅本地合成数据视图操作，正常认证可能写会话记录，未重启服务。MP4/原帧在ignored output/video，不计入Git源码包。[初稿核查](evidence/20261016-video-draft/summary.json)。下一步补录上传→新报告→补证→企业回复/通知→撤回重投并做讲解，最终赛事格式/真实人员核对仍待；不把初稿标成完整视频交付。",
+          "after": "10/16已生成80.08秒中文字幕无配音视频初稿，11段实际浏览器操作/286原帧：账户入口、既有合成材料/原文、保存规则报告/来源展开、状态分组、预设热力图/雷达联动。原采集1265×712、约4.2fps，编码1080p/25fps不是原生高帧率录屏；段间剪切与未录链路全片标清。完整解码通过并目检字幕/原文/证据/雷达，r2补录下部标签；跨调用后台首帧中断未采用。未重新上传/生成报告/投递或调用模型；本轮仅本地合成数据视图操作，正常认证可能写会话记录，未重启服务。MP4/原帧在ignored output/video，不计入Git源码包。[初稿核查](../evidence/20261016-video-draft/summary.json)。下一步补录上传→新报告→补证→企业回复/通知→撤回重投并做讲解，最终赛事格式/真实人员核对仍待；不把初稿标成完整视频交付。"
+        }
+      ]
+    },
+    {
+      "source": "docs/任务清单.md",
+      "archive": "docs/history/202610-开发历程.md",
+      "marker": "tasks",
+      "originalBytes": 73505,
+      "originalLines": 377,
+      "originalSha256": "8cf0fbc0f2f6302377e3779a767e312fbf318fb5eaaef852ba9f1350deb79a18",
+      "originalNormalizedSha256": "8cf0fbc0f2f6302377e3779a767e312fbf318fb5eaaef852ba9f1350deb79a18",
+      "originalLineEndings": "LF",
+      "headNormalizedSha256": "8cf0fbc0f2f6302377e3779a767e312fbf318fb5eaaef852ba9f1350deb79a18",
+      "includedPreexistingUncommittedText": false,
+      "linkEdits": [
+        {
+          "line": 6,
+          "before": "- 独立前端3138构建 `HNdt9SK706tuGRbc0NPbL` 与接受源码一致，继续使用既有合成API8114、PG55445；3136/3137与正常站未启停。[候选、截图、命令与待验](evidence/20261023-page-final/README.md)。",
+          "after": "- 独立前端3138构建 `HNdt9SK706tuGRbc0NPbL` 与接受源码一致，继续使用既有合成API8114、PG55445；3136/3137与正常站未启停。[候选、截图、命令与待验](../evidence/20261023-page-final/README.md)。"
+        },
+        {
+          "line": 16,
+          "before": "- 独立3137/既有合成API8114，构建E_NOkpjgVH-G2jRhfgdvS；明确接受文件集验收，原工作树48项其他修改保留。前端439通过，类型/lint/构建通过，既有img警告保留。[版本、截图、命令和边界](evidence/20261023-layout-closeout/README.md)。",
+          "after": "- 独立3137/既有合成API8114，构建E_NOkpjgVH-G2jRhfgdvS；明确接受文件集验收，原工作树48项其他修改保留。前端439通过，类型/lint/构建通过，既有img警告保留。[版本、截图、命令和边界](../evidence/20261023-layout-closeout/README.md)。"
+        },
+        {
+          "line": 25,
+          "before": "- 集成后本地SQLite 1590通过/91跳过/0失败；严格PG141、真实强停8及JUnit门禁通过；Ruff、迁移/模型对齐及前端构建通过。[命令、证据和当前CI入口](evidence/20261023-ci-repair/README.md)。远端Linux结论以实际main对应CI为准，旧Windows结果不替代。",
+          "after": "- 集成后本地SQLite 1590通过/91跳过/0失败；严格PG141、真实强停8及JUnit门禁通过；Ruff、迁移/模型对齐及前端构建通过。[命令、证据和当前CI入口](../evidence/20261023-ci-repair/README.md)。远端Linux结论以实际main对应CI为准，旧Windows结果不替代。"
+        },
+        {
+          "line": 35,
+          "before": "- [x] 最终本地CI形态检查：SQLite 1577通过/0失败/88跳过；严格PG 141通过/0跳过，hard-stop 8通过，JUnit门禁通过；前端382通过，lint/类型/build/Ruff和迁移对齐通过。[完整命令、版本及保留失败记录](evidence/20261022-core-acceptance/README.md)。未推送，不代表远端CI已重跑。",
+          "after": "- [x] 最终本地CI形态检查：SQLite 1577通过/0失败/88跳过；严格PG 141通过/0跳过，hard-stop 8通过，JUnit门禁通过；前端382通过，lint/类型/build/Ruff和迁移对齐通过。[完整命令、版本及保留失败记录](../evidence/20261022-core-acceptance/README.md)。未推送，不代表远端CI已重跑。"
+        },
+        {
+          "line": 48,
+          "before": "- 当前接受副本 `backend/.tmp/agent-result-20261022/source`，基线5cf7929加11个文件，构建 `B8CG2lzV2Ru6v8lFe1Dpk`。8112 API、3133前端与专属55442合成PG保留运行供用户查看，禁外部AI；正常3000/3001/3108/8108未启停。账号查找、页面入口、文件哈希及范围见[本轮记录](evidence/20261022-agent-result-integration/README.md)。",
+          "after": "- 当前接受副本 `backend/.tmp/agent-result-20261022/source`，基线5cf7929加11个文件，构建 `B8CG2lzV2Ru6v8lFe1Dpk`。8112 API、3133前端与专属55442合成PG保留运行供用户查看，禁外部AI；正常3000/3001/3108/8108未启停。账号查找、页面入口、文件哈希及范围见[本轮记录](../evidence/20261022-agent-result-integration/README.md)。"
+        },
+        {
+          "line": 52,
+          "before": "- 人工复核新增收件：已收到一位独立评审者填写的三例、12项判断；用户确认日期为2026-10-22、未参与实现且先读标准。输入、引用映射和模型原文与v2交付包一致。M01整文件覆盖理由和M03仅指向M02的行号仍待本人澄清，不代改结论、不汇总通过率；原表按字节保留在本机review目录，未纳入源码提交。旧0/3或江博未填项仅对应当时记录，不能覆盖此次收件。[收件事实与限制](evidence/20261022-agent-result-integration/README.md#人工复核新收件)。",
+          "after": "- 人工复核新增收件：已收到一位独立评审者填写的三例、12项判断；用户确认日期为2026-10-22、未参与实现且先读标准。输入、引用映射和模型原文与v2交付包一致。M01整文件覆盖理由和M03仅指向M02的行号仍待本人澄清，不代改结论、不汇总通过率；原表按字节保留在本机review目录，未纳入源码提交。旧0/3或江博未填项仅对应当时记录，不能覆盖此次收件。[收件事实与限制](../evidence/20261022-agent-result-integration/README.md#人工复核新收件)。"
+        },
+        {
+          "line": 59,
+          "before": "- 实际接受源码副本为 `backend/.tmp/source-identity-20261022/source`，基线2734621加明确文件集；构建 `HcR0P85IxK-L4gqVCIZbk`，各文件哈希及桌面/390px记录见[来源验收](evidence/20261022-report-uuid-display/accepted/README.md)。3108/8108不是这份构建，未重启正常站。新规则报告fdd97afc…用于两个项目同名文件；旧fda4ec24…投递保持固定，新增专属合成投递/viewed事件，不改正常库。补证既有任务仍指向其历史5960cf5d…，没有替换目标或抬级。",
+          "after": "- 实际接受源码副本为 `backend/.tmp/source-identity-20261022/source`，基线2734621加明确文件集；构建 `HcR0P85IxK-L4gqVCIZbk`，各文件哈希及桌面/390px记录见[来源验收](../evidence/20261022-report-uuid-display/accepted/README.md)。3108/8108不是这份构建，未重启正常站。新规则报告fdd97afc…用于两个项目同名文件；旧fda4ec24…投递保持固定，新增专属合成投递/viewed事件，不改正常库。补证既有任务仍指向其历史5960cf5d…，没有替换目标或抬级。"
+        },
+        {
+          "line": 60,
+          "before": "- 用户追加的上传内容核对已接入：本地短语/组合提示四类风险，解析后在任务页展示位置与上传修正版入口；不是上传阻断或违规判定，源码/测试/引用可误命中，不改评级。真实上传任务与边界见[内容提示验收](evidence/20261022-content-warnings/README.md)。检测载荷不包含命中原文，也不注入模型或索引文本。",
+          "after": "- 用户追加的上传内容核对已接入：本地短语/组合提示四类风险，解析后在任务页展示位置与上传修正版入口；不是上传阻断或违规判定，源码/测试/引用可误命中，不改评级。真实上传任务与边界见[内容提示验收](../evidence/20261022-content-warnings/README.md)。检测载荷不包含命中原文，也不注入模型或索引文本。"
+        },
+        {
+          "line": 67,
+          "before": "产品源码：`408535c`（越界分页）和 `4ba1ccd`（完整项目测试选证、既有规则叙述接线），仅本地提交。已提交的学生引导无需重做；UUID/Agent展示及其他工作区成果仍分组待集成。[本轮实际对照与限制](evidence/20261022-test-source-selection/README.md)。",
+          "after": "产品源码：`408535c`（越界分页）和 `4ba1ccd`（完整项目测试选证、既有规则叙述接线），仅本地提交。已提交的学生引导无需重做；UUID/Agent展示及其他工作区成果仍分组待集成。[本轮实际对照与限制](../evidence/20261022-test-source-selection/README.md)。"
+        },
+        {
+          "line": 83,
+          "before": "本轮仅验证r7交付包：全新Python/前端依赖、专属55441 PG迁移至0021、8107/3107生产服务、合成账号/材料与规则报告通过；实际浏览器登录/展开引用，专属数据库及双端停止重启后同一报告SHA不变。不是首次独立用户或真实AI验收。离线账号准备与端口说明已补回两份README（39f49d7），生成仅文档变化的r8；未另做第二次r8干净安装，代码/依赖与所验r7逐字节一致。资源均停止、数据/依赖保留，正常环境/P2未动。[结果、命令与限制](evidence/20261021-r7-clean-reproduction/README.md)。",
+          "after": "本轮仅验证r7交付包：全新Python/前端依赖、专属55441 PG迁移至0021、8107/3107生产服务、合成账号/材料与规则报告通过；实际浏览器登录/展开引用，专属数据库及双端停止重启后同一报告SHA不变。不是首次独立用户或真实AI验收。离线账号准备与端口说明已补回两份README（39f49d7），生成仅文档变化的r8；未另做第二次r8干净安装，代码/依赖与所验r7逐字节一致。资源均停止、数据/依赖保留，正常环境/P2未动。[结果、命令与限制](../evidence/20261021-r7-clean-reproduction/README.md)。"
+        },
+        {
+          "line": 91,
+          "before": "Agent执行器集成已本地提交 `ca01e52`：真实工作流受约束provider接线、来源/预算/发送前与回执留痕、硬停不转成功、旧执行器回归均以51项相关离线检查核对；当前授权输入升v3、六份源码与Git对象逐项一致，外部请求0。此阶段关闭，不继续无失败依据的重构。[集成范围](evidence/20261020-agent-integration/README.md)。",
+          "after": "Agent执行器集成已本地提交 `ca01e52`：真实工作流受约束provider接线、来源/预算/发送前与回执留痕、硬停不转成功、旧执行器回归均以51项相关离线检查核对；当前授权输入升v3、六份源码与Git对象逐项一致，外部请求0。此阶段关闭，不继续无失败依据的重构。[集成范围](../evidence/20261020-agent-integration/README.md)。"
+        },
+        {
+          "line": 93,
+          "before": "评审包工具整理已独立提交 `31ff69f`；后续 `9d43e5a` 补齐前端安装与可移植路径，从该提交生成r7 ZIP，837文件哈希、20份本地导航、解包打包专项22项及Agent离线包校验通过。r6历史包保留，不把两轮结果相加。另已生成仅指南/三例表的真人交付ZIP，逐项结论与理由留空，仍0/3。复用依赖，非干净安装/页面/冻结候选；[实际包、SHA与验证范围](evidence/20261020-source-package/README.md)。",
+          "after": "评审包工具整理已独立提交 `31ff69f`；后续 `9d43e5a` 补齐前端安装与可移植路径，从该提交生成r7 ZIP，837文件哈希、20份本地导航、解包打包专项22项及Agent离线包校验通过。r6历史包保留，不把两轮结果相加。另已生成仅指南/三例表的真人交付ZIP，逐项结论与理由留空，仍0/3。复用依赖，非干净安装/页面/冻结候选；[实际包、SHA与验证范围](../evidence/20261020-source-package/README.md)。"
+        },
+        {
+          "line": 98,
+          "before": "- 首次独立用户：按[现有演示指南的独立走查](guides/功能演示.md#首次独立用户走查)在隔离合成环境完成上传→报告→依据→明确投递及补证→新版→变化解释，企业核对/回复和通知定位；记录误解、恢复与求助，当前未执行。",
+          "after": "- 首次独立用户：按[现有演示指南的独立走查](../guides/功能演示.md#首次独立用户走查)在隔离合成环境完成上传→报告→依据→明确投递及补证→新版→变化解释，企业核对/回复和通知定位；记录误解、恢复与求助，当前未执行。"
+        },
+        {
+          "line": 108,
+          "before": "- 临时文件首批清理完成：255目录/25,330文件/4.516 GiB（pytest生成物、旧Next编译cache及可读Ruff缓存）。当前构建/依赖、材料、全部历史证据及P2保留；1626个受保护文件删除前后hash相同，正常站/API与日常启动预检通过。60处不可读目录跳过、不改权限。未执行79号文档/任务卡删除部分。[精确清单](evidence/20261019-cleanup-pass1/README.md)。",
+          "after": "- 临时文件首批清理完成：255目录/25,330文件/4.516 GiB（pytest生成物、旧Next编译cache及可读Ruff缓存）。当前构建/依赖、材料、全部历史证据及P2保留；1626个受保护文件删除前后hash相同，正常站/API与日常启动预检通过。60处不可读目录跳过、不改权限。未执行79号文档/任务卡删除部分。[精确清单](../evidence/20261019-cleanup-pass1/README.md)。"
+        },
+        {
+          "line": 110,
+          "before": "- 82号剩余修复已接入：新旧企业分离、有效唯一owner、来源全项核对、重跑不复活、并发3/0；正常新增3个精选岗位、收起9个旧目录岗位但原36岗位/报告/投递/快照保留，二次重跑39表完全不变。18后端/49前端目标测试、type/lint/build通过；真实1280/390页面及6下载hash通过。正常列表4条（另外1条企业原有岗位缺本轮来源依据，保留），日常cmd当前自动选dep-frontend-20261019-picker；后续已去掉材料搜索栏CP示例和旧编号指引（8项相关测试、目标lint/构建及实际页面通过）。使用指南改走三套场景。[证据与未验范围](evidence/20261019-task82-fixes/README.md)。",
+          "after": "- 82号剩余修复已接入：新旧企业分离、有效唯一owner、来源全项核对、重跑不复活、并发3/0；正常新增3个精选岗位、收起9个旧目录岗位但原36岗位/报告/投递/快照保留，二次重跑39表完全不变。18后端/49前端目标测试、type/lint/build通过；真实1280/390页面及6下载hash通过。正常列表4条（另外1条企业原有岗位缺本轮来源依据，保留），日常cmd当前自动选dep-frontend-20261019-picker；后续已去掉材料搜索栏CP示例和旧编号指引（8项相关测试、目标lint/构建及实际页面通过）。使用指南改走三套场景。[证据与未验范围](../evidence/20261019-task82-fixes/README.md)。"
+        },
+        {
+          "line": 112,
+          "before": "- 82号已交回，但执行端误用alembic -x dburl使正常库到0021。Codex只读确认36岗位原字段/报告/投递/快照等一致（alembic_version及refresh_tokens摘要变化另记），专属55437 PG往返迁移/模型check与发现谓词通过；决定保留0021不正常库删列。已补未知-x引擎前拒绝（红2→绿3，岗位相关合计15通过）。[处置依据](evidence/20261019-task82-integration/README.md)。后续归属/幂等/准备流程已修、正常站已接入并页面验收，见下条。",
+          "after": "- 82号已交回，但执行端误用alembic -x dburl使正常库到0021。Codex只读确认36岗位原字段/报告/投递/快照等一致（alembic_version及refresh_tokens摘要变化另记），专属55437 PG往返迁移/模型check与发现谓词通过；决定保留0021不正常库删列。已补未知-x引擎前拒绝（红2→绿3，岗位相关合计15通过）。[处置依据](../evidence/20261019-task82-integration/README.md)。后续归属/幂等/准备流程已修、正常站已接入并页面验收，见下条。"
+        },
+        {
+          "line": 113,
+          "before": "- dece154在专属55436容器补验此前未跑的67项PG：59常规＋8真实硬停，零失败/跳过，源码前后hash不变；此前7项PG源码/测试未变故不重跑。正常39表摘要完全相同，测试schema0、容器已移除。[本轮范围与JUnit](evidence/20261019-postgres-skipped-coverage/README.md)。不同环境结果不拼成冻结候选全量通过。",
+          "after": "- dece154在专属55436容器补验此前未跑的67项PG：59常规＋8真实硬停，零失败/跳过，源码前后hash不变；此前7项PG源码/测试未变故不重跑。正常39表摘要完全相同，测试schema0、容器已移除。[本轮范围与JUnit](../evidence/20261019-postgres-skipped-coverage/README.md)。不同环境结果不拼成冻结候选全量通过。"
+        },
+        {
+          "line": 114,
+          "before": "- 用户指向岗位发现堆满合成测试岗位：已参考BOSS公开聚合页技术方向，原创准备三套有业务背景的岗位/虚构简历/项目。现已导入3套、收起9个旧目录样例并加载正常站；[资料与来源](../demo/market-scenarios/README.md)，[82号接入任务](task-cards/20261019-HARNESS82-job-discovery-curation.md)已交棒，见顶部处置。旧岗位/报告/快照不得删除或因关闭岗位破坏补证。",
+          "after": "- 用户指向岗位发现堆满合成测试岗位：已参考BOSS公开聚合页技术方向，原创准备三套有业务背景的岗位/虚构简历/项目。现已导入3套、收起9个旧目录样例并加载正常站；[资料与来源](../../demo/market-scenarios/README.md)，[82号接入任务](../task-cards/20261019-HARNESS82-job-discovery-curation.md)已交棒，见顶部处置。旧岗位/报告/快照不得删除或因关闭岗位破坏补证。"
+        },
+        {
+          "line": 115,
+          "before": "- 58491a6已完成正常站真实规则任务SSE：观察25%实时更新→完成，2.4秒；未授权外发，AI表与原投递/快照/通知摘要不变。390px无横向溢出，键盘历史展开通过，模型未调用无勾选。真实断线/hidden/实际reduced-motion仍待。[正常站证据](evidence/20261019-normal-task-progress/README.md)。",
+          "after": "- 58491a6已完成正常站真实规则任务SSE：观察25%实时更新→完成，2.4秒；未授权外发，AI表与原投递/快照/通知摘要不变。390px无横向溢出，键盘历史展开通过，模型未调用无勾选。真实断线/hidden/实际reduced-motion仍待。[正常站证据](../evidence/20261019-normal-task-progress/README.md)。"
+        },
+        {
+          "line": 116,
+          "before": "- 26a64b9后端完整SQLite集成回归：1404通过/0失败/74跳过，328.24秒，Ruff通过；28项pin匹配。74跳过均为专属PG门控，不计PG通过，不是冻结候选。未改业务源码或依赖。[同次运行原始结果](evidence/20261019-backend-integrated-regression/README.md)。",
+          "after": "- 26a64b9后端完整SQLite集成回归：1404通过/0失败/74跳过，328.24秒，Ruff通过；28项pin匹配。74跳过均为专属PG门控，不计PG通过，不是冻结候选。未改业务源码或依赖。[同次运行原始结果](../evidence/20261019-backend-integrated-regression/README.md)。"
+        },
+        {
+          "line": 117,
+          "before": "- 26a64b9记录正常站已有合成报告的三步明确投递：定位投递区→勾选授权→确认投递；新增一条有效记录，原四条投递与快照、已保存报告摘要不变。启动前原Postgres已停止，仅恢复原容器/正常入口，启动前后39表摘要一致；原因未定，不归因于代码。[实际操作与只读核对](evidence/20261019-report-submit-walkthrough/README.md)。",
+          "after": "- 26a64b9记录正常站已有合成报告的三步明确投递：定位投递区→勾选授权→确认投递；新增一条有效记录，原四条投递与快照、已保存报告摘要不变。启动前原Postgres已停止，仅恢复原容器/正常入口，启动前后39表摘要一致；原因未定，不归因于代码。[实际操作与只读核对](../evidence/20261019-report-submit-walkthrough/README.md)。"
+        },
+        {
+          "line": 118,
+          "before": "- [81号AI输出辅助复核](evidence/20261019-harness81-ai-output-review/review.md)已交回；总控结合“名称相似不够”的实际rubric，不采纳M03应自动改1级的建议，现有null显示为未确认相关实践证据；理由清晰度仍可人工评估。[裁决与离线实测](evidence/20261019-harness81-ai-output-review/codex-adjudication.md)。原用量在attempts[].response.usage，人工数仍0。",
+          "after": "- [81号AI输出辅助复核](../evidence/20261019-harness81-ai-output-review/review.md)已交回；总控结合“名称相似不够”的实际rubric，不采纳M03应自动改1级的建议，现有null显示为未确认相关实践证据；理由清晰度仍可人工评估。[裁决与离线实测](../evidence/20261019-harness81-ai-output-review/codex-adjudication.md)。原用量在attempts[].response.usage，人工数仍0。"
+        },
+        {
+          "line": 119,
+          "before": "- 历史记录（10/22、10/26、10/29 按旧目标排定，11/15 截止下待重排；当前口径见本页顶部）：10/22停新增、10/26候选冻结、10/29交付准备。用户10/18提供的赛道原文为省赛11/18截止、视频5—8分钟/1080p/普通话、PDF≤30页；官网公开页尚未独立核到详情，本校更早节点待核。新增6分22秒离线合成配音草稿（旧无声稿保留），解码/格式/音轨通过，完整人工听审、真实AI片段与冻结同步仍待。[要求与差距](guides/比赛交付.md#1018赛道原文与内部节点) / [成片证据](evidence/20261018-growth-completion/README.md)。",
+          "after": "- 历史记录（10/22、10/26、10/29 按旧目标排定，11/15 截止下待重排；当前口径见本页顶部）：10/22停新增、10/26候选冻结、10/29交付准备。用户10/18提供的赛道原文为省赛11/18截止、视频5—8分钟/1080p/普通话、PDF≤30页；官网公开页尚未独立核到详情，本校更早节点待核。新增6分22秒离线合成配音草稿（旧无声稿保留），解码/格式/音轨通过，完整人工听审、真实AI片段与冻结同步仍待。[要求与差距](../guides/比赛交付.md#1018赛道原文与内部节点) / [成片证据](../evidence/20261018-growth-completion/README.md)。"
+        },
+        {
+          "line": 120,
+          "before": "- d31e01d执行器21项离线检查通过后，用户明确授权首批三例；7197f35工作树实际DeepSeek调用3次、结构/引用校验3通过，无重试或额外修复。回执输入9496/输出1315，按官方周末价估算约0.01元，非账单；claim保留、上限已满不续跑。独立人工评审仍0/语义率null，三例不满足12例覆盖，也不是整站真实AI链验收。[原响应与人工表](evidence/20261017-task70-semantic-review-packet/review.md)。",
+          "after": "- d31e01d执行器21项离线检查通过后，用户明确授权首批三例；7197f35工作树实际DeepSeek调用3次、结构/引用校验3通过，无重试或额外修复。回执输入9496/输出1315，按官方周末价估算约0.01元，非账单；claim保留、上限已满不续跑。独立人工评审仍0/语义率null，三例不满足12例覆盖，也不是整站真实AI链验收。[原响应与人工表](../evidence/20261017-task70-semantic-review-packet/review.md)。"
+        },
+        {
+          "line": 123,
+          "before": "- Codex独立PG7项通过（检索4＋上传并发3，零跳过）；31解析/OCR及19释放/版本/上传相关检查通过。前端335通过、类型/生产构建通过、lint零错误/1既有图片警告。它们是分批证据，不拼成一次后端全量绿灯。[PG](evidence/20261018-codex-pg-integration/README.md) / [集成范围与失败记录](evidence/20261018-codex-ui-integration/README.md)。",
+          "after": "- Codex独立PG7项通过（检索4＋上传并发3，零跳过）；31解析/OCR及19释放/版本/上传相关检查通过。前端335通过、类型/生产构建通过、lint零错误/1既有图片警告。它们是分批证据，不拼成一次后端全量绿灯。[PG](../evidence/20261018-codex-pg-integration/README.md) / [集成范围与失败记录](../evidence/20261018-codex-ui-integration/README.md)。"
+        },
+        {
+          "line": 125,
+          "before": "- 73文档整理及78启动归一已集成本地1d36141，日常启动/停止双击入口明确；正常站实际重复启动/停止/恢复通过、全部表摘要不变，保存任务正常页面已验。[记录](evidence/20261018-launcher-recovery/README.md)。79清理未执行。70仍覆盖未达标；68正常站补证片段已续验，独立首次用户未完成；72原型不进入生产；74/75/76仍须固定候选同步。",
+          "after": "- 73文档整理及78启动归一已集成本地1d36141，日常启动/停止双击入口明确；正常站实际重复启动/停止/恢复通过、全部表摘要不变，保存任务正常页面已验。[记录](../evidence/20261018-launcher-recovery/README.md)。79清理未执行。70仍覆盖未达标；68正常站补证片段已续验，独立首次用户未完成；72原型不进入生产；74/75/76仍须固定候选同步。"
+        },
+        {
+          "line": 127,
+          "before": "- 10/18补证正常站链路已续办：既有任务选择原简历/原项目v2→未外发生成新规则报告bf856aaa…→Redis从仅声明变局部操作/第5—10行可定位；原投递/事件/通知/AI表摘要与补证前完全一致。35段4分21秒无声素材已用于后续6分22秒配音草稿；非独立首次用户、非冻结同版本连续实录。[链路与视频](evidence/20261018-growth-completion/README.md)。74素材、字幕与合成配音已有，尚需真实AI片段更新和人工完整审片；75/76继续等待固定候选。",
+          "after": "- 10/18补证正常站链路已续办：既有任务选择原简历/原项目v2→未外发生成新规则报告bf856aaa…→Redis从仅声明变局部操作/第5—10行可定位；原投递/事件/通知/AI表摘要与补证前完全一致。35段4分21秒无声素材已用于后续6分22秒配音草稿；非独立首次用户、非冻结同版本连续实录。[链路与视频](../evidence/20261018-growth-completion/README.md)。74素材、字幕与合成配音已有，尚需真实AI片段更新和人工完整审片；75/76继续等待固定候选。"
+        },
+        {
+          "line": 135,
+          "before": "| 62 | [消除可修复的前端 lint 警告](task-cards/20261017-ZCODE62-lint-warnings.md) | ZCode · 5.3／低 | A；可先执行 |",
+          "after": "| 62 | [消除可修复的前端 lint 警告](../task-cards/20261017-ZCODE62-lint-warnings.md) | ZCode · 5.3／低 | A；可先执行 |"
+        },
+        {
+          "line": 136,
+          "before": "| 63 | [分页双端页面补验](task-cards/20261017-HARNESS63-pagination-ui.md) | Harness · Flash／低 | A；与62串行（都涉及通知）；无需重做59/60源码审查 |",
+          "after": "| 63 | [分页双端页面补验](../task-cards/20261017-HARNESS63-pagination-ui.md) | Harness · Flash／低 | A；与62串行（都涉及通知）；无需重做59/60源码审查 |"
+        },
+        {
+          "line": 137,
+          "before": "| 64 | [岗位推荐紧凑列表体验收尾](task-cards/20261017-ZCODE64-recommendation-polish.md) | ZCode · 5.3／低 | A；可与66并行 |",
+          "after": "| 64 | [岗位推荐紧凑列表体验收尾](../task-cards/20261017-ZCODE64-recommendation-polish.md) | ZCode · 5.3／低 | A；可与66并行 |"
+        },
+        {
+          "line": 138,
+          "before": "| 65 | [顶部账户菜单与步骤指引可达性](task-cards/20261017-ZCODE65-navigation-a11y.md) | ZCode · 5.3-Flash／低 | B；64交棒后执行 |",
+          "after": "| 65 | [顶部账户菜单与步骤指引可达性](../task-cards/20261017-ZCODE65-navigation-a11y.md) | ZCode · 5.3-Flash／低 | B；64交棒后执行 |"
+        },
+        {
+          "line": 139,
+          "before": "| 66 | [报告动作与证据阅读收尾](task-cards/20261017-HARNESS66-report-readability.md) | Harness · Flash／低 | A；与64不同文件可并行 |",
+          "after": "| 66 | [报告动作与证据阅读收尾](../task-cards/20261017-HARNESS66-report-readability.md) | Harness · Flash／低 | A；与64不同文件可并行 |"
+        },
+        {
+          "line": 140,
+          "before": "| 67 | [材料上传反馈与失败恢复](task-cards/20261017-ZCODE67-upload-recovery.md) | ZCode · 5.3／低 | B；65之后，68之前 |",
+          "after": "| 67 | [材料上传反馈与失败恢复](../task-cards/20261017-ZCODE67-upload-recovery.md) | ZCode · 5.3／低 | B；65之后，68之前 |"
+        },
+        {
+          "line": 141,
+          "before": "| 68 | [补证新版链路独立复核](task-cards/20261017-HARNESS68-growth-chain.md) | Harness · Flash／高 | B；67及Codex本轮补证录制交棒后 |",
+          "after": "| 68 | [补证新版链路独立复核](../task-cards/20261017-HARNESS68-growth-chain.md) | Harness · Flash／高 | B；67及Codex本轮补证录制交棒后 |"
+        },
+        {
+          "line": 142,
+          "before": "| 69 | [61号过滤检索修复独立审查](task-cards/20261017-HARNESS69-retrieval-review.md) | Harness · Flash／高 | B；必须等61号写入者交棒并固定文件hash |",
+          "after": "| 69 | [61号过滤检索修复独立审查](../task-cards/20261017-HARNESS69-retrieval-review.md) | Harness · Flash／高 | B；必须等61号写入者交棒并固定文件hash |"
+        },
+        {
+          "line": 143,
+          "before": "| 70 | [AI质量人工复核包](task-cards/20261017-HARNESS70-semantic-review-packet.md) | Harness · Flash／低 | A；可与UI任务并行 |",
+          "after": "| 70 | [AI质量人工复核包](../task-cards/20261017-HARNESS70-semantic-review-packet.md) | Harness · Flash／低 | A；可与UI任务并行 |"
+        },
+        {
+          "line": 144,
+          "before": "| 71 | [解析器超限与失败边界复核](task-cards/20261017-HARNESS71-parser-boundaries.md) | Harness · Flash／高 | B；70之后 |",
+          "after": "| 71 | [解析器超限与失败边界复核](../task-cards/20261017-HARNESS71-parser-boundaries.md) | Harness · Flash／高 | B；70之后 |"
+        },
+        {
+          "line": 145,
+          "before": "| 72 | [PDFium替换可行性A/B补验](task-cards/20261017-HARNESS72-pdfium-ab.md) | Harness · Flash／高 | C可选；71后且交付主线有余量时，不能阻塞冻结 |",
+          "after": "| 72 | [PDFium替换可行性A/B补验](../task-cards/20261017-HARNESS72-pdfium-ab.md) | Harness · Flash／高 | C可选；71后且交付主线有余量时，不能阻塞冻结 |"
+        },
+        {
+          "line": 146,
+          "before": "| 73 | [收敛使用与演示文档](task-cards/20261017-ZCODE73-guide-consolidation.md) | ZCode · 5.3-Flash／低 | C；62—71相关成果签收后，74之前 |",
+          "after": "| 73 | [收敛使用与演示文档](../task-cards/20261017-ZCODE73-guide-consolidation.md) | ZCode · 5.3-Flash／低 | C；62—71相关成果签收后，74之前 |"
+        },
+        {
+          "line": 147,
+          "before": "| 74 | [演示视频合成与配音稿](task-cards/20261017-ZCODE74-video-story.md) | ZCode · 5.3-Flash／低 | C；68和73完成，实际补证素材存在后 |",
+          "after": "| 74 | [演示视频合成与配音稿](../task-cards/20261017-ZCODE74-video-story.md) | ZCode · 5.3-Flash／低 | C；68和73完成，实际补证素材存在后 |"
+        },
+        {
+          "line": 148,
+          "before": "| 75 | [更新技术PDF候选稿](task-cards/20261017-ZCODE75-submission-pdf.md) | ZCode · 5.3-Flash／低 | D；73/74交棒且总控给出候选提交后 |",
+          "after": "| 75 | [更新技术PDF候选稿](../task-cards/20261017-ZCODE75-submission-pdf.md) | ZCode · 5.3-Flash／低 | D；73/74交棒且总控给出候选提交后 |"
+        },
+        {
+          "line": 149,
+          "before": "| 76 | [候选源码包可复现验收](task-cards/20261017-HARNESS76-release-package.md) | Harness · Flash／高 | D；候选提交明确、69签收且75完成后；全量验收唯一执行者 |",
+          "after": "| 76 | [候选源码包可复现验收](../task-cards/20261017-HARNESS76-release-package.md) | Harness · Flash／高 | D；候选提交明确、69签收且75完成后；全量验收唯一执行者 |"
+        },
+        {
+          "line": 150,
+          "before": "| 77 | [学生页面与真实处理进度](task-cards/20261017-HARNESS77-student-experience.md) | Harness · Flash／低 | **第一阶段已交棒，页面与集成待验**（任务页真实处理进度）；推荐卡密度、移动端流程、投递空态延期 |",
+          "after": "| 77 | [学生页面与真实处理进度](../task-cards/20261017-HARNESS77-student-experience.md) | Harness · Flash／低 | **第一阶段已交棒，页面与集成待验**（任务页真实处理进度）；推荐卡密度、移动端流程、投递空态延期 |"
+        },
+        {
+          "line": 151,
+          "before": "| 78 | [启动入口归一与环境说明](task-cards/20261017-HARNESS78-launcher-unification.md) | Harness · Flash／高 | 等待；77 第一阶段交棒后再排 |",
+          "after": "| 78 | [启动入口归一与环境说明](../task-cards/20261017-HARNESS78-launcher-unification.md) | Harness · Flash／高 | 等待；77 第一阶段交棒后再排 |"
+        },
+        {
+          "line": 152,
+          "before": "| 79 | [已完成任务、文档与临时产物清理](task-cards/20261017-HARNESS79-cleanup.md) | Harness · Flash／低 | 等待；依赖 77/78 交棒与总控确认 |",
+          "after": "| 79 | [已完成任务、文档与临时产物清理](../task-cards/20261017-HARNESS79-cleanup.md) | Harness · Flash／低 | 等待；依赖 77/78 交棒与总控确认 |"
+        },
+        {
+          "line": 169,
+          "before": "更新：2026-10-16。正式状态只在本页维护；现场见[当前接力](当前接力.md)。自动测试、页面、真实模型及人工语义分别记录。",
+          "after": "更新：2026-10-16。正式状态只在本页维护；现场见[当前接力](../当前接力.md)。自动测试、页面、真实模型及人工语义分别记录。"
+        },
+        {
+          "line": 173,
+          "before": "10/16 当前增量：S2 持久登录限流及 0020 已加载正常站，B3/B4/B7 隔离守卫已提交并完成离线与入口预检；下方 10/15 表格的待做描述是当时记录，不能再据此安排重复实现。学生步骤指引、岗位默认折叠与深色顶部栏已实际页面验收；职业规划失败重试清空材料已复现修复：3种恢复路径、283前端测试/类型/正常生产构建通过；真实组件合成失败回归与正常历史读取分列，未发起真实模型调用。[恢复记录](evidence/20261016-career-retry/summary.json)。独立首次用户、真实 AI 独立语义质量、完整双端视频和最终 PDF/源码包仍未闭合。[限流](evidence/20261016-login-rate-limit/sqlite-final/final.json) / [隔离守卫](evidence/20261016-e2e-remaining-guards/summary.json) / [学生指引](evidence/20261016-student-flow/summary.json) / [顶部栏](evidence/20261016-header-contrast/summary.json)。",
+          "after": "10/16 当前增量：S2 持久登录限流及 0020 已加载正常站，B3/B4/B7 隔离守卫已提交并完成离线与入口预检；下方 10/15 表格的待做描述是当时记录，不能再据此安排重复实现。学生步骤指引、岗位默认折叠与深色顶部栏已实际页面验收；职业规划失败重试清空材料已复现修复：3种恢复路径、283前端测试/类型/正常生产构建通过；真实组件合成失败回归与正常历史读取分列，未发起真实模型调用。[恢复记录](../evidence/20261016-career-retry/summary.json)。独立首次用户、真实 AI 独立语义质量、完整双端视频和最终 PDF/源码包仍未闭合。[限流](../evidence/20261016-login-rate-limit/sqlite-final/final.json) / [隔离守卫](../evidence/20261016-e2e-remaining-guards/summary.json) / [学生指引](../evidence/20261016-student-flow/summary.json) / [顶部栏](../evidence/20261016-header-contrast/summary.json)。"
+        },
+        {
+          "line": 185,
+          "before": "| G5 剩余问题分级 | 每项有等级、触发/影响、证据、负责人、闭合条件；未验证不能写成已修 | 下表维护；原始调查与独立取舍见[本轮交付检查](evidence/20261012-release-gate/README.md) |",
+          "after": "| G5 剩余问题分级 | 每项有等级、触发/影响、证据、负责人、闭合条件；未验证不能写成已修 | 下表维护；原始调查与独立取舍见[本轮交付检查](../evidence/20261012-release-gate/README.md) |"
+        },
+        {
+          "line": 189,
+          "before": "10月14日G3/G4/G5推进：固定源码包4c8c414解包，全量SQLite单次1203通过/49跳过、零失败错误；独立55432 PostgreSQL的11风险模块87通过、硬停8窗口在正确的仓库内临时目录复跑通过。首轮硬停4项因错误临时目录被安全守卫拒绝，失败保留，未削弱守卫或跳过。测试容器已停止，正在手动测试的网站未停止。见[原始回归记录](evidence/20261014-source-regression/summary.json)。未提交guard/launcher、CI49草案、浏览器撤回重投和首次用户反馈仍待验，不能由该源码包测试签收。",
+          "after": "10月14日G3/G4/G5推进：固定源码包4c8c414解包，全量SQLite单次1203通过/49跳过、零失败错误；独立55432 PostgreSQL的11风险模块87通过、硬停8窗口在正确的仓库内临时目录复跑通过。首轮硬停4项因错误临时目录被安全守卫拒绝，失败保留，未削弱守卫或跳过。测试容器已停止，正在手动测试的网站未停止。见[原始回归记录](../evidence/20261014-source-regression/summary.json)。未提交guard/launcher、CI49草案、浏览器撤回重投和首次用户反馈仍待验，不能由该源码包测试签收。"
+        },
+        {
+          "line": 191,
+          "before": "launcher后续独立验收：原子保存、完整运行清单、迁移摘要和进程身份校验已复核；父进程消失但可能存活子进程时改为保留记录/报错。34离线断言、7真实身份及测试自有进程树实际停止通过，当前网站只做CheckOnly。代码验收记录见[launcher检查](evidence/20261014-launcher-review/summary.json)，完整网站停止/恢复仍待空闲窗口；不签收AI guard或CI49。",
+          "after": "launcher后续独立验收：原子保存、完整运行清单、迁移摘要和进程身份校验已复核；父进程消失但可能存活子进程时改为保留记录/报错。34离线断言、7真实身份及测试自有进程树实际停止通过，当前网站只做CheckOnly。代码验收记录见[launcher检查](../evidence/20261014-launcher-review/summary.json)，完整网站停止/恢复仍待空闲窗口；不签收AI guard或CI49。"
+        },
+        {
+          "line": 193,
+          "before": "AI guard后续代码验收：Z47的跨子句状态串扰与明确未来新提交误拒已修正；原部署/源码因果守卫与provider指导经受影响流程验证。反例先4失败，修后37目标/138受影响通过，规则不构成人员贡献认证。见[检查](evidence/20261014-plan-guard-review/summary.json)。当前网站未重启加载最新修正，独立语义/页面仍待验；CI49仍未签收，r3完整回归不覆盖本批源码。",
+          "after": "AI guard后续代码验收：Z47的跨子句状态串扰与明确未来新提交误拒已修正；原部署/源码因果守卫与provider指导经受影响流程验证。反例先4失败，修后37目标/138受影响通过，规则不构成人员贡献认证。见[检查](../evidence/20261014-plan-guard-review/summary.json)。当前网站未重启加载最新修正，独立语义/页面仍待验；CI49仍未签收，r3完整回归不覆盖本批源码。"
+        },
+        {
+          "line": 195,
+          "before": "CI49后续本地验收：门禁新增真实硬停函数名与精确参数检查，20目标/30工具测试通过；CI两库vector初始化已实跑，99bd202干净后端快照专属cp_ci严格87+独立careerproof硬停8零失败跳过，真实JUnit门禁通过。前端sucrase3.35.1补直接声明，262测试/类型通过。见[记录](evidence/20261014-ci49-review/summary.json)。这些结果不证明远端Actions、分支保护、干净npm ci生产构建或最新全量；无推送/部署，当前网站保持不变。",
+          "after": "CI49后续本地验收：门禁新增真实硬停函数名与精确参数检查，20目标/30工具测试通过；CI两库vector初始化已实跑，99bd202干净后端快照专属cp_ci严格87+独立careerproof硬停8零失败跳过，真实JUnit门禁通过。前端sucrase3.35.1补直接声明，262测试/类型通过。见[记录](../evidence/20261014-ci49-review/summary.json)。这些结果不证明远端Actions、分支保护、干净npm ci生产构建或最新全量；无推送/部署，当前网站保持不变。"
+        },
+        {
+          "line": 203,
+          "before": "10/15正常库迁移已落地：六项非法值/重复只读预检均为0；一致性快照备份恢复到独立测试库后全表摘要相同，克隆库升级0019后除版本号外全表数据不变。随后按自有进程身份安全停止/恢复3000，正常库0018→0019成功，全表摘要除迁移版本外完全一致，登录/health均200。备份仅在本机忽略目录，不入Git；测试克隆库删除、专属容器停止，3001未迁移或重启。[备份恢复](evidence/20261015-backup-rehearsal/summary.json) / [正常库启用](evidence/20261015-backup-rehearsal/normal-activation.json)。0019表格内“未迁移”描述此前测试阶段，以上为后续实际启用结果。下一项统一判定标签，随后安全协议，首次独立用户与交付材料仍待。",
+          "after": "10/15正常库迁移已落地：六项非法值/重复只读预检均为0；一致性快照备份恢复到独立测试库后全表摘要相同，克隆库升级0019后除版本号外全表数据不变。随后按自有进程身份安全停止/恢复3000，正常库0018→0019成功，全表摘要除迁移版本外完全一致，登录/health均200。备份仅在本机忽略目录，不入Git；测试克隆库删除、专属容器停止，3001未迁移或重启。[备份恢复](../evidence/20261015-backup-rehearsal/summary.json) / [正常库启用](../evidence/20261015-backup-rehearsal/normal-activation.json)。0019表格内“未迁移”描述此前测试阶段，以上为后续实际启用结果。下一项统一判定标签，随后安全协议，首次独立用户与交付材料仍待。"
+        },
+        {
+          "line": 209,
+          "before": "| 1 Codex | 全新Python环境安装与依赖校验；不覆盖或删除现有venv。10/15解包目录新venv安装dev/mcp成功，pip check/生产pin/应用导入通过，[安装命令与结果](evidence/20261015-source-regression/python-install.json)；此前1300全量仍使用旧环境，不挪为新环境成绩。独立空库upgrade head/check通过（含未预建vector复跑），CI增加独立alembic_check库，远端未运行；[基线](evidence/20261015-migration-baseline/summary.json) |",
+          "after": "| 1 Codex | 全新Python环境安装与依赖校验；不覆盖或删除现有venv。10/15解包目录新venv安装dev/mcp成功，pip check/生产pin/应用导入通过，[安装命令与结果](../evidence/20261015-source-regression/python-install.json)；此前1300全量仍使用旧环境，不挪为新环境成绩。独立空库upgrade head/check通过（含未预建vector复跑），CI增加独立alembic_check库，远端未运行；[基线](../evidence/20261015-migration-baseline/summary.json) |"
+        },
+        {
+          "line": 210,
+          "before": "| 2 Codex设计/可用执行端实现 | 0019已实施5项状态/判定CHECK、报告要求唯一性、5索引及同名模型约束，枚举对齐实际5值；旧值/重复预检拒绝而不清理。SQLite/PG依赖历史保留与往返、全链upgrade/check/downgrade/reupgrade/check通过；新Python环境全量1310通过/55跳过、PG严格103+8硬停零跳过，门禁已要求新迁移模块。初次70个setup错误为合成核验夹具使用missing而非gap，已修且保留失败；随后新增模型/迁移一致性和门禁检查30通过/7PG跳过。两组真实迁移表结构、每事实表5000行的合成EXPLAIN ANALYZE通过：均衡场景4个新索引被选，热岗位1250投递/取100条场景选新岗位排序索引；未强迫planner，非实际流量或延迟保证。两临时库删除、容器停止；未迁移现有演示库。[约束证据](evidence/20261015-data-integrity/final.json) / [查询计划](evidence/20261015-index-plans/summary.json) |",
+          "after": "| 2 Codex设计/可用执行端实现 | 0019已实施5项状态/判定CHECK、报告要求唯一性、5索引及同名模型约束，枚举对齐实际5值；旧值/重复预检拒绝而不清理。SQLite/PG依赖历史保留与往返、全链upgrade/check/downgrade/reupgrade/check通过；新Python环境全量1310通过/55跳过、PG严格103+8硬停零跳过，门禁已要求新迁移模块。初次70个setup错误为合成核验夹具使用missing而非gap，已修且保留失败；随后新增模型/迁移一致性和门禁检查30通过/7PG跳过。两组真实迁移表结构、每事实表5000行的合成EXPLAIN ANALYZE通过：均衡场景4个新索引被选，热岗位1250投递/取100条场景选新岗位排序索引；未强迫planner，非实际流量或延迟保证。两临时库删除、容器停止；未迁移现有演示库。[约束证据](../evidence/20261015-data-integrity/final.json) / [查询计划](../evidence/20261015-index-plans/summary.json) |"
+        },
+        {
+          "line": 211,
+          "before": "| 3 可用执行端 / Codex验收 | 10/15已统一判定来源verdict-display.js：报告/看板/雷达/演示/规划/徽标共用，保留verified兼容，未评估单列；企业看板补撤回状态。学生投递原有解释性长句保留，不删“查看/下载不等于录用”含义。最终269前端测试/类型/生产构建通过；早期TS扩展导入、旧文案断言及测试别名解析失败均保留。正常3000合成热力图切换及390px无整体横向溢出、已存报告统一状态/5组来源默认折叠实测通过；原库全表摘要恢复前后不变。已回到默认可发现的dep-frontend目录并CheckOnly通过。企业真实列表/职业规划本轮未逐页实测，不写为全站页面验收。[自动检查](evidence/20261015-verdict-wording/final-v3.json) / [恢复](evidence/20261015-verdict-wording/preferred-runtime/normal-activation.json) |",
+          "after": "| 3 可用执行端 / Codex验收 | 10/15已统一判定来源verdict-display.js：报告/看板/雷达/演示/规划/徽标共用，保留verified兼容，未评估单列；企业看板补撤回状态。学生投递原有解释性长句保留，不删“查看/下载不等于录用”含义。最终269前端测试/类型/生产构建通过；早期TS扩展导入、旧文案断言及测试别名解析失败均保留。正常3000合成热力图切换及390px无整体横向溢出、已存报告统一状态/5组来源默认折叠实测通过；原库全表摘要恢复前后不变。已回到默认可发现的dep-frontend目录并CheckOnly通过。企业真实列表/职业规划本轮未逐页实测，不写为全站页面验收。[自动检查](../evidence/20261015-verdict-wording/final-v3.json) / [恢复](../evidence/20261015-verdict-wording/preferred-runtime/normal-activation.json) |"
+        },
+        {
+          "line": 212,
+          "before": "| 4 Codex协议 / 可用执行端测试 | 10/15会话刷新已启用正常3000/8000：原子消费与后继签发同事务，同源标签协调及网络失败恢复；SQLite1318通过/56跳过，专属PG107与硬停8均零跳过，前端275/类型/生产构建通过。重启前后全表摘要一致、版本仍0019，3001未动。自然过期双标签恢复已实测通过（单一正常演示账户、只签出一条后继），近期旧凭证4015仍拒绝，不是宽限授权。持久限流/完整重放链仍开放。首次独立试用者用户暂无法安排，保留未验证，继续推进交付材料，不以自动测试替代。[证据](evidence/20261015-refresh-atomicity/README.md)。 |",
+          "after": "| 4 Codex协议 / 可用执行端测试 | 10/15会话刷新已启用正常3000/8000：原子消费与后继签发同事务，同源标签协调及网络失败恢复；SQLite1318通过/56跳过，专属PG107与硬停8均零跳过，前端275/类型/生产构建通过。重启前后全表摘要一致、版本仍0019，3001未动。自然过期双标签恢复已实测通过（单一正常演示账户、只签出一条后继），近期旧凭证4015仍拒绝，不是宽限授权。持久限流/完整重放链仍开放。首次独立试用者用户暂无法安排，保留未验证，继续推进交付材料，不以自动测试替代。[证据](../evidence/20261015-refresh-atomicity/README.md)。 |"
+        },
+        {
+          "line": 281,
+          "before": "本轮代码/HTTP/日志/失败留档见[独立检查](evidence/20261012-release-gate/README.md)，ZCode静态调查见[45号审查](evidence/20261012-release-usability-audit/audit.md)。证据范围不能扩大；本地源码与服务以当前工作树为准。没有发现P0不等于所有安全问题均不存在。",
+          "after": "本轮代码/HTTP/日志/失败留档见[独立检查](../evidence/20261012-release-gate/README.md)，ZCode静态调查见[45号审查](../evidence/20261012-release-usability-audit/audit.md)。证据范围不能扩大；本地源码与服务以当前工作树为准。没有发现P0不等于所有安全问题均不存在。"
+        },
+        {
+          "line": 285,
+          "before": "来源为用户的仓库外整改清单，结论按现行源码复核；[处置与原始证据](evidence/20261013-remediation/README.md)。本批完成G3/G4/G5的配置、复现说明和问题分级，不代替未完成的交付门槛。",
+          "after": "来源为用户的仓库外整改清单，结论按现行源码复核；[处置与原始证据](../evidence/20261013-remediation/README.md)。本批完成G3/G4/G5的配置、复现说明和问题分级，不代替未完成的交付门槛。"
+        },
+        {
+          "line": 292,
+          "before": "| CI与专属PG门禁 | Z49草案未签收/推送。10月14日修正四个夹具的漏表/共享导入及本机.env依赖，隔离26专项通过；全量首跑因快照漏带评测JSON保留5失败/10错误，补资源后两个模块38通过，未冒称一次全量绿灯。Docker引擎不可用，PG与完整CI仍待复验；[实际结果](evidence/20261014-ci-fixture-repair/README.md) |",
+          "after": "| CI与专属PG门禁 | Z49草案未签收/推送。10月14日修正四个夹具的漏表/共享导入及本机.env依赖，隔离26专项通过；全量首跑因快照漏带评测JSON保留5失败/10错误，补资源后两个模块38通过，未冒称一次全量绿灯。Docker引擎不可用，PG与完整CI仍待复验；[实际结果](../evidence/20261014-ci-fixture-repair/README.md) |"
+        },
+        {
+          "line": 293,
+          "before": "| 视频/许可/评审访问/签署/PDF | 技术PDF已更新为8页评审预备稿并逐页检查；[生成/核查](evidence/20261014-submission-pdf.json)。视频已有80秒分段初稿，完整双端录制、最终验收/许可/评审访问/成员签署与正式提交仍未完成，不代填签名或许可 |",
+          "after": "| 视频/许可/评审访问/签署/PDF | 技术PDF已更新为8页评审预备稿并逐页检查；[生成/核查](../evidence/20261014-submission-pdf.json)。视频已有80秒分段初稿，完整双端录制、最终验收/许可/评审访问/成员签署与正式提交仍未完成，不代填签名或许可 |"
+        },
+        {
+          "line": 302,
+          "before": "| 依赖升级 | 已按13项处置，braces/selector-parser保留残余风险；[处置证据](evidence/20261010-DEP-residual/dependency-disposition.md) |",
+          "after": "| 依赖升级 | 已按13项处置，braces/selector-parser保留残余风险；[处置证据](../evidence/20261010-DEP-residual/dependency-disposition.md) |"
+        },
+        {
+          "line": 303,
+          "before": "| 本地嵌入兼容 | df7f3fa真实CPU加载/声明兼容3项零跳过、受影响130项；新旧六组向量/五权重哈希一致；[独立签收](evidence/20261010-DEP-fastembed-compatibility/codex-signoff.md) |",
+          "after": "| 本地嵌入兼容 | df7f3fa真实CPU加载/声明兼容3项零跳过、受影响130项；新旧六组向量/五权重哈希一致；[独立签收](../evidence/20261010-DEP-fastembed-compatibility/codex-signoff.md) |"
+        },
+        {
+          "line": 304,
+          "before": "| 升级后页面 | 学生三变化/390px、企业核验/撤回/通知已阶段通过；新预算八状态严格390px与三快照hash不变通过，关联企业问题→补证/新报告/通知及严格390px已通过；[正向链证据](evidence/20261010-enterprise-question-growth/README.md) |",
+          "after": "| 升级后页面 | 学生三变化/390px、企业核验/撤回/通知已阶段通过；新预算八状态严格390px与三快照hash不变通过，关联企业问题→补证/新报告/通知及严格390px已通过；[正向链证据](../evidence/20261010-enterprise-question-growth/README.md) |"
+        },
+        {
+          "line": 305,
+          "before": "| 实时预算显示 | d290aec接口/页面修复、known及held/unknown/503失败/复用刷新实际签收；[矩阵证据](evidence/20261010-e2e-budget-matrix/README.md) |",
+          "after": "| 实时预算显示 | d290aec接口/页面修复、known及held/unknown/503失败/复用刷新实际签收；[矩阵证据](../evidence/20261010-e2e-budget-matrix/README.md) |"
+        },
+        {
+          "line": 307,
+          "before": "| 联合离线基线 | 28将三维结构与8例盲评回放分列；修正重复JSON键/缺维度误判，53通过及Codex独立4复跑；严格3/8是作者草稿评分，真实语义仍null；[签收](evidence/20261011-AI-review-benchmark-codex/README.md) |",
+          "after": "| 联合离线基线 | 28将三维结构与8例盲评回放分列；修正重复JSON键/缺维度误判，53通过及Codex独立4复跑；严格3/8是作者草稿评分，真实语义仍null；[签收](../evidence/20261011-AI-review-benchmark-codex/README.md) |"
+        },
+        {
+          "line": 308,
+          "before": "| 升级PG补验 | 29补原28节点，60唯一节点最终通过（首轮56/4失败保留，合法路径重跑4通过）；Codex独立2风险通过。原46覆盖=专项17+29补28+Codex补1；[签收](evidence/20261011-DEP-pg-gap-codex/README.md) |",
+          "after": "| 升级PG补验 | 29补原28节点，60唯一节点最终通过（首轮56/4失败保留，合法路径重跑4通过）；Codex独立2风险通过。原46覆盖=专项17+29补28+Codex补1；[签收](../evidence/20261011-DEP-pg-gap-codex/README.md) |"
+        },
+        {
+          "line": 309,
+          "before": "| 文档与启动整理 | f131850文档减量、a91cb7e自动环境/构建缓存/进程复用/安全停止与真实启停通过；[启动证据](evidence/20261010-startup-launcher/README.md) |",
+          "after": "| 文档与启动整理 | f131850文档减量、a91cb7e自动环境/构建缓存/进程复用/安全停止与真实启停通过；[启动证据](../evidence/20261010-startup-launcher/README.md) |"
+        },
+        {
+          "line": 313,
+          "before": "以下数字只证明各自提交时范围，不能代替本轮升级后验证。[前阶段总审](evidence/20261005-phase-final/codex-goal-signoff.md)。",
+          "after": "以下数字只证明各自提交时范围，不能代替本轮升级后验证。[前阶段总审](../evidence/20261005-phase-final/codex-goal-signoff.md)。"
+        },
+        {
+          "line": 317,
+          "before": "| E2E-01/P0 | 可重复独立数据库/存储/端口/构建，Mock关闭外发，无重复投递/通知 | 脚本、夹具、测试、自审证据 | 隔离审查、真实启动/停止/重启抽验、提交 | 已签收9b442f4；17安全/8所有权用例及真实启动重启通过；[隔离审计](evidence/20261004-E2E-environment/codex-isolation-audit-20261005.md) |",
+          "after": "| E2E-01/P0 | 可重复独立数据库/存储/端口/构建，Mock关闭外发，无重复投递/通知 | 脚本、夹具、测试、自审证据 | 隔离审查、真实启动/停止/重启抽验、提交 | 已签收9b442f4；17安全/8所有权用例及真实启动重启通过；[隔离审计](../evidence/20261004-E2E-environment/codex-isolation-audit-20261005.md) |"
+        },
+        {
+          "line": 318,
+          "before": "| E2E-02/P0 | 企业晚响应不覆盖、通知定位、失败草稿可编辑、下载、撤回边界、桌面/390 | 页面首验、故障注入、修复/原始证据 | 独立晚响应/精确通知/hash抽验、签收提交 | 已签收76dfd59/970c48a/b8534ee/f96bca2；[企业签收](evidence/20261005-enterprise-final-review/codex-stage-signoff.md) |",
+          "after": "| E2E-02/P0 | 企业晚响应不覆盖、通知定位、失败草稿可编辑、下载、撤回边界、桌面/390 | 页面首验、故障注入、修复/原始证据 | 独立晚响应/精确通知/hash抽验、签收提交 | 已签收76dfd59/970c48a/b8534ee/f96bca2；[企业签收](../evidence/20261005-enterprise-final-review/codex-stage-signoff.md) |"
+        },
+        {
+          "line": 319,
+          "before": "| E2E-03/P0 | 从缺口创建任务、上传新版、生成报告、逐项解释材料/岗位变化，刷新可读且原投递固定 | 合成材料、真实UI三变化/390、runner回归/证据 | 岗位/授权/固定输入协议、独立数据与页面抽验、提交 | 已签收edf4bd5/77d5283/5960df1；三变化/刷新/两端通过，四报告同归属及三快照hash不变；[学生签收](evidence/20261005-growth-target-job/codex-stage-signoff.md)。旧seed企业问题409保留，不声称已回答 |",
+          "after": "| E2E-03/P0 | 从缺口创建任务、上传新版、生成报告、逐项解释材料/岗位变化，刷新可读且原投递固定 | 合成材料、真实UI三变化/390、runner回归/证据 | 岗位/授权/固定输入协议、独立数据与页面抽验、提交 | 已签收edf4bd5/77d5283/5960df1；三变化/刷新/两端通过，四报告同归属及三快照hash不变；[学生签收](../evidence/20261005-growth-target-job/codex-stage-signoff.md)。旧seed企业问题409保留，不声称已回答 |"
+        },
+        {
+          "line": 320,
+          "before": "| AI-01/P1 | 六类缺口建议具名可执行、引用可溯，拒绝无引用和错误归因，失败降级 | 离线评测/回归与独立只读审查 | 守卫/质量标准/可信度裁决、抽验提交 | 离线范围已签收9e87fec/9bc9601；146回归、14样例/23探针，当前源码hash匹配；[未来条件](evidence/20261005-AI-future-checks/README.md)。真实模型/独立人工任意语义未验证 |",
+          "after": "| AI-01/P1 | 六类缺口建议具名可执行、引用可溯，拒绝无引用和错误归因，失败降级 | 离线评测/回归与独立只读审查 | 守卫/质量标准/可信度裁决、抽验提交 | 离线范围已签收9e87fec/9bc9601；146回归、14样例/23探针，当前源码hash匹配；[未来条件](../evidence/20261005-AI-future-checks/README.md)。真实模型/独立人工任意语义未验证 |"
+        },
+        {
+          "line": 321,
+          "before": "| PRODUCT-01/P1 | 本人草稿可编辑持久化、刷新与原要求引用，预览后人工复制 | 有界后端/前端、目标/受影响检查、页面首验/自审及原始证据 | 协议/授权/来源与竞态裁决、独立风险复验、签收/本地提交 | 已完成：2f91484后端、d760726迁移、027069d前端、56ebd09/32a3a0c页面与最终补证；前端193/独立11、12项页面及原生剪贴板通过，旧投递/回复/通知/四报告哈希不变；[最终签收](evidence/20261005-PRODUCT-01-codex/codex-product-signoff-20261007.md) |",
+          "after": "| PRODUCT-01/P1 | 本人草稿可编辑持久化、刷新与原要求引用，预览后人工复制 | 有界后端/前端、目标/受影响检查、页面首验/自审及原始证据 | 协议/授权/来源与竞态裁决、独立风险复验、签收/本地提交 | 已完成：2f91484后端、d760726迁移、027069d前端、56ebd09/32a3a0c页面与最终补证；前端193/独立11、12项页面及原生剪贴板通过，旧投递/回复/通知/四报告哈希不变；[最终签收](../evidence/20261005-PRODUCT-01-codex/codex-product-signoff-20261007.md) |"
+        },
+        {
+          "line": 322,
+          "before": "| OPS-01/P1 | 用量硬停对账、在途预算、依赖审计；部署单独授权 | 有界实现、测试首跑与证据；20/21/22已交棒 | 协议/授权/费用裁决、真实PG及硬停复验、最终提交 | 本范围已签收：[最终审计](evidence/20261009-OPS-budget-pg-resume/codex-final-signoff.md)。核验/主匹配持久账目与共用预算：当前118受影响、49迁移/守卫/匹配、4生产入口均零跳过；真实8窗硬停+高风险4复跑、Ruff通过。依赖排序2565d80完成，未升级/部署/业务库切换/真实模型；其他AI链另列后续，P2暂停 |",
+          "after": "| OPS-01/P1 | 用量硬停对账、在途预算、依赖审计；部署单独授权 | 有界实现、测试首跑与证据；20/21/22已交棒 | 协议/授权/费用裁决、真实PG及硬停复验、最终提交 | 本范围已签收：[最终审计](../evidence/20261009-OPS-budget-pg-resume/codex-final-signoff.md)。核验/主匹配持久账目与共用预算：当前118受影响、49迁移/守卫/匹配、4生产入口均零跳过；真实8窗硬停+高风险4复跑、Ruff通过。依赖排序2565d80完成，未升级/部署/业务库切换/真实模型；其他AI链另列后续，P2暂停 |"
+        },
+        {
+          "line": 324,
+          "before": "前阶段PG940零跳过/前端153是当时源码快照，[原始证据](evidence/20261005-phase-final/README.md)。PRODUCT-01以自己的阶段与最终签收为准，不由旧全量计数替代新增页面或实际模型结果。",
+          "after": "前阶段PG940零跳过/前端153是当时源码快照，[原始证据](../evidence/20261005-phase-final/README.md)。PRODUCT-01以自己的阶段与最终签收为准，不由旧全量计数替代新增页面或实际模型结果。"
+        },
+        {
+          "line": 331,
+          "before": "[设计参考与测试表](prototypes/设计说明与验收.md)、[双角色合成原型](prototypes/evidence-workspace.html)。用户已选择原站靛蓝与证据联动；对应网站组件集成见当前 G2/G4 和 UX 证据。原型不代表网站页面通过，完整缩放/读屏/首次用户体验仍待验证。后续组件变更另设唯一文件卡，保留授权、通知锚点和原快照。",
+          "after": "[设计参考与测试表](../prototypes/设计说明与验收.md)、[双角色合成原型](../prototypes/evidence-workspace.html)。用户已选择原站靛蓝与证据联动；对应网站组件集成见当前 G2/G4 和 UX 证据。原型不代表网站页面通过，完整缩放/读屏/首次用户体验仍待验证。后续组件变更另设唯一文件卡，保留授权、通知锚点和原快照。"
+        },
+        {
+          "line": 333,
+          "before": "10月13日按用户优先级推进完善度与美观度：Harness50首页初稿、Codex精简与合成预览；雷达分层/默认折叠；真实与合成热力图按证据状态统一颜色，修正75阈值无法呈现当前65上限的问题。前端最终251、类型与生产构建通过；[本轮证据](evidence/20261013-experience-polish/README.md)。页面视觉/390px实测尚待补，不用构建或静态预览替代。ZCode暂停，空闲时段Harness辅助、Codex集成复验。",
+          "after": "10月13日按用户优先级推进完善度与美观度：Harness50首页初稿、Codex精简与合成预览；雷达分层/默认折叠；真实与合成热力图按证据状态统一颜色，修正75阈值无法呈现当前65上限的问题。前端最终251、类型与生产构建通过；[本轮证据](../evidence/20261013-experience-polish/README.md)。页面视觉/390px实测尚待补，不用构建或静态预览替代。ZCode暂停，空闲时段Harness辅助、Codex集成复验。"
+        },
+        {
+          "line": 337,
+          "before": "2026-10-14报告动作层推进G1/G2：合并学生工作台/补证计划，四组完整要求可展开，默认待补材料；顶部已保存状态概括，规则同句去重，管理员兜底和投递步骤保留。前端262、升级类型及独立生产构建通过；[实施记录](evidence/20261014-report-action-layer/README.md)。真实交互/390px/同学前后对比未验；不改报告为职业推荐，未重启现场。",
+          "after": "2026-10-14报告动作层推进G1/G2：合并学生工作台/补证计划，四组完整要求可展开，默认待补材料；顶部已保存状态概括，规则同句去重，管理员兜底和投递步骤保留。前端262、升级类型及独立生产构建通过；[实施记录](../evidence/20261014-report-action-layer/README.md)。真实交互/390px/同学前后对比未验；不改报告为职业推荐，未重启现场。"
+        },
+        {
+          "line": 339,
+          "before": "当前状态只维护本页；过期 GOAL 不再充当执行入口。历史验收/任务协议与人工复核样例统一在 evidence，原始日志不变。文档整理只完成说明减量与引用校验，不代表开放问题修复或全站迭代结束。入口与维护规则见[文档导航](README.md)。",
+          "after": "当前状态只维护本页；过期 GOAL 不再充当执行入口。历史验收/任务协议与人工复核样例统一在 evidence，原始日志不变。文档整理只完成说明减量与引用校验，不代表开放问题修复或全站迭代结束。入口与维护规则见[文档导航](../README.md)。"
+        },
+        {
+          "line": 341,
+          "before": "10月14日晚G2/G3实际页面验收：沿原隔离run完成撤回v2→两操作明确投递已保存v3→企业SQL原引用/回复→学生最新通知定位新记录。独立HTTP旧详情/查看/下载/回复与2条旧企业通知均404，原6快照未变，新投递全快照等于新版保存报告；用户自行注册账号未操作。仅合成站内回复，无真实模型/外发。首次独立用户上传与实际AI语义、视频/许可/最终材料仍未完成。[页面与独立核对](evidence/20261014-browser-reconsent/summary.json)。",
+          "after": "10月14日晚G2/G3实际页面验收：沿原隔离run完成撤回v2→两操作明确投递已保存v3→企业SQL原引用/回复→学生最新通知定位新记录。独立HTTP旧详情/查看/下载/回复与2条旧企业通知均404，原6快照未变，新投递全快照等于新版保存报告；用户自行注册账号未操作。仅合成站内回复，无真实模型/外发。首次独立用户上传与实际AI语义、视频/许可/最终材料仍未完成。[页面与独立核对](../evidence/20261014-browser-reconsent/summary.json)。"
+        },
+        {
+          "line": 343,
+          "before": "10月14日晚G1/G2使用障碍修复：岗位页曾强制外部AI同意才能生成报告，与后端和现行隐私说明冲突；现未授权也可生成本地规则报告，外部调用仍须明确同意。正常3000新CP01简历/ZIP经实际文件选择上传、解析100%、选择新版本、生成规则报告、展开代码原文、两操作明确投递成功；外发同意false/0物理请求，原7份日常投递快照哈希未变。新增实际后端边界用例1通过、类型/Ruff和两站构建恢复通过。仅合成材料，未调用真实模型；不代替独立首次用户或AI质量结论。[证据](evidence/20261014-match-without-external-consent/summary.json)。",
+          "after": "10月14日晚G1/G2使用障碍修复：岗位页曾强制外部AI同意才能生成报告，与后端和现行隐私说明冲突；现未授权也可生成本地规则报告，外部调用仍须明确同意。正常3000新CP01简历/ZIP经实际文件选择上传、解析100%、选择新版本、生成规则报告、展开代码原文、两操作明确投递成功；外发同意false/0物理请求，原7份日常投递快照哈希未变。新增实际后端边界用例1通过、类型/Ruff和两站构建恢复通过。仅合成材料，未调用真实模型；不代替独立首次用户或AI质量结论。[证据](../evidence/20261014-match-without-external-consent/summary.json)。"
+        },
+        {
+          "line": 345,
+          "before": "10/15正常网站补证与规则缺陷：正常演示学生从Redis缺口保存计划、上传原项目v2并明确选择、生成规则报告、逐项对比已实际执行。v3漏识别Redis类型参数写法，已AST修复并升evidence-v4，114相关检查/Ruff通过；同v2新报告识别Redis函数，比较明确为规则变化，旧8投递快照哈希不变、无物理模型请求。Redis操作仍落在基础线索等级，等级映射及历史冻结影响为下一有界P2（Codex负责）；不得以源码增加直接证明运行或本人贡献。记录见[修复](evidence/20261015-redis-parameter/summary.json)。",
+          "after": "10/15正常网站补证与规则缺陷：正常演示学生从Redis缺口保存计划、上传原项目v2并明确选择、生成规则报告、逐项对比已实际执行。v3漏识别Redis类型参数写法，已AST修复并升evidence-v4，114相关检查/Ruff通过；同v2新报告识别Redis函数，比较明确为规则变化，旧8投递快照哈希不变、无物理模型请求。Redis操作仍落在基础线索等级，等级映射及历史冻结影响为下一有界P2（Codex负责）；不得以源码增加直接证明运行或本人贡献。记录见[修复](../evidence/20261015-redis-parameter/summary.json)。"
+        },
+        {
+          "line": 347,
+          "before": "10/15Redis局部操作P2已闭合：新增v5评级口径仅写入新报告，历史缺省仍按v4；不会因部署新规则改写旧等级。2项红测修后128相关通过/Ruff通过，正常网页同v2材料显示局部操作，旧两份逐项API哈希及原8投递快照哈希不变。缓存已区分评级版本、无真实模型请求。[检查](evidence/20261015-redis-level-version/summary.json)。后续转最新候选回归、首次独立用户反馈及评审材料，未宣称整体完成。",
+          "after": "10/15Redis局部操作P2已闭合：新增v5评级口径仅写入新报告，历史缺省仍按v4；不会因部署新规则改写旧等级。2项红测修后128相关通过/Ruff通过，正常网页同v2材料显示局部操作，旧两份逐项API哈希及原8投递快照哈希不变。缓存已区分评级版本、无真实模型请求。[检查](../evidence/20261015-redis-level-version/summary.json)。后续转最新候选回归、首次独立用户反馈及评审材料，未宣称整体完成。"
+        },
+        {
+          "line": 349,
+          "before": "10/15最新源码包r4（9a710d5）已解包验证：756文件及冻结输入哈希一致，Ruff/全量SQLite1300通过、49跳过；专属PG87项及8真实硬停窗口零跳过，JUnit门禁通过。前端全新npm ci后262测试、类型及生产构建通过；两测试库无遗留schema且容器停止，未改运行网站或用户数据。后端尚未做全新依赖安装，远端CI、首次独立用户、真实AI语义、视频/许可/最终材料仍待。[本轮结果](evidence/20261015-source-regression/summary.json)。",
+          "after": "10/15最新源码包r4（9a710d5）已解包验证：756文件及冻结输入哈希一致，Ruff/全量SQLite1300通过、49跳过；专属PG87项及8真实硬停窗口零跳过，JUnit门禁通过。前端全新npm ci后262测试、类型及生产构建通过；两测试库无遗留schema且容器停止，未改运行网站或用户数据。后端尚未做全新依赖安装，远端CI、首次独立用户、真实AI语义、视频/许可/最终材料仍待。[本轮结果](../evidence/20261015-source-regression/summary.json)。"
+        },
+        {
+          "line": 351,
+          "before": "10/15首次使用说明已修真实障碍：演示网页、功能演示与九份下载步骤不再把模型费用同意作为报告前置；先走不外发规则报告，AI按需明确同意。下载步骤同步当前账户菜单、本人核对可选，使用指南注明已导入无需重复上传；简历/项目ZIP/catalog字节未改。材料6测试、类型/最终生产构建、九份真实HTTP下载与网页截图通过；正常站恢复前后全表摘要一致，3001未动。浏览器双标签加载/并行刷新同一学生可见，token数量未增加，不冒充同时过期轮换通过。首次独立用户仍未验证。[说明检查](evidence/20261015-demo-instructions/summary.json)。",
+          "after": "10/15首次使用说明已修真实障碍：演示网页、功能演示与九份下载步骤不再把模型费用同意作为报告前置；先走不外发规则报告，AI按需明确同意。下载步骤同步当前账户菜单、本人核对可选，使用指南注明已导入无需重复上传；简历/项目ZIP/catalog字节未改。材料6测试、类型/最终生产构建、九份真实HTTP下载与网页截图通过；正常站恢复前后全表摘要一致，3001未动。浏览器双标签加载/并行刷新同一学生可见，token数量未增加，不冒充同时过期轮换通过。首次独立用户仍未验证。[说明检查](../evidence/20261015-demo-instructions/summary.json)。"
+        },
+        {
+          "line": 353,
+          "before": "10/15报告初始分组修复：真实报告待补0项、部分支持2项时不再默认展示空列表；按待补→部分支持→未覆盖/复核→支持选择首个非空分组，用户切换/收起保持自主。3个红测修后10目标/277全前端、类型/生产构建通过。正常3000真实320px显示2项缺口、键盘切换支持3项及收起通过，5组来源默认关闭、未勾选投递不可提交；无页面横向溢出。恢复前后全表摘要一致，未改已保存报告或原投递，3001未动；实际200%缩放仍未验。[检查](evidence/20261015-report-initial-group/summary.json)。接下来优先对齐技术PDF与当前候选状态、推进视频和许可方案；首次独立用户暂无法安排，仍待真实反馈。",
+          "after": "10/15报告初始分组修复：真实报告待补0项、部分支持2项时不再默认展示空列表；按待补→部分支持→未覆盖/复核→支持选择首个非空分组，用户切换/收起保持自主。3个红测修后10目标/277全前端、类型/生产构建通过。正常3000真实320px显示2项缺口、键盘切换支持3项及收起通过，5组来源默认关闭、未勾选投递不可提交；无页面横向溢出。恢复前后全表摘要一致，未改已保存报告或原投递，3001未动；实际200%缩放仍未验。[检查](../evidence/20261015-report-initial-group/summary.json)。接下来优先对齐技术PDF与当前候选状态、推进视频和许可方案；首次独立用户暂无法安排，仍待真实反馈。"
+        },
+        {
+          "line": 355,
+          "before": "10/15技术PDF已更新为8页，功能基线f095d94：同步规则报告无需外发同意、报告非空分组、320px/键盘、补证与双端撤回重投、0019恢复及当前源码检查；保留首次独立用户/真实AI语义/200%缩放/视频/许可/评审访问/签署缺口。Poppler最终8页渲染，7页与已检查图像一致，改动第5页重新目检；字框均在A4内。Harness54在jbcode的Flash High非高峰独立核对7份来源，输出已交回；Codex核对提交blob并纠正“删历史签收”等无依据建议，不把其工作区中途读取当最终PDF签收。最终稿仍需冻结提交重建，旧r4不是最新候选。[PDF检查](evidence/20261015-submission-pdf.json)。本轮未改网站、数据或服务。",
+          "after": "10/15技术PDF已更新为8页，功能基线f095d94：同步规则报告无需外发同意、报告非空分组、320px/键盘、补证与双端撤回重投、0019恢复及当前源码检查；保留首次独立用户/真实AI语义/200%缩放/视频/许可/评审访问/签署缺口。Poppler最终8页渲染，7页与已检查图像一致，改动第5页重新目检；字框均在A4内。Harness54在jbcode的Flash High非高峰独立核对7份来源，输出已交回；Codex核对提交blob并纠正“删历史签收”等无依据建议，不把其工作区中途读取当最终PDF签收。最终稿仍需冻结提交重建，旧r4不是最新候选。[PDF检查](../evidence/20261015-submission-pdf.json)。本轮未改网站、数据或服务。"
+        },
+        {
+          "line": 357,
+          "before": "10/15源码预审包r5已生成，来源8917814、762文件逐项哈希与当前技术PDF一致；冻结输入/评审各自原始字节通过，解包打包/评测48专项零跳过。首个脚本误用输入哈希比较评审文件，纠正后通过，不是打包器缺陷，未修改冻结输入或校验条件。r5只复用依赖做专项，未重跑全量/PG/前端全新安装，仍有PyMuPDF/根许可阻断，不是最终候选。[包检查](evidence/20261015-source-preview-r5.json)。Harness55已在jbcode/Flash High非高峰委派PDFium独立原型，唯一写evidence/20261015-harness55-pdfium-prototype，合成夹具仅backend/.tmp/pdfium55-fixtures，使用bundled Python已有pypdfium2 5.14.0，不允许安装或改生产parser/pyproject/数据/服务。22:51窗口最小化且恢复检测人工输入，停止进一步键鼠操作，未确认任务终态，未重发；仅_probe.txt不算交付。后续先核对原55会话/结果再独立复验。Jina读取超时，已通过官方文档直接核对许可与非线程安全约束，只能做进程隔离原型，尚未替换或解除许可阻断。根LICENSE发布方向随后由用户确认暂时私有、以后再定，不代选开源许可。",
+          "after": "10/15源码预审包r5已生成，来源8917814、762文件逐项哈希与当前技术PDF一致；冻结输入/评审各自原始字节通过，解包打包/评测48专项零跳过。首个脚本误用输入哈希比较评审文件，纠正后通过，不是打包器缺陷，未修改冻结输入或校验条件。r5只复用依赖做专项，未重跑全量/PG/前端全新安装，仍有PyMuPDF/根许可阻断，不是最终候选。[包检查](../evidence/20261015-source-preview-r5.json)。Harness55已在jbcode/Flash High非高峰委派PDFium独立原型，唯一写evidence/20261015-harness55-pdfium-prototype，合成夹具仅backend/.tmp/pdfium55-fixtures，使用bundled Python已有pypdfium2 5.14.0，不允许安装或改生产parser/pyproject/数据/服务。22:51窗口最小化且恢复检测人工输入，停止进一步键鼠操作，未确认任务终态，未重发；仅_probe.txt不算交付。后续先核对原55会话/结果再独立复验。Jina读取超时，已通过官方文档直接核对许可与非线程安全约束，只能做进程隔离原型，尚未替换或解除许可阻断。根LICENSE发布方向随后由用户确认暂时私有、以后再定，不代选开源许可。"
+        },
+        {
+          "line": 359,
+          "before": "10/15自然过期双标签补验：最近签发37分钟后并行打开正常站个人投递/报告，两页同一演示学生可见原记录，刷新凭证81→82、有效6→6；未改Cookie、不操作用户账号。[页面核对](evidence/20261015-refresh-atomicity/browser-expired-summary.json)。Harness55独立PDFium原型已交回，Codex固定源码快照实跑19项零失败跳过；仅合成OCR回调，不是网站集成。线程亲和不保证进程全局安全，真实OCR/worker/文本A-B/跨平台及许可待验，生产parser/依赖未改。执行端自报尝试完整性标签调整不采纳、不代行，后续禁止改ACL/权限，原始说明与独立审查分别保留。[独立复验](evidence/20261015-harness55-pdfium-prototype/codex-final.json)。当前PDF稍早快照尚未纳入此次双标签证据，冻结后重建；用户已确认暂时保持私有、根许可证以后再定；依赖许可与赛事交付条件仍需核对。",
+          "after": "10/15自然过期双标签补验：最近签发37分钟后并行打开正常站个人投递/报告，两页同一演示学生可见原记录，刷新凭证81→82、有效6→6；未改Cookie、不操作用户账号。[页面核对](../evidence/20261015-refresh-atomicity/browser-expired-summary.json)。Harness55独立PDFium原型已交回，Codex固定源码快照实跑19项零失败跳过；仅合成OCR回调，不是网站集成。线程亲和不保证进程全局安全，真实OCR/worker/文本A-B/跨平台及许可待验，生产parser/依赖未改。执行端自报尝试完整性标签调整不采纳、不代行，后续禁止改ACL/权限，原始说明与独立审查分别保留。[独立复验](../evidence/20261015-harness55-pdfium-prototype/codex-final.json)。当前PDF稍早快照尚未纳入此次双标签证据，冻结后重建；用户已确认暂时保持私有、根许可证以后再定；依赖许可与赛事交付条件仍需核对。"
+        },
+        {
+          "line": 361,
+          "before": "10/16扫描PDF像素预检已加载正常3000/8000：先预算旋转后像素，超限在get_pixmap分配前拒绝，保留渲染后防线。旧实现3红测，修后11目标/29解析上传相关通过、Ruff通过，含真实隔离worker；允许页OCR回调仍为合成，不冒充真实OCR质量。首轮因原PostgreSQL容器停止而连接拒绝，尚未停止服务；核对容器归属并恢复后重试，正常库全表摘要不变、0019未变，3001未动。[证据](evidence/20261015-pdf-pixel-preflight/summary.json)。下一项独立处理S2登录限流，再复核HARNESS46 B3/B4/B7，不混改。Uvicorn本地安装默认proxy_headers=True、默认信任127.0.0.1，旧审查“未显式开即关闭”不成立，限流设计须先明确入口信任；共享IP不做小额度永久封禁。用户确认暂时私有、根许可证以后再定，第三方许可与评审访问仍待核对。",
+          "after": "10/16扫描PDF像素预检已加载正常3000/8000：先预算旋转后像素，超限在get_pixmap分配前拒绝，保留渲染后防线。旧实现3红测，修后11目标/29解析上传相关通过、Ruff通过，含真实隔离worker；允许页OCR回调仍为合成，不冒充真实OCR质量。首轮因原PostgreSQL容器停止而连接拒绝，尚未停止服务；核对容器归属并恢复后重试，正常库全表摘要不变、0019未变，3001未动。[证据](../evidence/20261015-pdf-pixel-preflight/summary.json)。下一项独立处理S2登录限流，再复核HARNESS46 B3/B4/B7，不混改。Uvicorn本地安装默认proxy_headers=True、默认信任127.0.0.1，旧审查“未显式开即关闭”不成立，限流设计须先明确入口信任；共享IP不做小额度永久封禁。用户确认暂时私有、根许可证以后再定，第三方许可与评审访问仍待核对。"
+        },
+        {
+          "line": 363,
+          "before": "10/16 S2登录限流已启用正常3000/8000、版本0020：数据库原子准入，同邮箱＋来源5次/300秒、来源120次/60秒；成功签发同事务清组合计数，来源计数保留，短时限制不等于停用账号。HMAC键不存原邮箱/IP，IPv6按/64、缺失来源共用unknown，不设演示账号豁免；Local/E2E/Docker入口明确no-proxy-headers。最终SQLite1333通过/59跳过，专属PG119及硬停8零跳过、16模块门禁通过；独立HTTP验证重启不丢限制、到期可登录，正常Next转发六次合成错误为5个401+429、伪造XFF不换桶。首轮旧portfolio夹具缺表与次轮检查脚本误留PG环境的失败均保留并已修正复跑；过期清理与准入分开持锁。私有备份恢复/克隆升级/alembic check通过，正常升级既有业务表摘要不变，新增限流探针计数属于预期；3001未动、测试容器停止/0遗留schema。分布式换源、注册及公网容量保护未覆盖，不作公网安全签收。[结果](evidence/20261016-login-rate-limit/summary.json)。下一步独立复核HARNESS46 B3/B4/B7，再继续视频与最终候选材料；首次独立人员和许可/评审访问仍按原缺口保留。本轮Codex额度实查5小时已用9%/周33%，Harness避峰暂停，GLM未重新确认余额不擅自调用。",
+          "after": "10/16 S2登录限流已启用正常3000/8000、版本0020：数据库原子准入，同邮箱＋来源5次/300秒、来源120次/60秒；成功签发同事务清组合计数，来源计数保留，短时限制不等于停用账号。HMAC键不存原邮箱/IP，IPv6按/64、缺失来源共用unknown，不设演示账号豁免；Local/E2E/Docker入口明确no-proxy-headers。最终SQLite1333通过/59跳过，专属PG119及硬停8零跳过、16模块门禁通过；独立HTTP验证重启不丢限制、到期可登录，正常Next转发六次合成错误为5个401+429、伪造XFF不换桶。首轮旧portfolio夹具缺表与次轮检查脚本误留PG环境的失败均保留并已修正复跑；过期清理与准入分开持锁。私有备份恢复/克隆升级/alembic check通过，正常升级既有业务表摘要不变，新增限流探针计数属于预期；3001未动、测试容器停止/0遗留schema。分布式换源、注册及公网容量保护未覆盖，不作公网安全签收。[结果](../evidence/20261016-login-rate-limit/summary.json)。下一步独立复核HARNESS46 B3/B4/B7，再继续视频与最终候选材料；首次独立人员和许可/评审访问仍按原缺口保留。本轮Codex额度实查5小时已用9%/周33%，Harness避峰暂停，GLM未重新确认余额不擅自调用。"
+        },
+        {
+          "line": 365,
+          "before": "10/16 HARNESS46 B3/B4/B7已收尾：E2E数据库URL必须显式本机5432；播种清单同时要求布尔true合成标志与指定factory入口，PS缺-SyntheticVerification在任何启动/建库前拒绝。撤回输出由事件/当前状态/企业看板派生并报告实际检查数，保留撤回历史却恢复有效状态会拒绝验证；认证会写会话/限流记录，不再把夹具复核泛称数据库只读。9红测修后61专项零跳过、Ruff通过；真实PS错误标志/错误端口拒绝与合法CheckOnly通过，未创建运行清单；首轮写错测试文件名的0用例失败保留。[检查](evidence/20261016-e2e-remaining-guards/summary.json)。未重播种、重启或迁移3000/3001，也未跑新的PG整链。下一步转向视频实稿及候选交付材料，不重复增加治理文档；首次独立用户、真实AI语义与最终访问/签署缺口仍保留。",
+          "after": "10/16 HARNESS46 B3/B4/B7已收尾：E2E数据库URL必须显式本机5432；播种清单同时要求布尔true合成标志与指定factory入口，PS缺-SyntheticVerification在任何启动/建库前拒绝。撤回输出由事件/当前状态/企业看板派生并报告实际检查数，保留撤回历史却恢复有效状态会拒绝验证；认证会写会话/限流记录，不再把夹具复核泛称数据库只读。9红测修后61专项零跳过、Ruff通过；真实PS错误标志/错误端口拒绝与合法CheckOnly通过，未创建运行清单；首轮写错测试文件名的0用例失败保留。[检查](../evidence/20261016-e2e-remaining-guards/summary.json)。未重播种、重启或迁移3000/3001，也未跑新的PG整链。下一步转向视频实稿及候选交付材料，不重复增加治理文档；首次独立用户、真实AI语义与最终访问/签署缺口仍保留。"
+        },
+        {
+          "line": 367,
+          "before": "10/16已生成80.08秒中文字幕无配音视频初稿，11段实际浏览器操作/286原帧：账户入口、既有合成材料/原文、保存规则报告/来源展开、状态分组、预设热力图/雷达联动。原采集1265×712、约4.2fps，编码1080p/25fps不是原生高帧率录屏；段间剪切与未录链路全片标清。完整解码通过并目检字幕/原文/证据/雷达，r2补录下部标签；跨调用后台首帧中断未采用。未重新上传/生成报告/投递或调用模型；本轮仅本地合成数据视图操作，正常认证可能写会话记录，未重启服务。MP4/原帧在ignored output/video，不计入Git源码包。[初稿核查](evidence/20261016-video-draft/summary.json)。下一步补录上传→新报告→补证→企业回复/通知→撤回重投并做讲解，最终赛事格式/真实人员核对仍待；不把初稿标成完整视频交付。",
+          "after": "10/16已生成80.08秒中文字幕无配音视频初稿，11段实际浏览器操作/286原帧：账户入口、既有合成材料/原文、保存规则报告/来源展开、状态分组、预设热力图/雷达联动。原采集1265×712、约4.2fps，编码1080p/25fps不是原生高帧率录屏；段间剪切与未录链路全片标清。完整解码通过并目检字幕/原文/证据/雷达，r2补录下部标签；跨调用后台首帧中断未采用。未重新上传/生成报告/投递或调用模型；本轮仅本地合成数据视图操作，正常认证可能写会话记录，未重启服务。MP4/原帧在ignored output/video，不计入Git源码包。[初稿核查](../evidence/20261016-video-draft/summary.json)。下一步补录上传→新报告→补证→企业回复/通知→撤回重投并做讲解，最终赛事格式/真实人员核对仍待；不把初稿标成完整视频交付。"
+        },
+        {
+          "line": 369,
+          "before": "10/16双端规则链视频已补至198.16秒/23段真实操作：新上传两份CP01合成材料、新规则报告、原文、明确撤回旧授权与新报告重投、企业证据联动/站内回复及学生通知新记录定位。初次已有有效投递拒绝覆盖为正常保护分支，未绕过；两段选择器观察失败、初稿企业详情未入画、补录失效tab已记录并修正录制。独立HTTP旧详情/查看/下载404、新详情200，原8快照内容哈希不变，本轮0物理模型请求。已恢复合成学生会话，3001/服务/依赖不动。仍待补证新版变化录制、配音与最终格式、人类首次测试和真实AI语义；不签收整个目标。[本轮视频与核查](evidence/20261016-video-student-chain/summary.json)。",
+          "after": "10/16双端规则链视频已补至198.16秒/23段真实操作：新上传两份CP01合成材料、新规则报告、原文、明确撤回旧授权与新报告重投、企业证据联动/站内回复及学生通知新记录定位。初次已有有效投递拒绝覆盖为正常保护分支，未绕过；两段选择器观察失败、初稿企业详情未入画、补录失效tab已记录并修正录制。独立HTTP旧详情/查看/下载404、新详情200，原8快照内容哈希不变，本轮0物理模型请求。已恢复合成学生会话，3001/服务/依赖不动。仍待补证新版变化录制、配音与最终格式、人类首次测试和真实AI语义；不签收整个目标。[本轮视频与核查](../evidence/20261016-video-student-chain/summary.json)。"
+        },
+        {
+          "line": 373,
+          "before": "候选人姓名/行（真实企业表为列）、通知全部/未读、材料版本及视觉定位按钮已补靛蓝选中反馈；报告分组、雷达要求、展开岗位、顶部导航已有同类效果。285前端/类型/独立构建通过；3096预览实际验证候选人B、390px表内滚动不溢出、未读筛选与项目版本。正常3000尚未加载，待与56号成果分别复核后统一恢复。[记录](evidence/20261016-candidate-selection/summary.json)。",
+          "after": "候选人姓名/行（真实企业表为列）、通知全部/未读、材料版本及视觉定位按钮已补靛蓝选中反馈；报告分组、雷达要求、展开岗位、顶部导航已有同类效果。285前端/类型/独立构建通过；3096预览实际验证候选人B、390px表内滚动不溢出、未读筛选与项目版本。正常3000尚未加载，待与56号成果分别复核后统一恢复。[记录](../evidence/20261016-candidate-selection/summary.json)。"
+        },
+        {
+          "line": 375,
+          "before": "CP01演示卡补可下载Redis合成v2与5步说明，原首版源码保留，ZIP与既有走查版本字节相同。类型/构建通过，新下载入口尚待正常站加载与补证视频录制；不冒称首次独立用户或真实AI。[素材核对](evidence/20261016-demo-growth-download/check.json)。",
+          "after": "CP01演示卡补可下载Redis合成v2与5步说明，原首版源码保留，ZIP与既有走查版本字节相同。类型/构建通过，新下载入口尚待正常站加载与补证视频录制；不冒称首次独立用户或真实AI。[素材核对](../evidence/20261016-demo-growth-download/check.json)。"
+        }
+      ]
+    }
+  ]
+}
