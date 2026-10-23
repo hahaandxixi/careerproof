@@ -1,0 +1,22 @@
+{
+  "sourceDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023",
+  "productionSourceCommit": "5a6b9c821c9e7de1cc79b90f7e35a93142e74148",
+  "frontendBuildId": "GXvhpNxWAbE2NMNGPLSnX",
+  "frontend": "http://127.0.0.1:3136",
+  "api": "http://127.0.0.1:8114",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "ownerTaskReadStatus": 200,
+  "otherStudentTaskReadStatus": 404,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "browserObservedTask": true,
+  "changesWritten": "authentication sessions only; no task/material/report/application mutation",
+  "acceptedRepairSourceCommit": "60f4839254c2ac1db3d01e87587e4c26bed666ad",
+  "runtimeContentUnchangedSinceBuild": true
+}
