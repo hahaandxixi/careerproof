@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 1 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 0.8453
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 2 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.2948
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 3 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.1486
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 4 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 6.3616
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 5 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 12.8931
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 6 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 10.4044
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 7 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 4.9077
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 8 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 2.8429
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 9 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 2.3011
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 238.8411

@@ -1,0 +1,79 @@
+{
+  "type": "observations from real rendered production build through CUA browser UI; DOM measurements read-only",
+  "viewports": [
+    [
+      1280,
+      900
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "report": "2997e468-ca66-401d-a3e2-f6518cad9243",
+  "growth": "3b9ba85b-aed3-4e1f-9e17-6ced074828c5",
+  "observations": {
+    "addMaterial": {
+      "expanded": true,
+      "focus": "upload-workspace-title"
+    },
+    "uploadVersion": {
+      "target": "Campus Signup：完整业务实现",
+      "focus": "project-upload-title",
+      "top": 128.2
+    },
+    "growthChangeLink": {
+      "expandedComparison": true
+    },
+    "privateDraft": {
+      "explicitSaveThenReloadReadback": true,
+      "originalSyntheticTextRestored": true,
+      "saveTop": 549.4,
+      "editorBottom": 486.2
+    },
+    "otherStudent": {
+      "taskDenied": true,
+      "draftEditors": 0,
+      "privateTextLeak": false
+    },
+    "ownerRestored": {
+      "savedDraftReadable": true
+    },
+    "requirementNavigation": {
+      "from": 2,
+      "next": 3,
+      "back": 2,
+      "unsubmittedNotePreserved": true,
+      "mountedArticles": 5,
+      "readerCount": 1,
+      "focus": "H3",
+      "headingTop": 134.6,
+      "headerBottom": 108.8
+    },
+    "citation": {
+      "id": "R2-E2",
+      "requirement": 2,
+      "detailsOpen": true,
+      "top": 120.2,
+      "refreshRestores": true
+    },
+    "allRequirements": {
+      "keyboardEnterOpens": true,
+      "itemCount": 5
+    },
+    "enterprise": {
+      "requirementSelectorOutsideChart": true,
+      "mobileChartExplicitToggle": true,
+      "replyNotSent": true
+    },
+    "wholePageHorizontalOverflow": false
+  },
+  "failuresFixed": {
+    "mobileClickSkippedOne": "capture update changed native href; captured destination now used",
+    "duplicateReaderOnEdit": "reproduced on baseline 3136 (10 articles/two readers); duplicate sibling React key with McpAccessPanel fixed (five articles/one reader)"
+  },
+  "notVerified": {
+    "browser200Percent": "five Control_L+plus did not alter DPR, viewport or visual scale; not substituted by CSS zoom",
+    "hiddenTab": "second IAB tab did not change original visibilityState from visible; no synthetic visibility event used"
+  }
+}

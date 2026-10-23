@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "48520616ec479a50052588919f499a6d4ed6d901",
+  "frontendDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\layout-closeout-20261023\\jianli",
+  "frontendBuildId": "E_NOkpjgVH-G2jRhfgdvS",
+  "frontend": "http://127.0.0.1:3137",
+  "frontendPid": 170760,
+  "frontendParentPid": 169388,
+  "api": "http://127.0.0.1:8114",
+  "apiPid": 75984,
+  "apiDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\backend",
+  "baselinePreview": "http://127.0.0.1:3136",
+  "baselineBuildId": "GXvhpNxWAbE2NMNGPLSnX",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022",
+    "container": "careerproof-core-acceptance-20261022",
+    "containerId": "526edce0bdb138d202eded803e59c2fea64ffeac22eb04decaefdbd697894e40"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "databaseProvenance": "reused prior dedicated runtime identity; same API process, live port and container rechecked; no new database inspection needed for layout",
+  "externalAI": false,
+  "os": "Windows 11 10.0.26200",
+  "node": "22.23.1",
+  "next": "15.5.27",
+  "react": "19.0.0",
+  "python": "3.12.14",
+  "dependencySource": "read-only junction to backend/.tmp/task62-lint/stage/jianli/node_modules; no install",
+  "writes": "synthetic owner private draft explicit save, refresh readback, restored original text; auth sessions; no report, material, application or reply writes",
+  "remainingUnverified": [
+    "actual browser 200% zoom",
+    "real hidden-tab lifecycle",
+    "real AI results",
+    "first independent user acceptance"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "sourceCommit": "48520616ec479a50052588919f499a6d4ed6d901",
+  "baseline": "4f5ad6ff1cb84c06f3ea5ff97f5ee7e25fb28070",
+  "files": [
+    {
+      "path": "jianli/src/app/globals.css",
+      "gitBlob": "d043afb1f9b634291898606fabc79993ed810c5d",
+      "sha256LF": "707a06e89b223ecca0fac366638772648a6d903ec50dea9368e2ac6734f96798"
+    },
+    {
+      "path": "jianli/src/app/portfolio/page.tsx",
+      "gitBlob": "be8a0c6f416876407c409524dd966e8e3d1fec03",
+      "sha256LF": "9b071085c2614e174ac752333eac7949374e20d050c38bdb5519b0218b70953a"
+    },
+    {
+      "path": "jianli/src/components/ApplicationBoard.tsx",
+      "gitBlob": "13c08e06f0e063501d76909f1adb79a815e265dd",
+      "sha256LF": "e3a7ff168cd1eae021b4228a4dd0e2d399bb07d1d9427a1f6af10035d929dacc"
+    },
+    {
+      "path": "jianli/src/components/GrowthWorkspace.tsx",
+      "gitBlob": "192d0797bc3d1195dbad896f59b844a4e3c85218",
+      "sha256LF": "c3cc011036ad372c936908fe5497c9565ff2f056fb90c248a5e9166b3727988b"
+    },
+    {
+      "path": "jianli/src/components/PrivateAnswerDraft.tsx",
+      "gitBlob": "f802d5aa9608f0c1d1f34a2b8cd310ccc003c83c",
+      "sha256LF": "8cbd50dd1a51b8ddaa371783fc0f39d5f3cc03ecbd0b87c047ecdcfb2b564f66"
+    },
+    {
+      "path": "jianli/src/components/ReportDetail.tsx",
+      "gitBlob": "b30e5f59182c040a329a8049a1343ed32f267f33",
+      "sha256LF": "8b036342650ebfb4a25d3fae72f3fc7eb347e630bcd30598d70ecf87abac629d"
+    },
+    {
+      "path": "jianli/src/components/ReportEvidenceWorkspace.tsx",
+      "gitBlob": "6f6f66e3c4a54ef0c8c26df02eef41ad2b6cf33f",
+      "sha256LF": "5378b9cbf4fa907693fad993e56870463c65f9a8d5b1121fcdac42754920f7e2"
+    },
+    {
+      "path": "jianli/src/components/ReportOverview.tsx",
+      "gitBlob": "70fc69a9d07acf96c4d440a18c5087581d7df700",
+      "sha256LF": "63d6ba6c87cc5718c7e56a0e6fd86d350c39c44fccf467d866bb896112c63109"
+    },
+    {
+      "path": "jianli/src/components/ReportRequirementReader.tsx",
+      "gitBlob": "e3340d48f3873c94ac09aeeee8fb4b899f52c18a",
+      "sha256LF": "bb37ea3c9dbe214804528cba4fd53b97f1bdeee34dd73d623cdeaef0d03af644"
+    },
+    {
+      "path": "jianli/src/components/SkillRadar.tsx",
+      "gitBlob": "5ab1ff837fc1bbec7219cce2a7f6fe0d709cb1cd",
+      "sha256LF": "b46ef10c3fbd78f99d8be3b862b35692b3687135ea9ab2cb833f112050f95d59"
+    },
+    {
+      "path": "jianli/src/lib/growth-next-action.ts",
+      "gitBlob": "1668a5aac1652e95bbb9a185600e2171278fa57f",
+      "sha256LF": "db615c29692e71fa7f075993b3f1bee36128fcae87cddb1c13ebabdeb5272330"
+    },
+    {
+      "path": "jianli/src/lib/growth-workflow.ts",
+      "gitBlob": "44d25d73de6c1ecef2927dbb57186cc425bea917",
+      "sha256LF": "e5fa3375cafe46138fdd04dc3324964c770a25d04d5a5e3b33e4acdf913bf85a"
+    },
+    {
+      "path": "jianli/tests/growth-material-entry.test.mjs",
+      "gitBlob": "a0fcd0f96efdb9c2780b9690bcef7cd50b23c718",
+      "sha256LF": "08d27abe68e52f8c081dd1f3c93c62b2c30dbccce9587f057950f12888d01d40"
+    },
+    {
+      "path": "jianli/tests/private-answer-recovery-notice.test.mjs",
+      "gitBlob": "0ec7d0af77d7d4e00617106a63f9eb60a77acd64",
+      "sha256LF": "31150926547bf363a90e28bcef284f121d1c190322936e985e3e2c6c47969c64"
+    },
+    {
+      "path": "jianli/tests/report-action-layer.test.mjs",
+      "gitBlob": "717efdaf859d5fdc22851e2f637fd8ac3869395d",
+      "sha256LF": "a2996b7dab148688d687fcf8efedda748f92407e0b774d9c13f5cca0fd901a0b"
+    },
+    {
+      "path": "jianli/tests/report-reader.test.mjs",
+      "gitBlob": "f3daaea25f29bffaa4829045f9c1b36bdde84b0e",
+      "sha256LF": "999ff6a300b008b8a9b44b9848ec6dc3aaa374411289b5739074d65bb6f9b97d"
+    },
+    {
+      "path": "jianli/tests/skill-radar-render.test.mjs",
+      "gitBlob": "8563795a3836ab57ed626a6c23241529f7d7254d",
+      "sha256LF": "5a9d5920a14700d4eb3ab7261730eaed1bbfc3bc14680ca18e16e2f4cb76141b"
+    }
+  ]
+}
