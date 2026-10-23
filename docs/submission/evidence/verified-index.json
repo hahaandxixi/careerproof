@@ -1,0 +1,102 @@
+[
+  {
+    "id": "E01",
+    "name": "同版本工程检查",
+    "kind": "远端自动检查",
+    "version": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+    "source": "docs/submission/evidence/ci-f6bf1ed.json",
+    "note": "CI39947184769三任务成功；前端442、SQLite1586/94跳过、严格PG141、强停8。数量来自该版本记录，不与历史累加。",
+    "sha256": "042b788a87273cb674842d356632cab9c10b431c4dd8c81d85dbd6ae294f024e",
+    "reviewCopy": "docs/submission/evidence/originals/E01-ci-f6bf1ed.json"
+  },
+  {
+    "id": "E02",
+    "name": "接受页面与固定版本",
+    "kind": "真实浏览器+静态回归",
+    "version": "e95504feed306e5cf5ee013a6e546976013639c0",
+    "source": "docs/evidence/20261023-page-final/candidate.json",
+    "note": "桌面1280/手机390、明确保存刷新及身份拒绝已验；真实200%缩放、标签隐藏/最小化仍待人工。",
+    "sha256": "a3352bd4dab643dd3a8ee0f5af6c49b00f5d73122d57dce00a64d7b6e999978d",
+    "reviewCopy": "docs/submission/evidence/originals/E02-candidate.json"
+  },
+  {
+    "id": "E03",
+    "name": "完整五项真实DeepSeek报告",
+    "kind": "历史真实模型+本地结构验证",
+    "version": "bcbe0e3及其等价运行副本，见E04",
+    "source": "docs/evidence/20261021-agent-verification/claims.md",
+    "note": "五项、14条引用、2请求、输入11137/输出1679；历史估算0.035706元。模型选择停止，无成功补检索，非当前v30效果。",
+    "sha256": "006b681e64818bce551ce071844bd6515c1b51b7bbace78d65afe9c355dc3081",
+    "reviewCopy": "docs/submission/evidence/originals/E03-claims.md.txt"
+  },
+  {
+    "id": "E04",
+    "name": "历史运行源码等价链",
+    "kind": "离线源码/路径核对",
+    "version": "历史逐文件清单",
+    "source": "docs/evidence/20261021-source-equivalence/source-equivalence.json",
+    "note": "运行副本、产品提交与去诊断差异分别记录；不能把当前源码写成历史请求源码。",
+    "sha256": "33697960f446a51ee901f95491ff7ac25eae903a3d2d24e07e73f46ee7c9f58a",
+    "reviewCopy": "docs/submission/evidence/originals/E04-source-equivalence.json"
+  },
+  {
+    "id": "E05",
+    "name": "单要求工具真实作用",
+    "kind": "历史真实DeepSeek Function Calling",
+    "version": "20261021独立固定工具批次",
+    "source": "docs/evidence/20261021-tool-choice/live-result.json",
+    "note": "2物理请求补取cancel片段R1-E3；0.015898元为历史估算。原fail保留，修正的是包含判据，无第二次请求。非站内五项报告。",
+    "sha256": "5e184cfbdffe18490cde995ec62c0cdb01a8df5e2587dfd6fdbad69df62ca37f",
+    "reviewCopy": "docs/submission/evidence/originals/E05-live-result.json"
+  },
+  {
+    "id": "E06",
+    "name": "真实工具批次判据更正",
+    "kind": "离线重新判定原结果",
+    "version": "与E05同次请求",
+    "source": "docs/evidence/20261021-tool-choice/live-acceptance.json",
+    "note": "可证明目标引用包含新增片段；不新增模型请求、不替代语义评审。",
+    "sha256": "6a34631be62784b6a2b45aa27da2309914fd1cbe1ac21f98aa3459a963af840f",
+    "reviewCopy": "docs/submission/evidence/originals/E06-live-acceptance.json"
+  },
+  {
+    "id": "E07",
+    "name": "受限候选到最终引用",
+    "kind": "同固定材料离线对照+隔离规则报告",
+    "version": "4ba1ccd",
+    "source": "docs/evidence/20261022-test-source-selection/README.md",
+    "note": "10个测试中候选1变6；最终上下文仅两个测试加一份上传输出。没有模型读全量或独立运行的结论。",
+    "sha256": "d4fcc6a5ad4aa8fdf62e05a998eb79a30681d6480a423783fc3dee05b9134c55",
+    "reviewCopy": "docs/submission/evidence/originals/E07-README.md.txt"
+  },
+  {
+    "id": "E08",
+    "name": "Agent页面与真人收件",
+    "kind": "保存报告展示+明确Mock+人工原表收件",
+    "version": "da728dc、ba0c970",
+    "source": "docs/evidence/20261022-agent-result-integration/README.md",
+    "note": "真实五项停止与Mock补检索分开。一位独立评审者三例已收，两处理由待澄清，不报告通过率。",
+    "sha256": "9c35cb83e0120e385758a7be4de06e54fc214b88c75a097d5675b4c75f8e6355",
+    "reviewCopy": "docs/submission/evidence/originals/E08-README.md.txt"
+  },
+  {
+    "id": "E09",
+    "name": "源码包干净复现",
+    "kind": "历史Windows干净安装与规则流程",
+    "version": "r7；39f49d7仅补文档",
+    "source": "docs/evidence/20261021-r7-clean-reproduction/README.md",
+    "note": "全新依赖、专属PG、规则报告与停止恢复已验。只证明r7对应版本；B1未重做安装。",
+    "sha256": "40e8f4a3f2277c1a71a8ae7b76dd3be11227c57a4d33c5e4c22d8cf7319202bc",
+    "reviewCopy": "docs/submission/evidence/originals/E09-README.md.txt"
+  },
+  {
+    "id": "E10",
+    "name": "内容核对与来源身份",
+    "kind": "本地规则+隔离页面",
+    "version": "44d57ae、0c27a9c",
+    "source": "docs/evidence/20261022-content-warnings/README.md",
+    "note": "本地四类风险提示，不自动拦截；未命中不等于安全；源码/测试/合法引用可由用户核对。",
+    "sha256": "30ef5da8c628e355fb30b497dee619058984b1d59842bd78797008187c5304cb",
+    "reviewCopy": "docs/submission/evidence/originals/E10-README.md.txt"
+  }
+]
