@@ -6,6 +6,7 @@ import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import ListPagination from "./ListPagination";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ApplicationView } from "@/lib/api/client";
+import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget } from "@/lib/notification-session";
 import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
 import AccessGate from "./AccessGate";
@@ -134,7 +135,7 @@ function Workspace({jobId}:{jobId:string}){
     {selected?.report&&<section id="selected-application-report" className="panel space-y-4">{selectedOutside&&<CandidateFilterNotice empty={false} selectedName={selected.candidateName} onClear={clearFilters}/>}<h2 className="text-xl font-semibold">{selected.candidateName} · 投递时固定报告</h2><p className="text-xs leading-5 text-slate-500">岗位：{selected.report.jobTitle || selected.jobTitle} · 报告生成于 {new Date(selected.report.createdAt).toLocaleString("zh-CN")} · 后续新版不会改写本次投递</p><p className="text-sm leading-6">{reportSummaryText(selected.report.summary)}</p><p className="text-xs text-slate-500">报告模式：{reportModeLabel(selected.report)}；查看与下载不等于通过面试。</p><button type="button" className="btn" disabled={busy} onClick={()=>void download()}>下载本次授权简历</button>
       <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarRequirement} materials={selected.report.materials}/>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">AI核验建议与沟通问题（按需查看）</summary><div className="mt-4"><ApplicationVerification key={`${selected.id}:${selected.report.id}`} applicationId={selected.id} report={selected.report} onUnavailable={verificationUnavailable} onUseQuestion={selected.status!=="replied"&&!busy ? useVerificationQuestion : undefined}/></div></details>
-      <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><p className="mt-2 text-xs text-slate-500">数值为材料支持度。{RULE_SCORE_CAP_NOTE}历史投递按原报告数值显示，不限制到 65。</p><ul className="mt-4 space-y-3">{selected.report.items.map(item=><li key={item.requirementId} className="rounded-lg border border-slate-200 p-3 text-sm"><strong>{item.requirementTitle||item.skill}</strong><p>{VERDICT[item.verdict]??item.verdict} · 材料支持度 {item.finalScore??"不可评"}</p><p>实践证据：{item.evidenceLevelLabel ?? (item.evidenceLevel!=null ? evidenceLevelName(item.evidenceLevel) : "待评估")} · {item.evidenceLevelSource==="ai_preliminary" ? "AI 初评，待独立核验" : "规则或复核结果"}</p><p className="break-words">{item.evidenceLevelReason}</p><p className="mt-2 break-words">{item.aiExplanation||item.explanation}</p>{item.aiInformationGap&&<p className="mt-2 text-amber-800">待核验：{item.aiInformationGap}</p>}<details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((e,index)=><div key={index} className="mt-2 text-xs"><p className="break-all">{e.citationId??"引用"} · <SourceIdentity source={e} materials={selected.report?.materials ?? []} /> · 第{e.lineStart}—{e.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{e.snippet}</pre><SourceIdentityDetails source={e} /></div>)}</details></li>)}</ul></details>
+      <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><p className="mt-2 text-xs text-slate-500">数值为材料支持度。{RULE_SCORE_CAP_NOTE}历史投递按原报告数值显示，不限制到 65。</p><ul className="mt-4 space-y-3">{selected.report.items.map(item=><SavedRequirementDetail key={item.requirementId} item={item} report={selected.report!}/>)}</ul></details>
       {selected.status!=="replied"&&<div className="space-y-3 border-t pt-4">
         <h3 className="font-semibold">发送站内回复</h3>
         <p className="rounded-lg bg-slate-50 p-3 text-sm">当前收件人：<strong>{selected.candidateName}</strong><span className="text-xs text-slate-500"> · 投递编号 {selected.id.slice(0,8)}（仅发送给该投递对应学生）</span></p>
@@ -167,11 +168,43 @@ export function toggleComparisonCandidate(ids: string[], id: string): string[] {
   return ids.length < 4 ? [...ids, id] : ids;
 }
 
+function SavedRequirementInterpretation({ item, report }: { item: ReportItem; report: MatchReport }) {
+  // Rejected text may remain in a fixed snapshot. Both compact and complete
+  // views adopt only validated, non-fallback AI interpretation.
+  const useAi = item.aiStatus === "validated" && !report.aiFallbackUsed;
+  const aiExplanation = useAi && item.aiExplanation?.trim() ? item.aiExplanation : null;
+  const gap = (useAi ? item.aiInformationGap : null) || item.evidenceLevelGap;
+  return <>
+    <p className="break-words text-sm"><span className="font-medium">{aiExplanation ? "AI解释" : "规则解释"}：</span>{aiExplanation || item.explanation}</p>
+    {gap && <p className="text-sm text-slate-700">待核对：{gap}</p>}
+  </>;
+}
+
+export function SavedRequirementDetail({ item, report }: { item: ReportItem; report: MatchReport }) {
+  return <li className="rounded-lg border border-slate-200 p-3 text-sm">
+    <strong>{item.requirementTitle || item.skill}</strong>
+    <p>{VERDICT[item.verdict] ?? item.verdict} · 材料支持度 {item.finalScore ?? "不可评"}</p>
+    <p>实践证据：{item.evidenceLevelLabel ?? (item.evidenceLevel != null ? evidenceLevelName(item.evidenceLevel) : "待评估")} · {item.evidenceLevelSource === "ai_preliminary" ? "AI 初评，待独立核验" : "规则或复核结果"}</p>
+    <p>{item.evidenceLevelReason ?? ""}</p>
+    <div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/></div>
+    <details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((source, index) => <div key={index} className="mt-2 text-xs"><p className="break-all">{source.citationId ?? "引用"} · <SourceIdentity source={source} materials={report.materials ?? []} /> · 第{source.lineStart}—{source.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}</details>
+  </li>;
+}
+
 export function SelectedRequirementEvidence({ application, requirementId }: { application: ApplicationView; requirementId: string }) {
   const report = application.report;
   const item = report?.items.find(value => value.requirementId === requirementId);
   if (!report) return null;
-  return <section className="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 className="font-semibold">{application.candidateName} · {item?.requirementTitle || "该报告未包含这条要求"}</h2>{item ? <><p className="text-sm">{VERDICT[item.verdict] ?? item.verdict} · {item.aiExplanation || item.explanation}</p>{item.aiInformationGap && <p className="text-sm text-slate-700">待核对：{item.aiInformationGap}</p>}{item.evidenceList.slice(0, 2).map((source, index) => <div key={`${source.citationId}-${index}`} className="rounded-lg bg-slate-50 p-3 text-xs"><p><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId || "规则引用"}</p><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}{!item.evidenceList.length && <p className="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p>}</> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}<a className="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>;
+  return <section className="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据">
+    <h2 className="font-semibold">{application.candidateName} · {item?.requirementTitle || "该报告未包含这条要求"}</h2>
+    {item ? <>
+      <p className="text-sm">{VERDICT[item.verdict] ?? item.verdict}</p>
+      <SavedRequirementInterpretation item={item} report={report}/>
+      {item.evidenceList.slice(0, 2).map((source, index) => <div key={`${source.citationId}-${index}`} className="rounded-lg bg-slate-50 p-3 text-xs"><p><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId || "规则引用"}</p><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}
+      {!item.evidenceList.length && <p className="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p>}
+    </> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}
+    <a className="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a>
+  </section>;
 }
 
 // 回复失败（请求失败或响应丢失）后的唯一编辑规则：正文可继续修改，任何编辑都撤销人工发送确认，

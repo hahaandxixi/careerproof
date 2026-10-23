@@ -50,7 +50,7 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup: render } = require("react-dom/server");
 const { ReportHistoryCard } = await import("../src/components/ReportList.tsx");
-const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect } = await import("../src/components/ApplicationBoard.tsx");
+const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail } = await import("../src/components/ApplicationBoard.tsx");
 
 const summary = {
   id: "report-a", jobId: "job-a", jobTitle: "后端开发", candidateName: "甲",
@@ -124,3 +124,67 @@ test("zero matches retain the selected requirement label and exact filter value"
   assert.match(reset, /<option value="" selected="">全部要求<\/option>/);
   assert.doesNotMatch(reset, /旧标签/);
 });
+
+
+for (const [aiStatus, fallback, accepted] of [
+  ["invalid_citations", false, false], ["rejected", false, false],
+  ["validated", true, false], ["validated", false, true],
+]) {
+  test(`nearby evidence uses only accepted AI interpretation (status=${aiStatus}, fallback=${fallback})`, () => {
+    const application = { id: "snapshot-application", candidateName: "合成评审甲", report: {
+      ...summary, aiFallbackUsed: fallback, materials: [], items: [{
+        requirementId: "sql-requirement", requirementTitle: "SQL事务", verdict: "supported",
+        explanation: "规则说明：源码包含显式回滚调用", evidenceLevelGap: "规则缺口：未核实实际运行环境",
+        aiExplanation: "模型原文：应当仅在有效状态显示", aiInformationGap: "模型缺口：应当仅在有效状态显示",
+        aiStatus, evidenceList: [],
+      }],
+    }};
+    const original = JSON.stringify(application);
+    const html = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "sql-requirement" }));
+    if (accepted) {
+      assert.match(html, /AI解释/);
+      assert.match(html, /模型原文：应当仅在有效状态显示/);
+      assert.match(html, /模型缺口：应当仅在有效状态显示/);
+      assert.doesNotMatch(html, /规则说明：源码包含显式回滚调用/);
+    } else {
+      assert.match(html, /规则解释/);
+      assert.match(html, /规则说明：源码包含显式回滚调用/);
+      assert.match(html, /规则缺口：未核实实际运行环境/);
+      assert.doesNotMatch(html, /模型原文：应当仅在有效状态显示|模型缺口：应当仅在有效状态显示|AI解释/);
+    }
+    assert.equal(JSON.stringify(application), original, "rendering must not rewrite the fixed snapshot");
+  });
+}
+
+
+for (const [aiStatus, fallback, accepted] of [
+  ["invalid_citations", false, false], ["rejected", false, false],
+  ["validated", true, false], ["validated", false, true],
+]) {
+  test(`full saved requirement uses the same interpretation guard (status=${aiStatus}, fallback=${fallback})`, () => {
+    const item = {
+      requirementId: "fixed-sql", requirementTitle: "持久化事务", skill: "SQL", verdict: "supported", finalScore: 65,
+      explanation: "规则依据：SQL事务包含回滚调用", evidenceLevelGap: "规则缺口：实际运行环境待核对",
+      aiExplanation: "MODEL_FULL_EXPLANATION", aiInformationGap: "MODEL_FULL_GAP", aiStatus,
+      evidenceList: [{ citationId: "R1-E1", filePath: "version-a/storage.py", projectVersionId: "version-a", lineStart: 20, lineEnd: 25, snippet: "connection.rollback()", contentHash: "fixed-hash", evidenceType: "project_code" }],
+    };
+    const report = { ...summary, aiFallbackUsed: fallback, materials: [], items: [item] };
+    const before = JSON.stringify(report);
+    const html = render(React.createElement(SavedRequirementDetail, { item, report }));
+    if (accepted) {
+      assert.match(html, /AI解释/);
+      assert.match(html, /MODEL_FULL_EXPLANATION/);
+      assert.match(html, /MODEL_FULL_GAP/);
+    } else {
+      assert.match(html, /规则解释/);
+      assert.match(html, /规则依据：SQL事务包含回滚调用/);
+      assert.match(html, /规则缺口：实际运行环境待核对/);
+      assert.doesNotMatch(html, /MODEL_FULL_EXPLANATION|MODEL_FULL_GAP|AI解释/);
+    }
+    assert.match(html, /R1-E1/);
+    assert.match(html, /第20—25行/);
+    assert.match(html, /connection.rollback/);
+    assert.match(html, /fixed-hash/);
+    assert.equal(JSON.stringify(report), before);
+  });
+}
