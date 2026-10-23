@@ -1,0 +1,39 @@
+{
+  "processes": [
+    {
+      "ProcessId": 51936,
+      "ParentProcessId": 21144,
+      "ExecutablePath": "C:\\Program Files\\Docker\\Docker\\resources\\com.docker.backend.exe",
+      "CommandLine": "\"C:\\Program Files\\Docker\\Docker\\resources\\com.docker.backend.exe\" services"
+    },
+    {
+      "ProcessId": 75984,
+      "ParentProcessId": 74004,
+      "ExecutablePath": "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+      "CommandLine": "\"C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe\" -m uvicorn app.main:app --host 127.0.0.1 --port 8114 --no-proxy-headers"
+    },
+    {
+      "ProcessId": 58316,
+      "ParentProcessId": 75228,
+      "ExecutablePath": "C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe",
+      "CommandLine": "\"C:\\Users\\江博\\AppData\\Local\\hermes\\node\\node.exe\" node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3136"
+    }
+  ],
+  "listeners": [
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 55445,
+      "OwningProcess": 51936
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 8114,
+      "OwningProcess": 75984
+    },
+    {
+      "LocalAddress": "127.0.0.1",
+      "LocalPort": 3136,
+      "OwningProcess": 58316
+    }
+  ]
+}

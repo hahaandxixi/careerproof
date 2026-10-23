@@ -1,0 +1,14 @@
+FAILED app/tests/test_agent_evidence_smoke.py::test_current_offline_packet_keeps_historical_cases_without_reauthorizing_them - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_packet_and_guard_limits_are_fixed_before_any_send - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_missing_usage_becomes_hard_stop_and_does_not_run_next_case - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_model_stop_is_not_labeled_program_skip - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_full_agent_chain_uses_mock_transport_and_real_workflow - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_agent_source_mismatch_becomes_hard_stop_without_post - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_evidence_smoke.py::test_offline_agent_cli_does_not_construct_provider - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_receipt_checkpoint_failure_stops_real_executor_after_one_post - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_final_log_write_failure_exits_without_success_summary - assert b'Agent final report persistence failed' in b'Traceback (most recent call last):\n  File "<string>", line 19, in <module>\n  File "/home/runner/work/careerproof/c...eption occurred:\n\nTraceback (most recent call last):\n  File "<string>", line 21, in <module>\nKeyError: \'guard\'\n'
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-400] - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[planning-1-401] - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-400] - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+FAILED app/tests/test_agent_smoke_hard_stop.py::test_nonretry_http_error_with_trusted_usage_stops_batch[analysis-2-401] - evals.bounded_evidence_smoke.SmokeStopped: Agent reviewed source changed
+===== 13 failed, 1564 passed, 94 skipped, 9 warnings in 435.33s (0:07:15) ======

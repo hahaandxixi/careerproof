@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "60f4839254c2ac1db3d01e87587e4c26bed666ad",
+  "checks": {
+    "unit": {
+      "total": 1681,
+      "failed": 0,
+      "skipped": 91,
+      "passed": 1590
+    },
+    "pg-strict": {
+      "total": 141,
+      "failed": 0,
+      "skipped": 0,
+      "passed": 141
+    },
+    "pg-hardstop": {
+      "total": 8,
+      "failed": 0,
+      "skipped": 0,
+      "passed": 8
+    }
+  },
+  "originalFailedRun": 39877034041,
+  "remoteCheck": "https://github.com/hahaandxixi/careerproof/actions?query=branch%3Amain",
+  "migrationUpgradeExit": 0,
+  "migrationCheckExit": 0,
+  "frontendBuildExit": 0
+}

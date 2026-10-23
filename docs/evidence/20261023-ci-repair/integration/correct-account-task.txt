@@ -1,0 +1,194 @@
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - link "职证 CareerProof":
+    - /url: /
+  - navigation "主导航":
+    - link "我的材料":
+      - /url: /portfolio
+    - link "发现岗位":
+      - /url: /jobs
+    - link "我的报告":
+      - /url: /reports
+    - link "补证任务":
+      - /url: /growth
+    - link "我的投递":
+      - /url: /applications
+  - generic "学生账户 · 林舟（虚构项目验证） 2 未读":
+    - generic: 林
+    - generic "林舟（虚构项目验证）": 学生账户 · 林舟（虚构项目验证）
+    - generic: 2 未读
+    - generic: ▾
+- main:
+  - navigation "学生操作指南":
+    - list:
+      - link "准备材料":
+        - /url: /portfolio
+        - generic: "1"
+        - generic: 准备材料
+      - generic: →
+      - link "推荐职业与岗位":
+        - /url: /recommendations
+        - generic: "2"
+        - generic: 推荐职业与岗位
+      - generic: →
+      - link "查看岗位匹配":
+        - /url: /reports
+        - generic: "3"
+        - generic: 查看岗位匹配
+      - generic: →
+      - generic: "4"
+      - text: 补充材料
+      - generic: 当前位置
+      - generic: →
+      - generic: "5"
+      - generic: 确认投递
+  - link "← 我的报告":
+    - /url: /reports
+  - heading "从缺口到新证据" [level=1]
+  - paragraph: 上传与分析是行动进度，不等于能力认证；企业原投递保持固定。
+  - button "读取已保存任务"
+  - heading "1. 固定基准与交付要求" [level=2]
+  - paragraph: 校园活动后端：完整项目材料验证 · 使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录
+  - paragraph: 新报告已对比 · 待人工核验
+  - paragraph: 原始缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+  - paragraph: 原报告建议（本地规则提示）：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+  - paragraph: 交付物：补交同一源码版本的本地报名、故障回滚和重启读取记录，标明环境及源码摘要。
+  - paragraph: 执行步骤
+  - list:
+    - listitem: 保留原源码并整理已产生的真实HTTP回执和测试输出
+    - listitem: 上传包含运行记录的新材料版本并与固定基准比较
+  - paragraph: 核验条件
+  - list:
+    - listitem: 运行记录能对应原源码摘要
+    - listitem: 成功及拒绝状态、故障回滚与重启读取均有实际观测
+    - listitem: 不将本地记录当作独立认证或保证评级提升
+  - link "打开原报告该要求":
+    - /url: /reports/4cd00c84-855f-4d26-8a3b-6fe31a076535#requirement-4a3a984f-3fcd-490f-9dd1-c056b0f0ff86
+  - paragraph: 此处基准已固定；原报告后来复核不改写它。整份报告重新分析，下面会逐项展示变化。
+  - heading "2. 本轮材料（已固定）" [level=2]
+  - status: 本轮材料已固定，不能在这个任务中重新关联或覆盖。如需继续补证，请从新报告选择下一条缺口；原任务和已投递报告保持不变。
+  - paragraph: 已保存目标岗位：校园活动后端：完整项目材料验证
+  - link "从新报告选择下一条缺口 →":
+    - /url: /reports/5960cf5d-0f6a-4564-b7ca-037e17d743e3
+  - paragraph: 服务端已保存材料 · 2 项
+  - list:
+    - text: 已保存：校园活动项目合成简历 · 第1版 · 简历
+    - text: 版本 5ecb752b-770b-4280-afb4-70ccbd1ae4b0 · 摘要 c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0
+    - text: 已保存：Campus Signup：完整业务实现 · 第2版 · 个人作品
+    - text: 版本 6db170c9-ea2b-4036-84d1-47260c687014 · 摘要 58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518
+  - paragraph: 新报告已保存，可核对变化。
+  - link "查看处理记录":
+    - /url: /tasks/812d8522-6163-465f-a2b0-f3783dd70df1
+  - link "打开新报告":
+    - /url: /reports/5960cf5d-0f6a-4564-b7ca-037e17d743e3
+  - heading "私人回答草稿（仅本人可见）" [level=2]
+  - paragraph: 切换标签页或最小化窗口会暂存当前任务的本机编辑，返回后可继续。刷新页面、退出账号或切换任务前请先点击“保存草稿”；未保存内容不会跨身份或任务保留，也不会发送给企业。
+  - paragraph: 在这里整理自己的回答文字并选择可核验的报告引用。草稿只保存在你的账号下：不发送给企业、不进入投递快照，也不改变任务进度、评级或分析输入；草稿不是企业回复，也不代表任何通过结论。
+  - paragraph: 已保存：版本 1 · 2026-10-22T11:52:21.258874+00:00 · 与已保存内容一致
+  - text: 回答草稿正文
+  - textbox "私人回答草稿正文":
+    - /placeholder: 写下你自己的回答草稿…（仅本人可见，不会发送给企业）
+    - text: 本轮隔离验收草稿：先核对事务回滚测试和源码版本，不向企业发送。
+  - paragraph: 最多 6000 字；换行按原样保存。清空内容也需要明确点击“保存草稿”才会替换服务器上的草稿。
+  - group "从服务端可选引用中选择证据（原要求：使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录）":
+    - generic: 从服务端可选引用中选择证据（原要求：使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录）
+    - list:
+      - checkbox "基准报告 R2-E1 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/schema.sql 第1-8行"
+      - generic: 基准报告 R2-E1 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/schema.sql 第1-8行
+      - checkbox "基准报告 R2-E2 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/service.py 第25-54行"
+      - generic: 基准报告 R2-E2 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/service.py 第25-54行
+      - checkbox "基准报告 R2-E3 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/storage.py 第32-36行"
+      - generic: 基准报告 R2-E3 · ca395374-2435-46ae-94f5-249c4331f33b/campus_signup/storage.py 第32-36行
+      - checkbox "目标报告 R2-E1 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql 第1-8行"
+      - generic: 目标报告 R2-E1 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql 第1-8行
+      - checkbox "目标报告 R2-E2 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25-54行"
+      - generic: 目标报告 R2-E2 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25-54行
+      - checkbox "目标报告 R2-E3 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第32-36行"
+      - generic: 目标报告 R2-E3 · 6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第32-36行
+    - paragraph: 最多选择 20 条引用；引用键由报告、要求与引用编号共同确定。
+  - button "保存草稿"
+  - button "重读已保存草稿"
+  - generic "预览已保存草稿（先查看，再确认复制）"
+  - heading "4. 与任务固定基准逐项对比" [level=2]
+  - paragraph: 变化背景：材料版本变化
+  - article:
+    - heading "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态" [level=3]
+    - paragraph: 证据等级：任务实现 → 任务实现；无已记录变化
+    - paragraph: 任务基准
+    - paragraph: 存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - paragraph: 目标报告
+    - paragraph: 存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - generic "新增展示的来源证据：0条"
+    - generic "不再展示的来源证据：0条"
+  - article:
+    - heading "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录 · 本次补证重点" [level=3]
+    - paragraph: 证据等级：任务实现 → 任务实现；无已记录变化
+    - paragraph: 任务基准
+    - paragraph: 存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - paragraph: 目标报告
+    - paragraph: 存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - generic "新增展示的来源证据：0条"
+    - generic "不再展示的来源证据：0条"
+  - article:
+    - heading "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加" [level=3]
+    - paragraph: 证据等级：任务实现 → 任务实现；无已记录变化
+    - paragraph: 任务基准
+    - paragraph: 存在Python函数实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - paragraph: 目标报告
+    - paragraph: 存在Python函数实现；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - generic "新增展示的来源证据：0条"
+    - generic "不再展示的来源证据：0条"
+  - article:
+    - heading "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争" [level=3]
+    - paragraph: 证据等级：任务实现 → 任务实现；展示证据变化
+    - paragraph: 任务基准
+    - paragraph: 存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - paragraph: 目标报告
+    - paragraph: 存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。
+    - paragraph: 缺口：仍需可核对的运行结果与验证记录，不能确认本人贡献。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - generic "新增展示的来源证据：1条"
+    - generic "不再展示的来源证据：1条"
+  - article:
+    - heading "使用Redis缓存活动查询并在报名或取消后失效缓存" [level=3]
+    - paragraph: 证据等级：未评级 → 未评级；无已记录变化
+    - paragraph: 任务基准
+    - paragraph: 简历与个人作品中均未找到足够信息，当前无法确认该能力
+    - paragraph: 缺口：核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - paragraph: 目标报告
+    - paragraph: 简历与个人作品中均未找到足够信息，当前无法确认该能力
+    - paragraph: 缺口：核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。
+    - paragraph: 补证建议：未记录可采用的 AI 建议，请到报告核对状态
+    - generic "新增展示的来源证据：0条"
+    - generic "不再展示的来源证据：0条"
+  - list:
+    - listitem: 变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。
+    - listitem: 等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。
+    - listitem: 历史岗位快照可能缺少必要性字段；无法还原未保存的属性。
+    - listitem: 基准是创建补证任务时固定的复核状态；目标报告采用当前复核状态。
+    - listitem: 引用减少仅表示目标报告未再展示，不代表原文件被删除。
+  - paragraph: 继续核对职业方向
+  - paragraph: 使用本次新报告的材料版本预填职业规划；先核对版本并单独同意 AI 外发，生成后才会与上次保存的规划比较。岗位要求变化与材料变化需分别解读。
+  - link "用本次材料查看职业规划变化 →":
+    - /url: /recommendations?resumeVersionId=5ecb752b-770b-4280-afb4-70ccbd1ae4b0&projectVersionId=6db170c9-ea2b-4036-84d1-47260c687014
+  - link "核对基准岗位当前要求与后续分析":
+    - /url: /jobs/33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0
+  - paragraph: 任务进度不代表能力通过；新报告不更新企业已收到的投递快照。变化不证明能力提升或本人贡献。
+- contentinfo: 规则检索 + AI 证据解释 · 模型不可用时自动降级 · 不执行上传的代码
+- alert

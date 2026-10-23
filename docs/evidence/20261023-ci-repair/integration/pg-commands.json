@@ -1,0 +1,59 @@
+[
+  {
+    "name": "pg-strict",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests/test_ai_budget_production_race.py",
+      "app/tests/test_durable_matching.py",
+      "app/tests/test_visual_postgres_concurrency.py",
+      "app/tests/test_mcp_postgres_isolation.py",
+      "app/tests/test_real_matching.py",
+      "app/tests/test_durable_attempt_service.py",
+      "app/tests/test_ai_request_attempt_migration.py",
+      "app/tests/test_knowledge_semantic_postgres.py",
+      "app/tests/test_ai_shared_budget_service.py",
+      "app/tests/test_ai_shared_budget_migration.py",
+      "app/tests/test_application_reconsent_migration.py",
+      "app/tests/test_data_integrity_migration.py",
+      "app/tests/test_refresh_atomicity.py",
+      "app/tests/test_login_rate_limit.py",
+      "app/tests/test_login_limit_migration.py",
+      "app/tests/test_paginated_lists_postgres.py",
+      "app/tests/test_material_admission_postgres.py",
+      "--basetemp=.tmp-pg-repair",
+      "-o",
+      "cache_dir=.tmp-ci/cache",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\docs\\evidence\\20261023-ci-repair\\integration\\pg-strict.xml"
+    ],
+    "exit": 0,
+    "seconds": 130.08
+  },
+  {
+    "name": "pg-hardstop",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests/test_attempt_hard_stop.py",
+      "--basetemp=.tmp-stop-repair",
+      "-o",
+      "cache_dir=.tmp-ci/cache",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\docs\\evidence\\20261023-ci-repair\\integration\\pg-hardstop.xml"
+    ],
+    "exit": 0,
+    "seconds": 27.39
+  },
+  {
+    "name": "pg-junit-gate",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "scripts/check_ci_junit.py",
+      "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\docs\\evidence\\20261023-ci-repair\\integration\\pg-strict.xml",
+      "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\docs\\evidence\\20261023-ci-repair\\integration\\pg-hardstop.xml"
+    ],
+    "exit": 0,
+    "seconds": 0.06
+  }
+]

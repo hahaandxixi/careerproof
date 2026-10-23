@@ -1,0 +1,29 @@
+[
+  {
+    "name": "ruff",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "ruff",
+      "check",
+      "."
+    ],
+    "exit": 0,
+    "seconds": 0.11
+  },
+  {
+    "name": "unit",
+    "command": [
+      "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "app/tests",
+      "--basetemp=.tmp-unit-repair",
+      "-o",
+      "cache_dir=.tmp-cache",
+      "--junitxml=D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\docs\\evidence\\20261023-ci-repair\\integration\\unit.xml"
+    ],
+    "exit": 0,
+    "seconds": 356.28
+  }
+]
