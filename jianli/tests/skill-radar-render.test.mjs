@@ -74,3 +74,12 @@ test("reference source cannot be presented as personal contribution", () => {
  assert.ok(html.includes("参考材料，不能证明本人贡献"));
  assert.ok(html.includes("截取片段"));
 });
+
+for(const [aiStatus,fallback,adopted] of [["validated",false,true],["rejected",false,false],["invalid_citations",false,false],["validated",true,false]]) {
+ test(`radar adopted interpretation ${aiStatus}/${fallback}`,()=>{
+ const item={requirementId:"sql",aiStatus,explanation:"规则依据",aiExplanation:"MODEL-EXPLANATION",aiInformationGap:"MODEL-GAP",evidenceLevelGap:"规则缺口",evidenceList:[]};
+ const html=render({dimensions:[dim("sql","supported",65)],items:[item],aiFallbackUsed:fallback});
+ assert.equal(html.includes("MODEL-EXPLANATION"),adopted);assert.equal(html.includes("MODEL-GAP"),adopted);
+ if(!adopted)assert.ok(html.includes("规则依据")&&html.includes("规则缺口"));
+ });
+}

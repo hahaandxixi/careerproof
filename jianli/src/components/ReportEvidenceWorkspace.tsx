@@ -25,20 +25,14 @@ export default function ReportEvidenceWorkspace({ report }: { report: MatchRepor
     (["gaps", "partial", "other", "supported"] as const).find(key => state[key].length > 0) ?? "gaps"
   );
   const actions = new Map((report.actionPlan ?? []).map(action => [action.requirementId, action]));
-  const materialVersions = (report.materials ?? [])
-    .map(material => {
-      const kind = material.kind === "resume" ? "简历" : material.kind === "project" ? "项目" : material.kind;
-      return `${material.title || kind}（${kind} v${material.versionNumber}）`;
-    })
-    .join(" · ");
   const openCount = state.gaps.length + state.partial.length + state.other.length;
 
   return <section aria-labelledby="evidence-workspace-title" className="panel min-w-0 space-y-4">
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0">
         <h2 id="evidence-workspace-title" className="text-lg font-semibold">下一步补证计划</h2>
-        <p className="mt-1 text-sm leading-6 text-slate-600">选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。</p>
-        {materialVersions && <p className="mt-2 break-words text-xs leading-5 text-slate-500">本报告固定材料：{materialVersions}。补证或上传新版不会替换本报告。</p>}
+        <p className="mt-1 text-sm leading-6 text-slate-600">选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。补证或上传新版不会替换本报告。</p>
+
         <p className="mt-2 text-sm leading-6 text-slate-700">
           {report.items.length === 0
             ? "下一步：暂无逐项结果，请先核对报告状态。"
@@ -47,9 +41,10 @@ export default function ReportEvidenceWorkspace({ report }: { report: MatchRepor
             : "下一步：核对关键引用后，可直接投递本报告；如材料更新，请生成新报告再决定。"}
         </p>
       </div>
+      <EvidenceLink targetId="report-materials" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">核对固定材料</EvidenceLink>
       <Link href="#report-comparison" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">查看版本变化 →</Link>
     </div>
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="按已保存的材料支持状态查看要求">
+    <details className="border-t border-slate-200 pt-3"><summary className="cursor-pointer py-2 text-sm font-medium text-indigo-700">展开完整补证计划 · {openCount} 项待补或需核对</summary><div className="mt-3 space-y-4">    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="按已保存的材料支持状态查看要求">
       {GROUPS.map(({ key, label }) => <button key={key} type="button"
         id={`evidence-group-${key}`} aria-expanded={expanded === key} aria-controls={`evidence-panel-${key}`}
         onClick={() => setExpanded(current => current === key ? null : key)}
@@ -90,6 +85,7 @@ export default function ReportEvidenceWorkspace({ report }: { report: MatchRepor
       </>}
     </div>)}
     {expanded === null && <p className="text-sm text-slate-600">选择上方状态，展开对应要求。</p>}
+</div></details>
     <details className="border-t border-slate-200 pt-3 text-sm">
       <summary className="cursor-pointer py-2 font-medium text-slate-700">补证步骤与投递说明</summary>
       <p className="mt-2 leading-6 text-slate-600">核对一条缺口 → 补充并保存新版材料 → 主动生成新报告，再查看逐项变化。</p>

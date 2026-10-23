@@ -7,11 +7,12 @@ import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [] }: {
-  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[];
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [], aiFallbackUsed = false }: {
+  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
 }) {
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
+  const [overviewOpen, setOverviewOpen] = useState(false);
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
   const selectedIndex = dimensions.indexOf(dimension);
@@ -34,9 +35,11 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
       <span>— {RADAR_STATUS.unsupported}</span>
     </div>
     <details className="mt-3 text-xs leading-5 text-slate-500"><summary className="w-fit cursor-pointer py-2 text-indigo-700">分数与图形如何理解</summary><p className="mt-1">分数沿用原报告，不填充面积。{RULE_SCORE_CAP_NOTE}</p></details>
-    <div className="mt-4 grid items-start gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-      <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
         <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => setSelectedId(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
+    <button type="button" className="btn-secondary mt-3 xl:hidden" aria-expanded={overviewOpen} onClick={() => setOverviewOpen(value => !value)}>{overviewOpen ? "收起整体雷达" : "展开整体雷达概览"}</button>
+    <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(340px,0.7fr)_minmax(0,1.3fr)]">
+      <div className={`${overviewOpen ? "block" : "hidden xl:block"} min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4`}>
+
         {dimensions.length >= 3 && dimensions.length <= 8 ? <svg className="mx-auto mt-2 w-full max-w-[400px]" viewBox="0 0 400 400" role="group" aria-label="岗位要求分数，点选轴标签或上方要求按钮查看证据">
           <circle cx="200" cy="200" r="108" fill="#f8fafc" />
           {[25, 50, 75, 100].map(value => <g key={value}><circle cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e2e8f0" /><text x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="10">{value}</text></g>)}
@@ -62,15 +65,17 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           })}
         </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，使用下方逐项证据对照，避免轴标签拥挤。</p>}
       </div>
-      <div id={detailId} className="min-w-0 rounded-xl border border-indigo-100 bg-white p-4 shadow-sm sm:p-5" aria-live="polite">
+      <div id={detailId} className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
         <p className="text-xs font-medium text-indigo-600">当前选中 · 第 {selectedIndex + 1} 项 / 共 {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-indigo-50/70 p-4"><div><p className="text-xs text-slate-600">原报告材料支持度</p><p className="mt-1 text-3xl font-semibold tabular-nums text-indigo-700">{score ?? "—"}</p></div><span className="rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-medium text-slate-700">{status(dimension)}</span></div>
         {score !== null && <p className="mt-1 text-xs text-slate-400">材料支持度 · 沿用原报告</p>}
         <p className="mt-3 text-xs leading-5 text-slate-500">岗位权重 {dimension.weight}{dimension.evidenceLevel != null && <> · 实践证据 {evidenceLevelName(dimension.evidenceLevel)} · {dimension.evidenceLevelSource === "ai_preliminary" ? "AI初评，待独立核验" : "原报告结果"}</>}</p>
+        {aiFallbackUsed && <p className="mt-3 text-sm text-amber-900">报告已降级，本处使用规则解释。</p>}
+        {item && item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="mt-3 text-sm text-amber-900">本项 AI 解释未被采用，请按规则和来源核对。</p>}
+        {item?.evidenceList.some(source => source.contextComplete === false) && <p className="mt-3 text-sm text-amber-900">部分来源上下文不完整，请展开核对。</p>}
         {item ? <>
-          <p className="mt-4 break-words text-sm leading-6 text-slate-700">{item.aiExplanation || item.explanation || "原报告未提供这项判断的说明。"}</p>
-          {item.aiInformationGap && <p className="mt-3 break-words text-xs leading-5 text-amber-800">待核对：{item.aiInformationGap}</p>}
+          <p className="mt-4 break-words text-sm leading-6 text-slate-700">{(item.aiStatus === "validated" && !aiFallbackUsed ? item.aiExplanation : null) || item.explanation || "原报告未提供这项判断的说明。"}</p>
           <details key={dimension.requirementId} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
             <summary className="cursor-pointer text-sm text-indigo-700">查看本次授权引用片段（{item.evidenceList.length}）</summary>
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
@@ -80,6 +85,8 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
               {!e.contextComplete && <p className="mt-2 leading-5 text-amber-800">{e.contextNote || "引用上下文不完整，需要结合原报告核对。"}</p>}
             </div>) : <p className="mt-3 text-xs leading-5 text-slate-500">本项没有可定位的引用片段，可在完整报告中核对材料缺口。</p>}
           </details>
+          {(item.aiStatus === "validated" && !aiFallbackUsed ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-xs leading-5 text-amber-800">待核对：{item.aiStatus === "validated" && !aiFallbackUsed ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
+
         </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"} {dimension.verdict === "gap" ? "缺材料不代表没有能力。" : "材料支持程度不代表能力或录用结论。"}</p>}
       </div>
     </div>

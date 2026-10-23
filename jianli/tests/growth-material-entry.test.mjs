@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { growthNextAction } from "../src/lib/growth-next-action.ts";
 import * as workflow from "../src/lib/growth-workflow.ts";
 import * as materialUpload from "../src/lib/material-upload.ts";
 
@@ -40,6 +41,8 @@ function renderTask(status, extra = {}) {
     "./EnterpriseReplyContext": picker("reply-context"),
     "./PrivateAnswerDraft": picker("private-draft"),
     "./ListPagination": picker("pagination"),
+    "@/lib/growth-next-action": { growthNextAction },
+    "./EvidenceLink": { __esModule: true, default: ({ targetId, children, className }) => jsx("a", { href: `#${targetId}`, children, className }) },
   };
   const source = readFileSync(new URL("../src/components/GrowthWorkspace.tsx", import.meta.url), "utf8");
   const code = transform(source, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
@@ -72,4 +75,14 @@ test("planned, selected and failed tasks retain explicit upload and save", () =>
     assert.match(html, /保存本次材料选择/);
     assert.doesNotMatch(html, /从新报告选择下一条缺口/);
   }
+});
+
+test("next action is navigation only and prioritizes saved task facts", () => {
+ const task={materials:[],analysisTaskId:null,targetReportId:null,status:"planned",requirementId:"r"};
+ assert.equal(growthNextAction(task,false).target,"growth-materials");
+ assert.equal(growthNextAction(task,true).target,"growth-save");
+ assert.equal(growthNextAction({...task,materials:[{id:"saved"}]},false).target,"growth-analysis");
+ assert.equal(growthNextAction({...task,analysisTaskId:"run",status:"analysis_failed"},true).target,"growth-processing");
+ assert.equal(growthNextAction({...task,targetReportId:"new",analysisTaskId:"run",comparison:{items:[]}},false).target,"growth-requirement-r");
+ assert.deepEqual(task.materials,[]);
 });

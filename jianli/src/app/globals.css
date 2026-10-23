@@ -111,3 +111,6 @@ body {
 
 /* Keep deep links below the two-row mobile header, including utility-styled anchors. */
 main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], main [id^="growth-"], #application-submit, #report-materials, #report-comparison { scroll-margin-top: 120px; }
+
+/* Compact local reading surfaces; other workspaces keep their existing spacing. */
+@media (max-width: 639px) { .layout-closeout .panel { padding: 14px; } }

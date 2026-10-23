@@ -81,6 +81,7 @@ function UploadProgress({ item, latest = false, onUploadVersion }: { item: Uploa
         </span>
       </div>
 
+      {!complete && <>
       <div role="progressbar" aria-label={`${item.title}处理进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.progress} className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
           className={`h-full rounded-full transition-all duration-500 ${failed ? "bg-rose-500" : "bg-indigo-600"}`}
@@ -91,13 +92,14 @@ function UploadProgress({ item, latest = false, onUploadVersion }: { item: Uploa
         <span>{item.errorMessage || item.currentStep}</span>
         <span>{item.progress}%</span>
       </div>
+      </>}
       {!item.taskId && !complete && (
         <p className="mt-2 text-xs text-amber-700">历史版本未关联任务，无法恢复实时进度。</p>
       )}
-      <div className="mt-4 flex flex-wrap gap-4 text-sm text-indigo-700">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-indigo-700">
         {onUploadVersion && <button type="button" className="underline" onClick={onUploadVersion}>给这个项目上传新版本</button>}
-        {complete && <Link href={`/materials/${item.kind}/${item.versionId}`}>预览解析内容</Link>}
-        {item.taskId && <Link href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
+        {complete && <Link className="btn-secondary" href={`/materials/${item.kind}/${item.versionId}`}>预览解析内容</Link>}
+        {item.taskId && <Link className={complete ? "underline" : "btn-secondary"} href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
         {complete && <Link href="/recommendations">获取职业推荐</Link>}
         {complete && <Link href="/jobs">选择岗位匹配</Link>}
       </div>
@@ -294,6 +296,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   function selectProject(project: ProjectView | null) {
     if (projectSubmitting.current) return;
     setUploadOpen(true);
+    requestAnimationFrame(() => { const target = document.getElementById("project-upload-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); });
     rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, projectRole) : null);
     setProjectName(project?.name ?? "");
     setProjectDescription(project?.description ?? "");
@@ -308,7 +311,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <div>
         <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
-        <h1 className="page-title mt-1">我的材料工作台</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title mt-1">我的材料工作台</h1><button type="button" className="btn" onClick={() => { setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
           先核对已保存材料，再按需要添加简历、项目或新版本。扫描件和图片由本地 OCR 识别，项目只做安全检查和静态扫描，不执行上传的代码。
         </p>
@@ -347,7 +350,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <details id="add-materials" open={uploadOpen || !!attempt || (historyLoaded && !uploads.length && !projects.length)} onToggle={event => setUploadOpen(event.currentTarget.open)} className="rounded-2xl border border-slate-200 bg-white">
         <summary className="cursor-pointer p-5 text-base font-semibold text-indigo-700">{uploads.length || projects.length ? "添加材料或上传新版本" : "开始准备材料"}</summary>
         <div className="border-t border-slate-200 p-4 sm:p-5">
-          <p className="mb-4 text-sm leading-6 text-slate-600">上传前可核对文件、大小、类型和目标。选择文件不会自动提交；解析完成也不会自动加入报告。</p>
+          <h2 id="upload-workspace-title" tabIndex={-1} className="mb-3 scroll-mt-32 text-lg font-semibold">添加简历或项目材料</h2><p className="mb-4 text-sm leading-6 text-slate-600">上传前可核对文件、大小、类型和目标。选择文件不会自动提交；解析完成也不会自动加入报告。</p>
       <div className="grid gap-6 lg:grid-cols-2">
         <form onSubmit={submitResume} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
@@ -381,7 +384,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         <form onSubmit={submitProject} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-5">
             <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">项目材料</span>
-            <h2 className="mt-3 text-xl font-bold text-slate-900">{attempt?.project ? "继续上传项目" : "上传项目"}</h2>
+            <h2 id="project-upload-title" tabIndex={-1} className="mt-3 scroll-mt-32 text-xl font-bold text-slate-900">{attempt?.project ? "继续上传项目" : "上传项目"}</h2>
             <p className="mt-1 text-sm leading-6 text-slate-500">代码项目使用 ZIP（最大30MB），打包前删除 node_modules；作品支持 PDF、DOCX、TXT 和常见图片（最大10MB）。扫描件由本地 OCR 识别，结果需人工核对。</p>
           </div>
           {attempt && (

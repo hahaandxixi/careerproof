@@ -88,7 +88,7 @@ export const GROWTH_CHANGES: Record<string, string> = {
 };
 
 export const GROWTH_POLL_LIMIT = 60;
-export const GROWTH_AUTO_QUERY_STOPPED = "已停止自动查询。任务继续在服务器处理，可点击读取已保存任务；不会新增模型调用。";
+export const GROWTH_AUTO_QUERY_STOPPED = "已停止自动查询。任务继续在服务器处理，可点击“刷新任务状态”；不会新增模型调用。";
 
 export interface GrowthAutoQueryInput {
   polls: number;

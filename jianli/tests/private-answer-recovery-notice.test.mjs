@@ -444,3 +444,11 @@ test("成功恢复后再次清理身份/任务（无新编辑）：丢弃提示�
   h.session.setText("重新开始编辑");
   assert.equal(h.state().lossNotice, "", "编辑仍按生命周期结束提示（修复不得让提示永久化）");
 });
+
+test("explicit save stays next to editor before collapsed reference candidates",()=>{
+ const html=renderToStaticMarkup(React.createElement(draftComponent.PrivateAnswerDraftPanel,panelProps()));
+ assert.ok(html.indexOf("保存草稿</button>")>html.indexOf("</textarea>"));
+ assert.ok(html.indexOf("保存草稿</button>")<html.indexOf("引用证据 · 已选"));
+ assert.ok(html.includes("尚未保存")&&html.includes("仅本人可见"));
+ assert.ok(!/<details[^>]*open[^>]*><summary[^>]*>引用证据/.test(html));
+});

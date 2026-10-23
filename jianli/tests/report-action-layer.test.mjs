@@ -155,7 +155,8 @@ test("fixed material versions and next action are visible without a second sourc
    { kind: "project", id: "q", title: "分析服务", versionNumber: 1, contentHash: "q" },
   ],
  });
- assert.ok(html.includes("简历（简历 v1） · 库存服务（项目 v2） · 分析服务（项目 v1）"));
+ assert.ok(html.includes("核对固定材料") && html.includes('href="#report-materials"'));
+ assert.ok(!html.includes("简历（简历 v1） · 库存服务（项目 v2） · 分析服务（项目 v1）"), "fixed names remain in the existing material section rather than being repeated in the plan");
  assert.ok(html.includes("补证或上传新版不会替换本报告。"));
  assert.ok(html.includes("下一步：核对关键引用后，可直接投递本报告"));
  assert.ok(!html.includes("先处理 0 项"));

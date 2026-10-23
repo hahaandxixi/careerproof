@@ -85,9 +85,10 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
     assert.ok(html.includes(`id="requirement-${item.requirementId}"`));
     assert.ok(html.includes(`未保存草稿 ${item.requirementId}`));
   }
-  assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
+  assert.equal((html.match(/aria-current="true"/g) ?? []).length, 2);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(html.includes("正在查看"));
+  assert.ok(html.includes("手机逐项阅读导航") && html.includes("展开全部要求") && html.includes("上一项"));
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
@@ -101,7 +102,7 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
   };
   const before = JSON.stringify(report);
   const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "库存服务 · 第 1 版", "库存服务 · 第 2 版", "模型已降级", "本地规则结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "模型已降级", "本地规则结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
   assert.equal((html.match(/class="btn /g) ?? []).length, 1);
   assert.ok(html.includes('href="#requirement-tests"'));
   assert.ok(!html.includes("模型耗时"));
@@ -153,7 +154,7 @@ function navigationFixture(hash = "", search = "") {
     values, events, details, windowListeners, documentListeners,
     commit() { render(); return effects[1](); },
     flush() { for (const [id, fn] of frames) { frames.delete(id); fn(); } },
-    click(href, extra = {}) { documentListeners.get("click")({ target: new Node(href), button: 0, ...extra }); },
+    click(href, extra = {}) { let prevented = false; documentListeners.get("click")({ target: new Node(href), button: 0, preventDefault() { prevented = true; }, ...extra }); return { prevented, hash: window.location.hash }; },
     hash(value) { window.location.hash = value; windowListeners.get("hashchange")(); },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
   };
@@ -194,4 +195,17 @@ test("modified, external and unknown links keep selection, and unmount removes l
     assert.deepEqual(f.events, []);
   } finally { f.cleanup(); }
   assert.equal(f.windowListeners.size, 0); assert.equal(f.documentListeners.size, 0);
+});
+
+// Synchronous state selection can change the clicked mobile link's href before native navigation.
+test("mobile navigation commits the captured destination and cancels the changing native href", () => {
+  const f = navigationFixture("#requirement-run");
+  try {
+    const navigation = f.click("#requirement-tests");
+    assert.equal(navigation.prevented, true);
+    assert.equal(navigation.hash, "#requirement-tests");
+    assert.equal(f.values[0].selected, "tests");
+    assert.equal(f.click("#citation-unknown").prevented, false);
+    assert.equal(f.click("#requirement-run", {ctrlKey: true}).prevented, false);
+  } finally { f.cleanup(); }
 });
