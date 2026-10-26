@@ -1,0 +1,256 @@
+TAP version 13
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+ok 1 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 21.7741
+  type: 'test'
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+ok 2 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 8.2297
+  type: 'test'
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 3 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 5.0849
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 4 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 5.976
+  type: 'test'
+  ...
+# Subtest: opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+ok 5 - opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+  ---
+  duration_ms: 11.4726
+  type: 'test'
+  ...
+# Subtest: existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+ok 6 - existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+  ---
+  duration_ms: 3.4096
+  type: 'test'
+  ...
+# Subtest: denied and temporarily unavailable lookups expose retry without opening a create form
+ok 7 - denied and temporarily unavailable lookups expose retry without opening a create form
+  ---
+  duration_ms: 1.8579
+  type: 'test'
+  ...
+# Subtest: a late lookup from another report cannot replace the selected task, and review warnings stay visible
+ok 8 - a late lookup from another report cannot replace the selected task, and review warnings stay visible
+  ---
+  duration_ms: 0.6501
+  type: 'test'
+  ...
+# Subtest: one integrated workspace keeps the complete saved items even when a plan is limited to three
+ok 9 - one integrated workspace keeps the complete saved items even when a plan is limited to three
+  ---
+  duration_ms: 11.3601
+  type: 'test'
+  ...
+# Subtest: identical rules advice and gap appear once in the action panel
+ok 10 - identical rules advice and gap appear once in the action panel
+  ---
+  duration_ms: 0.6811
+  type: 'test'
+  ...
+# Subtest: valid AI advice uses the saved requirement and drops foreign or duplicate citations
+ok 11 - valid AI advice uses the saved requirement and drops foreign or duplicate citations
+  ---
+  duration_ms: 1.1191
+  type: 'test'
+  ...
+# Subtest: rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+ok 12 - rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+  ---
+  duration_ms: 2.3675
+  type: 'test'
+  ...
+# Subtest: non-students retain explanation and advice without private student task controls
+ok 13 - non-students retain explanation and advice without private student task controls
+  ---
+  duration_ms: 1.7213
+  type: 'test'
+  ...
+# Subtest: review-only and unsupported states do not invent implementation deficiencies
+ok 14 - review-only and unsupported states do not invent implementation deficiencies
+  ---
+  duration_ms: 0.7632
+  type: 'test'
+  ...
+# Subtest: partial support and gaps expose their existing plan and explicit task trigger
+ok 15 - partial support and gaps expose their existing plan and explicit task trigger
+  ---
+  duration_ms: 1.1418
+  type: 'test'
+  ...
+# Subtest: supported requirements lead with conclusions and evidence; optional growth stays secondary
+ok 16 - supported requirements lead with conclusions and evidence; optional growth stays secondary
+  ---
+  duration_ms: 0.4555
+  type: 'test'
+  ...
+# Subtest: support survives incomplete context and its warning remains outside collapsed details
+ok 17 - support survives incomplete context and its warning remains outside collapsed details
+  ---
+  duration_ms: 0.5595
+  type: 'test'
+  ...
+# Subtest: missing plans and unrelated actions never manufacture suggestions or requirements
+ok 18 - missing plans and unrelated actions never manufacture suggestions or requirements
+  ---
+  duration_ms: 0.6365
+  type: 'test'
+  ...
+# Subtest: empty report does not masquerade as full support
+ok 19 - empty report does not masquerade as full support
+  ---
+  duration_ms: 0.179
+  type: 'test'
+  ...
+# Subtest: saved structured plans retain deliverable, steps and checks without changing the snapshot
+ok 20 - saved structured plans retain deliverable, steps and checks without changing the snapshot
+  ---
+  duration_ms: 0.6879
+  type: 'test'
+  ...
+# Subtest: generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+ok 21 - generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+  ---
+  duration_ms: 0.5337
+  type: 'test'
+  ...
+# Subtest: a saved structured plan takes priority over generic instructions
+ok 22 - a saved structured plan takes priority over generic instructions
+  ---
+  duration_ms: 0.5953
+  type: 'test'
+  ...
+# Subtest: action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+ok 23 - action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+  ---
+  duration_ms: 1.6818
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 24 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 1.0501
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 25 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.3663
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 26 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.168
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 27 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 7.2007
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 28 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 13.8201
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 29 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 9.2678
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 30 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 6.7803
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 31 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.1505
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 32 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 3.6341
+  type: 'test'
+  ...
+# Subtest: workspace filters partition real states, include review priority and preserve immutable inputs
+ok 33 - workspace filters partition real states, include review priority and preserve immutable inputs
+  ---
+  duration_ms: 0.5537
+  type: 'test'
+  ...
+# Subtest: all-supported defaults to all; review-only defaults to its exact saved item
+ok 34 - all-supported defaults to all; review-only defaults to its exact saved item
+  ---
+  duration_ms: 0.1877
+  type: 'test'
+  ...
+# Subtest: deep links escape a mismatched filter without losing the saved anchor
+ok 35 - deep links escape a mismatched filter without losing the saved anchor
+  ---
+  duration_ms: 2.3565
+  type: 'test'
+  ...
+# Subtest: integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+ok 36 - integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+  ---
+  duration_ms: 0.5183
+  type: 'test'
+  ...
+# Subtest: summary truncation changes no source identity or original text
+ok 37 - summary truncation changes no source identity or original text
+  ---
+  duration_ms: 0.3272
+  type: 'test'
+  ...
+# Subtest: single list and mounted panels replace the second action-list rendering
+ok 38 - single list and mounted panels replace the second action-list rendering
+  ---
+  duration_ms: 0.2335
+  type: 'test'
+  ...
+# Subtest: scan summaries keep UUID paths in detailed evidence instead of removing source identities
+ok 39 - scan summaries keep UUID paths in detailed evidence instead of removing source identities
+  ---
+  duration_ms: 0.1066
+  type: 'test'
+  ...
+# Subtest: returning to a report without a fragment restores its saved default, not the last visited requirement
+ok 40 - returning to a report without a fragment restores its saved default, not the last visited requirement
+  ---
+  duration_ms: 2.6978
+  type: 'test'
+  ...
+# Subtest: a single priority item offers the real supported count without duplicating the list
+ok 41 - a single priority item offers the real supported count without duplicating the list
+  ---
+  duration_ms: 0.7502
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 468.121
