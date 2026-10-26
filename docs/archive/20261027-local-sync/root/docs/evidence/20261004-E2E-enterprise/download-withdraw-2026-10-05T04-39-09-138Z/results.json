@@ -1,0 +1,67 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "download-withdraw",
+  "startedAt": "2026-10-05T04:39:09.138Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:39:09.139Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=download-withdraw runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:39:09.402Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 57459 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:39:09.591Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-39-09-138Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:39:10.946Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:39:42.297Z",
+      "name": "download-timeout-diagnostics",
+      "status": "warn",
+      "detail": "events=[] dirFiles=[] alert=null"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:39:42.386Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:39:42.387Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=n/a"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:39:42.387Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: download did not complete within 30000ms |     at waitForDownload (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:986:9) |     at async scenarioDownloadWithdraw (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:1024:20)"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-39-09-138Z\\download-timeout.json"
+  ],
+  "finishedAt": "2026-10-05T04:39:42.387Z"
+}

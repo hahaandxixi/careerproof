@@ -1,0 +1,35 @@
+PASS A1 first write creates the record
+PASS A2 second write replaces the record atomically
+PASS A3 failed save keeps the previous complete record
+PASS A4 reparse-point manifest paths are refused
+PASS A5 corrupt JSON reports the file location and is not deleted
+PASS A6 empty record file is refused with the file location
+PASS B1 valid owned roots are stopped through the extracted stop path
+PASS B2 a record with missing fields stops nothing
+PASS B3 a changed command on the second root stops nothing
+PASS B4 a reused PID stops nothing
+PASS B5 reuse is refused for incomplete or legacy manifests with the file location
+PASS C1 digest is stable across repeated calls
+PASS C2 changed migration content invalidates the digest
+PASS C3 added and removed migrations are detectable
+PASS C4 alembic config changes invalidate the digest
+PASS C5 bytecode cache and unrelated scratch do not affect the digest
+PASS C6 app source changes still invalidate; tests still do not
+PASS D1 safe cleanup swallows cleanup failures with a warning
+PASS D2 safe cleanup still runs a healthy cleanup
+PASS D3 original error survives a failing cleanup in the catch pattern
+PASS D4 AST: start/stop scripts parse and wire the new seams
+PASS E1 save never overwrites a foreign object parked at the legacy fixed temp path
+PASS E2 a hard-linked temp path never reaches the link-external file
+PASS E3 a reparse point parked at the temp path is neither followed nor deleted
+PASS E4 a descendant whose snapshot creation time differs from its live start is rejected before any stop
+PASS E5 a root that no longer matches its recorded start in the stop snapshot is not stopped
+PASS E6 a failing second-root pre-check stops nothing from the first root
+PASS F1 the real cross-API tick gap is a legal identity that gets stopped
+PASS F2 a full microsecond of cross-API drift is still a reused PID
+PASS F3 a .NET start-time change after sampling is still refused before any stop
+PASS F4 every root with the real tick gap is pre-checked and stopped
+PASS F5 a refused exclusive creation never deletes the object that won the temp path
+PASS F6 a CIM time above the .NET start is still a reused PID
+33/33 launcher-recovery assertions passed; no live processes, locks, real manifests, containers or databases touched.
+EXIT=0

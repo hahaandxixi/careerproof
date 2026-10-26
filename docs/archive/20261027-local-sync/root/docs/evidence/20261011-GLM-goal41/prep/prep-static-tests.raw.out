@@ -1,0 +1,72 @@
+$ node --test scripts/e2e/private-recovery-notice.test.mjs
+TAP version 13
+# Subtest: argument closure: only the pinned run id is accepted
+ok 1 - argument closure: only the pinned run id is accepted
+  ---
+  duration_ms: 1.0865
+  type: 'test'
+  ...
+# Subtest: argument closure: every other invocation is rejected
+ok 2 - argument closure: every other invocation is rejected
+  ---
+  duration_ms: 0.1969
+  type: 'test'
+  ...
+# Subtest: service and database targets are pinned constants
+ok 3 - service and database targets are pinned constants
+  ---
+  duration_ms: 0.2071
+  type: 'test'
+  ...
+# Subtest: fixed notice copy is bound byte-for-byte to the product source
+ok 4 - fixed notice copy is bound byte-for-byte to the product source
+  ---
+  duration_ms: 0.1762
+  type: 'test'
+  ...
+# Subtest: read-only SQL: SELECT-only statements inside a READ ONLY wrapper
+ok 5 - read-only SQL: SELECT-only statements inside a READ ONLY wrapper
+  ---
+  duration_ms: 0.5026
+  type: 'test'
+  ...
+# Subtest: canonical JSON mirrors the seeder's normalized_snapshot_hash
+ok 6 - canonical JSON mirrors the seeder's normalized_snapshot_hash
+  ---
+  duration_ms: 0.4827
+  type: 'test'
+  ...
+# Subtest: sha256Hex matches node crypto over utf8
+ok 7 - sha256Hex matches node crypto over utf8
+  ---
+  duration_ms: 0.0852
+  type: 'test'
+  ...
+# Subtest: markers are one-shot and clearly separated from the precondition seed
+ok 8 - markers are one-shot and clearly separated from the precondition seed
+  ---
+  duration_ms: 0.2998
+  type: 'test'
+  ...
+# Subtest: importing the runner module has no side effects
+ok 9 - importing the runner module has no side effects
+  ---
+  duration_ms: 0.2758
+  type: 'test'
+  ...
+# Subtest: psWindow drives a real minimize/restore roundtrip on its own throwaway window
+ok 10 - psWindow drives a real minimize/restore roundtrip on its own throwaway window
+  ---
+  duration_ms: 6478.3942
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6578.8596
+exit=0

@@ -1,0 +1,75 @@
+# 传智杯36 一屏交棒（供 Codex 独立验收）
+
+**结论**：`plan_deployment_outcome_error` 两处 Codex 复现误拒已修复（先红后绿），否定范围逃逸已堵，真因果句全保留拒绝。目标文件 22/22 绿，全套件 1172 passed / 46 skipped / 1 预存在环境失败（pyjwt pin，禁安装未动）。ruff 0。
+
+## 改了什么（全部增量见 12-self-review.md 第一节）
+
+- `backend/app/agents/contracts.py`：因果分支1强制「连接词→部署/运行结论」双要件（修复根因）；新增「作为…部署/运行…证明」尾部分支（防既有用例5漏检）；`_CAUSAL_EXEMPTION`+`_OUTCOME_NEGATION` 补 `不等同于|未证明|未证实`；否定前缀豁免改**子句局部**（`_causal_negation_prefix`，在 `，,、：:` 处截断16字符回看窗）；docstring 同步。
+- `backend/app/tests/test_weekend_plan_boundaries.py`（33新建、本就untracked）：原18用例零改动，新增4个测试函数（两句原话放行、否定连接词放行、`意味着`因果仍拒、否定子句不豁免独立因果错误）。
+
+## 验收路径（复跑命令，venv 内 pytest 8.4.2）
+
+```bash
+cd "D:\jbcode\web ai\jianli\backend"
+./.venv/Scripts/python.exe -m pytest app/tests/test_weekend_plan_boundaries.py -q -p no:cacheprovider   # 期望 22 passed
+./.venv/Scripts/python.exe -m ruff check app/agents/contracts.py app/tests/test_weekend_plan_boundaries.py  # 期望 0
+./.venv/Scripts/python.exe -m pytest app/tests -q -p no:cacheprovider --basetemp=.tmp-<你的名字>   # 期望 1172 passed, 46 skipped, 1 failed(pyjwt pin, 预存在)
+```
+注意：必须带 `--basetemp`（默认 %TEMP% 被拒访问，goal 29 已知约束）；全套件约 5.5 分钟。
+
+## 证据目录 docs/evidence/20261011-GLM-goal36/
+
+| 文件 | 内容 |
+|---|---|
+| 01-red-round1.txt | 红轮原始输出：3 failed（两句误拒+逃逸）/ 18 passed（原用例并存） |
+| 02-green-round1.txt / 05-green-final-target.txt | 修复后 21 → 22/22 绿 |
+| 03 / 04-full-suite*.txt | 首跑（暴露 basetemp 问题）与正确 basetemp 重跑 |
+| 06-ruff.txt | ruff 全过 |
+| 07-probes.txt | 17条有界变体探针 + 2条词面局限留档 |
+| 08-full-suite-final.txt | 终态全套件 |
+| 09 / 10-diff-*.txt | diff（09含33未提交改动；测试文件为untracked全量353行） |
+| 11-hash.txt | sha256：contracts.py `c94f5532…`，测试 `b0476362…`，任务卡 `1092970e…` |
+| 12-self-review.md | 本卡-only 增量、时间线、对抗清单、局限、未验证项 |
+
+## 请 Codex 重点复核
+
+1. 09号diff中**本卡-only** 的六个增量（12号第一节 D1–D6）是否与卡面「必须存在明确源码存在与部署/运行结论因果」一致；
+2. 否定子句局部化是否引入新的误放行（探针7的逗号用例已覆盖，欢迎加码）；
+3. 两处留档残余（07号尾部）是否接受为词面守卫已知局限而非本卡缺陷；
+4. 写范围：仅 contracts.py、测试文件、本证据目录（git status 可证）。
+
+**未做**：真实模型/联网/DB/服务/安装/.env/P2/Git提交推送（卡面禁止）。34/35 文件零触碰。
+
+---
+
+## 范围更正（Codex 指正后收敛，2026-10-11）
+
+**Codex 纠正**：本卡要求纯合同/任务边界目标与受影响测试，不要求全后端套件或 DB。据此更正验收口径：
+
+- **正式验收命令**（`backend/.venv-dependency23/Scripts/python.exe`，pytest 9.0.3 / ruff 0.12.12，`--basetemp=.tmp-goal36-pure`）：
+  ```bash
+  cd "D:\jbcode\web ai\jianli\backend"
+  ./.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_weekend_plan_boundaries.py \
+    app/tests/test_task_boundaries.py app/tests/test_task_boundary_review_regressions.py \
+    app/tests/test_task_plan_boundary_fallback.py app/tests/test_framework_upgrade_contract.py \
+    -q -p no:cacheprovider --basetemp=.tmp-goal36-pure     # 期望 64 passed（14-scope-correction/01）
+  ./.venv-dependency23/Scripts/python.exe -m ruff check app/agents/contracts.py app/tests/test_weekend_plan_boundaries.py  # All checks passed（02）
+  ```
+- **03/04/08 全量输出仅作背景留档，不作为本卡质量得分**：其中 03 的 418 ERROR 为临时目录权限（WinError5）、1 failed 为 pyjwt pin（2.10.1≠2.15.0）——均预存在环境项，**未验**、未修（不改权限/依赖/既有断言）；04 全量已在纠正到达前结束（1173 passed/1 同因失败），此后未再扩大重跑。
+- hash 复核（03-hash-recheck.txt）与 11 号一致：contracts.py `c94f5532…`、测试 `b0476362…` —— 范围收敛未改任何源码。
+- `task_boundaries.py` 本卡零改动（历史漏拒由39号卡另修）。
+
+---
+
+## 二次复核修复（Codex holdout 反例，2026-10-11）
+
+Codex 独立复核实测 22 目标通过后提出 2 个新反例（证据 `docs/evidence/20261011-GLM-integration-codex/goal36-independent-holdout.json`）：**逗号前否定/待核验子句掩盖逗号后独立部署结论**——「部署是否成功待核验，但服务器已稳定运行」「本人贡献待核验，接口已部署」在无运行记录步骤时被第二循环整句否定跳过而放行。
+
+**修复（D7，零词表扩充）**：新增 `_CLAUSE_SPLIT`（复用既定 `_CAUSAL_CLAUSE_SEPARATORS`），第二循环（结果断言无记录步骤）从整句 `_OUTCOME_NEGATION` 跳过改为**子句局部**——否定只豁免其所在子句，逗号后独立结论子句仍拒。因果守卫与结果守卫现在同一子句边界。`_OUTCOME_NEGATION`/`_DEPLOYMENT_OUTCOME` 词表未动。
+
+- 红测试：`test_pending_negation_clause_does_not_mask_independent_outcome_assertion`（2反例全合同+直接函数双路径 + 2条真实未来/否定计划保护断言）。红 **1 failed/22 passed**（15-holdout-scope-fix/01-red.txt）→ **23/23**（02-green.txt），ruff 0（03），探针 20/20 含 holdout 6条语义全部符合（04），旧17条零回退。
+- 新 hash（05）：contracts.py `cd6d6eb6…`、测试 `c622a87b…`。
+
+## 报告更正：全量运行含 DB 夹具（Codex 指出，2026-10-11）
+
+先前"未跑DB"表述**不准确**：03/04/08 全后端套件运行包含 SQLite/DB 夹具用例，属**非本卡要求的多余运行**。原始日志保留于 03/04/08 号文件仅作背景，本卡质量结论只依据 14/15 号纯模块运行（dependency23 解释器、`--basetemp` 于 backend/.tmp-*）。此后不再扩大运行；39号卡在改 task_boundaries，本卡不并跑其测试，纯 contracts 相关验证止于本卡目标文件。全程无真实模型/联网/服务/安装/Git提交。

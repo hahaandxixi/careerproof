@@ -1,0 +1,42 @@
+# 传智杯62 · 消除可修复的前端 lint 警告 · 交棒（ZCode，2026-10-17 第二轮，替代首轮报告）
+
+HEAD 33ba713，未提交未推送。首轮以「`++ref.current` 改等价赋值写法」消除三处警告被总控正确否决——那只是规则检测形式差异，不构成解决。本轮已**撤销该写法并改为真实重构**，警告经结构性消除，且以真实组件验证了失效语义。
+
+## 结果
+
+基线 0 error / 7 warning（`lint-baseline.txt`）→ 本轮后 **0 error / 1 warning**（`lint-after.txt`，同链 eslint@9.39.5）。
+
+| 文件 | 处置 |
+| --- | --- |
+| NotificationLink.tsx | 票据/取消标志收进 effect 闭包，清理只置 `cancelled=true`；**ref 全部移除** |
+| MaterialPreview.tsx | 文件选择改状态驱动（专责 effect + 局部 `current` 旗标，身份切换时 `setFileRequest(null)` 撤销在途请求）；**ref 全部移除**；重复点同文件仍重载（seq） |
+| NotificationCenter.tsx | `generation` 不再在清理中读取；新增 `alive` 旗标（清理仅赋常量、不读取），票据检查双门——卸载/依赖变化/act 链中止语义与原先一致 |
+| PrivateAnswerDraft.tsx | 解构 `targetReportId/crossJob` 补全 deps（首轮即为此法，非语法规避；其迟到回执语义由既有 `private-answer-workflow.test.mjs` 真实逻辑测试覆盖） |
+| tests/application-board-session.test.mjs | 删未用 `(...args)` 形参 |
+| tests/private-answer-workflow.test.mjs | 删未断言的 `reads` 计数 |
+| VisualEvidencePanel.tsx:46 `<img>` | **保留警告，技术理由**：src 为鉴权同源后端路由 `/backend/api/v1/project-versions/{id}/image`（cookie 鉴权）；`next/image` 的服务端优化器取图不带 cookie 会破坏鉴权，且项目约定不接受远程图片 URL。这不是已获批的豁免，是待权衡的取舍，换方案需改鉴权或图片管道，超出本卡。 |
+
+## 行为验证（详见 `behavior-scenarios.md` 与 `round3-raw-log.md`）
+
+真实组件挂载于 stage 验证台（`/z62verify`、`/z62frame`，当前源码构建），fetch 用 deferred mock 控制。**证据类型：真实页面渲染 + 真实组件 handler 执行；交互为页面内合成事件派发，非真实指针/键盘操作，不构成完整键盘验收。**
+
+第二轮（/z62verify，当时标签页可见）：
+- S1 卸载后迟到响应（NotificationLink）：999 未复活，重挂载显示新值 ✓
+- S2 key 重挂载（合成翻转）：旧实例迟到 999 丢弃 ✓（第三轮已被真实 login 路径替代为主要证据）
+- S3 act() 链中途卸载（NotificationCenter）：`readNotification` 0 次调用、无导航、零错误 ✓
+- S5 文件切换迟到（MaterialPreview）：迟到的 A 内容未覆盖 B ✓
+- S6 请求在途卸载（MaterialPreview）：迟到内容未出现，重挂载干净 ✓
+
+第三轮（/z62frame，新建可见标签页，真实 AuthProvider）：
+- **R1 同会话身份切换**：A 轮询/act 链/计数在途时经**真实 AuthProvider.login 切到 B**（生产 key={user.id} 重挂载）；B 请求正常完成显示；A 迟到回执（target/旧轮询/计数）全部丢弃——readCalls=0、无导航、无 A 数据残留、零错误 ✓
+- **R2/S4 轮询竞态**：同筛选重读（P1 迟到不覆盖 P2）✓；跨筛选（旧"全部"轮询迟到不覆盖新"未读"结果）✓；再次"恢复可见"分支重读并显示 ✓
+- 说明：范围组件的身份依赖在生产上即表现为 key 重挂载（NotificationLink/NotificationCenter 均如此，MaterialPreview 不依赖身份）；R1 驱动的是真实身份变化机制本身，而非合成的 key 翻转。
+- **S4 的 hidden 分支（离窗）未驱动**：本轮标签页全程真实可见且无法编程置后；主文档 visibilityState 为 guest 不可配置属性（未修改）；iframe realm 方案经对照实验证明 guest 子框架不执行页面 JS，已弃用。hidden 分支的失效行为在第二轮隐藏态标签页上观察到数据清空（部分证据），迟到回执不恢复的完整断言留待可离窗环境。
+
+## 检查
+
+`eslint .` 0/1（上述）；`tsc --noEmit` 0 错；触及测试 64/64（5 文件）。首三件 fixture（`fixture/`）保留为规则行为记录，不再是修复依据。
+
+## 环境与未验证
+
+Stage `backend/.tmp/task62-lint`（lint）与 `backend/.tmp/task64-render`（验证台，服务已停）；junction 复用 Z58 node_modules，零安装。未验证：完整键盘/指针走查（环境无法投递真实输入事件）、S4 场景（如上）、真实后端联调。

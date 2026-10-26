@@ -1,0 +1,101 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "late-response",
+  "startedAt": "2026-10-05T10:49:31.567Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T10:49:31.568Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=late-response runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T10:49:31.957Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 54914 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T10:49:32.257Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\late-response-2026-10-05T10-49-31-566Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T10:49:34.229Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T10:49:35.105Z",
+      "name": "a-view-held",
+      "status": "info",
+      "detail": "A /view response paused; busy indicator=true"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T10:49:35.272Z",
+      "name": "hash-navigation-accepted",
+      "status": "pass",
+      "detail": "hashchange consumed; stale session cleared via page refresh path; A2 clickable"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T10:49:35.727Z",
+      "name": "screenshot:a2-report-open-while-a-held",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\late-response-2026-10-05T10-49-31-566Z\\07-a2-report-open-while-a-held.png"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T10:49:37.442Z",
+      "name": "same-page-late-a-race",
+      "status": "pass",
+      "detail": "release=continued responseObserved=true a2ReportStillOpen=true aDataOverwroteA2=false error=false draft=false hashStillA2=true bothColumns=true"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T10:49:37.524Z",
+      "name": "screenshot:after-late-a-release-same-page",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\late-response-2026-10-05T10-49-31-566Z\\09-after-late-a-release-same-page.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T10:49:39.663Z",
+      "name": "cross-page-late-a",
+      "status": "pass",
+      "detail": "release=already-cancelled (page destroyed → cancellation is the expected browser behavior) bBoardIntact=true aColumnOnB=false error=false"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T10:49:39.727Z",
+      "name": "screenshot:cross-page-after-release",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261005-E2E-enterprise-retest\\late-response-2026-10-05T10-49-31-566Z\\11-cross-page-after-release.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T10:49:39.832Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T10:49:39.833Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261005-E2E-enterprise-retest\\late-response-2026-10-05T10-49-31-566Z\\same-page-race-evidence.json"
+  ],
+  "finishedAt": "2026-10-05T10:49:39.833Z"
+}

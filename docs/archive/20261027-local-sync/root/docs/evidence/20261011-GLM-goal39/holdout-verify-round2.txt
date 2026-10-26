@@ -1,0 +1,6 @@
+PASS current_history expected True got True
+PASS resolved_current_account expected False got False
+PASS current_still_impossible expected True got True
+PASS past_only_explicit expected False got False
+PASS conditional_other_clause expected True got True
+ALL PASS

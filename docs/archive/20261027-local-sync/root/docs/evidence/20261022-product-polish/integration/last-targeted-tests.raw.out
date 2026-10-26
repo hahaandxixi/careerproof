@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: pending list does not claim an empty result; refresh immediately removes the opened report
+ok 1 - pending list does not claim an empty result; refresh immediately removes the opened report
+  ---
+  duration_ms: 1.4692
+  type: 'test'
+  ...
+# Subtest: withdrawal between report response and authorization refresh prevents exporting that report
+ok 2 - withdrawal between report response and authorization refresh prevents exporting that report
+  ---
+  duration_ms: 0.2347
+  type: 'test'
+  ...
+# Subtest: a response started before a newer refresh cannot restore revoked content
+ok 3 - a response started before a newer refresh cannot restore revoked content
+  ---
+  duration_ms: 0.1528
+  type: 'test'
+  ...
+# Subtest: switching between two applications keeps the selected report and reply target aligned
+ok 4 - switching between two applications keeps the selected report and reply target aligned
+  ---
+  duration_ms: 0.3207
+  type: 'test'
+  ...
+# Subtest: window hiding and effect disposal invalidate requests, including across reactivation
+ok 5 - window hiding and effect disposal invalidate requests, including across reactivation
+  ---
+  duration_ms: 0.2593
+  type: 'test'
+  ...
+# Subtest: download bytes are not delivered after a withdrawal or an intervening window clear
+ok 6 - download bytes are not delivered after a withdrawal or an intervening window clear
+  ---
+  duration_ms: 0.7822
+  type: 'test'
+  ...
+# Subtest: failed read, download, or reply leaves no stale report and remains retryable
+ok 7 - failed read, download, or reply leaves no stale report and remains retryable
+  ---
+  duration_ms: 1.1461
+  type: 'test'
+  ...
+# Subtest: reply only reports confirmed delivery after detail and authorization reread
+ok 8 - reply only reports confirmed delivery after detail and authorization reread
+  ---
+  duration_ms: 0.1267
+  type: 'test'
+  ...
+# Subtest: a successful download reports browser delivery without claiming disk persistence
+ok 9 - a successful download reports browser delivery without claiming disk persistence
+  ---
+  duration_ms: 0.6833
+  type: 'test'
+  ...
+# Subtest: window cleanup triggered by browser download cannot restore the old report
+ok 10 - window cleanup triggered by browser download cannot restore the old report
+  ---
+  duration_ms: 0.3988
+  type: 'test'
+  ...
+# Subtest: server filtering retains an opened snapshot only after fresh exact authorization
+ok 11 - server filtering retains an opened snapshot only after fresh exact authorization
+  ---
+  duration_ms: 0.2354
+  type: 'test'
+  ...
+# Subtest: filter absence cannot retain a revoked snapshot or restore after tab hiding
+ok 12 - filter absence cannot retain a revoked snapshot or restore after tab hiding
+  ---
+  duration_ms: 0.2026
+  type: 'test'
+  ...
+# Subtest: filter refreshes authoritative reply metadata while preserving only fixed report (present=true)
+ok 13 - filter refreshes authoritative reply metadata while preserving only fixed report (present=true)
+  ---
+  duration_ms: 0.1852
+  type: 'test'
+  ...
+# Subtest: filter refreshes authoritative reply metadata while preserving only fixed report (present=false)
+ok 14 - filter refreshes authoritative reply metadata while preserving only fixed report (present=false)
+  ---
+  duration_ms: 0.0846
+  type: 'test'
+  ...
+# Subtest: return accepts only known internal pages and preserves selected materials and citation
+ok 15 - return accepts only known internal pages and preserves selected materials and citation
+  ---
+  duration_ms: 0.9262
+  type: 'test'
+  ...
+# Subtest: external, encoded path, authentication loops and mutation endpoints cannot be return destinations
+ok 16 - external, encoded path, authentication loops and mutation endpoints cannot be return destinations
+  ---
+  duration_ms: 0.1795
+  type: 'test'
+  ...
+# Subtest: role defaults cannot land a student in enterprise tools or enterprise in private material work
+ok 17 - role defaults cannot land a student in enterprise tools or enterprise in private material work
+  ---
+  duration_ms: 0.2682
+  type: 'test'
+  ...
+# Subtest: owned saved resources are checked with read-only calls; denied resources fall back
+ok 18 - owned saved resources are checked with read-only calls; denied resources fall back
+  ---
+  duration_ms: 0.882
+  type: 'test'
+  ...
+# Subtest: temporary connection failure keeps recoverable destination rather than pretending access was denied
+ok 19 - temporary connection failure keeps recoverable destination rather than pretending access was denied
+  ---
+  duration_ms: 0.174
+  type: 'test'
+  ...
+# Subtest: header auth links retain the original task and edit routes verify company ownership
+ok 20 - header auth links retain the original task and edit routes verify company ownership
+  ---
+  duration_ms: 0.2833
+  type: 'test'
+  ...
+# Subtest: admin edit return uses job access without requesting enterprise-only candidates
+ok 21 - admin edit return uses job access without requesting enterprise-only candidates
+  ---
+  duration_ms: 0.2407
+  type: 'test'
+  ...
+# Subtest: 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+ok 22 - 回复失败后的草稿面板真实渲染为可编辑文本框：无 readOnly、限2000字、无发送按钮
+  ---
+  duration_ms: 4.6725
+  type: 'test'
+  ...
+# Subtest: 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+ok 23 - 在失败草稿文本框中输入会触发真实 onChange，把新文本交给页面状态
+  ---
+  duration_ms: 0.198
+  type: 'test'
+  ...
+# Subtest: 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+ok 24 - 编辑草稿的统一行为：更新正文并撤销人工发送确认（正常编辑与失败草稿共用）
+  ---
+  duration_ms: 0.5161
+  type: 'test'
+  ...
+# Subtest: 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+ok 25 - 草稿被删空后未确认草稿面板仍渲染为可编辑文本框，可重新输入
+  ---
+  duration_ms: 0.7971
+  type: 'test'
+  ...
+# Subtest: 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+ok 26 - 旧失败→清理→新草稿→旧回调迟到：代际不一致一律忽略，不得改变新状态
+  ---
+  duration_ms: 0.1145
+  type: 'test'
+  ...
+# Subtest: 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+ok 27 - 代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态
+  ---
+  duration_ms: 0.0724
+  type: 'test'
+  ...
+# Subtest: 筛选空结果或已打开报告在筛选外时，提示原因、保留报告并给出清除入口
+ok 28 - 筛选空结果或已打开报告在筛选外时，提示原因、保留报告并给出清除入口
+  ---
+  duration_ms: 1.2799
+  type: 'test'
+  ...
+# Subtest: 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 29 - 请求失败的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 3.5611
+  type: 'test'
+  ...
+# Subtest: 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+ok 30 - 响应丢失（服务器已收到）的回复失败：只发出一次请求、不自动重发、不留旧报告
+  ---
+  duration_ms: 1.1595
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 725.8344

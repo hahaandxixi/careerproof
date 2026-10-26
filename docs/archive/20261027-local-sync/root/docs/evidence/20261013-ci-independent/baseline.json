@@ -1,0 +1,4 @@
+{
+  "commit": "f781a5bebe7fd9ed63e8d7db9e055ee2f379c41a",
+  "source": "git archive HEAD; no pending guard/launcher or untracked tests included"
+}

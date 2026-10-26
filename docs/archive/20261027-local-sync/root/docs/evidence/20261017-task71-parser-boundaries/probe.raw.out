@@ -1,0 +1,31 @@
+﻿fitz=PyMuPDF 1.26.4: Python bindings for the MuPDF 1.26.7 library (rebased implementation).
+Python 3.12 running on win32 (64-bit).
+ settings: ocr_enabled=True ocr_max_pages=10 ocr_max_image_pixels=20000000 max_document_characters=500000
+[AppError(code=4024)] zero-page PDF :: AppError: PDFδ��ȡ��ʶ�𵽿ɷ������֣����ϴ�����ɨ��������ְ��ĵ�
+over-limit PDF extracted characters=506203 (limit=500000, pages=9)
+[accepted] text PDF above max_document_characters :: sections=9
+[UNHANDLED] encrypted PDF (user password) :: ValueError: document closed or encrypted
+[UNHANDLED] corrupted PDF :: FileDataError: Failed to open file 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\corrupted.pdf'.
+[UNHANDLED] plain text renamed to .pdf :: FileDataError: Failed to open file 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\notreally.pdf'.
+[UNHANDLED] corrupted DOCX :: BadZipFile: File is not a zip file
+[UNHANDLED] zero-byte PDF :: EmptyFileError: Cannot open empty file: filename='D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\zero-byte.pdf'.
+
+page-count semantics: a 12-page all-scanned PDF with ocr_max_pages=10 would OCR at most 10 pages and leave 2 pages without OCR text.
+[AppError(code=4025)] isolated worker timeout :: AppError: �ļ���������쳣�˳������Ժ�����
+
+enforcement of max_document_characters (scanning D:\jbcode\web ai\jianli\backend\app):
+  app\core\config.py:43: max_document_characters: int = Field(default=500_000, ge=1000, le=2_000_000)
+  app\services\matching_materials.py:131: if len(resume_text) > settings.max_document_characters:
+  app\services\portfolio.py:427: settings.max_document_characters,
+  app\services\portfolio.py:519: settings.max_document_characters,
+
+--- summary ---
+AppError(code=4024)    | zero-page PDF | AppError: PDFδ��ȡ��ʶ�𵽿ɷ������֣����ϴ�����ɨ��������ְ��ĵ�
+accepted               | text PDF above max_document_characters | sections=9
+UNHANDLED              | encrypted PDF (user password) | ValueError: document closed or encrypted
+UNHANDLED              | corrupted PDF | FileDataError: Failed to open file 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\corrupted.pdf'.
+UNHANDLED              | plain text renamed to .pdf | FileDataError: Failed to open file 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\notreally.pdf'.
+UNHANDLED              | corrupted DOCX | BadZipFile: File is not a zip file
+UNHANDLED              | zero-byte PDF | EmptyFileError: Cannot open empty file: filename='D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task71-scratch\\zero-byte.pdf'.
+AppError(code=4025)    | isolated worker timeout | AppError: �ļ���������쳣�˳������Ժ�����
+unhandled cases: 5

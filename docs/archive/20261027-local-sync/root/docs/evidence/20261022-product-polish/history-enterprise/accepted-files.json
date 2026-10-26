@@ -1,0 +1,101 @@
+{
+  "head": "01232d27e8768121592b6c05300e0b5ba5170a55",
+  "stage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source",
+  "files": [
+    {
+      "path": "backend/app/api/v1/analysis.py",
+      "stageSha256": "871cf6988f7f5f6d6fc073b2121c508f7f80daa7eb5019829094cac0a6bec4bb",
+      "workspaceSha256": "9def03a57022eda377803ab09286f18352f8f876ae489b7a59861d969bef19fb"
+    },
+    {
+      "path": "backend/app/api/v1/applications.py",
+      "stageSha256": "1ab129d16510f775347492df0f4cf39b49431373d4af4bd35f902abde650e32c",
+      "workspaceSha256": "32e29d643ecfcde85c18da426aab2f2cd702695e056500f1406307ea969bb4d1"
+    },
+    {
+      "path": "backend/app/schemas/analysis.py",
+      "stageSha256": "6ec8ebb7d9ea7993415e5d1f1f53617a9d503053aab28c141a5dcf7e24a701d4",
+      "workspaceSha256": "9f574f3ceb4ecd1943257855a87d8467e2a7c483dbba020d0271ccedc1463a6c"
+    },
+    {
+      "path": "backend/app/schemas/jobs.py",
+      "stageSha256": "e90822f16cae3531243a33e2a24bd411a2173795f165d36209a25ae59898bca0",
+      "workspaceSha256": "56121fdd618e94f6884f160c9e307ed9e296e4efb5384a6c14b8d5185f61dec5"
+    },
+    {
+      "path": "backend/app/services/analysis.py",
+      "stageSha256": "952802e51977abefce04a377b5531cf29d42b880a2d3e3243251d412d90f61ce",
+      "workspaceSha256": "eadccb6b21532c8c9b582815b238ab6a3b1df8b4911b7623a9bb550bc89b9583"
+    },
+    {
+      "path": "backend/app/services/applications.py",
+      "stageSha256": "7a16abae89fa944e59aa8a6f2145f3a7b9a65f009fb9d51886cff3208d178677",
+      "workspaceSha256": "fb412c8d596aae6fe1f9e9c2fbf49eb96ccadc41eb53d96c86214ddd4f0c67bc"
+    },
+    {
+      "path": "backend/app/services/jobs.py",
+      "stageSha256": "3204cca66db4f27622225eb3ca513d0be1db1ff8106f00b8ac2ef2dfdc660c86",
+      "workspaceSha256": "3204cca66db4f27622225eb3ca513d0be1db1ff8106f00b8ac2ef2dfdc660c86"
+    },
+    {
+      "path": "backend/app/tests/test_product_history_filters.py",
+      "stageSha256": "6b3094a937a77966e63cb8b1ab28b9c5184d5e159201bbf4a11ea7920a5c83da",
+      "workspaceSha256": "6b3094a937a77966e63cb8b1ab28b9c5184d5e159201bbf4a11ea7920a5c83da"
+    },
+    {
+      "path": "backend/app/tests/test_product_history_filters_postgres.py",
+      "stageSha256": "9a92e750eb4ecf357d6528d36a49e9f2681640d2ac6c76c0a959bc10540adcf1",
+      "workspaceSha256": "9a92e750eb4ecf357d6528d36a49e9f2681640d2ac6c76c0a959bc10540adcf1"
+    },
+    {
+      "path": "jianli/src/lib/api/client.ts",
+      "stageSha256": "0cd240ca726b7ab5aaf9a857d1eb8d441248223337ebe62a717e53be2e170bf9",
+      "workspaceSha256": "35396179c249da02f4509875421e31f7f296d5a43bbb5f708febe28820930cd0"
+    },
+    {
+      "path": "jianli/src/lib/api/domain.ts",
+      "stageSha256": "94bcc4d44fd9f78448cf6ff1c081255f8d72c79786fc5d734699b950428f4a30",
+      "workspaceSha256": "a42b9a635d16c59e1a86c82d5c4a270806ee863f0933f6bdaf08baf85dcf54f9"
+    },
+    {
+      "path": "jianli/src/lib/application-board-session.ts",
+      "stageSha256": "c28cf546dbfaa893afe034e9cffe088a1a6b4504c01aa58693f2e3100a9f2d82",
+      "workspaceSha256": "c28cf546dbfaa893afe034e9cffe088a1a6b4504c01aa58693f2e3100a9f2d82"
+    },
+    {
+      "path": "jianli/src/components/ReportList.tsx",
+      "stageSha256": "8e48cf4a4990fa30e874c26b2f1ddec1f9716d4938ff3feaedd23c307cc0338a",
+      "workspaceSha256": "8e48cf4a4990fa30e874c26b2f1ddec1f9716d4938ff3feaedd23c307cc0338a"
+    },
+    {
+      "path": "jianli/src/components/ApplicationList.tsx",
+      "stageSha256": "9e2b6cedcda627b05b2f8f5aaab8c12af62d39b75dc19a8f2a9dd7e424c52806",
+      "workspaceSha256": "3cba9526984d7b094485d02db6af8ebb1955345fc993f9e1cb10d173ff180cb6"
+    },
+    {
+      "path": "jianli/src/components/ApplicationBoard.tsx",
+      "stageSha256": "529ece6e80c7aed0cf18ae77f4c2569d7fec9c693488fd3dae79a495b2b249c3",
+      "workspaceSha256": "a111a03b58d8bed20f916f2af0abf417f9de562f69a54a02fcba5f50796d0bc5"
+    },
+    {
+      "path": "jianli/src/components/JobList.tsx",
+      "stageSha256": "20140cfc6c1893565769917d3c28719d1449a03121616387aa0be506c1abf4b8",
+      "workspaceSha256": "b164010e426dc01832d97700d918390e40fe08564d12debc2a61e5fad9deb1d3"
+    },
+    {
+      "path": "jianli/tests/history-enterprise.test.mjs",
+      "stageSha256": "cb24099f1cd1df2a567045e8782fca418e8b6010911c253d40b1c6ff601e5ddf",
+      "workspaceSha256": "cb24099f1cd1df2a567045e8782fca418e8b6010911c253d40b1c6ff601e5ddf"
+    },
+    {
+      "path": "jianli/tests/application-board-session.test.mjs",
+      "stageSha256": "e0b592192569c671b9de2f1613624253b95865b25c6123d493c70230fcbd4b46",
+      "workspaceSha256": "9222599c26eb947dc6d7f4f29bcae5e2cc50b2ad044de41a2e6f00e7ab1bade8"
+    },
+    {
+      "path": "jianli/tests/failure-reply-draft.test.mjs",
+      "stageSha256": "23063afd930b75b565d560b6a06f33a9cf04d309e2c55c632908931ee1850337",
+      "workspaceSha256": "23063afd930b75b565d560b6a06f33a9cf04d309e2c55c632908931ee1850337"
+    }
+  ]
+}

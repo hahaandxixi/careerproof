@@ -1,0 +1,82 @@
+# 传智杯78 · 启动入口归一 — 交棒
+
+HEAD `5714f55`（较准备时的 33ba713 已前移，说明集成已发生）。本轮未改其它源码、未启停 3000/3001、
+未连数据库、未装依赖、未提交推送；Docker 与数据卷未动。
+
+## 一、现有入口与调用关系（核对结论）
+
+| 入口 | 调用链 | 进程记录 | 数据环境 |
+| --- | --- | --- | --- |
+| `Start-Local.ps1` | 核心：依赖校验 → 构建缓存 → Docker postgres → alembic → uvicorn:8000 + next:3000 | `backend/.tmp/local-run/processes.json`（schemaVersion 2）+ `launcher.lock` | 普通本地库（`backend/.env` 的 `DATABASE_URL`） |
+| `Start-Demo.ps1/.cmd` | 调 `Start-Local.ps1`（转发参数）后跑 `seed_demo` + `seed_role_materials --apply` | 复用 Local 记录 + `demo-ready.json`/`demo-credentials.json` | 同一普通库，额外写入合成演示数据 |
+| `Stop-Local.ps1`（`Stop-Demo.cmd` 转发） | 读记录 → 身份校验 → 停自有进程；`-Database` 才停 compose 的 postgres | 不删数据卷 | 同库 |
+| `scripts/Start-E2E.ps1` | 独立：专属 `cp_e2e_*` 库、3001/8001、强制合成模型 | 自有 run 目录 | 隔离库（只读核对，未改） |
+
+**真正重复实现**：此前普通环境**没有 .cmd 入口**（只有 demo 有），Windows 双击/`cmd` 用户无法直接启动
+（`.ps1` 受执行策略限制）。除此之外没有第二套进程管理：Local 是唯一实现，Demo 只转发并播种，E2E 独立。
+
+## 二、实际用户入口（本轮确定）
+
+| 用途 | 推荐入口 |
+| --- | --- |
+| 普通用户日常（真实本地库、自己的账号） | **`Start-Local.cmd`**（新增，极薄转发；等价 `Start-Local.ps1`） |
+| 比赛/课堂演示（合成账号与岗位） | `Start-Demo.cmd` |
+| 隔离验收 | `scripts/Start-E2E.ps1` |
+| 停止 | `Stop-Local.ps1` / `Stop-Demo.cmd`（默认保留数据库；`-Database` 才停容器） |
+
+## 三、修改
+
+| 文件 | 修改 |
+| --- | --- |
+| `Start-Local.cmd`（新增） | 极薄入口：`-ExecutionPolicy Bypass -File Start-Local.ps1 %*`，失败时提示读错误并暂停；**不含**任何 uvicorn/next/docker 调用，不新建进程管理 |
+| `Start-Local.ps1` | ①依赖不匹配时逐行列出**尝试过的路径 + 原因**（后端含 `python.exe` 路径；前端含 `Stale next runtime` / `Stale frontend lock` / `Stale frontend source copy`）；②就绪信息补充模式（`APP_ENV`）、数据环境（本地 compose PostgreSQL，不打印连接串）、账号入口（`/register`）；③未改参数、未删 CheckOnly/BuildOnly/Rebuild、未改安全停止逻辑 |
+| `scripts/local-launcher-owned-stop.test.ps1` | 修既有竞态：`Stop-Process` 返回时进程对象尚未消失（实测立即为 True、约 200 ms 后为 False），改为 `Wait-Process -Timeout 10` 后再断言"是否仍存活"；仍能抓到真正未停止的进程 |
+| `scripts/local-launcher-entry.test.ps1`（新增） | 6 条离线断言：cmd 入口存在/仅转发/带 Bypass/不重复进程管理；四个脚本语法解析 0 错；文档推荐与 `/register` 一致；就绪文案不打印密钥、`.env` 路径或数据库 URL；`-CheckOnly` 行为（成功只报预检、失败必须列路径且不提示安装） |
+| `docs/guides/使用与启动.md` | 仅"启动入口"段落：新增 `Start-Local.cmd` 为推荐入口、说明普通入口不建/不重置账号与 `/register`、补充预检失败会列出路径与原因的说明。**他人未提交改动（4 处）未触碰** |
+
+未改：`Start-Demo.*`、`Stop-Local.ps1`、`scripts/local-runtime.ps1`、`scripts/Start-E2E.ps1`、`scripts/Stop-E2E.ps1`。
+
+## 四、检查结果（离线 + 短命进程）
+
+| 测试 | 结果 |
+| --- | --- |
+| `scripts/local-runtime.test.ps1` | **exit 0**，10 条 |
+| `scripts/local-launcher-entry.test.ps1`（新） | **exit 0**，6 条 |
+| `scripts/local-launcher-owned-stop.test.ps1` | **exit 0**（修复前 exit 1「Owned child remains alive」），真实停止 2 个测试树进程 |
+| `scripts/local-launcher-recovery.test.ps1` | **exit 0**，34/34 |
+| `scripts/local-launcher-real-identity.test.ps1` | **exit 0**，7/7 |
+| PowerShell 语法解析（4 个脚本） | 0 错误 |
+
+合计 **58 条断言通过**；`-CheckOnly` 实跑一次（短命进程，未启动任何服务、未碰 Docker/DB）。
+
+## 五、环境事实（重要，未修）
+
+当前工作区**预检不通过**，`Start-Local.cmd` 会停在依赖校验并给出可操作原因：
+
+```
+D:\jbcode\web ai\jianli\jianli                                  -> Stale next runtime
+D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261010      -> Stale frontend lock
+D:\jbcode\web ai\jianli\backend\.tmp\dep-frontend-20261017      -> Stale frontend source copy: src/app/globals.css, ...
+Run npm ci in jianli/ or select an up-to-date -FrontendStage.
+```
+
+根因（只读核对，未修）：`jianli/node_modules` 是 **pnpm 的 `.pnpm` 存储布局**，而
+`scripts/dependencies/verify-frontend-runtime.mjs` 按 npm 扁平路径取 `lock.packages['node_modules/next']`，
+取不到即为 `undefined`；同时已装 `next 15.5.25` 与锁内 `15.5.27` 不一致。按卡**不安装、不降级、不改锁**，
+所以该项留给 Codex：在 `jianli/` 重新 `npm ci`（或产出一个与当前源码/锁一致的新 `dep-frontend-*` stage）。
+
+后端侧本工作区可验证通过：`backend/.venv-dependency23/Scripts/python.exe`，PyJWT **2.15.0** 与声明一致；
+`backend/.venv` 仍为 2.10.1，脚本会自动跳过它（不再把该环境当生产漂移）。
+
+## 六、未验证
+
+1. **真实 3000/8000 的 start → stop → restart**：按卡留给总控统一验收，本轮未启停任何服务。
+2. **Docker 未就绪**、**端口被无关进程占用**、**BuildOnly/Rebuild/部分失败清理**四条路径未实跑；
+   其中 Docker/端口/部分失败属启动路径，需真实服务，超出本轮"不启停"边界。既有 recovery 测试覆盖了
+   记录校验/拒绝猜测/部分字段缺失等逻辑（34 条），但不等于端到端。
+3. `Start-Local.cmd` 仅在 `-CheckOnly` 与语法/转发层面验证；其交互暂停与错误提示未在真实双击场景演示。
+4. 页面证据不适用（本卡无页面改动）。
+
+## 七、证据
+
+`docs/evidence/20261017-task78-launcher-unification/` 下 5 份测试原始输出；本 REPORT。

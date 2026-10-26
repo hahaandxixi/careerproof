@@ -1,0 +1,39 @@
+# 73号事实一致性检查（2026-10-17，只读核对）
+
+## 引用路径核对（三份指南全部外部引用）
+OK  backend/.tmp/demo-credentials.json
+OK  Start-Demo.cmd
+OK  Start-Demo.ps1
+OK  Start-Local.ps1
+OK  Stop-Local.ps1
+OK  Stop-Demo.cmd
+OK  scripts/Start-E2E.ps1
+OK  scripts/Stop-E2E.ps1
+OK  backend/.venv-dependency23/Scripts/python.exe
+OK  docs/prototypes/evidence-workspace.html
+OK  docs/evidence/20261012-demo-disclosure/README.md
+OK  docs/evidence/20261012-student-account-menu/README.md
+OK  docs/evidence/20261012-application-resubmission/README.md
+OK  docs/evidence/20261014-report-action-layer/README.md
+OK  docs/evidence/20261012-release-gate/README.md
+OK  backend/evals/demo_credentials.py
+OK  backend/evals/release_smoke.py
+OK  backend/.tmp/e2e/release-owner-20261012.json
+OK  backend/README.md
+OK  jianli/README.md
+OK  docs/evidence/历史验收汇编.md
+
+## 同目录指南互链（docs/guides/ 内）
+OK  AI与数据边界.md
+OK  工具与接入.md
+OK  比赛交付.md
+OK  功能演示.md
+OK  使用与启动.md
+OK  证据与产品能力.md
+OK  评测与人工复核.md
+
+## 配置一致性
+.env.example 与 app/core/config.py 的 DEEPSEEK_MODEL 均为 deepseek-flash；指南示例一致（未展示实际密钥）
+
+## 密码检查
+三份指南无明文密码；凭据仅指向 backend/.tmp/demo-credentials.json、backend/.tmp/e2e/<RunId>.json、release-smoke credentials 的本机查找方式

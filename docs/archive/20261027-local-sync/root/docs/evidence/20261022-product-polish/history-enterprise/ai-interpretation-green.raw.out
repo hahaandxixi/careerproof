@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: history card displays server-wide history facts and fixed versions only when recorded
+ok 1 - history card displays server-wide history facts and fixed versions only when recorded
+  ---
+  duration_ms: 20.2997
+  type: 'test'
+  ...
+# Subtest: comparison is bounded at four, removable and does not mutate the caller's selection
+ok 2 - comparison is bounded at four, removable and does not mutate the caller's selection
+  ---
+  duration_ms: 0.512
+  type: 'test'
+  ...
+# Subtest: nearby cell evidence stays in the selected application's frozen requirement and materials
+ok 3 - nearby cell evidence stays in the selected application's frozen requirement and materials
+  ---
+  duration_ms: 1.0567
+  type: 'test'
+  ...
+# Subtest: zero matches retain the selected requirement label and exact filter value
+ok 4 - zero matches retain the selected requirement label and exact filter value
+  ---
+  duration_ms: 0.7537
+  type: 'test'
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=invalid_citations, fallback=false)
+ok 5 - nearby evidence uses only accepted AI interpretation (status=invalid_citations, fallback=false)
+  ---
+  duration_ms: 0.522
+  type: 'test'
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=rejected, fallback=false)
+ok 6 - nearby evidence uses only accepted AI interpretation (status=rejected, fallback=false)
+  ---
+  duration_ms: 0.2435
+  type: 'test'
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=validated, fallback=true)
+ok 7 - nearby evidence uses only accepted AI interpretation (status=validated, fallback=true)
+  ---
+  duration_ms: 0.1769
+  type: 'test'
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=validated, fallback=false)
+ok 8 - nearby evidence uses only accepted AI interpretation (status=validated, fallback=false)
+  ---
+  duration_ms: 0.1797
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 854.7495

@@ -1,0 +1,132 @@
+# P0 修正 · task69 版本语义（**上一版"最新版本"修法已撤回，不予签收**）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。
+`retrieval.py` 当前 hash `456130a4028dd2fc246638f8aa76ecdbedb151e78efcf42f781882c387bbac00`。
+
+## 0. 先撤回：上一版的修法是语义错误
+
+上一版我把准入收紧为"每个简历最新版本 + 每个项目每个 `material_role` 最新版本"。
+**该修法不予签收**，理由是产品语义明确：用户可以为不同报告选择不同材料版本（含旧版本），
+已保存报告与投递绑定其固定版本。用 `max(version_number)` 或"最新"替代用户选择是错的；
+按 `material_role` 分组也解决不了这个语义错误。
+
+**撤回动作**：删除 `_allowed_source_ids` 内的两个 `max(version_number)` 派生表与 join，
+恢复 61 号原有的 owner 范围谓词；**没有整文件回退**——61 号的 `MATERIALIZED` 预过滤、
+`count(*) OVER ()`、`shortfall`、引擎选择、结构化日志全部保留，diff 仅去掉我引入的版本收窄。
+61 号测试 `test_retrieval_filtered_recall.py` 字节未变（`bac255b7…5f6b`）。
+
+## 1. 实际调用链与版本选择参数（本轮核对结论）
+
+```text
+GET /api/v1/knowledge/search?q=&limit=          api/v1/portfolio.py:38-45
+  -> search_owned_chunks(session, user, q, limit)   services/retrieval.py:298
+       signature: (session, user, query, limit)  —— 无版本参数
+
+POST /matches (MatchCreate)                      schemas/analysis.py:19
+  -> resolve_materials(session, request, user)    services/matching_materials.py:45
+       request.resume_version_id / request.project_version_ids  —— 显式版本选择
+```
+
+**按契约划分（本轮采用的划分）**：
+
+| 路径 | 版本范围 | 依据 |
+| --- | --- | --- |
+| 报告 / 匹配 | **严格限定用户本次明确选择的版本** | `resolve_materials` 用 `ResumeVersion.id == request.resume_version_id`、`ProjectVersion.id == version_id` 逐版本取 sections/files |
+| 材料库检索 `/knowledge/search` | **既有范围：本人所有未归档版本** | 接口不传版本；用户可用任意已保存版本建报告，故旧版本仍须可发现 |
+
+**没有**把库级检索擅自改成"仅最新版本"。也没有新增版本参数——若要给库级检索加版本范围，
+属协议扩展，本轮不做，见 §5。
+
+## 1b. 调用链表（真实文件与行号）
+
+### 报告 / 匹配链路
+
+| 步骤 | 位置 | 说明 |
+| --- | --- | --- |
+| 入口 | `backend/app/api/v1/analysis.py:70-77` | `POST /matches` → `create_match` → `AnalysisService(session).create_match_task(payload, current_user)`（:77） |
+| 调用函数 | `backend/app/services/analysis.py:371` | `async def create_match_task(...)` |
+| 调用函数 | `backend/app/services/analysis.py:375` | `materials = await resolve_materials(self.session, request, current_user)` |
+| owner 过滤 | `backend/app/services/matching_materials.py:50-58` | `StudentProfile.user_id == user.id` 得 student，再 `Resume.student_id == student.id`（:57） |
+| 所选版本过滤 | `backend/app/services/matching_materials.py:57,67` | `ResumeVersion.id == request.resume_version_id`（:57）+ `ResumeSection.resume_version_id == version.id`（:67） |
+| 所选版本过滤（项目） | `backend/app/services/matching_materials.py:90,110` | `ProjectVersion.id == version_id, Project.student_id == student.id`（:90）+ `ProjectFile.project_version_id == version_id`（:110） |
+| 实际执行查询 | `matching_materials.py` 内 `session.scalars/execute`（:65-69、:86-92、:108-112） | 只读所选版本的 sections 与 files |
+| 后续消费 | `analysis.py:743` → `analyze_materials(requirements, materials, …)` | 只遍历已解析出的 `materials`，不再按版本回查 |
+
+**报告链路是否经过本次修改的 `retrieval.py`？——不经过。** 证据：
+
+- `grep "from app.services.retrieval"` 在报告链路的四个模块（`services/analysis.py`、
+  `services/matching_materials.py`、`tools/semantic_retrieval.py`、`api/v1/analysis.py`）中
+  **均无匹配**；
+- `search_owned_chunks` 的唯一生产调用者是 `api/v1/portfolio.py:45`（`/knowledge/search`），
+  其余出现均在测试文件；
+- `matching_materials.py` 的导入列表（:1-35）不含 `app.services.retrieval`。
+
+**报告版本过滤是否存在实际缺口？——本轮核查结论为「无缺口」。**
+owner 与所选版本两个谓词都在 `resolve_materials` 内，且在**同一查询**里同时生效
+（`ResumeVersion.id == request.resume_version_id` **且** `Resume.student_id == student.id`），
+所以不存在"先跨 owner/跨版本取候选再过滤"的形态，也就不构成 §1 所担心的漏传。
+故本轮**不提供反例、不改修复位置**——按指令不应靠 SQL 字符串或标记计数判定，这里是靠
+调用链与导入关系判定：该链路根本不经过我修改的模块。
+
+**唯一残留风险（非缺口，属协议面）**：`/knowledge/search` 若将来要求"仅按某次报告选择的版本检索"，
+需要给接口加入参并改 `search_owned_chunks` 签名——当前**不需要**，故未做。
+
+## 2. 为什么库级检索保持"全部自有版本"是符合既有契约的
+
+- `/knowledge/search` 只接受 `q` 与 `limit`（`api/v1/portfolio.py:40-41`），**没有任何版本入参**；
+- 唯一的过滤位置就是 `search_owned_chunks` 内的 owner 谓词；
+- 用户材料库的语义是"我保存过的材料"，不是"某一份报告的冻结材料"，因此不按报告版本收窄；
+- 61 号修复解决的召回不足问题与版本无关，本次未触碰。
+
+## 3. 真实模块回归（红 → 绿）
+
+`backend/app/tests/test_retrieval_version_scope.py`（**7 passed**），覆盖本轮要求的五类：
+
+| 要求 | 对应用例 | 结果 |
+| --- | --- | --- |
+| 明确选 v1 且 v2 存在时 v1 仍能召回 | `test_library_search_keeps_an_older_version_when_a_newer_one_exists` + `test_selected_older_resume_version_is_used_even_when_newer_exists` | PASS |
+| 选 v2 时不返回未选 v1 | `test_selected_newer_resume_version_does_not_include_the_older_one` | PASS |
+| 未选项目、不同 owner 不能进入结果 | `test_unselected_project_and_reference_role_stay_out_of_the_selection`、`test_other_owner_cannot_be_selected_even_with_its_version_id`、`test_library_search_excludes_only_other_owners` | PASS |
+| 混合候选/大量干扰下合法候选不被挤掉 | `test_selection_scope_is_identical_before_and_after_candidate_generation`（选择集恒等于所选版本，不被追加） | PASS |
+| portfolio/reference 是否进入由选择与既有规则决定 | 同上 + 库级侧 reference 不被角色排除 | PASS |
+
+**红→绿（针对"撤回的修法"）**：把 `_allowed_source_ids` 临时改回 `max(version_number)` 后，
+
+```text
+FAILED test_library_search_keeps_an_older_version_when_a_newer_one_exists
+E  AssertionError: an older but still saved resume version must remain discoverable
+1 failed, 6 passed
+```
+
+恢复后 `7 passed`。这直接证明"最新版本"修法会删掉用户明确可选的旧版本。
+
+**范围一致性**：`resolve_materials` 是报告材料窗口的唯一定义处（后者各步都读它的输出），
+因此不存在"先跨范围取 top-k 再过滤"。`analyze_materials` 只遍历 `materials.files`
+（portfolio/reference 分流依据 `materialRole` 与 `SOURCE.txt` 既有规则，
+见 `matching_materials.py:146-176`），不额外拉取其他版本。
+
+## 4. 修改文件与 hash
+
+| 文件 | SHA256 | 状态 |
+| --- | --- | --- |
+| `backend/app/services/retrieval.py` | `456130a4028dd2fc246638f8aa76ecdbedb151e78efcf42f781882c387bbac00` | M（撤回版本收窄，保留 61 号） |
+| `backend/app/tests/test_retrieval_version_scope.py` | 见交付说明 | 重写（原"最新版本"断言已删除） |
+| `backend/app/tests/test_retrieval_filtered_recall.py` | `bac255b73aa62576a163860f3dbaa8084b0cf16cf5f7eafffdf7643577e75f6b` | **未改** |
+
+## 5. 未验证 / 需要交棒的协议问题
+
+1. **PG 端到端未跑**：无明确分配的专属 PG 环境，按规则不连。离线通过**不等于**端到端闭环。
+   上轮写的 PG-only 用例（`search_owned_chunks` 端到端）已随语义修正删除，因为该断言本身
+   编码的是错误语义。
+2. **库级检索无版本参数**：若产品要求"在材料库检索里限定某次选择的版本"，需要扩展
+   `/knowledge/search` 的查询参数与 `search_owned_chunks` 签名——**属协议扩展，本轮交棒方案**，
+   不自行猜测。方案草案：新增可选 `resumeVersionId` / `projectVersionIds`，缺省保持现有范围。
+3. 简历多版本可达性：仓库内仍未见"给既有简历加 v2"的端点（上传入口每次新建 `Resume`
+   且 `version_number=1`），故简历侧多版本在真实路径上**可能不可达**；项目侧可达（`/projects/{id}/versions`）。
+   测试用直接建表构造，不代表 HTTP 可达。
+4. 语义引擎（MiniLM 真向量）路径未单独验；本次只改准入谓词。
+
+## 6. 证据
+
+本轮红→绿日志：`probe-withdrawn-semantics.raw.out`（撤回修法在修正后源码上 3 failed，说明旧断言本身错误）；
+历史记录 `probe-version-leak-pre-fix.raw.out` / `probe-version-leak-post-fix.raw.out` 属已撤回语义，**不再作为验收依据**。

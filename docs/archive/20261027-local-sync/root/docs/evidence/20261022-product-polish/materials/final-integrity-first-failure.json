@@ -1,0 +1,18 @@
+{
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "mode": "PostgreSQL READ ONLY + accepted production serializers; no HTTP/login/write",
+  "growthId": "362c7923-9025-43df-87cf-b68dbf3c4d10",
+  "reportId": "2997e468-ca66-401d-a3e2-f6518cad9243",
+  "passed": false,
+  "failure": {
+    "type": "AssertionError",
+    "message": "Saved growth selection differs from report snapshot"
+  }
+}

@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: component shows actual source and final use before technical logs
+ok 1 - component shows actual source and final use before technical logs
+  ---
+  duration_ms: 9.2724
+  type: 'test'
+  ...
+# Subtest: no-consent and program-budget notices remain visible with no tool rows
+ok 2 - no-consent and program-budget notices remain visible with no tool rows
+  ---
+  duration_ms: 0.7634
+  type: 'test'
+  ...
+# Subtest: fallback shows rule explanation instead of a failed AI answer
+ok 3 - fallback shows rule explanation instead of a failed AI answer
+  ---
+  duration_ms: 3.2434
+  type: 'test'
+  ...
+# Subtest: role without growth permission gets no growth action
+ok 4 - role without growth permission gets no growth action
+  ---
+  duration_ms: 1.0374
+  type: 'test'
+  ...
+# Subtest: stop/no-result/fallback records do not invent sources
+ok 5 - stop/no-result/fallback records do not invent sources
+  ---
+  duration_ms: 1.3246
+  type: 'test'
+  ...
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+ok 6 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 21.4594
+  type: 'test'
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+ok 7 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 7.3793
+  type: 'test'
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 8 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 4.6827
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 9 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 4.9023
+  type: 'test'
+  ...
+# Subtest: six material gaps render six items even when the saved action plan contains only three
+ok 10 - six material gaps render six items even when the saved action plan contains only three
+  ---
+  duration_ms: 9.3702
+  type: 'test'
+  ...
+# Subtest: an absent action plan never empties the group or invents advice and attribution
+ok 11 - an absent action plan never empties the group or invents advice and attribution
+  ---
+  duration_ms: 0.8435
+  type: 'test'
+  ...
+# Subtest: identical rules advice appears once while its saved source remains visible
+ok 12 - identical rules advice appears once while its saved source remains visible
+  ---
+  duration_ms: 0.6825
+  type: 'test'
+  ...
+# Subtest: distinct AI advice and gap survive, with only same-requirement saved citations
+ok 13 - distinct AI advice and gap survive, with only same-requirement saved citations
+  ---
+  duration_ms: 0.8267
+  type: 'test'
+  ...
+# Subtest: admin retains its action plan without receiving student controls or duplicate rules text
+ok 14 - admin retains its action plan without receiving student controls or duplicate rules text
+  ---
+  duration_ms: 0.6057
+  type: 'test'
+  ...
+# Subtest: student receives one merged plan and no standalone duplicate
+ok 15 - student receives one merged plan and no standalone duplicate
+  ---
+  duration_ms: 0.5943
+  type: 'test'
+  ...
+# Subtest: review items open when gaps and partial support are absent
+ok 16 - review items open when gaps and partial support are absent
+  ---
+  duration_ms: 0.5833
+  type: 'test'
+  ...
+# Subtest: partial support opens its complete saved list instead of an empty gap panel
+ok 17 - partial support opens its complete saved list instead of an empty gap panel
+  ---
+  duration_ms: 0.7117
+  type: 'test'
+  ...
+# Subtest: fully supported and empty reports do not invent gaps or advice
+ok 18 - fully supported and empty reports do not invent gaps or advice
+  ---
+  duration_ms: 1.3623
+  type: 'test'
+  ...
+# Subtest: unmatched actions never create requirements, suggestions or citations
+ok 19 - unmatched actions never create requirements, suggestions or citations
+  ---
+  duration_ms: 0.6763
+  type: 'test'
+  ...
+# Subtest: fixed material versions and next action are visible without a second source of truth
+ok 20 - fixed material versions and next action are visible without a second source of truth
+  ---
+  duration_ms: 0.5223
+  type: 'test'
+  ...
+# Subtest: review-only items offer review without imposing a new delivery prerequisite
+ok 21 - review-only items offer review without imposing a new delivery prerequisite
+  ---
+  duration_ms: 0.4031
+  type: 'test'
+  ...
+# Subtest: empty items do not masquerade as full support
+ok 22 - empty items do not masquerade as full support
+  ---
+  duration_ms: 0.3419
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 23 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 0.8995
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 24 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.3292
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 25 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.1419
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 26 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 6.5086
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 27 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 14.5433
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 28 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 7.9301
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 29 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 3.9773
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 30 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.2012
+  type: 'test'
+  ...
+# Subtest: overlapping bounded excerpts expose 45 actual lines, without claiming either excerpt is complete
+ok 31 - overlapping bounded excerpts expose 45 actual lines, without claiming either excerpt is complete
+  ---
+  duration_ms: 1.5087
+  type: 'test'
+  ...
+# Subtest: complete function does not imply complete file
+ok 32 - complete function does not imply complete file
+  ---
+  duration_ms: 0.2045
+  type: 'test'
+  ...
+# Subtest: legacy ranges are unknown rather than inferred from snippet endpoints
+ok 33 - legacy ranges are unknown rather than inferred from snippet endpoints
+  ---
+  duration_ms: 0.1771
+  type: 'test'
+  ...
+# Subtest: a missing interior line cannot be displayed as full coverage
+ok 34 - a missing interior line cannot be displayed as full coverage
+  ---
+  duration_ms: 0.2388
+  type: 'test'
+  ...
+# Subtest: reference, changed version, conflicting hash, and wrong file cannot complete personal coverage
+ok 35 - reference, changed version, conflicting hash, and wrong file cannot complete personal coverage
+  ---
+  duration_ms: 0.2743
+  type: 'test'
+  ...
+# Subtest: stale, duplicate, or missing citation identifiers and truncated snippets fail closed
+ok 36 - stale, duplicate, or missing citation identifiers and truncated snippets fail closed
+  ---
+  duration_ms: 0.2527
+  type: 'test'
+  ...
+# Subtest: coverage beyond the source range and inconsistent full flags are not presented as verified
+ok 37 - coverage beyond the source range and inconsistent full flags are not presented as verified
+  ---
+  duration_ms: 0.1139
+  type: 'test'
+  ...
+# Subtest: deep links reveal nested evidence details and handle missing anchors safely
+ok 38 - deep links reveal nested evidence details and handle missing anchors safely
+  ---
+  duration_ms: 0.1575
+  type: 'test'
+  ...
+# Subtest: same filename distinguishes projects and versions in the rendered label
+ok 39 - same filename distinguishes projects and versions in the rendered label
+  ---
+  duration_ms: 4.9469
+  type: 'test'
+  ...
+# Subtest: details preserve full identity while a legal UUID inside code and filename survives
+ok 40 - details preserve full identity while a legal UUID inside code and filename survives
+  ---
+  duration_ms: 2.4118
+  type: 'test'
+  ...
+# Subtest: legacy source retains raw UUID-shaped path and declares missing version
+ok 41 - legacy source retains raw UUID-shaped path and declares missing version
+  ---
+  duration_ms: 0.3433
+  type: 'test'
+  ...
+# Subtest: coverage keeps separate ranges and links of the same file
+ok 42 - coverage keeps separate ranges and links of the same file
+  ---
+  duration_ms: 1.5091
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 544.5609

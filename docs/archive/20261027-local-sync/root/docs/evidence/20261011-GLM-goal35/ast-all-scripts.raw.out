@@ -1,0 +1,8 @@
+AST-OK Start-Local.ps1
+AST-OK Stop-Local.ps1
+AST-OK Start-Demo.ps1
+AST-OK scripts\local-runtime.ps1
+AST-OK scripts\local-launcher-recovery.test.ps1
+AST-OK scripts\local-runtime.test.ps1
+AST-OK scripts\Start-E2E.ps1
+AST-OK scripts\Stop-E2E.ps1

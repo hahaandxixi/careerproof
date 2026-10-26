@@ -1,0 +1,13 @@
+{
+  "reportUrl": "http://127.0.0.1:3108/reports/ac09d831-073b-4d9e-8799-3b4971716562",
+  "reportId": "ac09d831-073b-4d9e-8799-3b4971716562",
+  "taskId": "b0bf05ca-4047-4faf-8908-ff5902a7d9b3",
+  "jobId": "b3b6bfc4-0625-461c-8733-06e5b990133f",
+  "requirementId": "4b065df1-9844-4804-8942-905e2660bbc7",
+  "projectId": "e1661ee4-5dc9-4a32-b265-4ec18732f192",
+  "resumeVersionId": "92bbbf63-6444-447f-9838-1f6538f7cde2",
+  "projectVersionId": "6616e705-3d97-4730-93ef-273adba1ed52",
+  "realModelRequests": 0,
+  "uiFixtureOnly": true,
+  "note": "MockTransport output deliberately imported into a new isolated synthetic report; not live Agent execution."
+}

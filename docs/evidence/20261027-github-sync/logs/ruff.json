@@ -1,0 +1,20 @@
+{
+  "name": "ruff",
+  "command": [
+    "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
+    "-m",
+    "ruff",
+    "check",
+    "app/agents/evidence_scope.py",
+    "app/tools/display_path.py",
+    "app/tools/rule_narrative.py",
+    "app/tests/test_display_path.py",
+    "app/tests/test_rule_narrative.py",
+    "app/tests/test_evidence_scope.py",
+    "evals/check_run_paths.py"
+  ],
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\github-source-20261027\\backend",
+  "exit": 0,
+  "seconds": 0.5,
+  "scope": "isolated exact pending-source snapshot; not main or browser acceptance"
+}

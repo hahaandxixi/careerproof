@@ -1,0 +1,24 @@
+goal40 hash record (SHA256, PS Get-FileHash; git blob SHA1s noted for the before-state)
+git HEAD at session start: 6410915 (working tree = goal37 delivered state)
+
+--- before (goal37 final; snapshots below hash-match BOTH git blob SHA1 of the
+    pre-session files and goal37's own recorded hashes, so the diffs generated
+    from them are provably exact) ---
+scripts/local-runtime.ps1                 sha256=00886574fdc1f83038a2ee666e6ce5a7d66b9d273ea4758e0f3ebfeee0d8aacf  (git blob b32c49b99299a2f93cad9259c1124ab676a60350; snapshot: local-runtime.goal37-final.ps1)
+scripts/local-launcher-recovery.test.ps1  sha256=087dff6f823d61f57effbb80421021dd2a73b46e78926e5984bd7e1b05b291a8  (git blob 3296d2a8587d1e43d8948c060b2b1bea2a2c506c; snapshot: recovery-test.goal37-final.ps1)
+
+--- after (final, matches the green runs and AST record) ---
+scripts/local-runtime.ps1                 sha256=037f5fe4d9fc553732b640541f41868e2cbd9d5ed4ef22a96ca0003cfbfb84a5
+scripts/local-launcher-recovery.test.ps1  sha256=e2cc0fe177ce70546a610133f877142c8cfca2eed7bd147e9c4ca55d7abac461
+scripts/local-launcher-real-identity.test.ps1 (new file) sha256=fb6ae6fd16661a2a6592dfe3737b5474248c96096239d8690f97c05e93979d08
+
+--- frozen consumers: current hashes identical to goal37's recorded frozen values ---
+Start-Local.ps1                sha256=a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1
+Stop-Local.ps1                 sha256=025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2
+scripts/local-runtime.test.ps1 sha256=10d1075e03b6f4f9fbcdf5e0aa4c408d6424272f9b910f14ea0bf7cb02cdaeaf
+
+--- evidence files in this directory ---
+red-local-launcher-recovery.raw.out / green-local-launcher-recovery.raw.out /
+green2-local-launcher-recovery.raw.out / green-local-runtime-test.raw.out /
+real-identity.raw.out / ast-all-scripts.raw.out / runtime-goal40.diff /
+recovery-test-goal40.diff / local-runtime.goal37-final.ps1 / recovery-test.goal37-final.ps1

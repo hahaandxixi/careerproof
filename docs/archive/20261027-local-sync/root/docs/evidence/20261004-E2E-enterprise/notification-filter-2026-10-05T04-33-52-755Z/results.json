@@ -1,0 +1,60 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "notification-filter",
+  "startedAt": "2026-10-05T04:33:52.756Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:33:52.756Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=notification-filter runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:33:53.028Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 61831 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:33:53.187Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-33-52-755Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:33:54.539Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:33:55.035Z",
+      "name": "fixture-dependency",
+      "status": "blocked",
+      "detail": "both jobA candidates share display name and identical verdict sets (A=[\"claimed_only\"] A2=[\"claimed_only\"]); no page filter can exclude exactly one — needs Codex-approved fixture extension"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:33:55.131Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:33:55.131Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: fixture cannot express filter-out-target (see fixture-dependency step) |     at scenarioNotificationFilter (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:791:13) |     at async main (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:960:3)"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-33-52-755Z\\notification-filter-columns.json"
+  ],
+  "finishedAt": "2026-10-05T04:33:55.132Z"
+}

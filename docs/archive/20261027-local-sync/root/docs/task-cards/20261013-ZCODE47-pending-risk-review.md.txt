@@ -1,0 +1,14 @@
+# 传智杯47：待签收 guard / launcher 独立审查
+
+目标：G3 权限/快照可靠、G4 演示可恢复。Git 根 `D:\jbcode\web ai\jianli`，开始核对 HEAD/状态，当前文档提交 `71a2fd3`。用户允许使用 ZCode；按有效额度与难度选模型，智谱周总使用规划 90%、保留 10%，不购买或充值。
+
+1. 只读当前未提交 diff：`backend/app/agents/contracts.py`、`provider.py`、`backend/app/tools/task_boundaries.py`、`Start-Local.ps1`、`Stop-Local.ps1`、`scripts/local-runtime.ps1`，及必要直接依赖。
+2. 只读关联的 36/39/40 保留卡、相应证据摘要；不要重读全仓/历史汇编。当前文件/源码 hash 才是审查依据，旧绿灯不代表当前通过。
+3. AI 守卫：检查合法“材料变化/本人贡献尚不明/需要补实现或日志”误拒，以及跨要求/当前已解决和历史未解决状态串扰；引用/因果约束不能放宽。首次设计来源存在残余时明确未验证。
+4. Launcher：检查真实时间精度归一、根/后代身份与 PID 重用、CreateNew 失败后临时清理所有权、复用/停止事务。不要用纯 mock 证明真实进程停止安全。
+5. 可运行已核对为纯模块、无 DB/HTTP/外部模型的现有目标测试；只用升级 Python `.venv-dependency23`。目标包括 `test_weekend_plan_boundaries.py`、`test_shared_history_current_boundary.py` 和自有 scratch 的 PowerShell launcher 测试；发现隐含真实服务/DB/停止动作即不运行并报告。
+6. 唯一写 `docs/evidence/20261013-z47-risk-review/` 和本人独占 `backend/.tmp/z47-risk-review/`；允许纯合成反例/原始日志，不改任何业务/启动代码或现有测试。只提出可复现缺陷与最小修复建议。
+7. 禁止读 `.env`/凭据/真实材料/客户端数据库；禁止 DB/迁移/共享构建/服务或容器启停、真实模型、Git 提交推送、安装和 P2 stash。Codex 正在 8001/3001 原 run 做企业页面，不能碰其夹具、构建、进程和浏览器登录。
+8. 交付 `review.md`（分级、触发、file:line、验证命令/退出码、未知项），`source-hashes.json` 及完整原始输出；一屏回报。两类独立结论分别给出，未测试的真实页面/停止/语义保留未验证。
+
+这是有界只读审查，完成交棒；不无限 /goal 续跑，不因旧卡写着“修复”而获得代码写入权。Codex 独立风险复验后决定是否签收或另委派实现。

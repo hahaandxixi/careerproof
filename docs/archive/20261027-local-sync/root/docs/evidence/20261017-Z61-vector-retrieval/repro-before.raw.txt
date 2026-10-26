@@ -1,0 +1,45 @@
+D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+  return TextEmbedding(
+=== PHASE A: seeded corpus, schema cp_test_z61_repro_e209a9dcc45b4e4fa00cdd0ca8bb1282 (synthetic) ===
+dataset: {'total_chunks': 3024, 'owned_chunks': 24, 'allowed_ids': 3}
+hnsw.ef_search = 40
+hnsw.iterative_scan = off
+index: knowledge_chunks_pkey :: CREATE UNIQUE INDEX knowledge_chunks_pkey ON cp_test_z61_repro_e209a9dcc45b4e4fa00cdd0ca8bb1282.knowledge_chunks USING btree (id)
+index: ix_knowledge_chunks_source_type :: CREATE INDEX ix_knowledge_chunks_source_type ON cp_test_z61_repro_e209a9dcc45b4e4fa00cdd0ca8bb1282.knowledge_chunks USING btree (source_type)
+index: ix_knowledge_chunks_source_id :: CREATE INDEX ix_knowledge_chunks_source_id ON cp_test_z61_repro_e209a9dcc45b4e4fa00cdd0ca8bb1282.knowledge_chunks USING btree (source_id)
+index: ix_knowledge_chunks_embedding_hnsw :: CREATE INDEX ix_knowledge_chunks_embedding_hnsw ON cp_test_z61_repro_e209a9dcc45b4e4fa00cdd0ca8bb1282.knowledge_chunks USING hnsw (embedding vector_cosine_ops)
+allowed_ids in filter: 3
+--- control 'default': raw statement delivered 0 rows: [] ---
+Limit  (cost=14.06..133.83 rows=10 width=24) (actual time=0.289..0.289 rows=0 loops=1)
+  Buffers: shared hit=262
+  ->  Index Scan using ix_knowledge_chunks_embedding_hnsw on knowledge_chunks  (cost=14.06..3822.62 rows=318 width=24) (actual time=0.289..0.289 rows=0 loops=1)
+        Order By: (embedding <=> '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]'::vector)
+        Filter: (source_id = ANY ('{117e8ac2-59b8-4106-b0b5-fc87d197879d,64bbda75-625e-46a3-8901-310c058d3ebe,74456ca6-e678-4751-8226-803d826ddb14}'::uuid[]))
+        Rows Removed by Filter: 400
+        Buffers: shared hit=262
+Planning:
+  Buffers: shared hit=106
+Planning Time: 0.167 ms
+Execution Time: 0.307 ms
+--- control 'no-indexscan': raw statement delivered 10 rows: ['75da3dae-0175-4771-a2fe-64b465790e78', 'f053ad02-29bd-4df2-981a-f5369c003764', '27f7e47d-8e7a-42a3-9542-cfe2260ad2a1', 'c54aa445-fc68-4946-80de-400fc0502a8a', '168d8607-c643-4cf3-993a-2a8e34491c59', 'c31638d2-5151-4ff6-b2a9-9052945904d2', '9a15c8e1-08c7-4b64-b056-693cedd4dec4', 'eac73176-a363-4a86-aaf7-17b30cb50c33', 'c35fb1c2-1d84-49c3-8dd0-cf3567672a09', 'a1fc5779-be53-4c1a-840e-8e6bef4a33a2'] ---
+Limit  (cost=1054.73..1054.75 rows=10 width=24) (actual time=0.653..0.654 rows=10 loops=1)
+  Buffers: shared hit=756
+  ->  Sort  (cost=1054.73..1055.52 rows=318 width=24) (actual time=0.652..0.653 rows=10 loops=1)
+        Sort Key: ((embedding <=> '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.4472136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]'::vector))
+        Sort Method: top-N heapsort  Memory: 25kB
+        Buffers: shared hit=756
+        ->  Seq Scan on knowledge_chunks  (cost=0.00..1047.86 rows=318 width=24) (actual time=0.007..0.640 rows=24 loops=1)
+              Filter: (source_id = ANY ('{117e8ac2-59b8-4106-b0b5-fc87d197879d,64bbda75-625e-46a3-8901-310c058d3ebe,74456ca6-e678-4751-8226-803d826ddb14}'::uuid[]))
+              Rows Removed by Filter: 3000
+              Buffers: shared hit=756
+Planning:
+  Buffers: shared hit=1
+Planning Time: 0.046 ms
+Execution Time: 0.663 ms
+brute-force expected top-10 owned ids: ['a1fc5779-be53-4c1a-840e-8e6bef4a33a2', '75da3dae-0175-4771-a2fe-64b465790e78', 'f053ad02-29bd-4df2-981a-f5369c003764', '27f7e47d-8e7a-42a3-9542-cfe2260ad2a1', 'c54aa445-fc68-4946-80de-400fc0502a8a', '168d8607-c643-4cf3-993a-2a8e34491c59', 'c31638d2-5151-4ff6-b2a9-9052945904d2', '9a15c8e1-08c7-4b64-b056-693cedd4dec4', 'eac73176-a363-4a86-aaf7-17b30cb50c33', 'c35fb1c2-1d84-49c3-8dd0-cf3567672a09']
+search_owned_chunks delivered: 0
+search ids: []
+acceptance target: count==min(limit=10, owned_hit_count=24)==10; exact brute-force order match: False
+=== PHASE B: empty knowledge_chunks, schema cp_test_z61_empty_5106281f763941859d4bbe0dcdf63a25 (synthetic) ===
+knowledge_chunks rows=0; allowed sources exist; search_owned_chunks delivered=0
+=== reproduction complete (synthetic data, disposable instance) ===

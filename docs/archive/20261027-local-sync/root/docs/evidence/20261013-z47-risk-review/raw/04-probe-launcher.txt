@@ -1,0 +1,5 @@
+P1 dead-root orphan: live=0 orphanStopped=False LEAK=True
+P2 real-tick grid: live=1 stopped=[4244,4243] OK=True
+P3 1us drift refused: Root PID 4245 no longer matches its recorded start time; no processes stopped in z47-probe.json.
+P3 stopCalls=
+exit=0

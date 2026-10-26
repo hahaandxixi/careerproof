@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: a failed read is unknown, while verified empty work can offer the first-material route
+ok 1 - a failed read is unknown, while verified empty work can offer the first-material route
+  ---
+  duration_ms: 34.9768
+  type: 'test'
+  ...
+# Subtest: student continues the saved report without enterprise actions
+ok 2 - student continues the saved report without enterprise actions
+  ---
+  duration_ms: 19.3866
+  type: 'test'
+  ...
+# Subtest: enterprise gets its own job and authorized-application routes, not private student work
+ok 3 - enterprise gets its own job and authorized-application routes, not private student work
+  ---
+  duration_ms: 4.9555
+  type: 'test'
+  ...
+# Subtest: admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+ok 4 - admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+  ---
+  duration_ms: 3.1507
+  type: 'test'
+  ...
+# Subtest: authentication loading and error never render the saved identity as confirmed
+ok 5 - authentication loading and error never render the saved identity as confirmed
+  ---
+  duration_ms: 5.3113
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 266.995

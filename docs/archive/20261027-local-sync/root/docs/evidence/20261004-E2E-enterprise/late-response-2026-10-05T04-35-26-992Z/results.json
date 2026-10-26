@@ -1,0 +1,101 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "late-response",
+  "startedAt": "2026-10-05T04:35:26.992Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:35:26.993Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=late-response runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:35:27.260Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 61510 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:35:27.432Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\late-response-2026-10-05T04-35-26-992Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:35:28.797Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:35:29.463Z",
+      "name": "a-view-frozen",
+      "status": "info",
+      "detail": "POST /view held at request stage; busy indicator=true"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:35:29.819Z",
+      "name": "board-b-loaded",
+      "status": "pass",
+      "detail": "job B board shows application B while A response still frozen"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:35:29.820Z",
+      "name": "frozen-a-release",
+      "status": "info",
+      "detail": "[{\"url\":\"http://127.0.0.1:3001/applications/dfff7065-80ac-447e-95fb-0838e1bf3789/view\",\"result\":\"already-cancelled\",\"error\":\"Fetch.continueRequest: Invalid InterceptionId.\"}]"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:35:31.330Z",
+      "name": "late-a-response-outcome",
+      "status": "pass",
+      "detail": "bBoardIntact=true aReportRestored=false error=false aColumnVisibleOnB=false"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:35:31.385Z",
+      "name": "screenshot:board-b-after-late-a-release",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\late-response-2026-10-05T04-35-26-992Z\\09-board-b-after-late-a-release.png"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T04:35:32.466Z",
+      "name": "a-reopen-after-release",
+      "status": "pass",
+      "detail": "application A report opens normally on job A board"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T04:35:32.532Z",
+      "name": "screenshot:board-a-reopen",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\late-response-2026-10-05T04-35-26-992Z\\11-board-a-reopen.png"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T04:35:32.624Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T04:35:32.625Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\late-response-2026-10-05T04-35-26-992Z\\late-response-network.json"
+  ],
+  "finishedAt": "2026-10-05T04:35:32.625Z"
+}

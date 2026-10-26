@@ -1,0 +1,68 @@
+[
+  {
+    "path": "jianli/src/app/portfolio/page.tsx",
+    "before": "de6d2495a3170df79ce0852e7d629c70675cf63f81319a1b9df5e33849b8e45c",
+    "working": "6d6fb6c2cbbb343580046b4d16ee19a1035ee2d65a5508ac5bfd6bcba8b49fc8",
+    "accepted": "6d6fb6c2cbbb343580046b4d16ee19a1035ee2d65a5508ac5bfd6bcba8b49fc8"
+  },
+  {
+    "path": "jianli/src/components/GrowthUploadReturn.tsx",
+    "before": "b88f9c3173b9b7aa44583ddf1b770778d53b04e9ea142d3c9bc0b4467cd80728",
+    "working": "1bec51f68dd454728efc89463919d6580990fe73239a0b5263de687636418f32",
+    "accepted": "1bec51f68dd454728efc89463919d6580990fe73239a0b5263de687636418f32"
+  },
+  {
+    "path": "jianli/src/components/GrowthWorkspace.tsx",
+    "before": "620d6256195990dee85094973c8b51d722601b1343e3b38feb2f4ab5f154a245",
+    "working": "b4ee435de115011d31c18d6594337fbccdaafcee21890ba378342525a950006e",
+    "accepted": "b4ee435de115011d31c18d6594337fbccdaafcee21890ba378342525a950006e"
+  },
+  {
+    "path": "jianli/src/components/ProjectVersionPicker.tsx",
+    "before": "5a6d6234cc95e50fed7f6d1e97e8e83132376d6146272ae0d33d3867d4b63d60",
+    "working": "48c3f5c0ec5456db56cad57000b09ca5d9c389034513c6cf50e4e033d23329ff",
+    "accepted": "991e72da754b31933a5259656f73393bf8a15810bc08d9ed01a57579361583f5"
+  },
+  {
+    "path": "jianli/src/components/MaterialFileDropzone.tsx",
+    "before": null,
+    "working": "808011e2635cf6c513ad5a50e4b8074d89e597b0b00232d32b31476dbbf12deb",
+    "accepted": "808011e2635cf6c513ad5a50e4b8074d89e597b0b00232d32b31476dbbf12deb"
+  },
+  {
+    "path": "jianli/src/lib/material-picker.ts",
+    "before": "977d584bfe1ce53e1505890913a77cc92dd78ff65fedbb11121d729e84ffc31b",
+    "working": "78438e920229e3a8ee162abfe4420348f20b0252f19d670dc76d9ed902952a8b",
+    "accepted": "959da4416d46221eca26413cc6d659863c63c722524e63e964b6eeb6cf1beda8"
+  },
+  {
+    "path": "jianli/src/lib/material-upload.ts",
+    "before": null,
+    "working": "855c39d8cc2ce964a9f5ebca851055dbf2cb29a19a87334ad5e2487ca5437c9c",
+    "accepted": "855c39d8cc2ce964a9f5ebca851055dbf2cb29a19a87334ad5e2487ca5437c9c"
+  },
+  {
+    "path": "jianli/tests/material-picker.test.mjs",
+    "before": "45e2384390ea0e41b93ba58c1c623e3843b2420af6dc54800c2a482e3457d3a2",
+    "working": "4e4e69dde17cf67a9895ebfcdf619c4395202f2d2b588bdd4eee8de7b822a5f7",
+    "accepted": "b246fc1a90833c27428a62ba53efb765457c3fb4d4e9d8b6d075fdf59409c68a"
+  },
+  {
+    "path": "jianli/tests/material-workspace.test.mjs",
+    "before": null,
+    "working": "f22bee28963863735876272133598ccc8b2839c81889d8d400dbb35959d0750e",
+    "accepted": "f22bee28963863735876272133598ccc8b2839c81889d8d400dbb35959d0750e"
+  },
+  {
+    "path": "jianli/tests/material-upload.test.mjs",
+    "before": null,
+    "working": "6cedc81756f19b332edbcdbd3432189f2aa483489eb2091da6afdf5424902439",
+    "accepted": "6cedc81756f19b332edbcdbd3432189f2aa483489eb2091da6afdf5424902439"
+  },
+  {
+    "path": "jianli/tests/growth-material-entry.test.mjs",
+    "before": "67b54ad602d48e298e2e005f2c67517a52097ab00ff91c3366880e9742028512",
+    "working": "ed9592ba14713bc60847354bda6624d3895d6410621a2dcbaeb8183aeaa9730a",
+    "accepted": "ed9592ba14713bc60847354bda6624d3895d6410621a2dcbaeb8183aeaa9730a"
+  }
+]

@@ -1,0 +1,11 @@
+POST /auth/login
+GET /match-reports/59ac4fa1-4792-4c14-b268-51119b129076
+GET /projects
+POST /match-reports/59ac4fa1-4792-4c14-b268-51119b129076/growth-tasks
+POST /projects/1d4636c9-2497-490a-969c-e9ac431d694d/versions
+GET /analysis-tasks/6c1e8cff-9951-46c5-bfdb-fef8a5577655
+GET /analysis-tasks/6c1e8cff-9951-46c5-bfdb-fef8a5577655
+GET /projects/1d4636c9-2497-490a-969c-e9ac431d694d/versions
+GET /growth-tasks/7f64ed40-ccf2-4c16-9999-fbf158c40d27
+GET /match-reports/59ac4fa1-4792-4c14-b268-51119b129076
+{"passed": true, "growthId": "7f64ed40-ccf2-4c16-9999-fbf158c40d27", "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d", "newVersionId": "53366c20-1973-48a4-8b18-c27ca4ceaa7e", "versionNumber": 4, "scanTaskId": "6c1e8cff-9951-46c5-bfdb-fef8a5577655", "returnPath": "/growth/7f64ed40-ccf2-4c16-9999-fbf158c40d27?uploadedKind=project&uploadedVersion=53366c20-1973-48a4-8b18-c27ca4ceaa7e", "selectionSaved": false, "analysisStarted": false}

@@ -1,0 +1,53 @@
+﻿..........................................................sss........... [  5%]
+........................................................................ [ 10%]
+............s.........................s............s......s....s........ [ 15%]
+......................ss.......sss......s.....ssssssss.................. [ 20%]
+........................................................................ [ 25%]
+........................................................................ [ 30%]
+.......s.........ssssss................................................. [ 35%]
+......................................ss........s....................... [ 40%]
+...........................................s............................ [ 45%]
+.................................................................F...... [ 50%]
+................................sss.......ss............................ [ 55%]
+....................ss....s.......ss............................ssssss.. [ 60%]
+........................................s..........................sssss [ 65%]
+sss..................................................................... [ 70%]
+...............................................................s........ [ 75%]
+........................................................................ [ 80%]
+................ssss.................................................... [ 86%]
+........................................................................ [ 91%]
+........................................................................ [ 96%]
+ssssssss...............................................                  [100%]
+================================== FAILURES ===================================
+D:\jbcode\web ai\jianli\backend\app\tests\test_fastembed_dependency_compatibility.py:50: AssertionError: pyjwt: installed 2.10.1 != pin 2.15.0
+============================== warnings summary ===============================
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+.venv\Lib\site-packages\starlette\testclient.py:51
+  D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\starlette\testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+app/tests/test_fastembed_dependency_compatibility.py::test_real_local_onnx_embedding_smoke
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_fastembed_dependency_compatibility.py::test_installed_pins_match_pyproject_exactly
+1 failed, 1351 passed, 71 skipped, 7 warnings in 345.47s (0:05:45)
+python.exe : sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+所在位置 行:6 字符: 1
++ & $py -m pytest app/tests -q --no-header --basetemp="$ev\basetemp" -p ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (sys:1: Deprecat...ule__ attribute:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

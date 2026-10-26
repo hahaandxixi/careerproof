@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: filter refreshes authoritative reply metadata while preserving only fixed report (present=true)
+not ok 1 - filter refreshes authoritative reply metadata while preserving only fixed report (present=true)
+  ---
+  duration_ms: 1.5832
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\application-board-session.test.mjs:205:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'viewed'
+    - 'replied'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'replied'
+  actual: 'viewed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/application-board-session.test.mjs:223:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: filter refreshes authoritative reply metadata while preserving only fixed report (present=false)
+not ok 2 - filter refreshes authoritative reply metadata while preserving only fixed report (present=false)
+  ---
+  duration_ms: 0.2319
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\application-board-session.test.mjs:205:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'viewed'
+    - 'replied'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'replied'
+  actual: 'viewed'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/application-board-session.test.mjs:223:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 115.0193

@@ -1,0 +1,80 @@
+{
+  "zoom": {
+    "innerWidth": 1280,
+    "clientWidth": 1265,
+    "scrollWidth": 1265,
+    "bodyScroll": 1265
+  },
+  "flow": {
+    "scrollWidth": 749,
+    "clientWidth": 358,
+    "scrollLeft": 0
+  },
+  "flowEnd": {
+    "scrollWidth": 749,
+    "clientWidth": 358,
+    "scrollLeft": 391
+  },
+  "focus": [
+    {
+      "tag": "A",
+      "text": "跳到主要内容",
+      "href": "#main-content"
+    },
+    {
+      "tag": "A",
+      "text": "职证 CareerProof",
+      "href": "/"
+    },
+    {
+      "tag": "A",
+      "text": "岗位发现",
+      "href": "/jobs"
+    },
+    {
+      "tag": "A",
+      "text": "职业推荐",
+      "href": "/recommendations"
+    },
+    {
+      "tag": "A",
+      "text": "我的匹配报告",
+      "href": "/reports"
+    },
+    {
+      "tag": "SUMMARY",
+      "text": "M\n学生账户 · Mock界面合成学生\n▾",
+      "href": null
+    },
+    {
+      "tag": "A",
+      "text": "1\n准备材料",
+      "href": "/portfolio"
+    },
+    {
+      "tag": "A",
+      "text": "2\n推荐职业与岗位",
+      "href": "/recommendations"
+    },
+    {
+      "tag": "A",
+      "text": "4\n补充材料",
+      "href": "/growth"
+    },
+    {
+      "tag": "A",
+      "text": "5\n确认投递",
+      "href": "/reports/ac09d831-073b-4d9e-8799-3b4971716562#application-submit"
+    },
+    {
+      "tag": "A",
+      "text": "← 匹配报告",
+      "href": "/reports"
+    },
+    {
+      "tag": "A",
+      "text": "查看实际处理记录 →",
+      "href": "/tasks/b0bf05ca-4047-4faf-8908-ff5902a7d9b3"
+    }
+  ]
+}

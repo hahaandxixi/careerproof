@@ -1,0 +1,17 @@
+# 首页只读审查与目标回归
+
+审查基于 `01232d2` 加本轮明确接受文件，执行目录 `backend/.tmp/product-polish-20261022/source/jianli`。本执行端只新增 `jianli/tests/home-workspace.test.mjs` 与此记录，未编辑 HomeWorkspace 或其他生产文件。
+
+发现两处可复现的体验问题：材料/报告读取失败后仍显示“准备第一份材料”，把未知状态当成首次使用；管理员走非学生分支，显示企业工作台及不适用的企业入口。总控已修复：失败空数据使用中性“打开我的材料”，管理员有单独岗位/报告入口。
+
+使用真实 HomeWorkspace 源码经 sucrase 转译与 react-dom/server 渲染；受控 React state 提供已保存数据、读取错误、加载状态和当前角色，effects/API 不执行。不是浏览器验收，也不验证异步迟到回执或切换身份竞态。
+
+- 红：在独立临时源码副本撤掉上述两处修复，`CAREERPROOF_HOME_REVIEW_SOURCE=.../home-review-before.tsx node --test tests/home-workspace.test.mjs` → 3通过/2失败，exit 1。仅改临时副本，生产源码无变更。
+- 绿：移除该测试专用环境变量，`node --test tests/home-workspace.test.mjs` → 5通过/0失败，exit 0。
+- `node node_modules/eslint/bin/eslint.js tests/home-workspace.test.mjs` → exit 0，无警告或错误。
+
+五项回归覆盖：未知与确认空集的不同主入口、学生继续自己的报告且无企业动作、企业岗位/授权投递入口且无私人学生入口、管理员独立允许入口、认证加载/出错不显示已确认私人身份。保留前后原始输出 `home-review-before.raw.out`、`home-review-after.raw.out` 和 `home-review-lint.raw.out`。
+
+同次有界只读检查未发现材料版本自动选择或新 owner 绕过：上传返回参数经过当前账号材料列表核对，不直接保存；筛选仅改变可见性，保存与分析仍需明确操作。前端文件类型/大小验证不替代后端安全检查。登录返回已知内部路由与反外部跳转限制有效；此前企业报告/任务的角色不匹配已由总控另行修复。
+
+未验证：真实网络失败恢复、首页实际浏览器渲染、跨身份迟到响应、上传/补证真实端到端。没有启停服务、访问数据库、发送模型请求或安装依赖。

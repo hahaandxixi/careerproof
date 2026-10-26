@@ -1,0 +1,90 @@
+# DeepSeek Harness 交付状态（2026-10-17 第三轮更新）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。本轮：纠正 69 版本语义、复核 71 异常边界、PyJWT 维持只读诊断。
+
+## 一、状态总账（不自行签收）
+
+| 卡 | 状态 | 说明 |
+| --- | --- | --- |
+| **69** | ⚠️ **语义已纠正，未闭环** | 上一版"最新版本"修法**不予签收并已撤回**；按"报告限定所选版本 / 材料库检索保持既有范围"重新实现并验证（7 passed）。**PG 端到端未跑** |
+| **71** | ✅ **复核完成**（原生崩溃与 HTTP 链路未验） | 异常四分类订立；发现并修正了上一轮的**假清理测试**；P2 仅只读梳理，未改行为 |
+| **63** | **部分完成**（不计为完成） | 390px 真实渲染与键盘验收未做 |
+| **70** | **覆盖未达标**（不计为完成） | 6×2 未达成，"建议不可执行"仅 1 例且无新输出 |
+| **72** | **仍是原型结论** | 换行符差异影响字符计数与引用偏移；建议保留现状不替换 |
+| **68** | 等待 67 正式交棒 | 门未满足 |
+| **76** | 继续等待候选条件 | 69 未签收、75 无完成证据、无指定已提交 hash；PyJWT 仅只读诊断 |
+
+**准确完成数量：1 项复核完成（71）+ 1 项语义纠正完成但端到端未验（69）**。
+69 不能算完成——PG 端到端未跑。63/70/76 维持未完成。
+
+## 二、69 版本语义与调用链
+
+```text
+GET /knowledge/search?q=&limit=   -> search_owned_chunks(query, limit)      无版本参数
+POST /matches -> MatchCreate{resume_version_id, project_version_ids}
+                                  -> resolve_materials -> 逐版本取 sections/files
+```
+
+| 路径 | 版本范围 | 结论 |
+| --- | --- | --- |
+| 报告 / 匹配 | 严格限定本次明确选择的版本 | `ResumeVersion.id == request.resume_version_id`，`ProjectVersion.id == version_id` |
+| 材料库检索 | 既有范围：本人所有未归档版本 | 接口无版本入参；旧版本仍可为报告选用，故须可发现 |
+
+**撤回**：`max(version_number)` 与 `material_role` 分组派生表全部删除；61 号 `MATERIALIZED`
+预过滤、`count(*) OVER ()`、`shortfall`、日志保留；**未整文件回退**，61 号测试字节未变。
+
+## 三、红→绿
+
+### 69（针对被撤回的修法）
+```text
+临时恢复 max(version_number):
+FAILED test_library_search_keeps_an_older_version_when_a_newer_one_exists
+E  AssertionError: an older but still saved resume version must remain discoverable
+1 failed, 6 passed
+恢复正确语义后: 7 passed
+```
+
+### 71（清理断言）
+```text
+正常源码: 15 passed
+突变（去掉 with，故意泄漏）: 1 failed — opened 2 document(s) but closed 1
+恢复: 26 passed（含 test_document_ocr.py）
+```
+关键更正：上一轮 `path.unlink()` 是**假测试**（引用计数兜底关闭，突变下仍通过）。
+
+## 四、修改文件与 hash
+
+| 文件 | SHA256 | 状态 |
+| --- | --- | --- |
+| `backend/app/services/retrieval.py` | `456130a4028dd2fc246638f8aa76ecdbedb151e78efcf42f781882c387bbac00` | M（撤回版本收窄） |
+| `backend/app/tests/test_retrieval_version_scope.py` | `69867a7c523fccac1503cb03bfb0da649d13b1db9825e2b22d8400b9ae36a859` | 重写 |
+| `backend/app/tools/document_parser.py` | `2b1094899cae26e064a89ff1dd30ab7f244bf57fc78ddc5a6a857e8e4f401a72` | 未变（仅复核） |
+| `backend/app/tests/test_document_parser_unreadable.py` | `93e0dda4e360e85410d269ff8e0d0b04e8cf35723d2a19c769e5e43114e68229` | 扩充 |
+
+未改：`test_retrieval_filtered_recall.py`（`bac255b7…5f6b`）、`pyproject.toml`、锁文件、前端、正式文档。
+
+## 五、71 异常分类（终表）
+
+| 类别 | 异常 | 处理 |
+| --- | --- | --- |
+| 预期输入拒绝 | 损坏/零字节/假 PDF/加密 PDF/损坏 DOCX | `AppError(4024)` |
+| 底层解析异常 | `FileDataError`（含 `EmptyFileError`）、`fitz.FileNotFoundError`、`ValueError`、`BadZipFile`、`KeyError` | 窄元组转换 + `from error` |
+| 程序错误/未知 | `RuntimeError`、`TypeError`、`ModuleNotFoundError` | 继续传播 |
+| 内存耗尽 | `MemoryError` | 继续传播（本轮新增断言） |
+| 进程故障 | 子进程崩溃/超时 | 归 `task_runner`（4025/4026），未动 |
+
+文案不含路径；`__cause__` 保留原因；未捕获异常走 FastAPI 默认 500，不泄露细节。
+
+## 六、未验证 / PG 范围
+
+1. **PG 端到端未跑**：无明确分配的专属 PG，按规则不连。离线通过 ≠ 端到端闭环。
+   上一轮写的 PG-only 端到端用例已随语义修正删除（其断言编码了错误语义）。
+2. **库级检索加版本参数属协议扩展**：若产品要求，需改 `/knowledge/search` 入参与
+   `search_owned_chunks` 签名——本轮**交棒方案草案**，未自行实现。
+3. 71：真实 HTTP 状态码未验证；原生崩溃用例未构造；P2 的 4 个未确认项未改。
+4. 简历多版本在 HTTP 路径可能不可达（无"给既有简历加 v2"端点）；测试为直接建表构造。
+
+## 七、遵守的禁令
+
+未连正常业务库、未启停 3000/3001、未读 .env/凭据、未改 ACL、未做真实模型请求、未 Git 提交或推送。
+仅跑相关测试，未重复全仓调研。写入限于 `docs/evidence/20261017-task{69,71}*/` 与 `backend/.tmp/task*`。

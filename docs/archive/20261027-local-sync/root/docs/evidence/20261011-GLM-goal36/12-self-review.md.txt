@@ -1,0 +1,101 @@
+# 传智杯36 自审：AI守卫误拒修复与边界回归
+
+日期 2026-10-11 · 执行 GLM (Flash) · 待 Codex 独立验收
+Git根 `D:\jbcode\web ai\jianli`，HEAD `ef29532`，继承33/34/35未提交成果，未覆盖未重做。
+
+## 一、goal36 精确增量（区别于33的未提交改动）
+
+`git diff`（09号证据）混合了33的未提交改动；本节是**本卡-only** 变更，均可与01/02/07号原始输出对上。
+
+### D1 `_SOURCE_RUNTIME_CAUSAL` 第一分支补运行结论限定（误拒根因）
+
+- 之前（继承自33）：`(?:源码|代码)(?:文件)?存在.{0,14}(?:证明|证实|表明|等同于|等于|代表|说明)`
+  —— 连接词后不要求任何部署/运行结论，导致「源码存在**说明**文件已经上传」「源码存在**证明**材料可定位」命中。
+- 之后：连接词表追加 `意味着`，并强制尾随 `.{0,14}(?:已部署|已上线|部署成功|部署完成|稳定运行|线上稳定|线上可用|运行成功|已运行|正常运行)`。
+
+### D2 新增「作为…运行/部署…证明」尾部分支
+
+分支1限定结论后，既有用例 `test_causal_claim_inside_a_step_is_rejected`（"将源码存在作为部署证明归档"）会漏。新增：
+`(?:源码|代码)(?:文件)?.{0,6}(?:作为|当作|视为|算作|等同).{0,10}(?:部署|运行|上线|执行).{0,6}?(?:证据|证明|依据|记录)`
+（同时覆盖「当作…运行测试的证据」类真因果表述。）
+
+### D3 `_CAUSAL_EXEMPTION` 追加 `不等同于|未证明|未证实`
+
+「源码存在未证明部署成功」「源码存在不等同于已部署」属否定应放行（后者为预存在误拒，探针暴露）。
+
+### D4 否定豁免改为子句局部（否定范围逃逸修复）
+
+新增 `_causal_negation_prefix`：16字符回看窗在最后一个子句分隔符（`，,、：:`）处截断。
+此前「实际运行仍待核验，源码存在说明部署成功」因前窗含`待核验`整体豁免→逃逸；现逗号后新子句中的独立因果断言仍拒。
+`match.group()` 内含否定词（不代表/不等于/不能证明/是否/能否…）的豁免不变——它只豁免因果断言本身。
+
+### D5 `_OUTCOME_NEGATION` 追加 `不等同于|未证明`
+
+第二循环（结果断言无记录步骤）对整句含否定词即跳过；「源码存在不等同于已部署」中的`已部署`曾触发该分支误报，补词后口径与D3一致。
+
+### D6 `plan_deployment_outcome_error` docstring 同步说明（连接词+结论双要件、子句局部否定）
+
+### 测试侧（test_weekend_plan_boundaries.py）
+
+原18用例零改动（01号红轮显示 `18 passed` 并存）。新增4个函数+1个导入+`goal36_plan`/`LEGAL_MATERIAL_WORDING`：
+1. `test_material_upload_and_location_wording_is_allowed` —— Codex 复现的两句原话（直接函数 + 全合同双路径）
+2. `test_unproved_negated_connector_is_allowed` —— 未证明/不等同于两类否定
+3. `test_meaning_connector_causal_claim_is_still_rejected` —— `意味着` 因果句仍拒（探针暴露的逃逸补测）
+4. `test_pending_negation_clause_does_not_exempt_independent_causal_error` —— 否定子句不豁免同句独立因果错误
+
+## 二、先红后绿时间线
+
+| 轮 | 证据 | 结果 |
+|---|---|---|
+| 基线 | （未存盘，18 passed 0.07s） | 18绿 |
+| 红1（仅加测试） | 01-red-round1.txt | 3 failed / 18 passed：两句原话误拒 + 否定子句逃逸(None) |
+| 修复后 | 02-green-round1.txt | 21 passed |
+| 探针1发现 | （会话内，已固化为D3/D5与意味着分支） | 不等同于误拒、意味着逃逸 |
+| 终态 | 05-green-final-target.txt | 22/22 passed |
+| 终态探针 | 07-probes.txt | 17/17 预期行为 OK |
+| ruff | 06-ruff.txt | All checks passed（仅此两文件） |
+
+## 三、自审对抗清单（07-probes.txt 逐条可查）
+
+- ✅ 放行：材料定位/上传两句原话（含截断为单句的变体）、未证明、不代表、不等同于、无法以…、是否条件句
+- ✅ 仍拒：说明部署成功、即证明线上接口稳定运行、作为部署证明归档、等同于稳定运行、已有源码说明已上线、意味着线上可用、**否定子句+独立因果**（逗号两侧）、**待核验子句+独立因果**
+- ✅ 前缀豁免仅在同子句生效：`无法以源码存在证明部署成功` 放行（无法紧邻且同子句）
+- ✅ 33成果保留：Rule A/B 全部18用例未动且绿；provider.py、task_boundaries.py、其他33/34/35文件零改动
+
+## 四、词面守卫已知局限（非语义保证，卡片明示不接受其作为语义度量）
+
+1. **同子句否定前缀仍可豁免后续因果句**：`实际运行仍待核验时源码存在说明已上线` 逃逸（"时"连接无分隔符可截断）。07号留档。
+2. **第二循环整句跳过**：`_OUTCOME_NEGATION` 命中即跳过整句，同句内另一处结果断言可搭车逃逸（预存在设计；本卡未改其结构）。
+3. **结论词表为封闭枚举**：`源码存在意味着线上可用` 此前逃逸已补，但表外新措辞（如"正式对外服务"）仍会逃逸。
+4. **目录里的源码足以证明系统已上线**：探针显示**已命中**（经分支2路径），但属措辞巧合而非设计保证。
+
+## 五、未验证项 / 环境说明
+
+1. **全套件仅1失败为预存在环境项**：`test_fastembed_dependency_compatibility::test_installed_pins_match_pyproject_exactly` —— venv 中 pyjwt 2.10.1 ≠ pin 2.15.0；修复需安装依赖，本卡禁止，未处理（33号卡记录的同一环境）。
+2. pytest 默认临时目录被拒访问（WinError 5），全套件须 `--basetemp=.tmp-*`（goal 29 已知约束）；产生 `backend/.tmp-goal36-20261011/`、`backend/.tmp-goal36-final/` 两个测试临时目录，未清理（与其他goal惯例一致，可安全删除）。
+3. 未跑真实模型/联网/DB/服务（卡片禁止）；全部为离线合成用例。
+4. contracts.py 与测试文件的 `git diff` 含33未提交改动；本卡-only 变更以本文件第一节为准。
+5. 未验证 34/35 号成果（页面中断恢复、启动脚本）——不在本卡范围，其文件未触碰。
+
+## 六、写范围声明
+
+本卡仅写入：`backend/app/agents/contracts.py`、`backend/app/tests/test_weekend_plan_boundaries.py`、`docs/evidence/20261011-GLM-goal36/*`。未 Git 提交/推送，未改 .env，未安装依赖。
+
+## 七、最终源码 hash（sha256）
+
+```
+c94f553217e2295536aee17fd6d6e5028415000b61c29139cd18bb91920b8a9b  backend/app/agents/contracts.py
+b04763629527d2ef4c0b71f277d1a1e3b3e3c6d0ebd8ca2f56c8e6781e92721c  backend/app/tests/test_weekend_plan_boundaries.py
+1092970e121737c9d4c6e060d56651ca74d6a6a035a1bd4e3ed488e5ba674036  docs/task-cards/20261011-GLM-goal36-AI-false-positive.md
+```
+（11-hash.txt 同内容）
+
+## 八、范围更正（Codex 指正后，2026-10-11）
+
+本卡验收口径收敛为**纯合同/任务边界模块**：`backend/.venv-dependency23` 解释器下目标+4个纯模块 **64 passed**（14-scope-correction/01）、ruff All checks passed（02）、hash 复核与第七节一致（03）。本文"未验证项"第1条的全量套件结果（03/04/08）仅作背景留档、不作为本卡质量得分，其失败项（临时目录权限 ERROR、pyjwt pin）均预存在环境项、标**未验**；04 在纠正到达前已结束，未再扩大重跑。task_boundaries.py 零改动（历史漏拒归39号卡）。详见 13-handoff.md 范围更正节。
+
+## 九、二次复核修复与报告更正（Codex holdout，2026-10-11）
+
+**D7（零词表扩充）**：Codex 反例「部署是否成功待核验，但服务器已稳定运行」「本人贡献待核验，接口已部署」暴露第二循环整句否定跳过的子句边界缺陷。修复=`_CLAUSE_SPLIT`（复用 `_CAUSAL_CLAUSE_SEPARATORS`）使结果守卫子句局部化，与因果守卫同一子句边界；`_OUTCOME_NEGATION`/`_DEPLOYMENT_OUTCOME` 词表未动。红 1/22 → 23/23、ruff 0、探针 20/20（含 holdout 6条语义全符、旧17条零回退、explicit_future 放行）。新增测试 `test_pending_negation_clause_does_not_mask_independent_outcome_assertion`（含2条真实未来/否定计划保护断言）。证据 `15-holdout-scope-fix/01-05`；反例来源 `../20261011-GLM-integration-codex/goal36-independent-holdout.json`。
+
+**报告更正**：第八节前正文"未跑…DB"表述不准确——03/04/08 全后端运行包含 SQLite/DB 夹具用例，属非本卡要求的多余运行，日志保留作背景；本卡质量结论只依据 14/15 号纯模块运行。此后零扩大。新 hash：contracts.py `cd6d6eb6466b…`、测试 `c622a87b57ff…`（07号 hash 为本节修复前快照，11号更早，均保留）。
