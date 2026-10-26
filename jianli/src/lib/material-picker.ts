@@ -43,3 +43,15 @@ export function toggleMaterialVersion(selected: string[], id: string, checked: b
   if (selected.includes(id) || selected.length >= 10) return selected;
   return [...selected, id];
 }
+
+// 同名项目在选择器里必须仍可区分，否则用户会选错材料、生成基于错误项目的报告。
+// 只在名称确实重复时才补编号，常见情况（名称唯一）不增加噪声。
+export function duplicateProjectNames(projects: { name: string }[]): Set<string> {
+  const counts = new Map<string, number>();
+  for (const project of projects) counts.set(project.name, (counts.get(project.name) ?? 0) + 1);
+  return new Set([...counts].filter(([, count]) => count > 1).map(([name]) => name));
+}
+
+export function projectNameLabel(name: string, id: string, duplicateNames: ReadonlySet<string>): string {
+  return duplicateNames.has(name) ? `${name} · 材料编号 ${id.slice(0, 8)}` : name;
+}

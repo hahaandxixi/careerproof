@@ -161,3 +161,31 @@ test("二次确认面板：确认/取消各走各的回调，忙碌时确认禁�
   const busyConfirm = findButtons(busyNode).find(b => buttonText(b).includes("确认撤回授权"));
   assert.equal(busyConfirm.props.disabled, true, "撤回请求进行中必须禁用确认按钮");
 });
+
+// 空态只说"先生成匹配报告"而不给入口，用户会停在死路；且容易误以为必须先补证才能投递。
+test("我的投递空态直接给出可点击的下一步入口", () => {
+  const html = renderToStaticMarkup(React.createElement(list.ApplicationEmptyState));
+  assert.ok(html.includes("暂无投递"), html);
+  assert.ok(/href="\/reports"/.test(html), `空态必须能直达我的匹配报告：${html}`);
+  assert.ok(/href="\/jobs"/.test(html), `空态必须能直达岗位发现：${html}`);
+  assert.ok(html.includes("我的匹配报告") && html.includes("岗位发现"), html);
+});
+
+test("空态说明补证与本人核对不是投递前置", () => {
+  const html = renderToStaticMarkup(React.createElement(list.ApplicationEmptyState));
+  assert.ok(html.includes("补证与本人核对都不是投递的前置条件"), html);
+  assert.ok(html.includes("已有报告可以直接投递"), html);
+  assert.ok(html.includes("后续新报告不会替换"), "必须说明企业只看到投递时固定的报告");
+  assert.ok(!html.includes("<button"), `空态不应出现按钮式提交入口：${html}`);
+});
+
+// 企业回复里可粘贴长链接或长英文串；pre-wrap 不断词，缺 break-words 会撑破 390px 卡片。
+test("企业回复正文能在词内换行，不得撑破窄屏卡片", () => {
+  const longUrl = "https://example.com/" + "b".repeat(120);
+  const html = renderCard(fixture({ replyText: longUrl, replyKind: "continue", status: "replied" }));
+  const quote = /<blockquote[^>]*>/.exec(html)?.[0] ?? "";
+  assert.ok(quote, `回复正文应渲染为引用块：${html}`);
+  assert.ok(quote.includes("whitespace-pre-wrap"), `须保留原有换行语义：${quote}`);
+  assert.ok(quote.includes("break-words"), `pre-wrap 必须配 break-words，否则长链接横向溢出：${quote}`);
+  assert.ok(!/\bwhitespace-nowrap\b/.test(quote), `不得禁止换行：${quote}`);
+});

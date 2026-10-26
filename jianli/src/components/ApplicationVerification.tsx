@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { MatchReport } from "@/lib/api/domain";
 import type { VerificationReplyQuestion } from "@/lib/verification-reply-draft";
+import { displayFilePath } from "@/lib/display-path";
 import {
   applicationVerificationSources, createApplicationVerificationSession, initialApplicationVerificationState, verificationMatchesReport,
 } from "@/lib/application-verification-session";
@@ -78,7 +79,7 @@ export default function ApplicationVerification({ applicationId, report, onUnava
           <div><p className="font-medium text-amber-800">材料缺口与边界</p><p className="whitespace-pre-wrap break-words">{item.informationGap}</p></div>
           <div><p className="font-medium text-slate-800">建议人工核验的问题</p><ol className="list-decimal space-y-2 pl-5">{item.verificationQuestions.map((question, index) => <li key={index} className="whitespace-pre-wrap break-words">{question}{onUseQuestion && <button type="button" className="ml-2 text-indigo-700 underline" onClick={() => onUseQuestion({ requirementId: item.requirementId, requirementIndex: report.items.indexOf(requirement), requirementTitle: requirement.requirementTitle || requirement.skill, question, citationIds: item.citationIds })}>加入回复草稿</button>}</li>)}</ol></div>
           {item.nextStep && <div className="rounded-lg bg-slate-50 p-3"><p className="font-medium">可选下一步：{NEXT_STEP[item.nextStep]}</p><p className="whitespace-pre-wrap break-words">{item.nextStepReason}</p><p className="mt-1 text-xs text-slate-500">由企业自行确认和执行，此建议不会自动发给学生。</p></div>}
-          {evidence.length ? <details><summary className="cursor-pointer text-indigo-700">查看建议引用的授权片段（{evidence.length}）</summary><div className="space-y-3 pt-2">{evidence.map((source, index) => <div key={`${source.citationId}:${index}`} className="text-xs leading-5"><p className="break-all">{source.citationId} · {source.filePath} · 第{source.lineStart}—{source.lineEnd}行</p>{source.provenance === "reference" && <p className="text-amber-800">参考材料，不构成学生本人实践证明。</p>}<pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><p className="mt-1 text-slate-500">{source.contextNote}</p></div>)}</div></details> : <p className="text-xs text-slate-500">本项没有支持引用；问题和补证建议不构成能力证明。</p>}
+          {evidence.length ? <details><summary className="cursor-pointer text-indigo-700">查看建议引用的授权片段（{evidence.length}）</summary><div className="space-y-3 pt-2">{evidence.map((source, index) => <div key={`${source.citationId}:${index}`} className="text-xs leading-5"><p className="break-all">{source.citationId} · {displayFilePath(source.filePath)} · 第{source.lineStart}—{source.lineEnd}行</p>{source.provenance === "reference" && <p className="text-amber-800">参考材料，不构成学生本人实践证明。</p>}<pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><p className="mt-1 text-slate-500">{source.contextNote}</p></div>)}</div></details> : <p className="text-xs text-slate-500">本项没有支持引用；问题和补证建议不构成能力证明。</p>}
         </article>;
       })}
       {task?.boundary && <p className="text-xs leading-5 text-slate-500">{task.boundary}</p>}

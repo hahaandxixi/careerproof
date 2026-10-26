@@ -36,3 +36,17 @@ export function filterResumeMaterials<V extends ResumeVersion>(
     return versions.length ? [{ ...resume, category, versions }] : [];
   });
 }
+
+// 同名简历在版本选择器里必须仍可区分：两版同名简历会渲染出完全相同的标题，
+// 单选按钮的无障碍名也会重复，读屏用户无法判断自己选的是哪一份。
+// 与 projects 侧的 duplicateProjectNames/projectNameLabel 保持同一显示口径：
+// 只在标题确实重复时才补编号前8位，标题唯一的常见情况不增加噪声。
+export function duplicateResumeTitles(resumes: { title: string }[]): Set<string> {
+  const counts = new Map<string, number>();
+  for (const resume of resumes) counts.set(resume.title, (counts.get(resume.title) ?? 0) + 1);
+  return new Set([...counts].filter(([, count]) => count > 1).map(([title]) => title));
+}
+
+export function resumeTitleLabel(title: string, id: string, duplicateTitles: ReadonlySet<string>): string {
+  return duplicateTitles.has(title) ? `${title} · 材料编号 ${id.slice(0, 8)}` : title;
+}

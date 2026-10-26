@@ -13,6 +13,8 @@ from app.agents.evidence_workflow import build_evidence_contexts
 from app.tools.code_analyzer import CodeEvidence
 from app.tools.matcher import MatchItemResult, MatchResult
 
+UUID = "6db170c9-ea2b-4036-84d1-47260c687014"
+
 
 def make_result():
     requirement_id = uuid4()
@@ -23,7 +25,7 @@ def make_result():
             strength="high", explanation="test", content_hash="a" * 64,
         ),
         CodeEvidence(
-            skill="pytest", evidence_type="text", file_path="runtime/pytest-output.txt",
+            skill="pytest", evidence_type="text", file_path=f"{UUID}/runtime/pytest-output.txt",
             line_start=1, line_end=2, snippet="11 passed\n", strength="medium",
             explanation="runtime", content_hash="b" * 64,
         ),
@@ -74,9 +76,11 @@ def test_unsent_rule_evidence_removes_absolute_missing_claim():
     item = qualified.items[0]
     assert "未展示" not in (item.information_gap or "")
     assert "请补充" not in (item.suggestion or "")
-    assert "本次片段未覆盖" in (item.information_gap or "")
+    assert "规则层另有未发送材料" in (item.information_gap or "")
     assert "runtime/pytest-output.txt" in (item.information_gap or "")
     assert "材料中可能已包含" in (item.suggestion or "")
+    assert "runtime/pytest-output.txt 第1–2行" in (item.information_gap or "")
+    assert UUID not in (item.information_gap or "")
 
 
 def test_no_unsent_evidence_keeps_original_text():

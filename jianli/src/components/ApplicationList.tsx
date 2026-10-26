@@ -29,7 +29,7 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
       <p className="text-sm text-slate-700">{item.companyName} · {applicationStatusText(item.status)}</p>
     </div>
     <p className="text-sm text-indigo-700"><span className="font-medium">下一步：</span>{applicationNextAction(item.status)}</p>
-    {item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap"><span className="mb-1 block text-xs text-slate-600">企业最新回复{item.events.find(event=>event.type==="replied") ? ` · ${new Date(item.events.find(event=>event.type==="replied")!.at).toLocaleString("zh-CN")}` : ""}</span>{applicationReplyText(item.replyKind??"")}：{item.replyText}</blockquote>}
+    {item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap break-words"><span className="mb-1 block text-xs text-slate-600">企业最新回复{item.events.find(event=>event.type==="replied") ? ` · ${new Date(item.events.find(event=>event.type==="replied")!.at).toLocaleString("zh-CN")}` : ""}</span>{applicationReplyText(item.replyKind??"")}：{item.replyText}</blockquote>}
     <p className="text-sm"><Link className="text-indigo-700 underline" href={reportHref}>查看本次投递的原报告</Link>{item.replyText&&<span className="ml-2 text-xs text-slate-500">后续新报告不会替换本次投递。</span>}</p>
     {!!item.replyReferences?.length&&<div className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-medium">企业回复对应的原报告位置</p><ul className="mt-2 space-y-2">{item.replyReferences.map(reference=><li key={reference.requirementId} className="break-words"><Link className="text-indigo-700 underline" href={`${reportHref}#requirement-${encodeURIComponent(reference.requirementId)}`}>{`第${item.dimensions.findIndex(d=>d.requirementId===reference.requirementId)+1}项：`}{item.dimensions.find(d=>d.requirementId===reference.requirementId)?.title || "查看岗位要求"}</Link><Link className="ml-2 text-xs text-indigo-700 underline" href={`${reportHref}?enterpriseReply=${encodeURIComponent(reference.requirementId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>带着这项问题补证 →</Link>{reference.citationIds.length>0&&<span className="ml-2 text-xs">引用：{reference.citationIds.map((id,index)=><span key={id}>{index>0?"、":""}<Link className="text-indigo-700 underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>{id}</Link></span>)}</span>}</li>)}</ul><p className="mt-2 text-xs text-slate-500">这些链接定位本次投递的原报告；引用不自动证明能力或本人贡献。</p></div>}
     {item.status==="withdrawn"&&<p className="text-sm text-slate-600">本次授权已撤回。<Link className="ml-2 text-indigo-700 underline" href={`${reportHref}#application-submit`}>重新确认授权并投递</Link>；也可从新版报告投递，原记录与企业回复不会被覆盖。</p>}
@@ -41,6 +41,16 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
       <ol className="mt-2 space-y-2">{item.events.map(e=><li key={e.type}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
     </details>
   </article>;
+}
+
+// 传智杯44：空态必须能直接走到下一步。只写"先生成匹配报告"而不给入口，用户会停在死路；
+// 同时说明补证与本人核对不是投递前置，避免用户误以为必须先补材料才能投递。
+export function ApplicationEmptyState(){
+  return <div className="panel space-y-2 text-sm leading-6">
+    <p className="text-slate-700">暂无投递。</p>
+    <p className="text-slate-600">投递需要先有一份已保存的匹配报告：到<Link className="text-indigo-700 underline" href="/reports">我的匹配报告</Link>打开一份报告，或去<Link className="text-indigo-700 underline" href="/jobs">岗位发现</Link>选择岗位生成报告；随后在报告页阅读分享范围并确认授权。</p>
+    <p className="text-xs text-slate-500">补证与本人核对都不是投递的前置条件——已有报告可以直接投递。企业只会看到投递时固定的那份报告，后续新报告不会替换它。</p>
+  </div>;
 }
 
 export default function ApplicationList(){const {user}=useAuth();return <AccessGate roles={["student"]}><Workspace key={user?.id}/></AccessGate>;}
@@ -77,7 +87,7 @@ function Workspace(){
     <form className="panel space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}><div className="flex flex-wrap items-end gap-3"><label className="min-w-0 flex-1 text-sm">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label><label className="text-sm">查看范围<select className="field mt-1" value={view} onChange={event=>setView(event.target.value)}><option value="all">全部投递</option><option value="waiting">等待企业回复</option><option value="action">企业已回复，待我核对</option><option value="withdrawn">已撤回</option></select></label><button className="btn" disabled={busy}>筛选全部投递</button><button className="btn-secondary" type="button" disabled={busy} onClick={()=>{setQuery("");setView("all");filters.current={q:"",view:"all"};page.current=1;setRevokeId(null);void session.refresh();}}>重置</button></div><p className="text-xs text-slate-600">“待我核对”表示企业已有明确回复，不表示未读或要求再次回复；查看、下载不代表通过筛选。</p></form>
     <details className="text-sm leading-6 text-slate-600"><summary className="cursor-pointer select-none text-indigo-700">状态与刷新说明</summary><p className="mt-2">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p></details>
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>
-    {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&(filters.current.q||filters.current.view!=="all"?<p className="panel text-sm">没有符合筛选的投递，可以调整条件或重置。</p>:<p className="panel">暂无投递。先生成匹配报告，再确认分享授权。</p>)}
+    {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&(filters.current.q||filters.current.view!=="all"?<p className="panel text-sm">没有符合筛选的投递，可以调整条件或重置。</p>:<ApplicationEmptyState/>)}
     {items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}
     {state.pagination&&<><ListPagination label="投递分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;setRevokeId(null);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的投递，不计入本页记录数。</p>}</>}
   </div>;

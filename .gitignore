@@ -14,3 +14,10 @@ backend/evals/open-source-*.json
 
 # Local test scratch directories, including .tmp-* siblings.
 .tmp*/
+
+# 根目录本机环境变量：只允许提交示例模板。
+# backend/.env 与 jianli/.env* 已由各自子目录的 .gitignore 覆盖；这里补根目录，
+# 避免把 .env 放到仓库根（Next/Docker 常见约定）时被 git add 带进历史。
+/.env
+/.env.*
+!/.env.example

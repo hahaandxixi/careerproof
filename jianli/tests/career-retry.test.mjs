@@ -33,6 +33,9 @@ function fixture({ failMaterials = false } = {}) {
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},
+    // Display formatting (UUID prefix stripping) is covered by display-path.test.mjs.
+    // This fixture only asserts retry state transitions, so the pass-through is faithful here.
+    "@/lib/display-path":{displayFilePath:v=>v,displayFilePathText:v=>v},
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
   const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);

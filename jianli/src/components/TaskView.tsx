@@ -200,7 +200,7 @@ export default function TaskView({ id }: { id: string }) {
                 })()}
                 {isCompletedRecord(step.eventType) && <span className="sr-only">（已完成记录）</span>}
               </p>
-              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-500">{step.detail}</p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-slate-500">{step.detail}</p>
               {MODEL_STEPS.includes(step.name) && typeof step.payload.latencyMs === "number" && step.payload.latencyMs > 0 && <p className="mt-1 text-xs text-slate-400">耗时 {Math.round((step.payload.latencyMs as number) / 100) / 10} 秒 · 输入 {String(step.payload.inputTokens ?? 0)} tokens · 输出 {String(step.payload.outputTokens ?? 0)} tokens</p>}
             </li>)}</ol>}
       </details>

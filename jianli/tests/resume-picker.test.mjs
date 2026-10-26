@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { filterResumeMaterials, resumeDisplayCategory } from "../src/lib/resume-picker.ts";
+import { duplicateResumeTitles, filterResumeMaterials, resumeDisplayCategory, resumeTitleLabel } from "../src/lib/resume-picker.ts";
 
 const demoTitles = ["CP08｜数据库 DBA｜测试简历"];
 const version = (id, number, filename, status = "completed") => ({ id, versionNumber: number, originalFilename: filename, status });
@@ -44,4 +44,31 @@ test("all completed history stays available for existing explicit links even whe
   assert.equal(all.find(r => r.versions.some(v => v.id === selectedId))?.id, "old");
   assert.deepEqual(all.map(row => row.id), ["own", "demo", "old"]);
   assert.equal(selectedId, "old1");
+});
+
+// 同名简历若在选择器里显示成同一块、单选按钮无障碍名也相同，用户与读屏用户都无法判断选了哪一份。
+test("duplicateResumeTitles only reports titles that actually repeat", () => {
+  assert.deepEqual([...duplicateResumeTitles([])], []);
+  assert.deepEqual([...duplicateResumeTitles([{ title: "我的简历" }])], []);
+  assert.deepEqual(
+    [...duplicateResumeTitles([{ title: "我的简历" }, { title: "我的简历" }, { title: "另一份简历" }])],
+    ["我的简历"],
+  );
+});
+
+test("resumeTitleLabel adds the material number only for repeated titles", () => {
+  const duplicates = new Set(["我的简历"]);
+  assert.equal(resumeTitleLabel("另一份简历", "aaaaaaaa1111", duplicates), "另一份简历");
+  assert.equal(resumeTitleLabel("我的简历", "aaaaaaaa1111", duplicates), "我的简历 · 材料编号 aaaaaaaa");
+  assert.equal(resumeTitleLabel("我的简历", "bbbbbbbb2222", duplicates), "我的简历 · 材料编号 bbbbbbbb");
+  assert.equal(resumeTitleLabel("我的简历", "bbbbbbbb2222", new Set()), "我的简历");
+});
+
+test("同名简历块标题与无障碍名都必须不同，且只显示编号前8位", () => {
+  const rows = [{ id: "aaaaaaaa1111", title: "我的简历" }, { id: "bbbbbbbb2222", title: "我的简历" }];
+  const duplicates = duplicateResumeTitles(rows);
+  const labels = rows.map(row => resumeTitleLabel(row.title, row.id, duplicates));
+  assert.notEqual(labels[0], labels[1], "同名简历的显示名不得相同");
+  assert.deepEqual(labels, ["我的简历 · 材料编号 aaaaaaaa", "我的简历 · 材料编号 bbbbbbbb"]);
+  assert.ok(labels.every(label => !label.includes("1111") && !label.includes("2222")), "不得显示整串编号");
 });

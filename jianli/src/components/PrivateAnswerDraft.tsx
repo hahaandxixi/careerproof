@@ -8,6 +8,7 @@ import {
   privateAnswerIsDirty, privateAnswerReferenceKey, privateAnswerSaveProblem, PRIVATE_ANSWER_MAX_TEXT,
 } from "@/lib/private-answer-workflow";
 import type { PrivateAnswerState } from "@/lib/private-answer-workflow";
+import { displayFilePath } from "@/lib/display-path";
 
 export interface PrivateAnswerDraftProps {
   taskId: string;
@@ -173,7 +174,7 @@ export function PrivateAnswerDraftPanel(props: {
           return <li key={key} className="text-sm">
             <label className="flex items-start gap-2">
               <input type="checkbox" className="mt-1" checked={selectedKeys.has(key)} onChange={() => props.onToggle(option)} />
-              <span className="min-w-0 flex-1 break-all">{option.reportKind === "base" ? "基准报告" : "目标报告"} {option.citationId} · {option.filePath} 第{option.lineStart}-{option.lineEnd}行{option.provenance === "reference" ? " · 第三方参考，不计入评级" : ""}</span>
+              <span className="min-w-0 flex-1 break-all">{option.reportKind === "base" ? "基准报告" : "目标报告"} {option.citationId} · {displayFilePath(option.filePath)} 第{option.lineStart}-{option.lineEnd}行{option.provenance === "reference" ? " · 第三方参考，不计入评级" : ""}</span>
             </label>
           </li>;
         })}
@@ -185,7 +186,7 @@ export function PrivateAnswerDraftPanel(props: {
         <ul className="space-y-1">
           {orphanSelections.map(entry => {
             const key = privateAnswerReferenceKey(entry.reportId, entry.requirementId, entry.citationId);
-            return <li key={key} className="text-sm text-rose-700"><span className="break-all">{entry.citationId} · 已失效{entry.filePath ? ` · ${entry.filePath}` : ""}，不作为有效来源复制</span>
+            return <li key={key} className="text-sm text-rose-700"><span className="break-all">{entry.citationId} · 已失效{entry.filePath ? ` · ${displayFilePath(entry.filePath)}` : ""}，不作为有效来源复制</span>
               <button type="button" className="ml-2 text-xs text-indigo-700 underline" onClick={() => props.onRemove(key)}>移除</button>
             </li>;
           })}
