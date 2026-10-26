@@ -68,6 +68,7 @@ export default function DemoPage() {
     <details className="rounded-2xl border border-slate-200 bg-white p-6">
       <summary className="cursor-pointer font-semibold">查看规则覆盖范围与源码引用演示</summary>
       <p className="mt-3 text-sm leading-7 text-slate-600">当前静态规则覆盖 {coverage.reduce((sum, row) => sum + row.supported.length, 0)}/45 项要求。未覆盖项需人工核对，不能把静态覆盖当作完整岗位能力验证。</p>
+      <p className="mt-3 text-xs leading-5 text-slate-500 sm:hidden">表格可左右滑动，查看完整的规则覆盖与暂不支持项。</p>
       <div className="mt-3 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr><th className="p-2">岗位</th><th className="p-2">规则覆盖</th><th className="p-2">暂不支持</th></tr></thead><tbody>{coverage.map(row => <tr key={row.job} className="border-t border-slate-200"><td className="p-2">{row.job}</td><td className="p-2">{row.supported.length}/5</td><td className="p-2 text-slate-600">{row.unsupported.join("、") || "无"}</td></tr>)}</tbody></table></div>
       <div className="mt-5"><SourceCoverageDemo /></div>
     </details>

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { api, errorMessage, type ResumeHistory, type ProjectHistory } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobDetail } from "@/lib/api/domain";
 import { applicationNextAction, applicationStatusText } from "@/lib/application-display";
+import { matchReadiness } from "@/lib/match-readiness";
 import { bindJobApplicationStatusLifecycle, createJobApplicationStatusSession, type JobApplicationStatusState } from "@/lib/job-application-status";
 import { resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
 import { useAuth } from "./AuthProvider";
@@ -109,12 +110,18 @@ function MatchForm({
     finally { submitting.current = false; setBusy(false); }
   }
   const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
+  const readiness = matchReadiness({ loading, completedResumeCount: availableResumes.length });
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
   const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
   return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-500">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。<Link className="mt-2 block text-indigo-700 underline" href="/applications">已有投递？查看企业回应 →</Link></p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
-    {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
+    {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : readiness.kind === "missing-resume" ? <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950" role="status">
+      <p className="font-semibold">还不能生成报告：缺少已解析的简历</p>
+      <p className="mt-1 leading-6">{readiness.message}</p>
+      <Link className="mt-3 inline-block font-medium text-indigo-700 underline" href={readiness.actionHref}>{readiness.actionLabel} →</Link>
+      <p className="mt-2 text-xs leading-6">本报告只保存在你的账号中；上传材料不会自动投递，也不代表已经把材料分享给企业。</p>
+    </div> : <form className="mt-5 space-y-4" onSubmit={submit}>
       <fieldset disabled={busy} className="space-y-4">
         <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={setResumeVersionId} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />

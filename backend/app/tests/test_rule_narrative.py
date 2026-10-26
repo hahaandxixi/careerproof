@@ -36,6 +36,16 @@ def test_runtime_output_is_included_in_uploaded_inventory_without_becoming_evide
     assert "无需重复上传" in narrative["gap"]
 
 
+def test_uuid_prefix_is_hidden_from_rule_narrative():
+    uuid = "6db170c9-ea2b-4036-84d1-47260c687014"
+    record = source(f"{uuid}/version-a/ledger.py", "def allocate(n):\n    return n\n")
+    uploaded = source(f"{uuid}/runtime/pytest-output.txt", "11 passed")
+    narrative = build_rule_narrative([evidence(record)], (record, uploaded))
+    assert uuid not in narrative["reason"] and uuid not in narrative["gap"]
+    assert "version-a/ledger.py" in narrative["reason"]
+    assert "runtime/pytest-output.txt" in narrative["gap"]
+
+
 def test_observations_locate_real_source_without_certifying_business_or_tests():
     record = source("version-a/ledger.py", (
         "def allocate(n):\n"

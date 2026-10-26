@@ -1,6 +1,7 @@
 """Check the explicit run-path source manifest, not the whole worktree."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -33,7 +34,14 @@ def main() -> None:
             "passed": actual == expected and not dirty and not untracked,
         })
     result = {"status": "pass" if all(row["passed"] for row in rows) else "fail", "paths": rows}
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    text = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
+    print(text, end="")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(text, encoding="utf-8")
 
 
 if __name__ == "__main__":

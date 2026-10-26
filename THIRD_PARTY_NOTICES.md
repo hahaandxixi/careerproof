@@ -1,6 +1,6 @@
 # CareerProof 第三方依赖清单
 
-更新日期：2026-10-13。
+更新日期：2026-10-22。
 
 版本来自当前 `backend/pyproject.toml`、升级环境包元数据和 `jianli/package-lock.json`，
 以下只列直接依赖；许可证标识来自本地包元数据及既有清单，不替代完整许可证文本和发布许可核查。
@@ -56,13 +56,19 @@
 | next | 15.5.27 | MIT |
 | react | 19.0.0 | MIT |
 | react-dom | 19.0.0 | MIT |
+| @eslint/eslintrc | 3.3.7 | MIT |
 | @types/node | 22.20.1 | MIT |
 | @types/react | 19.2.18 | MIT |
 | @types/react-dom | 19.2.5 | MIT |
 | autoprefixer | 10.5.4 | MIT |
+| eslint | 9.39.5 | MIT |
+| eslint-config-next | 15.5.27 | MIT |
 | postcss | 8.5.26 | MIT |
+| sucrase | 3.35.1 | MIT |
 | tailwindcss | 3.4.19 | MIT |
 | typescript | 5.9.3 | Apache-2.0 |
+
+`sucrase` 是前端测试的转译依赖（`tests/*.test.mjs` 用它执行真实组件），不是运行时依赖；`eslint`、`eslint-config-next`、`@eslint/eslintrc` 为 lint 门禁依赖。四者的版本与许可证取自本地 `package-lock.json` 与 `node_modules` 元数据。
 
 ## 发布前许可阻断项
 

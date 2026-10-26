@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from app.agents.contracts import EvidenceAnalysis, RequirementEvidenceContext
+from app.tools.display_path import display_file_path
 from app.tools.matcher import MatchResult
 
 _MISSING_CUES = ("未展示", "未提供", "缺少", "缺失", "没有", "请补充", "需补充", "补充")
@@ -9,6 +10,18 @@ _MISSING_CUES = ("未展示", "未提供", "缺少", "缺失", "没有", "请补
 
 def _key(entry) -> tuple[str, int, int]:
     return (entry.file_path, entry.line_start, entry.line_end)
+
+
+def _short_material_ranges(entries) -> str:
+    grouped: dict[str, list[tuple[int, int]]] = {}
+    for entry in entries:
+        grouped.setdefault(display_file_path(entry.file_path), []).append(
+            (entry.line_start, entry.line_end)
+        )
+    return "；".join(
+        f"{path} " + "、".join(f"第{start}–{end}行" for start, end in ranges)
+        for path, ranges in grouped.items()
+    )
 
 
 def qualify_analysis(
@@ -43,17 +56,15 @@ def qualify_analysis(
         suggestion = item.suggestion or ""
         if not any(cue in gap or cue in suggestion for cue in _MISSING_CUES):
             continue
-        files = "、".join(
-            f"{entry.file_path}:{entry.line_start}-{entry.line_end}" for entry in unsent[:3]
-        )
+        materials = _short_material_ranges(unsent)
         items[index] = item.model_copy(update={
             "information_gap": (
-                "本次片段未覆盖模型判断所需的部分材料；规则层保存了未发送证据："
-                f"{files}。材料中可能已包含，请先核对这些材料后再判断是否仍需补充。"
+                "规则层另有未发送材料："
+                f"{materials}。材料中可能已包含，请先核对；仅对核对后仍未覆盖的场景再补充。"
             ),
             "suggestion": (
-                "先核对规则层保存但未发送的材料（"
-                f"{files}）；材料中可能已包含，仅对核对后仍未覆盖的场景再补充具体材料。"
+                "先核对规则层另有未发送材料："
+                f"{materials}；材料中可能已包含，仅对核对后仍未覆盖的场景再补充。"
             ),
         })
         changed = True

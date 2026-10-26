@@ -12,6 +12,7 @@ import textwrap
 from pathlib import PurePosixPath
 
 from app.tools.code_analyzer import FrozenRetrievalSource
+from app.tools.display_path import display_file_path, display_path_text
 
 VERSION = "rule-narrative-v1"
 MAX_TEXT = 2200
@@ -85,7 +86,10 @@ def build_rule_narrative(
         if key in seen:
             continue
         seen.add(key)
-        selected.append(f"{path} 第{start}—{end}行（{_source_observations(snippet, path)}）")
+        selected.append(
+            f"{display_file_path(path)} 第{start}—{end}行"
+            f"（{_source_observations(snippet, path)}）"
+        )
         if len(selected) == 3:
             break
     if not selected:
@@ -101,9 +105,13 @@ def build_rule_narrative(
                   and not PurePosixPath(path).name.startswith("requirements")][:3]
     inventory = []
     if test_paths:
-        inventory.append("已上传测试命名文件：" + "、".join(test_paths))
+        inventory.append("已上传测试命名文件：" + "、".join(
+            display_file_path(path) for path in test_paths
+        ))
     if text_paths:
-        inventory.append("已上传文本/JSON材料：" + "、".join(text_paths))
+        inventory.append("已上传文本/JSON材料：" + "、".join(
+            display_file_path(path) for path in text_paths
+        ))
     kinds = {entry.get("evidence_type") for entry in evidence[:12]
              if entry.get("provenance") == "portfolio"}
     focus = (
@@ -122,7 +130,11 @@ def build_rule_narrative(
     else:
         gap += "先核对所选材料中是否已有对应测试或记录，仅为尚未覆盖的场景补充验证材料。"
     gap += "文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
-    return {"version": VERSION, "reason": reason[:MAX_TEXT], "gap": gap[:MAX_TEXT]}
+    return {
+        "version": VERSION,
+        "reason": display_path_text(reason)[:MAX_TEXT],
+        "gap": display_path_text(gap)[:MAX_TEXT],
+    }
 
 
 def saved_rule_narrative(snapshot: dict) -> dict | None:

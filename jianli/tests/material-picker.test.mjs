@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "../src/lib/material-picker.ts";
+import { duplicateProjectNames, filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, projectNameLabel, toggleMaterialVersion } from "../src/lib/material-picker.ts";
 
 const projects = [
   { id: "p1", name: "后端练习", versions: [
@@ -65,4 +65,34 @@ test("project display groups prioritize named pairs without removing discoverabl
   assert.equal(projectDisplayCategory("历史验收项目 20260926-142342", demoNames), "history");
   assert.equal(projectDisplayCategory("视觉与代码组合合成验收 20260926-230706", demoNames), "history");
   assert.deepEqual(rows, original);
+});
+
+// 同名项目若在选择器里显示成同一行，用户会选错材料、基于错误项目生成报告。
+test("duplicateProjectNames only reports names that actually repeat", () => {
+  assert.deepEqual([...duplicateProjectNames([])], []);
+  assert.deepEqual([...duplicateProjectNames([{ name: "唯一项目" }])], []);
+  const repeated = duplicateProjectNames([
+    { name: "校园活动报名服务" }, { name: "校园活动报名服务" }, { name: "另一个项目" },
+  ]);
+  assert.deepEqual([...repeated], ["校园活动报名服务"]);
+});
+
+test("projectNameLabel adds the material number only for repeated names, so normal rows stay clean", () => {
+  const duplicates = new Set(["校园活动报名服务"]);
+  assert.equal(projectNameLabel("另一个项目", "aaaaaaaa1111", duplicates), "另一个项目");
+  assert.equal(projectNameLabel("校园活动报名服务", "aaaaaaaa1111", duplicates), "校园活动报名服务 · 材料编号 aaaaaaaa");
+  assert.equal(projectNameLabel("校园活动报名服务", "bbbbbbbb2222", duplicates), "校园活动报名服务 · 材料编号 bbbbbbbb");
+  assert.equal(projectNameLabel("校园活动报名服务", "bbbbbbbb2222", new Set()), "校园活动报名服务");
+});
+
+test("同名的两个项目标题必须不同，且只显示编号前8位", () => {
+  const rows = [
+    { id: "aaaaaaaa1111", name: "同名项目" },
+    { id: "bbbbbbbb2222", name: "同名项目" },
+  ];
+  const duplicates = duplicateProjectNames(rows);
+  const labels = rows.map(row => projectNameLabel(row.name, row.id, duplicates));
+  assert.notEqual(labels[0], labels[1], "同名项目的显示名不得相同");
+  assert.deepEqual(labels, ["同名项目 · 材料编号 aaaaaaaa", "同名项目 · 材料编号 bbbbbbbb"]);
+  assert.ok(labels.every(label => !label.includes("1111") && !label.includes("2222")), "不得显示整串编号");
 });

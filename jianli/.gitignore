@@ -1,6 +1,7 @@
 node_modules
-.next
-.next-e2e
+# 所有 Next 构建输出：.next 与隔离构建目录（.next-e2e / .next-ui-audit-* / .next-verify-* 等）。
+# 原先逐个列举 .next 与 .next-e2e，导致 .next-ui-audit-* 这类隔离构建产物漏网。
+.next*
 out
 *.log
 *.tsbuildinfo
