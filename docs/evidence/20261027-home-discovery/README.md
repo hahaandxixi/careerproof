@@ -56,15 +56,15 @@
 
 | 命令／检查 | 退出码与结果 | 证据 |
 | --- | --- | --- |
-| `npm test` | 0；486通过，0失败、取消、跳过 | [完整输出](frontend-full-final.log) |
-| `npm run typecheck` | 0 | [输出](typecheck-final.log) |
-| `npm run lint` | 0；0错误，保留鉴权图片既有1条 warning | [输出](lint-final.log) |
-| `BACKEND_ORIGIN=http://127.0.0.1:8140 npm run build`（PowerShell设置环境后执行） | 0；首页123kB、发现页119kB首次加载JS；未新增依赖 | [输出](frontend-build-final.log) |
-| `python -m pytest backend/app/tests/test_job_discovery_filters.py backend/app/tests/test_jobs_api.py backend/app/tests/test_job_discovery_curation.py -q --basetemp=backend/.tmp/jobs-regression-final --junitxml=backend/.tmp/backend-jobs-final.xml` | 0；22通过，0失败／跳过 | [日志](backend-jobs-final.log)、[JUnit](backend-jobs-final.xml) |
-| `python -m pytest app/tests/test_job_discovery_filters.py -q --basetemp=.tmp/pg-final --junitxml=.tmp/postgres-taxonomy-final.xml`（在backend运行，专属PG；日志含实际绝对路径） | 0；4通过，0失败／跳过 | [日志](postgres-taxonomy-final.log)、[JUnit](postgres-taxonomy-final.xml) |
-| `python -m ruff check` 本轮7个Python文件 | 0 | [输出](ruff-final.log) |
+| `npm test` | 0；486通过，0失败、取消、跳过 | [完整输出](frontend-full-final.raw.out) |
+| `npm run typecheck` | 0 | [输出](typecheck-final.raw.out) |
+| `npm run lint` | 0；0错误，保留鉴权图片既有1条 warning | [输出](lint-final.raw.out) |
+| `BACKEND_ORIGIN=http://127.0.0.1:8140 npm run build`（PowerShell设置环境后执行） | 0；首页123kB、发现页119kB首次加载JS；未新增依赖 | [输出](frontend-build-final.raw.out) |
+| `python -m pytest backend/app/tests/test_job_discovery_filters.py backend/app/tests/test_jobs_api.py backend/app/tests/test_job_discovery_curation.py -q --basetemp=backend/.tmp/jobs-regression-final --junitxml=backend/.tmp/backend-jobs-final.xml` | 0；22通过，0失败／跳过 | [日志](backend-jobs-final.raw.out)、[JUnit](backend-jobs-final.xml) |
+| `python -m pytest app/tests/test_job_discovery_filters.py -q --basetemp=.tmp/pg-final --junitxml=.tmp/postgres-taxonomy-final.xml`（在backend运行，专属PG；日志含实际绝对路径） | 0；4通过，0失败／跳过 | [日志](postgres-taxonomy-final.raw.out)、[JUnit](postgres-taxonomy-final.xml) |
+| `python -m ruff check` 本轮7个Python文件 | 0 | [输出](ruff-final.raw.out) |
 | `python scripts/sync_technical_careers.py --check` | 0；前后端分类一致 | 分类一致性也由上述真实回归检查 |
-| `python -m alembic upgrade head`、`python -m alembic check` | 各0；专属PG，无待生成迁移 | [迁移](migration.log)、[对齐](migration-check.log) |
+| `python -m alembic upgrade head`、`python -m alembic check` | 各0；专属PG，无待生成迁移 | [迁移](migration.raw.out)、[对齐](migration-check.raw.out) |
 | 实际8140 API，6组只读GET | 全部200，数量与方向组合、旧值兜底一致 | [逐例结果](live-api-filter-check.json) |
 
 后端运行显式设置 `PYTHONPATH` 为本工作树的 `backend`、`APP_ENV=test`、`AI_EXTERNAL_ENABLED=false`、`AI_PROVIDER=mock`。PG运行从本机忽略目录读取该任务专属连接并设置 `CP_HOME_TEST_DATABASE_URL`，测试在连接前检查主机、55447端口和两个明确的任务库名，拒绝其他目标；不把包含密码的连接串贴入命令或证据。
