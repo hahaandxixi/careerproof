@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from uuid import UUID
 
-from sqlalchemy import delete, func, or_, select
+from sqlalchemy import delete, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import MembershipRole
 from app.models.identity import Enterprise, EnterpriseMembership
 from app.models.recruitment import Job, JobRequirement, Skill
+from app.tools.technical_careers import discovery_conditions
 
 
 class JobRepository:
@@ -24,6 +25,9 @@ class JobRepository:
         category: str | None = None,
         city: str | None = None,
         employment_type: str | None = None,
+        direction: str | None = None,
+        specialty: str | None = None,
+        language: str | None = None,
         manager_id: UUID | None = None,
         include_all: bool = False,
     ) -> tuple[list[tuple[Job, int]], int]:
@@ -42,6 +46,11 @@ class JobRepository:
                     Job.title.icontains(q, autoescape=True),
                     Job.company_name.icontains(q, autoescape=True),
                     Job.description.icontains(q, autoescape=True),
+                    exists(select(1).where(
+                        JobRequirement.job_id == Job.id,
+                        or_(JobRequirement.skill_name.icontains(q, autoescape=True),
+                            JobRequirement.raw_text.icontains(q, autoescape=True)),
+                    ).correlate(Job)),
                 )
             )
         if category:
@@ -50,6 +59,7 @@ class JobRepository:
             conditions.append(Job.city == city)
         if employment_type:
             conditions.append(Job.employment_type == employment_type)
+        conditions.extend(discovery_conditions(direction, specialty, language))
         count_result = await self.session.scalar(
             select(func.count()).select_from(Job).where(*conditions)
         )

@@ -134,3 +134,5 @@ class JobSummary(APIModel):
     discovery_visible: bool = True
     application_count: int | None = None
     pending_application_count: int | None = None
+    career_direction: str | None = None
+    technical_tags: list[str] = Field(default_factory=list)
