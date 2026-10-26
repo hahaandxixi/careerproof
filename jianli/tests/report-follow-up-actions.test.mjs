@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire, registerHooks } from "node:module";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 const require=createRequire(import.meta.url), React=require("react"), {renderToStaticMarkup}=require("react-dom/server"), {transform}=require("sucrase");
 registerHooks({resolve(id,context,next){
@@ -106,5 +106,39 @@ test("denied, missing requirements and late upload-context replies never expose 
 test("invalid context or the existing growth-task path causes no report lookup or new return workflow",()=>{
  for(const params of [new URLSearchParams(),new URLSearchParams({sourceReport:"bad",sourceRequirement:requirementId}),new URLSearchParams({...Object.fromEntries(query()),growthTask:reportId})]){
   const f=fixture("ReportUploadReturn",{}, {query:params});try{assert.equal(f.tree(),null);assert.equal(f.calls.length,0);}finally{f.cleanup();}
+ }
+});
+
+test("the original job form explicitly submits chosen new versions without creating or binding a growth task",async()=>{
+ const values=[],sent=[],navigated=[],submitting={current:false};let index=0;
+ const resumes=[{id:"resume",title:"简历",versions:[{id:"new-resume",versionNumber:2,status:"completed"}]}];
+ const projects=[{id:"project",name:"项目",versions:[{id:"old-project",versionNumber:1,status:"completed"},{id:"new-project",versionNumber:2,status:"completed"}]}];
+ const frozen=JSON.stringify({resumes,projects});
+ const ResumePicker=()=>null,ProjectPicker=()=>null;
+ const modules={
+  react:{useEffect(){},useMemo:fn=>fn(),useRef:()=>submitting,useState(initial){const i=index++;if(!(i in values))values[i]=i===0?resumes:i===1?projects:i===6?false:initial;return[values[i],value=>{values[i]=typeof value==="function"?value(values[i]):value;}];}},
+  "react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:()=>null},
+  "next/navigation":{useRouter:()=>({push:value=>navigated.push(value)})},
+  "@/lib/api/client":{errorMessage:String,api:new Proxy({async createMatch(payload){sent.push(payload);return{taskId:"new-analysis"};}},{get(target,key){if(key in target)return target[key];return()=>{throw Error(`unexpected API ${String(key)}`);};}})},
+  "@/lib/api/domain":{},"@/lib/application-display":{},
+  "@/lib/job-application-status":{createJobApplicationStatusSession:()=>({})},
+  "@/lib/recommendation-selection":{},"./AuthProvider":{},"./AccessGate":{__esModule:true,default:()=>null,ErrorNotice:()=>null},
+  "./ProjectVersionPicker":{__esModule:true,default:ProjectPicker},"./ResumeVersionPicker":{__esModule:true,default:ResumePicker},"./ScenarioMaterials":{__esModule:true,default:()=>null},
+ };
+ const source=readFileSync(new URL("../src/components/JobDetailView.tsx",import.meta.url),"utf8");
+ const code=transform(source+"\nexport { MatchForm };",{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
+ const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
+ const render=()=>{index=0;return mod.exports.MatchForm({job:{id:reportId,requirements:[]},initialResumeVersionId:"",initialProjectVersionIds:[]});};
+ const submit=tree=>nodes(tree).find(node=>node.type==="form").props.onSubmit({preventDefault(){}});
+ let tree=render();await submit(tree);assert.equal(sent.length,0,"no matching request before choosing a resume");
+ nodes(tree).find(node=>node.type===ResumePicker).props.onChange("new-resume");
+ nodes(tree).find(node=>node.type===ProjectPicker).props.onChange(["new-project"]);
+ tree=render();assert.equal(sent.length,0,"changing selections must not start analysis");
+ await submit(tree);
+ assert.deepEqual(sent,[{jobId:reportId,resumeVersionId:"new-resume",projectVersionIds:["new-project"],externalAiConsent:false,usePreviousReport:false}]);
+ assert.deepEqual(navigated,["/tasks/new-analysis"]);
+ assert.equal(JSON.stringify({resumes,projects}),frozen);
+ for(const route of ["portfolio/page.tsx","jobs/[id]/page.tsx","reports/[id]/page.tsx","tasks/[id]/page.tsx","growth/page.tsx","growth/[id]/page.tsx"]){
+  assert.ok(existsSync(new URL(`../src/app/${route}`,import.meta.url)),route);
  }
 });

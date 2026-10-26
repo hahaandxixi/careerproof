@@ -102,7 +102,7 @@ test("non-students retain explanation and advice without private student task co
 test("review-only and unsupported states do not invent implementation deficiencies", () => {
  for(const value of [item("review","supported",{confirmationStatus:"rejected"}),item("outside","unsupported")]) {
   const html=render(report([value]));
-  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("查看已有补证记录"));
+  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("完成后上传新版材料"));
   assert.ok(!html.includes(">开始补证</button>")); assert.ok(html.includes("不能由此认定实现不存在"));
  }
 });
@@ -183,7 +183,8 @@ test("guidance can be copied and used for a new upload without creating a task",
  assert.ok(html.includes("复制补证建议"));
  assert.ok(html.includes("完成后上传新版材料"));
  assert.ok(html.includes("不必创建补证记录"));
- assert.ok(html.includes("已有记录与自定义计划（可选）"));
+ assert.ok(!html.includes("已有记录与自定义计划（可选）"));
+ assert.ok(!html.includes("查看已有补证记录"));
  assert.ok(!html.includes('>开始补证</button>'));
 });
 
@@ -197,10 +198,24 @@ test("copied guidance keeps saved sources and conditional instructions; rejected
  assert.ok(!text.includes("已成功运行"));
 });
 
-test("legacy growth anchors live inside the optional disclosure so the shared anchor revealer opens it",()=>{
+test("legacy growth anchors resolve to current copy/upload guidance without reopening task creation",()=>{
  for(const verdict of ["gap","supported"]){
   const html=render(report([item("legacy",verdict)]));
-  assert.match(html,/<details[^>]*><summary[^>]*>[^<]*<\/summary><div id="growth-legacy"/);
   assert.equal(count(html,'id="growth-legacy"'),1);
+  assert.ok(html.includes("复制补证建议")&&html.includes("完成后上传新版材料"));
+  assert.ok(!html.includes("自定义补证计划")&&!html.includes("查看已有补证记录"));
  }
+});
+
+test("no report requirement mounts task lookup or task plan editing for any saved evidence state",()=>{
+ for(const verdict of ["gap","partial","claimed_only","supported","unsupported"]){
+  const html=render(report([item("no-task",verdict)]));
+  assert.ok(!html.includes("查看已有补证记录"));
+  assert.ok(!html.includes("确认记录这条建议"));
+  assert.ok(!html.includes("保存并进入补证"));
+  assert.ok(!html.includes("<form"));
+ }
+ const source=readFileSync(path.join(SRC,"components/ReportEvidenceWorkspace.tsx"),"utf8");
+ assert.ok(!source.includes("GrowthTaskStart"));
+ assert.ok(!source.includes("existingGrowthTask"));
 });

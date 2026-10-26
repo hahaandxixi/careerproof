@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import type { GrowthTask, MatchReport, ReportItem } from "@/lib/api/domain";
+import type { ReactNode } from "react";
+import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText, evidenceWorkspace } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { requirementConclusion, savedRequirementAction } from "@/lib/report-workspace";
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
-import GrowthTaskStart from "./GrowthTaskStart";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import ReportRequirementReader from "./ReportRequirementReader";
 
@@ -16,13 +15,12 @@ export default function ReportEvidenceWorkspace({ report, children }: { report: 
 }
 
 export function RequirementActionPanel({ report, item, role }: { report: MatchReport; item: ReportItem; role?: string }) {
-  const [existingTask, setExistingTask] = useState<GrowthTask | null>(null);
   const groups = evidenceWorkspace([item]);
   const supported = groups.supported.length > 0;
   const actionable = groups.gaps.length + groups.partial.length > 0;
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
-  const plan = existingTask?.plan ?? advice?.taskPlan;
+  const plan = advice?.taskPlan;
   const explanation = requirementConclusion(item);
   const gap = advice?.gap || item.evidenceLevelGap?.trim();
   const conclusion = actionable ? gap || action?.evidenceGap?.trim() || explanation : explanation;
@@ -37,12 +35,11 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
     {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
     {item.evidenceList.some(source => source.contextComplete === false) && <p className="border-l-2 border-amber-400 pl-3 text-sm leading-6 text-amber-900">部分引用上下文不完整，请展开来源核对；不能据此确认完整实现。</p>}
     {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning} 已隐藏该任务草稿。</p>}
-    {(existingTask?.actionNeedsRecheck || existingTask?.taskPlanNeedsRecheck) && <p role="alert" className="text-sm leading-6 text-amber-900">已有任务的建议或计划需要重新核对。{existingTask.taskPlanWarning} 请核对原始来源，不要直接照旧建议重复上传。</p>}
     {!supported && <div className="space-y-3 border-t border-slate-200 pt-4">
       <h4 className="text-sm font-semibold text-slate-900">{action ? "建议怎么补" : "下一步先核对"}</h4>
       {!plan && text?.advice && <div className="text-sm leading-7"><p className="whitespace-pre-wrap break-words text-slate-800">{text.advice}</p><p className="text-xs text-slate-500">{action && ACTION_SOURCE_LABELS[action.source]} · 已保存建议</p></div>}
       {plan ? <div className="space-y-3 text-sm leading-7">
-        <p className="text-xs text-slate-500">{existingTask ? "来自本人已保存的补证任务计划" : "来自本报告已校验的 AI 任务草稿"}，仍需本人核对，不表示这些步骤已经执行。</p>
+        <p className="text-xs text-slate-500">来自本报告已校验的 AI 补证建议，仍需本人核对，不表示这些步骤已经执行。</p>
         <ol aria-label="建议行动" className="list-decimal space-y-2 pl-5">{plan.steps.slice(0, 4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol>
         {plan.steps.length > 4 && <details><summary className="cursor-pointer py-2 text-indigo-700">其余执行步骤</summary><ol start={5} className="list-decimal pl-5">{plan.steps.slice(4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol></details>}
         <h5 className="font-medium">建议提交的材料</h5>
@@ -50,7 +47,7 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
         <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul>
       </div> : <div className="space-y-2 text-sm leading-7">
         <p className="font-medium text-slate-800">通用核对步骤</p>
-        <p className="text-xs text-slate-600">以下是操作提示，不是系统已核实的实现情况。在自己的开发工具中完成改进即可；已有补证记录仍可按需读取。</p>
+        <p className="text-xs text-slate-600">以下是操作提示，不是系统已核实的实现情况。在自己的开发工具中完成改进后，返回上传新版材料并主动分析。</p>
         <ol className="list-decimal space-y-2 pl-5">{(actionable ? GENERAL_FOLLOW_UP : REVIEW_FOLLOW_UP).map((step, index) => <li key={index}>{step}</li>)}</ol>
         <p className="font-medium text-slate-800">建议提交的材料</p>
         <p className="text-xs leading-6 text-slate-600">暂无保存的具体交付物要求。以下为通用材料类型，按实际改进选择，不表示系统确认文件已经存在。</p>
@@ -65,14 +62,9 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
       {citations.length > 0 && <div className="flex flex-wrap gap-3">{citations.map(id => <EvidenceLink key={id} citationId={id} className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">建议依据 {id}</EvidenceLink>)}</div>}
     </div>}
     {role === "student" && <div>
-      {supported ? <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">材料有更新？按需查看补证指导</summary><div id={`growth-${item.requirementId}`} className="scroll-mt-24"><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} /><GrowthTaskStart reportId={report.id} requirementId={item.requirementId} advice={advice} compact triggerLabel="查看已有补证记录" /></div></details> : <>
-        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item, existingTask?.taskPlanNeedsRecheck || existingTask?.actionNeedsRecheck ? null : existingTask?.plan)} />
-        <details className="mt-4 border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">已有记录与自定义计划（可选）</summary>
-          <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
-          <GrowthTaskStart reportId={report.id} requirementId={item.requirementId} advice={advice} compact triggerLabel="查看已有补证记录" onExistingTask={setExistingTask} showExistingPlan={false} />
-          </div>
-        </details>
-      </>}
+      {supported ? <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">材料有更新？按需查看补证指导</summary><div id={`growth-${item.requirementId}`} className="scroll-mt-24"><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} /></div></details> : <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
+        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} />
+      </div>}
     </div>}
   </div>;
 }

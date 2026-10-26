@@ -73,3 +73,10 @@ test("authentication loading and error never render the saved identity as confir
   assert.ok(error.includes("公共介绍"));
   assert.ok(!error.includes("当前用户"));
 });
+
+test("old growth tasks cannot replace report continuation or form a second student work area",()=>{
+ const html=render("student",{work:{...EMPTY,reports:[{id:"report-owned",jobTitle:"当前岗位",createdAt:"2026-10-22T10:00:00Z",analysisMode:"rules"}],growth:[{id:"old-task",requirementTitle:"旧记录",status:"planned"}]}});
+ assert.ok(html.includes("继续核对：当前岗位"));
+ assert.ok(!html.includes("最近补证任务")&&!html.includes('href="/growth'));
+ assert.ok(!source.includes("api.listGrowthTasks"),"home must not depend on the legacy task list API");
+});

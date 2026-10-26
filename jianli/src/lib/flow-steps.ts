@@ -2,7 +2,7 @@ export const FLOW_STEPS = [
   { key: "materials", label: "准备材料", href: "/portfolio" },
   { key: "recommendations", label: "推荐职业与岗位", href: "/recommendations" },
   { key: "matching", label: "查看岗位匹配", href: "/reports" },
-  { key: "growth", label: "补充材料", href: "/growth" },
+  { key: "growth", label: "补充材料", href: "/portfolio" },
   { key: "application", label: "确认投递", href: null },
 ] as const;
 

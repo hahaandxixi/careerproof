@@ -68,7 +68,8 @@ test("navigation retains all five ordered steps and only one current location", 
   assert.ok(!/已完成|✓|aria-disabled|emerald|amber|rose|sky/.test(html));
   assert.ok(!html.includes('href="#"'));
   assert.ok(!html.includes('href="/applications"'));
-  assert.ok(html.includes('href="/growth"')); // Optional guidance, not a completion gate.
+  assert.ok(!html.includes('href="/growth"'));
+  assert.equal(flowStepsForLocation("/reports/r1").find(step=>step.key==="growth").href,"/portfolio");
   assert.ok(html.includes("左右滑动查看全部 5 步。"));
 });
 
