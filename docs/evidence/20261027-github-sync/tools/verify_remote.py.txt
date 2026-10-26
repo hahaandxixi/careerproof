@@ -1,0 +1,33 @@
+import base64,hashlib,json,pathlib,subprocess,sys
+ROOT=pathlib.Path(r'D:\jbcode\web ai\jianli');OUT=ROOT/'backend/.tmp/github-sync-20261027';GH=r'C:\Program Files\GitHub CLI\gh.exe'
+def git(*a):return subprocess.check_output(['git',*a],cwd=ROOT)
+def api(path):
+    endpoint='repos/hahaandxixi/careerproof'+('/'+path if path else '')
+    p=subprocess.run([GH,'api',endpoint],capture_output=True,check=True);return json.loads(p.stdout)
+plan=json.loads((OUT/'plan.json').read_text(encoding='utf8'));asset=(OUT/'asset-commit.txt').read_text().strip()
+heads={'codex/careerproof-pending-source':'e142a9e65f2746482e19a5f497bfcfc856935d2a','codex/careerproof-pending-evidence':asset,'codex/contest-delivery-20261023':'d072c6d6808b26f07588378aeb0eca3a476d8222','codex/ci-hash-fix':'bd0785711f2707f613022d72c0ca69283e2849b1','codex/ci-process-fix':'4ffec25f06259d8028f038cb72a2cec96fc9629f','codex/page-final-20261023':'6875262e2306da4ccfdec2134ac5323a8b294eb3','codex/report-workspace-20261026':'365aecffd5ef1807b993829bfba8bc6d02289fa8','main':'8ca91cc2c8e32fbd59412134798eb7db257a29d4'}
+refs=dict((b.replace('refs/heads/','',1),a) for a,b in (l.split('\t',1) for l in git('ls-remote','--heads','origin').decode().splitlines()))
+assert all(refs.get(k)==v for k,v in heads.items()),{k:refs.get(k) for k in heads if refs.get(k)!=heads[k]}
+result={'heads':heads,'files':{},'sample_sha256':[],'repository_private':None,'prs':[]}
+for branch in ['codex/careerproof-pending-source','codex/careerproof-pending-evidence','codex/contest-delivery-20261023']:
+    commit=heads[branch];tree=git('rev-parse',commit+'^{tree}').decode().strip();remote=api('git/trees/'+tree+'?recursive=1');assert not remote.get('truncated')
+    entries={x['path']:x['sha'] for x in remote['tree'] if x['type']=='blob'}
+    local={}
+    for v in git('ls-tree','-r','-z',commit).decode('utf8').split('\0'):
+        if not v:continue
+        meta,path=v.split('\t',1);local[path]=meta.split()[2]
+    assert entries==local,branch
+    pending=[x for x in plan['files'] if x['remote_branch']==branch and x['action']=='archive-draft']
+    assert all(x['remote_path'] in entries for x in pending)
+    result['files'][branch]={'commit':commit,'all_tree_files':len(entries),'pending_files_found':len(pending),'all_git_blob_ids_match':True}
+    samples=[x['remote_path'] for x in pending[:2]]
+    if 'contest' in branch:samples=['output/pdf/CareerProof-技术说明-预审版-20261023-B1.pdf']
+    for path in samples:
+        blob=api('git/blobs/'+entries[path]);content=base64.b64decode(blob['content']);actual=hashlib.sha256(content).hexdigest()
+        expected=hashlib.sha256(git('cat-file','blob',entries[path])).hexdigest();assert actual==expected
+        result['sample_sha256'].append({'branch':branch,'path':path,'sha256':actual,'match':True})
+repo=api('');assert repo['private'] is True;result['repository_private']=True
+for n in [1,2,3]:
+    p=api('pulls/'+str(n));assert p['draft'] and not p['merged'];result['prs'].append({'number':n,'draft':p['draft'],'head':p['head']['sha']})
+(OUT/'remote-verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf8')
+print(json.dumps(result,ensure_ascii=False))

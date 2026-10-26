@@ -1,0 +1,83 @@
+[
+  {
+    "branch": "codex/ci-hash-fix",
+    "head": "bd0785711f2707f613022d72c0ca69283e2849b1",
+    "unpublished": [
+      "bd0785711f2707f613022d72c0ca69283e2849b1"
+    ],
+    "cherry_main": [
+      "- bd0785711f2707f613022d72c0ca69283e2849b1"
+    ]
+  },
+  {
+    "branch": "codex/ci-integration",
+    "head": "21f9c2402a487a6deb4139d4d07246425d422012",
+    "unpublished": [],
+    "cherry_main": []
+  },
+  {
+    "branch": "codex/ci-process-fix",
+    "head": "4ffec25f06259d8028f038cb72a2cec96fc9629f",
+    "unpublished": [
+      "4ffec25f06259d8028f038cb72a2cec96fc9629f"
+    ],
+    "cherry_main": [
+      "- 4ffec25f06259d8028f038cb72a2cec96fc9629f"
+    ]
+  },
+  {
+    "branch": "codex/contest-delivery-20261023",
+    "head": "d072c6d6808b26f07588378aeb0eca3a476d8222",
+    "unpublished": [
+      "d072c6d6808b26f07588378aeb0eca3a476d8222"
+    ],
+    "cherry_main": [
+      "+ d072c6d6808b26f07588378aeb0eca3a476d8222"
+    ]
+  },
+  {
+    "branch": "codex/docs-governance-20261023",
+    "head": "88e97736396a6c7e5f539a903cde91a34e14d65a",
+    "unpublished": [],
+    "cherry_main": []
+  },
+  {
+    "branch": "codex/layout-closeout-20261023",
+    "head": "4f5ad6ff1cb84c06f3ea5ff97f5ee7e25fb28070",
+    "unpublished": [],
+    "cherry_main": []
+  },
+  {
+    "branch": "codex/page-final-20261023",
+    "head": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+    "unpublished": [
+      "6875262e2306da4ccfdec2134ac5323a8b294eb3"
+    ],
+    "cherry_main": [
+      "- 6875262e2306da4ccfdec2134ac5323a8b294eb3"
+    ]
+  },
+  {
+    "branch": "codex/report-workspace-20261026",
+    "head": "365aecffd5ef1807b993829bfba8bc6d02289fa8",
+    "unpublished": [],
+    "cherry_main": [
+      "+ 30dba8b34c391b913b76b6563b528770d4dafc91",
+      "+ 005365dd2ee17a6914cec3f7881b6f100a39b38b",
+      "+ 3a91fbcba9446a51142a817f3088e384a26eeddb",
+      "+ 52ff1ed1c1403ef5bf7cba3597d46c61ea2a0b5e",
+      "+ 9856e1e56eaa6be86564d453a4bc3e8990f84e53",
+      "+ 2f661e08b8194eb0b413190214fb243695836f14",
+      "+ 48bdbc4a2ee8e5f508244b2ce5f6173e7a28d0d9",
+      "+ 2d54ad0e0f040b07d8b5c90005ad227dc38b15cb",
+      "+ 2dcf0cfc986f473b2d210f3420975e9fef868a3e",
+      "+ 365aecffd5ef1807b993829bfba8bc6d02289fa8"
+    ]
+  },
+  {
+    "branch": "main",
+    "head": "8ca91cc2c8e32fbd59412134798eb7db257a29d4",
+    "unpublished": [],
+    "cherry_main": []
+  }
+]
