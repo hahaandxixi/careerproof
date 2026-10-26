@@ -1,0 +1,73 @@
+{
+  "sourceCommit": "30dba8b34c391b913b76b6563b528770d4dafc91",
+  "buildId": "rKqTIjQXdcfxdLKcToJ2V",
+  "comparison": "Git LF blobs and actual Windows build inputs recorded separately; only CRLF/LF normalization is allowed and was verified.",
+  "files": {
+    "jianli/src/components/GrowthTaskStart.tsx": {
+      "gitBlobSha256": "83d99348353ca4d56e54b54f0428c137e1024939b4c497d7ff201eec83a29837",
+      "buildInputSha256": "83cdf3aa450edacaa829286a956fb024739c3f63a923fa0283629317acd76610",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportDetail.tsx": {
+      "gitBlobSha256": "b912bd50423b69f6a60e48a663acbf18b44adec7fa9824aea9c9419c9c13ab94",
+      "buildInputSha256": "413e3e5535ac111970711778c9b3cda79a187c40c95a3be5e5a67cdb3d023957",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportEvidenceWorkspace.tsx": {
+      "gitBlobSha256": "4c3c91993666ea9f28596a8912f2a0d0fada0dda496dbc68cfdf3d3801960890",
+      "buildInputSha256": "84f0ae3187292e3b37314608963eaf11cc30f66028f118ade194663b8bff2f75",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportOverview.tsx": {
+      "gitBlobSha256": "70d659469e4a634923bdfe1d8a976d4c39b9d09182291f32629ef01898f6af66",
+      "buildInputSha256": "904be1e9a1e59ae65d1f94fd0d17c9fa4699e60c78ff8d2bf763b9c35499f100",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportRequirementReader.tsx": {
+      "gitBlobSha256": "4ae151813bfc059831c006269e10d5dcea8b517404df08ebd75ea0f2718f4cfb",
+      "buildInputSha256": "1f2842fe23212552df2fa66debc59a391e44ad510ba3e2e296c418c642962f12",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/analysis-status.ts": {
+      "gitBlobSha256": "c167b0f2dab36342be37ede891495acdac4801ec064a9f02c502ef6a4b5ce688",
+      "buildInputSha256": "267f9a5b8fc6f8ed214ab70790aa7c344af3f7e2bc88f8c8a906c812e022d39e",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/report-reader.ts": {
+      "gitBlobSha256": "a78d1dcbf10e618779ee9267021759072556df6b15476c3ee6f47e0fdbd23963",
+      "buildInputSha256": "acdd4b739fe13b8a99db12a1ccfea15c3968d2ff1659690904701b49a4467417",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/report-workspace.ts": {
+      "gitBlobSha256": "c6f497d1b59d619f496a38ac21a12c54cdfef7401b8142b645798245365f5f92",
+      "buildInputSha256": "0289b173486db5ef0cf919fd8aca7add50f0aee736579c8669c8e9b6965a04bd",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/report-action-layer.test.mjs": {
+      "gitBlobSha256": "d17e36a924377a7bf195eb306d253d75a6d5a7473578eb0349ea62300c096462",
+      "buildInputSha256": "d86c0ae790aa353f2bf7839407cf29ffe61d450e87266bcb1791c69db9eaad37",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/report-reader.test.mjs": {
+      "gitBlobSha256": "785eccdc0c1611d81a1a96f77bc17f305280182b824f204b0cf764bea73de616",
+      "buildInputSha256": "bb83450946b6d19f67aa185564406c50847664e8f5262b90f3de0bad539b69c3",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/score-labels-render.test.mjs": {
+      "gitBlobSha256": "273be5706db64394d4c70fb803e5eb4fc51a09b85fe406b0bf316acd5e2aabc5",
+      "buildInputSha256": "605ceebf5597d7699c910f0302750070138d16a8237c580b734eb35e03f3754c",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    }
+  }
+}

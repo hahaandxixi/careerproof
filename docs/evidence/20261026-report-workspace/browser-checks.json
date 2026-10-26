@@ -1,0 +1,86 @@
+{
+  "reportId": "193b42c7-8433-4f23-a4cb-76578c214b79",
+  "reportData": "existing synthetic saved report; 4 supported, 1 gap (Redis)",
+  "sourceCommit": "30dba8b34c391b913b76b6563b528770d4dafc91",
+  "buildId": "rKqTIjQXdcfxdLKcToJ2V",
+  "method": "actual in-app browser using UI actions, read-only DOM observations and existing isolated API; not a mock report or independent human test",
+  "passed": [
+    {
+      "case": "default priority",
+      "result": "Redis selected; one main list and one visible article; all five saved articles stay mounted"
+    },
+    {
+      "case": "all / supported / empty filters",
+      "result": "5 / 4 / 0 matching items; empty filter shows explicit empty state and zero visible articles"
+    },
+    {
+      "case": "context warning",
+      "result": "FastAPI remains supported; incomplete context warning stays directly visible"
+    },
+    {
+      "case": "evidence anchor",
+      "result": "R1-E1 selected and two ancestor details opened; target top 120.2px, fixed header bottom 68.8px"
+    },
+    {
+      "case": "keyboard",
+      "result": "Enter and Space activate filters; requirement navigation focuses H3"
+    },
+    {
+      "case": "unsaved review note",
+      "result": "survived priority/support filter switches; original restored; no review saved"
+    },
+    {
+      "case": "growth form",
+      "result": "trigger loads actual existing-task lookup and shows new form for this report; unsaved deliverable survives switching; original restored; no task saved"
+    },
+    {
+      "case": "responsive priority",
+      "width": 1440,
+      "height": 1000,
+      "wholePageOverflow": false,
+      "visibleArticles": 1,
+      "listedRequirements": 1
+    },
+    {
+      "case": "responsive priority",
+      "width": 1280,
+      "height": 900,
+      "wholePageOverflow": false,
+      "visibleArticles": 1,
+      "listedRequirements": 1
+    },
+    {
+      "case": "responsive priority",
+      "width": 768,
+      "height": 1024,
+      "wholePageOverflow": false,
+      "visibleArticles": 1,
+      "listedRequirements": 1
+    },
+    {
+      "case": "responsive priority",
+      "width": 390,
+      "height": 844,
+      "wholePageOverflow": false,
+      "visibleArticles": 1,
+      "listedRequirements": 1
+    }
+  ],
+  "pending": [
+    "real refresh and browser back/forward after filter selection",
+    "existing-task branch with a report that already has a saved task",
+    "browser console log collection",
+    "native Windows Chrome/Edge 200 percent zoom; observed Edge window was minimized, no zoom performed",
+    "physical touch device test",
+    "independent human timing, comprehension and two-action acceptance"
+  ],
+  "interruption": "agent-created tab closed at interrupted turn boundary; access to new 3139 tab was declined on resume; no raw CDP, alternate browser or indirect fetch used to bypass refusal",
+  "temporaryViewport": "reset after interruption",
+  "notDone": [
+    "no report rewriting",
+    "no application or reply sent",
+    "no new model request",
+    "no database migration",
+    "no normal-site restart"
+  ]
+}
