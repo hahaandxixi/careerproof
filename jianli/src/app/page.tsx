@@ -1,12 +1,13 @@
 import Link from "next/link";
 import HomeWorkspace from "@/components/HomeWorkspace";
-import { HEATMAP_DEMO, DEMO_LABELS, demoCellClass } from "@/lib/heatmap-demo";
+import { Suspense } from "react";
+import HomeScenarioPreview from "@/components/HomeScenarioPreview";
+import JobDiscovery from "@/components/JobDiscovery";
 
 const heroActions = "btn min-h-[44px] flex-1 px-5 sm:flex-none";
 const quietActions = "btn-secondary min-h-[44px] flex-1 px-5 sm:flex-none";
 const studentEntry = "flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 text-sm font-medium text-slate-700 hover:bg-slate-50";
 const enterpriseEntry = "flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-indigo-200 bg-indigo-50 px-5 text-sm font-medium text-indigo-800 hover:bg-indigo-100";
-const demoAction = "btn mt-4 min-h-[44px] w-full self-start px-5 sm:w-auto";
 const steps: [string, string][] = [
   ["01 · 整理材料", "上传简历、项目和作品，核对解析文本，选定本轮要参与匹配的版本。"],
   ["02 · 对照岗位", "按方向、城市和工作类型筛选岗位，对选定材料发起一次匹配分析。"],
@@ -27,14 +28,11 @@ export default function HomePage() {
           </div>
           <p className="mt-3 text-xs leading-5 text-slate-500">示例无需登录；正式报告只在你确认后向企业投递。</p>
         </div>
-        <div className="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm sm:p-6" aria-label="预设合成材料支持状态预览">
-          <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm font-semibold">Python 后端 · 岗位对照</p><span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs text-indigo-700">合成预览</span></div>
-          <p className="mt-2 text-xs leading-5 text-slate-500">先看要求，再看材料支持了什么</p>
-          <dl className="mt-5 space-y-3">{HEATMAP_DEMO[0].dimensions.map(d => <div key={d.requirementId} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50/70 p-3"><dt className="text-sm text-slate-700">{d.title}</dt><dd className={`rounded-md border px-2.5 py-1 text-xs font-medium ${demoCellClass(d.verdict)}`}>{DEMO_LABELS[d.verdict]}</dd></div>)}</dl>
-          <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-slate-500">预设状态，不含真实材料，不调用模型。缺材料不代表没有能力。</p>
-        </div>
+        <HomeScenarioPreview />
       </div>
     </section>
+
+    <Suspense fallback={<p role="status" className="panel">正在读取技术岗位…</p>}><JobDiscovery compact /></Suspense>
 
     <section aria-labelledby="choose-route" className="space-y-3">
       <h2 id="choose-route" className="px-1 text-sm font-semibold text-slate-500">选择你的路线</h2>
@@ -67,19 +65,6 @@ export default function HomePage() {
       </ol>
     </section>
 
-    <section className="panel" aria-labelledby="demo-entry">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="demo-entry" className="text-lg font-semibold">先看合成示例</h2>
-        <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">合成演示材料</span>
-      </div>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">无需登录；3 位虚构候选人对 4 项岗位要求，可直接体验筛选、候选人切换与岗位要求雷达。</p>
-      <Link href="/demo/heatmap" className={demoAction}>打开热力图交互示例</Link>
-      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs leading-6 text-slate-500">
-        <li>人物、经历和指标均为合成，不代表任何真实求职者。</li>
-        <li>不会创建真实投递、不会调用网站模型，也不产生真实评分。</li>
-      </ul>
-      <p className="mt-3 text-xs leading-6 text-slate-500">合成示例只用于了解界面；对你自己材料的分析需要在登录后对真实材料发起。</p>
-    </section>
 
     <aside className="rounded-xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600">
       AI 负责证据解释与逐项初评，本地规则负责检索边界、引用校验和评级上限；模型断链、限流、超时或输出未通过校验时会保留本地兜底报告。材料有证据支持不等于个人能力认证，未找到证据也不等于没有能力。
