@@ -1,0 +1,159 @@
+{
+  "sourceCommit": "a95eb4eadb886514f24cee6ae23db0761ad8a585",
+  "target": "http://127.0.0.1:8140",
+  "purpose": "actual backend integration, not browser UI verification",
+  "method": "GET only; no auth or business writes",
+  "results": [
+    {
+      "case": "all",
+      "params": {},
+      "status": 200,
+      "total": 3,
+      "page": 1,
+      "items": [
+        {
+          "id": "4baa3fc1-778a-40b1-b2bb-7d200aa3501b",
+          "title": "接口测试开发实习生",
+          "careerDirection": "testing",
+          "technicalTags": [
+            "pytest"
+          ]
+        },
+        {
+          "id": "3339b47f-7735-4683-a1ae-0494a368d9dd",
+          "title": "React 前端开发实习生",
+          "careerDirection": "frontend",
+          "technicalTags": [
+            "React"
+          ]
+        },
+        {
+          "id": "e4625d75-14b3-4e60-9687-5fd82a28c745",
+          "title": "Python 后端开发实习生",
+          "careerDirection": "backend",
+          "technicalTags": [
+            "FastAPI",
+            "pytest",
+            "Python",
+            "SQL"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "backend-python",
+      "params": {
+        "direction": "backend",
+        "specialty": "python",
+        "language": "python",
+        "city": "杭州",
+        "employmentType": "internship"
+      },
+      "status": 200,
+      "total": 1,
+      "page": 1,
+      "items": [
+        {
+          "id": "e4625d75-14b3-4e60-9687-5fd82a28c745",
+          "title": "Python 后端开发实习生",
+          "careerDirection": "backend",
+          "technicalTags": [
+            "FastAPI",
+            "pytest",
+            "Python",
+            "SQL"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "frontend",
+      "params": {
+        "direction": "frontend",
+        "q": "React"
+      },
+      "status": 200,
+      "total": 1,
+      "page": 1,
+      "items": [
+        {
+          "id": "3339b47f-7735-4683-a1ae-0494a368d9dd",
+          "title": "React 前端开发实习生",
+          "careerDirection": "frontend",
+          "technicalTags": [
+            "React"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "test",
+      "params": {
+        "direction": "testing"
+      },
+      "status": 200,
+      "total": 1,
+      "page": 1,
+      "items": [
+        {
+          "id": "4baa3fc1-778a-40b1-b2bb-7d200aa3501b",
+          "title": "接口测试开发实习生",
+          "careerDirection": "testing",
+          "technicalTags": [
+            "pytest"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "empty-ai",
+      "params": {
+        "direction": "ai",
+        "page": 99
+      },
+      "status": 200,
+      "total": 0,
+      "page": 1,
+      "items": []
+    },
+    {
+      "case": "invalid-safe-default",
+      "params": {
+        "direction": "invalid",
+        "specialty": "python"
+      },
+      "status": 200,
+      "total": 3,
+      "page": 1,
+      "items": [
+        {
+          "id": "4baa3fc1-778a-40b1-b2bb-7d200aa3501b",
+          "title": "接口测试开发实习生",
+          "careerDirection": "testing",
+          "technicalTags": [
+            "pytest"
+          ]
+        },
+        {
+          "id": "3339b47f-7735-4683-a1ae-0494a368d9dd",
+          "title": "React 前端开发实习生",
+          "careerDirection": "frontend",
+          "technicalTags": [
+            "React"
+          ]
+        },
+        {
+          "id": "e4625d75-14b3-4e60-9687-5fd82a28c745",
+          "title": "Python 后端开发实习生",
+          "careerDirection": "backend",
+          "technicalTags": [
+            "FastAPI",
+            "pytest",
+            "Python",
+            "SQL"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "sourceCommit": "a95eb4eadb886514f24cee6ae23db0761ad8a585",
+  "runId": 40373258950,
+  "url": "https://github.com/hahaandxixi/careerproof/actions/runs/40373258950",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 121749339250,
+      "name": "backend-postgres (strict 18 modules, JUnit gate)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 121749339368,
+      "name": "frontend (node 22.23.1, npm ci / test / typecheck / build)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 121749339429,
+      "name": "backend-unit (python 3.12, ruff, full SQLite suite)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "frontend": {
+    "passed": 486,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sqlite": {
+    "passed": 1590,
+    "failed": 0,
+    "skipped": 94
+  },
+  "postgresStrict": {
+    "passed": 141,
+    "failed": 0,
+    "skipped": 0
+  },
+  "hardStop": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "junitGate": {
+    "result": "PASS",
+    "modules": 18,
+    "testcases": 149,
+    "hardstopWindows": 8
+  },
+  "modelAlignment": "No new upgrade operations detected.",
+  "logExcerpts": [
+    "2026-10-26T17:56:51.5710732Z All checks passed!",
+    "2026-10-26T18:04:44.7987136Z =========== 1590 passed, 94 skipped, 9 warnings in 465.06s (0:07:45) ===========",
+    "2026-10-26T17:57:04.9090325Z No new upgrade operations detected.",
+    "2026-10-26T17:59:19.2434652Z ================= 141 passed, 5 warnings in 132.07s (0:02:12) ==================",
+    "2026-10-26T17:59:49.9291588Z ======================== 8 passed, 5 warnings in 28.18s ========================",
+    "2026-10-26T17:59:50.4751354Z CI-JUNIT-GATE result=PASS modules=18 testcases=149 hardstop_windows=8",
+    "2026-10-26T17:57:03.5315897Z # tests 486",
+    "2026-10-26T17:57:03.5317678Z # pass 486",
+    "2026-10-26T17:57:03.5318007Z # fail 0",
+    "2026-10-26T17:57:03.5318672Z # skipped 0"
+  ]
+}
