@@ -1,0 +1,244 @@
+TAP version 13
+# Subtest: one integrated workspace keeps the complete saved items even when a plan is limited to three
+ok 1 - one integrated workspace keeps the complete saved items even when a plan is limited to three
+  ---
+  duration_ms: 11.3819
+  type: 'test'
+  ...
+# Subtest: identical rules advice and gap appear once in the action panel
+ok 2 - identical rules advice and gap appear once in the action panel
+  ---
+  duration_ms: 1.5433
+  type: 'test'
+  ...
+# Subtest: valid AI advice uses the saved requirement and drops foreign or duplicate citations
+ok 3 - valid AI advice uses the saved requirement and drops foreign or duplicate citations
+  ---
+  duration_ms: 1.1697
+  type: 'test'
+  ...
+# Subtest: rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+ok 4 - rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+  ---
+  duration_ms: 2.6595
+  type: 'test'
+  ...
+# Subtest: non-students retain explanation and advice without private student task controls
+ok 5 - non-students retain explanation and advice without private student task controls
+  ---
+  duration_ms: 1.646
+  type: 'test'
+  ...
+# Subtest: review-only and unsupported states do not invent implementation deficiencies
+ok 6 - review-only and unsupported states do not invent implementation deficiencies
+  ---
+  duration_ms: 0.8152
+  type: 'test'
+  ...
+# Subtest: partial support and gaps expose their existing plan and explicit task trigger
+ok 7 - partial support and gaps expose their existing plan and explicit task trigger
+  ---
+  duration_ms: 1.1603
+  type: 'test'
+  ...
+# Subtest: supported requirements lead with conclusions and evidence; optional growth stays secondary
+ok 8 - supported requirements lead with conclusions and evidence; optional growth stays secondary
+  ---
+  duration_ms: 0.453
+  type: 'test'
+  ...
+# Subtest: support survives incomplete context and its warning remains outside collapsed details
+ok 9 - support survives incomplete context and its warning remains outside collapsed details
+  ---
+  duration_ms: 0.5608
+  type: 'test'
+  ...
+# Subtest: missing plans and unrelated actions never manufacture suggestions or requirements
+ok 10 - missing plans and unrelated actions never manufacture suggestions or requirements
+  ---
+  duration_ms: 0.6155
+  type: 'test'
+  ...
+# Subtest: empty report does not masquerade as full support
+ok 11 - empty report does not masquerade as full support
+  ---
+  duration_ms: 0.1814
+  type: 'test'
+  ...
+# Subtest: saved structured plans retain deliverable, steps and checks without changing the snapshot
+ok 12 - saved structured plans retain deliverable, steps and checks without changing the snapshot
+  ---
+  duration_ms: 0.6766
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 13 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 0.9273
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 14 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.3081
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 15 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.1618
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 16 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 7.746
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 17 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 14.3191
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 18 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 9.0273
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 19 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 4.3985
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 20 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.3927
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 21 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 4.1449
+  type: 'test'
+  ...
+# Subtest: workspace filters partition real states, include review priority and preserve immutable inputs
+ok 22 - workspace filters partition real states, include review priority and preserve immutable inputs
+  ---
+  duration_ms: 0.3977
+  type: 'test'
+  ...
+# Subtest: all-supported defaults to all; review-only defaults to its exact saved item
+ok 23 - all-supported defaults to all; review-only defaults to its exact saved item
+  ---
+  duration_ms: 0.1879
+  type: 'test'
+  ...
+# Subtest: deep links escape a mismatched filter without losing the saved anchor
+ok 24 - deep links escape a mismatched filter without losing the saved anchor
+  ---
+  duration_ms: 2.312
+  type: 'test'
+  ...
+# Subtest: integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+ok 25 - integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+  ---
+  duration_ms: 0.4467
+  type: 'test'
+  ...
+# Subtest: summary truncation changes no source identity or original text
+ok 26 - summary truncation changes no source identity or original text
+  ---
+  duration_ms: 0.2908
+  type: 'test'
+  ...
+# Subtest: single list and mounted panels replace the second action-list rendering
+ok 27 - single list and mounted panels replace the second action-list rendering
+  ---
+  duration_ms: 0.3893
+  type: 'test'
+  ...
+# Subtest: scan summaries keep UUID paths in detailed evidence instead of removing source identities
+ok 28 - scan summaries keep UUID paths in detailed evidence instead of removing source identities
+  ---
+  duration_ms: 0.1043
+  type: 'test'
+  ...
+# Subtest: 判定用语由同一来源提供，历史值和未评估不混为新结论
+ok 29 - 判定用语由同一来源提供，历史值和未评估不混为新结论
+  ---
+  duration_ms: 1.613
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：supported
+ok 30 - 徽标与雷达实际渲染统一判定：supported
+  ---
+  duration_ms: 6.1335
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：partial
+ok 31 - 徽标与雷达实际渲染统一判定：partial
+  ---
+  duration_ms: 0.5242
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：claimed_only
+ok 32 - 徽标与雷达实际渲染统一判定：claimed_only
+  ---
+  duration_ms: 0.4818
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：gap
+ok 33 - 徽标与雷达实际渲染统一判定：gap
+  ---
+  duration_ms: 0.4719
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：unsupported
+ok 34 - 徽标与雷达实际渲染统一判定：unsupported
+  ---
+  duration_ms: 0.8092
+  type: 'test'
+  ...
+# Subtest: 徽标与雷达实际渲染统一判定：verified
+ok 35 - 徽标与雷达实际渲染统一判定：verified
+  ---
+  duration_ms: 0.3392
+  type: 'test'
+  ...
+# Subtest: SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+ok 36 - SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100
+  ---
+  duration_ms: 1.387
+  type: 'test'
+  ...
+# Subtest: SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+ok 37 - SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例
+  ---
+  duration_ms: 0.9204
+  type: 'test'
+  ...
+# Subtest: ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+ok 38 - ActionPlan 岗位权重仍为 /5，当前证据显示等级名称或未评级
+  ---
+  duration_ms: 1.1629
+  type: 'test'
+  ...
+# Subtest: GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+ok 39 - GrowthComparison 基准未评级与目标等级名称、历史等级 80 仍可显示
+  ---
+  duration_ms: 2.0853
+  type: 'test'
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 701.9009

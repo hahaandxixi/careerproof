@@ -1,0 +1,59 @@
+
+> jianli@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.0s
+   Linting and checking validity of types ...
+
+./src/components/VisualEvidencePanel.tsx
+46:7  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    3.31 kB         113 kB
+├ ○ /_not-found                            999 B         104 kB
+├ ƒ /api/jobs                              155 B         103 kB
+├ ○ /applications                         6.6 kB         116 kB
+├ ƒ /candidates/[id]                       168 B         106 kB
+├ ○ /demo                                2.19 kB         112 kB
+├ ○ /demo/heatmap                         8.3 kB         114 kB
+├ ○ /growth                                136 B         135 kB
+├ ƒ /growth/[id]                           134 B         135 kB
+├ ƒ /jobs                                  170 B         114 kB
+├ ƒ /jobs/[id]                           6.09 kB         124 kB
+├ ƒ /jobs/[id]/applications              17.8 kB         128 kB
+├ ƒ /jobs/[id]/edit                        133 B         116 kB
+├ ○ /jobs/manage                           155 B         103 kB
+├ ○ /jobs/mine                             177 B         114 kB
+├ ○ /jobs/new                              132 B         116 kB
+├ ○ /login                               2.36 kB         112 kB
+├ ƒ /match/[jobId]/[candidateId]           168 B         106 kB
+├ ƒ /materials/[kind]/[id]               5.77 kB         116 kB
+├ ○ /notifications                       4.04 kB         114 kB
+├ ○ /portfolio                            8.3 kB         126 kB
+├ ƒ /recommendations                     6.71 kB         124 kB
+├ ○ /register                            2.83 kB         113 kB
+├ ○ /reports                              4.7 kB         115 kB
+├ ƒ /reports/[id]                          25 kB         135 kB
+└ ƒ /tasks/[id]                          6.62 kB         116 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-5cd2fe06309409a0.js      46.5 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          2.02 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

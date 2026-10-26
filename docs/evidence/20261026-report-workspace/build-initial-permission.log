@@ -1,0 +1,13 @@
+
+> jianli@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.27
+
+   Creating an optimized production build ...
+Failed to compile.
+
+Error: EPERM: operation not permitted, mkdir 'D:\jbcode\web ai\jianli\backend\.tmp\report-workspace-20261026\jianli\.next\server\app\growth'
+
+
+> Build failed because of webpack errors
