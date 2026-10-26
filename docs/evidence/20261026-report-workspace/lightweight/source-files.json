@@ -1,0 +1,114 @@
+{
+  "sourceCommit": "2f661e08b8194eb0b413190214fb243695836f14",
+  "buildId": "mi_792oqOn3k4fPv6goTb",
+  "files": {
+    "jianli/src/app/portfolio/page.tsx": {
+      "gitBlobSha256": "c03b0dd2416d44aa458f0201ed4beefcff836a5160ce3479de1eeacdeff10f55",
+      "buildInputSha256": "a9e35dca65d2651c1859aab93c7deebe0811873da1873befb03b709fa5425dbb",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/GrowthTaskStart.tsx": {
+      "gitBlobSha256": "6a59eb054d868f2f1eac70f5d833d6e905b186e12c993992a4a18de84a616a2c",
+      "buildInputSha256": "2df7cb550e7bffe2b4355c72e3513b59e75f330548a7cc0e2e62569fcf739063",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportDetail.tsx": {
+      "gitBlobSha256": "8d1f5bdec713ee6548385a11fb86c02b95ab264c14e89376b013fd4695ea666d",
+      "buildInputSha256": "8d1f5bdec713ee6548385a11fb86c02b95ab264c14e89376b013fd4695ea666d",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportEvidenceWorkspace.tsx": {
+      "gitBlobSha256": "71dab9f3985aadd8570368ae2a59006ecc252933043c4f8d57b9c6263437f811",
+      "buildInputSha256": "0db043df86d4471855b5b972e101b257427996cbec84e5673240df469227b061",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportFollowUpActions.tsx": {
+      "gitBlobSha256": "37f0c4ef4d929ab64ed4e063fd82b6ddb5caecd9c6288f7fee6fd184129fa109",
+      "buildInputSha256": "37f0c4ef4d929ab64ed4e063fd82b6ddb5caecd9c6288f7fee6fd184129fa109",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportOverview.tsx": {
+      "gitBlobSha256": "70d659469e4a634923bdfe1d8a976d4c39b9d09182291f32629ef01898f6af66",
+      "buildInputSha256": "904be1e9a1e59ae65d1f94fd0d17c9fa4699e60c78ff8d2bf763b9c35499f100",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportRequirementReader.tsx": {
+      "gitBlobSha256": "2738a763186f33ba9f874278efb2ab58d5b3675bd4c5c7712d6778b76c336c9a",
+      "buildInputSha256": "5ebab9f7ec4de154fd7af23f445835ad7d2392596132f55bf8578b5abf804832",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/components/ReportUploadReturn.tsx": {
+      "gitBlobSha256": "5c310cbae9c9349445f70228e71a910c0655f23ef2f2e063fb60bb92a6786e06",
+      "buildInputSha256": "5c310cbae9c9349445f70228e71a910c0655f23ef2f2e063fb60bb92a6786e06",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/analysis-status.ts": {
+      "gitBlobSha256": "c167b0f2dab36342be37ede891495acdac4801ec064a9f02c502ef6a4b5ce688",
+      "buildInputSha256": "267f9a5b8fc6f8ed214ab70790aa7c344af3f7e2bc88f8c8a906c812e022d39e",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/report-follow-up.ts": {
+      "gitBlobSha256": "11dad511a89aba1164dbd6fb44328637ebb1de67d2bfb36fd52fbde08284be54",
+      "buildInputSha256": "11dad511a89aba1164dbd6fb44328637ebb1de67d2bfb36fd52fbde08284be54",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/report-reader.ts": {
+      "gitBlobSha256": "a78d1dcbf10e618779ee9267021759072556df6b15476c3ee6f47e0fdbd23963",
+      "buildInputSha256": "acdd4b739fe13b8a99db12a1ccfea15c3968d2ff1659690904701b49a4467417",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/src/lib/report-workspace.ts": {
+      "gitBlobSha256": "c6f497d1b59d619f496a38ac21a12c54cdfef7401b8142b645798245365f5f92",
+      "buildInputSha256": "0289b173486db5ef0cf919fd8aca7add50f0aee736579c8669c8e9b6965a04bd",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/growth-task-entry.test.mjs": {
+      "gitBlobSha256": "61f82f5fde33956864999fa501e884dfd54da80895ba000c34a073fdea8565ac",
+      "buildInputSha256": "61f82f5fde33956864999fa501e884dfd54da80895ba000c34a073fdea8565ac",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/material-workspace.test.mjs": {
+      "gitBlobSha256": "04ead5ca8b4d8c8bb29fd465c3d8e48f7b43c870d28f295fcedd83c848309484",
+      "buildInputSha256": "f6182a450cf377f619cc2e0571e2a6b05a67f2c5517ddb97e8ae165e725c2450",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/report-action-layer.test.mjs": {
+      "gitBlobSha256": "83ec8793b72cbd381de4cfddf4635144b9a347c0bedc6296fd321818ef9b3223",
+      "buildInputSha256": "83ec8793b72cbd381de4cfddf4635144b9a347c0bedc6296fd321818ef9b3223",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/report-follow-up-actions.test.mjs": {
+      "gitBlobSha256": "278ace4d208f816c1b3b8be4d18477f78175f6a040753284bf6e1c5538da6e39",
+      "buildInputSha256": "278ace4d208f816c1b3b8be4d18477f78175f6a040753284bf6e1c5538da6e39",
+      "exactBytesMatch": true,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/report-reader.test.mjs": {
+      "gitBlobSha256": "9d695fcd7ee82cf4fde8e104d873cac87de571204a126c4dee6889bb475e5fbf",
+      "buildInputSha256": "2da90ae0fd8bb8c31c4f6bcd90b953bc4569b5e8c4dcbd0b33180aa2779c1d87",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    },
+    "jianli/tests/score-labels-render.test.mjs": {
+      "gitBlobSha256": "273be5706db64394d4c70fb803e5eb4fc51a09b85fe406b0bf316acd5e2aabc5",
+      "buildInputSha256": "605ceebf5597d7699c910f0302750070138d16a8237c580b734eb35e03f3754c",
+      "exactBytesMatch": false,
+      "lfNormalizedMatch": true
+    }
+  }
+}

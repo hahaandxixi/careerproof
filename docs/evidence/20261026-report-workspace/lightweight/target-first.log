@@ -1,0 +1,338 @@
+TAP version 13
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+ok 1 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 19.5037
+  type: 'test'
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+ok 2 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 9.3344
+  type: 'test'
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 3 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 5.0525
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 4 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 4.9477
+  type: 'test'
+  ...
+# Subtest: opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+ok 5 - opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+  ---
+  duration_ms: 10.5206
+  type: 'test'
+  ...
+# Subtest: existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+ok 6 - existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+  ---
+  duration_ms: 3.4705
+  type: 'test'
+  ...
+# Subtest: denied and temporarily unavailable lookups expose retry without opening a create form
+ok 7 - denied and temporarily unavailable lookups expose retry without opening a create form
+  ---
+  duration_ms: 1.6831
+  type: 'test'
+  ...
+# Subtest: a late lookup from another report cannot replace the selected task, and review warnings stay visible
+ok 8 - a late lookup from another report cannot replace the selected task, and review warnings stay visible
+  ---
+  duration_ms: 0.6463
+  type: 'test'
+  ...
+# Subtest: the shared action panel receives the exact saved plan without a second copy in the task launcher
+ok 9 - the shared action panel receives the exact saved plan without a second copy in the task launcher
+  ---
+  duration_ms: 0.5373
+  type: 'test'
+  ...
+# Subtest: browser suffix and byte contract matches the backend including uppercase images
+ok 10 - browser suffix and byte contract matches the backend including uppercase images
+  ---
+  duration_ms: 1.499
+  type: 'test'
+  ...
+# Subtest: only valid source timestamps are displayed; missing history never becomes now
+ok 11 - only valid source timestamps are displayed; missing history never becomes now
+  ---
+  duration_ms: 12.4872
+  type: 'test'
+  ...
+# Subtest: single file selection rejects multiple files without choosing an arbitrary first one
+ok 12 - single file selection rejects multiple files without choosing an arbitrary first one
+  ---
+  duration_ms: 0.5316
+  type: 'test'
+  ...
+# Subtest: latest upload summaries keep independent resume/project identities and pending newest versions
+ok 13 - latest upload summaries keep independent resume/project identities and pending newest versions
+  ---
+  duration_ms: 0.2439
+  type: 'test'
+  ...
+# Subtest: proposed material versions are compared against server-saved identities, not filenames/order
+ok 14 - proposed material versions are compared against server-saved identities, not filenames/order
+  ---
+  duration_ms: 0.169
+  type: 'test'
+  ...
+# Subtest: returned upload uses only a validated hint and does not encode selection/save actions
+ok 15 - returned upload uses only a validated hint and does not encode selection/save actions
+  ---
+  duration_ms: 0.3076
+  type: 'test'
+  ...
+# Subtest: real dropzone shares chooser/drop validation and retains a native keyboard file input
+ok 16 - real dropzone shares chooser/drop validation and retains a native keyboard file input
+  ---
+  duration_ms: 10.8621
+  type: 'test'
+  ...
+# Subtest: real returned-version review highlights only current owned data and never selects or saves
+ok 17 - real returned-version review highlights only current owned data and never selects or saves
+  ---
+  duration_ms: 19.2329
+  type: 'test'
+  ...
+# Subtest: actual project picker highlights a returned version without selecting it or marking search results newest
+ok 18 - actual project picker highlights a returned version without selecting it or marking search results newest
+  ---
+  duration_ms: 17.9121
+  type: 'test'
+  ...
+# Subtest: one integrated workspace keeps the complete saved items even when a plan is limited to three
+not ok 19 - one integrated workspace keeps the complete saved items even when a plan is limited to three
+  ---
+  duration_ms: 12.639
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 6
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 6
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:64:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: identical rules advice and gap appear once in the action panel
+not ok 20 - identical rules advice and gap appear once in the action panel
+  ---
+  duration_ms: 3.2297
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:69:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("建议补证计划"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:72:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: valid AI advice uses the saved requirement and drops foreign or duplicate citations
+ok 21 - valid AI advice uses the saved requirement and drops foreign or duplicate citations
+  ---
+  duration_ms: 1.2663
+  type: 'test'
+  ...
+# Subtest: rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+ok 22 - rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+  ---
+  duration_ms: 3.0922
+  type: 'test'
+  ...
+# Subtest: non-students retain explanation and advice without private student task controls
+ok 23 - non-students retain explanation and advice without private student task controls
+  ---
+  duration_ms: 1.6196
+  type: 'test'
+  ...
+# Subtest: review-only and unsupported states do not invent implementation deficiencies
+not ok 24 - review-only and unsupported states do not invent implementation deficiencies
+  ---
+  duration_ms: 0.74
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("记录核对与补证计划"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:104:45)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: partial support and gaps expose their existing plan and explicit task trigger
+not ok 25 - partial support and gaps expose their existing plan and explicit task trigger
+  ---
+  duration_ms: 0.7097
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:109:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("建议补证计划"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:112:44)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: supported requirements lead with conclusions and evidence; optional growth stays secondary
+not ok 26 - supported requirements lead with conclusions and evidence; optional growth stays secondary
+  ---
+  duration_ms: 0.5831
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("材料有更新？按需规划补证"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:120:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: support survives incomplete context and its warning remains outside collapsed details
+ok 27 - support survives incomplete context and its warning remains outside collapsed details
+  ---
+  duration_ms: 0.6925
+  type: 'test'
+  ...
+# Subtest: missing plans and unrelated actions never manufacture suggestions or requirements
+ok 28 - missing plans and unrelated actions never manufacture suggestions or requirements
+  ---
+  duration_ms: 1.1395
+  type: 'test'
+  ...
+# Subtest: empty report does not masquerade as full support
+ok 29 - empty report does not masquerade as full support
+  ---
+  duration_ms: 0.2934
+  type: 'test'
+  ...
+# Subtest: saved structured plans retain deliverable, steps and checks without changing the snapshot
+ok 30 - saved structured plans retain deliverable, steps and checks without changing the snapshot
+  ---
+  duration_ms: 0.882
+  type: 'test'
+  ...
+# Subtest: generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+ok 31 - generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+  ---
+  duration_ms: 0.5966
+  type: 'test'
+  ...
+# Subtest: a saved structured plan takes priority over generic instructions
+not ok 32 - a saved structured plan takes priority over generic instructions
+  ---
+  duration_ms: 0.8121
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:161:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("需要准备的证据"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:165:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+ok 33 - action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+  ---
+  duration_ms: 1.8159
+  type: 'test'
+  ...
+# Subtest: guidance can be copied and used for a new upload without creating a task
+ok 34 - guidance can be copied and used for a new upload without creating a task
+  ---
+  duration_ms: 0.731
+  type: 'test'
+  ...
+# Subtest: copied guidance keeps saved sources and conditional instructions; rejected AI never enters the clipboard
+ok 35 - copied guidance keeps saved sources and conditional instructions; rejected AI never enters the clipboard
+  ---
+  duration_ms: 0.3832
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 29
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 484.6865
