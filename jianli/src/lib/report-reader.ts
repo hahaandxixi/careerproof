@@ -4,7 +4,8 @@ import { sourceLocationId } from "./source-label";
 
 /** Reading order follows the existing saved-evidence priority, never a new score. */
 export function initialReportRequirement(items: ReportItem[]): string | null {
-  return evidenceWorkspace(items).priorities[0]?.requirementId ?? items[0]?.requirementId ?? null;
+  const state = evidenceWorkspace(items);
+  return state.priorities[0]?.requirementId ?? state.other[0]?.requirementId ?? items[0]?.requirementId ?? null;
 }
 
 export function reportAnchorId(hash: string): string | null {
@@ -16,7 +17,7 @@ export function reportAnchorId(hash: string): string | null {
 export function requirementForReportAnchor(items: ReportItem[], anchor: string | null): string | null {
   if (!anchor) return null;
   return items.find(item =>
-    anchor === `requirement-${item.requirementId}` || anchor === `growth-${item.requirementId}` ||
+    anchor === `requirement-${item.requirementId}` || anchor === `growth-${item.requirementId}` || anchor === `judgement-${item.requirementId}` ||
     item.evidenceList.some((source, index) => anchor === sourceLocationId(item.requirementId, source, index))
   )?.requirementId ?? null;
 }

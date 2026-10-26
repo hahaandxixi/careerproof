@@ -9,7 +9,7 @@ import { adoptGrowthAdvice, type GrowthAdviceDraft } from "@/lib/analysis-status
 import EvidenceLink from "./EvidenceLink";
 import EnterpriseReplyContext from "./EnterpriseReplyContext";
 
-export default function GrowthTaskStart({ reportId, requirementId, advice }: { reportId: string; requirementId: string; advice?: GrowthAdviceDraft | null }) {
+export default function GrowthTaskStart({ reportId, requirementId, advice, triggerLabel, primary = false }: { reportId: string; requirementId: string; advice?: GrowthAdviceDraft | null; triggerLabel?: string; primary?: boolean }) {
   const router = useRouter();
   const lock = useRef(false);
   const mounted = useRef(true);
@@ -67,8 +67,8 @@ export default function GrowthTaskStart({ reportId, requirementId, advice }: { r
     } catch (reason) { if (mounted.current) setError(errorMessage(reason)); }
     finally { lock.current = false; if (mounted.current) setBusy(false); }
   }
-  return <div className="mt-4 rounded-xl border border-indigo-200 p-4 text-sm">
-    <button type="button" aria-expanded={open} className="text-indigo-700 underline" onClick={() => setOpen(v => !v)}>{open ? "收起补证任务" : "从这条缺口创建或打开补证任务"}</button>
+  return <div className="mt-4 min-w-0 text-sm">
+    <button type="button" aria-expanded={open} className={primary ? "btn min-h-11 max-w-full whitespace-normal text-left" : "inline-flex min-h-11 items-center text-indigo-700 underline"} onClick={() => setOpen(v => !v)}>{open ? "收起补证任务" : triggerLabel ?? "从这条缺口创建或打开补证任务"}</button>
     {open && replyContext && <div className="mt-3"><EnterpriseReplyContext context={replyContext} /></div>}
     {open && replyContextError && <p role="status" className="mt-3 text-xs text-amber-800">企业回复上下文暂无法读取：{replyContextError}。仍可按原报告创建任务。</p>}
     {open && !checked && !lookupError && <p role="status" className="mt-3">正在读取该缺口已有任务，不调用模型…</p>}
