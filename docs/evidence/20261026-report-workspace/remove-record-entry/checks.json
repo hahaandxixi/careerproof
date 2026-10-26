@@ -1,0 +1,16 @@
+{
+  "sourceCommit":"2d54ad0e0f040b07d8b5c90005ad227dc38b15cb",
+  "buildId":"N234su9PxWcj-vMAPxUUg",
+  "commands":[
+    {"cwd":"jianli","command":"node --experimental-strip-types --test tests/report-action-layer.test.mjs (before repair)","exitCode":1,"passed":16,"failed":3,"skipped":0,"log":"target-red.log"},
+    {"cwd":"jianli","command":"node --experimental-strip-types --test tests/account-menu.test.mjs tests/home-workspace.test.mjs tests/flow-steps.test.mjs (before navigation repair)","exitCode":1,"passed":10,"failed":3,"skipped":0,"log":"navigation-red.log"},
+    {"cwd":"jianli","command":"node --experimental-strip-types --test tests/account-menu.test.mjs tests/home-workspace.test.mjs tests/flow-steps.test.mjs tests/report-action-layer.test.mjs tests/report-follow-up-actions.test.mjs tests/report-reader.test.mjs tests/material-upload.test.mjs tests/material-workspace.test.mjs tests/growth-task-entry.test.mjs tests/growth-anchor-entry.test.mjs","exitCode":0,"passed":83,"failed":0,"skipped":0,"log":"target-final.log"},
+    {"cwd":"jianli","command":"npm.cmd test","exitCode":0,"passed":475,"failed":0,"skipped":0,"log":"frontend-tests.log"},
+    {"cwd":"jianli","command":"npm.cmd run typecheck","exitCode":0,"log":"typecheck.log"},
+    {"cwd":"jianli","command":"npm.cmd run lint","exitCode":0,"errors":0,"warnings":1,"log":"lint.log"},
+    {"cwd":"jianli","command":"npm.cmd run build (BACKEND_ORIGIN=http://127.0.0.1:8114)","exitCode":0,"log":"build.log"}
+  ],
+  "method":"Production SSR and controlled hooks/handler/API regression. Not browser end-to-end or new backend permission evidence.",
+  "backend":"No production backend changes or database writes; unchanged full backend suite not repeated.",
+  "remoteCI":"Local independent branch only; not pushed or merged."
+}
