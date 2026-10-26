@@ -19,7 +19,12 @@ export default function ReportRequirementReader({ items, children }: { items: Re
       const anchor = reportAnchorId(hash);
       setEntry(previous => ({ filter: filterForRequirement(items, previous.filter, selected), selected, anchor: requirementForReportAnchor(items, anchor) ? anchor : `growth-${selected}`, revision: previous.revision + 1 }));
     };
-    const fromLocation = () => select(window.location.hash, window.location.search);
+    const fromLocation = () => {
+      if (!window.location.hash && !new URLSearchParams(window.location.search).get("enterpriseReply")) {
+        // Returning to the report's original URL must restore its default reading entry.
+        setEntry(previous => ({ selected: initialReportRequirement(items), filter: initialWorkspaceFilter(items), anchor: null, revision: previous.revision + 1 }));
+      } else select(window.location.hash, window.location.search);
+    };
     const fromLink = (event: MouseEvent) => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
@@ -35,8 +40,9 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     };
     fromLocation();
     window.addEventListener("hashchange", fromLocation);
+    window.addEventListener("popstate", fromLocation);
     document.addEventListener("click", fromLink, true);
-    return () => { window.removeEventListener("hashchange", fromLocation); document.removeEventListener("click", fromLink, true); };
+    return () => { window.removeEventListener("hashchange", fromLocation); window.removeEventListener("popstate", fromLocation); document.removeEventListener("click", fromLink, true); };
   }, [items]);
   useEffect(() => {
     if (!entry.anchor) return;
@@ -94,6 +100,8 @@ export default function ReportRequirementReader({ items, children }: { items: Re
             <span className="mt-1 block break-words text-xs leading-5 text-slate-500">{requirementSummary(item)}</span>
           </a></li>;
         })}</ol> : <p className="rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有这一类要求。<button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
+        {entry.filter === "priority" && visible.length === 1 && state.supported.length > 0 && <p className="mt-3 text-xs leading-6 text-slate-600">其他 {state.supported.length} 项已有证据支持 · <button type="button" className="inline-flex min-h-11 items-center text-indigo-700 underline" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
+        {!state.priorities.length && !state.other.length && <p className="mt-3 text-xs leading-6 text-slate-600">当前没有待处理项。可继续核对来源；材料支持不等于岗位要求已全部满足。</p>}
         <nav className="mt-3 flex flex-wrap gap-2 lg:hidden" aria-label="手机逐项阅读导航">
           {currentIndex > 0 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex - 1].requirementId}`}>上一项</a>}
           {currentIndex < items.length - 1 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex + 1].requirementId}`}>下一项</a>}

@@ -61,7 +61,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
  const before = JSON.stringify(value); const html = render(value);
  assert.equal(count(html,"岗位匹配与补证工作台"),1);
  for (const entry of items) assert.ok(html.includes(`href="#requirement-${entry.requirementId}"`));
- assert.equal(count(html, "从这条缺口开始补证"), 6);
+ assert.equal(count(html, ">开始补证</button>"), 6);
  assert.ok(!html.includes("展开完整补证计划"));
  assert.equal(JSON.stringify(value),before);
 });
@@ -77,7 +77,7 @@ test("valid AI advice uses the saved requirement and drops foreign or duplicate 
  const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap,citationIds:["R1-E1","R1-E1","R2-E9"]})]),evidenceContextVersion:"source-context-v2"};
  const html=render(value);
  assert.ok(html.includes("AI 证据建议")); assert.ok(html.includes("保存参数校验记录")); assert.ok(html.includes("缺少失败结果"));
- assert.equal(count(html,'href="#citation-R1-E1"'),2); // evidence entry plus the one adopted suggestion citation
+ assert.equal(count(html,'href="#citation-R1-E1"'),1); // the saved suggestion citation; source disclosure is owned by ReportDetail
  assert.ok(!html.includes("R2-E9"));
 });
 
@@ -94,7 +94,7 @@ test("non-students retain explanation and advice without private student task co
  for(const role of ["admin","enterprise",undefined]) {
   const html=render(report([value],[advice(value)]),role ?? "anonymous");
   assert.ok(html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
-  assert.ok(!html.includes("从这条缺口开始补证")); assert.ok(!html.includes('id="growth-')); assert.ok(!html.includes('href="/growth"'));
+  assert.ok(!html.includes(">开始补证</button>")); assert.ok(!html.includes('id="growth-')); assert.ok(!html.includes('href="/growth"'));
  }
 });
 
@@ -102,23 +102,23 @@ test("review-only and unsupported states do not invent implementation deficienci
  for(const value of [item("review","supported",{confirmationStatus:"rejected"}),item("outside","unsupported")]) {
   const html=render(report([value]));
   assert.ok(html.includes("当前需核对")); assert.ok(html.includes("记录核对与补证计划"));
-  assert.ok(!html.includes("从这条缺口开始补证")); assert.ok(html.includes("不能由此认定实现不存在"));
+  assert.ok(!html.includes(">开始补证</button>")); assert.ok(html.includes("不能由此认定实现不存在"));
  }
 });
 
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
-  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议补证计划")); assert.ok(html.includes("从这条缺口开始补证"));
+  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议补证计划")); assert.ok(html.includes(">开始补证</button>"));
   assert.ok(html.includes("先读取已有任务，由你确认后保存"));
  }
 });
 
 test("supported requirements lead with conclusions and evidence; optional growth stays secondary", () => {
  const value=item("complete","supported"); const html=render(report([value],[advice(value)]));
- assert.ok(html.includes("当前材料支持")); assert.ok(html.includes("核对具体证据"));
+ assert.ok(html.includes("当前材料支持")); assert.ok(html.includes("材料支持不等于运行成功"));
  assert.ok(html.includes("材料有更新？按需规划补证"));
- assert.ok(!html.includes("建议补证计划")); assert.ok(!html.includes("从这条缺口开始补证"));
+ assert.ok(!html.includes("建议补证计划")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
 });
 
@@ -137,7 +137,7 @@ test("missing plans and unrelated actions never manufacture suggestions or requi
 
 test("empty report does not masquerade as full support", () => {
  const html=render(report([])); assert.ok(html.includes("本报告尚无逐项要求"));
- assert.ok(!html.includes("从这条缺口开始补证")); assert.ok(!html.includes('href="#requirement-'));
+ assert.ok(!html.includes(">开始补证</button>")); assert.ok(!html.includes('href="#requirement-'));
 });
 
 test("saved structured plans retain deliverable, steps and checks without changing the snapshot", () => {
@@ -146,4 +146,33 @@ test("saved structured plans retain deliverable, steps and checks without changi
  const before=JSON.stringify(r); const html=render(r);
  for(const t of ["接口验证记录","运行失败场景","记录响应码与源码版本"]) assert.ok(html.includes(t));
  assert.equal(JSON.stringify(r),before);
+});
+
+test("generic checking guidance is explicitly separate from saved advice and never invents Redis facts", () => {
+ const entry=item("cache","gap",{requirementTitle:"使用 Redis 缓存并在写入后失效"});
+ const r=report([entry],[advice(entry,{action:"核对候选与要求的对应关系，补充直接相关的材料。"})]);
+ const before=JSON.stringify(r); const html=render(r);
+ for(const text of ["通用核对步骤","检查已有实现","已有实现","尚未实现","提交新版材料","查看报告原始建议","已提交的材料只需定位"]) assert.ok(html.includes(text),text);
+ assert.ok(html.includes(r.actionPlan[0].action));
+ assert.ok(!html.includes("cache.py") && !html.includes("Redis 已实现"));
+ assert.equal(JSON.stringify(r),before);
+});
+
+test("a saved structured plan takes priority over generic instructions", () => {
+ const entry=item("plan","gap",{aiStatus:"validated",aiSuggestion:"核对接口",aiInformationGap:"待核对失败路径",aiCitationIds:[],aiTaskPlan:{deliverable:"接口验证材料",steps:["核对异常分支","核对事务回滚"],acceptanceChecks:["版本与引用对应"]}});
+ const r={...report([entry],[advice(entry,{source:"ai_suggestion",action:"核对接口"})]),evidenceContextVersion:"source-context-v2"};
+ const html=render(r);
+ assert.ok(html.includes("需要准备的证据")); assert.ok(html.includes("核对事务回滚"));
+ assert.ok(!html.includes("通用核对步骤"));
+});
+
+test("action panel has no duplicate evidence shortcut; the article owns the single source disclosure", () => {
+ for(const verdict of ["gap","partial","supported","unsupported"]) {
+  const html=render(report([item("source",verdict)]));
+  assert.ok(!html.includes("核对判断依据与来源"));
+  assert.ok(!html.includes("核对具体证据"));
+ }
+ const detail=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
+ assert.ok(detail.includes("查看判断依据与来源引用（"));
+ assert.ok(!detail.includes("查看 {item.evidenceList.length} 条来源证据"));
 });

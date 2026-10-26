@@ -115,7 +115,7 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
  * This checks navigation ordering, not browser geometry, native pointer or keyboard behavior. */
 function navigationFixture(hash = "", search = "") {
   const effects = [], values = [], windowListeners = new Map(), documentListeners = new Map(), frames = new Map(), events = [];
-  let cursor = 0, nextFrame = 0, committedSelection;
+  let cursor = 0, nextFrame = 0, committedSelection, tree;
   const modules = {
     react: { Children: React.Children, useEffect: fn => effects.push(fn), useState: initial => {
       const i = cursor++;
@@ -144,14 +144,14 @@ function navigationFixture(hash = "", search = "") {
     events.push({ selected: committedSelection, open: details.open });
   } };
   globalThis.Element = Node;
-  globalThis.window = { location: { hash, search }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
+  globalThis.window = { location: { hash, search }, history: { pushState(_state, _title, hash) { window.location.hash = hash; } }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
   globalThis.document = {
     addEventListener: (name, fn) => documentListeners.set(name, fn), removeEventListener: name => documentListeners.delete(name),
     getElementById: id => id === "citation-saved-alpha" || id === "growth-implementation" || id === "requirement-implementation" ? target : null,
   };
   globalThis.requestAnimationFrame = fn => { const id = ++nextFrame; frames.set(id, fn); return id; };
   globalThis.cancelAnimationFrame = id => frames.delete(id);
-  const render = () => { cursor = 0; effects.length = 0; mod.exports.default({ items, children: articles }); committedSelection = values[0].selected; };
+  const render = () => { cursor = 0; effects.length = 0; tree = mod.exports.default({ items, children: articles }); committedSelection = values[0].selected; };
   render();
   const cleanupListeners = effects[0]();
   return {
@@ -160,6 +160,12 @@ function navigationFixture(hash = "", search = "") {
     flush() { for (const [id, fn] of frames) { frames.delete(id); fn(); } },
     click(href, extra = {}) { let prevented = false; documentListeners.get("click")({ target: new Node(href), button: 0, preventDefault() { prevented = true; }, ...extra }); return { prevented, hash: window.location.hash }; },
     hash(value) { window.location.hash = value; windowListeners.get("hashchange")(); },
+    pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
+    filter(label) {
+      const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && node.props.children[0] === label);
+      assert.ok(button, label); button.props.onClick(); render();
+    },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
   };
 }
@@ -270,4 +276,32 @@ test("scan summaries keep UUID paths in detailed evidence instead of removing so
  assert.ok(!workspace.requirementSummary(value).includes("12345678-"));
  assert.equal(JSON.stringify(value),before);
  assert.equal(helpers.requirementForReportAnchor([value],"citation-saved-alpha"),"implementation");
+});
+
+test("returning to a report without a fragment restores its saved default, not the last visited requirement", () => {
+ const f=navigationFixture();
+ try {
+  f.click("#requirement-implementation"); assert.equal(f.values[0].selected,"implementation");
+  f.pop(""); assert.equal(f.values[0].selected,"tests");
+  f.pop("#citation-saved-alpha"); assert.equal(f.values[0].selected,"implementation");
+ } finally {f.cleanup();}
+});
+
+test("a single priority item offers the real supported count without duplicating the list", () => {
+ const values=[...Array.from({length:4},(_,i)=>({...items[0],requirementId:`ok${i}`})),items[2]];
+ const html=renderToStaticMarkup(React.createElement(Reader,{items:values},values.map(value=>React.createElement("article",{key:value.requirementId}))));
+ assert.ok(html.includes("其他 4 项已有证据支持"));
+ assert.equal((html.match(/aria-label="报告中的岗位要求"/g)||[]).length,1);
+ assert.ok(!html.includes("岗位要求已全部满足"));
+});
+
+test("filter actions keep an included selection and a zero-count filter remains an explicit empty view", () => {
+ const f=navigationFixture();
+ try {
+  f.filter("有证据支持"); assert.equal(f.values[0].selected,"implementation");
+  assert.equal(window.location.hash,"#requirement-implementation");
+  f.filter("全部要求"); assert.equal(f.values[0].selected,"implementation");
+  f.filter("未覆盖或需复核"); assert.equal(f.values[0].selected,null);
+  f.pop("#requirement-tests"); assert.equal(f.values[0].selected,"tests");
+ } finally {f.cleanup();}
 });
