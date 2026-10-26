@@ -5,6 +5,8 @@ d=json.loads((OUT/'plan.json').read_text(encoding='utf8'));asset=(OUT/'asset-com
 def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT).decode('utf8').strip()
 rows=[]
 for i,x in enumerate(d['files']):
+    if x['category']=='equivalent' and not x.get('remote_branch') and x.get('equivalent'):
+        x['remote_branch'],x['remote_path']=x['equivalent'][0]
     remote_commit=None
     if x['category']=='source':remote_commit=source
     elif x['category'] in ('evidence','source-archive','delivery'):remote_commit=asset
@@ -22,6 +24,7 @@ for row in rows:
     if row['canonical_row'] is not None:
         canonical=rows[row['canonical_row']]
         row.update(remote_branch=canonical['remote_branch'],remote_path=canonical['remote_path'],remote_commit=canonical['remote_commit'])
+assert all(row['remote_commit'] and row['remote_path'] for row in rows if row['category'] in ('source','evidence','delivery','source-archive','equivalent'))
 dest=WT/'docs/evidence/20261027-github-sync';dest.mkdir(parents=True,exist_ok=True)
 def write(name,value):
     (dest/name).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
@@ -32,7 +35,7 @@ with (dest/'file-inventory.csv').open('w',encoding='utf-8-sig',newline='') as f:
 write('not-uploaded.json',[x for x in rows if x['category'] in ('excluded','decision')])
 write('branches-before.json',d['branches'])
 write('worktrees-before.json',[dict(x,changes=sum(y['worktree']==str(pathlib.Path(x['worktree'])) and y['status']!='ignored-deliverable' for y in d['files'])) for x in d['trees']])
-for name in ['preservation.json','credential-risk-metadata.json','ignored-directory-scope.json','40359108131.json','40359576364.json','remote-verification.json','navigation-check.json','git-data-upload.json']:
+for name in ['preservation.json','credential-risk-metadata.json','credential-context-followup.json','ignored-directory-scope.json','40359108131.json','40359576364.json','remote-verification.json','navigation-check.json','git-data-upload.json']:
     write(name,json.loads((OUT/name).read_text(encoding='utf8')))
 counts=dict(collections.Counter(x['category'] for x in rows));write('classification.json',{'total':len(rows),'nonignored_changes':6218,'targeted_ignored_deliverables':22,'categories':counts,'main_before':{'head':d['trees'][0]['HEAD'],'tracked_modified':48,'untracked_files':1587,'staged':0},'original_worktrees':13,'unpublished_original_branch_tips':4,'active_model_requests':0,'database_writes':0})
 readme=f'''# GitHub 全量成果同步审查（2026-10-27）
@@ -79,6 +82,7 @@ readme=f'''# GitHub 全量成果同步审查（2026-10-27）
 
 - 家庭试用 `.local` 环境与本机账号、3 个测试数据库、人工评审原件/回表、约 760 MB 镜像与 ZIP、依赖/Next 缓存、重复源码与评审 ZIP 均不上传。完整路径及理由逐行保留，未删除原件。
 - 3 份 10/13 原始日志含带密码 URL 或私钥形状文本。只记录类型与位置，不复制值；[风险元数据](credential-risk-metadata.json)区分当前远端树匹配情况，**不是全历史泄露判定**。部分匹配为 CI 测试字符串，不能断言都是真密钥；非占位 URL 需用户确认实际使用与轮换。本轮不上传原文件、不重写历史。
+- [上下文补查](credential-context-followup.json)定位到默认开发配置与测试字符串的既有远端文件/历史提交；没有据此认定为新泄露的真实 API key。原始日志依然不上传；若实际服务仍使用这些默认连接凭据，是否更换需另行处理。
 - 另两份说明中的 `ci` 账号是隔离 CI 固定夹具，模板使用变量占位；按上下文审查后保留，不把模式命中直接当真实泄露。
 - P2 stash `56c2b23` 原样留在本地、未应用、未删除、未当作已提交历史发布。继续受暂停约束。
 - 本地源码与证据文件 SHA256 再核对：6,240 条原件均未改变，见 [保留核查](preservation.json)。本轮安装环境和原有服务未被替换；没有重新做干净安装或浏览器产品验收。
