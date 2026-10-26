@@ -55,6 +55,7 @@ function fixture(options = {}) {
     retry() { nodes(tree).find(node => node.type === "button" && node.props.children === "重新读取任务").props.onClick(); commit(); },
     select(reportId, requirementId) { props = { ...props, reportId, requirementId }; commit(); },
     submit() { return nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); },
+    record() { nodes(tree).find(node => node.type === "button" && node.props.children === "确认记录这条建议").props.onClick(); },
     async settle(request, value, error = false) { request[error ? "reject" : "resolve"](value); await Promise.resolve(); await Promise.resolve(); commit(); },
     cleanup() { cleanups.forEach(fn => fn?.()); Object.assign(globalThis, original); },
   };
@@ -133,4 +134,44 @@ test("the shared action panel receives the exact saved plan without a second cop
     assert.ok(f.html().includes('href="/growth/owned-task"'));
     assert.equal(f.calls.filter(call => call[0] === "write").length, 0);
   } finally { f.cleanup(); }
+});
+
+test("optional compact records keep the advanced form closed and never invent a required plan", async () => {
+ const f=fixture({compact:true});
+ try {
+  f.open(); await f.settle(f.lookup[0],null);
+  const html=f.html();
+  assert.ok(html.includes("可跳过记录"));
+  assert.ok(html.includes("不会自动填造计划"));
+  assert.ok(html.includes('class="border-t border-slate-200 pt-2"><summary'));
+  assert.ok(!html.includes('open=""')); assert.ok(!html.includes("确认记录这条建议"));
+  assert.equal(f.calls.filter(call=>call[0]==="write").length,0);
+ }finally{f.cleanup();}
+});
+
+test("explicit compact recording reuses the complete validated plan exactly and shares the duplicate-submit lock", async () => {
+ const advice={suggestedKind:"execution",suggestion:"已有建议",gap:"已保存缺口",citationIds:[],taskPlan:{deliverable:"已有交付物",steps:["本人核对接口输出"],acceptanceChecks:["材料版本相符"]}};
+ const before=JSON.stringify(advice);const f=fixture({compact:true,advice});
+ try {
+  f.open();await f.settle(f.lookup[0],null);
+  assert.equal(f.calls.filter(call=>call[0]==="write").length,0);
+  f.record();f.record();
+  assert.equal(f.writes.length,1);
+  assert.deepEqual(f.calls.find(call=>call[0]==="write")[2],{requirementId:"cache",gapKind:"execution",...advice.taskPlan});
+  await f.settle(f.writes[0],task());
+  assert.deepEqual(f.navigation,["/growth/owned-task"]);
+  assert.equal(JSON.stringify(advice),before);
+ }finally{f.cleanup();}
+});
+
+test("compact record failures are visible outside the closed advanced form and can be retried",async()=>{
+ const advice={suggestedKind:"execution",suggestion:"核对记录",gap:"未验证",citationIds:[],taskPlan:{deliverable:"接口记录",steps:["核对输出"],acceptanceChecks:["对应版本"]}};
+ const f=fixture({compact:true,advice});
+ try{
+  f.open();await f.settle(f.lookup[0],null);f.record();await f.settle(f.writes[0],Error("记录暂未保存"),true);
+  const html=f.html();assert.ok(html.includes("记录暂未保存"));
+  assert.ok(html.indexOf('role="alert"')>html.lastIndexOf("</details>"));
+  f.record();assert.equal(f.writes.length,2);
+  await f.settle(f.writes[1],task());assert.deepEqual(f.navigation,["/growth/owned-task"]);
+ }finally{f.cleanup();}
 });

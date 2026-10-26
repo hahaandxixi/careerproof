@@ -6,6 +6,7 @@ import LoginLink from "@/components/LoginLink";
 import MaterialFileDropzone from "@/components/MaterialFileDropzone";
 import { latestMaterialVersions, materialFileError, materialFileSize, type UploadedMaterial } from "@/lib/material-upload";
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
+import ReportUploadReturn from "@/components/ReportUploadReturn";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ErrorNotice } from "@/components/AccessGate";
@@ -309,6 +310,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   return (
     <div className="space-y-8">
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
+      <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} /></Suspense>
       <div>
         <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
         <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title mt-1">我的材料工作台</h1><button type="button" className="btn" onClick={() => { setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div>
