@@ -16,7 +16,7 @@ afterEach(()=>{while(cleanups.length)cleanups.pop()();for(const[k,v]of originals
 const walk=node=>!node||typeof node!=="object"?[]:[node,...React.Children.toArray(node.props?.children).flatMap(walk)];
 const text=node=>typeof node==="string"?node:React.Children.toArray(node?.props?.children).map(text).join("");
 
-function fixture(){
+function fixture(count=2){
  const cells=[],effects=[],frames=new Map();let cursor=0,frame=0;
  const same=(a,b)=>a&&a.length===b.length&&a.every((v,i)=>Object.is(v,b[i]));
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps))cells[i]={deps,value:fn()};return cells[i].value;};
@@ -29,13 +29,13 @@ function fixture(){
  const counts={list:0,open:0,reply:0,detail:0};let authorized=true,waiter=null;
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
  const row=id=>({id,jobId:"job-a",reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
- const page=()=>({items:[...(authorized?[row("a")]:[]),row("b")],total:authorized?2:1,page:1,pageSize:20});
+ const page=()=>({items:[...(authorized?[row("a")]:[]),...Array.from({length:count-1},(_,i)=>row(String.fromCharCode(98+i)))],total:authorized?count:count-1,page:1,pageSize:20});
  const api={jobApplications:async()=>{counts.list++;return waiter?waiter:page();},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
  const modules={react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
-  "./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
+  "./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:"enterprise-a"}})},
   "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false},
@@ -71,10 +71,18 @@ test("tab return restores radar requirement/evidence only after GET authorizatio
 
 test("comparison selection survives tab return and revoked candidates are pruned",async()=>{
  const h=fixture();let tree=await h.settle();
- for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=h.render();}
+ for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();}
  h.button(tree,"并排核对 2 位").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
  assert.equal(h.button(tree,"返回本页全部候选人").props["aria-pressed"],true);
  const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,2);
  h.hide();h.revoke();h.show();tree=await h.settle();
  assert.ok(h.button(tree,"并排核对 1 位").props.disabled);assert.equal(h.counts.open,0);
+});
+
+
+test("three and four selected candidates retain the heatmap and offer only a two-person deep view",async()=>{
+ const h=fixture(4);let tree=await h.settle();
+ for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"返回本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
+ if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`并排核对 ${count} 位`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);}}
+ h.button(tree,"清空对照").props.onClick();tree=await h.settle();assert.ok(!h.nodes(tree).some(n=>Array.isArray(n.props?.candidates)));
 });

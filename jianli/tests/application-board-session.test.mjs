@@ -299,3 +299,30 @@ test("dispose and explicit clear discard restoration cache, including after reac
     await h.session.resume();assert.equal(h.state().selected,null);
   }
 });
+
+test('cross-page shortlist remains bounded, preserves server pagination and loads no reports until explicit open', async () => {
+  let page=1, opens=0;const denied=new Set();const checks=[];
+  const row=id=>({...metadata(id),candidateName:id});
+  const h=setup({list:async()=>({items:[row(page===1?'a':'b')],total:60,page,pageSize:20}),
+    detail:async id=>{checks.push(id);if(denied.has(id))throw Error('revoked');return row(id);},
+    open:async id=>{opens++;return {...row(id),report:{id:`report-${id}`,items:[]}};}});
+  await h.session.selectComparison(['a']);page=3;await h.session.filter();await h.session.selectComparison(['a','b']);
+  assert.deepEqual(h.state().comparison.map(c=>c.id),['a','b']);assert.equal(h.state().pagination.page,3);assert.equal(h.state().pagination.total,60);assert.equal(opens,0);
+  page=1;await h.session.filter();assert.deepEqual(h.state().comparison.map(c=>c.id),['a','b']);assert.deepEqual(h.state().items.map(c=>c.id),['a']);
+  await h.session.openComparison(['a','b']);assert.equal(opens,2);assert.ok(h.state().comparison.every(c=>c.report?.id===c.reportId));
+  await h.session.filter();h.session.suspend();assert.deepEqual(h.state().comparison,[]);await h.session.resume(['a','b']);assert.equal(opens,2);assert.ok(h.state().comparison.every(c=>c.report));
+  denied.add('b');await h.session.filter();assert.deepEqual(h.state().comparison.map(c=>c.id),['a']);
+  await h.session.selectComparison(['a','c','d','e','f']);assert.equal(h.state().comparison.length,4);assert.ok(!h.state().comparison.some(c=>c.id==='f'));assert.ok(checks.includes('b'));
+  await h.session.selectComparison([]);assert.deepEqual(h.state().comparison,[]);
+});
+
+test('late pair opening cannot repopulate hidden or disposed reports; changed fixed identity removes cached comparison', async()=>{
+  const wait=deferred();let newer=false;
+  const h=setup({list:async()=>[metadata('a'),{...metadata('b'),reportId:newer?'changed':'report-b'}],detail:async id=>metadata(id),
+    open:async id=>id==='b'?wait.promise:{...metadata(id),report:{id:`report-${id}`}}});
+  await h.session.selectComparison(['a','b']);const opening=h.session.openComparison(['a','b']);await Promise.resolve();h.session.suspend();
+  wait.resolve({...metadata('b'),report:{id:'report-b'}});await opening;assert.deepEqual(h.state().comparison,[]);
+  await h.session.resume(['a','b']);assert.ok(!h.state().comparison.find(c=>c.id==='b').report);
+  await h.session.openComparison(['a','b']);newer=true;await h.session.filter();assert.deepEqual(h.state().comparison.map(c=>c.id),['a']);
+  h.session.dispose();h.session.activate();await h.session.refresh();assert.deepEqual(h.state().comparison,[]);
+});

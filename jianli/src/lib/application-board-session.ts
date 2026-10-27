@@ -8,6 +8,8 @@ export interface ApplicationBoardState {
   error: string;
   notice: string;
   pagination?: PaginationInfo;
+  comparison?: ApplicationView[];
+  paused?: boolean;
 }
 
 export const initialApplicationBoardState: ApplicationBoardState = {
@@ -40,9 +42,30 @@ export function createApplicationBoardSession(
   let retained: ApplicationView | null = null;
   let resumeWanted = false;
   let comparisonIds: string[] = [];
+  let comparisonCache = new Map<string, ApplicationView>();
   let resuming: Promise<ApplicationBoardResume | null> | null = null;
-  const set = (next: ApplicationBoardState) => { state = next; publish(next); };
+  const set = (next: ApplicationBoardState) => {
+    state = { ...next, paused: suspended, comparison: next.loading || suspended ? [] : comparisonIds.flatMap(id => comparisonCache.get(id) ?? []) };
+    publish(state);
+  };
   const current = (ticket: number) => active && ticket === generation;
+  const matchingReport = (saved: ApplicationView, fresh: ApplicationView) => saved.jobId === fresh.jobId &&
+    saved.reportId === fresh.reportId && saved.report?.id === fresh.reportId;
+  async function recheckComparison(rows: ApplicationView[], ticket: number) {
+    const verified = new Map<string, ApplicationView>();
+    for (const id of comparisonIds) {
+      try {
+        const fresh = rows.find(item => item.id === id) ?? await api.detail?.(id);
+        if (!current(ticket)) return;
+        const saved = comparisonCache.get(id);
+        if (!fresh || fresh.id !== id || fresh.status === "withdrawn" ||
+            (saved && saved.jobId !== fresh.jobId) || (saved?.report && !matchingReport(saved, fresh))) continue;
+        verified.set(id, { ...fresh, report: saved?.report });
+      } catch { if (!current(ticket)) return; }
+    }
+    comparisonIds = comparisonIds.filter(id => verified.has(id));
+    comparisonCache = verified;
+  }
 
   async function run(
     operation: () => Promise<{ selected?: ApplicationView; deliver?: () => void; notice?: string }>,
@@ -57,8 +80,12 @@ export function createApplicationBoardSession(
     try {
       const result = await operation();
       if (!current(ticket)) return false;
+      if (result.selected && comparisonIds.includes(result.selected.id)) comparisonCache.set(result.selected.id, result.selected);
+      const comparisonCount = comparisonIds.length;
       const list = unpackList(await api.list());
       const { items } = list;
+      if (!current(ticket)) return false;
+      await recheckComparison(items, ticket);
       if (!current(ticket)) return false;
       let authoritative = items.find(item => item.id === selectedId);
       let stillAuthorized = !selectedId || !!authoritative;
@@ -79,11 +106,14 @@ export function createApplicationBoardSession(
             : result.selected ?? null
           : null,
         loading: false, error: "",
-        notice: stillAuthorized ? result.notice ?? "" : "该投递已不在当前列表，已清除打开的报告。请刷新或翻页重新核对授权。",
+        notice: stillAuthorized ? result.notice ?? (comparisonCount > comparisonIds.length ? "部分对照候选人已无法确认授权，已移出对照。" : "") : "该投递已不在当前列表，已清除打开的报告。请刷新或翻页重新核对授权。",
       });
       return stillAuthorized;
     } catch (error) {
-      if (current(ticket)) set({ items: [], selected: null, loading: false, error: api.errorMessage(error), notice: "" });
+      if (current(ticket)) {
+        comparisonCache.clear(); comparisonIds = [];
+        set({ items: [], selected: null, loading: false, error: api.errorMessage(error), notice: "" });
+      }
       return false;
     }
   }
@@ -132,17 +162,25 @@ export function createApplicationBoardSession(
           }
           if (saved && !selected) rejected.add(saved.id);
           const authorizedIds = requested.filter(id => allowed.has(id) && !rejected.has(id));
+          for (const id of comparisonIds) {
+            const fresh = allowed.get(id), saved = comparisonCache.get(id);
+            if (!fresh || rejected.has(id) || (saved && saved.jobId !== fresh.jobId) || (saved?.report && !matchingReport(saved, fresh))) {
+              rejected.add(id); comparisonCache.delete(id);
+            } else comparisonCache.set(id, { ...fresh, report: saved?.report });
+          }
+          comparisonIds = comparisonIds.filter(id => !rejected.has(id));
           resumeWanted = false;
           retained = null;
           set({ ...list, items: rows.filter(item => !rejected.has(item.id)), selected,
             loading: false, error: "",
             notice: rejected.size ? "部分投递已无法确认授权或固定报告，已清除对应的报告和选中状态。" : "",
           });
-          return { authorizedIds, selectedId: selected?.id ?? null };
+          return { authorizedIds: authorizedIds.filter(id => !rejected.has(id)), selectedId: selected?.id ?? null };
         } catch (error) {
           if (!current(ticket)) continue;
           resumeWanted = false;
           retained = null;
+          comparisonCache.clear(); comparisonIds = [];
           set({ items: [], selected: null, loading: false, error: api.errorMessage(error),
             notice: "授权核对未完成，已清除报告与选中状态。请刷新重试。" });
           return { authorizedIds: [], selectedId: null };
@@ -166,9 +204,32 @@ export function createApplicationBoardSession(
     clear() {
       ++generation;
       retained = null; resumeWanted = false; suspended = false;
+      comparisonCache.clear(); comparisonIds = [];
       if (active) set({ items: [], selected: null, loading: false, error: "", notice: "" });
     },
-    dispose() { active = false; ++generation; retained = null; resumeWanted = false; },
+    dispose() { active = false; ++generation; retained = null; resumeWanted = false; comparisonCache.clear(); comparisonIds = []; },
+    selectComparison(ids: string[]) {
+      if (!active || suspended) return Promise.resolve(false);
+      comparisonIds = [...new Set(ids)].slice(0, 4);
+      for (const id of comparisonCache.keys()) if (!comparisonIds.includes(id)) comparisonCache.delete(id);
+      const selected = state.selected;
+      return run(async () => ({ selected: selected ?? undefined }), selected?.id, true);
+    },
+    openComparison(ids: string[]) {
+      if (ids.length !== 2 || ids.some(id => !comparisonIds.includes(id))) return Promise.resolve(false);
+      const selected = state.selected;
+      return run(async () => {
+        const ticket = generation;
+        for (const id of ids) {
+          if (comparisonCache.get(id)?.report) continue;
+          const opened = await api.open(id);
+          if (!current(ticket)) return {};
+          if (opened.id !== id || opened.status === "withdrawn") throw new Error("投递授权核对结果不一致");
+          comparisonCache.set(id, opened);
+        }
+        return { selected: selected ?? undefined };
+      }, selected?.id, true);
+    },
     refresh() { return run(async () => ({})); },
     filter() {
       const selected = state.selected;

@@ -4,7 +4,7 @@ import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import type { SourceMaterial } from "@/lib/source-label";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
-import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection } from "@/lib/skill-radar";
+import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection, radarPosition } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
 
 export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange }: {
@@ -21,8 +21,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   if (!dimension) return null;
   const selectedIndex = dimensions.indexOf(dimension);
   const point = (index: number, ratio: number) => {
-    const angle = index * 2 * Math.PI / dimensions.length - 3 * Math.PI / 4;
-    return { x: 200 + 108 * ratio * Math.cos(angle), y: 200 + 108 * ratio * Math.sin(angle) };
+    return radarPosition(index, dimensions.length, ratio);
   };
   const score = radarScore(dimension);
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
