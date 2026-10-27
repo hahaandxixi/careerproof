@@ -141,3 +141,13 @@ PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验�
 - `tsc --noEmit`、五个目标文件ESLint及`next build`均exit 0；目标lint无警告，未运行全量前后端。原始红/绿及检查输出留本机忽略目录 `backend/.tmp/board-resume-*.raw.out`。
 - 3140已从接受提交启动，构建`Zs6bc13o3xglTwcRB-LTv`；8140后端、55447专属合成库与storage保持不变。非正常业务库，无浏览器持久化。
 - 真实桌面补验未完成：Edge扩展能读取工作台，但获取本机Edge窗口时工具因无法可靠确认当前网址而停止；遵守停止，不换接口绕行。没有最终截图或真实滚动保持结论。请在3140打开候选、选要求并展开引用，勾选两位并排核对，切到其他真实标签再返回；确认自动恢复、滚动不跳、回复草稿清空且发送仍需手动确认。快速重复切换检查相同状态。撤回和身份变化拒绝已由定向回归验证，未对原演示投递执行撤回操作。
+
+## 10/27 企业热力图遮挡与说明精简
+
+产品源码 `fcb1a4c30b91941b1df59359196528681d15e152`，3140构建 `dwxrsB-xSZ1Uc596Qc_iq`。仅相关前端与测试：导航 z-40；滚动表格 relative/isolate/z-0，内部sticky表头、左列与横滚保留。格子移除实践等级重复行，详细实践证据保留在现有面板；报告优先显示候选/岗位/模式及支持、待补、要求数量，复用 evidenceWorkspace 分类，部分支持与未覆盖另列。生成时间、固定版本、原摘要和限制折叠保留。页脚精简。后端、分数、权限和历史快照未改。
+
+`node --test tests/history-enterprise.test.mjs tests/application-board-session.test.mjs tests/application-board-visibility.test.mjs tests/skill-radar-render.test.mjs tests/site-header-discovery.test.mjs`：43通过、0失败/跳过，exit 0；TypeScript、目标ESLint exit 0，生产构建成功。新增真实概览渲染回归证明5类状态分别计数、固定版本/降级提示保留、输入快照不变；未运行全量前后端。
+
+真实浏览器为IAB，1280×720与390×844，使用既有专属合成库/企业。旧构建在scrollY=900时导航(130,30)命中tbody固定th；新构建表格top=-90.65时相同点命中header。表格内部scrollTop=108.8；手机组合滚动scrollLeft=262.4、scrollTop=157.6，左列与表格left相差0.8px，表头top与表格top相差0.8px；整页无横向溢出。实际点击实现材料候选的SQL格子，证据面板为schema.sql第1–8行、R3-E1，雷达05SQL选中；报告3支持/2待补/5要求，折叠可读原生成时间与两份第1版材料。未发送企业回复或请求AI。原生桌面标签切换仍保留上一节待验，本次不以IAB滚动替代。
+
+真实前后与手机截图留本机 `output/screenshots/CareerProof-board-polish-20261027/`：before-overlap.png、after-no-overlap.png、mobile-table-scroll.png、report-overview.png；对应上述前后构建，不打包凭据。原始定向与检查日志在本工作树忽略目录 `backend/.tmp/board-polish-*.raw.out`。
