@@ -1,12 +1,25 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { sourceLabel, sourceLocationId } from "../src/lib/source-label.ts";
+import { compactSourceLabel, sourceLabel, sourceLocationId } from "../src/lib/source-label.ts";
 
 const VERSION_A = "11111111-1111-4111-8111-111111111111";
 const VERSION_B = "11111111-1111-4111-8111-222222222222";
 const NESTED_UUID = "cccccccc-cccc-4ccc-8ccc-cccccccccccc";
 const material = (id, title, versionNumber) => ({ kind: "project", id, title, versionNumber });
 const compact = value => value.replace(/\s+/g, "");
+
+test("mobile source labels keep filename, project and fixed version without exposing an internal UUID", () => {
+  const materials = [material(VERSION_A, "订单服务", 1), material(VERSION_B, "订单服务", 2)];
+  const a = compactSourceLabel({filePath: `${VERSION_A}/src/service.py`, projectVersionId: VERSION_A}, materials);
+  const b = compactSourceLabel({filePath: `${VERSION_B}/src/service.py`, projectVersionId: VERSION_B}, materials);
+  assert.equal(a.fileName, "service.py"); assert.notEqual(a.material, b.material);
+  assert.ok(!JSON.stringify(a).includes(VERSION_A));
+  const legal = compactSourceLabel({filePath: `${VERSION_A}/${NESTED_UUID}.py`, projectVersionId: VERSION_A}, materials);
+  assert.equal(legal.fileName, `${NESTED_UUID}.py`, "a legitimate UUID filename is never scrubbed");
+  const duplicate = [material(VERSION_A, "服务", 1), material(VERSION_B, "服务", 1)];
+  assert.notEqual(compactSourceLabel({filePath:"service.py",projectVersionId:VERSION_A},duplicate).material,
+    compactSourceLabel({filePath:"service.py",projectVersionId:VERSION_B},duplicate).material);
+});
 
 test("two projects with service.py keep distinct saved project names", () => {
   const materials = [material(VERSION_A, "订单服务", 1), material(VERSION_B, "库存服务", 1)];
