@@ -1,4 +1,4 @@
-import test from "node:test";
+import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
@@ -61,23 +61,70 @@ function component(file, mocks) {
 }
 const link = { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) };
 const icon = { __esModule: true, default: () => React.createElement("svg", { "aria-hidden": true }) };
+const previousWindow = globalThis.window;
+afterEach(() => { if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow; });
 
 function harness(search, compact = false) {
   let cursor = 0; let effects = []; const requests = []; const routes = [];
   const state = [{ q: parse(search).q, city: parse(search).city }, null, true, "", 0];
   const api = { listJobs(filters) { return new Promise((resolve, reject) => { requests.push({ filters, resolve, reject }); }); } };
-  const router = { push: href => routes.push(["push", href]), replace: href => routes.push(["replace", href]) };
+  globalThis.window = { history: {
+    pushState(_state, _unused, href) { routes.push(["push", href]); },
+    replaceState(_state, _unused, href) { routes.push(["replace", href]); },
+  } };
   const mod = component("src/components/JobDiscovery.tsx", {
     react: { ...React, useMemo: fn => fn(), useState: () => { const n = cursor++; return [state[n], value => { state[n] = typeof value === "function" ? value(state[n]) : value; }]; }, useEffect: fn => effects.push(fn) },
     "react/jsx-runtime": require("react/jsx-runtime"), "next/link": link,
-    "next/navigation": { useRouter: () => router, useSearchParams: () => new URLSearchParams(search) },
+    "next/navigation": { useSearchParams: () => new URLSearchParams(search) },
     "@/lib/api/client": { api, errorMessage: String }, "@/lib/api/domain": ts(path.join(root, "src/lib/api/domain.ts")),
     "@/lib/job-discovery": helpers, "./CareerDirectionIcon": icon,
     "./AccessGate": { ErrorNotice: ({ message }) => React.createElement("p", { role: "alert" }, message) },
   });
-  return { requests, routes, state, mod, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()); } };
+  return { requests, routes, state, mod, setSearch(value) { search = value; }, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()); } };
 }
 const tick = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
+const job = id => ({ id, title: `岗位${id}`, companyName: "企业原文", city: "杭州", category: "software", employmentType: "internship", requirementCount: 5, isDemo: false, technicalTags: [] });
+
+test("home and jobs keep old cards through a deferred filter request instead of collapsing into skeletons", async () => {
+  for (const compact of [false, true]) {
+    const h = harness("", compact), cleanup = h.start();
+    const oldPage = { items: [job("old")], total: 13, page: 1, pageSize: compact ? 3 : 12 };
+    h.requests[0].resolve(oldPage); await tick();
+    cleanup.at(-1)(); h.setSearch("direction=testing"); h.start();
+    assert.equal(h.state[1], oldPage, "the previous page stays mounted during loading");
+    const pending = renderToStaticMarkup(h.render());
+    assert.ok(pending.includes('href="/jobs/old"'));
+    assert.ok(pending.includes("暂时保留上一组结果"));
+    assert.ok(pending.includes('aria-busy="true"'));
+    assert.ok(!pending.includes('aria-label="岗位加载占位"'));
+    if (!compact) assert.match(pending, /disabled=""[^>]*>下一页/);
+    h.requests[1].resolve({ items: [job("new")], total: 1, page: 1, pageSize: oldPage.pageSize }); await tick();
+    const completed = renderToStaticMarkup(h.render());
+    assert.ok(completed.includes('href="/jobs/new"'));
+    assert.ok(!completed.includes('href="/jobs/old"'));
+    assert.ok(!completed.includes("暂时保留上一组结果"));
+  }
+});
+
+test("late previous filters cannot replace retained cards or the latest result", async () => {
+  const h = harness(""); const firstCleanup = h.start();
+  h.requests[0].resolve({ items:[job("original")],total:1,page:1,pageSize:12 }); await tick(); firstCleanup.at(-1)();
+  h.setSearch("direction=backend"); const secondCleanup = h.start(); secondCleanup.at(-1)();
+  h.setSearch("direction=frontend"); h.start();
+  h.requests[1].resolve({ items:[job("stale")],total:1,page:1,pageSize:12 }); await tick();
+  assert.equal(h.state[1].items[0].id,"original"); assert.equal(h.state[2],true);
+  h.requests[2].resolve({ items:[job("latest")],total:1,page:1,pageSize:12 }); await tick();
+  assert.equal(h.state[1].items[0].id,"latest"); assert.equal(h.state[2],false);
+});
+
+test("a failed replacement is explicit and never presents old cards as matching the new filter", async () => {
+  const h = harness(""); const cleanup = h.start();
+  h.requests[0].resolve({items:[job("old")],total:1,page:1,pageSize:12}); await tick(); cleanup.at(-1)();
+  h.setSearch("direction=backend"); h.start(); h.requests[1].reject(new Error("筛选读取失败")); await tick();
+  const html=renderToStaticMarkup(h.render());
+  assert.ok(html.includes("筛选读取失败")); assert.ok(!html.includes('href="/jobs/old"'));
+  assert.ok(!html.includes("暂时没有符合条件的岗位"));
+});
 
 test("public list sends all filters to the server and ignores a response after cleanup", async () => {
   const h = harness("direction=backend&specialty=python&city=深圳&employmentType=internship&page=3");
@@ -98,6 +145,7 @@ test("home view-all carries actual selection; choosing a direction retains city/
   assert.ok(nodes.some(n => n.props?.href === "/jobs?direction=backend&specialty=python&city=%E6%B7%B1%E5%9C%B3&employmentType=internship&q=API"));
   const button = nodes.find(n => n.type === "button" && walk(n).some(c => c.type === "span" && c.props.children === "数据工程"));
   button.props.onClick(); const route = h.routes.at(-1)[1];
+  assert.equal(h.routes.at(-1)[0], "push", "home filter selections create native history entries too");
   const params = parse(route.split("?")[1]);
   assert.equal(params.direction, "data"); assert.equal(params.specialty, ""); assert.equal(params.city, "深圳"); assert.equal(params.q, "API"); assert.equal(params.employmentType, "internship");
 });

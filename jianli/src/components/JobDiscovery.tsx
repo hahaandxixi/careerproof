@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobSummary, type Page } from "@/lib/api/domain";
 import { CAREER_DIRECTIONS, CAREER_LANGUAGES, EMPTY_DISCOVERY, discoveryHref, directionLabel, readDiscoveryQuery, type DiscoveryQuery } from "@/lib/job-discovery";
@@ -10,7 +10,6 @@ import CareerDirectionIcon from "./CareerDirectionIcon";
 import { ErrorNotice } from "./AccessGate";
 
 export default function JobDiscovery({ compact = false }: { compact?: boolean }) {
-  const router = useRouter();
   const search = useSearchParams();
   const query = useMemo(() => {
     const value = readDiscoveryQuery(new URLSearchParams(search.toString()));
@@ -24,21 +23,23 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   useEffect(() => { setDraft({ q: query.q, city: query.city }); }, [query.q, query.city]);
   useEffect(() => {
     let current = true;
-    setBusy(true); setError(""); setData(null);
+    // Keep the previous result surface mounted while only its query changes.
+    setBusy(true); setError("");
     api.listJobs({ ...query, pageSize: compact ? 3 : 12 }).then(value => {
       if (!current) return;
       setData(value);
-      if (!compact && value.page !== query.page) router.replace(discoveryHref({ ...query, page: value.page }), { scroll: false });
+      if (!compact && value.page !== query.page) window.history.replaceState(null, "", discoveryHref({ ...query, page: value.page }));
     }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setBusy(false); });
     return () => { current = false; };
-  }, [query, compact, revision, router]);
+  }, [query, compact, revision]);
   const direction = CAREER_DIRECTIONS.find(item => item.id === query.direction);
   function choose(patch: Partial<DiscoveryQuery>) {
     const next = { ...query, q: draft.q.trim().slice(0, 200), city: draft.city.trim().slice(0, 100), page: 1, ...patch };
     const href = discoveryHref(next);
-    if (compact) router.replace(href.replace(/^\/jobs/, "/"), { scroll: false });
-    else router.push(href, { scroll: false });
+    // Next 15 synchronizes native History updates with useSearchParams. This is
+    // a same-page client filter, not a server navigation or a new scroll target.
+    window.history.pushState(null, "", compact ? href.replace(/^\/jobs/, "/") : href);
   }
   const reset = () => { setDraft({ q: "", city: "" }); choose({ ...EMPTY_DISCOVERY }); };
   const moreHref = discoveryHref({ ...query, page: 1 });
@@ -60,7 +61,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
         <button type="button" aria-pressed={!query.direction} onClick={() => choose({ direction: "", specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${!query.direction ? "career-direction-active" : ""}`}><span className="flex h-6 w-6 items-center justify-center rounded-md border border-current text-sm" aria-hidden="true">⊞</span><span>全部岗位</span></button>
         {CAREER_DIRECTIONS.map(item => <button key={item.id} type="button" aria-pressed={query.direction === item.id} onClick={() => choose({ direction: item.id, specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${query.direction === item.id ? "career-direction-active" : ""}`}><CareerDirectionIcon direction={item.id}/><span>{item.label}</span></button>)}
       </nav>
-      <div className="min-w-0 space-y-3">
+      <div className="min-w-0 space-y-3" aria-busy={busy}>
         <div className="border-b border-slate-200 pb-3">
           {direction && <div className="scrollbar-quiet mb-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={`${direction.label}的具体岗位`}>
             <button className={`career-specialty ${!query.specialty ? "career-specialty-active" : ""}`} type="button" aria-pressed={!query.specialty} onClick={() => choose({ specialty: "" })}>全部{direction.label}</button>
@@ -75,13 +76,13 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
           {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
         </div>
         <div aria-live="polite" className="flex min-h-8 flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500">
-          <p>{busy ? "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>{!compact && <span>按最近创建排序 · 合成岗位单独标注</span>}
+          <p>{busy ? data ? "正在更新筛选，暂时保留上一组结果…" : "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>{!compact && <span>按最近创建排序 · 合成岗位单独标注</span>}
         </div>
         {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)}/>}
-        {busy && <div aria-label="岗位加载占位" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}
-        {!busy && !error && data?.items.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center"><h2 className="font-semibold">暂时没有符合条件的岗位</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">分类是探索入口，不代表每一类都有已发布岗位。可以换个方向，或清除城市、工作类型和关键词。</p><button type="button" onClick={reset} className="btn-secondary mt-4 min-h-11">查看全部岗位</button></div>}
-        {!busy && !error && !!data?.items.length && <div className="grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-3">{data.items.map(job => <DiscoveryJobCard key={job.id} job={job} compact={compact}/>)}</div>}
-        {!compact && !busy && !error && data && data.total > 0 && <nav aria-label="岗位分页" className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm"><button type="button" className="btn-secondary min-h-11" disabled={data.page <= 1} onClick={() => choose({ page: data.page - 1 })}>上一页</button><span>第 {data.page} / {Math.max(1, Math.ceil(data.total / data.pageSize))} 页</span><button type="button" className="btn-secondary min-h-11" disabled={data.page * data.pageSize >= data.total} onClick={() => choose({ page: data.page + 1 })}>下一页</button></nav>}
+        {busy && !data && <div aria-label="岗位加载占位" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}
+        {!error && data?.items.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center"><h2 className="font-semibold">{busy ? "上一组筛选暂无岗位" : "暂时没有符合条件的岗位"}</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">分类是探索入口，不代表每一类都有已发布岗位。可以换个方向，或清除城市、工作类型和关键词。</p><button type="button" disabled={busy} onClick={reset} className="btn-secondary mt-4 min-h-11">查看全部岗位</button></div>}
+        {!error && !!data?.items.length && <div className="grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-3">{data.items.map(job => <DiscoveryJobCard key={job.id} job={job} compact={compact}/>)}</div>}
+        {!compact && !error && data && data.total > 0 && <nav aria-label="岗位分页" className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm"><button type="button" className="btn-secondary min-h-11" disabled={busy || data.page <= 1} onClick={() => choose({ page: data.page - 1 })}>上一页</button><span>第 {data.page} / {Math.max(1, Math.ceil(data.total / data.pageSize))} 页</span><button type="button" className="btn-secondary min-h-11" disabled={busy || data.page * data.pageSize >= data.total} onClick={() => choose({ page: data.page + 1 })}>下一页</button></nav>}
       </div>
     </div>
     {!compact && <p className="text-xs leading-5 text-slate-500">技术方向按岗位标题、明确技能及原分类作导航归类；不是能力认证。未识别方向的旧岗位仍可在“全部岗位”查询。</p>}
