@@ -32,6 +32,8 @@ export default function ApplicationBoard({jobId}:{jobId:string}){
   return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId}/></AccessGate>;
 }
 function Workspace({jobId}:{jobId:string}){
+  const workspace=useRef<HTMLDivElement>(null);
+  const [heldHeight,setHeldHeight]=useState<number|undefined>(undefined);
   const page=useRef(1);
   const filters=useRef({q:"",status:"",requirementId:"",verdict:""});
   const [state,setState]=useState(initialApplicationBoardState);
@@ -56,7 +58,11 @@ function Workspace({jobId}:{jobId:string}){
   const [status,setStatus]=useState("");
   const [compareIds,setCompareIds]=useState<string[]>([]);
   const [compareMode,setCompareMode]=useState(false);
+  const comparisonBookmark=useRef<string[]>([]);
+  comparisonBookmark.current=compareIds;
   const [radarRequirement,setRadarRequirement]=useState("");
+  const [radarSelectionId,setRadarSelectionId]=useState("");
+  const [radarEvidenceExpanded,setRadarEvidenceExpanded]=useState(false);
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
   // 未确认草稿状态：发送失败时置位，只由 resetReply（刷新/离窗/换投递）清除；与正文是否为空无关，
@@ -81,17 +87,44 @@ function Workspace({jobId}:{jobId:string}){
   }
   useEffect(()=>{
     session.activate();
-    const refresh=()=>{resetReply();setCompareIds([]);setCompareMode(false);void session.refresh();};
+    let alive=true;
+    let releaseFrame:number|undefined;
+    let pendingResume:ReturnType<typeof session.resume>|undefined;
+    const holdLayout=()=>{
+      const height=workspace.current?.getBoundingClientRect().height;
+      if(height)setHeldHeight(previous=>previous??height);
+    };
+    const refresh=()=>{resetReply();setHeldHeight(undefined);setCompareIds([]);setCompareMode(false);void session.refresh();};
+    const resume=()=>{
+      if(document.visibilityState!=="visible")return;
+      holdLayout();resetReply();
+      const pending=session.resume(comparisonBookmark.current);
+      if(pendingResume===pending)return;
+      pendingResume=pending;
+      void pending.then(result=>{
+        if(!alive||!result||document.visibilityState!=="visible")return;
+        const remaining=comparisonBookmark.current.filter(id=>result.authorizedIds.includes(id));
+        setCompareIds(previous=>previous.length===remaining.length&&previous.every((id,i)=>id===remaining[i])?previous:remaining);
+        setCompareMode(previous=>previous&&remaining.length>=2);
+        if(!result.selectedId){setRadarRequirement("");setRadarSelectionId("");setRadarEvidenceExpanded(false);}
+        // Keep the old page height until authorized content has rendered. No
+        // scroll command or anchor navigation runs during an ordinary return.
+        releaseFrame=requestAnimationFrame(()=>{if(alive&&document.visibilityState==="visible")setHeldHeight(undefined);});
+      }).finally(()=>{if(pendingResume===pending)pendingResume=undefined;});
+    };
     // B-06：返回页面时 visibilitychange、focus、pageshow 紧邻触发，合并为一次刷新。
-    const gate=createRefreshGate(refresh);
+    const gate=createRefreshGate(resume);
     const visibility=()=>{
       resetReply();
-      setCompareIds([]);setCompareMode(false);
-      if(document.visibilityState==="hidden"){session.clear();gate.reset();}else gate.trigger();
+      if(document.visibilityState==="hidden"){
+        holdLayout();
+        if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);
+        session.suspend();gate.reset();
+      }else gate.trigger();
     };
     const focusWindow=()=>{if(document.visibilityState==="visible"){resetReply();gate.trigger();}};
     // 离开窗口后即使 3 秒内返回，也必须重新核对投递授权。
-    const blurWindow=()=>gate.reset();
+    const blurWindow=()=>{resetReply();gate.reset();};
     gate.trigger();
     document.addEventListener("visibilitychange",visibility);
     window.addEventListener("focus",focusWindow);
@@ -99,7 +132,7 @@ function Workspace({jobId}:{jobId:string}){
     window.addEventListener("pageshow",gate.trigger);
     // B-15：hashchange 是新的显式锚点导航（同页锚点链接或前进/后退），不走合并闸门；重新核对授权后由列表 effect 定位一次。
     window.addEventListener("hashchange",refresh);
-    return ()=>{session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
+    return ()=>{alive=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
   },[session]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   // Predicates are applied before server counting/pagination; local sorting must
@@ -114,12 +147,12 @@ function Workspace({jobId}:{jobId:string}){
   // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
   // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
   useEffect(()=>{applyAnchor(items.map(i=>i.id),visible.map(i=>i.id));},[applyAnchor,items,visible]);
-  async function open(id:string,requirementId=""){resetReply();setRadarRequirement(requirementId);await session.open(id);}
+  async function open(id:string,requirementId=""){resetReply();setRadarRequirement(requirementId);setRadarSelectionId(requirementId);setRadarEvidenceExpanded(false);await session.open(id);}
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
-  return <div className="space-y-5"><h1 className="text-3xl font-bold">已授权投递 · 岗位匹配对照</h1><p className="text-sm leading-6 text-slate-600">查看学生向本岗位授权的固定报告，点选格子即可联动要求与证据。分数仅辅助核对，不代表录用顺序。</p>
+  return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="space-y-5"><h1 className="text-3xl font-bold">已授权投递 · 岗位匹配对照</h1><p className="text-sm leading-6 text-slate-600">查看学生向本岗位授权的固定报告，点选格子即可联动要求与证据。分数仅辅助核对，不代表录用顺序。</p>
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{resetReply();void session.refresh();}}>刷新授权投递</button>
-    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。刷新、翻页或重新回到此页面会核对授权并收起已打开报告；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
-    {state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();setCompareIds([]);setCompareMode(false);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的候选人，不计入本页记录数。</p>}</>}
+    <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。主动刷新或翻页会收起报告；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
+    {state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();setCompareIds([]);setCompareMode(false);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
     {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
@@ -133,7 +166,7 @@ function Workspace({jobId}:{jobId:string}){
     {!!visible.length&&<section className="panel space-y-3"><h2 className="font-semibold">岗位要求 × 投递候选人</h2><p className="text-xs leading-5 text-slate-600">可勾选本页2–4位候选人并排核对；对照仅使用各自已授权的固定报告。状态色不代表录用顺序。{RULE_SCORE_CAP_NOTE}</p><div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary" disabled={compareIds.length<2||compareIds.length>4} aria-pressed={compareMode} onClick={()=>setCompareMode(!compareMode)}>{compareMode?"返回本页全部候选人":`并排核对 ${compareIds.length} 位`}</button><span className="text-xs text-slate-600">已选 {compareIds.length}/4 位</span>{!!compareIds.length&&<button type="button" className="text-sm text-indigo-700 underline" onClick={()=>{setCompareIds([]);setCompareMode(false);}}>清除对照选择</button>}</div>{matrixItems.length>1&&<p className="text-xs text-indigo-700 sm:hidden">表格可左右滑动查看各位候选人。</p>}<div className="max-h-[60vh] overflow-auto rounded-lg border border-slate-200" role="region" aria-label="可滚动的授权候选人对照表" tabIndex={0}><table className="w-full border-separate border-spacing-0 text-xs"><thead className="sticky top-0 z-20 bg-white"><tr><th className="sticky left-0 z-30 min-w-40 bg-white p-3 text-left">岗位要求</th>{matrixItems.map(i=><th id={`application-${i.id}`} key={i.id} className={`min-w-36 p-2 ${selected?.id===i.id ? "bg-indigo-50" : "bg-white"}`}><button type="button" className="candidate-select" aria-pressed={selected?.id===i.id} disabled={busy} onClick={()=>void open(i.id)}>{i.candidateName}{selected?.id===i.id&&<span className="mt-1 block text-xs">当前候选人</span>}</button><p className="mt-1 font-normal">{i.overallScore??"不可评"} · {STATUS[i.status]??i.status}</p><label className="mt-2 flex items-center justify-center gap-1 font-normal"><input type="checkbox" checked={compareIds.includes(i.id)} disabled={!compareIds.includes(i.id)&&compareIds.length>=4} onChange={()=>{setCompareMode(false);setCompareIds(previous=>toggleComparisonCandidate(previous,i.id));}}/>加入对照</label></th>)}</tr></thead><tbody>{dimensions.map(d=><tr key={d.requirementId}><th className="sticky left-0 z-10 min-w-40 border-t border-slate-100 bg-white p-3 text-left font-normal">{d.title} · 权重{d.weight}</th>{matrixItems.map(i=>{const value=i.dimensions.find(v=>v.requirementId===d.requirementId);return <td key={i.id} className={`border-t border-slate-100 p-1 ${selected?.id===i.id ? "bg-indigo-50/70" : ""}`}><button type="button" disabled={busy} title={value ? value.title + " · 权重" + value.weight : "本报告没有这条要求"} className={`w-full rounded-lg border p-3 ${cellClass(value?.verdict??"unsupported",value?.score??null)}`} onClick={()=>void open(i.id,d.requirementId)}>{value?.score??"—"}<span className="mt-1 block">{VERDICT[value?.verdict??"unsupported"]??value?.verdict}</span>{value?.evidenceLevel!=null&&<span className="mt-1 block">实践证据 {evidenceLevelName(value.evidenceLevel)}</span>}</button></td>;})}</tr>)}</tbody></table></div></section>}
     {selected?.report&&radarRequirement&&<SelectedRequirementEvidence application={selected} requirementId={radarRequirement}/>}
     {selected?.report&&<section id="selected-application-report" className="panel space-y-4">{selectedOutside&&<CandidateFilterNotice empty={false} selectedName={selected.candidateName} onClear={clearFilters}/>}<h2 className="text-xl font-semibold">{selected.candidateName} · 投递时固定报告</h2><p className="text-xs leading-5 text-slate-500">岗位：{selected.report.jobTitle || selected.jobTitle} · 报告生成于 {new Date(selected.report.createdAt).toLocaleString("zh-CN")} · 后续新版不会改写本次投递</p><p className="text-sm leading-6">{reportSummaryText(selected.report.summary)}</p><p className="text-xs text-slate-500">报告模式：{reportModeLabel(selected.report)}；查看与下载不等于通过面试。</p><button type="button" className="btn-secondary" disabled={busy} onClick={()=>void download()}>下载本次授权简历</button>
-      <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarRequirement} materials={selected.report.materials} aiFallbackUsed={selected.report.aiFallbackUsed}/>
+      <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarSelectionId} onRequirementChange={id=>{setRadarSelectionId(id);setRadarEvidenceExpanded(false);}} evidenceExpanded={radarEvidenceExpanded} onEvidenceExpandedChange={setRadarEvidenceExpanded} materials={selected.report.materials} aiFallbackUsed={selected.report.aiFallbackUsed}/>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">AI核验建议与沟通问题（按需查看）</summary><div className="mt-4"><ApplicationVerification key={`${selected.id}:${selected.report.id}`} applicationId={selected.id} report={selected.report} onUnavailable={verificationUnavailable} onUseQuestion={selected.status!=="replied"&&!busy ? useVerificationQuestion : undefined}/></div></details>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><p className="mt-2 text-xs text-slate-500">数值为材料支持度。{RULE_SCORE_CAP_NOTE}历史投递按原报告数值显示，不限制到 65。</p><ul className="mt-4 space-y-3">{selected.report.items.map(item=><SavedRequirementDetail key={item.requirementId} item={item} report={selected.report!}/>)}</ul></details>
       {selected.status!=="replied"&&<div className="space-y-3 border-t pt-4">

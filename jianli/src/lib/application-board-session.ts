@@ -23,6 +23,11 @@ interface Dependencies {
   errorMessage(error: unknown): string;
 }
 
+export interface ApplicationBoardResume {
+  authorizedIds: string[];
+  selectedId: string | null;
+}
+
 // List membership must be rechecked before displaying an opened report. A late
 // response from before refresh, tab hiding, or unmount must never restore it.
 export function createApplicationBoardSession(
@@ -31,6 +36,11 @@ export function createApplicationBoardSession(
   let active = false;
   let generation = 0;
   let state = initialApplicationBoardState;
+  let suspended = false;
+  let retained: ApplicationView | null = null;
+  let resumeWanted = false;
+  let comparisonIds: string[] = [];
+  let resuming: Promise<ApplicationBoardResume | null> | null = null;
   const set = (next: ApplicationBoardState) => { state = next; publish(next); };
   const current = (ticket: number) => active && ticket === generation;
 
@@ -39,7 +49,9 @@ export function createApplicationBoardSession(
     selectedId?: string,
     refreshSelectedMetadata = false,
   ) {
-    if (!active) return false;
+    if (!active || suspended) return false;
+    retained = null;
+    resumeWanted = false;
     const ticket = ++generation;
     set({ ...initialApplicationBoardState });
     try {
@@ -76,13 +88,87 @@ export function createApplicationBoardSession(
     }
   }
 
+  function resume(ids: string[] = []): Promise<ApplicationBoardResume | null> {
+    if (!active) return Promise.resolve(null);
+    suspended = false;
+    resumeWanted = true;
+    comparisonIds = [...new Set(ids)].slice(0, 4);
+    if (resuming) return resuming;
+    resuming = (async () => {
+      // A second hide invalidates the first authorization read. Share that
+      // in-flight request, then make one fresh read for the latest visible state.
+      while (active && resumeWanted) {
+        const ticket = ++generation;
+        retained ??= state.selected;
+        const saved = retained;
+        const requested = [...new Set([...comparisonIds, ...(saved ? [saved.id] : [])])];
+        set({ ...initialApplicationBoardState });
+        try {
+          const list = unpackList(await api.list());
+          if (!current(ticket)) continue;
+          const rows = list.items.filter(item => item.status !== "withdrawn");
+          const allowed = new Map(rows.map(item => [item.id, item]));
+          const rejected = new Set<string>();
+          for (const id of requested) {
+            if (allowed.has(id)) continue;
+            try {
+              const item = await api.detail?.(id);
+              if (!current(ticket)) break;
+              if (!item || item.id !== id || item.status === "withdrawn") rejected.add(id);
+              else { allowed.set(id, item); rows.push(item); }
+            } catch {
+              if (!current(ticket)) break;
+              rejected.add(id); // Unconfirmed access is never sufficient for restore.
+            }
+          }
+          if (!current(ticket)) continue;
+          const authoritative = saved ? allowed.get(saved.id) : undefined;
+          let selected: ApplicationView | null = null;
+          if (saved && authoritative) {
+            if (saved.report && authoritative.reportId === saved.reportId
+                && saved.report.id === saved.reportId && authoritative.jobId === saved.jobId) {
+              selected = { ...authoritative, report: saved.report };
+            } else rejected.add(saved.id);
+          }
+          if (saved && !selected) rejected.add(saved.id);
+          const authorizedIds = requested.filter(id => allowed.has(id) && !rejected.has(id));
+          resumeWanted = false;
+          retained = null;
+          set({ ...list, items: rows.filter(item => !rejected.has(item.id)), selected,
+            loading: false, error: "",
+            notice: rejected.size ? "部分投递已无法确认授权或固定报告，已清除对应的报告和选中状态。" : "",
+          });
+          return { authorizedIds, selectedId: selected?.id ?? null };
+        } catch (error) {
+          if (!current(ticket)) continue;
+          resumeWanted = false;
+          retained = null;
+          set({ items: [], selected: null, loading: false, error: api.errorMessage(error),
+            notice: "授权核对未完成，已清除报告与选中状态。请刷新重试。" });
+          return { authorizedIds: [], selectedId: null };
+        }
+      }
+      return null;
+    })().finally(() => { resuming = null; });
+    return resuming;
+  }
+
   return {
-    activate() { active = true; },
-    clear() {
+    activate() { active = true; suspended = false; },
+    suspend() {
+      if (state.selected) retained = state.selected;
+      suspended = true;
+      resumeWanted = false;
       ++generation;
       if (active) set({ items: [], selected: null, loading: false, error: "", notice: "" });
     },
-    dispose() { active = false; ++generation; },
+    resume,
+    clear() {
+      ++generation;
+      retained = null; resumeWanted = false; suspended = false;
+      if (active) set({ items: [], selected: null, loading: false, error: "", notice: "" });
+    },
+    dispose() { active = false; ++generation; retained = null; resumeWanted = false; },
     refresh() { return run(async () => ({})); },
     filter() {
       const selected = state.selected;

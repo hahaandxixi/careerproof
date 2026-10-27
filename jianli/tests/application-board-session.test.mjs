@@ -229,3 +229,73 @@ for (const presentInList of [true, false]) {
     assert.equal(checks, presentInList ? 0 : 1);
   });
 }
+
+const fixed = { ...candidate, jobId: "job-a", reportId: "report-a", report: {id:"report-a", summary:"固定快照"} };
+const metadata = (id = "a") => ({ id, jobId:"job-a", reportId:`report-${id}`, status:"viewed", replyText:null });
+
+test("resume gates the cached immutable report behind a fresh read and never opens it again", async () => {
+  const pending = deferred(); let paused = false, opens = 0;
+  const h = setup({ list: () => paused ? pending.promise : Promise.resolve([metadata()]),
+    open: async () => { opens++; return fixed; } });
+  await h.session.open("a"); paused = true; h.session.suspend();
+  assert.equal(h.state().selected, null);
+  const resuming = h.session.resume(["a"]);
+  assert.equal(h.state().selected, null); assert.equal(h.state().loading, true);
+  pending.resolve([{...metadata(), status:"replied", replyText:"合成企业在其他窗口的回复"}]);
+  const result = await resuming;
+  assert.deepEqual(result.authorizedIds,["a"]);
+  assert.equal(h.state().selected.report,fixed.report);
+  assert.equal(h.state().selected.status,"replied");
+  assert.equal(h.state().selected.replyText,"合成企业在其他窗口的回复");
+  assert.equal(opens,1,"restoration must not POST another viewed event");
+});
+
+test("resume rechecks off-page comparison IDs with read-only detail and excludes withdrawn ones", async () => {
+  const checks=[]; const h=setup({list:async()=>({items:[metadata()],total:5,page:1,pageSize:1}),open:async()=>fixed,
+    detail:async id=>{checks.push(id);return {...metadata(id),status:id==="c"?"withdrawn":"viewed"};}});
+  await h.session.open("a"); h.session.suspend();
+  const result=await h.session.resume(["a","b","c"]);
+  assert.deepEqual(checks,["b","c"]);
+  assert.deepEqual(result.authorizedIds,["a","b"]);
+  assert.deepEqual(h.state().items.map(x=>x.id),["a","b"]);
+  assert.equal(h.state().pagination.total,5);
+  assert.equal(h.state().pagination.pageItemCount,1);
+  assert.match(h.state().notice,/清除/);
+});
+
+test("withdrawn permission, identity mismatch or failed authorization never restores a report", async () => {
+  for(const reason of ["withdrawn","report_changed","denied"]){
+    let paused=false;
+    const h=setup({list:async()=>paused?reason==="report_changed"?[{...metadata(),reportId:"another-report"}]:[]:[metadata()],
+      open:async()=>fixed,detail:async()=>{throw new Error("无权访问");}});
+    await h.session.open("a");paused=true;h.session.suspend();
+    const result=await h.session.resume(["a"]);
+    assert.equal(h.state().selected,null,reason);
+    assert.deepEqual(result.authorizedIds,[],reason);
+    assert.match(h.state().notice,/清除/,reason);
+    assert.equal((await h.session.resume()).selectedId,null,"revoked cache must be discarded");
+  }
+});
+
+test("rapid hidden/visible events share in-flight reads and stale authorization cannot win", async () => {
+  const first=deferred(),last=deferred();let reads=0,opens=0;
+  const h=setup({list:()=>++reads===1?Promise.resolve([metadata()]):reads===2?first.promise:last.promise,
+    open:async()=>{opens++;return fixed;}});
+  await h.session.open("a");h.session.suspend();
+  const a=h.session.resume(["a"]),b=h.session.resume(["a"]);
+  assert.equal(a,b);assert.equal(reads,2);
+  h.session.suspend();const c=h.session.resume(["a"]);assert.equal(a,c);
+  first.resolve([metadata()]);await Promise.resolve();await Promise.resolve();
+  assert.equal(h.state().selected,null,"a response from before the second hide is insufficient");
+  last.resolve([metadata()]);await c;
+  assert.equal(reads,3);assert.equal(opens,1);
+  assert.equal(h.state().selected.report,fixed.report);
+});
+
+test("dispose and explicit clear discard restoration cache, including after reactivation",async()=>{
+  for(const action of ["clear","dispose"]){
+    const h=setup({list:async()=>[metadata()],open:async()=>fixed});
+    await h.session.open("a");h.session.suspend();h.session[action]();h.session.activate();
+    await h.session.resume();assert.equal(h.state().selected,null);
+  }
+});
