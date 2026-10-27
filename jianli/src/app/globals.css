@@ -14,7 +14,7 @@
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-slate-50 text-[15px] leading-relaxed text-slate-900 antialiased;
 }
 
 :focus-visible {
@@ -28,7 +28,11 @@ body {
 }
 
 @layer components {
-  .career-directions { @apply flex min-w-0 gap-2 overflow-x-auto pb-1; }
+  .career-directions { @apply flex min-w-0 gap-2 overflow-x-auto pb-1; scrollbar-width: none; }
+  .career-directions::-webkit-scrollbar, .scrollbar-quiet::-webkit-scrollbar { display: none; }
+  .scrollbar-quiet { scrollbar-width: none; }
+  .reading-copy { @apply text-[15px] leading-7 text-slate-700; }
+  .form-label { @apply text-sm font-medium text-slate-700; }
   .career-direction { @apply flex min-h-12 shrink-0 items-center gap-2 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm font-medium text-slate-600 hover:border-indigo-300 hover:text-indigo-700; }
   .career-direction-active { @apply border-indigo-600 bg-indigo-50 text-indigo-800 ring-1 ring-indigo-600; }
   .career-specialty { @apply min-h-11 shrink-0 whitespace-nowrap rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:border-indigo-300; }
@@ -117,7 +121,17 @@ body {
   .flow-guide .flow-step { min-height: 36px; font-size: 12px; }
   .flow-guide .flow-step small { display: none; }
   .flow-guide .flow-number { width: 22px; height: 22px; }
+  .flow-guide .student-flow { overflow: visible; }
+  .flow-guide .student-flow ol { width: 100%; flex-wrap: wrap; gap: 4px 12px; }
+  .flow-guide .flow-arrow { display: none; }
+  /* Open mobile account menus join the header grid instead of covering the page. */
+  .site-account:has(.account-menu[open]), .account-menu[open] { display: contents; }
+  .account-menu[open] > summary { grid-column: 2; grid-row: 1; justify-self: end; }
+  .account-menu[open] > nav { position: static; grid-column: 1 / -1; grid-row: 3; width: 100%; max-width: none; max-height: min(60dvh, 24rem); overflow-y: auto; margin: 8px 0; box-shadow: none; }
 }
+
+/* Metadata remains smaller than body copy, without falling below 13px. */
+@layer utilities { .text-xs { font-size: 0.8125rem; line-height: 1.5; } }
 
 /* Keep deep links below the two-row mobile header, including utility-styled anchors. */
 main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], main [id^="growth-"], #application-submit, #report-materials, #report-comparison { scroll-margin-top: 120px; }

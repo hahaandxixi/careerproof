@@ -1,13 +1,20 @@
+"use client";
 import Link from "next/link";
+import { useId, useState } from "react";
 import type { FlowStepKey } from "@/lib/flow-steps";
 
 export default function FlowSteps({ steps, currentKey }: {
   steps: readonly { key: FlowStepKey; label: string; href: string | null }[];
   currentKey: FlowStepKey;
 }) {
-  return <div className="flow-guide mb-5">
-    <p className="mb-1 text-xs font-medium text-indigo-800 sm:hidden">当前位置：{steps.find(step => step.key === currentKey)?.label}</p>
-    <nav aria-label="学生操作指南" className="student-flow">
+  const [expanded, setExpanded] = useState(false);
+  const guideId = useId();
+  return <div className="flow-guide mb-4">
+    <button type="button" aria-expanded={expanded} aria-controls={guideId} onClick={() => setExpanded(value => !value)} className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-sm sm:hidden">
+      <span className="font-medium text-indigo-800">当前位置：{steps.find(step => step.key === currentKey)?.label}</span>
+      <span className="shrink-0 text-slate-600">{expanded ? "收起流程 −" : "完整流程 +"}</span>
+    </button>
+    <nav id={guideId} aria-label="学生操作指南" className={`student-flow ${expanded ? "block" : "hidden sm:block"}`}>
       <ol>{steps.map((step, index) => <li key={step.key} aria-current={step.key === currentKey ? "step" : undefined}>
         {index > 0 && <span className="flow-arrow" aria-hidden="true">→</span>}
         {step.href && step.key !== currentKey ? <Link href={step.href} className="flow-step">
@@ -17,6 +24,6 @@ export default function FlowSteps({ steps, currentKey }: {
         </span>}
       </li>)}</ol>
     </nav>
-    <p className="mt-1 text-xs leading-5 text-slate-500 sm:hidden">可往返操作 · 左右滑动查看全部 {steps.length} 步。</p>
+    {expanded && <p className="mt-1 text-xs leading-5 text-slate-600 sm:hidden">可往返操作，步骤仅表示位置，不代表已完成。</p>}
   </div>;
 }

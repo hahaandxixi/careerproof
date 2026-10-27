@@ -70,7 +70,9 @@ test("navigation retains all five ordered steps and only one current location", 
   assert.ok(!html.includes('href="/applications"'));
   assert.ok(!html.includes('href="/growth"'));
   assert.equal(flowStepsForLocation("/reports/r1").find(step=>step.key==="growth").href,"/portfolio");
-  assert.ok(html.includes("左右滑动查看全部 5 步。"));
+  assert.ok(html.includes('aria-expanded="false"'));
+  assert.ok(html.includes("完整流程 +"));
+  assert.ok(html.includes("hidden sm:block"), "mobile starts compact while desktop retains the five-step navigation");
 });
 
 test("confirmation is text until a concrete report supplies the existing confirmation anchor", () => {
