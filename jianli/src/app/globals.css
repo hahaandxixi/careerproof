@@ -124,3 +124,9 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 
 /* Compact local reading surfaces; other workspaces keep their existing spacing. */
 @media (max-width: 639px) { .layout-closeout .panel { padding: 14px; } }
+
+/* Every slide sizes the same grid track, including wrapped mobile copy. */
+.scenario-stage { display: grid; min-width: 0; }
+.scenario-slide { grid-area: 1 / 1; min-width: 0; visibility: hidden; opacity: 0; pointer-events: none; transform: translateX(8px); transition: opacity 180ms ease, transform 180ms ease, visibility 180ms; }
+.scenario-slide[data-active="true"] { visibility: visible; opacity: 1; pointer-events: auto; transform: none; }
+@media (prefers-reduced-motion: reduce) { .scenario-slide { transition: none; transform: none; } }
