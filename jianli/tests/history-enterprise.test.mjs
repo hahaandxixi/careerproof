@@ -50,7 +50,28 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup: render } = require("react-dom/server");
 const { ReportHistoryCard } = await import("../src/components/ReportList.tsx");
-const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail } = await import("../src/components/ApplicationBoard.tsx");
+const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail, FixedReportOverview } = await import("../src/components/ApplicationBoard.tsx");
+
+test("fixed report overview separates evidence support, gaps and uncovered requirements without changing the snapshot", () => {
+  const report = {
+    id: "report-fixed", jobTitle: "后端岗位", createdAt: "2026-10-27T00:00:00Z",
+    summary: "保留的完整判断", analysisMode: "rules", aiFallbackUsed: true,
+    materials: [{ kind: "project", id: "version-a", title: "报名服务", versionNumber: 2 }],
+    items: ["supported", "partial", "claimed_only", "gap", "unsupported"].map((verdict, index) => ({ requirementId: `r${index}`, verdict, weight: 1 })),
+  };
+  const original = JSON.stringify(report);
+  const html = render(React.createElement(FixedReportOverview, { application: { candidateName: "合成甲", report } }));
+  assert.match(html, /合成甲 · 投递时固定报告/);
+  assert.match(html, /规则报告 · 模型已降级/);
+  assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
+  assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
+  assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);
+  assert.match(html, /部分支持 1 项 · 未覆盖或需复核 1 项/);
+  assert.match(html, /<details[^>]*><summary[^>]*>报告时间、材料版本与判断范围<\/summary>/);
+  assert.match(html, /报名服务 · 第2版/);
+  assert.match(html, /保留的完整判断/);
+  assert.equal(JSON.stringify(report), original);
+});
 
 const summary = {
   id: "report-a", jobId: "job-a", jobTitle: "后端开发", candidateName: "甲",
