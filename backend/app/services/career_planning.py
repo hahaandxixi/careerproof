@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import re
 from collections import Counter
 from datetime import UTC, datetime
 from uuid import UUID
 
+import httpx
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -16,7 +18,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import overclaim_flags, runtime_plan_without_implementation_step
 from app.agents.evidence_workflow import _model_semaphore
-from app.agents.provider import OpenAICompatibleProvider, _redact_external_value, get_ai_provider
+from app.agents.provider import (
+    OpenAICompatibleProvider,
+    ProviderInputBudgetError,
+    ProviderOutputBudgetError,
+    ProviderOutputTruncatedError,
+    _redact_external_value,
+    get_ai_provider,
+)
 from app.core.config import settings
 from app.core.exceptions import AppError
 from app.models.analysis import AiUsageLog, AnalysisTask
@@ -538,36 +547,65 @@ async def create_career_plan(
         }
     )
     provider: OpenAICompatibleProvider | None = None
+    stage = "provider_configuration"
+    skip_persistence = False
+
+    def failure(status: str, error: Exception | None = None) -> None:
+        response.ai_status = status
+        response.ai_fallback_used = True
+        # Exception messages/tracebacks, provider bodies and requests may contain
+        # credentials or private material. Log only bounded categories.
+        context = {"stage": stage, "reason": status,
+                   "error_type": type(error).__name__ if error else "not_called"}
+        if isinstance(error, httpx.HTTPStatusError):
+            context["http_status"] = error.response.status_code
+        configured = (
+            settings.ai_provider if settings.ai_provider in {"mock", "deepseek"} else "other"
+        )
+        logger.warning(
+            "career_plan.ai_stage_failure stage=%s reason=%s error_type=%s "
+            "http_status=%s provider=%s external_ai_enabled=%s",
+            stage, status, context["error_type"], context.get("http_status", "-"),
+            configured, settings.ai_external_enabled, extra=context,
+        )
+
     if shortlist:
         try:
-            allowed, reason, _stats = await _daily_ai_budget(session, user.id)
-            if not allowed:
-                response.ai_status = reason or "usage_budget"
-                response.ai_fallback_used = True
+            candidate = get_ai_provider()
+            if not isinstance(candidate, OpenAICompatibleProvider):
+                failure("external_ai_disabled" if not settings.ai_external_enabled else
+                        "mock_provider" if settings.ai_provider == "mock" else
+                        "model_configuration_error")
+                skip_persistence = True
             else:
-                candidate = get_ai_provider()
-                if not isinstance(candidate, OpenAICompatibleProvider):
-                    raise ValueError("AI provider is unavailable")
                 provider = candidate
-                async with (
-                    _model_semaphore(),
-                    asyncio.timeout(settings.ai_workflow_timeout_seconds),
-                ):
-                    raw = await provider.generate_bounded_json(
-                        system=PLAN_PROMPT,
-                        data=_planning_input(shortlist, changes),
-                        max_tokens=1500,
-                    )
-                analysis = CareerPlanAnalysis.model_validate(raw)
-                validate_plan(analysis, shortlist, changes)
-                if any(item.task_plan is None for item in analysis.advice):
-                    raise ValueError("AI career plan omitted the actionable task")
-                response.ai_plan = analysis
-                response.ai_model = provider.model
-                response.ai_status = "validated"
+                stage = "ai_budget_check"
+                allowed, reason, _stats = await _daily_ai_budget(session, user.id)
+                if not allowed:
+                    failure(reason or "usage_budget")
+                    skip_persistence = True
+                else:
+                    stage = "model_request"
+                    async with (
+                        _model_semaphore(),
+                        asyncio.timeout(settings.ai_workflow_timeout_seconds),
+                    ):
+                        raw = await provider.generate_bounded_json(
+                            system=PLAN_PROMPT,
+                            data=_planning_input(shortlist, changes),
+                            max_tokens=1500,
+                        )
+                    stage = "output_schema"
+                    analysis = CareerPlanAnalysis.model_validate(raw)
+                    stage = "business_validation"
+                    validate_plan(analysis, shortlist, changes)
+                    if any(item.task_plan is None for item in analysis.advice):
+                        raise ValueError("AI career plan omitted the actionable task")
+                    response.ai_plan = analysis
+                    response.ai_model = provider.model
+                    response.ai_status = "validated"
         except CareerChangeAttributionConflict as exc:
-            response.ai_fallback_used = True
-            response.ai_status = "change_attribution_conflict"
+            failure("change_attribution_conflict", exc)
             response.ai_validation_issues = [
                 CareerValidationIssue(
                     reason="AI把推荐变化归因于补证，但当前对比不能证明因果；规则候选继续保留。",
@@ -576,8 +614,7 @@ async def create_career_plan(
                 )
             ]
         except CareerPlanChangeFactConflict as exc:
-            response.ai_fallback_used = True
-            response.ai_status = "change_fact_conflict"
+            failure("change_fact_conflict", exc)
             response.ai_validation_issues = [
                 CareerValidationIssue(
                     reason="AI的变化说明与已保存的材料或岗位事实冲突；规则候选继续保留。",
@@ -586,8 +623,7 @@ async def create_career_plan(
                 )
             ]
         except CareerTaskEvidenceGapConflict as exc:
-            response.ai_fallback_used = True
-            response.ai_status = "task_plan_evidence_gap_conflict"
+            failure("task_plan_evidence_gap_conflict", exc)
             response.ai_validation_issues = [
                 CareerValidationIssue(
                     reason="AI只要求运行结果，但当前该技能缺少可定位实现证据；请先补具名实现材料。",
@@ -596,8 +632,7 @@ async def create_career_plan(
                 )
             ]
         except VisibleCodeFactConflict as exc:
-            response.ai_fallback_used = True
-            response.ai_status = "visible_code_fact_conflict"
+            failure("visible_code_fact_conflict", exc)
             response.ai_validation_issues = [
                 CareerValidationIssue(
                     reason="AI的缺失表述与当前可见代码存在冲突，请结合引用核对。",
@@ -612,14 +647,47 @@ async def create_career_plan(
             # bound parameters, so never log the exception text.
             logger.warning(
                 "career_plan.ai_stage_database_fault",
-                extra={"stage": "ai_budget_check", "db_error": type(exc).__name__},
+                extra={"stage": stage, "db_error": type(exc).__name__},
             )
             raise
-        except Exception:  # one bounded model failure cannot erase the rule shortlist
-            response.ai_fallback_used = True
-            response.ai_status = "model_unavailable_or_invalid"
+        except (httpx.TimeoutException, TimeoutError) as exc:
+            failure("model_timeout", exc)
+        except httpx.TransportError as exc:
+            failure("model_network_error", exc)
+        except httpx.HTTPStatusError as exc:
+            code = exc.response.status_code
+            failure({401: "model_auth_error", 403: "model_auth_error",
+                     402: "model_quota_exceeded", 429: "model_rate_limited",
+                     400: "model_request_rejected"}.get(code, "model_http_error"), exc)
+        except (ProviderInputBudgetError, ProviderOutputBudgetError) as exc:
+            failure("model_request_budget", exc)
+            skip_persistence = True
+        except ProviderOutputTruncatedError as exc:
+            failure("model_output_truncated", exc)
+        except ValidationError as exc:
+            failure("model_output_truncated" if provider and provider.last_finish_reason == "length"
+                    else "model_output_schema_invalid", exc)
+        except ValueError as exc:
+            status = "model_internal_error"
+            if stage == "provider_configuration":
+                status = "model_configuration_error"
+            elif stage == "business_validation":
+                status = "model_business_validation_failed"
+            elif stage == "model_request":
+                invalid_json = isinstance(exc, json.JSONDecodeError) or isinstance(
+                    exc.__cause__, json.JSONDecodeError,
+                )
+                status = "model_json_invalid" if invalid_json else "model_output_schema_invalid"
+            failure(status, exc)
+            skip_persistence = stage == "provider_configuration"
+        except Exception as exc:  # Keep rule fallback without disguising its failure category.
+            failure("model_internal_error", exc)
     else:
         response.ai_status = "no_jobs"
+    if skip_persistence:
+        # No useful model attempt occurred. Keep rule candidates in this response,
+        # but do not grow history or replace the user's previous saved plan.
+        return response
     usage = provider.combined_usage() if provider else None
     if usage:
         response.ai_usage = usage.model_dump()
