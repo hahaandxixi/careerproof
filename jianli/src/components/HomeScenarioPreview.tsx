@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { HEATMAP_DEMO, DEMO_LABELS, demoCellClass } from "@/lib/heatmap-demo";
 
@@ -37,7 +36,7 @@ export default function HomeScenarioPreview() {
     setResetKey(value => value + 1);
   }
 
-  return <section className="min-w-0 rounded-2xl border border-indigo-100 bg-white p-4 shadow-sm sm:p-5" aria-label="合成示例预览" aria-roledescription="轮播图"
+  return <section className="min-w-0 rounded-2xl bg-white p-4 sm:p-5" aria-label="合成示例预览" aria-roledescription="轮播图"
     onPointerEnter={event => { if (event.pointerType !== "touch") setHovered(true); }}
     onPointerLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)}
     onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
@@ -49,7 +48,7 @@ export default function HomeScenarioPreview() {
           if (next !== null) { event.preventDefault(); select(next); document.getElementById(`${id}-tab-${next}`)?.focus(); }
         }}>{label}</button>)}
     </div>
-    <div className="mt-3 flex items-center justify-between gap-3"><p className="text-xs text-slate-500">从材料，到可以核对的变化</p><span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">合成预览</span></div>
+
     {/* Invisible grid items still size the track; wrapped copy never gets clipped. */}
     <div className="scenario-stage mt-3" aria-live={canPlay ? "off" : "polite"} aria-atomic="true">
       {SCENARIOS.map((label, index) => <div key={label} role="tabpanel" className="scenario-slide" id={`${id}-panel-${index}`} aria-labelledby={`${id}-tab-${index}`} aria-hidden={active !== index} inert={active !== index} data-active={active === index} tabIndex={active === index ? 0 : -1}>
@@ -83,6 +82,6 @@ export default function HomeScenarioPreview() {
       <button type="button" onClick={() => setPlaying(value => !value)} aria-label={playing ? "暂停自动轮播" : "启用自动轮播"} className="min-h-10 rounded text-xs text-indigo-700 underline underline-offset-4">{playing ? "暂停" : "播放"}</button>
     </div>
     <span className="sr-only">{active + 1} / 3 · {canPlay ? "每 5 秒自动切换" : "已暂停自动切换"}</span>
-    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs leading-5"><p className="text-slate-500">不调用真实 AI · 缺材料不代表没有能力</p><Link href="/demo/heatmap" className="inline-flex min-h-11 items-center font-medium text-indigo-700 underline">体验完整示例 →</Link></div>
+    <p className="mt-2 border-t border-slate-100 pt-2 text-xs leading-6 text-slate-600">合成预览 · 不调用真实 AI · 缺材料不代表没有能力</p>
   </section>;
 }

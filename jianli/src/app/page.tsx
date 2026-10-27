@@ -15,8 +15,8 @@ const steps: [string, string][] = [
 
 export default function HomePage() {
   return <HomeWorkspace><div className="space-y-6 sm:space-y-7">
-    <section className="panel overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-white py-6 sm:p-6 lg:px-8">
-      <div className="grid items-center gap-6 lg:grid-cols-[1.1fr_1fr]">
+    <section className="panel overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-white py-4 sm:p-5 lg:px-7">
+      <div className="grid items-center gap-5 lg:grid-cols-[1.1fr_1fr]">
         <div>
           <p className="inline-flex rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-medium text-indigo-700">CareerProof · 从你的材料出发</p>
           <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">让你的经历，<br /><span className="text-indigo-600">成为看得见的证据。</span></h1>

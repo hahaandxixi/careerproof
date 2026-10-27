@@ -43,7 +43,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   const reset = () => { setDraft({ q: "", city: "" }); choose({ ...EMPTY_DISCOVERY }); };
   const moreHref = discoveryHref({ ...query, page: 1 });
   const Heading = compact ? "h2" : "h1";
-  return <section aria-labelledby="technical-jobs-title" className={`min-w-0 space-y-4 ${compact ? "rounded-2xl border border-indigo-100 bg-gradient-to-b from-indigo-50/60 to-slate-50 p-3 sm:p-5" : ""}`} id="technical-jobs">
+  return <section aria-labelledby="technical-jobs-title" className={`min-w-0 space-y-4 ${compact ? "rounded-2xl bg-indigo-50/40 p-3 sm:p-5" : ""}`} id="technical-jobs">
     <div className="flex flex-wrap items-start justify-between gap-3"><div>
       {!compact && <p className="text-xs font-semibold tracking-wide text-indigo-600">职业与岗位探索</p>}
       <Heading id="technical-jobs-title" className={compact ? "mt-1 text-2xl font-bold tracking-tight" : "mt-1 text-3xl font-bold tracking-tight sm:text-4xl"}>{compact ? "探索技术岗位" : "发现适合你的技术岗位"}</Heading>
@@ -56,20 +56,20 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
       <button type="submit" className="btn min-h-12 shrink-0 whitespace-nowrap px-4 sm:px-7">搜索岗位</button>
     </form>
     <div className="grid min-w-0 gap-4 lg:grid-cols-[12rem_minmax(0,1fr)]">
-      <nav aria-label="技术职业方向" className="career-directions lg:flex-col lg:gap-1 lg:self-start lg:rounded-xl lg:border lg:border-slate-200 lg:bg-white lg:p-2">
+      <nav aria-label="技术职业方向" className="career-directions lg:flex-col lg:gap-1 lg:self-start lg:border-r lg:border-slate-200 lg:pr-3">
         <button type="button" aria-pressed={!query.direction} onClick={() => choose({ direction: "", specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${!query.direction ? "career-direction-active" : ""}`}><span className="flex h-6 w-6 items-center justify-center rounded-md border border-current text-sm" aria-hidden="true">⊞</span><span>全部岗位</span></button>
         {CAREER_DIRECTIONS.map(item => <button key={item.id} type="button" aria-pressed={query.direction === item.id} onClick={() => choose({ direction: item.id, specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${query.direction === item.id ? "career-direction-active" : ""}`}><CareerDirectionIcon direction={item.id}/><span>{item.label}</span></button>)}
       </nav>
       <div className="min-w-0 space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4">
-          {direction && <div className="mb-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={`${direction.label}的具体岗位`}>
+        <div className="border-b border-slate-200 pb-3">
+          {direction && <div className="scrollbar-quiet mb-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={`${direction.label}的具体岗位`}>
             <button className={`career-specialty ${!query.specialty ? "career-specialty-active" : ""}`} type="button" aria-pressed={!query.specialty} onClick={() => choose({ specialty: "" })}>全部{direction.label}</button>
             {direction.specialties.map(item => <button key={item.id} type="button" className={`career-specialty ${query.specialty === item.id ? "career-specialty-active" : ""}`} aria-pressed={query.specialty === item.id} onClick={() => choose({ specialty: item.id })}>{item.label}</button>)}
           </div>}
           <div className="grid min-w-0 grid-cols-2 items-end gap-3 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
-            <label className="min-w-0 space-y-1 text-xs text-slate-500">城市<input form="job-discovery-search" className="field !bg-slate-50 !py-2" value={draft.city} maxLength={100} placeholder="全部城市" onChange={event => setDraft({ ...draft, city: event.target.value })}/></label>
-            <label className="min-w-0 space-y-1 text-xs text-slate-500">工作类型<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.employmentType} onChange={event => choose({ employmentType: event.target.value })}><option value="">全部类型</option>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <label className="min-w-0 space-y-1 text-xs text-slate-500">技术语言<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.language} onChange={event => choose({ language: event.target.value })}><option value="">不限语言</option>{CAREER_LANGUAGES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+            <label className="form-label min-w-0 space-y-1">城市<input form="job-discovery-search" className="field !bg-slate-50 !py-2" value={draft.city} maxLength={100} placeholder="全部城市" onChange={event => setDraft({ ...draft, city: event.target.value })}/></label>
+            <label className="form-label min-w-0 space-y-1">工作类型<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.employmentType} onChange={event => choose({ employmentType: event.target.value })}><option value="">全部类型</option>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+            <label className="form-label min-w-0 space-y-1">技术语言<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.language} onChange={event => choose({ language: event.target.value })}><option value="">不限语言</option>{CAREER_LANGUAGES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
             <button type="button" className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-lg px-2 text-sm text-slate-500 underline hover:text-indigo-700" onClick={reset}>重置筛选</button>
           </div>
           {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
@@ -91,10 +91,10 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
 export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; compact?: boolean }) {
   const Heading = compact ? "h3" : "h2";
   return <article className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 transition-colors hover:border-indigo-300 hover:shadow-sm motion-reduce:transition-none">
-    <div className="flex min-w-0 items-start gap-3"><span className={`flex shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ${compact ? "h-8 w-8" : "h-10 w-10"}`}><CareerDirectionIcon direction={job.careerDirection ?? ""}/></span><div className="min-w-0 flex-1"><Heading className={`text-base font-semibold leading-6 text-slate-950 ${compact ? "line-clamp-2" : ""}`}><Link className="break-words hover:text-indigo-700" href={`/jobs/${job.id}`}>{job.title}</Link></Heading><p className={`mt-1 text-xs leading-5 text-slate-500 ${compact ? "truncate" : "break-words"}`} title={job.companyName}>{job.companyName}</p></div></div>
+    <div className="flex min-w-0 items-start gap-3"><span className={`flex shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ${compact ? "h-8 w-8" : "h-10 w-10"}`}><CareerDirectionIcon direction={job.careerDirection ?? ""}/></span><div className="min-w-0 flex-1"><Heading className={`min-h-12 line-clamp-2 text-base font-semibold leading-6 text-slate-950`}><Link className="break-words hover:text-indigo-700" href={`/jobs/${job.id}`}>{job.title}</Link></Heading><p className={`mt-1 text-xs leading-5 text-slate-500 ${compact ? "truncate" : "break-words"}`} title={job.companyName}>{job.companyName}</p></div></div>
     <div className={`mt-3 flex flex-wrap items-center text-xs ${compact ? "gap-x-2 gap-y-1 text-slate-500" : "gap-1.5"}`}><span className={compact ? "" : "career-meta"}>{job.city || "城市未填写"}</span>{compact && <span aria-hidden="true">·</span>}<span className={compact ? "" : "career-meta"}>{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span>{compact && <span aria-hidden="true">·</span>}<span className={compact ? "" : "career-meta"}>{directionLabel(job.careerDirection) ?? `${CATEGORY_LABELS[job.category] ?? "其他方向"} · 未细分`}</span>{job.isDemo && <span className="rounded-md bg-indigo-50 px-2 py-1 text-indigo-700">合成示例岗位</span>}</div>
     {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="mt-2 flex flex-wrap gap-1.5">{job.technicalTags.slice(0, 4).map(tag => <li key={tag} className={`rounded-md px-2 text-xs text-slate-500 ${compact ? "bg-slate-50 py-0.5" : "border border-slate-100 py-1"}`}>{tag}</li>)}</ul>}
-    {job.description && <p className={`mt-3 line-clamp-2 break-words leading-5 text-slate-500 ${compact ? "min-h-10 text-sm" : "text-xs"}`}>{job.description}</p>}
+    {job.description && <p className={`mt-3 min-h-12 line-clamp-2 break-words text-sm leading-6 text-slate-700`}>{job.description}</p>}
     <div className={`mt-auto flex items-center justify-between gap-2 ${compact ? "pt-3" : "flex-wrap pt-4"}`}><span className={compact ? "text-sm font-medium tabular-nums text-slate-700" : "text-xs text-slate-500"}>{compact ? `${job.requirementCount} 项要求` : `岗位要求 ${job.requirementCount} 项`}</span><Link className={`inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3 text-sm font-medium ${compact ? "min-w-28 bg-indigo-600 text-white hover:bg-indigo-700" : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"}`} href={`/jobs/${job.id}`}>查看要求 →</Link></div>
   </article>;
 }

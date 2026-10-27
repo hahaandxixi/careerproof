@@ -126,6 +126,7 @@ body {
   .flow-guide .flow-arrow { display: none; }
   /* Open mobile account menus join the header grid instead of covering the page. */
   .site-account:has(.account-menu[open]), .account-menu[open] { display: contents; }
+  .account-menu[open]::details-content { display: contents; }
   .account-menu[open] > summary { grid-column: 2; grid-row: 1; justify-self: end; }
   .account-menu[open] > nav { position: static; grid-column: 1 / -1; grid-row: 3; width: 100%; max-width: none; max-height: min(60dvh, 24rem); overflow-y: auto; margin: 8px 0; box-shadow: none; }
 }
