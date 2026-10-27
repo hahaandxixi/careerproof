@@ -69,6 +69,19 @@ def direction_expression():
     )
 
 
+def keyword_condition(query):
+    """Search explicit job identity, never incidental collaboration prose."""
+    term = query.strip()
+    for key, group in DIRECTIONS.items():
+        if term.casefold() in {v.casefold() for v in [group["label"], *group["titleTerms"]]}:
+            return direction_expression() == key
+    return or_(
+        _matches(Job.title, [term]),
+        Job.company_name.icontains(term, autoescape=True),
+        _skill_exists([term]),
+    )
+
+
 def discovery_conditions(direction=None, specialty=None, language=None):
     direction, specialty, language = normalize_filters(direction, specialty, language)
     conditions = []

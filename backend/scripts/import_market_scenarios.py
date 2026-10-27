@@ -1,4 +1,4 @@
-"""Plan (default) or explicitly apply the three fictional experience scenarios.
+"""Plan (default) or explicitly apply the curated fictional experience scenarios.
 
 DATABASE_URL from app settings is deliberately NOT used. Supply --database-url.
 Apply also requires --enterprise-id and --confirm. Legacy curation is separate:

@@ -1,5 +1,5 @@
 {
-  "version": "market-scenarios-20261019",
+  "version": "market-scenarios-20261027",
   "syntheticOnly": true,
   "companyName": "职证场景实验室（虚构）",
   "notice": "以下为参考公开岗位能力方向编写的体验场景，企业、人物和经历均为虚构；不向BOSS或真实企业投递。",
@@ -66,6 +66,90 @@
       "resumeFile": "booking-quality-resume.txt",
       "projectFile": "booking-quality-project.zip",
       "materialBoundary": "有自包含的演示接口与三类测试、用例说明；不声称覆盖生产系统、并发仲裁、身份授权或所有预约规则。"
+    },
+    {
+      "key": "java-orders",
+      "title": "Java 后端开发工程师（校招）",
+      "category": "software", "city": "上海", "employmentType": "campus",
+      "description": "为虚构校园商店实现订单查询、库存校验与取消接口，和页面开发者约定错误返回。关注事务边界、可维护代码与回归测试。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"Java","rawText":"使用Java实现订单状态转换，拒绝非法状态操作。","weight":4,"isRequired":true},
+        {"skillName":"Spring Boot","rawText":"实现订单查询与取消接口，校验请求并返回明确错误。","weight":5,"isRequired":true},
+        {"skillName":"SQL","rawText":"设计订单与库存表，使用事务避免失败时留下部分写入。","weight":4,"isRequired":true},
+        {"skillName":"JUnit","rawText":"为库存不足、重复取消和正常订单编写行为测试。","weight":3,"isRequired":true},
+        {"skillName":"Git","rawText":"通过提交说明交代本人实现范围与验证方法。","weight":2,"isRequired":false}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
+    },
+    {
+      "key": "android-events",
+      "title": "Android 移动开发实习生",
+      "category": "software", "city": "深圳", "employmentType": "internship",
+      "description": "开发虚构校园活动移动客户端，完成活动列表、详情和报名反馈。与接口同学协作处理加载、断网和重复点击，兼顾小屏可读性。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"Kotlin","rawText":"使用Kotlin定义活动模型与输入校验，处理空数据。","weight":4,"isRequired":true},
+        {"skillName":"Android","rawText":"实现活动列表与详情页面，管理页面生命周期和状态恢复。","weight":5,"isRequired":true},
+        {"skillName":"HTTP","rawText":"调用活动接口，区分加载、成功、断网与服务端错误。","weight":4,"isRequired":true},
+        {"skillName":"JUnit","rawText":"验证报名校验、重试与重复点击防护行为。","weight":3,"isRequired":true},
+        {"skillName":"无障碍","rawText":"为主要按钮提供可理解名称，检查文字放大后的布局。","weight":2,"isRequired":false}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
+    },
+    {
+      "key": "data-pipeline",
+      "title": "数据开发工程师（校招）",
+      "category": "data_analysis", "city": "杭州", "employmentType": "campus",
+      "description": "为虚构校园商店建立每日订单汇总流程，完成清洗、去重、入库与质量检查。输出可复核的统计口径，说明迟到数据和重复执行的处理方式。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"Python","rawText":"解析订单数据并校验字段，隔离无效记录。","weight":4,"isRequired":true},
+        {"skillName":"SQL","rawText":"按日期和商品汇总订单，正确处理重复记录及空值。","weight":5,"isRequired":true},
+        {"skillName":"ETL","rawText":"实现可重复运行的数据抽取与入库流程，避免重复累加。","weight":4,"isRequired":true},
+        {"skillName":"pytest","rawText":"测试空批次、重复批次与异常金额的处理。","weight":3,"isRequired":true},
+        {"skillName":"数据质量","rawText":"提供输入输出计数与校验记录，明确统计覆盖范围。","weight":3,"isRequired":true}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
+    },
+    {
+      "key": "ai-knowledge",
+      "title": "大模型 AI 应用开发实习生",
+      "category": "software", "city": "北京", "employmentType": "internship",
+      "description": "为虚构社团文档库开发带来源引用的知识问答原型，关注检索范围、输出校验与失败恢复。不得把模型回答当作已核实事实。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"Python","rawText":"实现文档导入与问题处理，处理不支持格式和空输入。","weight":4,"isRequired":true},
+        {"skillName":"RAG","rawText":"按用户资料范围检索片段，并返回可定位的文件和行号。","weight":5,"isRequired":true},
+        {"skillName":"LLM","rawText":"约束模型输出结构，校验引用并标记无证据结论。","weight":4,"isRequired":true},
+        {"skillName":"pytest","rawText":"测试无检索结果、模型超时和无效引用，不调用付费接口。","weight":3,"isRequired":true},
+        {"skillName":"隐私保护","rawText":"明确外发材料范围，敏感信息不写入公开日志。","weight":3,"isRequired":true}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
+    },
+    {
+      "key": "devops-service",
+      "title": "DevOps 云原生工程师（校招）",
+      "category": "operations", "city": "成都", "employmentType": "campus",
+      "description": "为虚构活动服务准备容器运行、健康检查与发布回退流程，区分配置、密钥和持久化数据。通过故障演练解释服务恢复边界。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"Docker","rawText":"编写可复现的容器构建与启动配置，避免将密钥打包。","weight":5,"isRequired":true},
+        {"skillName":"Kubernetes","rawText":"配置服务、健康探针及资源限制，说明失败时的恢复方式。","weight":4,"isRequired":true},
+        {"skillName":"Linux","rawText":"定位进程、端口和日志，给出故障排查步骤。","weight":4,"isRequired":true},
+        {"skillName":"CI/CD","rawText":"建立测试后构建与发布的流水线，失败时阻止继续发布。","weight":3,"isRequired":true},
+        {"skillName":"监控","rawText":"提供健康与错误指标示例，明确演练环境和未验证范围。","weight":2,"isRequired":false}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
+    },
+    {
+      "key": "ai-product",
+      "title": "AI 产品与技术协作实习生",
+      "category": "other", "city": "广州", "employmentType": "internship",
+      "description": "为虚构校园知识助手梳理用户问题、证据展示和人工确认路径，和设计及开发共同验证方案。区分产品假设、模型能力与真实用户反馈。合成示例岗位，不是真实招聘。",
+      "requirements": [
+        {"skillName":"需求分析","rawText":"明确目标用户、问题场景与验收条件，区分必要和可选需求。","weight":5,"isRequired":true},
+        {"skillName":"AI产品","rawText":"说明模型可用范围、错误风险和人工确认节点。","weight":4,"isRequired":true},
+        {"skillName":"交互原型","rawText":"展示来源查看、错误恢复及主要操作的完整交互路径。","weight":4,"isRequired":true},
+        {"skillName":"用户测试","rawText":"记录真实操作任务、卡点与改进依据，不伪造用户反馈。","weight":3,"isRequired":true},
+        {"skillName":"技术协作","rawText":"以明确接口与验收示例交代和开发者协作的范围。","weight":2,"isRequired":false}
+      ],
+      "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
     }
   ]
 }

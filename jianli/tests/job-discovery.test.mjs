@@ -64,7 +64,7 @@ const icon = { __esModule: true, default: () => React.createElement("svg", { "ar
 const previousWindow = globalThis.window;
 afterEach(() => { if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow; });
 
-function harness(search, compact = false) {
+function harness(search, compact = false, role = null) {
   let cursor = 0; let effects = []; const requests = []; const routes = [];
   const state = [{ q: parse(search).q, city: parse(search).city }, null, true, "", 0];
   const api = { listJobs(filters) { return new Promise((resolve, reject) => { requests.push({ filters, resolve, reject }); }); } };
@@ -79,11 +79,20 @@ function harness(search, compact = false) {
     "@/lib/api/client": { api, errorMessage: String }, "@/lib/api/domain": ts(path.join(root, "src/lib/api/domain.ts")),
     "@/lib/job-discovery": helpers, "./CareerDirectionIcon": icon,
     "./AccessGate": { ErrorNotice: ({ message }) => React.createElement("p", { role: "alert" }, message) },
+    "./AuthProvider": { useAuth: () => ({ user: role ? { role } : null, status: role ? "authenticated" : "unauthenticated" }) },
   });
   return { requests, routes, state, mod, setSearch(value) { search = value; }, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()); } };
 }
 const tick = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
 const job = id => ({ id, title: `岗位${id}`, companyName: "企业原文", city: "杭州", category: "software", employmentType: "internship", requirementCount: 5, isDemo: false, technicalTags: [] });
+
+test("only authenticated students see the material recommendation action", () => {
+  for (const role of [null, "student", "enterprise", "admin"]) {
+    const html = renderToStaticMarkup(harness("", false, role).render());
+    assert.equal(html.includes('href="/recommendations"'), role === "student");
+    if (role === "student") assert.ok(html.includes("按我的材料推荐岗位"));
+  }
+});
 
 test("home and jobs keep old cards through a deferred filter request instead of collapsing into skeletons", async () => {
   for (const compact of [false, true]) {

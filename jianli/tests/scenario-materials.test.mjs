@@ -15,7 +15,9 @@ const Component = compiledModule.exports.default;
 const catalog = JSON.parse(readFileSync(new URL("../../demo/market-scenarios.json", import.meta.url), "utf8"));
 
 test("each canonical sample renders its own real downloadable files", () => {
-  for (const scenario of catalog.scenarios) {
+  const paired = catalog.scenarios.filter(scenario => scenario.resumeFile && scenario.projectFile);
+  assert.equal(paired.length, 3, "the original three material pairs must remain available");
+  for (const scenario of paired) {
     const html = renderToStaticMarkup(React.createElement(Component, {
       title: scenario.title, companyName: catalog.companyName, isDemo: true,
     }));
@@ -25,6 +27,14 @@ test("each canonical sample renders its own real downloadable files", () => {
     }
     assert.match(html, /不会自动写入你的账号/);
   }
+});
+
+test("new discovery-only samples do not advertise nonexistent downloads", () => {
+  const unpaired = catalog.scenarios.filter(scenario => !scenario.resumeFile);
+  assert.equal(unpaired.length, 6);
+  for (const scenario of unpaired) assert.equal(renderToStaticMarkup(React.createElement(Component, {
+    title: scenario.title, companyName: catalog.companyName, isDemo: true,
+  })), "");
 });
 
 test("ordinary jobs and unrecognized samples do not get unrelated materials", () => {

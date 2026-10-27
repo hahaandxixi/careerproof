@@ -134,7 +134,7 @@ async def test_combined_filters_count_and_pagination_share_predicates(technical_
             "language": "python",
             "city": "深圳",
             "employmentType": "internship",
-            "q": "ledger",
+            "q": "FastAPI",
             "pageSize": 1,
         }
         page1 = (await client.get("/api/v1/jobs", params=filters)).json()["data"]
@@ -144,7 +144,12 @@ async def test_combined_filters_count_and_pagination_share_predicates(technical_
         requirement_only = (
             await client.get("/api/v1/jobs", params={**filters, "q": "需要提供FastAPI"})
         ).json()["data"]
-        assert requirement_only["total"] == 2, "Search must include saved requirement text"
+        # Search is now a role/skill/company lookup, not a full-text material search.
+        assert requirement_only["total"] == 0
+        description_only = (
+            await client.get("/api/v1/jobs", params={**filters, "q": "ledger"})
+        ).json()["data"]
+        assert description_only["total"] == 0
         last = (await client.get("/api/v1/jobs", params={**filters, "page": 99})).json()["data"]
         assert last["page"] == 2 and last["total"] == 2
         empty = (
@@ -155,6 +160,38 @@ async def test_combined_filters_count_and_pagination_share_predicates(technical_
             await client.get("/api/v1/jobs", params={"direction": "backend", "specialty": "java"})
         ).json()["data"]
         assert [x["id"] for x in java_rows["items"]] == [java], "JavaScript is not Java"
+
+
+async def test_keyword_search_uses_role_identity_not_collaboration_prose(technical_db):
+    app, _ = technical_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        await register(client, "search-scope@example.com")
+        org = await organization(client, "星河合成技术企业")
+        backend = await posting(client, org, "Python 后端开发", ["Python", "FastAPI"])
+        frontend = await posting(
+            client, org, "React 前端开发", ["React", "JavaScript"],
+            description="与后端协作，和算法、运维、测试、数据开发团队联调",
+            requirements=[{"skillName": "React", "rawText": "与后端协作，提供接口测试反馈"}],
+        )
+        java = await posting(client, org, "Java 后端开发", ["Java", "Spring Boot"])
+        examples = [("测试", "接口测试开发", ["pytest"]),
+                    ("数据开发", "数据开发工程师", ["SQL"]),
+                    ("算法", "算法工程师", ["Python"]),
+                    ("运维", "DevOps 运维工程师", ["Docker"])]
+        expected = {term: {await posting(client, org, title, skills)}
+                    for term, title, skills in examples}
+        expected.update({"后端": {backend, java}, "前端": {frontend},
+                         "FastAPI": {backend}, "React": {frontend}, "Java": {java}})
+        for term, ids in expected.items():
+            result = (await client.get("/api/v1/jobs", params={"q": term})).json()["data"]
+            assert {item["id"] for item in result["items"]} == ids, term
+            assert result["total"] == len(ids)
+        company = (await client.get("/api/v1/jobs", params={"q": "星河"})).json()["data"]
+        assert company["total"] == 7
+        conflict = (await client.get("/api/v1/jobs", params={
+            "q": "后端", "direction": "frontend", "page": 99,
+        })).json()["data"]
+        assert conflict == {"items": [], "total": 0, "page": 1, "pageSize": 20}
 
 
 async def test_legacy_unknown_filters_and_management_permissions_survive(technical_db):
