@@ -106,3 +106,18 @@ Edge曾实际打开早期构建 `xrJlPRtZfz-qWoD7K3gGS`，确认匿名首页、�
 本轮改动与PR #1重叠首页、导航及样式，故明确依赖其基线。PR #2其他未接受前端成果若后续集成，需要逐文件复核这些重叠处，不能把另一工作树整体复制进来。PR #3材料和PR #4历史归档均未合并。
 
 PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验与最终接受范围确定后绑定同一提交。保留原交付物、历史报告、模型回执与人工原表。
+
+## 10/27 岗位搜索、角色入口与合成授权演示
+
+本节产品源码为 `b481307`，继续在 `codex/home-discovery-20261027`；不合并main或其他PR。上文三岗位、AI方向为空及浏览器受限等描述是早期快照，不适用于本节预览。
+
+- 搜索改为岗位标题、明确技能和企业名称；明确方向词复用现有分类表达式，不再搜索描述和要求正文的协作措辞。“后端”修复前返回Python与React，修复后为Python与新增Java，不再返回React。技术词Java不会匹配JavaScript。
+- 推荐入口仅向已登录学生显示“按我的材料推荐岗位”；企业、管理员、匿名隐藏。学生推荐页面实际可访问；现有材料规则推荐接口实际返回全部9个候选。
+- 原三份场景对象逐字段与改前Git内容一致；新增六份，每份5条要求。9个岗位覆盖七方向：后端2、前端与移动2、其余各1。六个新岗位仅提供岗位要求，不伪造专属下载材料。
+- 在原专属合成库生成3份真实规则报告并经`POST /applications`明确授权；Python岗位2份，React岗位1份。Python实现材料3项有项目证据，仅声明材料0项；不代表运行或本人贡献核验。未插入预设报告、未改分或生成企业回复。
+- `evals/seed_market_applications.py`校验固定数据库、存储、容器标签、绑定端口、API与库中企业身份，复用材料上传与规则流程。企业读取经过显式`/view`，因此演示投递当前为“已查看”，产生的站内事件仅涉及合成账号。完整重放前后岗位、材料、报告、投递与事件数相同；历史报告保留。
+- 本地定向命令：`pytest app/tests/test_job_discovery_filters.py app/tests/test_job_discovery_curation.py app/tests/test_market_applications_seed.py -q --basetemp .tmp/search-green-20261027 --junitxml=.tmp/search-green.xml` → 23通过；`node --test tests/job-discovery.test.mjs tests/scenario-materials.test.mjs` → 16通过。目标Ruff、ESLint、TypeScript与生产构建通过。未运行全量后端。
+- 真实PG/API核对：9岗位／七分类、10组关键词、学生材料推荐9候选、导入与投递重放无新增、企业计数2+1、同岗位分页与Python支持/声明筛选各1、无关学生访问404。首次脚本误用不含报告的detail GET曾失败，修为原有显式view入口后成功；未绕过授权。
+- 前端3140构建`hhVsGvCYGjmQvDXKP92Sx`，API8140，同库`127.0.0.1:55447/cp_home_discovery_test_20261027`，存储仍为本工作树`backend/.tmp/storage`；外部AI禁用。桌面1440与手机390实际截图位于本机`output/screenshots/CareerProof-market-polish-20261027-b481307/`。企业入口隐藏、学生入口与推荐页、候选热力图、固定来源及筛选均实际操作。
+
+运行准备（仅本机已确认的独立预览）：从本工作树`backend`运行`python -m evals.seed_market_applications --runtime .tmp/private-runtime.json`。私有凭据与可恢复状态只留在Git忽略目录，不随交付公开；工具拒绝正常业务库。真实AI效果、首次独立用户与原生200%仍不由本次验证替代。
