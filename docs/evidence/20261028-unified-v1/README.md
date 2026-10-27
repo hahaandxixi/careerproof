@@ -3,7 +3,7 @@
 ## 当前使用
 
 - 主工作树：`D:/jbcode/web ai/careerproof-v1`，分支 `codex/unified-v1-20261028`。
-- 代码：远端main `834b9a8f8b527d70d8bc734d03274415a257a29c` 与演示 `3a8692773f3683a73d4e1db45c266838770501fe` 正常合并为 `52d2cbac8c7cf94764cec82d6365190f039547ac`；迁移与受管启动源码 `493e2d70a94079f5b63e7fc2143a95d5e67ca981`。其后提交只整理本记录与入口文档。
+- 代码：远端main `834b9a8f8b527d70d8bc734d03274415a257a29c` 与演示 `3a8692773f3683a73d4e1db45c266838770501fe` 正常合并为 `52d2cbac8c7cf94764cec82d6365190f039547ac`；迁移工具源码 `493e2d70a94079f5b63e7fc2143a95d5e67ca981`；最终接受源码 `f355ff1798fecc9ec1847659b8c7e8e2be72560d` 将配置收敛到唯一 `backend/.env`（私有runtime文件只选解释器与容器）。最终启动、重启和复用均已实际核对；随后提交只整理本记录与入口文档。
 - 前端 **http://127.0.0.1:3140**，API **http://127.0.0.1:8140**，构建 **`acsnmGVluMsq05LIjNq-6`**。
 - PostgreSQL 17：`127.0.0.1:55447/careerproof_v1`，迁移 `0021_job_discovery_flags`；既有Docker数据卷保留源演示库，应用只连接新目标库。
 - 统一材料：`D:/jbcode/web ai/jianli/backend/storage-v1`。

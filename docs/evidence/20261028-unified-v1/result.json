@@ -1,6 +1,6 @@
 {
   "date": "2026-10-28",
-  "codeCommit": "493e2d70a94079f5b63e7fc2143a95d5e67ca981",
+  "codeCommit": "f355ff1798fecc9ec1847659b8c7e8e2be72560d",
   "mergeCommit": "52d2cbac8c7cf94764cec82d6365190f039547ac",
   "branch": "codex/unified-v1-20261028",
   "worktree": "D:\\jbcode\\web ai\\careerproof-v1",
@@ -12,15 +12,15 @@
   "processes": [
     {
       "Invocation": "uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8140",
-      "Needle": "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe",
-      "Id": 636180,
-      "Started": "2026-10-27T17:24:43.2295166Z"
+      "Id": 648544,
+      "Started": "2026-10-27T17:36:07.2326782Z",
+      "Needle": "D:\\jbcode\\web ai\\jianli\\backend\\.venv-dependency23\\Scripts\\python.exe"
     },
     {
       "Invocation": "D:\\jbcode\\web ai\\careerproof-v1\\jianli\\node_modules\\next\\dist\\bin\\next",
-      "Needle": "D:\\jbcode\\web ai\\careerproof-v1\\jianli\\node_modules\\next\\dist\\bin\\next",
-      "Id": 636712,
-      "Started": "2026-10-27T17:24:46.6936538Z"
+      "Id": 650196,
+      "Started": "2026-10-27T17:36:10.8926472Z",
+      "Needle": "D:\\jbcode\\web ai\\careerproof-v1\\jianli\\node_modules\\next\\dist\\bin\\next"
     }
   ],
   "sourceCounts": {
@@ -526,5 +526,7 @@
     "Supplier final billing not verified; task cost zero is not proof of a free call.",
     "Three candidates fit one page; real cross-page/four-person browser check not performed.",
     "Original dirty workspace and delivery artifacts not accepted by this consolidation."
-  ]
+  ],
+  "canonicalConfig": "backend/.env",
+  "runtimeProfile": "backend/.tmp/unified-runtime.private.json (executable/container paths only)"
 }
