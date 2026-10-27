@@ -27,7 +27,7 @@ export default function SiteHeader() {
     catch (reason) { setError(errorMessage(reason)); }
     finally { setBusy(false); }
   }
-  return <header className="site-header sticky top-0 z-10 border-b">
+  return <header className={`site-header sticky top-0 z-10 border-b ${!user ? "site-header-public" : ""}`}>
     <div className="site-header-inner mx-auto max-w-6xl px-4">
       <Link href="/" className="site-brand shrink-0 py-2 font-semibold">职证 CareerProof</Link>
       <nav aria-label="主导航" className="site-primary-nav text-sm">
@@ -43,7 +43,6 @@ export default function SiteHeader() {
             <Link href="/jobs/new" aria-current={current("/jobs/new")}>发布岗位</Link>
           </>}
           {user?.role === "admin" && <Link href="/reports" aria-current={current("/reports")}>匹配报告</Link>}
-          {!user && <Link href="/demo/heatmap">交互示例</Link>}
         </>}
       </nav>
       <div className="site-account flex min-w-0 items-center justify-end gap-3 text-sm">

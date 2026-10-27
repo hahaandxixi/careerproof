@@ -1,5 +1,5 @@
 import JobList from "@/components/JobList";
-export default async function JobsPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
-  const query = (await searchParams).q;
-  return <JobList initialQuery={typeof query === "string" ? query.slice(0, 200) : ""} />;
+import { Suspense } from "react";
+export default function JobsPage() {
+  return <Suspense fallback={<p role="status" className="panel">正在读取岗位筛选…</p>}><JobList/></Suspense>;
 }

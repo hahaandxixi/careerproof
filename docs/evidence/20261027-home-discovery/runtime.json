@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "a95eb4eadb886514f24cee6ae23db0761ad8a585",
+  "frontend": {
+    "pid": 685196,
+    "port": 3140,
+    "directory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\home-discovery-20261027\\jianli",
+    "buildId": "S9wXSiHUIGmqeSjj9xqR3",
+    "api": "http://127.0.0.1:8140",
+    "sourceCommit": "a95eb4eadb886514f24cee6ae23db0761ad8a585"
+  },
+  "backend": {
+    "pid": 664964,
+    "port": 8140,
+    "directory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\home-discovery-20261027\\backend",
+    "database": "127.0.0.1:55447/cp_home_discovery_test_20261027",
+    "container": "careerproof-home-discovery-20261027",
+    "externalAi": false
+  },
+  "postgresRegressionDatabase": "127.0.0.1:55447/cp_home_discovery_regression_20261027",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\home-discovery-20261027\\backend\\.tmp\\storage",
+  "syntheticPostings": {
+    "source": "demo/market-scenarios.json",
+    "count": 3,
+    "newInventedJobs": 0
+  },
+  "externalAiEnabled": false,
+  "normalServicesChanged": false,
+  "credentials": "generated locally in ignored backend/.tmp/private-runtime.json; never included in evidence",
+  "browserLoadedFinalBuild": false
+}

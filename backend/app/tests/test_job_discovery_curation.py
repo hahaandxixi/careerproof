@@ -247,14 +247,14 @@ async def test_import_plan_lists_evidence_and_apply_is_idempotent(jobs_db):
     async with factory() as session:
         plan = await importer.build_plan(session, payload, UUID(org["id"]), UUID(old_org["id"]))
         assert plan["targetEnterprise"]["resolved"] is True
-        assert [row["action"] for row in plan["scenarios"]] == ["create"] * 3
+        assert [row["action"] for row in plan["scenarios"]] == ["create"] * 9
         assert [row["jobId"] for row in plan["legacyToHide"]] == [str(legacy)]
         legacy_before = await session.get(Job, legacy)
         assert legacy_before.discovery_visible is True
 
     async with factory() as session:
         first = await importer.apply_plan(session, payload, UUID(org["id"]), UUID(old_org["id"]))
-    assert len(first["created"]) == 3 and first["hidden"] == [str(legacy)]
+    assert len(first["created"]) == 9 and first["hidden"] == [str(legacy)]
 
     async with factory() as session:
         second = await importer.apply_plan(session, payload, UUID(org["id"]), UUID(old_org["id"]))
@@ -265,7 +265,7 @@ async def test_import_plan_lists_evidence_and_apply_is_idempotent(jobs_db):
         count = await session.scalar(
             select(func.count()).select_from(Job).where(Job.enterprise_id == UUID(org["id"]))
         )
-        assert count == 3, "three new scenarios in a separate enterprise, no duplicates"
+        assert count == 9, "all nine scenarios in a separate enterprise, no duplicates"
 
         scenarios = list(
             await session.scalars(
@@ -398,16 +398,26 @@ async def test_legacy_title_alone_is_not_origin_evidence(jobs_db):
         assert (await session.get(Job, suspicious)).discovery_visible
 
 
-async def test_fresh_demo_seed_creates_only_three_and_replays_without_writes(jobs_db):
+async def test_fresh_demo_seed_creates_nine_and_replays_without_writes(jobs_db):
     app, factory = jobs_db
     importer = _load_importer()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         user = await register(client, "fresh-demo@example.com")
     async with factory() as session:
         first = await importer.seed_scenarios(session, UUID(user["id"]))
-        assert len(first["created"]) == 3 and first["hidden"] == []
+        assert len(first["created"]) == 9 and first["hidden"] == []
     async with factory() as session:
         second = await importer.seed_scenarios(session, UUID(user["id"]))
         assert second["created"] == second["updated"] == second["hidden"] == []
-        assert await session.scalar(select(func.count()).select_from(Job)) == 3
-        assert len(await JobRepository(session).recommendation_candidates(100)) == 3
+        assert await session.scalar(select(func.count()).select_from(Job)) == 9
+        assert len(await JobRepository(session).recommendation_candidates(100)) == 9
+        from app.tools.technical_careers import classify_title
+
+        catalog = importer.load_scenarios()["scenarios"]
+        assert {classify_title(j["title"], j["category"],
+                              [r["skillName"] for r in j["requirements"]]) for j in catalog} == {
+            "backend", "frontend", "testing", "data", "ai", "cloud", "product",
+        }
+        for spec in catalog:
+            assert 4 <= len(spec["requirements"]) <= 6
+            assert "不是真实招聘" in spec["description"] or "原创体验岗位" in spec["description"]

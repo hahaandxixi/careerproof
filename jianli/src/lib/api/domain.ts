@@ -19,6 +19,7 @@ export interface JobSummary {
   // Curated experience sample rather than a real vacancy; the flag comes from the server.
   isDemo?: boolean; discoveryVisible?: boolean;
   applicationCount?: number | null; pendingApplicationCount?: number | null;
+  careerDirection?: string | null; technicalTags?: string[];
 }
 export interface JobDetail extends JobSummary { enterpriseId: string | null; createdBy: string; requirements: JobRequirement[] }
 export interface JobInput {

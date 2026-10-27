@@ -1,4 +1,4 @@
-"""Explicitly prepare local demo accounts and the three curated fictional scenarios."""
+"""Explicitly prepare local demo accounts and curated fictional scenarios."""
 
 import asyncio
 import json

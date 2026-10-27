@@ -18,6 +18,7 @@ from app.schemas.jobs import (
     JobUpdate,
     JobView,
 )
+from app.tools.technical_careers import TAXONOMY, classify_title
 
 
 class JobService:
@@ -74,6 +75,21 @@ class JobService:
                 .group_by(Application.job_id)
             )
             application_counts = {job_id: (count, pending) for job_id, count, pending in counts}
+        skills_by_job: dict[UUID, list[str]] = {}
+        if rows:
+            skills = await self.session.execute(select(
+                JobRequirement.job_id, JobRequirement.skill_name,
+            ).where(JobRequirement.job_id.in_([job.id for job, _ in rows])))
+            for job_id, skill in skills:
+                skills_by_job.setdefault(job_id, []).append(skill)
+        known_tags = {
+            term.lower()
+            for group in [*TAXONOMY["languages"], *[
+                specialty for direction in TAXONOMY["directions"]
+                for specialty in direction["specialties"]
+            ]]
+            for term in group["terms"]
+        }
         return PaginatedData(
             items=[
                 JobSummary(
@@ -93,6 +109,13 @@ class JobService:
                     pending_application_count=(
                         application_counts.get(job.id, (0, 0))[1] if mine else None
                     ),
+                    career_direction=classify_title(
+                        job.title, job.category, skills_by_job.get(job.id, []),
+                    ),
+                    technical_tags=sorted({
+                        skill for skill in skills_by_job.get(job.id, [])
+                        if skill.lower() in known_tags
+                    }, key=str.casefold)[:8],
                 )
                 for job, requirement_count in rows
             ],

@@ -80,7 +80,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
   };
   return <section aria-labelledby="report-requirements-title" className="min-w-0 space-y-4">
     <header><h2 id="report-requirements-title" className="section-title">岗位匹配与补证工作台</h2>
-      <p className="mt-1 text-sm leading-6 text-slate-600">共 {items.length} 项要求。先找待处理项，再核对依据或开始补证；也可直接投递当前报告。</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">选择一项看原因与下一步；来源按需展开，也可直接投递当前报告。</p>
     </header>
     <div className="flex flex-wrap gap-2" role="group" aria-label="按已保存的材料支持状态筛选">
       {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
@@ -97,7 +97,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
             className={`block min-h-11 border-l-2 px-3 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${selected ? "border-indigo-600 bg-indigo-50/60 text-indigo-950" : "border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-slate-50"}`}>
             <span className="block break-words text-sm font-semibold leading-6">{item.requirementTitle}</span>
             <span className="mt-1 block text-xs leading-6">{workspaceStatusLabel(item)} · 岗位权重 {item.weight}/5{selected ? " · 正在查看" : ""}</span>
-            <span className="mt-1 block break-words text-xs leading-5 text-slate-500">{requirementSummary(item)}</span>
+            <span className="mt-1 hidden break-words text-xs leading-6 text-slate-600 lg:block">{requirementSummary(item)}</span>
           </a></li>;
         })}</ol> : <p className="rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有这一类要求。<button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
         {entry.filter === "priority" && visible.length === 1 && state.supported.length > 0 && <p className="mt-3 text-xs leading-6 text-slate-600">其他 {state.supported.length} 项已有证据支持 · <button type="button" className="inline-flex min-h-11 items-center text-indigo-700 underline" onClick={() => changeFilter("all")}>查看全部要求</button></p>}

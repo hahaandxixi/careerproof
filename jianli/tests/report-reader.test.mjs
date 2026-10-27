@@ -256,6 +256,18 @@ test("integrated overview keeps fixed versions and fallback visible without dupl
  assert.ok(html.includes("库存 · 第 2 版")); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
 });
 
+test("overview counts saved evidence states, never equating rule coverage or review items with support", () => {
+ const values=[...items,{...items[0],requirementId:"rejected",confirmationStatus:"rejected"},{...items[0],requirementId:"outside",verdict:"unsupported"}];
+ const value={candidateName:"合成学生",jobTitle:"后端",createdAt:"2026-10-27T00:00:00Z",items:values,analysisMode:"rules",aiFallbackUsed:false,materials:[]};
+ const before=JSON.stringify(value);
+ const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
+ assert.match(html,/有证据支持<\/dt><dd[^>]*>1</);
+ assert.match(html,/待补材料<\/dt><dd[^>]*>1</);
+ assert.match(html,/岗位要求<\/dt><dd[^>]*>5</);
+ assert.ok(html.includes("另有 1 项部分支持 · 2 项未覆盖或需复核"));
+ assert.equal(JSON.stringify(value),before);
+});
+
 test("summary truncation changes no source identity or original text", () => {
  const value={...items[0],explanation:"保存的判断".repeat(40)}; const before=JSON.stringify(value);
  assert.ok(workspace.requirementSummary(value).endsWith("…")); assert.equal(workspace.requirementSummary(value).length,91); assert.equal(JSON.stringify(value),before);

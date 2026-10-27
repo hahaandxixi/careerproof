@@ -1,11 +1,15 @@
 import type { ReportEvidence } from "@/lib/api/domain";
-import { sourceLabel, type SourceMaterial } from "@/lib/source-label";
+import { compactSourceLabel, sourceLabel, type SourceMaterial } from "@/lib/source-label";
 
 type Source = Pick<ReportEvidence, "filePath" | "projectVersionId">;
 
-export default function SourceIdentity({ source, materials = [] }: {
-  source: Source; materials?: readonly SourceMaterial[];
+export default function SourceIdentity({ source, materials = [], compact = false }: {
+  source: Source; materials?: readonly SourceMaterial[]; compact?: boolean;
 }) {
+  if (compact) {
+    const label = compactSourceLabel(source, materials);
+    return <span className="break-words"><span className="sm:hidden"><strong>{label.fileName}</strong><span className="mt-1 block font-normal text-slate-600">{label.material}</span></span><span className="hidden sm:inline">{sourceLabel(source, materials)}</span></span>;
+  }
   return <span className="break-all">{sourceLabel(source, materials)}</span>;
 }
 

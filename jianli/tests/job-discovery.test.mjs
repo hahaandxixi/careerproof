@@ -1,0 +1,181 @@
+import test, { afterEach } from "node:test";
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+const React = require("react");
+const { renderToStaticMarkup } = require("react-dom/server");
+const { transform } = require("sucrase");
+const root = fileURLToPath(new URL("../", import.meta.url));
+const modules = new Map();
+function ts(file) {
+  if (modules.has(file)) return modules.get(file);
+  if (file.endsWith(".json")) return JSON.parse(readFileSync(file, "utf8"));
+  const mod = { exports: {} };
+  const code = transform(readFileSync(file, "utf8"), { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
+  new Function("require", "module", "exports", code)(id => {
+    if (!id.startsWith(".")) return require(id);
+    const target = path.resolve(path.dirname(file), id);
+    return /\.(js|json)$/.test(target) ? require(target) : ts(target.endsWith(".ts") ? target : target + ".ts");
+  }, mod, mod.exports);
+  modules.set(file, mod.exports); return mod.exports;
+}
+const helpers = ts(path.join(root, "src/lib/job-discovery.ts"));
+const parse = value => helpers.readDiscoveryQuery(new URLSearchParams(value));
+
+test("seven direction groups retain meaningful children without inventing published jobs", () => {
+  assert.equal(helpers.CAREER_DIRECTIONS.length, 7);
+  assert.equal(new Set(helpers.CAREER_DIRECTIONS.map(x => x.id)).size, 7);
+  for (const group of helpers.CAREER_DIRECTIONS) assert.ok(group.specialties.length >= 4);
+  assert.deepEqual(parse("direction=backend&specialty=python&city=深圳&employmentType=internship&language=python&q=API&page=2"), {
+    direction: "backend", specialty: "python", city: "深圳", employmentType: "internship", language: "python", q: "API", category: "", page: 2,
+  });
+});
+test("invalid direction/child/language/page are normalized; old q/category still work", () => {
+  const invalid = parse("direction=javascript:alert(1)&specialty=python&language=unknown&employmentType=social&page=-4&q=旧岗位&category=software");
+  assert.equal(invalid.direction, ""); assert.equal(invalid.specialty, ""); assert.equal(invalid.language, ""); assert.equal(invalid.employmentType, ""); assert.equal(invalid.page, 1);
+  assert.equal(invalid.q, "旧岗位"); assert.equal(invalid.category, "software");
+  assert.equal(parse("direction=frontend&specialty=python").specialty, "");
+  assert.equal(parse("q=" + "a".repeat(300)).q.length, 200);
+});
+test("URLs roundtrip every independent filter and preserve legacy keyword links", () => {
+  const query = parse("direction=testing&specialty=automation&language=python&city=广州&employmentType=full_time&q=a%26b&page=3");
+  const url = helpers.discoveryHref(query);
+  assert.deepEqual(parse(url.split("?")[1]), query);
+  assert.equal(helpers.discoveryHref(helpers.EMPTY_DISCOVERY), "/jobs");
+  assert.equal(parse("q=Python").q, "Python");
+});
+
+function walk(tree) {
+  if (!tree || typeof tree !== "object") return [];
+  return [tree, ...React.Children.toArray(tree.props?.children).flatMap(walk)];
+}
+function component(file, mocks) {
+  const mod = { exports: {} };
+  const code = transform(readFileSync(path.join(root, file), "utf8"), { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
+  new Function("require", "module", "exports", code)(id => { assert.ok(id in mocks, id); return mocks[id]; }, mod, mod.exports);
+  return mod.exports;
+}
+const link = { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) };
+const icon = { __esModule: true, default: () => React.createElement("svg", { "aria-hidden": true }) };
+const previousWindow = globalThis.window;
+afterEach(() => { if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow; });
+
+function harness(search, compact = false, role = null) {
+  let cursor = 0; let effects = []; const requests = []; const routes = [];
+  const state = [{ q: parse(search).q, city: parse(search).city }, null, true, "", 0];
+  const api = { listJobs(filters) { return new Promise((resolve, reject) => { requests.push({ filters, resolve, reject }); }); } };
+  globalThis.window = { history: {
+    pushState(_state, _unused, href) { routes.push(["push", href]); },
+    replaceState(_state, _unused, href) { routes.push(["replace", href]); },
+  } };
+  const mod = component("src/components/JobDiscovery.tsx", {
+    react: { ...React, useMemo: fn => fn(), useState: () => { const n = cursor++; return [state[n], value => { state[n] = typeof value === "function" ? value(state[n]) : value; }]; }, useEffect: fn => effects.push(fn) },
+    "react/jsx-runtime": require("react/jsx-runtime"), "next/link": link,
+    "next/navigation": { useSearchParams: () => new URLSearchParams(search) },
+    "@/lib/api/client": { api, errorMessage: String }, "@/lib/api/domain": ts(path.join(root, "src/lib/api/domain.ts")),
+    "@/lib/job-discovery": helpers, "./CareerDirectionIcon": icon,
+    "./AccessGate": { ErrorNotice: ({ message }) => React.createElement("p", { role: "alert" }, message) },
+    "./AuthProvider": { useAuth: () => ({ user: role ? { role } : null, status: role ? "authenticated" : "unauthenticated" }) },
+  });
+  return { requests, routes, state, mod, setSearch(value) { search = value; }, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()); } };
+}
+const tick = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
+const job = id => ({ id, title: `岗位${id}`, companyName: "企业原文", city: "杭州", category: "software", employmentType: "internship", requirementCount: 5, isDemo: false, technicalTags: [] });
+
+test("only authenticated students see the material recommendation action", () => {
+  for (const role of [null, "student", "enterprise", "admin"]) {
+    const html = renderToStaticMarkup(harness("", false, role).render());
+    assert.equal(html.includes('href="/recommendations"'), role === "student");
+    if (role === "student") assert.ok(html.includes("按我的材料推荐岗位"));
+  }
+});
+
+test("home and jobs keep old cards through a deferred filter request instead of collapsing into skeletons", async () => {
+  for (const compact of [false, true]) {
+    const h = harness("", compact), cleanup = h.start();
+    const oldPage = { items: [job("old")], total: 13, page: 1, pageSize: compact ? 3 : 12 };
+    h.requests[0].resolve(oldPage); await tick();
+    cleanup.at(-1)(); h.setSearch("direction=testing"); h.start();
+    assert.equal(h.state[1], oldPage, "the previous page stays mounted during loading");
+    const pending = renderToStaticMarkup(h.render());
+    assert.ok(pending.includes('href="/jobs/old"'));
+    assert.ok(pending.includes("暂时保留上一组结果"));
+    assert.ok(pending.includes('aria-busy="true"'));
+    assert.ok(!pending.includes('aria-label="岗位加载占位"'));
+    if (!compact) assert.match(pending, /disabled=""[^>]*>下一页/);
+    h.requests[1].resolve({ items: [job("new")], total: 1, page: 1, pageSize: oldPage.pageSize }); await tick();
+    const completed = renderToStaticMarkup(h.render());
+    assert.ok(completed.includes('href="/jobs/new"'));
+    assert.ok(!completed.includes('href="/jobs/old"'));
+    assert.ok(!completed.includes("暂时保留上一组结果"));
+  }
+});
+
+test("late previous filters cannot replace retained cards or the latest result", async () => {
+  const h = harness(""); const firstCleanup = h.start();
+  h.requests[0].resolve({ items:[job("original")],total:1,page:1,pageSize:12 }); await tick(); firstCleanup.at(-1)();
+  h.setSearch("direction=backend"); const secondCleanup = h.start(); secondCleanup.at(-1)();
+  h.setSearch("direction=frontend"); h.start();
+  h.requests[1].resolve({ items:[job("stale")],total:1,page:1,pageSize:12 }); await tick();
+  assert.equal(h.state[1].items[0].id,"original"); assert.equal(h.state[2],true);
+  h.requests[2].resolve({ items:[job("latest")],total:1,page:1,pageSize:12 }); await tick();
+  assert.equal(h.state[1].items[0].id,"latest"); assert.equal(h.state[2],false);
+});
+
+test("a failed replacement is explicit and never presents old cards as matching the new filter", async () => {
+  const h = harness(""); const cleanup = h.start();
+  h.requests[0].resolve({items:[job("old")],total:1,page:1,pageSize:12}); await tick(); cleanup.at(-1)();
+  h.setSearch("direction=backend"); h.start(); h.requests[1].reject(new Error("筛选读取失败")); await tick();
+  const html=renderToStaticMarkup(h.render());
+  assert.ok(html.includes("筛选读取失败")); assert.ok(!html.includes('href="/jobs/old"'));
+  assert.ok(!html.includes("暂时没有符合条件的岗位"));
+});
+
+test("public list sends all filters to the server and ignores a response after cleanup", async () => {
+  const h = harness("direction=backend&specialty=python&city=深圳&employmentType=internship&page=3");
+  const cleanup = h.start();
+  assert.equal(h.requests[0].filters.page, 3); assert.equal(h.requests[0].filters.specialty, "python"); assert.equal(h.requests[0].filters.city, "深圳");
+  assert.equal(h.requests[0].filters.pageSize, 12);
+  cleanup.at(-1)(); h.requests[0].resolve({ items: [{ id: "late" }], total: 1, page: 1, pageSize: 12 }); await tick();
+  assert.equal(h.state[1], null); assert.deepEqual(h.routes, []);
+});
+test("server clamping replaces the URL rather than displaying an impossible page", async () => {
+  const h = harness("direction=backend&page=99"); h.start();
+  h.requests[0].resolve({ items: [], total: 13, page: 2, pageSize: 12 }); await tick();
+  assert.deepEqual(h.routes, [["replace", "/jobs?direction=backend&page=2"]]);
+});
+test("home view-all carries actual selection; choosing a direction retains city/type/keyword", () => {
+  const h = harness("direction=backend&specialty=python&city=深圳&employmentType=internship&q=API", true);
+  const tree = h.render(); const nodes = walk(tree);
+  assert.ok(nodes.some(n => n.props?.href === "/jobs?direction=backend&specialty=python&city=%E6%B7%B1%E5%9C%B3&employmentType=internship&q=API"));
+  const button = nodes.find(n => n.type === "button" && walk(n).some(c => c.type === "span" && c.props.children === "数据工程"));
+  button.props.onClick(); const route = h.routes.at(-1)[1];
+  assert.equal(h.routes.at(-1)[0], "push", "home filter selections create native history entries too");
+  const params = parse(route.split("?")[1]);
+  assert.equal(params.direction, "data"); assert.equal(params.specialty, ""); assert.equal(params.city, "深圳"); assert.equal(params.q, "API"); assert.equal(params.employmentType, "internship");
+});
+test("primary keyword search submits the retained secondary filters and resets only the page", () => {
+  const h = harness("direction=backend&specialty=python&city=杭州&employmentType=internship&language=python&page=2", true);
+  const input = walk(h.render()).find(n => n.type === "input" && n.props.id === "job-discovery-keyword");
+  input.props.onChange({ target: { value: " FastAPI 数据库 " } });
+  const nodes = walk(h.render()), form = nodes.find(n => n.type === "form");
+  let prevented = false; form.props.onSubmit({ preventDefault() { prevented = true; } });
+  assert.ok(prevented);
+  assert.deepEqual(parse(h.routes.at(-1)[1].split("?")[1]), {
+    direction: "backend", specialty: "python", language: "python", city: "杭州", employmentType: "internship", category: "", q: "FastAPI 数据库", page: 1,
+  });
+  for (const field of nodes.filter(n => ["input", "select"].includes(n.type) && n !== input && n.props.id !== "job-discovery-keyword")) assert.equal(field.props.form, form.props.id, "secondary controls retain native form submission");
+});
+test("empty and failure are separate states; cards only use saved public facts", async () => {
+  const h = harness(""); h.start(); h.requests[0].resolve({ items: [], total: 0, page: 1, pageSize: 12 }); await tick();
+  const html = renderToStaticMarkup(h.render()); assert.ok(html.includes("暂时没有符合条件的岗位")); assert.ok(!html.includes("合成示例岗位"));
+  const failed = harness(""); failed.start(); failed.requests[0].reject(new Error("offline")); await tick();
+  assert.ok(renderToStaticMarkup(failed.render()).includes("offline"));
+  const card = renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard, { job: { id: "actual-id", title: "待分类岗位", companyName: "企业原文", city: "", category: "other", employmentType: "full_time", requirementCount: 3, isDemo: true, technicalTags: [] } }));
+  assert.ok(card.includes("合成示例岗位") && card.includes("全职") && card.includes("未细分"));
+  assert.ok(!card.includes("社招") && !card.includes("匹配度") && !card.includes("薪资"));
+});

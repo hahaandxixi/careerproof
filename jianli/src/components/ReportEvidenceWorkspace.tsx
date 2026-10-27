@@ -30,7 +30,7 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
   return <div className="mt-4 min-w-0 space-y-4" aria-label={`${item.skill}的判断与下一步`}>
     <div><h4 className="text-sm font-semibold text-slate-900">{supported ? "当前材料支持" : actionable ? "当前缺口" : "当前需核对"}</h4>
       <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>
-      {supported && <p className="mt-2 text-xs leading-6 text-slate-600">本报告保存了 {item.evidenceList.length} 条来源。材料支持不等于运行成功、本人贡献或能力认证。</p>}
+      {supported && <p className="mt-2 text-xs leading-6 text-slate-600">材料支持不等于运行成功或本人贡献。</p>}
     </div>
     {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
     {item.evidenceList.some(source => source.contextComplete === false) && <p className="border-l-2 border-amber-400 pl-3 text-sm leading-6 text-amber-900">部分引用上下文不完整，请展开来源核对；不能据此确认完整实现。</p>}
@@ -46,12 +46,15 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
         <p className="break-words">{plan.deliverable}</p>
         <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul>
       </div> : <div className="space-y-2 text-sm leading-7">
+        <p className="reading-copy">先核对已有实现与测试；确有改进后上传新版材料，并主动重新分析。</p>
+        <details><summary className="cursor-pointer py-2 text-indigo-700">查看通用核对步骤与材料清单</summary><div className="space-y-2 pt-2">
         <p className="font-medium text-slate-800">通用核对步骤</p>
         <p className="text-xs text-slate-600">以下是操作提示，不是系统已核实的实现情况。在自己的开发工具中完成改进后，返回上传新版材料并主动分析。</p>
         <ol className="list-decimal space-y-2 pl-5">{(actionable ? GENERAL_FOLLOW_UP : REVIEW_FOLLOW_UP).map((step, index) => <li key={index}>{step}</li>)}</ol>
         <p className="font-medium text-slate-800">建议提交的材料</p>
         <p className="text-xs leading-6 text-slate-600">暂无保存的具体交付物要求。以下为通用材料类型，按实际改进选择，不表示系统确认文件已经存在。</p>
         <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-slate-600"><li>直接对应这条要求的新增或修订工程文件，并标明关键位置。</li><li>相关测试材料；如有执行记录，注明源码版本与验证范围。</li><li>必要时提供解释关键操作的项目说明。已有材料先定位，不必重复提交；运行结果与本人贡献分别核验。</li></ul>
+        </div></details>
       </div>}
       {action ? <details className="text-sm leading-7"><summary className="cursor-pointer py-2 text-indigo-700">查看报告原始建议 · {ACTION_SOURCE_LABELS[action.source]}</summary>
         {text?.advice && <p className="whitespace-pre-wrap break-words">{text.advice}</p>}

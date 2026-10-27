@@ -5,9 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type Page, type JobSummary } from "@/lib/api/domain";
 import { ErrorNotice } from "./AccessGate";
+import JobDiscovery from "./JobDiscovery";
 
 const EMPTY_FILTER = { q: "", category: "", city: "", employmentType: "" };
 export default function JobList({ mine = false, initialQuery = "" }: { mine?: boolean; initialQuery?: string }) {
+  return mine ? <ManagedJobList initialQuery={initialQuery}/> : <JobDiscovery/>;
+}
+function ManagedJobList({ initialQuery }: { initialQuery: string }) {
+  const mine = true;
   const [draft, setDraft] = useState({ ...EMPTY_FILTER, q: initialQuery });
   const [filter, setFilter] = useState({ ...EMPTY_FILTER, q: initialQuery });
   const [page, setPage] = useState(1);

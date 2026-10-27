@@ -130,6 +130,9 @@ async def list_jobs(
     category: JobCategory | None = None,
     city: str | None = Query(default=None, max_length=100),
     employment_type: EmploymentType | None = Query(default=None, alias="employmentType"),
+    direction: str | None = Query(default=None, max_length=40),
+    specialty: str | None = Query(default=None, max_length=40),
+    language: str | None = Query(default=None, max_length=40),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[PaginatedData[JobSummary]]:
     return success(
@@ -140,6 +143,9 @@ async def list_jobs(
             category=category,
             city=city,
             employment_type=employment_type,
+            direction=direction,
+            specialty=specialty,
+            language=language,
         )
     )
 
