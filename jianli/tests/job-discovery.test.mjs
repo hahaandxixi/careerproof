@@ -101,6 +101,18 @@ test("home view-all carries actual selection; choosing a direction retains city/
   const params = parse(route.split("?")[1]);
   assert.equal(params.direction, "data"); assert.equal(params.specialty, ""); assert.equal(params.city, "深圳"); assert.equal(params.q, "API"); assert.equal(params.employmentType, "internship");
 });
+test("primary keyword search submits the retained secondary filters and resets only the page", () => {
+  const h = harness("direction=backend&specialty=python&city=杭州&employmentType=internship&language=python&page=2", true);
+  const input = walk(h.render()).find(n => n.type === "input" && n.props.id === "job-discovery-keyword");
+  input.props.onChange({ target: { value: " FastAPI 数据库 " } });
+  const nodes = walk(h.render()), form = nodes.find(n => n.type === "form");
+  let prevented = false; form.props.onSubmit({ preventDefault() { prevented = true; } });
+  assert.ok(prevented);
+  assert.deepEqual(parse(h.routes.at(-1)[1].split("?")[1]), {
+    direction: "backend", specialty: "python", language: "python", city: "杭州", employmentType: "internship", category: "", q: "FastAPI 数据库", page: 1,
+  });
+  for (const field of nodes.filter(n => ["input", "select"].includes(n.type) && n !== input && n.props.id !== "job-discovery-keyword")) assert.equal(field.props.form, form.props.id, "secondary controls retain native form submission");
+});
 test("empty and failure are separate states; cards only use saved public facts", async () => {
   const h = harness(""); h.start(); h.requests[0].resolve({ items: [], total: 0, page: 1, pageSize: 12 }); await tick();
   const html = renderToStaticMarkup(h.render()); assert.ok(html.includes("暂时没有符合条件的岗位")); assert.ok(!html.includes("合成示例岗位"));

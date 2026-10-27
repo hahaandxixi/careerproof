@@ -15,13 +15,13 @@ const steps: [string, string][] = [
 
 export default function HomePage() {
   return <HomeWorkspace><div className="space-y-6 sm:space-y-7">
-    <section className="panel overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-white py-8 sm:p-10">
-      <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
+    <section className="panel overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-white py-6 sm:p-6 lg:px-8">
+      <div className="grid items-center gap-6 lg:grid-cols-[1.1fr_1fr]">
         <div>
           <p className="inline-flex rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-medium text-indigo-700">CareerProof · 从你的材料出发</p>
-          <h1 className="mt-5 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">让你的经历，<br /><span className="text-indigo-600">成为看得见的证据。</span></h1>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">上传材料，对照岗位，找到值得补充的一项。查看来源、保留版本，再由你决定是否投递。</p>
-          <div className="mt-7 flex flex-wrap gap-3">
+          <h1 className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">让你的经历，<br /><span className="text-indigo-600">成为看得见的证据。</span></h1>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">上传材料，对照岗位，找到值得补充的一项。查看来源、保留版本，再由你决定是否投递。</p>
+          <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/jobs" className={heroActions}>发现适合的岗位</Link>
             <Link href="/demo/heatmap" className={quietActions}>先看交互示例</Link>
           </div>
