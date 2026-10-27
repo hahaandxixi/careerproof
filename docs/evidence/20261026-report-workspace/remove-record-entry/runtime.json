@@ -1,0 +1,12 @@
+{
+  "sourceCommit": "2d54ad0e0f040b07d8b5c90005ad227dc38b15cb",
+  "buildId": "N234su9PxWcj-vMAPxUUg",
+  "pid": 247168,
+  "frontendDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli",
+  "frontend": "http://127.0.0.1:3139",
+  "api": "http://127.0.0.1:8114",
+  "database": "127.0.0.1:55445/cp_product_polish_20261022",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "scope": "Owned frontend rebuilt; original 3138/8114 preserved. API database/storage identity inherited from accepted isolated environment record."
+}

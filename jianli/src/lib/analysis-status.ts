@@ -56,7 +56,7 @@ function suggestedGapKind(gap: string): GrowthPlan["gapKind"] {
 }
 
 export function validatedGrowthAdvice(report: MatchReport, item: ReportItem): GrowthAdviceDraft | null {
-  if (!sourceContextVerified(report.evidenceContextVersion)
+  if (report.aiFallbackUsed || !sourceContextVerified(report.evidenceContextVersion)
     || item.aiStatus !== "validated"
     || item.aiSuggestionRedundant
     || item.confirmationStatus === "rejected"

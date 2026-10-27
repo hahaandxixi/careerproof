@@ -1,0 +1,103 @@
+{
+  "note": "Before/after are the same report at different reading anchors, not a pixel-height or speed benchmark. CSS sizes are recorded separately from capture pixel sizes. Original screenshot bytes retained; JPEG suffix corrected.",
+  "screenshots": [
+    {
+      "file": "before-1440.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        1425,
+        990
+      ],
+      "sha256": "22a312e19e34ab73d7eb7ad80b4cd47af41c321e1104d60fe55cae8f5360756c",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "file": "before-390.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        375,
+        811
+      ],
+      "sha256": "d80fdf4439d8fd1f71ca18cc03ca7393aea4734e587760fd69da64c99a3610a8",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "file": "after-1440-workspace.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        1425,
+        990
+      ],
+      "sha256": "f0a7780dc28276a98bbbe78ce5364bedb3a92840d1d4d2a9d74b42aa53c8335e",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    {
+      "file": "after-1280-workspace.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        1265,
+        889
+      ],
+      "sha256": "a7c34eafe9a98079db46a8bb8684c5ed11612b268a0e83ee5d76e231d25bd40c",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "file": "after-768-workspace.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        753,
+        1004
+      ],
+      "sha256": "79bef5d0b2f8c5f3cd0e6210b883cccb982f37946ef49bbe72962c72b1b71d80",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 768,
+        "height": 1024
+      }
+    },
+    {
+      "file": "after-390-workspace.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        375,
+        811
+      ],
+      "sha256": "64c3cd34e9f3dbcfc4eab5b92b9f94fd7bb2290f9ab3c1cfee45c9fb3e88df78",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "file": "after-390-action.jpg",
+      "format": "JPEG",
+      "imagePixels": [
+        375,
+        811
+      ],
+      "sha256": "08b47291b38fd046fac8f4f13a0986946714130ddb25d378a4b3423d3ac874ae",
+      "scope": "before: accepted 3138 build HNdt9SK706tuGRbc0NPbL initial page; after: final 3139 build rKqTIjQXdcfxdLKcToJ2V with workspace/requirement anchor",
+      "cssViewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  ]
+}

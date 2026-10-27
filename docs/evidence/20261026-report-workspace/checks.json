@@ -1,0 +1,39 @@
+{
+  "sourceCommit": "30dba8b34c391b913b76b6563b528770d4dafc91",
+  "commands": [
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd test",
+      "exitCode": 0,
+      "passed": 448,
+      "failed": 0,
+      "skipped": 0,
+      "log": "frontend-tests.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run lint",
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "warning": "existing @next/next/no-img-element in VisualEvidencePanel",
+      "log": "lint.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run build (BACKEND_ORIGIN=http://127.0.0.1:8114)",
+      "exitCode": 0,
+      "buildId": "rKqTIjQXdcfxdLKcToJ2V",
+      "log": "build.log"
+    }
+  ],
+  "backendTests": "not rerun: no backend, API, migration or dependency changes",
+  "dependencies": "independent copy of existing accepted node_modules; no installation or upgrade",
+  "remoteCI": "not run for this unpublished isolated branch; main CI is not this candidate validation"
+}

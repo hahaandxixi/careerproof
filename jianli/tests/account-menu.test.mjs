@@ -77,3 +77,13 @@ test("header keeps each role's original navigation, including admin logout witho
     }
   }
 });
+
+test("student has exactly four primary entries and accesses old growth tasks only from the account menu",()=>{
+ user={id:"student",role:"student",displayName:"合成学生"};
+ const html=render(Header), primary=html.match(/<nav aria-label="主导航"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+ assert.ok(primary);
+ assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(value=>value[1]),["/portfolio","/jobs","/reports","/applications"]);
+ assert.ok(!primary.includes("补证任务"));
+ const menu=render(Menu,{role:"student",name:"学生",unreadCount:0,busy:false,onLogout(){}});
+ assert.match(menu,/href="\/growth"[^>]*>历史补证记录/);
+});

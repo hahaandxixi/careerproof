@@ -1,0 +1,30 @@
+{
+  "branch": "codex/report-workspace-20261026",
+  "acceptedSourceCommit": "52ff1ed1c1403ef5bf7cba3597d46c61ea2a0b5e",
+  "frontend": "http://127.0.0.1:3139",
+  "frontendDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli",
+  "buildId": "BZICo0xmwnquMyfDVcCsp",
+  "pid": 197780,
+  "api": "http://127.0.0.1:8114",
+  "apiDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\ci-integration-20261023\\backend",
+  "database": "127.0.0.1:55445/cp_product_polish_20261022",
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "scope": "Only owned 3139 frontend rebuilt and restarted; existing API/DB and 3138 preserved. No browser or HTTP request after access denial.",
+  "mainMerged": false,
+  "pushed": false,
+  "browserStatus": "Saved user permission denies 3139; no bypass attempted; V2 visual and real navigation acceptance pending.",
+  "apiIdentityVerification": "PID 75432 still owns 8114; command line is uvicorn app.main:app. API source/DB/storage identities reused from previously accepted isolated environment; not independently connected to DB or inspected process environment this round. psutil is absent; no install attempted.",
+  "frontendIdentityVerification": "PID 197780 owns 3139, explicit accepted-worktree Next command; build ID read from .next/BUILD_ID, server log reports Ready. No HTTP/page health claim after browser denial.",
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [
+      {
+        "source": "/backend/:path*",
+        "destination": "http://127.0.0.1:8114/:path*",
+        "regex": "^/backend(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+      }
+    ],
+    "fallback": []
+  }
+}

@@ -1,0 +1,508 @@
+TAP version 13
+# Subtest: enterprise menu preserves exact unread count and identity without student-only routes
+ok 1 - enterprise menu preserves exact unread count and identity without student-only routes
+  ---
+  duration_ms: 9.6847
+  type: 'test'
+  ...
+# Subtest: unknown and zero unread counts do not fabricate a badge
+ok 2 - unknown and zero unread counts do not fabricate a badge
+  ---
+  duration_ms: 1.3038
+  type: 'test'
+  ...
+# Subtest: header keeps each role's original navigation, including admin logout without notification support
+ok 3 - header keeps each role's original navigation, including admin logout without notification support
+  ---
+  duration_ms: 4.1735
+  type: 'test'
+  ...
+# Subtest: student has exactly four primary entries and accesses old growth tasks only from the account menu
+ok 4 - student has exactly four primary entries and accesses old growth tasks only from the account menu
+  ---
+  duration_ms: 1.9959
+  type: 'test'
+  ...
+# Subtest: student routes identify location without claiming progress or leaking to other roles
+ok 5 - student routes identify location without claiming progress or leaking to other roles
+  ---
+  duration_ms: 0.7862
+  type: 'test'
+  ...
+# Subtest: navigation retains all five ordered steps and only one current location
+ok 6 - navigation retains all five ordered steps and only one current location
+  ---
+  duration_ms: 7.6024
+  type: 'test'
+  ...
+# Subtest: confirmation is text until a concrete report supplies the existing confirmation anchor
+ok 7 - confirmation is text until a concrete report supplies the existing confirmation anchor
+  ---
+  duration_ms: 0.7767
+  type: 'test'
+  ...
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+ok 8 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 31.3768
+  type: 'test'
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+ok 9 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 12.6518
+  type: 'test'
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 10 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 6.3333
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 11 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 7.8444
+  type: 'test'
+  ...
+# Subtest: opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+ok 12 - opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+  ---
+  duration_ms: 14.1131
+  type: 'test'
+  ...
+# Subtest: existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+ok 13 - existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+  ---
+  duration_ms: 6.4707
+  type: 'test'
+  ...
+# Subtest: denied and temporarily unavailable lookups expose retry without opening a create form
+ok 14 - denied and temporarily unavailable lookups expose retry without opening a create form
+  ---
+  duration_ms: 2.5761
+  type: 'test'
+  ...
+# Subtest: a late lookup from another report cannot replace the selected task, and review warnings stay visible
+ok 15 - a late lookup from another report cannot replace the selected task, and review warnings stay visible
+  ---
+  duration_ms: 0.7251
+  type: 'test'
+  ...
+# Subtest: the shared action panel receives the exact saved plan without a second copy in the task launcher
+ok 16 - the shared action panel receives the exact saved plan without a second copy in the task launcher
+  ---
+  duration_ms: 0.6
+  type: 'test'
+  ...
+# Subtest: optional compact records keep the advanced form closed and never invent a required plan
+ok 17 - optional compact records keep the advanced form closed and never invent a required plan
+  ---
+  duration_ms: 0.6553
+  type: 'test'
+  ...
+# Subtest: explicit compact recording reuses the complete validated plan exactly and shares the duplicate-submit lock
+ok 18 - explicit compact recording reuses the complete validated plan exactly and shares the duplicate-submit lock
+  ---
+  duration_ms: 1.0068
+  type: 'test'
+  ...
+# Subtest: compact record failures are visible outside the closed advanced form and can be retried
+ok 19 - compact record failures are visible outside the closed advanced form and can be retried
+  ---
+  duration_ms: 1.8268
+  type: 'test'
+  ...
+# Subtest: a failed read is unknown, while verified empty work can offer the first-material route
+ok 20 - a failed read is unknown, while verified empty work can offer the first-material route
+  ---
+  duration_ms: 45.8795
+  type: 'test'
+  ...
+# Subtest: student continues the saved report without enterprise actions
+ok 21 - student continues the saved report without enterprise actions
+  ---
+  duration_ms: 30.0325
+  type: 'test'
+  ...
+# Subtest: enterprise gets its own job and authorized-application routes, not private student work
+ok 22 - enterprise gets its own job and authorized-application routes, not private student work
+  ---
+  duration_ms: 10.649
+  type: 'test'
+  ...
+# Subtest: admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+ok 23 - admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+  ---
+  duration_ms: 4.4626
+  type: 'test'
+  ...
+# Subtest: authentication loading and error never render the saved identity as confirmed
+ok 24 - authentication loading and error never render the saved identity as confirmed
+  ---
+  duration_ms: 7.1105
+  type: 'test'
+  ...
+# Subtest: old growth tasks cannot replace report continuation or form a second student work area
+ok 25 - old growth tasks cannot replace report continuation or form a second student work area
+  ---
+  duration_ms: 5.6233
+  type: 'test'
+  ...
+# Subtest: browser suffix and byte contract matches the backend including uppercase images
+ok 26 - browser suffix and byte contract matches the backend including uppercase images
+  ---
+  duration_ms: 1.9609
+  type: 'test'
+  ...
+# Subtest: only valid source timestamps are displayed; missing history never becomes now
+ok 27 - only valid source timestamps are displayed; missing history never becomes now
+  ---
+  duration_ms: 24.2666
+  type: 'test'
+  ...
+# Subtest: single file selection rejects multiple files without choosing an arbitrary first one
+ok 28 - single file selection rejects multiple files without choosing an arbitrary first one
+  ---
+  duration_ms: 0.7762
+  type: 'test'
+  ...
+# Subtest: latest upload summaries keep independent resume/project identities and pending newest versions
+ok 29 - latest upload summaries keep independent resume/project identities and pending newest versions
+  ---
+  duration_ms: 0.3994
+  type: 'test'
+  ...
+# Subtest: proposed material versions are compared against server-saved identities, not filenames/order
+ok 30 - proposed material versions are compared against server-saved identities, not filenames/order
+  ---
+  duration_ms: 0.3203
+  type: 'test'
+  ...
+# Subtest: returned upload uses only a validated hint and does not encode selection/save actions
+ok 31 - returned upload uses only a validated hint and does not encode selection/save actions
+  ---
+  duration_ms: 0.6186
+  type: 'test'
+  ...
+# Subtest: real dropzone shares chooser/drop validation and retains a native keyboard file input
+ok 32 - real dropzone shares chooser/drop validation and retains a native keyboard file input
+  ---
+  duration_ms: 19.2189
+  type: 'test'
+  ...
+# Subtest: real returned-version review highlights only current owned data and never selects or saves
+ok 33 - real returned-version review highlights only current owned data and never selects or saves
+  ---
+  duration_ms: 27.8223
+  type: 'test'
+  ...
+# Subtest: actual project picker highlights a returned version without selecting it or marking search results newest
+ok 34 - actual project picker highlights a returned version without selecting it or marking search results newest
+  ---
+  duration_ms: 28.1019
+  type: 'test'
+  ...
+# Subtest: actual upload forms accept supported uppercase image files
+ok 35 - actual upload forms accept supported uppercase image files
+  ---
+  duration_ms: 76.8446
+  type: 'test'
+  ...
+# Subtest: unsupported and oversize files stop actual form handlers before API
+ok 36 - unsupported and oversize files stop actual form handlers before API
+  ---
+  duration_ms: 28.066
+  type: 'test'
+  ...
+# Subtest: returning workspace shows one latest version first and keeps history collapsed
+ok 37 - returning workspace shows one latest version first and keeps history collapsed
+  ---
+  duration_ms: 11.3066
+  type: 'test'
+  ...
+# Subtest: empty loaded workspace opens preparation without making two uploads mandatory
+ok 38 - empty loaded workspace opens preparation without making two uploads mandatory
+  ---
+  duration_ms: 4.7307
+  type: 'test'
+  ...
+# Subtest: one integrated workspace keeps the complete saved items even when a plan is limited to three
+ok 39 - one integrated workspace keeps the complete saved items even when a plan is limited to three
+  ---
+  duration_ms: 12.3164
+  type: 'test'
+  ...
+# Subtest: identical rules advice and gap appear once in the action panel
+ok 40 - identical rules advice and gap appear once in the action panel
+  ---
+  duration_ms: 0.8469
+  type: 'test'
+  ...
+# Subtest: valid AI advice uses the saved requirement and drops foreign or duplicate citations
+ok 41 - valid AI advice uses the saved requirement and drops foreign or duplicate citations
+  ---
+  duration_ms: 1.2936
+  type: 'test'
+  ...
+# Subtest: rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+ok 42 - rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+  ---
+  duration_ms: 2.793
+  type: 'test'
+  ...
+# Subtest: non-students retain explanation and advice without private student task controls
+ok 43 - non-students retain explanation and advice without private student task controls
+  ---
+  duration_ms: 1.8263
+  type: 'test'
+  ...
+# Subtest: review-only and unsupported states do not invent implementation deficiencies
+ok 44 - review-only and unsupported states do not invent implementation deficiencies
+  ---
+  duration_ms: 0.9414
+  type: 'test'
+  ...
+# Subtest: partial support and gaps expose their existing plan and explicit task trigger
+ok 45 - partial support and gaps expose their existing plan and explicit task trigger
+  ---
+  duration_ms: 1.4012
+  type: 'test'
+  ...
+# Subtest: supported requirements lead with conclusions and evidence; optional growth stays secondary
+ok 46 - supported requirements lead with conclusions and evidence; optional growth stays secondary
+  ---
+  duration_ms: 0.4921
+  type: 'test'
+  ...
+# Subtest: support survives incomplete context and its warning remains outside collapsed details
+ok 47 - support survives incomplete context and its warning remains outside collapsed details
+  ---
+  duration_ms: 0.6776
+  type: 'test'
+  ...
+# Subtest: missing plans and unrelated actions never manufacture suggestions or requirements
+ok 48 - missing plans and unrelated actions never manufacture suggestions or requirements
+  ---
+  duration_ms: 0.7768
+  type: 'test'
+  ...
+# Subtest: empty report does not masquerade as full support
+ok 49 - empty report does not masquerade as full support
+  ---
+  duration_ms: 0.1993
+  type: 'test'
+  ...
+# Subtest: saved structured plans retain deliverable, steps and checks without changing the snapshot
+ok 50 - saved structured plans retain deliverable, steps and checks without changing the snapshot
+  ---
+  duration_ms: 1.1287
+  type: 'test'
+  ...
+# Subtest: generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+ok 51 - generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+  ---
+  duration_ms: 0.5571
+  type: 'test'
+  ...
+# Subtest: a saved structured plan takes priority over generic instructions
+ok 52 - a saved structured plan takes priority over generic instructions
+  ---
+  duration_ms: 0.5273
+  type: 'test'
+  ...
+# Subtest: action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+ok 53 - action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+  ---
+  duration_ms: 1.7217
+  type: 'test'
+  ...
+# Subtest: guidance can be copied and used for a new upload without creating a task
+ok 54 - guidance can be copied and used for a new upload without creating a task
+  ---
+  duration_ms: 0.578
+  type: 'test'
+  ...
+# Subtest: copied guidance keeps saved sources and conditional instructions; rejected AI never enters the clipboard
+ok 55 - copied guidance keeps saved sources and conditional instructions; rejected AI never enters the clipboard
+  ---
+  duration_ms: 0.4156
+  type: 'test'
+  ...
+# Subtest: legacy growth anchors resolve to current copy/upload guidance without reopening task creation
+ok 56 - legacy growth anchors resolve to current copy/upload guidance without reopening task creation
+  ---
+  duration_ms: 0.8922
+  type: 'test'
+  ...
+# Subtest: no report requirement mounts task lookup or task plan editing for any saved evidence state
+ok 57 - no report requirement mounts task lookup or task plan editing for any saved evidence state
+  ---
+  duration_ms: 3.5921
+  type: 'test'
+  ...
+# Subtest: copy and upload work with no task/API access, clipboard success is truthful, and failure offers manual copy
+ok 58 - copy and upload work with no task/API access, clipboard success is truthful, and failure offers manual copy
+  ---
+  duration_ms: 22.4042
+  type: 'test'
+  ...
+# Subtest: late copy receipts cannot label a different identity/requirement's guidance as copied
+ok 59 - late copy receipts cannot label a different identity/requirement's guidance as copied
+  ---
+  duration_ms: 3.791
+  type: 'test'
+  ...
+# Subtest: report upload hints accept only UUID context, never return URLs or version selection instructions
+ok 60 - report upload hints accept only UUID context, never return URLs or version selection instructions
+  ---
+  duration_ms: 0.287
+  type: 'test'
+  ...
+# Subtest: upload return verifies the saved report and exposes navigation only, preserving existing materials
+ok 61 - upload return verifies the saved report and exposes navigation only, preserving existing materials
+  ---
+  duration_ms: 6.4705
+  type: 'test'
+  ...
+# Subtest: denied, missing requirements and late upload-context replies never expose another report's navigation
+ok 62 - denied, missing requirements and late upload-context replies never expose another report's navigation
+  ---
+  duration_ms: 5.9356
+  type: 'test'
+  ...
+# Subtest: invalid context or the existing growth-task path causes no report lookup or new return workflow
+ok 63 - invalid context or the existing growth-task path causes no report lookup or new return workflow
+  ---
+  duration_ms: 8.1928
+  type: 'test'
+  ...
+# Subtest: the original job form explicitly submits chosen new versions without creating or binding a growth task
+ok 64 - the original job form explicitly submits chosen new versions without creating or binding a growth task
+  ---
+  duration_ms: 10.6498
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 65 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 1.4882
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 66 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.5882
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 67 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.2891
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 68 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 9.136
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 69 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 15.617
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 70 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 11.1539
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 71 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 7.3169
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 72 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.6894
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 73 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 4.5202
+  type: 'test'
+  ...
+# Subtest: workspace filters partition real states, include review priority and preserve immutable inputs
+ok 74 - workspace filters partition real states, include review priority and preserve immutable inputs
+  ---
+  duration_ms: 0.8192
+  type: 'test'
+  ...
+# Subtest: all-supported defaults to all; review-only defaults to its exact saved item
+ok 75 - all-supported defaults to all; review-only defaults to its exact saved item
+  ---
+  duration_ms: 0.3282
+  type: 'test'
+  ...
+# Subtest: deep links escape a mismatched filter without losing the saved anchor
+ok 76 - deep links escape a mismatched filter without losing the saved anchor
+  ---
+  duration_ms: 2.8981
+  type: 'test'
+  ...
+# Subtest: integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+ok 77 - integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+  ---
+  duration_ms: 0.5033
+  type: 'test'
+  ...
+# Subtest: summary truncation changes no source identity or original text
+ok 78 - summary truncation changes no source identity or original text
+  ---
+  duration_ms: 0.3511
+  type: 'test'
+  ...
+# Subtest: single list and mounted panels replace the second action-list rendering
+ok 79 - single list and mounted panels replace the second action-list rendering
+  ---
+  duration_ms: 0.2515
+  type: 'test'
+  ...
+# Subtest: scan summaries keep UUID paths in detailed evidence instead of removing source identities
+ok 80 - scan summaries keep UUID paths in detailed evidence instead of removing source identities
+  ---
+  duration_ms: 0.1143
+  type: 'test'
+  ...
+# Subtest: returning to a report without a fragment restores its saved default, not the last visited requirement
+ok 81 - returning to a report without a fragment restores its saved default, not the last visited requirement
+  ---
+  duration_ms: 2.2917
+  type: 'test'
+  ...
+# Subtest: a single priority item offers the real supported count without duplicating the list
+ok 82 - a single priority item offers the real supported count without duplicating the list
+  ---
+  duration_ms: 0.7038
+  type: 'test'
+  ...
+# Subtest: filter actions keep an included selection and a zero-count filter remains an explicit empty view
+ok 83 - filter actions keep an included selection and a zero-count filter remains an explicit empty view
+  ---
+  duration_ms: 4.109
+  type: 'test'
+  ...
+1..83
+# tests 83
+# suites 0
+# pass 83
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 542.3314

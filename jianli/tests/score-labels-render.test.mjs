@@ -57,6 +57,8 @@ const { VERDICT_LABELS, APPLICATION_STATUS_LABELS, verdictLabel } = await import
 const { RADAR_STATUS } = await import(pathToFileURL(path.join(SRC, "lib/skill-radar.ts")).href);
 const { DEMO_LABELS } = await import(pathToFileURL(path.join(SRC, "lib/heatmap-demo.ts")).href);
 
+const { workspaceStatusLabel } = await import(pathToFileURL(path.join(SRC, "lib/report-workspace.ts")).href);
+
 test("判定用语由同一来源提供，历史值和未评估不混为新结论", () => {
   assert.equal(RADAR_STATUS, VERDICT_LABELS);
   assert.equal(DEMO_LABELS.verified, undefined); // No duplicate legacy-only filter.
@@ -71,7 +73,12 @@ test("判定用语由同一来源提供，历史值和未评估不混为新结�
   // authenticated report/board/planning fetches or replace their page checks.
   for (const name of ["ApplicationBoard", "ReportDetail", "CareerRecommendations", "VerdictBadge"]) {
     const source = readFileSync(path.join(SRC, `components/${name}.tsx`), "utf8");
-    assert.ok(source.includes('from "@/lib/verdict-display.js"'), name);
+    if (name === "ReportDetail") {
+      assert.ok(source.includes('workspaceStatusLabel(item)'), name);
+      const helper = readFileSync(path.join(SRC, "lib/report-workspace.ts"), "utf8");
+      assert.ok(helper.includes('from "./verdict-display.js"'));
+      for (const [value, label] of Object.entries(VERDICT_LABELS)) assert.equal(workspaceStatusLabel({ verdict: value }), label);
+    } else assert.ok(source.includes('from "@/lib/verdict-display.js"'), name);
     assert.ok(!source.includes('claimed_only: "仅'), name);
   }
 });

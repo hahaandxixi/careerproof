@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "2f661e08b8194eb0b413190214fb243695836f14",
+  "buildId": "mi_792oqOn3k4fPv6goTb",
+  "commands": [
+    {"cwd":"jianli","command":"node --experimental-strip-types --test tests/report-action-layer.test.mjs (before implementation)","exitCode":1,"passed":15,"failed":2,"skipped":0,"log":"target-red.log"},
+    {"cwd":"jianli","command":"node --experimental-strip-types --test tests/report-action-layer.test.mjs tests/report-follow-up-actions.test.mjs tests/growth-task-entry.test.mjs tests/growth-anchor-entry.test.mjs tests/material-upload.test.mjs tests/material-workspace.test.mjs","exitCode":0,"passed":49,"failed":0,"skipped":0,"log":"target-final.log"},
+    {"cwd":"jianli","command":"npm.cmd test","exitCode":0,"passed":471,"failed":0,"skipped":0,"log":"frontend-tests.log"},
+    {"cwd":"jianli","command":"npm.cmd run typecheck","exitCode":0,"log":"typecheck.log"},
+    {"cwd":"jianli","command":"npm.cmd run lint","exitCode":0,"errors":0,"warnings":1,"existingWarning":"VisualEvidencePanel no-img-element","log":"lint.log"},
+    {"cwd":"jianli","command":"npm.cmd run build (BACKEND_ORIGIN=http://127.0.0.1:8114)","exitCode":0,"log":"build.log"}
+  ],
+  "initialFullRun":{"exitCode":1,"passed":465,"failed":4,"skipped":0,"log":"frontend-first.log","cause":"Controlled material-workspace loader lacked the new adjacent ReportUploadReturn boundary; original upload assertions retained. The new component is tested separately."},
+  "method":"Production SSR and controlled hooks/event handlers, mocked clipboard and API. Not native browser or end-to-end evidence.",
+  "backend":"Unchanged; no unrelated full backend rerun or business writes.",
+  "remoteCI":"Not pushed or merged; no CI for this branch commit."
+}

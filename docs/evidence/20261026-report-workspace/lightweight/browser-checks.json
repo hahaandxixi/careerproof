@@ -1,0 +1,8 @@
+{
+  "sourceCommit":"2f661e08b8194eb0b413190214fb243695836f14",
+  "buildId":"mi_792oqOn3k4fPv6goTb",
+  "status":"pending",
+  "reason":"Prior saved browser-origin denial remains unresolved; no repeat or indirect workaround attempted this round.",
+  "newScreenshots":[],
+  "pending":["1440/1280/768/390 rendering and overflow","actual clipboard and manual fallback","copy/upload without creating a record","existing and completed task navigation","actual upload, explicit version selection and reanalysis","deep links, back/refresh and editing","real account isolation","native 200% zoom","independent user comprehension"]
+}

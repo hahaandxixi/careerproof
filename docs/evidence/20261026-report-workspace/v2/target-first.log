@@ -1,0 +1,334 @@
+TAP version 13
+# Subtest: same-document link opens the task even when SPA navigation emits no hashchange
+ok 1 - same-document link opens the task even when SPA navigation emits no hashchange
+  ---
+  duration_ms: 18.7631
+  type: 'test'
+  ...
+# Subtest: repeating the same hash link reopens a deliberately collapsed form
+ok 2 - repeating the same hash link reopens a deliberately collapsed form
+  ---
+  duration_ms: 7.8239
+  type: 'test'
+  ...
+# Subtest: other requirements, modified clicks and non-links cannot open this task
+ok 3 - other requirements, modified clicks and non-links cannot open this task
+  ---
+  duration_ms: 4.7594
+  type: 'test'
+  ...
+# Subtest: unmount removes navigation listeners while direct-bookmark opening remains supported
+ok 4 - unmount removes navigation listeners while direct-bookmark opening remains supported
+  ---
+  duration_ms: 4.4972
+  type: 'test'
+  ...
+# Subtest: opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+ok 5 - opening a missing-task entry reads first; only an explicit submit creates, and repeated submits share the lock
+  ---
+  duration_ms: 11.8944
+  type: 'test'
+  ...
+# Subtest: existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+ok 6 - existing planned and completed tasks reuse their saved plan and links, never create on open or re-open
+  ---
+  duration_ms: 3.3621
+  type: 'test'
+  ...
+# Subtest: denied and temporarily unavailable lookups expose retry without opening a create form
+ok 7 - denied and temporarily unavailable lookups expose retry without opening a create form
+  ---
+  duration_ms: 1.5968
+  type: 'test'
+  ...
+# Subtest: a late lookup from another report cannot replace the selected task, and review warnings stay visible
+ok 8 - a late lookup from another report cannot replace the selected task, and review warnings stay visible
+  ---
+  duration_ms: 0.498
+  type: 'test'
+  ...
+# Subtest: one integrated workspace keeps the complete saved items even when a plan is limited to three
+not ok 9 - one integrated workspace keeps the complete saved items even when a plan is limited to three
+  ---
+  duration_ms: 11.8106
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    7 !== 6
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 6
+  actual: 7
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:64:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: identical rules advice and gap appear once in the action panel
+ok 10 - identical rules advice and gap appear once in the action panel
+  ---
+  duration_ms: 0.7246
+  type: 'test'
+  ...
+# Subtest: valid AI advice uses the saved requirement and drops foreign or duplicate citations
+ok 11 - valid AI advice uses the saved requirement and drops foreign or duplicate citations
+  ---
+  duration_ms: 1.1131
+  type: 'test'
+  ...
+# Subtest: rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+ok 12 - rejected, unvalidated, fallback and stale-context AI text never becomes action advice
+  ---
+  duration_ms: 2.3568
+  type: 'test'
+  ...
+# Subtest: non-students retain explanation and advice without private student task controls
+not ok 13 - non-students retain explanation and advice without private student task controls
+  ---
+  duration_ms: 2.834
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!html.includes("开始补证"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:97:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: review-only and unsupported states do not invent implementation deficiencies
+not ok 14 - review-only and unsupported states do not invent implementation deficiencies
+  ---
+  duration_ms: 1.0473
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!html.includes("开始补证"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:105:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: partial support and gaps expose their existing plan and explicit task trigger
+ok 15 - partial support and gaps expose their existing plan and explicit task trigger
+  ---
+  duration_ms: 1.3117
+  type: 'test'
+  ...
+# Subtest: supported requirements lead with conclusions and evidence; optional growth stays secondary
+not ok 16 - supported requirements lead with conclusions and evidence; optional growth stays secondary
+  ---
+  duration_ms: 0.6217
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\report-action-layer.test.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!html.includes("开始补证"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/report-action-layer.test.mjs:121:46)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: support survives incomplete context and its warning remains outside collapsed details
+ok 17 - support survives incomplete context and its warning remains outside collapsed details
+  ---
+  duration_ms: 1.1713
+  type: 'test'
+  ...
+# Subtest: missing plans and unrelated actions never manufacture suggestions or requirements
+ok 18 - missing plans and unrelated actions never manufacture suggestions or requirements
+  ---
+  duration_ms: 0.6133
+  type: 'test'
+  ...
+# Subtest: empty report does not masquerade as full support
+ok 19 - empty report does not masquerade as full support
+  ---
+  duration_ms: 0.2081
+  type: 'test'
+  ...
+# Subtest: saved structured plans retain deliverable, steps and checks without changing the snapshot
+ok 20 - saved structured plans retain deliverable, steps and checks without changing the snapshot
+  ---
+  duration_ms: 0.6234
+  type: 'test'
+  ...
+# Subtest: generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+ok 21 - generic checking guidance is explicitly separate from saved advice and never invents Redis facts
+  ---
+  duration_ms: 0.4545
+  type: 'test'
+  ...
+# Subtest: a saved structured plan takes priority over generic instructions
+ok 22 - a saved structured plan takes priority over generic instructions
+  ---
+  duration_ms: 0.5698
+  type: 'test'
+  ...
+# Subtest: action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+ok 23 - action panel has no duplicate evidence shortcut; the article owns the single source disclosure
+  ---
+  duration_ms: 1.5646
+  type: 'test'
+  ...
+# Subtest: initial selection preserves the existing evidence priority without sorting the saved report
+ok 24 - initial selection preserves the existing evidence priority without sorting the saved report
+  ---
+  duration_ms: 1.2401
+  type: 'test'
+  ...
+# Subtest: saved citation and rule-source identities resolve exactly across same-name files and versions
+ok 25 - saved citation and rule-source identities resolve exactly across same-name files and versions
+  ---
+  duration_ms: 0.3474
+  type: 'test'
+  ...
+# Subtest: enterprise reply entry selects its saved requirement and never overrides a known citation
+ok 26 - enterprise reply entry selects its saved requirement and never overrides a known citation
+  ---
+  duration_ms: 0.1701
+  type: 'test'
+  ...
+# Subtest: real reader SSR keeps every article and draft mounted, with one visible selected panel
+ok 27 - real reader SSR keeps every article and draft mounted, with one visible selected panel
+  ---
+  duration_ms: 8.3571
+  type: 'test'
+  ...
+# Subtest: overview renders fixed identity, truthful fallback and a single existing-priority action
+ok 28 - overview renders fixed identity, truthful fallback and a single existing-priority action
+  ---
+  duration_ms: 13.7859
+  type: 'test'
+  ...
+# Subtest: direct citation bookmark selects the saved requirement before expanding and scrolling
+ok 29 - direct citation bookmark selects the saved requirement before expanding and scrolling
+  ---
+  duration_ms: 8.3472
+  type: 'test'
+  ...
+# Subtest: same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+ok 30 - same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item
+  ---
+  duration_ms: 5.21
+  type: 'test'
+  ...
+# Subtest: modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+ok 31 - modified, external and unknown links keep selection, and unmount removes listeners and pending scroll
+  ---
+  duration_ms: 3.9207
+  type: 'test'
+  ...
+# Subtest: mobile navigation commits the captured destination and cancels the changing native href
+ok 32 - mobile navigation commits the captured destination and cancels the changing native href
+  ---
+  duration_ms: 3.5976
+  type: 'test'
+  ...
+# Subtest: workspace filters partition real states, include review priority and preserve immutable inputs
+ok 33 - workspace filters partition real states, include review priority and preserve immutable inputs
+  ---
+  duration_ms: 0.6016
+  type: 'test'
+  ...
+# Subtest: all-supported defaults to all; review-only defaults to its exact saved item
+ok 34 - all-supported defaults to all; review-only defaults to its exact saved item
+  ---
+  duration_ms: 0.1866
+  type: 'test'
+  ...
+# Subtest: deep links escape a mismatched filter without losing the saved anchor
+ok 35 - deep links escape a mismatched filter without losing the saved anchor
+  ---
+  duration_ms: 2.2849
+  type: 'test'
+  ...
+# Subtest: integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+ok 36 - integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action
+  ---
+  duration_ms: 0.4309
+  type: 'test'
+  ...
+# Subtest: summary truncation changes no source identity or original text
+ok 37 - summary truncation changes no source identity or original text
+  ---
+  duration_ms: 0.3864
+  type: 'test'
+  ...
+# Subtest: single list and mounted panels replace the second action-list rendering
+ok 38 - single list and mounted panels replace the second action-list rendering
+  ---
+  duration_ms: 0.2285
+  type: 'test'
+  ...
+# Subtest: scan summaries keep UUID paths in detailed evidence instead of removing source identities
+ok 39 - scan summaries keep UUID paths in detailed evidence instead of removing source identities
+  ---
+  duration_ms: 0.1054
+  type: 'test'
+  ...
+# Subtest: returning to a report without a fragment restores its saved default, not the last visited requirement
+ok 40 - returning to a report without a fragment restores its saved default, not the last visited requirement
+  ---
+  duration_ms: 1.9452
+  type: 'test'
+  ...
+# Subtest: a single priority item offers the real supported count without duplicating the list
+ok 41 - a single priority item offers the real supported count without duplicating the list
+  ---
+  duration_ms: 0.7007
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 37
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 469.5006

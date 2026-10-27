@@ -35,6 +35,7 @@ export default function AccountMenu({ name, unreadCount, busy, onLogout, role = 
     <nav aria-label={`${roleLabel}账户`} className="absolute right-0 top-full z-20 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
       <p className="break-words border-b border-slate-100 px-3 py-2 text-xs text-slate-500">{name} · {roleLabel}</p>
       {!enterprise && <Link className={linkClass} href="/" onClick={close}>工作台</Link>}
+      {!enterprise && <Link className={linkClass} href="/growth" onClick={close}>历史补证记录</Link>}
       <Link className={linkClass} href="/notifications" onClick={close}>通知{unreadCount === null ? "" : `（${unreadCount} 未读）`}</Link>
       <div className="mt-1 border-t border-slate-100 pt-1"><button className={`${linkClass} w-full text-left`} disabled={busy} onClick={()=>{close();onLogout();}}>{busy ? "退出中…" : "退出登录"}</button></div>
     </nav>

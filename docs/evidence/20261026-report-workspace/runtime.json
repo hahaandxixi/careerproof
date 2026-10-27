@@ -1,0 +1,15 @@
+{
+  "sourceBase": "8ca91cc2c8e32fbd59412134798eb7db257a29d4",
+  "branch": "codex/report-workspace-20261026",
+  "frontend": "http://127.0.0.1:3139",
+  "frontendDirectory": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli",
+  "buildId": "rKqTIjQXdcfxdLKcToJ2V",
+  "pid": 158976,
+  "api": "http://127.0.0.1:8114",
+  "database": "127.0.0.1:55445/cp_product_polish_20261022",
+  "externalAI": false,
+  "scope": "new frontend only; existing accepted isolated API and synthetic data reused",
+  "acceptedSourceCommit": "30dba8b34c391b913b76b6563b528770d4dafc91",
+  "mainMerged": false,
+  "browserAfterInterruption": "new tab access to 3139 was declined; no further browser or indirect access attempted"
+}

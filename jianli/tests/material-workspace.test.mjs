@@ -30,6 +30,7 @@ function workspace(file, kind, state = {}) {
     "next/link": { __esModule: true, default: props => runtime.jsx("a", props) },
     "@/components/ArchivedMaterials": { __esModule: true, default: () => null },
     "@/components/GrowthUploadReturn": { __esModule: true, default: () => null },
+    "@/components/ReportUploadReturn": { __esModule: true, default: () => null },
     "@/components/MaterialFileDropzone": { __esModule: true, default: () => null },
     "@/components/LoginLink": { __esModule: true, default: () => null },
     "@/components/AuthProvider": { useAuth: () => ({}) },

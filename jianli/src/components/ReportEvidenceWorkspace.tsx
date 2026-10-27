@@ -1,96 +1,70 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import type { MatchReport } from "@/lib/api/domain";
+import type { ReactNode } from "react";
+import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText, evidenceWorkspace } from "@/lib/evidence-workspace";
-import ActionPlan from "./ActionPlan";
+import { validatedGrowthAdvice } from "@/lib/analysis-status";
+import { requirementConclusion, savedRequirementAction } from "@/lib/report-workspace";
+import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
+import ReportFollowUpActions from "./ReportFollowUpActions";
+import ReportRequirementReader from "./ReportRequirementReader";
 
-const GROUPS = [
-  { key: "supported", label: "有证据支持" },
-  { key: "partial", label: "部分支持" },
-  { key: "gaps", label: "待补材料" },
-  { key: "other", label: "未覆盖或需复核" },
-] as const;
-type Group = typeof GROUPS[number]["key"];
-
-export function ReportActionLayer({ report, role }: { report: MatchReport; role?: string }) {
-  return role === "student" ? <ReportEvidenceWorkspace key={report.id} report={report} /> : <ActionPlan actions={report.actionPlan} />;
+export default function ReportEvidenceWorkspace({ report, children }: { report: MatchReport; children: ReactNode }) {
+  return <ReportRequirementReader items={report.items}>{children}</ReportRequirementReader>;
 }
 
-export default function ReportEvidenceWorkspace({ report }: { report: MatchReport }) {
-  const state = evidenceWorkspace(report.items);
-  const [expanded, setExpanded] = useState<Group | null>(() =>
-    (["gaps", "partial", "other", "supported"] as const).find(key => state[key].length > 0) ?? "gaps"
-  );
-  const actions = new Map((report.actionPlan ?? []).map(action => [action.requirementId, action]));
-  const openCount = state.gaps.length + state.partial.length + state.other.length;
-
-  return <section aria-labelledby="evidence-workspace-title" className="panel min-w-0 space-y-4">
-    <div className="flex flex-wrap items-start justify-between gap-3">
-      <div className="min-w-0">
-        <h2 id="evidence-workspace-title" className="text-lg font-semibold">下一步补证计划</h2>
-        <p className="mt-1 text-sm leading-6 text-slate-600">选择一组要求查看缺口，按需核对证据或开始补证。补证不影响你直接投递本份报告。补证或上传新版不会替换本报告。</p>
-
-        <p className="mt-2 text-sm leading-6 text-slate-700">
-          {report.items.length === 0
-            ? "下一步：暂无逐项结果，请先核对报告状态。"
-            : openCount > 0
-            ? `下一步：可核对 ${openCount} 项待补、部分支持或需复核的要求，也可直接投递当前报告；若补充材料，请生成新报告后再选择投递版本。`
-            : "下一步：核对关键引用后，可直接投递本报告；如材料更新，请生成新报告再决定。"}
-        </p>
-      </div>
-      <EvidenceLink targetId="report-materials" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">核对固定材料</EvidenceLink>
-      <Link href="#report-comparison" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">查看版本变化 →</Link>
+export function RequirementActionPanel({ report, item, role }: { report: MatchReport; item: ReportItem; role?: string }) {
+  const groups = evidenceWorkspace([item]);
+  const supported = groups.supported.length > 0;
+  const actionable = groups.gaps.length + groups.partial.length > 0;
+  const action = savedRequirementAction(report, item);
+  const advice = validatedGrowthAdvice(report, item);
+  const plan = advice?.taskPlan;
+  const explanation = requirementConclusion(item);
+  const gap = advice?.gap || item.evidenceLevelGap?.trim();
+  const conclusion = actionable ? gap || action?.evidenceGap?.trim() || explanation : explanation;
+  const text = action ? distinctActionText(action, conclusion) : null;
+  const allowed = new Set(item.evidenceList.map(source => source.citationId));
+  const citations = [...new Set(action?.citationIds ?? [])].filter(id => allowed.has(id));
+  return <div className="mt-4 min-w-0 space-y-4" aria-label={`${item.skill}的判断与下一步`}>
+    <div><h4 className="text-sm font-semibold text-slate-900">{supported ? "当前材料支持" : actionable ? "当前缺口" : "当前需核对"}</h4>
+      <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>
+      {supported && <p className="mt-2 text-xs leading-6 text-slate-600">本报告保存了 {item.evidenceList.length} 条来源。材料支持不等于运行成功、本人贡献或能力认证。</p>}
     </div>
-    <details className="border-t border-slate-200 pt-3"><summary className="cursor-pointer py-2 text-sm font-medium text-indigo-700">展开完整补证计划 · {openCount} 项待补或需核对</summary><div className="mt-3 space-y-4">    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="按已保存的材料支持状态查看要求">
-      {GROUPS.map(({ key, label }) => <button key={key} type="button"
-        id={`evidence-group-${key}`} aria-expanded={expanded === key} aria-controls={`evidence-panel-${key}`}
-        onClick={() => setExpanded(current => current === key ? null : key)}
-        className={`min-h-20 rounded-xl border p-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${expanded === key ? "border-indigo-600 bg-indigo-50 text-indigo-950" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}>
-        <span className="block text-xs leading-5">{label}</span>
-        <span className="mt-1 block text-2xl font-semibold">{state[key].length}<span className="ml-1 text-xs font-normal">项</span></span>
-        <span className="mt-1 block text-xs">{expanded === key ? "收起" : "展开"}</span>
-      </button>)}
-    </div>
-    {GROUPS.map(({ key, label }) => <div key={key} id={`evidence-panel-${key}`} role="region"
-      aria-labelledby={`evidence-group-${key}`} hidden={expanded !== key}>
-      {expanded === key && <>
-        <h3 className="mb-3 font-medium">{label} · {state[key].length} 项</h3>
-        {state[key].length === 0 ? <p className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有标记为“{label}”的要求，可以选择其他分组查看。</p> : <ul className="space-y-3">
-          {state[key].map(item => {
-            const action = actions.get(item.requirementId);
-            const gap = item.evidenceLevelGap?.trim() || item.explanation?.trim() || "该项暂无已保存的缺口说明，请核对原要求与材料。";
-            const text = action ? distinctActionText(action, gap) : null;
-            const allowed = new Set(item.evidenceList.map(evidence => evidence.citationId));
-            const citations = [...new Set(action?.citationIds ?? [])].filter(citation => allowed.has(citation));
-            return <li key={item.requirementId} className="min-w-0 rounded-xl border border-slate-200 p-4">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <h4 className="min-w-0 break-words font-medium">{item.requirementTitle}</h4>
-                {action && <span className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600">{ACTION_SOURCE_LABELS[action.source] ?? "来源未标注"}</span>}
-              </div>
-              <p className="mt-1 text-xs text-slate-500">岗位权重 {item.weight} / 5</p>
-              <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600">{gap}</p>
-              {text?.advice && <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6"><strong>建议行动：</strong>{text.advice}</p>}
-              {text?.gap && <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600"><strong>建议对应缺口：</strong>{text.gap}</p>}
-              {citations.length > 0 && <div className="mt-2 flex flex-wrap gap-3">{citations.map(citation => <EvidenceLink key={citation} citationId={citation} className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">查看引用 {citation}</EvidenceLink>)}</div>}
-              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-                <Link className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline" href={`#requirement-${item.requirementId}`}>核对来源与逐项解释</Link>
-                {(key === "gaps" || key === "partial") && <Link className="btn-secondary min-h-11" href={`#growth-${item.requirementId}`}>从这条缺口开始补证 →</Link>}
-              </div>
-            </li>;
-          })}
-        </ul>}
-      </>}
-    </div>)}
-    {expanded === null && <p className="text-sm text-slate-600">选择上方状态，展开对应要求。</p>}
-</div></details>
-    <details className="border-t border-slate-200 pt-3 text-sm">
-      <summary className="cursor-pointer py-2 font-medium text-slate-700">补证步骤与投递说明</summary>
-      <p className="mt-2 leading-6 text-slate-600">核对一条缺口 → 补充并保存新版材料 → 主动生成新报告，再查看逐项变化。</p>
-      <p className="mt-2 leading-6 text-slate-600">已投递时，企业查看的是投递当时的固定报告。补证任务和新报告不会自动替换该快照，也不会自动向企业发送内容。</p>
-      <Link className="mt-2 inline-flex min-h-11 items-center text-indigo-700 underline" href="/growth">查看我的补证任务 →</Link>
-    </details>
-  </section>;
+    {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
+    {item.evidenceList.some(source => source.contextComplete === false) && <p className="border-l-2 border-amber-400 pl-3 text-sm leading-6 text-amber-900">部分引用上下文不完整，请展开来源核对；不能据此确认完整实现。</p>}
+    {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning} 已隐藏该任务草稿。</p>}
+    {!supported && <div className="space-y-3 border-t border-slate-200 pt-4">
+      <h4 className="text-sm font-semibold text-slate-900">{action ? "建议怎么补" : "下一步先核对"}</h4>
+      {!plan && text?.advice && <div className="text-sm leading-7"><p className="whitespace-pre-wrap break-words text-slate-800">{text.advice}</p><p className="text-xs text-slate-500">{action && ACTION_SOURCE_LABELS[action.source]} · 已保存建议</p></div>}
+      {plan ? <div className="space-y-3 text-sm leading-7">
+        <p className="text-xs text-slate-500">来自本报告已校验的 AI 补证建议，仍需本人核对，不表示这些步骤已经执行。</p>
+        <ol aria-label="建议行动" className="list-decimal space-y-2 pl-5">{plan.steps.slice(0, 4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol>
+        {plan.steps.length > 4 && <details><summary className="cursor-pointer py-2 text-indigo-700">其余执行步骤</summary><ol start={5} className="list-decimal pl-5">{plan.steps.slice(4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol></details>}
+        <h5 className="font-medium">建议提交的材料</h5>
+        <p className="break-words">{plan.deliverable}</p>
+        <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul>
+      </div> : <div className="space-y-2 text-sm leading-7">
+        <p className="font-medium text-slate-800">通用核对步骤</p>
+        <p className="text-xs text-slate-600">以下是操作提示，不是系统已核实的实现情况。在自己的开发工具中完成改进后，返回上传新版材料并主动分析。</p>
+        <ol className="list-decimal space-y-2 pl-5">{(actionable ? GENERAL_FOLLOW_UP : REVIEW_FOLLOW_UP).map((step, index) => <li key={index}>{step}</li>)}</ol>
+        <p className="font-medium text-slate-800">建议提交的材料</p>
+        <p className="text-xs leading-6 text-slate-600">暂无保存的具体交付物要求。以下为通用材料类型，按实际改进选择，不表示系统确认文件已经存在。</p>
+        <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-slate-600"><li>直接对应这条要求的新增或修订工程文件，并标明关键位置。</li><li>相关测试材料；如有执行记录，注明源码版本与验证范围。</li><li>必要时提供解释关键操作的项目说明。已有材料先定位，不必重复提交；运行结果与本人贡献分别核验。</li></ul>
+      </div>}
+      {action ? <details className="text-sm leading-7"><summary className="cursor-pointer py-2 text-indigo-700">查看报告原始建议 · {ACTION_SOURCE_LABELS[action.source]}</summary>
+        {text?.advice && <p className="whitespace-pre-wrap break-words">{text.advice}</p>}
+        {text?.gap && <p className="whitespace-pre-wrap break-words text-slate-600">{text.gap}</p>}
+        {!text?.advice && !text?.gap && <p className="text-slate-600">原始建议与上方缺口说明相同。</p>}
+        <p className="text-xs text-slate-500">来自本报告已保存内容；通用提示不替换原始建议。</p>
+      </details> : <p className="text-xs leading-6 text-slate-600">暂无已保存的具体行动计划。先核对岗位要求和已有材料；不能由此认定实现不存在。</p>}
+      {citations.length > 0 && <div className="flex flex-wrap gap-3">{citations.map(id => <EvidenceLink key={id} citationId={id} className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">建议依据 {id}</EvidenceLink>)}</div>}
+    </div>}
+    {role === "student" && <div>
+      {supported ? <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">材料有更新？按需查看补证指导</summary><div id={`growth-${item.requirementId}`} className="scroll-mt-24"><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} /></div></details> : <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
+        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} />
+      </div>}
+    </div>}
+  </div>;
 }

@@ -35,7 +35,6 @@ export default function SiteHeader() {
           <Link href="/portfolio" aria-current={current("/portfolio")}>我的材料</Link>
           <Link href="/jobs" aria-current={current("/jobs")}>发现岗位</Link>
           <Link href="/reports" aria-current={current("/reports")}>我的报告</Link>
-          <Link href="/growth" aria-current={current("/growth")}>补证任务</Link>
           <Link href="/applications" aria-current={current("/applications")}>我的投递</Link>
         </> : <>
           <Link href="/jobs" aria-current={current("/jobs")}>岗位发现</Link>

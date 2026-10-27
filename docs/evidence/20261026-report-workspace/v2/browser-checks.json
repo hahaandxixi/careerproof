@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "52ff1ed1c1403ef5bf7cba3597d46c61ea2a0b5e",
+  "buildId": "BZICo0xmwnquMyfDVcCsp",
+  "status": "blocked by saved user permission",
+  "attempt": "one createBrowserTab to explicit V2 preview http://127.0.0.1:3139; denied by saved origin permission",
+  "workaroundAttempted": false,
+  "newScreenshots": [],
+  "pending": [
+    "1440/1280/768/390 V2 rendering and overflow",
+    "real refresh/back/forward and re-entry",
+    "existing task and completed-task navigation",
+    "same-file multi-version citation navigation and fixed-header positioning",
+    "unsaved edit continuity and role switch in the browser",
+    "keyboard focus and console errors",
+    "native Windows browser 200% zoom",
+    "independent user comprehension"
+  ]
+}

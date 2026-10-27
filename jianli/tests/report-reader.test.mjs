@@ -39,6 +39,8 @@ const load = name => import(pathToFileURL(path.join(SRC, name)).href);
 const helpers = await load("lib/report-reader.ts");
 const { revealEvidenceAnchor } = await load("lib/evidence-anchor.ts");
 const verdicts = await load("lib/verdict-display.js");
+const workspace = await load("lib/report-workspace.ts");
+const evidenceWorkspace = await load("lib/evidence-workspace.ts");
 const { default: Reader } = await load("components/ReportRequirementReader.tsx");
 const { default: Overview } = await load("components/ReportOverview.tsx");
 
@@ -81,11 +83,11 @@ test("enterprise reply entry selects its saved requirement and never overrides a
 test("real reader SSR keeps every article and draft mounted, with one visible selected panel", () => {
   const html = renderToStaticMarkup(React.createElement(Reader, { items }, articles));
   for (const item of items) {
-    assert.ok(html.includes(`href="#requirement-${item.requirementId}"`));
+    if (item.verdict !== "supported") assert.ok(html.includes(`href="#requirement-${item.requirementId}"`));
     assert.ok(html.includes(`id="requirement-${item.requirementId}"`));
     assert.ok(html.includes(`未保存草稿 ${item.requirementId}`));
   }
-  assert.equal((html.match(/aria-current="true"/g) ?? []).length, 2);
+  assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(html.includes("正在查看"));
   assert.ok(html.includes("手机逐项阅读导航") && html.includes("展开全部要求") && html.includes("上一项"));
@@ -113,7 +115,7 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
  * This checks navigation ordering, not browser geometry, native pointer or keyboard behavior. */
 function navigationFixture(hash = "", search = "") {
   const effects = [], values = [], windowListeners = new Map(), documentListeners = new Map(), frames = new Map(), events = [];
-  let cursor = 0, nextFrame = 0, committedSelection;
+  let cursor = 0, nextFrame = 0, committedSelection, tree;
   const modules = {
     react: { Children: React.Children, useEffect: fn => effects.push(fn), useState: initial => {
       const i = cursor++;
@@ -124,6 +126,8 @@ function navigationFixture(hash = "", search = "") {
     "@/lib/report-reader": helpers,
     "@/lib/evidence-anchor": { revealEvidenceAnchor },
     "@/lib/verdict-display.js": verdicts,
+    "@/lib/report-workspace": workspace,
+    "@/lib/evidence-workspace": evidenceWorkspace,
   };
   const mod = { exports: {} };
   const code = transform(readFileSync(path.join(SRC, "components/ReportRequirementReader.tsx"), "utf8"), {
@@ -140,14 +144,14 @@ function navigationFixture(hash = "", search = "") {
     events.push({ selected: committedSelection, open: details.open });
   } };
   globalThis.Element = Node;
-  globalThis.window = { location: { hash, search }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
+  globalThis.window = { location: { hash, search }, history: { pushState(_state, _title, hash) { window.location.hash = hash; } }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
   globalThis.document = {
     addEventListener: (name, fn) => documentListeners.set(name, fn), removeEventListener: name => documentListeners.delete(name),
     getElementById: id => id === "citation-saved-alpha" || id === "growth-implementation" || id === "requirement-implementation" ? target : null,
   };
   globalThis.requestAnimationFrame = fn => { const id = ++nextFrame; frames.set(id, fn); return id; };
   globalThis.cancelAnimationFrame = id => frames.delete(id);
-  const render = () => { cursor = 0; effects.length = 0; mod.exports.default({ items, children: articles }); committedSelection = values[0].selected; };
+  const render = () => { cursor = 0; effects.length = 0; tree = mod.exports.default({ items, children: articles }); committedSelection = values[0].selected; };
   render();
   const cleanupListeners = effects[0]();
   return {
@@ -156,6 +160,12 @@ function navigationFixture(hash = "", search = "") {
     flush() { for (const [id, fn] of frames) { frames.delete(id); fn(); } },
     click(href, extra = {}) { let prevented = false; documentListeners.get("click")({ target: new Node(href), button: 0, preventDefault() { prevented = true; }, ...extra }); return { prevented, hash: window.location.hash }; },
     hash(value) { window.location.hash = value; windowListeners.get("hashchange")(); },
+    pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
+    filter(label) {
+      const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && node.props.children[0] === label);
+      assert.ok(button, label); button.props.onClick(); render();
+    },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
   };
 }
@@ -208,4 +218,90 @@ test("mobile navigation commits the captured destination and cancels the changin
     assert.equal(f.click("#citation-unknown").prevented, false);
     assert.equal(f.click("#requirement-run", {ctrlKey: true}).prevented, false);
   } finally { f.cleanup(); }
+});
+
+
+test("workspace filters partition real states, include review priority and preserve immutable inputs", () => {
+ const values=[...items,{...items[0],requirementId:"review",confirmationStatus:"rejected"},{...items[0],requirementId:"outside",verdict:"unsupported"}];
+ const before=JSON.stringify(values);
+ assert.deepEqual(workspace.workspaceRequirements(values,"priority").map(x=>x.requirementId),["tests","run","review","outside"]);
+ assert.deepEqual(workspace.workspaceRequirements(values,"supported").map(x=>x.requirementId),["implementation"]);
+ assert.equal(workspace.workspaceRequirements(values,"partial").length,1);
+ assert.equal(workspace.workspaceRequirements(values,"gaps").length,1);
+ assert.equal(workspace.workspaceRequirements(values,"other").length,2);
+ assert.equal(workspace.workspaceRequirements(values,"all").length,5);
+ assert.equal(JSON.stringify(values),before);
+});
+
+test("all-supported defaults to all; review-only defaults to its exact saved item", () => {
+ assert.equal(workspace.initialWorkspaceFilter([items[0]]),"all");
+ const value={...items[0],confirmationStatus:"corrected"};
+ assert.equal(workspace.initialWorkspaceFilter([items[0],value]),"priority");
+ assert.equal(helpers.initialReportRequirement([items[0],{...value,requirementId:"corrected"}]),"corrected");
+ assert.equal(workspace.workspaceStatusLabel(value),"本人标记修正 · 需复核");
+ assert.equal(workspace.workspaceStatusLabel({...items[0],evidenceList:[{contextComplete:false}]}),"有证据支持");
+});
+
+test("deep links escape a mismatched filter without losing the saved anchor", () => {
+ assert.equal(workspace.filterForRequirement(items,"priority","implementation"),"all");
+ assert.equal(workspace.filterForRequirement(items,"priority","tests"),"priority");
+ const f=navigationFixture("#citation-saved-alpha");
+ try{ assert.equal(f.values[0].filter,"all"); assert.equal(f.values[0].anchor,"citation-saved-alpha"); }finally{f.cleanup();}
+ assert.equal(helpers.requirementForReportAnchor(items,"judgement-tests"),"tests");
+});
+
+test("integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action", () => {
+ const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
+ const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
+ assert.ok(html.includes("库存 · 第 2 版")); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+});
+
+test("summary truncation changes no source identity or original text", () => {
+ const value={...items[0],explanation:"保存的判断".repeat(40)}; const before=JSON.stringify(value);
+ assert.ok(workspace.requirementSummary(value).endsWith("…")); assert.equal(workspace.requirementSummary(value).length,91); assert.equal(JSON.stringify(value),before);
+});
+
+test("single list and mounted panels replace the second action-list rendering", () => {
+ const source=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
+ assert.equal((source.match(/<ReportEvidenceWorkspace /g)||[]).length,1);
+ assert.ok(!source.includes("ReportActionLayer")); assert.ok(source.includes("<RequirementActionPanel"));
+ assert.ok(source.includes('item.aiStatus === "validated" && !report.aiFallbackUsed && !!item.ratingCriteria'));
+});
+
+
+test("scan summaries keep UUID paths in detailed evidence instead of removing source identities", () => {
+ const value={...items[0],explanation:"本项静态引用：12345678-abcd-abcd-abcd-123456789012/service.py 第1行",evidenceLevelReason:"可引用材料提供本项实质操作的支持"};
+ const before=JSON.stringify(value);
+ assert.equal(workspace.requirementConclusion(value),value.evidenceLevelReason);
+ assert.ok(!workspace.requirementSummary(value).includes("12345678-"));
+ assert.equal(JSON.stringify(value),before);
+ assert.equal(helpers.requirementForReportAnchor([value],"citation-saved-alpha"),"implementation");
+});
+
+test("returning to a report without a fragment restores its saved default, not the last visited requirement", () => {
+ const f=navigationFixture();
+ try {
+  f.click("#requirement-implementation"); assert.equal(f.values[0].selected,"implementation");
+  f.pop(""); assert.equal(f.values[0].selected,"tests");
+  f.pop("#citation-saved-alpha"); assert.equal(f.values[0].selected,"implementation");
+ } finally {f.cleanup();}
+});
+
+test("a single priority item offers the real supported count without duplicating the list", () => {
+ const values=[...Array.from({length:4},(_,i)=>({...items[0],requirementId:`ok${i}`})),items[2]];
+ const html=renderToStaticMarkup(React.createElement(Reader,{items:values},values.map(value=>React.createElement("article",{key:value.requirementId}))));
+ assert.ok(html.includes("其他 4 项已有证据支持"));
+ assert.equal((html.match(/aria-label="报告中的岗位要求"/g)||[]).length,1);
+ assert.ok(!html.includes("岗位要求已全部满足"));
+});
+
+test("filter actions keep an included selection and a zero-count filter remains an explicit empty view", () => {
+ const f=navigationFixture();
+ try {
+  f.filter("有证据支持"); assert.equal(f.values[0].selected,"implementation");
+  assert.equal(window.location.hash,"#requirement-implementation");
+  f.filter("全部要求"); assert.equal(f.values[0].selected,"implementation");
+  f.filter("未覆盖或需复核"); assert.equal(f.values[0].selected,null);
+  f.pop("#requirement-tests"); assert.equal(f.values[0].selected,"tests");
+ } finally {f.cleanup();}
 });

@@ -1,0 +1,11 @@
+{
+  "sourceCommit":"2d54ad0e0f040b07d8b5c90005ad227dc38b15cb",
+  "buildId":"N234su9PxWcj-vMAPxUUg",
+  "userAuthorizedThisRound":true,
+  "attempt":"One createBrowserTab to explicit 3139 report after the user's permission reply.",
+  "result":"Still denied by saved user permission or managed policy at the origin gate.",
+  "workaroundAttempted":false,
+  "newScreenshots":[],
+  "endToEnd":"NOT VERIFIED: old report -> actual new-version upload -> new rule report -> evidence comparison without a growth task.",
+  "pending":["four primary student links","copy/upload and history secondary entry","actual upload and explicit version selection","new rule report and comparison","old task/private draft and identity denial","source/deep-link navigation","1440/1280/768/390 and native 200%","console errors"]
+}

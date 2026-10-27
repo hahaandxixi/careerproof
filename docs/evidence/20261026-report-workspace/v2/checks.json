@@ -1,0 +1,61 @@
+{
+  "sourceCommit": "52ff1ed1c1403ef5bf7cba3597d46c61ea2a0b5e",
+  "os": "Windows-11-10.0.26200-SP0",
+  "node": "22.23.1",
+  "next": "15.5.27",
+  "react": "19.0.0",
+  "commands": [
+    {
+      "cwd": "jianli",
+      "command": "node --experimental-strip-types --test tests/report-action-layer.test.mjs tests/report-reader.test.mjs (before repair)",
+      "exitCode": 1,
+      "passed": 28,
+      "failed": 5,
+      "skipped": 0,
+      "log": "target-red.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "node --experimental-strip-types --test tests/report-action-layer.test.mjs tests/report-reader.test.mjs tests/growth-task-entry.test.mjs tests/growth-anchor-entry.test.mjs",
+      "exitCode": 0,
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0,
+      "log": "target-final.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd test",
+      "exitCode": 0,
+      "passed": 459,
+      "failed": 0,
+      "skipped": 0,
+      "log": "frontend-tests.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run lint",
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 1,
+      "warning": "existing VisualEvidencePanel no-img-element",
+      "log": "lint.log"
+    },
+    {
+      "cwd": "jianli",
+      "command": "npm.cmd run build (BACKEND_ORIGIN=http://127.0.0.1:8114)",
+      "exitCode": 0,
+      "buildId": "BZICo0xmwnquMyfDVcCsp",
+      "log": "build.log"
+    }
+  ],
+  "backend": "unchanged; no backend tests, DB writes or external AI calls this round",
+  "remoteCI": "not run; branch not pushed or merged",
+  "controlledTests": "Actual component effects/event handlers with controlled hooks/API promises plus SSR. Not real browser navigation, authorization or new end-to-end evidence."
+}

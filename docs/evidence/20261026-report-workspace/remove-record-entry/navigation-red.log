@@ -1,0 +1,164 @@
+TAP version 13
+# Subtest: enterprise menu preserves exact unread count and identity without student-only routes
+ok 1 - enterprise menu preserves exact unread count and identity without student-only routes
+  ---
+  duration_ms: 6.8619
+  type: 'test'
+  ...
+# Subtest: unknown and zero unread counts do not fabricate a badge
+ok 2 - unknown and zero unread counts do not fabricate a badge
+  ---
+  duration_ms: 0.7772
+  type: 'test'
+  ...
+# Subtest: header keeps each role's original navigation, including admin logout without notification support
+ok 3 - header keeps each role's original navigation, including admin logout without notification support
+  ---
+  duration_ms: 2.5754
+  type: 'test'
+  ...
+# Subtest: student has exactly four primary entries and accesses old growth tasks only from the account menu
+not ok 4 - student has exactly four primary entries and accesses old growth tasks only from the account menu
+  ---
+  duration_ms: 1.6354
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\account-menu.test.mjs:81:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        '/portfolio',
+        '/jobs',
+        '/reports',
+    +   '/growth',
+        '/applications'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '/portfolio'
+    1: '/jobs'
+    2: '/reports'
+    3: '/applications'
+  actual:
+    0: '/portfolio'
+    1: '/jobs'
+    2: '/reports'
+    3: '/growth'
+    4: '/applications'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/account-menu.test.mjs:85:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: student routes identify location without claiming progress or leaking to other roles
+ok 5 - student routes identify location without claiming progress or leaking to other roles
+  ---
+  duration_ms: 0.7724
+  type: 'test'
+  ...
+# Subtest: navigation retains all five ordered steps and only one current location
+not ok 6 - navigation retains all five ordered steps and only one current location
+  ---
+  duration_ms: 9.9979
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\flow-steps.test.mjs:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(!html.includes('href="/growth"'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/flow-steps.test.mjs:71:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: confirmation is text until a concrete report supplies the existing confirmation anchor
+ok 7 - confirmation is text until a concrete report supplies the existing confirmation anchor
+  ---
+  duration_ms: 0.8028
+  type: 'test'
+  ...
+# Subtest: a failed read is unknown, while verified empty work can offer the first-material route
+ok 8 - a failed read is unknown, while verified empty work can offer the first-material route
+  ---
+  duration_ms: 35.8738
+  type: 'test'
+  ...
+# Subtest: student continues the saved report without enterprise actions
+ok 9 - student continues the saved report without enterprise actions
+  ---
+  duration_ms: 19.7065
+  type: 'test'
+  ...
+# Subtest: enterprise gets its own job and authorized-application routes, not private student work
+ok 10 - enterprise gets its own job and authorized-application routes, not private student work
+  ---
+  duration_ms: 5.1773
+  type: 'test'
+  ...
+# Subtest: admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+ok 11 - admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+  ---
+  duration_ms: 3.3492
+  type: 'test'
+  ...
+# Subtest: authentication loading and error never render the saved identity as confirmed
+ok 12 - authentication loading and error never render the saved identity as confirmed
+  ---
+  duration_ms: 5.9746
+  type: 'test'
+  ...
+# Subtest: old growth tasks cannot replace report continuation or form a second student work area
+not ok 13 - old growth tasks cannot replace report continuation or form a second student work area
+  ---
+  duration_ms: 7.4255
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\report-workspace-20261026\\jianli\\tests\\home-workspace.test.mjs:77:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("继续核对：当前岗位"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/report-workspace-20261026/jianli/tests/home-workspace.test.mjs:79:9)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 10
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 335.6211

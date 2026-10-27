@@ -3,15 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, errorMessage, type CurrentUser, type ProjectHistory, type ResumeHistory } from "@/lib/api/client";
-import type { GrowthTask, JobSummary, NotificationItem, ReportSummary } from "@/lib/api/domain";
+import type { JobSummary, NotificationItem, ReportSummary } from "@/lib/api/domain";
 import { useAuth } from "./AuthProvider";
 
 type SavedWork = {
-  reports: ReportSummary[]; growth: GrowthTask[]; notifications: NotificationItem[];
+  reports: ReportSummary[]; notifications: NotificationItem[];
   jobs: JobSummary[]; resumes: ResumeHistory[]; projects: ProjectHistory[];
 };
-const EMPTY: SavedWork = { reports: [], growth: [], notifications: [], jobs: [], resumes: [], projects: [] };
-const growthLabel: Record<string, string> = { planned: "待补材料", materials_selected: "材料已确认", analyzing: "分析进行中", analysis_failed: "分析失败 · 可恢复", compared: "可查看版本变化" };
+const EMPTY: SavedWork = { reports: [], notifications: [], jobs: [], resumes: [], projects: [] };
 
 export default function HomeWorkspace({ children }: { children: React.ReactNode }) {
   const { user, status, reload } = useAuth();
@@ -32,7 +31,6 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     setLoading(true); setErrors([]);
     const requests: { key: keyof SavedWork; label: string; run: () => Promise<SavedWork[keyof SavedWork]> }[] = student ? [
       { key: "reports", label: "最近报告", run: async () => (await api.listReports(1, 3)).items },
-      { key: "growth", label: "最近补证任务", run: async () => (await api.listGrowthTasks(1, 3)).items },
       { key: "notifications", label: "未读通知", run: async () => (await api.notifications(1, true, 3)).items },
       { key: "resumes", label: "简历", run: () => api.listResumes() },
       { key: "projects", label: "项目", run: () => api.listProjects() },
@@ -55,9 +53,8 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
   const activeMaterial = [...work.resumes, ...work.projects].flatMap(material => material.versions)
     .filter(version => version.taskId && ["pending", "running", "failed"].includes(version.status))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
-  const openGrowth = work.growth.find(task => task.status !== "compared");
-  const resumeHref = activeMaterial ? `/tasks/${activeMaterial.taskId}` : openGrowth ? `/growth/${openGrowth.id}` : work.reports[0] ? `/reports/${work.reports[0].id}` : "/portfolio";
-  const resumeLabel = activeMaterial ? `${activeMaterial.status === "failed" ? "处理上传问题" : "查看材料处理"}：${activeMaterial.originalFilename ?? "已上传材料"}` : openGrowth ? `继续补证：${openGrowth.requirementTitle}` : work.reports[0] ? `继续核对：${work.reports[0].jobTitle}` : errors.length ? "打开我的材料" : "准备第一份材料";
+  const resumeHref = activeMaterial ? `/tasks/${activeMaterial.taskId}` : work.reports[0] ? `/reports/${work.reports[0].id}` : "/portfolio";
+  const resumeLabel = activeMaterial ? `${activeMaterial.status === "failed" ? "处理上传问题" : "查看材料处理"}：${activeMaterial.originalFilename ?? "已上传材料"}` : work.reports[0] ? `继续核对：${work.reports[0].jobTitle}` : errors.length ? "打开我的材料" : "准备第一份材料";
   return <div className="space-y-6">
     <section className="panel border-indigo-100 bg-gradient-to-br from-indigo-50 to-white">
       <p className="text-sm font-medium text-indigo-700">{student ? "学生工作台" : "企业工作台"}</p>
@@ -74,9 +71,6 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
         {student ? <>
           <WorkSection title="最近报告" href="/reports" empty="没有可显示的报告。先选定材料，再进入岗位生成报告。">
             {work.reports.map(report => <li key={report.id}><Link className="work-row" href={`/reports/${report.id}`}><strong className="block break-words text-sm">{report.jobTitle}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(report.createdAt).toLocaleString("zh-CN")} · {report.aiFallbackUsed ? "模型已回退，请核对规则结果" : report.analysisMode === "rules" ? "规则报告" : "查看分析方式与依据"}</span></Link></li>)}
-          </WorkSection>
-          <WorkSection title="最近补证任务" href="/growth" empty="没有可显示的补证任务。报告中的具体缺口可以创建补证任务。">
-            {work.growth.map(task => <li key={task.id}><Link className="work-row" href={`/growth/${task.id}`}><strong className="block break-words text-sm">{task.requirementTitle}</strong><span className="mt-1 block break-words text-xs leading-5 text-slate-600">{task.jobTitle} · {growthLabel[task.status] ?? task.status}</span></Link></li>)}
           </WorkSection>
         </> : <WorkSection title="最近岗位" href="/jobs/mine" empty="还没有可显示的岗位。创建岗位后，在岗位管理中核对授权投递。">
           {work.jobs.map(job => <li key={job.id}><Link className="work-row" href={`/jobs/${job.id}/applications`}><strong className="block break-words text-sm">{job.title}</strong><span className="mt-1 block text-xs text-slate-600">{job.companyName} · {job.status === "published" ? "已发布" : job.status === "draft" ? "草稿" : "已关闭"} · 核对已授权投递 →</span></Link></li>)}
