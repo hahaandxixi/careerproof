@@ -131,3 +131,13 @@ PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验�
 - `max_tokens=1500`保持不变：未获得/执行新的真实模型请求，不能把此次Mock配置故障归因于截断。离线长度停止和结构失败分支可正确识别；最初两个探针用的单左括号可被现有JSON修复机制解析，已改为真正未闭合的字符串输入。
 - `pytest app/tests/test_career_plan_failures.py app/tests/test_career_change_attribution.py app/tests/test_career_visible_checks.py app/tests/test_frozen_career_conflict.py -q`：97通过；职业规划前端两个定向文件10通过；目标Ruff、ESLint、类型及生产构建通过，未运行全量测试。日志/JUnit留于本工作树`backend/.tmp/career-failure-*`。
 - 实际接口两次提交均为`external_ai_disabled`、`planId=null`、保留9个规则候选，规划记录4→4；原快照哈希与上次规划完全不变。真实页面已验证按钮禁用、原因只显示一次及“本次规则候选（未保存为规划）”。截图在本机`output/screenshots/CareerProof-career-ai-fix-20261027-b137997/disabled-ai.png`。真实DeepSeek效果、额度和真实输出截断仍未复验。
+
+## 10/27 企业标签页选中状态恢复
+
+产品源码 `2775029088fb2cdce9c3a9b2feb4ba7416afa4d1`，仍在原独立工作树和分支。离窗曾执行破坏性 clear，回窗只重读列表；现在区分 suspend/resume 与明确清除。候选、岗位要求、引用展开和对照选择仅留页面内存，隐藏时不渲染报告；返回先用 GET 列表及必要的 GET detail 核对权限、报告和岗位身份，再复用已明确打开的固定快照，不自动 POST view。撤回、读取失败或报告身份变化清除相应选择；换身份/卸载丢弃缓存。未发送回复及确认仍清空，本轮没有发送回复、AI请求或更改后端。
+
+- 修改：ApplicationBoard、application-board-session；SkillRadar仅增加可选的选中/引用展开状态回调，未重构雷达或改变其他调用方。refresh-gate原有合并闸门保留，session合并在途核验，局部保留高度避免报告临时卸载导致页面塌陷；不运行滚动或锚点定位命令。
+- 红：新增用例在原session上因缺少suspend失败。绿：`node --test tests/application-board-visibility.test.mjs tests/application-board-session.test.mjs tests/refresh-gate.test.mjs tests/skill-radar.test.mjs tests/skill-radar-render.test.mjs tests/history-enterprise.test.mjs tests/failure-reply-draft.test.mjs tests/verification-reply-draft.test.mjs`，64通过/0失败/0跳过，exit 0。包含真实Workspace处理器的模拟事件验证：授权前无报告、要求与引用展开恢复、两人对照恢复、撤回剔除、草稿及确认清空；session验证并发合并、旧回执失效、只GET恢复且open次数不增加、卸载清除。模拟事件不充当真实标签切换。
+- `tsc --noEmit`、五个目标文件ESLint及`next build`均exit 0；目标lint无警告，未运行全量前后端。原始红/绿及检查输出留本机忽略目录 `backend/.tmp/board-resume-*.raw.out`。
+- 3140已从接受提交启动，构建`Zs6bc13o3xglTwcRB-LTv`；8140后端、55447专属合成库与storage保持不变。非正常业务库，无浏览器持久化。
+- 真实桌面补验未完成：Edge扩展能读取工作台，但获取本机Edge窗口时工具因无法可靠确认当前网址而停止；遵守停止，不换接口绕行。没有最终截图或真实滚动保持结论。请在3140打开候选、选要求并展开引用，勾选两位并排核对，切到其他真实标签再返回；确认自动恢复、滚动不跳、回复草稿清空且发送仍需手动确认。快速重复切换检查相同状态。撤回和身份变化拒绝已由定向回归验证，未对原演示投递执行撤回操作。
