@@ -4,6 +4,7 @@ import type { ApplicationView } from "@/lib/api/client";
 import { comparableRadarAxes } from "@/lib/application-comparison";
 import { radarPosition, radarPointKind, radarScore, radarSegments, RADAR_STATUS } from "@/lib/skill-radar";
 import { reportModeLabel } from "@/lib/report-display";
+import { requirementSummary } from "@/lib/report-workspace";
 import { heatmapCellClass } from "@/lib/heatmap-cell.js";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 
@@ -46,6 +47,8 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
   const report=candidate.report;
   const item=report?.items.find(d=>d.requirementId===requirementId);
   const useAi=!!item&&item.aiStatus==="validated"&&!report?.aiFallbackUsed;
+  const explanation=(useAi?item?.aiExplanation:null)||item?.explanation||"";
+  const gap=(useAi?item?.aiInformationGap:null)||item?.evidenceLevelGap||"请核对来源覆盖范围、运行记录与本人贡献；本报告未独立认证。";
   return <article className="min-w-0 space-y-3 rounded-xl border border-slate-200 p-4" aria-label={`${candidate.candidateName}的固定证据`}>
     <h3 className="break-words font-semibold" style={{color}}>{candidate.candidateName}</h3>
     {report&&<p className="text-xs text-slate-600">{reportModeLabel(report)}</p>}
@@ -53,8 +56,9 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
     {item?<>
       <p className="break-words text-sm font-medium">{item.requirementTitle||item.skill}</p>
       <div className={`rounded-lg border p-3 text-sm ${heatmapCellClass(item.verdict)}`}><strong>{RADAR_STATUS[item.verdict]??item.verdict}</strong><span className="ml-3">材料支持度 {item.finalScore??"不可评"}</span></div>
-      <p className="break-words text-sm leading-6">{(useAi?item.aiExplanation:null)||item.explanation}</p>
-      <p className="break-words text-sm text-slate-600">待核对：{(useAi?item.aiInformationGap:null)||item.evidenceLevelGap||"请核对来源覆盖范围、运行记录与本人贡献；本报告未独立认证。"}</p>
+      <p className="break-words text-sm leading-6">{useAi&&item.aiExplanation?`${explanation.slice(0,100)}${explanation.length>100?"…":""}`:requirementSummary(item)}</p>
+      <p className="break-words text-sm text-slate-600">待核对：{gap.slice(0,100)}{gap.length>100?"…":""}</p>
+      <details className="text-sm"><summary className="cursor-pointer py-1 text-indigo-700">完整判断与核验说明</summary><p className="mt-2 break-words leading-6">{explanation}</p><p className="mt-2 break-words leading-6">{gap}</p></details>
       {item.evidenceList.length?<ul className="space-y-3">{item.evidenceList.map((source,index)=><li key={`${source.citationId}:${index}`} className="min-w-0 border-t border-slate-100 pt-3"><p className="text-xs leading-6"><SourceIdentity source={source} materials={report?.materials} compact/> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId||"规则来源"}</p><details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-indigo-700">展开源码片段</summary><pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-slate-50 p-3 text-xs">{source.snippet}</pre><SourceIdentityDetails source={source}/></details>{source.contextComplete===false&&<p className="mt-2 text-xs text-amber-900">{source.contextNote||"引用上下文不完整，需核对完整来源。"}</p>}</li>)}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}
     </>:<p className="text-sm text-slate-600">当前授权报告没有对应要求，请按该报告的固定要求核对。</p>}
   </article>;
