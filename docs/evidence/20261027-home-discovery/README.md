@@ -151,3 +151,15 @@ PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验�
 真实浏览器为IAB，1280×720与390×844，使用既有专属合成库/企业。旧构建在scrollY=900时导航(130,30)命中tbody固定th；新构建表格top=-90.65时相同点命中header。表格内部scrollTop=108.8；手机组合滚动scrollLeft=262.4、scrollTop=157.6，左列与表格left相差0.8px，表头top与表格top相差0.8px；整页无横向溢出。实际点击实现材料候选的SQL格子，证据面板为schema.sql第1–8行、R3-E1，雷达05SQL选中；报告3支持/2待补/5要求，折叠可读原生成时间与两份第1版材料。未发送企业回复或请求AI。原生桌面标签切换仍保留上一节待验，本次不以IAB滚动替代。
 
 真实前后与手机截图留本机 `output/screenshots/CareerProof-board-polish-20261027/`：before-overlap.png、after-no-overlap.png、mobile-table-scroll.png、report-overview.png；对应上述前后构建，不打包凭据。原始定向与检查日志在本工作树忽略目录 `backend/.tmp/board-polish-*.raw.out`。
+
+## 10/27 跨页名单与双人证据对照
+
+产品源码`195df67b4a7cf007a972a7b7e91d8285e81b50c4`，主体`a5c1a18`；3140构建`qRTg7bDUqPMZghJuK1oPl`。纯前端，后端、数据库结构、评分和权限未改。现有session管理最多4个比较条目，翻页/筛选通过GET列表及必要detail重新授权，完整报告仅用户明确打开所选两份时读取；返回页面复用已打开快照但必须先核对权限/固定身份。身份切换/卸载清缓存，撤回或身份变化剔除，迟到响应不能复活。未用浏览器持久化，无自动AI或回复。
+
+新增CandidatePairComparison，复用原SVG坐标、点型和连线规则；岗位/比较基准/实际要求ID、标题、技能、权重、规则尺度一致才共轴，否则逐人独立要求。A靛蓝实线/点、B橙色虚线/点，线色仅标身份，状态另标；仅自述空心点，缺材料和不可评不绘点，只有相邻有证据点才连接。双列原报告引用按需展开，解释仅采用有效且未降级AI，原文保留；手机上下排列。3/4人仍使用热力图，从名单选其中两人；单人原报告与回复按需展开。
+
+定向：`node --test tests/application-board-session.test.mjs tests/application-board-visibility.test.mjs tests/history-enterprise.test.mjs tests/skill-radar.test.mjs tests/skill-radar-render.test.mjs`，49通过/0失败/0跳过；TypeScript、目标ESLint、生产构建均exit 0。覆盖60条分页模拟的第1→3→1页、移除/清空/4人上限、仅显式打开、恢复不重复POST、撤回/固定身份变化/迟到回执，真实Workspace的3/4列及两人入口、不同基准拒绝叠图与来源不串用。首轮回归发现隐藏空状态误清名单，已用会话paused区分并修复；四人回归首轮错误地在三人筛选表中找未显示第四人，修正测试为先返回当前页再选，不改断言。原始输出留`backend/.tmp/pair-*.raw.out`，未运行全量前后端。
+
+实际浏览器IAB、1440×1000及390×844：既有Python岗位3份已授权合成投递。明确打开“实现材料/仅声明”两份，切FastAPI后A为65、app.py第12–14行R2-E1，B为10且没有对应引用；两列随同一要求切换，源码默认折叠可真实展开。筛选到仅B（服务器总数1）仍保留A/B名单及报告，清除筛选恢复3且名单不丢；加入第三人、切三列热力图、选择其中两人的入口、移除第三人实测。手机无整页横溢出，列上下排列，切Git双方显示缺材料且无对应引用。不新增演示数据，不发送回复或真实AI；显式查看发生在原专属合成库。
+
+真实跨页、4人页面、不同历史版本及撤回浏览器情形未制造，分别由上述定向回归验证；当前3份投递不能冒充实际多页验收。截图在本机`output/screenshots/CareerProof-pair-comparison-20261027-195df67/`：desktop-pair.png、desktop-evidence.png、desktop-three-heatmap.png、mobile-pair.png、mobile-evidence.png。原用户标签未重载；如其仍保留旧JS，需刷新3140查看本版。已恢复IAB视口和原匿名状态。
