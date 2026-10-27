@@ -70,7 +70,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
           {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
         </div>
         <div aria-live="polite" className="flex min-h-8 flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500">
-          <p>{busy ? "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位${compact && data.total ? ` · 首页展示 ${data.items.length} 个` : ""}` : ""}</p><span>按最近创建排序 · 合成岗位单独标注</span>
+          <p>{busy ? "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>{!compact && <span>按最近创建排序 · 合成岗位单独标注</span>}
         </div>
         {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)}/>}
         {busy && <div aria-label="岗位加载占位" className={`grid gap-3 ${compact ? "md:grid-cols-3" : "md:grid-cols-2 xl:grid-cols-3"}`}>{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}
@@ -79,17 +79,17 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
         {!compact && !busy && !error && data && data.total > 0 && <nav aria-label="岗位分页" className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm"><button type="button" className="btn-secondary min-h-11" disabled={data.page <= 1} onClick={() => choose({ page: data.page - 1 })}>上一页</button><span>第 {data.page} / {Math.max(1, Math.ceil(data.total / data.pageSize))} 页</span><button type="button" className="btn-secondary min-h-11" disabled={data.page * data.pageSize >= data.total} onClick={() => choose({ page: data.page + 1 })}>下一页</button></nav>}
       </div>
     </div>
-    <p className="text-xs leading-5 text-slate-500">技术方向按岗位标题、明确技能及原分类作导航归类；不是能力认证。未识别方向的旧岗位仍可在“全部岗位”查询。</p>
+    {!compact && <p className="text-xs leading-5 text-slate-500">技术方向按岗位标题、明确技能及原分类作导航归类；不是能力认证。未识别方向的旧岗位仍可在“全部岗位”查询。</p>}
   </section>;
 }
 
 export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; compact?: boolean }) {
   const Heading = compact ? "h3" : "h2";
   return <article className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 transition-colors hover:border-indigo-200">
-    <div className="flex min-w-0 items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"><CareerDirectionIcon direction={job.careerDirection ?? ""}/></span><div className="min-w-0 flex-1"><Heading className="text-base font-semibold leading-6 text-slate-950"><Link className="break-words hover:text-indigo-700" href={`/jobs/${job.id}`}>{job.title}</Link></Heading><p className="mt-1 break-words text-xs leading-5 text-slate-500">{job.companyName}</p></div></div>
-    <div className="mt-3 flex flex-wrap gap-1.5 text-xs"><span className="career-meta">{job.city || "城市未填写"}</span><span className="career-meta">{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span><span className="career-meta">{directionLabel(job.careerDirection) ?? `${CATEGORY_LABELS[job.category] ?? "其他方向"} · 未细分`}</span>{job.isDemo && <span className="rounded-md bg-indigo-50 px-2 py-1 text-indigo-700">合成示例岗位</span>}</div>
-    {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="mt-2 flex flex-wrap gap-1.5">{job.technicalTags.slice(0, 4).map(tag => <li key={tag} className="rounded-md border border-slate-100 px-2 py-1 text-xs text-slate-500">{tag}</li>)}</ul>}
-    {job.description && <p className="mt-3 line-clamp-2 break-words text-xs leading-5 text-slate-500">{job.description}</p>}
-    <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-4"><span className="text-xs text-slate-500">岗位要求 {job.requirementCount} 项</span><Link className="inline-flex min-h-11 items-center rounded-lg bg-indigo-50 px-3 text-sm font-medium text-indigo-700 hover:bg-indigo-100" href={`/jobs/${job.id}`}>查看要求 →</Link></div>
+    <div className="flex min-w-0 items-start gap-3"><span className={`flex shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ${compact ? "h-8 w-8" : "h-10 w-10"}`}><CareerDirectionIcon direction={job.careerDirection ?? ""}/></span><div className="min-w-0 flex-1"><Heading className={`text-base font-semibold leading-6 text-slate-950 ${compact ? "line-clamp-2" : ""}`}><Link className="break-words hover:text-indigo-700" href={`/jobs/${job.id}`}>{job.title}</Link></Heading><p className={`mt-1 text-xs leading-5 text-slate-500 ${compact ? "truncate" : "break-words"}`} title={job.companyName}>{job.companyName}</p></div></div>
+    <div className={`mt-3 flex flex-wrap items-center text-xs ${compact ? "gap-x-2 gap-y-1 text-slate-500" : "gap-1.5"}`}><span className={compact ? "" : "career-meta"}>{job.city || "城市未填写"}</span>{compact && <span aria-hidden="true">·</span>}<span className={compact ? "" : "career-meta"}>{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span>{compact && <span aria-hidden="true">·</span>}<span className={compact ? "" : "career-meta"}>{directionLabel(job.careerDirection) ?? `${CATEGORY_LABELS[job.category] ?? "其他方向"} · 未细分`}</span>{job.isDemo && <span className="rounded-md bg-indigo-50 px-2 py-1 text-indigo-700">合成示例岗位</span>}</div>
+    {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="mt-2 flex flex-wrap gap-1.5">{job.technicalTags.slice(0, 4).map(tag => <li key={tag} className={`rounded-md px-2 text-xs text-slate-500 ${compact ? "bg-slate-50 py-0.5" : "border border-slate-100 py-1"}`}>{tag}</li>)}</ul>}
+    {job.description && <p className={`mt-3 line-clamp-2 break-words leading-5 text-slate-500 ${compact ? "min-h-10 text-sm" : "text-xs"}`}>{job.description}</p>}
+    <div className={`mt-auto flex items-center justify-between gap-2 ${compact ? "pt-3" : "flex-wrap pt-4"}`}><span className="text-xs text-slate-500">{compact ? `${job.requirementCount} 项要求` : `岗位要求 ${job.requirementCount} 项`}</span><Link className={`inline-flex min-h-11 shrink-0 items-center justify-center whitespace-nowrap rounded-lg bg-indigo-50 px-3 text-sm font-medium text-indigo-700 hover:bg-indigo-100 ${compact ? "min-w-28" : ""}`} href={`/jobs/${job.id}`}>查看要求 →</Link></div>
   </article>;
 }
