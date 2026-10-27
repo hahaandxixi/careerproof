@@ -121,3 +121,13 @@ PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验�
 - 前端3140构建`hhVsGvCYGjmQvDXKP92Sx`，API8140，同库`127.0.0.1:55447/cp_home_discovery_test_20261027`，存储仍为本工作树`backend/.tmp/storage`；外部AI禁用。桌面1440与手机390实际截图位于本机`output/screenshots/CareerProof-market-polish-20261027-b481307/`。企业入口隐藏、学生入口与推荐页、候选热力图、固定来源及筛选均实际操作。
 
 运行准备（仅本机已确认的独立预览）：从本工作树`backend`运行`python -m evals.seed_market_applications --runtime .tmp/private-runtime.json`。私有凭据与可恢复状态只留在Git忽略目录，不随交付公开；工具拒绝正常业务库。真实AI效果、首次独立用户与原生200%仍不由本次验证替代。
+
+## 10/27 职业规划失败提示
+
+接受源码`b137997`（后端修复`a3681b1`）。3140前端构建`9zU9zGtLYlLKVrZtrCrFV`，API8140、原专属合成库和存储保持不变。实际服务日志确认`provider=mock external_ai_enabled=False`，没有切换DeepSeek或读取/展示完整模型密钥。
+
+- 根因：Mock provider被当成异常，宽泛catch统一标成`model_unavailable_or_invalid`；无法运行模型却持续保存规则降级规划。现在明确返回`external_ai_disabled`或`mock_provider`，不新增规划、不替换历史；按钮旁显示原因并阻止相同配置下继续点击。
+- 模型路径仅记录安全阶段、异常类、原因枚举与HTTP状态；区分配置、网络、超时、额度、JSON/长度截断、字段结构及业务引用校验。原有引用、事实、归因校验和数据库故障传播保留。已发送请求的真实失败仍保留降级及用量记录。
+- `max_tokens=1500`保持不变：未获得/执行新的真实模型请求，不能把此次Mock配置故障归因于截断。离线长度停止和结构失败分支可正确识别；最初两个探针用的单左括号可被现有JSON修复机制解析，已改为真正未闭合的字符串输入。
+- `pytest app/tests/test_career_plan_failures.py app/tests/test_career_change_attribution.py app/tests/test_career_visible_checks.py app/tests/test_frozen_career_conflict.py -q`：97通过；职业规划前端两个定向文件10通过；目标Ruff、ESLint、类型及生产构建通过，未运行全量测试。日志/JUnit留于本工作树`backend/.tmp/career-failure-*`。
+- 实际接口两次提交均为`external_ai_disabled`、`planId=null`、保留9个规则候选，规划记录4→4；原快照哈希与上次规划完全不变。真实页面已验证按钮禁用、原因只显示一次及“本次规则候选（未保存为规划）”。截图在本机`output/screenshots/CareerProof-career-ai-fix-20261027-b137997/disabled-ai.png`。真实DeepSeek效果、额度和真实输出截断仍未复验。
