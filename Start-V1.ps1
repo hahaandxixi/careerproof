@@ -22,9 +22,15 @@ try {
     $configPath = Join-Path $backend '.tmp\unified-runtime.private.json'
     if (!(Test-Path -LiteralPath $configPath)) { throw 'Local unified configuration missing. This launcher does not create or reset data.' }
     $config = Get-Content -LiteralPath $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
-    if ($config.env.AI_PROVIDER -ne 'deepseek' -or $config.env.AI_EXTERNAL_ENABLED -ne 'true') { throw 'V1 requires the configured real DeepSeek provider.' }
-    if (!$config.env.DATABASE_URL.EndsWith('/careerproof_v1')) { throw 'Refusing a source database as the unified target.' }
-    $configHash = (Get-FileHash -LiteralPath $configPath -Algorithm SHA256).Hash
+    # One business configuration: backend/.env. The private runtime profile only
+    # selects executables and the owned container; it holds no second AI/DB config.
+    $envPath = Join-Path $backend '.env'
+    $envJson = & $config.python -c 'import json,sys; from dotenv import dotenv_values; print(json.dumps(dotenv_values(sys.argv[1])))' $envPath
+    if ($LASTEXITCODE -ne 0) { throw 'Could not read the unified backend/.env.' }
+    $appConfig = $envJson | ConvertFrom-Json
+    if ($appConfig.AI_PROVIDER -ne 'deepseek' -or $appConfig.AI_EXTERNAL_ENABLED -ne 'true' -or [string]::IsNullOrWhiteSpace($appConfig.DEEPSEEK_API_KEY)) { throw 'V1 requires the configured real DeepSeek provider.' }
+    if (!$appConfig.DATABASE_URL.EndsWith('/careerproof_v1')) { throw 'Refusing a source database as the unified target.' }
+    $configHash = (Get-FileHash -LiteralPath $configPath -Algorithm SHA256).Hash + ':' + (Get-FileHash -LiteralPath $envPath -Algorithm SHA256).Hash
     $backendDigest = Get-LocalBackendDigest $backend
     $buildId = (Get-Content -LiteralPath (Join-Path $frontend '.next\BUILD_ID') -Raw).Trim()
     if ($previous -and @(Get-ValidatedLocalProcesses $previous $statePath).Count) {
@@ -38,7 +44,7 @@ try {
     foreach ($port in @(3140, 8140)) {
         if (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) { throw "Port $port belongs to another run; nothing stopped." }
     }
-    foreach ($property in $config.env.PSObject.Properties) {
+    foreach ($property in $appConfig.PSObject.Properties) {
         $saved[$property.Name] = [Environment]::GetEnvironmentVariable($property.Name, 'Process')
         [Environment]::SetEnvironmentVariable($property.Name, [string]$property.Value, 'Process')
     }
