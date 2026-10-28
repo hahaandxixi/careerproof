@@ -1,6 +1,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { careerPlanRecommendations, visibleCareerChanges } from "../src/lib/career-plan-display.ts";
+import { careerPlanConfigurationBlocked, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "../src/lib/career-plan-display.ts";
+
+test("configuration, transport, output and evidence failures have distinct honest messages", () => {
+  assert.match(careerPlanFailureMessage("external_ai_disabled"), /未启用外部 AI.*没有调用模型/);
+  assert.match(careerPlanFailureMessage("mock_provider"), /模拟模型/);
+  assert.match(careerPlanFailureMessage("model_timeout"), /超时/);
+  assert.match(careerPlanFailureMessage("model_rate_limited"), /请求受限/);
+  assert.match(careerPlanFailureMessage("model_quota_exceeded"), /额度不足/);
+  assert.match(careerPlanFailureMessage("model_output_truncated"), /长度上限/);
+  assert.match(careerPlanFailureMessage("model_output_schema_invalid"), /必要字段或结构/);
+  assert.match(careerPlanFailureMessage("model_business_validation_failed"), /引用、证据或表述校验/);
+  assert.ok(!careerPlanFailureMessage("model_unavailable_or_invalid").includes("通过校验"), "legacy unknown failures cannot be relabelled as validation failures");
+  for (const status of ["external_ai_disabled", "mock_provider", "model_configuration_error", "model_auth_error", "model_request_rejected", "model_quota_exceeded"]) assert.equal(careerPlanConfigurationBlocked(status), true);
+  for (const status of ["model_timeout", "model_network_error", "validated"]) assert.equal(careerPlanConfigurationBlocked(status), false);
+});
 
 const recommendations = Array.from({ length: 10 }, (_, index) => ({
   jobId: `job-${index}`, jobTitle: "相同岗位名称", companyName: `企业${index}`,

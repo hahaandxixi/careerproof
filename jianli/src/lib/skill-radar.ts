@@ -4,6 +4,10 @@ import { VERDICT_LABELS } from "./verdict-display.js";
 
 export type RadarDimension = ApplicationView["dimensions"][number];
 export const RADAR_STATUS = VERDICT_LABELS;
+export function radarPosition(index: number, count: number, ratio: number) {
+  const angle = index * 2 * Math.PI / count - 3 * Math.PI / 4;
+  return { x: 200 + 108 * ratio * Math.cos(angle), y: 200 + 108 * ratio * Math.sin(angle) };
+}
 export function radarScore(d: RadarDimension): number | null {
   return d.verdict !== "unsupported" && RADAR_STATUS[d.verdict] &&
     typeof d.score === "number" && Number.isFinite(d.score) && d.score >= 0 && d.score <= 100 ? d.score : null;

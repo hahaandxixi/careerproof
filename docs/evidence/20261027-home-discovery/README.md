@@ -121,3 +121,45 @@ PDF、视频、源码ZIP没有为此候选更新；它们仍需在页面补验�
 - 前端3140构建`hhVsGvCYGjmQvDXKP92Sx`，API8140，同库`127.0.0.1:55447/cp_home_discovery_test_20261027`，存储仍为本工作树`backend/.tmp/storage`；外部AI禁用。桌面1440与手机390实际截图位于本机`output/screenshots/CareerProof-market-polish-20261027-b481307/`。企业入口隐藏、学生入口与推荐页、候选热力图、固定来源及筛选均实际操作。
 
 运行准备（仅本机已确认的独立预览）：从本工作树`backend`运行`python -m evals.seed_market_applications --runtime .tmp/private-runtime.json`。私有凭据与可恢复状态只留在Git忽略目录，不随交付公开；工具拒绝正常业务库。真实AI效果、首次独立用户与原生200%仍不由本次验证替代。
+
+## 10/27 职业规划失败提示
+
+接受源码`b137997`（后端修复`a3681b1`）。3140前端构建`9zU9zGtLYlLKVrZtrCrFV`，API8140、原专属合成库和存储保持不变。实际服务日志确认`provider=mock external_ai_enabled=False`，没有切换DeepSeek或读取/展示完整模型密钥。
+
+- 根因：Mock provider被当成异常，宽泛catch统一标成`model_unavailable_or_invalid`；无法运行模型却持续保存规则降级规划。现在明确返回`external_ai_disabled`或`mock_provider`，不新增规划、不替换历史；按钮旁显示原因并阻止相同配置下继续点击。
+- 模型路径仅记录安全阶段、异常类、原因枚举与HTTP状态；区分配置、网络、超时、额度、JSON/长度截断、字段结构及业务引用校验。原有引用、事实、归因校验和数据库故障传播保留。已发送请求的真实失败仍保留降级及用量记录。
+- `max_tokens=1500`保持不变：未获得/执行新的真实模型请求，不能把此次Mock配置故障归因于截断。离线长度停止和结构失败分支可正确识别；最初两个探针用的单左括号可被现有JSON修复机制解析，已改为真正未闭合的字符串输入。
+- `pytest app/tests/test_career_plan_failures.py app/tests/test_career_change_attribution.py app/tests/test_career_visible_checks.py app/tests/test_frozen_career_conflict.py -q`：97通过；职业规划前端两个定向文件10通过；目标Ruff、ESLint、类型及生产构建通过，未运行全量测试。日志/JUnit留于本工作树`backend/.tmp/career-failure-*`。
+- 实际接口两次提交均为`external_ai_disabled`、`planId=null`、保留9个规则候选，规划记录4→4；原快照哈希与上次规划完全不变。真实页面已验证按钮禁用、原因只显示一次及“本次规则候选（未保存为规划）”。截图在本机`output/screenshots/CareerProof-career-ai-fix-20261027-b137997/disabled-ai.png`。真实DeepSeek效果、额度和真实输出截断仍未复验。
+
+## 10/27 企业标签页选中状态恢复
+
+产品源码 `2775029088fb2cdce9c3a9b2feb4ba7416afa4d1`，仍在原独立工作树和分支。离窗曾执行破坏性 clear，回窗只重读列表；现在区分 suspend/resume 与明确清除。候选、岗位要求、引用展开和对照选择仅留页面内存，隐藏时不渲染报告；返回先用 GET 列表及必要的 GET detail 核对权限、报告和岗位身份，再复用已明确打开的固定快照，不自动 POST view。撤回、读取失败或报告身份变化清除相应选择；换身份/卸载丢弃缓存。未发送回复及确认仍清空，本轮没有发送回复、AI请求或更改后端。
+
+- 修改：ApplicationBoard、application-board-session；SkillRadar仅增加可选的选中/引用展开状态回调，未重构雷达或改变其他调用方。refresh-gate原有合并闸门保留，session合并在途核验，局部保留高度避免报告临时卸载导致页面塌陷；不运行滚动或锚点定位命令。
+- 红：新增用例在原session上因缺少suspend失败。绿：`node --test tests/application-board-visibility.test.mjs tests/application-board-session.test.mjs tests/refresh-gate.test.mjs tests/skill-radar.test.mjs tests/skill-radar-render.test.mjs tests/history-enterprise.test.mjs tests/failure-reply-draft.test.mjs tests/verification-reply-draft.test.mjs`，64通过/0失败/0跳过，exit 0。包含真实Workspace处理器的模拟事件验证：授权前无报告、要求与引用展开恢复、两人对照恢复、撤回剔除、草稿及确认清空；session验证并发合并、旧回执失效、只GET恢复且open次数不增加、卸载清除。模拟事件不充当真实标签切换。
+- `tsc --noEmit`、五个目标文件ESLint及`next build`均exit 0；目标lint无警告，未运行全量前后端。原始红/绿及检查输出留本机忽略目录 `backend/.tmp/board-resume-*.raw.out`。
+- 3140已从接受提交启动，构建`Zs6bc13o3xglTwcRB-LTv`；8140后端、55447专属合成库与storage保持不变。非正常业务库，无浏览器持久化。
+- 真实桌面补验未完成：Edge扩展能读取工作台，但获取本机Edge窗口时工具因无法可靠确认当前网址而停止；遵守停止，不换接口绕行。没有最终截图或真实滚动保持结论。请在3140打开候选、选要求并展开引用，勾选两位并排核对，切到其他真实标签再返回；确认自动恢复、滚动不跳、回复草稿清空且发送仍需手动确认。快速重复切换检查相同状态。撤回和身份变化拒绝已由定向回归验证，未对原演示投递执行撤回操作。
+
+## 10/27 企业热力图遮挡与说明精简
+
+产品源码 `fcb1a4c30b91941b1df59359196528681d15e152`，3140构建 `dwxrsB-xSZ1Uc596Qc_iq`。仅相关前端与测试：导航 z-40；滚动表格 relative/isolate/z-0，内部sticky表头、左列与横滚保留。格子移除实践等级重复行，详细实践证据保留在现有面板；报告优先显示候选/岗位/模式及支持、待补、要求数量，复用 evidenceWorkspace 分类，部分支持与未覆盖另列。生成时间、固定版本、原摘要和限制折叠保留。页脚精简。后端、分数、权限和历史快照未改。
+
+`node --test tests/history-enterprise.test.mjs tests/application-board-session.test.mjs tests/application-board-visibility.test.mjs tests/skill-radar-render.test.mjs tests/site-header-discovery.test.mjs`：43通过、0失败/跳过，exit 0；TypeScript、目标ESLint exit 0，生产构建成功。新增真实概览渲染回归证明5类状态分别计数、固定版本/降级提示保留、输入快照不变；未运行全量前后端。
+
+真实浏览器为IAB，1280×720与390×844，使用既有专属合成库/企业。旧构建在scrollY=900时导航(130,30)命中tbody固定th；新构建表格top=-90.65时相同点命中header。表格内部scrollTop=108.8；手机组合滚动scrollLeft=262.4、scrollTop=157.6，左列与表格left相差0.8px，表头top与表格top相差0.8px；整页无横向溢出。实际点击实现材料候选的SQL格子，证据面板为schema.sql第1–8行、R3-E1，雷达05SQL选中；报告3支持/2待补/5要求，折叠可读原生成时间与两份第1版材料。未发送企业回复或请求AI。原生桌面标签切换仍保留上一节待验，本次不以IAB滚动替代。
+
+真实前后与手机截图留本机 `output/screenshots/CareerProof-board-polish-20261027/`：before-overlap.png、after-no-overlap.png、mobile-table-scroll.png、report-overview.png；对应上述前后构建，不打包凭据。原始定向与检查日志在本工作树忽略目录 `backend/.tmp/board-polish-*.raw.out`。
+
+## 10/27 跨页名单与双人证据对照
+
+产品源码`195df67b4a7cf007a972a7b7e91d8285e81b50c4`，主体`a5c1a18`；3140构建`qRTg7bDUqPMZghJuK1oPl`。纯前端，后端、数据库结构、评分和权限未改。现有session管理最多4个比较条目，翻页/筛选通过GET列表及必要detail重新授权，完整报告仅用户明确打开所选两份时读取；返回页面复用已打开快照但必须先核对权限/固定身份。身份切换/卸载清缓存，撤回或身份变化剔除，迟到响应不能复活。未用浏览器持久化，无自动AI或回复。
+
+新增CandidatePairComparison，复用原SVG坐标、点型和连线规则；岗位/比较基准/实际要求ID、标题、技能、权重、规则尺度一致才共轴，否则逐人独立要求。A靛蓝实线/点、B橙色虚线/点，线色仅标身份，状态另标；仅自述空心点，缺材料和不可评不绘点，只有相邻有证据点才连接。双列原报告引用按需展开，解释仅采用有效且未降级AI，原文保留；手机上下排列。3/4人仍使用热力图，从名单选其中两人；单人原报告与回复按需展开。
+
+定向：`node --test tests/application-board-session.test.mjs tests/application-board-visibility.test.mjs tests/history-enterprise.test.mjs tests/skill-radar.test.mjs tests/skill-radar-render.test.mjs`，49通过/0失败/0跳过；TypeScript、目标ESLint、生产构建均exit 0。覆盖60条分页模拟的第1→3→1页、移除/清空/4人上限、仅显式打开、恢复不重复POST、撤回/固定身份变化/迟到回执，真实Workspace的3/4列及两人入口、不同基准拒绝叠图与来源不串用。首轮回归发现隐藏空状态误清名单，已用会话paused区分并修复；四人回归首轮错误地在三人筛选表中找未显示第四人，修正测试为先返回当前页再选，不改断言。原始输出留`backend/.tmp/pair-*.raw.out`，未运行全量前后端。
+
+实际浏览器IAB、1440×1000及390×844：既有Python岗位3份已授权合成投递。明确打开“实现材料/仅声明”两份，切FastAPI后A为65、app.py第12–14行R2-E1，B为10且没有对应引用；两列随同一要求切换，源码默认折叠可真实展开。筛选到仅B（服务器总数1）仍保留A/B名单及报告，清除筛选恢复3且名单不丢；加入第三人、切三列热力图、选择其中两人的入口、移除第三人实测。手机无整页横溢出，列上下排列，切Git双方显示缺材料且无对应引用。不新增演示数据，不发送回复或真实AI；显式查看发生在原专属合成库。
+
+真实跨页、4人页面、不同历史版本及撤回浏览器情形未制造，分别由上述定向回归验证；当前3份投递不能冒充实际多页验收。截图在本机`output/screenshots/CareerProof-pair-comparison-20261027-195df67/`：desktop-pair.png、desktop-evidence.png、desktop-three-heatmap.png、mobile-pair.png、mobile-evidence.png。原用户标签未重载；如其仍保留旧JS，需刷新3140查看本版。已恢复IAB视口和原匿名状态。

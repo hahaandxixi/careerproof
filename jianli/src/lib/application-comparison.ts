@@ -1,5 +1,18 @@
 import type { ApplicationView } from "./api/client";
 
+/** Snapshot basis plus actual axes must agree; never align unlike requirements by position. */
+export function comparableRadarAxes(a: ApplicationView, b: ApplicationView): boolean {
+  if (!a.comparisonBasis || a.comparisonBasis !== b.comparisonBasis || a.jobId !== b.jobId ||
+      !a.dimensions.length || a.dimensions.length !== b.dimensions.length) return false;
+  const keys = new Set(a.dimensions.map(d => d.requirementId));
+  if (keys.size !== a.dimensions.length || new Set(b.dimensions.map(d => d.requirementId)).size !== keys.size) return false;
+  return a.dimensions.every(d => {
+    const other = b.dimensions.find(value => value.requirementId === d.requirementId);
+    return other && ["title", "skill", "weight", "formulaVersion", "evidenceLevelVersion"].every(key =>
+      d[key as keyof typeof d] === other[key as keyof typeof other]);
+  });
+}
+
 export function mixedComparisonBasis(items: ApplicationView[]): boolean {
   return items.length > 1 && (
     items.some(item => !item.comparisonBasis) ||

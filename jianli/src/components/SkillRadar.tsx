@@ -4,21 +4,24 @@ import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import type { SourceMaterial } from "@/lib/source-label";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
-import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection } from "@/lib/skill-radar";
+import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection, radarPosition } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [], aiFallbackUsed = false }: {
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange }: {
   dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
+  onRequirementChange?: (id: string) => void;
+  evidenceExpanded?: boolean;
+  onEvidenceExpandedChange?: (open: boolean) => void;
 }) {
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
   const [overviewOpen, setOverviewOpen] = useState(false);
+  const selectRequirement = (id: string) => { setSelectedId(id); onRequirementChange?.(id); };
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
   const selectedIndex = dimensions.indexOf(dimension);
   const point = (index: number, ratio: number) => {
-    const angle = index * 2 * Math.PI / dimensions.length - 3 * Math.PI / 4;
-    return { x: 200 + 108 * ratio * Math.cos(angle), y: 200 + 108 * ratio * Math.sin(angle) };
+    return radarPosition(index, dimensions.length, ratio);
   };
   const score = radarScore(dimension);
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
@@ -35,7 +38,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
       <span>— {RADAR_STATUS.unsupported}</span>
     </div>
     <details className="mt-3 text-xs leading-5 text-slate-500"><summary className="w-fit cursor-pointer py-2 text-indigo-700">分数与图形如何理解</summary><p className="mt-1">分数沿用原报告，不填充面积。{RULE_SCORE_CAP_NOTE}</p></details>
-        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => setSelectedId(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
+        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
     <button type="button" className="btn-secondary mt-3 xl:hidden" aria-expanded={overviewOpen} onClick={() => setOverviewOpen(value => !value)}>{overviewOpen ? "收起整体雷达" : "展开整体雷达概览"}</button>
     <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(340px,0.7fr)_minmax(0,1.3fr)]">
       <div className={`${overviewOpen ? "block" : "hidden xl:block"} min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4`}>
@@ -56,7 +59,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
             return <g key={d.requirementId}>
               <line x1="200" y1="200" x2={end.x} y2={end.y} stroke={active ? "#818cf8" : "#cbd5e1"} strokeWidth={active ? 2 : 1} />
               {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#d97706" : "#4f46e5"} strokeWidth="2"><title>{`${title}：${radarScore(d)}，${status(d)}`}</title></circle>}
-              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${radarScore(d) ?? "不可评"}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => setSelectedId(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedId(d.requirementId); } }}>
+              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${radarScore(d) ?? "不可评"}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
                 <rect x={label.x - 58} y={label.y - 20} width="116" height="44" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
                 <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="12" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
                 <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="10" fill="#64748b">{radarScore(d) ?? "—"} · {status(d)}</text>
@@ -76,7 +79,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
         {item?.evidenceList.some(source => source.contextComplete === false) && <p className="mt-3 text-sm text-amber-900">部分来源上下文不完整，请展开核对。</p>}
         {item ? <>
           <p className="mt-4 break-words text-sm leading-6 text-slate-700">{(item.aiStatus === "validated" && !aiFallbackUsed ? item.aiExplanation : null) || item.explanation || "原报告未提供这项判断的说明。"}</p>
-          <details key={dimension.requirementId} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
+          <details key={dimension.requirementId} open={evidenceExpanded} onToggle={event=>onEvidenceExpandedChange?.(event.currentTarget.open)} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
             <summary className="cursor-pointer text-sm text-indigo-700">查看本次授权引用片段（{item.evidenceList.length}）</summary>
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
               <p className="break-all leading-5">{e.citationId || "原报告引用"} · <SourceIdentity source={e} materials={materials} /> · 第{e.lineStart}—{e.lineEnd}行</p>

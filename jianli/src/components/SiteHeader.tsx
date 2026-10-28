@@ -27,7 +27,7 @@ export default function SiteHeader() {
     catch (reason) { setError(errorMessage(reason)); }
     finally { setBusy(false); }
   }
-  return <header className={`site-header sticky top-0 z-10 border-b ${!user ? "site-header-public" : ""}`}>
+  return <header className={`site-header sticky top-0 z-40 border-b ${!user ? "site-header-public" : ""}`}>
     <div className="site-header-inner mx-auto max-w-6xl px-4">
       <Link href="/" className="site-brand shrink-0 py-2 font-semibold">职证 CareerProof</Link>
       <nav aria-label="主导航" className="site-primary-nav text-sm">

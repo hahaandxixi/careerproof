@@ -50,7 +50,28 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup: render } = require("react-dom/server");
 const { ReportHistoryCard } = await import("../src/components/ReportList.tsx");
-const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail } = await import("../src/components/ApplicationBoard.tsx");
+const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail, FixedReportOverview } = await import("../src/components/ApplicationBoard.tsx");
+
+test("fixed report overview separates evidence support, gaps and uncovered requirements without changing the snapshot", () => {
+  const report = {
+    id: "report-fixed", jobTitle: "后端岗位", createdAt: "2026-10-27T00:00:00Z",
+    summary: "保留的完整判断", analysisMode: "rules", aiFallbackUsed: true,
+    materials: [{ kind: "project", id: "version-a", title: "报名服务", versionNumber: 2 }],
+    items: ["supported", "partial", "claimed_only", "gap", "unsupported"].map((verdict, index) => ({ requirementId: `r${index}`, verdict, weight: 1 })),
+  };
+  const original = JSON.stringify(report);
+  const html = render(React.createElement(FixedReportOverview, { application: { candidateName: "合成甲", report } }));
+  assert.match(html, /合成甲 · 投递时固定报告/);
+  assert.match(html, /规则报告 · 模型已降级/);
+  assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
+  assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
+  assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);
+  assert.match(html, /部分支持 1 项 · 未覆盖或需复核 1 项/);
+  assert.match(html, /<details[^>]*><summary[^>]*>报告时间、材料版本与判断范围<\/summary>/);
+  assert.match(html, /报名服务 · 第2版/);
+  assert.match(html, /保留的完整判断/);
+  assert.equal(JSON.stringify(report), original);
+});
 
 const summary = {
   id: "report-a", jobId: "job-a", jobTitle: "后端开发", candidateName: "甲",
@@ -188,3 +209,29 @@ for (const [aiStatus, fallback, accepted] of [
     assert.equal(JSON.stringify(report), before);
   });
 }
+
+const { default: CandidatePairComparison } = await import('../src/components/CandidatePairComparison.tsx');
+const { comparableRadarAxes } = await import('../src/lib/application-comparison.ts');
+const pairCandidate = (id, secondVerdict='supported') => ({
+ id, jobId:'job-a', candidateName:`合成${id}`, reportId:`report-${id}`, comparisonBasis:'same-frozen-basis',
+ dimensions:[{requirementId:'r1',title:'接口实现',skill:'FastAPI',weight:4,verdict:'supported',score:65,formulaVersion:'v3'}, {requirementId:'r2',title:'业务测试',skill:'pytest',weight:3,verdict:secondVerdict,score:secondVerdict==='gap'?0:40,formulaVersion:'v3'}, {requirementId:'r3',title:'SQL持久化',skill:'SQL',weight:2,verdict:'unsupported',score:null,formulaVersion:'v3'}],
+ report:{id:`report-${id}`,analysisMode:'rules',aiFallbackUsed:true,materials:[{kind:'project',id:`version-${id}`,title:`项目${id}`,versionNumber:2}],
+ items:['r1','r2','r3'].map((r,i)=>({requirementId:r,requirementTitle:r,verdict:i===1?secondVerdict:'supported',finalScore:i===1&&secondVerdict==='gap'?0:40,aiStatus:'validated',aiExplanation:'UNADOPTED_AI',aiInformationGap:'UNADOPTED_GAP',explanation:`${id}-${r}-原判断`,evidenceLevelGap:`${id}-${r}-核对事项`,evidenceList:i===1&&secondVerdict==='gap'?[]:[{citationId:`${id}-${r}-E1`,filePath:`version-${id}/service.py`,projectVersionId:`version-${id}`,lineStart:12,lineEnd:28,snippet:`${id}-${r}-source`,contextComplete:true}]}))}
+});
+test('two fixed reports use identity colors and linked requirement columns, with missing material not plotted as zero',()=>{
+ const candidates=[pairCandidate('A'),pairCandidate('B','gap')];
+ const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){},initialIds:['r2']}));
+ assert.match(html,/双人同轴材料支持度雷达/);assert.match(html,/#4f46e5/);assert.match(html,/#c2410c/);assert.doesNotMatch(html,/<polygon/);
+ assert.match(html,/A-r2-source/);assert.doesNotMatch(html,/A-r1-source/);assert.match(html,/B-r2-原判断/);assert.match(html,/当前授权报告没有对应引用/);
+ assert.match(html,/项目A/);assert.match(html,/第12–28行/);assert.doesNotMatch(html,/UNADOPTED_AI|UNADOPTED_GAP/);
+ assert.doesNotMatch(html,/aria-label="合成B · pytest/);assert.match(html,/aria-label="合成A · pytest/);
+ assert.doesNotMatch(html,/<details[^>]*\bopen[= >]/);
+});
+test('mismatching basis or axes never overlay; selection alone never claims a report is opened',()=>{
+ const a=pairCandidate('A'),b=pairCandidate('B');
+ for(const changed of [{...b,comparisonBasis:'other'}, {...b,dimensions:b.dimensions.map((d,i)=>i===1?{...d,weight:5}:d)}, {...b,dimensions:b.dimensions.map((d,i)=>i===1?{...d,requirementId:'different'}:d)}]){
+ assert.equal(comparableRadarAxes(a,changed),false);
+ const html=render(React.createElement(CandidatePairComparison,{candidates:[a,changed],busy:false,onOpen(){}}));assert.match(html,/比较依据不同/);assert.doesNotMatch(html,/双人同轴材料支持度雷达/);assert.match(html,/合成A的岗位要求/);assert.match(html,/合成B的岗位要求/);
+ }
+ const html=render(React.createElement(CandidatePairComparison,{candidates:[a,{...b,report:undefined}],busy:false,onOpen(){}}));assert.match(html,/打开两份授权报告/);assert.doesNotMatch(html,/A-r1-source|双人同轴材料支持度雷达/);
+});

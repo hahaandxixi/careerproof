@@ -2,13 +2,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { careerPlanConfigurationBlocked, careerPlanFailureMessage } from "../src/lib/career-plan-display.ts";
 const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
 const jsx = require("react/jsx-runtime");
 
 // Execute the real component with deterministic hooks and synthetic APIs.
 // This tests state transitions, not browser rendering or a real model request.
-function fixture({ failMaterials = false } = {}) {
+function fixture({ failMaterials = false, generationResult = null } = {}) {
   const cells = [], effects = [], dependencies = [];
   let cursor = 0, effectCursor = 0, createCalls = 0, listCalls = 0, historyCalls = 0;
   const same = (a,b) => a && a.length === b.length && a.every((v,i) => Object.is(v,b[i]));
@@ -19,7 +20,7 @@ function fixture({ failMaterials = false } = {}) {
   const api = {
     async listResumes(){listCalls++;if(failMaterials)throw Error("synthetic list unavailable");return [{versions:[{id:"resume-v2",status:"completed"}]}];},
     async listProjects(){return [{versions:[{id:"project-v3",status:"completed"}]}];},
-    async createCareerPlan(){createCalls++;throw Error("synthetic generation unavailable");},
+    async createCareerPlan(){createCalls++;if(generationResult)return generationResult;throw Error("synthetic generation unavailable");},
     async latestCareerPlan(){historyCalls++;throw Error("synthetic history unavailable");},
   };
   const picker = name => Object.assign(()=>null,{testName:name});
@@ -29,7 +30,7 @@ function fixture({ failMaterials = false } = {}) {
     "@/lib/api/client":{api,errorMessage:e=>e.message},
     "@/lib/api/domain":{CATEGORY_LABELS:{},EMPLOYMENT_LABELS:{}},
     "@/lib/recommendation-selection":{jobAnalysisHref:()=>"/jobs/job1",resolveInitialMaterialSelection:()=>({resumeVersionId:"",projectVersionIds:[]})},
-    "@/lib/career-plan-display":{careerPlanRecommendations:()=>[],visibleCareerChanges:()=>[]},
+    "@/lib/career-plan-display":{careerPlanRecommendations:()=>[],visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},
@@ -70,4 +71,18 @@ test("history retry is a read and does not reload material selection or create a
  await f.get(tree,f.ErrorNotice).props.retry();await f.settle();tree=f.render();
  assert.equal(f.get(tree,f.ResumePicker).props.selectedId,"resume-v2");
  assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:2});
+});
+
+test("a disabled AI result blocks repeated generation even after material selection changes",async()=>{
+ const f=fixture({generationResult:{aiPlan:null,aiStatus:"external_ai_disabled",aiFallbackUsed:true,planId:null,materials:[],recommendations:[],changes:[],summary:"合成规则候选"}});
+ let tree=f.render();await f.settle();tree=f.render();
+ f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
+ f.get(tree,"input").props.onChange({target:{checked:true}});tree=f.render();
+ await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
+ const button=f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="当前 AI 配置不可用");
+ assert.ok(button?.props.disabled);
+ assert.ok(f.nodes(tree).some(n=>n.type==="p"&&n.props.children===careerPlanFailureMessage("external_ai_disabled")));
+ f.get(tree,f.ResumePicker).props.onChange("resume-v3");tree=f.render();
+ await f.get(tree,"form").props.onSubmit({preventDefault(){}});
+ assert.equal(f.calls().createCalls,1,"changing material does not repair environment configuration");
 });

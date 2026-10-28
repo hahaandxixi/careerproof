@@ -14,3 +14,6 @@ backend/evals/open-source-*.json
 
 # Local test scratch directories, including .tmp-* siblings.
 .tmp*/
+
+# Consolidated local business storage (original files and parsed sources).
+/backend/storage-v1/

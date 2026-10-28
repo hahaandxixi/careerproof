@@ -38,6 +38,17 @@ OLD_VERSION = "11111111-1111-4111-8111-111111111111"
 NEW_VERSION = "22222222-2222-4222-8222-222222222222"
 
 
+def offline_unavailable_provider():
+    # A real bounded model-stage failure, not disabled/missing configuration.
+    async def handler(_request):
+        return httpx.Response(503, json={"error": "synthetic provider outage"})
+
+    return DeepSeekProvider(
+        api_key="synthetic-key", base_url="https://api.deepseek.com", model="deepseek-flash",
+        timeout_seconds=1, max_attempts=1, transport=httpx.MockTransport(handler),
+    )
+
+
 def result(*, requirement="SQL 查询", weight=2, version=OLD_VERSION, priority="explore"):
     return JobRecommendationResult.model_validate({
         "summary": "合成规则候选",
@@ -169,10 +180,7 @@ async def test_saved_plan_explains_closed_job_without_rewriting_first_snapshot(
 ):
     from app.services import career_planning
 
-    def unavailable_provider():
-        raise ValueError("synthetic provider outage")
-
-    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -225,10 +233,7 @@ async def test_saved_plan_separates_job_details_edit_from_student_material_chang
 ):
     from app.services import career_planning
 
-    def unavailable_provider():
-        raise ValueError("synthetic provider outage")
-
-    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -280,10 +285,7 @@ async def test_saved_plan_explains_simultaneous_job_edit_and_project_version_cha
 ):
     from app.services import career_planning
 
-    def unavailable_provider():
-        raise ValueError("synthetic provider outage")
-
-    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -377,10 +379,7 @@ async def test_career_api_does_not_call_reordered_requirements_a_job_edit(
 ):
     from app.services import career_planning
 
-    def unavailable_provider():
-        raise ValueError("synthetic provider outage")
-
-    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, _factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -749,6 +748,7 @@ async def test_ai_budget_database_fault_surfaces_instead_of_faking_rule_fallback
         raise AssertionError("unreachable")
 
     monkeypatch.setattr(career_planning, "_daily_ai_budget", broken_budget)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, _factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -791,10 +791,7 @@ async def test_model_stage_failure_still_degrades_to_rule_candidates(
     """B-10 regression: bounded model failures keep the designed rule fallback."""
     from app.services import career_planning
 
-    def unavailable_provider():
-        raise ValueError("synthetic provider outage")
-
-    monkeypatch.setattr(career_planning, "get_ai_provider", unavailable_provider)
+    monkeypatch.setattr(career_planning, "get_ai_provider", offline_unavailable_provider)
     app, _factory = matching_db
     async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as owner,
@@ -811,7 +808,7 @@ async def test_model_stage_failure_still_degrades_to_rule_candidates(
         })
         assert response.status_code == 200, response.text
         saved = response.json()["data"]
-        assert saved["aiStatus"] == "model_unavailable_or_invalid"
+        assert saved["aiStatus"] == "model_http_error"
         assert saved["aiFallbackUsed"] is True
         assert saved["aiPlan"] is None
         assert [item["jobId"] for item in saved["recommendations"]] == [job["id"]]
