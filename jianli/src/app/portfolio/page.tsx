@@ -52,7 +52,7 @@ function statusText(status: string): string {
   return labels[status] ?? "历史处理状态待确认";
 }
 
-function UploadProgress({ item, latest = false, onUploadVersion, onDeleteProject, deleteDisabled = false }: { item: UploadRecord; latest?: boolean; onUploadVersion?: () => void; onDeleteProject?: () => void; deleteDisabled?: boolean }) {
+function UploadProgress({ item, onUploadVersion, onDeleteProject, deleteDisabled = false }: { item: UploadRecord; latest?: boolean; onUploadVersion?: () => void; onDeleteProject?: () => void; deleteDisabled?: boolean }) {
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   return (
@@ -65,7 +65,7 @@ function UploadProgress({ item, latest = false, onUploadVersion, onDeleteProject
             >
               {item.kind === "resume" ? "简历" : "项目"}
             </span>
-            <h3 className="min-w-0 break-words font-semibold text-slate-800">{item.title}</h3>{latest && <span className="text-xs text-slate-600">最新上传</span>}
+            <h3 className="min-w-0 break-words text-base font-semibold text-slate-800">{item.title}</h3>
           </div>
           <p className="mt-1 break-words text-xs leading-6 text-slate-600">
             {item.filename} · 第 {item.versionNumber} 版 · {new Date(item.createdAt).toLocaleString("zh-CN")}
@@ -341,14 +341,13 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="material-workspace space-y-5">
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} /></Suspense>
       <div>
-        <p className="text-sm font-medium text-indigo-600">学生材料中心</p>
         <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title mt-1">我的材料工作台</h1><button type="button" className="btn" onClick={() => { setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-          核对已保存材料，按需预览、上传新版或选择岗位。平台只做静态分析，不执行上传代码。
+          平台只做静态分析，不执行上传代码。
         </p>
       </div>
 
@@ -361,7 +360,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0 flex-1 basis-48">
             <h2 className="section-title">已保存材料</h2>
-            <p className="mt-1 text-sm text-slate-500">默认显示每份材料的最新上传；历史版本保留，生成报告时仍需明确选择。</p>
           </div>
           <button type="button" onClick={() => void loadHistory()} className="min-h-11 shrink-0 whitespace-nowrap text-sm text-indigo-600">刷新列表</button>
         </div>
@@ -393,7 +391,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <div className="grid gap-6 lg:grid-cols-2">
         <form onSubmit={submitResume} className="min-w-0 rounded-xl bg-slate-50 p-4">
           <div className="mb-5">
-            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">简历材料</span>
             <h2 className="mt-3 text-xl font-bold text-slate-900">上传简历</h2>
             <p className="mt-1 text-sm text-slate-500">扫描件和图片会提取文字，请对照原图核对 OCR 结果。</p>
           </div>
@@ -422,13 +419,12 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
         <form onSubmit={submitProject} className="min-w-0 rounded-xl bg-slate-50 p-4">
           <div className="mb-5">
-            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">项目材料</span>
-            <h2 id="project-upload-title" tabIndex={-1} className="mt-3 scroll-mt-32 text-xl font-bold text-slate-900">{attempt?.project ? "继续上传项目" : "上传项目"}</h2>
+            <h2 id="project-upload-title" tabIndex={-1} className="mt-3 scroll-mt-32 text-xl font-bold text-slate-900">{attempt?.project ? "上传新版本" : "上传项目"}</h2>
             <p className="mt-1 text-sm leading-6 text-slate-500">代码项目打包前删除 node_modules；图片与扫描件的 OCR 结果需人工核对。</p>
           </div>
           {attempt && (
             <div className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-              <p>{attempt.project ? `正在上传到“${attempt.project.name}”，重试不会重复创建项目。` : "已保留本次提交，可重新选择原文件继续提交。"}</p>
+              <p>{attempt.project ? `目标项目：${attempt.project.name}。重试将复用原项目。` : "已保留本次提交，可重新选择原文件继续提交。"}</p>
               <p className="mt-1 text-xs">刷新后需重新选择文件；上传状态不确定时请重选原文件。</p>
               <button type="button" disabled={projectBusy} onClick={() => selectProject(null)} className="mt-2 underline">
                 改为创建另一个项目

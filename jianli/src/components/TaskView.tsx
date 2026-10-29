@@ -13,6 +13,7 @@ import {
   modelStepQualifier,
   realDurationSeconds,
   stageText,
+  retrievalStageDetail,
   taskModeLabel,
   type ConnectionState,
 } from "@/lib/process-trace";
@@ -155,7 +156,7 @@ export default function TaskView({ id }: { id: string }) {
   const duration = task ? realDurationSeconds(task.startedAt, task.completedAt) : null;
   const completionRecords = task ? completionCount(task.steps) : 0;
   const connectionText = connectionLabel(connection, streamSupported, streamOpened);
-  return <div className="mx-auto max-w-3xl space-y-6">
+  return <div className="analysis-task-view mx-auto max-w-3xl space-y-6">
     <div className="flex gap-4 text-sm text-indigo-600"><Link href="/portfolio">我的材料</Link><Link href="/reports">匹配报告</Link></div>
     <h1 className="text-3xl font-bold">分析任务</h1>
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
@@ -200,7 +201,8 @@ export default function TaskView({ id }: { id: string }) {
                 })()}
                 {isCompletedRecord(step.eventType) && <span className="sr-only">（已完成记录）</span>}
               </p>
-              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-500">{step.detail}</p>
+              <p className="mt-1 whitespace-pre-wrap text-base leading-7 text-slate-700">{retrievalStageDetail(step)}</p>
+              {retrievalStageDetail(step) !== step.detail && <details className="mt-1 text-sm text-slate-600"><summary className="cursor-pointer py-1">原始阶段记录</summary><p className="mt-1">{step.detail}</p></details>}
               {MODEL_STEPS.includes(step.name) && typeof step.payload.latencyMs === "number" && step.payload.latencyMs > 0 && <p className="mt-1 text-xs text-slate-400">耗时 {Math.round((step.payload.latencyMs as number) / 100) / 10} 秒 · 输入 {String(step.payload.inputTokens ?? 0)} tokens · 输出 {String(step.payload.outputTokens ?? 0)} tokens</p>}
             </li>)}</ol>}
       </details>

@@ -19,5 +19,6 @@ export default function StudentFlowGuide() {
       nav.scrollLeft = Math.max(0, current.offsetLeft - nav.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2);
     }
   }, [pathname, currentKey]);
-  return currentKey ? <div ref={container}><FlowSteps key={pathname} steps={flowStepsForLocation(pathname)} currentKey={currentKey} /></div> : null;
+  // Saved reports are reading surfaces; their own back, upload and sharing links remain available.
+  return currentKey && !/^\/reports\/[^/]+$/.test(pathname) ? <div ref={container}><FlowSteps key={pathname} steps={flowStepsForLocation(pathname)} currentKey={currentKey} /></div> : null;
 }

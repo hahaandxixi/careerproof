@@ -83,3 +83,16 @@ test("confirmation is text until a concrete report supplies the existing confirm
   assert.ok(html.includes('href="/reports/r1#application-submit"'));
   assert.ok(!html.includes("已完成"));
 });
+
+test("saved report reading omits the five-step guide while job preparation keeps it", () => {
+ let pathname="/reports/saved", role="student";
+ const source=readFileSync(path.join(SRC,"components/StudentFlowGuide.tsx"),"utf8");
+ const mod={exports:{}};
+ const modules={react:{useEffect(){},useRef:()=>({current:null})},"react/jsx-runtime":require("react/jsx-runtime"),
+  "next/navigation":{usePathname:()=>pathname},"./AuthProvider":{useAuth:()=>({user:{role}})},
+  "./FlowSteps":{__esModule:true,default:FlowSteps},"@/lib/flow-steps":{flowStepsForLocation,studentFlowLocation}};
+ new Function("require","module","exports",transform(source,{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id=>modules[id],mod,mod.exports);
+ assert.equal(mod.exports.default(),null);
+ pathname="/jobs/python";assert.ok(renderToStaticMarkup(React.createElement(mod.exports.default)).includes("学生操作指南"));
+ role="enterprise";assert.equal(mod.exports.default(),null);
+});

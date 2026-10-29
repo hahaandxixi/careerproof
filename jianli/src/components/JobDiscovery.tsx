@@ -48,9 +48,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   const Heading = compact ? "h2" : "h1";
   return <section aria-labelledby="technical-jobs-title" className={`min-w-0 space-y-4 ${compact ? "rounded-2xl bg-indigo-50/40 p-3 sm:p-5" : ""}`} id="technical-jobs">
     <div className="flex flex-wrap items-start justify-between gap-3"><div>
-      {!compact && <p className="text-xs font-semibold tracking-wide text-indigo-600">职业与岗位探索</p>}
       <Heading id="technical-jobs-title" className={compact ? "mt-1 text-2xl font-bold tracking-tight" : "mt-1 text-3xl font-bold tracking-tight sm:text-4xl"}>{compact ? "探索技术岗位" : "发现适合你的技术岗位"}</Heading>
-      <p className="mt-2 text-sm leading-6 text-slate-500">先找感兴趣的岗位，再用材料核对每项要求。</p>
     </div>{compact ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-indigo-700 underline" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
     <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="flex min-w-0 items-center gap-2 rounded-xl border border-indigo-300 bg-white p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100" onSubmit={event => { event.preventDefault(); choose({}); }}>
       <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-indigo-500"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>

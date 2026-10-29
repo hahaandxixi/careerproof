@@ -14,7 +14,7 @@ export default function ReportEvidenceWorkspace({ report, children }: { report: 
   return <ReportRequirementReader items={report.items}>{children}</ReportRequirementReader>;
 }
 
-export function RequirementActionPanel({ report, item, role }: { report: MatchReport; item: ReportItem; role?: string }) {
+export function RequirementActionPanel({ report, item, role, explanationVisible = false }: { report: MatchReport; item: ReportItem; role?: string; explanationVisible?: boolean }) {
   const groups = evidenceWorkspace([item]);
   const supported = groups.supported.length > 0;
   const actionable = groups.gaps.length + groups.partial.length > 0;
@@ -28,23 +28,24 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
   const allowed = new Set(item.evidenceList.map(source => source.citationId));
   const citations = [...new Set(action?.citationIds ?? [])].filter(id => allowed.has(id));
   return <div className="mt-4 min-w-0 space-y-4" aria-label={`${item.skill}的判断与下一步`}>
-    <div><h4 className="text-sm font-semibold text-slate-900">{supported ? "当前材料支持" : actionable ? "当前缺口" : "当前需核对"}</h4>
-      <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>
+    {!explanationVisible && <div><h4 className="text-base font-semibold text-slate-900">{supported ? "当前材料支持" : actionable ? "当前缺口" : "当前需核对"}</h4>
+      {/[0-9a-f]{8}-[0-9a-f-]{27,}/i.test(conclusion || "") ? <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-indigo-700">查看保存的缺口与材料定位原文</summary><p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700">{conclusion}</p></details> : <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>}
       {supported && <p className="mt-2 text-xs leading-6 text-slate-600">材料支持不等于运行成功或本人贡献。</p>}
-    </div>
+      {role !== "student" && explanation && explanation !== conclusion && <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-indigo-700">规则判断原文</summary><p className="mt-2 break-words leading-7">{explanation}</p></details>}
+    </div>}
     {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
-    {item.evidenceList.some(source => source.contextComplete === false) && <p className="border-l-2 border-amber-400 pl-3 text-sm leading-6 text-amber-900">部分引用上下文不完整，请展开来源核对；不能据此确认完整实现。</p>}
     {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning} 已隐藏该任务草稿。</p>}
     {!supported && <div className="space-y-3 border-t border-slate-200 pt-4">
-      <h4 className="text-sm font-semibold text-slate-900">{action ? "建议怎么补" : "下一步先核对"}</h4>
+      <h4 className="text-sm font-semibold text-slate-900">{action || plan ? "建议怎么补" : "下一步先核对"}</h4>
       {!plan && text?.advice && <div className="text-sm leading-7"><p className="whitespace-pre-wrap break-words text-slate-800">{text.advice}</p><p className="text-xs text-slate-500">{action && ACTION_SOURCE_LABELS[action.source]} · 已保存建议</p></div>}
       {plan ? <div className="space-y-3 text-sm leading-7">
-        <p className="text-xs text-slate-500">来自本报告已校验的 AI 补证建议，仍需本人核对，不表示这些步骤已经执行。</p>
+        <p className="text-sm text-slate-600">以下是建议，尚未执行。</p>
         <ol aria-label="建议行动" className="list-decimal space-y-2 pl-5">{plan.steps.slice(0, 4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol>
         {plan.steps.length > 4 && <details><summary className="cursor-pointer py-2 text-indigo-700">其余执行步骤</summary><ol start={5} className="list-decimal pl-5">{plan.steps.slice(4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol></details>}
-        <h5 className="font-medium">建议提交的材料</h5>
+        <details><summary className="cursor-pointer py-1 text-indigo-700">建议提交的材料与核验条件</summary>
+        <h5 className="mt-2 font-medium">建议提交的材料</h5>
         <p className="break-words">{plan.deliverable}</p>
-        <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul>
+        <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul></details>
       </div> : <div className="space-y-2 text-sm leading-7">
         <p className="reading-copy">先核对已有实现与测试；确有改进后上传新版材料，并主动重新分析。</p>
         <details><summary className="cursor-pointer py-2 text-indigo-700">查看通用核对步骤与材料清单</summary><div className="space-y-2 pt-2">
@@ -61,7 +62,7 @@ export function RequirementActionPanel({ report, item, role }: { report: MatchRe
         {text?.gap && <p className="whitespace-pre-wrap break-words text-slate-600">{text.gap}</p>}
         {!text?.advice && !text?.gap && <p className="text-slate-600">原始建议与上方缺口说明相同。</p>}
         <p className="text-xs text-slate-500">来自本报告已保存内容；通用提示不替换原始建议。</p>
-      </details> : <p className="text-xs leading-6 text-slate-600">暂无已保存的具体行动计划。先核对岗位要求和已有材料；不能由此认定实现不存在。</p>}
+      </details> : !plan && <p className="text-xs leading-6 text-slate-600">暂无已保存的具体行动计划。先核对岗位要求和已有材料；不能由此认定实现不存在。</p>}
       {citations.length > 0 && <div className="flex flex-wrap gap-3">{citations.map(id => <EvidenceLink key={id} citationId={id} className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">建议依据 {id}</EvidenceLink>)}</div>}
     </div>}
     {role === "student" && <div>

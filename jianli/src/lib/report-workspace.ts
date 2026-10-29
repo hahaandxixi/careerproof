@@ -48,3 +48,12 @@ export function savedRequirementAction(report: MatchReport, item: ReportItem) {
   if (!["rules", "review", "ai_suggestion"].includes(action.source)) return null;
   return action;
 }
+
+/** Visibility only: saved ratings and explanations are never recomputed. */
+export function adoptedReportExplanation(report: MatchReport, item: ReportItem): string | null {
+  if (!["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode)
+    || report.aiProvider?.startsWith("mock") || report.aiFallbackUsed
+    || item.aiStatus !== "validated"
+    || ["rejected", "corrected"].includes(item.confirmationStatus ?? "")) return null;
+  return item.aiExplanation?.trim() || null;
+}

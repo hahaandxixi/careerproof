@@ -59,7 +59,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
  const items = Array.from({length: 6}, (_, i) => item(`gap${i}`));
  const value = report(items,items.slice(0,3).map(entry => advice(entry)));
  const before = JSON.stringify(value); const html = render(value);
- assert.equal(count(html,"岗位匹配与补证工作台"),1);
+ assert.equal(count(html,'aria-label="岗位要求与证据"'),1);
  for (const entry of items) assert.ok(html.includes(`href="#requirement-${entry.requirementId}"`));
  assert.equal(count(html, "完成后上传新版材料"), 6);
  assert.equal(count(html, "复制补证建议"), 6);
@@ -111,7 +111,7 @@ test("partial support and gaps expose their existing plan and explicit task trig
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
   assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议怎么补")); assert.ok(html.includes("完成后上传新版材料"));
-  assert.ok(html.includes("不必创建补证记录"));
+  assert.ok(html.includes("明确选版并主动分析"));
  }
 });
 
@@ -123,11 +123,11 @@ test("supported requirements lead with conclusions and evidence; optional growth
  assert.ok(!html.includes('class="btn min-h-11'));
 });
 
-test("support survives incomplete context and its warning remains outside collapsed details", () => {
+test("support survives incomplete context without duplicating the source pane's warning in actions", () => {
  const value=item("context","supported",{evidenceList:[{citationId:"C",contextComplete:false}]});
  const html=render(report([value]));
- assert.ok(html.includes("有证据支持")); assert.ok(html.includes("部分引用上下文不完整"));
- assert.ok(html.indexOf("部分引用上下文不完整") < html.indexOf("<details"));
+ assert.ok(html.includes("有证据支持")); assert.ok(!html.includes("部分引用上下文不完整"));
+ assert.equal(value.evidenceList[0].contextComplete,false);
 });
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
@@ -167,6 +167,15 @@ test("a saved structured plan takes priority over generic instructions", () => {
  assert.ok(!html.includes("通用核对步骤"));
 });
 
+test("a validated structured plan without an actionPlan entry never claims that no concrete plan exists", () => {
+ const entry=item("plan-only","gap",{aiStatus:"validated",aiSuggestion:"核对接口",aiInformationGap:"缺少异常记录",aiCitationIds:[],aiTaskPlan:{deliverable:"验证记录",steps:["运行异常请求"],acceptanceChecks:["注明固定源码版本"]}});
+ const value={...report([entry]),evidenceContextVersion:"source-context-v2"};
+ const before=JSON.stringify(value); const html=render(value);
+ assert.ok(html.includes("运行异常请求") && html.includes("验证记录") && html.includes("注明固定源码版本"));
+ assert.ok(!html.includes("暂无已保存的具体行动计划"));
+ assert.equal(JSON.stringify(value),before);
+});
+
 test("action panel has no duplicate evidence shortcut; the article owns the single source disclosure", () => {
  for(const verdict of ["gap","partial","supported","unsupported"]) {
   const html=render(report([item("source",verdict)]));
@@ -182,7 +191,7 @@ test("guidance can be copied and used for a new upload without creating a task",
  const entry=item("cache","gap"); const html=render(report([entry],[advice(entry)]));
  assert.ok(html.includes("复制补证建议"));
  assert.ok(html.includes("完成后上传新版材料"));
- assert.ok(html.includes("不必创建补证记录"));
+ assert.ok(html.includes("明确选版并主动分析"));
  assert.ok(!html.includes("已有记录与自定义计划（可选）"));
  assert.ok(!html.includes("查看已有补证记录"));
  assert.ok(!html.includes('>开始补证</button>'));
