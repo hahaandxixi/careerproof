@@ -149,9 +149,9 @@ export default function TaskView({ id }: { id: string }) {
   const aiStep = task?.steps.find(step => MODEL_STEPS.includes(step.name));
   const usedAI = taskUsedExternalAI(aiStep?.payload.provider, aiStep?.payload.fallbackUsed);
   const fellBack = aiStep?.payload.fallbackUsed === true;
-  // Three evidenced modes, never merged: degraded run, AI-assisted run, rules-only run.
-  const modeLabel = taskModeLabel({ usedAI, fellBack });
   const active = task ? !TERMINAL.has(task.status) : false;
+  // A missing model record during retrieval is not evidence of a rules-only run.
+  const modeLabel = taskModeLabel({ usedAI, fellBack, active, modelRecorded: !!aiStep });
   const duration = task ? realDurationSeconds(task.startedAt, task.completedAt) : null;
   const completionRecords = task ? completionCount(task.steps) : 0;
   const connectionText = connectionLabel(connection, streamSupported, streamOpened);
