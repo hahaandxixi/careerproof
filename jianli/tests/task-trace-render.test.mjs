@@ -20,10 +20,10 @@ function load(path, modules) {
   return loaded.exports;
 }
 
-function render(payload, eventType = "tool.completed") {
+function render(payload, eventType = "tool.completed", overrides = {}) {
   const task = { status: "completed", progress: 100, createdAt: "2026-10-18T00:00:00Z",
     startedAt: null, completedAt: null, steps: [{step: 1, name: "模型证据分析", eventType,
-      detail: "synthetic", payload}], reportId: null, currentStep: "处理结束" };
+      detail: "synthetic", payload}], reportId: null, currentStep: "处理结束", ...overrides };
   let state = 0;
   const trace = load("../src/lib/process-trace.ts", {});
   const link = { __esModule: true, default: ({children, href}) => React.createElement("a", {href}, children) };
@@ -60,4 +60,17 @@ test("skipped and degraded model stages show the reason without a success tick",
 test("completed AI records retain a tick; unavailable records never gain one", () => {
   assert.ok(render({provider: "deepseek", fallbackUsed: false}).includes("✓"));
   assert.ok(!render({}, "verification.unavailable").includes("✓"));
+});
+
+test("actual task page at 25 percent does not label an unobserved AI result as rules", () => {
+  const html = render({}, "tool.completed", {
+    status: "running", progress: 25, steps: [], currentStep: "正在读取材料并检索候选证据",
+  });
+  assert.match(html, /25%/);
+  assert.match(html, /正在读取材料并检索候选证据/);
+  assert.match(html, /处理中，外部 AI 调用结果待确认/);
+  assert.doesNotMatch(html, /规则模式|AI 解释已参与/);
+  assert.match(render({provider: "deepseek", fallbackUsed: false}), /AI 解释已参与/);
+  assert.match(render({provider: "rules", skippedReason: "consent_not_granted"}), /规则模式（未使用外部 AI）/);
+  assert.match(render({provider: "deepseek", fallbackUsed: true}), /模型已降级，本次为规则结果/);
 });

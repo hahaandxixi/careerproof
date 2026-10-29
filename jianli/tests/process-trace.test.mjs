@@ -64,6 +64,12 @@ test("degraded, AI-assisted and rules-only modes stay distinct", () => {
   assert.equal(taskModeLabel({ usedAI: false, fellBack: false }), "规则模式（未使用外部 AI）");
 });
 
+test("a missing model record is pending or unknown, never a fabricated rules result", () => {
+  assert.equal(taskModeLabel({ usedAI: false, fellBack: false, active: true, modelRecorded: false }), "处理中，外部 AI 调用结果待确认");
+  assert.equal(taskModeLabel({ usedAI: false, fellBack: false, active: false, modelRecorded: false }), "未记录模型处理结果");
+  assert.equal(taskModeLabel({ usedAI: false, fellBack: false, active: true, modelRecorded: true }), "规则模式（未使用外部 AI）");
+});
+
 test("production step events and their tick decision", () => {
   // Derived from the four generation sites, not from the string shape alone.
   const production = [
