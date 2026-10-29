@@ -1,0 +1,452 @@
+{
+  "scope": "desktop-only A-G",
+  "date": "2026-10-29",
+  "screenshots": [
+    {
+      "file": "01-home-jobs/A01-home-hero-and-scenario.png",
+      "covers": [
+        "A01"
+      ],
+      "action": "访客打开首页第一屏",
+      "focus": "产品名称、Hero与三场景合成预览",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "2efb5f6384d08b85dc04226b3cdf746de4526081e11adbdfe55e857de745783d"
+    },
+    {
+      "file": "01-home-jobs/A02-home-exploration-and-routes.png",
+      "covers": [
+        "A02",
+        "A03"
+      ],
+      "action": "滚动到首页岗位探索区",
+      "focus": "七大方向、搜索、岗位卡片和紧凑角色入口",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "903184b809a8aa9d1dc1df7311644809e26db75543bd445e714038df42a621b0"
+    },
+    {
+      "file": "01-home-jobs/A04-job-search-and-seven-directions.png",
+      "covers": [
+        "A03",
+        "A04"
+      ],
+      "action": "打开岗位发现",
+      "focus": "七方向、二级标签、服务端筛选和岗位结果",
+      "issue": "P1：完整岗位列表仍包含历史Mock测试岗；录制时选择明确的Python后端案例，不把旧测试岗称为真实招聘。",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "3fb3f3263d11b5cd59e7bfad4dbb38b0cc7bd356d9106714b2c1102a6606fb47"
+    },
+    {
+      "file": "01-home-jobs/A05-python-job-and-requirements.png",
+      "covers": [
+        "A05",
+        "G02"
+      ],
+      "action": "打开Python岗位详情",
+      "focus": "Python岗位实际要求；该图为学生视角，企业归属见G01，不冒充企业详情截图。",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "9ea93ff0eced10052ec6263d0bc3f5223aeb25b2f94d6724ced91b45bfe44ad8"
+    },
+    {
+      "file": "02-student-materials/B01-student-workspace.png",
+      "covers": [
+        "B01"
+      ],
+      "action": "登录小江后打开首页",
+      "focus": "最近报告、材料和岗位入口",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "f374327207b1d3501ae9987c4039f94e9dbe4c864a0ecbd32052359ef8638f7f"
+    },
+    {
+      "file": "02-student-materials/B02-material-library-and-actions.png",
+      "covers": [
+        "B02",
+        "B03",
+        "B07"
+      ],
+      "action": "我的材料 → 已保存材料",
+      "focus": "简历、项目、最新版本与删除入口（未执行删除）",
+      "issue": "录制注意：项目库最新为第5版，现有AI报告固定引用第2版；不是页面错误。",
+      "ready": "适合，需说明固定版本",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "79d5fc556f5f0482a630273712e255af16aa0c9b60559027ace935c7a1e43370"
+    },
+    {
+      "file": "02-student-materials/B04-project-version-history.png",
+      "covers": [
+        "B04"
+      ],
+      "action": "展开历史版本",
+      "focus": "原项目第1版与第2版，以及后续重复上传的独立版本",
+      "issue": "同名V2包还被上传为第3—5版；录制固定报告应使用第2版。",
+      "ready": "适合，需选清版本",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "6a36efbf2fb3580d9f64860e1b793b09933afd733381b5b50f247cea4e17260a"
+    },
+    {
+      "file": "02-student-materials/B05-saved-project-source.png",
+      "covers": [
+        "B05"
+      ],
+      "action": "打开报告所用项目第2版 → app.py",
+      "focus": "真实保存的多文件列表、源码及行号",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "7e10ab59dfbe4b3c7b7449413c511a1df861bb9c937f2f7daea9a02e1d6d4c00"
+    },
+    {
+      "file": "02-student-materials/B06-upload-new-version-form.png",
+      "covers": [
+        "B06",
+        "D02"
+      ],
+      "action": "项目卡片 → 给这个项目上传新版本（不选文件、不提交）",
+      "focus": "上传目标属于原项目；简历与项目分开准备",
+      "issue": "P2：尚未提交时提示“正在上传到”，容易被理解为已开始上传。",
+      "ready": "适合，需旁白说明尚未提交",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "ee660201170c89dd1035bb2210ee074de75979d56922f0018c003aa2e5572f97"
+    },
+    {
+      "file": "03-real-ai-report/C01-existing-material-version-selection.png",
+      "covers": [
+        "C01"
+      ],
+      "action": "选择已有简历V1和项目第2版，不生成报告",
+      "focus": "材料版本明确选择、上传新版不自动替换报告",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "621e3e842a26414a1913a1fe9c6704df1c2bb66862978752b598070a8608c125"
+    },
+    {
+      "file": "03-real-ai-report/C02-external-ai-consent-scope.png",
+      "covers": [
+        "C02"
+      ],
+      "action": "展示外部AI发送说明，仅勾选页面控件不提交",
+      "focus": "必要片段、脱敏、历史参考另行选择",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "a243750a20e93075dfef7aea26a505bc52b04f79479db179f6707730028563c7"
+    },
+    {
+      "file": "03-real-ai-report/C03-real-deepseek-task-record.png",
+      "covers": [
+        "C03"
+      ],
+      "action": "打开已完成任务并展开实际处理记录",
+      "focus": "deepseek-flash、5项解释、真实tokens与引用校验",
+      "issue": "P1：本地语义检索阶段写“保留词法检索与规则报告”，容易与最终DeepSeek成功模式混淆；模型阶段实际成功。",
+      "ready": "适合，需解释阶段含义",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "f23a89e1ac03f842acbb7ccf31139a45091ab1f8a359ccb959dfb40b248cc5d3"
+    },
+    {
+      "file": "03-real-ai-report/C04-v2-ai-report-overview.png",
+      "covers": [
+        "C04",
+        "D05",
+        "D09"
+      ],
+      "action": "打开已保存V2报告",
+      "focus": "小江、Python岗位、AI模式、4项支持与1项待补",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "befee0a0daa7978d85e66e8a00e55bbc2bb8a33996eba7626923f4dd5799fdff"
+    },
+    {
+      "file": "03-real-ai-report/C06-fastapi-ai-explanation.png",
+      "covers": [
+        "C06"
+      ],
+      "action": "展开判据与AI证据解释",
+      "focus": "DeepSeek对路由、查询、剩余名额的具体解释",
+      "issue": "P1：AI解释埋在多层展开区，且缺口文字包含较长内部路径。",
+      "ready": "适合，录制前先展开",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "f5f98903c451c27a3ef5e774f4699ee891d1571adbc9b1dafe7e64c8c8493807"
+    },
+    {
+      "file": "03-real-ai-report/C07-fastapi-source-evidence.png",
+      "covers": [
+        "C07",
+        "C05"
+      ],
+      "action": "点击AI解释的引用R2-E1",
+      "focus": "app.py第35–45行与完整活动列表函数",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "4e2e1f778d59ee892378c760b90c88614a388ebf6ea4769a4cb8859f3f845b24"
+    },
+    {
+      "file": "03-real-ai-report/C08-pytest-gap-and-next-actions.png",
+      "covers": [
+        "C08",
+        "C09",
+        "D01",
+        "D02",
+        "E05"
+      ],
+      "action": "选择原版pytest要求",
+      "focus": "真实测试证据缺口、三条行动与上传新版入口",
+      "issue": "P1：缺口首段仍有长UUID，且“暂无已保存计划”容易分散注意。",
+      "ready": "适合，保留真实状态",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "684cfd5263b2740c73f6c92ff80f47a15afb3e23566e070ca0d4301ba28386d0"
+    },
+    {
+      "file": "03-real-ai-report/C10-pytest-related-source-not-test-proof.png",
+      "covers": [
+        "C10"
+      ],
+      "action": "查看pytest关联README与报名实现",
+      "focus": "相关实现不等于测试已执行",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "b63825815a3180515558b8477fddc1583450f1e0ebb67d43481bf305c3e8ad1b"
+    },
+    {
+      "file": "04-evidence-growth/D04-v2-pytest-source.png",
+      "covers": [
+        "D04"
+      ],
+      "action": "项目第2版 → tests/test_registration.py",
+      "focus": "新增实际测试函数、请求、断言；不将代码存在当作测试通过",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "1f7ad5655dc9b52085d2c461fdfb8d803037882d6158e7fe7da3e70bc5fa7f7d"
+    },
+    {
+      "file": "04-evidence-growth/D06-v1-v2-evidence-change-summary.png",
+      "covers": [
+        "D06",
+        "D07"
+      ],
+      "action": "读取与上一份报告对比",
+      "focus": "5项证据变化、1项状态变化、pytest从声明到支持",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "6471ff18b1fc2b7258a82364c31443e3d8d1777a7842d0dfb5c628071192f13b"
+    },
+    {
+      "file": "04-evidence-growth/D08-new-test-citations-and-source.png",
+      "covers": [
+        "D08"
+      ],
+      "action": "展开pytest新增引用与源码",
+      "focus": "新增测试引用、记录文件与原文核验",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "00f1d9ab5c2ea80bac9a021d75bdaaef9169bad3e97dad7836d1f9486d083500"
+    },
+    {
+      "file": "05-career-planning/E02-saved-rule-career-candidates.png",
+      "covers": [
+        "E01",
+        "E02",
+        "E04"
+      ],
+      "action": "只读取既有验收学生的上次规划",
+      "focus": "真实保存的三岗位候选与规则降级说明，非小江",
+      "issue": "历史结果没有可用AI规划，不能录成真实DeepSeek职业规划。",
+      "ready": "适合展示规则候选，需说明模式",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "c1964e1c792b6cddb4c546ac6b2e8d4454a1f02d15e7e1efa28f467db5a3fb2f"
+    },
+    {
+      "file": "05-career-planning/E03-candidate-evidence-and-next-step.png",
+      "covers": [
+        "E03"
+      ],
+      "action": "展开已有候选岗位的推荐依据",
+      "focus": "规则证据依据、缺口与进入完整报告的入口",
+      "issue": "这是历史规则推荐，不是新的AI规划。",
+      "ready": "适合说明推荐依据",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "ddcd8a21104d34a6cddb6400e6dd928735ead0010ea5ec032be1eb91064e601e"
+    },
+    {
+      "file": "06-applications-notifications/F01-explicit-sharing-scope.png",
+      "covers": [
+        "F01",
+        "F06"
+      ],
+      "action": "查看报告投递授权区域，不勾选不投递",
+      "focus": "固定报告与简历授权范围、撤回限制和人工确认",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "48bfbc9a4333f06d3e93de4d43003e7bbd6621c0661e230a117e0babfb864000"
+    },
+    {
+      "file": "06-applications-notifications/F02-existing-authorization-and-reply.png",
+      "covers": [
+        "F02",
+        "F03",
+        "F04",
+        "F06"
+      ],
+      "action": "读取已有合成验收学生的投递时间线，不撤回",
+      "focus": "已授权固定报告、企业已有回复、撤回入口；非小江账号",
+      "issue": "与小江是不同合成学生，录制时须明确切换案例。",
+      "ready": "适合企业授权链路，需说明账号",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "926bcf337d9d89346a007ec4c9973fe29b60d1aca01168f3dea0cdc2bb1ab8c2"
+    },
+    {
+      "file": "06-applications-notifications/F05-existing-notification-center.png",
+      "covers": [
+        "F05"
+      ],
+      "action": "只查看通知列表，不标记未读项",
+      "focus": "既有提交、查看、回复事件及状态边界",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "fb268ba5def894417c5e368b9bcbe99a073bc6e1c04b6925297e5a59a4723141"
+    },
+    {
+      "file": "07-enterprise-comparison/G01-enterprise-job-management.png",
+      "covers": [
+        "G01"
+      ],
+      "action": "企业进入我的岗位",
+      "focus": "现有岗位、真实授权投递数量及管理入口",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "e45ea68f0f9ad776e851b565977a56fea590be49681796ec449c4e8c393f0128"
+    },
+    {
+      "file": "07-enterprise-comparison/G03-authorized-list-and-heatmap.png",
+      "covers": [
+        "G03",
+        "G04"
+      ],
+      "action": "进入Python岗位已有授权列表",
+      "focus": "三份既有授权、服务端筛选与要求热力图",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "9c1b5f43ade6569ae39dd15ab8d129388ae5fac1fcb3433988f43db966434a40"
+    },
+    {
+      "file": "07-enterprise-comparison/G06-two-candidate-selection.png",
+      "covers": [
+        "G06"
+      ],
+      "action": "将已存在的实现与声明学生加入对照",
+      "focus": "2/4对照名单、可移除、仅显示已选热力图",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "9d1bd5f44cccd718ab07b9df650ac1d9b7ec8c70f4b3babf9c21c43294809912"
+    },
+    {
+      "file": "07-enterprise-comparison/G07-pair-radar-and-evidence.png",
+      "covers": [
+        "G07",
+        "G08",
+        "G10"
+      ],
+      "action": "打开双人深入核对",
+      "focus": "同轴雷达、身份图例、固定报告与双列证据",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "39c7b3ecf67f68f4b7d00e6d6c8df2843f35a160f00bd83fd1ce4af219914206"
+    },
+    {
+      "file": "07-enterprise-comparison/G08-fastapi-two-column-source-check.png",
+      "covers": [
+        "G05",
+        "G08",
+        "G09"
+      ],
+      "action": "选择FastAPI并展开已有源码",
+      "focus": "左侧源码支持，右侧仅简历声明且无对应引用",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "7975b2bb5dc780d268b711a2b44a55464201be6eca5b8dd48264dbc281a1a44e"
+    },
+    {
+      "file": "07-enterprise-comparison/G11-existing-reply-and-fixed-report.png",
+      "covers": [
+        "G10",
+        "G11"
+      ],
+      "action": "查看已回复的历史授权投递",
+      "focus": "已有人工回复与投递时固定报告，不发送新消息",
+      "issue": "无明显阻碍",
+      "ready": "适合",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "f88ddd87c3a83ffbaf8a06e4b82f3f3734e810a3684b6de82491383f4b997b2c"
+    },
+    {
+      "file": "07-enterprise-comparison/G12-optional-ai-verification-and-reply.png",
+      "covers": [
+        "G11",
+        "G12"
+      ],
+      "action": "展开企业核验面板并只读取已保存建议",
+      "focus": "可选AI入口、外发确认和人工发送回复",
+      "issue": "当前投递尚无已保存企业AI核验建议；不能录成已生成结果。",
+      "ready": "适合展示入口与人工确认边界",
+      "pixelWidth": 1920,
+      "pixelHeight": 1080,
+      "sha256": "57c9da91d74b7c79c09165de630c195b8d299dcc2c8c6b62983b3eae97f7bb3b"
+    }
+  ],
+  "count": 32,
+  "runtimeBuildId": "czcR2mfJEQ8miBGygc_pp",
+  "workspaceSourceHead": "86d50306d86a0cf0be615643bf0c9ae142f0df1d"
+}
