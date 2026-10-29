@@ -109,3 +109,10 @@ export function stageText(currentStep: string | null | undefined, active: boolea
   if (step) return step;
   return active ? "正在准备处理" : "本次任务没有记录当前阶段";
 }
+
+/** A local retrieval fallback does not describe the later model-analysis outcome. */
+export function retrievalStageDetail(step: { name: string; detail: string }) {
+  return step.name === "本地语义文档检索" && step.detail === "本地语义模型不可用，已保留词法检索与规则报告"
+    ? "本地语义检索不可用，本阶段保留词法检索。最终分析结果见上方处理方式。"
+    : step.detail;
+}

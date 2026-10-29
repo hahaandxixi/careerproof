@@ -145,3 +145,17 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 .scenario-slide { grid-area: 1 / 1; min-width: 0; visibility: hidden; opacity: 0; pointer-events: none; transform: translateX(8px); transition: opacity 180ms ease, transform 180ms ease, visibility 180ms; }
 .scenario-slide[data-active="true"] { visibility: visible; opacity: 1; pointer-events: auto; transform: none; }
 @media (prefers-reduced-motion: reduce) { .scenario-slide { transition: none; transform: none; } }
+
+/* Pre-guidance recording: local report and pair readers, not a site-wide width change. */
+main:has(.report-recording-layout), main:has(.enterprise-recording-layout) { max-width: 1600px; }
+.report-recording-layout .report-overview { padding: 4px 0 12px; border-bottom: 1px solid #e2e8f0; }
+.report-recording-layout .requirement-reading-panel { padding: 20px; }
+.report-recording-layout .text-xs, .enterprise-recording-layout .text-xs { font-size: 0.875rem; }
+.material-workspace .text-xs, .analysis-task-view .text-xs, #technical-jobs .text-xs { font-size: 0.875rem; }
+.report-recording-layout .reading-copy, .report-recording-layout [aria-label="建议行动"] { font-size: 1rem; line-height: 1.75; }
+.enterprise-recording-layout > .panel { padding: 16px 20px; }
+.enterprise-candidate-filters .field { margin-top: 4px; }
+@media (min-width: 1280px) {
+  .report-reading-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+  .pair-reading-grid { grid-template-columns: minmax(0, 1fr) 280px; }
+}

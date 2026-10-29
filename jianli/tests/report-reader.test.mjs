@@ -43,6 +43,8 @@ const workspace = await load("lib/report-workspace.ts");
 const evidenceWorkspace = await load("lib/evidence-workspace.ts");
 const { default: Reader } = await load("components/ReportRequirementReader.tsx");
 const { default: Overview } = await load("components/ReportOverview.tsx");
+const { default: AiExplanation } = await load("components/ReportAiExplanation.tsx");
+const { default: SourcePanel } = await load("components/ReportSourcePanel.tsx");
 
 const items = [
   { requirementId: "implementation", requirementTitle: "持久化", verdict: "supported", weight: 5, evidenceLevel: 3,
@@ -89,8 +91,8 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   }
   assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
-  assert.ok(html.includes("正在查看"));
-  assert.ok(html.includes("手机逐项阅读导航") && html.includes("展开全部要求") && html.includes("上一项"));
+  assert.ok(!html.includes("正在查看") && !html.includes("当前筛选"));
+  assert.ok(html.includes("手机逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
@@ -163,7 +165,7 @@ function navigationFixture(hash = "", search = "") {
     pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
     filter(label) {
       const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
-      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && node.props.children[0] === label);
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && node.props.children === label);
       assert.ok(button, label); button.props.onClick(); render();
     },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
@@ -253,7 +255,8 @@ test("deep links escape a mismatched filter without losing the saved anchor", ()
 test("integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action", () => {
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.ok(html.includes("库存 · 第 2 版")); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.match(html, /<h1[^>]*>后端<\/h1>/); assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
 });
 
 test("overview counts saved evidence states, never equating rule coverage or review items with support", () => {
@@ -299,12 +302,48 @@ test("returning to a report without a fragment restores its saved default, not t
  } finally {f.cleanup();}
 });
 
-test("a single priority item offers the real supported count without duplicating the list", () => {
+test("a short requirement set shows every saved item with one selection and no repeated count summary", () => {
  const values=[...Array.from({length:4},(_,i)=>({...items[0],requirementId:`ok${i}`})),items[2]];
  const html=renderToStaticMarkup(React.createElement(Reader,{items:values},values.map(value=>React.createElement("article",{key:value.requirementId}))));
- assert.ok(html.includes("其他 4 项已有证据支持"));
+ for(const value of values) assert.ok(html.includes(`href="#requirement-${value.requirementId}"`));
+ assert.equal((html.match(/aria-current="true"/g)||[]).length,1);
+ assert.ok(!html.includes("其他 4 项已有证据支持") && !html.includes("岗位匹配与补证工作台"));
  assert.equal((html.match(/aria-label="报告中的岗位要求"/g)||[]).length,1);
  assert.ok(!html.includes("岗位要求已全部满足"));
+});
+
+test("primary AI explanation is shown only for adopted saved output and preserves its citation link", () => {
+ const item={...items[0],skill:"FastAPI",aiStatus:"validated",aiExplanation:"列表接口包含真实聚合处理",aiCitationIds:["saved-alpha"],confirmationStatus:"pending"};
+ const report={analysisMode:"ai_evidence",aiProvider:"deepseek",aiFallbackUsed:false,items:[item],materials:[],evidenceContextVersion:"source-context-v2"};
+ const before=JSON.stringify(report);
+ const renderAi=(r,i=item)=>renderToStaticMarkup(React.createElement(AiExplanation,{report:r,item:i}));
+ const html=renderAi(report);
+ assert.ok(html.indexOf(item.aiExplanation)<html.indexOf("<details"));
+ assert.ok(html.includes('href="#citation-saved-alpha"'));
+ for(const changed of [{...report,aiFallbackUsed:true},{...report,analysisMode:"rules"},{...report,aiProvider:"mock"}]) assert.equal(renderAi(changed),"");
+ for(const changed of [{...item,aiStatus:"rejected"},{...item,confirmationStatus:"corrected"},{...item,confirmationStatus:"rejected"}]) assert.equal(renderAi(report,changed),"");
+ assert.equal(JSON.stringify(report),before);
+});
+
+test("an incomplete source stays marked on its summary even while collapsed", () => {
+ const source={citationId:"S2",filePath:"service.py",lineStart:5,lineEnd:8,snippet:"partial_source",contextComplete:false,contextNote:"缺少完整函数"};
+ const item={...items[0],aiCitationIds:[],evidenceList:[{...source,citationId:"S1",contextComplete:true},source]};
+ const report={analysisMode:"rules",aiFallbackUsed:false,items:[item],materials:[]};
+ const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
+ assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*上下文不完整(?:(?!<\/summary>)[\s\S])*<\/summary>/);
+ assert.ok(html.includes("缺少完整函数") && html.includes("partial_source"));
+});
+
+test("adjacent sources keep all original anchors, snippets and version identity with one default-open source", () => {
+ const item={...items[0],skill:"FastAPI",aiStatus:"validated",aiCitationIds:["saved-alpha"],aiExplanation:"已保存解释",evidenceList:[
+  {...items[0].evidenceList[0],lineStart:12,lineEnd:13,snippet:"return items",contextComplete:true},
+  {citationId:null,filePath:"project-v2/service.py",projectVersionId:"project-v2",lineStart:20,lineEnd:21,snippet:"raise Error",contextComplete:false}
+ ]};
+ const report={analysisMode:"ai_evidence",aiFallbackUsed:false,items:[item],materials:[{kind:"project",id:"project-v1",title:"库存",versionNumber:1},{kind:"project",id:"project-v2",title:"库存",versionNumber:2}]};
+ const before=JSON.stringify(report);const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
+ for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版','完整来源与校验信息']) assert.ok(html.includes(text),text);
+ assert.equal((html.match(/<details[^>]* open=""/g)||[]).length,1);
+ assert.equal(JSON.stringify(report),before);
 });
 
 test("filter actions keep an included selection and a zero-count filter remains an explicit empty view", () => {

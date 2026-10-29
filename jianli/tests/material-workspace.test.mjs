@@ -104,3 +104,14 @@ test("empty loaded workspace opens preparation without making two uploads mandat
   assert.equal(preparation.props.open, true);
   assert.equal(value.collect(value.tree, "form").length, 2);
 });
+
+test("preparing an existing project version does not claim an upload has started", () => {
+ const project={id:"existing",name:"报名服务",description:""};
+ const attempt=upload.newProjectAttempt(project.name,project.description,project);
+ const value=workspace(null,"project",{15:attempt});
+ const headings=value.collect(value.tree,"h2").map(node=>node.props.children);
+ assert.ok(headings.includes("上传新版本"));
+ const copy=JSON.stringify(value.tree);
+ assert.ok(copy.includes("目标项目：报名服务"));assert.ok(!copy.includes("正在上传到"));
+ assert.equal(value.calls.length,0);
+});

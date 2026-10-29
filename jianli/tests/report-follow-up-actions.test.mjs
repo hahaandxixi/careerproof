@@ -46,7 +46,7 @@ test("copy and upload work with no task/API access, clipboard success is truthfu
  Object.defineProperty(globalThis,"navigator",{configurable:true,value:{clipboard:{writeText(text){writes.push(text);return request.promise;}}}});
  const f=fixture("ReportFollowUpActions",{reportId,requirementId,text:"保存的指导与提醒"});
  try{
-  assert.ok(f.html().includes("不必创建补证记录"));
+  assert.ok(f.html().includes("明确选版并主动分析"));
   assert.ok(f.html().includes("sourceReport="+reportId));
   assert.ok(!f.html().includes("已复制补证建议"));
   f.button("复制补证建议");await f.settle(request,null);

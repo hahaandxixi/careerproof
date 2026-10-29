@@ -74,3 +74,16 @@ test("actual task page at 25 percent does not label an unobserved AI result as r
   assert.match(render({provider: "rules", skippedReason: "consent_not_granted"}), /规则模式（未使用外部 AI）/);
   assert.match(render({provider: "deepseek", fallbackUsed: true}), /模型已降级，本次为规则结果/);
 });
+
+test("local semantic fallback is scoped to retrieval while the real final model result stays visible", () => {
+ const original="本地语义模型不可用，已保留词法检索与规则报告";
+ const stages=[{step:1,name:"本地语义文档检索",detail:original,eventType:"tool.completed",payload:{}},
+  {step:2,name:"模型证据分析",detail:"deepseek-flash完成5项解释",eventType:"tool.completed",payload:{provider:"deepseek",fallbackUsed:false}}];
+ const before=JSON.stringify(stages);
+ const html=render({},"tool.completed",{steps:stages});
+ assert.match(html,/AI 解释已参与/); assert.match(html,/本地语义检索不可用，本阶段保留词法检索/);
+ assert.match(html,/<summary[^>]*>原始阶段记录<\/summary><p[^>]*>本地语义模型不可用，已保留词法检索与规则报告<\/p>/);
+ assert.equal(JSON.stringify(stages),before);
+ const withoutModel=render({},"tool.completed",{steps:[stages[0]]});
+ assert.match(withoutModel,/未记录模型处理结果/);assert.doesNotMatch(withoutModel,/AI 解释已参与/);
+});

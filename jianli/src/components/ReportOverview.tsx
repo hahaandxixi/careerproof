@@ -9,6 +9,26 @@ export default function ReportOverview({ report, role, workbench = false }: { re
   const states = evidenceWorkspace(report.items);
   const counts = { resume: report.materials.filter(m => m.kind === "resume").length, personal: report.materials.filter(m => m.kind === "project" && m.materialRole !== "reference").length, reference: report.materials.filter(m => m.materialRole === "reference").length };
   const identity = role === "student" ? "学生" : role === "enterprise" ? "企业" : role === "admin" ? "管理员" : "当前账号";
+  if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="岗位匹配报告" aria-labelledby="report-title">
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="min-w-0"><h1 id="report-title" className="break-words text-2xl font-bold text-slate-950">{report.jobTitle}</h1>
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600"><span>{report.candidateName}</span><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time><span className="font-medium text-indigo-800">{report.aiProvider?.startsWith("mock") ? reportModeLabel(report) : report.aiFallbackUsed ? "规则分析 · AI 已降级" : ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) ? "AI 分析 + 规则校验" : report.analysisMode === "rules" ? "规则分析" : reportModeLabel(report)}</span></p>
+      </div>
+      <dl aria-label="已保存的证据状态摘要" className="grid grid-cols-3 gap-x-6 gap-y-2">
+        <div><dt className="text-sm text-emerald-800">有证据支持</dt><dd className="text-2xl font-semibold tabular-nums">{states.supported.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
+        <div><dt className="text-sm text-amber-800">待补材料</dt><dd className="text-2xl font-semibold tabular-nums">{states.gaps.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
+        <div><dt className="text-sm text-slate-600">岗位要求</dt><dd className="text-2xl font-semibold tabular-nums">{report.items.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
+      </dl>
+    </div>
+    {(states.partial.length > 0 || states.other.length > 0) && <p className="text-sm text-slate-600">另有 {states.partial.length} 项部分支持 · {states.other.length} 项未覆盖或需复核。</p>}
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
+      <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 items-center text-indigo-700 underline">材料版本</EvidenceLink>
+      {role === "student" && <EvidenceLink targetId="report-comparison" className="inline-flex min-h-9 items-center font-medium text-indigo-700 underline">版本对比</EvidenceLink>}
+      <EvidenceLink targetId="report-analysis" className="inline-flex min-h-9 items-center text-indigo-700 underline">分析详情</EvidenceLink>
+    </div>
+    {report.aiFallbackUsed && <p className="border-l-2 border-amber-400 pl-3 text-sm text-amber-900"><strong>模型已降级：</strong>模型处理或输出校验未能完成，本报告使用本地规则结果。</p>}
+    <p className="text-sm text-slate-600">材料支持不等于能力认证；本报告与已投递材料保持固定版本。</p>
+  </section>;
   return <section className="panel min-w-0 space-y-3" aria-labelledby="report-title">
     <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
       <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{identity}查看</span>
