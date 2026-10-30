@@ -302,7 +302,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     setUploadOpen(true);
     setUploadKind("project");
     requestAnimationFrame(() => { const target = document.getElementById("project-upload-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); });
-    rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, projectRole) : null);
+    const role = newestUploads.find(item=>item.kind==="project"&&item.resourceId===project?.id)?.materialRole ?? projectRole;
+    rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, role) : null);
     setProjectName(project?.name ?? "");
     setProjectDescription(project?.description ?? "");
     setProjectFile(null);

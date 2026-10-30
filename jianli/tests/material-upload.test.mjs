@@ -23,6 +23,14 @@ test("browser suffix and byte contract matches the backend including uppercase i
   assert.match(materialFileError("project", { name: "proof.zip", size: 30 * 1024 * 1024 + 1 }), /30MB/);
 });
 
+test("same-name projects keep separate latest roles and histories by stable identity",()=>{
+ const rows=[{kind:"project",resourceId:"reference",versionNumber:1,materialRole:"portfolio"},{kind:"project",resourceId:"reference",versionNumber:2,materialRole:"reference"},{kind:"project",resourceId:"personal",versionNumber:1,materialRole:"portfolio"}];
+ const latest=latestMaterialVersions(rows);
+ assert.equal(latest.find(r=>r.resourceId==="reference").materialRole,"reference");
+ assert.equal(latest.find(r=>r.resourceId==="personal").materialRole,"portfolio");
+ assert.equal(rows.length,3);
+});
+
 test("only valid source timestamps are displayed; missing history never becomes now", () => {
   assert.equal(materialVersionTime(), null);
   assert.equal(materialVersionTime(""), null);

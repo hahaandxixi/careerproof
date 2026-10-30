@@ -41,6 +41,7 @@ export default function JobForm({ jobId }: { jobId?: string }) {
 
   useEffect(() => {
     const requestGuard = draftRequests.current;
+    setDraftBusy(false);
     let current = true;
     setLoading(true); setError("");
     Promise.all([api.listEnterprises(), api.jobOptions(), jobId ? api.getJob(jobId) : Promise.resolve(null)])
