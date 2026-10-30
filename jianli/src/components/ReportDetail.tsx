@@ -6,6 +6,7 @@ import { api, errorMessage } from "@/lib/api/client";
 import type { MatchReport } from "@/lib/api/domain";
 import { sourceContextVerified } from "@/lib/analysis-status";
 import { reportAiRatedCount } from "@/lib/report-display";
+import { agentProcessSummary } from "@/lib/agent-evidence";
 import { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import SourceCoverage from "./SourceCoverage";
@@ -80,11 +81,12 @@ export default function ReportDetail({ id }: { id: string }) {
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
     {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel reportId={id} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
     {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">图片观察附件</h2><p className="text-sm leading-6 text-slate-600">以下是生成报告时保存的视觉描述，不进入当前评级或代码引用白名单。本人核对不代表独立认证。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}<Link className="text-indigo-700 underline" href={`/materials/project/${visual.projectVersionId}`}>查看原图与当前核对状态 →</Link></div>)}</section>}
-    <details className="panel"><summary className="cursor-pointer font-semibold">证据等级如何划分？</summary><p className="mt-3 text-sm leading-7">1 级：基础线索；2 级：局部操作；3 级：任务实现；4 级：验证闭环；5 级：工程验证。当前自动判定至 3 级，4、5 级需可审计的验证与复核流程，尚未开放授予。仅自述、未找到证据和规则不支持均不评级。等级参考考试的知识应用与岗位实践维度设计，不等于软考资格或 NCRE 等级。岗位权重只表示重要性，不参与平均等级。借鉴技能图谱的领域分层，AI 逐项审查相关性、实质操作和完整任务；规则约束最高等级，模型可以降低评级。AI 初评及采纳证据均不等于独立认证。</p><p className="mt-2 text-xs text-slate-500">参考：<a className="underline" href="https://ncre.neea.edu.cn/xhtml1/folder/1507/909-1.htm" target="_blank" rel="noreferrer">全国计算机等级考试介绍</a>、<a className="underline" href="https://gxt.hunan.gov.cn/gxt/rkb/zgjs11/202202/t20220210_22483921.html" target="_blank" rel="noreferrer">软考数据库系统工程师说明</a>。本项目采用自定义证据判据。</p></details>
+    <details className="text-sm"><summary className="disclosure">材料判据</summary><div className="space-y-2 py-2 leading-7 text-slate-700"><p>保存的等级是材料判定：基础线索、局部操作、任务实现。名称沿用生成报告时的规则，具体原因见逐项判断记录，不代表能力认证。</p><p>规则结合相关性、实质操作及任务上下文判断；仅声明、无可定位证据、规则未覆盖或复核暂停时不评级。识别实现代码不等于平台执行了完整任务，测试文件也不等于测试已通过。</p><p>岗位权重表示要求的重要性；不按等级或引用数量汇总能力分。旧记录保留当时结果，不自动改用新规则。</p></div></details>
 
     <details className="panel text-sm" aria-label="报告处理与范围说明"><summary className="cursor-pointer py-1 font-medium text-slate-700">分析详情</summary><div id="report-analysis" className="scroll-mt-24"><p className="mt-3 text-sm text-slate-600">规则覆盖范围：{assessedCount}/{report.items.length} 项（不是证据支持数量）。{assessedCount === 0 ? "当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? "未覆盖要求不评级。" : "全部要求有对应规则，不代表证据完整或能力已被证实。"}</p><p className="mt-3 text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
       <p className="mt-3 leading-7 text-slate-700">{aiUsed ? (sourceContextVerified(report.evidenceContextVersion) ? "生成时记录了来源定位校验；请以逐项异常提示核对当前解释。平台未执行代码，运行结果、测试质量和本人贡献均未认证。" : "历史报告仅核验引用编号，未通过本轮完整上下文与过度推断检查，建议重新生成报告。") : "有证据支持不等于能力认证；没有找到证据不代表没有能力。暂不支持的技能不评级。"}</p>
       {report.aiModel && <p className="mt-3 text-xs leading-6 text-slate-600">保存的模型：{report.aiModel}</p>}
+      {(report.aiProcess?.planningSkippedReason || report.aiProcess?.skippedReason) && <p className="mt-3 text-sm text-slate-600">{agentProcessSummary(report)}</p>}
       {report.aiUsage && <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-600">
         {report.aiUsage.latency_ms != null && <div><dt>模型耗时</dt><dd>{Math.round(report.aiUsage.latency_ms / 100) / 10} 秒</dd></div>}
         {report.aiUsage.input_tokens != null && <div><dt>输入用量</dt><dd>{report.aiUsage.input_tokens} tokens</dd></div>}

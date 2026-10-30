@@ -86,7 +86,7 @@ test("rejected, unvalidated, fallback and stale-context AI text never becomes ac
  const entry=item("ai","gap",{aiStatus:"validated",aiSuggestion:"不应展示为有效的AI建议",aiInformationGap:"旧AI缺口",aiCitationIds:[]});
  for (const change of [{aiFallbackUsed:true},{evidenceContextVersion:"legacy"},{items:[{...entry,aiStatus:"rejected"}]},{items:[{...entry,confirmationStatus:"corrected"}]}]) {
   const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap})]),evidenceContextVersion:"source-context-v2",...change};
-  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("暂无已保存的具体行动计划"));
+  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("查看通用核对步骤与材料清单"));
  }
 });
 
@@ -111,13 +111,13 @@ test("partial support and gaps expose their existing plan and explicit task trig
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
   assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议怎么补")); assert.ok(html.includes("完成后上传新版材料"));
-  assert.ok(html.includes("明确选版并主动分析"));
+  assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  }
 });
 
 test("supported requirements lead with conclusions and evidence; optional growth stays secondary", () => {
  const value=item("complete","supported"); const html=render(report([value],[advice(value)]));
- assert.ok(html.includes("当前材料支持")); assert.ok(html.includes("材料支持不等于运行成功"));
+ assert.ok(html.includes("当前材料支持")); assert.ok(!html.includes("材料支持不等于运行成功"));
  assert.ok(html.includes("材料有更新？按需查看补证指导"));
  assert.ok(!html.includes("建议怎么补")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
@@ -132,7 +132,7 @@ test("support survives incomplete context without duplicating the source pane's 
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
  const value=item("current"); const html=render(report([value],[advice(item("foreign"),{action:"外部报告的建议"})]));
- assert.ok(html.includes("暂无已保存的具体行动计划")); assert.ok(!html.includes("外部报告的建议"));
+ assert.ok(html.includes("查看通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
  assert.ok(!html.includes('href="#requirement-foreign"'));
 });
 
@@ -172,7 +172,7 @@ test("a validated structured plan without an actionPlan entry never claims that 
  const value={...report([entry]),evidenceContextVersion:"source-context-v2"};
  const before=JSON.stringify(value); const html=render(value);
  assert.ok(html.includes("运行异常请求") && html.includes("验证记录") && html.includes("注明固定源码版本"));
- assert.ok(!html.includes("暂无已保存的具体行动计划"));
+ assert.ok(!html.includes("查看通用核对步骤与材料清单"));
  assert.equal(JSON.stringify(value),before);
 });
 
@@ -191,7 +191,7 @@ test("guidance can be copied and used for a new upload without creating a task",
  const entry=item("cache","gap"); const html=render(report([entry],[advice(entry)]));
  assert.ok(html.includes("复制补证建议"));
  assert.ok(html.includes("完成后上传新版材料"));
- assert.ok(html.includes("明确选版并主动分析"));
+ assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  assert.ok(!html.includes("已有记录与自定义计划（可选）"));
  assert.ok(!html.includes("查看已有补证记录"));
  assert.ok(!html.includes('>开始补证</button>'));

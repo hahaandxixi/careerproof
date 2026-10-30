@@ -29,7 +29,7 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
     })}</div>
     <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer py-1">原始解释与校验记录</summary>
       <p className="mt-2 whitespace-pre-wrap break-words">{explanation}</p>
-      <p className="mt-2">{sourceContextVerified(report.evidenceContextVersion) ? "引用与原文已通过本报告校验，解释是否充分仍需核对。" : "历史解释仅保留当时校验结果，未通过当前完整上下文检查。"}不证明代码运行成功或本人贡献。</p>
+      <p className="mt-2">{sourceContextVerified(report.evidenceContextVersion) ? "生成时记录了引用与原文校验，解释是否充分仍需核对。" : "历史解释仅保留当时校验结果，未通过当前完整上下文检查。"}</p>
       {item.aiConfidence != null && <p className="mt-2">解释置信度 {Math.round(item.aiConfidence * 100)}%</p>}
       {item.aiInformationGap && <p className="mt-2 whitespace-pre-wrap break-words">仍缺少：{item.aiInformationGap}</p>}
       {item.aiSuggestion && <p className="mt-2 whitespace-pre-wrap break-words">建议补充：{item.aiSuggestion}</p>}
