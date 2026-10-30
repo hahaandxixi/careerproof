@@ -330,7 +330,7 @@ test("an incomplete source stays marked on its summary even while collapsed", ()
  const item={...items[0],aiCitationIds:[],evidenceList:[{...source,citationId:"S1",contextComplete:true},source]};
  const report={analysisMode:"rules",aiFallbackUsed:false,items:[item],materials:[]};
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
- assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*上下文不完整(?:(?!<\/summary>)[\s\S])*<\/summary>/);
+ assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*历史完整性信息不足(?:(?!<\/summary>)[\s\S])*<\/summary>/);
  assert.ok(html.includes("缺少完整函数") && html.includes("partial_source"));
 });
 

@@ -1,5 +1,6 @@
 from dataclasses import replace
 from uuid import uuid4
+import pytest
 
 from app.agents.contracts import (
     AIRating,
@@ -67,16 +68,33 @@ def make_analysis(result):
     )
 
 
-def test_unsent_rule_evidence_removes_absolute_missing_claim():
+def test_unsent_runtime_record_does_not_replace_concrete_gap_or_suggestion():
     result = make_result()
     contexts = build_evidence_contexts(result, max_evidence=1)
     qualified = qualify_analysis(make_analysis(result), result, contexts)
     item = qualified.items[0]
-    assert "未展示" not in (item.information_gap or "")
-    assert "请补充" not in (item.suggestion or "")
-    assert "本次片段未覆盖" in (item.information_gap or "")
-    assert "runtime/pytest-output.txt" in (item.information_gap or "")
-    assert "材料中可能已包含" in (item.suggestion or "")
+    assert item.information_gap == "未展示运行结果"
+    assert item.suggestion == "请补充运行结果"
+    assert result.items[0].evidence_list[1].file_path == "runtime/pytest-output.txt"
+
+
+def test_unsent_test_code_cannot_resolve_missing_run_record():
+    result = make_result()
+    result.items[0].evidence_list[1] = replace(result.items[0].evidence_list[1],
+        file_path="tests/test_other.py", snippet="def test_other():\n    assert other()")
+    contexts = build_evidence_contexts(result, max_evidence=1)
+    item = qualify_analysis(make_analysis(result), result, contexts).items[0]
+    assert item.information_gap == "未展示运行结果"
+    assert item.suggestion == "请补充运行结果"
+
+
+def test_whole_project_absence_is_rejected_when_sources_were_not_sent():
+    result = make_result()
+    contexts = build_evidence_contexts(result, max_evidence=1)
+    analysis = make_analysis(result)
+    analysis.items[0].information_gap = "整个项目没有测试实现"
+    with pytest.raises(ValueError, match="supplied evidence scope"):
+        qualify_analysis(analysis, result, contexts)
 
 
 def test_no_unsent_evidence_keeps_original_text():

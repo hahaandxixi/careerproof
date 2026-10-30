@@ -13,9 +13,10 @@ const NEXT_STEP = {
   discuss_implementation: "人工沟通具体实现",
 };
 
-export default function ApplicationVerification({ applicationId, report, onUnavailable, onUseQuestion }: {
+export default function ApplicationVerification({ applicationId, report, onUnavailable, onUseQuestion, requirementComparison }: {
   applicationId: string; report: MatchReport; onUnavailable(): void;
   onUseQuestion?: (question: VerificationReplyQuestion) => void;
+  requirementComparison?: {status:"same"|"changed"|"unknown";changes:string[];missingFields:string[]};
 }) {
   const [state, setState] = useState(initialApplicationVerificationState);
   const [consent, setConsent] = useState(false);
@@ -53,7 +54,7 @@ export default function ApplicationVerification({ applicationId, report, onUnava
       <button type="button" className="text-sm text-indigo-700 underline disabled:text-slate-400" disabled={loading} onClick={() => void session.load()}>读取已保存建议</button>
     </div>
     <p className="text-xs leading-5 text-slate-500">读取已有结果不新增模型调用；同一投递快照优先复用已保存建议。授权变化时停止展示，刷新投递或离开窗口会收起建议。</p>
-    <p className="text-xs leading-5 text-amber-800">岗位当前要求可能与投递时要求不同，请核对各项对应关系和变化；固定报告保留投递时依据。</p>
+    {requirementComparison?.status!=="same" && <details className="text-sm text-amber-900"><summary className="cursor-pointer">{requirementComparison?.status==="changed" ? "岗位要求已更新，本报告基于投递时版本" : "版本信息不足，无法确认岗位要求是否一致"}</summary><ul className="mt-2">{requirementComparison?.changes.map((s,i)=><li key={i}>{s}</li>)}</ul>{!!requirementComparison?.missingFields.length&&<p>缺少比较依据：{requirementComparison.missingFields.join("、")}</p>}</details>}
     {task?.dailyBudget && <section aria-label="今日 AI 预算" className="rounded-lg bg-white p-3 text-xs leading-6 text-slate-700">
       <p className="font-medium">今日 AI 预算（北京时间）</p>
       <p>已知用量：输入 {task.dailyBudget.knownInputTokens} / 输出 {task.dailyBudget.knownOutputTokens} Tokens</p>

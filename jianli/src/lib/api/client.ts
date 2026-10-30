@@ -248,6 +248,7 @@ export interface ApplicationView {
   consentVersion: string; replyKind: string | null; replyText: string | null;
   replyReferences: { requirementId: string; citationIds: string[] }[];
   comparisonBasis: string;
+  requirementComparison?: {status:"same"|"changed"|"unknown";changes:string[];missingFields:string[]};
   events: { type: string; at: string; detail: string }[];
   dimensions: { requirementId: string; title: string; skill: string; score: number | null; verdict: string; weight: number; evidenceLevel: number | null; evidenceLevelSource: string | null; evidenceLevelVersion: string | null; formulaVersion: string | null }[];
   report?: MatchReport;

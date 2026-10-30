@@ -413,6 +413,11 @@ def validate_grounded_analysis(
             if boundary_error:
                 raise ValueError(boundary_error)
         answer_texts = (item.explanation, item.information_gap, item.suggestion, *plan_texts)
+        inline_citations = set(re.findall(r"(?<![A-Za-z0-9])R\d+-E\d+(?![A-Za-z0-9])", " ".join(v for v in answer_texts if v)))
+        if not inline_citations.issubset(allowed):
+            raise ValueError("AI prose contains an unknown or cross-requirement citation")
+        if not inline_citations.issubset(set(item.citation_ids)):
+            raise ValueError("AI prose citations do not match its structured citations")
         combined = " ".join(value for value in answer_texts if value)
         narrative = " ".join(value for value in (
             item.explanation, item.information_gap, item.suggestion,

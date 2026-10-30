@@ -20,7 +20,7 @@ from app.models.audit import AuditLog
 from app.models.enums import UserRole
 from app.models.identity import StudentProfile, User
 from app.models.portfolio import Resume, ResumeVersion
-from app.models.recruitment import Application, ApplicationEvent, Job
+from app.models.recruitment import Application, ApplicationEvent, Job, JobRequirement
 from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.schemas.common import PaginatedData
 from app.services.analysis import AnalysisService
@@ -281,6 +281,17 @@ class ApplicationService:
         return await self.view(item, job)
 
     async def view(self, item, job, include_report=False):
+        from app.tools.requirement_versions import compare_requirements
+
+        saved_report = await self.session.get(MatchReport, item.report_id)
+        current_requirements = list(await self.session.scalars(
+            select(JobRequirement).where(JobRequirement.job_id == job.id)
+        ))
+        requirement_comparison = compare_requirements(
+            saved_report.job_snapshot.get("requirements") if saved_report else None,
+            [{"id": str(r.id), "title": r.raw_text, "skill": r.skill_name,
+              "weight": r.weight, "isRequired": r.is_required} for r in current_requirements],
+        )
         student = await self.session.get(StudentProfile, item.student_id)
         user = await self.session.get(User, student.user_id)
         events = await self.session.scalars(
@@ -290,6 +301,7 @@ class ApplicationService:
         )
         result = {
             "id": str(item.id),
+            "requirementComparison": requirement_comparison,
             "jobId": str(job.id),
             "jobTitle": job.title,
             "companyName": job.company_name,

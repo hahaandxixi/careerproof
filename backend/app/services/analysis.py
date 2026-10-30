@@ -419,6 +419,7 @@ class AnalysisService:
                             "title": r.raw_text,
                             "skill": r.skill_name,
                             "weight": r.weight,
+                            "isRequired": r.is_required,
                         }
                         for r in requirements
                     ],
