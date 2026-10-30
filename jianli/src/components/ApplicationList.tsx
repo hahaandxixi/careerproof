@@ -75,11 +75,11 @@ function Workspace(){
   useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
   return <div className="space-y-5"><h1 className="page-title">我的投递</h1>
     <form className="panel space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
-      <div className="grid min-w-0 items-end gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(16rem,1fr)_minmax(12rem,.7fr)_auto_auto]">
-        <label className="form-label min-w-0 sm:col-span-2 lg:col-span-1">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label>
-        <label className="form-label min-w-0">查看范围<select className="field mt-1" value={view} onChange={event=>setView(event.target.value)}><option value="all">全部投递</option><option value="waiting">等待企业回复</option><option value="action">企业已回复，待我核对</option><option value="withdrawn">已撤回</option></select></label>
-        <button className="btn min-h-11 whitespace-nowrap" disabled={busy}>筛选全部投递</button><button className="btn-secondary min-h-11 whitespace-nowrap" type="button" disabled={busy} onClick={()=>{setQuery("");setView("all");filters.current={q:"",view:"all"};page.current=1;setRevokeId(null);void session.refresh();}}>重置</button>
-      </div><p className="text-xs text-slate-600">“待我核对”表示企业已有明确回复；查看、下载不代表通过筛选。</p>
+      <div className="flex min-w-0 flex-wrap items-end gap-3">
+        <label className="form-label min-w-0 flex-1 basis-64">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label>
+        <button className="btn min-h-11 whitespace-nowrap" disabled={busy}>搜索</button><button className="btn-secondary min-h-11 whitespace-nowrap" type="button" disabled={busy} onClick={()=>{setQuery("");setView("all");filters.current={q:"",view:"all"};page.current=1;setRevokeId(null);void session.refresh();}}>重置</button>
+      </div>
+      <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["all","全部投递"],["waiting","等待企业回复"],["action","待我核对"],["withdrawn","已撤回"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={view===value} disabled={busy} onClick={()=>{setView(value);filters.current={q:query.trim(),view:value};page.current=1;setRevokeId(null);void session.refresh();}}>{label}</button>)}</div>
     </form>
     <details className="text-sm leading-6 text-slate-600"><summary className="cursor-pointer select-none text-indigo-700">状态与刷新说明</summary><p className="mt-2">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p></details>
     <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新投递状态</button>

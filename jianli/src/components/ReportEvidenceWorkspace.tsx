@@ -27,6 +27,9 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
   const text = action ? distinctActionText(action, conclusion) : null;
   const allowed = new Set(item.evidenceList.map(source => source.citationId));
   const citations = [...new Set(action?.citationIds ?? [])].filter(id => allowed.has(id));
+  const projectVersions = report.materials.filter(material => material.kind === "project");
+  const projectVersionId = item.evidenceList.find(source => projectVersions.some(material => material.id === source.projectVersionId))?.projectVersionId
+    ?? (projectVersions.length === 1 ? projectVersions[0].id : undefined);
   return <div className="mt-4 min-w-0 space-y-4" aria-label={`${item.skill}的判断与下一步`}>
     {!explanationVisible && <div><h4 className="text-base font-semibold text-slate-900">{supported ? "当前材料支持" : actionable ? "当前缺口" : "当前需核对"}</h4>
       {/[0-9a-f]{8}-[0-9a-f-]{27,}/i.test(conclusion || "") ? <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-indigo-700">查看保存的缺口与材料定位原文</summary><p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700">{conclusion}</p></details> : <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>}
@@ -67,7 +70,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     </div>}
     {role === "student" && <div>
       {supported ? <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">材料有更新？按需查看补证指导</summary><div id={`growth-${item.requirementId}`} className="scroll-mt-24"><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} /></div></details> : <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
-        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} text={followUpCopyText(report, item)} />
+        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId ?? undefined} text={followUpCopyText(report, item)} />
       </div>}
     </div>}
   </div>;

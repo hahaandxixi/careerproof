@@ -21,7 +21,9 @@ export function studentFlowLocation(pathname: string, role?: string): FlowStepKe
 
 export function flowStepsForLocation(pathname: string) {
   const reportDetail = /^\/reports\/[^/]+$/.test(pathname);
+  const project = pathname.match(/^\/materials\/project\/([^/]+)$/)?.[1];
   return FLOW_STEPS.map(step => ({ ...step,
-    href: step.key === "application" && reportDetail ? `${pathname}#application-submit` : step.href,
+    href: step.key === "application" && reportDetail ? `${pathname}#application-submit`
+      : step.key === "growth" ? `/portfolio?${new URLSearchParams({add:"project",...(project?{sourceProjectVersion:project}:{}),...(reportDetail?{sourceReport:pathname.split("/")[2]}:{})})}` : step.href,
   }));
 }

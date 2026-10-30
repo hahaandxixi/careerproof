@@ -7,6 +7,7 @@ import MaterialFileDropzone from "@/components/MaterialFileDropzone";
 import { latestMaterialVersions, materialFileError, materialFileSize, type UploadedMaterial } from "@/lib/material-upload";
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
 import ReportUploadReturn from "@/components/ReportUploadReturn";
+import MaterialUploadIntent from "@/components/MaterialUploadIntent";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ErrorNotice } from "@/components/AccessGate";
@@ -345,6 +346,11 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     <div className="material-workspace space-y-5">
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} /></Suspense>
+      <Suspense fallback={null}><MaterialUploadIntent projects={projects} ready={historyLoaded && attemptReady} onOpen={projectId => {
+        if (attemptRef.current || projectSubmitting.current || deletingProject.current || resumeBusy) return false;
+        selectProject(projects.find(project => project.id === projectId) ?? null);
+        return true;
+      }} /></Suspense>
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">我的材料</h1><div className="flex items-center gap-4"><Link href="/jobs" className="text-sm text-indigo-700 underline">选择岗位</Link><button type="button" className="btn" disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div></div>
       </div>
