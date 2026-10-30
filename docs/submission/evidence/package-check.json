@@ -1,0 +1,13 @@
+{
+  "bundle": "output/source/CareerProof-review-materials-20261023-B1.zip",
+  "sha256": "0146e7078ab496c1416de54115451a14bd458f799ed500e22624fbe300533894",
+  "bytes": 3677514,
+  "files": 40,
+  "actualExtraction": true,
+  "mismatches": [],
+  "sourceExtractedFiles": 899,
+  "sourceMismatches": [],
+  "sourceCommit": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+  "productAccepted": "e95504feed306e5cf5ee013a6e546976013639c0",
+  "scope": "Packaged files are frozen; this external receipt is created after bundling and is not inside that ZIP. No installation/runtime validation."
+}
