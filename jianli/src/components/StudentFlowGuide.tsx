@@ -20,5 +20,5 @@ export default function StudentFlowGuide() {
     }
   }, [pathname, currentKey]);
   // Saved reports are reading surfaces; their own back, upload and sharing links remain available.
-  return currentKey && !/^\/reports\/[^/]+$/.test(pathname) ? <div ref={container}><FlowSteps key={pathname} steps={flowStepsForLocation(pathname)} currentKey={currentKey} /></div> : null;
+  return currentKey && pathname!=="/portfolio" && !/^\/reports\/[^/]+$/.test(pathname) ? <div ref={container}><FlowSteps key={pathname} steps={flowStepsForLocation(pathname)} currentKey={currentKey} /></div> : null;
 }

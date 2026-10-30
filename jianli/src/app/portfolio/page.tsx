@@ -67,7 +67,7 @@ function UploadProgress({ item, onUploadVersion, onDeleteProject, deleteDisabled
             </span>
             <h3 className="min-w-0 break-words text-base font-semibold text-slate-800">{item.title}</h3>
           </div>
-          <p className="mt-1 break-words text-xs leading-6 text-slate-600">
+          <p className="mt-1 break-words text-sm leading-6 text-slate-600">
             {item.filename} · 第 {item.versionNumber} 版 · {new Date(item.createdAt).toLocaleString("zh-CN")}
             {item.sizeBytes != null && ` · ${materialFileSize(item.sizeBytes)}`}
             {item.kind === "project" && ` · ${item.materialRole === "reference" ? "第三方参考" : "个人作品"}`}
@@ -98,13 +98,11 @@ function UploadProgress({ item, onUploadVersion, onDeleteProject, deleteDisabled
         <p className="mt-2 text-xs text-amber-700">历史版本未关联任务，无法恢复实时进度。</p>
       )}
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-indigo-700">
-        {complete && <Link className="btn-secondary" href={`/materials/${item.kind}/${item.versionId}`}>预览解析内容</Link>}
-        {onUploadVersion && <button type="button" className="btn-secondary" onClick={onUploadVersion}>给这个项目上传新版本</button>}
-        {complete && <Link className="btn" href="/jobs">选择岗位匹配</Link>}
+        {complete && <Link className="btn-secondary" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
+        {onUploadVersion && <button type="button" className="btn-secondary" onClick={onUploadVersion}>上传新版</button>}
         {!complete && item.taskId && <Link className="btn-secondary" href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
-        {onDeleteProject && <button type="button" className="min-h-11 text-sm text-rose-700 underline disabled:opacity-50" disabled={deleteDisabled} onClick={onDeleteProject}>删除项目</button>}
       </div>
-      {complete && <details className="mt-2 text-sm text-slate-600"><summary className="w-fit cursor-pointer py-2">处理记录与更多操作</summary><div className="flex flex-wrap gap-4 py-2">{item.taskId && <Link className="underline" href={`/tasks/${item.taskId}`}>查看处理记录</Link>}<Link className="underline" href="/recommendations">获取职业推荐</Link></div></details>}
+      <details className="mt-2 text-sm text-slate-600"><summary className="w-fit cursor-pointer py-2">更多操作</summary><div className="flex flex-wrap gap-4 py-2">{item.taskId && <Link className="underline" href={`/tasks/${item.taskId}`}>处理记录</Link>}{onDeleteProject && <button type="button" className="min-h-11 text-sm text-rose-700 underline disabled:opacity-50" disabled={deleteDisabled} onClick={onDeleteProject}>移出材料库</button>}</div></details>
     </article>
   );
 }
@@ -153,6 +151,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [attemptReady, setAttemptReady] = useState(false);
   const historyRequest = useRef(0);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadKind, setUploadKind] = useState<"resume" | "project" | null>(null);
   const [recentUpload, setRecentUpload] = useState<UploadedMaterial | null>(null);
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState("");
@@ -169,6 +168,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     attemptRef.current = saved;
     setAttempt(saved);
     if (saved) {
+      setUploadKind("project"); setUploadOpen(true);
       setProjectName(saved.name);
       setProjectDescription(saved.description);
       setProjectRole(saved.materialRole);
@@ -210,7 +210,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   ].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [resumes, projects]);
 
   const newestUploads = useMemo(() => latestMaterialVersions(uploads), [uploads]);
-  const historicalUploads = uploads.filter(item => !newestUploads.includes(item));
 
   const activeTaskIds = useMemo(
     () => uploads.filter((item) => item.taskId && !TERMINAL_STATUSES.has(item.status)).map((item) => item.taskId),
@@ -301,6 +300,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   function selectProject(project: ProjectView | null) {
     if (projectSubmitting.current || deletingProject.current) return;
     setUploadOpen(true);
+    setUploadKind("project");
     requestAnimationFrame(() => { const target = document.getElementById("project-upload-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); });
     rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, projectRole) : null);
     setProjectName(project?.name ?? "");
@@ -313,7 +313,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
   async function deleteProject(projectId: string, name: string) {
     if (projectSubmitting.current || deletingProject.current) return;
-    if (!window.confirm(`删除项目“${name}”？该项目及其所有版本将从当前材料库移除。历史报告、已授权投递和引用文件仍保留，可在归档材料中恢复。`)) return;
+    if (!window.confirm(`将项目“${name}”及其所有版本移出当前材料库？历史报告、已授权投递和引用文件仍保留，可在归档材料中恢复。`)) return;
     deletingProject.current = true;
     setDeletingProjectId(projectId);
     setDeleteError("");
@@ -333,7 +333,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       }
       setNotice(`项目“${name}”已从当前材料库移除，历史报告和引用仍保留。`);
     } catch (reason) {
-      setDeleteError(`删除项目失败：${errorMessage(reason)}`);
+      setDeleteError(`移除项目失败：${errorMessage(reason)}`);
     } finally {
       deletingProject.current = false;
       setDeletingProjectId(null);
@@ -345,10 +345,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} /></Suspense>
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title mt-1">我的材料工作台</h1><button type="button" className="btn" onClick={() => { setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-          平台只做静态分析，不执行上传代码。
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">我的材料</h1><div className="flex items-center gap-4"><Link href="/jobs" className="text-sm text-indigo-700 underline">选择岗位</Link><button type="button" className="btn" disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div></div>
       </div>
 
       {historyLoaded && !uploads.length && !projects.length && !historyError
@@ -358,9 +355,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
       <section>
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-0 flex-1 basis-48">
-            <h2 className="section-title">已保存材料</h2>
-          </div>
           <button type="button" onClick={() => void loadHistory()} className="min-h-11 shrink-0 whitespace-nowrap text-sm text-indigo-600">刷新列表</button>
         </div>
         {historyError && (
@@ -374,25 +368,22 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         {projects.filter(project => !project.versions.length).map(project => <div key={project.id} className="surface-muted mb-3 flex flex-wrap items-center justify-between gap-3 p-4"><div><p className="break-words font-medium">{project.name}</p><p className="text-xs text-slate-600">项目已创建，尚未保存文件。</p></div><div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary" disabled={projectBusy || !!deletingProjectId} onClick={() => selectProject(project)}>继续上传</button><button type="button" className="min-h-11 text-sm text-rose-700 underline disabled:opacity-50" disabled={projectBusy || !!deletingProjectId} onClick={() => void deleteProject(project.id, project.name)}>删除项目</button></div></div>)}
         {uploads.length > 0 && (
           <div className="grid gap-3 md:grid-cols-2">
-            {newestUploads.map(item => <UploadProgress key={item.key} item={item} latest onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} onDeleteProject={item.kind === "project" ? () => void deleteProject(item.resourceId, item.title) : undefined} deleteDisabled={projectBusy || !!deletingProjectId} />)}
+            {newestUploads.map(item => <section key={item.key} className="min-w-0"><UploadProgress item={item} latest onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} onDeleteProject={item.kind === "project" ? () => void deleteProject(item.resourceId, item.title) : undefined} deleteDisabled={projectBusy || !!deletingProjectId} />{uploads.some(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key)&&<details className="mt-2 text-sm"><summary className="cursor-pointer py-2 text-indigo-700">历史版本</summary><div className="space-y-2">{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).map(version=><UploadProgress key={version.key} item={version}/>)}</div></details>}</section>)}
           </div>
         )}
-        {historicalUploads.length > 0 && <details className="mt-4 rounded-xl border border-slate-200 bg-white"><summary className="cursor-pointer p-4 text-sm font-medium text-indigo-700">查看历史版本 · {historicalUploads.length} 项</summary><div className="grid gap-3 border-t border-slate-200 p-4 md:grid-cols-2">{historicalUploads.map(item => <UploadProgress key={item.key} item={item} />)}</div></details>}
         {historyLoaded && !historyError && !uploads.length && !projects.length && (
           <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center text-sm text-slate-500">
-            还没有保存的材料。从下方上传一份简历或一个项目；两类材料可分别准备，不是强制闯关顺序。
+            暂无材料，请添加简历或项目。
           </div>
         )}
       </section>
-      <details id="add-materials" open={uploadOpen || !!attempt || (historyLoaded && !uploads.length && !projects.length)} onToggle={event => setUploadOpen(event.currentTarget.open)} className="rounded-2xl border border-slate-200 bg-white">
-        <summary className="cursor-pointer p-5 text-base font-semibold text-indigo-700">{uploads.length || projects.length ? "添加材料或上传新版本" : "开始准备材料"}</summary>
-        <div className="border-t border-slate-200 p-4 sm:p-5">
-          <h2 id="upload-workspace-title" tabIndex={-1} className="mb-3 scroll-mt-32 text-lg font-semibold">添加简历或项目材料</h2><p className="mb-4 text-sm leading-6 text-slate-600">上传前可核对文件、大小、类型和目标。选择文件不会自动提交；解析完成也不会自动加入报告。</p>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <form onSubmit={submitResume} className="min-w-0 rounded-xl bg-slate-50 p-4">
+      {uploadOpen && <section id="add-materials" className="rounded-xl border border-slate-200 bg-white p-5">
+          <div className="flex items-center justify-between gap-3"><h2 id="upload-workspace-title" tabIndex={-1} className={`${uploadKind ? "sr-only" : "text-lg font-semibold"} scroll-mt-24`}>添加材料</h2><button type="button" className="ml-auto min-h-11 text-sm text-slate-600 underline" disabled={resumeBusy||projectBusy} onClick={()=>setUploadOpen(false)}>收起</button></div>
+          {!uploadKind&&<div className="flex flex-wrap gap-3"><button type="button" className="btn-secondary" onClick={()=>{setResumeFile(null);setUploadKind("resume");}}>简历</button><button type="button" className="btn-secondary" onClick={()=>selectProject(null)}>新项目</button>{attempt&&<button type="button" className="btn-secondary" onClick={()=>setUploadKind("project")}>继续上次上传</button>}</div>}
+      <div className="max-w-3xl">
+        {uploadKind === "resume" && <form onSubmit={submitResume} className="min-w-0">
           <div className="mb-5">
             <h2 className="mt-3 text-xl font-bold text-slate-900">上传简历</h2>
-            <p className="mt-1 text-sm text-slate-500">扫描件和图片会提取文字，请对照原图核对 OCR 结果。</p>
           </div>
           <div className="space-y-4">
             <label className="block">
@@ -415,17 +406,16 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           >
             {resumeBusy ? "正在上传…" : "上传并解析简历"}
           </button>
-        </form>
+        </form>}
 
-        <form onSubmit={submitProject} className="min-w-0 rounded-xl bg-slate-50 p-4">
+        {uploadKind === "project" && <form onSubmit={submitProject} className="min-w-0">
           <div className="mb-5">
             <h2 id="project-upload-title" tabIndex={-1} className="mt-3 scroll-mt-32 text-xl font-bold text-slate-900">{attempt?.project ? "上传新版本" : "上传项目"}</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-500">代码项目打包前删除 node_modules；图片与扫描件的 OCR 结果需人工核对。</p>
           </div>
           {attempt && (
             <div className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-              <p>{attempt.project ? `目标项目：${attempt.project.name}。重试将复用原项目。` : "已保留本次提交，可重新选择原文件继续提交。"}</p>
-              <p className="mt-1 text-xs">刷新后需重新选择文件；上传状态不确定时请重选原文件。</p>
+              <p>{attempt.project ? `目标项目：${attempt.project.name}` : "已保留未完成上传，请重新选择原文件继续。"}</p>
+              {projectError&&<p className="mt-1">重试将复用原项目和上传标识，请选择原文件。</p>}
               <button type="button" disabled={projectBusy} onClick={() => selectProject(null)} className="mt-2 underline">
                 改为创建另一个项目
               </button>
@@ -459,8 +449,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={attempt?.project ? `${attempt.project.name} · 新版本` : projectName.trim() ? `${projectName.trim()} · 新项目` : "新项目（请先填写名称）"} disabled={projectBusy} onChange={setProjectFile} onError={setProjectError} />
             <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
               <legend className="px-1 font-medium text-slate-700">材料归属</legend>
-              <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(attempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("portfolio")} /><span>个人作品：可用于实践证据初评，本人贡献仍需核验</span></label>
-              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(attempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("reference")} /><span>第三方参考：可用于检索与学习建议，不计入个人实践评级</span></label>
+              <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(attempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("portfolio")} /><span>个人作品</span></label>
+              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(attempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("reference")} /><span>参考资料（不计个人实践评级）</span></label>
             </fieldset>
           </div>
           {projectError && <p className="mt-3 text-sm text-rose-600">{projectError}</p>}
@@ -469,13 +459,12 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             disabled={projectBusy || !!deletingProjectId || !attemptReady}
             className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
-            {projectBusy ? "正在提交…" : attempt ? "继续上传（复用原项目）" : "创建项目并开始扫描"}
+            {projectBusy ? "正在上传…" : projectError&&attempt ? "重试上传" : attempt?.project ? "上传新版本" : "上传项目"}
           </button>
-        </form>
+        </form>}
       </div>
 
-        </div>
-      </details>
+      </section>}
 
       <ArchivedMaterials onRestore={()=>void loadHistory()} />
     </div>
