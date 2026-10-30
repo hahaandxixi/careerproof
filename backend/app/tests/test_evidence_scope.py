@@ -78,6 +78,17 @@ def test_unsent_runtime_record_does_not_replace_concrete_gap_or_suggestion():
     assert result.items[0].evidence_list[1].file_path == "runtime/pytest-output.txt"
 
 
+def test_test_code_does_not_erase_explicitly_missing_test_execution_record():
+    result = make_result()
+    result.items[0].evidence_list[1] = replace(result.items[0].evidence_list[1],
+        file_path="tests/test_other.py", snippet="def test_other():\n    assert other()")
+    contexts = build_evidence_contexts(result, max_evidence=1)
+    analysis = make_analysis(result)
+    analysis.items[0].information_gap = "材料未提供测试运行记录"
+    assert qualify_analysis(analysis, result, contexts).items[0].information_gap == "材料未提供测试运行记录"
+    assert result.items[0].evidence_list[1].file_path == "tests/test_other.py"
+
+
 def test_unsent_test_code_cannot_resolve_missing_run_record():
     result = make_result()
     result.items[0].evidence_list[1] = replace(result.items[0].evidence_list[1],
