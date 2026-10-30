@@ -1,0 +1,119 @@
+{
+  "checkedAt": "2026-10-30T02:14:59.362872+00:00",
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "node": "v22.23.1",
+  "acceptedSource": "ea02903ccb97d82b880977460b650615903aa350",
+  "frontendSourceCommit": "ea02903ccb97d82b880977460b650615903aa350",
+  "buildId": "RLcZoyknK6MTku2FRKv3Z",
+  "distDir": ".next-simplicity-batches-close-20261030",
+  "frontend": {
+    "url": "http://127.0.0.1:3140",
+    "httpStatus": 200,
+    "pid": 165804,
+    "directory": "D:\\jbcode\\web ai\\careerproof-v1\\jianli"
+  },
+  "backend": {
+    "url": "http://127.0.0.1:8140",
+    "healthHttpStatus": 200,
+    "launcherPid": 150588,
+    "workerPid": 150684,
+    "directory": "D:\\jbcode\\web ai\\careerproof-v1\\backend",
+    "sourceDigest": "2D1B30001B8FCC6C862C5B1DD16BDB989791176A7054B0A40C6D14E657123F86"
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55447,
+    "name": "careerproof_v1"
+  },
+  "storage": "D:/jbcode/web ai/jianli/backend/storage-v1",
+  "aiConfigurationFromVerifiedLauncher": {
+    "provider": "deepseek",
+    "externalEnabled": "true",
+    "model": "deepseek-flash",
+    "newCallsThisTask": 0
+  },
+  "assetChecks": [
+    {
+      "asset": "/_next/static/chunks/1112-e3950a12e8c2a94d.js",
+      "sha256": "63d569214414e4a60a488d1fbb146037ca57786081ca2368ce08b592a1937501",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/1436-91591e5f8af0db12.js",
+      "sha256": "76c3f7a376a4ac7565d57ca848e6d07f3b7b07aa3a2b7cba09b8fdb85e4bc3bc",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/2866-3e8df9c8ff988b6f.js",
+      "sha256": "89aefb55a4524ff9a24c5bafeab013d96c4509a8821f0409e0d3da2acf863d6e",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/7532-74eaa053bb2b00a5.js",
+      "sha256": "18517121ed82eb62897597f117940de7502b897306ef0fd12f4d4e185df52da0",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/error-3d63e511b6a2ead6.js",
+      "sha256": "d30b84642d6d5ace521ba9041dd9368225af75c6a975d6e521861e0383493f57",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/global-error-3db23bd3572bf91c.js",
+      "sha256": "e619e16e370e243b53a24c75a45b6ac4e6c06771bb38a2134ce8a14a5dab7bfb",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/layout-822339fede43fa5e.js",
+      "sha256": "bbdf66e265155e97d3b2063c911c62e06f62ed0c17c754fe3422eb7300343353",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/page-2b9f968ccf4fb6e4.js",
+      "sha256": "d8314232800c05bc19c6f57feef86b41ccf3654585fad057eaf7c15525a02f35",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/c2a625ac-534a682fa2e819d1.js",
+      "sha256": "b84d0b8803d6cc75092d931c6366f16bf029a509ac562b384c38ec3eb0c0d279",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/main-app-f05afa501d4c9c9d.js",
+      "sha256": "57d517b21b380b976fd24e0a2cdf644635a11880e26ef9ee9da22b8991902ccc",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/chunks/webpack-826ed10b2c4805f8.js",
+      "sha256": "96843d0ad59418fb663f20fe08900a4f9f6afc56aa295f3ecccc73bca5956326",
+      "matchesDisk": true
+    },
+    {
+      "asset": "/_next/static/css/130f7efc09078c1a.css",
+      "sha256": "ca15dad5b9497ea2af1c1b4683e88409bf67c3205f7bea4c7aba5de63948c9c8",
+      "matchesDisk": true
+    }
+  ],
+  "businessRowsUnchangedFromPreTaskBaseline": true,
+  "counts": {
+    "applications": 19,
+    "application_events": 49,
+    "notifications": 55,
+    "match_reports": 103,
+    "match_items": 379,
+    "projects": 54,
+    "project_versions": 75,
+    "project_files": 338,
+    "resume_versions": 56,
+    "analysis_tasks": 265,
+    "ai_usage_logs": 64,
+    "ai_request_attempts": 11
+  },
+  "browserVisualAcceptance": "pending: Computer Use URL identification safety stop; not retried or bypassed"
+}
