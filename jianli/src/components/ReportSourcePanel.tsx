@@ -8,13 +8,15 @@ import { sourceLimit } from "@/lib/source-limits";
 export default function ReportSourcePanel({ report, item }: { report: MatchReport; item: ReportItem }) {
   const adopted = !!adoptedReportExplanation(report, item);
   const first = adopted ? item.evidenceList.findIndex(source => !!source.citationId && item.aiCitationIds.includes(source.citationId)) : 0;
+  const identities = new Set(item.evidenceList.map(source=>compactSourceLabel(source,report.materials).material));
   return <section className="min-w-0" aria-label={`${item.skill}的证据来源`}>
     <h4 className="font-semibold">来源</h4>
+    {identities.size===1&&<p className="mt-1 text-sm text-slate-600">{[...identities][0]}</p>}
     {item.evidenceList.length ? <div className="mt-3 space-y-2">{item.evidenceList.map((source, index) => {
       const label = compactSourceLabel(source, report.materials);
       const limit = sourceLimit(report, source);
       return <details key={`${source.filePath}-${index}`} open={index === Math.max(0, first)} className="rounded-lg border border-slate-200 open:border-indigo-300">
-        <summary className="cursor-pointer p-3 text-base text-indigo-900"><strong>{label.fileName}</strong><span className="ml-2 text-sm">第 {source.lineStart}–{source.lineEnd} 行</span>{limit && <span className="ml-2 text-sm text-amber-900">{limit.label}</span>}<span className="mt-1 block text-sm text-slate-600">{label.material}{source.provenance === "reference" ? " · 第三方参考，不计评级" : ""}</span></summary>
+        <summary className="cursor-pointer p-3 text-base text-indigo-900"><strong>{label.fileName}</strong><span className="ml-2 text-sm">第 {source.lineStart}–{source.lineEnd} 行</span>{limit && <span className="ml-2 text-sm text-amber-900">{limit.label}</span>}{(identities.size>1||source.provenance==="reference")&&<span className="mt-1 block text-sm text-slate-600">{identities.size>1?label.material:""}{source.provenance === "reference" ? " · 第三方参考，不计评级" : ""}</span>}</summary>
         <div id={sourceLocationId(item.requirementId, source, index)} className="min-w-0 scroll-mt-24 px-3 pb-3">
           {limit && <p className="mb-2 text-sm leading-6 text-amber-900">{limit.detail}</p>}
           {limit?.readable !== false && <EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} />}

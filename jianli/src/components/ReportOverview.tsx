@@ -21,6 +21,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       </dl>
     </div>
     {(states.partial.length > 0 || states.other.length > 0) && <p className="text-sm text-slate-600">另有 {states.partial.length} 项部分支持 · {states.other.length} 项未覆盖或需复核。</p>}
+    <p className="text-sm text-slate-600">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")||"历史记录未保存材料版本"}</p>
     <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
       <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 items-center text-indigo-700 underline">材料版本</EvidenceLink>
       {role === "student" && <EvidenceLink targetId="report-comparison" className="inline-flex min-h-9 items-center font-medium text-indigo-700 underline">版本对比</EvidenceLink>}
