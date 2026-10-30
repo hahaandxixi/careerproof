@@ -16,6 +16,7 @@ export function comparableRadarAxes(a: ApplicationView, b: ApplicationView): boo
 
 export function mixedComparisonBasis(items: ApplicationView[]): boolean {
   return items.length > 1 && (
+    items.some(item=>item.fixedRequirementBasisComplete!==true) ||
     items.some(item => !item.comparisonBasis) ||
     new Set(items.map(item => item.comparisonBasis)).size > 1
   );
