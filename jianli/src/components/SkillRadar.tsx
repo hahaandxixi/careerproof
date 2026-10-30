@@ -6,6 +6,7 @@ import type { SourceMaterial } from "@/lib/source-label";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection, radarPosition } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
+import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-citations";
 
 export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange }: {
   dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
@@ -24,13 +25,13 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     return radarPosition(index, dimensions.length, ratio);
   };
   const score = radarScore(dimension);
+  const useAi = !!item && item.aiStatus==="validated" && !aiFallbackUsed && !invalidNarrativeCitations(item).length;
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
   return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" aria-label="证据联动雷达">
     <div className="flex flex-wrap items-start justify-between gap-3">
-      <div><p className="text-xs font-medium tracking-wide text-indigo-600">从要求到证据</p><h3 className="mt-1 text-lg font-semibold">岗位要求雷达 · 证据联动</h3></div>
+      <h3 className="text-lg font-semibold">逐项核对</h3>
       <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600">{dimensions.length} 项岗位要求</span>
     </div>
-    <p className="mt-2 text-sm leading-6 text-slate-600">选择一项要求，查看原报告判断，再按需展开来源片段。</p>
     <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="雷达图例">
       <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported} / {RADAR_STATUS.partial}</span>
       <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
@@ -69,26 +70,26 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
         </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，使用下方逐项证据对照，避免轴标签拥挤。</p>}
       </div>
       <div id={detailId} className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
-        <p className="text-xs font-medium text-indigo-600">当前选中 · 第 {selectedIndex + 1} 项 / 共 {dimensions.length} 项</p>
+        <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-indigo-50/70 p-4"><div><p className="text-xs text-slate-600">原报告材料支持度</p><p className="mt-1 text-3xl font-semibold tabular-nums text-indigo-700">{score ?? "—"}</p></div><span className="rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-xs font-medium text-slate-700">{status(dimension)}</span></div>
-        {score !== null && <p className="mt-1 text-xs text-slate-400">材料支持度 · 沿用原报告</p>}
-        <p className="mt-3 text-xs leading-5 text-slate-500">岗位权重 {dimension.weight}{dimension.evidenceLevel != null && <> · 实践证据 {evidenceLevelName(dimension.evidenceLevel)} · {dimension.evidenceLevelSource === "ai_preliminary" ? "AI初评，待独立核验" : "原报告结果"}</>}</p>
+        <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
+        <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><p>材料支持度 {score??"不可评"} · 岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}，不等于能力认证。</p>}</details>
         {aiFallbackUsed && <p className="mt-3 text-sm text-amber-900">报告已降级，本处使用规则解释。</p>}
         {item && item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="mt-3 text-sm text-amber-900">本项 AI 解释未被采用，请按规则和来源核对。</p>}
-        {item?.evidenceList.some(source => source.contextComplete === false) && <p className="mt-3 text-sm text-amber-900">部分来源上下文不完整，请展开核对。</p>}
+        {item&&invalidNarrativeCitations(item).length>0&&<p className="mt-3 text-sm text-amber-900">历史AI解释含未对齐引用，请按规则与固定来源核对。</p>}
         {item ? <>
-          <p className="mt-4 break-words text-sm leading-6 text-slate-700">{(item.aiStatus === "validated" && !aiFallbackUsed ? item.aiExplanation : null) || item.explanation || "原报告未提供这项判断的说明。"}</p>
+          <p className="mt-4 break-words text-base leading-7 text-slate-700">{(useAi&&item.aiExplanation ? readableCitationText(item,item.aiExplanation) : null) || item.explanation || "原报告未提供这项判断的说明。"}</p>
+          {useAi&&item.aiExplanation&&<details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">AI解释原文</summary><p className="mt-2 whitespace-pre-wrap leading-7">{item.aiExplanation}</p></details>}
           <details key={dimension.requirementId} open={evidenceExpanded} onToggle={event=>onEvidenceExpandedChange?.(event.currentTarget.open)} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
             <summary className="cursor-pointer text-sm text-indigo-700">查看本次授权引用片段（{item.evidenceList.length}）</summary>
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
-              <p className="break-all leading-5">{e.citationId || "原报告引用"} · <SourceIdentity source={e} materials={materials} /> · 第{e.lineStart}—{e.lineEnd}行</p>
+              <p className="leading-6 text-sm"><SourceIdentity source={e} materials={materials} compact/> · 第{e.lineStart}—{e.lineEnd}行</p>
               {e.provenance === "reference" && <p className="mt-1 text-amber-800">参考材料，不能证明本人贡献。</p>}
-              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{e.snippet}</pre><SourceIdentityDetails source={e} />
+              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2 text-sm">{e.snippet}</pre><SourceIdentityDetails source={e} />
               {!e.contextComplete && <p className="mt-2 leading-5 text-amber-800">{e.contextNote || "引用上下文不完整，需要结合原报告核对。"}</p>}
             </div>) : <p className="mt-3 text-xs leading-5 text-slate-500">本项没有可定位的引用片段，可在完整报告中核对材料缺口。</p>}
           </details>
-          {(item.aiStatus === "validated" && !aiFallbackUsed ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-xs leading-5 text-amber-800">待核对：{item.aiStatus === "validated" && !aiFallbackUsed ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
+          {(useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-sm leading-6 text-amber-800">待核对：{useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
 
         </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"} {dimension.verdict === "gap" ? "缺材料不代表没有能力。" : "材料支持程度不代表能力或录用结论。"}</p>}
       </div>

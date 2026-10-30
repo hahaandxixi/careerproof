@@ -6,7 +6,11 @@ import { radarPosition, radarPointKind, radarScore, radarSegments, RADAR_STATUS 
 import { reportModeLabel } from "@/lib/report-display";
 import { requirementSummary } from "@/lib/report-workspace";
 import { heatmapCellClass } from "@/lib/heatmap-cell.js";
-import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
+import { SourceIdentityDetails } from "./SourceIdentity";
+import { invalidNarrativeCitations } from "@/lib/report-citations";
+import { compactSourceLabel } from "@/lib/source-label";
+import { sourceLimit } from "@/lib/source-limits";
+import ReportNarrative from "./ReportNarrative";
 
 export default function CandidatePairComparison({candidates, busy, onOpen, initialIds, onRequirementChange}:{
   candidates: [ApplicationView, ApplicationView]; busy: boolean; onOpen:()=>void;
@@ -24,7 +28,7 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
   return <section className="panel pair-evidence-workspace min-w-0 space-y-4" aria-label="双人证据对照">
     <h2 className="text-xl font-semibold">双人证据对照</h2>
     {!ready?<div className="space-y-3 rounded-xl bg-slate-50 p-4"><p className="text-sm">打开这两份固定报告后查看雷达和引用。仅核对所选两位，不加载其他候选人的报告。</p><button type="button" className="btn" disabled={busy} onClick={onOpen}>打开两份授权报告</button></div>:<>
-      {!aligned&&<p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">比较依据不同：岗位要求、权重或规则尺度不一致，不叠加雷达。请分别选择各自报告中的要求核对。</p>}
+      {!aligned&&<p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{candidates.some(c=>c.fixedRequirementBasisComplete!==true)?"比较依据不足：历史要求信息不完整，不能确认同一尺度。":"比较依据不同：岗位要求、权重或规则尺度不一致。"}不叠加雷达，请分别核对固定要求。</p>}
       {aligned&&<>
         <div className="flex flex-wrap gap-2" aria-label="双人共同岗位要求">{axes.map((d,i)=><button key={d.requirementId} type="button" className={current?.requirementId===d.requirementId?"btn":"btn-secondary"} aria-pressed={current?.requirementId===d.requirementId} onClick={()=>setSelectedId(d.requirementId)}>{i+1} · {d.skill||d.title}</button>)}</div>
       </>}
@@ -49,7 +53,8 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
 export function EvidenceColumn({candidate,color,requirementId,independent,onSelect}:{candidate:ApplicationView;color:string;requirementId:string;independent:boolean;onSelect:(id:string)=>void}) {
   const report=candidate.report;
   const item=report?.items.find(d=>d.requirementId===requirementId);
-  const useAi=!!item&&item.aiStatus==="validated"&&!report?.aiFallbackUsed;
+  const invalid=item?invalidNarrativeCitations(item):[];
+  const useAi=!!item&&item.aiStatus==="validated"&&!report?.aiFallbackUsed&&!invalid.length;
   const explanation=(useAi?item?.aiExplanation:null)||item?.explanation||"";
   const gap=(useAi?item?.aiInformationGap:null)||item?.evidenceLevelGap||"请核对来源覆盖范围、运行记录与本人贡献；本报告未独立认证。";
   return <article className="min-w-0 space-y-3 rounded-xl border border-slate-200 p-4" aria-label={`${candidate.candidateName}的固定证据`}>
@@ -58,10 +63,13 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
     {independent&&<label className="block text-sm">{candidate.candidateName}的岗位要求<select className="field mt-1" value={requirementId} onChange={e=>onSelect(e.target.value)}>{candidate.dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label>}
     {item?<>
       {independent && <p className="break-words text-base font-medium">{item.requirementTitle || item.skill}</p>}
-      <div className={`rounded-lg border p-3 text-sm ${heatmapCellClass(item.verdict)}`}><strong>{RADAR_STATUS[item.verdict]??item.verdict}</strong><span className="ml-3">材料支持度 {item.finalScore??"不可评"}</span></div>
-      <p className="break-words text-base leading-7">{useAi&&item.aiExplanation?`${explanation.slice(0,100)}${explanation.length>100?"…":""}`:requirementSummary(item)}</p>
-      <details className="text-sm"><summary className="cursor-pointer py-1 text-indigo-700">完整判断与核验说明</summary><p className="mt-2 break-words leading-6">{explanation}</p><p className="mt-2 break-words leading-6">{gap}</p></details>
-      {item.evidenceList.length?<ul className="space-y-3">{item.evidenceList.map((source,index)=><li key={`${source.citationId}:${index}`} className="min-w-0 border-t border-slate-100 pt-3"><p className="text-xs leading-6"><SourceIdentity source={source} materials={report?.materials} compact/> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId||"规则来源"}</p><details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-indigo-700">展开源码片段</summary><pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-slate-50 p-3 text-xs">{source.snippet}</pre><SourceIdentityDetails source={source}/></details>{source.contextComplete===false&&<p className="mt-2 text-xs text-amber-900">{source.contextNote||"引用上下文不完整，需核对完整来源。"}</p>}</li>)}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}
+      <div className={`rounded-lg border p-3 text-base ${heatmapCellClass(item.verdict)}`}><strong>{RADAR_STATUS[item.verdict]??item.verdict}</strong></div>
+      {invalid.length>0&&<p className="text-sm text-amber-900">历史AI解释含未对齐引用，当前按规则判断与固定来源核对。</p>}
+      <p className="break-words text-base leading-7">{useAi&&report?<ReportNarrative text={explanation} item={item} report={report} sourcePrefix={`pair-${candidate.id}-`}/>:requirementSummary(item)}</p>
+      <p className="break-words text-base leading-7 text-slate-700">待核对：{gap}</p>
+      <details className="text-sm"><summary className="cursor-pointer py-1 text-indigo-700">原报告判断记录</summary><p className="mt-2">原报告材料支持度 {item.finalScore??"不可评"}，不是能力或录用分数。</p><p className="mt-2 break-words leading-6">{useAi?item.aiExplanation:item.explanation}</p></details>
+      {report&&<p className="text-sm text-slate-600">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")}</p>}
+      {item.evidenceList.length?<ul className="space-y-2">{item.evidenceList.map((source,index)=>{const limit=report?sourceLimit(report,source):null;return <li key={`${source.citationId}:${index}`} className="min-w-0 border-t border-slate-100 pt-2"><details id={`pair-${candidate.id}-citation-${source.citationId??index}`} open={index===0} className="text-sm"><summary className="cursor-pointer py-2 text-indigo-700">{compactSourceLabel(source,report?.materials).fileName} · 第{source.lineStart}–{source.lineEnd}行{limit?` · ${limit.label}`:""}</summary>{limit&&<p className="text-sm leading-6 text-amber-900">{limit.detail}</p>}{limit?.readable!==false&&<pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-slate-50 p-3 text-sm">{source.snippet}</pre>}<SourceIdentityDetails source={source}/></details>{source.provenance==="reference"&&<p className="text-sm text-amber-900">第三方参考，不作为本人实践证明。</p>}</li>;})}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}
     </>:<p className="text-sm text-slate-600">当前授权报告没有对应要求，请按该报告的固定要求核对。</p>}
   </article>;
 }

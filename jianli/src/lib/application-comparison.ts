@@ -2,6 +2,7 @@ import type { ApplicationView } from "./api/client";
 
 /** Snapshot basis plus actual axes must agree; never align unlike requirements by position. */
 export function comparableRadarAxes(a: ApplicationView, b: ApplicationView): boolean {
+  if (a.fixedRequirementBasisComplete!==true || b.fixedRequirementBasisComplete!==true) return false;
   if (!a.comparisonBasis || a.comparisonBasis !== b.comparisonBasis || a.jobId !== b.jobId ||
       !a.dimensions.length || a.dimensions.length !== b.dimensions.length) return false;
   const keys = new Set(a.dimensions.map(d => d.requirementId));

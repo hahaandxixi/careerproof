@@ -4,7 +4,7 @@ def compare_requirements(saved: list[dict] | None, current: list[dict]) -> dict:
     if saved is None:
         return {"status": "unknown", "changes": [], "missingFields": ["投递时岗位要求"]}
     def normalize(row):
-        aliases = {"id": ("id", "requirementId"), "要求内容": ("title", "rawText", "text"),
+        aliases = {"id": ("id", "requirementId"), "要求内容": ("title", "rawText", "text", "requirementTitle"),
                    "技能": ("skill", "skillName"), "权重": ("weight",), "是否必需": ("isRequired", "is_required")}
         return {name: next((row[k] for k in keys if k in row and row[k] is not None), None) for name, keys in aliases.items()}
     old, new = [normalize(r) for r in saved], [normalize(r) for r in current]

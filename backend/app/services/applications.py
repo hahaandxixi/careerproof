@@ -256,6 +256,9 @@ class ApplicationService:
             raise AppError("24小时内最多投递20次（含撤回后重新投递），请稍后再试",
                            status_code=429, code=4298)
         snapshot = report_view.model_dump(mode="json", by_alias=True)
+        requirement_basis = report.job_snapshot.get("requirements")
+        if requirement_basis:
+            snapshot["requirementBasis"] = [dict(row) for row in requirement_basis]
         item = Application(
             job_id=job.id,
             student_id=student.id,
@@ -283,12 +286,16 @@ class ApplicationService:
     async def view(self, item, job, include_report=False):
         from app.tools.requirement_versions import compare_requirements
 
-        saved_report = await self.session.get(MatchReport, item.report_id)
+        # Compare only this application's frozen facts, never a mutable report
+        # projection or the student's latest material/report.
+        saved_requirements = item.report_snapshot.get("requirementBasis")
+        if saved_requirements is None:
+            saved_requirements = item.report_snapshot.get("items")
         current_requirements = list(await self.session.scalars(
             select(JobRequirement).where(JobRequirement.job_id == job.id)
         ))
         requirement_comparison = compare_requirements(
-            saved_report.job_snapshot.get("requirements") if saved_report else None,
+            saved_requirements,
             [{"id": str(r.id), "title": r.raw_text, "skill": r.skill_name,
               "weight": r.weight, "isRequired": r.is_required} for r in current_requirements],
         )
@@ -334,8 +341,10 @@ class ApplicationService:
             }
             for i in item.report_snapshot.get("items", [])
         ]
+        result["fixedRequirementBasisComplete"] = compare_requirements(saved_requirements, saved_requirements or [])["status"] == "same"
         # Equal requirement IDs can have edited text/weight or a different scoring version.
         basis = {
+            "required": sorted((str(r.get("id", r.get("requirementId", ""))), r.get("isRequired", r.get("is_required"))) for r in (saved_requirements or [])),
             "context": item.report_snapshot.get("evidenceContextVersion"),
             "criteria": sorted(
                 [
