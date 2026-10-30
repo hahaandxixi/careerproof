@@ -51,6 +51,13 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const { default: SkillRadar } = await import(pathToFileURL(path.join(SRC, "components/SkillRadar.tsx")).href);
 const dim = (id,verdict,score) => ({requirementId:id,title:id,skill:id,verdict,score,weight:1,evidenceLevel:null});
 const render = props => renderToStaticMarkup(React.createElement(SkillRadar,props));
+
+test("desktop radar stays visible without a collapsed overview control and retains raw scale",()=>{
+ const html=render({dimensions:[dim("FastAPI long requirement","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)]});
+ assert.ok(html.includes("<svg"));assert.ok(!html.includes("hidden xl:block"));assert.ok(!html.includes("展开整体雷达"));
+ assert.ok(html.includes("<title>FastAPI long requirement</title>"));
+ assert.ok(html.includes(">100</text>"));assert.ok(!html.includes("65%"));
+});
 test("linked detail renders only selected requirement citations and keeps sources collapsed", () => {
  // 传智杯48：正常数据改为 evidence-v3 单项可达值 65/40/0（不再用 85/55 假装高分）
  const dimensions=[dim("Python","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)];

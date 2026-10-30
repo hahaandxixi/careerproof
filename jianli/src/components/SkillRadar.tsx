@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import type { SourceMaterial } from "@/lib/source-label";
+import EvidenceSnippet from "./EvidenceSnippet";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import { RADAR_STATUS, radarPointKind, radarScore, radarSegments, radarSelection, radarPosition } from "@/lib/skill-radar";
 import { RULE_SCORE_CAP_NOTE, evidenceLevelName } from "@/lib/evidence-display";
@@ -16,7 +17,6 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
 }) {
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
-  const [overviewOpen, setOverviewOpen] = useState(false);
   const selectRequirement = (id: string) => { setSelectedId(id); onRequirementChange?.(id); };
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
@@ -32,7 +32,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
       <h3 className="text-lg font-semibold">逐项核对</h3>
       <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600">{dimensions.length} 项岗位要求</span>
     </div>
-    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="雷达图例">
+    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="雷达图例">
       <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported} / {RADAR_STATUS.partial}</span>
       <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
       <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-dashed border-slate-400" />{RADAR_STATUS.gap}（不绘点）</span>
@@ -40,9 +40,8 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     </div>
     <details className="mt-3 text-xs leading-5 text-slate-500"><summary className="w-fit cursor-pointer py-2 text-indigo-700">分数与图形如何理解</summary><p className="mt-1">分数沿用原报告，不填充面积。{RULE_SCORE_CAP_NOTE}</p></details>
         <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
-    <button type="button" className="btn-secondary mt-3 xl:hidden" aria-expanded={overviewOpen} onClick={() => setOverviewOpen(value => !value)}>{overviewOpen ? "收起整体雷达" : "展开整体雷达概览"}</button>
     <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(340px,0.7fr)_minmax(0,1.3fr)]">
-      <div className={`${overviewOpen ? "block" : "hidden xl:block"} min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4`}>
+      <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
 
         {dimensions.length >= 3 && dimensions.length <= 8 ? <svg className="mx-auto mt-2 w-full max-w-[400px]" viewBox="0 0 400 400" role="group" aria-label="岗位要求分数，点选轴标签或上方要求按钮查看证据">
           <circle cx="200" cy="200" r="108" fill="#f8fafc" />
@@ -61,7 +60,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
               <line x1="200" y1="200" x2={end.x} y2={end.y} stroke={active ? "#818cf8" : "#cbd5e1"} strokeWidth={active ? 2 : 1} />
               {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#d97706" : "#4f46e5"} strokeWidth="2"><title>{`${title}：${radarScore(d)}，${status(d)}`}</title></circle>}
               <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${radarScore(d) ?? "不可评"}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
-                <rect x={label.x - 58} y={label.y - 20} width="116" height="44" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
+                <title>{title}</title><rect x={label.x - 58} y={label.y - 20} width="116" height="44" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
                 <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="12" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
                 <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="10" fill="#64748b">{radarScore(d) ?? "—"} · {status(d)}</text>
               </g>
@@ -85,7 +84,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
               <p className="leading-6 text-sm"><SourceIdentity source={e} materials={materials} compact/> · 第{e.lineStart}—{e.lineEnd}行</p>
               {e.provenance === "reference" && <p className="mt-1 text-amber-800">参考材料，不能证明本人贡献。</p>}
-              <pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2 text-sm">{e.snippet}</pre><SourceIdentityDetails source={e} />
+              <EvidenceSnippet evidence={e} materials={materials} showContextNote={false}/><SourceIdentityDetails source={e} />
               {!e.contextComplete && <p className="mt-2 leading-5 text-amber-800">{e.contextNote || "引用上下文不完整，需要结合原报告核对。"}</p>}
             </div>) : <p className="mt-3 text-xs leading-5 text-slate-500">本项没有可定位的引用片段，可在完整报告中核对材料缺口。</p>}
           </details>

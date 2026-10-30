@@ -100,3 +100,12 @@ test("enterprise status and evidence filters apply immediately while retaining c
  assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
  h.button(tree,"重置").props.onClick();await h.settle();assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"",status:"",requirementId:"",verdict:""});
 });
+
+test("selected heatmap cell identifies both candidate and requirement after returning to the matrix",async()=>{
+ const h=fixture();let tree=await h.settle();
+ const cell=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="候选人a · Python要求 · 仅简历声明");
+ assert.ok(cell);await cell.props.onClick();tree=await h.settle();h.button(tree,"候选人").props.onClick();tree=h.render();
+ const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="候选人a · Python要求 · 仅简历声明");
+ assert.equal(selected.props["aria-pressed"],true);assert.match(selected.props.className,/ring-inset/);
+ assert.equal(h.counts.reply,0);
+});
