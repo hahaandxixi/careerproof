@@ -1,0 +1,24 @@
+# Goal33 executed commands (from D:\jbcode\web ai\jianli unless noted)
+# 1) red run (pre-implementation; 6 failed = goal-30 reproduction, 10 passed = pins)
+cd backend
+./.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_weekend_plan_boundaries.py -v --basetemp=.tmp-goal33-red
+#   -> 6 failed, 10 passed (red-run.out)
+# 2) implementation edits: contracts.py, task_boundaries.py, provider.py
+# 3) target green run
+./.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_weekend_plan_boundaries.py -q --basetemp=.tmp-goal33-green2 -p no:cacheprovider
+#   -> 18 passed (target-green.out, final)
+# 4) affected contract/plan/eval suites
+./.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_task_boundaries.py app/tests/test_task_boundary_review_regressions.py app/tests/test_actionable_evidence_gaps.py app/tests/test_task_plan_boundary_fallback.py app/tests/test_task_plan_future_checks.py app/tests/test_task_plan_quality_coverage.py app/tests/test_actionable_plans.py app/tests/test_quality_dimensions.py app/tests/test_quality_review_benchmark.py app/tests/test_quality_review_benchmark_holdout.py -q --basetemp=.tmp-goal33-affected3 -p no:cacheprovider
+#   -> 142 passed (affected-contract-plan-evals.out)
+# 5) affected consumers + workflow suites
+./.venv-dependency23/Scripts/python.exe -m pytest app/tests/test_career_change_attribution.py app/tests/test_career_visible_checks.py app/tests/test_real_matching.py app/tests/test_report_comparison.py app/tests/test_ai_evidence_workflow.py -q --basetemp=.tmp-goal33-affected4 -p no:cacheprovider
+#   -> 158 passed (affected-consumers-workflow.out)
+# 6) Codex independent probe re-run (baseline flip documented, exit=1 expected)
+backend/.venv-dependency23/Scripts/python.exe docs/evidence/20261011-AI-plan-consistency-codex/source-attribution-probe.py
+#   -> AssertionError "Baseline changed" (codex-probe-after-fix.out)
+# 7) post-fix verification (Codex probe halves re-evaluated without editing it)
+backend/.venv-dependency23/Scripts/python.exe docs/evidence/20261011-GLM-goal33/postfix-boundary-verify.py
+#   -> exit=0, frozen draft rejected, independent proof accepted (postfix-boundary-verify.out)
+# 8) adversarial sweep: inline python -c checks over new guards -> OK (transcript in handoff.md)
+# Intermediate runs (superseded, same suites): affected1 94 passed / affected2 158 passed / evals 48 passed / green1 16 passed
+# No provider/network/DB/service/browser/install; no git commit/push; basetemp under backend/.tmp-*

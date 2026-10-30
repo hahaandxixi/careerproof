@@ -1,0 +1,2 @@
+﻿8bf855a0cb4f3e50b6ab60bf8118b9ede3840b713aac9a390aa73267a1d85974  backend/app/tools/document_parser.py
+e2a58b1c0704c47d417e7caf0d03cf3310c0314280b3f256db21d5204e88d948  backend/app/tests/test_document_ocr.py

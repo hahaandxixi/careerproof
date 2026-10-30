@@ -1,0 +1,162 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+__________________ test_selective_filter_returns_exact_topk ___________________
+
+recall_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D1FFE82090>, autoflush=True, expire_on_commit=False)
+
+    async def test_selective_filter_returns_exact_topk(recall_db):
+>       user_id, owned_total = await _seed_adversarial(
+            recall_db, sections=3, chunks_per_section=8, corpus=3000
+        )
+
+app\tests\test_retrieval_filtered_recall.py:290: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_retrieval_filtered_recall.py:285: in _seed_adversarial
+    await _add_corpus(factory, corpus, rng, base_time - timedelta(minutes=1))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D1FFE82090>, autoflush=True, expire_on_commit=False)
+count = 3000, rng = <random.Random object at 0x000001D1D8F61D00>
+base_time = datetime.datetime(2026, 10, 17, 4, 19, 14, 142622, tzinfo=datetime.timezone.utc)
+
+    async def _add_corpus(factory, count: int, rng: random.Random, base_time: datetime) -> None:
+        async with factory() as session:
+            for position in range(count):
+                session.add(
+                    KnowledgeChunk(
+                        source_type="resume_section",
+>                       source_id=uuid.UUID(int=rng.getrandbits(128), version=4),
+                                  ^^^^
+                        content=CORPUS_TEXT,
+                        chunk_metadata={
+                            "chunkIndex": position,
+                            "lineStart": 1,
+                            "lineEnd": 1,
+                            "embeddingEngine": HASH_ENGINE,
+                        },
+                        embedding=local_embedding(CORPUS_TEXT),
+                        created_at=base_time + timedelta(seconds=position),
+                    )
+                )
+E               NameError: name 'uuid' is not defined. Did you forget to import 'uuid'
+
+app\tests\test_retrieval_filtered_recall.py:185: NameError
+___________________ test_single_owned_source_partial_window ___________________
+
+recall_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D188089FD0>, autoflush=True, expire_on_commit=False)
+
+    async def test_single_owned_source_partial_window(recall_db):
+>       user_id, owned_total = await _seed_adversarial(
+            recall_db, sections=1, chunks_per_section=3, corpus=3000
+        )
+
+app\tests\test_retrieval_filtered_recall.py:319: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_retrieval_filtered_recall.py:285: in _seed_adversarial
+    await _add_corpus(factory, corpus, rng, base_time - timedelta(minutes=1))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D188089FD0>, autoflush=True, expire_on_commit=False)
+count = 3000, rng = <random.Random object at 0x000001D1D8E1EE30>
+base_time = datetime.datetime(2026, 10, 17, 4, 19, 14, 379634, tzinfo=datetime.timezone.utc)
+
+    async def _add_corpus(factory, count: int, rng: random.Random, base_time: datetime) -> None:
+        async with factory() as session:
+            for position in range(count):
+                session.add(
+                    KnowledgeChunk(
+                        source_type="resume_section",
+>                       source_id=uuid.UUID(int=rng.getrandbits(128), version=4),
+                                  ^^^^
+                        content=CORPUS_TEXT,
+                        chunk_metadata={
+                            "chunkIndex": position,
+                            "lineStart": 1,
+                            "lineEnd": 1,
+                            "embeddingEngine": HASH_ENGINE,
+                        },
+                        embedding=local_embedding(CORPUS_TEXT),
+                        created_at=base_time + timedelta(seconds=position),
+                    )
+                )
+E               NameError: name 'uuid' is not defined. Did you forget to import 'uuid'
+
+app\tests\test_retrieval_filtered_recall.py:185: NameError
+_________________________ test_large_allowed_ids_list _________________________
+
+recall_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D1885EE150>, autoflush=True, expire_on_commit=False)
+
+    async def test_large_allowed_ids_list(recall_db):
+        # 250 owned sections make the source_id IN (...) list large while most
+        # sections carry no chunks at all
+>       user_id, owned_total = await _seed_adversarial(
+            recall_db, sections=250, chunks_per_section=2, corpus=3000
+        )
+
+app\tests\test_retrieval_filtered_recall.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\tests\test_retrieval_filtered_recall.py:285: in _seed_adversarial
+    await _add_corpus(factory, corpus, rng, base_time - timedelta(minutes=1))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+factory = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D1885EE150>, autoflush=True, expire_on_commit=False)
+count = 3000, rng = <random.Random object at 0x000001D1D90168E0>
+base_time = datetime.datetime(2026, 10, 17, 4, 19, 14, 533898, tzinfo=datetime.timezone.utc)
+
+    async def _add_corpus(factory, count: int, rng: random.Random, base_time: datetime) -> None:
+        async with factory() as session:
+            for position in range(count):
+                session.add(
+                    KnowledgeChunk(
+                        source_type="resume_section",
+>                       source_id=uuid.UUID(int=rng.getrandbits(128), version=4),
+                                  ^^^^
+                        content=CORPUS_TEXT,
+                        chunk_metadata={
+                            "chunkIndex": position,
+                            "lineStart": 1,
+                            "lineEnd": 1,
+                            "embeddingEngine": HASH_ENGINE,
+                        },
+                        embedding=local_embedding(CORPUS_TEXT),
+                        created_at=base_time + timedelta(seconds=position),
+                    )
+                )
+E               NameError: name 'uuid' is not defined. Did you forget to import 'uuid'
+
+app\tests\test_retrieval_filtered_recall.py:185: NameError
+__________________ test_empty_index_distinct_from_shortfall ___________________
+
+recall_db = async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001D18862A810>, autoflush=True, expire_on_commit=False)
+caplog = <_pytest.logging.LogCaptureFixture object at 0x000001D188613AA0>
+
+    async def test_empty_index_distinct_from_shortfall(recall_db, caplog):
+        user_id = await _create_student(recall_db, "Z61 空表学生")
+        await _add_owned_section(recall_db, user_id, 0, " ".join(OWNED_TOKENS))
+        async with recall_db() as session:
+            user = await session.scalar(select(User).where(User.id == user_id))
+            with caplog.at_level(logging.INFO, logger="app.services.retrieval"):
+                results = await search_owned_chunks(session, user, QUERY_TEXT, 8)
+            assert results == []
+            empty_lines = [
+                record.getMessage()
+                for record in caplog.records
+                if '"outcome": "no-indexed-chunks"' in record.getMessage()
+            ]
+>           assert empty_lines, "empty index must be observable as its own outcome"
+E           AssertionError: empty index must be observable as its own outcome
+E           assert []
+
+app\tests\test_retrieval_filtered_recall.py:372: AssertionError
+============================== warnings summary ===============================
+app/tests/test_retrieval_filtered_recall.py::test_empty_index_distinct_from_shortfall
+  D:\jbcode\web ai\jianli\backend\app\tools\semantic_retrieval.py:70: UserWarning: The model sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 now uses mean pooling instead of CLS embedding. In order to preserve the previous behaviour, consider either pinning fastembed version to 0.5.1 or using `add_custom_model` functionality.
+    return TextEmbedding(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_retrieval_filtered_recall.py::test_selective_filter_returns_exact_topk
+FAILED app/tests/test_retrieval_filtered_recall.py::test_single_owned_source_partial_window
+FAILED app/tests/test_retrieval_filtered_recall.py::test_large_allowed_ids_list
+FAILED app/tests/test_retrieval_filtered_recall.py::test_empty_index_distinct_from_shortfall
+4 failed, 1 warning in 4.61s

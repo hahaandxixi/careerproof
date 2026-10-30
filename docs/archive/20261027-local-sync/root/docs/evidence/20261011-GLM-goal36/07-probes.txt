@@ -1,0 +1,21 @@
+ALLOW-expected OK  '源码存在说明文件已经上传，实际运行仍待核验' -> None
+ALLOW-expected OK  '源码存在证明材料可定位，部署结果需要另行核验' -> None
+ALLOW-expected OK  '源码存在未证明部署成功' -> None
+ALLOW-expected OK  '源码存在不代表已部署' -> None
+ALLOW-expected OK  '源码存在不等同于已部署' -> None
+ALLOW-expected OK  '无法以源码存在证明部署成功' -> None
+ALLOW-expected OK  '源码存在是否说明部署成功需核验' -> None
+ALLOW-expected OK  '源码存在说明文件已经上传' -> None
+ALLOW-expected OK  '源码存在证明材料可定位' -> None
+REJECT-expected OK  '源码存在说明部署成功' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '源码存在即证明线上接口稳定运行' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '实际运行仍待核验，源码存在说明部署成功' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '源码存在作为部署证明归档' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '代码文件存在等同于稳定运行' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '已有源码说明已上线' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '源码存在意味着线上可用' -> AI task plan claims source presence proves a deployment or runtime outcome
+REJECT-expected OK  '部署是否完成尚待核验，源码存在说明已上线' -> AI task plan claims source presence proves a deployment or runtime outcome
+--- documented lexical-limit residuals (expected escapes, by design) ---
+probe caught '目录里的源码足以证明系统已上线'
+probe ESCAPES '实际运行仍待核验时源码存在说明已上线'
+RESULT ALL-OK

@@ -1,0 +1,23 @@
+# Agent run verification claims
+
+> **作用域（仅一次运行）**：本文只描述报告 **f918** 的验证：输入/输出 **11,137 / 1,679**、估算费用 **0.035706 元**、**2 次物理请求**，工具状态为 **`planner_declined`**。它不是 tool-choice 的另一次运行，不能与后者的 6,001/487、0.015898 元、工具 `completed`/补取 `R1-E3` 互相替代或拼成同一次结论。
+
+- 状态：**pass**
+- 报告项数：5
+- 证据引用数：14
+- 物理请求：2
+- 输入/输出：11137/1679
+- 高峰价估算：0.035706 元
+
+## 可声称
+
+- 引用路径/行号均来自固定 ZIP；
+- 每项 AI 引用均为证据引用子集；
+- 等级未超过本地 supported criteria 数；
+- 用量行存在且与报告汇总一致；
+- 费用未超过 5 元。
+
+## 不可声称
+
+- tool execution: no completed retrieve_more_evidence call
+- page rendering and human semantic review are outside this verifier

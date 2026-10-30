@@ -1,0 +1,11 @@
+{
+  "name": "frontend-tests",
+  "command": [
+    "npm.cmd",
+    "test"
+  ],
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\github-source-20261027\\jianli",
+  "exit": 1,
+  "seconds": 4.87,
+  "scope": "isolated exact pending-source snapshot; not main or browser acceptance"
+}

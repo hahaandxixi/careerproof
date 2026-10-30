@@ -1,0 +1,37 @@
+{
+  "runId": "closure-20261005",
+  "scenario": "viewport390",
+  "startedAt": "2026-10-05T12:55:04.403Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T12:55:04.403Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=viewport390 runId=closure-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T12:55:04.929Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise-390 dynamic port 63702 profile=profile-enterprise-390"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T12:55:05.344Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise-390 exitCode=2147483651"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T12:55:05.345Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: cdp connection closed |     at WebSocket.<anonymous> (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:183:83) |     at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T12:55:05.345Z"
+}

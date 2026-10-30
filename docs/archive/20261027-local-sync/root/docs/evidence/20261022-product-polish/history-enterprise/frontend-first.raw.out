@@ -1,0 +1,268 @@
+TAP version 13
+# Subtest: pending list does not claim an empty result; refresh immediately removes the opened report
+ok 1 - pending list does not claim an empty result; refresh immediately removes the opened report
+  ---
+  duration_ms: 1.3177
+  type: 'test'
+  ...
+# Subtest: withdrawal between report response and authorization refresh prevents exporting that report
+ok 2 - withdrawal between report response and authorization refresh prevents exporting that report
+  ---
+  duration_ms: 0.2345
+  type: 'test'
+  ...
+# Subtest: a response started before a newer refresh cannot restore revoked content
+ok 3 - a response started before a newer refresh cannot restore revoked content
+  ---
+  duration_ms: 0.1519
+  type: 'test'
+  ...
+# Subtest: switching between two applications keeps the selected report and reply target aligned
+ok 4 - switching between two applications keeps the selected report and reply target aligned
+  ---
+  duration_ms: 0.3262
+  type: 'test'
+  ...
+# Subtest: window hiding and effect disposal invalidate requests, including across reactivation
+ok 5 - window hiding and effect disposal invalidate requests, including across reactivation
+  ---
+  duration_ms: 0.2729
+  type: 'test'
+  ...
+# Subtest: download bytes are not delivered after a withdrawal or an intervening window clear
+ok 6 - download bytes are not delivered after a withdrawal or an intervening window clear
+  ---
+  duration_ms: 0.3982
+  type: 'test'
+  ...
+# Subtest: failed read, download, or reply leaves no stale report and remains retryable
+ok 7 - failed read, download, or reply leaves no stale report and remains retryable
+  ---
+  duration_ms: 0.8743
+  type: 'test'
+  ...
+# Subtest: reply only reports confirmed delivery after detail and authorization reread
+ok 8 - reply only reports confirmed delivery after detail and authorization reread
+  ---
+  duration_ms: 0.1279
+  type: 'test'
+  ...
+# Subtest: a successful download reports browser delivery without claiming disk persistence
+ok 9 - a successful download reports browser delivery without claiming disk persistence
+  ---
+  duration_ms: 0.8944
+  type: 'test'
+  ...
+# Subtest: window cleanup triggered by browser download cannot restore the old report
+ok 10 - window cleanup triggered by browser download cannot restore the old report
+  ---
+  duration_ms: 0.3827
+  type: 'test'
+  ...
+# Subtest: server filtering retains an opened snapshot only after fresh exact authorization
+ok 11 - server filtering retains an opened snapshot only after fresh exact authorization
+  ---
+  duration_ms: 0.2338
+  type: 'test'
+  ...
+# Subtest: filter absence cannot retain a revoked snapshot or restore after tab hiding
+ok 12 - filter absence cannot retain a revoked snapshot or restore after tab hiding
+  ---
+  duration_ms: 0.203
+  type: 'test'
+  ...
+# Subtest: filtering keeps unsupported and claimed-only separate from evidence-backed rows
+ok 13 - filtering keeps unsupported and claimed-only separate from evidence-backed rows
+  ---
+  duration_ms: 1.127
+  type: 'test'
+  ...
+# Subtest: incomparable versions sort by submission time rather than implying a score ranking
+ok 14 - incomparable versions sort by submission time rather than implying a score ranking
+  ---
+  duration_ms: 6.9201
+  type: 'test'
+  ...
+# Subtest: equal criteria use saved scores with unassessed values last
+ok 15 - equal criteria use saved scores with unassessed values last
+  ---
+  duration_ms: 0.1591
+  type: 'test'
+  ...
+# Subtest: filter view reports empty results and selected reports outside the current filter
+ok 16 - filter view reports empty results and selected reports outside the current filter
+  ---
+  duration_ms: 0.173
+  type: 'test'
+  ...
+# Subtest: 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+ok 17 - 卡片突出岗位/公司/状态/下一动作，锚点 id 保留
+  ---
+  duration_ms: 19.9239
+  type: 'test'
+  ...
+# Subtest: 完整投递记录默认折叠，摘要给条数，内容仍可展开
+ok 18 - 完整投递记录默认折叠，摘要给条数，内容仍可展开
+  ---
+  duration_ms: 0.7486
+  type: 'test'
+  ...
+# Subtest: 查看与下载状态的卡片不推断录用
+ok 19 - 查看与下载状态的卡片不推断录用
+  ---
+  duration_ms: 0.8025
+  type: 'test'
+  ...
+# Subtest: 企业回复与原报告/问题/引用链接保留
+ok 20 - 企业回复与原报告/问题/引用链接保留
+  ---
+  duration_ms: 1.1349
+  type: 'test'
+  ...
+# Subtest: 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+ok 21 - 已撤回状态展示重新投递入口并定位到报告页授权锚点，且不再出现撤回按钮
+  ---
+  duration_ms: 0.3917
+  type: 'test'
+  ...
+# Subtest: 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+ok 22 - 未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回
+  ---
+  duration_ms: 0.9185
+  type: 'test'
+  ...
+# Subtest: 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+ok 23 - 二次确认面板：确认/取消各走各的回调，忙碌时确认禁用
+  ---
+  duration_ms: 0.4527
+  type: 'test'
+  ...
+# Subtest: 我的投递空态直接给出可点击的下一步入口
+ok 24 - 我的投递空态直接给出可点击的下一步入口
+  ---
+  duration_ms: 0.2769
+  type: 'test'
+  ...
+# Subtest: 空态说明补证与本人核对不是投递前置
+ok 25 - 空态说明补证与本人核对不是投递前置
+  ---
+  duration_ms: 0.5633
+  type: 'test'
+  ...
+# Subtest: 企业回复正文能在词内换行，不得撑破窄屏卡片
+ok 26 - 企业回复正文能在词内换行，不得撑破窄屏卡片
+  ---
+  duration_ms: 0.6449
+  type: 'test'
+  ...
+# Subtest: 企业端能看出本次投递固定了哪几份材料：类别、标题、版本与材料编号
+ok 27 - 企业端能看出本次投递固定了哪几份材料：类别、标题、版本与材料编号
+  ---
+  duration_ms: 5.3766
+  type: 'test'
+  ...
+# Subtest: 企业端不得提供材料原文预览入口（企业无材料库访问权）
+ok 28 - 企业端不得提供材料原文预览入口（企业无材料库访问权）
+  ---
+  duration_ms: 0.932
+  type: 'test'
+  ...
+# Subtest: 同名同版本的两份材料仍可区分（靠材料编号，不靠 UUID 全串）
+ok 29 - 同名同版本的两份材料仍可区分（靠材料编号，不靠 UUID 全串）
+  ---
+  duration_ms: 0.2913
+  type: 'test'
+  ...
+# Subtest: 没有材料时不留空折叠块
+ok 30 - 没有材料时不留空折叠块
+  ---
+  duration_ms: 0.294
+  type: 'test'
+  ...
+# Subtest: 材料类别措辞与学生报告页一致
+ok 31 - 材料类别措辞与学生报告页一致
+  ---
+  duration_ms: 0.0958
+  type: 'test'
+  ...
+# Subtest: 证据行带材料身份：固定版本与历史版本必须分开表述
+ok 32 - 证据行带材料身份：固定版本与历史版本必须分开表述
+  ---
+  duration_ms: 0.2972
+  type: 'test'
+  ...
+# Subtest: 内容摘要缺失时不留空标签
+ok 33 - 内容摘要缺失时不留空标签
+  ---
+  duration_ms: 0.235
+  type: 'test'
+  ...
+# Subtest: 已发送回复必须同时显示回应类型，与学生在个人投递里看到的一致
+ok 34 - 已发送回复必须同时显示回应类型，与学生在个人投递里看到的一致
+  ---
+  duration_ms: 0.6794
+  type: 'test'
+  ...
+# Subtest: 已发送回复带定位条数，便于核对自己发出去的内容
+ok 35 - 已发送回复带定位条数，便于核对自己发出去的内容
+  ---
+  duration_ms: 0.2993
+  type: 'test'
+  ...
+# Subtest: 没有回复正文时整块不渲染，历史或异常数据不得渲染空引用块
+ok 36 - 没有回复正文时整块不渲染，历史或异常数据不得渲染空引用块
+  ---
+  duration_ms: 0.3093
+  type: 'test'
+  ...
+# Subtest: 未知回应类型原样显示，不猜测成某个已知类型
+ok 37 - 未知回应类型原样显示，不猜测成某个已知类型
+  ---
+  duration_ms: 0.178
+  type: 'test'
+  ...
+# Subtest: 长回复必须能在词内换行，不得撑破窄屏容器
+ok 38 - 长回复必须能在词内换行，不得撑破窄屏容器
+  ---
+  duration_ms: 0.1736
+  type: 'test'
+  ...
+# Subtest: 矩阵在窄屏给出横向滑动提示，并说明共有几位候选人
+ok 39 - 矩阵在窄屏给出横向滑动提示，并说明共有几位候选人
+  ---
+  duration_ms: 0.1701
+  type: 'test'
+  ...
+# Subtest: 只有一位或没有候选人时不给滑动提示
+ok 40 - 只有一位或没有候选人时不给滑动提示
+  ---
+  duration_ms: 0.0884
+  type: 'test'
+  ...
+# Subtest: history card displays server-wide history facts and fixed versions only when recorded
+ok 41 - history card displays server-wide history facts and fixed versions only when recorded
+  ---
+  duration_ms: 20.3008
+  type: 'test'
+  ...
+# Subtest: comparison is bounded at four, removable and does not mutate the caller's selection
+ok 42 - comparison is bounded at four, removable and does not mutate the caller's selection
+  ---
+  duration_ms: 0.5593
+  type: 'test'
+  ...
+# Subtest: nearby cell evidence stays in the selected application's frozen requirement and materials
+ok 43 - nearby cell evidence stays in the selected application's frozen requirement and materials
+  ---
+  duration_ms: 1.0559
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1008.4575

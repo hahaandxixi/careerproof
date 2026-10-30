@@ -1,0 +1,82 @@
+{
+  "heads": {
+    "codex/careerproof-pending-source": "e142a9e65f2746482e19a5f497bfcfc856935d2a",
+    "codex/careerproof-pending-evidence": "408f77ec87611801e26250f3d08faec1af363126",
+    "codex/contest-delivery-20261023": "d072c6d6808b26f07588378aeb0eca3a476d8222",
+    "codex/ci-hash-fix": "bd0785711f2707f613022d72c0ca69283e2849b1",
+    "codex/ci-process-fix": "4ffec25f06259d8028f038cb72a2cec96fc9629f",
+    "codex/page-final-20261023": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+    "codex/report-workspace-20261026": "365aecffd5ef1807b993829bfba8bc6d02289fa8",
+    "main": "8ca91cc2c8e32fbd59412134798eb7db257a29d4"
+  },
+  "files": {
+    "codex/careerproof-pending-source": {
+      "commit": "e142a9e65f2746482e19a5f497bfcfc856935d2a",
+      "all_tree_files": 4273,
+      "pending_files_found": 42,
+      "all_git_blob_ids_match": true
+    },
+    "codex/careerproof-pending-evidence": {
+      "commit": "408f77ec87611801e26250f3d08faec1af363126",
+      "all_tree_files": 4868,
+      "pending_files_found": 592,
+      "all_git_blob_ids_match": true
+    },
+    "codex/contest-delivery-20261023": {
+      "commit": "d072c6d6808b26f07588378aeb0eca3a476d8222",
+      "all_tree_files": 4300,
+      "pending_files_found": 0,
+      "all_git_blob_ids_match": true
+    }
+  },
+  "sample_sha256": [
+    {
+      "branch": "codex/careerproof-pending-source",
+      "path": ".gitignore",
+      "sha256": "a3de9b4fc6dbc374a53285b41f9c1e0269807d7a2b04b4992f57baec37ec2856",
+      "match": true
+    },
+    {
+      "branch": "codex/careerproof-pending-source",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "9e2d76091ded450a69bb18479e57b5afafa14e8ac5d4682561502c579fd5268c",
+      "match": true
+    },
+    {
+      "branch": "codex/careerproof-pending-evidence",
+      "path": "docs/archive/20261027-local-sync/root/README.md.txt",
+      "sha256": "177fa5e86c8e06a2e7fd7c69e9e1cdd1f84d319880c81605cd0c2c7663f3cbc7",
+      "match": true
+    },
+    {
+      "branch": "codex/careerproof-pending-evidence",
+      "path": "docs/archive/20261027-local-sync/root/demo/README.md.txt",
+      "sha256": "53f494b71a9566a491345d7bef24d00cdd2016c91201a7c1ecc0a41cd2602603",
+      "match": true
+    },
+    {
+      "branch": "codex/contest-delivery-20261023",
+      "path": "output/pdf/CareerProof-技术说明-预审版-20261023-B1.pdf",
+      "sha256": "2a50a303ae4e506df60705cbb27d4470bc4064609af758bf02471f7e3a88e962",
+      "match": true
+    }
+  ],
+  "repository_private": true,
+  "prs": [
+    {
+      "number": 1,
+      "draft": true,
+      "head": "365aecffd5ef1807b993829bfba8bc6d02289fa8"
+    },
+    {
+      "number": 2,
+      "draft": true,
+      "head": "e142a9e65f2746482e19a5f497bfcfc856935d2a"
+    },
+    {
+      "number": 3,
+      "draft": true,
+      "head": "d072c6d6808b26f07588378aeb0eca3a476d8222"
+    }
+  ]
+}

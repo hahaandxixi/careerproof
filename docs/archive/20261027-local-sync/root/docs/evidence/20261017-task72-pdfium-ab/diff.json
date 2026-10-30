@@ -1,0 +1,93 @@
+[
+  {
+    "fixture": "chinese_text",
+    "file_sha256_match": true,
+    "pymupdf_chars": 36,
+    "pdfium_chars": 37,
+    "delta": 1,
+    "same_text": false,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "中文简历：使用 FastAPI 编写健康检查接口\n第二行用于字符计数对照",
+    "pdfium_first": "中文简历：使用 FastAPI 编写健康检查接口\r\n第二行用于字符计数对照"
+  },
+  {
+    "fixture": "english_text",
+    "file_sha256_match": true,
+    "pymupdf_chars": 74,
+    "pdfium_chars": 75,
+    "delta": 1,
+    "same_text": false,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "FastAPI health endpoint returns status ok\nsecond line for citation offsets",
+    "pdfium_first": "FastAPI health endpoint returns status ok\r\nsecond line for citation offsets"
+  },
+  {
+    "fixture": "multi_page",
+    "file_sha256_match": true,
+    "pymupdf_chars": 33,
+    "pdfium_chars": 33,
+    "delta": 0,
+    "same_text": true,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "page body 1\npage body 2\npage body 3",
+    "pdfium_first": "page body 1\npage body 2\npage body 3"
+  },
+  {
+    "fixture": "over_char_cap",
+    "file_sha256_match": true,
+    "pymupdf_chars": 600000,
+    "pdfium_chars": 600000,
+    "delta": 0,
+    "same_text": true,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "pdfium_first": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  {
+    "fixture": "plain_lines",
+    "file_sha256_match": true,
+    "pymupdf_chars": 28,
+    "pdfium_chars": 30,
+    "delta": 2,
+    "same_text": false,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "line one\nline two\nline three",
+    "pdfium_first": "line one\r\nline two\r\nline three"
+  },
+  {
+    "fixture": "rotated_90",
+    "file_sha256_match": true,
+    "pymupdf_chars": 22,
+    "pdfium_chars": 22,
+    "delta": 0,
+    "same_text": true,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "",
+    "pymupdf_first": "rotated ninety degrees",
+    "pdfium_first": "rotated ninety degrees"
+  },
+  {
+    "fixture": "scanned_image_only",
+    "file_sha256_match": true,
+    "pymupdf_chars": 0,
+    "pdfium_chars": 0,
+    "delta": 0,
+    "same_text": true,
+    "same_pages": true,
+    "pymupdf_err": "",
+    "pdfium_err": "PdfParseError: [4024/pdf_no_text] PDF未提取或识别到可分析文字，请上传清晰扫描件或文字版文档",
+    "pymupdf_first": "",
+    "pdfium_first": ""
+  }
+]

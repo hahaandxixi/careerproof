@@ -1,0 +1,46 @@
+== runId regex /^\w.-+$/ (runner line 31) vs Start/Stop-E2E.ps1 line 27/9 ==
+  ".."             runnerRegex=true  ps1Regex=false
+  "."              runnerRegex=true  ps1Regex=false
+  "a..b"           runnerRegex=true  ps1Regex=false
+  "--scenario"     runnerRegex=true  ps1Regex=false
+  "-x"             runnerRegex=true  ps1Regex=false
+  "..\\..\\x"      runnerRegex=false  ps1Regex=false
+  "a/b"            runnerRegex=false  ps1Regex=false
+  "audit-20261005" runnerRegex=true  ps1Regex=true
+
+== RUNTIME_DIR = path.join(ROOT,'backend','.tmp','e2e-browser',RUN_ID) (line 32) ==
+  runId="audit-20261005" -> D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser\audit-20261005
+  runId=".."            -> D:\jbcode\web ai\jianli\backend\.tmp
+  runId="."             -> D:\jbcode\web ai\jianli\backend\.tmp\e2e-browser
+  credential filename for '..': "...json" (line 601: stays inside e2e/, interlocked by raw.runId===RUN_ID at line 604)
+
+== STAGE_DIR = path.join(EVIDENCE_DIR, SCENARIO+'-'+stamp) (line 42) — scenario is NEVER validated ==
+  scenario="skeleton"           -> D:\jbcode\web ai\jianli\docs\evidence\20261004-E2E-enterprise\skeleton-2026-10-05T00-00-00-000Z
+    contained under docs/evidence: true   (mkdirSync top-level line 43; results.json written by catch at line 1292 via persist line 66-69)
+  scenario="..\\..\\..\\..\\evil" -> D:\jbcode\web ai\evil-2026-10-05T00-00-00-000Z
+    contained under docs/evidence: false   (mkdirSync top-level line 43; results.json written by catch at line 1292 via persist line 66-69)
+  scenario="..\\..\\out-repo"   -> D:\jbcode\web ai\jianli\docs\out-repo-2026-10-05T00-00-00-000Z
+    contained under docs/evidence: false   (mkdirSync top-level line 43; results.json written by catch at line 1292 via persist line 66-69)
+
+== argValue('--run') with argv ['--run','--scenario','skeleton'] (lines 25-28) ==
+  RUN_ID="--scenario"  SCENARIO="skeleton"
+  ('--scenario' swallowed as runId value; passes runner regex; ps1 regex would reject)
+
+== aggregation: notPassed = steps.filter(s => s.status==='fail'||s.status==='blocked') ==
+  all pass                                                               -> exit 0
+  one fail                                                               -> exit 1
+  one blocked                                                            -> exit 1
+  warn only (old-notification-A 'no-notice-no-report' path, line 1107-1108) -> exit 0
+
+== JSON.parse SyntaxError echo for malformed synthetic credential files ==
+  (SCRUB is built only AFTER successful parse at lines 605-607, so scrub()
+   is a no-op if the parse itself throws; whether content reaches the
+   message depends on the V8 version's error format.)
+  truncated: Expected ',' or '}' after property value in JSON at position 91 (line 1 column 92)
+    password reaches message: false
+  stray-token: Expected ',' or '}' after property value in JSON at position 90 (line 1 column 91)
+    password reaches message: false
+  bad-colon: Expected ':' after property name in JSON at position 43 (line 1 column 44)
+    password reaches message: false
+  conclusion on node v22.23.1: messages carry position only, no content echo;
+  keep a generic-message try/catch as hardening (older/newer V8 may differ).

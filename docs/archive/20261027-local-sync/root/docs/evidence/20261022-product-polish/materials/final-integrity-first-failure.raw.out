@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.tmp\product-polish-20261022\materials-final-integrity.py", line 75, in <module>
+    asyncio.run(run())
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.tmp\product-polish-20261022\materials-final-integrity.py", line 45, in run
+    assert growth["materials"]==report["materials"],"Saved growth selection differs from report snapshot"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Saved growth selection differs from report snapshot

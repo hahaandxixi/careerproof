@@ -1,0 +1,52 @@
+# GitHub 全量成果同步审查（2026-10-27）
+
+本轮仅审查、归档和推送；未合并 main、未部署、未公开仓库、未操作业务库或真实模型。主目录仍保留原来的修改，并未清空状态。
+
+## 完整清单与数量
+
+原始 13 个 worktree：86 个已跟踪修改、6,132 个非忽略未跟踪文件，共 6,218 个文件条目；另定向检查 22 个忽略的交付资产，共 **6,240** 条。主 worktree 其中为 **48 modified + 1,587 untracked**，暂存区为空。新建的两个本轮审查 worktree 不计入开工数量。目录与依赖缓存只记录范围，不递归搜集。
+
+| 分类 | 条目数 | 处置 |
+| --- | ---: | --- |
+| 待集成源码/测试/工具 | 42 | `codex/careerproof-pending-source`，提交 `e142a9e65f2746482e19a5f497bfcfc856935d2a`；有失败，Draft |
+| 历史替代源码/测试 | 8 | 作为字节附件归档，不覆盖当前产品 |
+| 文档与证据 | 555 | 安全历史附件归档，不改原报告 |
+| 历史交付资产 | 29 | 历史 PDF、6 个旧视频、合成项目及安全脚本；不是最终交付 |
+| 已有等价内容 | 5282 | 逐行给出远端分支/文件或 canonical row；不重复提交 |
+| 私密、可再生和重复产物 | 321 | 保留本地，不上传 |
+| 原始凭据风险待确认 | 3 | 保留本地，停止该文件上传 |
+
+逐条入口：[CSV](file-inventory.csv)、[JSON](file-inventory.json)、[未上传清单](not-uploaded.json)、[分支盘点](branches-before.json)、[worktree 盘点](worktrees-before.json)。类别互斥，合计 6,240；已提交 B1 等原始分支另计，不混入待处理文件数量。
+
+## 本轮远端保存位置
+
+- [PR #1 报告工作台](https://github.com/hahaandxixi/careerproof/pull/1)：原有 10 提交保持不变，`365aecf`；CI 成功，浏览器闭环未完成，仍 Draft。
+- [PR #2 待集成源码](https://github.com/hahaandxixi/careerproof/pull/2)：42 个原文件 + 范围说明。与 PR #1 的 ReportDetail 重叠；旧 UUID 正则、同名版本语义和两项测试失败均未签收。
+- [PR #3 B1 预审材料](https://github.com/hahaandxixi/careerproof/pull/3)：原始本地提交 `d072c6d` 的 43 个新增资产；25 页 PDF、分镜与源稿。基线 e95504f/f6bf1ed，不是 10/26 候选；未将可再生源码 ZIP 再纳入 Git。
+- `codex/careerproof-pending-evidence`：原始附件提交 `408f77ec87611801e26250f3d08faec1af363126`；本记录所在后续提交只是分类与回执。完整资产路径逐行见清单。
+- 原始 `bd07857`、`4ffec25`、`6875262` 已分别保存到原同名远端分支。它们与 main 已有补丁等价，不再创建重复 PR、重测或改变 SHA。其余本地分支提交已被远端历史包含。
+
+## 实际验证
+
+- 源码快照：后端定向 19 通过、Ruff 通过、前端 lint 0 error/1 既有 warning、typecheck/build 成功；前端 476 通过/1 失败。失败为 keyboard-focus 对 `ReportDetail.tsx:67` 的焦点样式检查。
+- 旧私人草稿 runner：9 通过/1 失败，旧 DISCARD_NOTICE 与当前产品文案不一致。未修改断言，也未执行访问站点或业务库的 runner 主流程。
+- 源码 [CI 40359108131](https://github.com/hahaandxixi/careerproof/actions/runs/40359108131)：前端 476/1；SQLite **1589 通过/94 跳过**；PG **141 通过**、hard-stop **8 通过**、JUnit PASS。不能合并。
+- B1 [CI 40359576364](https://github.com/hahaandxixi/careerproof/actions/runs/40359576364)：前端 **442 通过**，SQLite **1586 通过/94 跳过**，PG **141**、hard-stop **8**，三项任务成功。只证明其自身基线检查，不代表预审材料已绑定最新产品。
+- 完整本地原始输出在 [logs](logs/)，CI 元数据在同目录 JSON；远端源日志保留在相应 Actions 页面，不混入别的版本数字。
+- 两个合成项目 ZIP 成员检查无环境配置、依赖、缓存、数据库及密钥形状；63 张新增截图以 3 张联系表检查，6 个旧视频抽取 16 帧检查；PDF 只读提取与代表页检查，未重出。媒体抽样不是逐帧隐私或产品验收认证。
+- 归档附件关闭 Git 换行转换，实际暂存 blob 逐一对 SHA256；源码按既有 Git 属性规范化换行，不能将其 Windows 原始字节 hash 与 Git LF hash 混说相同。
+- Git 大包两次 HTTPS 传输中断后，经 GitHub Git Data 官方接口上传已审查对象；服务器返回的树与原始提交 SHA 均完全一致，后续普通 push 核实 up-to-date，没有改写作者、时间或历史，没有强推。见 [传输回执](git-data-upload.json)。
+- 独立 GitHub API 核对三个新保存分支的完整文件树，所有 Git blob ID 相同；42 个源码与 592 个附件路径全部存在，代表文件再下载比对 SHA256。见 [远端核对](remote-verification.json)。新增入口和 B1 说明共 10 份文档、38 个本地链接无断链；旧 `.md.txt` 附件不作为当前导航，见 [链接范围](navigation-check.json)。
+
+## 排除与安全边界
+
+- 家庭试用 `.local` 环境与本机账号、3 个测试数据库、人工评审原件/回表、约 760 MB 镜像与 ZIP、依赖/Next 缓存、重复源码与评审 ZIP 均不上传。完整路径及理由逐行保留，未删除原件。
+- 3 份 10/13 原始日志含带密码 URL 或私钥形状文本。只记录类型与位置，不复制值；[风险元数据](credential-risk-metadata.json)区分当前远端树匹配情况，**不是全历史泄露判定**。部分匹配为 CI 测试字符串，不能断言都是真密钥；非占位 URL 需用户确认实际使用与轮换。本轮不上传原文件、不重写历史。
+- [上下文补查](credential-context-followup.json)定位到默认开发配置与测试字符串的既有远端文件/历史提交；没有据此认定为新泄露的真实 API key。原始日志依然不上传；若实际服务仍使用这些默认连接凭据，是否更换需另行处理。
+- 另两份说明中的 `ci` 账号是隔离 CI 固定夹具，模板使用变量占位；按上下文审查后保留，不把模式命中直接当真实泄露。
+- P2 stash `56c2b23` 原样留在本地、未应用、未删除、未当作已提交历史发布。继续受暂停约束。
+- 本地源码与证据文件 SHA256 再核对：6,240 条原件均未改变，见 [保留核查](preservation.json)。本轮安装环境和原有服务未被替换；没有重新做干净安装或浏览器产品验收。
+
+## 如何继续
+
+本轮保存位置不等于接受版本。先在独立分支审查源代码差异、两项失败与 PR #1 重叠，再做真实浏览器闭环；B1 与旧视频作为历史材料用于重制，许可/真实签署/评审访问仍由团队处理。main 维持 `8ca91cc`，没有自动合并许可。

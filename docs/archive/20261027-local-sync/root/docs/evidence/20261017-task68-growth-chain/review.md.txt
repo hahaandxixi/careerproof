@@ -1,0 +1,61 @@
+# task68 · 补证新版链路独立复核 — 交棒（部分完成，交棒门未满足）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。**未改任何源码**（本卡禁止改正在录制/集成的源码）。
+
+## 门（未满足，必须说明）
+
+任务卡依赖「67 及 Codex 本轮补证录制交棒后」。实测：
+
+- `docs/evidence/20261017-growth-live-video/HANDOFF.md` **不存在**；
+- 该目录只有 `normal-before.json` + 1 PNG + 6 个 `.out`，**无结论文件**；
+- 未见 67 号交棒记录。
+
+因此本轮**不是**在 67 交棒后做的复核，页面与数据库证据无法与"正在录制的新链路"对齐。
+以下仅为**模块级只读验证**，不替代 67 交棒后的验收。
+
+## 已完成（模块级，可复跑）
+
+### 前端（36 passed）
+`tests/growth-anchor-entry.test.mjs`、`growth-job-selection.test.mjs`、`growth-material-entry.test.mjs`、
+`growth-workflow.test.mjs` → **36 passed, 0 failed**（`t68-frontend-growth.raw.out`）。覆盖：
+- **SPA 同 hash 入口可重复打开**：`same-document link opens the task even when SPA navigation emits no hashchange`、
+  `repeating the same hash link reopens a deliberately collapsed form`（`growth-anchor-entry.test.mjs:43,49`）；
+- **材料锁定**：`分析开始后岗位与材料同时锁定；失败后解锁可人工重存`，
+  analyzing/compared → `locked=true`，materials_selected/analysis_failed → `locked=false`
+  （`growth-job-selection.test.mjs:73-77`）。
+
+### 后端（25 passed, 1 skipped）
+`test_evidence_growth.py`、`test_growth_target_job.py`、`test_growth_answer.py`
+→ **25 passed, 1 skipped**（`t68-backend-growth.raw.out`）。唯一 skip：
+`test_evidence_growth.py:347`「Real PostgreSQL row-lock concurrency requires the integration database」——
+即**行锁并发**验收需要专属 PG，本卡未分配、不连接，按卡片标未验。
+
+## 仍未验证（卡片明确要求、本轮无法完成）
+
+1. **页面与数据库证据**必须由合成环境实际取得，否则标未验 —— 本轮**未取得**任何页面截图或
+   数据库行级证据（无浏览器环境、不放行服务）。
+2. **完成任务材料锁定后指向保存报告**、**新版仍属原项目**、**原简历保留**、**两类对比基线明确**、
+   **新报告不自动覆盖投递** —— 这五项只在既有测试断言层面间接受覆盖（`growth-workflow`/`test_evidence_growth`），
+   本轮**未找到针对每一项的单一可复现反例**，也**未新增独立反例**；卡片要求「优先一个可复现反例」，
+   本轮未能给出，属未完成项而非通过项。
+3. 旧快照保持断言：卡片要求「不能只比较新报告自身」，本轮未独立设计该类断言。
+4. **未在 67 交棒后的新链路上复核**（门未满足）。
+
+## 命令 / 结果
+
+```text
+node --experimental-strip-types --test tests/growth-anchor-entry.test.mjs \
+  tests/growth-job-selection.test.mjs tests/growth-material-entry.test.mjs \
+  tests/growth-workflow.test.mjs            # 36 passed, exit 0
+python -m pytest app/tests/test_evidence_growth.py app/tests/test_growth_target_job.py \
+  app/tests/test_growth_answer.py -q --basetemp=... -p no:cacheprovider   # 25 passed, 1 skipped, exit 0
+```
+
+## 结论
+
+**不做通过判定**。模块级回归全绿，但卡片核心（67 交棒后的真实链路页面/DB 证据 + 至少一个独立反例）
+**未完成**，门条件缺失是主因。建议待 67 交棒、提供合成环境后再派发本卡。
+
+## 证据
+
+`t68-frontend-growth.raw.out`、`t68-backend-growth.raw.out`、`source-hashes.txt`（本目录）。

@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: component shows actual source and final use before technical logs
+ok 1 - component shows actual source and final use before technical logs
+  ---
+  duration_ms: 6.7836
+  type: 'test'
+  ...
+# Subtest: role without growth permission gets no growth action
+ok 2 - role without growth permission gets no growth action
+  ---
+  duration_ms: 1.0798
+  type: 'test'
+  ...
+# Subtest: stop/no-result/fallback records do not invent sources
+ok 3 - stop/no-result/fallback records do not invent sources
+  ---
+  duration_ms: 1.0199
+  type: 'test'
+  ...
+# Subtest: saved added citation maps to its own requirement and reconstructs only prior model citations
+ok 4 - saved added citation maps to its own requirement and reconstructs only prior model citations
+  ---
+  duration_ms: 1.1626
+  type: 'test'
+  ...
+# Subtest: fallback cannot claim that a retrieved citation was accepted by final AI
+ok 5 - fallback cannot claim that a retrieved citation was accepted by final AI
+  ---
+  duration_ms: 0.1334
+  type: 'test'
+  ...
+# Subtest: missing saved citation does not invent a source or a conclusion change
+ok 6 - missing saved citation does not invent a source or a conclusion change
+  ---
+  duration_ms: 0.1379
+  type: 'test'
+  ...
+# Subtest: model stop, program budget skip, unavailable search and zero result stay distinct
+ok 7 - model stop, program budget skip, unavailable search and zero result stay distinct
+  ---
+  duration_ms: 0.1514
+  type: 'test'
+  ...
+# Subtest: history is never represented as an added current source; UI fixtures are named
+ok 8 - history is never represented as an added current source; UI fixtures are named
+  ---
+  duration_ms: 0.1798
+  type: 'test'
+  ...
+# Subtest: same saved report uses one rules/AI/fallback label on both surfaces
+ok 9 - same saved report uses one rules/AI/fallback label on both surfaces
+  ---
+  duration_ms: 1.1404
+  type: 'test'
+  ...
+# Subtest: historical summary wording is normalized for display without changing facts
+ok 10 - historical summary wording is normalized for display without changing facts
+  ---
+  duration_ms: 0.1156
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 183.4242

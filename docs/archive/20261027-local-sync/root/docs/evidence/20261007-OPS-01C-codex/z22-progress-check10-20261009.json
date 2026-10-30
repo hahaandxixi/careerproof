@@ -1,0 +1,93 @@
+{
+  "observedAtUtc": "2026-10-09T10:44:14.835426+00:00",
+  "taskNumber": 22,
+  "task": {
+    "workspace_path": "D:\\jbcode",
+    "task_id": "sess_05d2ef94-b7db-477a-9625-ce38e40b3c32",
+    "task_status": "completed",
+    "provider": "glm",
+    "model": "account:bigmodel-individual-coding-plan/GLM-5.3",
+    "created_at": 1791541701365,
+    "updated_at": 1791542003553,
+    "deleted": 0,
+    "archived": 0
+  },
+  "scope": "read-only metadata for this exact task; no input, message, credential or database mutation",
+  "caution": "An indexed running flag alone is not a live execution proof; inspect recent call timestamps and repeated observations.",
+  "recentModels": [
+    {
+      "id": "usage_model_main_turn_msg_mv0u7i81_4077f98d-24a9-4b96-a0d7-30f48f287e4b_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791542601218,
+      "first_token_at": 1791542606492,
+      "completed_at": 1791542649966,
+      "output_tokens": 2671,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    },
+    {
+      "id": "usage_model_main_turn_msg_mv0u59ok_656c20bb-7681-4d65-8d9d-83d68b94e3d6_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791542496836,
+      "first_token_at": 1791542499504,
+      "completed_at": 1791542600667,
+      "output_tokens": 5787,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    },
+    {
+      "id": "usage_model_main_turn_msg_mv0u50le_36e2704f-3c4d-4a44-959c-7f6e36d2e096_0",
+      "status": "completed",
+      "provider_id": "account:bigmodel-individual-coding-plan",
+      "model_id": "GLM-5.3",
+      "variant": "max",
+      "started_at": 1791542485059,
+      "first_token_at": 1791542491510,
+      "completed_at": 1791542496454,
+      "output_tokens": 402,
+      "error_type": null,
+      "finish_reason": "tool-calls"
+    }
+  ],
+  "recentTools": [
+    {
+      "tool_name": "Bash",
+      "status": "completed",
+      "started_at": 1791542649974,
+      "completed_at": 1791542650517,
+      "exit_code": 0,
+      "error_type": null
+    },
+    {
+      "tool_name": "Bash",
+      "status": "completed",
+      "started_at": 1791542600670,
+      "completed_at": 1791542601209,
+      "exit_code": 0,
+      "error_type": null
+    },
+    {
+      "tool_name": "Bash",
+      "status": "completed",
+      "started_at": 1791542496456,
+      "completed_at": 1791542496808,
+      "exit_code": 0,
+      "error_type": null
+    }
+  ],
+  "latestAssistantMetadata": [
+    {
+      "time_created": 1791542650527,
+      "time_updated": 1791542650527,
+      "role": "assistant",
+      "finish": null,
+      "completed_at": null
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "withdraw-verify",
+  "startedAt": "2026-10-05T10:07:02.809Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T10:07:02.810Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=withdraw-verify runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T10:07:03.070Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 50516 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T10:07:03.238Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\withdraw-verify-2026-10-05T10-07-02-808Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T10:07:05.151Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T10:07:05.646Z",
+      "name": "board-A-unreadable",
+      "status": "pass",
+      "detail": "aColumnGone=true otherCandidateKept=true aReportRendered=false"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T10:07:05.705Z",
+      "name": "screenshot:board-A-after-withdraw",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\withdraw-verify-2026-10-05T10-07-02-808Z\\06-board-A-after-withdraw.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T10:07:35.717Z",
+      "name": "old-anchor-A",
+      "status": "pass",
+      "detail": "unavailableNotice=true otherCandidateKept=true aReportRendered=false"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T10:07:35.773Z",
+      "name": "screenshot:old-anchor-A-outcome",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\withdraw-verify-2026-10-05T10-07-02-808Z\\08-old-anchor-A-outcome.png"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T10:08:06.357Z",
+      "name": "old-notification-A",
+      "status": "pass",
+      "detail": "inaccessibleCards=2 withdrawalEventCardTime=2026/10/5 12:41:37 (withdrawnAt 2026-10-05T04:41:37.324Z from download-withdraw-2026-10-05T04-41-28-116Z) olderInaccessible=1 openCardAnchors=[\"no-landing:{\\\"path\\\":\\\"/notifications\\\",\\\"hash\\\":\\\"\\\",\\\"alert\\\":null,\\\"status\\\":null}\",\"no-landing:{\\\"path\\\":\\\"/notifications\\\",\\\"hash\\\":\\\"\\\",\\\"alert\\\":null,\\\"status\\\":null}\"] aAnchorLeak=false"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T10:08:06.403Z",
+      "name": "screenshot:notifications-final-state",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\withdraw-verify-2026-10-05T10-07-02-808Z\\10-notifications-final-state.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T10:08:06.502Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T10:08:06.502Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\withdraw-verify-2026-10-05T10-07-02-808Z\\notifications-after-withdraw.json"
+  ],
+  "finishedAt": "2026-10-05T10:08:06.502Z"
+}

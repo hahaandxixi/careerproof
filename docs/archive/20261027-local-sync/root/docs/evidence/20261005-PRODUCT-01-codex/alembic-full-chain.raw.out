@@ -1,0 +1,153 @@
+Target: dedicated temporary SQLite; no business database
+COMMAND: D:\jbcode\web ai\jianli\backend\.venv\Scripts\python.exe -m alembic upgrade head
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_initial, Initial CareerProof schema.
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 177, in execute
+    self._adapt_connection._handle_exception(error)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 337, in _handle_exception
+    raise error
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 159, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\core.py", line 122, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\core.py", line 105, in run
+    result = function()
+             ^^^^^^^^^^
+sqlite3.OperationalError: near "EXTENSION": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\config.py", line 1022, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\config.py", line 1012, in main
+    self.run_cmd(cfg, options)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\config.py", line 946, in run_cmd
+    fn(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\command.py", line 483, in upgrade
+    script.run_env()
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\script\base.py", line 549, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\util\pyfiles.py", line 116, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\util\pyfiles.py", line 136, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "D:\jbcode\web ai\jianli\backend\alembic\env.py", line 59, in <module>
+    run_migrations_online()
+  File "D:\jbcode\web ai\jianli\backend\alembic\env.py", line 53, in run_migrations_online
+    asyncio.run(run_async_migrations())
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\����\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\alembic\env.py", line 48, in run_async_migrations
+    await connection.run_sync(do_run_migrations)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py", line 887, in run_sync
+    return await greenlet_spawn(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\alembic\env.py", line 38, in do_run_migrations
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\runtime\environment.py", line 946, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\runtime\migration.py", line 627, in run_migrations
+    step.migration_fn(**kw)
+  File "D:\jbcode\web ai\jianli\backend\alembic\versions\0001_initial.py", line 33, in upgrade
+    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
+  File "<string>", line 8, in execute
+  File "<string>", line 3, in execute
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\operations\ops.py", line 2591, in execute
+    return operations.invoke(op)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\operations\base.py", line 441, in invoke
+    return fn(self, operation)
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\operations\toimpl.py", line 240, in execute_sql
+    operations.migration_context.impl.execute(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\ddl\impl.py", line 253, in execute
+    self._exec(sql, execution_options)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\alembic\ddl\impl.py", line 246, in _exec
+    return conn.execute(construct, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 177, in execute
+    self._adapt_connection._handle_exception(error)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 337, in _handle_exception
+    raise error
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py", line 159, in execute
+    self.await_(_cursor.execute(operation, parameters))
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\cursor.py", line 40, in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\cursor.py", line 32, in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\core.py", line 122, in _execute
+    return await future
+           ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\aiosqlite\core.py", line 105, in run
+    result = function()
+             ^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "EXTENSION": syntax error
+[SQL: CREATE EXTENSION IF NOT EXISTS vector]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+EXIT=1

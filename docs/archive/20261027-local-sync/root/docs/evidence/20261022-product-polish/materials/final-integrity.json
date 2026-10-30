@@ -1,0 +1,237 @@
+{
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "mode": "PostgreSQL READ ONLY + accepted production serializers; no HTTP/login/write",
+  "growthId": "362c7923-9025-43df-87cf-b68dbf3c4d10",
+  "reportId": "2997e468-ca66-401d-a3e2-f6518cad9243",
+  "materialShapes": {
+    "growthSaved": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+        "materialRole": "portfolio"
+      }
+    ],
+    "reportSnapshot": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ]
+  },
+  "confirmedSelection": {
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+        "materialRole": "portfolio"
+      }
+    ],
+    "analysisTaskId": "41abea62-6455-404c-844a-4139b9b0eabe",
+    "inputProjectVersionIds": [
+      "53366c20-1973-48a4-8b18-c27ca4ceaa7e"
+    ],
+    "versionNumber": 4,
+    "filename": "CareerProof-campus-signup-v2-runtime.zip",
+    "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "parseStatus": "completed"
+  },
+  "analysis": {
+    "analysisMode": "rules",
+    "aiProvider": null,
+    "aiUsage": null,
+    "aiToolCalls": [],
+    "overallScore": 52.0
+  },
+  "originalReport": {
+    "id": "fda4ec24-3534-4a4e-80aa-2d5959b0c87e",
+    "expectedHash": "d775165ca3cbbaadc1c3f9da273875e8dc34594593d4bba7753f4c2f0aa35322",
+    "actualHash": "d775165ca3cbbaadc1c3f9da273875e8dc34594593d4bba7753f4c2f0aa35322"
+  },
+  "previousNewReport": {
+    "id": "59ac4fa1-4792-4c14-b268-51119b129076",
+    "expectedHash": "0142e92da04d6fc38f968665fa77161441024414b0a296c9fb7693921521ec26",
+    "actualHash": "0142e92da04d6fc38f968665fa77161441024414b0a296c9fb7693921521ec26"
+  },
+  "databaseFacts": {
+    "expectedOriginalTwo": {
+      "ai_request_attempts": 3,
+      "ai_usage_logs": 3,
+      "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+      "applicationCount": 2
+    },
+    "actualOriginalTwo": {
+      "ai_request_attempts": 3,
+      "ai_usage_logs": 3,
+      "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+      "applicationCount": 2
+    },
+    "totalApplicationsNow": 3,
+    "additionalAuthorizedApplicationIds": [
+      "557f6a7a-7409-4f2d-99ac-d1a5a0dd3462"
+    ]
+  },
+  "originalSnapshotHashes": {
+    "3615d742-5dad-4d12-baf2-cca2aeb2058a": {
+      "expected": "b3e7a2bf72c215e0baecb3462a9347aab2fa3c5add7d4cff210c391fc0aa3e00",
+      "actual": "b3e7a2bf72c215e0baecb3462a9347aab2fa3c5add7d4cff210c391fc0aa3e00"
+    },
+    "9fa05cd4-b71a-44fd-a22f-bc4694983361": {
+      "expected": "88833bc1f745b19a02a6689beff1433424f809a7ba2e59e01fd3d97f1445869f",
+      "actual": "88833bc1f745b19a02a6689beff1433424f809a7ba2e59e01fd3d97f1445869f"
+    }
+  },
+  "comparison": {
+    "baseReportId": "4cd00c84-855f-4d26-8a3b-6fe31a076535",
+    "targetReportId": "2997e468-ca66-401d-a3e2-f6518cad9243",
+    "contextChanges": [
+      "materials"
+    ],
+    "baseMaterials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "56fa9fa10dccc035e20c5fa447077436d24f893cc20d0dea7cb0c01a15a3463c"
+      }
+    ],
+    "targetMaterials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "items": [
+      {
+        "requirementId": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "title": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "baseLevel": 3,
+        "targetLevel": 3,
+        "changes": [
+          "interpretation"
+        ],
+        "addedEvidenceCount": 0,
+        "removedEvidenceCount": 0
+      },
+      {
+        "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "title": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "baseLevel": 3,
+        "targetLevel": 3,
+        "changes": [
+          "interpretation"
+        ],
+        "addedEvidenceCount": 0,
+        "removedEvidenceCount": 0
+      },
+      {
+        "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+        "title": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+        "baseLevel": 3,
+        "targetLevel": 3,
+        "changes": [
+          "interpretation",
+          "evidence"
+        ],
+        "addedEvidenceCount": 9,
+        "removedEvidenceCount": 5
+      },
+      {
+        "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+        "title": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+        "baseLevel": 3,
+        "targetLevel": 3,
+        "changes": [
+          "interpretation",
+          "evidence"
+        ],
+        "addedEvidenceCount": 6,
+        "removedEvidenceCount": 0
+      },
+      {
+        "requirementId": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "title": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "baseLevel": null,
+        "targetLevel": null,
+        "changes": [],
+        "addedEvidenceCount": 0,
+        "removedEvidenceCount": 0
+      }
+    ],
+    "limitations": [
+      "变化标签只说明同时发生的变化，不证明等级变化的因果关系或本人能力提升。",
+      "等级采用当前报告读取口径；部分历史规则等级未在生成时冻结。",
+      "历史岗位快照可能缺少必要性字段；无法还原未保存的属性。",
+      "基准是创建补证任务时固定的复核状态；目标报告采用当前复核状态。",
+      "引用减少仅表示目标报告未再展示，不代表原文件被删除。"
+    ]
+  },
+  "allLevelsUnchanged": true,
+  "passed": true,
+  "verificationNotes": [
+    "仅只读事务和生产序列化器核对；未调用登录、HTTP或任何写接口，也未启停服务。",
+    "首轮探针直接比较原始字典，把简历 materialRole 缺省与 null 的序列化差异当成不等；最终按生产 ReportMaterial 规范化后匹配。原始形态保留在 materialShapes，失败记录保留。",
+    "第二轮探针错误要求整个投递集合保持两行；父任务确认第三条为独立授权的界面对照样例。最终精确比较 comparison-candidate.json 记录的原两条ID、逐条哈希及原集合摘要；第三条只单独列明，不算原快照改变。",
+    "五项等级均未变化：FastAPI、SQL、Python、pytest 为3，Redis待确认。变化依据是材料从V1到已明确保存的V4及可见解释/证据集合变化，不代表能力提升、真实执行认证或AI语义改善。"
+  ]
+}

@@ -1,0 +1,77 @@
+import collections, hashlib, json, pathlib, re, subprocess
+from zipfile import ZipFile
+ROOT=pathlib.Path(r'D:\jbcode\web ai\jianli'); OUT=ROOT/'backend/.tmp/github-sync-20261027'
+d=json.loads((OUT/'inventory-before.json').read_text(encoding='utf8')); rows=d['files']
+# Targeted ignored deliverables only: final historical videos/subtitles and source archives,
+# not rendering frames, installed dependencies or build caches.
+for tree in d['trees']:
+    wt=pathlib.Path(tree['worktree'])
+    selected=list((wt/'output/source').glob('*'))
+    selected+=list((wt/'output/video').glob('*'))
+    selected+=list((wt/'output/video/archive/20261021-old-drafts').glob('*'))
+    for f in selected:
+        if not f.is_file():continue
+        path=f.relative_to(wt).as_posix()
+        if any(x['worktree']==str(wt) and x['path']==path for x in rows):continue
+        result=subprocess.run(['git','check-ignore','-q','--',path],cwd=wt)
+        if result.returncode!=0:continue
+        data=f.read_bytes()
+        rows.append(dict(worktree=str(wt),head=tree['HEAD'],branch=tree.get('branch','detached'),path=path,status='ignored-deliverable',size=len(data),sha256=hashlib.sha256(data).hexdigest(),equivalent=[],risks={},git_blob=None,error=None))
+seen={}
+for x in rows:
+    p=x['path']; tree=pathlib.Path(x['worktree']).name; root=x['worktree']==str(ROOT)
+    x.update(category=None,reason=None,action='retain-local',remote_branch=None,remote_path=None,source_task='not independently established',conflicts=[])
+    def c(cat,reason):x.update(category=cat,reason=reason)
+    if x.get('error'):c('decision','unreadable or non-regular; inspect locally')
+    elif '/.local/' in p or p.endswith(('.db','.sqlite','.sqlite3','.env')) or re.search(r'(^|/)(?:credentials[^/]*|storage_state[^/]*|cookies[^/]*|\.env(?:\.[^/]+)?)(?:/|$)',p) and not p.endswith('.example'):
+        c('excluded','private runtime configuration/database/authentication state; not uploaded')
+    elif p.startswith('output/review/') and p.endswith('.md'):
+        c('excluded','human review originals or response forms; sharing authorization not established, do not publish')
+    elif any(part.startswith(('.next','__pycache__','basetemp')) or part in ('node_modules','.venv','.git') for part in pathlib.PurePosixPath(p).parts):
+        c('excluded','reproducible dependency/build/cache content')
+    elif p.startswith('recheck-accepted-'):
+        c('equivalent' if x['equivalent'] else 'excluded','extracted accepted-commit snapshot or duplicate packed source; not a new development result')
+    elif x['size'] and x['size']>50_000_000:
+        c('excluded','oversized reproducible image/source bundle; retain locally, no new LFS/release cost')
+    elif p.endswith('.zip'):
+        if p.startswith('output/demo/'):
+            c('delivery','small original synthetic runnable project; archive input after member scan')
+        else:c('excluded','duplicate source/review/distribution ZIP; source/history or constituent files retained instead')
+    elif x['equivalent']:
+        c('equivalent','identical Git blob or text-only CRLF/LF equivalent already in remote tree')
+        x['remote_branch']=x['equivalent'][0][0];x['remote_path']=x['equivalent'][0][1]
+    elif p.startswith('output/family/') and '/CareerProof-Family/source/' in p:
+        c('excluded','packaged source copy; accepted source commit retained, do not duplicate entire repository')
+    elif p.startswith('output/family/') and any(t in p for t in ['/data/','/logs/','/images/']):
+        c('excluded','family trial local data/log/image payload')
+    elif p in ['docs/evidence/20261013-ci-independent/baseline-pg.raw.out','docs/evidence/20261013-ci-independent/baseline-pg.xml','docs/evidence/20261013-ci-independent/baseline-unit.xml']:
+        c('decision','credential-bearing URL/private-key-shaped text in raw historical material; preserve original, do not publish without context review')
+    elif root and (p.startswith(('backend/app/','backend/evals/','jianli/src/','jianli/tests/','scripts/')) and p!='scripts/build_submission_pdf.py' or p in ('.gitignore','jianli/.gitignore','backend/.env.example','THIRD_PARTY_NOTICES.md')):
+        c('source','pending implementation/test/tool snapshot; isolated draft, not accepted into main')
+        x['remote_branch']='codex/careerproof-pending-source';x['remote_path']=p
+    elif p.startswith('output/'):
+        c('delivery','historical/pre-review asset or family trial authored launcher; not a final candidate')
+    elif not root and p.startswith('jianli/'):
+        c('source-archive','alternate historical worktree code; archive exact bytes, do not overlay current implementation')
+    else:c('evidence','historical documentation/evidence snapshot; preserve bytes and temporal scope')
+    # Cross-worktree duplicate snapshots are represented once, with an explicit pointer.
+    key=x['sha256']
+    if x['category'] in ('source','source-archive','delivery','evidence'):
+        if key in seen:
+            first=seen[key];c('equivalent','identical bytes to another inventoried asset; see canonical inventory row')
+            x['canonical']=first
+        else:seen[key]=len([1 for z in rows[:rows.index(x)]])
+    if x['category'] in ('evidence','source-archive','delivery'):
+        x['remote_branch']='codex/careerproof-pending-evidence'
+        dest=f'docs/archive/20261027-local-sync/{"root" if root else tree}/{p}'
+        # Historical .md snapshots are text attachments, not new active navigation.
+        if p.endswith('.md'):dest+='.txt'
+        x['remote_path']=dest
+    if x['category'] in ('source','evidence','source-archive','delivery'):x['action']='archive-draft'
+    # All locally modified source paths overlapping the active report PR are explicit.
+    if root and p.startswith('jianli/'):
+        changed=subprocess.check_output(['git','diff','--name-only','origin/main..origin/codex/report-workspace-20261026','--',p],cwd=ROOT)
+        if changed:x['conflicts'].append('PR #1 changes same path; do not merge by overwriting')
+    # Archive local system-path-only probe metadata separately; no credential values in registry.
+(OUT/'plan.json').write_text(json.dumps(d,ensure_ascii=False,indent=2),encoding='utf8')
+print(json.dumps({'total':len(rows),'categories':dict(collections.Counter(x['category'] for x in rows)),'new_bytes':sum(x['size'] or 0 for x in rows if x['action']=='archive-draft'),'root_source':[x['path'] for x in rows if x['category']=='source'],'review_required':[x['path'] for x in rows if x['category']=='decision'],'delivery':[x['path'] for x in rows if x['category']=='delivery']},ensure_ascii=False,indent=2))

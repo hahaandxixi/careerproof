@@ -1,0 +1,35 @@
+FFF....                                                                  [100%]
+================================== FAILURES ===================================
+__________ test_current_shared_account_history_word_does_not_exempt ___________
+
+    def test_current_shared_account_history_word_does_not_exempt():
+>       assert shared_history_attribution_impossible([CURRENT_HISTORY_SOURCE]) is True
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['项目当前共用账号，历史记录无法区分作者'])
+
+app\tests\test_shared_history_current_boundary.py:35: AssertionError
+_____ test_current_history_wording_rejects_extraction_like_plain_wording ______
+
+    def test_current_history_wording_rejects_extraction_like_plain_wording():
+>       assert extraction_plan_error(CURRENT_HISTORY_SOURCE) is not None
+E       AssertionError: assert None is not None
+E        +  where None = extraction_plan_error('项目当前共用账号，历史记录无法区分作者')
+
+app\tests\test_shared_history_current_boundary.py:39: AssertionError
+____ test_mixed_past_and_current_facts_scope_check_fires_on_current_claim _____
+
+    def test_mixed_past_and_current_facts_scope_check_fires_on_current_claim():
+        # 旧事实与当前事实同句混合：当前仍无法归属 wins over the 此前 marker.
+>       assert (
+            shared_history_attribution_impossible(["此前共用账号，当前提交仍无法区分作者"])
+            is True
+        )
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['此前共用账号，当前提交仍无法区分作者'])
+
+app\tests\test_shared_history_current_boundary.py:45: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_shared_history_current_boundary.py::test_current_shared_account_history_word_does_not_exempt
+FAILED app/tests/test_shared_history_current_boundary.py::test_current_history_wording_rejects_extraction_like_plain_wording
+FAILED app/tests/test_shared_history_current_boundary.py::test_mixed_past_and_current_facts_scope_check_fires_on_current_claim
+3 failed, 4 passed in 0.09s

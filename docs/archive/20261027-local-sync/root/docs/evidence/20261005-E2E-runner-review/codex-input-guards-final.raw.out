@@ -1,0 +1,24 @@
+✔ documented defaults and existing scenario names remain usable (1.069ms)
+✔ reject unsafe or ambiguous CLI ["--run",".."] (0.2514ms)
+✔ reject unsafe or ambiguous CLI ["--run","."] (0.0678ms)
+✔ reject unsafe or ambiguous CLI ["--run","a..b"] (0.0506ms)
+✔ reject unsafe or ambiguous CLI ["--run","--scenario","skeleton"] (0.0612ms)
+✔ reject unsafe or ambiguous CLI ["--run"] (0.0489ms)
+✔ reject unsafe or ambiguous CLI ["--run","valid","--run","other"] (0.0488ms)
+✔ reject unsafe or ambiguous CLI ["--other","valid"] (0.0602ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","../../outside"] (0.0642ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","..\\..\\outside"] (0.1023ms)
+✔ reject unsafe or ambiguous CLI ["--scenario","not-a-scenario"] (0.0602ms)
+✔ reject unsafe or ambiguous CLI ["--run","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] (0.0531ms)
+✔ actual CLI refuses a scenario traversal before creating runtime/evidence directories (49.3456ms)
+✔ malformed synthetic credentials never expose JSON source fragments (0.3887ms)
+✔ withdrawn notification needs positive unavailable evidence, missing evidence is blocked (0.0721ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.6739
+EXIT=0

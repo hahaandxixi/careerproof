@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\rule-narrative-fix\validate.py", line 183, in <module>
+    main()
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-complete-project-validation\rule-narrative-fix\validate.py", line 151, in main
+    assert citations(previous) == citations(current), current["skill"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: FastAPI

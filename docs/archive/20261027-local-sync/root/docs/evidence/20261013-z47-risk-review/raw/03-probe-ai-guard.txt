@@ -1,0 +1,14 @@
+OK  G1a baseline current history (39 holdout shape, must stay True): expected=True actual=True
+HIT G1b resolved word in an UNRELATED clause masks current fact: expected=True actual=False
+HIT G1c past word in an UNRELATED clause masks current fact: expected=True actual=False
+HIT G1d unrelated 不再 masks current fact: expected=True actual=False
+OK  G1e control: genuinely resolved line stays exempt (39 holdout 1): expected=False actual=False
+HIT G1f extraction plan under G1b source is NOT rejected (leak): expected='reject' actual='allow'
+OK  G2a control: extraction from existing history still rejected: expected='reject' actual='reject'
+HIT G2b future personal-account commits get rejected (over-reject?): expected='allow' actual='reject'
+OK  G2c control: independent named proof stays allowed: expected='allow' actual='allow'
+HIT G4a '已上线功能的补充截图' without a runtime-record step: expected=None actual='AI task plan asserts a deployment or runtime outcome without a runtime-record step'
+OK  G4b modified-material wording (材料变化) stays allowed: expected=None actual=None
+OK  G4c same as G4a but WITH a runtime-record step (design escape): expected=None actual=None
+
+summary: 6 finding(s) out of 12

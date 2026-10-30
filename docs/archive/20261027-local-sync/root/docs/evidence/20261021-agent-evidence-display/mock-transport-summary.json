@@ -1,0 +1,36 @@
+{
+  "realExternalRequests": 0,
+  "mockPhysicalRequests": 5,
+  "posts": [
+    {
+      "case": "AG-01",
+      "stage": "planning_1",
+      "transport": "MockTransport"
+    },
+    {
+      "case": "AG-01",
+      "stage": "analysis",
+      "transport": "MockTransport"
+    },
+    {
+      "case": "AG-02",
+      "stage": "analysis",
+      "transport": "MockTransport"
+    },
+    {
+      "case": "AG-03",
+      "stage": "planning_1",
+      "transport": "MockTransport"
+    },
+    {
+      "case": "AG-03",
+      "stage": "analysis",
+      "transport": "MockTransport"
+    }
+  ],
+  "syntheticOnly": true,
+  "decisions": "pre-scripted MockTransport, not a real model choice",
+  "newEvidence": "actual workflow executed retrieval over frozen AG-01 sources",
+  "claimRoot": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\offline-only-claims-r2",
+  "productionClaimsTouched": false
+}

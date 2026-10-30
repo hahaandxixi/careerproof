@@ -1,0 +1,14 @@
+chinese_text         filehash=OK pm=    36 px=    37 delta=+1 same_text=False same_pages=True
+    pymupdf: '中文简历：使用 FastAPI 编写健康检查接口\n第二行用于字符计数对照'
+    pdfium : '中文简历：使用 FastAPI 编写健康检查接口\r\n第二行用于字符计数对照'
+english_text         filehash=OK pm=    74 px=    75 delta=+1 same_text=False same_pages=True
+    pymupdf: 'FastAPI health endpoint returns status ok\nsecond line for citation offsets'
+    pdfium : 'FastAPI health endpoint returns status ok\r\nsecond line for citation offsets'
+multi_page           filehash=OK pm=    33 px=    33 delta=+0 same_text=True same_pages=True
+over_char_cap        filehash=OK pm=600000 px=600000 delta=+0 same_text=True same_pages=True
+plain_lines          filehash=OK pm=    28 px=    30 delta=+2 same_text=False same_pages=True
+    pymupdf: 'line one\nline two\nline three'
+    pdfium : 'line one\r\nline two\r\nline three'
+rotated_90           filehash=OK pm=    22 px=    22 delta=+0 same_text=True same_pages=True
+scanned_image_only   filehash=OK pm=     0 px=     0 delta=+0 same_text=True same_pages=True
+    err pm='' px='PdfParseError: [4024/pdf_no_text] PDF未提取或识别到可分析文字，请上传清晰扫描件或文'

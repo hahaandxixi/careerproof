@@ -1,0 +1,29 @@
+# 传智杯64 · 岗位推荐紧凑列表体验收尾 · 交棒（ZCode，2026-10-17）
+
+HEAD 33ba713，未提交未推送。**改动：CareerRecommendations.tsx 一处**（sha256 `28b799c0c4e5a25d09c176785927573f2a89ff578e349317a0a70197877f6009`）——收起态卡片左列加 `min-w-0 flex-1`、标题与公司行加 `break-words`、优先级徽章加 `shrink-0`，解决长名称挤压（flex 内文本被徽章挤变形/无溢出保护）。slate/indigo 与语义色未动。
+
+## 先确认后改（卡的顺序要求）
+
+复用的既有能力核实为已满足，未重复改动：默认折叠（`careerPlanRecommendations`：AI 比较岗+焦点岗，无 AI 时前 3）、候选列表二次折叠（`expandedCandidates`+aria-expanded）、岗位卡 `<details>/<summary>` 原生键盘展开/收起、focus-visible outline、证据原文与岗位原文各自再折叠一层、"展开其余 N 个规则候选"按钮。仍存在的只有长名称挤压一项，故只修它。
+
+## 真实渲染验收（stage 构建 + 浏览器截图）
+
+**证据类型分层**：截图为**真实页面渲染**（stage 构建产物 + 真实浏览器）；展开行为与表单操作为**页面内合成事件派发至真实组件 handler**（本会话 IAB 无法投递真实指针/键盘事件）；**键盘可达为结构级核实**（原生 details/summary 语义），非逐键实操——合成事件不算完整键盘验收。
+
+Stage：`backend/.tmp/task64-render/stage/jianli`（当前源码副本 + junction 复用 Z58 node_modules，零安装；`next build` 通过=含类型检查）。渲染台路由 `/z64preview` 为 **stage-only** fetch-mock 合成数据（含对抗性超长中文标题 + 77 字符无空格英文公司名），服务 `127.0.0.1:3105`，未触碰 3000/3001。mock 通过 `/career-plans/latest` 展示结果列表（列表渲染路径与生成路径相同）。
+
+- 桌面 1280（`desktop-1280-collapsed.png`）：2 张重点卡，长标题两行折行、无溢出无横向滚动，徽章/计数/展开按钮齐全。
+- 390px（`mobile-390-collapsed.png`）：document/body/卡片三级溢出全部为 0，标题与公司名正常折行，徽章不与文字重叠。
+- 展开行为（合成事件派发至真实 handler）：aria-expanded false→true、6 卡全出、首卡详情展开内容属于该岗（Kubernetes 证据在 Kubernetes 卡）、内部证据/原文 details 保持折叠。
+- 键盘：结构级核实（summary 原生可聚焦、Enter/Space 原生切换、expand 按钮带 aria-expanded）；本会话 IAB 无法投递真实指针/键盘事件，未做逐键实操，不构成完整键盘验收——Codex 复验时可补。
+
+## 目标检查
+
+- `tests/recommendation-selection.test.mjs` 5/5 通过。
+- `tsc --noEmit` 0 错；改动组件 eslint 0 警告。
+
+## 未验证 / 移交
+
+- 视觉评委提的两点软性打磨（对抗性无空格公司名断行位置生硬、超长标题在 390px 占约 5 行压首屏）——真实数据有词间空格、标题更短，不触发；如要 line-clamp 属新 UX 决策，留 Codex 裁决，本卡未做。
+- 390px 截图中顶栏账户下拉呈打开态覆盖内容——属 65 号卡范围，已在该卡排查。
+- 合成数据仅用于渲染验收，不构成质量/延迟结论。

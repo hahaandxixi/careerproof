@@ -1,0 +1,4 @@
+$ node --check scripts/e2e/private-recovery-notice-runner.mjs
+SYNTAX-OK runner (exit 0)
+$ node --check scripts/e2e/private-recovery-notice.test.mjs
+SYNTAX-OK test (exit 0)

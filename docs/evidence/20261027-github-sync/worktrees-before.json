@@ -1,0 +1,76 @@
+[
+  {
+    "worktree": "D:/jbcode/web ai/jianli",
+    "HEAD": "8ca91cc2c8e32fbd59412134798eb7db257a29d4",
+    "branch": "refs/heads/main",
+    "changes": 1635
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/ci-hash-20261023",
+    "HEAD": "bd0785711f2707f613022d72c0ca69283e2849b1",
+    "branch": "refs/heads/codex/ci-hash-fix",
+    "changes": 2
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/ci-integration-20261023",
+    "HEAD": "21f9c2402a487a6deb4139d4d07246425d422012",
+    "branch": "refs/heads/codex/ci-integration",
+    "changes": 2
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/ci-process-20261023",
+    "HEAD": "4ffec25f06259d8028f038cb72a2cec96fc9629f",
+    "branch": "refs/heads/codex/ci-process-fix",
+    "changes": 0
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/contest-delivery-20261023",
+    "HEAD": "d072c6d6808b26f07588378aeb0eca3a476d8222",
+    "branch": "refs/heads/codex/contest-delivery-20261023",
+    "changes": 0
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/docs-governance-20261023",
+    "HEAD": "88e97736396a6c7e5f539a903cde91a34e14d65a",
+    "branch": "refs/heads/codex/docs-governance-20261023",
+    "changes": 23
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/layout-closeout-20261023",
+    "HEAD": "4f5ad6ff1cb84c06f3ea5ff97f5ee7e25fb28070",
+    "branch": "refs/heads/codex/layout-closeout-20261023",
+    "changes": 55
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/page-final-20261023",
+    "HEAD": "6875262e2306da4ccfdec2134ac5323a8b294eb3",
+    "branch": "refs/heads/codex/page-final-20261023",
+    "changes": 4230
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/path-check-clean",
+    "HEAD": "8e344aab02894958a5dc68d8e37053b382df5c6e",
+    "changes": 0
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/path-check-clean2",
+    "HEAD": "f17be7adabf9083eeb02c8066f8c2312090c5cab",
+    "changes": 0
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/path-check-clean3",
+    "HEAD": "9128559378198473697b808be595a4108e61cf15",
+    "changes": 0
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/report-workspace-20261026",
+    "HEAD": "365aecffd5ef1807b993829bfba8bc6d02289fa8",
+    "branch": "refs/heads/codex/report-workspace-20261026",
+    "changes": 3
+  },
+  {
+    "worktree": "D:/jbcode/web ai/jianli/backend/.tmp/ui-accepted-worktree",
+    "HEAD": "8e344aab02894958a5dc68d8e37053b382df5c6e",
+    "changes": 268
+  }
+]

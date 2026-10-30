@@ -1,0 +1,32 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CareerProof · 家庭试用说明</title>
+<style>body{font:16px/1.8 "Microsoft YaHei",sans-serif;background:#f5f7fb;color:#243047;margin:0}main{max-width:830px;margin:32px auto;padding:32px;background:white;border:1px solid #dce2ef;border-radius:16px}h1{font-size:28px;color:#3730a3;line-height:1.4}h2{font-size:21px;margin-top:30px}li{margin:10px 0}a{color:#4338ca}code{background:#eef2ff;padding:3px 6px;border-radius:4px;overflow-wrap:anywhere}.note{padding:14px 18px;border-left:4px solid #6366f1;background:#eef2ff}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:10px;border-bottom:1px solid #ddd}small{color:#64748b}@media(max-width:600px){main{margin:0;padding:20px;border:0}}</style>
+<main><p>职证 CareerProof · 2026-10-25 家庭试用包</p><h1>爸爸，先试着上传一套材料，看看报告能不能讲清楚。</h1>
+<p>这个网站把岗位要求与简历、项目文件逐项对应，让人能点开来源核对，也能根据缺口补充新版材料。请按真实感受试，不用追求高分。</p>
+<div class="note"><b>这是本机试用包，不是免安装软件。</b>适用于 <b>Windows 10/11、Intel/AMD 64 位电脑</b>，不用另装 Python、Node.js 或数据库；先安装并打开 <b>Docker Desktop</b>。本包已带运行组件，Docker 安装完成后可离线试用本文的 TXT/ZIP 规则报告路线。建议预留至少 8 GB 可用磁盘空间。包内没有真实个人资料或 API 密钥。</div>
+<h2>一、第一次打开</h2><ol>
+<li>将整个 ZIP <b>解压</b>到电脑上的普通文件夹，例如 <code>C:\CareerProof-Trial</code>。不要直接在压缩包里运行，也不要只取出一个启动文件。</li>
+<li>如果未安装 Docker Desktop，打开<a href="https://docs.docker.com/desktop/setup/install/windows-install/">官方 Windows 安装说明</a>，按电脑类型下载。按安装程序要求完成 WSL 2／虚拟化配置及必要重启。保持默认 <b>Linux containers</b> 模式——电脑仍然是 Windows。若安装这一步卡住，请让家人协助，不必自行修改系统设置。</li>
+<li>打开 Docker Desktop，等它显示 <b>Engine running</b>。</li>
+<li>双击 <b>01-Start.cmd</b>，等待显示“启动完成”。首次会导入随包组件并初始化本机数据，通常需要几分钟，请不要关闭。成功后会自动打开网站和本机账号说明。</li>
+<li>用账号说明中的<b>学生账号</b>登录。以后仍双击 <b>01-Start.cmd</b>；忘记账号可双击 <b>03-Accounts.cmd</b>。</li></ol>
+<p>网址：<a href="http://127.0.0.1:3150">http://127.0.0.1:3150</a>。这个地址只能在启动试用包的电脑上使用，不能把它发给别人当作在线网址。</p>
+<h2>二、先体验这一条路线</h2><ol>
+<li>登录学生账号，打开“我的材料”。从包内<b>试用材料</b>文件夹选择 <code>event-api-resume.txt</code> 作为简历、<code>event-api-project.zip</code> 作为项目；分别上传，项目 ZIP 不用解压。名称可填“活动报名简历”和“活动报名项目”。等待两项处理完成。</li>
+<li>打开“发现岗位”，选择<b>Python 后端开发实习生</b>。明确选择刚上传的简历版本和项目版本。</li>
+<li><b>不勾选外部 AI 同意</b>，点击生成匹配报告，等实际任务结束。本包禁用外部模型，不会产生模型调用费；这一步是本地规则分析，不能当作真实大模型质量体验。</li>
+<li>打开报告，选一条岗位要求，再打开引用：是否能找到文件、行号和原文？报告说的依据与你看到的一致吗？规则未覆盖不代表你没有能力。</li>
+<li>看一条补证建议。如果需要练习完整补证，可创建补证任务，给<b>原项目</b>上传真正补充过的新版，返回任务明确保存版本选择，再生成新报告。原报告与已投递快照不会自动替换。暂不改材料也没关系，反馈“是否知道下一步做什么”即可。</li></ol>
+<p>想看企业端时，先由学生在报告页阅读授权范围、<b>明确确认站内投递</b>，再退出并用企业账号查看。仅限这些虚构岗位和合成材料；不会发给 BOSS 或真实公司。不需要为了完成试用而发送企业回复。</p>
+<h2>三、用完、下次继续和反馈</h2><ul>
+<li>双击 <b>02-Stop.cmd</b>，仅停止本包服务，账号、材料和报告保留。关闭浏览器或启动窗口不会停止后台服务。</li>
+<li>保留解压目录，尤其是首次启动后生成的 <code>.local</code> 文件夹；不要在 Docker 中删除本包的数据卷。数据保存在本机 Docker 卷中，搬走 ZIP 不等于搬走已上传材料。</li>
+<li>把<b>试用反馈.txt</b>填好发回，卡住就写页面、按钮和看到的提示，可附截图。请勿转发 <code>.local</code>、密码或私人材料。</li></ul>
+<h2>四、打不开时</h2><table><tr><th>现象</th><th>处理</th></tr>
+<tr><td>Docker 未就绪</td><td>打开 Docker Desktop 等待完成；本包不会替你修改系统权限。</td></tr>
+<tr><td>运行组件导入失败／校验失败</td><td>确认 ZIP 传输、解压完整，磁盘空间充足。不要单独移动 images 或 source 文件夹；保留窗口和 logs 供排查。</td></tr>
+<tr><td>3150 端口被占用</td><td>若本包已启动，直接打开网址；否则把提示截图给家人，不要随意结束其他程序。</td></tr>
+<tr><td>浏览器登录后提示没有权限</td><td>学生与企业账号用途不同，请按本包账号文件登录，不要套用他人电脑的旧任务链接。</td></tr>
+<tr><td>报告有缺口／规则不覆盖</td><td>可能是材料本来缺失或规则范围有限，不是必须拿满分。请点引用核对，再反馈是否说清楚。</td></tr></table>
+<p><b>版本与验证：</b>产品源码取自提交 <code>8ca91cc</code>，没有混入未提交成果。此包是家庭试用版，尚不代表全部人工验收完成。包的实际检查范围见 <a href="验证结果.txt">验证结果.txt</a>；原始源码清单在 <code>source/SOURCE_MANIFEST.json</code>。</p>
+<small>外部 AI 关闭；向量语义检索关闭以避免首次下载嵌入模型；规则报告保留。Docker Desktop 自身安装可能需要联网；本包启动不下载运行镜像。图片 OCR 不在本次离线路线验收范围内。仅用合成材料试用即可。</small></main></html>

@@ -1,0 +1,272 @@
+{
+  "api": "http://127.0.0.1:8113",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+  "calls": [
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/jobs/33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/resumes",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/622bb60a-ee28-4b0e-a5e6-1da234acd472",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/622bb60a-ee28-4b0e-a5e6-1da234acd472",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/622bb60a-ee28-4b0e-a5e6-1da234acd472",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/projects",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/projects/1171988a-ed7a-433d-b37b-7da4d9c09958/versions",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/62fcc6ce-dcf8-41a9-9bb5-112bc96796e9",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/62fcc6ce-dcf8-41a9-9bb5-112bc96796e9",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/62fcc6ce-dcf8-41a9-9bb5-112bc96796e9",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/matches",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/99990ce5-6e2d-46ea-bb49-bf0c226c36fa",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/99990ce5-6e2d-46ea-bb49-bf0c226c36fa",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/99990ce5-6e2d-46ea-bb49-bf0c226c36fa",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/2410fd38-bd46-4ff1-8931-278cd71c1a27",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/applications",
+      "status": 201
+    }
+  ],
+  "inputFiles": [
+    {
+      "filename": "CareerProof-campus-signup-resume.txt",
+      "sha256": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+    },
+    {
+      "filename": "CareerProof-campus-signup-v2-runtime.zip",
+      "sha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+    }
+  ],
+  "before": {
+    "applications": {
+      "3615d742-5dad-4d12-baf2-cca2aeb2058a": {
+        "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+        "snapshotSha256": "b3e7a2bf72c215e0baecb3462a9347aab2fa3c5add7d4cff210c391fc0aa3e00"
+      },
+      "9fa05cd4-b71a-44fd-a22f-bc4694983361": {
+        "jobId": "b3b6bfc4-0625-461c-8733-06e5b990133f",
+        "snapshotSha256": "88833bc1f745b19a02a6689beff1433424f809a7ba2e59e01fd3d97f1445869f"
+      }
+    },
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3
+  },
+  "userId": "621c39fb-dd5e-40bc-b5d4-8ad75550f8d2",
+  "resumeUpload": {
+    "resumeId": "0e80a8d9-1004-4c2c-ad08-90f27722742e",
+    "versionId": "5abba3be-ba61-40af-a2a2-17b6d9661e93",
+    "taskId": "622bb60a-ee28-4b0e-a5e6-1da234acd472",
+    "status": "pending"
+  },
+  "projectId": "1171988a-ed7a-433d-b37b-7da4d9c09958",
+  "projectUpload": {
+    "projectId": "1171988a-ed7a-433d-b37b-7da4d9c09958",
+    "versionId": "6cbf9f52-15bc-439b-80b2-5e303bb0c48e",
+    "taskId": "62fcc6ce-dcf8-41a9-9bb5-112bc96796e9",
+    "status": "pending"
+  },
+  "matchAccepted": {
+    "taskId": "99990ce5-6e2d-46ea-bb49-bf0c226c36fa",
+    "status": "pending"
+  },
+  "report": {
+    "id": "2410fd38-bd46-4ff1-8931-278cd71c1a27",
+    "candidateId": "621c39fb-dd5e-40bc-b5d4-8ad75550f8d2",
+    "candidateName": "林禾（界面对照合成）",
+    "analysisMode": "rules",
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "5abba3be-ba61-40af-a2a2-17b6d9661e93",
+        "title": "校园报名项目配套简历 · 界面对照合成",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "6cbf9f52-15bc-439b-80b2-5e303bb0c48e",
+        "title": "校园报名系统 · 界面对照合成",
+        "versionNumber": 1,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "requirementCount": 5,
+    "sha256": "98e1292500f5c49f2d288543736d5351f8c0ab13dfd9f771ddd3ae7ea1cae307"
+  },
+  "application": {
+    "id": "557f6a7a-7409-4f2d-99ac-d1a5a0dd3462",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "jobTitle": "校园活动后端：完整项目材料验证",
+    "companyName": "校园活动项目实验室（虚构）",
+    "candidateName": "林禾（界面对照合成）",
+    "reportId": "2410fd38-bd46-4ff1-8931-278cd71c1a27",
+    "status": "submitted",
+    "createdAt": "2026-10-22T11:59:07.957557+00:00",
+    "consentVersion": "application-report-v1",
+    "replyKind": null,
+    "replyText": null,
+    "replyReferences": [],
+    "overallScore": 52.0,
+    "events": [
+      {
+        "type": "submitted",
+        "at": "2026-10-22T11:59:07.966060+00:00",
+        "detail": "学生明确授权该岗位企业查看本次固定报告、引用片段并获取本次简历文件"
+      }
+    ],
+    "dimensions": [
+      {
+        "requirementId": "5db05125-931a-4bc6-8cca-7bc352d558e5",
+        "title": "实现校园活动创建、报名、取消和查询接口，校验请求并返回对应错误状态",
+        "skill": "FastAPI",
+        "score": 65.0,
+        "verdict": "supported",
+        "weight": 5,
+        "evidenceLevel": 3,
+        "evidenceLevelSource": "rules",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "formulaVersion": "evidence-v4"
+      },
+      {
+        "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+        "title": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+        "skill": "SQL",
+        "score": 65.0,
+        "verdict": "supported",
+        "weight": 5,
+        "evidenceLevel": 3,
+        "evidenceLevelSource": "rules",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "formulaVersion": "evidence-v4"
+      },
+      {
+        "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+        "title": "用Python完成满额与重复报名拒绝，取消后恢复一个名额，避免重复取消导致名额增加",
+        "skill": "Python",
+        "score": 65.0,
+        "verdict": "supported",
+        "weight": 5,
+        "evidenceLevel": 3,
+        "evidenceLevelSource": "rules",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "formulaVersion": "evidence-v4"
+      },
+      {
+        "requirementId": "8ba20aff-ca1c-4180-9785-8a5a05092ff0",
+        "title": "编写行为测试验证成功报名、重复与满额拒绝、取消、事务回滚、重启恢复及最后名额竞争",
+        "skill": "pytest",
+        "score": 65.0,
+        "verdict": "supported",
+        "weight": 5,
+        "evidenceLevel": 3,
+        "evidenceLevelSource": "rules",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "formulaVersion": "evidence-v4"
+      },
+      {
+        "requirementId": "58f121b0-fbd4-4e81-ad03-df57eed7978f",
+        "title": "使用Redis缓存活动查询并在报名或取消后失效缓存",
+        "skill": "Redis",
+        "score": 0.0,
+        "verdict": "gap",
+        "weight": 5,
+        "evidenceLevel": null,
+        "evidenceLevelSource": "rules",
+        "evidenceLevelVersion": "practice-evidence-v5-redis-operation",
+        "formulaVersion": "evidence-v4"
+      }
+    ],
+    "comparisonBasis": "620737997c26cc5ce041299bbafc418639a3a629a28d6c570385c51a31acd9c0"
+  },
+  "after": {
+    "applications": {
+      "3615d742-5dad-4d12-baf2-cca2aeb2058a": {
+        "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+        "snapshotSha256": "b3e7a2bf72c215e0baecb3462a9347aab2fa3c5add7d4cff210c391fc0aa3e00"
+      },
+      "557f6a7a-7409-4f2d-99ac-d1a5a0dd3462": {
+        "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+        "snapshotSha256": "98e1292500f5c49f2d288543736d5351f8c0ab13dfd9f771ddd3ae7ea1cae307"
+      },
+      "9fa05cd4-b71a-44fd-a22f-bc4694983361": {
+        "jobId": "b3b6bfc4-0625-461c-8733-06e5b990133f",
+        "snapshotSha256": "88833bc1f745b19a02a6689beff1433424f809a7ba2e59e01fd3d97f1445869f"
+      }
+    },
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3
+  },
+  "originalTwoSnapshotsUnchanged": true,
+  "passed": true
+}

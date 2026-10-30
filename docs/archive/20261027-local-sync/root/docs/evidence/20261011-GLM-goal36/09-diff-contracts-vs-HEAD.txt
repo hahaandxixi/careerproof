@@ -1,0 +1,96 @@
+diff --git a/backend/app/agents/contracts.py b/backend/app/agents/contracts.py
+index 08f5d82..9896bfc 100644
+--- a/backend/app/agents/contracts.py
++++ b/backend/app/agents/contracts.py
+@@ -129,6 +129,76 @@ def runtime_plan_without_implementation_step(deliverable: str, steps: list[str])
+     return runtime_requested and not implementation_step
+ 
+ 
++_DEPLOYMENT_OUTCOME = re.compile(r"已部署|已上线|(?:线上|服务器|生产环境).{0,10}稳定运行")
++_OUTCOME_NEGATION = re.compile(
++    r"不代表|不等于|不等同于|不能证明|无法证明|不能断言|无法断言|尚未|是否|待核验|需核验|未部署|未上线"
++    r"|未证明"
++)
++_RUNTIME_RECORD_STEP = re.compile(
++    r"(?:运行|执行|部署|启动|请求|访问|调用)[^。！？；;\n]{0,25}?(?:保存|记录|留存|留档|日志)"
++    r"|(?:保存|记录|留存|留档)[^。！？；;\n]{0,25}?(?:运行|执行|部署|启动|请求|访问|调用)"
++)
++_SOURCE_RUNTIME_CAUSAL = re.compile(
++    r"(?:源码|代码)(?:文件)?存在.{0,14}(?:证明|证实|表明|等同于|等于|代表|说明|意味着)"
++    r".{0,14}(?:已部署|已上线|部署成功|部署完成|稳定运行|线上稳定|线上可用|运行成功|已运行|正常运行)"
++    r"|(?:已有|存在).{0,4}(?:源码|代码|文件).{0,12}(?:即|就|直接)?(?:证明|证实|表明|说明|意味着)"
++    r".{0,12}(?:已部署|已上线|部署成功|稳定运行|线上稳定|线上可用)"
++    r"|(?:源码|代码).{0,12}(?:即|就|直接)?(?:证明|证实|表明).{0,12}"
++    r"(?:已部署|已上线|部署成功|稳定运行|线上稳定)"
++    r"|(?:源码|代码)(?:文件)?.{0,6}(?:作为|当作|视为|算作|等同).{0,10}"
++    r"(?:已部署|已上线|部署完成|稳定运行|线上稳定).{0,6}?(?:证据|证明|依据|记录)"
++    r"|(?:源码|代码)(?:文件)?.{0,6}(?:作为|当作|视为|算作|等同).{0,10}"
++    r"(?:部署|运行|上线|执行).{0,6}?(?:证据|证明|依据|记录)"
++)
++_CAUSAL_EXEMPTION = re.compile(
++    r"不能|无法|不代表|不等于|不等同于|不得|不可|不足以|未能|尚不能|尚未|是否|能否|待核验|需核验"
++    r"|避免|拒绝|未证明|未证实"
++)
++_CAUSAL_CLAUSE_SEPARATORS = ("，", ",", "、", "：", ":")
++
++
++def _causal_negation_prefix(sentence: str, start: int) -> str:
++    """Exemption words only count when they share the causal clause itself."""
++    prefix = sentence[max(0, start - 16) : start]
++    cut = max(prefix.rfind(separator) for separator in _CAUSAL_CLAUSE_SEPARATORS)
++    return prefix[cut + 1 :]
++
++
++def plan_deployment_outcome_error(
++    deliverable: str, steps: list[str], acceptance_checks: list[str]
++) -> str | None:
++    """Reject explicit "source presence proves deployment/runtime" conclusions.
++
++    This is a narrow causal/outcome guard, not a judgment on whether the
++    deployment happened. A match needs an explicit causal connector AND a
++    deployment/runtime conclusion, so "source presence means the file was
++    uploaded / material is locatable" stays allowed. Negative statements,
++    conditional wording and plans that actually produce a runtime record
++    stay allowed; a negation only exempts inside its own clause, so an
++    independent causal assertion after a comma is still rejected. Inserting
++    a bare "运行" into a step cannot rescue a causal acceptance conclusion.
++    """
++    for text in (deliverable, *steps, *acceptance_checks):
++        for sentence in re.split(r"[。！？；;\n]", text):
++            for match in _SOURCE_RUNTIME_CAUSAL.finditer(sentence):
++                prefix = _causal_negation_prefix(sentence, match.start())
++                if _CAUSAL_EXEMPTION.search(prefix) or _CAUSAL_EXEMPTION.search(match.group()):
++                    continue
++                return "AI task plan claims source presence proves a deployment or runtime outcome"
++    for text in (deliverable, *acceptance_checks):
++        for sentence in re.split(r"[。！？；;\n]", text):
++            if _OUTCOME_NEGATION.search(sentence):
++                continue
++            if _DEPLOYMENT_OUTCOME.search(sentence) and not any(
++                _RUNTIME_RECORD_STEP.search(step) for step in steps
++            ):
++                return (
++                    "AI task plan asserts a deployment or runtime outcome "
++                    "without a runtime-record step"
++                )
++    return None
++
++
+ def missing_cited_function_body_claim(text: str) -> bool:
+     """An explicitly different function is outside the cited function context."""
+     for match in re.finditer(
+@@ -365,6 +435,14 @@ def validate_grounded_analysis(
+             context, item.task_plan
+         ):
+             raise ValueError("AI task plan requests execution before missing implementation")
++        if item.task_plan:
++            deployment_error = plan_deployment_outcome_error(
++                item.task_plan.deliverable,
++                item.task_plan.steps,
++                item.task_plan.acceptance_checks,
++            )
++            if deployment_error:
++                raise ValueError(deployment_error)
+         if (all_cited_functions_covered(cited_evidence)
+                 and missing_function_context_claim(coverage_text)):
+             raise ValueError("AI explanation contradicts jointly covered function source")

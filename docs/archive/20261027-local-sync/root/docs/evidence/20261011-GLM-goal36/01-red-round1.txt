@@ -1,0 +1,44 @@
+..................FFF                                                    [100%]
+================================== FAILURES ===================================
+____________ test_material_upload_and_location_wording_is_allowed _____________
+
+    def test_material_upload_and_location_wording_is_allowed():
+        context = supported_python_context()
+        for phrase in LEGAL_MATERIAL_WORDING:
+>           assert plan_deployment_outcome_error(
+                "部署情况说明", ["整理 metrics.py 源码文件"], [phrase]
+            ) is None, phrase
+E           AssertionError: 源码存在说明文件已经上传，实际运行仍待核验
+E           assert 'AI task plan claims source presence proves a deployment or runtime outcome' is None
+E            +  where 'AI task plan claims source presence proves a deployment or runtime outcome' = plan_deployment_outcome_error('部署情况说明', ['整理 metrics.py 源码文件'], ['源码存在说明文件已经上传，实际运行仍待核验'])
+
+app\tests\test_weekend_plan_boundaries.py:322: AssertionError
+_________________ test_unproved_negated_connector_is_allowed __________________
+
+    def test_unproved_negated_connector_is_allowed():
+        context = supported_python_context()
+        phrase = "源码存在未证明部署成功"
+>       assert plan_deployment_outcome_error(
+            "部署情况说明", ["整理 metrics.py 源码文件"], [phrase]
+        ) is None
+E       AssertionError: assert 'AI task plan claims source presence proves a deployment or runtime outcome' is None
+E        +  where 'AI task plan claims source presence proves a deployment or runtime outcome' = plan_deployment_outcome_error('部署情况说明', ['整理 metrics.py 源码文件'], ['源码存在未证明部署成功'])
+
+app\tests\test_weekend_plan_boundaries.py:331: AssertionError
+____ test_pending_negation_clause_does_not_exempt_independent_causal_error ____
+
+    def test_pending_negation_clause_does_not_exempt_independent_causal_error():
+        context = supported_python_context()
+        phrase = "实际运行仍待核验，源码存在说明部署成功"
+        error = plan_deployment_outcome_error(
+            "部署情况说明", ["整理 metrics.py 源码文件"], [phrase]
+        )
+>       assert error is not None and "deployment or runtime" in error
+E       assert (None is not None)
+
+app\tests\test_weekend_plan_boundaries.py:343: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_weekend_plan_boundaries.py::test_material_upload_and_location_wording_is_allowed
+FAILED app/tests/test_weekend_plan_boundaries.py::test_unproved_negated_connector_is_allowed
+FAILED app/tests/test_weekend_plan_boundaries.py::test_pending_negation_clause_does_not_exempt_independent_causal_error
+3 failed, 18 passed in 0.11s

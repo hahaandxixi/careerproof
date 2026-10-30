@@ -1,0 +1,5 @@
+49e0d733236667784f39fdd8f59442eb1c3a71d3a0bc1aefc7ac89918a1c6732 *scripts/e2e/private-recovery-notice-runner.mjs
+69fbf724fc2dc58fa7b6eb3a38cc440a89dfa8047784ab6f488d0cfbce973085 *scripts/e2e/private-recovery-notice.test.mjs
+# sha256 of the goal-41 write surface at prep handoff (2026-10-11).
+# Source files: scripts/e2e/private-recovery-notice-runner.mjs, scripts/e2e/private-recovery-notice.test.mjs
+# Any later change to these two files must update this file before the page run.
