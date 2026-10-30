@@ -82,7 +82,7 @@ test("details preserve full identity while a legal UUID inside code and filename
     .replace(/<span aria-hidden="true"[^>]*>[\s\S]*?<\/span>/g, "");
   const decode = text => text.replace(/&quot;/g, '"').replace(/&#x27;/g, "'")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-  const lines = [...code.matchAll(/<span class="block">([\s\S]*?)<\/span>/g)].map(match => decode(match[1]));
+  const lines = [...code.matchAll(/<span class="whitespace-pre">([\s\S]*?)<\/span>/g)].map(match => decode(match[1]));
   assert.equal(lines.join("\n"), evidence.snippet);
 });
 
