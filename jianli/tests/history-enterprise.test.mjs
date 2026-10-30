@@ -85,7 +85,7 @@ test("history card displays server-wide history facts and fixed versions only wh
       { kind: "project", id: "version-b222222", title: "同名项目", versionNumber: 2 },
     ],
   }, onSameJob() {} }));
-  assert.match(html, /该岗位有后续报告/);
+  assert.match(html, /有后续报告/);
   assert.match(html, /同岗位历史（27份）/);
   assert.match(html, /同名项目 · 第1版 · 材料编号 version-/);
   assert.match(html, /同名项目 · 第2版/);
@@ -213,7 +213,7 @@ for (const [aiStatus, fallback, accepted] of [
 const { default: CandidatePairComparison } = await import('../src/components/CandidatePairComparison.tsx');
 const { comparableRadarAxes } = await import('../src/lib/application-comparison.ts');
 const pairCandidate = (id, secondVerdict='supported') => ({
- id, jobId:'job-a', candidateName:`合成${id}`, reportId:`report-${id}`, comparisonBasis:'same-frozen-basis',
+ id, jobId:'job-a', candidateName:`合成${id}`, reportId:`report-${id}`, comparisonBasis:'same-frozen-basis',fixedRequirementBasisComplete:true,
  dimensions:[{requirementId:'r1',title:'接口实现',skill:'FastAPI',weight:4,verdict:'supported',score:65,formulaVersion:'v3'}, {requirementId:'r2',title:'业务测试',skill:'pytest',weight:3,verdict:secondVerdict,score:secondVerdict==='gap'?0:40,formulaVersion:'v3'}, {requirementId:'r3',title:'SQL持久化',skill:'SQL',weight:2,verdict:'unsupported',score:null,formulaVersion:'v3'}],
  report:{id:`report-${id}`,analysisMode:'rules',aiFallbackUsed:true,materials:[{kind:'project',id:`version-${id}`,title:`项目${id}`,versionNumber:2}],
  items:['r1','r2','r3'].map((r,i)=>({requirementId:r,requirementTitle:r,verdict:i===1?secondVerdict:'supported',finalScore:i===1&&secondVerdict==='gap'?0:40,aiStatus:'validated',aiExplanation:'UNADOPTED_AI',aiInformationGap:'UNADOPTED_GAP',explanation:`${id}-${r}-原判断`,evidenceLevelGap:`${id}-${r}-核对事项`,evidenceList:i===1&&secondVerdict==='gap'?[]:[{citationId:`${id}-${r}-E1`,filePath:`version-${id}/service.py`,projectVersionId:`version-${id}`,lineStart:12,lineEnd:28,snippet:`${id}-${r}-source`,contextComplete:true}]}))}
@@ -225,7 +225,7 @@ test('two fixed reports use identity colors and linked requirement columns, with
  assert.match(html,/A-r2-source/);assert.doesNotMatch(html,/A-r1-source/);assert.match(html,/B-r2-原判断/);assert.match(html,/当前授权报告没有对应引用/);
  assert.match(html,/项目A/);assert.match(html,/第12–28行/);assert.doesNotMatch(html,/UNADOPTED_AI|UNADOPTED_GAP/);
  assert.doesNotMatch(html,/aria-label="合成B · pytest/);assert.match(html,/aria-label="合成A · pytest/);
- assert.doesNotMatch(html,/<details[^>]*\bopen[= >]/);
+ assert.equal((html.match(/<details[^>]*\bopen[= >]/g)||[]).length,1);
 });
 test('mismatching basis or axes never overlay; selection alone never claims a report is opened',()=>{
  const a=pairCandidate('A'),b=pairCandidate('B');
@@ -234,4 +234,19 @@ test('mismatching basis or axes never overlay; selection alone never claims a re
  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,changed],busy:false,onOpen(){}}));assert.match(html,/比较依据不同/);assert.doesNotMatch(html,/双人同轴材料支持度雷达/);assert.match(html,/合成A的岗位要求/);assert.match(html,/合成B的岗位要求/);
  }
  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,{...b,report:undefined}],busy:false,onOpen(){}}));assert.match(html,/打开两份授权报告/);assert.doesNotMatch(html,/A-r1-source|双人同轴材料支持度雷达/);
+});
+
+test('incomplete historical requirement facts cannot produce a same-axis comparison',()=>{
+ const a=pairCandidate('A'),b={...pairCandidate('B'),fixedRequirementBasisComplete:undefined};
+ assert.equal(comparableRadarAxes(a,b),false);
+ const html=render(React.createElement(CandidatePairComparison,{candidates:[a,b],busy:false,onOpen(){}}));
+ assert.match(html,/比较依据不足/);assert.doesNotMatch(html,/双人同轴材料支持度雷达/);assert.match(html,/合成A的岗位要求/);
+});
+
+test('equal citation aliases in two fixed reports get candidate-scoped links and preserve full accepted text',()=>{
+ const candidates=['A','B'].map(id=>{const c=pairCandidate(id);c.report.aiFallbackUsed=false;c.report.analysisMode='ai_evidence';c.report.items[0]={...c.report.items[0],aiExplanation:'R1-E1 '+('实际材料解释。'.repeat(30))+'原文结尾',aiCitationIds:['R1-E1'],aiInformationGap:'运行待核验',evidenceList:[{...c.report.items[0].evidenceList[0],citationId:'R1-E1'}]};return c;});
+ const before=JSON.stringify(candidates);
+ const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){}}));
+ for(const id of ['A','B']) {assert.match(html,new RegExp(`href="#pair-${id}-citation-R1-E1"`));assert.match(html,new RegExp(`id="pair-${id}-citation-R1-E1"`));}
+ assert.match(html,/原文结尾/);assert.doesNotMatch(html,/href="#citation-R1-E1"/);assert.equal(JSON.stringify(candidates),before);
 });

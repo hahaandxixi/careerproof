@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type Enterprise, type JobDraftResult, type JobOptions, type RequirementInput } from "@/lib/api/domain";
 import { ErrorNotice } from "./AccessGate";
+import { combineDraftRequirements, createDraftRequestGuard, quoteStillMatches } from "@/lib/job-draft";
 
 export default function JobForm({ jobId }: { jobId?: string }) {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function JobForm({ jobId }: { jobId?: string }) {
   const [draftConsent, setDraftConsent] = useState(false);
   const [draftBusy, setDraftBusy] = useState(false);
   const [draftError, setDraftError] = useState("");
+  const draftRequests = useRef(createDraftRequestGuard());
   const [aiDraft, setAiDraft] = useState<JobDraftResult | null>(null);
   const [draftSource, setDraftSource] = useState("");
   const [selectedDraftRows, setSelectedDraftRows] = useState<number[]>([]);
@@ -38,6 +40,8 @@ export default function JobForm({ jobId }: { jobId?: string }) {
   const [revision, setRevision] = useState(0);
 
   useEffect(() => {
+    const requestGuard = draftRequests.current;
+    setDraftBusy(false);
     let current = true;
     setLoading(true); setError("");
     Promise.all([api.listEnterprises(), api.jobOptions(), jobId ? api.getJob(jobId) : Promise.resolve(null)])
@@ -51,7 +55,7 @@ export default function JobForm({ jobId }: { jobId?: string }) {
         }
       }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setLoading(false); });
-    return () => { current = false; };
+    return () => { current = false; requestGuard.invalidate(); };
   }, [jobId, revision]);
 
   async function createOrganization(event: React.FormEvent) {
@@ -64,22 +68,26 @@ export default function JobForm({ jobId }: { jobId?: string }) {
   }
   async function generateDraft() {
     if (!draftConsent || description.trim().length < 20 || description.length > 6000) return;
-    setDraftBusy(true); setDraftError(""); setAiDraft(null);
+    if (draftBusy) return;
+    const ticket = draftRequests.current.start();
+    const source = description;
+    setDraftBusy(true); setDraftError("");
     try {
       const result = await api.draftJobRequirements({ description, externalAiConsent: draftConsent });
-      setAiDraft(result); setDraftSource(description);
+      if (!draftRequests.current.accepts(ticket)) return;
+      setAiDraft(result); setDraftSource(source);
       setSelectedDraftRows(result.requirements.map((_, index) => index));
-    } catch (reason) { setDraftError(errorMessage(reason)); }
-    finally { setDraftBusy(false); }
+    } catch (reason) { if (draftRequests.current.accepts(ticket)) setDraftError(errorMessage(reason)); }
+    finally { if (draftRequests.current.isLatest(ticket)) setDraftBusy(false); }
   }
-  function acceptDraft() {
+  function acceptDraft(mode: "append" | "replace") {
     if (!aiDraft || description !== draftSource || selectedDraftRows.length === 0) return;
-    setRequirements(aiDraft.requirements.filter((_, index) => selectedDraftRows.includes(index)).map(row => ({
-      rawText: row.rawText, skillName: row.skillName, weight: row.weight, isRequired: row.isRequired,
-      sourceQuote: row.sourceQuote, sourceStart: row.sourceStart, sourceEnd: row.sourceEnd,
-    })));
-    setAiDraft(null);
-    setDraftError("");
+    const existing = requirements.filter(r=>r.rawText.trim()||r.skillName.trim()).length;
+    if (mode==="replace" && existing && !window.confirm(`将用选中的${selectedDraftRows.length}条草稿替换表单中现有${existing}条要求。现有编辑将被移除，是否继续？`)) return;
+    try {
+      setRequirements(combineDraftRequirements(requirements, aiDraft.requirements.filter((_,i)=>selectedDraftRows.includes(i)), mode));
+      setAiDraft(null); setSelectedDraftRows([]); setDraftError("");
+    } catch(reason) { setDraftError(errorMessage(reason)); }
   }
   function locateSource(start: number, end: number) {
     descriptionRef.current?.focus();
@@ -88,6 +96,7 @@ export default function JobForm({ jobId }: { jobId?: string }) {
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current) return;
     setError("");
+    if (requirements.some(row=>!quoteStillMatches(description,row))) { setError("部分要求的原文关联已失效，请重新核对或取消原文关联。"); return; }
     if (!enterpriseId || !title.trim() || !requirements.length || requirements.some(r => !r.rawText.trim() || !r.skillName.trim())) {
       setError("请选择所属企业，填写岗位名称和至少一项完整的岗位要求。"); return;
     }
@@ -127,14 +136,23 @@ export default function JobForm({ jobId }: { jobId?: string }) {
           <label className="form-label">工作城市<input className="field mt-1" maxLength={100} value={city} onChange={e => setCity(e.target.value)} placeholder="如：杭州 / 远程" /></label>
           <label className="form-label">工作类型<select className="field mt-1" value={employmentType} onChange={e => setEmploymentType(e.target.value)}>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           <label className="form-label">岗位状态<select className="field mt-1" value={jobStatus} onChange={e => setJobStatus(e.target.value)}><option value="draft">保存草稿</option><option value="published">公开发布</option><option value="closed">关闭</option></select></label>
-          <label className="form-label sm:col-span-2">岗位描述<textarea ref={descriptionRef} className="field mt-1" rows={5} maxLength={20000} value={description} onChange={e => setDescription(e.target.value)} /></label>
+          <label className="form-label sm:col-span-2">岗位描述<textarea ref={descriptionRef} className="field mt-1" rows={5} maxLength={20000} value={description} onChange={e => {draftRequests.current.sourceChanged(); setDescription(e.target.value);}} /><span className="mt-1 block text-sm text-slate-600">{description.length} 字 · AI 提取要求支持20–6000字</span></label>
         </div>
-        <details className="rounded-xl border border-slate-200 bg-white px-4"><summary className="cursor-pointer py-3 text-sm font-medium text-indigo-700">可选：AI 辅助拆解岗位要求</summary><div className="space-y-4 pb-4">
-          <div><h2 className="section-title">AI 拆解岗位要求</h2><p className="mt-1 text-sm leading-7 text-slate-600">粘贴完整岗位描述（AI 拆解限 20–6000 字），AI 提取最多 12 条要求并附上原文定位。你可以逐条选择、修改，确认后才进入发布表单。</p></div>
+        <details className="rounded-xl border border-slate-200 bg-white px-4"><summary className="cursor-pointer py-3 text-base font-medium text-indigo-700">从岗位描述提取要求</summary><div className="space-y-4 pb-4">
           <label className="flex items-start gap-3 rounded-lg bg-indigo-50 p-3 text-xs leading-6 text-indigo-900"><input className="mt-1" type="checkbox" checked={draftConsent} onChange={event => setDraftConsent(event.target.checked)} /><span>同意将当前岗位描述发送给配置的模型进行拆解。生成草稿不会自动保存或发布岗位，模型调用可能产生费用。</span></label>
-          <button type="button" className="btn-secondary" disabled={draftBusy || !draftConsent || description.trim().length < 20 || description.length > 6000} onClick={generateDraft}>{draftBusy ? "AI 正在拆解…" : "从描述生成 AI 草稿"}</button>
+          <button type="button" className="btn-secondary" disabled={draftBusy || !draftConsent || description.trim().length < 20 || description.length > 6000} onClick={generateDraft}>{draftBusy ? "正在提取…" : aiDraft ? "重新提取要求" : "提取要求草稿"}</button>
+          {!draftBusy && (description.trim().length<20 || description.length>6000 || !draftConsent) && <p className="text-sm text-slate-600">{description.trim().length<20 ? "请先填写至少20字的岗位描述。" : description.length>6000 ? "岗位描述超过6000字，请精简后再提取。" : "请先确认上述外发范围。"}</p>}
           {draftError && <p className="text-sm text-rose-700">{draftError}</p>}
-          {aiDraft && <div className="space-y-3 rounded-lg border border-indigo-200 p-4"><p className="text-xs text-indigo-700">{aiDraft.model} 生成的待确认草稿 · {aiDraft.requirements.length} 条</p><p className="text-xs text-slate-500">核验建议仅在草稿中供参考，不自动加入已发布要求；需要保留时请人工编辑要求说明。</p>{description !== draftSource && <p className="text-sm text-amber-700">岗位描述已修改，请重新生成草稿后再采纳，确保原文定位准确。</p>}{aiDraft.requirements.map((row, index) => <label key={`${row.sourceStart}-${index}`} className="flex gap-3 rounded-lg bg-slate-50 p-3 text-sm"><input type="checkbox" className="mt-1" checked={selectedDraftRows.includes(index)} onChange={event => setSelectedDraftRows(values => event.target.checked ? [...values, index] : values.filter(value => value !== index))} /><span className="min-w-0 flex-1"><strong>{row.skillName}</strong> · 权重 {row.weight}/5 · {row.isRequired ? "必要要求" : "加分项"}<span className="mt-1 block">{row.rawText}</span>{row.weightReason && <span className="mt-1 block text-xs">权重理由：{row.weightReason}</span>}{row.evidenceRequest && <span className="mt-1 block">建议核验材料：{row.evidenceRequest}</span>}{row.verificationQuestion && <span className="mt-1 block">建议面试问题：{row.verificationQuestion}</span>}<span className="mt-1 block text-xs text-slate-500">原文：“{row.sourceQuote}”</span><button type="button" className="mt-1 text-xs text-indigo-700 underline" onClick={event => { event.preventDefault(); locateSource(row.sourceStart, row.sourceEnd); }}>定位原文</button></span></label>)}<button type="button" className="btn-secondary" disabled={description !== draftSource || selectedDraftRows.length === 0} onClick={acceptDraft}>确认选中要求并填入表单</button></div>}
+          {aiDraft && <div className="space-y-3 border-t border-slate-200 pt-4"><p className="text-sm text-slate-600">待确认草稿 · {aiDraft.requirements.length}条</p>
+            {description !== draftSource && <p className="text-sm text-amber-800">岗位描述已修改。旧草稿仅供参考，请重新提取后再采纳。</p>}
+            {aiDraft.requirements.map((row,index)=><div key={index} className="space-y-2 rounded-lg bg-slate-50 p-3">
+              <div className="flex items-center justify-between"><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={selectedDraftRows.includes(index)} onChange={e=>setSelectedDraftRows(v=>e.target.checked?[...v,index]:v.filter(i=>i!==index))}/>要求{index+1}</label><button type="button" className="text-sm text-rose-700" onClick={()=>{setAiDraft(v=>v?{...v,requirements:v.requirements.filter((_,i)=>i!==index)}:v);setSelectedDraftRows(v=>v.filter(i=>i!==index).map(i=>i>index?i-1:i));}}>移除草稿</button></div>
+              <label className="block text-sm">要求说明<input className="field mt-1" maxLength={2000} value={row.rawText} onChange={e=>setAiDraft(v=>v?{...v,requirements:v.requirements.map((r,i)=>i===index?{...r,rawText:e.target.value}:r)}:v)}/></label>
+              <div className="grid gap-3 sm:grid-cols-3"><label className="text-sm">技能<input className="field mt-1" maxLength={100} value={row.skillName} onChange={e=>setAiDraft(v=>v?{...v,requirements:v.requirements.map((r,i)=>i===index?{...r,skillName:e.target.value}:r)}:v)}/></label><label className="text-sm">重要程度<select className="field mt-1" value={row.weight} onChange={e=>setAiDraft(v=>v?{...v,requirements:v.requirements.map((r,i)=>i===index?{...r,weight:Number(e.target.value)}:r)}:v)}>{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}/5</option>)}</select></label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={row.isRequired} onChange={e=>setAiDraft(v=>v?{...v,requirements:v.requirements.map((r,i)=>i===index?{...r,isRequired:e.target.checked}:r)}:v)}/>必要要求</label></div>
+              <details className="text-sm"><summary className="cursor-pointer text-indigo-700">原文依据与建议</summary><p className="mt-2">{row.sourceQuote}</p>{row.evidenceRequest&&<p>{row.evidenceRequest}</p>}{row.verificationQuestion&&<p>{row.verificationQuestion}</p>}<button type="button" disabled={description!==draftSource} className="min-h-10 text-indigo-700 underline" onClick={()=>locateSource(row.sourceStart,row.sourceEnd)}>定位原文</button></details>
+            </div>)}
+            <div className="flex flex-wrap gap-3"><button type="button" className="btn-secondary" disabled={description!==draftSource||!selectedDraftRows.length} onClick={()=>acceptDraft("append")}>追加选中要求</button><button type="button" className="min-h-11 text-sm text-slate-600 underline" disabled={description!==draftSource||!selectedDraftRows.length} onClick={()=>acceptDraft("replace")}>替换表单要求…</button></div>
+          </div>}
         </div></details>
         <div className="panel space-y-4">
           <h2 className="section-title">岗位要求</h2><p className="text-sm leading-6 text-slate-500">每条要求单独填写技能名称和重要程度。可使用自定义技能；超出规则支持范围的技能会标注“暂未支持”，不按零分处理。</p>

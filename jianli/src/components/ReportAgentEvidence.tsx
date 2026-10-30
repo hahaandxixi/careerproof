@@ -16,10 +16,10 @@ function Source({ evidence, report }: { evidence: ReportEvidence; report: MatchR
 
 export default function ReportAgentEvidence({ report, canGrow }: { report: MatchReport; canGrow: boolean }) {
   const rows = agentEvidenceRows(report);
-  if (!rows.length && !report.aiProcess?.planningSkippedReason && !report.aiProcess?.skippedReason && !report.aiFallbackUsed) return null;
+  if (!rows.length) return null;
   const mock = report.aiProvider?.startsWith("mock") === true;
-  return <section className="panel min-w-0 space-y-4" aria-labelledby="agent-evidence-title">
-    <div><p className="text-xs font-medium text-indigo-700">从材料到下一步</p><h2 id="agent-evidence-title" className="mt-1 text-lg font-semibold">这次分析做了什么</h2></div>
+  return <details className="min-w-0 space-y-3 border-t border-slate-200 pt-2">
+    <summary id="agent-evidence-title" className="disclosure">检索记录（{rows.length}）</summary>
     {mock && <p className="rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm font-medium text-indigo-950">Mock 界面验证：材料与片段可核对，工具选择和模型输出为预设，不是真实模型运行证据。</p>}
     <p className="text-sm leading-7 text-slate-700">{agentProcessSummary(report)}</p>
     {rows.map(({ call, item, added, otherSaved, action, influence }, index) => <article key={index} className="min-w-0 space-y-3 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4">
@@ -35,7 +35,6 @@ export default function ReportAgentEvidence({ report, canGrow }: { report: Match
         <div className="flex flex-wrap gap-4 text-sm"><a href={`#requirement-${item.requirementId}`} className="text-indigo-700 underline">核对完整要求与结论 →</a>{canGrow && <a href={`#growth-${item.requirementId}`} className="font-medium text-indigo-700 underline">从这条要求继续补证 →</a>}</div></>}
     </article>)}
     {canGrow && !rows.some(row => row.item) && <a className="inline-block text-sm font-medium text-indigo-700 underline" href="#evidence-workspace-title">核对报告缺口与补证计划 →</a>}
-    <p className="text-xs leading-6 text-slate-600">没有保存初始AI判断，不展示虚构的评分或结论前后对比。新增材料不证明代码已执行或本人贡献，上传新版也不会替换旧报告或原投递快照。</p>
     <details className="text-xs text-slate-600"><summary className="cursor-pointer">技术记录与范围</summary><ul className="mt-2 space-y-2">{rows.map(({ call }, index) => <li key={index} className="break-all">{call.tool} · {call.status ?? "未保存状态"} · {call.scope ?? "未保存范围"}{call.round ? ` · 第${call.round}轮` : ""}</li>)}</ul></details>
-  </section>;
+  </details>;
 }

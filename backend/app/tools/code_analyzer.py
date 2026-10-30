@@ -846,6 +846,31 @@ def find_evidence(
                     )
                     python_scores[(normalized_path, line_number)] = score
                 continue
+            if suffix == ".py" and item.evidence_type == "fastapi_route":
+                matches = list(item.content_pattern.finditer(content))
+                # Bounded coverage across a file, including its final route.
+                if len(matches) > 6:
+                    matches = [matches[round(i * (len(matches) - 1) / 5)] for i in range(6)]
+                for route in matches:
+                    line_number = content.count("\n", 0, route.start()) + 1
+                    key = (normalized_path, item.evidence_type, line_number)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    results.append(
+                        CodeEvidence(
+                            skill=skill,
+                            evidence_type=item.evidence_type,
+                            file_path=normalized_path,
+                            line_start=line_number,
+                            line_end=line_number,
+                            snippet=file.content.splitlines()[line_number - 1].strip()[:240],
+                            strength=item.strength,
+                            explanation=item.explanation + "；运行结果与本人贡献仍需核验。",
+                            content_hash=hashlib.sha256(file.content.encode("utf-8")).hexdigest(),
+                        )
+                    )
+                continue
             if (normalized_path, item.evidence_type) in seen:
                 continue
             match = item.content_pattern.search(content)

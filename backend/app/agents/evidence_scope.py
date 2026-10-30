@@ -1,10 +1,16 @@
-"""Qualify AI gap/suggestion wording against rule-layer evidence that was not sent."""
+"""Keep concrete model gaps intact; reject claims beyond the supplied scope."""
 from __future__ import annotations
+
+import re
 
 from app.agents.contracts import EvidenceAnalysis, RequirementEvidenceContext
 from app.tools.matcher import MatchResult
 
-_MISSING_CUES = ("未展示", "未提供", "缺少", "缺失", "没有", "请补充", "需补充", "补充")
+_PROJECT_ABSENCE = re.compile(
+    r"(?:整个项目|全部材料|代码库).{0,12}(?:没有|未提供|未包含|不存在|缺少)"
+    r"|(?:项目|材料)(?:中)?(?:完全|根本)?(?:没有|未包含|未提供|不存在).{0,8}"
+    r"(?:测试代码|测试实现|测试(?!运行|执行|记录|结果)|路由|接口实现|业务实现|源码)"
+)
 
 
 def _key(entry) -> tuple[str, int, int]:
@@ -16,19 +22,17 @@ def qualify_analysis(
     result: MatchResult,
     sent_contexts: list[RequirementEvidenceContext],
 ) -> EvidenceAnalysis:
-    """Replace absolute missing claims when a rule-layer evidence exists unsent.
+    """Unsent sources are a separate scope fact, never a replacement diagnosis.
 
-    This only changes wording. It does not select evidence, change a score, or
-    assert that the unsent material proves the missing fact.
+    The report retains all rule sources and the sent-source identities, allowing
+    readers to locate omitted material without inventing a new model conclusion.
     """
     rule_items = {str(item.requirement_id): item for item in result.items}
     sent = {
         str(context.requirement_id): {_key(entry) for entry in context.evidence}
         for context in sent_contexts
     }
-    items = list(analysis.items)
-    changed = False
-    for index, item in enumerate(items):
+    for item in analysis.items:
         rule = rule_items.get(str(item.requirement_id))
         if rule is None:
             continue
@@ -39,24 +43,10 @@ def qualify_analysis(
         ]
         if not unsent:
             continue
-        gap = item.information_gap or ""
-        suggestion = item.suggestion or ""
-        if not any(cue in gap or cue in suggestion for cue in _MISSING_CUES):
-            continue
-        files = "、".join(
-            f"{entry.file_path}:{entry.line_start}-{entry.line_end}" for entry in unsent[:3]
-        )
-        items[index] = item.model_copy(update={
-            "information_gap": (
-                "本次片段未覆盖模型判断所需的部分材料；规则层保存了未发送证据："
-                f"{files}。材料中可能已包含，请先核对这些材料后再判断是否仍需补充。"
-            ),
-            "suggestion": (
-                "先核对规则层保存但未发送的材料（"
-                f"{files}）；材料中可能已包含，仅对核对后仍未覆盖的场景再补充具体材料。"
-            ),
-        })
-        changed = True
-    if not changed:
-        return analysis
-    return analysis.model_copy(update={"items": items})
+        text = " ".join(v for v in (item.explanation, item.information_gap, item.suggestion) if v)
+        if _PROJECT_ABSENCE.search(text):
+            raise ValueError(
+                "AI absence claim exceeds the supplied evidence scope; "
+                "additional rule sources were not sent"
+            )
+    return analysis

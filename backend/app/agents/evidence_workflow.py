@@ -597,9 +597,9 @@ async def run_evidence_workflow(
                     )
                 else:
                     analysis = await provider.analyze_evidence(contexts=model_contexts)
-                analysis = qualify_analysis(analysis, result, model_contexts)
                 stage = "validation"
                 try:
+                    analysis = qualify_analysis(analysis, result, model_contexts)
                     validate_grounded_analysis(model_contexts, analysis)
                 except ValueError as validation_error:
                     if not isinstance(provider, OpenAICompatibleProvider):

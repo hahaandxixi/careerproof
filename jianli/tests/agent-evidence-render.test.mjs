@@ -47,23 +47,27 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 const { default: Panel } = await import(pathToFileURL(path.join(SRC, "components/ReportAgentEvidence.tsx")).href);
+const { agentProcessSummary } = await import(pathToFileURL(path.join(SRC, "lib/agent-evidence.ts")).href);
 const fixture = JSON.parse(readFileSync(path.join(here, "fixtures/agent-evidence-report.json"), "utf8"));
 const render = (report = fixture, canGrow = true) => renderToStaticMarkup(React.createElement(Panel, { report, canGrow }));
 
 test("component shows actual source and final use before technical logs", () => {
   const html = render();
-  for (const text of ["这次分析做了什么", "Mock 界面验证", "project/order.py", "store.rollback()", "最终解释引用了", "没有保存初始AI判断", "对照其他已保存引用", "不能据此还原首轮实际发送"]) assert.ok(html.includes(text), text);
+  for (const text of ["检索记录", "Mock 界面验证", "project/order.py", "store.rollback()", "最终解释引用了", "对照其他已保存引用", "不能据此还原首轮实际发送"]) assert.ok(html.includes(text), text);
+  assert.match(html,/^<details\b(?![^>]*\bopen)/);
+  assert.ok(!html.includes("没有保存初始AI判断"));
   assert.ok(!html.includes("补检索前的已有引用"));
   assert.ok(html.includes(`href="#growth-${fixture.items[0].requirementId}"`));
   assert.ok(html.indexOf("补充找到的证据") < html.indexOf("技术记录与范围"));
 });
-test("no-consent and program-budget notices remain visible with no tool rows", () => {
+test("no tool rows produces no filler panel; internal process reasons remain available for analysis details", () => {
   const value = structuredClone(fixture); value.aiToolCalls = [];
   value.aiProcess = { skippedReason: "consent_not_granted" };
-  assert.ok(render(value).includes("本次未调用模型"));
-  assert.ok(render(value).includes('href="#evidence-workspace-title"'));
+  assert.equal(render(value),"");
+  assert.match(agentProcessSummary(value),/本次未调用模型/);
   value.aiProcess = { planningSkippedReason: "report_budget_reserved" };
-  assert.ok(render(value).includes("不是模型主动选择停止"));
+  assert.equal(render(value),"");
+  assert.match(agentProcessSummary(value),/不是模型主动选择停止/);
 });
 test("fallback shows rule explanation instead of a failed AI answer", () => {
   const value = structuredClone(fixture); value.aiFallbackUsed = true;

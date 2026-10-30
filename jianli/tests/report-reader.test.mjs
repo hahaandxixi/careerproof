@@ -57,6 +57,18 @@ const articles = items.map(item => React.createElement("article", { key: item.re
   React.createElement("p", null, `原文 ${item.requirementTitle}`),
   React.createElement("textarea", { defaultValue: `未保存草稿 ${item.requirementId}` })));
 
+test("readable AI links keep the saved narrative and never map cross-item history to another source",()=>{
+ const item={...items[0],skill:"FastAPI",aiStatus:"validated",aiExplanation:"R1-E1包含接口实现。",aiInformationGap:null,aiSuggestion:null,aiCitationIds:["R1-E1"],evidenceList:[{citationId:"R1-E1",filePath:"app.py",lineStart:12,lineEnd:20,snippet:"return items",contextComplete:true}]};
+ const report={analysisMode:"ai_evidence",aiFallbackUsed:false,evidenceContextVersion:"source-context-v3",materials:[],items:[item]};
+ const before=JSON.stringify(report);
+ const rendered=renderToStaticMarkup(React.createElement(AiExplanation,{report,item}));
+ assert.match(rendered,/app.py · 12–20行/);assert.match(rendered,/#citation-R1-E1/);assert.match(rendered,/R1-E1包含接口实现/);
+ const invalid={...item,aiExplanation:"R2-E1包含接口实现。"};
+ const rejected=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:invalid}));
+ assert.match(rejected,/未与本项来源对齐/);assert.match(rejected,/R2-E1包含接口实现/);assert.doesNotMatch(rejected,/href="#citation-R2-E1"/);
+ assert.equal(JSON.stringify(report),before);
+});
+
 test("initial selection preserves the existing evidence priority without sorting the saved report", () => {
   const before = JSON.stringify(items);
   assert.equal(helpers.initialReportRequirement(items), "tests");
@@ -330,7 +342,7 @@ test("an incomplete source stays marked on its summary even while collapsed", ()
  const item={...items[0],aiCitationIds:[],evidenceList:[{...source,citationId:"S1",contextComplete:true},source]};
  const report={analysisMode:"rules",aiFallbackUsed:false,items:[item],materials:[]};
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
- assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*上下文不完整(?:(?!<\/summary>)[\s\S])*<\/summary>/);
+ assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*历史完整性信息不足(?:(?!<\/summary>)[\s\S])*<\/summary>/);
  assert.ok(html.includes("缺少完整函数") && html.includes("partial_source"));
 });
 

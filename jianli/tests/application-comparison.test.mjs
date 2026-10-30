@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { applicationFilterView, filterApplications, mixedComparisonBasis } from "../src/lib/application-comparison.ts";
 
 const item = (id, score, verdict, basis = "same", at = "2026-09-28T12:00:00Z") => ({
-  id, candidateName: id, createdAt: at, comparisonBasis: basis, overallScore: score,
+  id, candidateName: id, createdAt: at, comparisonBasis: basis, overallScore: score,fixedRequirementBasisComplete:true,
   dimensions: [{ requirementId: "sql", title: "数据库查询", skill: "SQL", score, verdict }],
 });
 
@@ -26,6 +26,12 @@ test("incomparable versions sort by submission time rather than implying a score
 test("equal criteria use saved scores with unassessed values last", () => {
   const values = [item("未评", null, "unsupported"), item("低", 20, "partial"), item("高", 50, "supported")];
   assert.deepEqual(filterApplications(values, "", "sql", "").map(i => i.id), ["高", "低", "未评"]);
+});
+
+test("missing fixed comparison fields are unknown and cannot imply score-based ranking",()=>{
+ const values=[{...item("旧记录",99,"supported"),fixedRequirementBasisComplete:undefined},{...item("新记录",20,"partial","same","2026-10-01T00:00:00Z"),fixedRequirementBasisComplete:false}];
+ assert.equal(mixedComparisonBasis(values),true);
+ assert.deepEqual(filterApplications(values,"","","").map(i=>i.id),["新记录","旧记录"]);
 });
 
 test("filter view reports empty results and selected reports outside the current filter", () => {

@@ -21,13 +21,13 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       </dl>
     </div>
     {(states.partial.length > 0 || states.other.length > 0) && <p className="text-sm text-slate-600">另有 {states.partial.length} 项部分支持 · {states.other.length} 项未覆盖或需复核。</p>}
+    <p className="text-sm text-slate-600">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")||"历史记录未保存材料版本"}</p>
     <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
       <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 items-center text-indigo-700 underline">材料版本</EvidenceLink>
       {role === "student" && <EvidenceLink targetId="report-comparison" className="inline-flex min-h-9 items-center font-medium text-indigo-700 underline">版本对比</EvidenceLink>}
       <EvidenceLink targetId="report-analysis" className="inline-flex min-h-9 items-center text-indigo-700 underline">分析详情</EvidenceLink>
     </div>
     {report.aiFallbackUsed && <p className="border-l-2 border-amber-400 pl-3 text-sm text-amber-900"><strong>模型已降级：</strong>模型处理或输出校验未能完成，本报告使用本地规则结果。</p>}
-    <p className="text-sm text-slate-600">材料支持不等于能力认证；本报告与已投递材料保持固定版本。</p>
   </section>;
   return <section className="panel min-w-0 space-y-3" aria-labelledby="report-title">
     <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
@@ -51,6 +51,5 @@ export default function ReportOverview({ report, role, workbench = false }: { re
     {workbench && <details className="text-sm text-slate-600"><summary className="cursor-pointer py-1">查看本次材料名称与版本</summary><p className="mt-2 break-words leading-6">{report.materials.map(material => `${material.title} · 第 ${material.versionNumber} 版`).join("；")}</p></details>}
     {report.aiFallbackUsed && <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900"><strong>模型已降级：</strong>模型处理或输出校验未能完成，本报告使用本地规则结果。</p>}
     {!workbench && first && <EvidenceLink targetId={`requirement-${first.requirementId}`} className="btn min-h-11 max-w-full whitespace-normal break-words text-left">先核对「{first.requirementTitle}」 →</EvidenceLink>}
-    <p className="text-xs leading-6 text-slate-600">逐项证据等级描述材料支持情况，不汇总能力总分。补证或上传新版不会替换本报告及已投递的固定快照。</p>
   </section>;
 }

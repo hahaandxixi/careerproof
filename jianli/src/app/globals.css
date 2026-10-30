@@ -81,6 +81,11 @@ body {
   .material-version:has(input:checked) { @apply border-indigo-400 bg-indigo-50 ring-1 ring-indigo-200; }
   .material-version:focus-within { @apply outline outline-2 outline-offset-2 outline-indigo-600; }
   .btn-secondary { @apply inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
+  .action-link { @apply inline-flex min-h-11 items-center rounded-md px-2 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 hover:underline; }
+  .btn-quiet { @apply inline-flex min-h-11 items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50; }
+  .disclosure { @apply w-fit cursor-pointer rounded-md py-2 text-sm font-medium text-slate-600 hover:text-indigo-700; }
+  /* Field ring is its focus indicator; do not draw the global outline as a second ring. */
+  .field:focus-visible { outline: none; }
   /* Current-stage marker: only rendered while a task is active, so terminal states stay still. */
   .task-stage { display: flex; align-items: flex-start; gap: 8px; }
   .task-stage-dot { flex-shrink: 0; width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: #4f46e5; animation: task-stage-pulse 1.6s ease-in-out infinite; }

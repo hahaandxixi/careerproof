@@ -1,6 +1,6 @@
 import AccessGate from "@/components/AccessGate";
-import GrowthWorkspace from "@/components/GrowthWorkspace";
+import GrowthHistory from "@/components/GrowthHistory";
 
 export default function GrowthListPage() {
-  return <AccessGate roles={["student"]}><GrowthWorkspace /></AccessGate>;
+  return <AccessGate roles={["student"]}><GrowthHistory /></AccessGate>;
 }

@@ -22,7 +22,7 @@ function SourceGroup({ label, groups, reportId, requirementId, materials }: {
       const anchor = group.citationIds[0] ? `citation-${group.citationIds[0]}` : `requirement-${requirementId}`;
       return <li key={index} className="min-w-0 space-y-1 py-3">
         <Link className="break-words font-medium text-indigo-700 underline" href={`/reports/${reportId}#${anchor}`}>{short.fileName} · {source.lineStart > 0 ? `第 ${source.lineStart}–${source.lineEnd} 行` : "行号未记录"}</Link>
-        <p className="break-words text-xs leading-6 text-slate-600">{short.material} · {sourceRecordKind(source)}</p>
+        <p className="break-words text-sm leading-6 text-slate-600">{short.material} · {sourceRecordKind(source)}</p>
         {source.provenance === "reference" && <p className="text-xs text-slate-600">第三方参考，不作为个人实践证明。</p>}
         <details className="min-w-0 text-xs leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-1">完整来源与源码</summary>
           <dl className="min-w-0 space-y-1 py-2 [overflow-wrap:anywhere]">
@@ -48,10 +48,10 @@ function RequirementChange({ row, value, showTitle = true }: { row: ComparisonRo
   return <div className="min-w-0 space-y-3">
     <div className="flex flex-wrap items-start justify-between gap-2">{showTitle && <h3 className="min-w-0 flex-1 break-words font-semibold text-slate-900">{item.title}</h3>}<span className="shrink-0 text-xs leading-6 text-slate-600">权重 {item.targetRequirement?.weight ?? item.baseRequirement?.weight ?? "未记录"}</span></div>
     <p className="flex flex-wrap items-center gap-2 text-sm"><span className="text-slate-600">基准 → 当前</span><span>{row.baseStatus}</span><span aria-hidden="true">→</span><span className={row.statusChanged ? "font-medium text-indigo-700" : "text-slate-700"}>{row.targetStatus}</span></p>
-    <p className="leading-6 text-slate-700">{row.summary}</p>
+    <p className="text-base leading-7 text-slate-700">{row.evidenceChanged && item.status==="existing" ? row.statusChanged ? "判断状态已改变，请核对相关来源。" : "引用范围有变化，判断状态未改变。" : row.summary}</p>
+    {item.targetInformationGap&&<p className="text-base leading-7 text-slate-700">仍待核对：{/规则层保存了未发送证据/.test(item.targetInformationGap)?"旧记录只保存了分析范围提示，具体缺口原文无法恢复，请到原报告核对。":item.targetInformationGap}</p>}
     {row.levelChanged && <p className="text-xs leading-6 text-slate-600">实践证据等级：{item.baseLevel == null ? "未评级" : evidenceLevelName(item.baseLevel)} → {item.targetLevel == null ? "未评级" : evidenceLevelName(item.targetLevel)}。等级与引用变化同时展示，不推断因果。</p>}
-    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600"><span>新增 {row.added.length}</span><span>移除展示 {row.removed.length}</span><span>保留展示 {row.retained.length}</span></div>
-    {(tests > 0 || records > 0) && <p className="text-xs leading-6 text-slate-600">新增引用中：测试代码 {tests} 处、记录文件 {records} 处（按文件名区分）。是否执行成功，需核对记录原文及对应源码版本。</p>}
+    {(tests > 0 || records > 0) && <p className="text-sm leading-6 text-slate-600">新增测试代码引用 {tests} 处、记录文件引用 {records} 处。运行结果需核对原文与源码版本。</p>}
     <SourceGroup label="新增引用" groups={row.added} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />
     <SourceGroup label="移除展示的引用" groups={row.removed} reportId={value.baseId} requirementId={item.requirementId} materials={value.baseMaterials} />
     <SourceGroup label="保留展示的引用（当前版本）" groups={row.retained} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />
@@ -69,13 +69,10 @@ export default function ReportComparisonView({ value, base, current }: { value: 
   const [filter, setFilter] = useState<ComparisonFilter>("changed");
   const rows = comparisonRows(value, base, current), counts = comparisonCounts(rows);
   const visible = filterComparisonRows(rows, filter);
-  return <div className="min-w-0 space-y-4 text-sm" aria-label="按岗位要求查看证据变化">
-    <dl className="grid grid-cols-1 gap-3 rounded-xl bg-slate-50 p-4 sm:grid-cols-3">
-      {[["证据有变化", counts.evidence], ["判断状态有变化", counts.status], ["当前仍需补证", counts.needs]].map(([label, count]) => <div key={label}><dt className="text-xs text-slate-600">{label}</dt><dd className="mt-1 text-2xl font-semibold text-slate-900">{count}<span className="ml-1 text-sm font-normal">项</span></dd></div>)}
-    </dl>
-    <p className="text-xs leading-6 text-slate-600">判断状态统计原报告的支持状态；仍需补证包括部分支持、材料缺口及本人标记需修正的要求。引用变化不代表源码已修改、测试已通过或能力提升。</p>
+  return <div className="min-w-0 space-y-4 text-base" aria-label="按岗位要求查看证据变化">
+    <div className="grid grid-cols-1 gap-3 border-b border-slate-200 pb-3 sm:grid-cols-2">{[{label:"基准报告",report:base},{label:"当前报告",report:current}].map(side=><div key={side.label}><Link className="font-medium text-indigo-700 underline" href={`/reports/${side.report.id}`}>{side.label} · {new Date(side.report.createdAt).toLocaleString("zh-CN")}</Link><p className="mt-1 text-sm text-slate-700">{side.report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")||"未记录材料版本"}</p></div>)}</div>
+    {value.contextChanges.some(key=>/requirement|formula|rubric|job/.test(key))&&<p className="text-sm text-amber-900">比较依据存在变化：{value.contextChanges.map(key=>GROWTH_CHANGES[key]??key).join("、")}。请展开比较范围核对，不能仅按状态高低判断。</p>}
     <div className="flex flex-wrap gap-2" role="group" aria-label="筛选要求变化">{FILTERS.map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)} className={`min-h-10 rounded-full px-3 py-2 text-sm ${filter === key ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{label} {counts[key]}</button>)}</div>
-    <p role="status" className="text-xs text-slate-600">显示 {visible.length} / {counts.all} 项要求</p>
     {counts.changed === 0 && <p className="rounded-lg bg-slate-50 p-3">本次没有检测到变化。可切换“全部要求”或“没有变化”查看原记录。</p>}
     {visible.length === 0 && counts.changed > 0 && <p className="py-3 text-slate-600">没有符合此筛选的要求。</p>}
     <div className="min-w-0 space-y-3">{visible.map(row => row.changed

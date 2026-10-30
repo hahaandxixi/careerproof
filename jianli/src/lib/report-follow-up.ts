@@ -55,7 +55,7 @@ export function reportFollowUpContext(query: Pick<URLSearchParams, "get">) {
 }
 
 /** These parameters are navigation hints only; the receiver checks the owned report. */
-export function reportUploadHref(reportId: string, requirementId: string): string {
+export function reportUploadHref(reportId: string, requirementId: string, projectVersionId?: string): string {
   return UUID.test(reportId) && UUID.test(requirementId)
-    ? `/portfolio?${new URLSearchParams({ sourceReport: reportId, sourceRequirement: requirementId })}` : "/portfolio";
+    ? `/portfolio?${new URLSearchParams({ sourceReport: reportId, sourceRequirement: requirementId, add:"project", ...(projectVersionId && UUID.test(projectVersionId) ? {sourceProjectVersion:projectVersionId}: {}) })}` : "/portfolio";
 }
