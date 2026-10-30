@@ -1,0 +1,169 @@
+{
+  "checkedAt": "2026-10-30T16:16:13.187382+00:00",
+  "source": "e9f3d091c682ca513342ce57e36e135b9e68f01c",
+  "branch": "codex/desktop-readability-20261031",
+  "buildId": "mooOW7bI-CNs0o20RcjTj",
+  "frontendDirectory": "D:\\jbcode\\web ai\\careerproof-v1\\jianli",
+  "distDir": ".next-desktop-reading-20261031",
+  "frontend": "http://127.0.0.1:3140",
+  "frontendPid": 44068,
+  "api": "http://127.0.0.1:8140",
+  "apiPid": 71896,
+  "apiHealthHttp": 200,
+  "database": "127.0.0.1:55447/careerproof_v1",
+  "storage": "D:/jbcode/web ai/jianli/backend/storage-v1",
+  "backendSourceDigestUnchanged": "2D1B30001B8FCC6C862C5B1DD16BDB989791176A7054B0A40C6D14E657123F86",
+  "routes": [
+    {
+      "path": "/",
+      "http": 200
+    },
+    {
+      "path": "/portfolio",
+      "http": 200
+    },
+    {
+      "path": "/reports/8b12bdc5-d298-4e62-b4e5-947aee1bd820",
+      "http": 200
+    },
+    {
+      "path": "/jobs/e4625d75-14b3-4e60-9687-5fd82a28c745/applications",
+      "http": 200
+    },
+    {
+      "path": "/applications",
+      "http": 200
+    },
+    {
+      "path": "/growth",
+      "http": 200
+    }
+  ],
+  "routeCheckScope": "HTTP shells and JS/CSS only; not authenticated browser acceptance",
+  "assetChecks": [
+    {
+      "asset": "/_next/static/chunks/1112-e3950a12e8c2a94d.js",
+      "sha256": "63d569214414e4a60a488d1fbb146037ca57786081ca2368ce08b592a1937501",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/1436-91591e5f8af0db12.js",
+      "sha256": "76c3f7a376a4ac7565d57ca848e6d07f3b7b07aa3a2b7cba09b8fdb85e4bc3bc",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/2866-3e8df9c8ff988b6f.js",
+      "sha256": "89aefb55a4524ff9a24c5bafeab013d96c4509a8821f0409e0d3da2acf863d6e",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/7480-2440c729634b7387.js",
+      "sha256": "4626a15a73b6213e04c2e95b7a1df06c5888dff9e7b28d02e58d024f2242460d",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/7532-74eaa053bb2b00a5.js",
+      "sha256": "18517121ed82eb62897597f117940de7502b897306ef0fd12f4d4e185df52da0",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/9258-516ae6e91a66ccdb.js",
+      "sha256": "f5071d84ce6c7ece534cc59c7ba81fbd527c35156d6896855c88ee0240117b46",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/9828-2c07569c5613c757.js",
+      "sha256": "1162efb1582461587b4bb9da1e55ff3b9a7edbc55659a61efaf52220ebaf61df",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/applications/page-0c3fd71d27eb59c8.js",
+      "sha256": "c6aca8a975e99e79ab17f99de8baa17976a6b63102557b35ebd7b398d0be29da",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/error-3d63e511b6a2ead6.js",
+      "sha256": "d30b84642d6d5ace521ba9041dd9368225af75c6a975d6e521861e0383493f57",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/global-error-3db23bd3572bf91c.js",
+      "sha256": "e619e16e370e243b53a24c75a45b6ac4e6c06771bb38a2134ce8a14a5dab7bfb",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/growth/page-9ad60e235d07f6e0.js",
+      "sha256": "32a6ac17ede16e504a2de1219505e629b86c16c9e042389d9d2890e6a844ae7a",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/jobs/%5Bid%5D/applications/page-bfd444836d1e1033.js",
+      "sha256": "bcb700db6c8774ec072b7920a1e5bd0fa8def36f0ad7607466657becfb822fe3",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/layout-26aeca679fc4b32a.js",
+      "sha256": "7f5ca7127abcb9725a06ff4a16d926f84a4d090da997436532a1e113bb4b6698",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/page-2b9f968ccf4fb6e4.js",
+      "sha256": "d8314232800c05bc19c6f57feef86b41ccf3654585fad057eaf7c15525a02f35",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/portfolio/page-cb2a6c528a50a326.js",
+      "sha256": "fa0f44db998f0f808afba4f1493fca0ac90fa931f0bcbd48d5d5e99a5c76d47b",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/app/reports/%5Bid%5D/page-06ae4698612d9f11.js",
+      "sha256": "c3cfbcd6687501e3730b29be002d3785c09cb65bd1cfa9c77047ffce84890fef",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/c2a625ac-534a682fa2e819d1.js",
+      "sha256": "b84d0b8803d6cc75092d931c6366f16bf029a509ac562b384c38ec3eb0c0d279",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/main-app-f05afa501d4c9c9d.js",
+      "sha256": "57d517b21b380b976fd24e0a2cdf644635a11880e26ef9ee9da22b8991902ccc",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/chunks/webpack-31a46d394430082e.js",
+      "sha256": "66593237e38bdbdbb971fa63112310a23ebb71657021f79b2d81fd5c82523b8a",
+      "matchesBuild": true
+    },
+    {
+      "asset": "/_next/static/css/a10d45225d6a2e6a.css",
+      "sha256": "c793afadc42f819115c54065f05da93bf1a6307f822b09f05d9ee3d9ddf4871b",
+      "matchesBuild": true
+    }
+  ],
+  "dataFingerprintsUnchanged": true,
+  "counts": {
+    "applications": 19,
+    "application_events": 49,
+    "notifications": 55,
+    "match_reports": 103,
+    "match_items": 379,
+    "projects": 54,
+    "project_versions": 75,
+    "project_files": 338,
+    "resume_versions": 56,
+    "analysis_tasks": 265,
+    "ai_usage_logs": 64,
+    "ai_request_attempts": 11
+  },
+  "existingNextConfigBytesPreserved": true,
+  "newModelCalls": 0,
+  "browserAcceptance": "pending: earlier Computer Use URL safety stop has no verified recovery basis; not retried or bypassed",
+  "newScreenshots": []
+}
