@@ -62,3 +62,13 @@ test("archive remains compact until opened; restore requires an explicit action"
  await nodes(tree).find(n=>n.type==="button"&&text(n)==="恢复到材料库").props.onClick();
  assert.deepEqual(calls,[["project","archived",false]]);assert.equal(restored,1);
 });
+test("reading saved enterprise advice is not presented as generation and only explicit consent can generate",async()=>{
+ let publish;const calls={read:0,generate:0};
+ const state={task:{status:"running",aiStatus:"pending"},loading:false,error:"",notice:""};
+ const session={activate(){},dispose(){},clear(){},load(){calls.read++;publish({...state,loading:true});},generate(consent){assert.equal(consent,true);calls.generate++;publish({...state,loading:true});}};
+ const h=mount("ApplicationVerification",{"@/lib/api/client":{api:{},ApiError:Error,errorMessage:String},"./SourceIdentity":{__esModule:true,default:()=>null,SourceIdentityDetails:()=>null},"@/lib/application-verification-session":{initialApplicationVerificationState:state,createApplicationVerificationSession:(_api,set)=>{publish=set;return session;},verificationMatchesReport:()=>true,applicationVerificationSources:()=>[]}},{applicationId:"app",report:{items:[],materials:[]},requirementComparison:{status:"same"},onUnavailable(){}},false);
+ let tree=await h.settle();assert.match(text(tree),/正在读取已保存建议/);assert.doesNotMatch(text(tree),/正在生成核验建议/);assert.equal(calls.generate,0);
+ publish(state);tree=await h.settle();nodes(tree).find(n=>n.type==="input").props.onChange({target:{checked:true}});tree=h.render();
+ nodes(tree).find(n=>n.type==="button"&&text(n)==="生成建议").props.onClick();tree=await h.settle();assert.match(text(tree),/正在生成核验建议/);assert.equal(calls.generate,1);
+ publish(state);tree=await h.settle();nodes(tree).find(n=>n.type==="button"&&text(n)==="读取已保存建议").props.onClick();tree=await h.settle();assert.match(text(tree),/正在读取已保存建议/);assert.equal(calls.generate,1);
+});

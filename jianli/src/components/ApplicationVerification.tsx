@@ -21,6 +21,7 @@ export default function ApplicationVerification({ applicationId, report, onUnava
 }) {
   const [state, setState] = useState(initialApplicationVerificationState);
   const [consent, setConsent] = useState(false);
+  const [operation, setOperation] = useState<"read" | "generate">("read");
   const session = useMemo(() => createApplicationVerificationSession({
     latest: signal => api.applicationVerification(applicationId, undefined, signal),
     create: signal => api.createApplicationVerification(applicationId, signal),
@@ -43,18 +44,18 @@ export default function ApplicationVerification({ applicationId, report, onUnava
 
   const { task, loading, error, notice } = state;
   const analysis = task?.status === "completed" && task.aiStatus === "validated" ? task.analysis : null;
-  return <section className="space-y-4 rounded-xl border border-indigo-200 bg-indigo-50/30 p-4 sm:p-5" aria-labelledby="verification-title">
-    <h3 id="verification-title" className="text-lg font-semibold">材料核验建议</h3>
+  return <section className="space-y-4" aria-labelledby="verification-title">
+    <h3 id="verification-title" className="sr-only">企业材料核验建议</h3>
     <p className="text-sm leading-6 text-slate-600">企业另行生成的核验建议，不改变学生原报告。</p>
     {!analysis&&<><label className="flex items-start gap-2 text-sm leading-6">
       <input type="checkbox" className="mt-1.5 shrink-0" checked={consent} disabled={loading} onChange={event => setConsent(event.target.checked)} />
       <span>同意将当前岗位要求、投递时要求与已授权引用片段发送给 DeepSeek 官方 API，生成核验建议，可能产生费用。</span>
     </label>
     <div className="flex flex-wrap items-center gap-3">
-      <button type="button" className="btn" disabled={loading || !consent} onClick={() => void session.generate(consent)}>生成建议</button>
-      <button type="button" className="text-sm text-indigo-700 underline disabled:text-slate-400" disabled={loading} onClick={() => void session.load()}>读取已保存建议</button>
+      <button type="button" className="btn" disabled={loading || !consent} onClick={() => {setOperation("generate");void session.generate(consent);}}>生成建议</button>
+      <button type="button" className="btn-quiet" disabled={loading} onClick={() => {setOperation("read");void session.load();}}>读取已保存建议</button>
     </div></>}
-    {analysis&&<button type="button" className="min-h-10 text-sm text-indigo-700 underline" disabled={loading} onClick={()=>void session.load()}>刷新已保存建议</button>}
+    {analysis&&<button type="button" className="btn-quiet" disabled={loading} onClick={()=>{setOperation("read");void session.load();}}>刷新已保存建议</button>}
     {requirementComparison?.status!=="same" && <details className="text-sm text-amber-900"><summary className="cursor-pointer">{requirementComparison?.status==="changed" ? "岗位要求已更新，本报告基于投递时版本" : "版本信息不足，无法确认岗位要求是否一致"}</summary><ul className="mt-2">{requirementComparison?.changes.map((s,i)=><li key={i}>{s}</li>)}</ul>{!!requirementComparison?.missingFields.length&&<p>缺少比较依据：{requirementComparison.missingFields.join("、")}</p>}</details>}
     {task?.usageKnown===false&&<p className="text-sm text-amber-900">本次用量收据不完整，已知用量不代表全部费用；未核实部分继续占用预留。</p>}
     {task?.dailyBudget && <details aria-label="今日 AI 预算" className="rounded-lg bg-white p-3 text-sm leading-6 text-slate-700"><summary className="cursor-pointer text-indigo-700">用量详情</summary>
@@ -65,10 +66,10 @@ export default function ApplicationVerification({ applicationId, report, onUnava
       {(task.dailyBudget.adjustedInputCapacity > 0 || task.dailyBudget.adjustedOutputCapacity > 0) && <p>管理员审计调整容量：输入 {task.dailyBudget.adjustedInputCapacity} / 输出 {task.dailyBudget.adjustedOutputCapacity} Tokens（不等于厂商实际账单）</p>}
       <p>{task.usageKnown === false ? "本次收据不完整；已知部分不代表全部用量。" : "预算展示是当前账目快照；是否可发送仍由服务端逐次准入判断。"}</p>
     </details>}
-    {loading && <p role="status" className="text-sm text-indigo-800">{task ? "正在生成核验建议，已授权范围会再次核对…" : "正在核对已保存的核验建议…"}</p>}
+    {loading && <p role="status" className="text-sm text-indigo-800">{operation === "generate" ? "正在生成核验建议…" : "正在读取已保存建议…"}</p>}
     {notice && <p role="status" className="text-sm leading-6 text-amber-800">{notice}</p>}
     {error && <p role="alert" className="text-sm leading-6 text-rose-700">{error}</p>}
-    {!loading && !task && !error && <p className="text-sm text-slate-500">尚无已保存的核验建议，可确认外发范围后生成。</p>}
+    {!loading && !task && !error && <p className="text-sm text-slate-600">暂无已保存建议。</p>}
     {task && !loading && task.status === "completed" && !analysis && <p role="status" className="text-sm text-amber-800">{task.failureKind === "saved_validation_failed" ? "已保存建议未通过当前固定报告校验，已隐藏。请核对原报告；如需重新生成，请重新确认外发范围。" : "本次没有可展示的有效 AI 建议，请继续核对原报告。"}</p>}
     {analysis && <div className="space-y-4">
       <p className="text-sm text-slate-600">企业建议 · {task?.createdAt ? new Date(task.createdAt).toLocaleString("zh-CN") : "生成时间未记录"}</p>

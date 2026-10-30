@@ -4,7 +4,7 @@ import type { ApplicationView } from "@/lib/api/client";
 import { comparableRadarAxes } from "@/lib/application-comparison";
 import { radarPosition, radarPointKind, radarScore, radarSegments, RADAR_STATUS } from "@/lib/skill-radar";
 import { reportModeLabel } from "@/lib/report-display";
-import { requirementSummary } from "@/lib/report-workspace";
+import { requirementConclusion } from "@/lib/report-workspace";
 import { heatmapCellClass } from "@/lib/heatmap-cell.js";
 import { SourceIdentityDetails } from "./SourceIdentity";
 import { invalidNarrativeCitations } from "@/lib/report-citations";
@@ -56,7 +56,7 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
   const invalid=item?invalidNarrativeCitations(item):[];
   const useAi=!!item&&item.aiStatus==="validated"&&!report?.aiFallbackUsed&&!invalid.length;
   const explanation=(useAi?item?.aiExplanation:null)||item?.explanation||"";
-  const gap=(useAi?item?.aiInformationGap:null)||item?.evidenceLevelGap||"请核对来源覆盖范围、运行记录与本人贡献；本报告未独立认证。";
+  const gap=(useAi?item?.aiInformationGap:null)||item?.evidenceLevelGap;
   return <article className="min-w-0 space-y-3 rounded-xl border border-slate-200 p-4" aria-label={`${candidate.candidateName}的固定证据`}>
     <h3 className="break-words font-semibold" style={{color}}>{candidate.candidateName}</h3>
     {report&&<p className="text-xs text-slate-600">{reportModeLabel(report)}</p>}
@@ -65,8 +65,8 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
       {independent && <p className="break-words text-base font-medium">{item.requirementTitle || item.skill}</p>}
       <div className={`rounded-lg border p-3 text-base ${heatmapCellClass(item.verdict)}`}><strong>{RADAR_STATUS[item.verdict]??item.verdict}</strong></div>
       {invalid.length>0&&<p className="text-sm text-amber-900">历史AI解释含未对齐引用，当前按规则判断与固定来源核对。</p>}
-      <p className="break-words text-base leading-7">{useAi&&report?<ReportNarrative text={explanation} item={item} report={report} sourcePrefix={`pair-${candidate.id}-`}/>:requirementSummary(item)}</p>
-      <p className="break-words text-base leading-7 text-slate-700">待核对：{gap}</p>
+      <p className="break-words text-base leading-7">{useAi&&report?<ReportNarrative text={explanation} item={item} report={report} sourcePrefix={`pair-${candidate.id}-`}/>:requirementConclusion(item)}</p>
+      {gap&&<p className="break-words text-base leading-7 text-slate-700">待核对：{gap}</p>}
       <details className="text-sm"><summary className="cursor-pointer py-1 text-indigo-700">原报告判断记录</summary><p className="mt-2">原报告材料支持度 {item.finalScore??"不可评"}，不是能力或录用分数。</p><p className="mt-2 break-words leading-6">{useAi?item.aiExplanation:item.explanation}</p></details>
       {report&&<p className="text-sm text-slate-600">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")}</p>}
       {item.evidenceList.length?<ul className="space-y-2">{item.evidenceList.map((source,index)=>{const limit=report?sourceLimit(report,source):null;return <li key={`${source.citationId}:${index}`} className="min-w-0 border-t border-slate-100 pt-2"><details id={`pair-${candidate.id}-citation-${source.citationId??index}`} open={index===0} className="text-sm"><summary className="cursor-pointer py-2 text-indigo-700">{compactSourceLabel(source,report?.materials).fileName} · 第{source.lineStart}–{source.lineEnd}行{limit?` · ${limit.label}`:""}</summary>{limit&&<p className="text-sm leading-6 text-amber-900">{limit.detail}</p>}{limit?.readable!==false&&<pre className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-slate-50 p-3 text-sm">{source.snippet}</pre>}<SourceIdentityDetails source={source}/></details>{source.provenance==="reference"&&<p className="text-sm text-amber-900">第三方参考，不作为本人实践证明。</p>}</li>;})}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}

@@ -27,11 +27,11 @@ function fixture(count=2){
  const win=new EventTarget(),doc=Object.assign(new EventTarget(),{visibilityState:"visible",getElementById:()=>null});
  globalThis.window=win;globalThis.document=doc;globalThis.location={hash:""};
  globalThis.requestAnimationFrame=fn=>{frames.set(++frame,fn);return frame;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
- const counts={list:0,open:0,reply:0,detail:0};let authorized=true,waiter=null;
+ const counts={list:0,open:0,reply:0,detail:0};const queries=[];let authorized=true,waiter=null;
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
  const row=id=>({id,jobId:"job-a",reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
- const page=()=>({items:[...(authorized?[row("a")]:[]),...Array.from({length:count-1},(_,i)=>row(String.fromCharCode(98+i)))],total:authorized?count:count-1,page:1,pageSize:20});
- const api={getJob:async()=>({id:"job-a",title:"测试岗位"}),jobApplications:async()=>{counts.list++;return waiter?waiter:page();},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
+ const pageResult=()=>({items:[...(authorized?[row("a")]:[]),...Array.from({length:count-1},(_,i)=>row(String.fromCharCode(98+i)))],total:authorized?count:count-1,page:1,pageSize:20});
+ const api={getJob:async()=>({id:"job-a",title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult();},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
@@ -49,7 +49,7 @@ function fixture(count=2){
  const render=()=>{cursor=0;const outer=mod.exports.default({jobId:"job-a"});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
  const settle=async()=>{for(let i=0;i<25;i++){render();while(effects.length)effects.shift()();await Promise.resolve();}for(const[id,fn]of frames){frames.delete(id);fn();}return render();};
  cleanups.push(()=>cells.forEach(cell=>cell?.cleanup?.()));
- return{render,settle,counts,Radar,nodes:walk,
+ return{render,settle,counts,queries,Radar,nodes:walk,
   hide(){doc.visibilityState="hidden";doc.dispatchEvent(new Event("visibilitychange"));return render();},
   show(){doc.visibilityState="visible";doc.dispatchEvent(new Event("visibilitychange"));win.dispatchEvent(new Event("focus"));win.dispatchEvent(new Event("pageshow"));return render();},
   revoke(){authorized=false;},waitFor(value){waiter=value;},button(tree,label){const found=walk(tree).find(n=>n.type==="button"&&text(n)===label);assert.ok(found,label);return found;},
@@ -86,4 +86,17 @@ test("three and four selected candidates retain the heatmap and offer only a two
  for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"返回本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
  if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`并排核对 ${count} 位`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,`双人对照（${count}）`).props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"候选人").props.onClick();tree=h.render();}}
  h.button(tree,"清空对照").props.onClick();tree=await h.settle();assert.ok(!h.nodes(tree).some(n=>Array.isArray(n.props?.candidates)));
+});
+
+test("enterprise status and evidence filters apply immediately while retaining cross-page comparison",async()=>{
+ const h=fixture();let tree=await h.settle();
+ const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id==="application-a");h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
+ h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
+ h.button(tree,"已回复").props.onClick();tree=await h.settle();
+ assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"Python",status:"replied",requirementId:"",verdict:""});
+ assert.equal(h.button(tree,"已回复").props["aria-pressed"],true);
+ h.button(tree,"缺少材料").props.onClick();tree=await h.settle();assert.equal(h.queries.at(-1).verdict,"gap");assert.equal(h.queries.at(-1).status,"replied");
+ assert.ok(h.nodes(tree).some(n=>n.type==="button"&&n.props["aria-label"]==="移出对照：候选人a"));
+ assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
+ h.button(tree,"重置").props.onClick();await h.settle();assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"",status:"",requirementId:"",verdict:""});
 });
