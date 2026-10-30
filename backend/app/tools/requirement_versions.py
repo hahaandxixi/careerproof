@@ -1,14 +1,29 @@
 """Compare known fixed requirement facts without filling gaps in history."""
 
+
 def compare_requirements(saved: list[dict] | None, current: list[dict]) -> dict:
     if saved is None:
         return {"status": "unknown", "changes": [], "missingFields": ["投递时岗位要求"]}
+
     def normalize(row):
-        aliases = {"id": ("id", "requirementId"), "要求内容": ("title", "rawText", "text", "requirementTitle"),
-                   "技能": ("skill", "skillName"), "权重": ("weight",), "是否必需": ("isRequired", "is_required")}
-        return {name: next((row[k] for k in keys if k in row and row[k] is not None), None) for name, keys in aliases.items()}
+        aliases = {
+            "id": ("id", "requirementId"),
+            "要求内容": ("title", "rawText", "text", "requirementTitle"),
+            "技能": ("skill", "skillName"),
+            "权重": ("weight",),
+            "是否必需": ("isRequired", "is_required"),
+        }
+        return {
+            name: next((row[k] for k in keys if k in row and row[k] is not None), None)
+            for name, keys in aliases.items()
+        }
+
     old, new = [normalize(r) for r in saved], [normalize(r) for r in current]
-    if any(not r["id"] for r in old + new) or len({r["id"] for r in old}) != len(old) or len({r["id"] for r in new}) != len(new):
+    if (
+        any(not r["id"] for r in old + new)
+        or len({r["id"] for r in old}) != len(old)
+        or len({r["id"] for r in new}) != len(new)
+    ):
         return {"status": "unknown", "changes": [], "missingFields": ["可靠的要求标识"]}
     a, b = {r["id"]: r for r in old}, {r["id"]: r for r in new}
     changes, missing = [], set()
@@ -23,5 +38,8 @@ def compare_requirements(saved: list[dict] | None, current: list[dict]) -> dict:
                     missing.add(field)
                 elif a[key][field] != b[key][field]:
                     changes.append(f"{a[key]['技能'] or '该要求'}的{field}已改变")
-    return {"status": "changed" if changes else "unknown" if missing else "same",
-            "changes": sorted(changes), "missingFields": sorted(missing)}
+    return {
+        "status": "changed" if changes else "unknown" if missing else "same",
+        "changes": sorted(changes),
+        "missingFields": sorted(missing),
+    }

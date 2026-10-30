@@ -45,5 +45,8 @@ def qualify_analysis(
             continue
         text = " ".join(v for v in (item.explanation, item.information_gap, item.suggestion) if v)
         if _PROJECT_ABSENCE.search(text):
-            raise ValueError("AI absence claim exceeds the supplied evidence scope; additional rule sources were not sent")
+            raise ValueError(
+                "AI absence claim exceeds the supplied evidence scope; "
+                "additional rule sources were not sent"
+            )
     return analysis

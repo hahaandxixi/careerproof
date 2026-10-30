@@ -341,10 +341,18 @@ class ApplicationService:
             }
             for i in item.report_snapshot.get("items", [])
         ]
-        result["fixedRequirementBasisComplete"] = compare_requirements(saved_requirements, saved_requirements or [])["status"] == "same"
+        result["fixedRequirementBasisComplete"] = (
+            compare_requirements(saved_requirements, saved_requirements or [])["status"] == "same"
+        )
         # Equal requirement IDs can have edited text/weight or a different scoring version.
         basis = {
-            "required": sorted((str(r.get("id", r.get("requirementId", ""))), r.get("isRequired", r.get("is_required"))) for r in (saved_requirements or [])),
+            "required": sorted(
+                (
+                    str(r.get("id", r.get("requirementId", ""))),
+                    r.get("isRequired", r.get("is_required")),
+                )
+                for r in (saved_requirements or [])
+            ),
             "context": item.report_snapshot.get("evidenceContextVersion"),
             "criteria": sorted(
                 [

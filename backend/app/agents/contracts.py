@@ -406,14 +406,19 @@ def validate_grounded_analysis(
                 steps=item.task_plan.steps,
                 acceptance_checks=item.task_plan.acceptance_checks,
                 personal_source_texts=[
-                    source.snippet for source in context.evidence
+                    source.snippet
+                    for source in context.evidence
                     if source.provenance == "portfolio"
                 ],
             )
             if boundary_error:
                 raise ValueError(boundary_error)
         answer_texts = (item.explanation, item.information_gap, item.suggestion, *plan_texts)
-        inline_citations = set(re.findall(r"(?<![A-Za-z0-9])R\d+-E\d+(?![A-Za-z0-9])", " ".join(v for v in answer_texts if v)))
+        inline_citations = set(
+            re.findall(
+                r"(?<![A-Za-z0-9])R\d+-E\d+(?![A-Za-z0-9])", " ".join(v for v in answer_texts if v)
+            )
+        )
         if not inline_citations.issubset(allowed):
             raise ValueError("AI prose contains an unknown or cross-requirement citation")
         if not inline_citations.issubset(set(item.citation_ids)):

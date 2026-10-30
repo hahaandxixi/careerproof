@@ -857,13 +857,19 @@ def find_evidence(
                     if key in seen:
                         continue
                     seen.add(key)
-                    results.append(CodeEvidence(
-                        skill=skill, evidence_type=item.evidence_type,
-                        file_path=normalized_path, line_start=line_number, line_end=line_number,
-                        snippet=file.content.splitlines()[line_number - 1].strip()[:240],
-                        strength=item.strength, explanation=item.explanation + "；运行结果与本人贡献仍需核验。",
-                        content_hash=hashlib.sha256(file.content.encode("utf-8")).hexdigest(),
-                    ))
+                    results.append(
+                        CodeEvidence(
+                            skill=skill,
+                            evidence_type=item.evidence_type,
+                            file_path=normalized_path,
+                            line_start=line_number,
+                            line_end=line_number,
+                            snippet=file.content.splitlines()[line_number - 1].strip()[:240],
+                            strength=item.strength,
+                            explanation=item.explanation + "；运行结果与本人贡献仍需核验。",
+                            content_hash=hashlib.sha256(file.content.encode("utf-8")).hexdigest(),
+                        )
+                    )
                 continue
             if (normalized_path, item.evidence_type) in seen:
                 continue

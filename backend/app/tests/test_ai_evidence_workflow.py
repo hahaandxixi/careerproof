@@ -327,11 +327,25 @@ def test_retrieval_prefers_new_source_lines_over_overlapping_context() -> None:
     result, _sources = synthetic_case()
     # Isolate overlapping context vs a new file. Multi-route detection has its
     # own regression; extra routes would add a third, equally valid candidate.
-    first_route = next(e for e in result.items[0].evidence_list if e.evidence_type == "fastapi_route")
-    result = replace(result, items=[replace(item, evidence_list=[
-        e for e in item.evidence_list
-        if e.evidence_type != "fastapi_route" or e == first_route
-    ]) if index == 0 else item for index, item in enumerate(result.items)])
+    first_route = next(
+        e for e in result.items[0].evidence_list if e.evidence_type == "fastapi_route"
+    )
+    result = replace(
+        result,
+        items=[
+            replace(
+                item,
+                evidence_list=[
+                    e
+                    for e in item.evidence_list
+                    if e.evidence_type != "fastapi_route" or e == first_route
+                ],
+            )
+            if index == 0
+            else item
+            for index, item in enumerate(result.items)
+        ],
+    )
     contexts = build_evidence_contexts(result, max_evidence=2)
     updated, event = execute_retrieval_tool(
         result,

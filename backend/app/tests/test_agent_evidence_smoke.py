@@ -43,6 +43,9 @@ def test_current_offline_packet_keeps_historical_cases_without_reauthorizing_the
 @pytest.mark.parametrize("relative", [
     "backend/app/agents/evidence_policy.md",
     "backend/app/agents/input_budget.py",
+    "backend/app/agents/evidence_workflow.py",
+    "backend/app/agents/contracts.py",
+    "backend/app/tools/code_analyzer.py",
 ])
 def test_reviewed_policy_and_budget_content_mutation_is_rejected(monkeypatch, tmp_path, relative):
     data = packet()
