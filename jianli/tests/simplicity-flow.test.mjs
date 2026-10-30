@@ -53,3 +53,12 @@ test("pending uploads are kept instead of being overwritten by a navigation hint
  const h=mount("MaterialUploadIntent",{"next/navigation":{useSearchParams:()=>new URLSearchParams({add:"project"})}},{ready:true,projects:[],onOpen:()=>false},false);
  assert.match(text(await h.settle()),/未完成的上传/);
 });
+test("archive remains compact until opened; restore requires an explicit action",async()=>{
+ const calls=[];let restored=0;
+ const api={listResumes:async()=>[],listProjects:async()=>[{id:"archived",name:"旧项目",isArchived:true}],archiveMaterial:async(...args)=>{calls.push(args);}};
+ const h=mount("ArchivedMaterials",{"@/lib/api/client":{api,errorMessage:String}},{onRestore:()=>restored++},false);
+ let tree=await h.settle();assert.equal(tree.props.open,undefined);assert.notEqual(tree.props.className,"panel");assert.deepEqual(calls,[]);
+ tree.props.onToggle({currentTarget:{open:true}});tree=await h.settle();assert.match(text(tree),/旧项目/);assert.deepEqual(calls,[]);
+ await nodes(tree).find(n=>n.type==="button"&&text(n)==="恢复到材料库").props.onClick();
+ assert.deepEqual(calls,[["project","archived",false]]);assert.equal(restored,1);
+});

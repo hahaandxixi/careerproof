@@ -15,7 +15,7 @@ function workspace(file, kind, state = {}) {
   let index = 0;
   const calls = [];
   const errors = [];
-  const initial = { 1: kind === "resume" ? file : null, 2: "报名服务", 5: kind === "project" ? file : null, ...state };
+  const initial = { 1: kind === "resume" ? file : null, 2: "报名服务", 5: kind === "project" ? file : null, 17:true, 18:kind, ...state };
   const modules = {
     react: {
       Suspense: props => props.children,
@@ -31,6 +31,7 @@ function workspace(file, kind, state = {}) {
     "@/components/ArchivedMaterials": { __esModule: true, default: () => null },
     "@/components/GrowthUploadReturn": { __esModule: true, default: () => null },
     "@/components/ReportUploadReturn": { __esModule: true, default: () => null },
+    "@/components/MaterialUploadIntent": { __esModule: true, default: () => null },
     "@/components/MaterialFileDropzone": { __esModule: true, default: () => null },
     "@/components/LoginLink": { __esModule: true, default: () => null },
     "@/components/AuthProvider": { useAuth: () => ({}) },
@@ -54,7 +55,7 @@ function workspace(file, kind, state = {}) {
     if (Array.isArray(node)) return node.flatMap(item => collect(item, type));
     return [...(node.type === type ? [node] : []), ...collect(node.props?.children, type)];
   }
-  return { tree, form: collect(tree, "form")[kind === "resume" ? 0 : 1], calls, errors, collect };
+  return { tree, form: collect(tree, "form")[0], calls, errors, collect };
 }
 
 test("actual upload forms accept supported uppercase image files", async () => {
@@ -86,23 +87,25 @@ test("unsupported and oversize files stop actual form handlers before API", asyn
 
 test("returning workspace shows one latest version first and keeps history collapsed", () => {
   const versions = [1, 2].map(n => ({ id: `v${n}`, versionNumber: n, originalFilename: `service-v${n}.zip`, createdAt: `2026-10-${20 + n}`, status: "completed", progress: 100 }));
-  const value = workspace(null, "project", { 11: [{ id: "p", name: "报名服务", description: "", versions }], 12: true });
+  const value = workspace(null, "project", { 11: [{ id: "p", name: "报名服务", description: "", versions }], 12: true,17:false });
   const details = value.collect(value.tree, "details");
-  assert.equal(details[0].props.open, undefined); // historical versions default closed
-  assert.equal(details[1].props.id, "add-materials");
-  assert.equal(details[1].props.open, false);
-  const records = value.collect(value.tree, "section")[0];
-  const newest = value.collect(records, "div").flatMap(node => node.props.children ?? []).filter(node => node?.props?.latest);
+  const history=details.find(node=>JSON.stringify(node.props.children).includes("历史版本"));
+  assert.ok(history);assert.equal(history.props.open,undefined);
+  assert.ok(JSON.stringify(history.props.children).includes("历史版本（"));
+  assert.equal(value.collect(value.tree,"form").length,0,"returning workspace does not open an upload automatically");
+  const all=node=>Array.isArray(node)?node.flatMap(all):!node||typeof node!=="object"?[]:[node,...all(node.props?.children)];
+  const newest = all(value.tree).filter(node => node.props?.latest);
   assert.equal(newest.length, 1);
   assert.equal(newest[0].props.item.versionId, "v2");
   assert.equal(newest[0].props.item.filename, "service-v2.zip");
 });
 
-test("empty loaded workspace opens preparation without making two uploads mandatory", () => {
-  const value = workspace(null, "resume", { 12: true });
-  const preparation = value.collect(value.tree, "details").find(node => node.props.id === "add-materials");
-  assert.equal(preparation.props.open, true);
-  assert.equal(value.collect(value.tree, "form").length, 2);
+test("adding materials first offers a type choice and mounts only the chosen form", () => {
+  const value = workspace(null, "resume", { 12: true,18:null });
+  const preparation = value.collect(value.tree, "section").find(node => node.props.id === "add-materials");
+  assert.ok(preparation);
+  assert.equal(value.collect(value.tree, "form").length,0);
+  for(const kind of ["resume","project"])assert.equal(workspace(null,kind).collect(workspace(null,kind).tree,"form").length,1);
 });
 
 test("preparing an existing project version does not claim an upload has started", () => {

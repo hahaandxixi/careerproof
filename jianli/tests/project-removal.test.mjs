@@ -32,15 +32,15 @@ function workspace(client = {}) {
     "@/lib/portfolio-upload": upload, "@/lib/material-upload": material,
     "@/lib/api/client": { api, errorMessage: error => error.message },
   };
-  for (const name of ["ArchivedMaterials", "LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
+  for (const name of ["ArchivedMaterials", "LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn", "MaterialUploadIntent"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
   const code = transform(`${source}\nexport { PortfolioWorkspace };`, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
   const mod = { exports: {} };
   new Function("require", "module", "exports", code)(id => { assert.ok(id in modules, id); return modules[id]; }, mod, mod.exports);
   const render = () => { cursor=0; refCursor=0; return mod.exports.PortfolioWorkspace({ userId: "owner" }); };
   function remove(tree, id="owned") {
     const card = nodes(tree, n => n.props?.item?.resourceId === id && n.props?.latest)[0];
-    if (card) return nodes(card.type(card.props), n => n.type === "button" && n.props.children === "删除项目")[0];
-    return nodes(tree, n => n.type === "button" && n.props.children === "删除项目")[0];
+    if (card) return nodes(card.type(card.props), n => n.type === "button" && n.props.children === "移出材料库")[0];
+    return nodes(tree, n => n.type === "button" && n.props.children === "移出材料库")[0];
   }
   return { render, remove, state, refs, calls };
 }
