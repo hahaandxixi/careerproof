@@ -30,6 +30,6 @@ export default function ApplicationSubmit({reportId}: {reportId:string}) {
         <li>撤回后可重新确认授权再投递，将建立新记录，旧投递不会恢复或被覆盖。</li>
       </ul>
     </details>
-    <Link href="/applications" className="block text-sm text-indigo-700 underline">查看我的投递</Link>
+    <Link href="/applications" className="btn-secondary">查看我的投递</Link>
   </section>;
 }

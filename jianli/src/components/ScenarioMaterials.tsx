@@ -15,7 +15,7 @@ export default function ScenarioMaterials({ title, companyName, isDemo }: {
     <div className="mt-3 flex flex-wrap gap-3">
       <a className="btn-secondary break-words" download href={`/demo-assets/scenarios/${key}-resume.txt`}>下载虚构简历（TXT）</a>
       <a className="btn-secondary break-words" download href={`/demo-assets/scenarios/${key}-project.zip`}>下载项目材料（ZIP）</a>
-      <a className="inline-flex min-h-[44px] items-center text-sm text-indigo-700 underline" href="/portfolio">去个人材料上传 →</a>
+      <a className="btn-secondary" href="/portfolio">去个人材料上传 →</a>
     </div>
   </section>;
 }

@@ -54,7 +54,7 @@ export default function ReportDetail({ id }: { id: string }) {
   }
   return <div className="report-recording-layout layout-closeout min-w-0 space-y-3">
     <EvidenceAnchorRestore revision={report.id} />
-    <Link className="text-sm text-indigo-600" href="/reports">← 匹配报告</Link>
+    <Link className="btn-secondary btn-compact" href="/reports">← 匹配报告</Link>
     <ReportOverview report={report} role={user?.role} workbench />
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">本次检索到 {referenceCount} 条第三方参考片段，可用于理解技术实现和补证方向；它们不计入个人实践评级，也不能证明本人贡献。</aside>}
     <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className="panel requirement-reading-panel min-w-0 scroll-mt-24"><div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><h3 tabIndex={-1} className="break-words text-lg font-semibold outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">{item.requirementTitle}</h3><p className="mt-1 text-sm text-slate-600">岗位权重 {item.weight} / 5</p></div><span className={`rounded-full border px-3 py-1 text-sm ${heatmapCellClass(item.verdict)}`}>{workspaceStatusLabel(item)}</span></div>
@@ -92,7 +92,7 @@ export default function ReportDetail({ id }: { id: string }) {
         {report.aiUsage.input_tokens != null && <div><dt>输入用量</dt><dd>{report.aiUsage.input_tokens} tokens</dd></div>}
         {report.aiUsage.output_tokens != null && <div><dt>输出用量</dt><dd>{report.aiUsage.output_tokens} tokens</dd></div>}
       </dl>}
-      {user?.role !== "enterprise" && <Link className="mt-3 inline-flex min-h-11 items-center text-indigo-700 underline" href={`/tasks/${report.taskId}`}>查看实际处理记录 →</Link>}</div>
+      {user?.role !== "enterprise" && <Link className="btn-secondary mt-3" href={`/tasks/${report.taskId}`}>查看实际处理记录 →</Link>}</div>
     </details>
   </div>;
 }

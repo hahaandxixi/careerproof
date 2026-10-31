@@ -15,7 +15,7 @@ const EMPTY: SavedWork = { reports: [], notifications: [], jobs: [], resumes: []
 export default function HomeWorkspace({ children }: { children: React.ReactNode }) {
   const { user, status, reload } = useAuth();
   if (status === "loading") return <p role="status" className="panel text-slate-600">正在读取你的工作区…</p>;
-  if (status === "error") return <div className="space-y-4"><div role="alert" className="surface-muted">暂时无法确认登录状态。<button className="ml-2 underline" onClick={() => void reload()}>重试连接</button></div>{children}</div>;
+  if (status === "error") return <div className="space-y-4"><div role="alert" className="surface-muted">暂时无法确认登录状态。<button className="btn-secondary btn-compact ml-2" onClick={() => void reload()}>重试连接</button></div>{children}</div>;
   if (user?.role === "admin") return <section className="panel space-y-4"><h1 className="page-title">管理员工作区</h1><p className="text-sm text-slate-600">按当前账号权限查看岗位与报告。</p><div className="flex flex-wrap gap-3"><Link className="btn" href="/jobs">查看岗位</Link><Link className="btn-secondary" href="/reports">查看报告</Link></div></section>;
   return user ? <SavedWorkspace key={user.id} user={user} /> : <>{children}</>;
 }
@@ -66,7 +66,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
       </div>}
     </section>
     {loading ? <p role="status" className="panel text-sm text-slate-600">正在读取最近保存的工作…</p> : <>
-      {errors.length > 0 && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"><p>部分内容未能读取，以下列表可能不完整。</p>{errors.map(error => <p key={error} className="mt-1 break-words">{error}</p>)}<button className="mt-3 min-h-11 underline" onClick={() => setReload(value => value + 1)}>重试读取</button></div>}
+      {errors.length > 0 && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800"><p>部分内容未能读取，以下列表可能不完整。</p>{errors.map(error => <p key={error} className="mt-1 break-words">{error}</p>)}<button className="btn-secondary mt-3" onClick={() => setReload(value => value + 1)}>重试读取</button></div>}
       <div className="grid min-w-0 gap-5 lg:grid-cols-2">
         {student ? <>
           <WorkSection title="最近报告" href="/reports" empty="没有可显示的报告。先选定材料，再进入岗位生成报告。">

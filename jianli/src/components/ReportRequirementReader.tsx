@@ -96,11 +96,11 @@ export default function ReportRequirementReader({ items, children }: { items: Re
             <span className="break-words text-base font-semibold leading-6">{item.skill || item.requirementTitle}</span>
             <span className="text-sm leading-6">{workspaceStatusLabel(item)}</span>
           </a></li>;
-        })}</ol> : <p className="rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有这一类要求。<button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
+        })}</ol> : <p className="rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有这一类要求。<button type="button" className="btn-secondary btn-compact ml-2" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
         <nav className="mt-3 flex flex-wrap gap-2 lg:hidden" aria-label="手机逐项阅读导航">
           {currentIndex > 0 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex - 1].requirementId}`}>上一项</a>}
           {currentIndex < items.length - 1 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex + 1].requirementId}`}>下一项</a>}
-          {entry.filter !== "all" && <button type="button" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline" onClick={() => changeFilter("all")}>展开全部要求（{items.length}）</button>}
+          {entry.filter !== "all" && <button type="button" className="btn-secondary" onClick={() => changeFilter("all")}>展开全部要求（{items.length}）</button>}
         </nav>
       </nav>
       <div className="min-w-0">{!visible.length && <p className="text-sm text-slate-500">选择其他筛选查看判断与行动。</p>}{items.map((item, index) => <div key={item.requirementId} hidden={entry.selected !== item.requirementId}>{articles[index]}</div>)}</div>

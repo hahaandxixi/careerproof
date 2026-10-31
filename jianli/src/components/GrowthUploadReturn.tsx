@@ -10,7 +10,7 @@ import ProjectVersionPicker from "./ProjectVersionPicker";
 export default function GrowthUploadReturn({ uploaded }: { uploaded?: UploadedMaterial | null }) {
   const id = useSearchParams().get("growthTask");
   if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return null;
-  return <aside className="panel space-y-2 border-indigo-200 text-sm"><p>正在为补证任务准备材料。给原项目上传具名新版，旧材料与企业投递不被覆盖；解析完成后回任务明确选择版本。</p>{uploaded && <p role="status" className="text-indigo-800">本次上传已保存。回到任务后会提示对应版本；仍需自行选择并确认保存，不会自动生成报告。</p>}<Link className="text-indigo-700 underline" href={growthUploadReturnHref(id, uploaded)}>返回补证任务并读取材料 →</Link></aside>;
+  return <aside className="panel space-y-2 border-indigo-200 text-sm"><p>正在为补证任务准备材料。给原项目上传具名新版，旧材料与企业投递不被覆盖；解析完成后回任务明确选择版本。</p>{uploaded && <p role="status" className="text-indigo-800">本次上传已保存。回到任务后会提示对应版本；仍需自行选择并确认保存，不会自动生成报告。</p>}<Link className="btn-secondary" href={growthUploadReturnHref(id, uploaded)}>返回补证任务并读取材料 →</Link></aside>;
 }
 
 // Search parameters are navigation hints, never selection or permission data.

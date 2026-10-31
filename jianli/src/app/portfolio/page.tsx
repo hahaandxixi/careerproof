@@ -352,12 +352,12 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         return true;
       }} /></Suspense>
       <div>
-        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">我的材料</h1><div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button><Link href="/jobs" className="action-link">选择岗位</Link><button type="button" className="btn" disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">我的材料</h1><div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button><Link href="/jobs" className="btn-secondary">选择岗位</Link><button type="button" className="btn" disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "start" }); target?.focus({ preventScroll: true }); }); }}>添加材料</button></div></div>
       </div>
 
       {historyLoaded && !uploads.length && !projects.length && !historyError
         ? <Link href="/demo" className="block rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">没有测试材料？下载合成简历和项目 ZIP，按演示指南完成匹配 →</Link>
-        : <details className="text-sm"><summary className="disclosure">材料帮助</summary><Link href="/demo" className="action-link">合成示例与下载</Link></details>}
+        : <details className="text-sm"><summary className="disclosure">材料帮助</summary><Link href="/demo" className="btn-secondary">合成示例与下载</Link></details>}
       {notice && <p role="status" className="rounded-xl bg-indigo-50 p-3 text-sm text-indigo-800">{notice}</p>}
 
       <section>
@@ -420,7 +420,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             <div className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
               <p>{attempt.project ? `目标项目：${attempt.project.name}` : "已保留未完成上传，请重新选择原文件继续。"}</p>
               {projectError&&<p className="mt-1">重试将复用原项目和上传标识，请选择原文件。</p>}
-              <button type="button" disabled={projectBusy} onClick={() => selectProject(null)} className="mt-2 underline">
+              <button type="button" disabled={projectBusy} onClick={() => selectProject(null)} className="btn-secondary mt-2">
                 改为创建另一个项目
               </button>
             </div>

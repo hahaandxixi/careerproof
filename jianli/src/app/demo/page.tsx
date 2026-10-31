@@ -13,12 +13,12 @@ export default function DemoPage() {
       <h1 className="page-title mt-2">选一个职业，用一套对应材料</h1>
       <p className="mt-3 leading-7 text-slate-600">每套都有独立编号、简历、项目或作品、人工测试步骤。先测一套；请勿将不同编号的材料混选。所有人物、经历和指标均为虚构。</p>
     </header>
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3"><p className="text-sm text-slate-700">想先看企业如何核对证据？</p><Link href="/demo/heatmap" className="inline-flex min-h-11 items-center text-sm font-medium text-indigo-700 underline">打开热力图交互演示 →</Link></div>
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3"><p className="text-sm text-slate-700">想先看企业如何核对证据？</p><Link href="/demo/heatmap" className="btn-secondary">打开热力图交互演示 →</Link></div>
     <details className="rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer font-semibold">首次使用：登录与账号说明</summary>
       <p className="mt-3 text-sm leading-7 text-slate-600">首次使用可先注册学生账号，已有账号直接登录。企业账号用于岗位管理，学生账号用于材料上传与报告测试；演示账号由负责人提供，凭据不会显示在网页上。注册和后续登录请保持同一网站地址。</p>
       <details className="mt-3 text-sm text-slate-600"><summary className="cursor-pointer">负责人：账号在哪里？</summary><p className="mt-2 leading-7">日常3000演示账号在本机 <code>backend/.tmp/demo-credentials.json</code>；3001隔离运行的企业账号在 <code>backend/.tmp/e2e/&lt;RunId&gt;.json</code> 的 <code>accounts.enterprise</code>，不要混用。自行注册的账号使用自己设置的密码；文件不会记录这类账号的密码。凭据不要截图分享或提交。</p></details>
-      <Link href="/login" className="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white">前往登录</Link>
-      <Link href="/register" className="ml-4 inline-block text-sm text-indigo-600 underline">注册学生账号</Link>
+      <Link href="/login" className="btn mt-4">前往登录</Link>
+      <Link href="/register" className="btn-secondary ml-4">注册学生账号</Link>
     </details>
     <section>
       <h2 className="section-title">选择一个案例，展开查看配套材料</h2>
@@ -45,7 +45,7 @@ export default function DemoPage() {
           </details>}
           <DemoCaseImport sample={sample}/>
           <p className="mt-3 text-xs leading-6 text-amber-800">应识别的边界：{sample.boundary}</p>
-          <Link className="mt-3 inline-block text-sm text-indigo-600 underline" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
+          <Link className="btn-secondary mt-3" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
         </div></details></article>)}
       </div>
     </section>
@@ -59,7 +59,7 @@ export default function DemoPage() {
         <li>决定投递时，在报告页阅读分享范围、勾选同意并确认投递，再从顶部“我的投递”查看进度，从账户菜单查看“通知”。生成报告不会自动投递。</li>
       </ol>
       <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">代码和方案不等于执行成功；材料缺失不代表没有能力。AI 不可用时自动生成本地兜底报告，并明确显示降级。</p>
-      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="underline">进入我的材料</Link><Link href="/recommendations" className="underline">测试职业规划</Link></div>
+      <div className="mt-4 flex flex-wrap gap-5 text-sm text-indigo-600"><Link href="/portfolio" className="btn-secondary">进入我的材料</Link><Link href="/recommendations" className="btn-secondary">测试职业规划</Link></div>
     </details>
     <details className="rounded-xl border border-slate-200 bg-white p-4">
       <summary className="cursor-pointer font-semibold">查看规则覆盖范围与源码引用演示</summary>

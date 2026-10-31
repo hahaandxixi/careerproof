@@ -42,7 +42,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
       <span className="min-w-0 break-words">{selectedResume.title} · 第 {selected.versionNumber} 版
         <span className="mt-1 block text-xs text-slate-600">{selected.originalFilename} · {selected.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
       </span>
-      <button type="button" className="shrink-0 text-xs text-indigo-700 underline" onClick={() => onChange("")}>取消选择</button>
+      <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
     </div> : <p className="text-xs text-slate-500">尚未选择简历；请展开并选择已完成解析的版本，不会自动加入历史材料。</p>}
     {all.length ? <details ref={chooser} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
@@ -55,7 +55,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
           <span>显示历史验收材料（{historyCount} 份）；搜索时也会查找这些材料。</span>
         </label>}
         <p className="text-xs leading-6 text-slate-500">选择简历后，可选择与其对应的项目材料。搜索、收起或隐藏历史材料不会更改已选版本。</p>
-        {!all.some(resume => resume.category === "demo") && <p className="text-xs leading-6 text-slate-500">需要体验材料？可在<Link href="/jobs" className="text-indigo-700 underline">对应体验岗位详情</Link>下载配套简历与项目，再上传到当前账号。</p>}
+        {!all.some(resume => resume.category === "demo") && <p className="text-xs leading-6 text-slate-500">需要体验材料？可在<Link href="/jobs" className="btn-secondary">对应体验岗位详情</Link>下载配套简历与项目，再上传到当前账号。</p>}
         <div className="max-h-72 space-y-3 overflow-y-auto">
           {GROUPS.map(group => {
             const rows = visible.filter(resume => resume.category === group.key);

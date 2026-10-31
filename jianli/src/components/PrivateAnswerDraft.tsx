@@ -186,7 +186,7 @@ export function PrivateAnswerDraftPanel(props: {
           {orphanSelections.map(entry => {
             const key = privateAnswerReferenceKey(entry.reportId, entry.requirementId, entry.citationId);
             return <li key={key} className="text-sm text-rose-700"><span className="break-all">{entry.citationId} · 已失效{entry.filePath ? ` · ${entry.filePath}` : ""}，不作为有效来源复制</span>
-              <button type="button" className="ml-2 text-xs text-indigo-700 underline" onClick={() => props.onRemove(key)}>移除</button>
+              <button type="button" className="btn-quiet btn-compact ml-2" onClick={() => props.onRemove(key)}>移除</button>
             </li>;
           })}
         </ul>
