@@ -11,6 +11,12 @@ test("empty first page has no controls; an out-of-range empty page retains its r
  assert.equal(Pagination({value:{total:0,page:1,pageSize:20},onPage(){}}),null);
  let page;const tree=Pagination({value:{total:0,page:3,pageSize:20},onPage:n=>page=n});nodes(tree).find(n=>n.type==="button").props.onClick();assert.equal(page,2);
 });
+test("a single page keeps its count without disabled navigation",()=>{
+ const Pagination=load("ListPagination",{"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/list-pagination.js":{pageBounds:()=>({previous:false,next:false}),paginationSummary:()=>"分页"}});
+ const tree=Pagination({value:{total:4,page:1,pageSize:20},label:"候选人分页",onPage(){throw Error("no page action");}});
+ assert.equal(nodes(tree).filter(n=>n.type==="button").length,0);
+ assert.equal(text(tree),"共 4 条");assert.equal(tree.props["aria-label"],"候选人分页");
+});
 test("wrapping and expanded reading preserve physical line numbers and copying returns only original bytes",async()=>{
  const cells=[];let cursor=0;const hooks={useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useRef(value){const i=cursor++;return cells[i]??={current:value};}};
  const Snippet=load("EvidenceSnippet",{react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/source-label":{sourceLabel:e=>e.filePath}});
