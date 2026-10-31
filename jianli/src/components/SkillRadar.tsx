@@ -59,10 +59,10 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
             return <g key={d.requirementId}>
               <line x1="200" y1="200" x2={end.x} y2={end.y} stroke={active ? "#818cf8" : "#cbd5e1"} strokeWidth={active ? 2 : 1} />
               {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#d97706" : "#4f46e5"} strokeWidth="2"><title>{`${title}：${radarScore(d)}，${status(d)}`}</title></circle>}
-              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${radarScore(d) ?? "不可评"}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
+              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${radarScore(d)}`}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
                 <title>{title}</title><rect x={label.x - 58} y={label.y - 20} width="116" height="44" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
                 <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="12" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
-                <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="10" fill="#64748b">{radarScore(d) ?? "—"} · {status(d)}</text>
+                <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="10" fill="#64748b">{kind === "none" ? status(d) : `${radarScore(d)} · ${status(d)}`}</text>
               </g>
             </g>;
           })}

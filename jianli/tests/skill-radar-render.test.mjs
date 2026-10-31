@@ -58,6 +58,14 @@ test("desktop radar stays visible without a collapsed overview control and retai
  assert.ok(html.includes("<title>FastAPI long requirement</title>"));
  assert.ok(html.includes(">100</text>"));assert.ok(!html.includes("65%"));
 });
+test("axis labels distinguish missing evidence from a scored zero without changing stored values",()=>{
+ const html=render({dimensions:[dim("材料缺口","gap",0),dim("可评零值","supported",0),dim("规则未覆盖","unsupported",null)]});
+ assert.ok(html.includes('aria-label="材料缺口，材料待补充，查看证据"'));
+ assert.ok(!html.includes('0 · 材料待补充'));
+ assert.ok(html.includes('aria-label="可评零值，有证据支持，0，查看证据"'));
+ assert.ok(html.includes('0 · 有证据支持'));
+ assert.ok(html.includes('aria-label="规则未覆盖，规则暂未支持，查看证据"'));
+});
 test("linked detail renders only selected requirement citations and keeps sources collapsed", () => {
  // 传智杯48：正常数据改为 evidence-v3 单项可达值 65/40/0（不再用 85/55 假装高分）
  const dimensions=[dim("Python","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)];
