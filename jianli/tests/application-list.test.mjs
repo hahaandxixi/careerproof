@@ -162,3 +162,18 @@ test("二次确认面板：确认/取消各走各的回调，忙碌时确认禁�
   const busyConfirm = findButtons(busyNode).find(b => buttonText(b).includes("确认撤回授权"));
   assert.equal(busyConfirm.props.disabled, true, "撤回请求进行中必须禁用确认按钮");
 });
+
+
+test("reply presentation uses the actual replied event and preserves legacy missing metadata",()=>{
+ const html=renderCard(fixture({status:"replied",replyKind:"continue",replyText:"原始回复",events:[{type:"submitted",at:"2020-01-01T00:00:00Z"},{type:"replied",at:"2026-10-31T01:02:03Z"}]}));
+ assert.match(html,/继续沟通/);assert.match(html,/原始回复/);assert.match(html,/<time[^>]*dateTime="2026-10-31T01:02:03Z"/i);assert.doesNotMatch(html,/dateTime="2020/);
+ const legacy=renderCard(fixture({status:"replied",replyText:"旧回复原文",replyKind:null,events:[]}));assert.match(legacy,/回复类型未记录/);assert.match(legacy,/回复时间未记录/);assert.match(legacy,/旧回复原文/);assert.doesNotMatch(legacy,/<time/);
+});
+
+
+test("enterprise sent reply uses the same metadata and does not substitute application creation time",async()=>{
+ const {default:Reply}=await import("../src/components/ApplicationReply.tsx");
+ const item=fixture({status:"replied",replyKind:"interview",replyText:"原始企业回复",events:[{type:"replied",at:"2026-10-31T08:00:00Z"},{type:"replied",at:"invalid"}]});
+ const before=JSON.stringify(item);const html=renderToStaticMarkup(React.createElement(Reply,{application:item,sent:true}));
+ assert.match(html,/已发送 · /);assert.match(html,/面试邀请/);assert.match(html,/dateTime="2026-10-31T08:00:00Z"/i);assert.match(html,/原始企业回复/);assert.doesNotMatch(html,/2026-10-12/);assert.equal(JSON.stringify(item),before);
+});

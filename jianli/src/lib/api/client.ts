@@ -243,7 +243,7 @@ export interface McpGrant {
 }
 
 export interface ApplicationView {
-  id: string; jobId: string; jobTitle: string; companyName: string; candidateName: string;
+  id: string; jobId: string; jobTitle: string; companyName: string; candidateId: string; candidateName: string;
   reportId: string; status: string; createdAt: string; overallScore: number | null;
   consentVersion: string; replyKind: string | null; replyText: string | null;
   replyReferences: { requirementId: string; citationIds: string[] }[];

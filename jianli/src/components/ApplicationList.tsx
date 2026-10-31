@@ -8,8 +8,9 @@ import { applicationAnchorId, clearApplicationAnchor, includeApplicationTarget }
 import { createApplicationAnchorRevealer } from "@/lib/application-anchor";
 import { createApplicationListSession, type ApplicationListState } from "@/lib/application-list-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
-import { applicationEventsSummary, applicationNextAction, applicationReplyText, applicationStatusText } from "@/lib/application-display";
+import { applicationEventsSummary, applicationNextAction, applicationStatusText } from "@/lib/application-display";
 import AccessGate from "./AccessGate";
+import ApplicationReply from "./ApplicationReply";
 import { useAuth } from "./AuthProvider";
 
 // 传智杯44：单条投递卡片是无状态展示组件，突出岗位/公司/状态/企业回复/下一动作；
@@ -29,7 +30,7 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
       <p className="text-sm text-slate-700">{item.companyName} · {applicationStatusText(item.status)}</p>
     </div>
     {!item.replyText&&item.status!=="withdrawn"&&<p className="text-sm text-slate-600">{applicationNextAction(item.status)}</p>}
-    {item.replyText&&<blockquote className="rounded-lg bg-indigo-50 p-3 text-sm whitespace-pre-wrap"><div className="mb-2 flex flex-wrap items-baseline justify-between gap-2"><span className="font-semibold text-indigo-900">{applicationReplyText(item.replyKind??"")}</span>{item.events.find(event=>event.type==="replied")&&<time className="text-sm text-slate-600" dateTime={item.events.find(event=>event.type==="replied")!.at}>{new Date(item.events.find(event=>event.type==="replied")!.at).toLocaleString("zh-CN")}</time>}</div>{item.replyText}</blockquote>}
+    <ApplicationReply application={item}/>
     {!!item.replyReferences?.length&&<div className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-medium">企业回复对应的原报告位置</p><ul className="mt-2 space-y-2">{item.replyReferences.map(reference=><li key={reference.requirementId} className="break-words"><Link className="text-indigo-700 underline" href={`${reportHref}#requirement-${encodeURIComponent(reference.requirementId)}`}>{`第${item.dimensions.findIndex(d=>d.requirementId===reference.requirementId)+1}项：`}{item.dimensions.find(d=>d.requirementId===reference.requirementId)?.title || "查看岗位要求"}</Link><Link className="ml-2 text-xs text-indigo-700 underline" href={`${reportHref}?enterpriseReply=${encodeURIComponent(reference.requirementId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>带着这项问题补证 →</Link>{reference.citationIds.length>0&&<span className="ml-2 text-xs">引用：{reference.citationIds.map((id,index)=><span key={id}>{index>0?"、":""}<Link className="text-indigo-700 underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>{id}</Link></span>)}</span>}</li>)}</ul><p className="mt-2 text-xs text-slate-500">这些链接定位本次投递的原报告；引用不自动证明能力或本人贡献。</p></div>}
     {item.status==="withdrawn"&&<p className="text-sm text-slate-600">本次授权已撤回。<Link className="ml-2 text-indigo-700 underline" href={`${reportHref}#application-submit`}>重新确认授权并投递</Link>；也可从新版报告投递，原记录与企业回复不会被覆盖。</p>}
     <div className="card-actions"><Link className="btn-secondary" href={reportHref}>查看投递报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet ml-auto" onClick={()=>onRequestWithdraw(item.id)}>撤回投递授权</button>}</div>

@@ -16,7 +16,7 @@ from app.core.config import settings
 from app.models.analysis import AnalysisTask, MatchItem, MatchReport
 from app.models.audit import AuditLog
 from app.models.enums import TaskStatus
-from app.models.identity import EnterpriseMembership, StudentProfile
+from app.models.identity import EnterpriseMembership, StudentProfile, User
 from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.services.applications import _reply_references, reply_context_for_requirement
@@ -166,6 +166,15 @@ async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
         )
         assert created.status_code == 201, created.text
         aid = created.json()["data"]["id"]
+        async with factory() as session:
+            candidate_id = str(await session.scalar(
+                select(User.id).where(User.email == "student@example.com")
+            ))
+        assert created.json()["data"]["candidateId"] == candidate_id
+        detail = (await hr.get(f"/api/v1/applications/{aid}")).json()["data"]
+        assert detail["candidateId"] == candidate_id
+        assert [event["type"] for event in detail["events"]] == ["submitted"]
+        assert (await other.get(f"/api/v1/applications/{aid}")).status_code == 404
         frozen_basis = created.json()["data"]["comparisonBasis"]
         assert len(frozen_basis) == 64
         assert (
@@ -177,6 +186,7 @@ async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
         assert (await other.post(f"/api/v1/applications/{aid}/view")).status_code == 404
         assert (await hr.get(f"/api/v1/match-reports/{rid}")).status_code == 404
         listed = (await hr.get(f"/api/v1/jobs/{job['id']}/applications")).json()["data"]["items"]
+        assert listed[0]["candidateId"] == candidate_id
         assert (
             len(listed) == 1
             and "report" not in listed[0]

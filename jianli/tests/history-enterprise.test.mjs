@@ -254,8 +254,8 @@ test('equal citation aliases in two fixed reports get candidate-scoped links and
 
 test("registered example names agree across the matrix, pair legend and fixed evidence without rewriting snapshots",()=>{
  const candidates=[pairCandidate("A"),pairCandidate("B")];
- candidates[0].id="3724815b-78c4-4229-b98a-80da1ab00209";candidates[0].candidateName="Python 实现材料学生（合成）";
- candidates[1].id="efd038f0-cf48-4791-a8e3-288dcae5991e";candidates[1].candidateName="首页验收学生（合成）";
+ candidates[0].id="new-application-for-implemented-user";candidates[0].candidateId="b5ec33cb-c669-4ae5-8a86-c1a591f5d2de";candidates[0].candidateName="Python 实现材料学生（合成）";
+ candidates[1].id="new-application-for-home-user";candidates[1].candidateId="3e1e80a0-c7e0-4203-9aa9-f770b7ba3fe3";candidates[1].candidateName="首页验收学生（合成）";
  for(const c of candidates)Object.assign(c.report,{summary:"原报告摘要",createdAt:"2026-10-29T12:00:00Z",jobTitle:"原岗位"});
  const before=JSON.stringify(candidates);
  const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){}}));

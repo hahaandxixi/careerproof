@@ -312,6 +312,7 @@ class ApplicationService:
             "jobId": str(job.id),
             "jobTitle": job.title,
             "companyName": job.company_name,
+            "candidateId": str(user.id),
             "candidateName": user.display_name,
             "reportId": str(item.report_id),
             "status": item.status,
