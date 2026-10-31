@@ -120,6 +120,6 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
  const missing=cell("候选人b · Python要求 · 本报告无此项");assert.ok(missing);assert.equal(missing.props.disabled,true);assert.match(text(missing),/本报告无此项/);
  missing.props.onClick();assert.equal(h.counts.open,0);
  const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
- const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.doesNotMatch(text(unsupported),/本报告无此项/);
+ const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
  await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
 });

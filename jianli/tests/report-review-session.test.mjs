@@ -51,3 +51,11 @@ test("old reads and writes cannot publish after account/report disposal",async()
 test("a response for another report is rejected instead of replacing the current one",async()=>{
  const h=await fixture({get:n=>report(n===1?"r":"other")});await h.session.review("a","accepted");assert.equal(h.state.report,null);assert.match(h.state.error,/报告身份不匹配/);
 });
+
+
+test("reactivated sessions ignore an earlier read without unlocking or overwriting the new generation",async()=>{
+ let count=0,state;const old=deferred();
+ const session=createReportReviewSession("r",{get:async()=>++count===1?old.promise:report("r",count),review:async()=>{},errorMessage:String},next=>state=next);
+ session.activate();const prior=session.load();session.dispose();session.activate();await session.load();assert.equal(state.report.revision,2);
+ old.resolve(report("r",1));await prior;assert.equal(state.report.revision,2);await session.review("a","accepted");assert.equal(state.report.revision,3);
+});
