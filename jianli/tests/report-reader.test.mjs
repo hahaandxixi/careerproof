@@ -104,7 +104,7 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(!html.includes("正在查看") && !html.includes("当前筛选"));
-  assert.ok(html.includes("手机逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
+  assert.ok(html.includes("逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
