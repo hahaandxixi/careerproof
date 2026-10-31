@@ -1,6 +1,7 @@
 // Real component SSR with controlled saved state. Effects/network are deliberately
 // not executed; this does not verify late responses, identity races or browser behavior.
 import test from "node:test";
+import { displayIdentity } from "../src/lib/demo-display-identity.js";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
@@ -21,6 +22,7 @@ function render(role, { work = EMPTY, errors = [], loading = false, status = "au
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
     "@/lib/api/client": { api: new Proxy({}, { get() { throw new Error("SSR must not request data"); } }), errorMessage: String },
+    "./IdentityName": { __esModule: true, default: ({name,identityId}) => {const value=displayIdentity(name,identityId);return value.isExample ? `${value.name} · 示例` : name;} },
     "./AuthProvider": { useAuth: () => ({ user: role ? { id: "synthetic", displayName: "当前用户", role } : null, status, reload() {} }) },
   };
   const code = transform(source, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;

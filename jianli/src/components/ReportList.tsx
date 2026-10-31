@@ -1,4 +1,5 @@
 "use client";
+import IdentityName from "./IdentityName";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ import ListPagination from "./ListPagination";
 
 export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary; onSameJob?: (jobId: string) => void }) {
   return <article className="panel space-y-3">
-    <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><Link className="break-words text-lg font-semibold text-indigo-800 underline-offset-4 hover:underline" href={`/reports/${report.id}`}>{report.jobTitle}</Link><p className="mt-1 text-sm text-slate-600">{report.candidateName} · {new Date(report.createdAt).toLocaleString("zh-CN")}</p></div>{report.isLatestForJob !== undefined && <span className="rounded bg-slate-100 px-2 py-1 text-sm text-slate-700">{report.isLatestForJob ? "最新" : "有后续报告"}</span>}</div>
+    <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><Link className="break-words text-lg font-semibold text-indigo-800 underline-offset-4 hover:underline" href={`/reports/${report.id}`}>{report.jobTitle}</Link><p className="mt-1 text-sm text-slate-600"><IdentityName name={report.candidateName} identityId={report.candidateId}/> · {new Date(report.createdAt).toLocaleString("zh-CN")}</p></div>{report.isLatestForJob !== undefined && <span className="rounded bg-slate-100 px-2 py-1 text-sm text-slate-700">{report.isLatestForJob ? "最新" : "有后续报告"}</span>}</div>
     {!!report.materials?.length&&<p className="text-sm text-slate-700">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")}</p>}
     <details className="text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>
     {!!report.materials?.length && <details className="text-xs text-slate-600"><summary className="cursor-pointer leading-5">固定材料：{report.materials.map(material => `${material.kind === "resume" ? "简历" : material.materialRole === "reference" ? "参考材料" : "项目"} v${material.versionNumber}`).join(" · ")}</summary><ul className="mt-2 space-y-1">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="break-words">{material.title} · 第{material.versionNumber}版 · 材料编号 {material.id.slice(0, 8)}</li>)}</ul></details>}

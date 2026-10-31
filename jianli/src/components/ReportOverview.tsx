@@ -1,3 +1,4 @@
+import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
 import { evidenceWorkspace, evidenceWorkspaceSummary } from "@/lib/evidence-workspace";
 import { initialReportRequirement } from "@/lib/report-reader";
@@ -12,7 +13,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
   if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="岗位匹配报告" aria-labelledby="report-title">
     <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="min-w-0"><h1 id="report-title" className="break-words text-2xl font-bold text-slate-950">{report.jobTitle}</h1>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600"><span>{report.candidateName}</span><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time><span className="font-medium text-indigo-800">{report.aiProvider?.startsWith("mock") ? reportModeLabel(report) : report.aiFallbackUsed ? "规则分析 · AI 已降级" : ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) ? "AI 分析 + 规则校验" : report.analysisMode === "rules" ? "规则分析" : reportModeLabel(report)}</span></p>
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600"><span><IdentityName name={report.candidateName} identityId={report.candidateId}/></span><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time><span className="font-medium text-indigo-800">{report.aiProvider?.startsWith("mock") ? reportModeLabel(report) : report.aiFallbackUsed ? "规则分析 · AI 已降级" : ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) ? "AI 分析 + 规则校验" : report.analysisMode === "rules" ? "规则分析" : reportModeLabel(report)}</span></p>
       </div>
       <dl aria-label="已保存的证据状态摘要" className="grid grid-cols-3 gap-x-6 gap-y-2">
         <div><dt className="text-sm text-emerald-800">有证据支持</dt><dd className="text-2xl font-semibold tabular-nums">{states.supported.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
@@ -34,7 +35,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{identity}查看</span>
       <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-900">{reportModeLabel(report)}</span>
     </div>
-    <div><h1 id="report-title" className="page-title">岗位匹配报告</h1><p className="mt-2 break-words text-lg font-semibold text-slate-900">{report.candidateName} · {report.jobTitle}</p></div>
+    <div><h1 id="report-title" className="page-title">岗位匹配报告</h1><p className="mt-2 break-words text-lg font-semibold text-slate-900"><IdentityName name={report.candidateName} identityId={report.candidateId}/> · {report.jobTitle}</p></div>
     {workbench && <div>
       <dl aria-label="已保存的证据状态摘要" className="grid grid-cols-3 gap-2 border-y border-slate-100 py-3">
         <div><dt className="text-sm text-emerald-800">有证据支持</dt><dd className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{states.supported.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>

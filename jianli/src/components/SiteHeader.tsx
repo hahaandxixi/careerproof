@@ -49,8 +49,8 @@ export default function SiteHeader() {
 
         {status === "loading" ? <span className="text-xs text-slate-300">确认会话中…</span> :
           status === "error" ? <button onClick={() => void reload()} className="min-h-11 text-amber-200">连接异常 · 重试</button> :
-          user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
-          user?.role === "enterprise" ? <NotificationLink render={count => <AccountMenu role="enterprise" name={user.displayName} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
+          user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} identityId={user.id} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
+          user?.role === "enterprise" ? <NotificationLink render={count => <AccountMenu role="enterprise" name={user.displayName} identityId={user.id} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
           user ? <><span className="max-w-28 truncate text-slate-300" title={user.displayName}>{user.displayName}</span><button className="min-h-11" disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :
           <><LoginLink className="inline-flex min-h-11 items-center">登录</LoginLink><LoginLink register className="inline-flex min-h-11 items-center rounded-lg bg-indigo-600 px-3 text-white hover:bg-indigo-500">注册</LoginLink></>}
       </div>

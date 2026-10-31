@@ -250,3 +250,16 @@ test('equal citation aliases in two fixed reports get candidate-scoped links and
  for(const id of ['A','B']) {assert.match(html,new RegExp(`href="#pair-${id}-citation-R1-E1"`));assert.match(html,new RegExp(`id="pair-${id}-citation-R1-E1"`));}
  assert.match(html,/原文结尾/);assert.doesNotMatch(html,/href="#citation-R1-E1"/);assert.equal(JSON.stringify(candidates),before);
 });
+
+
+test("registered example names agree across the matrix, pair legend and fixed evidence without rewriting snapshots",()=>{
+ const candidates=[pairCandidate("A"),pairCandidate("B")];
+ candidates[0].id="3724815b-78c4-4229-b98a-80da1ab00209";candidates[0].candidateName="Python 实现材料学生（合成）";
+ candidates[1].id="efd038f0-cf48-4791-a8e3-288dcae5991e";candidates[1].candidateName="首页验收学生（合成）";
+ for(const c of candidates)Object.assign(c.report,{summary:"原报告摘要",createdAt:"2026-10-29T12:00:00Z",jobTitle:"原岗位"});
+ const before=JSON.stringify(candidates);
+ const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){}}));
+ assert.match(html,/林同学/);assert.match(html,/陈同学/);assert.match(html,/示例/);assert.match(html,/原记录名称：Python 实现材料学生/);
+ assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
+ const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.match(fixed,/示例/);
+});

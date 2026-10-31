@@ -1,3 +1,4 @@
+import * as demoIdentity from "../src/lib/demo-display-identity.js";
 // Execute the real Workspace/event handlers with deterministic hooks and API
 // promises. These are component behavior tests, not real browser visibility.
 import test, { afterEach } from "node:test";
@@ -15,7 +16,7 @@ const originals=new Map(["window","document","location","requestAnimationFrame",
 const cleanups=[];
 afterEach(()=>{while(cleanups.length)cleanups.pop()();for(const[k,v]of originals){if(v===undefined)delete globalThis[k];else globalThis[k]=v;}});
 const walk=node=>!node||typeof node!=="object"?[]:[node,...React.Children.toArray(node.props?.children).flatMap(walk)];
-const text=node=>typeof node==="string"?node:React.Children.toArray(node?.props?.children).map(text).join("");
+const text=node=>typeof node==="string"?node:node?.type?.testName==="identity"?demoIdentity.identityLabel(node.props.name,node.props.identityId):React.Children.toArray(node?.props?.children).map(text).join("");
 
 function fixture(count=2){
  const cells=[],effects=[],frames=new Map();let cursor=0,frame=0;
@@ -35,7 +36,7 @@ function fixture(count=2){
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
- const modules={"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
+ const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
   "./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:"enterprise-a"}})},

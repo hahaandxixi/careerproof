@@ -1,4 +1,5 @@
 import test from "node:test";
+import * as demoIdentity from "../src/lib/demo-display-identity.js";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -10,6 +11,7 @@ const { transform } = require("sucrase");
 let user = null;
 let count = 1200;
 const modules = {
+  "@/lib/demo-display-identity.js": demoIdentity,
   react: React,
   "react/jsx-runtime": require("react/jsx-runtime"),
   "next/link": { __esModule: true, default: props => React.createElement("a", props) },
@@ -86,4 +88,16 @@ test("student retains four primary entries without a legacy growth task menu ent
  assert.ok(!primary.includes("补证任务"));
  const menu=render(Menu,{role:"student",name:"学生",unreadCount:0,busy:false,onLogout(){}});
  assert.doesNotMatch(menu,/href="\/growth"|历史补证记录/);
+});
+
+
+test("registered example identity is consistent for login and session reload, with the original retained in details",()=>{
+ const saved={id:"3e1e80a0-c7e0-4203-9aa9-f770b7ba3fe3",role:"student",displayName:"首页验收学生（合成）"};
+ for(const current of [saved,JSON.parse(JSON.stringify(saved))]){
+  user=current;const html=render(Header);const summary=html.match(/<summary[^>]*>[\s\S]*?<\/summary>/)[0];
+  assert.match(summary,/陈同学/);assert.match(summary,/示例/);assert.doesNotMatch(summary,/首页验收/);
+  assert.match(html,/示例账号原名/);assert.match(html,/首页验收学生（合成）/);assert.match(html,/陈同学 · 学生/);
+ }
+ assert.equal(saved.displayName,"首页验收学生（合成）");
+ user={id:"unknown",role:"student",displayName:"小江"};const actual=render(Header);assert.match(actual,/小江/);assert.doesNotMatch(actual,/示例账号原名/);
 });

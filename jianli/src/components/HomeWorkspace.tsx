@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { api, errorMessage, type CurrentUser, type ProjectHistory, type ResumeHistory } from "@/lib/api/client";
 import type { JobSummary, NotificationItem, ReportSummary } from "@/lib/api/domain";
 import { useAuth } from "./AuthProvider";
+import IdentityName from "./IdentityName";
 
 type SavedWork = {
   reports: ReportSummary[]; notifications: NotificationItem[];
@@ -58,7 +59,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
   return <div className="space-y-6">
     <section className="panel border-indigo-100 bg-gradient-to-br from-indigo-50 to-white">
       <p className="text-sm font-medium text-indigo-700">{student ? "学生工作台" : "企业工作台"}</p>
-      <h1 className="page-title mt-2 break-words">{user.displayName}，继续你的工作</h1>
+      <h1 className="page-title mt-2 break-words"><IdentityName name={user.displayName} identityId={user.id}/>，继续你的工作</h1>
       <p className="mt-3 text-sm leading-6 text-slate-600">{student ? "从已保存的材料与报告继续。核对依据，再决定补证或投递。" : "从自己的岗位进入已授权投递，按要求核对候选人的固定材料。"}</p>
       {!loading && <div className="mt-5 flex flex-wrap items-center gap-3">
         <Link className="btn max-w-full whitespace-normal break-words text-left" href={student ? resumeHref : "/jobs/mine"}>{student ? resumeLabel : "查看岗位与授权投递"} →</Link>
