@@ -29,4 +29,9 @@ test("wrapping and expanded reading preserve physical line numbers and copying r
  const old=Object.getOwnPropertyDescriptor(globalThis,"navigator");let copied;
  try{Object.defineProperty(globalThis,"navigator",{configurable:true,value:{clipboard:{writeText:async value=>{copied=value;}}}});await button("复制原文").props.onClick();assert.equal(copied,evidence.snippet);}finally{if(old)Object.defineProperty(globalThis,"navigator",old);else delete globalThis.navigator;}
  const pre=nodes(tree).find(n=>n.type==="pre");assert.match(text(pre),/20/);assert.match(text(pre),/21/);assert.equal(JSON.stringify(evidence),original);assert.doesNotMatch(text(tree),/内容已截断/);
+ assert.equal(pre.props.tabIndex,0);
+ cells.length=0;cursor=0;
+ const prose=Snippet({evidence:{...evidence,filePath:"notes/README.md"}});
+ assert.equal(nodes(prose).find(n=>n.type==="button"&&text(n)==="换行").props["aria-pressed"],true);
+ assert.match(text(nodes(prose).find(n=>n.type==="pre")),/20/);
 });

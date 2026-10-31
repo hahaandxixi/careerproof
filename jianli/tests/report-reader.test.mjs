@@ -63,6 +63,11 @@ test("readable AI links keep the saved narrative and never map cross-item histor
  const before=JSON.stringify(report);
  const rendered=renderToStaticMarkup(React.createElement(AiExplanation,{report,item}));
  assert.match(rendered,/app.py · 12–20行/);assert.match(rendered,/#citation-R1-E1/);assert.match(rendered,/R1-E1包含接口实现/);
+ assert.equal((rendered.match(/href="#citation-R1-E1"/g)??[]).length,1);
+ const extra={...item,aiCitationIds:["R1-E1","R1-E2"],evidenceList:[...item.evidenceList,{citationId:"R1-E2",filePath:"test.py",lineStart:3,lineEnd:5,snippet:"assert result",contextComplete:true}]};
+ const extraHtml=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:extra}));
+ assert.equal((extraHtml.match(/href="#citation-R1-E1"/g)??[]).length,1);
+ assert.match(extraHtml,/其他解释来源/);assert.match(extraHtml,/#citation-R1-E2/);
  const invalid={...item,aiExplanation:"R2-E1包含接口实现。"};
  const rejected=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:invalid}));
  assert.match(rejected,/未与本项来源对齐/);assert.match(rejected,/R2-E1包含接口实现/);assert.doesNotMatch(rejected,/href="#citation-R2-E1"/);
