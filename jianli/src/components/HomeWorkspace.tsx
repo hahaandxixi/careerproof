@@ -76,15 +76,14 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
           {work.jobs.map(job => <li key={job.id}><Link className="work-row" href={`/jobs/${job.id}/applications`}><strong className="block break-words text-sm">{job.title}</strong><span className="mt-1 block text-xs text-slate-600">{job.companyName} · {job.status === "published" ? "已发布" : job.status === "draft" ? "草稿" : "已关闭"} · 核对已授权投递 →</span></Link></li>)}
         </WorkSection>}
         <WorkSection title="未读消息" href="/notifications" empty="当前没有可显示的未读消息。">
-          {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")} · 到通知页核对来源</span></Link></li>)}
+          {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")}</span></Link></li>)}
         </WorkSection>
-        {student && <section className="panel"><h2 className="section-title">材料与岗位</h2><p className="mt-2 text-sm leading-6 text-slate-600">上传新版会保留旧版本。选择参与分析的版本后，再生成报告。</p><div className="mt-4 flex flex-wrap gap-3"><Link href="/portfolio" className="btn-secondary">管理我的材料</Link><Link href="/recommendations" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">职业与岗位推荐 →</Link></div></section>}
+        {student && <section className="panel"><h2 className="section-title">材料与岗位</h2><div className="mt-4 flex flex-wrap gap-3"><Link href="/portfolio" className="btn">管理我的材料</Link><Link href="/recommendations" className="btn-secondary">职业与岗位推荐</Link></div></section>}
       </div>
-      <p className="text-xs leading-5 text-slate-500">这里显示最近保存的记录；全部历史与状态请进入各自列表查看。打开入口不会自动分析、投递或发送回复。</p>
     </>}
   </div>;
 }
 
 function WorkSection({ title, href, empty, children }: { title: string; href: string; empty: string; children: React.ReactNode[] }) {
-  return <section className="panel min-w-0"><div className="flex items-center justify-between gap-3"><h2 className="section-title">{title}</h2><Link className="inline-flex min-h-11 shrink-0 items-center text-sm text-indigo-700 underline" href={href}>查看全部</Link></div>{children.length ? <ul className="divide-y divide-slate-100">{children}</ul> : <p className="mt-3 text-sm leading-6 text-slate-600">{empty}</p>}</section>;
+  return <section className="panel min-w-0"><div className="flex items-center justify-between gap-3"><h2 className="section-title">{title}</h2><Link className="btn-secondary shrink-0" href={href} aria-label={`查看全部${title}`}>查看全部</Link></div>{children.length ? <ul className="divide-y divide-slate-100">{children}</ul> : <p className="mt-3 text-sm leading-6 text-slate-600">{empty}</p>}</section>;
 }

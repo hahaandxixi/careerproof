@@ -20,7 +20,7 @@ export function ManagedJobCard({ job, changing, onStatusChange }: {
     <div className="card-actions mt-auto">
       <Link className={job.status === "draft" ? "btn" : "btn-secondary"} href={`/jobs/${job.id}/edit`}>编辑岗位</Link>
       <Link className={job.status === "draft" ? "btn-secondary" : "btn"} href={`/jobs/${job.id}/applications`}>查看投递</Link>
-      <Link className="action-link" href={`/jobs/${job.id}`}>查看岗位</Link>
+      <Link className="btn-secondary" href={`/jobs/${job.id}`}>查看岗位</Link>
       <button type="button" className={job.status === "published" ? "btn-danger-quiet ml-auto" : "btn-secondary ml-auto"} disabled={!!changing} onClick={() => {
         if (job.status === "published" && !window.confirm("关闭此岗位？关闭后将停止接收新投递，已有投递和固定报告仍会保留。")) return;
         onStatusChange(job);

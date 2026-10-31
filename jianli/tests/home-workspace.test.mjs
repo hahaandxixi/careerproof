@@ -80,3 +80,10 @@ test("old growth tasks cannot replace report continuation or form a second stude
  assert.ok(!html.includes("最近补证任务")&&!html.includes('href="/growth'));
  assert.ok(!source.includes("api.listGrowthTasks"),"home must not depend on the legacy task list API");
 });
+
+test("workspace destinations use bounded controls and omit repeated navigation instructions",()=>{
+ const html=render("student",{work:{...EMPTY,notifications:[{id:"n",title:"企业已请求查看报告；不代表录用",createdAt:"2026-10-29T12:00:00Z"}]}});
+ for(const href of ["/reports","/notifications","/recommendations"])assert.match(html,new RegExp(`<a[^>]*class="btn-secondary[^\"]*"[^>]*href="${href}"|<a[^>]*href="${href}"[^>]*class="btn-secondary`));
+ assert.match(html,/企业已请求查看报告；不代表录用/);
+ assert.doesNotMatch(html,/到通知页核对来源|上传新版会保留旧版本|打开入口不会自动/);
+});
