@@ -30,6 +30,14 @@ import { activeVerificationReplyReferences, appendVerificationReplyQuestion, typ
 import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-citations";
 import { VERDICT_LABELS as VERDICT, APPLICATION_STATUS_LABELS as STATUS } from "@/lib/verdict-display.js";
 
+export function ApplicationEmptyState({ filtered, onClear }: { filtered: boolean; onClear(): void }) {
+  return <section className="panel space-y-3">
+    <h2 className="section-title">{filtered ? "没有符合筛选的投递" : "暂无投递"}</h2>
+    {!filtered && <p className="text-sm text-slate-600">学生确认授权后，投递会显示在这里。</p>}
+    <div className="flex flex-wrap gap-2">{filtered && <button type="button" className="btn-secondary" onClick={onClear}>清除筛选</button>}<Link className={filtered ? "action-link" : "btn-secondary"} href="/demo/heatmap">查看交互示例</Link></div>
+  </section>;
+}
+
 export default function ApplicationBoard({jobId}:{jobId:string}){
   const {user}=useAuth();
   return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId}/></AccessGate>;
@@ -179,7 +187,7 @@ function Workspace({jobId}:{jobId:string}){
       <details><summary className="disclosure">要求与证据筛选</summary><div className="grid gap-3 py-2 lg:grid-cols-[minmax(12rem,1fr)_2fr]"><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);applyFilters({q:query.trim(),status,requirementId:id,verdict});}}/><div><p className="mb-2 text-sm">证据状态</p><div role="group" aria-label="证据状态" className="flex flex-wrap gap-2">{[["","全部"],["supported","有证据或部分支持"],["claimed_only","仅简历自述"],["gap","缺少材料"],["unsupported","暂不可评"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={verdict===value} disabled={busy} onClick={()=>{setVerdict(value);applyFilters({q:query.trim(),status,requirementId:focus,verdict:value});}}>{label}</button>)}</div></div></div></details>
     </form>
     {activeView==="list"&&mixedBasis&&<p role="status" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{items.some(c=>c.fixedRequirementBasisComplete!==true)?"比较依据不足：部分固定报告缺少完整要求信息。当前按投递时间排列，请逐份核对。":"岗位要求或规则尺度不同。当前按投递时间排列，请分别核对固定报告。"}</p>}
-    {activeView==="list"&&!items.length&&!busy&&!error&&<p className="panel">当前范围没有已授权投递，可以清除筛选或由学生从该岗位的完整报告中确认投递。平台不会从学生库导出未经授权的简历。<Link className="mt-3 block text-indigo-700 underline" href="/demo/heatmap">先查看合成热力图交互示例 →</Link></p>}
+    {activeView==="list"&&!items.length&&!busy&&!error&&<ApplicationEmptyState filtered={Object.values(filters.current).some(Boolean)} onClear={clearFilters}/>}
     {activeView==="list"&&!!items.length&&filterView.empty&&<CandidateFilterNotice empty selectedName={selectedOutside?selected?.candidateName:undefined} onClear={clearFilters}/>}
     {activeView!=="report"&&!!comparison.length&&<section className="panel space-y-3" aria-label="跨页对照名单"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-semibold">对照名单 · {comparison.length}/4 位</h2><button type="button" disabled={busy} className="text-sm text-indigo-700 underline" onClick={()=>chooseComparison([])}>清空对照</button></div><ul className="flex flex-wrap gap-2">{comparison.map(c=><li key={c.id} className="flex max-w-full items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm"><span className="break-words">{c.candidateName}</span><button type="button" disabled={busy} className="shrink-0 text-indigo-700 underline" aria-label={`移出对照：${c.candidateName}`} onClick={()=>chooseComparison(compareIds.filter(id=>id!==c.id))}>移除</button></li>)}</ul>{comparison.length===4&&<p className="text-sm text-slate-600">已达4位上限，请先移除一位再加入。</p>}{comparison.length>2&&<div className="flex flex-wrap gap-3">{[0,1].map(index=><label key={index} className="min-w-0 text-sm">深入比较候选人{index===0?"A":"B"}<select className="field mt-1" value={pairIds[index]??""} onChange={e=>setPairIds(previous=>{const next=[...previous];next[index]=e.target.value;return next;})}>{comparison.map(c=><option key={c.id} value={c.id} disabled={pairIds[1-index]===c.id}>{c.candidateName}</option>)}</select></label>)}</div>}</section>}
     {activeView==="compare"&&pair.length===2&&pair[0].id!==pair[1].id&&<CandidatePairComparison key={pairIds.join(":")} candidates={pair as [ApplicationView,ApplicationView]} busy={busy} initialIds={pairBookmark.current.key===pairIds.join(":")?pairBookmark.current.ids:undefined} onRequirementChange={(id,side)=>{const key=pairIds.join(":");if(pairBookmark.current.key!==key)pairBookmark.current={key,ids:[]};pairBookmark.current.ids[side]=id;}} onOpen={()=>{resetReply();void session.openComparison(pairIds);}}/>}

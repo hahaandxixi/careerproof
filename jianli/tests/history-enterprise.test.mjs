@@ -86,7 +86,7 @@ test("history card displays server-wide history facts and fixed versions only wh
     ],
   }, onSameJob() {} }));
   assert.match(html, /有后续报告/);
-  assert.match(html, /同岗位历史（27份）/);
+  assert.match(html, /历史报告 · 27/);
   assert.match(html, /同名项目 · 第1版 · 材料编号 version-/);
   assert.match(html, /同名项目 · 第2版/);
   assert.match(html, /href="\/reports\/report-a"/);

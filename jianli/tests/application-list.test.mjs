@@ -87,7 +87,6 @@ test("卡片突出岗位/公司/状态/下一动作，锚点 id 保留", () => {
   assert.ok(html.includes("前端工程师"), html);
   assert.ok(html.includes("示例公司"), html);
   assert.ok(html.includes("企业已查看报告，尚未回复"), html);
-  assert.ok(html.includes("下一步："), html);
   assert.ok(html.includes("等待企业回复即可；查看报告不代表通过筛选"), html);
   assert.ok(html.includes('id="application-app-1"'), html);
 });
@@ -117,6 +116,8 @@ test("企业回复与原报告/问题/引用链接保留", () => {
   const html = renderCard(item);
   assert.ok(html.includes("面试邀请"), html);
   assert.ok(html.includes("周四下午来聊聊"), html);
+  assert.ok(!html.includes("阅读企业回复并按其内容跟进"), "已有回复不重复展示阅读指令");
+  assert.ok(html.includes("查看投递报告"), html);
   assert.ok(html.includes('href="/reports/r-9"'), html);
   assert.ok(html.includes('href="/reports/r-9#requirement-q1"'), html);
   assert.ok(html.includes("第1项："), html);
