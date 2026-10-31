@@ -41,15 +41,28 @@
 
 自动审批拒绝了包含重启逻辑的命令，理由仅为“blocked by policy”；该命令未执行。没有换接口绕过。已准备语法检查通过的本机文件 `backend/.tmp/three-batches-20261031/Start-Ready.ps1`，它不会停止服务：只在原进程/端口已退出、配置/数据库/存储匹配、任务队列无未完成项时启动既有前后端。无迁移、播种或AI请求。
 
-手动切换（需用户执行，完成后再核对PID、资源与数据指纹）：
+### 手动切换入口（已替换先停服务的旧步骤）
+
+请勿继续使用此前先调用停止函数的五行命令。新增本机只读预检文件 `backend/.tmp/three-batches-20261031/Test-BeforeStop.ps1`：在停服务前检查原进程及端口归属、接受构建和源码、配置指纹、数据库身份/可连接性、存储、运行依赖及无PENDING/RUNNING任务，失败直接抛出错误，不改变服务。返回的原运行记录用于后续身份校验，不重新猜测要停止的进程。
+
+以下命令必须作为**一个完整脚本块**执行。`$ErrorActionPreference='Stop'` 与预检结果/记录指纹检查保证失败时不进入停止步骤；不要拆成先停止再检查。切换期间请暂停其他分析操作及其他执行端对这套服务的使用；预检证明的是检查时状态。启动前原有检查继续保留。
 
 ```powershell
-$cpRoot = 'D:\jbcode\web ai\careerproof-v1'
-. (Join-Path $cpRoot 'scripts\local-runtime.ps1')
-$cpRecord = Join-Path $cpRoot 'backend\.tmp\v1-run\processes.json'
-Stop-ValidatedLocalProcesses (Read-LocalRunManifest $cpRecord) $cpRecord
-& (Join-Path $cpRoot 'backend\.tmp\three-batches-20261031\Start-Ready.ps1')
+& {
+    $ErrorActionPreference = 'Stop'
+    $cpRoot = 'D:\jbcode\web ai\careerproof-v1'
+    . (Join-Path $cpRoot 'scripts\local-runtime.ps1')
+    $cpReady = & (Join-Path $cpRoot 'backend\.tmp\three-batches-20261031\Test-BeforeStop.ps1')
+    if (!$cpReady.Passed) { throw '预检未通过，不停止服务。' }
+    if ((Get-FileHash -LiteralPath $cpReady.RecordPath).Hash -ne $cpReady.ManifestHash) {
+        throw '运行记录已变化，不停止服务。'
+    }
+    Stop-ValidatedLocalProcesses $cpReady.Manifest $cpReady.RecordPath
+    & (Join-Path $cpRoot 'backend\.tmp\three-batches-20261031\Start-Ready.ps1')
+}
 ```
+
+本轮仅运行只读预检及故意传入错误构建ID的失败路径：正常预检通过，错误构建被拒绝，3140/8140监听PID前后不变；两个文件语法检查通过。没有执行上面的停止/启动脚本块，没有重启服务。只读检查日志与本机文件都在 `backend/.tmp/three-batches-20261031/`，不进入公共启动器或提交凭据。
 
 此前Computer Use无法可靠识别当前浏览器URL而安全停止，尚无有效恢复依据；本轮读了技能后未重复尝试或改走另一接口。无新截图，不以HTTP壳/SSR/模拟事件代替真实页面验收。
 
