@@ -169,5 +169,8 @@ main:has(.report-recording-layout), main:has(.enterprise-recording-layout) { max
 .enterprise-candidate-filters .field { margin-top: 4px; }
 @media (min-width: 1280px) {
   .report-reading-grid { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
-  .pair-reading-grid { grid-template-columns: minmax(0, 1fr) 280px; }
+  .pair-reading-grid { grid-template-columns: minmax(0, 1fr) 360px; }
+}
+@media (min-width: 1440px) {
+  .pair-reading-grid { grid-template-columns: minmax(0, 1fr) 420px; }
 }
