@@ -1176,3 +1176,39 @@ async def test_local_report_budget_reason_survives_report_and_task_read(
         )).json()["data"]
         assert refreshed["id"] == report["id"]
         assert refreshed["aiFallbackUsed"] is True
+
+
+async def test_no_model_context_preserves_uploaded_evidence_and_accurate_step(
+    matching_db, monkeypatch,
+):
+    app, _factory = matching_db
+
+    async def empty_context_workflow(result, progress=None, **kwargs):
+        contexts = [context.model_copy(update={"evidence": []})
+                    for context in build_evidence_contexts(result)]
+        return EvidenceWorkflowOutcome(
+            contexts=contexts, analysis=None, provider="rules", model=None,
+            fallback_used=False, fallback_reason=None, skipped_reason="no_evidence",
+        )
+
+    monkeypatch.setattr(analysis_service, "run_evidence_workflow", empty_context_workflow)
+    transport = ASGITransport(app=app)
+    async with (
+        AsyncClient(transport=transport, base_url="http://test") as owner,
+        AsyncClient(transport=transport, base_url="http://test") as student,
+    ):
+        await register(owner, "context-owner@example.com")
+        job = await create_job(owner)
+        await register(student, "context-student@example.com", "student")
+        resume, _project, version = await upload_materials(student)
+        report = await match_report(student, job, resume, version, externalAiConsent=True)
+        assert report["analysisMode"] == "rules"
+        assert any(item["evidenceList"] for item in report["items"])
+        task = (await student.get(
+            f"/api/v1/analysis-tasks/{report['taskId']}"
+        )).json()["data"]
+        step = next(entry for entry in task["steps"] if entry["name"] == "模型证据分析")
+        assert "没有可用的模型证据上下文" in step["detail"]
+        assert "不代表材料中完全没有相关实现" in step["detail"]
+        assert "当前材料没有可引用证据" not in step["detail"]
+        assert step["payload"]["skippedReason"] == "no_evidence"

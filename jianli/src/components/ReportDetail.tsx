@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
-import type { MatchReport } from "@/lib/api/domain";
 import { sourceContextVerified } from "@/lib/analysis-status";
 import { reportAiRatedCount } from "@/lib/report-display";
 import { agentProcessSummary } from "@/lib/agent-evidence";
-import { ErrorNotice } from "./AccessGate";
+import AccessGate, { ErrorNotice } from "./AccessGate";
+import { createReportReviewSession, initialReportReviewState } from "@/lib/report-review-session";
 import { useAuth } from "./AuthProvider";
 import SourceCoverage from "./SourceCoverage";
 import EvidenceLink from "./EvidenceLink";
@@ -27,31 +27,25 @@ const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关",
 const REVIEW_LABELS: Record<string, string> = { pending: "待本人核对", accepted: "本人已采纳", rejected: "本人已驳回", corrected: "本人标记已修正" };
 export default function ReportDetail({ id }: { id: string }) {
   const { user } = useAuth();
-  const [report, setReport] = useState<MatchReport | null>(null);
-  const [error, setError] = useState("");
-  const [revision, setRevision] = useState(0);
-  const [reviewing, setReviewing] = useState<string | null>(null);
+  return <AccessGate><ReportWorkspace key={`${user?.id}:${user?.role}:${id}`} id={id}/></AccessGate>;
+}
+function ReportWorkspace({ id }: { id: string }) {
+  const { user } = useAuth();
+  const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
-  useEffect(() => {
-    let current = true;
-    setError(""); setReport(null);
-    api.getReport(id).then(value => { if (current) setReport(value); }).catch(reason => { if (current) setError(errorMessage(reason)); });
-    return () => { current = false; };
-  }, [id, revision]);
-  if (error) return <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />;
+  const session = useMemo(() => createReportReviewSession(id, {
+    get: api.getReport, review: api.reviewEvidence, errorMessage,
+  }, setState), [id]);
+  useEffect(() => { session.activate(); void session.load(); return () => session.dispose(); }, [session]);
+  const { report, error, reviewing, issues, needsSync } = state;
+  if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
   const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
   const aiRatedCount = reportAiRatedCount(report);
   const assessedCount = report.items.filter(item => item.verdict !== "unsupported").length;
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
-  async function review(requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") {
-    setReviewing(requirementId); setError("");
-    try {
-      await api.reviewEvidence(id, requirementId, status, reviewNotes[requirementId]);
-      setReport(await api.getReport(id));
-    } catch (reason) { setError(errorMessage(reason)); }
-    finally { setReviewing(null); }
-  }
+  const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
+    session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
   return <div className="report-recording-layout layout-closeout min-w-0 space-y-3">
     <EvidenceAnchorRestore revision={report.id} />
     <Link className="btn-secondary btn-compact" href="/reports">← 匹配报告</Link>
@@ -72,7 +66,7 @@ export default function ReportDetail({ id }: { id: string }) {
       {item.aiStatus === "validated" && !report.aiFallbackUsed && !!item.ratingCriteria?.length && <ul className="mt-3 space-y-2 text-sm">{item.ratingCriteria.map(criterion => <li key={criterion.criterion} className="rounded-lg border border-slate-200 p-3"><strong>{CRITERION_LABELS[criterion.criterion] ?? criterion.criterion}：{criterion.supported ? "AI 判断支持" : "尚未支持"}</strong><p className="mt-1 text-slate-600">{criterion.reason}</p><div className="mt-2 flex gap-3">{criterion.citation_ids.map(citation => <EvidenceLink className="text-xs text-indigo-600 underline" key={citation} citationId={citation}>{citation}</EvidenceLink>)}</div></li>)}</ul>}
       <SourceCoverage item={item} materials={report.materials} />
       </details>
-      {item.evidenceId && user?.role === "student" && <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4"><summary className="cursor-pointer py-1 text-sm font-medium">本人核对记录（可选） · {REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</summary><p className="mt-2 text-xs leading-6 text-slate-600">用于记录你对来源证据的意见，不是教师或企业认证；不核对也可以继续补证。驳回或标记修正会影响此报告的当前证据展示，原投递快照不变。</p><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm font-medium">核对这条证据</p><span className="text-xs text-slate-500">{REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</span></div><textarea aria-label={`${item.requirementTitle}的本人核对说明`} className="mt-3 min-h-20 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm" maxLength={1000} placeholder="可选：记录采纳、驳回或修正原因" value={reviewNotes[item.requirementId] ?? item.reviewerNote ?? ""} onChange={event => setReviewNotes(notes => ({ ...notes, [item.requirementId]: event.target.value }))} /><div className="mt-3 flex flex-wrap gap-2"><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "accepted")}>采纳证据</button><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "rejected")}>驳回证据</button><button className="btn-secondary" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "corrected")}>标记已修正</button>{item.confirmationStatus !== "pending" && <button className="px-3 py-2 text-xs text-slate-500" disabled={reviewing === item.requirementId} onClick={() => review(item.requirementId, "pending")}>恢复待核对</button>}</div>{item.confirmedAt && <p className="mt-2 text-xs text-slate-500">核对时间：{new Date(item.confirmedAt).toLocaleString("zh-CN")}</p>}</details>}
+      {item.evidenceId && user?.role === "student" && <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4"><summary className="cursor-pointer py-1 text-sm font-medium">本人核对记录（可选） · {REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</summary><p className="mt-2 text-xs leading-6 text-slate-600">用于记录你对来源证据的意见，不是教师或企业认证；不核对也可以继续补证。驳回或标记修正会影响此报告的当前证据展示，原投递快照不变。</p><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm font-medium">核对这条证据</p><span className="text-xs text-slate-500">{REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</span></div><textarea aria-label={`${item.requirementTitle}的本人核对说明`} className="mt-3 min-h-20 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm" maxLength={1000} placeholder="可选：记录采纳、驳回或修正原因" value={reviewNotes[item.requirementId] ?? item.reviewerNote ?? ""} onChange={event => setReviewNotes(notes => ({ ...notes, [item.requirementId]: event.target.value }))} /><div className="mt-3 flex flex-wrap gap-2"><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "accepted")}>采纳证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "rejected")}>驳回证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "corrected")}>标记已修正</button>{item.confirmationStatus !== "pending" && <button className="px-3 py-2 text-xs text-slate-500" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "pending")}>恢复待核对</button>}</div>{issues[item.requirementId] && <div role="alert" className="mt-3 space-y-2 text-sm text-rose-800"><p>{issues[item.requirementId].message}</p>{issues[item.requirementId].readRequired && <button type="button" className="btn-secondary" disabled={reviewing !== null} onClick={() => void session.refresh(item.requirementId)}>重新读取核对记录</button>}</div>}{item.confirmedAt && <p className="mt-2 text-xs text-slate-500">核对时间：{new Date(item.confirmedAt).toLocaleString("zh-CN")}</p>}</details>}
       <p className="mt-4 text-xs text-slate-500">评级规则版本：{item.evidenceLevelVersion}</p></div></details>
     </article>)}</ReportEvidenceWorkspace>
     <ReportAgentEvidence report={report} canGrow={user?.role === "student"} />
