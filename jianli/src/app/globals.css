@@ -98,6 +98,10 @@ body {
   50% { opacity: 0.45; transform: scale(0.85); }
 }
 
+@media (min-width: 640px) {
+  .site-header .site-brand { font-size: 22px; font-weight: 700; line-height: 1.25; }
+}
+
 /* Explicit native progress styling keeps Chromium from using its green default. */
 .task-progress { appearance: none; overflow: hidden; border: 0; border-radius: 9999px; background: #e2e8f0; }
 .task-progress::-webkit-progress-bar { background: #e2e8f0; }
