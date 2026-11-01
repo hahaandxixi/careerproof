@@ -1,5 +1,7 @@
 # 企业读取失败、重试焦点与主站切换（2026-11-01）
 
+**后续返回链路已修复：** 功能源码 `74223d9`、3140构建 `FSXaKigUvzs4b--RMdRwm`，见文末“离页返回补验”。下文 `d7d6303` / `L17gYOSAOlA952SMhk8cl`及名单重置描述是上一阶段实测快照，不是当前待恢复设计；原生200%和真实标签隐藏仍未验。
+
 ## 接受源码与范围
 
 - 分支 `codex/read-recovery-main-20261101`；功能提交 `fd7c247`、`d7d6303`，基于此前回复回执修复 `cb255a1`。
@@ -63,3 +65,38 @@ Windows；Node `v22.23.1`；现有Python虚拟环境，不重复安装依赖。
 3140本轮为只读健康/资源绑定核验，完整故障注入与点击使用同源码的隔离3144，不将合成图称为主站真实业务截图。原`next-env.d.ts`、`tsconfig.json`未提交改动按开工字节保留。
 
 需要回退前端时执行本地 `output/ui-review/20261101-read-recovery/Activate-Main.ps1 -Action Rollback`：同样先检查身份/任务队列，只恢复旧构建 `ayj9grXn757U2gqBdLjto`，不回退Git、数据库或文件。旧dist、原运行清单 `main-before.json` 和所有旧截图保留。
+
+## 离页返回补验与限定修复
+
+- 分支 `codex/board-history-return-20261101`，功能提交 `74223d9cef3a2c4547add8c179d4b45ac3911381`。原重置来自Workspace销毁后默认page1/空名单，没有发现已批准“返回时重置”的产品依据。
+- 生产修改只有 `ApplicationBoard.tsx` 与新增 `application-board-history.ts`；另更新组件测试并新增历史元数据测试。不改后端、AuthProvider、图表或指数方案。
+- 利用当前浏览器历史条目记录筛选、页码及最多4个对照ID，绑定当前账号ID和岗位ID，保留Next路由内部字段；不使用localStorage/sessionStorage，不记录报告正文、源码、候选人姓名或回复草稿。不同账号/岗位的历史块不采用。
+- 挂载/历史返回先恢复查询参数，再复用原 `session.resume`，通过授权列表及页外只读详情确认候选人。核对前不展示旧候选人；失效项移出并更新历史条目。服务端已会校正越界页，本轮直接保存返回的实际页码，不另建分页算法。
+- 跨路由报告正文不缓存；返回只恢复名单和查询。继续查看具体报告仍使用原来的明确打开操作，不自动产生view或reply POST。已挂载页面的离窗恢复与回复回执逻辑保持原样。
+
+### 实际检查与截图
+
+`output/ui-review/20261101-board-history/` 保留日志、10张真实1920×1080视口截图（实际图片像素另列）、`SCREENSHOT_INDEX.md`、`screenshots.json`、`截图总览.html`。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| `node --experimental-strip-types --test tests/application-board-history.test.mjs tests/application-board-visibility.test.mjs tests/application-board-session.test.mjs tests/application-reply-result.test.mjs tests/failure-reply-draft.test.mjs tests/read-retry-focus.test.mjs` | 退出0，93通过、0失败、0跳过；`targeted.log` |
+| `node node_modules/eslint/bin/eslint.js src/components/ApplicationBoard.tsx src/lib/application-board-history.ts` | 退出0；`lint.log` |
+| 独立QA与真实8140两次生产构建（各自dist，包含类型检查） | 均退出0；`qa-build.log` / `main-build.log`；保留既有图片lint警告 |
+| 第二页选三人、关键词Python → 岗位管理 → 后退 → 前进离页 → 再后退 | 实际恢复第二页、原关键词及三人名单；同视口离页前/返回后截图保留 |
+| 组合筛选后离页返回 | Python、已查看未回复、FastAPI、有证据或部分支持及两人名单均恢复 |
+| 换岗位、换账号、授权失效 | 第二岗位为空名单；另一合成企业实际后退原历史条目时无旧筛选/名单，API拒绝；撤回项核对后从3人减到2人 |
+| 授权读取延迟与页码回退 | 等待期间无候选人正文；服务器总数缩至一页后正确回到第一页 |
+| 图表与读取副作用 | 明确打开两份合成固定报告后，FastAPI双列来源及100/61.5雷达联动保留；恢复阶段view/reply均为0 |
+
+验收为纯内存3145→8164，构建 `yiW5DsTCQfIKkFfcpqwry`，不连接真实数据库、不转发真实API、不调用模型。`read-return-before.json`/`read-return-after.json`记录28→34个请求、view=0、reply=0；之后仅明确点击“打开两份授权报告”产生2个合成view，回复仍为0。原生200%与真实标签隐藏沿用准确未验状态，不重复盲试。
+
+首轮93项中3项失败是组件测试文本助手漏渲染数字，修正为与React一致后相同断言全部通过，保留 `targeted-first.log`；未删除或放宽断言。浏览器中一次等待超过工具默认3秒，实际4个串行800ms授权读取随后完成，已检查最终清理状态，没有重发写入。工程资源核验首次因本地路径未解码`%5Bid%5D`失败，解码后完成字节核对，不将诊断脚本错误当作产品失败。
+
+### 最新主站绑定与回退
+
+- 3140前端PID361068，构建 `FSXaKigUvzs4b--RMdRwm` / `.next-board-history-main-20261101`，源码 `74223d9`；独立编译代理仍为真实8140。原8140进程58272及库/存储不变。
+- 停前进程身份、配置摘要、后端生产源码摘要、代理及空任务队列检查通过，仅切换3140前端；其他预览未停止。首页与候选人页面HTML、构建清单和真实API健康均200，15个实际JS/CSS（含候选人页面块）与接受构建逐字节一致。
+- 12张业务表数量和内容指纹均不变，记录见 `main-verification.json`；前后指纹为 `backend/.tmp/simplicity-audit-20261030/data-board-history-{before,after}-main.json`。配置原有两文件字节保持，未做真实业务写入、模型请求或后端全量测试。
+- 本次回退入口：本地 `output/ui-review/20261101-board-history/Activate-Main.ps1 -Action Rollback`，恢复上一接受前端 `L17gYOSAOlA952SMhk8cl`，仍先检查身份和任务队列，不回退Git或数据。上一阶段的回退脚本仅作历史记录，不用于撤销本次更新。
+- 未推送、未合并。主站本轮只读绑定检查与隔离页面真实交互分别记录，不把合成截图冒充真实企业业务验收。
