@@ -44,6 +44,7 @@ export function supportMeasure(axis, scale) {
   if (raw == null) issue = "原始分值未记录";
   else if (typeof raw !== "number" || !Number.isFinite(raw)) issue = "原始分值不是有限数值";
   else if (raw < 0) issue = "原始分值小于0，无法按本规则换算或绘点";
+  else if (scale.mode === "index" && cap !== scale.denominator) issue = "本项规则与整图换算依据不一致，无法换算或绘点";
   else if (cap != null && raw > cap) issue = `原始分值超过已确认规则上限${cap}，无法按本规则换算或绘点`;
   else if (raw > scale.denominator) issue = "原始分值超出旧图坐标范围，无法绘点";
   const numeric = !issue && typeof raw === "number";
@@ -58,9 +59,4 @@ export function supportScaleNote(scale) {
   return scale.mode === "index"
     ? `指数 = 原始分值 ÷ ${scale.denominator} × 100。100对应全局规则上限，不是能力或录用分数；部分复杂要求的规则上限更低。`
     : scale.reason;
-}
-
-/** @param {{finalScore?: number|null, formulaVersion?: string|null, verdict: string}[]} items */
-export function reportSupportScale(items) {
-  return resolveSupportScale(items);
 }

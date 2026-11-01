@@ -22,6 +22,8 @@ const SkillRadar = dynamic(() => import("./SkillRadar"), {
 });
 import { applicationFilterView, mixedComparisonBasis } from "@/lib/application-comparison";
 import { RULE_SCORE_CAP_NOTE } from "@/lib/evidence-display";
+import { resolveSupportScale, supportMeasure } from "@/lib/support-index.js";
+import SupportMeasureDetails from "./SupportMeasureDetails";
 import { reportModeLabel, reportSummaryText } from "@/lib/report-display";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { heatmapCellClass as cellClass } from "@/lib/heatmap-cell.js";
@@ -271,9 +273,14 @@ function SavedRequirementInterpretation({ item, report }: { item: ReportItem; re
 }
 
 export function SavedRequirementDetail({ item, report }: { item: ReportItem; report: MatchReport }) {
+  const scale=resolveSupportScale(report.items);
+  const measure=supportMeasure({score:item.finalScore,formulaVersion:item.formulaVersion,verdict:item.verdict},scale);
   return <li className="rounded-lg border border-slate-200 p-3 text-sm">
     <strong>{item.requirementTitle || item.skill}</strong>
-    <p className="mt-2 text-base">{VERDICT[item.verdict] ?? item.verdict}</p><details className="mt-2 text-sm"><summary className="cursor-pointer text-indigo-700">原报告计量与等级</summary><p>材料支持度 {item.finalScore??"不可评"} · {item.evidenceLevelLabel??"未评级"}</p><p>{item.evidenceLevelReason}</p></details>
+    <p className="mt-2 text-base">{VERDICT[item.verdict] ?? item.verdict}</p>
+    {measure.ratio!=null&&<p className="mt-2">{scale.label} {measure.text}</p>}
+    {measure.issue&&item.verdict!=="unsupported"&&<p role="status" className="mt-2 text-amber-900">{measure.issue}；原始值 {String(measure.raw??"未记录")}。</p>}
+    <details className="mt-2 text-sm"><summary className="cursor-pointer text-indigo-700">原报告计量与等级</summary><SupportMeasureDetails raw={item.finalScore} formulaVersion={item.formulaVersion} scale={scale}/><p>{item.evidenceLevelLabel??"未评级"} · {item.evidenceLevelReason}</p></details>
     <div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/></div>
     <details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((source, index) => <div key={index} className="mt-2 text-xs"><p className="break-all">{source.citationId ?? "引用"} · <SourceIdentity source={source} materials={report.materials ?? []} /> · 第{source.lineStart}—{source.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}</details>
   </li>;

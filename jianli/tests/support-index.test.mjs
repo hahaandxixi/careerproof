@@ -21,6 +21,7 @@ test("whole chart resolves known mixed versions with shared cap, never from sele
    assert.equal(supportMeasure(axes[0],scale).ratio,10/100);assert.match(scale.label,/未换算/);
  }
  assert.equal(resolveSupportScale([]).mode,"raw");
+ assert.match(supportMeasure(axis(40,"unknown"),resolveSupportScale(axes)).issue,/不一致/);
 });
 test("public sample metadata is explicit; saved synthetic-tagged reports are not inferred",()=>{
  const axes=[axis(65,"synthetic-only")];
