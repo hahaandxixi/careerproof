@@ -102,16 +102,17 @@ for (const [verdict, label] of Object.entries({
 
 const dim = (id, verdict, score, extra = {}) => ({ requirementId: id, title: id, skill: id, verdict, score, weight: 3, evidenceLevel: null, ...extra });
 
-test("SkillRadar 证据等级显示名称并说明规则上限，不再呈现 /5 与 / 100", () => {
-  const dimensions = [dim("Python", "supported", 65, { evidenceLevel: 3 }), dim("SQL", "partial", 40, { evidenceLevel: 2 }), dim("pytest", "gap", 0)];
+test("SkillRadar 指数与原始口径可追溯，证据等级不使用 /5 或能力完成比例", () => {
+  const dimensions = [dim("Python", "supported", 65, { evidenceLevel: 3 }), dim("SQL", "partial", 40, { evidenceLevel: 2 }), dim("pytest", "gap", 0)].map(d=>({...d,formulaVersion:"evidence-v3"}));
   const html = renderToStaticMarkup(React.createElement(SkillRadar, { dimensions, items: [], initialRequirementId: "Python" }));
   assert.ok(html.includes("实践证据 任务实现"));
-  assert.ok(html.includes("当前规则上限 65"));
-  assert.ok(html.includes("材料支持度"));
+  assert.ok(html.includes("原始分值 65")&&html.includes("规则 evidence-v3"));
+  assert.ok(html.includes("材料支持度指数 100")&&html.includes("65 × 100"));
   assert.ok(!html.includes("/ 100"));
   assert.ok(!html.includes("/5"));
-  // 雷达 SVG 环刻度是坐标尺度，本次文案整改不得改动
+  // Index labels and geometry share the authorized conversion; no percentage claim.
   assert.ok(html.includes(">100<"));
+  assert.ok(!html.includes("100%"));
 });
 
 test("SkillRadar 历史未知等级 4 仍显示原数字，不消失也不造比例", () => {

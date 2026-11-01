@@ -3,10 +3,20 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
-import type { NotificationPage } from "@/lib/api/domain";
+import type { NotificationItem, NotificationPage } from "@/lib/api/domain";
 import { notificationHref, notificationsChanged } from "@/lib/notification-session";
 import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
+import ListPagination from "./ListPagination";
+
+export function NotificationCard({ item, busy, onOpen, onRead }: {
+  item: NotificationItem; busy: boolean; onOpen(id: string): void; onRead(id: string): void;
+}) {
+  return <li className="panel space-y-3">
+    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="font-semibold">{item.type === "replied" ? "企业已回复" : item.title}</h2><p className="text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
+    <div className="card-actions">{item.accessible ? <button type="button" className="btn-secondary" disabled={busy} onClick={() => onOpen(item.id)}>查看投递</button> : <p className="text-sm text-slate-600">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button type="button" className="btn-quiet" disabled={busy} onClick={() => onRead(item.id)}>标为已读</button>}</div>
+  </li>;
+}
 
 export default function NotificationCenter() {
   const { user } = useAuth();
@@ -57,14 +67,13 @@ function Workspace() {
     finally { locked.current = false; if (alive.current && ticket === generation.current) setBusy(false); }
   }
   return <div className="space-y-5"><h1 className="page-title">通知中心</h1>
-    <p className="text-sm leading-6 text-slate-600">在这里查看投递进度与企业回应。查看或下载不代表面试或录用。</p>
     <details className="text-xs text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">通知说明</summary><p className="mt-2 leading-5">投递、查看、下载、回复和撤回会产生站内通知。阅读通知不等于阅读报告，历史事件不补发。打开投递时仍会核对授权；撤回后旧通知不能打开报告。</p></details>
-    <div className="flex flex-wrap items-center gap-3"><button aria-pressed={!unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(false); }}>全部</button><button aria-pressed={unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(true); }}>未读</button><button className="inline-flex min-h-11 items-center text-indigo-700 underline" disabled={busy} onClick={() => setRevision(value => value + 1)}>刷新通知</button><button className="inline-flex min-h-11 items-center text-indigo-700 underline" disabled={busy || !data?.unreadCount} onClick={() => void act(api.readAllNotifications)}>全部标为已读</button></div>
+    <div className="flex flex-wrap items-center gap-3"><button aria-pressed={!unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(false); }}>全部</button><button aria-pressed={unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(true); }}>未读</button><button className="btn-secondary" disabled={busy} onClick={() => setRevision(value => value + 1)}>刷新</button><button className="btn-quiet" disabled={busy || !data?.unreadCount} onClick={() => void act(api.readAllNotifications)}>全部标为已读</button></div>
     {busy && <p role="status">正在读取或更新通知…</p>}{error && <p role="alert" className="panel text-rose-700">{error}</p>}
     <label className="flex items-center gap-2 text-sm">每页通知数<select className="field w-auto" disabled={busy} value={pageSize} onChange={event => { setPage(1); setPageSize(Number(event.target.value)); }}><option value={20}>20条</option><option value={50}>50条</option></select></label>
     {data && <><p className="text-sm">未读 {data.unreadCount} 条 · 当前筛选共 {data.total} 条</p>
       {!data.items.length && <div className="panel"><p className="reading-copy">{unread ? "暂无未读通知，可切换到全部查看历史记录。" : "暂无通知，新的投递事件会显示在这里。"}</p>{!unread && <Link className="btn-secondary mt-3" href={user?.role === "enterprise" ? "/jobs/mine" : "/reports"}>{user?.role === "enterprise" ? "查看我的岗位" : "查看我的报告"}</Link>}</div>}
-      <ul className="space-y-3">{data.items.map(item => <li key={item.id} className="panel space-y-3"><h2 className="font-semibold">{item.title}</h2><p className="text-xs text-slate-500">{new Date(item.createdAt).toLocaleString()} · {item.readAt ? "已读" : "未读"}</p><div className="flex flex-wrap gap-4">{item.accessible ? <button className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline" disabled={busy} onClick={() => void act(() => Promise.resolve(), item.id)}>核对授权并打开投递</button> : <p className="text-sm text-slate-500">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button className="inline-flex min-h-11 items-center text-sm underline" disabled={busy} onClick={() => void act(() => api.readNotification(item.id))}>标为已读</button>}</div></li>)}</ul>
-      <div className="flex gap-4"><button className="btn-secondary" disabled={busy || page === 1} onClick={() => setPage(value => value - 1)}>上一页</button><span>第 {page} 页</span><button className="btn-secondary" disabled={busy || page * data.pageSize >= data.total} onClick={() => setPage(value => value + 1)}>下一页</button></div></>}
+      <ul className="space-y-3">{data.items.map(item => <NotificationCard key={item.id} item={item} busy={busy} onOpen={id => void act(() => Promise.resolve(), id)} onRead={id => void act(() => api.readNotification(id))}/>)}</ul>
+      <ListPagination label="通知分页" value={data} busy={busy} onPage={setPage}/></>}
   </div>;
 }

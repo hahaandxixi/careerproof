@@ -63,6 +63,11 @@ test("readable AI links keep the saved narrative and never map cross-item histor
  const before=JSON.stringify(report);
  const rendered=renderToStaticMarkup(React.createElement(AiExplanation,{report,item}));
  assert.match(rendered,/app.py · 12–20行/);assert.match(rendered,/#citation-R1-E1/);assert.match(rendered,/R1-E1包含接口实现/);
+ assert.equal((rendered.match(/href="#citation-R1-E1"/g)??[]).length,1);
+ const extra={...item,aiCitationIds:["R1-E1","R1-E2"],evidenceList:[...item.evidenceList,{citationId:"R1-E2",filePath:"test.py",lineStart:3,lineEnd:5,snippet:"assert result",contextComplete:true}]};
+ const extraHtml=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:extra}));
+ assert.equal((extraHtml.match(/href="#citation-R1-E1"/g)??[]).length,1);
+ assert.match(extraHtml,/其他解释来源/);assert.match(extraHtml,/#citation-R1-E2/);
  const invalid={...item,aiExplanation:"R2-E1包含接口实现。"};
  const rejected=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:invalid}));
  assert.match(rejected,/未与本项来源对齐/);assert.match(rejected,/R2-E1包含接口实现/);assert.doesNotMatch(rejected,/href="#citation-R2-E1"/);
@@ -104,7 +109,7 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(!html.includes("正在查看") && !html.includes("当前筛选"));
-  assert.ok(html.includes("手机逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
+  assert.ok(html.includes("逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
@@ -342,11 +347,11 @@ test("an incomplete source stays marked on its summary even while collapsed", ()
  const item={...items[0],aiCitationIds:[],evidenceList:[{...source,citationId:"S1",contextComplete:true},source]};
  const report={analysisMode:"rules",aiFallbackUsed:false,items:[item],materials:[]};
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
- assert.match(html,/<summary[^>]*>(?:(?!<\/summary>)[\s\S])*历史完整性信息不足(?:(?!<\/summary>)[\s\S])*<\/summary>/);
+ assert.match(html,/<header[^>]*>(?:(?!<\/header>)[\s\S])*历史完整性信息不足(?:(?!<\/header>)[\s\S])*<\/header>/);
  assert.ok(html.includes("缺少完整函数") && html.includes("partial_source"));
 });
 
-test("adjacent sources keep all original anchors, snippets and version identity with one default-open source", () => {
+test("source directory keeps all original anchors, snippets and versions with only one visible reader", () => {
  const item={...items[0],skill:"FastAPI",aiStatus:"validated",aiCitationIds:["saved-alpha"],aiExplanation:"已保存解释",evidenceList:[
   {...items[0].evidenceList[0],lineStart:12,lineEnd:13,snippet:"return items",contextComplete:true},
   {citationId:null,filePath:"project-v2/service.py",projectVersionId:"project-v2",lineStart:20,lineEnd:21,snippet:"raise Error",contextComplete:false}
@@ -354,7 +359,39 @@ test("adjacent sources keep all original anchors, snippets and version identity 
  const report={analysisMode:"ai_evidence",aiFallbackUsed:false,items:[item],materials:[{kind:"project",id:"project-v1",title:"库存",versionNumber:1},{kind:"project",id:"project-v2",title:"库存",versionNumber:2}]};
  const before=JSON.stringify(report);const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
  for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版','完整来源与校验信息']) assert.ok(html.includes(text),text);
- assert.equal((html.match(/<details[^>]* open=""/g)||[]).length,1);
+ assert.equal((html.match(/<article/g)||[]).length,2);
+ assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,1);
+ assert.match(html,/选择来源/);
+ assert.equal(JSON.stringify(report),before);
+});
+
+test("twelve-source directory keeps every source and opens the exact bookmarked or clicked identity",async()=>{
+ const sourceHelpers=await load("lib/source-label.ts"),limits=await load("lib/source-limits.ts");
+ const item={...items[0],skill:"Python",aiCitationIds:[],evidenceList:Array.from({length:12},(_,i)=>({citationId:`R1-E${i+1}`,filePath:`v${i%2}/service.py`,projectVersionId:`v${i%2}`,lineStart:i*10+1,lineEnd:i*10+3,snippet:`source_${i}`,contextComplete:true}))};
+ const report={items:[item],materials:[0,1].map(i=>({kind:"project",id:`v${i}`,title:"报名服务",versionNumber:i+1})),analysisMode:"rules",aiFallbackUsed:false};
+ const before=JSON.stringify(report),html=renderToStaticMarkup(React.createElement(SourcePanel,{item,report}));
+ assert.equal((html.match(/<option/g)||[]).length,12);assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,11);
+ const values=[],effects=[],frames=[],listeners=new Map(),scrolled=[];let cursor=0;
+ const original={window:globalThis.window,document:globalThis.document,Element:globalThis.Element,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
+ class Link {constructor(href){this.href=href;}closest(){return{getAttribute:()=>this.href};}}
+ const hook={useState(initial){const i=cursor++;if(!(i in values))values[i]=initial;return[values[i],v=>values[i]=typeof v==="function"?v(values[i]):v];},useEffect(fn){effects.push(fn);}};
+ const stub=()=>null,modules={react:hook,"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/report-workspace":workspace,"@/lib/source-label":sourceHelpers,"@/lib/source-limits":limits,"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{SourceIdentityDetails:stub}};
+ const code=transform(readFileSync(path.join(SRC,"components/ReportSourcePanel.tsx"),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
+ const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
+ const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];
+ let tree;const redraw=()=>{cursor=0;effects.length=0;tree=mod.exports.default({report,item});return tree;};let cleanup;
+ try{
+   globalThis.Element=Link;globalThis.window={location:{hash:"#citation-R1-E12"},addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
+   globalThis.document={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),getElementById:id=>({scrollIntoView(){scrolled.push({id,index:values[0].index});}})};
+   globalThis.requestAnimationFrame=fn=>(frames.push(fn),frames.length);globalThis.cancelAnimationFrame=()=>{};
+   redraw();cleanup=effects[0]();redraw();effects[1]();frames.splice(0).forEach(fn=>fn());assert.equal(values[0].index,11);assert.equal(scrolled.at(-1).id,"citation-R1-E12");
+   nodes(tree).find(n=>n.type==="select").props.onChange({target:{value:"3"}});redraw();assert.equal(values[0].index,3);
+   listeners.get("click")({button:0,target:new Link("#citation-R1-E12")});redraw();effects[1]();frames.splice(0).forEach(fn=>fn());assert.equal(values[0].index,11);
+   listeners.get("click")({button:0,ctrlKey:true,target:new Link("#citation-R1-E1")});assert.equal(values[0].index,11);
+   window.location.hash="#citation-R1-E2";listeners.get("popstate")();redraw();assert.equal(values[0].index,1);
+   listeners.get("click")({button:0,target:new Link("#citation-other")});assert.equal(values[0].index,1);
+   assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
+ }finally{cleanup?.();Object.assign(globalThis,original);}
  assert.equal(JSON.stringify(report),before);
 });
 

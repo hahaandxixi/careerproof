@@ -6,8 +6,28 @@ import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type Page, type JobSummary } from "@/lib/api/domain";
 import { ErrorNotice } from "./AccessGate";
 import JobDiscovery from "./JobDiscovery";
+import ListPagination from "./ListPagination";
 
 const EMPTY_FILTER = { q: "", category: "", city: "", employmentType: "" };
+export function ManagedJobCard({ job, changing, onStatusChange }: {
+  job: JobSummary; changing: string; onStatusChange(job: JobSummary): void;
+}) {
+  return <article className="panel flex flex-col gap-3">
+    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><Link className="break-words text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{job.title}</Link><p className="mt-1 text-sm text-slate-600">{job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p></div><span className="shrink-0 rounded-md bg-slate-100 px-2 py-1 text-sm text-slate-700">{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status] ?? job.status}</span></div>
+    {job.isDemo && <p className="text-sm text-slate-600">合成示例岗位 · 虚构企业</p>}
+    <p className="line-clamp-3 text-sm leading-6 text-slate-600">{job.description || "暂无描述"}</p>
+    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600"><span>{CATEGORY_LABELS[job.category] ?? job.category} · {job.requirementCount} 项要求</span>{job.applicationCount != null && <span>投递 {job.applicationCount} · 待回复 {job.pendingApplicationCount ?? 0}</span>}</div>
+    <div className="card-actions mt-auto">
+      <Link className={job.status === "draft" ? "btn" : "btn-secondary"} href={`/jobs/${job.id}/edit`}>编辑岗位</Link>
+      <Link className={job.status === "draft" ? "btn-secondary" : "btn"} href={`/jobs/${job.id}/applications`}>查看投递</Link>
+      <Link className="btn-secondary" href={`/jobs/${job.id}`}>查看岗位</Link>
+      <button type="button" className={job.status === "published" ? "btn-danger-quiet ml-auto" : "btn-secondary ml-auto"} disabled={!!changing} onClick={() => {
+        if (job.status === "published" && !window.confirm("关闭此岗位？关闭后将停止接收新投递，已有投递和固定报告仍会保留。")) return;
+        onStatusChange(job);
+      }}>{changing === job.id ? "更新中…" : job.status === "published" ? "关闭岗位" : "发布岗位"}</button>
+    </div>
+  </article>;
+}
 export default function JobList({ mine = false, initialQuery = "" }: { mine?: boolean; initialQuery?: string }) {
   return mine ? <ManagedJobList initialQuery={initialQuery}/> : <JobDiscovery/>;
 }
@@ -47,14 +67,8 @@ function ManagedJobList({ initialQuery }: { initialQuery: string }) {
     </form>
     {error && <ErrorNotice message={error} retry={refresh} />}
     {busy && <p role="status" className="text-sm text-slate-500">正在加载岗位…</p>}
-    {!busy && !error && data?.items.length === 0 && <div className="panel py-10 text-center text-slate-500">{mine ? "你的企业暂未创建岗位。" : "没有符合条件的岗位，试试其他筛选条件。"}{mine ? <Link className="mt-4 block text-indigo-700 underline" href="/jobs/new">创建第一个岗位 →</Link> : <button type="button" className="mt-4 text-indigo-700 underline" onClick={() => { setDraft(EMPTY_FILTER); setFilter(EMPTY_FILTER); setPage(1); }}>清除筛选查看全部岗位</button>}</div>}
-    {!error && <div className="grid gap-4 md:grid-cols-2">{data?.items.map(job => <article key={job.id} className="panel">
-      <div className="flex items-start justify-between gap-3"><div className="flex flex-wrap items-center gap-2"><Link className="text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{job.title}</Link>{job.isDemo && <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">体验样例 · 虚构企业</span>}</div><span className="text-xs text-slate-500">{EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</span></div>
-      <p className="mt-1 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p><p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-600">{job.description || "暂无描述"}</p>
-      {mine && job.applicationCount != null && <Link className="mt-3 block text-sm text-indigo-700 underline" href={`/jobs/${job.id}/applications`}>已授权投递 {job.applicationCount} 份 · 待回复 {job.pendingApplicationCount ?? 0} 份 →</Link>}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2"><span className="rounded bg-indigo-50 px-2 py-1 text-xs text-indigo-700">{CATEGORY_LABELS[job.category] ?? job.category} · {job.requirementCount} 项要求</span><Link href={`/jobs/${job.id}`} className="text-sm text-indigo-600">查看岗位 →</Link></div>
-      {mine && <div className="mt-4 flex items-center gap-3 border-t border-slate-100 pt-3 text-sm"><span>{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status]}</span><Link className="text-indigo-600" href={`/jobs/${job.id}/edit`}>编辑</Link><button className="text-indigo-600 disabled:opacity-50" disabled={!!changing} onClick={() => void changeStatus(job)}>{changing === job.id ? "更新中…" : job.status === "published" ? "关闭岗位" : "发布岗位"}</button></div>}
-    </article>)}</div>}
-    {data && data.total > 0 && <div className="flex items-center justify-center gap-4 text-sm"><button className="btn-secondary" disabled={busy || page <= 1} onClick={() => setPage(page - 1)}>上一页</button><span>第 {page} / {Math.max(1, Math.ceil(data.total / data.pageSize))} 页 · 共 {data.total} 个</span><button className="btn-secondary" disabled={busy || page * data.pageSize >= data.total} onClick={() => setPage(page + 1)}>下一页</button></div>}
+    {!busy && !error && data?.items.length === 0 && <div className="panel space-y-3"><h2 className="section-title">{Object.values(filter).some(Boolean) ? "没有符合筛选的岗位" : "暂无岗位"}</h2>{Object.values(filter).some(Boolean) ? <button type="button" className="btn-secondary" onClick={() => { setDraft(EMPTY_FILTER); setFilter(EMPTY_FILTER); setPage(1); }}>清除筛选</button> : <Link className="btn" href="/jobs/new">创建第一个岗位</Link>}</div>}
+    {!error && <div className="grid gap-4 md:grid-cols-2">{data?.items.map(job => <ManagedJobCard key={job.id} job={job} changing={changing} onStatusChange={job => void changeStatus(job)}/>)}</div>}
+    {data && <ListPagination label="岗位分页" value={data} busy={busy} onPage={setPage}/>}
   </div>;
 }

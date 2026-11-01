@@ -53,7 +53,7 @@ export default function MaterialPreview({ id, kind, initialFileId, initialLineSt
     document.getElementById(`source-line-${initialLineStart}`)?.scrollIntoView({ block: "center" });
   }, [selected, initialFileId, initialLineStart]);
   return <div className="space-y-6">
-    <Link href="/portfolio" className="text-sm text-indigo-600">← 我的材料</Link>
+    <Link href="/portfolio" className="btn-secondary btn-compact">← 我的材料</Link>
     <div><h1 className="text-2xl font-bold">{kind === "resume" ? "简历解析预览" : "项目 / 作品文本预览"}</h1><p className="mt-2 text-sm leading-6 text-slate-500">核对系统实际读取到的内容。扫描件与图片由本地 OCR 提取文字，识别结果需对照原图。</p></div>
     {!loading && !error && kind === "project" && <VisualEvidencePanel key={id} versionId={id} />}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}

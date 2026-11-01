@@ -18,11 +18,12 @@ test("未知历史等级保留原数字，不伪造比例", () => {
   for (const level of [4, 80, 100]) assert.ok(!evidenceLevelName(level).includes("/"));
 });
 
-test("65 只是当前规则上限，不引入 100 分口径", () => {
+test("原始规则上限65保持，展示指数明确换算并保留未知规则边界", () => {
   assert.equal(RULE_SCORE_CAP, 65);
   assert.ok(RULE_SCORE_CAP_NOTE.includes("65"));
   assert.ok(RULE_SCORE_CAP_NOTE.includes("材料支持度"));
-  assert.ok(!RULE_SCORE_CAP_NOTE.includes("100"));
+  assert.ok(RULE_SCORE_CAP_NOTE.includes("原始值÷65×100"));
+  assert.ok(RULE_SCORE_CAP_NOTE.includes("未知规则未换算"));
   // “满分”只能以否定澄清（不是能力满分）出现，不得单独宣称
   assert.ok(!RULE_SCORE_CAP_NOTE.includes("满分") || RULE_SCORE_CAP_NOTE.includes("不是能力满分"));
 });

@@ -47,7 +47,7 @@ export default function MaterialContentNotice({ report }: { report: unknown }) {
         <span className="block break-all">{finding.path} · 第 {finding.line} 行</span>
       </li>)}</ul>
     </details>}
-    <p className="mt-3"><Link href="/portfolio" className="font-medium text-indigo-700 underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">返回材料，上传修正后的新版本</Link></p>
+    <p className="mt-3"><Link href="/portfolio" className="btn-secondary">返回材料，上传修正后的新版本</Link></p>
     <p className="mt-1 text-xs leading-5 text-slate-700">新版本不会自动替换当前材料、已有报告或投递快照。检测仅针对已解析文本，不修改材料原文或评级。</p>
   </section>;
 }

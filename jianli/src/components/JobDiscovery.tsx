@@ -49,7 +49,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   return <section aria-labelledby="technical-jobs-title" className={`min-w-0 space-y-4 ${compact ? "rounded-2xl bg-indigo-50/40 p-3 sm:p-5" : ""}`} id="technical-jobs">
     <div className="flex flex-wrap items-start justify-between gap-3"><div>
       <Heading id="technical-jobs-title" className={compact ? "mt-1 text-2xl font-bold tracking-tight" : "mt-1 text-3xl font-bold tracking-tight sm:text-4xl"}>{compact ? "探索技术岗位" : "发现适合你的技术岗位"}</Heading>
-    </div>{compact ? <Link className="inline-flex min-h-11 items-center text-sm font-medium text-indigo-700 underline" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
+    </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
     <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="flex min-w-0 items-center gap-2 rounded-xl border border-indigo-300 bg-white p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100" onSubmit={event => { event.preventDefault(); choose({}); }}>
       <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-indigo-500"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
       <label htmlFor="job-discovery-keyword" className="sr-only">关键词</label>
@@ -71,12 +71,12 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
             <label className="form-label min-w-0 space-y-1">城市<input form="job-discovery-search" className="field !bg-slate-50 !py-2" value={draft.city} maxLength={100} placeholder="全部城市" onChange={event => setDraft({ ...draft, city: event.target.value })}/></label>
             <label className="form-label min-w-0 space-y-1">工作类型<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.employmentType} onChange={event => choose({ employmentType: event.target.value })}><option value="">全部类型</option>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
             <label className="form-label min-w-0 space-y-1">技术语言<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.language} onChange={event => choose({ language: event.target.value })}><option value="">不限语言</option>{CAREER_LANGUAGES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-            <button type="button" className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-lg px-2 text-sm text-slate-500 underline hover:text-indigo-700" onClick={reset}>重置筛选</button>
+            <button type="button" className="btn-quiet whitespace-nowrap" onClick={reset}>重置筛选</button>
           </div>
-          {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="ml-2 min-h-11 text-indigo-700 underline" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
+          {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="btn-secondary btn-compact ml-2" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
         </div>
         <div aria-live="polite" className="flex min-h-8 flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500">
-          <p>{busy ? data ? "正在更新筛选，暂时保留上一组结果…" : "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>{!compact && <span>按最近创建排序 · 合成岗位单独标注</span>}
+          <p>{busy ? data ? "正在更新筛选，暂时保留上一组结果…" : "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>
         </div>
         {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)}/>}
         {busy && !data && <div aria-label="岗位加载占位" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}

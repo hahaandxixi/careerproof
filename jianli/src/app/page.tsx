@@ -39,7 +39,7 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center gap-x-5">
           <span className="text-sm font-semibold text-slate-700">学生</span>
           <Link href="/portfolio" className={routeEntry}>整理材料 →</Link>
-          <Link href="/jobs" className="inline-flex min-h-11 items-center text-sm text-slate-600 underline-offset-4 hover:text-indigo-700 hover:underline">查看岗位</Link>
+          <Link href="/jobs" className="btn-secondary">查看岗位</Link>
         </div>
         <div className="flex flex-wrap items-center gap-x-5 sm:justify-end">
           <span className="text-sm font-semibold text-slate-700">企业</span>

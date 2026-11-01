@@ -48,7 +48,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
           <span className="mt-1 block text-xs text-slate-600">{version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
           <span className="mt-1 block text-xs text-slate-600">已解析{materialVersionTime(version.createdAt) && <> · <time dateTime={version.createdAt}>上传于 {materialVersionTime(version.createdAt)}</time></>}</span>
         </span>
-        <button type="button" className="shrink-0 text-xs text-indigo-700 underline" aria-label={`移除 ${version.name} 第 ${version.versionNumber} 版`} onClick={() => onChange(toggleMaterialVersion(selectedIds, version.id, false))}>移除</button>
+        <button type="button" className="btn-quiet btn-compact shrink-0" aria-label={`移除 ${version.name} 第 ${version.versionNumber} 版`} onClick={() => onChange(toggleMaterialVersion(selectedIds, version.id, false))}>移除</button>
       </li>)}
     </ul> : <p className="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p>}
     {selectableProjects.length > 0 ? <details key={highlightedVersionId || "projects"} open={!!highlightedVersionId} className="rounded-xl border border-slate-200">

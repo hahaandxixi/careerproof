@@ -27,5 +27,5 @@ export default function DemoCaseImport({sample}:{sample:{resumeName:string;resum
       setNotice("对应材料已保存到当前账号。到“个人材料”查看解析进度，待简历和项目均解析完成后，再按同编号选择；没有生成 AI 报告。");
     }catch(e){setNotice(errorMessage(e));}finally{locked.current=false;setBusy(false);}
   }
-  return <div className="mt-3 space-y-2"><button type="button" disabled={busy} className="min-h-11 rounded-lg border border-indigo-200 px-3 py-2 text-sm text-indigo-700 disabled:opacity-50" onClick={()=>void run()}>{busy?"正在导入…":"导入这套材料到我的账号"}</button>{notice&&<><p role="status" className="text-xs leading-6 text-slate-600">{notice}</p><Link href="/portfolio" className="inline-flex min-h-11 items-center text-sm text-indigo-700 underline">查看个人材料与解析进度 →</Link></>}</div>;
+  return <div className="mt-3 space-y-2"><button type="button" disabled={busy} className="min-h-11 rounded-lg border border-indigo-200 px-3 py-2 text-sm text-indigo-700 disabled:opacity-50" onClick={()=>void run()}>{busy?"正在导入…":"导入这套材料到我的账号"}</button>{notice&&<><p role="status" className="text-xs leading-6 text-slate-600">{notice}</p><Link href="/portfolio" className="btn-secondary">查看个人材料与解析进度 →</Link></>}</div>;
 }

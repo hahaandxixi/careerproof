@@ -1,3 +1,6 @@
+import { VERDICT_LABELS, APPLICATION_STATUS_LABELS } from "../src/lib/verdict-display.js";
+import * as supportIndex from "../src/lib/support-index.js";
+import * as demoIdentity from "../src/lib/demo-display-identity.js";
 // Execute the real Workspace/event handlers with deterministic hooks and API
 // promises. These are component behavior tests, not real browser visibility.
 import test, { afterEach } from "node:test";
@@ -15,9 +18,9 @@ const originals=new Map(["window","document","location","requestAnimationFrame",
 const cleanups=[];
 afterEach(()=>{while(cleanups.length)cleanups.pop()();for(const[k,v]of originals){if(v===undefined)delete globalThis[k];else globalThis[k]=v;}});
 const walk=node=>!node||typeof node!=="object"?[]:[node,...React.Children.toArray(node.props?.children).flatMap(walk)];
-const text=node=>typeof node==="string"?node:React.Children.toArray(node?.props?.children).map(text).join("");
+const text=node=>typeof node==="string"?node:node?.type?.testName==="identity"?demoIdentity.identityLabel(node.props.name,node.props.identityId):React.Children.toArray(node?.props?.children).map(text).join("");
 
-function fixture(count=2){
+function fixture(count=2,editRow=value=>value){
  const cells=[],effects=[],frames=new Map();let cursor=0,frame=0;
  const same=(a,b)=>a&&a.length===b.length&&a.every((v,i)=>Object.is(v,b[i]));
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps))cells[i]={deps,value:fn()};return cells[i].value;};
@@ -29,21 +32,21 @@ function fixture(count=2){
  globalThis.requestAnimationFrame=fn=>{frames.set(++frame,fn);return frame;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
  const counts={list:0,open:0,reply:0,detail:0};const queries=[];let authorized=true,waiter=null;
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
- const row=id=>({id,jobId:"job-a",reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
+ const row=id=>editRow({id,jobId:"job-a",reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
  const pageResult=()=>({items:[...(authorized?[row("a")]:[]),...Array.from({length:count-1},(_,i)=>row(String.fromCharCode(98+i)))],total:authorized?count:count-1,page:1,pageSize:20});
  const api={getJob:async()=>({id:"job-a",title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult();},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
- const modules={"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
-  "./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
+ const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
+  "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:"enterprise-a"}})},
   "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false},
-  "@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
+  "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
-  "@/lib/verdict-display.js":{VERDICT_LABELS:{claimed_only:"仅简历声明"},APPLICATION_STATUS_LABELS:{viewed:"已查看"}}};
+  "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS}};
  const code=transform(readFileSync(new URL("../src/components/ApplicationBoard.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const render=()=>{cursor=0;const outer=mod.exports.default({jobId:"job-a"});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
@@ -108,4 +111,16 @@ test("selected heatmap cell identifies both candidate and requirement after retu
  const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="候选人a · Python要求 · 仅简历声明");
  assert.equal(selected.props["aria-pressed"],true);assert.match(selected.props.className,/ring-inset/);
  assert.equal(h.counts.reply,0);
+});
+
+
+test("matrix missing item differs from unsupported and numeric zero, without opening an unrelated requirement",async()=>{
+ const h=fixture(3,row=>({...row,dimensions:row.id==="b"?[]:row.dimensions.map(d=>({...d,score:row.id==="c"?null:0,verdict:row.id==="c"?"unsupported":"supported"}))}));
+ let tree=await h.settle();
+ const cell=part=>h.nodes(tree).find(n=>n.type==="button"&&String(n.props["aria-label"]).includes(part));
+ const missing=cell("候选人b · Python要求 · 本报告无此项");assert.ok(missing);assert.equal(missing.props.disabled,true);assert.match(text(missing),/本报告无此项/);
+ missing.props.onClick();assert.equal(h.counts.open,0);
+ const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
+ const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
+ await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
 });

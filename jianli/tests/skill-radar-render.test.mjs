@@ -49,14 +49,94 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 const { default: SkillRadar } = await import(pathToFileURL(path.join(SRC, "components/SkillRadar.tsx")).href);
+const {default: HeatmapDemo,DemoSupportValue}=await import("../src/components/HeatmapDemo.tsx");
+const {default: SupportMeasureDetails}=await import("../src/components/SupportMeasureDetails.tsx");
+const {resolveSupportScale}=await import("../src/lib/support-index.js");
 const dim = (id,verdict,score) => ({requirementId:id,title:id,skill:id,verdict,score,weight:1,evidenceLevel:null});
 const render = props => renderToStaticMarkup(React.createElement(SkillRadar,props));
+const knownDim = (id,verdict,score) => ({...dim(id,verdict,score),formulaVersion:"evidence-v4"});
+
+test("actual demo parent uses one index scale for table and radar without presenting gaps as zero",()=>{
+ const html=renderToStaticMarkup(React.createElement(HeatmapDemo));
+ const table=html.match(/<table[\s\S]*?<\/table>/)[0];
+ for(const value of ["100","61.5","15.4"])assert.ok(table.includes(` · ${value}`));
+ assert.doesNotMatch(table,/材料待补充 · 0| · 65<| · 40<| · 10</);
+ assert.match(table,/规则暂未支持 · —/);assert.match(html,/Python：材料支持度指数 100/);
+ for(const [verdict,score,expected] of [["supported",0,"有证据支持 · 0"],["gap",0,"材料待补充"],["unsupported",null,"规则暂未支持 · —"],["claimed_only",10,"仅简历声明 · 15.4"],["partial",null,"原始分值未记录"]]){
+   const dimension=knownDim("SQL",verdict,score),before=JSON.stringify(dimension);
+   const result=renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension,dimensions:[dimension]}));
+   assert.ok(result.includes(expected),result);assert.equal(JSON.stringify(dimension),before);
+ }
+ const unknown=dim("SQL","supported",38.27);
+ assert.match(renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension:unknown,dimensions:[unknown]})),/原值（未换算） 38.27/);
+});
+test("raw measurement details preserve API precision while only index labels are rounded",()=>{
+ const scale=resolveSupportScale([knownDim("SQL","partial",38.27)]);
+ const html=renderToStaticMarkup(React.createElement(SupportMeasureDetails,{raw:38.27,formulaVersion:"evidence-v4",scale}));
+ assert.match(html,/原始分值 38.27/);assert.doesNotMatch(html,/原始分值 38.3/);
+ for(const raw of [null,NaN,Infinity,-1,66]){
+   const detail=renderToStaticMarkup(React.createElement(SupportMeasureDetails,{raw,scale}));
+   assert.ok(detail.includes(raw==null?"未记录":String(raw)));
+ }
+});
 
 test("desktop radar stays visible without a collapsed overview control and retains raw scale",()=>{
  const html=render({dimensions:[dim("FastAPI long requirement","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)]});
  assert.ok(html.includes("<svg"));assert.ok(!html.includes("hidden xl:block"));assert.ok(!html.includes("展开整体雷达"));
  assert.ok(html.includes("<title>FastAPI long requirement</title>"));
  assert.ok(html.includes(">100</text>"));assert.ok(!html.includes("65%"));
+});
+test("axis labels distinguish missing evidence from a scored zero without changing stored values",()=>{
+ const html=render({dimensions:[dim("材料缺口","gap",0),dim("可评零值","supported",0),dim("规则未覆盖","unsupported",null)]});
+ assert.ok(html.includes('aria-label="材料缺口，材料待补充，查看证据"'));
+ assert.ok(!html.includes('0 · 材料待补充'));
+ assert.ok(html.includes('aria-label="可评零值，有证据支持，0，查看证据"'));
+ assert.ok(html.includes('0 · 有证据支持'));
+ assert.ok(html.includes('aria-label="规则未覆盖，规则暂未支持，查看证据"'));
+});
+
+test("known whole-chart index changes geometry and readable values together; selection does not rescale axes",()=>{
+ const dimensions=[knownDim("FastAPI","supported",65),knownDim("SQL","partial",40),knownDim("pytest","claimed_only",10)];
+ const before=JSON.stringify(dimensions);
+ const first=render({dimensions,initialRequirementId:"FastAPI"}), second=render({dimensions,initialRequirementId:"SQL"});
+ for(const html of [first,second]){
+   assert.match(html,/材料支持度指数 100/);assert.match(html,/61.5 · 部分证据支持/);assert.match(html,/15.4 · 仅简历声明/);
+   assert.match(html,/原始分值/);assert.match(html,/evidence-v4/);assert.doesNotMatch(html,/65%|100%/);
+ }
+ // Same plotted coordinates after selecting another requirement; highlight/radius can differ.
+ const points=html=>[...html.matchAll(/<circle cx="([^"]+)" cy="([^"]+)" r="[57]"/g)].map(m=>[Number(m[1]),Number(m[2])]);
+ assert.deepEqual(points(first),points(second));assert.equal(points(first).length,3);
+ assert.ok(Math.abs(Math.hypot(points(first)[0][0]-200,points(first)[0][1]-200)-108)<1e-10);
+ assert.ok(Math.abs(Math.hypot(points(first)[1][0]-200,points(first)[1][1]-200)-108*40/65)<1e-10);
+ assert.equal(JSON.stringify(dimensions),before);
+});
+test("unknown versions keep a whole raw chart; anomalous known raw values remain visible without a dot",()=>{
+ const dimensions=[knownDim("FastAPI","supported",65),{...knownDim("SQL","partial",40),formulaVersion:"unknown"},knownDim("pytest","gap",0)];
+ const html=render({dimensions});assert.match(html,/未换算/);assert.match(html,/65 · 有证据支持/);assert.match(html,/40 · 部分证据支持/);
+ const bad=render({dimensions:[knownDim("FastAPI","supported",66),knownDim("SQL","partial",40),knownDim("pytest","gap",0)]});
+ assert.match(bad,/超过已确认规则上限65/);assert.match(bad,/原始值 66/);
+ assert.doesNotMatch(bad,/<title>FastAPI：材料支持度指数/);
+});
+
+test("actual requirement buttons and keyboard axes change the selected evidence without changing index coordinates",async()=>{
+ const lib=await import("../src/lib/skill-radar.ts"), support=await import("../src/lib/support-index.js"), citations=await import("../src/lib/report-citations.ts");
+ const cells=[];let cursor=0;
+ const hooks={useId:()=>"radar-detail",useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=v;}];}};
+ const stub=()=>null;
+ const modules={react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{default:stub,SourceIdentityDetails:stub,__esModule:true},"./SupportMeasureDetails":{default:stub,__esModule:true},"@/lib/skill-radar":lib,"@/lib/evidence-display":{evidenceLevelName:String},"@/lib/support-index.js":support,"@/lib/report-citations":citations};
+ const code=transform(readFileSync(path.join(SRC,"components/SkillRadar.tsx"),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
+ const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
+ const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];
+ const dimensions=[knownDim("FastAPI","supported",65),knownDim("SQL","partial",40),knownDim("pytest","gap",0)],changes=[];
+ const items=dimensions.map(d=>({requirementId:d.requirementId,explanation:`source-for-${d.requirementId}`,evidenceList:[]}));
+ const redraw=()=>{cursor=0;return mod.exports.default({dimensions,items,onRequirementChange:id=>changes.push(id)});};
+ let tree=redraw();const points=tree=>nodes(tree).filter(n=>n.type==="circle"&&[5,7].includes(n.props.r)).map(n=>[n.props.cx,n.props.cy]);const initial=points(tree);
+ nodes(tree).find(n=>n.type==="button"&&n.props["aria-pressed"]===false).props.onClick();tree=redraw();
+ assert.ok(nodes(tree).some(n=>n.type==="p"&&n.props.children==="source-for-SQL"));assert.deepEqual(points(tree),initial);
+ const axis=nodes(tree).find(n=>n.type==="g"&&n.props["aria-label"]?.startsWith("pytest，"));let prevented=false;
+ axis.props.onKeyDown({key:"Enter",preventDefault(){prevented=true;}});tree=redraw();
+ assert.equal(prevented,true);assert.deepEqual(changes,["SQL","pytest"]);assert.deepEqual(points(tree),initial);
+ assert.ok(nodes(tree).some(n=>n.type==="p"&&n.props.children==="source-for-pytest"));
 });
 test("linked detail renders only selected requirement citations and keeps sources collapsed", () => {
  // 传智杯48：正常数据改为 evidence-v3 单项可达值 65/40/0（不再用 85/55 假装高分）

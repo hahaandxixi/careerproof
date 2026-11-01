@@ -1139,7 +1139,10 @@ async def execute_match_task(task_id: UUID) -> None:
                     (
                         f"{workflow.model}完成{len(ai_by_requirement)}项解释"
                         if workflow.analysis
-                        else "当前材料没有可引用证据，已跳过外部模型"
+                        else (
+                            "没有可用的模型证据上下文，已跳过外部分析；"
+                            "不代表材料中完全没有相关实现"
+                        )
                         if workflow.skipped_reason == "no_evidence"
                         else "已达到当天 AI 用量上限，已保留本地规则报告"
                         if workflow.skipped_reason

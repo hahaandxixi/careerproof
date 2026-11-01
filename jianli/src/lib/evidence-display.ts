@@ -1,9 +1,9 @@
 // 传智杯48：证据等级与分数尺度的唯一前端展示口径。
 // 等级是序数（当前自动判定 1/2/3，名称与后端 app/tools/evidence_levels.py 一致），
 // 不是 x/5 比例；分数是材料支持度（evidence-v3 单项可达 0/10/15/30/40/65），
-// 65 只是当前规则上限，不得呈现为未达 100 的成绩或能力满分。
+// 原始计量仍保留；显示指数仅由 support-index.js 按已确认的版本上限换算。
 export const RULE_SCORE_CAP = 65;
-export const RULE_SCORE_CAP_NOTE = "当前规则上限 65，分数仅表示材料支持度，不是能力满分或录用概率。";
+export const RULE_SCORE_CAP_NOTE = "材料支持度指数：evidence-v3/v4 原始规则上限65，按原始值÷65×100换算；未知规则未换算，不是能力满分或录用概率。";
 
 const LEVEL_NAMES: Readonly<Record<number, string>> = { 1: "基础线索", 2: "局部操作", 3: "任务实现" };
 

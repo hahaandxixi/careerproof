@@ -1,6 +1,7 @@
 // Real component SSR with controlled saved state. Effects/network are deliberately
 // not executed; this does not verify late responses, identity races or browser behavior.
 import test from "node:test";
+import { displayIdentity } from "../src/lib/demo-display-identity.js";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
@@ -21,6 +22,7 @@ function render(role, { work = EMPTY, errors = [], loading = false, status = "au
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
     "@/lib/api/client": { api: new Proxy({}, { get() { throw new Error("SSR must not request data"); } }), errorMessage: String },
+    "./IdentityName": { __esModule: true, default: ({name,identityId}) => {const value=displayIdentity(name,identityId);return value.isExample ? `${value.name} · 示例` : name;} },
     "./AuthProvider": { useAuth: () => ({ user: role ? { id: "synthetic", displayName: "当前用户", role } : null, status, reload() {} }) },
   };
   const code = transform(source, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
@@ -79,4 +81,11 @@ test("old growth tasks cannot replace report continuation or form a second stude
  assert.ok(html.includes("继续核对：当前岗位"));
  assert.ok(!html.includes("最近补证任务")&&!html.includes('href="/growth'));
  assert.ok(!source.includes("api.listGrowthTasks"),"home must not depend on the legacy task list API");
+});
+
+test("workspace destinations use bounded controls and omit repeated navigation instructions",()=>{
+ const html=render("student",{work:{...EMPTY,notifications:[{id:"n",title:"企业已请求查看报告；不代表录用",createdAt:"2026-10-29T12:00:00Z"}]}});
+ for(const href of ["/reports","/notifications","/recommendations"])assert.match(html,new RegExp(`<a[^>]*class="btn-secondary[^\"]*"[^>]*href="${href}"|<a[^>]*href="${href}"[^>]*class="btn-secondary`));
+ assert.match(html,/企业已请求查看报告；不代表录用/);
+ assert.doesNotMatch(html,/到通知页核对来源|上传新版会保留旧版本|打开入口不会自动/);
 });

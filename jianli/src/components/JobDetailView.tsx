@@ -36,12 +36,11 @@ export default function JobDetailView({
   if (error) return <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />;
   if (!job) return <p className="py-12 text-center text-slate-500">正在加载岗位…</p>;
   return <div className="space-y-6">
-    <Link className="text-sm text-indigo-600" href="/jobs">← 岗位发现</Link>
-    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="mt-2 text-3xl font-bold">{job.title}</h1><p className="mt-2 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p>{job.isDemo && <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-6 text-slate-700">体验样例：岗位、企业与人物均为虚构，仅用于练习材料核对；不向真实企业投递，也不代表任何真实招聘。</p>}</div><span className="rounded bg-slate-100 px-3 py-1 text-sm">{job.status === "published" ? (job.isDemo ? "可体验" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{job.description || "暂无岗位描述"}</p></section>
+    <Link className="btn-secondary btn-compact" href="/jobs">← 岗位发现</Link>
+    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="mt-2 text-3xl font-bold">{job.title}</h1><p className="mt-2 text-sm text-slate-500">{job.companyName} · {job.city || "城市未填写"}</p>{job.isDemo && <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-6 text-slate-700">体验样例：岗位、企业与人物均为虚构，仅用于练习材料核对；不向真实企业投递，也不代表任何真实招聘。</p>}</div><span className="rounded bg-slate-100 px-3 py-1 text-sm">{job.status === "published" ? (job.isDemo ? "可体验" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{job.description || "暂无岗位描述"}</p>{user?.role === "enterprise" && <div className="card-actions mt-5"><Link className="btn" href={`/jobs/${job.id}/applications`}>查看投递</Link></div>}</section>
     <ScenarioMaterials title={job.title} companyName={job.companyName} isDemo={job.isDemo} />
     <section className="panel"><h2 className="text-lg font-semibold">岗位要求</h2><ol className="mt-4 space-y-3">{job.requirements.map((requirement, index) => <li key={requirement.id} className="rounded-xl bg-slate-50 p-4"><p className="text-sm font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p>{requirement.sourceQuote && <p className="mt-2 rounded-lg bg-white p-2 text-xs leading-6 text-slate-600">岗位原文：“{requirement.sourceQuote}”</p>}</li>)}</ol></section>
     {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} /></AccessGate>}
-    {user?.role === "enterprise" && <Link className="panel block text-indigo-700 underline" href={`/jobs/${job.id}/applications`}>查看本岗位已授权投递与匹配对照</Link>}
     {job.status !== "published" && <p className="panel text-sm text-amber-700">该岗位尚未发布或已关闭，目前不能创建新的匹配任务。</p>}
   </div>;
 }
@@ -51,11 +50,11 @@ export default function JobDetailView({
 // error 显式且不阻断匹配，重试只读；撤回史如实呈现，不给重投/授权入口。
 export function JobApplicationStatusNotice({ state, onRetry }: { state: JobApplicationStatusState; onRetry(): void }) {
   if (state.kind === "loading") return <p role="status" className="mt-3 text-xs text-slate-500">正在核对本岗位的已有投递…</p>;
-  if (state.kind === "error") return <p role="alert" className="mt-3 text-xs leading-6 text-rose-700">本岗位投递状态读取失败：{state.message}。这不影响生成报告。<button type="button" className="ml-1 underline" onClick={onRetry}>重试读取</button></p>;
+  if (state.kind === "error") return <p role="alert" className="mt-3 text-xs leading-6 text-rose-700">本岗位投递状态读取失败：{state.message}。这不影响生成报告。<button type="button" className="btn-secondary btn-compact ml-1" onClick={onRetry}>重试读取</button></p>;
   if (state.kind === "unknown") return null;
   const anchor = `/applications#application-${encodeURIComponent(state.application.id)}`;
-  if (state.kind === "withdrawn") return <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600"><p>本岗位此前的投递{applicationStatusText(state.application.status)}。这里只说明该条撤回记录；其他投递状态请查看个人投递。生成新报告不受影响；再次分享仍须从报告页确认授权。</p><Link className="text-indigo-700 underline" href={anchor}>查看该条撤回记录 →</Link></div>;
-  return <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm text-indigo-950"><p className="font-semibold">本岗位已有进行中的投递：{applicationStatusText(state.application.status)}</p><p className="mt-1 text-xs leading-6">下一步：{applicationNextAction(state.application.status)}生成新报告不会替换该投递。</p><Link className="mt-1 block text-indigo-700 underline" href={anchor}>查看本岗位投递状态 →</Link></div>;
+  if (state.kind === "withdrawn") return <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600"><p>本岗位此前的投递{applicationStatusText(state.application.status)}。这里只说明该条撤回记录；其他投递状态请查看个人投递。生成新报告不受影响；再次分享仍须从报告页确认授权。</p><Link className="btn-secondary mt-2" href={anchor}>查看该条撤回记录 →</Link></div>;
+  return <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm text-indigo-950"><p className="font-semibold">本岗位已有进行中的投递：{applicationStatusText(state.application.status)}</p><p className="mt-1 text-xs leading-6">下一步：{applicationNextAction(state.application.status)}生成新报告不会替换该投递。</p><Link className="btn-secondary mt-2" href={anchor}>查看本岗位投递状态 →</Link></div>;
 }
 
 function MatchForm({
@@ -111,7 +110,7 @@ function MatchForm({
   const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
   const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
-  return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-500">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。<Link className="mt-2 block text-indigo-700 underline" href="/applications">已有投递？查看企业回应 →</Link></p>
+  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">查看我的投递</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>

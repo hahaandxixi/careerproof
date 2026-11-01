@@ -95,6 +95,36 @@ async def test_no_evidence_skips_external_provider(monkeypatch) -> None:
 
 
 @pytest.mark.asyncio
+async def test_empty_model_context_does_not_mean_uploaded_source_is_absent(monkeypatch) -> None:
+    source = ProjectFileSnapshot("service.py", "def register(name):\n    return {'name': name}\n")
+    result = match_candidate(
+        [RequirementInput(uuid4(), "具备钢琴演奏实践", "钢琴演奏", 5)],
+        parse_resume("报名服务项目"),
+        [source],
+    )
+    limits = []
+
+    def contexts(candidate, max_evidence=3):
+        limits.append(max_evidence)
+        return build_evidence_contexts(candidate, max_evidence=max_evidence)
+
+    monkeypatch.setattr(settings, "ai_external_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "deepseek")
+    monkeypatch.setattr(settings, "ai_context_evidence_limit", 2)
+    monkeypatch.setattr("app.agents.evidence_workflow.build_evidence_contexts", contexts)
+    monkeypatch.setattr(
+        "app.agents.evidence_workflow.get_ai_provider",
+        lambda: pytest.fail("Empty context must skip before creating a provider"),
+    )
+    outcome = await run_evidence_workflow(result)
+    assert "def register" in source.content
+    assert limits == [3]  # The configured limit applies only after the no-evidence guard.
+    assert outcome.skipped_reason == "no_evidence"
+    assert outcome.analysis is None
+    assert outcome.request_count == 0
+
+
+@pytest.mark.asyncio
 async def test_mixed_report_only_sends_evidenced_requirements(monkeypatch) -> None:
     result = match_candidate(
         [

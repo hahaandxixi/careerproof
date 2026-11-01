@@ -31,6 +31,12 @@ export function applicationReplyText(kind: string): string {
   return APPLICATION_REPLY_TEXT[kind] ?? kind;
 }
 
+export function applicationReplyInfo(item: { replyKind?: string | null; events?: readonly { type: string; at: string }[] }) {
+  const event = (item.events ?? []).filter(value => value.type === "replied" && Number.isFinite(Date.parse(value.at)))
+    .reduce<{ at: string } | null>((latest, value) => !latest || Date.parse(value.at) > Date.parse(latest.at) ? value : latest, null);
+  return { kind: item.replyKind ? applicationReplyText(item.replyKind) : "回复类型未记录", at: event?.at ?? null };
+}
+
 export function applicationNextAction(status: string): string {
   return APPLICATION_NEXT_ACTION[status] ?? "刷新投递状态获取最新进展。";
 }
