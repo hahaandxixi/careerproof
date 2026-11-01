@@ -248,7 +248,7 @@ export function createApplicationBoardSession(
           retained = null;
           comparisonCache.clear(); comparisonIds = [];
           set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: "list",
-            notice: "授权核对未完成，已清除报告与选中状态。请刷新重试。" });
+            notice: saved || requested.length ? "授权未确认，已清除报告和对照。" : "" });
           return { authorizedIds: [], selectedId: null };
         }
       }

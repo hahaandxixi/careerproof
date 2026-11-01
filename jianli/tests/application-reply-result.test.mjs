@@ -72,6 +72,12 @@ test("initial list errors and empty results remain distinct; retry is only a lis
   assert.equal(h.calls.reply, 0); assert.equal(h.calls.view, 0);
 });
 
+test("initial authorization load failure does not add a second cleanup warning when nothing was opened", async () => {
+  const h=setup();h.fail("list");await h.session.resume();
+  assert.equal(h.state().errorScope,"list");assert.equal(h.state().notice,"");
+  assert.match(h.state().error,/list unavailable/);
+});
+
 test("a normal successful reply is confirmed independently of its authorization read", async () => {
   const h = setup(); await h.session.open("a");
   const result = await h.session.reply("continue", "one reply");
