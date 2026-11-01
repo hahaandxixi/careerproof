@@ -56,7 +56,7 @@ export function supportMeasure(axis, scale) {
   const ratio = numeric ? raw / scale.denominator : null;
   const value = ratio == null ? null : scale.mode === "index" ? ratio * 100 : raw;
   const plottable = ["supported", "verified", "partial", "claimed_only"].includes(axis.verdict);
-  return { raw, value, text: formatSupportNumber(value), ratio: plottable ? ratio : null, issue };
+  return { raw, value, text: scale.mode === "index" ? formatSupportNumber(value) : formatRawSupportNumber(value), ratio: plottable ? ratio : null, issue };
 }
 
 /** @param {SupportScale} scale */

@@ -36,6 +36,7 @@ test("gap, unsupported, missing values, claims and a genuinely scored zero remai
  assert.equal(supportMeasure(axis(10,"evidence-v4","claimed_only"),scale).text,"15.4");
  for(const score of [null,undefined,NaN,Infinity,-1,66,100,"65"]){const m=supportMeasure(axis(score),scale);assert.equal(m.ratio,null);assert.equal(m.value,null);assert.ok(m.issue);assert.equal(m.raw,score);}
  const legacy=resolveSupportScale([axis(65,"unknown")]);
+ assert.equal(supportMeasure(axis(38.27,"unknown"),legacy).text,"38.27");
  assert.equal(supportMeasure(axis(101,"unknown"),legacy).ratio,null);
  assert.match(supportMeasure(axis(66),legacy).issue,/超过已确认/);
 });

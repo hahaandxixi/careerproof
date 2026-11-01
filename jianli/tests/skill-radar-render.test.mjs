@@ -68,7 +68,7 @@ test("actual demo parent uses one index scale for table and radar without presen
    assert.ok(result.includes(expected),result);assert.equal(JSON.stringify(dimension),before);
  }
  const unknown=dim("SQL","supported",38.27);
- assert.match(renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension:unknown,dimensions:[unknown]})),/原值（未换算）/);
+ assert.match(renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension:unknown,dimensions:[unknown]})),/原值（未换算） 38.27/);
 });
 test("raw measurement details preserve API precision while only index labels are rounded",()=>{
  const scale=resolveSupportScale([knownDim("SQL","partial",38.27)]);
