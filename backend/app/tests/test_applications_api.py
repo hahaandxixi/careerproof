@@ -224,8 +224,12 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
         ).json()["data"]["id"]
         assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 409
         payload = {"kind": "interview", "text": "合成面试邀请"}
-        async with AsyncClient(transport=ASGITransport(app=jobs_db[0]), base_url="http://test") as anonymous:
-            unauthenticated = await anonymous.post(f"/api/v1/applications/{aid}/reply", json=payload)
+        async with AsyncClient(
+            transport=ASGITransport(app=jobs_db[0]), base_url="http://test"
+        ) as anonymous:
+            unauthenticated = await anonymous.post(
+                f"/api/v1/applications/{aid}/reply", json=payload
+            )
             assert (unauthenticated.status_code, unauthenticated.json()["code"]) == (401, 4015)
         denied = await other.post(f"/api/v1/applications/{aid}/reply", json=payload)
         assert (denied.status_code, denied.json()["code"]) == (404, 4049)

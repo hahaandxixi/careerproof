@@ -1,10 +1,9 @@
+import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel, field_validator
-import pytest
 
-from app.core.exceptions import install_exception_handlers
-from app.core.exceptions import AppError
+from app.core.exceptions import AppError, install_exception_handlers
 
 
 class Input(BaseModel):
@@ -18,7 +17,9 @@ class Input(BaseModel):
         return value
 
 
-@pytest.mark.parametrize("status,code", [(401, 4015), (403, 4037), (404, 4049), (409, 4098), (422, 4224)])
+@pytest.mark.parametrize(
+    "status,code", [(401, 4015), (403, 4037), (404, 4049), (409, 4098), (422, 4224)]
+)
 async def test_structured_app_error_preserves_reply_rejection_contract(status, code):
     app = FastAPI()
     install_exception_handlers(app)
