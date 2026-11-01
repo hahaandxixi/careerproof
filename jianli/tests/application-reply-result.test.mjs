@@ -43,6 +43,7 @@ for (const failure of ["detail", "list"]) {
     assert.equal(result.write, "confirmed");
     assert.equal(result.refresh, "failed");
     assert.equal(result.applied, true);
+    assert.equal(h.state().errorScope, failure === "list" ? "list" : "detail");
     assert.equal(h.state().selected, null);
     assert.equal(h.calls.reply, 1);
     assert.equal(h.calls.view, 1, "post-write refresh must not POST another viewed event");
@@ -59,6 +60,17 @@ for (const failure of ["detail", "list"]) {
     assert.equal(h.calls.reply, 1); assert.equal(h.calls.view, 1);
   });
 }
+
+test("initial list errors and empty results remain distinct; retry is only a list GET", async () => {
+  const h = setup(); h.fail("list");
+  assert.equal(await h.session.refresh(), false);
+  assert.equal(h.state().errorScope, "list"); assert.equal(h.state().loading, false);
+  h.fail(""); h.api.list = async () => [];
+  assert.equal(await h.session.refresh(), true);
+  assert.equal(h.state().error, ""); assert.equal(h.state().errorScope, undefined);
+  assert.deepEqual(h.state().items, []);
+  assert.equal(h.calls.reply, 0); assert.equal(h.calls.view, 0);
+});
 
 test("a normal successful reply is confirmed independently of its authorization read", async () => {
   const h = setup(); await h.session.open("a");

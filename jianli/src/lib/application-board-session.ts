@@ -10,6 +10,8 @@ export interface ApplicationBoardState {
   pagination?: PaginationInfo;
   comparison?: ApplicationView[];
   paused?: boolean;
+  loadingScope?: "list" | "detail";
+  errorScope?: "list" | "detail";
 }
 
 export const initialApplicationBoardState: ApplicationBoardState = {
@@ -91,21 +93,26 @@ export function createApplicationBoardSession(
     selectedId?: string,
     refreshSelectedMetadata = false,
     onFailure?: (error: unknown) => void,
+    initialScope: "list" | "detail" = selectedId ? "detail" : "list",
   ) {
     if (!active || suspended) return false;
     retained = null;
     resumeWanted = false;
     pendingReply = null;
     const ticket = ++generation;
-    set({ ...initialApplicationBoardState });
+    let scope = initialScope;
+    set({ ...initialApplicationBoardState, loadingScope: scope });
     try {
       const result = await operation(ticket);
       if (!current(ticket)) return false;
       if (result.selected && comparisonIds.includes(result.selected.id)) comparisonCache.set(result.selected.id, result.selected);
       const comparisonCount = comparisonIds.length;
+      scope = "list";
+      if (state.loadingScope !== scope) set({ ...state, loadingScope: scope });
       const list = unpackList(await api.list());
       const { items } = list;
       if (!current(ticket)) return false;
+      scope = "detail";
       await recheckComparison(items, ticket);
       if (!current(ticket)) return false;
       let authoritative = items.find(item => item.id === selectedId);
@@ -138,7 +145,7 @@ export function createApplicationBoardSession(
       if (current(ticket)) {
         onFailure?.(error);
         comparisonCache.clear(); comparisonIds = [];
-        set({ items: [], selected: null, loading: false, error: api.errorMessage(error), notice: "" });
+        set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: scope, notice: "" });
       }
       return false;
     }
@@ -191,7 +198,7 @@ export function createApplicationBoardSession(
         retained ??= state.selected;
         const saved = retained;
         const requested = [...new Set([...comparisonIds, ...(saved ? [saved.id] : [])])];
-        set({ ...initialApplicationBoardState });
+        set({ ...initialApplicationBoardState, loadingScope: "list" });
         try {
           const list = unpackList(await api.list());
           if (!current(ticket)) continue;
@@ -240,7 +247,7 @@ export function createApplicationBoardSession(
           resumeWanted = false;
           retained = null;
           comparisonCache.clear(); comparisonIds = [];
-          set({ items: [], selected: null, loading: false, error: api.errorMessage(error),
+          set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: "list",
             notice: "授权核对未完成，已清除报告与选中状态。请刷新重试。" });
           return { authorizedIds: [], selectedId: null };
         }

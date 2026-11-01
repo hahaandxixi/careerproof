@@ -52,6 +52,7 @@ const board = await import(pathToFileURL(path.join(SRC, "components/ApplicationB
 const { createApplicationBoardSession, initialApplicationBoardState } = await import(
   pathToFileURL(path.join(SRC, "lib/application-board-session.ts")).href);
 const replyResult = (write, refresh = "not_attempted", extra = {}) => ({ write, refresh, applied: true, accessLost: false, ...extra });
+const {request} = await import(pathToFileURL(path.join(SRC,"lib/api/client.ts")).href);
 
 function findTextareas(node, found = []) {
   if (!node || typeof node !== "object") return found;
@@ -140,11 +141,45 @@ test("成功写入后刷新失败：真实反馈显示已发送，只提供读�
   assert.match(html, /刷新回复状态/);
   assert.doesNotMatch(html, /送达尚未确认|textarea|确认发送站内回复/);
   const feedback = board.ReplyReadFeedback(props);
-  const button = feedback.props.children.find(node => node?.type === "button");
-  button.props.onClick(); assert.equal(reads, 1);
+  const element = feedback.props.children.find(node => node?.type === board.ReadRetryButton);
+  const button = board.ReadRetryButton(element.props);
+  button.props.onClick({currentTarget:{}}); assert.equal(reads, 1);
   const denied = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, {...props,result:replyResult("confirmed", "failed", {accessLost:true})}));
   assert.match(denied, /回复已发送；当前投递已无法访问/);
   assert.doesNotMatch(denied, /button|textarea/);
+});
+
+test("列表错误、详情错误与加载反馈名称准确且不重复发送状态", () => {
+  const list = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:false,error:"列表读取失败",scope:"list",retrying:false,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(list,/投递列表加载失败/); assert.match(list,/重新加载投递列表/);
+  assert.doesNotMatch(list,/暂无投递|尚未确认|旧报告已清除/);
+  assert.equal((list.match(/role="alert"/g)??[]).length,1);
+  const detail = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:false,error:"报告读取失败",scope:"detail",retrying:false,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(detail,/固定报告未能读取/); assert.match(detail,/返回投递列表/);
+  const loading = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:true,error:"",scope:"list",retrying:true,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(loading,/正在加载投递列表/); assert.match(loading,/aria-disabled="true"/);
+  assert.doesNotMatch(loading,/\sdisabled=""|暂无投递/);
+  const saved = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, {
+    result:replyResult("confirmed","failed"),busy:false,scope:"list",error:"列表连接失败",onRefresh:()=>{},
+  }));
+  assert.match(saved,/回复已发送，投递列表刷新失败/);
+  assert.match(saved,/重新加载投递列表/); assert.doesNotMatch(saved,/送达尚未确认/);
+});
+
+test("读取按钮加载时仍可保留焦点，但连续点击不会触发再次读取", () => {
+  let reads=0;
+  const busy=board.ReadRetryButton({busy:true,label:"重新加载投递列表",onRetry:()=>reads++});
+  assert.equal(busy.props.disabled,undefined); assert.equal(busy.props["aria-disabled"],true);
+  busy.props.onClick({currentTarget:{}});busy.props.onClick({currentTarget:{}});
+  assert.equal(reads,0);
+  const ready=board.ReadRetryButton({busy:false,label:"重新加载投递列表",onRetry:()=>reads++});
+  ready.props.onClick({currentTarget:{}});assert.equal(reads,1);
 });
 
 test("明确拒绝与未知草稿显示不同原因，均不提供重发按钮", () => {
@@ -207,6 +242,22 @@ function setup(overrides = {}) {
   }, state => snapshots.push(state));
   session.activate();
   return { session, state: () => snapshots.at(-1) ?? initialApplicationBoardState };
+}
+
+for(const [status,code,expected] of [[401,4015,"rejected"],[403,4037,"rejected"],[404,4049,"rejected"],
+  [409,4098,"rejected"],[422,4220,"rejected"],[422,4224,"rejected"],[500,5000,"unknown"],[408,4080,"unknown"]]){
+  test(`真实客户端解析HTTP ${status}/${code}后，发送结果为${expected}`,async()=>{
+    const originalFetch=globalThis.fetch;
+    let calls=0;
+    globalThis.fetch=async()=>{calls++;return new Response(JSON.stringify({code,message:"相同消息文本不参与拒绝分类",data:{},requestId:"isolated-contract"}),{status,headers:{"Content-Type":"application/json"}});};
+    try{
+      const h=setup({reply:()=>request("/applications/synthetic/reply",{method:"POST"},false)});
+      await h.session.open("a");
+      const result=await h.session.reply("continue","合成客户端契约");
+      assert.equal(result.write,expected);assert.equal(calls,1);
+      assert.equal(h.state().selected,null);
+    }finally{globalThis.fetch=originalFetch;}
+  });
 }
 
 for (const [variant, failure] of [

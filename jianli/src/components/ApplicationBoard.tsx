@@ -29,6 +29,7 @@ import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { heatmapCellClass as cellClass } from "@/lib/heatmap-cell.js";
 import { createApplicationBoardSession, initialApplicationBoardState, type ApplicationReplyResult } from "@/lib/application-board-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
+import { trackReadRetryFocus } from "@/lib/read-retry-focus";
 import ApplicationVerification from "./ApplicationVerification";
 import { activeVerificationReplyReferences, appendVerificationReplyQuestion, type VerificationReplyQuestion } from "@/lib/verification-reply-draft";
 
@@ -93,19 +94,38 @@ function Workspace({jobId}:{jobId:string}){
   // await 返回后仅当代际一致才更新草稿状态，迟到的旧回调不得把清理后产生的新草稿标为未确认。
   const [unconfirmedReply,setUnconfirmedReply]=useState(false);
   const [replyResult,setReplyResult]=useState<ApplicationReplyResult|null>(null);
+  const readFeedback=useRef<HTMLDivElement>(null);
+  const retryLock=useRef(false),retryFromToolbar=useRef(false);
+  const retryScope=useRef<"list"|"detail"|undefined>(undefined);
+  const [readRetrying,setReadRetrying]=useState(false),[readComplete,setReadComplete]=useState(false);
   const replyDraftGeneration=useRef(0);
   const [replyDraftNotice,setReplyDraftNotice]=useState("");
   const [replyQuestions,setReplyQuestions]=useState<VerificationReplyQuestion[]>([]);
   const replyReferences=activeVerificationReplyReferences(replyText,replyQuestions);
-  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);void session.refresh();},[session]);
-  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);}
-  async function refreshReply(){
+  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);void session.refresh();},[session]);
+  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);}
+  async function refreshList(source:HTMLButtonElement,toolbar=false){
+    if(retryLock.current||busy)return;
+    retryLock.current=true;retryFromToolbar.current=toolbar;retryScope.current="list";setReadRetrying(true);resetReply();
     const generation=replyDraftGeneration.current;
-    const result=await session.refreshReply();
-    if(!result.applied||replyDraftGeneration.current!==generation)return;
-    if(result.accessLost)resetReply();
-    else if(result.refresh==="complete"){setUnconfirmedReply(false);setConfirmReply(false);}
-    setReplyResult(result);
+    let applied=true;
+    const finish=trackReadRetryFocus(source,()=>readFeedback.current,()=>applied&&replyDraftGeneration.current===generation);
+    try{const refreshed=await session.refresh();applied=replyDraftGeneration.current===generation;if(applied&&refreshed)setReadComplete(true);}
+    finally{retryLock.current=false;setReadRetrying(false);finish();}
+  }
+  async function refreshReply(source:HTMLButtonElement){
+    if(retryLock.current||busy)return;
+    retryLock.current=true;retryFromToolbar.current=false;retryScope.current=state.errorScope;setReadRetrying(true);
+    let generation=replyDraftGeneration.current,applied=true;
+    const finish=trackReadRetryFocus(source,()=>readFeedback.current,()=>applied&&replyDraftGeneration.current===generation);
+    try{
+      const result=await session.refreshReply();
+      applied=result.applied&&replyDraftGeneration.current===generation;
+      if(!applied)return;
+      if(result.accessLost){resetReply();generation=replyDraftGeneration.current;}
+      else if(result.refresh==="complete"){setUnconfirmedReply(false);setConfirmReply(false);}
+      setReplyResult(result);
+    }finally{retryLock.current=false;setReadRetrying(false);finish();}
   }
   function useVerificationQuestion(question: VerificationReplyQuestion){
     const result=appendVerificationReplyQuestion(replyText,question);
@@ -174,33 +194,34 @@ function Workspace({jobId}:{jobId:string}){
   const matrixItems=compareMode ? comparison : visible;
   const matrixDimensions=Array.from(new Map(matrixItems.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   const pair=pairIds.map(id=>comparison.find(c=>c.id===id)).filter((c):c is ApplicationView=>!!c);
-  function chooseComparison(ids:string[]){setCompareIds(ids);setCompareMode(false);void session.selectComparison(ids);}
+  function chooseComparison(ids:string[]){setReadComplete(false);setCompareIds(ids);setCompareMode(false);void session.selectComparison(ids);}
   const mixedBasis=mixedComparisonBasis(matrixItems);
   const selectedOutside=filterView.selectedOutside;
-  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){filters.current=next;page.current=1;void session.filter();}
+  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){setReadComplete(false);filters.current=next;page.current=1;void session.filter();}
   function clearFilters(){setQuery("");setFocus("");setFocusLabel("");setVerdict("");setStatus("");applyFilters({q:"",status:"",requirementId:"",verdict:""});}
   // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
   // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
   useEffect(()=>{applyAnchor(items.map(i=>i.id),visible.map(i=>i.id));},[applyAnchor,items,visible]);
   const activeView=view==="report"&&selected?.report?"report":view==="compare"&&comparison.length>=2?"compare":"list";
+  const blockedDraft=unconfirmedReply||(replyResult?.write==="rejected"&&replyResult.refresh!=="complete"&&!replyResult.accessLost);
+  const replyNeedsRead=!!replyResult&&replyResult.refresh!=="complete"&&!replyResult.accessLost;
   async function open(id:string,requirementId=""){resetReply();setRadarRequirement(requirementId);setRadarSelectionId(requirementId);setRadarEvidenceExpanded(false);if(await session.open(id))setView("report");}
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
   return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="enterprise-recording-layout space-y-4"><div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-2xl font-bold">{jobTitle||items[0]?.jobTitle||"岗位候选人"}</h1>
-    <button type="button" className="btn-quiet" disabled={busy} onClick={()=>{resetReply();void session.refresh();}}>刷新授权投递</button></div><nav className="flex flex-wrap gap-2" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" className="selection-toggle" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?comparison.length<2:tab.key==="report"?!selected?.report:false} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
+    {((!error&&!replyNeedsRead&&!readRetrying)||(readRetrying&&retryFromToolbar.current))&&<ReadRetryButton busy={busy} quiet label="刷新授权投递" onRetry={source=>void refreshList(source,true)}/>}</div><nav className="flex flex-wrap gap-2" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" className="selection-toggle" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?comparison.length<2:tab.key==="report"?!selected?.report:false} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
     <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
     {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
-    {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="btn-secondary" onClick={clearFilters}>清除筛选并定位</button><button type="button" className="btn-secondary" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="btn-quiet" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
-    {error&&<p role="alert" className="panel text-rose-700">{error}{!replyResult&&" 请刷新授权投递重试，旧报告已清除。"}</p>}
-    {replyResult&&<ReplyReadFeedback result={replyResult} busy={busy} onRefresh={()=>void refreshReply()}/>}
-    {(unconfirmedReply||(replyResult?.write==="rejected"&&replyResult.refresh!=="complete"&&!replyResult.accessLost))&&<UnconfirmedReplyDraft text={replyText} rejected={replyResult?.write==="rejected"} busy={busy} onRefresh={()=>void refreshReply()} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
     <form className={`enterprise-candidate-filters ${activeView==="list"?"grid":"hidden"} gap-3`} onSubmit={event=>{event.preventDefault();applyFilters();}}>
       <div className="flex flex-wrap items-end gap-3"><label className="min-w-0 flex-1 basis-64 text-sm">查找候选人<input type="search" className="field mt-1" placeholder="姓名或报告内容" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)}/></label><button className="btn" disabled={busy}>搜索</button><button className="btn-quiet" type="button" disabled={busy} onClick={clearFilters}>重置</button></div>
       <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["","全部状态"],["submitted","尚未查看"],["viewed","已查看，未回复"],["downloaded","已下载，未回复"],["replied","已回复"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={status===value} disabled={busy} onClick={()=>{setStatus(value);applyFilters({q:query.trim(),status:value,requirementId:focus,verdict});}}>{label}</button>)}</div>
       <details><summary className="disclosure">要求与证据筛选</summary><div className="grid gap-3 py-2 lg:grid-cols-[minmax(12rem,1fr)_2fr]"><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);applyFilters({q:query.trim(),status,requirementId:id,verdict});}}/><div><p className="mb-2 text-sm">证据状态</p><div role="group" aria-label="证据状态" className="flex flex-wrap gap-2">{[["","全部"],["supported","有证据或部分支持"],["claimed_only","仅简历自述"],["gap","缺少材料"],["unsupported","暂不可评"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={verdict===value} disabled={busy} onClick={()=>{setVerdict(value);applyFilters({q:query.trim(),status,requirementId:focus,verdict:value});}}>{label}</button>)}</div></div></div></details>
     </form>
+    <div ref={readFeedback} tabIndex={-1} aria-label="读取结果" hidden={!busy&&!error&&!replyResult&&!readComplete} className="rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
+      {blockedDraft?<UnconfirmedReplyDraft text={replyText} rejected={replyResult?.write==="rejected"} busy={busy} error={error} onRefresh={source=>void refreshReply(source)} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>:replyResult?<ReplyReadFeedback result={replyResult} busy={busy} error={error} scope={state.errorScope??(readRetrying?retryScope.current:undefined)} onRefresh={source=>void refreshReply(source)}/>:<ApplicationReadFeedback busy={busy} error={error} scope={state.errorScope??state.loadingScope} retrying={readRetrying} complete={readComplete} onRefresh={source=>void refreshList(source)}/>}
+    </div>
     {activeView==="list"&&mixedBasis&&<p role="status" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{items.some(c=>c.fixedRequirementBasisComplete!==true)?"比较依据不足：部分固定报告缺少完整要求信息。当前按投递时间排列，请逐份核对。":"岗位要求或规则尺度不同。当前按投递时间排列，请分别核对固定报告。"}</p>}
     {activeView==="list"&&!items.length&&!busy&&!error&&<ApplicationEmptyState filtered={Object.values(filters.current).some(Boolean)} onClear={clearFilters}/>}
     {activeView==="list"&&!!items.length&&filterView.empty&&<CandidateFilterNotice empty selectedName={selectedOutside&&selected?identityLabel(selected.candidateName,selected.candidateId):undefined} onClear={clearFilters}/>}
@@ -326,13 +347,28 @@ export function replySendOutcome(result:ApplicationReplyResult,generationUnchang
   return result.write==="rejected"?"mark-rejected":"mark-unconfirmed";
 }
 
-export function ReplyReadFeedback({result,busy,onRefresh}:{result:ApplicationReplyResult;busy:boolean;onRefresh:()=>void}){
+export function ReadRetryButton({busy,label,onRetry,quiet=false}:{busy:boolean;label:string;onRetry:(source:HTMLButtonElement)=>void;quiet?:boolean}){
+  return <button type="button" className={`${quiet?"btn-quiet":"btn-secondary"} aria-disabled:cursor-wait aria-disabled:opacity-60`} aria-label={label} aria-disabled={busy} onClick={event=>{if(!busy)onRetry(event.currentTarget);}}>{busy?"正在读取…":label}</button>;
+}
+
+export function ApplicationReadFeedback({busy,error,scope,retrying,complete,onRefresh}:{busy:boolean;error:string;scope?:"list"|"detail";retrying:boolean;complete:boolean;onRefresh:(source:HTMLButtonElement)=>void}){
+  if(!busy&&!error&&!complete)return null;
+  if(!busy&&!error&&complete)return <p role="status" className="text-sm text-emerald-800">投递列表已更新。</p>;
+  const label=scope==="detail"?"返回投递列表":"重新加载投递列表";
+  return <section className="panel space-y-3" aria-label={scope==="detail"?"报告读取状态":"投递列表读取状态"}>
+    <h2 className="font-semibold">{busy?(scope==="detail"?"正在读取固定报告":"正在加载投递列表"):(scope==="detail"?"固定报告未能读取":"投递列表加载失败")}</h2>
+    {error&&!busy&&<p role="alert" className="text-sm text-rose-700">{error}</p>}
+    {(!!error||retrying)&&<ReadRetryButton busy={busy} label={label} onRetry={onRefresh}/>}
+  </section>;
+}
+
+export function ReplyReadFeedback({result,busy,onRefresh,error="",scope}:{result:ApplicationReplyResult;busy:boolean;onRefresh:(source:HTMLButtonElement)=>void;error?:string;scope?:"list"|"detail"}){
   if(result.write==="not_sent"||!result.applied)return null;
   if(result.write!=="confirmed"&&result.refresh!=="complete"&&!result.accessLost)return null;
   const message=result.write==="confirmed"
-    ? result.accessLost?"回复已发送；当前投递已无法访问，报告与草稿已清除。":result.refresh==="complete"?"回复已发送。":"回复已发送，最新状态刷新失败。"
+    ? result.accessLost?"回复已发送；当前投递已无法访问，报告与草稿已清除。":busy?"回复已发送，正在重新读取状态…":result.refresh==="complete"?"回复已发送。":scope==="list"?"回复已发送，投递列表刷新失败。":"回复已发送，最新状态刷新失败。"
     : result.accessLost?"当前投递已无法访问，报告与草稿已清除。":result.write==="rejected"?"本次发送被拒绝，已刷新当前回复状态，请核对下方记录。":"已刷新当前回复状态，请核对下方记录；不会自动重发。";
-  return <div role="status" className="panel flex flex-wrap items-center justify-between gap-3 text-sm"><p>{message}</p>{result.refresh==="failed"&&!result.accessLost&&<button type="button" className="btn-secondary" disabled={busy} onClick={onRefresh}>刷新回复状态</button>}</div>;
+  return <div role="status" className="panel flex flex-wrap items-center justify-between gap-3 text-sm"><div><p>{message}</p>{error&&!busy&&<p role="alert" className="mt-2 text-rose-700">{error}</p>}</div>{result.refresh==="failed"&&!result.accessLost&&<ReadRetryButton busy={busy} label={scope==="list"?"重新加载投递列表":"刷新回复状态"} onRetry={onRefresh}/>}</div>;
 }
 // 筛选只影响候选列表，不关闭已打开报告或清空未发送草稿；用可见提示避免把旧报告误认为当前筛选结果。
 export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolean;selectedName?:string;onClear:()=>void}){
@@ -345,6 +381,6 @@ export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolea
 // 会话失败清空列表与旧报告后，草稿只保留在本页组件状态：可编辑、可复制、仍限2000字；
 // 面板由未确认草稿状态（发送失败置位、resetReply 生命周期清除）控制，与正文是否为空无关，
 // 删空后仍可重新输入；不提供发送入口，不显示已送达，也不自动重发——重新发送必须先刷新并重新核对授权。
-export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:()=>void}){
-  return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p><textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<button type="button" className="btn-secondary" disabled={busy} onClick={onRefresh}>刷新回复状态</button>}</div>;
+export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh,error=""}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:(source:HTMLButtonElement)=>void;error?:string}){
+  return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p>{error&&!busy&&<p role="alert" className="text-rose-700">{error}</p>}<textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<ReadRetryButton busy={busy} label="刷新回复状态" onRetry={onRefresh}/>}</div>;
 }
