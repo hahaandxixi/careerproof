@@ -27,8 +27,10 @@ import SupportMeasureDetails from "./SupportMeasureDetails";
 import { reportModeLabel, reportSummaryText } from "@/lib/report-display";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { heatmapCellClass as cellClass } from "@/lib/heatmap-cell.js";
-import { createApplicationBoardSession, initialApplicationBoardState } from "@/lib/application-board-session";
+import { createApplicationBoardSession, initialApplicationBoardState, type ApplicationReplyResult } from "@/lib/application-board-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
+import { trackReadRetryFocus } from "@/lib/read-retry-focus";
+import { applicationBoardHistoryState, readApplicationBoardHistory, type ApplicationBoardFilters } from "@/lib/application-board-history";
 import ApplicationVerification from "./ApplicationVerification";
 import { activeVerificationReplyReferences, appendVerificationReplyQuestion, type VerificationReplyQuestion } from "@/lib/verification-reply-draft";
 
@@ -45,16 +47,23 @@ export function ApplicationEmptyState({ filtered, onClear }: { filtered: boolean
 
 export default function ApplicationBoard({jobId}:{jobId:string}){
   const {user}=useAuth();
-  return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId}/></AccessGate>;
+  return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId} ownerId={user?.id??""}/></AccessGate>;
 }
-function Workspace({jobId}:{jobId:string}){
+function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
   const workspace=useRef<HTMLDivElement>(null);
   const [view,setView]=useState<"list"|"compare"|"report">("list");
   const [jobTitle,setJobTitle]=useState("");
   useEffect(()=>{let active=true;api.getJob(jobId).then(job=>{if(active)setJobTitle(job.title);}).catch(()=>{if(active)setJobTitle("");});return()=>{active=false;};},[jobId]);
   const [heldHeight,setHeldHeight]=useState<number|undefined>(undefined);
   const page=useRef(1);
-  const filters=useRef({q:"",status:"",requirementId:"",verdict:""});
+  const filters=useRef<ApplicationBoardFilters>({q:"",status:"",requirementId:"",verdict:""});
+  const comparisonBookmark=useRef<string[]>([]);
+  const navigationReady=useRef(false);
+  const rememberNavigation=useCallback(()=>{
+    if(!navigationReady.current||window.location.pathname!==`/jobs/${jobId}/applications`)return;
+    window.history.replaceState(applicationBoardHistoryState(window.history.state,ownerId,jobId,
+      {page:page.current,filters:filters.current,comparisonIds:comparisonBookmark.current}),"",window.location.href);
+  },[ownerId,jobId]);
   const [state,setState]=useState(initialApplicationBoardState);
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,selected,error,notice,loading:busy}=state;
@@ -62,7 +71,7 @@ function Workspace({jobId}:{jobId:string}){
     list:async()=>{const id=applicationAnchorId();const result=await api.jobApplications(jobId,page.current,20,filters.current);const items=await includeApplicationTarget(result.items, api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});return {...result,items,pageItemCount:result.items.length};}, open:api.openApplication,
     detail:async id=>{const item=await api.applicationDetail(id);if(item.jobId!==jobId)throw new Error("投递不属于当前岗位");return item;},
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
-  },value=>{if(value.pagination)page.current=value.pagination.page;setState(value);}),[jobId]);
+  },value=>{if(value.pagination)page.current=value.pagination.page;if(!value.loading&&!value.paused){comparisonBookmark.current=(value.comparison??[]).map(item=>item.id);rememberNavigation();}setState(value);}),[jobId,rememberNavigation]);
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；目标被筛选条件排除时给出可执行提示，不静默失败。
   // 提示存为 string（""=无提示）：filtered-out 期间每次渲染都会重放同一 outcome，依赖 Object.is 去重，避免对象身份引发循环渲染。
   const [anchorFilterTarget,setAnchorFilterTarget]=useState("");
@@ -81,23 +90,50 @@ function Workspace({jobId}:{jobId:string}){
   const pairBookmark=useRef<{key:string;ids:string[]}>({key:"",ids:[]});
   const comparison=state.comparison??[];
   useEffect(()=>{if(busy||state.paused)return;const ids=(state.comparison??[]).map(c=>c.id);setCompareIds(previous=>previous.join()===ids.join()?previous:ids);setPairIds(previous=>{const valid=previous.filter(id=>ids.includes(id));const next=valid.length===2?valid:ids.slice(0,2);return previous.join()===next.join()?previous:next;});if(ids.length<2)setCompareMode(false);},[state.comparison,state.paused,busy]);
-  const comparisonBookmark=useRef<string[]>([]);
   comparisonBookmark.current=compareIds;
   const [radarRequirement,setRadarRequirement]=useState("");
   const [radarSelectionId,setRadarSelectionId]=useState("");
   const [radarEvidenceExpanded,setRadarEvidenceExpanded]=useState(false);
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
-  // 未确认草稿状态：发送失败时置位，只由 resetReply（刷新/离窗/换投递）清除；与正文是否为空无关，
+  // 未确认草稿状态：仅写入结果未知时置位，与后续读取失败区分；与正文是否为空无关，
   // 删空后仍可编辑重输。清理代际 replyDraftGeneration 由各清理路径递增：发送前捕获本次代际，
   // await 返回后仅当代际一致才更新草稿状态，迟到的旧回调不得把清理后产生的新草稿标为未确认。
   const [unconfirmedReply,setUnconfirmedReply]=useState(false);
+  const [replyResult,setReplyResult]=useState<ApplicationReplyResult|null>(null);
+  const readFeedback=useRef<HTMLDivElement>(null);
+  const retryLock=useRef(false),retryFromToolbar=useRef(false);
+  const retryScope=useRef<"list"|"detail"|undefined>(undefined);
+  const [readRetrying,setReadRetrying]=useState(false),[readComplete,setReadComplete]=useState(false);
   const replyDraftGeneration=useRef(0);
   const [replyDraftNotice,setReplyDraftNotice]=useState("");
   const [replyQuestions,setReplyQuestions]=useState<VerificationReplyQuestion[]>([]);
   const replyReferences=activeVerificationReplyReferences(replyText,replyQuestions);
-  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);void session.refresh();},[session]);
-  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);}
+  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);void session.refresh();},[session]);
+  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);}
+  async function refreshList(source:HTMLButtonElement,toolbar=false){
+    if(retryLock.current||busy)return;
+    retryLock.current=true;retryFromToolbar.current=toolbar;retryScope.current="list";setReadRetrying(true);resetReply();
+    const generation=replyDraftGeneration.current;
+    let applied=true;
+    const finish=trackReadRetryFocus(source,()=>readFeedback.current,()=>applied&&replyDraftGeneration.current===generation);
+    try{const refreshed=await session.refresh();applied=replyDraftGeneration.current===generation;if(applied&&refreshed)setReadComplete(true);}
+    finally{retryLock.current=false;setReadRetrying(false);finish();}
+  }
+  async function refreshReply(source:HTMLButtonElement){
+    if(retryLock.current||busy)return;
+    retryLock.current=true;retryFromToolbar.current=false;retryScope.current=state.errorScope;setReadRetrying(true);
+    let generation=replyDraftGeneration.current,applied=true;
+    const finish=trackReadRetryFocus(source,()=>readFeedback.current,()=>applied&&replyDraftGeneration.current===generation);
+    try{
+      const result=await session.refreshReply();
+      applied=result.applied&&replyDraftGeneration.current===generation;
+      if(!applied)return;
+      if(result.accessLost){resetReply();generation=replyDraftGeneration.current;}
+      else if(result.refresh==="complete"){setUnconfirmedReply(false);setConfirmReply(false);}
+      setReplyResult(result);
+    }finally{retryLock.current=false;setReadRetrying(false);finish();}
+  }
   function useVerificationQuestion(question: VerificationReplyQuestion){
     const result=appendVerificationReplyQuestion(replyText,question);
     if(result.status==="too_long"){setReplyDraftNotice("回复已接近 2000 字上限，请缩短正文后重试。");return;}
@@ -109,6 +145,14 @@ function Workspace({jobId}:{jobId:string}){
     setReplyDraftNotice("已加入可编辑草稿。请对照固定报告核对问题与引用，再确认发送。");
   }
   useEffect(()=>{
+    const restoreNavigation=()=>{
+      const saved=readApplicationBoardHistory(window.history.state,ownerId,jobId);
+      page.current=saved.page;filters.current=saved.filters;comparisonBookmark.current=saved.comparisonIds;
+      setQuery(saved.filters.q);setStatus(saved.filters.status);setFocus(saved.filters.requirementId);setFocusLabel("");setVerdict(saved.filters.verdict);
+      setCompareIds(saved.comparisonIds);setCompareMode(false);setPairIds([]);setView("list");
+      navigationReady.current=true;
+    };
+    restoreNavigation();
     session.activate();
     let alive=true;
     let releaseFrame:number|undefined;
@@ -117,7 +161,8 @@ function Workspace({jobId}:{jobId:string}){
       const height=workspace.current?.getBoundingClientRect().height;
       if(height)setHeldHeight(previous=>previous??height);
     };
-    const refresh=()=>{resetReply();setHeldHeight(undefined);void session.refresh();};
+    let restoredHistoryUrl="";
+    const refresh=()=>{if(restoredHistoryUrl===window.location.href){restoredHistoryUrl="";return;}resetReply();setHeldHeight(undefined);void session.refresh();};
     const resume=()=>{
       if(document.visibilityState!=="visible")return;
       holdLayout();resetReply();
@@ -137,6 +182,11 @@ function Workspace({jobId}:{jobId:string}){
     };
     // B-06：返回页面时 visibilitychange、focus、pageshow 紧邻触发，合并为一次刷新。
     const gate=createRefreshGate(resume);
+    const historyReturn=()=>{
+      if(window.location.pathname!==`/jobs/${jobId}/applications`)return;
+      restoredHistoryUrl=window.location.href;
+      navigationReady.current=false;session.clear();restoreNavigation();gate.reset();gate.trigger();
+    };
     const visibility=()=>{
       resetReply();
       if(document.visibilityState==="hidden"){
@@ -155,8 +205,9 @@ function Workspace({jobId}:{jobId:string}){
     window.addEventListener("pageshow",gate.trigger);
     // B-15：hashchange 是新的显式锚点导航（同页锚点链接或前进/后退），不走合并闸门；重新核对授权后由列表 effect 定位一次。
     window.addEventListener("hashchange",refresh);
-    return ()=>{alive=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
-  },[session]);
+    window.addEventListener("popstate",historyReturn);
+    return ()=>{alive=false;navigationReady.current=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);window.removeEventListener("popstate",historyReturn);};
+  },[session,ownerId,jobId]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   // Predicates are applied before server counting/pagination; local sorting must
   // not drop matches found in the fixed report's text outside visible labels.
@@ -165,32 +216,34 @@ function Workspace({jobId}:{jobId:string}){
   const matrixItems=compareMode ? comparison : visible;
   const matrixDimensions=Array.from(new Map(matrixItems.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   const pair=pairIds.map(id=>comparison.find(c=>c.id===id)).filter((c):c is ApplicationView=>!!c);
-  function chooseComparison(ids:string[]){setCompareIds(ids);setCompareMode(false);void session.selectComparison(ids);}
+  function chooseComparison(ids:string[]){setReadComplete(false);comparisonBookmark.current=ids;setCompareIds(ids);rememberNavigation();setCompareMode(false);void session.selectComparison(ids);}
   const mixedBasis=mixedComparisonBasis(matrixItems);
   const selectedOutside=filterView.selectedOutside;
-  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){filters.current=next;page.current=1;void session.filter();}
+  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){setReadComplete(false);filters.current=next;page.current=1;rememberNavigation();void session.filter();}
   function clearFilters(){setQuery("");setFocus("");setFocusLabel("");setVerdict("");setStatus("");applyFilters({q:"",status:"",requirementId:"",verdict:""});}
   // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
   // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
   useEffect(()=>{applyAnchor(items.map(i=>i.id),visible.map(i=>i.id));},[applyAnchor,items,visible]);
   const activeView=view==="report"&&selected?.report?"report":view==="compare"&&comparison.length>=2?"compare":"list";
+  const blockedDraft=unconfirmedReply||(replyResult?.write==="rejected"&&replyResult.refresh!=="complete"&&!replyResult.accessLost);
+  const replyNeedsRead=!!replyResult&&replyResult.refresh!=="complete"&&!replyResult.accessLost;
   async function open(id:string,requirementId=""){resetReply();setRadarRequirement(requirementId);setRadarSelectionId(requirementId);setRadarEvidenceExpanded(false);if(await session.open(id))setView("report");}
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
   return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="enterprise-recording-layout space-y-4"><div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-2xl font-bold">{jobTitle||items[0]?.jobTitle||"岗位候选人"}</h1>
-    <button type="button" className="btn-quiet" disabled={busy} onClick={()=>{resetReply();void session.refresh();}}>刷新授权投递</button></div><nav className="flex flex-wrap gap-2" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" className="selection-toggle" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?comparison.length<2:tab.key==="report"?!selected?.report:false} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
+    {((!error&&!replyNeedsRead&&!readRetrying)||(readRetrying&&retryFromToolbar.current))&&<ReadRetryButton busy={busy} quiet label="刷新授权投递" onRetry={source=>void refreshList(source,true)}/>}</div><nav className="flex flex-wrap gap-2" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" className="selection-toggle" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?comparison.length<2:tab.key==="report"?!selected?.report:false} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
     <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
-    {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
-    {busy&&<p role="status" className="panel">正在核对授权投递，请稍候…</p>}
+    {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;rememberNavigation();resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="btn-secondary" onClick={clearFilters}>清除筛选并定位</button><button type="button" className="btn-secondary" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="btn-quiet" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
-    {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
-    {unconfirmedReply&&<UnconfirmedReplyDraft text={replyText} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
     <form className={`enterprise-candidate-filters ${activeView==="list"?"grid":"hidden"} gap-3`} onSubmit={event=>{event.preventDefault();applyFilters();}}>
       <div className="flex flex-wrap items-end gap-3"><label className="min-w-0 flex-1 basis-64 text-sm">查找候选人<input type="search" className="field mt-1" placeholder="姓名或报告内容" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)}/></label><button className="btn" disabled={busy}>搜索</button><button className="btn-quiet" type="button" disabled={busy} onClick={clearFilters}>重置</button></div>
       <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["","全部状态"],["submitted","尚未查看"],["viewed","已查看，未回复"],["downloaded","已下载，未回复"],["replied","已回复"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={status===value} disabled={busy} onClick={()=>{setStatus(value);applyFilters({q:query.trim(),status:value,requirementId:focus,verdict});}}>{label}</button>)}</div>
       <details><summary className="disclosure">要求与证据筛选</summary><div className="grid gap-3 py-2 lg:grid-cols-[minmax(12rem,1fr)_2fr]"><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);applyFilters({q:query.trim(),status,requirementId:id,verdict});}}/><div><p className="mb-2 text-sm">证据状态</p><div role="group" aria-label="证据状态" className="flex flex-wrap gap-2">{[["","全部"],["supported","有证据或部分支持"],["claimed_only","仅简历自述"],["gap","缺少材料"],["unsupported","暂不可评"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={verdict===value} disabled={busy} onClick={()=>{setVerdict(value);applyFilters({q:query.trim(),status,requirementId:focus,verdict:value});}}>{label}</button>)}</div></div></div></details>
     </form>
+    <div ref={readFeedback} tabIndex={-1} aria-label="读取结果" hidden={!busy&&!error&&!replyResult&&!readComplete} className="rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
+      {blockedDraft?<UnconfirmedReplyDraft text={replyText} rejected={replyResult?.write==="rejected"} busy={busy} error={error} onRefresh={source=>void refreshReply(source)} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>:replyResult?<ReplyReadFeedback result={replyResult} busy={busy} error={error} scope={state.errorScope??(readRetrying?retryScope.current:undefined)} onRefresh={source=>void refreshReply(source)}/>:<ApplicationReadFeedback busy={busy} error={error} scope={state.errorScope??state.loadingScope} retrying={readRetrying} complete={readComplete} onRefresh={source=>void refreshList(source)}/>}
+    </div>
     {activeView==="list"&&mixedBasis&&<p role="status" className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{items.some(c=>c.fixedRequirementBasisComplete!==true)?"比较依据不足：部分固定报告缺少完整要求信息。当前按投递时间排列，请逐份核对。":"岗位要求或规则尺度不同。当前按投递时间排列，请分别核对固定报告。"}</p>}
     {activeView==="list"&&!items.length&&!busy&&!error&&<ApplicationEmptyState filtered={Object.values(filters.current).some(Boolean)} onClear={clearFilters}/>}
     {activeView==="list"&&!!items.length&&filterView.empty&&<CandidateFilterNotice empty selectedName={selectedOutside&&selected?identityLabel(selected.candidateName,selected.candidateId):undefined} onClear={clearFilters}/>}
@@ -202,7 +255,7 @@ function Workspace({jobId}:{jobId:string}){
       <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarSelectionId} onRequirementChange={id=>{setRadarSelectionId(id);setRadarEvidenceExpanded(false);}} evidenceExpanded={radarEvidenceExpanded} onEvidenceExpandedChange={setRadarEvidenceExpanded} materials={selected.report.materials} aiFallbackUsed={selected.report.aiFallbackUsed}/>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">企业核验建议</summary><div className="mt-4"><ApplicationVerification key={`${selected.id}:${selected.report.id}`} applicationId={selected.id} report={selected.report} requirementComparison={selected.requirementComparison} onUnavailable={verificationUnavailable} onUseQuestion={selected.status!=="replied"&&!busy ? useVerificationQuestion : undefined}/></div></details>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><ul className="mt-4 space-y-3">{selected.report.items.map(item=><SavedRequirementDetail key={item.requirementId} item={item} report={selected.report!}/>)}</ul></details>
-      {selected.status!=="replied"&&<div className="space-y-3 border-t pt-4">
+      {selected.status!=="replied"&&replyResult?.write!=="confirmed"&&<div className="space-y-3 border-t pt-4">
         <h3 className="font-semibold">发送站内回复</h3>
         <p className="rounded-lg bg-slate-50 p-3 text-sm">收件人：<strong><IdentityName name={selected.candidateName} identityId={selected.candidateId}/></strong></p>
         <p className="text-xs text-slate-500">发送后将直接显示给该学生，本期不可覆盖。</p>
@@ -211,7 +264,7 @@ function Workspace({jobId}:{jobId:string}){
         <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="btn-quiet btn-compact shrink-0" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
-        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const sent=await session.reply(replyKind,text,references);const outcome=replySendOutcome(sent,replyDraftGeneration.current===generation);if(outcome==="reset")resetReply();else if(outcome==="mark-unconfirmed")setUnconfirmedReply(true);}}>确认发送站内回复</button>
+        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const result=await session.reply(replyKind,text,references);const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);if(outcome==="ignore")return;if(outcome==="reset")resetReply();else{setConfirmReply(false);setUnconfirmedReply(outcome==="mark-unconfirmed");}setReplyResult(result);}}>确认发送站内回复</button>
       </div>}
       <ApplicationReply application={selected} sent/>
     </details>}
@@ -307,12 +360,37 @@ export function SelectedRequirementEvidence({ application, requirementId }: { ap
 export function applyReplyDraftEdit(text:string,edit:(text:string)=>void,confirm:(on:boolean)=>void){
   edit(text);confirm(false);
 }
-// 发送完成后的失败草稿归属规则：清理代际在发送期间未变，成功才重置、失败才标记未确认；
+// 写入回执与读取结果分别处理；读取失败不得抹去已确认的提交。
 // 迟到的旧回调（等待期间发生过清理，新草稿可能已产生）一律忽略，不得改变新状态。
-export type ReplySendOutcome="reset"|"mark-unconfirmed"|"ignore";
-export function replySendOutcome(sent:boolean,generationUnchanged:boolean):ReplySendOutcome{
-  if(!generationUnchanged)return "ignore";
-  return sent?"reset":"mark-unconfirmed";
+export type ReplySendOutcome="reset"|"mark-rejected"|"mark-unconfirmed"|"ignore";
+export function replySendOutcome(result:ApplicationReplyResult,generationUnchanged:boolean):ReplySendOutcome{
+  if(!generationUnchanged||!result.applied||result.write==="not_sent")return "ignore";
+  if(result.accessLost||result.write==="confirmed")return "reset";
+  return result.write==="rejected"?"mark-rejected":"mark-unconfirmed";
+}
+
+export function ReadRetryButton({busy,label,onRetry,quiet=false}:{busy:boolean;label:string;onRetry:(source:HTMLButtonElement)=>void;quiet?:boolean}){
+  return <button type="button" className={`${quiet?"btn-quiet":"btn-secondary"} aria-disabled:cursor-wait aria-disabled:opacity-60`} aria-label={label} aria-disabled={busy} onClick={event=>{if(!busy)onRetry(event.currentTarget);}}>{busy?"正在读取…":label}</button>;
+}
+
+export function ApplicationReadFeedback({busy,error,scope,retrying,complete,onRefresh}:{busy:boolean;error:string;scope?:"list"|"detail";retrying:boolean;complete:boolean;onRefresh:(source:HTMLButtonElement)=>void}){
+  if(!busy&&!error&&!complete)return null;
+  if(!busy&&!error&&complete)return <p role="status" className="text-sm text-emerald-800">投递列表已更新。</p>;
+  const label=scope==="detail"?"返回投递列表":"重新加载投递列表";
+  return <section className="panel space-y-3" aria-label={scope==="detail"?"报告读取状态":"投递列表读取状态"}>
+    <h2 className="font-semibold">{busy?(scope==="detail"?"正在读取固定报告":"正在加载投递列表"):(scope==="detail"?"固定报告未能读取":"投递列表加载失败")}</h2>
+    {error&&!busy&&<p role="alert" className="text-sm text-rose-700">{error}</p>}
+    {(!!error||retrying)&&<ReadRetryButton busy={busy} label={label} onRetry={onRefresh}/>}
+  </section>;
+}
+
+export function ReplyReadFeedback({result,busy,onRefresh,error="",scope}:{result:ApplicationReplyResult;busy:boolean;onRefresh:(source:HTMLButtonElement)=>void;error?:string;scope?:"list"|"detail"}){
+  if(result.write==="not_sent"||!result.applied)return null;
+  if(result.write!=="confirmed"&&result.refresh!=="complete"&&!result.accessLost)return null;
+  const message=result.write==="confirmed"
+    ? result.accessLost?"回复已发送；当前投递已无法访问，报告与草稿已清除。":busy?"回复已发送，正在重新读取状态…":result.refresh==="complete"?"回复已发送。":scope==="list"?"回复已发送，投递列表刷新失败。":"回复已发送，最新状态刷新失败。"
+    : result.accessLost?"当前投递已无法访问，报告与草稿已清除。":result.write==="rejected"?"本次发送被拒绝，已刷新当前回复状态，请核对下方记录。":"已刷新当前回复状态，请核对下方记录；不会自动重发。";
+  return <div role="status" className="panel flex flex-wrap items-center justify-between gap-3 text-sm"><div><p>{message}</p>{error&&!busy&&<p role="alert" className="mt-2 text-rose-700">{error}</p>}</div>{result.refresh==="failed"&&!result.accessLost&&<ReadRetryButton busy={busy} label={scope==="list"?"重新加载投递列表":"刷新回复状态"} onRetry={onRefresh}/>}</div>;
 }
 // 筛选只影响候选列表，不关闭已打开报告或清空未发送草稿；用可见提示避免把旧报告误认为当前筛选结果。
 export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolean;selectedName?:string;onClear:()=>void}){
@@ -325,6 +403,6 @@ export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolea
 // 会话失败清空列表与旧报告后，草稿只保留在本页组件状态：可编辑、可复制、仍限2000字；
 // 面板由未确认草稿状态（发送失败置位、resetReply 生命周期清除）控制，与正文是否为空无关，
 // 删空后仍可重新输入；不提供发送入口，不显示已送达，也不自动重发——重新发送必须先刷新并重新核对授权。
-export function UnconfirmedReplyDraft({text,onEdit}:{text:string;onEdit:(nextText:string)=>void}){
-  return <div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认，平台不会自动重发。以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p><textarea className="field" maxLength={2000} value={text} onChange={e=>onEdit(e.target.value)} aria-label="未确认发送的回复草稿"/></div>;
+export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh,error=""}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:(source:HTMLButtonElement)=>void;error?:string}){
+  return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p>{error&&!busy&&<p role="alert" className="text-rose-700">{error}</p>}<textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<ReadRetryButton busy={busy} label="刷新回复状态" onRetry={onRefresh}/>}</div>;
 }

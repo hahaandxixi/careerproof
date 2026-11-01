@@ -51,6 +51,8 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const board = await import(pathToFileURL(path.join(SRC, "components/ApplicationBoard.tsx")).href);
 const { createApplicationBoardSession, initialApplicationBoardState } = await import(
   pathToFileURL(path.join(SRC, "lib/application-board-session.ts")).href);
+const replyResult = (write, refresh = "not_attempted", extra = {}) => ({ write, refresh, applied: true, accessLost: false, ...extra });
+const {request} = await import(pathToFileURL(path.join(SRC,"lib/api/client.ts")).href);
 
 function findTextareas(node, found = []) {
   if (!node || typeof node !== "object") return found;
@@ -114,16 +116,83 @@ test("旧失败→清理→新草稿→旧回调迟到：代际不一致一律�
   const oldGeneration = generation;
   cleanup();
   cleanup();
-  const outcome = board.replySendOutcome(false, generation === oldGeneration);
+  const outcome = board.replySendOutcome(replyResult("unknown"), generation === oldGeneration);
   assert.equal(outcome, "ignore", "迟到的旧失败回调不得把新草稿标为未确认");
   assert.equal(unconfirmed, false);
   // 旧发送以成功结束同样不得清掉清理后产生的新草稿状态
-  assert.equal(board.replySendOutcome(true, generation === oldGeneration), "ignore");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "complete"), generation === oldGeneration), "ignore");
 });
 
-test("代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态", () => {
-  assert.equal(board.replySendOutcome(false, true), "mark-unconfirmed");
-  assert.equal(board.replySendOutcome(true, true), "reset");
+test("代际一致才处理写入结果：未知、拒绝、成功及读失败不混淆", () => {
+  assert.equal(board.replySendOutcome(replyResult("unknown"), true), "mark-unconfirmed");
+  assert.equal(board.replySendOutcome(replyResult("rejected"), true), "mark-rejected");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "complete"), true), "reset");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "failed"), true), "reset");
+  assert.equal(board.replySendOutcome(replyResult("unknown", "failed", {accessLost:true}), true), "reset", "失去授权必须清理旧草稿");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "failed", {applied:false}), true), "ignore");
+  assert.equal(board.replySendOutcome(replyResult("not_sent"), true), "ignore");
+});
+
+test("成功写入后刷新失败：真实反馈显示已发送，只提供读取入口", () => {
+  let reads = 0;
+  const props = {result:replyResult("confirmed", "failed"), busy:false, onRefresh:()=>{reads++;}};
+  const html = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, props));
+  assert.match(html, /回复已发送，最新状态刷新失败/);
+  assert.match(html, /刷新回复状态/);
+  assert.doesNotMatch(html, /送达尚未确认|textarea|确认发送站内回复/);
+  const feedback = board.ReplyReadFeedback(props);
+  const element = feedback.props.children.find(node => node?.type === board.ReadRetryButton);
+  const button = board.ReadRetryButton(element.props);
+  button.props.onClick({currentTarget:{}}); assert.equal(reads, 1);
+  const denied = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, {...props,result:replyResult("confirmed", "failed", {accessLost:true})}));
+  assert.match(denied, /回复已发送；当前投递已无法访问/);
+  assert.doesNotMatch(denied, /button|textarea/);
+});
+
+test("列表错误、详情错误与加载反馈名称准确且不重复发送状态", () => {
+  const list = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:false,error:"列表读取失败",scope:"list",retrying:false,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(list,/投递列表加载失败/); assert.match(list,/重新加载投递列表/);
+  assert.doesNotMatch(list,/暂无投递|尚未确认|旧报告已清除/);
+  assert.equal((list.match(/role="alert"/g)??[]).length,1);
+  const detail = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:false,error:"报告读取失败",scope:"detail",retrying:false,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(detail,/固定报告未能读取/); assert.match(detail,/返回投递列表/);
+  const loading = renderToStaticMarkup(React.createElement(board.ApplicationReadFeedback, {
+    busy:true,error:"",scope:"list",retrying:true,complete:false,onRefresh:()=>{},
+  }));
+  assert.match(loading,/正在加载投递列表/); assert.match(loading,/aria-disabled="true"/);
+  assert.doesNotMatch(loading,/\sdisabled=""|暂无投递/);
+  const saved = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, {
+    result:replyResult("confirmed","failed"),busy:false,scope:"list",error:"列表连接失败",onRefresh:()=>{},
+  }));
+  assert.match(saved,/回复已发送，投递列表刷新失败/);
+  assert.match(saved,/重新加载投递列表/); assert.doesNotMatch(saved,/送达尚未确认/);
+});
+
+test("读取按钮加载时仍可保留焦点，但连续点击不会触发再次读取", () => {
+  let reads=0;
+  const busy=board.ReadRetryButton({busy:true,label:"重新加载投递列表",onRetry:()=>reads++});
+  assert.equal(busy.props.disabled,undefined); assert.equal(busy.props["aria-disabled"],true);
+  busy.props.onClick({currentTarget:{}});busy.props.onClick({currentTarget:{}});
+  assert.equal(reads,0);
+  const ready=board.ReadRetryButton({busy:false,label:"重新加载投递列表",onRetry:()=>reads++});
+  ready.props.onClick({currentTarget:{}});assert.equal(reads,1);
+});
+
+test("明确拒绝与未知草稿显示不同原因，均不提供重发按钮", () => {
+  for (const rejected of [false,true]) {
+    const html = renderToStaticMarkup(React.createElement(board.UnconfirmedReplyDraft, {
+      text:"可编辑的草稿", rejected, onEdit:()=>{}, onRefresh:()=>{}, busy:false,
+    }));
+    assert.match(html, rejected ? /本次发送被拒绝/ : /回复是否送达尚未确认/);
+    if (rejected) assert.doesNotMatch(html, /送达尚未确认/);
+    assert.match(html, /刷新回复状态/);
+    assert.doesNotMatch(html, /确认发送站内回复/);
+    assert.equal((html.match(/<button/g)??[]).length, 1);
+  }
 });
 
 test("筛选空结果或已打开报告在筛选外时，提示原因、保留报告并给出清除入口", () => {
@@ -175,6 +244,22 @@ function setup(overrides = {}) {
   return { session, state: () => snapshots.at(-1) ?? initialApplicationBoardState };
 }
 
+for(const [status,code,expected] of [[401,4015,"rejected"],[403,4037,"rejected"],[404,4049,"rejected"],
+  [409,4098,"rejected"],[422,4220,"rejected"],[422,4224,"rejected"],[500,5000,"unknown"],[408,4080,"unknown"]]){
+  test(`真实客户端解析HTTP ${status}/${code}后，发送结果为${expected}`,async()=>{
+    const originalFetch=globalThis.fetch;
+    let calls=0;
+    globalThis.fetch=async()=>{calls++;return new Response(JSON.stringify({code,message:"相同消息文本不参与拒绝分类",data:{},requestId:"isolated-contract"}),{status,headers:{"Content-Type":"application/json"}});};
+    try{
+      const h=setup({reply:()=>request("/applications/synthetic/reply",{method:"POST"},false)});
+      await h.session.open("a");
+      const result=await h.session.reply("continue","合成客户端契约");
+      assert.equal(result.write,expected);assert.equal(calls,1);
+      assert.equal(h.state().selected,null);
+    }finally{globalThis.fetch=originalFetch;}
+  });
+}
+
 for (const [variant, failure] of [
   ["请求失败", new Error("注入请求失败（合成错误）")],
   ["响应丢失（服务器已收到）", new Error("响应丢失（合成错误）")],
@@ -187,7 +272,8 @@ for (const [variant, failure] of [
     });
     await h.session.open("a");
     assert.equal(openCalls, 1);
-    assert.equal(await h.session.reply("continue", `${variant}前写好的草稿`, []), false);
+    const result = await h.session.reply("continue", `${variant}前写好的草稿`, []);
+    assert.equal(result.write, "unknown"); assert.equal(result.refresh, "not_attempted");
     // 留出事件循环：若存在自动重发或后台重试，会在此显现为第二次 reply 调用。
     await new Promise(resolve => setImmediate(resolve));
     await new Promise(resolve => setImmediate(resolve));

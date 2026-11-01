@@ -223,12 +223,18 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
             )
         ).json()["data"]["id"]
         assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 409
-        assert (
-            await hr.post(
-                f"/api/v1/applications/{aid}/reply",
-                json={"kind": "interview", "text": "合成面试邀请"},
+        payload = {"kind": "interview", "text": "合成面试邀请"}
+        async with AsyncClient(
+            transport=ASGITransport(app=jobs_db[0]), base_url="http://test"
+        ) as anonymous:
+            unauthenticated = await anonymous.post(
+                f"/api/v1/applications/{aid}/reply", json=payload
             )
-        ).status_code == 409
+            assert (unauthenticated.status_code, unauthenticated.json()["code"]) == (401, 4015)
+        denied = await other.post(f"/api/v1/applications/{aid}/reply", json=payload)
+        assert (denied.status_code, denied.json()["code"]) == (404, 4049)
+        unopened = await hr.post(f"/api/v1/applications/{aid}/reply", json=payload)
+        assert (unopened.status_code, unopened.json()["code"]) == (409, 4098)
         await hr.post(f"/api/v1/applications/{aid}/view")
         file = await hr.post(f"/api/v1/applications/{aid}/resume-download")
         assert (
@@ -236,11 +242,10 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
             and file.content == raw
             and "filename*=UTF-8" in file.headers["content-disposition"]
         )
-        assert (
-            await hr.post(
-                f"/api/v1/applications/{aid}/reply", json={"kind": "hired", "text": "非法状态"}
-            )
-        ).status_code == 422
+        invalid = await hr.post(
+            f"/api/v1/applications/{aid}/reply", json={"kind": "hired", "text": "非法状态"}
+        )
+        assert (invalid.status_code, invalid.json()["code"]) == (422, 4220)
         replied = await hr.post(
             f"/api/v1/applications/{aid}/reply",
             json={"kind": "continue", "text": "请补充运行记录，合成测试用。"},
@@ -328,6 +333,7 @@ async def test_reply_links_only_to_its_frozen_requirement_and_citations(
                 "kind": "continue", "text": text_value, "references": [reference]
             })
             assert rejected.status_code == 422
+            assert rejected.json()["code"] == 4224
         sent = await hr.post(path, json={
             "kind": "continue", "text": text_body,
             "references": [{"requirementId": requirement_id, "citationIds": ["R1-E1"]}],

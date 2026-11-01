@@ -10,6 +10,8 @@ export interface ApplicationBoardState {
   pagination?: PaginationInfo;
   comparison?: ApplicationView[];
   paused?: boolean;
+  loadingScope?: "list" | "detail";
+  errorScope?: "list" | "detail";
 }
 
 export const initialApplicationBoardState: ApplicationBoardState = {
@@ -30,6 +32,23 @@ export interface ApplicationBoardResume {
   selectedId: string | null;
 }
 
+export interface ApplicationReplyResult {
+  write: "confirmed" | "rejected" | "unknown" | "not_sent";
+  refresh: "complete" | "failed" | "not_attempted";
+  applied: boolean;
+  accessLost: boolean;
+}
+
+const noReply: ApplicationReplyResult = { write: "not_sent", refresh: "not_attempted", applied: false, accessLost: false };
+const statusOf = (error: unknown) => (error as { status?: number } | null)?.status;
+const accessDenied = (error: unknown) => [401, 403, 404].includes(statusOf(error) ?? 0);
+function replyRejected(error: unknown) {
+  const { status, code } = (error ?? {}) as { status?: number; code?: number };
+  // Only structured API rejections issued before commit establish non-delivery.
+  // A timeout, 5xx, malformed success or unrecognized conflict remains unknown.
+  return [401, 403, 404, 409, 422].includes(status ?? 0) && typeof code === "number" && Math.floor(code / 10) === status;
+}
+
 // List membership must be rechecked before displaying an opened report. A late
 // response from before refresh, tab hiding, or unmount must never restore it.
 export function createApplicationBoardSession(
@@ -44,6 +63,8 @@ export function createApplicationBoardSession(
   let comparisonIds: string[] = [];
   let comparisonCache = new Map<string, ApplicationView>();
   let resuming: Promise<ApplicationBoardResume | null> | null = null;
+  let replyInFlight = false;
+  let pendingReply: { saved: ApplicationView; write: ApplicationReplyResult["write"] } | null = null;
   const set = (next: ApplicationBoardState) => {
     state = { ...next, paused: suspended, comparison: next.loading || suspended ? [] : comparisonIds.flatMap(id => comparisonCache.get(id) ?? []) };
     publish(state);
@@ -68,23 +89,30 @@ export function createApplicationBoardSession(
   }
 
   async function run(
-    operation: () => Promise<{ selected?: ApplicationView; deliver?: () => void; notice?: string }>,
+    operation: (ticket: number) => Promise<{ selected?: ApplicationView; deliver?: () => void; notice?: string }>,
     selectedId?: string,
     refreshSelectedMetadata = false,
+    onFailure?: (error: unknown) => void,
+    initialScope: "list" | "detail" = selectedId ? "detail" : "list",
   ) {
     if (!active || suspended) return false;
     retained = null;
     resumeWanted = false;
+    pendingReply = null;
     const ticket = ++generation;
-    set({ ...initialApplicationBoardState });
+    let scope = initialScope;
+    set({ ...initialApplicationBoardState, loadingScope: scope });
     try {
-      const result = await operation();
+      const result = await operation(ticket);
       if (!current(ticket)) return false;
       if (result.selected && comparisonIds.includes(result.selected.id)) comparisonCache.set(result.selected.id, result.selected);
       const comparisonCount = comparisonIds.length;
+      scope = "list";
+      if (state.loadingScope !== scope) set({ ...state, loadingScope: scope });
       const list = unpackList(await api.list());
       const { items } = list;
       if (!current(ticket)) return false;
+      scope = "detail";
       await recheckComparison(items, ticket);
       if (!current(ticket)) return false;
       let authoritative = items.find(item => item.id === selectedId);
@@ -96,6 +124,10 @@ export function createApplicationBoardSession(
         if (!current(ticket)) return false;
         if (authoritative.id !== selectedId) throw new Error("投递授权核对结果不一致");
         stillAuthorized = true;
+      }
+      if (authoritative && (authoritative.status === "withdrawn" || (result.selected &&
+          (authoritative.jobId !== result.selected.jobId || authoritative.reportId !== result.selected.reportId)))) {
+        throw Object.assign(new Error("投递授权或固定报告已变化，请重新核对。"), { status: 403 });
       }
       if (stillAuthorized) result.deliver?.();
       if (!current(ticket)) return false;
@@ -111,15 +143,49 @@ export function createApplicationBoardSession(
       return stillAuthorized;
     } catch (error) {
       if (current(ticket)) {
+        onFailure?.(error);
         comparisonCache.clear(); comparisonIds = [];
-        set({ items: [], selected: null, loading: false, error: api.errorMessage(error), notice: "" });
+        set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: scope, notice: "" });
       }
       return false;
     }
   }
 
+  async function runReply(saved: ApplicationView, write: ApplicationReplyResult["write"], send?: () => Promise<ApplicationView>): Promise<ApplicationReplyResult> {
+    let accessLost = false;
+    const reading = run(async ticket => {
+      if (send) {
+        try {
+          const receipt = await send();
+          if (receipt.id !== saved.id || receipt.jobId !== saved.jobId || receipt.reportId !== saved.reportId || receipt.status !== "replied") {
+            throw new Error("回复响应无法确认，请先核对当前回复状态。");
+          }
+          write = "confirmed";
+        } catch (error) {
+          write = replyRejected(error) ? "rejected" : "unknown";
+          throw error;
+        }
+      }
+      if (!current(ticket)) return {};
+      if (!api.detail) throw new Error("回复状态暂时无法读取，请刷新授权投递核对。");
+      // GET detail checks access without recording a new viewed event. Only the
+      // already opened immutable report may be reused, never stale reply metadata.
+      const fresh = await api.detail(saved.id);
+      if (fresh.id !== saved.id || fresh.jobId !== saved.jobId || fresh.status === "withdrawn" || !matchingReport(saved, fresh)) {
+        throw Object.assign(new Error("投递授权或固定报告已变化，请重新核对。"), { status: 403 });
+      }
+      return { selected: { ...fresh, report: saved.report } };
+    }, saved.id, true, error => { accessLost = accessDenied(error); });
+    const ticket = generation;
+    const refreshed = await reading;
+    const applied = current(ticket);
+    if (applied && !refreshed && !accessLost) pendingReply = { saved, write };
+    return { write, refresh: refreshed ? "complete" : send && write !== "confirmed" ? "not_attempted" : "failed", applied, accessLost };
+  }
+
   function resume(ids: string[] = []): Promise<ApplicationBoardResume | null> {
     if (!active) return Promise.resolve(null);
+    pendingReply = null;
     suspended = false;
     resumeWanted = true;
     comparisonIds = [...new Set(ids)].slice(0, 4);
@@ -132,7 +198,7 @@ export function createApplicationBoardSession(
         retained ??= state.selected;
         const saved = retained;
         const requested = [...new Set([...comparisonIds, ...(saved ? [saved.id] : [])])];
-        set({ ...initialApplicationBoardState });
+        set({ ...initialApplicationBoardState, loadingScope: "list" });
         try {
           const list = unpackList(await api.list());
           if (!current(ticket)) continue;
@@ -181,8 +247,8 @@ export function createApplicationBoardSession(
           resumeWanted = false;
           retained = null;
           comparisonCache.clear(); comparisonIds = [];
-          set({ items: [], selected: null, loading: false, error: api.errorMessage(error),
-            notice: "授权核对未完成，已清除报告与选中状态。请刷新重试。" });
+          set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: "list",
+            notice: saved || requested.length ? "授权未确认，已清除报告和对照。" : "" });
           return { authorizedIds: [], selectedId: null };
         }
       }
@@ -198,16 +264,18 @@ export function createApplicationBoardSession(
       suspended = true;
       resumeWanted = false;
       ++generation;
+      pendingReply = null;
       if (active) set({ items: [], selected: null, loading: false, error: "", notice: "" });
     },
     resume,
     clear() {
       ++generation;
       retained = null; resumeWanted = false; suspended = false;
+      pendingReply = null;
       comparisonCache.clear(); comparisonIds = [];
       if (active) set({ items: [], selected: null, loading: false, error: "", notice: "" });
     },
-    dispose() { active = false; ++generation; retained = null; resumeWanted = false; comparisonCache.clear(); comparisonIds = []; },
+    dispose() { active = false; ++generation; retained = null; pendingReply = null; resumeWanted = false; comparisonCache.clear(); comparisonIds = []; },
     selectComparison(ids: string[]) {
       if (!active || suspended) return Promise.resolve(false);
       comparisonIds = [...new Set(ids)].slice(0, 4);
@@ -250,13 +318,17 @@ export function createApplicationBoardSession(
         };
       }, id);
     },
-    reply(kind: string, text: string, references: ApplicationView["replyReferences"] = []) {
-      const id = state.selected?.id;
-      if (!id || state.loading) return Promise.resolve(false);
-      return run(async () => {
-        await api.reply(id, kind, text, references);
-        return { selected: await api.open(id) };
-      }, id);
+    async reply(kind: string, text: string, references: ApplicationView["replyReferences"] = []): Promise<ApplicationReplyResult> {
+      const saved = state.selected;
+      if (!active || suspended || !saved || state.loading || replyInFlight || pendingReply) return noReply;
+      replyInFlight = true;
+      try { return await runReply(saved, "unknown", () => api.reply(saved.id, kind, text, references)); }
+      finally { replyInFlight = false; }
+    },
+    async refreshReply(): Promise<ApplicationReplyResult> {
+      const pending = pendingReply;
+      if (!active || suspended || !pending || state.loading || replyInFlight) return noReply;
+      return runReply(pending.saved, pending.write);
     },
   };
 }
