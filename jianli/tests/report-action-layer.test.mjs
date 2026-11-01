@@ -47,6 +47,7 @@ const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
+const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra });
 const advice = (value, extra = {}) => ({ requirementId: value.requirementId, requirementTitle: value.requirementTitle, skill: value.skill, weight: value.weight, currentLevel: null, source: "rules", action: value.evidenceLevelGap, evidenceGap: value.evidenceLevelGap, citationIds: [], ...extra });
@@ -176,15 +177,19 @@ test("a validated structured plan without an actionPlan entry never claims that 
  assert.equal(JSON.stringify(value),before);
 });
 
-test("action panel has no duplicate evidence shortcut; the article owns the single source disclosure", () => {
+test("action panel has no duplicate evidence shortcut; the article owns a single linked source reader", () => {
  for(const verdict of ["gap","partial","supported","unsupported"]) {
   const html=render(report([item("source",verdict)]));
   assert.ok(!html.includes("核对判断依据与来源"));
   assert.ok(!html.includes("核对具体证据"));
  }
  const detail=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
- assert.ok(detail.includes("查看判断依据与来源引用（"));
+ assert.equal(count(detail,"<ReportSourcePanel "),1);
  assert.ok(!detail.includes("查看 {item.evidenceList.length} 条来源证据"));
+ const entry=item("source","supported",{evidenceList:[{citationId:"S1",filePath:"app.py",lineStart:4,lineEnd:5,snippet:"saved-source",contextComplete:true}]});
+ const html=renderToStaticMarkup(React.createElement(SourcePanel,{report:report([entry]),item:entry}));
+ assert.equal(count(html,'aria-label="source的证据来源"'),1);
+ assert.ok(html.includes('id="citation-S1"')&&html.includes("saved-source")&&html.includes("来源（1）"));
 });
 
 test("guidance can be copied and used for a new upload without creating a task", () => {

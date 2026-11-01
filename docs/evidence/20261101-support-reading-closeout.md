@@ -12,6 +12,8 @@
 
 整合定向运行 **86通过、0失败、0跳过**，不与分批重叠数量相加。目标ESLint、类型及两份独立生产构建通过。命令：
 
+首次远端运行 `41260910325` 的前端全套为590通过/4失败/0跳过：candidate-selection两项的自定义加载器未登记新增换算模块；report-action-layer仍断言已替换的来源入口文字；score-labels仍断言旧分值说明。补齐真实模块映射，将旧文字断言改为单一来源阅读区、保留原引用/原值及新指数的等价行为验证，原选择/颜色/等级/比例边界断言保留。仅对应三个文件33项本地回归通过；生产源码未再修改、不重复构建。最终远端结果仍以PR最后提交Checks为准，首次失败日志保留在本机。
+
 ```powershell
 cd jianli
 node --experimental-strip-types --test tests/support-index.test.mjs tests/skill-radar.test.mjs tests/skill-radar-render.test.mjs tests/history-enterprise.test.mjs tests/evidence-display.test.mjs tests/application-comparison.test.mjs tests/application-board-visibility.test.mjs tests/heatmap-demo.test.mjs tests/report-reader.test.mjs tests/desktop-reading.test.mjs
