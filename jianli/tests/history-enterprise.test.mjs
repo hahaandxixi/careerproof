@@ -228,6 +228,7 @@ test('two fixed reports use identity colors and linked requirement columns, with
  assert.equal((html.match(/<details[^>]*\bopen[= >]/g)||[]).length,1);
  assert.match(html,/材料支持度指数 61.5/);assert.match(html,/原始分值 40/);assert.match(html,/原始分值 0/);
  assert.match(html,/实线 \/ 大圆点/);assert.match(html,/虚线 \/ 小圆点/);
+ assert.match(html,/pair-reading-grid/);
 });
 
 test("entire pair resolves a shared cap while retaining exact per-axis version compatibility",()=>{
@@ -252,6 +253,7 @@ test('mismatching basis or axes never overlay; selection alone never claims a re
  for(const changed of [{...b,comparisonBasis:'other'}, {...b,dimensions:b.dimensions.map((d,i)=>i===1?{...d,weight:5}:d)}, {...b,dimensions:b.dimensions.map((d,i)=>i===1?{...d,requirementId:'different'}:d)}]){
  assert.equal(comparableRadarAxes(a,changed),false);
  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,changed],busy:false,onOpen(){}}));assert.match(html,/比较依据不同/);assert.doesNotMatch(html,/双人同轴材料支持度雷达/);assert.match(html,/合成A的岗位要求/);assert.match(html,/合成B的岗位要求/);
+ assert.doesNotMatch(html,/pair-reading-grid/);
  }
  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,{...b,report:undefined}],busy:false,onOpen(){}}));assert.match(html,/打开两份授权报告/);assert.doesNotMatch(html,/A-r1-source|双人同轴材料支持度雷达/);
 });

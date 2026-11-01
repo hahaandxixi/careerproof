@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { adoptedReportExplanation } from "@/lib/report-workspace";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
@@ -56,5 +58,3 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
     })}</div> : <p className="mt-3 text-sm leading-7 text-slate-600">{item.verdict === "unsupported" ? "当前规则未覆盖此要求，请人工核对保存材料。" : "当前报告没有对应的可定位引用，不能据此认定没有这项能力。"}</p>}
   </section>;
 }
-"use client";
-import { useEffect, useState } from "react";
