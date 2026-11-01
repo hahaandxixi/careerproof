@@ -27,7 +27,7 @@ import SupportMeasureDetails from "./SupportMeasureDetails";
 import { reportModeLabel, reportSummaryText } from "@/lib/report-display";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { heatmapCellClass as cellClass } from "@/lib/heatmap-cell.js";
-import { createApplicationBoardSession, initialApplicationBoardState } from "@/lib/application-board-session";
+import { createApplicationBoardSession, initialApplicationBoardState, type ApplicationReplyResult } from "@/lib/application-board-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
 import ApplicationVerification from "./ApplicationVerification";
 import { activeVerificationReplyReferences, appendVerificationReplyQuestion, type VerificationReplyQuestion } from "@/lib/verification-reply-draft";
@@ -88,16 +88,25 @@ function Workspace({jobId}:{jobId:string}){
   const [radarEvidenceExpanded,setRadarEvidenceExpanded]=useState(false);
   const [verdict,setVerdict]=useState("");
   const [replyKind,setReplyKind]=useState("continue"),[replyText,setReplyText]=useState(""),[confirmReply,setConfirmReply]=useState(false);
-  // 未确认草稿状态：发送失败时置位，只由 resetReply（刷新/离窗/换投递）清除；与正文是否为空无关，
+  // 未确认草稿状态：仅写入结果未知时置位，与后续读取失败区分；与正文是否为空无关，
   // 删空后仍可编辑重输。清理代际 replyDraftGeneration 由各清理路径递增：发送前捕获本次代际，
   // await 返回后仅当代际一致才更新草稿状态，迟到的旧回调不得把清理后产生的新草稿标为未确认。
   const [unconfirmedReply,setUnconfirmedReply]=useState(false);
+  const [replyResult,setReplyResult]=useState<ApplicationReplyResult|null>(null);
   const replyDraftGeneration=useRef(0);
   const [replyDraftNotice,setReplyDraftNotice]=useState("");
   const [replyQuestions,setReplyQuestions]=useState<VerificationReplyQuestion[]>([]);
   const replyReferences=activeVerificationReplyReferences(replyText,replyQuestions);
-  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);void session.refresh();},[session]);
-  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);}
+  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);void session.refresh();},[session]);
+  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);}
+  async function refreshReply(){
+    const generation=replyDraftGeneration.current;
+    const result=await session.refreshReply();
+    if(!result.applied||replyDraftGeneration.current!==generation)return;
+    if(result.accessLost)resetReply();
+    else if(result.refresh==="complete"){setUnconfirmedReply(false);setConfirmReply(false);}
+    setReplyResult(result);
+  }
   function useVerificationQuestion(question: VerificationReplyQuestion){
     const result=appendVerificationReplyQuestion(replyText,question);
     if(result.status==="too_long"){setReplyDraftNotice("回复已接近 2000 字上限，请缩短正文后重试。");return;}
@@ -184,8 +193,9 @@ function Workspace({jobId}:{jobId:string}){
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="btn-secondary" onClick={clearFilters}>清除筛选并定位</button><button type="button" className="btn-secondary" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="btn-quiet" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
-    {error&&<p role="alert" className="panel text-rose-700">{error} 请刷新授权投递重试，旧报告已清除。</p>}
-    {unconfirmedReply&&<UnconfirmedReplyDraft text={replyText} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
+    {error&&<p role="alert" className="panel text-rose-700">{error}{!replyResult&&" 请刷新授权投递重试，旧报告已清除。"}</p>}
+    {replyResult&&<ReplyReadFeedback result={replyResult} busy={busy} onRefresh={()=>void refreshReply()}/>}
+    {(unconfirmedReply||(replyResult?.write==="rejected"&&replyResult.refresh!=="complete"&&!replyResult.accessLost))&&<UnconfirmedReplyDraft text={replyText} rejected={replyResult?.write==="rejected"} busy={busy} onRefresh={()=>void refreshReply()} onEdit={text=>applyReplyDraftEdit(text,setReplyText,setConfirmReply)}/>}
     <form className={`enterprise-candidate-filters ${activeView==="list"?"grid":"hidden"} gap-3`} onSubmit={event=>{event.preventDefault();applyFilters();}}>
       <div className="flex flex-wrap items-end gap-3"><label className="min-w-0 flex-1 basis-64 text-sm">查找候选人<input type="search" className="field mt-1" placeholder="姓名或报告内容" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)}/></label><button className="btn" disabled={busy}>搜索</button><button className="btn-quiet" type="button" disabled={busy} onClick={clearFilters}>重置</button></div>
       <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["","全部状态"],["submitted","尚未查看"],["viewed","已查看，未回复"],["downloaded","已下载，未回复"],["replied","已回复"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={status===value} disabled={busy} onClick={()=>{setStatus(value);applyFilters({q:query.trim(),status:value,requirementId:focus,verdict});}}>{label}</button>)}</div>
@@ -202,7 +212,7 @@ function Workspace({jobId}:{jobId:string}){
       <SkillRadar key={`${selected.id}:${selected.report.id}:${radarRequirement}`} dimensions={selected.dimensions} items={selected.report.items} initialRequirementId={radarSelectionId} onRequirementChange={id=>{setRadarSelectionId(id);setRadarEvidenceExpanded(false);}} evidenceExpanded={radarEvidenceExpanded} onEvidenceExpandedChange={setRadarEvidenceExpanded} materials={selected.report.materials} aiFallbackUsed={selected.report.aiFallbackUsed}/>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">企业核验建议</summary><div className="mt-4"><ApplicationVerification key={`${selected.id}:${selected.report.id}`} applicationId={selected.id} report={selected.report} requirementComparison={selected.requirementComparison} onUnavailable={verificationUnavailable} onUseQuestion={selected.status!=="replied"&&!busy ? useVerificationQuestion : undefined}/></div></details>
       <details className="rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer text-sm font-medium text-indigo-700">查看完整逐项报告（{selected.report.items.length}项）</summary><ul className="mt-4 space-y-3">{selected.report.items.map(item=><SavedRequirementDetail key={item.requirementId} item={item} report={selected.report!}/>)}</ul></details>
-      {selected.status!=="replied"&&<div className="space-y-3 border-t pt-4">
+      {selected.status!=="replied"&&replyResult?.write!=="confirmed"&&<div className="space-y-3 border-t pt-4">
         <h3 className="font-semibold">发送站内回复</h3>
         <p className="rounded-lg bg-slate-50 p-3 text-sm">收件人：<strong><IdentityName name={selected.candidateName} identityId={selected.candidateId}/></strong></p>
         <p className="text-xs text-slate-500">发送后将直接显示给该学生，本期不可覆盖。</p>
@@ -211,7 +221,7 @@ function Workspace({jobId}:{jobId:string}){
         <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="btn-quiet btn-compact shrink-0" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
-        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const sent=await session.reply(replyKind,text,references);const outcome=replySendOutcome(sent,replyDraftGeneration.current===generation);if(outcome==="reset")resetReply();else if(outcome==="mark-unconfirmed")setUnconfirmedReply(true);}}>确认发送站内回复</button>
+        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const result=await session.reply(replyKind,text,references);const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);if(outcome==="ignore")return;if(outcome==="reset")resetReply();else{setConfirmReply(false);setUnconfirmedReply(outcome==="mark-unconfirmed");}setReplyResult(result);}}>确认发送站内回复</button>
       </div>}
       <ApplicationReply application={selected} sent/>
     </details>}
@@ -307,12 +317,22 @@ export function SelectedRequirementEvidence({ application, requirementId }: { ap
 export function applyReplyDraftEdit(text:string,edit:(text:string)=>void,confirm:(on:boolean)=>void){
   edit(text);confirm(false);
 }
-// 发送完成后的失败草稿归属规则：清理代际在发送期间未变，成功才重置、失败才标记未确认；
+// 写入回执与读取结果分别处理；读取失败不得抹去已确认的提交。
 // 迟到的旧回调（等待期间发生过清理，新草稿可能已产生）一律忽略，不得改变新状态。
-export type ReplySendOutcome="reset"|"mark-unconfirmed"|"ignore";
-export function replySendOutcome(sent:boolean,generationUnchanged:boolean):ReplySendOutcome{
-  if(!generationUnchanged)return "ignore";
-  return sent?"reset":"mark-unconfirmed";
+export type ReplySendOutcome="reset"|"mark-rejected"|"mark-unconfirmed"|"ignore";
+export function replySendOutcome(result:ApplicationReplyResult,generationUnchanged:boolean):ReplySendOutcome{
+  if(!generationUnchanged||!result.applied||result.write==="not_sent")return "ignore";
+  if(result.accessLost||result.write==="confirmed")return "reset";
+  return result.write==="rejected"?"mark-rejected":"mark-unconfirmed";
+}
+
+export function ReplyReadFeedback({result,busy,onRefresh}:{result:ApplicationReplyResult;busy:boolean;onRefresh:()=>void}){
+  if(result.write==="not_sent"||!result.applied)return null;
+  if(result.write!=="confirmed"&&result.refresh!=="complete"&&!result.accessLost)return null;
+  const message=result.write==="confirmed"
+    ? result.accessLost?"回复已发送；当前投递已无法访问，报告与草稿已清除。":result.refresh==="complete"?"回复已发送。":"回复已发送，最新状态刷新失败。"
+    : result.accessLost?"当前投递已无法访问，报告与草稿已清除。":result.write==="rejected"?"本次发送被拒绝，已刷新当前回复状态，请核对下方记录。":"已刷新当前回复状态，请核对下方记录；不会自动重发。";
+  return <div role="status" className="panel flex flex-wrap items-center justify-between gap-3 text-sm"><p>{message}</p>{result.refresh==="failed"&&!result.accessLost&&<button type="button" className="btn-secondary" disabled={busy} onClick={onRefresh}>刷新回复状态</button>}</div>;
 }
 // 筛选只影响候选列表，不关闭已打开报告或清空未发送草稿；用可见提示避免把旧报告误认为当前筛选结果。
 export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolean;selectedName?:string;onClear:()=>void}){
@@ -325,6 +345,6 @@ export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolea
 // 会话失败清空列表与旧报告后，草稿只保留在本页组件状态：可编辑、可复制、仍限2000字；
 // 面板由未确认草稿状态（发送失败置位、resetReply 生命周期清除）控制，与正文是否为空无关，
 // 删空后仍可重新输入；不提供发送入口，不显示已送达，也不自动重发——重新发送必须先刷新并重新核对授权。
-export function UnconfirmedReplyDraft({text,onEdit}:{text:string;onEdit:(nextText:string)=>void}){
-  return <div className="panel space-y-2 text-sm"><p>回复是否送达尚未确认，平台不会自动重发。以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p><textarea className="field" maxLength={2000} value={text} onChange={e=>onEdit(e.target.value)} aria-label="未确认发送的回复草稿"/></div>;
+export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:()=>void}){
+  return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p><textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<button type="button" className="btn-secondary" disabled={busy} onClick={onRefresh}>刷新回复状态</button>}</div>;
 }

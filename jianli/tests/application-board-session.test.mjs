@@ -63,13 +63,14 @@ test("switching between two applications keeps the selected report and reply tar
   const first = deferred();
   const calls = [];
   const h = setup({
-    list: async () => [{ id: "a" }, { id: "b" }],
+    list: async () => [metadata("a"), {...metadata("b"), status: calls.length ? "replied" : "viewed"}],
     open: async id => id === "a" ? first.promise : {
-      id: "b", status: "viewed", report: { summary: "合成 B 报告" },
+      ...metadata("b"), report: { id: "report-b", summary: "合成 B 报告" },
     },
+    detail: async id => ({...metadata(id), status:"replied"}),
     reply: async (id, kind, text, references) => {
       calls.push({ id, kind, text, references });
-      return { id, status: "replied" };
+      return { ...metadata(id), status: "replied" };
     },
   });
   const oldOpen = h.session.open("a");
@@ -79,7 +80,8 @@ test("switching between two applications keeps the selected report and reply tar
   assert.equal(h.state().selected.id, "b");
   assert.equal(h.state().selected.report.summary, "合成 B 报告");
   const references = [{ requirementId: "b-requirement", citationIds: ["B-E1"] }];
-  assert.equal(await h.session.reply("continue", "合成 B 的人工核验问题", references), true);
+  const result = await h.session.reply("continue", "合成 B 的人工核验问题", references);
+  assert.equal(result.write, "confirmed"); assert.equal(result.refresh, "complete");
   assert.deepEqual(calls, [{
     id: "b", kind: "continue", text: "合成 B 的人工核验问题", references,
   }]);
@@ -129,7 +131,10 @@ test("failed read, download, or reply leaves no stale report and remains retryab
     fail = true;
     if (operation === "open") await h.session.open("a");
     else if (operation === "download") await h.session.download(() => assert.fail("must not deliver"));
-    else assert.equal(await h.session.reply("continue", "合成测试回复，不是招聘决定"), false);
+    else {
+      const result = await h.session.reply("continue", "合成测试回复，不是招聘决定");
+      assert.equal(result.write, "unknown"); assert.equal(result.refresh, "not_attempted");
+    }
     assert.equal(h.state().selected, null);
     assert.deepEqual(h.state().items, []);
     assert.equal(h.state().loading, false);
@@ -140,11 +145,20 @@ test("failed read, download, or reply leaves no stale report and remains retryab
   }
 });
 
-test("reply only reports confirmed delivery after detail and authorization reread", async () => {
-  const h = setup();
+test("reply confirmation and refreshed authorization are reported separately without another view event", async () => {
+  let sent = false, views = 0, reads = 0;
+  const current = () => ({...metadata(), status: sent ? "replied" : "viewed"});
+  const h = setup({ list: async () => [current()],
+    open: async () => {views++; return {...current(), report:{id:"report-a", summary:"合成授权报告"}};},
+    detail: async () => {reads++; return current();},
+    reply: async () => {sent=true; return current();},
+  });
   await h.session.open("a");
-  assert.equal(await h.session.reply("continue", "合成测试回复", []), true);
+  const result = await h.session.reply("continue", "合成测试回复", []);
+  assert.equal(result.write, "confirmed"); assert.equal(result.refresh, "complete");
   assert.equal(h.state().selected.id, "a");
+  assert.equal(h.state().selected.status, "replied");
+  assert.equal(views, 1); assert.equal(reads, 1);
 });
 
 test("a successful download reports browser delivery without claiming disk persistence", async () => {

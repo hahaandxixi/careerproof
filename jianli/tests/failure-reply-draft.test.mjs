@@ -51,6 +51,7 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const board = await import(pathToFileURL(path.join(SRC, "components/ApplicationBoard.tsx")).href);
 const { createApplicationBoardSession, initialApplicationBoardState } = await import(
   pathToFileURL(path.join(SRC, "lib/application-board-session.ts")).href);
+const replyResult = (write, refresh = "not_attempted", extra = {}) => ({ write, refresh, applied: true, accessLost: false, ...extra });
 
 function findTextareas(node, found = []) {
   if (!node || typeof node !== "object") return found;
@@ -114,16 +115,49 @@ test("旧失败→清理→新草稿→旧回调迟到：代际不一致一律�
   const oldGeneration = generation;
   cleanup();
   cleanup();
-  const outcome = board.replySendOutcome(false, generation === oldGeneration);
+  const outcome = board.replySendOutcome(replyResult("unknown"), generation === oldGeneration);
   assert.equal(outcome, "ignore", "迟到的旧失败回调不得把新草稿标为未确认");
   assert.equal(unconfirmed, false);
   // 旧发送以成功结束同样不得清掉清理后产生的新草稿状态
-  assert.equal(board.replySendOutcome(true, generation === oldGeneration), "ignore");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "complete"), generation === oldGeneration), "ignore");
 });
 
-test("代际一致时发送结果才生效：失败标记未确认，成功重置草稿状态", () => {
-  assert.equal(board.replySendOutcome(false, true), "mark-unconfirmed");
-  assert.equal(board.replySendOutcome(true, true), "reset");
+test("代际一致才处理写入结果：未知、拒绝、成功及读失败不混淆", () => {
+  assert.equal(board.replySendOutcome(replyResult("unknown"), true), "mark-unconfirmed");
+  assert.equal(board.replySendOutcome(replyResult("rejected"), true), "mark-rejected");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "complete"), true), "reset");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "failed"), true), "reset");
+  assert.equal(board.replySendOutcome(replyResult("unknown", "failed", {accessLost:true}), true), "reset", "失去授权必须清理旧草稿");
+  assert.equal(board.replySendOutcome(replyResult("confirmed", "failed", {applied:false}), true), "ignore");
+  assert.equal(board.replySendOutcome(replyResult("not_sent"), true), "ignore");
+});
+
+test("成功写入后刷新失败：真实反馈显示已发送，只提供读取入口", () => {
+  let reads = 0;
+  const props = {result:replyResult("confirmed", "failed"), busy:false, onRefresh:()=>{reads++;}};
+  const html = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, props));
+  assert.match(html, /回复已发送，最新状态刷新失败/);
+  assert.match(html, /刷新回复状态/);
+  assert.doesNotMatch(html, /送达尚未确认|textarea|确认发送站内回复/);
+  const feedback = board.ReplyReadFeedback(props);
+  const button = feedback.props.children.find(node => node?.type === "button");
+  button.props.onClick(); assert.equal(reads, 1);
+  const denied = renderToStaticMarkup(React.createElement(board.ReplyReadFeedback, {...props,result:replyResult("confirmed", "failed", {accessLost:true})}));
+  assert.match(denied, /回复已发送；当前投递已无法访问/);
+  assert.doesNotMatch(denied, /button|textarea/);
+});
+
+test("明确拒绝与未知草稿显示不同原因，均不提供重发按钮", () => {
+  for (const rejected of [false,true]) {
+    const html = renderToStaticMarkup(React.createElement(board.UnconfirmedReplyDraft, {
+      text:"可编辑的草稿", rejected, onEdit:()=>{}, onRefresh:()=>{}, busy:false,
+    }));
+    assert.match(html, rejected ? /本次发送被拒绝/ : /回复是否送达尚未确认/);
+    if (rejected) assert.doesNotMatch(html, /送达尚未确认/);
+    assert.match(html, /刷新回复状态/);
+    assert.doesNotMatch(html, /确认发送站内回复/);
+    assert.equal((html.match(/<button/g)??[]).length, 1);
+  }
 });
 
 test("筛选空结果或已打开报告在筛选外时，提示原因、保留报告并给出清除入口", () => {
@@ -187,7 +221,8 @@ for (const [variant, failure] of [
     });
     await h.session.open("a");
     assert.equal(openCalls, 1);
-    assert.equal(await h.session.reply("continue", `${variant}前写好的草稿`, []), false);
+    const result = await h.session.reply("continue", `${variant}前写好的草稿`, []);
+    assert.equal(result.write, "unknown"); assert.equal(result.refresh, "not_attempted");
     // 留出事件循环：若存在自动重发或后台重试，会在此显现为第二次 reply 调用。
     await new Promise(resolve => setImmediate(resolve));
     await new Promise(resolve => setImmediate(resolve));
