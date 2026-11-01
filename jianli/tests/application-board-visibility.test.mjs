@@ -12,15 +12,17 @@ import { evidenceWorkspace } from "../src/lib/evidence-workspace.ts";
 import { createRefreshGate } from "../src/lib/refresh-gate.ts";
 import { createApplicationAnchorRevealer } from "../src/lib/application-anchor.ts";
 import { invalidNarrativeCitations, readableCitationText } from "../src/lib/report-citations.ts";
+import * as boardHistory from "../src/lib/application-board-history.ts";
+import { trackReadRetryFocus } from "../src/lib/read-retry-focus.ts";
 
 const require=createRequire(import.meta.url),React=require("react"),{transform}=require("sucrase");
 const originals=new Map(["window","document","location","requestAnimationFrame","cancelAnimationFrame"].map(k=>[k,globalThis[k]]));
 const cleanups=[];
 afterEach(()=>{while(cleanups.length)cleanups.pop()();for(const[k,v]of originals){if(v===undefined)delete globalThis[k];else globalThis[k]=v;}});
 const walk=node=>!node||typeof node!=="object"?[]:[node,...React.Children.toArray(node.props?.children).flatMap(walk)];
-const text=node=>typeof node==="string"?node:node?.type?.testName==="identity"?demoIdentity.identityLabel(node.props.name,node.props.identityId):React.Children.toArray(node?.props?.children).map(text).join("");
+const text=node=>typeof node==="string"||typeof node==="number"?String(node):node?.type?.testName==="identity"?demoIdentity.identityLabel(node.props.name,node.props.identityId):React.Children.toArray(node?.props?.children).map(text).join("");
 
-function fixture(count=2,editRow=value=>value){
+function fixture(count=2,editRow=value=>value,options={}){
  const cells=[],effects=[],frames=new Map();let cursor=0,frame=0;
  const same=(a,b)=>a&&a.length===b.length&&a.every((v,i)=>Object.is(v,b[i]));
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps))cells[i]={deps,value:fn()};return cells[i].value;};
@@ -28,31 +30,37 @@ function fixture(count=2,editRow=value=>value){
   useRef(initial){const i=cursor++;return cells[i]??=( {current:initial});},useMemo:memo,useCallback:(fn,deps)=>memo(()=>fn,deps),
   useEffect(fn,deps){const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps)){const old=cells[i]?.cleanup;cells[i]={deps};effects.push(()=>{old?.();cells[i].cleanup=fn();});}}};
  const win=new EventTarget(),doc=Object.assign(new EventTarget(),{visibilityState:"visible",getElementById:()=>null});
- globalThis.window=win;globalThis.document=doc;globalThis.location={hash:""};
+ const jobId=options.jobId??"job-a",ownerId=options.ownerId??"enterprise-a";
+ win.location={pathname:`/jobs/${jobId}/applications`,hash:"",href:`http://localhost/jobs/${jobId}/applications`};
+ win.history={state:structuredClone(options.historyState??null),replaceState(state){this.state=state;}};
+ globalThis.window=win;globalThis.document=doc;globalThis.location=win.location;
  globalThis.requestAnimationFrame=fn=>{frames.set(++frame,fn);return frame;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
  const counts={list:0,open:0,reply:0,detail:0};const queries=[];let authorized=true,waiter=null;
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
- const row=id=>editRow({id,jobId:"job-a",reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
- const pageResult=()=>({items:[...(authorized?[row("a")]:[]),...Array.from({length:count-1},(_,i)=>row(String.fromCharCode(98+i)))],total:authorized?count:count-1,page:1,pageSize:20});
- const api={getJob:async()=>({id:"job-a",title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult();},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
+ const row=id=>editRow({id,jobId,reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
+ const pageResult=requested=>{const rows=[...(authorized&&count>0?[row("a")]:[]),...Array.from({length:Math.max(0,count-1)},(_,i)=>row(String.fromCharCode(98+i)))];const page=Math.min(requested,Math.max(1,Math.ceil(rows.length/20)));return {items:rows.slice((page-1)*20,page*20),total:rows.length,page,pageSize:20};};
+ const api={getJob:async()=>({id:jobId,title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult(page);},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
  const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
   "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
-  "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:"enterprise-a"}})},
+  "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:ownerId}})},
   "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false},
   "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
+  "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
   "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
   "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS}};
  const code=transform(readFileSync(new URL("../src/components/ApplicationBoard.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
- const render=()=>{cursor=0;const outer=mod.exports.default({jobId:"job-a"});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
+ const render=()=>{cursor=0;const outer=mod.exports.default({jobId});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
  const settle=async()=>{for(let i=0;i<25;i++){render();while(effects.length)effects.shift()();await Promise.resolve();}for(const[id,fn]of frames){frames.delete(id);fn();}return render();};
  cleanups.push(()=>cells.forEach(cell=>cell?.cleanup?.()));
- return{render,settle,counts,queries,Radar,nodes:walk,
+ return{render,settle,counts,queries,Radar,nodes:walk,row,
+  bookmark(){return structuredClone(win.history.state);},unmount(){cells.forEach(cell=>cell?.cleanup?.());},
+  backTo(state){win.history.state=structuredClone(state);win.dispatchEvent(new Event("popstate"));},
   hide(){doc.visibilityState="hidden";doc.dispatchEvent(new Event("visibilitychange"));return render();},
   show(){doc.visibilityState="visible";doc.dispatchEvent(new Event("visibilitychange"));win.dispatchEvent(new Event("focus"));win.dispatchEvent(new Event("pageshow"));return render();},
   revoke(){authorized=false;},waitFor(value){waiter=value;},button(tree,label){const found=walk(tree).find(n=>n.type==="button"&&text(n)===label);assert.ok(found,label);return found;},
@@ -123,4 +131,59 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
  const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
  const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
  await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
+});
+
+const shortlist=tree=>walk(tree).find(n=>n.props?.["aria-label"]==="跨页对照名单");
+function choose(h,tree,id){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);assert.ok(th,id);h.nodes(th).find(n=>n.type==="input").props.onChange();}
+function changePage(h,tree,page){h.nodes(tree).find(n=>n.type?.testName==="pagination").props.onPage(page);}
+const savedHistory=()=>boardHistory.applicationBoardHistoryState({__NA:true},"enterprise-a","job-a",{
+ page:2,filters:{q:"Python",status:"viewed",requirementId:"r1",verdict:"claimed_only"},comparisonIds:["a","b","u"],
+});
+
+test("leaving and returning restores applied filters, page two and three IDs only after read-only authorization",async()=>{
+ const h=fixture(24);let tree=await h.settle();
+ for(const id of ["a","b"]){choose(h,tree,id);tree=await h.settle();}
+ h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
+ h.button(tree,"已查看，未回复").props.onClick();tree=await h.settle();
+ changePage(h,tree,2);tree=await h.settle();choose(h,tree,"u");tree=await h.settle();
+ const saved=h.bookmark();assert.equal(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").page,2);
+ assert.deepEqual(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").comparisonIds,["a","b","u"]);
+ h.unmount();
+ const returned=fixture(24,value=>value,{historyState:saved});let resolve;
+ returned.waitFor(new Promise(yes=>{resolve=yes;}));tree=await returned.settle();
+ assert.equal(shortlist(tree),undefined,"history IDs are not sufficient authorization to display candidates");
+ assert.equal(returned.radar(tree),undefined);
+ resolve({items:["u","v","w","x"].map(returned.row),total:24,page:2,pageSize:20});tree=await returned.settle();
+ assert.deepEqual(returned.queries[0],{page:2,size:20,q:"Python",status:"viewed",requirementId:"",verdict:""});
+ assert.match(text(shortlist(tree)),/3\/4/);
+ assert.deepEqual(boardHistory.readApplicationBoardHistory(returned.bookmark(),"enterprise-a","job-a").comparisonIds,["a","b","u"]);
+ assert.equal(returned.counts.open,0);assert.equal(returned.counts.reply,0);assert.equal(returned.counts.detail,2);
+ assert.ok(!h.nodes(tree).some(n=>n.type==="textarea"));
+});
+
+test("a revoked off-page candidate is removed from the restored shortlist and history",async()=>{
+ const h=fixture(24,value=>value,{historyState:savedHistory()});h.revoke();const tree=await h.settle();
+ assert.match(text(shortlist(tree)),/2\/4/);
+ assert.deepEqual(boardHistory.readApplicationBoardHistory(h.bookmark(),"enterprise-a","job-a").comparisonIds,["b","u"]);
+ assert.ok(!text(shortlist(tree)).includes("候选人a"));assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
+});
+
+test("history from another account or job restores no filter, page or comparison selection",async()=>{
+ for(const options of [{ownerId:"enterprise-b"},{jobId:"job-b"}]){
+  const h=fixture(24,value=>value,{historyState:savedHistory(),...options});const tree=await h.settle();
+  assert.deepEqual(h.queries[0],{page:1,size:20,q:"",status:"",requirementId:"",verdict:""});
+  assert.equal(shortlist(tree),undefined);assert.equal(h.counts.detail,0);assert.equal(h.counts.open,0);h.unmount();
+ }
+});
+
+test("popstate reauthorizes the matching history entry and server page clamping updates its bookmark",async()=>{
+ const h=fixture(24);let tree=await h.settle();h.backTo(savedHistory());tree=await h.settle();
+ assert.equal(h.queries.at(-1).page,2);assert.equal(h.queries.at(-1).requirementId,"r1");assert.match(text(shortlist(tree)),/3\/4/);
+ h.button(tree,"重置").props.onClick();await h.settle();assert.equal(h.queries.at(-1).page,1);
+ h.backTo(savedHistory());tree=await h.settle();assert.equal(h.queries.at(-1).page,2);assert.match(text(shortlist(tree)),/3\/4/);
+ assert.equal(h.counts.open,0);h.unmount();
+ for(const count of [1,0]){
+  const limited=fixture(count,value=>value,{historyState:boardHistory.applicationBoardHistoryState(null,"enterprise-a","job-a",{page:2,filters:{q:"",status:"",requirementId:"",verdict:""},comparisonIds:[]})});
+  await limited.settle();assert.equal(boardHistory.readApplicationBoardHistory(limited.bookmark(),"enterprise-a","job-a").page,1);assert.equal(limited.counts.open,0);limited.unmount();
+ }
 });

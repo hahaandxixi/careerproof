@@ -30,6 +30,7 @@ import { heatmapCellClass as cellClass } from "@/lib/heatmap-cell.js";
 import { createApplicationBoardSession, initialApplicationBoardState, type ApplicationReplyResult } from "@/lib/application-board-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
 import { trackReadRetryFocus } from "@/lib/read-retry-focus";
+import { applicationBoardHistoryState, readApplicationBoardHistory, type ApplicationBoardFilters } from "@/lib/application-board-history";
 import ApplicationVerification from "./ApplicationVerification";
 import { activeVerificationReplyReferences, appendVerificationReplyQuestion, type VerificationReplyQuestion } from "@/lib/verification-reply-draft";
 
@@ -46,16 +47,23 @@ export function ApplicationEmptyState({ filtered, onClear }: { filtered: boolean
 
 export default function ApplicationBoard({jobId}:{jobId:string}){
   const {user}=useAuth();
-  return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId}/></AccessGate>;
+  return <AccessGate roles={["enterprise"]}><Workspace key={`${user?.id}:${jobId}`} jobId={jobId} ownerId={user?.id??""}/></AccessGate>;
 }
-function Workspace({jobId}:{jobId:string}){
+function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
   const workspace=useRef<HTMLDivElement>(null);
   const [view,setView]=useState<"list"|"compare"|"report">("list");
   const [jobTitle,setJobTitle]=useState("");
   useEffect(()=>{let active=true;api.getJob(jobId).then(job=>{if(active)setJobTitle(job.title);}).catch(()=>{if(active)setJobTitle("");});return()=>{active=false;};},[jobId]);
   const [heldHeight,setHeldHeight]=useState<number|undefined>(undefined);
   const page=useRef(1);
-  const filters=useRef({q:"",status:"",requirementId:"",verdict:""});
+  const filters=useRef<ApplicationBoardFilters>({q:"",status:"",requirementId:"",verdict:""});
+  const comparisonBookmark=useRef<string[]>([]);
+  const navigationReady=useRef(false);
+  const rememberNavigation=useCallback(()=>{
+    if(!navigationReady.current||window.location.pathname!==`/jobs/${jobId}/applications`)return;
+    window.history.replaceState(applicationBoardHistoryState(window.history.state,ownerId,jobId,
+      {page:page.current,filters:filters.current,comparisonIds:comparisonBookmark.current}),"",window.location.href);
+  },[ownerId,jobId]);
   const [state,setState]=useState(initialApplicationBoardState);
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,selected,error,notice,loading:busy}=state;
@@ -63,7 +71,7 @@ function Workspace({jobId}:{jobId:string}){
     list:async()=>{const id=applicationAnchorId();const result=await api.jobApplications(jobId,page.current,20,filters.current);const items=await includeApplicationTarget(result.items, api.applicationDetail, id, jobId, ()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示当前岗位的其他已授权投递。");});return {...result,items,pageItemCount:result.items.length};}, open:api.openApplication,
     detail:async id=>{const item=await api.applicationDetail(id);if(item.jobId!==jobId)throw new Error("投递不属于当前岗位");return item;},
     download:api.downloadApplicationResume, reply:api.replyApplication, errorMessage,
-  },value=>{if(value.pagination)page.current=value.pagination.page;setState(value);}),[jobId]);
+  },value=>{if(value.pagination)page.current=value.pagination.page;if(!value.loading&&!value.paused){comparisonBookmark.current=(value.comparison??[]).map(item=>item.id);rememberNavigation();}setState(value);}),[jobId,rememberNavigation]);
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；目标被筛选条件排除时给出可执行提示，不静默失败。
   // 提示存为 string（""=无提示）：filtered-out 期间每次渲染都会重放同一 outcome，依赖 Object.is 去重，避免对象身份引发循环渲染。
   const [anchorFilterTarget,setAnchorFilterTarget]=useState("");
@@ -82,7 +90,6 @@ function Workspace({jobId}:{jobId:string}){
   const pairBookmark=useRef<{key:string;ids:string[]}>({key:"",ids:[]});
   const comparison=state.comparison??[];
   useEffect(()=>{if(busy||state.paused)return;const ids=(state.comparison??[]).map(c=>c.id);setCompareIds(previous=>previous.join()===ids.join()?previous:ids);setPairIds(previous=>{const valid=previous.filter(id=>ids.includes(id));const next=valid.length===2?valid:ids.slice(0,2);return previous.join()===next.join()?previous:next;});if(ids.length<2)setCompareMode(false);},[state.comparison,state.paused,busy]);
-  const comparisonBookmark=useRef<string[]>([]);
   comparisonBookmark.current=compareIds;
   const [radarRequirement,setRadarRequirement]=useState("");
   const [radarSelectionId,setRadarSelectionId]=useState("");
@@ -138,6 +145,14 @@ function Workspace({jobId}:{jobId:string}){
     setReplyDraftNotice("已加入可编辑草稿。请对照固定报告核对问题与引用，再确认发送。");
   }
   useEffect(()=>{
+    const restoreNavigation=()=>{
+      const saved=readApplicationBoardHistory(window.history.state,ownerId,jobId);
+      page.current=saved.page;filters.current=saved.filters;comparisonBookmark.current=saved.comparisonIds;
+      setQuery(saved.filters.q);setStatus(saved.filters.status);setFocus(saved.filters.requirementId);setFocusLabel("");setVerdict(saved.filters.verdict);
+      setCompareIds(saved.comparisonIds);setCompareMode(false);setPairIds([]);setView("list");
+      navigationReady.current=true;
+    };
+    restoreNavigation();
     session.activate();
     let alive=true;
     let releaseFrame:number|undefined;
@@ -146,7 +161,8 @@ function Workspace({jobId}:{jobId:string}){
       const height=workspace.current?.getBoundingClientRect().height;
       if(height)setHeldHeight(previous=>previous??height);
     };
-    const refresh=()=>{resetReply();setHeldHeight(undefined);void session.refresh();};
+    let restoredHistoryUrl="";
+    const refresh=()=>{if(restoredHistoryUrl===window.location.href){restoredHistoryUrl="";return;}resetReply();setHeldHeight(undefined);void session.refresh();};
     const resume=()=>{
       if(document.visibilityState!=="visible")return;
       holdLayout();resetReply();
@@ -166,6 +182,11 @@ function Workspace({jobId}:{jobId:string}){
     };
     // B-06：返回页面时 visibilitychange、focus、pageshow 紧邻触发，合并为一次刷新。
     const gate=createRefreshGate(resume);
+    const historyReturn=()=>{
+      if(window.location.pathname!==`/jobs/${jobId}/applications`)return;
+      restoredHistoryUrl=window.location.href;
+      navigationReady.current=false;session.clear();restoreNavigation();gate.reset();gate.trigger();
+    };
     const visibility=()=>{
       resetReply();
       if(document.visibilityState==="hidden"){
@@ -184,8 +205,9 @@ function Workspace({jobId}:{jobId:string}){
     window.addEventListener("pageshow",gate.trigger);
     // B-15：hashchange 是新的显式锚点导航（同页锚点链接或前进/后退），不走合并闸门；重新核对授权后由列表 effect 定位一次。
     window.addEventListener("hashchange",refresh);
-    return ()=>{alive=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);};
-  },[session]);
+    window.addEventListener("popstate",historyReturn);
+    return ()=>{alive=false;navigationReady.current=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);window.removeEventListener("popstate",historyReturn);};
+  },[session,ownerId,jobId]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   // Predicates are applied before server counting/pagination; local sorting must
   // not drop matches found in the fixed report's text outside visible labels.
@@ -194,10 +216,10 @@ function Workspace({jobId}:{jobId:string}){
   const matrixItems=compareMode ? comparison : visible;
   const matrixDimensions=Array.from(new Map(matrixItems.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   const pair=pairIds.map(id=>comparison.find(c=>c.id===id)).filter((c):c is ApplicationView=>!!c);
-  function chooseComparison(ids:string[]){setReadComplete(false);setCompareIds(ids);setCompareMode(false);void session.selectComparison(ids);}
+  function chooseComparison(ids:string[]){setReadComplete(false);comparisonBookmark.current=ids;setCompareIds(ids);rememberNavigation();setCompareMode(false);void session.selectComparison(ids);}
   const mixedBasis=mixedComparisonBasis(matrixItems);
   const selectedOutside=filterView.selectedOutside;
-  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){setReadComplete(false);filters.current=next;page.current=1;void session.filter();}
+  function applyFilters(next={q:query.trim(),status,requirementId:focus,verdict}){setReadComplete(false);filters.current=next;page.current=1;rememberNavigation();void session.filter();}
   function clearFilters(){setQuery("");setFocus("");setFocusLabel("");setVerdict("");setStatus("");applyFilters({q:"",status:"",requirementId:"",verdict:""});}
   // B-15：列表或筛选结果每次变化后尝试一次定位。新导航 revealed；目标在 items 但被筛掉时转为提示；
   // 已消费的导航在同 hash 下反复调用只会得到 idle/waiting，因此自动刷新、撤回不会劫持视口。
@@ -210,7 +232,7 @@ function Workspace({jobId}:{jobId:string}){
   return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="enterprise-recording-layout space-y-4"><div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-2xl font-bold">{jobTitle||items[0]?.jobTitle||"岗位候选人"}</h1>
     {((!error&&!replyNeedsRead&&!readRetrying)||(readRetrying&&retryFromToolbar.current))&&<ReadRetryButton busy={busy} quiet label="刷新授权投递" onRetry={source=>void refreshList(source,true)}/>}</div><nav className="flex flex-wrap gap-2" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" className="selection-toggle" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?comparison.length<2:tab.key==="report"?!selected?.report:false} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
     <details className="text-xs leading-5 text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
-    {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
+    {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;rememberNavigation();resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
     {anchorFilterTarget&&<div role="status" className="panel space-y-2 text-amber-800"><p>通知指向的投递在当前筛选结果之外，未自动滚动。可以清除筛选后定位，或直接打开该投递报告。</p><div className="flex flex-wrap gap-x-4 gap-y-1"><button type="button" className="btn-secondary" onClick={clearFilters}>清除筛选并定位</button><button type="button" className="btn-secondary" disabled={busy} onClick={()=>{setAnchorFilterTarget("");anchor.dismiss();void open(anchorFilterTarget);}}>直接打开该投递报告</button><button type="button" className="btn-quiet" onClick={()=>{anchor.dismiss();setAnchorFilterTarget("");}}>关闭</button></div></div>}
