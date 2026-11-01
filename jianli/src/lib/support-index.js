@@ -34,6 +34,11 @@ export function formatSupportNumber(value) {
   return typeof value === "number" && Number.isFinite(value) ? String(Number(value.toFixed(1))) : String(value ?? "未记录");
 }
 
+/** Original API numbers must not use the rounded index formatter.
+ * @param {unknown} value
+ */
+export function formatRawSupportNumber(value) { return String(value ?? "未记录"); }
+
 /** No clamping: anomalous raw values stay traceable but are not plotted.
  * @param {{score?: number|null, formulaVersion?: string|null, verdict: string}} axis @param {SupportScale} scale
  */

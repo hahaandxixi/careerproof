@@ -49,9 +49,36 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 const { default: SkillRadar } = await import(pathToFileURL(path.join(SRC, "components/SkillRadar.tsx")).href);
+const {default: HeatmapDemo,DemoSupportValue}=await import("../src/components/HeatmapDemo.tsx");
+const {default: SupportMeasureDetails}=await import("../src/components/SupportMeasureDetails.tsx");
+const {resolveSupportScale}=await import("../src/lib/support-index.js");
 const dim = (id,verdict,score) => ({requirementId:id,title:id,skill:id,verdict,score,weight:1,evidenceLevel:null});
 const render = props => renderToStaticMarkup(React.createElement(SkillRadar,props));
 const knownDim = (id,verdict,score) => ({...dim(id,verdict,score),formulaVersion:"evidence-v4"});
+
+test("actual demo parent uses one index scale for table and radar without presenting gaps as zero",()=>{
+ const html=renderToStaticMarkup(React.createElement(HeatmapDemo));
+ const table=html.match(/<table[\s\S]*?<\/table>/)[0];
+ for(const value of ["100","61.5","15.4"])assert.ok(table.includes(` · ${value}`));
+ assert.doesNotMatch(table,/材料待补充 · 0| · 65<| · 40<| · 10</);
+ assert.match(table,/规则暂未支持 · —/);assert.match(html,/Python：材料支持度指数 100/);
+ for(const [verdict,score,expected] of [["supported",0,"有证据支持 · 0"],["gap",0,"材料待补充"],["unsupported",null,"规则暂未支持 · —"],["claimed_only",10,"仅简历声明 · 15.4"],["partial",null,"原始分值未记录"]]){
+   const dimension=knownDim("SQL",verdict,score),before=JSON.stringify(dimension);
+   const result=renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension,dimensions:[dimension]}));
+   assert.ok(result.includes(expected),result);assert.equal(JSON.stringify(dimension),before);
+ }
+ const unknown=dim("SQL","supported",38.27);
+ assert.match(renderToStaticMarkup(React.createElement(DemoSupportValue,{dimension:unknown,dimensions:[unknown]})),/原值（未换算）/);
+});
+test("raw measurement details preserve API precision while only index labels are rounded",()=>{
+ const scale=resolveSupportScale([knownDim("SQL","partial",38.27)]);
+ const html=renderToStaticMarkup(React.createElement(SupportMeasureDetails,{raw:38.27,formulaVersion:"evidence-v4",scale}));
+ assert.match(html,/原始分值 38.27/);assert.doesNotMatch(html,/原始分值 38.3/);
+ for(const raw of [null,NaN,Infinity,-1,66]){
+   const detail=renderToStaticMarkup(React.createElement(SupportMeasureDetails,{raw,scale}));
+   assert.ok(detail.includes(raw==null?"未记录":String(raw)));
+ }
+});
 
 test("desktop radar stays visible without a collapsed overview control and retains raw scale",()=>{
  const html=render({dimensions:[dim("FastAPI long requirement","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)]});
