@@ -1,0 +1,19 @@
+{
+  "scope": "goal42 read-only design review; reviewed inputs unchanged (their sha256 re-verified against docs/evidence/20261011-design-prototype/manifest.json)",
+  "reviewedInputs": [
+    "docs/task-cards/20261011-GLM-goal42-design-review.md",
+    "docs/prototypes/设计说明与验收.md",
+    "docs/prototypes/evidence-workspace.html",
+    "docs/evidence/20261011-design-prototype/ (4 screenshots + browser-checks.json + contrast-palette.json + manifest.json)",
+    "jianli/src/components/ReportDetail.tsx",
+    "jianli/src/components/ApplicationSubmit.tsx (authorization lines)",
+    "jianli/src/components/ApplicationBoard.tsx (authorization lines)"
+  ],
+  "findings": ["V1 authorization boundary missing from prototype first screen (P1)", "V2 320px/44px self-reported evidence with contradictory passes and no 320 screenshot (P1)", "V3 candidate-switch semantics unverified, no aria-pressed on toggle buttons (P2)", "V4 A/B view switch has no focus management or announcement (P2)", "V5 aria-label on generic span avatar ignored by screen readers (P3)"],
+  "files": [
+    {
+      "path": "docs/evidence/20261011-GLM-goal42-design-review/design-review-report.md",
+      "sha256": "17babe41dfa25488c846c939e2a3e64a43a7e7209edbaee1469bd89745155ec6"
+    }
+  ]
+}

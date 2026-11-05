@@ -1,0 +1,26 @@
+﻿python 3.12.14
+
+--- A. compiled PostgreSQL statement (retrieval.py:294-307 shape) ---
+WITH owned_chunks AS MATERIALIZED 
+(SELECT knowledge_chunks.source_type AS source_type, knowledge_chunks.source_id AS source_id, knowledge_chunks.content AS content, knowledge_chunks.chunk_metadata AS chunk_metadata, knowledge_chunks.embedding AS embedding, knowledge_chunks.id AS id, knowledge_chunks.created_at AS created_at, knowledge_chunks.updated_at AS updated_at, count(*) OVER () AS owned_matches 
+FROM knowledge_chunks 
+WHERE knowledge_chunks.source_id IN (__[POSTCOMPILE_source_id_1]))
+ SELECT owned_chunks.source_type, owned_chunks.source_id, owned_chunks.content, owned_chunks.chunk_metadata, owned_chunks.embedding, owned_chunks.id, owned_chunks.created_at, owned_chunks.updated_at, owned_chunks.owned_matches 
+FROM owned_chunks ORDER BY owned_chunks.embedding <=> %(embedding_1)s 
+ LIMIT %(param_1)s
+[PASS] A1 filter is version-agnostic (no resume_version_id / project_version_id predicate) :: expected: the owned CTE filters only on source_id
+[PASS] A2 filter carries no source_type discriminator
+[PASS] A3 pre-filter is materialised before ordering
+[PASS] A4 window count is evaluated inside the owned CTE (pre-LIMIT)
+[PASS] A5 distance ordering is cosine distance, not a post-filter
+
+--- B. allow-list from the real retrieval.py predicates ---
+allowed ids: 4
+superseded resume v1 section admitted: True
+superseded project v1 file admitted:   True
+[FAIL] B1 resume v1 section is NOT retrieved after v2 exists :: if FAIL: search can return superseded resume content
+[FAIL] B2 project v1 file is NOT retrieved after v2 exists :: if FAIL: search can return superseded project content
+
+--- summary ---
+checks failed: 2 ['B1 resume v1 section is NOT retrieved after v2 exists', 'B2 project v1 file is NOT retrieved after v2 exists']
+allow-list result: {'allowed': 4, 'old_resume_admitted': True, 'old_project_admitted': True}

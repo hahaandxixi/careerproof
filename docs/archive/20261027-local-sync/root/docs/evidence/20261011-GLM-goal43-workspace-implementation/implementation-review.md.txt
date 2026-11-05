@@ -1,0 +1,39 @@
+# 传智杯43：补证工作台实现只读复核报告
+
+2026-10-11。ZCode 只读复核，不改源码/DB/启动构建/提交。范围：Codex 改动的 5 文件——jianli/src/components/ReportEvidenceWorkspace.tsx（新增）、jianli/src/lib/evidence-workspace.ts（新增）、jianli/src/components/ReportDetail.tsx（修改）、jianli/src/components/GrowthTaskStart.tsx（修改）、jianli/tests/evidence-workspace.test.mjs（新增）。
+
+## 复核方法
+
+读 5 文件全文 + ReportDetail/GrowthTaskStart 的 git diff；交叉核对 domain.ts:56,59（verdict 为 string、confirmationStatus 四值+null）、client.ts:286-287（两接口均默认 GET 只读）、EvidenceAnchorRestore/evidence-anchor（hash 滚动与 details 展开机制）、ApplicationList.tsx:44（既有 enterpriseReply 入口）。本机实跑 `node --experimental-strip-types --test tests/evidence-workspace.test.mjs`：3/3 通过（Node 22.23.1）。未运行 213 全量/类型/构建（采信 Codex 结论，与本次复核重点不冲突）。
+
+## 五项重点核对结论（均通过）
+
+1. **状态分类 ✓**：evidence-workspace.ts:4-7 四桶互斥——supported(verified 含)/partial/gaps(含 claimed_only)/other；rejected、corrected 一律移出正面桶进 other（保守方向，不虚增支持）；未知 verdict（domain 为 string）落 other，测试 item("i","future") 覆盖；confirmationStatus 为 null 视同未复核、留在原 verdict 桶（evidence-workspace.ts:4-6 `?? ""` 判断）。桶计数与逐项徽章、ReportDetail VERDICTS 同源同义（差异见 F2）。
+2. **角色门控 ✓**：ReportDetail.tsx diff 中工作台与 ApplicationSubmit 同在一个 `user?.role === "student"` 片段；`#growth-{id}` 包装 div 在学生门控的逐项循环内；企业视图无工作台、无 growth 锚点。ApplicationSubmit 从页首移到工作台后仍是投递操作本体（授权文案+勾选+按钮不可分离，ApplicationSubmit.tsx:11-13），授权边界未丢失（42 号卡 V1 已闭环）。
+3. **同要求锚点 ✓**：工作台 CTA 与"核对来源"链接同取一个 `item.requirementId` 插值（ReportEvidenceWorkspace.tsx:21），无跨要求错配可能；三个锚点目标均存在且带 scroll-mt-24（ReportDetail.tsx:76 requirement-*、新增 growth-* 包装、新增 #report-comparison）。GrowthTaskStart.tsx:24-31 新增 hash/hashchange 打开，与既有 ?enterpriseReply=X 路径并存；EvidenceAnchorRestore 对 hash 统一做 details 展开+scrollIntoView，`#growth-*`/`#report-comparison` 不在任何 details 内，行为互补无冲突。
+4. **补证不自动保存/模型调用 ✓**：面板打开仅发 2 个 GET（existingGrowthTask、enterpriseReplyContext，client.ts:286-287 均默认 GET，无事件埋点副作用）；"补入 AI 草稿空白项"仅 set 本地 state（GrowthTaskStart.tsx:83-87，文案明示"不会保存任务或调用模型"）；唯一写路径是显式 submit 的 createGrowthTask POST（:55）。工作台组件纯展示零 API。侧栏声明"不会自动替换该快照，也不会自动向企业发送内容"与实现一致。
+5. **同权重排序 ✓**：evidence-workspace.ts:9 filter 保序（原报告序）+ `b.weight - a.weight`（ES2019 起 sort 稳定）；`.sort` 作用于 filter 产生的新数组，不改入参——测试第 2 例断言顺序与入参 JSON 前后一致；本机实跑通过。切片 3 项的文案（:23）与实现一致。
+
+## 实质发现（3 项，均有定位）
+
+### F1（P2）收起后再次点击同一缺口 CTA 无任何响应——新工作台主路径上的死链
+
+- **定位**：ReportEvidenceWorkspace.tsx:21 CTA `<Link href="#growth-{id}">` + GrowthTaskStart.tsx:25-31 仅靠 `hashchange` 触发 `openFromAnchor`。
+- **复现**：点"从这条缺口开始补证"→面板打开；点"收起补证任务"；再点同一 CTA——hash 未变，不触发 hashchange，浏览器同 hash 也不重滚，面板保持收起，链接看似失效。这是工作台最可能重复使用的一条路径。
+- **本轮可修**（小改）：在 GrowthTaskStart 的锚点按钮或链接上加 click 兜底（如 hash 相同时手动 setOpen(true)+scrollIntoView），或 CTA 改为受控打开。**网站验收**：UX-02 完整 Tab 序列一并覆盖该路径。
+
+### F2（P3）"仅简历声明"被并入"待补材料"统计，计数标签与逐项徽章口径不一致
+
+- **定位**：evidence-workspace.ts:6 将 claimed_only 计入 gaps；ReportEvidenceWorkspace.tsx:15 该桶标签"待补材料"；同文件 ：19 徽章又区分"仅简历声明"，ReportDetail.tsx:20 VERDICTS 亦区分。
+- **问题**：指标行把"材料存在但不完整"（gap）与"仅有简历自述、无任何材料"（claimed_only）合并显示，学生看计数无法区分两种严重度不同的状态；工作台 caption（:16）只声明了"未覆盖和已驳回或修正项需单独核对"，未声明此合并。
+- **本轮可修**（文案级）：标签改"待补材料（含仅简历声明）"或拆成第五格。不阻塞验收。
+
+### F3（P3）hash 打开面板的新路径无焦点管理与播报
+
+- **定位**：GrowthTaskStart.tsx:24-31 打开面板时不移动焦点、无 live 播报；焦点停留在被点击的链接上，展开内容在下方，读屏/键盘用户无"面板已打开"的可感知信号（toggle 按钮 aria-expanded 会更新，但 hash 路径不经过任何按钮）。
+- **问题**：这是本次新增的打开路径（旧 enterpriseReply 路径同病，但本次改动了该 effect 却未补焦点管理）；与设计说明"焦点……不可随布局改写"及 UX-02"焦点有可理解落点"的要求有差距。
+- **本轮可修**：openFromAnchor 打开后聚焦 toggle 按钮（tabindex=-1）或在面板容器加 aria-live。也可并入 UX-02/UX-07 网站待验清单统一复验。
+
+## 结论
+
+五项重点全部通过，新增代码未破坏 33/36/39/41 号卡的边界语义（enterpriseReply 旧路径保留、授权仍在投递操作本体、补证全只读直到显式提交）。3 项发现均为交互/文案级，无 P1，不阻塞 Codex 只读页面验收（question-chain SkipSeed 库）；F1 建议验收前小修，F2/F3 可随网站 UX 验收批量处理。测试 3/3 本机实跑通过；213 全量/类型/构建采信 Codex 结论。

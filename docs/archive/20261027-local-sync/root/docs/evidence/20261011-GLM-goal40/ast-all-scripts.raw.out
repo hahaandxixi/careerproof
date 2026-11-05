@@ -1,0 +1,9 @@
+docs\evidence\20261011-GLM-goal40\local-runtime.goal37-final.ps1  sha256=00886574fdc1f83038a2ee666e6ce5a7d66b9d273ea4758e0f3ebfeee0d8aacf
+docs\evidence\20261011-GLM-goal40\recovery-test.goal37-final.ps1  sha256=087dff6f823d61f57effbb80421021dd2a73b46e78926e5984bd7e1b05b291a8
+scripts\local-runtime.test.ps1  sha256=10d1075e03b6f4f9fbcdf5e0aa4c408d6424272f9b910f14ea0bf7cb02cdaeaf
+AST Start-Local.ps1 errors=0
+AST Stop-Local.ps1 errors=0
+AST scripts\local-runtime.ps1 errors=0
+AST scripts\local-runtime.test.ps1 errors=0
+AST scripts\local-launcher-recovery.test.ps1 errors=0
+AST scripts\local-launcher-real-identity.test.ps1 errors=0

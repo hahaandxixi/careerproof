@@ -1,0 +1,7 @@
+# 命令：node -e（TypeScript compiler API transpileModule，仅内存语法解析，无文件输出、无类型检查、无构建）
+syntax-ok src/components/GrowthWorkspace.tsx
+syntax-ok src/components/GrowthComparison.tsx
+syntax-ok src/lib/growth-workflow.ts
+syntax-ok src/lib/api/domain.ts
+syntax-ok src/lib/api/client.ts
+EXIT_CODE=0

@@ -1,0 +1,137 @@
+Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x000001B89049C5F0>>
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py", line 372, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1136, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 907, in terminate
+    self.await_(asyncio.shield(self._connection.close(timeout=2)))
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\asyncpg\connection.py", line 1504, in close
+    await self._protocol.close(timeout)
+  File "asyncpg\\protocol\\protocol.pyx", line 627, in close
+  File "asyncpg\\protocol\\protocol.pyx", line 660, in asyncpg.protocol.protocol.BaseProtocol._request_cancel
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\asyncpg\connection.py", line 1673, in _cancel_current_command
+    self._cancellations.add(self._loop.create_task(self._cancel(waiter)))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 455, in create_task
+    self._check_closed()
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 545, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Traceback (most recent call last):
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 799, in call_soon
+    self._check_closed()
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 545, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-agent-evidence-display\prepare_ui_fixture.py", line 43, in <module>
+    asyncio.run(patch_fixture()); result=data('GET','/match-reports/'+rid); assert result['aiProvider']=='mock-ui' and result['items'][0]['aiCitationIds']==['R1-E3']
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261021-agent-evidence-display\prepare_ui_fixture.py", line 38, in patch_fixture
+    report=await session.get(MatchReport,UUID(rid)); assert str(report.job_id)==job['id']; file=(await session.scalars(select(ProjectFile).where(ProjectFile.project_version_id==UUID(version['versionId'])))).one(); item=(await session.scalars(select(MatchItem).where(MatchItem.report_id==report.id))).one(); evidence=[]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\ext\asyncio\session.py", line 606, in get
+    return await greenlet_spawn(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 3694, in get
+    return self._get_impl(
+           ^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 3873, in _get_impl
+    return db_load_fn(
+           ^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\loading.py", line 695, in load_on_pk_identity
+    session.execute(
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 2365, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 2241, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 2110, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\orm\session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py", line 3277, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\engine\base.py", line 3301, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py", line 1363, in _checkout
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\pool\base.py", line 1301, in _checkout
+    result = pool._dialect._do_ping_w_event(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\engine\default.py", line 728, in _do_ping_w_event
+    return self.do_ping(dbapi_connection)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1169, in do_ping
+    dbapi_connection.ping()
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 813, in ping
+    self._handle_exception(error)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 794, in _handle_exception
+    raise error
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 811, in ping
+    _ = self.await_(self._async_ping())
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 820, in _async_ping
+    await tr.start()
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\asyncpg\transaction.py", line 146, in start
+    await self._connection.execute(query)
+  File "D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\asyncpg\connection.py", line 349, in execute
+    result = await self._protocol.query(query, timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg\\protocol\\protocol.pyx", line 375, in query
+  File "asyncpg\\protocol\\protocol.pyx", line 368, in asyncpg.protocol.protocol.BaseProtocol.query
+  File "asyncpg\\protocol\\coreproto.pyx", line 1174, in asyncpg.protocol.protocol.CoreProtocol._simple_query
+  File "asyncpg\\protocol\\protocol.pyx", line 967, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\proactor_events.py", line 366, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\asyncio\proactor_events.py", line 402, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'send'
+sys:1: RuntimeWarning: coroutine 'Connection._cancel' was never awaited

@@ -1,0 +1,86 @@
+TAP version 13
+# Subtest: argument closure: only the pinned run id is accepted
+ok 1 - argument closure: only the pinned run id is accepted
+  ---
+  duration_ms: 1.112
+  type: 'test'
+  ...
+# Subtest: argument closure: every other invocation is rejected
+ok 2 - argument closure: every other invocation is rejected
+  ---
+  duration_ms: 0.226
+  type: 'test'
+  ...
+# Subtest: service and database targets are pinned constants
+ok 3 - service and database targets are pinned constants
+  ---
+  duration_ms: 0.2128
+  type: 'test'
+  ...
+# Subtest: fixed notice copy is bound byte-for-byte to the product source
+not ok 4 - fixed notice copy is bound byte-for-byte to the product source
+  ---
+  duration_ms: 0.4676
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\github-source-20261027\\scripts\\e2e\\private-recovery-notice.test.mjs:65:1'
+  failureType: 'testCodeFailure'
+  error: 'discard notice text must exist verbatim in private-answer-workflow.ts'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/github-source-20261027/scripts/e2e/private-recovery-notice.test.mjs:66:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: read-only SQL: SELECT-only statements inside a READ ONLY wrapper
+ok 5 - read-only SQL: SELECT-only statements inside a READ ONLY wrapper
+  ---
+  duration_ms: 0.5147
+  type: 'test'
+  ...
+# Subtest: canonical JSON mirrors the seeder's normalized_snapshot_hash
+ok 6 - canonical JSON mirrors the seeder's normalized_snapshot_hash
+  ---
+  duration_ms: 0.4893
+  type: 'test'
+  ...
+# Subtest: sha256Hex matches node crypto over utf8
+ok 7 - sha256Hex matches node crypto over utf8
+  ---
+  duration_ms: 0.0953
+  type: 'test'
+  ...
+# Subtest: markers are one-shot and clearly separated from the precondition seed
+ok 8 - markers are one-shot and clearly separated from the precondition seed
+  ---
+  duration_ms: 0.3658
+  type: 'test'
+  ...
+# Subtest: importing the runner module has no side effects
+ok 9 - importing the runner module has no side effects
+  ---
+  duration_ms: 0.2995
+  type: 'test'
+  ...
+# Subtest: psWindow drives a real minimize/restore roundtrip on its own throwaway window
+ok 10 - psWindow drives a real minimize/restore roundtrip on its own throwaway window
+  ---
+  duration_ms: 8163.473
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8311.5141

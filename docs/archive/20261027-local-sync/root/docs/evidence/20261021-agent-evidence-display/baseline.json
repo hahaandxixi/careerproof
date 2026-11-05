@@ -1,0 +1,35 @@
+{
+  "head": "75d6c5937cb295ea3e34de4da672203dae99de68",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\source",
+  "ownedFiles": [
+    "backend/app/schemas/analysis.py",
+    "backend/app/services/analysis.py",
+    "backend/app/tests/test_agent_process_display.py",
+    "jianli/src/lib/api/domain.ts",
+    "jianli/src/lib/agent-evidence.ts",
+    "jianli/src/lib/report-display.ts",
+    "jianli/src/components/ReportAgentEvidence.tsx",
+    "jianli/src/components/ReportDetail.tsx",
+    "jianli/tests/agent-evidence.test.mjs"
+  ],
+  "protectedHashes": {
+    "docs/guides/使用与启动.md": "fc541b98b6ac8fd9c1cadd81df64ba063a155403396cbebea46ec70f47505541",
+    "docs/当前接力.md": "7d19fd6ba4bcc7ff315b130717e991079703d578bffdef7d4ff76ba9d8335e73",
+    "jianli/src/components/JobDetailView.tsx": "3a31ccbef20dad07526cd6a0f5508175f54289bcf7a1dcb2be9f16a6df454cc0",
+    "jianli/src/lib/match-readiness.ts": "1ee76970a1be25d3cb3a4bc53e5c65d81fed9bf01730068f3b8058048c18e2fb",
+    "jianli/tests/match-readiness.test.mjs": "db2fcbc141853647441de57f7073c31842750f8e5aea0e9be45ec69f99eee4df"
+  },
+  "normalServicesTouched": false,
+  "realExternalRequests": 0,
+  "trueAgentRecordAvailable": false,
+  "existingDisplay": {
+    "task": "real phase + folded step logs",
+    "report": "folded tool name/query/citation link; full evidence elsewhere",
+    "growth": "existing requirement-specific create/upload/compare controls"
+  },
+  "missingData": [
+    "initial AI judgment",
+    "current-version live Agent demonstration"
+  ],
+  "mockOnly": true
+}

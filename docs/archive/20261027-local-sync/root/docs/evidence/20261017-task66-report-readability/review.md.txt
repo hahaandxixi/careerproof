@@ -1,0 +1,48 @@
+# task66 · 报告动作与证据阅读收尾 — 交棒
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。**本轮零代码交付**：可复现阅读障碍未找到，
+按任务卡「已满足要求允许零代码交付」处理。未改 `ReportEvidenceWorkspace` / `EvidenceSnippet` /
+`evidence-workspace.ts` 及任何业务源码。
+
+## 结论（按验收项逐条）
+
+| 验收项 | 结果 | 依据 |
+| --- | --- | --- |
+| 计数与展开项均来自 `report.items` | 通过 | `evidenceWorkspace()` 只吃 `report.items`（`lib/evidence-workspace.ts:26-34`）；四个分组计数来自该结果，`prioritize` 已去掉三项上限（`:3-6`） |
+| 超过 3 项仍全部可看 | 通过 | 既有 `report-action-layer.test.mjs:56-65`（6 项 6 个入口）；另有 6 项 gaps 全展开断言 `evidence-workspace.test.mjs:21-27` |
+| 无建议不捏造 | 通过 | `:67-73` 断言无 `建议行动：`、无来源标签；`:131-139` 空报告不产生 `href="#requirement-"`；`:141-147` 不匹配的 action 不产生条目/引用 |
+| 规则/AI 来源准确 | 通过 | `ACTION_SOURCE_LABELS` 三值（`evidence-workspace.ts:8-12`）；`report-action-layer.test.mjs:75-91` 覆盖 rules 去重与 ai_suggestion 保留 |
+| 同句不重复 | 通过 | `distinctActionText()` 归一化空白后比较（`evidence-workspace.ts:14-24`）；`:38-43` 与 `report-action-layer.test.mjs:75-81` 双向断言 |
+| 空项/管理员既有入口/非学生兜底不删 | 通过 | `:93-101` 管理员仍见 actionPlan、无学生控件；`:103-108` 学生仅一份合并计划；`ReportActionLayer` role 分支未改（组件 `:18-20`） |
+| 390px 长引用不撑宽整页 | **部分通过（静态）** | 新增独立探针见下 |
+
+## 新增独立探针（唯一新增文件，写在证据目录）
+
+`verify-long-citation.test.mjs`：渲染 120 字符不可断引用 id + 280 字符缺口文本，断言
+①标签与文本未被截断 ②承载容器带 `break-words` / `min-w-0` / `flex-wrap`
+③无固定宽像素容器 ④`EvidenceSnippet` 具 `max-w-full` + `overflow-auto` + `min-w-0`。
+**2 passed**（`verify-long-citation.raw.out`）。
+
+局限：静态 HTML 无法测量布局，本探针证明「不会因固定宽度或缺失断词类而撑宽」，
+**不等于真实 390px 渲染通过**；真实视口需浏览器环境（见未验证项）。
+
+## 命令与结果
+
+- `node --experimental-strip-types --test tests/report-action-layer.test.mjs tests/evidence-workspace.test.mjs`
+  → **16 passed, 0 failed**（`t66-related-tests.raw.out`）
+- `node node_modules/typescript/bin/tsc --noEmit` → **exit 0**（`t66-typecheck.raw.out`）
+- 探针 → **2 passed**（`verify-long-citation.raw.out`）
+- 全量前端套件顺带观察：**322 passed / 1 failed**，失败为 `tests/lint-config.test.mjs:38`
+  找不到 `node_modules/eslint/bin/eslint.js`（本机未装 eslint 包），属环境缺依赖、非本卡回归。
+
+## 未验证项
+
+1. **真实 390px 浏览器渲染**：本环境无可驱动浏览器（`node_modules` 无 playwright/puppeteer；
+   既有 E2E 走 raw CDP 且需 3001 服务，本卡不放行起服务）。长引用结论按静态规则成立。
+2. 未跑 `next build`；`jianli/src` 未改动，构建风险不变。
+3. 未做真实用户走查，实现/独立审查/人类验收未代签。
+
+## 证据
+
+`verify-long-citation.test.mjs`、`verify-long-citation.raw.out`、`t66-related-tests.raw.out`、
+`t66-typecheck.raw.out`（均在本目录）。源码 hash 见 `source-hashes.txt`。

@@ -1,0 +1,28 @@
+{
+  "history": [
+    {
+      "source": "阶段1-比赛需求拆解与项目总控.md",
+      "lines": 281,
+      "normalizedAndOriginalBytesMatch": true
+    },
+    {
+      "source": "docs/当前接力.md",
+      "lines": 263,
+      "normalizedAndOriginalBytesMatch": true
+    },
+    {
+      "source": "docs/任务清单.md",
+      "lines": 377,
+      "normalizedAndOriginalBytesMatch": true
+    }
+  ],
+  "documentsChecked": 20,
+  "localLinksChecked": 389,
+  "repositoryHostedLinksCheckedAgainstTree": 8,
+  "markdownFragmentsChecked": 41,
+  "openTasks": 10,
+  "handoffLines": 85,
+  "failures": [],
+  "warnings": [],
+  "limits": "No general external URL availability check, live application test, or new CI/model execution. GitHub main document URLs validated against this tree."
+}

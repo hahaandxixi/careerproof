@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: browser suffix and byte contract matches the backend including uppercase images
+ok 1 - browser suffix and byte contract matches the backend including uppercase images
+  ---
+  duration_ms: 1.5165
+  type: 'test'
+  ...
+# Subtest: single file selection rejects multiple files without choosing an arbitrary first one
+ok 2 - single file selection rejects multiple files without choosing an arbitrary first one
+  ---
+  duration_ms: 0.4834
+  type: 'test'
+  ...
+# Subtest: latest upload summaries keep independent resume/project identities and pending newest versions
+ok 3 - latest upload summaries keep independent resume/project identities and pending newest versions
+  ---
+  duration_ms: 0.2626
+  type: 'test'
+  ...
+# Subtest: proposed material versions are compared against server-saved identities, not filenames/order
+ok 4 - proposed material versions are compared against server-saved identities, not filenames/order
+  ---
+  duration_ms: 0.1637
+  type: 'test'
+  ...
+# Subtest: returned upload uses only a validated hint and does not encode selection/save actions
+ok 5 - returned upload uses only a validated hint and does not encode selection/save actions
+  ---
+  duration_ms: 0.3046
+  type: 'test'
+  ...
+# Subtest: real dropzone shares chooser/drop validation and retains a native keyboard file input
+ok 6 - real dropzone shares chooser/drop validation and retains a native keyboard file input
+  ---
+  duration_ms: 10.8642
+  type: 'test'
+  ...
+# Subtest: real returned-version review highlights only current owned data and never selects or saves
+not ok 7 - real returned-version review highlights only current owned data and never selects or saves
+  ---
+  duration_ms: 30.4772
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\material-upload.test.mjs:101:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026/. Input:
+    
+    '<aside class="space-y-2 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm" aria-label="刚上传的补证版本"><p class="break-words font-medium text-indigo-900">刚上传：报名服务 · 第 2 版 · service.zip</p><p class="leading-6 text-slate-700">解析已完成，尚未加入当前选择。请在下方明确选择，核对后保存。</p></aside>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<aside class="space-y-2 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm" aria-label="刚上传的补证版本"><p class="break-words font-medium text-indigo-900">刚上传：报名服务 · 第 2 版 · service.zip</p><p class="leading-6 text-slate-700">解析已完成，尚未加入当前选择。请在下方明确选择，核对后保存。</p></aside>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/material-upload.test.mjs:121:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: actual project picker highlights a returned version without selecting it or marking search results newest
+not ok 8 - actual project picker highlights a returned version without selecting it or marking search results newest
+  ---
+  duration_ms: 10.6876
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\material-upload.test.mjs:128:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /已解析.*<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026/. Input:
+    
+    '<section aria-label="项目或作品版本选择" class="space-y-3"><div class="flex flex-wrap items-center justify-between gap-2"><p class="text-sm font-medium">项目或作品版本（最多 10 项，可不选）</p><span class="text-xs text-slate-500">已选 0/10</span></div><p class="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p><details open="" class="rounded-xl border border-slate-200"><summary class="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · 1 个项目</summary><div class="space-y-3 border-t border-slate-200 p-3"><label class="block text-xs text-slate-600">搜索项目名称或文件名<input class="field mt-1" type="search" placeholder="输入项目名称或文件名" value=""/></label><p class="text-xs text-slate-500">展开项目查看已完成解析的版本。可选不同版本做对照；收起或搜索不会取消已选项。</p><div class="max-h-72 space-y-2 overflow-y-auto"><section aria-label="我的其他项目与作品" class="space-y-2"><h3 class="text-xs font-semibold text-slate-500">我的其他项目与作品 · 1 个项目</h3><details open="" class="rounded-lg bg-slate-50"><summary class="cursor-pointer p-3 text-sm font-medium break-words">作品<span class="ml-2 text-xs font-normal text-slate-500">2 个版本 · 已选 0</span></summary><div class="space-y-2 px-3 pb-3"><label class="material-version flex items-start gap-2 rounded-lg border p-2 text-sm border-indigo-400 bg-indigo-50"><input class="mt-1 shrink-0" type="checkbox"/><span class="min-w-0 break-words">第 2 版 · new.zip · 个人作品<span class="ml-2 text-xs text-slate-600">最新可用版本</span><span class="mt-1 block text-xs font-medium text-indigo-800">刚上传 · 尚未选择</span></span></label><label class="material-version flex items-start gap-2 rounded-lg border p-2 text-sm border-transparent bg-white"><input class="mt-1 shrink-0" type="checkbox"/><span class="min-w-0 break-words">第 1 版 · old.zip · 个人作品</span></label></div></details></section></div></div></details></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section aria-label="项目或作品版本选择" class="space-y-3"><div class="flex flex-wrap items-center justify-between gap-2"><p class="text-sm font-medium">项目或作品版本（最多 10 项，可不选）</p><span class="text-xs text-slate-500">已选 0/10</span></div><p class="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p><details open="" class="rounded-xl border border-slate-200"><summary class="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · 1 个项目</summary><div class="space-y-3 border-t border-slate-200 p-3"><label class="block text-xs text-slate-600">搜索项目名称或文件名<input class="field mt-1" type="search" placeholder="输入项目名称或文件名" value=""/></label><p class="text-xs text-slate-500">展开项目查看已完成解析的版本。可选不同版本做对照；收起或搜索不会取消已选项。</p><div class="max-h-72 space-y-2 overflow-y-auto"><section aria-label="我的其他项目与作品" class="space-y-2"><h3 class="text-xs font-semibold text-slate-500">我的其他项目与作品 · 1 个项目</h3><details open="" class="rounded-lg bg-slate-50"><summary class="cursor-pointer p-3 text-sm font-medium break-words">作品<span class="ml-2 text-xs font-normal text-slate-500">2 个版本 · 已选 0</span></summary><div class="space-y-2 px-3 pb-3"><label class="material-version flex items-start gap-2 rounded-lg border p-2 text-sm border-indigo-400 bg-indigo-50"><input class="mt-1 shrink-0" type="checkbox"/><span class="min-w-0 break-words">第 2 版 · new.zip · 个人作品<span class="ml-2 text-xs text-slate-600">最新可用版本</span><span class="mt-1 block text-xs font-medium text-indigo-800">刚上传 · 尚未选择</span></span></label><label class="material-version flex items-start gap-2 rounded-lg border p-2 text-sm border-transparent bg-white"><input class="mt-1 shrink-0" type="checkbox"/><span class="min-w-0 break-words">第 1 版 · old.zip · 个人作品</span></label></div></details></section></div></div></details></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/material-upload.test.mjs:149:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 315.0619

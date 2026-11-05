@@ -1,0 +1,64 @@
+[
+  {
+    "filePath": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task77-lint\\stage\\jianli\\src\\components\\TaskView.tsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "react-hooks/exhaustive-deps",
+        "severity": 1,
+        "message": "React Hook useEffect has a missing dependency: 'connection'. Either include it or remove the dependency array.",
+        "line": 137,
+        "column": 6,
+        "nodeType": "ArrayExpression",
+        "endLine": 137,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "desc": "Update the dependencies array to be: [connection, id, revision]",
+            "fix": {
+              "range": [
+                4477,
+                4491
+              ],
+              "text": "[connection, id, revision]"
+            }
+          }
+        ],
+        "suppressions": [
+          {
+            "kind": "directive",
+            "justification": ""
+          }
+        ]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task77-lint\\stage\\jianli\\src\\lib\\process-trace.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\task77-lint\\stage\\jianli\\tests\\process-trace.test.mjs",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

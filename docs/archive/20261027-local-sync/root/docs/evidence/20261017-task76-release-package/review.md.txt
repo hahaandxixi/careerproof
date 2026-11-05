@@ -1,0 +1,50 @@
+# task76 · 候选源码包可复现验收 — 交棒（**未执行打包**，门未满足）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。未打包、未改源码/锁文件；只写本目录 + `backend/.tmp/task76-*`（本轮用 `docs/evidence/.../basetemp` 作 pytest 独占 basetemp）。
+
+## 门（全部未满足，故按卡片停手）
+
+任务卡依赖：「候选提交明确、**69 签收**且 **75 完成**后；全量验收唯一执行者」。
+
+| 门 | 实际 | 结论 |
+| --- | --- | --- |
+| 候选提交明确 | HEAD `33ba713`，但工作区有 **136 项未提交/未跟踪**（含 Z57 分页、task69-72 证据、他人未交棒改动） | 不满足：无"指定已提交 hash" |
+| 69 签收 | 我在本轮做了 69 的**独立审查**（发现版本维度缺陷），但**签收权在 Codex**；未见签收记录 | 不满足 |
+| 75 完成 | `docs/task-cards/20261017-ZCODE75-submission-pdf.md` 存在，但**无 75 号完成证据目录**；`output/pdf/CareerProof-技术文档-提交候选稿.pdf` 存在仅为候选稿 | 不满足 |
+
+**因此未运行 `scripts/build_source_package.py`、未生成 `output/source/` 新包**。既有 5 个
+`CareerProof-source-preview-2026…zip` 均为历史 r2–r5 包，非 76 号产物。
+
+## 已完成的替代性取证（不等于通过）
+
+### 全量后端（SQLite，一次）
+`python -m pytest app/tests -q --basetemp=... -p no:cacheprovider`
+→ **1 failed, 1351 passed, 71 skipped, 7 warnings in 345s**（`backend-full-sqlite.raw.out`）
+
+- 唯一失败：`test_fastembed_dependency_compatibility.py::test_installed_pins_match_pyproject_exactly`
+  `AssertionError: pyjwt: installed 2.10.1 != pin 2.15.0`——**依赖漂移**（本机已装 pyjwt 与
+  `pyproject` 锁定不一致），非本批源码改动；Z61 交棒亦记录同一失败。
+  **按卡片"失败保留并交回，不边修边称同一候选全绿"，此处不修、不忽略、不称全绿。**
+- 71 skipped：均为需要真实 PostgreSQL 或外部模型的门控套件（含 `test_growth_answer_postgres`、
+  `test_knowledge_semantic_postgres`、`test_paginated_lists_postgres` 等）；未分配专属 PG，不跑。
+- 未跑前端全量（卡片要求"全量前后端各一次"；前端全量已在 task63 观察 322 passed / 1 failed
+  `lint-config` 缺 eslint 包），**未作为本候选的全量前端结果**。
+
+## 未验证项
+
+1. **未打包**：未执行 `--ref` 打包，未核对逐文件 hash、必需合成资源、无秘密/上传存储/临时产物。
+2. **未独立解包验证**：卡片要求"独立解包验证安装与核心构建"，未做。
+3. **未跑 PG**：卡片要求"PG 仅在总控明确交付的专属容器/数据库下执行，未分配则不运行"——未分配，未跑。
+4. **未跑 lint/typecheck/build**：未在本轮作为候选门禁执行。
+5. **未列视频/PDF 独立交付清单哈希**：`output/video/` 有 4 个 mp4、`output/pdf/` 有 1 个候选稿 PDF，
+   但未按卡片要求单列 hash 与所在路径。
+6. 剩余签署/访问/许可/真人复核阻断**未单列**（本轮无候选包可关联）。
+
+## 建议
+
+待 **69 由 Codex 签收** 且 **75 完成**、并指定**一个已提交 hash** 作为候选后，再派发 76。
+届时需在专属 PG 或明确"无 PG"结论下重跑全量，并对 pyjwt 之类依赖漂移先做决定（锁文件不可漂移）。
+
+## 证据
+
+`backend-full-sqlite.raw.out`（全量原始输出）、`basetemp/`（本轮 pytest 独占临时目录）、本文件。

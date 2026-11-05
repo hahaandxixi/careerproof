@@ -1,0 +1,58 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "download-withdraw",
+  "startedAt": "2026-10-05T04:38:08.477Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:38:08.477Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=download-withdraw runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:38:08.749Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 61986 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:38:08.927Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\download-withdraw-2026-10-05T04-38-08-476Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:38:10.265Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:38:41.631Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:38:41.632Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "student exitCode=n/a"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:38:41.632Z",
+      "name": "scenario-aborted",
+      "status": "fail",
+      "detail": "Error: download did not complete within 30000ms |     at waitForDownload (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:981:9) |     at async scenarioDownloadWithdraw (file:///D:/jbcode/web%20ai/jianli/scripts/e2e/enterprise-browser-runner.mjs:1019:20)"
+    }
+  ],
+  "artifacts": [],
+  "finishedAt": "2026-10-05T04:38:41.632Z"
+}

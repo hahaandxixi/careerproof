@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: return accepts only known internal pages and preserves selected materials and citation
+ok 1 - return accepts only known internal pages and preserves selected materials and citation
+  ---
+  duration_ms: 0.8446
+  type: 'test'
+  ...
+# Subtest: external, encoded path, authentication loops and mutation endpoints cannot be return destinations
+ok 2 - external, encoded path, authentication loops and mutation endpoints cannot be return destinations
+  ---
+  duration_ms: 0.1654
+  type: 'test'
+  ...
+# Subtest: role defaults cannot land a student in enterprise tools or enterprise in private material work
+ok 3 - role defaults cannot land a student in enterprise tools or enterprise in private material work
+  ---
+  duration_ms: 0.2518
+  type: 'test'
+  ...
+# Subtest: owned saved resources are checked with read-only calls; denied resources fall back
+ok 4 - owned saved resources are checked with read-only calls; denied resources fall back
+  ---
+  duration_ms: 0.9075
+  type: 'test'
+  ...
+# Subtest: temporary connection failure keeps recoverable destination rather than pretending access was denied
+ok 5 - temporary connection failure keeps recoverable destination rather than pretending access was denied
+  ---
+  duration_ms: 0.1734
+  type: 'test'
+  ...
+# Subtest: header auth links retain the original task and edit routes verify company ownership
+ok 6 - header auth links retain the original task and edit routes verify company ownership
+  ---
+  duration_ms: 0.2546
+  type: 'test'
+  ...
+# Subtest: admin edit return uses job access without requesting enterprise-only candidates
+not ok 7 - admin edit return uses job access without requesting enterprise-only candidates
+  ---
+  duration_ms: 0.7029
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\auth-return.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '/jobs'
+    - '/jobs/owned/edit'
+            ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '/jobs/owned/edit'
+  actual: '/jobs'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/auth-return.test.mjs:59:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 147.08

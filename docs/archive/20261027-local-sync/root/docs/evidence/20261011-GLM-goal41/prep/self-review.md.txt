@@ -1,0 +1,44 @@
+# 自审记录 — private-recovery-notice-runner（goal 41 准备阶段）
+
+日期：2026-10-11。范围：`scripts/e2e/private-recovery-notice-runner.mjs`、`scripts/e2e/private-recovery-notice.test.mjs`、`docs/evidence/20261011-GLM-goal41/`。未改任何产品文件/旧 runner/其他任务文件。
+
+## 自审中发现并已修复的缺陷（全部在准备阶段发现，未进入实跑）
+
+1. **Chrome 构造器作用域缺陷**：构造器最初引用 main() 局部的 `RUN_STAMP`（ReferenceError 必现）。改为构造参数 `stamp` 必填校验。
+2. **PowerShell 参数传递错误**：`powershell -Command <script> arg1 arg2` 的 arg 不会绑定 `$args`（会被拼接成新语句）。改为把 pid/cmdShow（本 run 自产的数字）直接内嵌进命令串。修正后用自有 WinForms 探针窗口完成真实 MINIMIZED→RESTORED→MINIMIZED 往返验证（静态测试 #10，10/10 过）。
+3. **leakScan 的 localStorage/sessionStorage 假检查**：`JSON.stringify(storage)` 恒为 `"{}"`，marker 若入库也查不出。改为逐 key 枚举真实转储后扫描。
+4. **坏参数闭合演示**：5 组非法参数全部 exit=3 且不产生任何文件（证据 prep-args-closure.raw.out）。
+5. **隐藏态后续步骤风险**：任一步 hide/restore 失败后窗口可能停留在隐藏态，后续 fillText 会对着最小化窗口发鼠标事件。新增 `ensureVisible` 守卫：每步开始确认 `document.visibilityState === "visible"`，否则先真实恢复；恢复失败抛 `PageAbortError` 诚实中止剩余页面步骤（记 blocked），`finally` 仍关浏览器，终态只读比对在无 after-seed 基线时如实跳过。
+6. **fixture 快照哈希复刻不可行（实测确认，非假设）**：存储文本含 Python 浮点 `overallScore: 55.0`，JS Number 解析为 55，seeder 的 `normalized_snapshot_hash` 无法在 JS 字节级复刻（0/3 一致，见 prep-fixture-hash.raw.out）。处置：runner 中 fixture 交叉核对降级为**信息性记录**（不作为门禁）；硬不变量改为 before/after 全量原始文本哈希全等（`appsRawSha256`/`draftRawSha256` + 逐行 `rowSha256`），任何变化必然现形。
+7. **BOM 防御**：凭证文件实测无 BOM，仍加 `replace(/^\uFEFF/, "")` 防止 Codex 侧重生成文件时引入。
+8. **测试断言修正**：`assert.equal` → `assert.deepEqual`（对象比较）。
+
+## 与任务卡逐项对照（准备阶段完成项）
+
+- 唯一写：runner + 测试 + docs/evidence/20261011-GLM-goal41/ ✓（浏览器 profile 目录仅在实跑时由 runner 创建，位于被忽略的 backend/.tmp/e2e-browser/）
+- 参考 private-answer-page-runner 的 raw CDP/登录/凭证内存脱敏方式，更小独立 runner ✓（未 import 旧 runner，仅复制模式；密码/cookie 进 SCRUB，凭证解析失败不泄原文）
+- 参数只允许 question-chain-20261010；服务仅 127.0.0.1:8001/3001；无 CLI 端口/run 覆盖（无 process.env/localhost）✓ 静态测试固化
+- 不访问业务库：psql `-d DB_NAME` 固定 cp_e2e_question-chain-20261010 + `BEGIN READ ONLY … ROLLBACK` 服务端强制 ✓
+- 通过真实页面操作草稿输入与恢复；API/SQL 仅预检或只读核对 ✓（Node 侧 API 客户端只有 GET，结构上无写方法）
+- 不 API 代 UI 保存 ✓（唯一 PUT 是前置种子且走真实 UI 保存按钮）
+- 不注入组件状态/伪造 visibility ✓（隐藏 = 对本 run 自有 Chrome 窗口的 Win32 ShowWindow 真实最小化 + 页面自报 visibilityState=hidden 双重验证；不发合成事件、不改属性；探针失败记 blocked 不伪造）
+- marker 一次性、不保存 ✓（结束时 DOM/输入值/localStorage/sessionStorage/cookie 全量扫描 + 全程 PUT 计数必须为 1）
+- 页面步骤 1-7（读草稿/未编辑不谎报丢弃/marker 隐藏恢复/读取中+成功后提示/重复隐藏保持/再编辑结束/390px 关键路径+溢出+泄露扫描）已按卡实现 ✓
+- 三投递 snapshot 哈希 + 已发送回复摘要先后只读核对 ✓；不新增报告/分析/模型/企业消息 → counts before/after（match_reports/analysis_tasks/ai_usage_logs/notifications/application_events/agent_steps/growth_answer_drafts/applications）✓
+- 读取失败路径：浏览器级 Network.emulateNetworkConditions 真断网（真实传输层失败，明确记录）；20s 内观察不到则记 blocked=未验，不伪造 ✓
+- 服务未就绪 → 有限健康检查后 exit 2（blocked），不空等轮询 ✓（本轮准备阶段未执行任何页面/API 请求，runner 仅在 Codex 服务就绪后由 Codex/续跑任务执行）
+
+## 已知局限（如实声明）
+
+- **读取期间提示可见**为 best-effort 轮询（恢复后 load 可能快于一次 20ms 轮询）；观察不到记 info 并注明，硬门禁是成功后提示保持。不伪造。
+- **headed Chrome + ShowWindow** 依赖交互桌面会话；静态测试已用自有 GUI 探针窗口证明窗口站可用、管线端到端成立；实跑时若 Chrome 窗口句柄不可得，runner 记 blocked（不会退化为伪造事件）。
+- 390px 截图在 marker 已被恢复清除后拍摄；marker 输入态另有一张过程截图（证明真实键入），两者用途不同，README 已说明。
+- 恢复读取失败路径依赖 CDP 离线仿真被 Chrome 正确应用；若失败记未验。
+- 前端 stage：任务卡说明升级 stage 由 Codex 准备；runner 运行时读取 manifest 仅记录，DB 身份由只读交叉核对决定（backend-db-identity）。
+
+## 准备阶段实际执行的命令
+
+- `node --check` ×2、`node --test scripts/e2e/private-recovery-notice.test.mjs`（多次，最终 10/10）
+- 非法参数调用 ×5（exit 3，无文件写入）
+- 只读 psql（BEGIN READ ONLY…ROLLBACK）：counts、report_snapshot 样本、canonical 复刻尝试
+- 无服务启停、无迁移/seed、无安装、无外发、无 .env、无 Git 提交推送、无 P2。

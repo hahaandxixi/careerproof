@@ -1,0 +1,122 @@
+{
+  "runId": "audit-20261005",
+  "scenario": "notification-filter",
+  "startedAt": "2026-10-05T04:46:24.041Z",
+  "steps": [
+    {
+      "n": 1,
+      "at": "2026-10-05T04:46:24.042Z",
+      "name": "scenario-start",
+      "status": "info",
+      "detail": "scenario=notification-filter runId=audit-20261005"
+    },
+    {
+      "n": 2,
+      "at": "2026-10-05T04:46:24.323Z",
+      "name": "chrome-launched",
+      "status": "info",
+      "detail": "enterprise dynamic port 63399 profile=profile-enterprise"
+    },
+    {
+      "n": 3,
+      "at": "2026-10-05T04:46:24.505Z",
+      "name": "screenshot:login-page-empty",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\03-login-page-empty.png"
+    },
+    {
+      "n": 4,
+      "at": "2026-10-05T04:46:26.416Z",
+      "name": "login-ok",
+      "status": "pass",
+      "detail": "landed on /jobs"
+    },
+    {
+      "n": 5,
+      "at": "2026-10-05T04:46:26.911Z",
+      "name": "filter-plan",
+      "status": "info",
+      "detail": "hide target=8032fdb1 via zero-result keyword (shared names make per-candidate filters impossible)"
+    },
+    {
+      "n": 6,
+      "at": "2026-10-05T04:46:26.959Z",
+      "name": "screenshot:board-candidates",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\06-board-candidates.png"
+    },
+    {
+      "n": 7,
+      "at": "2026-10-05T04:46:27.561Z",
+      "name": "notification-card-found",
+      "status": "pass",
+      "detail": "card #0 navigates to target via real 核对授权并打开投递 click"
+    },
+    {
+      "n": 8,
+      "at": "2026-10-05T04:46:28.167Z",
+      "name": "anchor-navigation",
+      "status": "pass",
+      "detail": "landed with target hash while list response held"
+    },
+    {
+      "n": 9,
+      "at": "2026-10-05T04:46:28.788Z",
+      "name": "filtered-out-notice",
+      "status": "pass",
+      "detail": "notice=true targetHidden=true zeroResultList=true"
+    },
+    {
+      "n": 10,
+      "at": "2026-10-05T04:46:28.845Z",
+      "name": "screenshot:filtered-out-notice",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\10-filtered-out-notice.png"
+    },
+    {
+      "n": 11,
+      "at": "2026-10-05T04:46:29.190Z",
+      "name": "clear-filter-locate-once",
+      "status": "pass",
+      "detail": "targetVisible=true scrollY=11 targetTop=523 pageH=813"
+    },
+    {
+      "n": 12,
+      "at": "2026-10-05T04:46:29.243Z",
+      "name": "screenshot:after-clear-filter",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\12-after-clear-filter.png"
+    },
+    {
+      "n": 13,
+      "at": "2026-10-05T04:46:29.901Z",
+      "name": "refresh-no-hijack",
+      "status": "pass",
+      "detail": "scrollBefore=0 scrollAfter=0 noticeGone=true targetRetained=true scrollEvents=[137,11,0]"
+    },
+    {
+      "n": 14,
+      "at": "2026-10-05T04:46:29.979Z",
+      "name": "screenshot:after-refresh-no-hijack",
+      "status": "evidence",
+      "detail": "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\14-after-refresh-no-hijack.png"
+    },
+    {
+      "n": 15,
+      "at": "2026-10-05T04:46:30.098Z",
+      "name": "chrome-stopped",
+      "status": "info",
+      "detail": "enterprise exitCode=0"
+    },
+    {
+      "n": 16,
+      "at": "2026-10-05T04:46:30.098Z",
+      "name": "scenario-complete",
+      "status": "pass"
+    }
+  ],
+  "artifacts": [
+    "docs\\evidence\\20261004-E2E-enterprise\\notification-filter-2026-10-05T04-46-24-040Z\\notification-filter-telemetry.json"
+  ],
+  "finishedAt": "2026-10-05T04:46:30.098Z"
+}

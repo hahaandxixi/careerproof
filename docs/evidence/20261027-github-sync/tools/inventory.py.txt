@@ -1,0 +1,60 @@
+import collections, hashlib, json, pathlib, re, subprocess
+ROOT = pathlib.Path(r'D:\jbcode\web ai\jianli')
+OUT = ROOT / 'backend/.tmp/github-sync-20261027'
+def git(*args, cwd=ROOT, raw=False):
+    p = subprocess.run(['git', '-c', 'core.quotepath=false', *args], cwd=cwd, capture_output=True, check=True)
+    return p.stdout if raw else p.stdout.decode('utf-8').strip()
+trees=[]
+for block in git('worktree','list','--porcelain').split('\n\n'):
+    d={x.split(' ',1)[0]:x.split(' ',1)[1] for x in block.splitlines() if ' ' in x}
+    if d: trees.append(d)
+remote_blobs=collections.defaultdict(list)
+refs=git('for-each-ref','--format=%(refname:short)','refs/remotes/origin').splitlines()
+for ref in refs:
+    for line in git('ls-tree','-r',ref).splitlines():
+        meta,path=line.split('\t',1); mode,typ,oid=meta.split()
+        if typ=='blob': remote_blobs[oid].append((ref,path))
+rows=[]
+patterns={
+ 'private_key':r'-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----',
+ 'api_key':r'\bsk-[A-Za-z0-9_-]{20,}',
+ 'bearer':r'(?i)Bearer\s+[A-Za-z0-9_.-]{30,}',
+ 'jwt':r'\beyJ[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}',
+ 'credential_url':r'(?i)(?:postgres(?:ql)?(?:\+\w+)?|mysql|https?)://[^\s/:]+:[^\s/@]+@',
+ 'password_assignment':r'(?i)["\']?(?:password|api[_-]?key|secret[_-]?key|access[_-]?token)["\']?\s*[:=]\s*["\'][^"\'\r\n]{4,}["\']',
+ 'cookie':r'(?i)(?:set-cookie|cookie)["\']?\s*[:=]\s*["\'][^"\'\r\n]{15,}',
+ 'email':r'[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}',
+ 'local_path':r'(?i)[A-Z]:[\\/](?:Users|jbcode)[\\/]',
+}
+for tree in trees:
+    wt=pathlib.Path(tree['worktree']); status=git('status','--porcelain=v1','-z','--untracked-files=all',cwd=wt,raw=True).split(b'\0')
+    i=0
+    while i<len(status):
+        v=status[i].decode('utf-8');i+=1
+        if not v: continue
+        state,path=v[:2],v[3:]
+        if 'R' in state or 'C' in state: i+=1
+        file=wt/path
+        row=dict(worktree=str(wt),branch=tree.get('branch','detached'),head=tree['HEAD'],path=path,status=state,size=None,sha256=None,git_blob=None,equivalent=[],risks={},error=None)
+        try:
+            if file.is_file():
+                data=file.read_bytes();row['size']=len(data);row['sha256']=hashlib.sha256(data).hexdigest()
+                def blob(d): return hashlib.sha1(b'blob '+str(len(d)).encode()+b'\0'+d).hexdigest()
+                oid=blob(data)
+                normalized=blob(data.replace(b'\r\n',b'\n')) if b'\0' not in data[:8192] else oid
+                row['git_blob']=oid;row['normalized_blob']=normalized
+                row['equivalent']=(remote_blobs.get(oid,[]) or remote_blobs.get(normalized,[]))[:4]
+                if b'\0' not in data[:8192] and len(data)<20_000_000:
+                    s=data.decode('utf-8-sig',errors='replace')
+                    row['risks']={key:[n for n,line in enumerate(s.splitlines(),1) if re.search(pat,line)] for key,pat in patterns.items()}
+                    row['risks']={k:v for k,v in row['risks'].items() if v}
+            else: row['error']='not a regular file'
+        except Exception as e: row['error']=type(e).__name__
+        rows.append(row)
+branches=[]
+for b in git('for-each-ref','--format=%(refname:short)','refs/heads').splitlines():
+    missing=git('rev-list',b,'--not','--remotes=origin').splitlines()
+    branches.append(dict(branch=b,head=git('rev-parse',b),unpublished=missing,cherry_main=git('cherry','origin/main',b).splitlines()))
+payload=dict(root=str(ROOT),trees=trees,branches=branches,remote_refs=refs,files=rows,stash=git('stash','list').splitlines())
+(OUT/'inventory-before.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps(dict(trees=len(trees),files=len(rows),by_tree=dict(collections.Counter(x['worktree'] for x in rows)),by_status=dict(collections.Counter(x['status'] for x in rows)),by_extension=dict(collections.Counter(pathlib.Path(x['path']).suffix for x in rows)),unpublished_branches={x['branch']:len(x['unpublished']) for x in branches},risk_counts=dict(collections.Counter(k for x in rows for k in x['risks'])),largest=sorted([(x['size'] or 0,x['path'],pathlib.Path(x['worktree']).name) for x in rows],reverse=True)[:12]),ensure_ascii=False,indent=2))

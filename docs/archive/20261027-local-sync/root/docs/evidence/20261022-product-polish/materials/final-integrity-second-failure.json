@@ -1,0 +1,113 @@
+{
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\backend",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "mode": "PostgreSQL READ ONLY + accepted production serializers; no HTTP/login/write",
+  "growthId": "362c7923-9025-43df-87cf-b68dbf3c4d10",
+  "reportId": "2997e468-ca66-401d-a3e2-f6518cad9243",
+  "materialShapes": {
+    "growthSaved": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+        "materialRole": "portfolio"
+      }
+    ],
+    "reportSnapshot": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ]
+  },
+  "confirmedSelection": {
+    "materials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 4,
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+        "materialRole": "portfolio"
+      }
+    ],
+    "analysisTaskId": "41abea62-6455-404c-844a-4139b9b0eabe",
+    "inputProjectVersionIds": [
+      "53366c20-1973-48a4-8b18-c27ca4ceaa7e"
+    ],
+    "versionNumber": 4,
+    "filename": "CareerProof-campus-signup-v2-runtime.zip",
+    "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "parseStatus": "completed"
+  },
+  "analysis": {
+    "analysisMode": "rules",
+    "aiProvider": null,
+    "aiUsage": null,
+    "aiToolCalls": [],
+    "overallScore": 52.0
+  },
+  "originalReport": {
+    "id": "fda4ec24-3534-4a4e-80aa-2d5959b0c87e",
+    "expectedHash": "d775165ca3cbbaadc1c3f9da273875e8dc34594593d4bba7753f4c2f0aa35322",
+    "actualHash": "d775165ca3cbbaadc1c3f9da273875e8dc34594593d4bba7753f4c2f0aa35322"
+  },
+  "previousNewReport": {
+    "id": "59ac4fa1-4792-4c14-b268-51119b129076",
+    "expectedHash": "0142e92da04d6fc38f968665fa77161441024414b0a296c9fb7693921521ec26",
+    "actualHash": "0142e92da04d6fc38f968665fa77161441024414b0a296c9fb7693921521ec26"
+  },
+  "databaseFacts": {
+    "expected": {
+      "ai_request_attempts": 3,
+      "ai_usage_logs": 3,
+      "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+      "applicationCount": 2
+    },
+    "actual": {
+      "ai_request_attempts": 3,
+      "ai_usage_logs": 3,
+      "applicationSnapshotsHash": "b4e07ad53f6a3ea0312c210f096f483ccea7caff882a65c5ad61f7f190ec32c8",
+      "applicationCount": 3
+    }
+  },
+  "passed": false,
+  "failure": {
+    "type": "AssertionError",
+    "message": ""
+  }
+}

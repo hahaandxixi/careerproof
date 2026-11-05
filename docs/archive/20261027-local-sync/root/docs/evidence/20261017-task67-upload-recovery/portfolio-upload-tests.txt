@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: failed ZIP upload retains project and request key across repeated retries
+ok 1 - failed ZIP upload retains project and request key across repeated retries
+  ---
+  duration_ms: 2.1245
+  type: 'test'
+  ...
+# Subtest: lost creation response retries with the same creation key
+ok 2 - lost creation response retries with the same creation key
+  ---
+  duration_ms: 0.2156
+  type: 'test'
+  ...
+# Subtest: refresh restores pending keys for the correct user without storing files
+ok 3 - refresh restores pending keys for the correct user without storing files
+  ---
+  duration_ms: 0.5532
+  type: 'test'
+  ...
+# Subtest: explicit new version retains project but gets a new upload key
+ok 4 - explicit new version retains project but gets a new upload key
+  ---
+  duration_ms: 0.1827
+  type: 'test'
+  ...
+# Subtest: reference role survives upload retry and refresh
+ok 5 - reference role survives upload retry and refresh
+  ---
+  duration_ms: 0.1745
+  type: 'test'
+  ...
+# Subtest: client timeout keeps the attempt retryable without inferring upload failure
+ok 6 - client timeout keeps the attempt retryable without inferring upload failure
+  ---
+  duration_ms: 0.6274
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95.749
+exit=0

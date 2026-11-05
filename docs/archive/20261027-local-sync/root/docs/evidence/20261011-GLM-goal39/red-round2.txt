@@ -1,0 +1,36 @@
+.......FF.................                                               [100%]
+================================== FAILURES ===================================
+_____________ test_holdout_resolved_current_account_stays_exempt ______________
+
+    def test_holdout_resolved_current_account_stays_exempt():
+        # 当前 belongs to the 已改用 clause, not to the earlier impossibility
+        # clause; the resolved old description must stay exempt.
+>       assert (
+            shared_history_attribution_impossible(
+                ["此前共用账号，历史记录无法区分作者，当前已改用个人账号"]
+            )
+            is False
+        )
+E       AssertionError: assert True is False
+E        +  where True = shared_history_attribution_impossible(['此前共用账号，历史记录无法区分作者，当前已改用个人账号'])
+
+app\tests\test_shared_history_current_boundary.py:99: AssertionError
+________ test_holdout_conditional_clause_does_not_suppress_later_fact _________
+
+    def test_holdout_conditional_clause_does_not_suppress_later_fact():
+        # 如果 scopes only its own clause; the later shared-account fact keeps
+        # its association with the attribution statement and still triggers.
+>       assert (
+            shared_history_attribution_impossible(
+                ["如果后续增加分工证明会再核验；当前共用账号，历史记录无法区分作者"]
+            )
+            is True
+        )
+E       AssertionError: assert False is True
+E        +  where False = shared_history_attribution_impossible(['如果后续增加分工证明会再核验；当前共用账号，历史记录无法区分作者'])
+
+app\tests\test_shared_history_current_boundary.py:110: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_shared_history_current_boundary.py::test_holdout_resolved_current_account_stays_exempt
+FAILED app/tests/test_shared_history_current_boundary.py::test_holdout_conditional_clause_does_not_suppress_later_fact
+2 failed, 24 passed in 0.11s

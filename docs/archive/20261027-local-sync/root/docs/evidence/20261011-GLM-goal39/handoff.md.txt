@@ -1,0 +1,42 @@
+# 传智杯39 交棒：当前共用账号历史归因漏拒修复
+
+HEAD 6410915（仅前端34+38签收，与本修复无关）。改动仅3处：`backend/app/tools/task_boundaries.py`、新`backend/app/tests/test_shared_history_current_boundary.py`、本证据目录。36(contracts/weekend)/37(启动器)/38(前端)未动，无DB/模型/服务/联网/安装/.env/提交推送。
+
+## 第2轮：Codex独立反例补修（20261011-GLM-integration-codex/goal39-independent-holdout.json）
+
+- 红轮 `red-round2.txt`：恰好2条holdout失败（24条既有测试仍过）——
+  1. `resolved_current_account`：「此前共用账号，历史记录无法区分作者，当前已改用个人账号」误拒True。原因：`当前`属于"已改用"子句，却整行联结不可归属短语，把当前已解决词当成当前不可归属。
+  2. `conditional_other_clause`：「如果后续增加分工证明会再核验；当前共用账号，历史记录无法区分作者」漏拒False。原因：条件词整行跳过，吞掉后置独立事实。
+- 修复（仍只动 `shared_history_attribution_impossible`，`final-task-boundaries.diff` 已重建为39号完整增量）：条件词与`当前`标记**子句级作用域**（子句分隔`，,；;。！？`）——含条件词的子句剔除后仅评剩余scope；`current_claim`改为"同一子句内同时出现当前标记与现在时不可归属"才击败过去/已解决标记；否定式/解析/历史标记与触发门仍在剩余scope上整体评估，**共用账号事实与后置历史归因保持跨子句关联**（非逐子句独立判门，无脑逗号分割会丢该关联）。
+- 绿轮 `green-round2.txt`：26 passed（本文件10条含2条holdout + 纯模块 test_task_boundaries.py 16条零改动）；`holdout-verify-round2.txt`：Codex holdout **5/5 PASS**（含3条原本已过的 current_history / current_still_impossible / past_only_explicit）。
+- ruff `ruff-round2.txt` All checks passed；hash见 `hashes.txt`（task_boundaries `f6c126ed…`，测试 `ae662fae…`）。
+- 按指示本轮未并跑36目标：contracts依赖套件（weekend/review_regressions/fallback/gaps）第1轮曾97绿，本轮未重跑，待36落定后由其自验。
+
+## 第1轮：红绿
+
+- 红轮 `red-round1.txt`（原始命令首轮失败存档）：新测试 3 failed / 4 passed。
+  1. `shared_history_attribution_impossible(["项目当前共用账号，历史记录无法区分作者"])` 为 False（Codex复现的漏拒）。
+  2. 同源 `task_boundary_error` 对"从提交历史筛出本人署名/具名提交清单"返回 None（漏拒连带）。
+  3. 混合句"此前共用账号，当前提交仍无法区分作者"被"此前"整行豁免。
+- 绿轮 `green-and-affected.txt`：新测试8条 + 受影响5文件共 **97 passed**；33原18断言与36冻结用例零改动全绿。
+- `pre-snapshot-check.txt`：修改前快照（backend/.tmp-goal39-shared-history/task_boundaries.pre）红例 False、平叙例 True，与卡面观察逐值一致，diff 即红绿转换。
+
+## 修复要点（第1轮）
+
+- `历史记录`从整行豁免表移除——记录本体名词不是时间状语。
+- 豁免拆两组：`_RESOLVED_SCOPE`（已改用/已换用/现已/不再/新增已解决）；`_HISTORICAL_SCOPE`（旧记录/旧版/此前/曾经）仅无当前不可归属声明时豁免。
+- 触发门改 `_current_attribution_impossible`：不可归属短语紧邻4字窗口出现 曾/此前/当时/以前 不触发。
+- 提取门 `_EXTRACTION_SHAPE` 与 `_PLAN_NEGATION` 未动；`conflicting_implementation_sources` 未动。
+
+## 自审
+
+- 冻结用例逐条手工推演：33/36 源文本不含"历史记录"，行为不变；"此前仓库曾用共用账号，现已区分作者"仍由`现已`豁免；"如果共用账号未区分作者，应在计划中说明局限"——如果子句剔除后剩余scope无共用账号事实，仍False；"本项目未使用共用账号"仍由否定式豁免；独立具名分工证明+待核验与"本人提交清单"（无提取claim）保持None。
+- holdout 1 子句拆分：["此前共用账号"]["历史记录无法区分作者"]["当前已改用个人账号"]——无子句同现当前+不可归属→current_claim False→此前/已改用豁免→False；holdout 2：如果子句剔除→剩余["当前共用账号"]["历史记录无法区分作者"]→门跨子句关联→True。
+- 未声称任意语义保证：仍是显式事实窄规则；未改旧断言。
+
+## 未验证项 / 残余
+
+- "提交不再区分作者"类否定词不在 `_ATTRIBUTION_IMPOSSIBLE` 内，为既有行为，未改动。
+- contracts依赖套件本轮未重跑（36并跑冻结），第1轮97绿基线在 `green-and-affected.txt`。
+- 交棒diff以39号开工前快照为基线（backend/.tmp-goal39-shared-history/task_boundaries.pre），只含39号两轮增量；`git diff`对HEAD会混入33号未提交改动。
+- 未跑全后端测试套件；未提交推送。

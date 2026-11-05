@@ -1,0 +1,31 @@
+# Z62 第三轮原始记录（2026-10-17）
+
+验证台：stage-only 路由 /z62frame（当前源码构建，模块级安装 deferred fetch mock 与 z62r3 桥）。运行于新建 IAB 标签页（真实 visible；主文档 visibilityState 为 guest 自带的不可配置 own getter，未做任何修改）。iframe 方案已弃用（guest 的子框架不执行页面 JS、无 load 事件、跨域拦截——有对照实验：v3-marker 截图证明 iframe 仅渲染 SSR 像素、模块级 postMessage ping 收不到）。
+
+## R1 同会话身份切换（真实 AuthProvider.login）
+
+请求日志（z.log 原样）：
+vis:own-nonconfigurable / users/me ×2 / count ×2 / pages / resolve:pages / resolve:count ×2 / count ×2 / target / pages / count ×2 / login:user-b / count / pages / resolve:pages / count ×2 / resolve:count ×2 / resolve:target / resolve:pages / resolve:count ×4
+
+步骤与断言：
+1. users/me→甲(A)，首屏轮询 resolve A-ITEM-甲的投递 → centerHasA=true
+2. 点击「核对授权并打开投递」→ notificationTarget 挂起（targets[0]）
+3. 派发 visibilitychange（真实可见态走 else 分支）→ A 的第二笔轮询挂起（pages[1]）
+4. 派发 notifications-changed → 4 笔 A 时代计数挂起
+5. **z.auth.login("b@…") → login:user-b**（真实 AuthProvider.login → api.login POST → setUser → 生产 key={user.id} 重挂载）
+6. B 的新轮询 resolve B-ITEM-乙的投递 → 显示 ✓；B 计数 resolve 2 → 通知（2 未读）✓；href=/z62frame
+7. A 迟到回执依次返回：target.go()、pages[1]=A-LEAK-888、旧计数=999
+结果：readCalls=**0**（act 链在 readNotification 前中止）；URL 未变；A-LEAK-888/A-ITEM/999 均未出现；B-ITEM 与 2 未读保持；errors=[]
+
+## R2/S4 轮询竞态（真实组件 + 真实可见标签页）
+
+请求日志（z.log 原样）：
+vis:own-nonconfigurable / users/me ×2 / count ×2 / pages / pages / resolve:pages / count ×2 / resolve:pages / pages / pages / pages / resolve:pages / count ×2 / pages / resolve:pages / count ×2 / resolve:pages / count ×2 / pages / resolve:pages / count ×2
+
+2a-1 同筛选重读：P1 挂起 → visibilitychange(else) → P2 挂起 → P2=NEW2（未读 3 · 共 5）→ P1 迟到 OLD-LEAK-777 → 摘要保持"未读 3 条 · 当前筛选共 5 条"，oldLeak=false，new2Stays=true
+2a-2 跨筛选：刷新 P3(全部) 挂起 → visibilitychange → P4 → P4=NEW4 → 点「未读」→ P5=NEW5-未读筛选（未读 2 · 共 2）→ P3 迟到 OLD-ALL-LEAK-666 → 摘要保持，oldAllLeak=false，new5Stays=true
+2d 恢复重读：再 visibilitychange → P6 发出并显示 NEW6（未读 9 · 共 9）
+errors=[]
+
+## 证据类型声明
+真实 Next 构建渲染 + 真实组件（NotificationCenter/NotificationLink/AuthProvider 为仓库源码）；身份切换经真实 AuthProvider.login；轮询/重读经真实 visibilitychange handler（else 分支 = 恢复可见的重读路径）；点击/事件派发为页面内合成事件；fetch 回执由 stage mock 控制。**非真实用户键鼠操作；"离窗"（hidden 分支）在本轮环境不可达（标签页全程真实可见且无法编程置后），未驱动。**

@@ -1,0 +1,327 @@
+FFFFFFFFFFFFFFFFFF                                                       [100%]
+================================== FAILURES ===================================
+___________________________ test_gate_script_exists ___________________________
+
+    def test_gate_script_exists():
+>       assert GATE_SCRIPT.is_file(), f"missing gate script: {GATE_SCRIPT}"
+E       AssertionError: missing gate script: D:\jbcode\web ai\jianli\backend\scripts\check_ci_junit.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = WindowsPath('D:/jbcode/web ai/jianli/backend/scripts/check_ci_junit.py').is_file
+
+app\tests\test_ci_junit_gate.py:107: AssertionError
+______________________ test_green_strict_run_exits_zero _______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_green_strict_run_exits_ze0')
+
+    def test_green_strict_run_exits_zero(tmp_path):
+        result = run_gate(tmp_path, [build_junit(green_cases())])
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:112: AssertionError
+___________________ test_split_junit_files_still_exits_zero ___________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_split_junit_files_still_e0')
+
+    def test_split_junit_files_still_exits_zero(tmp_path):
+        """CI feeds the strict file and the hard-stop file to one gate call."""
+        rest = [case for case in green_cases() if case[0] != HARD_STOP_MODULE]
+        hardstop = [
+            (module, name, status)
+            for module, name, status in green_cases()
+            if module == HARD_STOP_MODULE
+        ]
+        result = run_gate(
+            tmp_path, [build_junit(rest), build_junit(hardstop)]
+        )
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:126: AssertionError
+___________________ test_extra_unknown_module_does_not_fail ___________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_extra_unknown_module_does0')
+
+    def test_extra_unknown_module_does_not_fail(tmp_path):
+        cases = green_cases() + [("test_ci_junit_gate", "test_sample", "passed")]
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_PASS, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:132: AssertionError
+____________________ test_missing_junit_file_exits_nonzero ____________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_missing_junit_file_exits_0')
+
+    def test_missing_junit_file_exits_nonzero(tmp_path):
+        absent = tmp_path / "junit-absent.xml"
+        result = subprocess.run(
+            [sys.executable, str(GATE_SCRIPT), str(absent)],
+            capture_output=True, text=True, timeout=120, check=False,
+        )
+        assert result.returncode == EXIT_MISSING_FILE, result.stdout + result.stderr
+>       assert "junit-absent.xml" in result.stdout + result.stderr
+E       assert 'junit-absent.xml' in ('' + "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe: can't open file 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n")
+E        +  where '' = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").stdout
+E        +  and   "C:\\Users\\江博\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe: can't open file 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n" = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").stderr
+
+app\tests\test_ci_junit_gate.py:142: AssertionError
+______________________ test_malformed_xml_exits_nonzero _______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_malformed_xml_exits_nonze0')
+
+    def test_malformed_xml_exits_nonzero(tmp_path):
+        result = run_gate(tmp_path, ["<testsuite><testcase not-xml"])
+>       assert result.returncode == EXIT_FORMAT, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 3
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:147: AssertionError
+_________________ test_unexpected_root_element_exits_nonzero __________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_unexpected_root_element_e0')
+
+    def test_unexpected_root_element_exits_nonzero(tmp_path):
+        result = run_gate(tmp_path, ["<result><case/></result>"])
+>       assert result.returncode == EXIT_FORMAT, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 3
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:152: AssertionError
+_____________ test_testcase_without_name_attribute_exits_nonzero ______________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_testcase_without_name_att0')
+
+    def test_testcase_without_name_attribute_exits_nonzero(tmp_path):
+        broken = (
+            '<testsuite name="s" tests="1">'
+            '<testcase classname="app.tests.test_real_matching"/></testsuite>'
+        )
+        result = run_gate(tmp_path, [broken])
+>       assert result.returncode == EXIT_FORMAT, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 3
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:161: AssertionError
+_____________________ test_empty_testsuite_exits_nonzero ______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_empty_testsuite_exits_non0')
+
+    def test_empty_testsuite_exits_nonzero(tmp_path):
+        result = run_gate(
+            tmp_path, ['<testsuite name="s" tests="0" failures="0" errors="0"/>']
+        )
+>       assert result.returncode == EXIT_EMPTY, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 4
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:168: AssertionError
+______________________ test_missing_module_exits_nonzero ______________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_missing_module_exits_nonz0')
+
+    def test_missing_module_exits_nonzero(tmp_path):
+        cases = [case for case in green_cases() if case[0] != "test_real_matching"]
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_MODULE_MISSING, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 5
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:174: AssertionError
+___________ test_module_without_cases_in_second_file_exits_nonzero ____________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_module_without_cases_in_s0')
+
+    def test_module_without_cases_in_second_file_exits_nonzero(tmp_path):
+        """A module claimed by neither JUnit file must fail even if one file is green."""
+        rest = [case for case in green_cases() if case[0] not in
+                (HARD_STOP_MODULE, "test_mcp_postgres_isolation")]
+        result = run_gate(tmp_path, [build_junit(rest)])
+>       assert result.returncode == EXIT_MODULE_MISSING, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 5
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:183: AssertionError
+____ test_missing_hardstop_window_exits_nonzero[ledger_committed-matching] ____
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_missing_hardstop_window_e0')
+dropped_phase = 'ledger_committed', dropped_chain = 'matching'
+
+    @pytest.mark.parametrize("dropped_phase,dropped_chain", [
+        ("ledger_committed", "matching"),
+        ("send_intent_committed", "verification"),
+    ])
+    def test_missing_hardstop_window_exits_nonzero(
+            tmp_path, dropped_phase, dropped_chain):
+        names = [
+            name for name in hardstop_case_names()
+            if f"[{dropped_phase}-{dropped_chain}]" not in name
+        ]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 6
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:197: AssertionError
+_ test_missing_hardstop_window_exits_nonzero[send_intent_committed-verification] _
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_missing_hardstop_window_e1')
+dropped_phase = 'send_intent_committed', dropped_chain = 'verification'
+
+    @pytest.mark.parametrize("dropped_phase,dropped_chain", [
+        ("ledger_committed", "matching"),
+        ("send_intent_committed", "verification"),
+    ])
+    def test_missing_hardstop_window_exits_nonzero(
+            tmp_path, dropped_phase, dropped_chain):
+        names = [
+            name for name in hardstop_case_names()
+            if f"[{dropped_phase}-{dropped_chain}]" not in name
+        ]
+        result = run_gate(tmp_path, [build_junit(green_cases(names))])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 6
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:197: AssertionError
+___________ test_hardstop_without_parametrised_names_exits_nonzero ____________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_hardstop_without_parametr0')
+
+    def test_hardstop_without_parametrised_names_exits_nonzero(tmp_path):
+        """One flat case name cannot stand in for the two-chain four-window matrix."""
+        cases = green_cases(hardstop_names=["test_only_one_flat_case"])
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_WINDOW_MISSING, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 6
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:206: AssertionError
+_________________ test_not_passed_case_exits_nonzero[failure] _________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_not_passed_case_exits_non0')
+status = 'failure'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 7
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:214: AssertionError
+__________________ test_not_passed_case_exits_nonzero[error] __________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_not_passed_case_exits_non1')
+status = 'error'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 7
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:214: AssertionError
+_________________ test_not_passed_case_exits_nonzero[skipped] _________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_not_passed_case_exits_non2')
+status = 'skipped'
+
+    @pytest.mark.parametrize("status", ["failure", "error", "skipped"])
+    def test_not_passed_case_exits_nonzero(tmp_path, status):
+        cases = green_cases()
+        cases.append(("test_real_matching", "test_synthetic_bad", status))
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 7
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:214: AssertionError
+_________________ test_skipped_hardstop_window_exits_nonzero __________________
+
+tmp_path = WindowsPath('D:/jbcode/web ai/jianli/backend/.tmp-z49-red/test_skipped_hardstop_window_e0')
+
+    def test_skipped_hardstop_window_exits_nonzero(tmp_path):
+        """A skipped window counts as not actually passed even though it is present."""
+        cases = [
+            (module, name, "skipped" if name.endswith("[receipt_committed-matching]")
+             else status)
+            for module, name, status in green_cases()
+        ]
+        result = run_gate(tmp_path, [build_junit(cases)])
+>       assert result.returncode == EXIT_NOT_PASSED, result.stdout + result.stderr
+E       AssertionError: C:\Users\江博\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe: can't open file 'D:\\jbcode\\web ai\\jianli\\backend\\scripts\\check_ci_junit.py': [Errno 2] No such file or directory
+E         
+E       assert 2 == 7
+E        +  where 2 = CompletedProcess(args=['D:\\jbcode\\web ai\\jianli\\backend\\.venv\\Scripts\\python.exe', 'D:\\jbcode\\web ai\\jianli\... 'D:\\\\jbcode\\\\web ai\\\\jianli\\\\backend\\\\scripts\\\\check_ci_junit.py': [Errno 2] No such file or directory\n").returncode
+
+app\tests\test_ci_junit_gate.py:226: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [WinError 5] 拒绝访问。: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] 拒绝访问。: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_ci_junit_gate.py::test_gate_script_exists - AssertionEr...
+FAILED app/tests/test_ci_junit_gate.py::test_green_strict_run_exits_zero - As...
+FAILED app/tests/test_ci_junit_gate.py::test_split_junit_files_still_exits_zero
+FAILED app/tests/test_ci_junit_gate.py::test_extra_unknown_module_does_not_fail
+FAILED app/tests/test_ci_junit_gate.py::test_missing_junit_file_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_malformed_xml_exits_nonzero - As...
+FAILED app/tests/test_ci_junit_gate.py::test_unexpected_root_element_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_testcase_without_name_attribute_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_empty_testsuite_exits_nonzero - ...
+FAILED app/tests/test_ci_junit_gate.py::test_missing_module_exits_nonzero - A...
+FAILED app/tests/test_ci_junit_gate.py::test_module_without_cases_in_second_file_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_missing_hardstop_window_exits_nonzero[ledger_committed-matching]
+FAILED app/tests/test_ci_junit_gate.py::test_missing_hardstop_window_exits_nonzero[send_intent_committed-verification]
+FAILED app/tests/test_ci_junit_gate.py::test_hardstop_without_parametrised_names_exits_nonzero
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[failure]
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[error]
+FAILED app/tests/test_ci_junit_gate.py::test_not_passed_case_exits_nonzero[skipped]
+FAILED app/tests/test_ci_junit_gate.py::test_skipped_hardstop_window_exits_nonzero
+18 failed, 2 warnings in 0.94s

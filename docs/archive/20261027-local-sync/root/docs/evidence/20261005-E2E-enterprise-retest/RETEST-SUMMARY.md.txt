@@ -1,0 +1,24 @@
+# E2E-02 新构建复测总结（run: closure-20261005，2026-10-05）
+
+运行器：`scripts/e2e/enterprise-browser-runner.mjs`（参数经 `runner-input.mjs` 严格校验，护栏13项测试通过未回退）。隔离环境 127.0.0.1:3001/8001、cp_e2e_closure-20261005、Mock外发关闭；动态调试端口+独立profile；口令零落盘（证据JSON全量扫描0命中）。本轮**未撤回任何投递、未运行download-withdraw/withdraw-verify**；A/B各被真实送达1条回复（正文+时间见 `reply-failure-…/delivered-replies-for-student.json`，供学生侧后续使用）。
+
+## 场景结论（目录省略前缀 docs/evidence/20261005-E2E-enterprise-retest/）
+
+| 场景 | 结论 | 证据目录 | 要点 |
+|---|---|---|---|
+| skeleton | ✅通过 | skeleton-…10-47-01 | 登录→jobA看板→A报告；**下载落盘SHA256=授权文件哈希a0149d5a…（matchesAuthorizedFile=true）**，exit 0 |
+| reply-failure（修复后验收） | ✅通过 | reply-failure-…10-47-15 | 桌面(A)+390px(B)×两变体共4段注入全部pass：失败草稿**可编辑→删空仍存在→重输**全链真输入验证；无发送入口/勾选框/旧报告；各变体恰1次POST、2s等待无自动重发；刷新后请求失败变体服务器未送达且回复表单恢复可发，响应丢失变体服务器已送达且无表单无发送键不可二次发送；delivered-replies=2（desktop→A、390→B）。390截图实测780px宽=真390视口 |
+| notification-filter | ✅通过 | notification-filter-…10-47-55 | 真实通知卡→锚点落地（列表响应held）→零结果筛选→"筛选结果之外"提示→清除筛选定位一次（scrollEvents[137,11,0]）→刷新不劫持、目标保留 |
+| viewport390 | ✅通过 | viewport390-…10-48-40 | 加载后实测390×844，登录→看板→报告关键链路完成 |
+| late-response | ✅通过 | late-response-…10-49-31 | **同页竞态（主）**：A /view响应阶段hold（busy如实记录）→Page.navigate同文档#application-A2（真实地址栏锚点路径，hashchange事件页面侧记录）→刷新后A2可点、A2授权报告打开→放行A：**release=continued且responseReceived可观察（真正delivered而非already-cancelled）**，A2报告未被A数据覆盖（blockquote检测）、无未确认草稿、无错误、hash/双列保持。**跨页（辅）**：导航销毁发起页→already-cancelled为浏览器预期行为，B板完好无泄漏 |
+
+## 中间失败运行（全部保留，真实退出码）
+
+- `viewport390-…10-48-19`：exit 1——视口测量在about:blank阶段过早（980px布局视口），真实页面390全过；已改为加载后测量并重跑通过。
+- `late-response-…10-48-51`：exit 1——我的断言bug：A2未回复故其报告自带正常回复表单textarea，误当"旧草稿"；竞态核心断言（delivered/不覆盖/无错误）当时已全过；改为仅检查`未确认发送的回复草稿`专属aria-label后重跑通过。
+
+## 未验项
+
+1. 同页竞态中"迟到响应把A数据写入selected"的正向反例不可构造（产品代际守卫生效，仅能证明阴性结果）。
+2. 逐人筛选变体仍受同名夹具限制（零结果筛选替代验证，与上一轮一致）。
+3. 撤回链路沿用旧run audit-20261005证据，本轮未复测（按指令禁止撤回）。

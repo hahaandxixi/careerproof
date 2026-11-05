@@ -1,0 +1,11 @@
+﻿python.exe : Traceback (most recent call last):
+所在位置 行:4 字符: 1
++ & $rt "$ev\probe_ab.py" 2>&1 | Out-File -FilePath (Join-Path $ev 'pro ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261017-task72-pdfium-ab\probe_ab.py", line 31, in <module>
+    import fitz  # noqa: E402  (production reader)
+    ^^^^^^^^^^^
+ModuleNotFoundError: No module named 'fitz'

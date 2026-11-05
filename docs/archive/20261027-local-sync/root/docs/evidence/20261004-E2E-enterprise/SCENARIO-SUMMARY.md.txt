@@ -1,0 +1,48 @@
+# E2E-02 企业页面故障注入——场景证据总结（run: audit-20261005）
+
+运行器：`scripts/e2e/enterprise-browser-runner.mjs`（隔离环境 127.0.0.1:3001/8001，数据库 cp_e2e_audit-20261005，Mock，外发关闭）。所有等待有超时；动态调试端口+独立profile；口令不入日志/截图/证据（results.json 全量扫描 0 命中）。截图均先于输入或跳转完成，无口令画面。
+
+## 各场景结论（按时间顺序，目录名省略前缀 docs/evidence/20261004-E2E-enterprise/）
+
+| 场景 | 结论 | 证据目录 | 要点 |
+|---|---|---|---|
+| skeleton | 通过 | skeleton-2026-10-05T04-25-36-108Z | 企业登录→jobA看板→A报告打开，3截图+DOM+完整network日志，exit 0 |
+| reply-failure | 缺陷复现（阻断待修，见修复卡20261005-E2E-reply-draft） | reply-failure-2026-10-05T04-26-18-917Z | 两变体（请求失败/响应丢失）失败后草稿保留但 readOnly=true、真实IME输入被阻止；各仅1次POST无自动重发；请求失败变体刷新后服务器未收到；响应丢失变体服务器已收到、刷新后已送达不可二次发送（编辑框消失）。**企业闭环不能记全通过** |
+| notification-filter（v1） | blocked（夹具依赖，红灯保留） | notification-filter-2026-10-05T04-33-52-755Z | 两候选人同名且verdict全为claimed_only，无法按人筛选 |
+| notification-filter（v2） | 通过 | notification-filter-2026-10-05T04-46-24-040Z | 零结果关键词筛选下经真实通知锚点落地→“筛选结果之外”提示出现；清除筛选定位一次（scrollEvents [137,11,0]）；刷新不劫持滚动、目标保留 |
+| late-response（v1） | 通过（仅签“导航取消请求”路径） | late-response-2026-10-05T04-35-26-992Z | 请求阶段冻结→导航到jobB→放行=already-cancelled；B板完好、无旧报告、A正常重开 |
+| late-response（v2） | 通过 | late-response-2026-10-05T04-47-32-809Z | 响应阶段冻结（POST已到服务器）→导航jobB→放行仍already-cancelled；B完好/A2报告未恢复/A2可重开；冻结期间同页“刷新授权投递”按钮busy禁用（如实记录未绕过）。**未验：迟到响应真正到达新页面后被隔离（跨页导航下发起页销毁、拦截失效，架构上不可达）；同页候选人切换因A已撤回仅剩单候选人无法构造** |
+| download-withdraw | 通过（撤回已发生，不可逆） | download-withdraw-2026-10-05T04-41-28-116Z | A下载落盘SHA256=授权文件哈希 a0149d5a…（matchesAuthorizedFile=true）；B基线与撤回后哈希一致；学生端真实UI撤回A成功；B撤回后仍可开可下载。注意：本目录步骤[13] board-A-unreadable 标fail是**脚本错页bug**（当时tab在jobB板误查jobA列），真实状态由 withdraw-verify 场景补验 |
+| withdraw-verify | 通过 | withdraw-verify-2026-10-05T10-09-19-774Z（最终版） | jobA板A列消失、A2保留、无A报告；旧锚点URL给出”通知对应的投递已不可访问”且不交付报告；**撤回通知与A旧投递通知无打开按钮是正确产品行为**（审计确认），A卡识别用时间戳关联证明：撤回事件卡2026/10/5 12:41:37与download-withdraw证据步骤04:41:37.324Z精确对齐，另1张更早不可访问卡为A原投递通知；2张可打开卡实测分别落到A2与B锚点、无一指向A。早期probe标fail的运行（04-44-03及10-0x三次no-landing抖动）全部保留未删 |
+| viewport390 | 通过 | viewport390-2026-10-05T04-48-39-049Z | Emulation 390×844@2x：登录→看板→报告关键链路可完成，截图780px宽=真390视口。步骤[3] innerWidth=980 是 about:blank 阶段布局视口测量过早，加载后实测 pageWidth=390=viewport（另留 512px 最小窗宽对照目录 04-48-10） |
+
+## 已删除的证据目录（Codex禁止删除指令下达前，均为基础设施中断/被取代运行，根因已在后续运行修复并全绿）
+
+- skeleton-2026-10-05T04-23-46-360Z（FINDER空hay匹配bug中断）
+- skeleton-2026-10-05T04-24-21-298Z（残留DevToolsActivePort旧端口中断）
+- skeleton-2026-10-05T04-25-00-798Z（通过但api-log过滤为空，被04-25-36完整版取代）
+- reply-failure-2026-10-05T04-25-47-485Z（复选框2匹配中断）
+- notification-filter-2026-10-05T04-31-05-796Z（同名致通知定位中断）
+- late-response-2026-10-05T04-34-09-004Z（Invalid InterceptionId崩溃）
+- late-response-2026-10-05T04-34-52-522Z（同名误报，被04-35-26列id判据版取代）
+
+此后未再删除任何目录（含4个download-withdraw中断目录与512px对照目录）。
+
+## 服务侧状态变化（全部经页面真实操作，合成对象）
+
+- A（dfff7065）：被reply-failure响应丢失变体回复一次（已送达）；后被学生撤回（不可逆）。
+- A2（8032fdb1）：多次被查看（viewed）。
+- B（d9c64113）：多次查看+3次下载。
+- 企业若干通知被点击/标读。
+
+## 未验项
+
+1. 迟到响应真正到达新页面后的隔离（见late-response说明）。
+2. 同页候选人间切换的晚响应竞态（夹具单候选人限制）。
+3. “其他候选人保留”于筛选态下的逐人变体（同名夹具限制，已用零结果筛选+清除后保留替代验证）。
+
+## 审计修订（2026-10-05 追加）
+
+1. **退出码聚合**：main()原在存在fail/blocked步骤时仍记scenario-complete pass并exit 0，已修正——任一fail/blocked步骤⇒scenario-complete记fail且exitCode=1；脚本正常结束不再等于验收通过。修正前的历史运行退出码含义以各results.json步骤为准。
+2. **已删目录清单**见上节；此后所有失败/中断/被取代目录一律保留（含withdraw-verify的4次中间运行、download-withdraw的4次中断、viewport390的512px对照）。
+3. **草稿修复**由独立免费任务负责（仅组件/前端测试），与本运行器/证据无文件交集；A保持撤回不恢复，后续场景一律使用有效的A2/B。

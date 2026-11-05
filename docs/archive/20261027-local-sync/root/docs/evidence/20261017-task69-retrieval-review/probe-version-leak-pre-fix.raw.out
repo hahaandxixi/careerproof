@@ -1,0 +1,21 @@
+﻿
+admission path used: inline predicates (pre-fix code shape)
+admitted ids: 5
+[FAIL] D1 superseded resume v1 section excluded from admitted set :: admitted=True
+[PASS] D2 current resume v2 section retained
+[FAIL] D3 superseded project portfolio v1 file excluded :: admitted=True
+[PASS] D4 current project portfolio v2 file retained
+[PASS] D5 current reference-role work at v3 retained (legitimate recall kept)
+[PASS] D6 other owner's resume excluded
+[PASS] D7 other owner's project file excluded
+
+replayed ranking (limit=2) over 5 admitted chunks:
+   distance=-0.000000 source_id=5f47b01c-3d2a-4111-9ffe-9125cae5a2fa content='STALE-RESUME-V1-�����ϵľɰ��������'
+   distance=0.244987 source_id=c4429102-4d93-44b4-bc6b-551323e5c50a content='RESUME-V2-��ǰ�汾����'
+[FAIL] D8 superseded v1 section does not occupy a result slot :: stale_in_top=True
+   -> RED: the stale section is an exact query match and wins a slot, displacing current-version material.
+
+--- summary: 8 checks, 3 failed ---
+FAILED: D1 superseded resume v1 section excluded from admitted set
+FAILED: D3 superseded project portfolio v1 file excluded
+FAILED: D8 superseded v1 section does not occupy a result slot

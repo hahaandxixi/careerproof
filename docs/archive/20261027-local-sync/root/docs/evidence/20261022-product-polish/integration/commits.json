@@ -1,0 +1,78 @@
+{
+  "baseCommit": "01232d27e8768121592b6c05300e0b5ba5170a55",
+  "commits": [
+    {
+      "commit": "175c3517322799dbfbd8c1d075d0d3cc6296d3e4",
+      "message": "feat: query authorized report and application history before pagination",
+      "files": [
+        "backend/app/api/v1/analysis.py",
+        "backend/app/api/v1/applications.py",
+        "backend/app/schemas/analysis.py",
+        "backend/app/schemas/jobs.py",
+        "backend/app/services/analysis.py",
+        "backend/app/services/applications.py",
+        "backend/app/services/jobs.py",
+        "backend/app/tests/test_product_history_filters.py",
+        "backend/app/tests/test_product_history_filters_postgres.py",
+        "jianli/src/lib/api/client.ts",
+        "jianli/src/lib/api/domain.ts",
+        "jianli/src/lib/application-board-session.ts",
+        "jianli/tests/application-board-session.test.mjs"
+      ]
+    },
+    {
+      "commit": "3dfcef5504274cb9820fd841b4cf021806b036fa",
+      "message": "feat: unify material report and task continuation experience",
+      "files": [
+        "jianli/src/app/demo/page.tsx",
+        "jianli/src/app/globals.css",
+        "jianli/src/app/layout.tsx",
+        "jianli/src/app/login/page.tsx",
+        "jianli/src/app/page.tsx",
+        "jianli/src/app/portfolio/page.tsx",
+        "jianli/src/app/register/page.tsx",
+        "jianli/src/components/AccessGate.tsx",
+        "jianli/src/components/ApplicationBoard.tsx",
+        "jianli/src/components/ApplicationList.tsx",
+        "jianli/src/components/FlowSteps.tsx",
+        "jianli/src/components/GrowthUploadReturn.tsx",
+        "jianli/src/components/GrowthWorkspace.tsx",
+        "jianli/src/components/HomeWorkspace.tsx",
+        "jianli/src/components/JobList.tsx",
+        "jianli/src/components/LoginLink.tsx",
+        "jianli/src/components/MaterialFileDropzone.tsx",
+        "jianli/src/components/ProjectVersionPicker.tsx",
+        "jianli/src/components/ReportDetail.tsx",
+        "jianli/src/components/ReportList.tsx",
+        "jianli/src/components/ReportOverview.tsx",
+        "jianli/src/components/ReportRequirementReader.tsx",
+        "jianli/src/components/SiteHeader.tsx",
+        "jianli/src/components/StudentAccountMenu.tsx",
+        "jianli/src/lib/auth-return.ts",
+        "jianli/src/lib/material-picker.ts",
+        "jianli/src/lib/material-upload.ts",
+        "jianli/src/lib/report-reader.ts",
+        "jianli/tests/auth-return.test.mjs",
+        "jianli/tests/failure-reply-draft.test.mjs",
+        "jianli/tests/flow-steps.test.mjs",
+        "jianli/tests/growth-material-entry.test.mjs",
+        "jianli/tests/history-enterprise.test.mjs",
+        "jianli/tests/home-workspace.test.mjs",
+        "jianli/tests/material-picker.test.mjs",
+        "jianli/tests/material-upload.test.mjs",
+        "jianli/tests/material-workspace.test.mjs",
+        "jianli/tests/report-reader.test.mjs"
+      ]
+    },
+    {
+      "commit": "5a6b9c821c9e7de1cc79b90f7e35a93142e74148",
+      "message": "fix: honor validated AI interpretation in authorized reports",
+      "files": [
+        "jianli/src/components/ApplicationBoard.tsx",
+        "jianli/tests/history-enterprise.test.mjs"
+      ]
+    }
+  ],
+  "acceptedCommit": "5a6b9c821c9e7de1cc79b90f7e35a93142e74148",
+  "verifiedBlobs": 51
+}

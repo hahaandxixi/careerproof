@@ -1,0 +1,7 @@
+{
+  "scope": "task_boundary_error only, not full matcher/contract/model",
+  "taskBoundariesSha256": "4a0486ea025117a6caf8b1ea83e3056cae31b9af6a555b7bf879b51c854d3deb",
+  "sharedAccountFrozenDraftNowRejected": "AI task plan extracts personal attribution from shared-account history that explicitly cannot distinguish authors; provide independent named contribution proof or division confirmation and keep it pending verification",
+  "independentNamedProofStillAccepted": true
+}
+exit=0

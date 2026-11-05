@@ -1,0 +1,277 @@
+{
+  "api": "http://127.0.0.1:8113",
+  "sourceCommit": "01232d27e8768121592b6c05300e0b5ba5170a55",
+  "database": {
+    "port": 55445,
+    "name": "cp_product_polish_20261022"
+  },
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\storage",
+  "externalAI": false,
+  "calls": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/59ac4fa1-4792-4c14-b268-51119b129076",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/projects",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/match-reports/59ac4fa1-4792-4c14-b268-51119b129076/growth-tasks",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/projects/1d4636c9-2497-490a-969c-e9ac431d694d/versions",
+      "status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/6c1e8cff-9951-46c5-bfdb-fef8a5577655",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analysis-tasks/6c1e8cff-9951-46c5-bfdb-fef8a5577655",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/projects/1d4636c9-2497-490a-969c-e9ac431d694d/versions",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/growth-tasks/7f64ed40-ccf2-4c16-9999-fbf158c40d27",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/match-reports/59ac4fa1-4792-4c14-b268-51119b129076",
+      "status": 200
+    }
+  ],
+  "baseReportId": "59ac4fa1-4792-4c14-b268-51119b129076",
+  "package": {
+    "path": "D:\\jbcode\\web ai\\jianli\\output\\demo\\CareerProof-campus-signup-v2-runtime.zip",
+    "sha256": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518",
+    "bytes": 8693
+  },
+  "requestId": "c384e513-4532-452d-a93c-7376cf15740d",
+  "limitation": "Identical V2 bytes create a version-selection fixture, not new implementation or evidence of improvement",
+  "databaseBefore": {
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3,
+    "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+    "applicationCount": 2
+  },
+  "userId": "d37532ac-ff22-4d4e-a469-305da757b71c",
+  "baseReportHash": "0142e92da04d6fc38f968665fa77161441024414b0a296c9fb7693921521ec26",
+  "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+  "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d",
+  "projectName": "Campus Signup：完整业务实现",
+  "previousVersions": [
+    {
+      "id": "9c90c38b-87f6-4bff-b1b1-d5e58d46bbbb",
+      "versionNumber": 3,
+      "status": "completed",
+      "originalFilename": "CareerProof-campus-signup-v2-runtime.zip"
+    },
+    {
+      "id": "6db170c9-ea2b-4036-84d1-47260c687014",
+      "versionNumber": 2,
+      "status": "completed",
+      "originalFilename": "CareerProof-campus-signup-v2-runtime.zip"
+    },
+    {
+      "id": "ca395374-2435-46ae-94f5-249c4331f33b",
+      "versionNumber": 1,
+      "status": "completed",
+      "originalFilename": "campus-signup-v1.zip"
+    }
+  ],
+  "expectedNextVersionNumber": 4,
+  "growthPayload": {
+    "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+    "gapKind": "review",
+    "deliverable": "核对现有测试与运行记录对应源码版本（不承诺等级提升）",
+    "steps": [
+      "核对已上传的测试与运行记录引用",
+      "明确选择刚上传的项目版本，再确认保存材料选择"
+    ],
+    "acceptanceChecks": [
+      "文件、行号与源码版本可对应",
+      "未把重复上传视为实现变化或等级提升"
+    ]
+  },
+  "growth": {
+    "id": "7f64ed40-ccf2-4c16-9999-fbf158c40d27",
+    "baseReportId": "59ac4fa1-4792-4c14-b268-51119b129076",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "jobTitle": "校园活动后端：完整项目材料验证",
+    "targetJobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "targetJobTitle": "校园活动后端：完整项目材料验证",
+    "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+    "requirementTitle": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+    "gap": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+    "originalAction": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+    "actionSource": "rules",
+    "actionCitationIds": [],
+    "actionNeedsRecheck": false,
+    "taskPlanNeedsRecheck": false,
+    "taskPlanWarning": null,
+    "enterpriseReply": null,
+    "plan": {
+      "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+      "gapKind": "review",
+      "deliverable": "核对现有测试与运行记录对应源码版本（不承诺等级提升）",
+      "steps": [
+        "核对已上传的测试与运行记录引用",
+        "明确选择刚上传的项目版本，再确认保存材料选择"
+      ],
+      "acceptanceChecks": [
+        "文件、行号与源码版本可对应",
+        "未把重复上传视为实现变化或等级提升"
+      ]
+    },
+    "baseMaterials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "6db170c9-ea2b-4036-84d1-47260c687014",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 2,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "materials": [],
+    "status": "planned",
+    "analysisTaskId": null,
+    "analysisStatus": null,
+    "analysisError": null,
+    "targetReportId": null,
+    "comparison": null,
+    "createdAt": "2026-10-22T11:53:15.743240+00:00",
+    "boundary": "任务进度不代表能力通过；新报告不更新企业已收到的投递快照。变化不证明能力提升或本人贡献。"
+  },
+  "upload": {
+    "projectId": "1d4636c9-2497-490a-969c-e9ac431d694d",
+    "versionId": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+    "taskId": "6c1e8cff-9951-46c5-bfdb-fef8a5577655",
+    "status": "pending"
+  },
+  "scanTask": {
+    "id": "6c1e8cff-9951-46c5-bfdb-fef8a5577655",
+    "status": "completed",
+    "errorMessage": null,
+    "states": [
+      {
+        "status": "pending",
+        "progress": 0,
+        "currentStep": "等待扫描"
+      },
+      {
+        "status": "completed",
+        "progress": 100,
+        "currentStep": "项目解析完成"
+      }
+    ]
+  },
+  "newVersion": {
+    "id": "53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+    "versionNumber": 4,
+    "materialRole": "portfolio",
+    "originalFilename": "CareerProof-campus-signup-v2-runtime.zip",
+    "sizeBytes": 8693,
+    "createdAt": "2026-10-22T11:53:15.783394Z",
+    "status": "completed",
+    "taskId": "6c1e8cff-9951-46c5-bfdb-fef8a5577655",
+    "progress": 100,
+    "currentStep": "项目解析完成",
+    "errorMessage": null
+  },
+  "growthAfterUpload": {
+    "id": "7f64ed40-ccf2-4c16-9999-fbf158c40d27",
+    "baseReportId": "59ac4fa1-4792-4c14-b268-51119b129076",
+    "jobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "jobTitle": "校园活动后端：完整项目材料验证",
+    "targetJobId": "33d0b1e1-1b45-4ef9-a0fc-c44da1ba1fd0",
+    "targetJobTitle": "校园活动后端：完整项目材料验证",
+    "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+    "requirementTitle": "使用SQLite SQL持久化活动与报名，参数化读写，写入失败回滚名额及报名记录",
+    "gap": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+    "originalAction": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json、6db170c9-ea2b-4036-84d1-47260c687014/runtime/pytest-output.txt。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。",
+    "actionSource": "rules",
+    "actionCitationIds": [],
+    "actionNeedsRecheck": false,
+    "taskPlanNeedsRecheck": false,
+    "taskPlanWarning": null,
+    "enterpriseReply": null,
+    "plan": {
+      "requirementId": "4a3a984f-3fcd-490f-9dd1-c056b0f0ff86",
+      "gapKind": "review",
+      "deliverable": "核对现有测试与运行记录对应源码版本（不承诺等级提升）",
+      "steps": [
+        "核对已上传的测试与运行记录引用",
+        "明确选择刚上传的项目版本，再确认保存材料选择"
+      ],
+      "acceptanceChecks": [
+        "文件、行号与源码版本可对应",
+        "未把重复上传视为实现变化或等级提升"
+      ]
+    },
+    "baseMaterials": [
+      {
+        "kind": "resume",
+        "id": "5ecb752b-770b-4280-afb4-70ccbd1ae4b0",
+        "title": "校园活动项目合成简历",
+        "versionNumber": 1,
+        "materialRole": null,
+        "contentHash": "c69663013589734b6977fec2c6193892d8ffef32f0ed1e7cea7b40d91dbfe9a0"
+      },
+      {
+        "kind": "project",
+        "id": "6db170c9-ea2b-4036-84d1-47260c687014",
+        "title": "Campus Signup：完整业务实现",
+        "versionNumber": 2,
+        "materialRole": "portfolio",
+        "contentHash": "58b3ced4e093d346b7f466d5cc36243639357590d8ab692445d6de9202fb1518"
+      }
+    ],
+    "materials": [],
+    "status": "planned",
+    "analysisTaskId": null,
+    "analysisStatus": null,
+    "analysisError": null,
+    "targetReportId": null,
+    "comparison": null,
+    "createdAt": "2026-10-22T11:53:15.743240+00:00",
+    "boundary": "任务进度不代表能力通过；新报告不更新企业已收到的投递快照。变化不证明能力提升或本人贡献。"
+  },
+  "baseReportUnchanged": true,
+  "databaseAfter": {
+    "ai_request_attempts": 3,
+    "ai_usage_logs": 3,
+    "applicationSnapshotsHash": "bd4ffdc1ae35aed6e9a9beadbba5b9f5baab264468f1ba157b4a098695f729c3",
+    "applicationCount": 2
+  },
+  "returnPath": "/growth/7f64ed40-ccf2-4c16-9999-fbf158c40d27?uploadedKind=project&uploadedVersion=53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+  "browserReturnURL": "http://127.0.0.1:3135/growth/7f64ed40-ccf2-4c16-9999-fbf158c40d27?uploadedKind=project&uploadedVersion=53366c20-1973-48a4-8b18-c27ca4ceaa7e",
+  "passed": true
+}

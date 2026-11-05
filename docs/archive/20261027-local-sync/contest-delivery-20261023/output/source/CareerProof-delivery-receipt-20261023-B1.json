@@ -1,0 +1,10 @@
+{
+  "materialsCommit": "d072c6d6808b26f07588378aeb0eca3a476d8222",
+  "branch": "codex/contest-delivery-20261023",
+  "verifiedCommittedFiles": 43,
+  "committedByteMismatches": [],
+  "mainSourceChangesFromThisBranch": false,
+  "push": false,
+  "merge": false,
+  "bundleReceipt": "docs/submission/evidence/package-check.json"
+}

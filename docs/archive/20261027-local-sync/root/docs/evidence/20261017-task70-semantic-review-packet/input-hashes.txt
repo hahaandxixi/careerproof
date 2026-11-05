@@ -1,0 +1,5 @@
+# SHA256 of the frozen inputs this packet was assembled from
+ed6314d1e79c74ad25fb11ad913b42479f586fe2c0336f1131b8301708438ac6  backend/evals/evidence-trust-cases.json
+29c8d6574e6b37f5ef101e20a14c81c3afbc726437d82c9371da03c3ed881630  backend/evals/trust-deepseek-v6-20260918-run1.json
+dd529a6c4e3dc7e5a62db25f88ea34f2c3210b7c5447ffcad21609661290547e  backend/evals/trust-deepseek-v6-20260918-revalidated-v7.json
+531f28c2ad106637e8813bdf6ac2f94b26e5f75a512eee1e0de59f5e5d3638bd  backend/evals/deepseek-tool-report-20260918-152713.json

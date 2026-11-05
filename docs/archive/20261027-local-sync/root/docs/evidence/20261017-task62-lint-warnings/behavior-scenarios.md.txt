@@ -1,0 +1,29 @@
+# Z62 真实组件行为验证 · 场景记录（2026-10-17 第二轮）
+
+验证台：`backend/.tmp/task64-render/stage/jianli` 内 stage-only 路由 `/z62verify`（当前源码构建，`next build` 含类型检查；服务 127.0.0.1:3105，已停）。挂载**真实组件** `NotificationLink` / `NotificationCenter` / `MaterialPreview(kind="project")`，fetch 以 stage 内 deferred mock 控制（可挂起、可按序释放），页面提供挂载开关与 `key` 重挂载开关（等价生产中 `key={user.id}` 的账号切换机制）。
+
+**证据类型声明**：以下均为真实页面渲染 + 真实组件代码执行；交互通过 evaluate 在页面内派发事件（click / notifications-changed / visibilitychange）触发**真实注册的 React handler**，fetch 回执由 mock 按序释放。**非真实指针/键盘操作**——本会话 IAB 无法投递真实输入事件（点击任意元素均超时），故不构成完整键盘验收。
+
+| 场景 | 步骤 | 结果 |
+| --- | --- | --- |
+| S1 NotificationLink 卸载后迟到响应 | 派发 notifications-changed（两实例各发新请求）→ 卸载页面区实例 → 释放其回执 unreadCount=999 → 重挂载 → 新请求回 1 | 卸载后无错误；重挂载显示 `通知（1 未读）`；999 从未出现在页面区（顶栏存活实例显示自己的 999 属其自身最新回执，正常） |
+| S2 账号切换（key 重挂载） | 旧实例请求在途 → 翻转 key（user-a→user-b）→ 释放旧实例回执 999 → 新实例回 2 | 显示 `通知（2 未读）`，999 未出现，零错误 |
+| S3 NotificationCenter act() 链中途卸载 | 点击「核对授权并打开投递」（notificationTarget 挂起）→ 卸载 → 释放 target 回执 | `readNotification` 调用数 **0**（act 链在 readNotification 前中止）；URL 未变（无 router.push）；零错误 |
+| S5 MaterialPreview 请求切换 | 点击文件 A（挂起）→ 点击文件 B（挂起）→ 先释放 B → 迟到释放 A | 显示 B（`src/b.py` + B-CONTENT-MARKER）；A 的迟到内容未出现、未覆盖 |
+| S6 MaterialPreview 请求在途卸载 | 点击 A（挂起）→ 卸载 → 释放回执（UNMOUNTED-LATE-CONTENT）→ 重挂载 → 释放列表 | 卸载期与重挂载后迟到内容均未出现；重挂载为干净状态（文件列表重列、无旧内容）；零错误 |
+
+## 环境阻塞项（如实）
+
+- **S4（NotificationCenter 轮询竞态：依赖变化时在途旧轮询不得覆盖新数据）未能驱动**：本会话 IAB 标签页真实处于 `document.hidden`（面板失焦，`browser.capabilities.visibility.set(true)` 无法置前），而该组件按设计在 hidden 时不发轮询；且该 IAB 的 `document` 实例有**不可配置的 own `visibilityState` getter**（原型重定义无效），无法在页面内模拟可见性翻转。已观察到的部分：hidden 分支执行了真实失效（数据清空）。留待有可见视口的环境复验（Codex 复验路径：可见状态下刷新通知发起 R1 → 切走再切回标签页 → R2 返回后释放 R1 旧数据 → 断言无覆盖）。
+- 页面水合存在 mock 安装竞态（layout 的 AuthProvider effect 可能先于页面模块 mock 执行，users/me 打到真实代理 500）：验证台以「mock 就绪后点重试」恢复，不影响组件行为结论；此为 stage 验证台局限，非产品缺陷。
+
+## 组件改动（本轮真实修复，替代上一轮的等价赋值写法）
+
+- NotificationLink：票据与取消标志收进 effect 闭包（`let cancelled/ticket`），清理只置 `cancelled=true`——**ref 全部移除**。
+- MaterialPreview：文件选择改为状态驱动（`fileRequest` state + 专责 effect + 局部 `current` 旗标），身份切换 effect 体内 `setFileRequest(null)` 撤销在途请求——**ref 全部移除**；重复点击同文件仍会重新加载（请求对象带 seq）。
+- NotificationCenter：`generation` 只在 effect 体/act/可见性处理推进（清理不读取）；新增 `alive` 旗标，清理中**仅做常量赋值** `alive.current=false`（不读取 ref 值，不落入规则关注的"清理读取过期 ref"场景），所有票据检查双门（`alive && ticket===generation`）。
+
+## 检查
+
+- `eslint .`（stage，与 Z58 同链）：**0 error / 1 warning**（仅 VisualEvidencePanel `<img>`，见报告技术理由）——三处 react-hooks/exhaustive-deps 警告经上述重构真实消除，未禁用规则。
+- `tsc --noEmit`：0 错。触及测试 5 文件 64/64 通过（application-board-session、private-answer-workflow、portfolio-upload、recommendation-selection、flow-steps）。
