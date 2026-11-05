@@ -49,7 +49,7 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
-const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra });
+const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
 const advice = (value, extra = {}) => ({ requirementId: value.requirementId, requirementTitle: value.requirementTitle, skill: value.skill, weight: value.weight, currentLevel: null, source: "rules", action: value.evidenceLevelGap, evidenceGap: value.evidenceLevelGap, citationIds: [], ...extra });
 const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan: actions, materials: [] });
 const count = (html, text) => html.split(text).length - 1;
@@ -62,7 +62,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
  const before = JSON.stringify(value); const html = render(value);
  assert.equal(count(html,'aria-label="岗位要求与证据"'),1);
  for (const entry of items) assert.ok(html.includes(`href="#requirement-${entry.requirementId}"`));
- assert.equal(count(html, "完成后上传新版材料"), 6);
+ assert.equal(count(html, "添加项目材料"), 6);
  assert.equal(count(html, "复制补证建议"), 6);
  assert.ok(!html.includes("展开完整补证计划"));
  assert.equal(JSON.stringify(value),before);
@@ -79,7 +79,7 @@ test("valid AI advice uses the saved requirement and drops foreign or duplicate 
  const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap,citationIds:["R1-E1","R1-E1","R2-E9"]})]),evidenceContextVersion:"source-context-v2"};
  const html=render(value);
  assert.ok(html.includes("AI 证据建议")); assert.ok(html.includes("保存参数校验记录")); assert.ok(html.includes("缺少失败结果"));
- assert.equal(count(html,'href="#citation-R1-E1"'),1); // the saved suggestion citation; source disclosure is owned by ReportDetail
+ assert.equal(count(html,'href="#citation-R1-E1"'),1); // one file link also identifies the saved suggestion basis; no duplicate shortcut
  assert.ok(!html.includes("R2-E9"));
 });
 
@@ -87,7 +87,7 @@ test("rejected, unvalidated, fallback and stale-context AI text never becomes ac
  const entry=item("ai","gap",{aiStatus:"validated",aiSuggestion:"不应展示为有效的AI建议",aiInformationGap:"旧AI缺口",aiCitationIds:[]});
  for (const change of [{aiFallbackUsed:true},{evidenceContextVersion:"legacy"},{items:[{...entry,aiStatus:"rejected"}]},{items:[{...entry,confirmationStatus:"corrected"}]}]) {
   const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap})]),evidenceContextVersion:"source-context-v2",...change};
-  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("查看通用核对步骤与材料清单"));
+  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("通用核对步骤与材料清单"));
  }
 });
 
@@ -103,7 +103,7 @@ test("non-students retain explanation and advice without private student task co
 test("review-only and unsupported states do not invent implementation deficiencies", () => {
  for(const value of [item("review","supported",{confirmationStatus:"rejected"}),item("outside","unsupported")]) {
   const html=render(report([value]));
-  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("完成后上传新版材料"));
+  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("添加项目材料"));
   assert.ok(!html.includes(">开始补证</button>")); assert.ok(html.includes("不能由此认定实现不存在"));
  }
 });
@@ -111,14 +111,14 @@ test("review-only and unsupported states do not invent implementation deficienci
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
-  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议怎么补")); assert.ok(html.includes("完成后上传新版材料"));
+  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议怎么补")); assert.ok(html.includes("添加项目材料"));
   assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  }
 });
 
 test("supported requirements lead with conclusions and evidence; optional growth stays secondary", () => {
  const value=item("complete","supported"); const html=render(report([value],[advice(value)]));
- assert.ok(html.includes("当前材料支持")); assert.ok(!html.includes("材料支持不等于运行成功"));
+ assert.ok(html.includes("判断依据")); assert.ok(!html.includes("材料支持不等于运行成功"));
  assert.ok(html.includes("材料有更新？按需查看补证指导"));
  assert.ok(!html.includes("建议怎么补")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
@@ -133,7 +133,7 @@ test("support survives incomplete context without duplicating the source pane's 
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
  const value=item("current"); const html=render(report([value],[advice(item("foreign"),{action:"外部报告的建议"})]));
- assert.ok(html.includes("查看通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
+ assert.ok(html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
  assert.ok(!html.includes('href="#requirement-foreign"'));
 });
 
@@ -154,8 +154,8 @@ test("generic checking guidance is explicitly separate from saved advice and nev
  const entry=item("cache","gap",{requirementTitle:"使用 Redis 缓存并在写入后失效"});
  const r=report([entry],[advice(entry,{action:"核对候选与要求的对应关系，补充直接相关的材料。"})]);
  const before=JSON.stringify(r); const html=render(r);
- for(const text of ["通用核对步骤","检查已有实现","已有实现","尚未实现","提交新版材料","查看报告原始建议","已提交的材料只需定位"]) assert.ok(html.includes(text),text);
- assert.ok(html.includes(r.actionPlan[0].action));
+ for(const text of ["通用核对步骤","检查已有实现","已有实现","尚未实现","提交新版材料","已提交的材料只需定位"]) assert.ok(html.includes(text),text);
+ assert.equal(count(html, r.actionPlan[0].action),1);
  assert.ok(!html.includes("cache.py") && !html.includes("Redis 已实现"));
  assert.equal(JSON.stringify(r),before);
 });
@@ -173,7 +173,7 @@ test("a validated structured plan without an actionPlan entry never claims that 
  const value={...report([entry]),evidenceContextVersion:"source-context-v2"};
  const before=JSON.stringify(value); const html=render(value);
  assert.ok(html.includes("运行异常请求") && html.includes("验证记录") && html.includes("注明固定源码版本"));
- assert.ok(!html.includes("查看通用核对步骤与材料清单"));
+ assert.ok(!html.includes("通用核对步骤与材料清单"));
  assert.equal(JSON.stringify(value),before);
 });
 
@@ -189,13 +189,13 @@ test("action panel has no duplicate evidence shortcut; the article owns a single
  const entry=item("source","supported",{evidenceList:[{citationId:"S1",filePath:"app.py",lineStart:4,lineEnd:5,snippet:"saved-source",contextComplete:true}]});
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report:report([entry]),item:entry}));
  assert.equal(count(html,'aria-label="source的证据来源"'),1);
- assert.ok(html.includes('id="citation-S1"')&&html.includes("saved-source")&&html.includes("来源（1）"));
+ assert.ok(html.includes('id="citation-S1"')&&html.includes("saved-source")&&html.includes("引用原文")&&html.includes("1 处"));
 });
 
 test("guidance can be copied and used for a new upload without creating a task", () => {
  const entry=item("cache","gap"); const html=render(report([entry],[advice(entry)]));
  assert.ok(html.includes("复制补证建议"));
- assert.ok(html.includes("完成后上传新版材料"));
+ assert.ok(html.includes("添加项目材料"));
  assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  assert.ok(!html.includes("已有记录与自定义计划（可选）"));
  assert.ok(!html.includes("查看已有补证记录"));
@@ -216,7 +216,7 @@ test("legacy growth anchors resolve to current copy/upload guidance without reop
  for(const verdict of ["gap","supported"]){
   const html=render(report([item("legacy",verdict)]));
   assert.equal(count(html,'id="growth-legacy"'),1);
-  assert.ok(html.includes("复制补证建议")&&html.includes("完成后上传新版材料"));
+  assert.ok(html.includes("复制补证建议")&&html.includes("添加项目材料"));
   assert.ok(!html.includes("自定义补证计划")&&!html.includes("查看已有补证记录"));
  }
 });

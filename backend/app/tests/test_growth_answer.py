@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from app.models.analysis import AiUsageLog, AnalysisTask
 from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.recruitment import ApplicationEvent
+from app.tests.submission_helpers import application_payload
 from app.tests.test_evidence_growth import newer, plan
 from app.tests.test_real_matching import (
     create_job,
@@ -596,7 +597,7 @@ async def test_answer_draft_saves_leave_downstream_state_untouched(matching_db):
         env = await setup_answer_env(student, hr, "-frozen")
         task, base = env["task"], env["base"]
         application = await student.post(
-            "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, base['id'])
         )
         assert application.status_code == 201, application.text
         app_id = application.json()["data"]["id"]

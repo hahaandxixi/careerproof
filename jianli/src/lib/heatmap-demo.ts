@@ -9,12 +9,12 @@ export const DEMO_REQUIREMENTS = [
 ];
 const rows = [
   // Preset interface examples use the current rule scale; these are not generated reports.
-  { name: "合成候选人 A", values: [["supported", 65], ["partial", 40], ["gap", 0], ["claimed_only", 10]] },
-  { name: "合成候选人 B", values: [["partial", 40], ["supported", 65], ["supported", 65], ["gap", 0]] },
-  { name: "合成候选人 C", values: [["claimed_only", 10], ["gap", 0], ["unsupported", null], ["partial", 40]] },
+  { name: "林同学", values: [["supported", 65], ["partial", 40], ["gap", 0], ["claimed_only", 10]] },
+  { name: "唐同学", values: [["partial", 40], ["supported", 65], ["supported", 65], ["gap", 0]] },
+  { name: "陈同学", values: [["claimed_only", 10], ["gap", 0], ["unsupported", null], ["partial", 40]] },
 ];
 export const HEATMAP_DEMO: ApplicationView[] = rows.map((row, index) => ({
-  id: `demo-application-${index}`, candidateId: `demo-user-${index}`, jobId: "demo-job", jobTitle: "Python 后端开发（合成示例）", companyName: "合成演示企业", candidateName: row.name,
+  id: `demo-application-${index}`, candidateId: `demo-user-${index}`, jobId: "demo-job", jobTitle: "Python 后端开发", companyName: "云栈科技", candidateName: row.name,
   reportId: `demo-report-${index}`, status: "submitted", createdAt: "2026-10-12T00:00:00Z", overallScore: null,
   consentVersion: "synthetic-demo-only", replyKind: null, replyText: null, replyReferences: [], events: [], comparisonBasis: "synthetic-fixed-v1",
   dimensions: row.values.map(([verdict, score], i) => ({ requirementId: DEMO_REQUIREMENTS[i].id, title: DEMO_REQUIREMENTS[i].title, skill: DEMO_REQUIREMENTS[i].skill,

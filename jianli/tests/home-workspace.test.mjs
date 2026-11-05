@@ -1,3 +1,4 @@
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 // Real component SSR with controlled saved state. Effects/network are deliberately
 // not executed; this does not verify late responses, identity races or browser behavior.
 import test from "node:test";
@@ -19,6 +20,7 @@ function render(role, { work = EMPTY, errors = [], loading = false, status = "au
   const values = [work, errors, loading, 0];
   const modules = {
     react: { ...React, useState: () => [values[cursor++], () => {}], useEffect: () => {} },
+ "@/lib/demo-display-identity.js":demoPresentation,
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
     "@/lib/api/client": { api: new Proxy({}, { get() { throw new Error("SSR must not request data"); } }), errorMessage: String },
@@ -42,7 +44,7 @@ test("a failed read is unknown, while verified empty work can offer the first-ma
 test("student continues the saved report without enterprise actions", () => {
   const html = render("student", { work: { ...EMPTY, reports: [{ id: "report-owned", jobTitle: "后端开发", createdAt: "2026-10-22T10:00:00Z", analysisMode: "rules" }] } });
   assert.ok(html.includes('href="/reports/report-owned"'));
-  assert.ok(html.includes("继续核对：后端开发"));
+  assert.ok(html.includes("继续核对报告") && html.includes("后端开发"));
   assert.ok(html.includes('href="/portfolio"'));
   assert.ok(!html.includes('href="/jobs/new"'));
   assert.ok(!html.includes("企业工作台"));
@@ -78,7 +80,7 @@ test("authentication loading and error never render the saved identity as confir
 
 test("old growth tasks cannot replace report continuation or form a second student work area",()=>{
  const html=render("student",{work:{...EMPTY,reports:[{id:"report-owned",jobTitle:"当前岗位",createdAt:"2026-10-22T10:00:00Z",analysisMode:"rules"}],growth:[{id:"old-task",requirementTitle:"旧记录",status:"planned"}]}});
- assert.ok(html.includes("继续核对：当前岗位"));
+ assert.ok(html.includes("继续核对报告") && html.includes("当前岗位"));
  assert.ok(!html.includes("最近补证任务")&&!html.includes('href="/growth'));
  assert.ok(!source.includes("api.listGrowthTasks"),"home must not depend on the legacy task list API");
 });

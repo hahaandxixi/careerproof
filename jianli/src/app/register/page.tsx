@@ -52,10 +52,10 @@ export default function RegisterPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="workspace-sheet p-5 sm:p-7">
         <div className="mb-6">
           <p className="text-sm font-medium text-indigo-600">创建账号</p>
-          <h1 className="page-title mt-1">加入职证 CareerProof</h1>
+          <h1 className="page-title">注册</h1>
           <p className="mt-2 text-sm text-slate-500">学生账号可以上传简历与项目，企业账号用于发布岗位。</p>
         </div>
 

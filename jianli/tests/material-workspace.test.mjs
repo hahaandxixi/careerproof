@@ -1,3 +1,4 @@
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -16,7 +17,8 @@ function workspace(file, kind, state = {}) {
   const calls = [];
   const errors = [];
   const initial = { 1: kind === "resume" ? file : null, 2: "报名服务", 5: kind === "project" ? file : null, 17:true, 18:kind, ...state };
-  const modules = {
+  const modules = { "@/lib/demo-display-identity.js":demoPresentation,
+
     react: {
       Suspense: props => props.children,
       useCallback: fn => fn, useEffect() {}, useMemo: fn => fn(),
@@ -94,10 +96,11 @@ test("returning workspace shows one latest version first and keeps history colla
   assert.ok(JSON.stringify(history.props.children).includes("历史版本（"));
   assert.equal(value.collect(value.tree,"form").length,0,"returning workspace does not open an upload automatically");
   const all=node=>Array.isArray(node)?node.flatMap(all):!node||typeof node!=="object"?[]:[node,...all(node.props?.children)];
-  const newest = all(value.tree).filter(node => node.props?.latest);
-  assert.equal(newest.length, 1);
-  assert.equal(newest[0].props.item.versionId, "v2");
-  assert.equal(newest[0].props.item.filename, "service-v2.zip");
+  const current = all(value.tree).filter(node => node.props?.item && node.props?.onUploadVersion);
+  assert.equal(current.length, 1);
+  assert.equal(current[0].props.item.versionId, "v2");
+  assert.equal(current[0].props.item.filename, "service-v2.zip");
+  assert.equal(all(history).filter(node => node.props?.item?.versionId === "v1").length, 1);
 });
 
 test("adding materials first offers a type choice and mounts only the chosen form", () => {
@@ -117,4 +120,20 @@ test("preparing an existing project version does not claim an upload has started
  const copy=JSON.stringify(value.tree);
  assert.ok(copy.includes("目标项目：报名服务"));assert.ok(!copy.includes("正在上传到"));
  assert.equal(value.calls.length,0);
+});
+
+test("completed material promotes job comparison while empty and pending work retain add-materials", () => {
+  const nodes = node => Array.isArray(node) ? node.flatMap(nodes) : !node || typeof node !== "object" ? [] : [node, ...nodes(node.props?.children)];
+  const version = status => ({id:"v",versionNumber:1,originalFilename:"service.zip",createdAt:"2026-11-05T00:00:00Z",status});
+  for (const status of ["completed", "pending"]) {
+    const value = workspace(null, null, {11:[{id:"p",name:"报名服务",versions:[version(status)]}],12:true,17:false,18:null});
+    const actions = nodes(value.tree).filter(node => node.props?.href === "/jobs").filter(node => node.props.children === "选择岗位进行对照");
+    assert.equal(actions.length, status === "completed" ? 1 : 0);
+    if(actions.length) assert.equal(actions[0].props.href,"/jobs");
+    const add=value.collect(value.tree,"button").find(node=>node.props.children==="添加材料");
+    assert.equal(add.props.className,status==="completed"?"btn-secondary":"btn");
+    assert.equal(value.calls.length,0);
+  }
+  const empty=workspace(null,null,{12:true,17:false,18:null});
+  assert.equal(nodes(empty.tree).filter(node => node.props?.href === "/jobs").filter(node=>node.props.children==="选择岗位进行对照").length,0);
 });

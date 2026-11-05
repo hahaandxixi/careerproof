@@ -1,5 +1,6 @@
 "use client";
 
+import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useState } from "react";
 import type { MatchReport, ReportComparison } from "@/lib/api/domain";
@@ -70,7 +71,7 @@ export default function ReportComparisonView({ value, base, current }: { value: 
   const rows = comparisonRows(value, base, current), counts = comparisonCounts(rows);
   const visible = filterComparisonRows(rows, filter);
   return <div className="min-w-0 space-y-4 text-base" aria-label="按岗位要求查看证据变化">
-    <div className="grid grid-cols-1 gap-3 border-b border-slate-200 pb-3 sm:grid-cols-2">{[{label:"基准报告",report:base},{label:"当前报告",report:current}].map(side=><div key={side.label}><Link className="font-medium text-indigo-700 underline" href={`/reports/${side.report.id}`}>{side.label} · {new Date(side.report.createdAt).toLocaleString("zh-CN")}</Link><p className="mt-1 text-sm text-slate-700">{side.report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")||"未记录材料版本"}</p></div>)}</div>
+    <div className="grid grid-cols-1 gap-3 border-b border-slate-200 pb-3 sm:grid-cols-2">{[{label:"基准报告",report:base},{label:"当前报告",report:current}].map(side=><div key={side.label}><Link className="font-medium text-indigo-700 underline" href={`/reports/${side.report.id}`}>{side.label} · {new Date(side.report.createdAt).toLocaleString("zh-CN")}</Link><p className="mt-1 text-sm text-slate-700">{side.report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")||"未记录材料版本"}</p></div>)}</div>
     {value.contextChanges.some(key=>/requirement|formula|rubric|job/.test(key))&&<p className="text-sm text-amber-900">比较依据存在变化：{value.contextChanges.map(key=>GROWTH_CHANGES[key]??key).join("、")}。请展开比较范围核对，不能仅按状态高低判断。</p>}
     <div className="flex flex-wrap gap-2" role="group" aria-label="筛选要求变化">{FILTERS.map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)} className={`min-h-10 rounded-full px-3 py-2 text-sm ${filter === key ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{label} {counts[key]}</button>)}</div>
     {counts.changed === 0 && <p className="rounded-lg bg-slate-50 p-3">本次没有检测到变化。可切换“全部要求”或“没有变化”查看原记录。</p>}
@@ -82,7 +83,7 @@ export default function ReportComparisonView({ value, base, current }: { value: 
       <div className="space-y-3 pt-3 leading-6 [overflow-wrap:anywhere]">
         <div className="flex flex-wrap gap-4"><Link className="btn-secondary" href={`/reports/${value.baseId}`}>基准报告 · {new Date(base.createdAt).toLocaleString("zh-CN")}</Link><Link className="btn-secondary" href={`/reports/${value.targetId}`}>当前报告 · {new Date(current.createdAt).toLocaleString("zh-CN")}</Link></div>
         <p>变化背景：{value.contextChanges.map(key => GROWTH_CHANGES[key] ?? key).join("、") || "未记录背景变化"}。材料版本发生变化，不代表每一条引用或判断都改变。</p>
-        {[{label: "基准材料", rows: value.baseMaterials}, {label: "当前材料", rows: value.targetMaterials}].map(side => <div key={side.label}><h3 className="font-medium">{side.label}</h3><ul>{side.rows.map(m => <li key={`${m.kind}-${m.id}`}>{m.title} · 第 {m.versionNumber} 版<details className="text-xs text-slate-600"><summary className="w-fit cursor-pointer">版本校验信息</summary><p>{m.id} · {m.contentHash}</p></details></li>)}</ul></div>)}
+        {[{label: "基准材料", rows: value.baseMaterials}, {label: "当前材料", rows: value.targetMaterials}].map(side => <div key={side.label}><h3 className="font-medium">{side.label}</h3><ul>{side.rows.map(m => <li key={`${m.kind}-${m.id}`}>{displayMaterialTitle(m.title, m.id)} · 第 {m.versionNumber} 版<details className="text-xs text-slate-600"><summary className="w-fit cursor-pointer">版本校验信息</summary><p>{m.id} · {m.contentHash}</p></details></li>)}</ul></div>)}
         <p>测试代码引用与运行记录引用分别展示。上传的测试输出仍需核对内容及源码版本，不是平台独立执行结果；未再展示的引用仍可在基准报告中查看。</p>
         <ul className="space-y-1 text-xs text-slate-600">{value.limitations.map(note => <li key={note}>{note}</li>)}</ul>
       </div>

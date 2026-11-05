@@ -10,6 +10,7 @@ from sqlalchemy import select
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import TaskStatus
 from app.models.recruitment import Application
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 
 pytest_plugins = ["app.tests.test_real_matching"]
@@ -22,7 +23,7 @@ async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path
         matching_db, tmp_path, monkeypatch
     )
     try:
-        payload = {"reportId": str(rid), "shareConsent": True}
+        payload = await application_payload(student, rid)
         original = (await student.post("/api/v1/applications", json=payload)).json()["data"]
         old_id = original["id"]
         old_notice = (await hr.get("/api/v1/notifications")).json()["data"]["items"][0]["id"]
@@ -53,6 +54,8 @@ async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path
             else:
                 report.summary = "本次重新分享的报告"
             await session.commit()
+
+        payload = await application_payload(student, payload["reportId"])
 
         refused = await student.post("/api/v1/applications",
                                      json={**payload, "shareConsent": False})
@@ -96,9 +99,9 @@ async def test_reconsent_keeps_old_snapshot_and_revocation(matching_db, tmp_path
         }
         # A different report cannot silently replace this active consent.
         if new_report:
-            assert (await student.post("/api/v1/applications", json={
-                "reportId": str(rid), "shareConsent": True
-            })).status_code == 409
+            assert (await student.post(
+                "/api/v1/applications", json=await application_payload(student, rid)
+            )).status_code == 409
     finally:
         await close(hr, student, other)
 
@@ -110,7 +113,7 @@ async def test_reconsent_does_not_bypass_closed_job_or_daily_limit(
         matching_db, tmp_path, monkeypatch
     )
     try:
-        payload = {"reportId": str(rid), "shareConsent": True}
+        payload = await application_payload(student, rid)
         old_id = (await student.post("/api/v1/applications", json=payload)).json()["data"]["id"]
         await student.post(f"/api/v1/applications/{old_id}/withdraw")
         await hr.patch(f"/api/v1/jobs/{job['id']}", json={"status": "closed"})
@@ -139,7 +142,7 @@ async def test_postgres_concurrent_reconsent_creates_one_active_application(
         matching_db, tmp_path, monkeypatch
     )
     try:
-        payload = {"reportId": str(rid), "shareConsent": True}
+        payload = await application_payload(student, rid)
         old_id = (await student.post("/api/v1/applications", json=payload)).json()["data"]["id"]
         await student.post(f"/api/v1/applications/{old_id}/withdraw")
         responses = await asyncio.gather(*(

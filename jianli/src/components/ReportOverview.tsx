@@ -1,3 +1,4 @@
+import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
 import { evidenceWorkspace, evidenceWorkspaceSummary } from "@/lib/evidence-workspace";
@@ -11,8 +12,8 @@ export default function ReportOverview({ report, role, workbench = false }: { re
   const counts = { resume: report.materials.filter(m => m.kind === "resume").length, personal: report.materials.filter(m => m.kind === "project" && m.materialRole !== "reference").length, reference: report.materials.filter(m => m.materialRole === "reference").length };
   const identity = role === "student" ? "学生" : role === "enterprise" ? "企业" : role === "admin" ? "管理员" : "当前账号";
   if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="岗位匹配报告" aria-labelledby="report-title">
-    <div className="flex flex-wrap items-center justify-between gap-4">
-      <div className="min-w-0"><h1 id="report-title" className="break-words text-2xl font-bold text-slate-950">{report.jobTitle}</h1>
+    <div className="report-overview-heading flex flex-wrap items-center justify-between gap-4">
+      <div className="min-w-0"><h1 id="report-title" className="page-title break-words">{displayJobTitle(report.jobTitle, report.jobId)}</h1>
         <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600"><span><IdentityName name={report.candidateName} identityId={report.candidateId}/></span><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time><span className="font-medium text-indigo-800">{report.aiProvider?.startsWith("mock") ? reportModeLabel(report) : report.aiFallbackUsed ? "规则分析 · AI 已降级" : ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) ? "AI 分析 + 规则校验" : report.analysisMode === "rules" ? "规则分析" : reportModeLabel(report)}</span></p>
       </div>
       <dl aria-label="已保存的证据状态摘要" className="grid grid-cols-3 gap-x-6 gap-y-2">
@@ -22,12 +23,15 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       </dl>
     </div>
     {(states.partial.length > 0 || states.other.length > 0) && <p className="text-sm text-slate-600">另有 {states.partial.length} 项部分支持 · {states.other.length} 项未覆盖或需复核。</p>}
-    <p className="text-sm text-slate-600">{report.materials.map(m=>`${m.title} v${m.versionNumber}`).join(" · ")||"历史记录未保存材料版本"}</p>
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
-      <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 items-center text-indigo-700 underline">材料版本</EvidenceLink>
+    <div className="report-overview-tools flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
       {role === "student" && <EvidenceLink targetId="report-comparison" className="inline-flex min-h-9 items-center font-medium text-indigo-700 underline">版本对比</EvidenceLink>}
+      <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 min-w-0 items-center break-words text-slate-700 underline" aria-label="查看本报告材料版本">{report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")||"历史记录未保存材料版本"}</EvidenceLink>
       <EvidenceLink targetId="report-analysis" className="inline-flex min-h-9 items-center text-indigo-700 underline">分析详情</EvidenceLink>
     </div>
+    <ol className="report-reading-steps" aria-label="材料核对步骤">
+      <li><a href="/portfolio">整理材料</a></li><li aria-current="step">岗位对照</li>
+      <li><EvidenceLink targetId={states.gaps[0] ? `growth-${states.gaps[0].requirementId}` : "report-materials"}>补充证据</EvidenceLink></li>
+    </ol>
     {report.aiFallbackUsed && <p className="border-l-2 border-amber-400 pl-3 text-sm text-amber-900"><strong>模型已降级：</strong>模型处理或输出校验未能完成，本报告使用本地规则结果。</p>}
   </section>;
   return <section className="panel min-w-0 space-y-3" aria-labelledby="report-title">
@@ -35,7 +39,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{identity}查看</span>
       <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-900">{reportModeLabel(report)}</span>
     </div>
-    <div><h1 id="report-title" className="page-title">岗位匹配报告</h1><p className="mt-2 break-words text-lg font-semibold text-slate-900"><IdentityName name={report.candidateName} identityId={report.candidateId}/> · {report.jobTitle}</p></div>
+    <div><h1 id="report-title" className="page-title">岗位匹配报告</h1><p className="mt-2 break-words text-lg font-semibold text-slate-900"><IdentityName name={report.candidateName} identityId={report.candidateId}/> · {displayJobTitle(report.jobTitle, report.jobId)}</p></div>
     <dl className="grid gap-3 text-sm sm:grid-cols-2">
       <div><dt className="text-xs text-slate-600">生成时间</dt><dd className="mt-1 text-slate-900"><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time></dd></div>
       <div className="min-w-0"><dt className="text-xs text-slate-600">固定材料版本</dt><dd className="mt-1 break-words text-slate-900">{report.materials.length ? [counts.resume && `${counts.resume} 份简历`, counts.personal && `${counts.personal} 份个人作品`, counts.reference && `${counts.reference} 份第三方参考`].filter(Boolean).join(" · ") + "（本次固定版本）" : "历史报告未记录材料版本"}<EvidenceLink targetId="report-materials" className="ml-2 inline-block text-indigo-700 underline">核对材料</EvidenceLink></dd></div>

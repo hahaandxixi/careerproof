@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "./AuthProvider";
 import FlowSteps from "./FlowSteps";
 import { flowStepsForLocation, studentFlowLocation } from "@/lib/flow-steps";
@@ -9,7 +9,13 @@ import { flowStepsForLocation, studentFlowLocation } from "@/lib/flow-steps";
 export default function StudentFlowGuide() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const currentKey = studentFlowLocation(pathname, user?.role);
+  const [context, setContext] = useState({ search: "", hash: "" });
+  useEffect(() => {
+    const update = () => setContext({ search: window.location.search, hash: window.location.hash });
+    update(); window.addEventListener("hashchange", update); window.addEventListener("popstate", update);
+    return () => { window.removeEventListener("hashchange", update); window.removeEventListener("popstate", update); };
+  }, [pathname]);
+  const currentKey = studentFlowLocation(pathname, user?.role, context.search, context.hash);
   const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const nav = container.current?.querySelector("nav");
@@ -19,6 +25,5 @@ export default function StudentFlowGuide() {
       nav.scrollLeft = Math.max(0, current.offsetLeft - nav.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2);
     }
   }, [pathname, currentKey]);
-  // Saved reports are reading surfaces; their own back, upload and sharing links remain available.
-  return currentKey && !["/portfolio","/reports"].includes(pathname) && !/^\/reports\/[^/]+$/.test(pathname) ? <div ref={container}><FlowSteps key={pathname} steps={flowStepsForLocation(pathname)} currentKey={currentKey} /></div> : null;
+  return currentKey ? <div ref={container}><FlowSteps key={`${user?.id}:${pathname}`} steps={flowStepsForLocation(pathname, context.search)} currentKey={currentKey} /></div> : null;
 }

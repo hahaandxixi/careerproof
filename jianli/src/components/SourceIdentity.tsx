@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { ReportEvidence } from "@/lib/api/domain";
 import { compactSourceLabel, sourceLabel, type SourceMaterial } from "@/lib/source-label";
 
@@ -13,11 +14,12 @@ export default function SourceIdentity({ source, materials = [], compact = false
   return <span className="break-all">{sourceLabel(source, materials)}</span>;
 }
 
-export function SourceIdentityDetails({ source }: {
-  source: Pick<ReportEvidence, "filePath" | "projectVersionId" | "lineStart" | "lineEnd" | "citationId" | "contentHash" | "evidenceType">;
+export function SourceIdentityDetails({ source, children }: {
+  source: Pick<ReportEvidence, "filePath" | "projectVersionId" | "lineStart" | "lineEnd" | "citationId" | "contentHash" | "evidenceType">; children?: ReactNode;
 }) {
   return <details className="mt-3 text-xs leading-6 text-slate-600">
     <summary className="cursor-pointer">完整来源与校验信息</summary>
+    {children}
     <p className="mt-2 break-all">保存路径：{source.filePath}<br />
       材料版本ID：{source.projectVersionId || "历史版本未记录，保留原始路径"}<br />
       原文范围：第 {source.lineStart}–{source.lineEnd} 行<br />

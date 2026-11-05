@@ -15,6 +15,7 @@ from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import User
 from app.models.recruitment import Application, JobRequirement
 from app.services.evidence_growth import EvidenceGrowthService
+from app.tests.submission_helpers import application_payload
 from app.tests.test_real_matching import (
     create_job,
     match_report,
@@ -68,7 +69,7 @@ async def test_uploaded_version_report_diff_and_frozen_enterprise_snapshot(
         resume, project, version = await upload_materials(student)
         base = await match_report(student, job, resume, version)
         application = await student.post(
-            "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, base['id'])
         )
         assert application.status_code == 201, application.text
         app_id = application.json()["data"]["id"]
@@ -176,10 +177,7 @@ async def test_uploaded_version_report_diff_and_frozen_enterprise_snapshot(
             assert (
                 await student.post(
                     "/api/v1/applications",
-                    json={
-                        "reportId": result["targetReportId"],
-                        "shareConsent": True,
-                    },
+                    json=await application_payload(student, result['targetReportId']),
                 )
             ).status_code == 409
             continuation = await student.post(

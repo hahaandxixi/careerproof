@@ -29,6 +29,73 @@ function Get-LocalFrontendBuild([string]$FrontendRoot, $Selection) {
     foreach ($file in $core) { [void](Resolve-LocalFrontendArtifact $root $file) }
     $id = (Get-Content -LiteralPath (Join-Path $root 'BUILD_ID') -Raw -Encoding UTF8).Trim()
     if ($id -cne $Selection.buildId) { throw 'Selected frontend BUILD_ID does not match the accepted build.' }
+    # Newly produced candidates require a contemporaneous source/artifact manifest.
+    # Legacy accepted builds retain their historical evidence grade; never fabricate one.
+    if ($Selection.distDir.StartsWith('.next-candidate-', [StringComparison]::Ordinal)) {
+        $project = Split-Path -Parent $front.FullName
+        $manifestPath = Resolve-LocalFrontendArtifact $project ('output/builds/' + $Selection.distDir + '/artifact-manifest.json')
+        $provenance = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($provenance.schema -ne 1 -or $provenance.distDir -cne $Selection.distDir -or
+            $provenance.buildId -cne $id -or $provenance.sourceBase -cne $Selection.sourceCommit -or
+            !$provenance.capturedAt -or !$provenance.sealedAt -or
+            !$provenance.inputFiles -or !$provenance.artifactFiles) {
+            throw 'Candidate provenance identity is incomplete or differs from selection.'
+        }
+        foreach ($group in @(@{ Root=$front.FullName; Files=$provenance.inputFiles },
+                            @{ Root=$root; Files=$provenance.artifactFiles })) {
+            $entries = @($group.Files.PSObject.Properties)
+            if (!$entries.Count) { throw 'Candidate provenance has no file hashes.' }
+            foreach ($entry in $entries) {
+                if ($entry.Value -isnot [string] -or $entry.Value -cnotmatch '\A[0-9a-f]{64}\z') { throw 'Invalid provenance hash.' }
+                $file = Resolve-LocalFrontendArtifact $group.Root $entry.Name
+                if ((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -cne $entry.Value) {
+                    throw "Candidate provenance hash mismatch: $($entry.Name)"
+                }
+            }
+        }
+        # New/deleted source inputs also invalidate the candidate, not only changed bytes.
+        $expectedInputs = @($provenance.inputFiles.PSObject.Properties.Name | Sort-Object)
+        $actualInputs = @()
+        foreach ($folder in @('src', 'public')) {
+            $folderRoot = Join-Path $front.FullName $folder
+            if (Test-Path -LiteralPath $folderRoot) {
+                $pending = New-Object 'System.Collections.Generic.Stack[string]'
+                $pending.Push($folderRoot)
+                while ($pending.Count) {
+                    foreach ($item in Get-ChildItem -LiteralPath $pending.Pop() -Force) {
+                        if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Candidate inputs cannot contain reparse points.' }
+                        if ($item.PSIsContainer) { $pending.Push($item.FullName) }
+                        else { $actualInputs += $item.FullName.Substring($front.FullName.Length + 1).Replace('\','/') }
+                    }
+                }
+            }
+        }
+        $actualInputs += @(Get-ChildItem -LiteralPath $front.FullName -File | Where-Object {
+            $_.Name -cmatch '^(package(?:-lock)?\.json|next\.config\..+|tsconfig\.json|next-env\.d\.ts|(?:postcss|tailwind)\.config\..+)$'
+        } | ForEach-Object { $_.Name })
+        if (Compare-Object ($actualInputs | Sort-Object) $expectedInputs -CaseSensitive) { throw 'Candidate source input set changed.' }
+        # Match candidate-artifact.mjs: the seal covers the complete artifact
+        # set except cache/ and trace, not just the files already in its map.
+        $expectedArtifacts = @($provenance.artifactFiles.PSObject.Properties.Name | Sort-Object)
+        $actualArtifacts = @()
+        $pendingArtifacts = New-Object 'System.Collections.Generic.Stack[string]'
+        $pendingArtifacts.Push($root)
+        while ($pendingArtifacts.Count) {
+            foreach ($item in Get-ChildItem -LiteralPath $pendingArtifacts.Pop() -Force) {
+                if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Candidate artifacts cannot contain reparse points.' }
+                if ($item.PSIsContainer) { $pendingArtifacts.Push($item.FullName) }
+                else {
+                    $relative = $item.FullName.Substring($root.Length + 1).Replace('\','/')
+                    if ($relative -cne 'trace' -and !$relative.StartsWith('cache/', [StringComparison]::Ordinal)) {
+                        $actualArtifacts += $relative
+                    }
+                }
+            }
+        }
+        if (Compare-Object ($actualArtifacts | Sort-Object) $expectedArtifacts -CaseSensitive) { throw 'Candidate artifact file set changed.' }
+    }
+    # Start-V1's ready check requests this exact static file, even if the client manifest omits it.
+    [void](Resolve-LocalFrontendArtifact $root "static/$id/_buildManifest.js")
     $required = Get-Content -LiteralPath (Join-Path $root 'required-server-files.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($required.config.distDir -cne $Selection.distDir -or $required.files -isnot [array] -or !$required.files.Count) { throw 'Frontend build directory metadata is inconsistent or incomplete.' }
     foreach ($file in $required.files) {

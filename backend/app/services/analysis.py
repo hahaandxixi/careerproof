@@ -67,6 +67,7 @@ from app.services.task_lifecycle import (
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
 from app.tools.evidence_levels import VERSION as EVIDENCE_LEVEL_VERSION
+from app.tools.fixture_provenance import fixture_job_ids
 from app.tools.function_coverage import (
     redundant_source_request,
     task_plan_redundant_source_request,
@@ -557,7 +558,7 @@ class AnalysisService:
 
     async def list_reports(
         self, user: User, page: int = 1, page_size: int = 20,
-        *, q: str | None = None, job_id: UUID | None = None,
+        *, q: str | None = None, job_id: UUID | None = None, scope: str = "product",
     ):
         # The count and the page slice share the same ownership predicate, and a
         # caller is clamped to the last available page instead of an empty page.
@@ -577,6 +578,9 @@ class AnalysisService:
             .cte("owned_report_history")
         )
         conditions = []
+        fixture_ids = set(await self.session.scalars(fixture_job_ids()))
+        if scope != "all":
+            conditions.append(MatchReport.job_id.not_in(fixture_ids))
         if q and q.strip():
             conditions.append(MatchReport.job_snapshot["title"].as_string().icontains(
                 q.strip(), autoescape=True,
@@ -605,6 +609,7 @@ class AnalysisService:
             items=[MatchReportHistorySummary(
                 **self.summary(row).model_dump(),
                 materials=row.materials_snapshot,
+                record_provenance="test_fixture" if row.job_id in fixture_ids else None,
                 job_report_count=count,
                 is_latest_for_job=order == 1,
             ) for row, count, order in rows],
@@ -613,22 +618,43 @@ class AnalysisService:
             page_size=page_size,
         )
 
-    async def get_report(self, report_id: UUID, user: User) -> MatchReportView:
-        report = await self.analysis.get_report(report_id)
+    async def _locked_report(self, report_id: UUID, user: User, *, write=False) -> MatchReport:
+        # Scope authorization before locking; only the report is a lock target.
+        # Shared reads keep report comparisons from acquiring opposite exclusive
+        # locks, while review writes exclude readers through their transaction.
+        query = (
+            select(MatchReport)
+            .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+            .where(MatchReport.id == report_id)
+        )
+        if user.role is not UserRole.ADMIN:
+            query = query.where(AnalysisTask.created_by == user.id)
+        report = await self.session.scalar(
+            query.with_for_update(read=not write, of=MatchReport)
+            .execution_options(populate_existing=True)
+        )
         if not report:
             raise AppError("匹配报告不存在或无权访问", code=4042, status_code=404)
         await self.get_task(report.analysis_task_id, user)
+        return report
+
+    async def get_report(self, report_id: UUID, user: User) -> MatchReportView:
+        # Do not commit here: a consent caller must hold this shared lock until
+        # its fixed snapshot and Application are committed together.
+        report = await self._locked_report(report_id, user)
         items = await self.analysis.report_items(report.id)
         evidence_ids = [item.evidence_id for item in items if item.evidence_id]
         evidence_by_id = {
             row.id: row
             for row in await self.session.scalars(
                 select(SkillEvidence).where(SkillEvidence.id.in_(evidence_ids))
+                .execution_options(populate_existing=True)
             )
         }
         item_views = [self._item_view(item, evidence_by_id.get(item.evidence_id)) for item in items]
         return MatchReportView(
             **self.summary(report).model_dump(),
+            review_revision=report.version,
             materials=report.materials_snapshot,
             gaps=report.gaps,
             claimed_only=report.claimed_only,
@@ -653,10 +679,7 @@ class AnalysisService:
         payload: EvidenceReviewUpdate,
         user: User,
     ) -> MatchItemView:
-        report = await self.analysis.get_report(report_id)
-        if not report:
-            raise AppError("匹配报告不存在或无权访问", code=4042, status_code=404)
-        await self.get_task(report.analysis_task_id, user)
+        report = await self._locked_report(report_id, user, write=True)
         item = await self.session.scalar(
             select(MatchItem).where(
                 MatchItem.report_id == report_id,
@@ -667,7 +690,10 @@ class AnalysisService:
             raise AppError("报告要求项不存在", code=4047, status_code=404)
         if not item.evidence_id:
             raise AppError("该要求项没有可复核的材料证据", code=4096, status_code=409)
-        evidence = await self.session.get(SkillEvidence, item.evidence_id)
+        evidence = await self.session.scalar(
+            select(SkillEvidence).where(SkillEvidence.id == item.evidence_id)
+            .execution_options(populate_existing=True)
+        )
         if not evidence or evidence.analysis_task_id != report.analysis_task_id:
             raise AppError("证据记录不存在", code=4048, status_code=404)
         if payload.status == ConfirmationStatus.PENDING:
@@ -678,9 +704,10 @@ class AnalysisService:
             evidence.confirmed_at = datetime.now(UTC)
         evidence.confirmation_status = payload.status
         evidence.reviewer_note = payload.note or None
+        report.version += 1
+        result = self._item_view(item, evidence)
         await self.session.commit()
-        await self.session.refresh(evidence)
-        return self._item_view(item, evidence)
+        return result
 
     @staticmethod
     def _item_view(item: MatchItem, evidence: SkillEvidence | None = None) -> MatchItemView:
@@ -919,6 +946,7 @@ async def execute_match_task(task_id: UUID) -> None:
                 "fallbackReason": workflow.fallback_reason,
                 "skippedReason": workflow.skipped_reason,
                 "failureStage": workflow.failure_stage,
+                "failureType": workflow.failure_type,
                 "inputBudgetStop": workflow.input_budget_stop,
                 "inputPreflights": list(workflow.input_preflights),
                 "repairUsed": workflow.repaired,
@@ -1170,6 +1198,7 @@ async def execute_match_task(task_id: UUID) -> None:
                         "fallbackUsed": workflow.fallback_used,
                         "fallbackReason": workflow.fallback_reason,
                         "failureStage": workflow.failure_stage,
+                        "failureType": workflow.failure_type,
                         "inputBudgetStop": workflow.input_budget_stop,
                         "inputPreflights": list(workflow.input_preflights),
                         "skippedReason": workflow.skipped_reason,

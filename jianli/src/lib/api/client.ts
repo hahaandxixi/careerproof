@@ -265,7 +265,7 @@ export const api = {
   readNotification(id: string) { return request<{ unreadCount: number }>(`/notifications/${id}/read`, { method: "POST" }); },
   readAllNotifications() { return request<{ unreadCount: number }>("/notifications/read-all", { method: "POST" }); },
   notificationTarget(id: string) { return request<{ href: string }>(`/notifications/${id}/target`); },
-  createApplication(reportId: string) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true }) })); },
+  createApplication(reportId: string, expectedReviewRevision: number) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true, expectedReviewRevision }) })); },
   applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}`); },
   myApplications(page = 1, pageSize = 20, jobId?: string, filters: { q?: string; view?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); if (jobId) query.set("jobId", jobId); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
   jobApplications(jobId: string, page = 1, pageSize = 20, filters: { q?: string; status?: string; requirementId?: string; verdict?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/jobs/${jobId}/applications?${query}`); },
@@ -316,7 +316,8 @@ export const api = {
     return request<CareerPlanResult>("/career-plans", { method: "POST", ...jsonBody(payload) });
   },
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
-  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
+  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string; scope?: "product" | "all" } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
+  compareReports(baseId: string, targetId: string) { return request<ReportComparison>(`/match-reports/${baseId}/comparison/${targetId}`); },
   previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
   existingGrowthTask(reportId: string, requirementId: string) { return request<GrowthTask | null>(`/match-reports/${reportId}/growth-tasks/${requirementId}`); },
   enterpriseReplyContext(reportId: string, requirementId: string) { return request<EnterpriseReplyContext | null>(`/match-reports/${reportId}/enterprise-replies/${requirementId}`); },

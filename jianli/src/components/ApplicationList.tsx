@@ -1,4 +1,5 @@
 "use client";
+import { demoJobAlias } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ListPagination from "./ListPagination";
@@ -24,10 +25,10 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
   onCancelWithdraw(): void;
 }) {
   const reportHref = `/reports/${encodeURIComponent(item.reportId)}`;
-  return <article id={`application-${item.id}`} className="panel space-y-3">
+  return <article id={`application-${item.id}`} className="workspace-row space-y-3">
     <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-      <h2 className="text-xl font-semibold">{item.jobTitle}</h2>
-      <p className="text-sm text-slate-700">{item.companyName} · {applicationStatusText(item.status)}</p>
+      <h2 className="text-xl font-semibold">{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</h2>
+      <p className="text-sm text-slate-700">{demoJobAlias(item.jobId)?.companyName ?? item.companyName} · {applicationStatusText(item.status)}</p>
     </div>
     {!item.replyText&&item.status!=="withdrawn"&&<p className="text-sm text-slate-600">{applicationNextAction(item.status)}</p>}
     <ApplicationReply application={item}/>
@@ -74,7 +75,7 @@ function Workspace(){
   const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
   useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
   return <div className="space-y-5"><h1 className="page-title">我的投递</h1>
-    <form className="panel space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
+    <form className="workspace-sheet workspace-row space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
       <div className="flex min-w-0 flex-wrap items-end gap-3">
         <label className="form-label min-w-0 flex-1 basis-64">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label>
         <button className="btn min-h-11 whitespace-nowrap" disabled={busy}>搜索</button><button className="btn-quiet whitespace-nowrap" type="button" disabled={busy} onClick={()=>{setQuery("");setView("all");filters.current={q:"",view:"all"};page.current=1;setRevokeId(null);void session.refresh();}}>重置</button><button type="button" className="btn-secondary whitespace-nowrap" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新</button>
@@ -83,7 +84,7 @@ function Workspace(){
     </form>
     <details className="text-sm leading-6 text-slate-600"><summary className="cursor-pointer select-none text-indigo-700">状态与刷新说明</summary><p className="mt-2">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p></details>
     {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&(filters.current.q||filters.current.view!=="all"?<p className="panel text-sm">没有符合筛选的投递，可以调整条件或重置。</p>:<div className="panel"><p className="reading-copy">暂无投递。先查看匹配报告，再决定是否分享。</p><Link className="btn mt-3" href="/reports">查看我的报告</Link></div>)}
-    {items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}
+    <div className={items.length ? "workspace-sheet workspace-list" : undefined}>{items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}</div>
     {state.pagination&&<><ListPagination label="投递分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;setRevokeId(null);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的投递，不计入本页记录数。</p>}</>}
   </div>;
 }

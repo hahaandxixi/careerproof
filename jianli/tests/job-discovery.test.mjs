@@ -1,3 +1,4 @@
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -74,6 +75,7 @@ function harness(search, compact = false, role = null) {
   } };
   const mod = component("src/components/JobDiscovery.tsx", {
     react: { ...React, useMemo: fn => fn(), useState: () => { const n = cursor++; return [state[n], value => { state[n] = typeof value === "function" ? value(state[n]) : value; }]; }, useEffect: fn => effects.push(fn) },
+ "@/lib/demo-display-identity.js":demoPresentation,
     "react/jsx-runtime": require("react/jsx-runtime"), "next/link": link,
     "next/navigation": { useSearchParams: () => new URLSearchParams(search) },
     "@/lib/api/client": { api, errorMessage: String }, "@/lib/api/domain": ts(path.join(root, "src/lib/api/domain.ts")),
@@ -172,10 +174,36 @@ test("primary keyword search submits the retained secondary filters and resets o
 });
 test("empty and failure are separate states; cards only use saved public facts", async () => {
   const h = harness(""); h.start(); h.requests[0].resolve({ items: [], total: 0, page: 1, pageSize: 12 }); await tick();
-  const html = renderToStaticMarkup(h.render()); assert.ok(html.includes("暂时没有符合条件的岗位")); assert.ok(!html.includes("合成示例岗位"));
+  const html = renderToStaticMarkup(h.render()); assert.ok(html.includes("暂时没有符合条件的岗位")); assert.ok(!html.includes("演示岗位"));
   const failed = harness(""); failed.start(); failed.requests[0].reject(new Error("offline")); await tick();
   assert.ok(renderToStaticMarkup(failed.render()).includes("offline"));
   const card = renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard, { job: { id: "actual-id", title: "待分类岗位", companyName: "企业原文", city: "", category: "other", employmentType: "full_time", requirementCount: 3, isDemo: true, technicalTags: [] } }));
-  assert.ok(card.includes("合成示例岗位") && card.includes("全职") && card.includes("未细分"));
+  assert.ok(!card.includes("演示岗位") && card.includes("全职") && card.includes("未细分"));
   assert.ok(!card.includes("社招") && !card.includes("匹配度") && !card.includes("薪资"));
+});
+
+test("fixture IDs never disguise the saved job title; explicit demo data retains its disclosure", async () => {
+  const h = harness(""); h.start();
+  const known = { ...job("1233f1e2-169f-4ea5-a5a0-542fa940e897"), title: "钢琴演奏验收记录", isDemo: true };
+  h.requests[0].resolve({items:[known],total:1,page:1,pageSize:12});await tick();
+  const html = renderToStaticMarkup(h.render());
+  assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
+  const card=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:known}));
+  assert.ok(card.includes("钢琴演奏验收记录"));
+  assert.ok(!card.includes("Python 后端开发实习生"));
+  const ordinary=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:{...known,id:"ordinary"}}));
+  assert.ok(ordinary.includes("钢琴演奏验收记录"));
+});
+
+test("curated technical experience remains disclosed without rewriting saved public facts", async () => {
+  for (const id of ["72e49e95-4f27-4412-ac94-f1675a5f8970", "6c8ad563-ebf8-427c-b4a3-82905f37dbd0", "f05872f3-1b5f-4bb3-bfcd-9629d170b471"]) {
+    const h = harness(""); h.start();
+    const experience = { ...job(id), title: "技术岗位原文", companyName: "机构原文", isDemo: false };
+    h.requests[0].resolve({items:[experience],total:1,page:1,pageSize:12});await tick();
+    const html = renderToStaticMarkup(h.render());
+    assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
+    const card = renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:experience}));
+    assert.ok(card.includes("技术岗位原文") && card.includes("机构原文"));
+  }
+  assert.equal(demoPresentation.demoJobAlias("1233f1e2-169f-4ea5-a5a0-542fa940e897"),undefined);
 });

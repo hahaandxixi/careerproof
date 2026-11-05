@@ -18,6 +18,7 @@ from app.models.enums import TaskStatus, UserRole
 from app.models.evidence_growth import EvidenceGrowthTask
 from app.models.identity import StudentProfile, User
 from app.models.recruitment import Application, Job
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 from app.tests.test_evidence_growth import plan
 from app.tests.test_jobs_api import register
@@ -389,7 +390,7 @@ async def test_notification_page_size_aliases_and_conflict(jobs_db, tmp_path, mo
     )
     try:
         created = await student.post(
-            f"{API}/applications", json={"reportId": str(rid), "shareConsent": True}
+            f"{API}/applications", json=await application_payload(student, rid)
         )
         assert created.status_code == 201, created.text
         aid = created.json()["data"]["id"]

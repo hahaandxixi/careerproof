@@ -7,6 +7,7 @@ from app.models.identity import EnterpriseMembership
 from app.models.notification import Notification
 from app.models.recruitment import Application, ApplicationEvent
 from app.services.applications import ApplicationService
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 
 pytest_plugins = ["app.tests.test_jobs_api", "app.tests.test_real_matching"]
@@ -27,7 +28,7 @@ async def test_real_events_dedup_pagination_read_scope_and_revocation(
     try:
         for _ in range(2):
             response = await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
             assert response.status_code == 201
         aid = response.json()["data"]["id"]
@@ -108,7 +109,7 @@ async def test_transaction_rollback_leaves_no_event_or_notification(jobs_db, tmp
         owner = await session.scalar(select(User).where(User.email == "student@example.com"))
         with pytest.raises(RuntimeError):
             await ApplicationService(session).create(
-                ApplicationCreate(report_id=rid, share_consent=True), owner
+                ApplicationCreate.model_validate(await application_payload(student, rid)), owner
             )
         await session.rollback()
     async with factory() as session:
@@ -125,7 +126,7 @@ async def test_membership_loss_rechecks_old_notice_without_leaking_details(
     )
     try:
         await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         nid = (await listing(hr))["items"][0]["id"]
         assert (await hr.get(f"/api/v1/notifications/{nid}/target")).status_code == 200
@@ -151,7 +152,7 @@ async def test_postgres_concurrent_view_deduplicates_event_and_notice(
     )
     try:
         response = await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         aid = response.json()["data"]["id"]
         responses = await asyncio.gather(
@@ -174,7 +175,7 @@ async def test_authorized_target_detail_is_read_only_and_last_page_recovers(
     )
     try:
         response = await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         aid = response.json()["data"]["id"]
         for actor in (student, hr):

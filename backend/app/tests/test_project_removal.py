@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from app.core.config import settings
 from app.models.portfolio import ProjectFile, ProjectVersion
+from app.tests.submission_helpers import application_payload
 from app.tests.test_jobs_api import register
 from app.tests.test_real_matching import (
     create_job,
@@ -32,7 +33,7 @@ async def test_project_removal_hides_all_versions_but_preserves_authorized_histo
         report = await match_report(student, job, resume, first)
         rid = report["id"]
         created = await student.post(
-            "/api/v1/applications", json={"reportId": rid, "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         assert created.status_code == 201, created.text
         aid = created.json()["data"]["id"]

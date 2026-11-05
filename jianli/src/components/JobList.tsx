@@ -1,5 +1,6 @@
 "use client";
 
+import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
@@ -12,12 +13,14 @@ const EMPTY_FILTER = { q: "", category: "", city: "", employmentType: "" };
 export function ManagedJobCard({ job, changing, onStatusChange }: {
   job: JobSummary; changing: string; onStatusChange(job: JobSummary): void;
 }) {
-  return <article className="panel flex flex-col gap-3">
-    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><Link className="break-words text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{job.title}</Link><p className="mt-1 text-sm text-slate-600">{job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p></div><span className="shrink-0 rounded-md bg-slate-100 px-2 py-1 text-sm text-slate-700">{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status] ?? job.status}</span></div>
-    {job.isDemo && <p className="text-sm text-slate-600">合成示例岗位 · 虚构企业</p>}
-    <p className="line-clamp-3 text-sm leading-6 text-slate-600">{job.description || "暂无描述"}</p>
+  const alias = demoJobAlias(job.id);
+  return <article className="workspace-row grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
+    <div className="min-w-0 space-y-2">
+    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><Link className="break-words text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{displayJobTitle(job.title, job.id)}</Link><p className="mt-1 text-sm text-slate-600">{alias?.companyName ?? job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p></div><span className="status-chip">{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status] ?? job.status}</span></div>
+    <p className="line-clamp-3 text-sm leading-6 text-slate-600">{(alias?.description ?? job.description) || "暂无描述"}</p>
     <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600"><span>{CATEGORY_LABELS[job.category] ?? job.category} · {job.requirementCount} 项要求</span>{job.applicationCount != null && <span>投递 {job.applicationCount} · 待回复 {job.pendingApplicationCount ?? 0}</span>}</div>
-    <div className="card-actions mt-auto">
+    </div>
+    <div className="card-actions lg:max-w-[26rem] lg:justify-end">
       <Link className={job.status === "draft" ? "btn" : "btn-secondary"} href={`/jobs/${job.id}/edit`}>编辑岗位</Link>
       <Link className={job.status === "draft" ? "btn-secondary" : "btn"} href={`/jobs/${job.id}/applications`}>查看投递</Link>
       <Link className="btn-secondary" href={`/jobs/${job.id}`}>查看岗位</Link>
@@ -57,7 +60,7 @@ function ManagedJobList({ initialQuery }: { initialQuery: string }) {
     finally { setChanging(""); }
   }
   return <div className="space-y-6">
-    <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-sm text-indigo-600">{mine ? "企业工作台" : "职业与岗位探索"}</p><h1 className="mt-1 text-3xl font-bold">{mine ? "我的岗位" : "岗位发现"}</h1></div>{mine ? <Link className="btn" href="/jobs/new">发布新岗位</Link> : <Link className="btn-secondary" href="/recommendations">按材料推荐职业</Link>}</div>
+    <div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title mt-1">{mine ? "我的岗位" : "岗位发现"}</h1></div>{mine ? <Link className="btn" href="/jobs/new">发布新岗位</Link> : <Link className="btn-secondary" href="/recommendations">按材料推荐职业</Link>}</div>
     <form className="panel grid gap-3 sm:grid-cols-2 lg:grid-cols-5" onSubmit={event => { event.preventDefault(); setPage(1); setFilter({ ...draft }); }}>
       <label className="space-y-1 text-sm">关键词<input className="field" value={draft.q} maxLength={200} placeholder="岗位、企业或描述" onChange={e => setDraft({ ...draft, q: e.target.value })} /></label>
       <label className="space-y-1 text-sm">方向<select className="field" value={draft.category} onChange={e => setDraft({ ...draft, category: e.target.value })}><option value="">全部方向</option>{Object.entries(CATEGORY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
@@ -68,7 +71,7 @@ function ManagedJobList({ initialQuery }: { initialQuery: string }) {
     {error && <ErrorNotice message={error} retry={refresh} />}
     {busy && <p role="status" className="text-sm text-slate-500">正在加载岗位…</p>}
     {!busy && !error && data?.items.length === 0 && <div className="panel space-y-3"><h2 className="section-title">{Object.values(filter).some(Boolean) ? "没有符合筛选的岗位" : "暂无岗位"}</h2>{Object.values(filter).some(Boolean) ? <button type="button" className="btn-secondary" onClick={() => { setDraft(EMPTY_FILTER); setFilter(EMPTY_FILTER); setPage(1); }}>清除筛选</button> : <Link className="btn" href="/jobs/new">创建第一个岗位</Link>}</div>}
-    {!error && <div className="grid gap-4 md:grid-cols-2">{data?.items.map(job => <ManagedJobCard key={job.id} job={job} changing={changing} onStatusChange={job => void changeStatus(job)}/>)}</div>}
+    {!error && <div className={data?.items.length ? "workspace-sheet workspace-list" : undefined}>{data?.items.map(job => <ManagedJobCard key={job.id} job={job} changing={changing} onStatusChange={job => void changeStatus(job)}/>)}</div>}
     {data && <ListPagination label="岗位分页" value={data} busy={busy} onPage={setPage}/>}
   </div>;
 }

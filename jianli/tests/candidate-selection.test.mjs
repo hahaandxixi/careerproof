@@ -31,9 +31,16 @@ test("name and evidence-cell selection move a unique visible candidate marker to
 });
 test("filtered fallback highlights the candidate actually displayed and empty results have no stale marker",()=>{
  const f=fixture();let t=f.render();
- f.nodes(t).find(n=>n.type==="input").props.onChange({target:{value:"候选人 C"}});t=f.render();
+ const target=HEATMAP_DEMO[2];
+ f.nodes(t).find(n=>n.type==="input").props.onChange({target:{value:target.candidateName}});t=f.render();
  assert.equal(f.buttons(t).length,1);assert.equal(f.buttons(t)[0].props["aria-pressed"],true);
+ assert.equal(f.buttons(t)[0].props.children[0],target.candidateName);
+ assert.deepEqual(f.nodes(t).filter(n=>n.type==="tr"&&n.props.className?.includes("bg-indigo-50/70")).map(n=>n.key),[target.id]);
+ assert.equal(f.nodes(t).filter(n=>n.type==="span"&&n.props.children==="当前候选人").length,1);
+ assert.equal(f.nodes(t).find(n=>n.type==="h2").props.children[0],target.candidateName);
  f.nodes(t).find(n=>n.type==="input").props.onChange({target:{value:"nothing-matches"}});t=f.render();
  assert.equal(f.buttons(t).length,0);
  assert.equal(f.nodes(t).filter(n=>n.type==="span"&&n.props.children==="当前候选人").length,0);
+ assert.equal(f.nodes(t).filter(n=>n.type==="tr"&&n.props.className?.includes("bg-indigo-50/70")).length,0);
+ assert.equal(f.nodes(t).filter(n=>n.props?.["aria-label"]==="候选人证据对照").length,0);
 });

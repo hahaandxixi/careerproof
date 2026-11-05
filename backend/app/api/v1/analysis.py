@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
@@ -108,11 +109,12 @@ async def list_match_reports(
     page_size: int = Query(default=20, ge=1, le=100, alias="pageSize"),
     q: str | None = Query(default=None, max_length=200),
     job_id: UUID | None = Query(default=None, alias="jobId"),
+    scope: Literal["product", "all"] = Query(default="product"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[PaginatedData[MatchReportHistorySummary]]:
     return success(await AnalysisService(session).list_reports(
-        current_user, page, page_size, q=q, job_id=job_id,
+        current_user, page, page_size, q=q, job_id=job_id, scope=scope,
     ))
 
 

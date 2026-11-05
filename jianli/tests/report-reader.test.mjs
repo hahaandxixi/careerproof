@@ -163,7 +163,7 @@ function navigationFixture(hash = "", search = "") {
     events.push({ selected: committedSelection, open: details.open });
   } };
   globalThis.Element = Node;
-  globalThis.window = { location: { hash, search }, history: { pushState(_state, _title, hash) { window.location.hash = hash; } }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
+  globalThis.window = { location: { hash, search }, history: { pushState(_state, _title, hash) { window.location.hash = hash; } }, dispatchEvent: event => { windowListeners.get(event.type)?.(event); return true; }, addEventListener: (name, fn) => windowListeners.set(name, fn), removeEventListener: name => windowListeners.delete(name) };
   globalThis.document = {
     addEventListener: (name, fn) => documentListeners.set(name, fn), removeEventListener: name => documentListeners.delete(name),
     getElementById: id => id === "citation-saved-alpha" || id === "growth-implementation" || id === "requirement-implementation" ? target : null,
@@ -382,7 +382,7 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
  let tree;const redraw=()=>{cursor=0;effects.length=0;tree=mod.exports.default({report,item});return tree;};let cleanup;
  try{
    globalThis.Element=Link;globalThis.window={location:{hash:"#citation-R1-E12"},addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
-   globalThis.document={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),getElementById:id=>({scrollIntoView(){scrolled.push({id,index:values[0].index});}})};
+   globalThis.document={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),getElementById:id=>({scrollIntoView(){scrolled.push({id,index:values[0].index});},focus(){scrolled.push({focused:id});}})};
    globalThis.requestAnimationFrame=fn=>(frames.push(fn),frames.length);globalThis.cancelAnimationFrame=()=>{};
    redraw();cleanup=effects[0]();redraw();effects[1]();frames.splice(0).forEach(fn=>fn());assert.equal(values[0].index,11);assert.equal(scrolled.at(-1).id,"citation-R1-E12");
    nodes(tree).find(n=>n.type==="select").props.onChange({target:{value:"3"}});redraw();assert.equal(values[0].index,3);
@@ -390,6 +390,14 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
    listeners.get("click")({button:0,ctrlKey:true,target:new Link("#citation-R1-E1")});assert.equal(values[0].index,11);
    window.location.hash="#citation-R1-E2";listeners.get("popstate")();redraw();assert.equal(values[0].index,1);
    listeners.get("click")({button:0,target:new Link("#citation-other")});assert.equal(values[0].index,1);
+   assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
+   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
+   assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,0);
+   assert.equal(scrolled.at(-1).focused,"source-open-"+item.requirementId);
+   listeners.get("click")({button:0,target:new Link("#citation-R1-E2")});redraw();
+   assert.equal(values[0].opened,true);assert.equal(values[0].index,1);
+   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
+   nodes(tree).find(n=>n.type==="button"&&n.props.id==="source-open-"+item.requirementId).props.onClick();redraw();
    assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
  }finally{cleanup?.();Object.assign(globalThis,original);}
  assert.equal(JSON.stringify(report),before);
