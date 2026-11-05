@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applicationFilterView, filterApplications, mixedComparisonBasis } from "../src/lib/application-comparison.ts";
+import { applicationFilterView, filterApplications, mixedComparisonBasis, requirementDifference } from "../src/lib/application-comparison.ts";
 
 const item = (id, score, verdict, basis = "same", at = "2026-09-28T12:00:00Z") => ({
   id, candidateName: id, createdAt: at, comparisonBasis: basis, overallScore: score,fixedRequirementBasisComplete:true,
@@ -45,4 +45,17 @@ test("filter view reports empty results and selected reports outside the current
   assert.equal(empty.empty, true);
   assert.equal(empty.selectedOutside, true);
   assert.equal(applicationFilterView(values, "", "", "", "甲").selectedOutside, false);
+});
+
+test("pair summary distinguishes displayed differences without identifying sources by count", () => {
+  const a = { verdict: "supported", finalScore: 65, evidenceList: [{filePath:"one.py"}] };
+  const sameCount = { verdict: "supported", finalScore: 65, evidenceList: [{filePath:"other.py"}] };
+  assert.match(requirementDifference(a, sameCount, true), /相同，仍需分别核对来源/);
+  const missing = { verdict: "claimed_only", finalScore: 10, evidenceList: [] };
+  const difference = requirementDifference(a, missing, true);
+  for (const name of ["判断状态", "来源数量", "材料支持度指数"]) assert.ok(difference.includes(name));
+  const unknown = requirementDifference({...a, finalScore:null}, sameCount, false);
+  assert.ok(!unknown.includes("材料支持度指数"));
+  assert.match(unknown, /仍需分别核对来源/);
+  assert.match(requirementDifference({...a, finalScore:0}, {...sameCount, finalScore:10}, true), /材料支持度指数不同/);
 });

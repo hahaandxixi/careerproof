@@ -12,8 +12,8 @@ import ListPagination from "./ListPagination";
 export function NotificationCard({ item, busy, onOpen, onRead }: {
   item: NotificationItem; busy: boolean; onOpen(id: string): void; onRead(id: string): void;
 }) {
-  return <li className="panel space-y-3">
-    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="font-semibold">{item.type === "replied" ? "企业已回复" : item.title}</h2><p className="text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
+  return <li className="workspace-row space-y-2">
+    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="flex min-w-0 items-baseline gap-2 font-semibold">{!item.readAt && <span aria-hidden="true" className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full bg-indigo-600" />}<span className="break-words">{item.type === "replied" ? "企业已回复" : item.title}</span></h2><p className="shrink-0 text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
     <div className="card-actions">{item.accessible ? <button type="button" className="btn-secondary" disabled={busy} onClick={() => onOpen(item.id)}>查看投递</button> : <p className="text-sm text-slate-600">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button type="button" className="btn-quiet" disabled={busy} onClick={() => onRead(item.id)}>标为已读</button>}</div>
   </li>;
 }
@@ -73,7 +73,7 @@ function Workspace() {
     <label className="flex items-center gap-2 text-sm">每页通知数<select className="field w-auto" disabled={busy} value={pageSize} onChange={event => { setPage(1); setPageSize(Number(event.target.value)); }}><option value={20}>20条</option><option value={50}>50条</option></select></label>
     {data && <><p className="text-sm">未读 {data.unreadCount} 条 · 当前筛选共 {data.total} 条</p>
       {!data.items.length && <div className="panel"><p className="reading-copy">{unread ? "暂无未读通知，可切换到全部查看历史记录。" : "暂无通知，新的投递事件会显示在这里。"}</p>{!unread && <Link className="btn-secondary mt-3" href={user?.role === "enterprise" ? "/jobs/mine" : "/reports"}>{user?.role === "enterprise" ? "查看我的岗位" : "查看我的报告"}</Link>}</div>}
-      <ul className="space-y-3">{data.items.map(item => <NotificationCard key={item.id} item={item} busy={busy} onOpen={id => void act(() => Promise.resolve(), id)} onRead={id => void act(() => api.readNotification(id))}/>)}</ul>
+      <ul className={data.items.length ? "workspace-sheet workspace-list" : undefined}>{data.items.map(item => <NotificationCard key={item.id} item={item} busy={busy} onOpen={id => void act(() => Promise.resolve(), id)} onRead={id => void act(() => api.readNotification(id))}/>)}</ul>
       <ListPagination label="通知分页" value={data} busy={busy} onPage={setPage}/></>}
   </div>;
 }

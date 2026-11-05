@@ -659,9 +659,13 @@ async def _create_fixture(
         clients = {"student": student_client, "studentA2": a2_client}
         deliveries: dict[str, dict] = {}
         for slot, student_key, _job_slot in DELIVERY_PLAN:
+            report = _payload(
+                await clients[student_key].get(f"/match-reports/{reports[slot]}")
+            )
             response = await clients[student_key].post(
                 "/applications",
-                json={"reportId": reports[slot], "shareConsent": True},
+                json={"reportId": reports[slot], "shareConsent": True,
+                      "expectedReviewRevision": report["reviewRevision"]},
             )
             if response.status_code != 201:
                 raise IsolationError(

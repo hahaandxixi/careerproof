@@ -44,6 +44,7 @@ test("失败可重试：失败提示原样可见，busy 归零后再次提交发
   await h.session.submit();
   assert.equal(h.state().done, false);
   assert.match(h.state().notice, /网络中断/, "失败原因必须展示给用户");
+  assert.match(h.state().notice, /投递结果尚未确认/);
   assert.equal(h.state().busy, false, "失败后按钮必须恢复可用才能重试");
   await h.session.submit();
   assert.equal(calls, 2, "重试必须真实发出第二次请求");

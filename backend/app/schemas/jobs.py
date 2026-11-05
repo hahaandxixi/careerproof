@@ -20,8 +20,8 @@ class JobRequirementCreate(APIModel):
     weight: int = Field(default=1, ge=1, le=5)
     is_required: bool = True
     source_quote: str | None = Field(default=None, min_length=3, max_length=1000)
-    source_start: int | None = Field(default=None, ge=0)
-    source_end: int | None = Field(default=None, gt=0)
+    source_start: int | None = Field(default=None, ge=0, strict=True)
+    source_end: int | None = Field(default=None, gt=0, strict=True)
 
 
 class JobDraftRequest(APIModel):
@@ -43,6 +43,7 @@ class JobDraftRequirement(APIModel):
 
 
 class JobDraftResult(APIModel):
+    normalized_description: str = Field(min_length=20, max_length=6000)
     requirements: list[JobDraftRequirement] = Field(min_length=1, max_length=12)
     model: str
     usage: dict | None = None

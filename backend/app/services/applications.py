@@ -220,12 +220,14 @@ class ApplicationService:
 
     async def create(self, request: ApplicationCreate, user):
         student = await self._student(user)
-        # This checks task ownership through the existing student report access path.
+        # Ownership and all evidence are read under the shared report lock. Keep
+        # the lock through snapshot commit; review writes use the exclusive lock.
         report_view = await AnalysisService(self.session).get_report(request.report_id, user)
         report = await self.session.get(MatchReport, request.report_id)
         # Serialize submissions and job closure against the same job row lock.
         job = await self.session.scalar(
             select(Job).where(Job.id == report.job_id).with_for_update()
+            .execution_options(populate_existing=True)
         )
         if job.status != "published":
             raise AppError("岗位已关闭，不能投递", status_code=409, code=4098)
@@ -233,13 +235,19 @@ class ApplicationService:
             select(Application).where(
                 Application.job_id == job.id, Application.student_id == student.id,
                 Application.status != "withdrawn",
-            )
+            ).execution_options(populate_existing=True)
         )
         if existing:
             if existing.report_id == report.id:
+                # Idempotent retry returns the already-consented snapshot, even
+                # after a later review; it never refreshes or replaces consent.
                 return await self.view(existing, job)
             raise AppError("该岗位已有有效投递；如需分享另一份报告，请先撤回原投递授权",
                            status_code=409, code=4098)
+        if request.expected_review_revision != report_view.review_revision:
+            raise AppError(
+                "报告已更新，请重新读取并核对最新版本后再授权投递", status_code=409, code=4098
+            )
         # Lock the student's row so concurrent submissions to distinct jobs share one limit.
         await self.session.scalar(
             select(StudentProfile).where(StudentProfile.id == student.id).with_for_update()

@@ -14,7 +14,9 @@ test("preset interface scores stay within the current material-support rule scal
 test("demo has three synthetic identities with aligned requirement columns and no real report", () => {
  assert.equal(HEATMAP_DEMO.length, 3);
  for (const row of HEATMAP_DEMO) {
-  assert.match(row.candidateName, /合成/);
+  assert.ok(["林同学", "唐同学", "陈同学"].includes(row.candidateName));
+  assert.ok(row.candidateId.startsWith("demo-user-"));
+  assert.equal(row.consentVersion, "synthetic-demo-only");
   assert.equal(row.overallScore, null);
   assert.equal(row.report, undefined);
   assert.deepEqual(row.dimensions.map(d => d.requirementId), DEMO_REQUIREMENTS.map(r => r.id));
@@ -24,9 +26,9 @@ test("demo has three synthetic identities with aligned requirement columns and n
  assert.equal(unassessed.score, null);
 });
 test("same production filter narrows demo by candidate, focused requirement and material state", () => {
- assert.deepEqual(filterApplications(HEATMAP_DEMO,"候选人 B","","").map(r=>r.candidateName),["合成候选人 B"]);
- assert.deepEqual(filterApplications(HEATMAP_DEMO,"","demo-sql","gap").map(r=>r.candidateName),["合成候选人 C"]);
- assert.deepEqual(filterApplications(HEATMAP_DEMO,"","demo-test","supported").map(r=>r.candidateName),["合成候选人 B"]);
+ assert.deepEqual(filterApplications(HEATMAP_DEMO,"唐同学","","").map(r=>r.candidateName),["唐同学"]);
+ assert.deepEqual(filterApplications(HEATMAP_DEMO,"","demo-sql","gap").map(r=>r.candidateName),["陈同学"]);
+ assert.deepEqual(filterApplications(HEATMAP_DEMO,"","demo-test","supported").map(r=>r.candidateName),["唐同学"]);
  assert.equal(filterApplications(HEATMAP_DEMO,"不存在","","").length,0);
 });
 

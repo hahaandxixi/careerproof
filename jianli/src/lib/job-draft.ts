@@ -1,4 +1,4 @@
-import type { RequirementInput } from "./api/domain";
+import type { JobDraftResult, RequirementInput } from "./api/domain";
 
 export function createDraftRequestGuard() {
   let request = 0, revision = 0;
@@ -19,5 +19,27 @@ export function combineDraftRequirements(current: RequirementInput[], selected: 
 }
 
 export function quoteStillMatches(description: string, row: RequirementInput) {
-  return !row.sourceQuote || (row.sourceStart!=null && row.sourceEnd!=null && description.slice(row.sourceStart,row.sourceEnd)===row.sourceQuote);
+  if (row.sourceQuote == null) return row.sourceStart == null && row.sourceEnd == null;
+  const range = sourceSelectionRange(description, row.sourceStart, row.sourceEnd);
+  return !!row.sourceQuote && range !== null && description.slice(...range) === row.sourceQuote;
+}
+
+// API offsets are Unicode code points; textarea selection offsets are UTF-16.
+export function sourceSelectionRange(description: string, start: number | null | undefined,
+  end: number | null | undefined): [number, number] | null {
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start! < 0 || end! <= start!) return null;
+  const points = Array.from(description);
+  if (end! > points.length) return null;
+  return [points.slice(0, start!).join("").length, points.slice(0, end!).join("").length];
+}
+
+export function currentDraftSource(guard: ReturnType<typeof createDraftRequestGuard>,
+  ticket: {request:number;revision:number}, result: JobDraftResult): string | null {
+  if (!guard.accepts(ticket)) return null;
+  const source = result.normalizedDescription;
+  // Never approximate the server's whitespace rules or rewrite historical references.
+  if (typeof source !== "string" || !source || result.requirements.some(row => !quoteStillMatches(source,row))) {
+    throw Error("草稿未返回可核对的岗位原文，请重新提取或手动填写要求。");
+  }
+  return source;
 }

@@ -19,7 +19,7 @@ export const initialApplicationBoardState: ApplicationBoardState = {
 };
 
 interface Dependencies {
-  list(): Promise<ApplicationView[] | ListPage<ApplicationView>>;
+  list(): Promise<ApplicationView[] | (ListPage<ApplicationView> & { onAccepted?: () => void })>;
   open(id: string): Promise<ApplicationView>;
   detail?(id: string): Promise<ApplicationView>;
   download(id: string): Promise<{ blob: Blob; filename: string }>;
@@ -109,9 +109,10 @@ export function createApplicationBoardSession(
       const comparisonCount = comparisonIds.length;
       scope = "list";
       if (state.loadingScope !== scope) set({ ...state, loadingScope: scope });
-      const list = unpackList(await api.list());
-      const { items } = list;
+      const response = await api.list();
       if (!current(ticket)) return false;
+      const list = unpackList(response);
+      const { items } = list;
       scope = "detail";
       await recheckComparison(items, ticket);
       if (!current(ticket)) return false;
@@ -140,6 +141,7 @@ export function createApplicationBoardSession(
         loading: false, error: "",
         notice: stillAuthorized ? result.notice ?? (comparisonCount > comparisonIds.length ? "部分对照候选人已无法确认授权，已移出对照。" : "") : "该投递已不在当前列表，已清除打开的报告。请刷新或翻页重新核对授权。",
       });
+      if (current(ticket) && !Array.isArray(response)) response.onAccepted?.();
       return stillAuthorized;
     } catch (error) {
       if (current(ticket)) {
@@ -200,8 +202,9 @@ export function createApplicationBoardSession(
         const requested = [...new Set([...comparisonIds, ...(saved ? [saved.id] : [])])];
         set({ ...initialApplicationBoardState, loadingScope: "list" });
         try {
-          const list = unpackList(await api.list());
+          const response = await api.list();
           if (!current(ticket)) continue;
+          const list = unpackList(response);
           const rows = list.items.filter(item => item.status !== "withdrawn");
           const allowed = new Map(rows.map(item => [item.id, item]));
           const rejected = new Set<string>();
@@ -241,6 +244,7 @@ export function createApplicationBoardSession(
             loading: false, error: "",
             notice: rejected.size ? "部分投递已无法确认授权或固定报告，已清除对应的报告和选中状态。" : "",
           });
+          if (current(ticket) && !Array.isArray(response)) response.onAccepted?.();
           return { authorizedIds: authorizedIds.filter(id => !rejected.has(id)), selectedId: selected?.id ?? null };
         } catch (error) {
           if (!current(ticket)) continue;

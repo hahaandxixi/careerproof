@@ -259,6 +259,7 @@ class MatchReportHistorySummary(MatchReportSummary):
     materials: list[ReportMaterial] = Field(default_factory=list)
     job_report_count: int
     is_latest_for_job: bool
+    record_provenance: Literal["test_fixture"] | None = None
 
 
 class EvidenceActionView(APIModel):
@@ -274,6 +275,8 @@ class EvidenceActionView(APIModel):
 
 
 class MatchReportView(MatchReportSummary):
+    # Historical frozen snapshots predate this field; unknown must not become revision 1.
+    review_revision: int | None = Field(default=None, ge=1)
     visual_claims: list[VisualReviewView] = Field(default_factory=list)
     materials: list[ReportMaterial] = Field(default_factory=list)
     gaps: list[str]

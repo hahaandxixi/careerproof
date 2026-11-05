@@ -34,7 +34,7 @@ Next.js / TypeScript 前端、FastAPI / Python 后端、PostgreSQL、本地文�
 
 ## 本地启动
 
-本机已整合的 **V1 主环境**使用 `Start-V1.cmd`，地址为 [3140](http://127.0.0.1:3140)，停止使用 `Start-V1.ps1 -Stop`。它恢复已有统一数据库和材料，不重新播种；真实 DeepSeek 仍需逐次明确同意外发。配置只保存在本机，整合与验证结果见[统一环境记录](docs/evidence/20261028-unified-v1/README.md)。下面的 `Start-Local` 流程用于新机器安装，不能用于切回本机旧数据库。
+本机 Windows 电脑端的 **V1 主环境**使用 `Start-V1.cmd`，地址为 [3140](http://127.0.0.1:3140)，停止使用 `Start-V1.cmd -Stop`。它读取本地持久配置中明确选择的已接受构建，校验目录、BUILD_ID、产物和编译代理后再启动；停止不会清除构建选择，不自动回退旧 `.next`。切换构建使用 `Select-V1Build.ps1`，具体命令与当前冷启动未验范围见[使用与启动](docs/guides/使用与启动.md#已接受构建的选择)。它恢复已有统一数据库和材料，不重新播种；真实 DeepSeek 仍需逐次明确同意外发。配置只保存在本机，整合记录见[统一环境记录](docs/evidence/20261028-unified-v1/README.md)。下面的 `Start-Local` 流程用于新机器安装，不能用于切回本机旧数据库。
 
 1. 双击桌面的 **Docker Desktop**，等待引擎就绪。
 2. 在项目根目录（源码ZIP的解压目录，包含启动文件）双击 **`Start-Local.cmd`**，等待提示ready。

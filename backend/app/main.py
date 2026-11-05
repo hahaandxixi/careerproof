@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from contextlib import asynccontextmanager, suppress
+from time import monotonic
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,28 +15,49 @@ from app.core.security_headers import SecurityHeadersMiddleware
 from app.services.task_dispatcher import dispatch_pending_tasks, stop_dispatched_tasks
 from app.services.task_lifecycle import recover_interrupted_tasks
 
+# A recovery round must not indefinitely block startup or all later retries.
+# SQLAlchemy's session contexts roll back/close when cancellation unwinds them.
+# This is a cooperative asyncio deadline, not a hard kill of a database driver.
+_RECOVERY_TIMEOUT_SECONDS = 5.0
 
-async def _recover_once() -> None:
+
+async def _recover_once() -> bool:
     try:
-        await recover_interrupted_tasks(async_session_factory)
-        await dispatch_pending_tasks(async_session_factory)
-    except Exception:
-        logging.getLogger(__name__).warning("Task recovery unavailable; dispatcher will retry")
+        async with asyncio.timeout(_RECOVERY_TIMEOUT_SECONDS):
+            await recover_interrupted_tasks(async_session_factory)
+            await dispatch_pending_tasks(async_session_factory)
+        return True
+    except Exception as exc:
+        logging.getLogger(__name__).warning(
+            "Task recovery unavailable; dispatcher will retry (%s)", type(exc).__name__
+        )
+        return False
 
 
-async def _recovery_loop() -> None:
+async def _record_recovery(application: FastAPI) -> None:
+    application.state.recovery_ok = await _recover_once() is True
+    if application.state.recovery_ok:
+        application.state.recovery_last_success = monotonic()
+
+
+async def _recovery_loop(application: FastAPI) -> None:
     while True:
+        await _record_recovery(application)
         await asyncio.sleep(settings.task_dispatch_interval_seconds)
-        await _recover_once()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    await _recover_once()
-    recovery = asyncio.create_task(_recovery_loop())
+    _app.state.recovery_ok = False
+    _app.state.recovery_last_success = None
+    # Publish liveness immediately; readiness remains false until a whole
+    # recovery/dispatch round succeeds. Slow recovery must not hide /health.
+    recovery = asyncio.create_task(_recovery_loop(_app))
+    _app.state.recovery_task = recovery
     try:
         yield
     finally:
+        _app.state.recovery_ok = False
         recovery.cancel()
         with suppress(asyncio.CancelledError):
             await recovery

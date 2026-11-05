@@ -5,6 +5,12 @@ import { createReportReviewSession } from "../src/lib/report-review-session.ts";
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return{promise,resolve,reject};};
 const failure=status=>Object.assign(new Error(`error-${status}`),{status});
 const report=(id="r",revision=0)=>({id,revision,items:[{requirementId:"a"},{requirementId:"b"}]});
+
+test("an explicit report reread exposes the synchronization gate until the response arrives",async()=>{
+ const pending=deferred();const h=await fixture({get:n=>n===2?pending.promise:report("r",n)});
+ const read=h.session.load();assert.equal(h.state.needsSync,true);await h.session.review("a","accepted");assert.equal(h.writes,0);
+ pending.resolve(report("r",2));await read;assert.equal(h.state.needsSync,false);assert.equal(h.state.report.revision,2);
+});
 async function fixture(overrides={}){
  let state,reads=0,writes=0;
  const session=createReportReviewSession("r",{get:async()=>{reads++;return overrides.get?overrides.get(reads):report("r",reads);},review:async(...args)=>{writes++;return overrides.review?.(...args);},errorMessage:e=>e.message},value=>state=value);

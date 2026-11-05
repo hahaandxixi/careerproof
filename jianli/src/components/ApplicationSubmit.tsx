@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { api, errorMessage } from "@/lib/api/client";
 import { createApplicationSubmitSession } from "@/lib/application-submit-session";
@@ -7,11 +7,17 @@ import { createApplicationSubmitSession } from "@/lib/application-submit-session
 // 传智杯44：轻量投递。首屏只保留三个必须先看到的风险点（固定报告/引用、
 // 简历下载可能含联系方式、撤回但已下载副本无法追回），其余分享说明折叠进
 // details；授权不预勾选，确认按钮忙碌防重、失败后可直接重试。
-export default function ApplicationSubmit({reportId}: {reportId:string}) {
+export default function ApplicationSubmit({reportId, reviewRevision, blocked = false, onRefresh}: {reportId:string; reviewRevision?:number|null; blocked?:boolean; onRefresh?:()=>void}) {
   const [consent,setConsent] = useState(false);
   const [state,setState] = useState({busy:false,notice:"",done:false});
-  const session = useMemo(()=>createApplicationSubmitSession({submit:()=>api.createApplication(reportId),errorMessage},setState),[reportId]);
+  const synchronized = !blocked && Number.isSafeInteger(reviewRevision) && (reviewRevision ?? 0) >= 1;
+  useEffect(() => { setConsent(false); }, [reportId, blocked, reviewRevision]);
+  const session = useMemo(()=>createApplicationSubmitSession({submit:()=>api.createApplication(reportId, reviewRevision!),errorMessage},value => {
+    setState(value);
+    if (value.notice && !value.done) setConsent(false);
+  }),[reportId, reviewRevision]);
   return <section id="application-submit" className="panel scroll-mt-24 space-y-3">
+    {!synchronized && <p role="status" className="text-sm text-amber-800">请先同步最新核对记录，再确认投递。{!blocked && onRefresh && <button type="button" className="btn-secondary" onClick={onRefresh}>重新读取报告</button>}</p>}
     <h2 className="font-semibold">向该岗位投递本份报告</h2>
     <p className="text-sm leading-6 text-slate-600">确认后，该岗位所属企业将获得以下访问权：</p>
     <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-slate-600">
@@ -19,9 +25,10 @@ export default function ApplicationSubmit({reportId}: {reportId:string}) {
       <li>下载<b>本次投递的简历原文件</b>，文件可能含联系方式；</li>
       <li>以上访问可随时撤回，但<b>撤回前已下载的副本无法追回</b>。</li>
     </ul>
-    <label className="flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" checked={consent} disabled={state.busy} onChange={e=>setConsent(e.target.checked)} /><span>我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。</span></label>
-    {state.done ? <Link href="/applications" className="btn inline-block">查看投递进度 →</Link> : <button type="button" className="btn" disabled={!consent||state.busy} onClick={()=>{void session.submit();}}>{state.busy?"正在投递…":"确认投递"}</button>}
+    <label className="flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" checked={consent} disabled={state.busy || !synchronized} onChange={e=>setConsent(e.target.checked)} /><span>我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。</span></label>
+    {state.done ? <Link href="/applications" className="btn inline-block">查看投递进度 →</Link> : <button type="button" className="btn" disabled={!consent||state.busy||!synchronized} onClick={()=>{if (consent && synchronized) void session.submit();}}>{state.busy?"正在投递…":"确认投递"}</button>}
     {state.notice&&<p role="status" className={state.done?"text-sm text-indigo-700":"text-sm text-rose-700"}>{state.notice}</p>}
+    {state.notice && !state.done && onRefresh && <button type="button" className="btn-secondary" disabled={state.busy || blocked} onClick={() => { setConsent(false); onRefresh(); }}>重新读取报告后确认</button>}
     <details className="text-sm leading-6 text-slate-600">
       <summary className="cursor-pointer select-none text-indigo-700">其他分享说明与限制</summary>
       <ul className="mt-2 list-disc space-y-1 pl-5">

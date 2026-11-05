@@ -8,6 +8,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.recruitment import Application
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 from app.tests.test_jobs_api import job_payload, organization, register
 
@@ -112,9 +113,9 @@ async def test_enterprise_uses_frozen_process_without_retrofilling_or_live_repor
             report = await session.get(MatchReport, report_id)
             report.analysis_metadata = {"planningSkippedReason": "report_budget_reserved"}
             await session.commit()
-        submitted = await student.post("/api/v1/applications", json={
-            "reportId": str(report_id), "shareConsent": True,
-        })
+        submitted = await student.post(
+            "/api/v1/applications", json=await application_payload(student, report_id)
+        )
         assert submitted.status_code == 201, submitted.text
         application_id = UUID(submitted.json()["data"]["id"])
         async with factory() as session:

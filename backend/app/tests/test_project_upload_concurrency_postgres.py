@@ -15,7 +15,7 @@ from app.core.exceptions import AppError
 from app.models.enums import UserRole
 from app.models.identity import StudentProfile, User
 from app.models.portfolio import Project, ProjectVersion
-from app.repositories.portfolio import PortfolioRepository
+from app.services import portfolio as portfolio_service
 from app.services.portfolio import PortfolioService
 
 pytest_plugins = ["app.tests.test_real_matching"]
@@ -41,8 +41,9 @@ async def test_concurrent_project_uploads_serialize(matching_db, monkeypatch, mo
         await session.commit()
         user_id, project_id = user.id, project.id
 
-    # Both independent transactions reach the locking query before either proceeds.
-    original = PortfolioRepository.owned_project
+    # Synchronize BEFORE the first lock. owned_project runs after the owner lock;
+    # a barrier there deadlocks the harness because the other request waits on it.
+    original = portfolio_service.lock_material_owner
     ready = asyncio.Event()
     arrivals = 0
 
@@ -54,7 +55,7 @@ async def test_concurrent_project_uploads_serialize(matching_db, monkeypatch, mo
         await asyncio.wait_for(ready.wait(), 10)
         return await original(self, *args, **kwargs)
 
-    monkeypatch.setattr(PortfolioRepository, "owned_project", synchronized)
+    monkeypatch.setattr(portfolio_service, "lock_material_owner", synchronized)
     key = uuid4()
 
     async def upload(index):

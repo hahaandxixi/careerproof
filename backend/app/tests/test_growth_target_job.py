@@ -11,6 +11,7 @@ from app.core.exceptions import AppError
 from app.models.analysis import AnalysisTask
 from app.models.evidence_growth import EvidenceGrowthTask
 from app.services.report_comparison import compare_views
+from app.tests.submission_helpers import application_payload
 from app.tests.test_evidence_growth import newer, plan
 from app.tests.test_real_matching import (
     create_job,
@@ -39,7 +40,7 @@ async def test_explicit_target_change_real_reports_and_original_application(matc
         resume, project, version = await upload_materials(student)
         base = await match_report(student, original_job, resume, version)
         application = await student.post(
-            "/api/v1/applications", json={"reportId": base["id"], "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, base['id'])
         )
         assert application.status_code == 201, application.text
         application_url = f"/api/v1/applications/{application.json()['data']['id']}/view"

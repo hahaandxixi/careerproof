@@ -50,7 +50,7 @@ const { default: FlowSteps } = await import(pathToFileURL(path.join(SRC, "compon
 const { FLOW_STEPS, studentFlowLocation, flowStepsForLocation } = await import(pathToFileURL(path.join(SRC, "lib/flow-steps.ts")).href);
 
 test("student routes identify location without claiming progress or leaking to other roles", () => {
-  for (const [url, key] of [["/portfolio", "materials"], ["/materials/project/v2", "materials"], ["/recommendations", "recommendations"], ["/reports/r1", "matching"], ["/jobs/job1", "matching"], ["/growth/g1", "growth"]]) {
+  for (const [url, key] of [["/portfolio", "materials"], ["/materials/project/v2", "materials"], ["/recommendations", "recommendations"], ["/reports/r1", "matching"], ["/jobs/job1", "recommendations"], ["/growth/g1", "growth"]]) {
     assert.equal(studentFlowLocation(url, "student"), key);
     for (const role of [undefined, "enterprise", "admin"]) assert.equal(studentFlowLocation(url, role), null);
   }
@@ -84,15 +84,16 @@ test("confirmation is text until a concrete report supplies the existing confirm
   assert.ok(!html.includes("已完成"));
 });
 
-test("saved report reading omits the five-step guide while job preparation keeps it", () => {
+test("portfolio, saved reports and jobs share the five-step guide", () => {
  let pathname="/reports/saved", role="student";
  const source=readFileSync(path.join(SRC,"components/StudentFlowGuide.tsx"),"utf8");
  const mod={exports:{}};
- const modules={react:{useEffect(){},useRef:()=>({current:null})},"react/jsx-runtime":require("react/jsx-runtime"),
+ const modules={react:{useEffect(){},useRef:()=>({current:null}),useState:v=>[v,()=>{}]},"react/jsx-runtime":require("react/jsx-runtime"),
   "next/navigation":{usePathname:()=>pathname},"./AuthProvider":{useAuth:()=>({user:{role}})},
   "./FlowSteps":{__esModule:true,default:FlowSteps},"@/lib/flow-steps":{flowStepsForLocation,studentFlowLocation}};
  new Function("require","module","exports",transform(source,{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id=>modules[id],mod,mod.exports);
- assert.equal(mod.exports.default(),null);
+ assert.ok(renderToStaticMarkup(React.createElement(mod.exports.default)).includes("学生操作指南"));
+ pathname="/portfolio";assert.ok(renderToStaticMarkup(React.createElement(mod.exports.default)).includes("学生操作指南"));
  pathname="/jobs/python";assert.ok(renderToStaticMarkup(React.createElement(mod.exports.default)).includes("学生操作指南"));
  role="enterprise";assert.equal(mod.exports.default(),null);
 });

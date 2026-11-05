@@ -55,11 +55,16 @@ const text=n=>typeof n==="string"||typeof n==="number"?String(n):React.Children.
 const job={id:"job-a",title:"Python 后端",companyName:"公司",city:"杭州",employmentType:"internship",status:"published",description:"原岗位描述",category:"software",requirementCount:5,applicationCount:3,pendingApplicationCount:2};
 
 test("managed job actions retain destinations, true counts and state outside the action group",()=>{
- const html=render(React.createElement(ManagedJobCard,{job,changing:"",onStatusChange(){}}));
+ const tree=ManagedJobCard({job,changing:"",onStatusChange(){}});
+ const html=render(tree);
  assert.match(html,/投递 3 · 待回复 2/);assert.match(html,/已发布/);
  for(const href of ["/jobs/job-a","/jobs/job-a/edit","/jobs/job-a/applications"])assert.ok(html.includes(`href="${href}"`));
  assert.match(html,/<a class="btn-secondary" href="\/jobs\/job-a">查看岗位<\/a>/);
- assert.match(html,/关闭岗位/);assert.match(html,/card-actions mt-auto/);
+ assert.match(html,/关闭岗位/);assert.match(html,/card-actions\b/);
+ const groups=nodes(tree).filter(n=>n.props?.className?.split(" ").includes("card-actions"));
+ assert.equal(groups.length,1);
+ assert.deepEqual(nodes(groups[0]).filter(n=>n.type==="button"||n.props?.href).map(text),["编辑岗位","查看投递","查看岗位","关闭岗位"]);
+ assert.doesNotMatch(text(groups[0]),/已发布|投递 3 · 待回复 2/);
  const draft=render(React.createElement(ManagedJobCard,{job:{...job,status:"draft"},changing:"job-a",onStatusChange(){}}));
  assert.match(draft,/草稿/);assert.match(draft,/更新中…/);assert.match(draft,/<button[^>]*disabled/);assert.match(draft,/查看投递/);
 });

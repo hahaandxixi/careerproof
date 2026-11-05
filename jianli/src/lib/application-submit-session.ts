@@ -24,8 +24,13 @@ export function createApplicationSubmitSession(
         publish({ busy: false, notice: "已投递，可在“我的投递”查看企业回应与撤回授权。", done: true });
       } catch (error) {
         inFlight = false;
-        // 失败提示原样展示，按钮恢复可用，用户再次点击即为重试。
-        publish({ busy: false, notice: api.errorMessage(error), done: false });
+        const status = (error as {status?: number} | null)?.status;
+        const unknown = status === undefined || status < 400 || status === 408 || status >= 500;
+        // A lost response does not establish failure; never automatically send again.
+        const notice = unknown
+          ? `投递结果尚未确认：${api.errorMessage(error)}。请先到“我的投递”查看；如需重试，将仍使用本次报告版本。`
+          : api.errorMessage(error);
+        publish({ busy: false, notice, done: false });
       }
     },
   };

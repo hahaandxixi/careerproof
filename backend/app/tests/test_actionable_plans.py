@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from app.schemas.analysis import CareerPlanAnalysis, JobRecommendationView
-from app.services.career_planning import validate_plan
+from app.services.career_planning import CareerPlanContractError, validate_plan
 from app.services.job_drafting import validate_draft
 
 
@@ -54,12 +54,16 @@ def test_action_plan_rejects_empty_or_unbounded_checklists(field):
 def test_action_plan_cannot_smuggle_unknown_citation():
     raw, job = student_case()
     raw["advice"][0]["citationIds"] = ["R9-E9"]
-    with pytest.raises(ValueError, match="unknown or cross-job"):
+    with pytest.raises(CareerPlanContractError) as exc_info:
         validate_plan(CareerPlanAnalysis.model_validate(raw), [job])
+    assert type(exc_info.value) is CareerPlanContractError
+    assert exc_info.value.category == "unknown_or_cross_job_citation"
 
 
 def test_action_plan_rejects_blank_task_step():
     raw, job = student_case()
     raw["advice"][0]["taskPlan"]["steps"] = [" "]
-    with pytest.raises(ValueError, match="empty or oversized"):
+    with pytest.raises(CareerPlanContractError) as exc_info:
         validate_plan(CareerPlanAnalysis.model_validate(raw), [job])
+    assert type(exc_info.value) is CareerPlanContractError
+    assert exc_info.value.category == "invalid_task_step"
