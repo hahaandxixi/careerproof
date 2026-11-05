@@ -1,0 +1,42 @@
+{
+  "runId": 39947184769,
+  "url": "https://github.com/hahaandxixi/careerproof/actions/runs/39947184769",
+  "expectedCommit": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+  "checkedOn": "2026-10-23",
+  "method": "Read-only GitHub connector, exact run jobs and decoded logs; no rerun",
+  "jobs": [
+    {
+      "jobId": 120392590802,
+      "name": "frontend",
+      "conclusion": "success",
+      "commitMentioned": true,
+      "summary": [
+        "2026-10-23T11:36:37.3410218Z # tests 442",
+        "2026-10-23T11:36:37.3448885Z # pass 442",
+        "2026-10-23T11:36:37.3449170Z # fail 0",
+        "2026-10-23T11:36:37.3449893Z # skipped 0"
+      ]
+    },
+    {
+      "jobId": 120392590811,
+      "name": "backend-postgres",
+      "conclusion": "success",
+      "commitMentioned": true,
+      "summary": [
+        "2026-10-23T11:36:43.7963874Z No new upgrade operations detected.",
+        "2026-10-23T11:39:18.0576894Z ================= 141 passed, 5 warnings in 151.53s (0:02:31) ==================",
+        "2026-10-23T11:39:52.8499057Z ======================== 8 passed, 5 warnings in 31.94s ========================",
+        "2026-10-23T11:39:53.5205041Z CI-JUNIT-GATE result=PASS modules=18 testcases=149 hardstop_windows=8"
+      ]
+    },
+    {
+      "jobId": 120392590885,
+      "name": "backend-unit",
+      "conclusion": "success",
+      "commitMentioned": true,
+      "summary": [
+        "2026-10-23T11:42:03.7974033Z =========== 1586 passed, 94 skipped, 9 warnings in 331.46s (0:05:31) ==========="
+      ]
+    }
+  ]
+}
