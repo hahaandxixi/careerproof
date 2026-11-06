@@ -1,3 +1,4 @@
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire, registerHooks } from "node:module";
@@ -26,7 +27,7 @@ function fixture(filename, initialProps={}, environment={}) {
   useRef(initial){const i=index++;return slots[i]??={current:initial};},
   useEffect(fn,deps){const i=index++;if(!effects[i]||deps.some((v,j)=>!Object.is(v,effects[i][j])))pending.push(()=>{cleanup[i]?.();cleanup[i]=fn();});effects[i]=deps;},
  };
- const modules={react,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:props=>React.createElement("a",props)},
+ const modules={"@/lib/demo-display-identity.js":demoPresentation,react,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:props=>React.createElement("a",props)},
   "next/navigation":{useSearchParams:()=>environment.query??new URLSearchParams()},
   "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;}}}};
  const code=transform(readFileSync(new URL(`../src/components/${filename}.tsx`,import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
@@ -117,7 +118,7 @@ test("the original job form explicitly submits chosen new versions without creat
  const projects=[{id:"project",name:"项目",versions:[{id:"old-project",versionNumber:1,status:"completed"},{id:"new-project",versionNumber:2,status:"completed"}]}];
  const frozen=JSON.stringify({resumes,projects});
  const ResumePicker=()=>null,ProjectPicker=()=>null;
- const modules={
+ const modules={"@/lib/demo-display-identity.js":demoPresentation,
   react:{useEffect(){},useMemo:fn=>fn(),useRef:()=>submitting,useState(initial){const i=index++;if(!(i in values))values[i]=i===0?resumes:i===1?projects:i===6?false:initial;return[values[i],value=>{values[i]=typeof value==="function"?value(values[i]):value;}];}},
   "react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:()=>null},
   "next/navigation":{useRouter:()=>({push:value=>navigated.push(value)})},

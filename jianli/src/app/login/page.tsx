@@ -34,10 +34,9 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md">
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="workspace-sheet p-5 sm:p-7">
         <div className="mb-6">
-          <p className="text-sm font-medium text-indigo-600">欢迎回来</p>
-          <h1 className="page-title mt-1">登录职证 CareerProof</h1>
+          <h1 className="page-title">登录</h1>
           <p className="mt-2 text-sm text-slate-500">继续整理材料，查看属于你的匹配报告。</p>
         </div>
 
@@ -52,7 +51,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="field mt-1"
               placeholder="name@example.com"
             />
           </label>
@@ -65,7 +64,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="field mt-1"
               placeholder="请输入密码"
             />
           </label>

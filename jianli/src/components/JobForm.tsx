@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type Enterprise, type JobDraftResult, type JobOptions, type RequirementInput } from "@/lib/api/domain";
 import { ErrorNotice } from "./AccessGate";
-import { combineDraftRequirements, createDraftRequestGuard, quoteStillMatches } from "@/lib/job-draft";
+import { combineDraftRequirements, createDraftRequestGuard, currentDraftSource, quoteStillMatches, sourceSelectionRange } from "@/lib/job-draft";
 
 export default function JobForm({ jobId }: { jobId?: string }) {
   const router = useRouter();
@@ -70,12 +70,12 @@ export default function JobForm({ jobId }: { jobId?: string }) {
     if (!draftConsent || description.trim().length < 20 || description.length > 6000) return;
     if (draftBusy) return;
     const ticket = draftRequests.current.start();
-    const source = description;
     setDraftBusy(true); setDraftError("");
     try {
       const result = await api.draftJobRequirements({ description, externalAiConsent: draftConsent });
-      if (!draftRequests.current.accepts(ticket)) return;
-      setAiDraft(result); setDraftSource(source);
+      const source = currentDraftSource(draftRequests.current, ticket, result);
+      if (source === null) return;
+      setDescription(source); setAiDraft(result); setDraftSource(source);
       setSelectedDraftRows(result.requirements.map((_, index) => index));
     } catch (reason) { if (draftRequests.current.accepts(ticket)) setDraftError(errorMessage(reason)); }
     finally { if (draftRequests.current.isLatest(ticket)) setDraftBusy(false); }
@@ -90,8 +90,10 @@ export default function JobForm({ jobId }: { jobId?: string }) {
     } catch(reason) { setDraftError(errorMessage(reason)); }
   }
   function locateSource(start: number, end: number) {
+    const range = sourceSelectionRange(description, start, end);
+    if (!range) { setError("原文位置无效，请重新核对关联。"); return; }
     descriptionRef.current?.focus();
-    descriptionRef.current?.setSelectionRange(start, end);
+    descriptionRef.current?.setSelectionRange(...range);
   }
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current) return;
@@ -101,7 +103,8 @@ export default function JobForm({ jobId }: { jobId?: string }) {
       setError("请选择所属企业，填写岗位名称和至少一项完整的岗位要求。"); return;
     }
     submitting.current = true; setBusy(true);
-    const fields = { title: title.trim(), description: description.trim(), category, city: city.trim() || "不限", employmentType, status: jobStatus, requirements: requirements.map(r => ({ ...r, rawText: r.rawText.trim(), skillName: r.skillName.trim() })) };
+    // Keep the server's canonical source intact; JS trim has different Unicode rules.
+    const fields = { title: title.trim(), description, category, city: city.trim() || "不限", employmentType, status: jobStatus, requirements: requirements.map(r => ({ ...r, rawText: r.rawText.trim(), skillName: r.skillName.trim() })) };
     try {
       const { requirements: updatedRequirements, ...metadata } = fields;
       const update = JSON.stringify(updatedRequirements) === originalRequirements.current ? metadata : fields;

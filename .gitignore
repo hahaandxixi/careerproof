@@ -17,3 +17,6 @@ backend/evals/open-source-*.json
 
 # Consolidated local business storage (original files and parsed sources).
 /backend/storage-v1/
+
+# Candidate builds are local evidence, never source files to commit.
+/jianli/.next-candidate-*/

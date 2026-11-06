@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import type { FlowStepKey } from "@/lib/flow-steps";
 
 export default function FlowSteps({ steps, currentKey }: {
-  steps: readonly { key: FlowStepKey; label: string; href: string | null }[];
+  steps: readonly { key: FlowStepKey; label: string; href: string | null; unavailableReason?: string }[];
   currentKey: FlowStepKey;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -19,9 +19,10 @@ export default function FlowSteps({ steps, currentKey }: {
         {index > 0 && <span className="flow-arrow" aria-hidden="true">→</span>}
         {step.href && step.key !== currentKey ? <Link href={step.href} className="flow-step">
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>
-        </Link> : <span className="flow-step">
+        </Link> : <span className="flow-step" title={step.unavailableReason}>
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>
         </span>}
+        {step.unavailableReason && <span className="sr-only">{step.unavailableReason}</span>}
       </li>)}</ol>
     </nav>
   </div>;

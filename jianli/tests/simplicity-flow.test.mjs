@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { createApplicationListSession } from "../src/lib/application-list-session.ts";
 import { createRefreshGate } from "../src/lib/refresh-gate.ts";
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 const require=createRequire(import.meta.url), React=require("react"), {transform}=require("sucrase");
 const oldDocument=globalThis.document,oldWindow=globalThis.window;
 afterEach(()=>{globalThis.document=oldDocument;globalThis.window=oldWindow;});
@@ -15,7 +16,7 @@ function mount(filename, additions, props={}, unwrap=true) {
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps))cells[i]={deps,value:fn()};return cells[i].value;};
  const hooks={useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useRef(value){const i=cursor++;return cells[i]??={current:value};},useMemo:memo,useCallback:(fn,deps)=>memo(()=>fn,deps),useEffect(fn,deps){const i=cursor++;if(!cells[i]||!same(cells[i].deps,deps)){const cleanup=cells[i]?.cleanup;cells[i]={deps};effects.push(()=>{cleanup?.();cells[i].cleanup=fn();});}}};
  globalThis.document=Object.assign(new EventTarget(),{visibilityState:"visible"});globalThis.window=new EventTarget();
- const modules={"./ApplicationReply":{__esModule:true,default:()=>null},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:p=>React.createElement("a",p)},"./AuthProvider":{useAuth:()=>({user:{id:"student"}})},"./AccessGate":{__esModule:true,default:()=>null},"./ListPagination":{__esModule:true,default:()=>null},...additions};
+ const modules={"@/lib/demo-display-identity.js":demoPresentation,"./ApplicationReply":{__esModule:true,default:()=>null},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:p=>React.createElement("a",p)},"./AuthProvider":{useAuth:()=>({user:{id:"student"}})},"./AccessGate":{__esModule:true,default:()=>null},"./ListPagination":{__esModule:true,default:()=>null},...additions};
  const code=transform(readFileSync(new URL(`../src/components/${filename}.tsx`,import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(name=>{assert.ok(name in modules,name);return modules[name];},mod,mod.exports);
  const render=()=>{cursor=0;const parent=mod.exports.default(props);return !unwrap?parent:parent.props.children?.type?parent.props.children.type(parent.props.children.props):parent.type(parent.props);};

@@ -49,7 +49,7 @@ from app.tools.visible_checks import (
     visible_code_facts,
 )
 
-PLAN_VERSION = "career-plan-v11-change-fact-check"
+PLAN_VERSION = "career-plan-v12-explicit-citation-contract"
 
 _CHANGE_CAUSALITY = re.compile(
     r"(?:补证|新增证据|新版材料|材料更新)[^。；，,\n]{0,24}"
@@ -90,6 +90,14 @@ _REQUIREMENTS_UNCHANGED = re.compile(
 )
 
 logger = logging.getLogger(__name__)
+
+
+class CareerPlanContractError(ValueError):
+    """Static category only; never contains model text or source identifiers."""
+
+    def __init__(self, category: str):
+        super().__init__(category)
+        self.category = category
 
 
 class CareerChangeAttributionConflict(ValueError):
@@ -320,13 +328,13 @@ def validate_plan(
     allowed_ids = {job.job_id for job in shortlist}
     actual_ids = [item.job_id for item in analysis.advice]
     if len(actual_ids) != len(allowed_ids) or set(actual_ids) != allowed_ids:
-        raise ValueError("AI plan job IDs differ from the shortlisted jobs")
+        raise CareerPlanContractError("shortlist_mismatch")
     if analysis.focus_job_id not in allowed_ids:
-        raise ValueError("AI plan selected an unknown focus job")
+        raise CareerPlanContractError("unknown_focus_job")
     _reject_change_causality(analysis.comparison)
     _reject_change_fact_conflicts(analysis, changes or [])
     if overclaim_flags(analysis.comparison):
-        raise ValueError("AI plan comparison overclaims candidate ability")
+        raise CareerPlanContractError("comparison_overclaim")
     by_id = {job.job_id: job for job in shortlist}
     if len(shortlist) == 1 and conflicts_with_visible_checks(
         analysis.comparison, visible_code_facts(shortlist[0])
@@ -339,11 +347,11 @@ def validate_plan(
             evidence.citation_id for evidence in by_id[item.job_id].evidence if evidence.citation_id
         }
         if len(item.citation_ids) != len(set(item.citation_ids)):
-            raise ValueError("AI career advice contains duplicate citations")
+            raise CareerPlanContractError("duplicate_citations")
         if not set(item.citation_ids).issubset(allowed_citations):
-            raise ValueError("AI career advice cites an unknown or cross-job source")
+            raise CareerPlanContractError("unknown_or_cross_job_citation")
         if allowed_citations and not item.citation_ids:
-            raise ValueError("AI career advice omitted the available evidence citations")
+            raise CareerPlanContractError("available_citation_omitted")
         facts = visible_code_facts(by_id[item.job_id])
         for field in ("reason", "key_gap", "next_task"):
             text = getattr(item, field)
@@ -357,7 +365,7 @@ def validate_plan(
                 *item.task_plan.acceptance_checks,
             ]
             if any(not text.strip() or len(text) > 200 for text in task_texts):
-                raise ValueError("AI career task contains empty or oversized steps")
+                raise CareerPlanContractError("invalid_task_step")
             for text in task_texts:
                 if conflicts_with_visible_checks(text, facts):
                     raise VisibleCodeFactConflict("task_plan", text, facts)
@@ -382,7 +390,7 @@ def validate_plan(
             overclaim_flags(text)
             for text in (item.reason, item.key_gap, item.next_task, *task_texts)
         ):
-            raise ValueError("AI career advice overclaims candidate ability")
+            raise CareerPlanContractError("advice_overclaim")
 
 
 def diverse_shortlist(recommendations: list[JobRecommendationView]) -> list[JobRecommendationView]:
@@ -417,6 +425,11 @@ def _planning_input(
                 "supportedCount": job.supported_count,
                 "claimedCount": job.claimed_count,
                 "gaps": job.gaps,
+                "citationPolicy": {
+                    "allowedIds": [evidence.citation_id for evidence in job.evidence[:3]
+                                   if evidence.citation_id],
+                    "citationRequired": any(evidence.citation_id for evidence in job.evidence[:3]),
+                },
                 "requirements": [
                     {
                         "text": requirement.text[:160],
@@ -464,6 +477,9 @@ PLAN_PROMPT = (
     "没有证据时直接说当前材料未展示，不推断没有能力。"
     "不能推断录用概率、本人贡献、代码运行结果或测试通过。引用只能选本岗位 evidence.citationId，"
     "引用要支持reason中描述的可见事实；无证据时citationIds为空。"
+    "每个岗位的citationPolicy明确引用契约：citationRequired为true时，"
+    "citationIds必须至少包含一个allowedIds中的原样编号；不能遗漏、改写或跨岗位借用。"
+    "citationRequired为false时返回空数组，不得发明编号。"
     "changesFromPreviousPlan是程序计算的变化，只能照其事实解释，不能编造提升；"
     "即使材料和推荐档位同时变化，也不能声称补证导致推荐档位变化；"
     "若requirementsChanged为真，岗位要求或权重已变，尤其不能把档位变化归因于学生补证。"
@@ -564,9 +580,10 @@ async def create_career_plan(
         )
         logger.warning(
             "career_plan.ai_stage_failure stage=%s reason=%s error_type=%s "
-            "http_status=%s provider=%s external_ai_enabled=%s",
+            "http_status=%s provider=%s external_ai_enabled=%s validation_code=%s",
             stage, status, context["error_type"], context.get("http_status", "-"),
-            configured, settings.ai_external_enabled, extra=context,
+            configured, settings.ai_external_enabled,
+            error.category if isinstance(error, CareerPlanContractError) else "-", extra=context,
         )
 
     if shortlist:
@@ -600,7 +617,7 @@ async def create_career_plan(
                     stage = "business_validation"
                     validate_plan(analysis, shortlist, changes)
                     if any(item.task_plan is None for item in analysis.advice):
-                        raise ValueError("AI career plan omitted the actionable task")
+                        raise CareerPlanContractError("actionable_task_omitted")
                     response.ai_plan = analysis
                     response.ai_model = provider.model
                     response.ai_status = "validated"

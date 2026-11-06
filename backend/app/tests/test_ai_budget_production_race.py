@@ -68,6 +68,7 @@ from app.services import application_verification as verification
 from app.services.ai_budget import SharedBudgetService
 from app.services.ai_request_attempts import AttemptContext, AttemptService
 from app.services.task_runner import FastAPIBackgroundTaskRunner
+from app.tests.submission_helpers import application_payload
 from app.tests.test_application_verification import (
     case,  # noqa: F401
     completion,
@@ -392,7 +393,7 @@ async def build_second_verification_task(fixture_case):
             await session.commit()
             report_id = report.id
         submitted = await second.post(
-            "/api/v1/applications", json={"reportId": str(report_id), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(second, report_id)
         )
         assert submitted.status_code == 201, submitted.text
         application_id = submitted.json()["data"]["id"]

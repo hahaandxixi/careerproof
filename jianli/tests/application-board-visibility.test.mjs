@@ -84,18 +84,18 @@ test("tab return restores radar requirement/evidence only after GET authorizatio
 test("comparison selection survives tab return and revoked candidates are pruned",async()=>{
  const h=fixture();let tree=await h.settle();
  for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();}
- h.button(tree,"并排核对 2 位").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
- assert.equal(h.button(tree,"返回本页全部候选人").props["aria-pressed"],true);
+ h.button(tree,"热力图仅看所选（2）").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
+ assert.equal(h.button(tree,"显示本页全部候选人").props["aria-pressed"],true);
  const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,2);
  h.hide();h.revoke();h.show();tree=await h.settle();
- assert.ok(h.button(tree,"并排核对 1 位").props.disabled);assert.equal(h.counts.open,0);
+ assert.ok(h.button(tree,"热力图仅看所选（1）").props.disabled);assert.equal(h.counts.open,0);
 });
 
 
 test("three and four selected candidates retain the heatmap and offer only a two-person deep view",async()=>{
  const h=fixture(4);let tree=await h.settle();
- for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"返回本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
- if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`并排核对 ${count} 位`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,`双人对照（${count}）`).props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"候选人").props.onClick();tree=h.render();}}
+ for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"显示本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
+ if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`热力图仅看所选（${count}）`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,`双人对照（${count}）`).props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"候选人").props.onClick();tree=h.render();}}
  h.button(tree,"清空对照").props.onClick();tree=await h.settle();assert.ok(!h.nodes(tree).some(n=>Array.isArray(n.props?.candidates)));
 });
 

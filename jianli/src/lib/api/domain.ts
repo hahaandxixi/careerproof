@@ -9,6 +9,7 @@ export interface JobDraftRequirement extends RequirementInput {
   evidenceRequest?: string; verificationQuestion?: string; weightReason?: string;
 }
 export interface JobDraftResult {
+  normalizedDescription?: string; // Older servers are rejected explicitly during draft adoption.
   requirements: JobDraftRequirement[]; model: string; usage: { input_tokens?: number; output_tokens?: number } | null;
   confirmed: boolean;
 }
@@ -36,6 +37,7 @@ export interface ReportSummary {
   evidenceContextVersion: string | null;
   materials?: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];
   jobReportCount?: number; isLatestForJob?: boolean;
+  recordProvenance?: "test_fixture" | null;
 }
 export interface ReportEvidence {
   citationId: string | null;
@@ -70,6 +72,7 @@ export interface ReportItem {
   aiSuggestionRedundant?: boolean; aiStatus: string; aiOrigin?: string | null;
 }
 export interface MatchReport extends ReportSummary {
+  reviewRevision?: number | null;
   aiProcess?: { planningSkippedReason?: string | null; skippedReason?: string | null; fallbackReason?: string | null; failureStage?: string | null };
   visualClaims?: VisualReview[];
   materials: { kind: string; id: string; title: string; versionNumber: number; contentHash: string; materialRole?: "portfolio" | "reference" | null }[];

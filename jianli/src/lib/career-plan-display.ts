@@ -1,4 +1,22 @@
 import type { CareerPlanResult, JobRecommendation } from "./api/domain.ts";
+import { demoJobAlias, displayJobTitle, displayMaterialTitle } from "./demo-display-identity.js";
+
+/** Display projection only: preserve saved IDs, versions, evidence and model text. */
+export function careerPlanDisplayIdentity(result: CareerPlanResult): CareerPlanResult {
+  return {
+    ...result,
+    materials: result.materials.map(material => ({
+      ...material, title: displayMaterialTitle(material.title, material.id),
+    })),
+    recommendations: result.recommendations.map(job => ({
+      ...job, jobTitle: displayJobTitle(job.jobTitle, job.jobId),
+      companyName: demoJobAlias(job.jobId)?.companyName ?? job.companyName,
+    })),
+    changes: result.changes.map(change => ({
+      ...change, jobTitle: displayJobTitle(change.jobTitle, change.jobId),
+    })),
+  };
+}
 
 export function careerPlanConfigurationBlocked(status: string): boolean {
   return ["external_ai_disabled", "mock_provider", "model_configuration_error", "model_auth_error", "model_request_rejected", "model_quota_exceeded"].includes(status);

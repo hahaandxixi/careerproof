@@ -45,10 +45,13 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
     const targetStatus = now ? verdictLabel(now.verdict) : "当前报告无此项";
     const summary = item.status !== "existing"
       ? (item.status === "added" ? "当前报告新增该要求，无法直接与原要求判断比较。" : "当前报告不再包含该要求，基准报告仍可查看。")
+      : !added.length && !removed.length && !(now?.evidenceList ?? []).length && !(old?.evidenceList ?? []).length
+        ? "两次报告都没有可展示的引用，判断只依据简历声明与规则结果。"
       : evidenceChanged ? `新增展示 ${added.length} 处、移除展示 ${removed.length} 处引用；${statusChanged ? "判断状态已改变，请核对下方来源。" : "判断状态未改变。"}`
       : statusChanged ? "判断状态已改变，未记录引用集合变化；请核对解释和判定条件。"
       : levelChanged ? "证据等级发生变化，判断状态未改变；请核对判定记录。"
       : changed ? "解释、建议或判定背景有更新，判断状态未改变。"
+      : retained.length ? `两次报告展示的引用集合未变（保留 ${retained.length} 处），判断状态未变。`
       : "本项没有检测到变化。";
     return { item, old, now, added, removed, retained, evidenceChanged, statusChanged, levelChanged, needsEvidence, changed, baseStatus, targetStatus, summary };
   });

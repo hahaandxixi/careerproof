@@ -53,41 +53,14 @@ function preview(t) {
   return h;
 }
 
-test("defaults to matching, advances only after five seconds, and loops from the third slide", t => {
+test("starts on matching and only changes with a user selection", t => {
   const h = preview(t);
-  assert.equal(h.active, 0); assert.equal(h.tick(4999), 0); assert.equal(h.tick(1), 1);
-  assert.equal(h.tick(5000), 2); assert.equal(h.tick(5000), 0);
-});
-
-test("manual buttons, arrows and dots restart the full interval, including the current slide", t => {
-  const h = preview(t);
-  h.tick(4000); h.clickTab(0);
-  assert.equal(h.tick(1000), 0); assert.equal(h.tick(3999), 0); assert.equal(h.tick(1), 1);
-  h.button("上一个场景").props.onClick(); h.render(); assert.equal(h.active, 0);
-  h.button("上一个场景").props.onClick(); h.render(); assert.equal(h.active, 2);
-  h.button("下一个场景").props.onClick(); h.render(); assert.equal(h.active, 0);
-  h.tick(4000); h.button("切换到版本对比").props.onClick(); h.render();
-  assert.equal(h.tick(4999), 2); assert.equal(h.tick(1), 0);
-});
-
-test("mouse hover and focus pause independently; leaving both resumes with a fresh interval", t => {
-  const h = preview(t);
-  h.root.props.onPointerEnter({ pointerType: "mouse" }); h.render(); assert.equal(h.tick(15000), 0);
-  h.root.props.onFocusCapture(); h.render();
-  h.root.props.onPointerLeave(); h.render(); assert.equal(h.tick(10000), 0);
-  h.root.props.onBlurCapture({ currentTarget: { contains: () => true }, relatedTarget: {} }); h.render(); assert.equal(h.tick(10000), 0);
-  h.root.props.onBlurCapture({ currentTarget: { contains: () => false }, relatedTarget: null }); h.render();
-  assert.equal(h.tick(4999), 0); assert.equal(h.tick(1), 1);
-  h.root.props.onPointerEnter({ pointerType: "touch" }); h.render(); assert.equal(h.tick(5000), 2);
-});
-
-test("hidden documents and the explicit pause control stop playback; unmount removes timers/listeners", t => {
-  const h = preview(t);
-  h.visibility("hidden"); assert.equal(h.tick(15000), 0);
-  h.visibility("visible"); assert.equal(h.tick(5000), 1);
-  h.button("暂停自动轮播").props.onClick(); h.render(); assert.equal(h.tick(15000), 1);
-  h.button("启用自动轮播").props.onClick(); h.render(); assert.equal(h.tick(5000), 2);
-  h.unmount(); assert.equal(h.tick(15000), 2); assert.equal(h.listeners.size, 0);
+  assert.equal(h.active, 0);
+  assert.equal(h.tick(20000), 0);
+  h.clickTab(1);
+  assert.equal(h.tick(20000), 1);
+  h.clickTab(2);
+  assert.equal(h.active, 2);
 });
 
 test("keyboard navigation moves focus; inactive slides are inaccessible and cannot take focus", t => {
@@ -106,8 +79,8 @@ test("three complete scenes keep synthetic boundaries and use different content 
   const h = preview(t), panels = walk(h.root).filter(n => n.props?.role === "tabpanel");
   assert.ok(walk(panels[0]).some(n => n.type === "dl"));
   assert.ok(walk(panels[1]).some(n => n.type === "ol"));
-  assert.ok(!walk(panels[2]).some(n => n.type === "ol" || n.type === "dl"));
+  assert.ok(walk(panels[2]).some(n => n.type === "dl"));
   const html = renderToStaticMarkup(h.root);
-  for (const text of ["合成预览", "不调用真实 AI", "当前缺口", "自动化测试", "不用先创建补证任务", "V1", "V2", "不保证等级上升", "来源可追溯"]) assert.ok(html.includes(text), text);
+  for (const text of ["数据说明", "当前为交互样例", "不调用模型", "当前缺口", "自动化测试", "V1", "V2", "旧报告和原投递保留原版本"]) assert.ok(html.includes(text), text);
   assert.ok(!source.includes("api.") && !html.includes("78%"));
 });

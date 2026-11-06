@@ -20,6 +20,7 @@ from app.models.identity import EnterpriseMembership, StudentProfile, User
 from app.models.portfolio import Resume, ResumeVersion
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.services.applications import _reply_references, reply_context_for_requirement
+from app.tests.submission_helpers import application_payload
 from app.tests.test_jobs_api import job_payload, organization, register
 from app.tests.test_real_matching import matching_db  # noqa: F401
 
@@ -153,16 +154,17 @@ async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
     try:
         assert (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": False}
+                "/api/v1/applications",
+                json=await application_payload(student, rid, share_consent=False),
             )
         ).status_code == 422
         assert (
             await other.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).status_code == 403
         created = await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         assert created.status_code == 201, created.text
         aid = created.json()["data"]["id"]
@@ -179,7 +181,7 @@ async def test_explicit_consent_owner_scope_idempotency_and_snapshot(
         assert len(frozen_basis) == 64
         assert (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).json()["data"]["id"] == aid
         assert (await other.get(f"/api/v1/jobs/{job['id']}/applications")).status_code == 404
@@ -219,7 +221,7 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
     try:
         aid = (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).json()["data"]["id"]
         assert (await hr.post(f"/api/v1/applications/{aid}/resume-download")).status_code == 409
@@ -272,7 +274,7 @@ async def test_download_reply_and_withdraw_revoke_every_enterprise_path(
             )
         ).status_code == 404
         resubmitted = await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         assert resubmitted.status_code == 201, resubmitted.text
         assert resubmitted.json()["data"]["id"] != aid
@@ -289,7 +291,7 @@ async def test_reply_links_only_to_its_frozen_requirement_and_citations(
     )
     try:
         created = await student.post(
-            "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(student, rid)
         )
         aid = created.json()["data"]["id"]
         async with factory() as session:
@@ -379,7 +381,7 @@ async def test_missing_or_tampered_download_does_not_record_success(jobs_db, tmp
     try:
         aid = (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).json()["data"]["id"]
         await hr.post(f"/api/v1/applications/{aid}/view")
@@ -414,7 +416,7 @@ async def test_postgres_withdraw_wins_while_slow_resume_read_is_blocked(
             pytest.skip("Requires an explicitly configured isolated PostgreSQL schema")
         aid = (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).json()["data"]["id"]
         await hr.post(f"/api/v1/applications/{aid}/view")
@@ -501,13 +503,13 @@ async def test_closed_job_and_other_student_report_cannot_be_submitted(
         await register(second, "second@example.com", "student")
         assert (
             await second.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).status_code == 404
         await hr.patch(f"/api/v1/jobs/{job['id']}", json={"status": "closed"})
         assert (
             await student.post(
-                "/api/v1/applications", json={"reportId": str(rid), "shareConsent": True}
+                "/api/v1/applications", json=await application_payload(student, rid)
             )
         ).status_code == 409
     finally:
@@ -543,7 +545,7 @@ async def test_daily_limit_and_membership_revocation_fail_closed(jobs_db, tmp_pa
                     )
                 )
             await session.commit()
-        payload = {"reportId": str(rid), "shareConsent": True}
+        payload = await application_payload(student, rid)
         limited = await student.post("/api/v1/applications", json=payload)
         assert limited.status_code == 429
         assert len((await student.get("/api/v1/applications/mine")).json()["data"]["items"]) == 20

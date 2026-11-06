@@ -4,7 +4,7 @@ export function safeReturnPath(raw: string | null | undefined): string | null {
   try {
     const url = new URL(raw, "https://careerproof.invalid");
     if (url.origin !== "https://careerproof.invalid" || /%|\\/.test(url.pathname)) return null;
-    if (!/^\/(?:$|portfolio$|recommendations$|applications$|notifications$|jobs(?:\/(?:[a-zA-Z0-9-]+)(?:\/(?:applications|edit))?)?$|reports(?:\/[a-zA-Z0-9-]+)?$|growth(?:\/[a-zA-Z0-9-]+)?$|tasks\/[a-zA-Z0-9-]+$|materials\/(?:resume|project)\/[a-zA-Z0-9-]+$)/.test(url.pathname)) return null;
+    if (!/^\/(?:$|skills$|portfolio$|recommendations$|applications$|notifications$|jobs(?:\/(?:[a-zA-Z0-9-]+)(?:\/(?:applications|edit))?)?$|reports(?:\/[a-zA-Z0-9-]+)?$|growth(?:\/[a-zA-Z0-9-]+)?$|tasks\/[a-zA-Z0-9-]+$|materials\/(?:resume|project)\/[a-zA-Z0-9-]+$)/.test(url.pathname)) return null;
     return `${url.pathname}${url.search}${url.hash}`;
   } catch { return null; }
 }
@@ -21,7 +21,7 @@ export function roleReturnPath(raw: string | null | undefined, role: string): st
   const path = new URL(target, "https://careerproof.invalid").pathname;
   const enterpriseOnly = /^\/jobs\/(new|mine|manage)$|^\/jobs\/[^/]+\/(applications|edit)$/.test(path);
   const studentOnly = /^\/(portfolio|recommendations|applications|growth|reports|tasks)(\/|$)|^\/materials\//.test(path);
-  if ((enterpriseOnly && role === "student") || (studentOnly && role === "enterprise")) return fallback;
+  if ((enterpriseOnly && role === "student") || (studentOnly && role === "enterprise") || (path === "/skills" && role !== "student")) return fallback;
   return target;
 }
 

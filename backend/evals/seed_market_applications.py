@@ -151,6 +151,7 @@ def run(runtime_path):
                 if "applicationId" not in slot:
                     delivery = _payload(student.post("/applications", json={
                         "reportId": slot["reportId"], "shareConsent": True,
+                        "expectedReviewRevision": report["reviewRevision"],
                     }))
                     slot["applicationId"] = delivery["id"]
                     save(state_path, state)

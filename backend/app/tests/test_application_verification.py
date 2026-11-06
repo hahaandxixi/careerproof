@@ -19,6 +19,7 @@ from app.models.identity import EnterpriseMembership, StudentProfile, User
 from app.models.recruitment import Application, JobRequirement
 from app.services import application_verification as verification
 from app.services.task_runner import FastAPIBackgroundTaskRunner
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 from app.tests.test_jobs_api import register
 from app.tests.test_real_matching import matching_db  # noqa: F401
@@ -206,7 +207,7 @@ async def case(matching_db, tmp_path, monkeypatch):  # noqa: F811
             ))
         await session.commit()
     response = await student.post(
-        "/api/v1/applications", json={"reportId": str(report_id), "shareConsent": True}
+        "/api/v1/applications", json=await application_payload(student, report_id)
     )
     assert response.status_code == 201, response.text
     application_id = response.json()["data"]["id"]
@@ -583,7 +584,7 @@ async def test_different_application_cannot_reuse_or_read_another_task(case):
             await session.commit()
             report_id = report.id
         submitted = await second.post(
-            "/api/v1/applications", json={"reportId": str(report_id), "shareConsent": True}
+            "/api/v1/applications", json=await application_payload(second, report_id)
         )
         assert submitted.status_code == 201, submitted.text
         application_id = submitted.json()["data"]["id"]

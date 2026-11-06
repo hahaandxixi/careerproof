@@ -2,7 +2,7 @@
 
 import { Children, useEffect, useState, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
-import { revealEvidenceAnchor } from "@/lib/evidence-anchor";
+import { navigateEvidenceFragment, revealEvidenceAnchor } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
@@ -34,7 +34,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
         // Capture the original destination: selecting can rerender mobile prev/next links
         // before the browser reads their default-action href, otherwise one click skips an item.
         event.preventDefault();
-        if (window.location.hash !== href) window.location.hash = href;
+        navigateEvidenceFragment(href);
         select(href);
       }
     };
@@ -63,6 +63,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
   const visible = workspaceRequirements(items, entry.filter);
+  const nextGap = state.gaps.find(item => item.requirementId !== entry.selected);
   const filters: { key: WorkspaceFilter; label: string; count: number }[] = [
     { key: "priority", label: "优先处理", count: state.priorities.length + state.other.length },
     { key: "all", label: "全部要求", count: items.length },
@@ -78,21 +79,21 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     // Preserve the current requirement across refresh without moving focus away from the filter.
     if (selected && selected !== entry.selected) window.history.pushState(null, "", `#requirement-${selected}`);
   };
-  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="min-w-0 scroll-mt-24 space-y-3">
-    <span id="report-requirements-title" className="sr-only">岗位要求与证据</span>
+  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-index-layout min-w-0 scroll-mt-24">
+    <div className="report-index min-w-0">
+    <h2 id="report-requirements-title" className="sr-only">岗位要求</h2>
     <details className="text-sm"><summary className="cursor-pointer py-1 text-slate-600">筛选要求{entry.filter !== "all" ? ` · ${filters.find(filter => filter.key === entry.filter)?.label}` : ""}</summary>
     <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="按已保存的材料支持状态筛选">
       {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
-        onClick={() => changeFilter(filter.key)} className={`min-h-11 rounded-lg border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${entry.filter === filter.key ? "border-indigo-600 bg-indigo-50 text-indigo-950" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300"}`}>
+        onClick={() => changeFilter(filter.key)} className={`min-h-11 rounded-lg border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#245c50] ${entry.filter === filter.key ? "border-[#245c50] bg-[#e7efe9] text-[#173c34]" : "border-slate-200 bg-white text-slate-600 hover:border-[#7ca396]"}`}>
         {filter.label}
       </button>)}
     </div></details>
-    <div className="min-w-0 space-y-3">
       <nav aria-label="报告中的岗位要求" className="min-w-0">
-        {visible.length ? <ol className="flex min-w-0 flex-wrap gap-2">{visible.map(item => {
+        {visible.length ? <ol className="report-index-list">{visible.map(item => {
           const selected = entry.selected === item.requirementId;
           return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={selected ? "true" : undefined}
-            className={`flex min-h-11 flex-wrap items-center gap-x-2 rounded-lg border px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${selected ? "border-indigo-600 bg-indigo-50 text-indigo-950" : "border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-slate-50"}`}>
+            className="report-index-link">
             <span className="break-words text-base font-semibold leading-6">{item.skill || item.requirementTitle}</span>
             <span className="text-sm leading-6">{workspaceStatusLabel(item)}</span>
           </a></li>;
@@ -103,7 +104,8 @@ export default function ReportRequirementReader({ items, children }: { items: Re
           {entry.filter !== "all" && <button type="button" className="btn-secondary" onClick={() => changeFilter("all")}>展开全部要求（{items.length}）</button>}
         </nav>
       </nav>
-      <div className="min-w-0">{!visible.length && <p className="text-sm text-slate-500">选择其他筛选查看判断与行动。</p>}{items.map((item, index) => <div key={item.requirementId} hidden={entry.selected !== item.requirementId}>{articles[index]}</div>)}</div>
     </div>
+    <div className="min-w-0">{!visible.length && <p className="text-sm text-slate-500">选择其他筛选查看判断与行动。</p>}{items.map((item, index) => <div key={item.requirementId} hidden={entry.selected !== item.requirementId}>{articles[index]}</div>)}</div>
+    {nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
   </section>;
 }

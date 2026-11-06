@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: careerproof
       POSTGRES_PASSWORD: careerproof
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - careerproof_postgres:/var/lib/postgresql/data
     healthcheck:

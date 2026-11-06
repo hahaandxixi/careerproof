@@ -1,3 +1,4 @@
+import type { ReportItem } from "./api/domain";
 import type { ApplicationView } from "./api/client";
 
 /** Snapshot basis plus actual axes must agree; never align unlike requirements by position. */
@@ -52,4 +53,22 @@ export function applicationFilterView(
     empty: visible.length === 0,
     selectedOutside: !!selectedId && !visible.some(item => item.id === selectedId),
   };
+}
+
+
+/** Only displayed fields are compared. Equal counts never identify equal sources. */
+export function requirementDifference(
+  first: Pick<ReportItem, "verdict" | "finalScore" | "evidenceList">,
+  second: Pick<ReportItem, "verdict" | "finalScore" | "evidenceList">,
+  compareSupport: boolean,
+): string {
+  const fields: { name: string; first: string | number | null; second: string | number | null }[] = [
+    { name: "判断状态", first: first.verdict, second: second.verdict },
+    { name: "来源数量", first: first.evidenceList.length, second: second.evidenceList.length },
+  ];
+  if (compareSupport) fields.push({ name: "材料支持度指数", first: first.finalScore, second: second.finalScore });
+  const differences = fields.filter(field => field.first !== field.second).map(field => field.name);
+  return differences.length
+    ? differences.join("、") + "不同，请分别核对两份固定报告。"
+    : "可见的" + fields.map(field => field.name).join("、") + "相同，仍需分别核对来源。";
 }

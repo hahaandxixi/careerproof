@@ -1,19 +1,23 @@
+import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
+import * as sourceLabels from "../src/lib/source-label.ts";
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {createRequire} from "node:module";
 import {readFileSync} from "node:fs";
 import {createReportReviewSession,initialReportReviewState} from "../src/lib/report-review-session.ts";
 const require=createRequire(import.meta.url),React=require("react"),{transform}=require("sucrase"),jsx=require("react/jsx-runtime");
-const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];
-const text=n=>typeof n==="string"?n:React.Children.toArray(n?.props?.children).map(text).join("");
+const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes),...(n.props?.sections??[]).flatMap(s=>nodes(s.content))];
+const text=n=>typeof n==="string"?n:[...React.Children.toArray(n?.props?.children),...(n?.props?.sections??[]).map(s=>s.content)].map(text).join("");
 function fixture({writeError,readError}={}){
  const cells=[],effects=[];let cursor=0,reads=0,writes=0,account="owner",role="student";
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||cells[i].deps.join()!==deps.join())cells[i]={deps,value:fn()};return cells[i].value;};
  const hooks={useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useMemo:memo,useEffect(fn,deps){const i=cursor++;if(!cells[i]){cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}}};
  const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials:[],analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
  const api={getReport:async()=>{reads++;if(reads===2&&readError)throw readError;return report;},reviewEvidence:async(...args)=>{writes++;if(writeError)throw writeError;return args;}};
- const stub=()=>null;const modules={react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":{adoptedReportExplanation:()=>"",workspaceStatusLabel:v=>v.verdict},"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""}};
- for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportOverview","ReportAiExplanation","ReportSourcePanel"])modules[`./${name}`]={__esModule:true,default:stub};
+ const stub=()=>null;const modules={"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":{adoptedReportExplanation:()=>"",workspaceStatusLabel:v=>v.verdict},"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""}};
+ modules["@/lib/report-follow-up"]={followUpCopyText:()=>""};
+ for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportOverview","ReportAiExplanation","ReportSourcePanel","ReportSections","ReportFollowUpActions"])modules[`./${name}`]={__esModule:true,default:stub};
  modules["./ReportEvidenceWorkspace"]={__esModule:true,default:stub,RequirementActionPanel:stub};
  const source=readFileSync(new URL("../src/components/ReportDetail.tsx",import.meta.url),"utf8")+"\nexport {ReportWorkspace};";
  const mod={exports:{}};new Function("require","module","exports",transform(source,{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);

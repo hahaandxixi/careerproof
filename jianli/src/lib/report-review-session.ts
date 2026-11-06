@@ -36,7 +36,7 @@ export function createReportReviewSession(reportId: string, api: {
     async load() {
       if (!active || locked) return;
       locked = true; const ticket = generation;
-      update({ error: "" });
+      update({ error: "", needsSync: true });
       try { const report = await read(ticket); if (report) update({ report, issues: {}, needsSync: false }); }
       catch (error) { if (current(ticket)) accessFailure(error); }
       finally { if (current(ticket)) locked = false; }

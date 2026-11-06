@@ -1,15 +1,40 @@
+param([switch]$ReleaseFollowupOnly)
 # Windows PowerShell 5.1 offline fixtures. Every process, native command, HTTP
 # request and port query is a substitute. Never invokes real Docker/API/Next/DB.
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$scratch = Join-Path $projectRoot ('backend\.tmp\v1-build-tests-' + [guid]::NewGuid().ToString('N'))
+$scratchParent = if ($ReleaseFollowupOnly) { 'output\fix-followup-20261104\release' } else { 'backend\.tmp' }
+$scratch = Join-Path $projectRoot (Join-Path $scratchParent ('v1-build-tests-' + [guid]::NewGuid().ToString('N')))
 New-Item -ItemType Directory -Path $scratch -Force | Out-Null
 $sourceId = 'a' * 40
 $global:cpV1Fixture = @{}
 $checks = 0
 function Assert([bool]$Ok, [string]$Message) { if (!$Ok) { throw $Message } }
 function Json([string]$Path, $Value) { $Value | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $Path -Encoding UTF8 }
-function Check([string]$Name, [scriptblock]$Probe) { & $Probe; $script:checks++; Write-Output "PASS $Name" }
+function Normalize-TestAbsolutePath([string]$Path) {
+    $normalized = $Path.Replace('/', '\')
+    Assert ($normalized -match '^(?:[A-Za-z]:\\|\\\\[^\\]+\\[^\\]+\\)') 'Path identity must be absolute.'
+    Assert (($normalized -split '\\') -notcontains '..') 'Path identity contains an escape segment.'
+    return [IO.Path]::GetFullPath($normalized)
+}
+function Reject-MissingPath([scriptblock]$Operation, [string]$ExpectedPath) {
+    $record = $null
+    try { & $Operation | Out-Null } catch { $record = $_ }
+    Assert ($null -ne $record) "Expected refusal for missing path: $ExpectedPath"
+    $exception = $record.Exception
+    $missing = ($exception -is [System.Management.Automation.ItemNotFoundException]) -or
+        ($exception -is [IO.FileNotFoundException]) -or ($exception -is [IO.DirectoryNotFoundException])
+    Assert $missing "Expected a missing-path exception; got $($exception.GetType().FullName)."
+    $target = $record.TargetObject
+    Assert ($target -is [string] -and ![string]::IsNullOrWhiteSpace($target)) 'Missing-path error has no structured path identity.'
+    $actual = Normalize-TestAbsolutePath $target
+    $expected = Normalize-TestAbsolutePath $ExpectedPath
+    Assert ([string]::Equals($actual,$expected,[StringComparison]::OrdinalIgnoreCase)) "Missing-path target differs: expected '$expected', received '$actual'."
+}
+function Check([string]$Name, [scriptblock]$Probe) {
+    if ($ReleaseFollowupOnly -and !$Name.StartsWith('release follow-up:')) { return }
+    & $Probe; $script:checks++; Write-Output "PASS $Name"
+}
 function Make-Build([string]$Front, [string]$Dist, [string]$Id) {
     $root = Join-Path $Front $Dist
     foreach ($dir in @('server/app', 'server/pages', 'static/chunks', "static/$Id")) { New-Item -ItemType Directory -Path (Join-Path $root $dir) -Force | Out-Null }
@@ -36,6 +61,7 @@ function New-Fixture {
     Json $global:cpV1Fixture.case.Profile @{python='Fixture-Python';node='fixture-node';container='fixture-container'}
     $global:cpV1Fixture.live=@{}; $global:cpV1Fixture.ports=@{}; $global:cpV1Fixture.starts=@(); $global:cpV1Fixture.native=@(); $global:cpV1Fixture.health=@(); $global:cpV1Fixture.stops=@()
     $global:cpV1Fixture.denyPath=''; $global:cpV1Fixture.reparsePath=''; $global:cpV1Fixture.wrongHealth=$false; $global:cpV1Fixture.migrationFails=$false; $global:cpV1Fixture.sequence=0
+    $global:cpV1Fixture.backendHealthFails=$false; $global:cpV1Fixture.webSpawnFails=$false; $global:cpV1Fixture.cleanupIdentityDrift=$false; $global:cpV1Fixture.stopFails=$false; $global:cpV1Fixture.replaceStateOnFailure=$false
     $global:cpV1Fixture.appConfig=@{AI_PROVIDER='deepseek';AI_EXTERNAL_ENABLED='true';DEEPSEEK_API_KEY='fixture-only-not-a-real-key';DATABASE_URL='postgresql+asyncpg://fixture/careerproof_v1';NEXT_DIST_DIR='.next-env-injection';BACKEND_ORIGIN='http://127.0.0.1:8999'}
 }
 function Select-Fixture([string]$Dist='.next-accepted',[string]$Id='new-build') {
@@ -62,6 +88,7 @@ function Start-Process {
     param($FilePath,$ArgumentList,$WorkingDirectory,$WindowStyle,[switch]$PassThru,$RedirectStandardOutput,$RedirectStandardError)
     Assert ($FilePath -in @('Fixture-Python','fixture-node')) 'Unexpected executable was requested.'
     Assert ($WindowStyle -eq 'Hidden') 'Launcher would expose an unnecessary window.'
+    if ($FilePath -eq 'fixture-node' -and $global:cpV1Fixture.webSpawnFails) { throw 'Fixture frontend spawn failed.' }
     $global:cpV1Fixture.sequence++; $number=70000+$global:cpV1Fixture.sequence
     $started=([datetime]'2026-11-01T00:00:00Z').AddSeconds($global:cpV1Fixture.sequence)
     $command=$FilePath+' '+($ArgumentList -join ' ')
@@ -80,12 +107,23 @@ function Get-NetTCPConnection { param($LocalPort,$State,$ErrorAction) if($global
 function Stop-Process {
     param($Id,[switch]$Force,$ErrorAction)
     Assert ($global:cpV1Fixture.live.ContainsKey([int]$Id)) 'Attempt to stop an unowned process.'
+    if ($global:cpV1Fixture.stopFails) { return }
     $global:cpV1Fixture.stops+=[int]$Id;$global:cpV1Fixture.live.Remove([int]$Id)
     foreach($port in @($global:cpV1Fixture.ports.Keys)){if($global:cpV1Fixture.ports[$port] -eq [int]$Id){$global:cpV1Fixture.ports.Remove($port)}}
 }
 function Invoke-WebRequest {
     param($Uri,$TimeoutSec,[switch]$UseBasicParsing)
     $global:cpV1Fixture.health+=$Uri
+    if ($global:cpV1Fixture.backendHealthFails -and $Uri -match '/ready$') {
+        if ($global:cpV1Fixture.cleanupIdentityDrift) {
+            $number = $global:cpV1Fixture.starts[0].Id
+            $global:cpV1Fixture.live[$number].CommandLine = 'foreign-process-identity'
+        }
+        if ($global:cpV1Fixture.replaceStateOnFailure) {
+            'unknown-recovery-record-do-not-delete' | Set-Content -LiteralPath $global:cpV1Fixture.case.State -Encoding UTF8
+        }
+        throw 'Fixture backend readiness failed.'
+    }
     if($global:cpV1Fixture.wrongHealth -and $Uri -match '/_next/'){throw 'Fixture server is serving another build.'}
     return [pscustomobject]@{StatusCode=200}
 }
@@ -112,6 +150,8 @@ Check 'cold start ignores old default and inherited env; records the actual sele
         Assert ($global:cpV1Fixture.starts[1].Dist -eq '.next-accepted' -and $global:cpV1Fixture.starts[1].Api -eq 'http://127.0.0.1:8140') 'Child inherited an unaccepted directory or API.'
         Assert ($env:NEXT_DIST_DIR -eq '.next-foreign' -and $env:BACKEND_ORIGIN -eq 'http://127.0.0.1:8888') 'Caller environment was not restored.'
         Assert ($global:cpV1Fixture.health -contains 'http://127.0.0.1:3140/_next/static/new-build/_buildManifest.js') 'Ready check does not identify the actual build.'
+        Assert ($global:cpV1Fixture.health -contains 'http://127.0.0.1:8140/api/v1/ready') 'Startup must check dependencies, not just liveness.'
+        Assert ($global:cpV1Fixture.health -notcontains 'http://127.0.0.1:8140/api/v1/health') 'Liveness must not be used as readiness.'
     }finally{$env:NEXT_DIST_DIR=$oldDist;$env:BACKEND_ORIGIN=$oldApi}
 }
 Check 'reuse keeps identities and build checks without another start or migration' {
@@ -127,7 +167,14 @@ Check 'stop removes only process record; next cold start retains accepted select
 Check 'selection refuses an active owned run' { $before=(Get-FileHash -LiteralPath $global:cpV1Fixture.case.Profile).Hash;Reject {Select-Fixture} 'Stop the owned';Assert ((Get-FileHash -LiteralPath $global:cpV1Fixture.case.Profile).Hash -eq $before) 'Active selection changed.' }
 Check 'missing selection does not fall back to a valid old .next' { New-Fixture;Reject {Start-Fixture} 'selection missing';No-Startup }
 Check 'missing route, lazy chunk and metadata files fail before native work' {
-    foreach($file in @('server/app/page.js','static/chunks/lazy.js','required-server-files.json')){New-Fixture;Select-Fixture;Remove-Item -LiteralPath (Join-Path $global:cpV1Fixture.case.Root "jianli/.next-accepted/$file");Reject {Start-Fixture} 'Cannot find';No-Startup}
+    foreach ($file in @('server/app/page.js','static/chunks/lazy.js','required-server-files.json')) {
+        New-Fixture
+        Select-Fixture
+        $expected = Join-Path $global:cpV1Fixture.case.Root "jianli/.next-accepted/$file"
+        Remove-Item -LiteralPath $expected
+        Reject-MissingPath { Start-Fixture } $expected
+        No-Startup
+    }
 }
 Check 'wrong BUILD_ID and directory metadata are rejected' {
     New-Fixture;Select-Fixture;'other-build'|Set-Content -LiteralPath (Join-Path $global:cpV1Fixture.case.Root 'jianli/.next-accepted/BUILD_ID');Reject {Start-Fixture} 'BUILD_ID';No-Startup
@@ -167,5 +214,89 @@ Check 'failed migration restores inherited environment and does not start proces
 Check 'explicit accepted default clears NEXT_DIST_DIR for next.config compatibility' {
     New-Fixture;Select-Fixture '.next' 'old-build';$old=$env:NEXT_DIST_DIR
     try{$env:NEXT_DIST_DIR='.next-foreign';Start-Fixture;Assert ([string]::IsNullOrEmpty($global:cpV1Fixture.starts[1].Dist)) 'Default .next was passed as an invalid NEXT_DIST_DIR.';Assert ($env:NEXT_DIST_DIR -eq '.next-foreign') 'Inherited env lost.'}finally{$env:NEXT_DIST_DIR=$old}
+}
+Check 'release follow-up: backend readiness failure stops only its new API and preserves selection' {
+    New-Fixture; Select-Fixture
+    $before = (Get-FileHash -LiteralPath $global:cpV1Fixture.case.Profile).Hash
+    $global:cpV1Fixture.backendHealthFails = $true
+    Reject { Start-Fixture } 'owned health check'
+    Assert ($global:cpV1Fixture.starts.Count -eq 1 -and $global:cpV1Fixture.stops.Count -eq 1 -and $global:cpV1Fixture.live.Count -eq 0) 'Backend failure did not clean only the newly created API.'
+    Assert (!(Test-Path -LiteralPath $global:cpV1Fixture.case.State)) 'Confirmed stopped services left the current run record.'
+    Assert ((Get-FileHash -LiteralPath $global:cpV1Fixture.case.Profile).Hash -eq $before) 'Failure cleanup changed persistent selection.'
+}
+Check 'release follow-up: frontend spawn and readiness failures clean this attempt' {
+    foreach ($mode in @('spawn','ready')) {
+        New-Fixture; Select-Fixture
+        if ($mode -eq 'spawn') { $global:cpV1Fixture.webSpawnFails = $true } else { $global:cpV1Fixture.wrongHealth = $true }
+        $pattern = if ($mode -eq 'spawn') { 'frontend spawn failed' } else { 'owned health check' }
+        Reject { Start-Fixture } $pattern
+        $expected = if ($mode -eq 'spawn') { 1 } else { 2 }
+        Assert ($global:cpV1Fixture.starts.Count -eq $expected -and $global:cpV1Fixture.stops.Count -eq $expected -and $global:cpV1Fixture.live.Count -eq 0) 'Frontend failure left a newly created service alive.'
+        Assert (!(Test-Path -LiteralPath $global:cpV1Fixture.case.State)) 'Confirmed stopped frontend failure kept the run record.'
+    }
+}
+Check 'release follow-up: a failed reused run never stops earlier services' {
+    New-Fixture; Select-Fixture; Start-Fixture
+    $before = (Get-FileHash -LiteralPath $global:cpV1Fixture.case.State).Hash
+    $global:cpV1Fixture.wrongHealth = $true
+    Reject { Start-Fixture } 'owned health check'
+    Assert ($global:cpV1Fixture.starts.Count -eq 2 -and $global:cpV1Fixture.stops.Count -eq 0 -and $global:cpV1Fixture.live.Count -eq 2) 'Reuse failure stopped or replaced an existing run.'
+    Assert ((Get-FileHash -LiteralPath $global:cpV1Fixture.case.State).Hash -eq $before) 'Reuse failure changed the recovery record.'
+}
+Check 'release follow-up: identity drift or unconfirmed stop retains recovery evidence' {
+    foreach ($mode in @('identity','stop')) {
+        New-Fixture; Select-Fixture
+        $global:cpV1Fixture.backendHealthFails = $true
+        if ($mode -eq 'identity') { $global:cpV1Fixture.cleanupIdentityDrift = $true } else { $global:cpV1Fixture.stopFails = $true }
+        Reject { Start-Fixture } 'owned health check'
+        Assert ($global:cpV1Fixture.stops.Count -eq 0 -and $global:cpV1Fixture.live.Count -eq 1) 'Unknown identity was stopped or unconfirmed exit was misreported.'
+        Assert (Test-Path -LiteralPath $global:cpV1Fixture.case.State) 'Uncertain cleanup discarded the process record.'
+        $supplemental = @(Get-ChildItem -LiteralPath (Split-Path -Parent $global:cpV1Fixture.case.State) -Filter 'startup-failed-*.json' -File)
+        Assert ($supplemental.Count -eq 1) 'Missing supplemental new-process identities.'
+        $record = Get-Content -LiteralPath $supplemental[0].FullName -Raw | ConvertFrom-Json
+        Assert ($record.processes.Count -eq 1 -and $record.processes[0].Id -eq $global:cpV1Fixture.starts[0].Id) 'Supplemental recovery identity differs from this attempt.'
+    }
+}
+Check 'release follow-up: changed main record survives successful owned cleanup' {
+    New-Fixture; Select-Fixture
+    $global:cpV1Fixture.backendHealthFails = $true
+    $global:cpV1Fixture.replaceStateOnFailure = $true
+    Reject { Start-Fixture } 'owned health check'
+    Assert ($global:cpV1Fixture.stops.Count -eq 1 -and $global:cpV1Fixture.live.Count -eq 0) 'Changed record prevented cleanup of the independently recorded new process.'
+    Assert ((Get-Content -LiteralPath $global:cpV1Fixture.case.State -Raw).Trim() -eq 'unknown-recovery-record-do-not-delete') 'Cleanup removed or replaced an unknown process record.'
+}
+function Make-CandidateFixture {
+    New-Fixture
+    $front = Join-Path $global:cpV1Fixture.case.Root 'jianli'
+    $dist = '.next-candidate-release-fixture'
+    $build = Join-Path $front $dist
+    Make-Build $front $dist 'candidate-build'
+    New-Item -ItemType Directory -Path (Join-Path $front 'src') -Force | Out-Null
+    'synthetic source' | Set-Content -LiteralPath (Join-Path $front 'src/fixture.txt') -Encoding UTF8
+    $inputFiles = @{'src/fixture.txt'=(Get-FileHash -LiteralPath (Join-Path $front 'src/fixture.txt')).Hash.ToLowerInvariant()}
+    $artifactFiles = @{}
+    foreach ($file in Get-ChildItem -LiteralPath $build -Recurse -File) {
+        $relative = $file.FullName.Substring($build.Length + 1).Replace('\','/')
+        $artifactFiles[$relative] = (Get-FileHash -LiteralPath $file.FullName).Hash.ToLowerInvariant()
+    }
+    $destination = Join-Path $global:cpV1Fixture.case.Root "output/builds/$dist"
+    New-Item -ItemType Directory -Path $destination -Force | Out-Null
+    Json (Join-Path $destination 'artifact-manifest.json') @{schema=1;distDir=$dist;buildId='candidate-build';sourceBase=$sourceId;capturedAt='2026-11-04T00:00:00Z';sealedAt='2026-11-04T00:01:00Z';inputFiles=$inputFiles;artifactFiles=$artifactFiles}
+    Select-Fixture $dist 'candidate-build'
+    return $build
+}
+Check 'release follow-up: an unsealed added artifact is refused before native work' {
+    $build = Make-CandidateFixture
+    'synthetic unsealed addition' | Set-Content -LiteralPath (Join-Path $build 'static/extra.txt') -Encoding UTF8
+    Reject { Start-Fixture } 'artifact file set changed'
+    No-Startup
+}
+Check 'release follow-up: cache and trace remain excluded from artifact membership' {
+    $build = Make-CandidateFixture
+    New-Item -ItemType Directory -Path (Join-Path $build 'cache/nested') -Force | Out-Null
+    'regenerable cache' | Set-Content -LiteralPath (Join-Path $build 'cache/nested/cache.txt') -Encoding UTF8
+    'regenerable trace' | Set-Content -LiteralPath (Join-Path $build 'trace') -Encoding UTF8
+    Start-Fixture
+    Assert ($global:cpV1Fixture.starts.Count -eq 2) 'Excluded cache/trace incorrectly invalidated a sealed build.'
 }
 Write-Output "$checks offline V1 build-selection checks passed; no real services, containers, migrations or business data touched. Fixtures: $scratch"

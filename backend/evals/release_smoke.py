@@ -165,7 +165,10 @@ async def verify_reconsent(data, student, hr, other, job_id, old_id, new_report,
     board_url = f"/api/v1/jobs/{job_id}/applications"
     board = await data(hr, "GET", board_url)
     assert old_id not in {item["id"] for item in board["items"]}, "Withdrawn row remains on board"
-    payload = {"reportId": new_report["id"], "shareConsent": True}
+    payload = {
+        "reportId": new_report["id"], "shareConsent": True,
+        "expectedReviewRevision": new_report["reviewRevision"],
+    }
     await data(student, "POST", "/api/v1/applications", expected=422,
                json={**payload, "shareConsent": False})
     renewed = await data(student, "POST", "/api/v1/applications", expected=201, json=payload)
@@ -384,14 +387,16 @@ async def exercise(run: str, root: Path) -> Path:
                 "POST",
                 "/api/v1/applications",
                 expected=422,
-                json={"reportId": base["id"], "shareConsent": False},
+                json={"reportId": base["id"], "shareConsent": False,
+                      "expectedReviewRevision": base["reviewRevision"]},
             )
             application = await data(
                 student,
                 "POST",
                 "/api/v1/applications",
                 expected=201,
-                json={"reportId": base["id"], "shareConsent": True},
+                json={"reportId": base["id"], "shareConsent": True,
+                      "expectedReviewRevision": base["reviewRevision"]},
             )
             aid = application["id"]
             result["ids"]["application"] = aid
@@ -400,7 +405,8 @@ async def exercise(run: str, root: Path) -> Path:
                 "POST",
                 "/api/v1/applications",
                 expected=201,
-                json={"reportId": base["id"], "shareConsent": True},
+                json={"reportId": base["id"], "shareConsent": True,
+                      "expectedReviewRevision": base["reviewRevision"]},
             )
             assert again["id"] == aid
             await data(other, "GET", f"/api/v1/applications/{aid}", expected=404)

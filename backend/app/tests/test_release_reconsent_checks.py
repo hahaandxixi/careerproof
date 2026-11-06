@@ -8,6 +8,7 @@ import pytest
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import TaskStatus
 from app.models.recruitment import Application
+from app.tests.submission_helpers import application_payload
 from app.tests.test_applications_api import close, setup
 from app.tests.test_real_matching import matching_db as matching_db
 from evals.release_smoke import verify_reconsent
@@ -22,9 +23,9 @@ async def test_reconsent_smoke_checks_reject_incomplete_chain(
         matching_db, tmp_path, monkeypatch,
     )
     try:
-        original = (await student.post('/api/v1/applications', json={
-            'reportId': str(rid), 'shareConsent': True,
-        })).json()['data']
+        original = (await student.post(
+            '/api/v1/applications', json=await application_payload(student, rid)
+        )).json()['data']
         old_id = original['id']
         frozen = (await hr.post(f'/api/v1/applications/{old_id}/view')).json()['data']['report']
         notices = (await hr.get('/api/v1/notifications')).json()['data']['items']

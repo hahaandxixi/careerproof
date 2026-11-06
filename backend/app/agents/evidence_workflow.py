@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, replace
@@ -28,6 +29,7 @@ from app.agents.provider import (
     get_ai_provider,
 )
 from app.core.config import settings
+from app.services.ai_budget import BudgetAdmissionError
 from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import _rule_classification
@@ -35,6 +37,8 @@ from app.tools.evidence_selection import select_test_context
 from app.tools.function_coverage import file_coverage, function_coverage
 from app.tools.matcher import MatchResult
 from app.tools.skill_rubric import rubric_for
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,6 +62,7 @@ class EvidenceWorkflowOutcome:
     planning_skipped_reason: str | None = None
     input_budget_stop: dict | None = None
     input_preflights: tuple[dict, ...] = ()
+    failure_type: str | None = None
 
 
 _MODEL_SEMAPHORE: asyncio.Semaphore | None = None
@@ -285,6 +290,8 @@ def eligible_retrieval_contexts(
 
 
 def _fallback_reason(exc: Exception) -> str:
+    if isinstance(exc, BudgetAdmissionError):
+        return "budget_admission"
     if isinstance(exc, ProviderInputBudgetError):
         return "input_token_limit"
     if isinstance(exc, ProviderOutputBudgetError):
@@ -691,6 +698,9 @@ async def run_evidence_workflow(
             ),
         )
     except Exception as exc:
+        # No exception text, traceback, HTTP body or source fragment in product logs.
+        logger.warning("matching.ai_stage_failure stage=%s reason=%s error_type=%s",
+                       stage, _fallback_reason(exc), type(exc).__name__)
         if not settings.ai_local_fallback_enabled:
             raise
         input_budget_stop = None
@@ -717,6 +727,7 @@ async def run_evidence_workflow(
                 else planning_usage
             ),
             failure_stage=stage,
+            failure_type=type(exc).__name__,
             input_budget_stop=input_budget_stop,
             input_preflights=(
                 tuple(provider.input_preflights)

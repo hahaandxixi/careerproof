@@ -9,6 +9,7 @@ from app.schemas.common import APIModel
 class ApplicationCreate(APIModel):
     report_id: UUID
     share_consent: Literal[True]
+    expected_review_revision: int = Field(ge=1, strict=True)
 
 
 class ReplyReference(APIModel):

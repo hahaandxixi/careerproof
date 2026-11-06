@@ -281,7 +281,7 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  for(const c of candidates)Object.assign(c.report,{summary:"原报告摘要",createdAt:"2026-10-29T12:00:00Z",jobTitle:"原岗位"});
  const before=JSON.stringify(candidates);
  const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){}}));
- assert.match(html,/林同学/);assert.match(html,/陈同学/);assert.match(html,/示例/);assert.match(html,/原记录名称：Python 实现材料学生/);
+ assert.match(html,/林同学/);assert.match(html,/陈同学/);assert.doesNotMatch(html,/· 示例/);assert.doesNotMatch(html,/原记录名称：Python 实现材料学生/);
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
- const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.match(fixed,/示例/);
+ const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
 });

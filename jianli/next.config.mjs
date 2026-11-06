@@ -17,6 +17,10 @@ if (nextDistDir != null && (nextDistDir === ".next" || !/^\.[a-z0-9-]+$/.test(ne
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   ...(nextDistDir ? { distDir: nextDistDir } : {}),
+  // Sealed local candidates must remain verifiable after serving pages.
+  ...(nextDistDir?.startsWith(".next-candidate-") ? {
+    experimental: { isrFlushToDisk: false },
+  } : {}),
   async headers() {
     const headers = [
       { key: "X-Frame-Options", value: "DENY" },

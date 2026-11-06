@@ -1,10 +1,16 @@
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Query, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import get_current_user
+from app.api.upload_admission import (
+    ProjectUploadForm,
+    ResumeUploadForm,
+    authenticated_upload,
+    multipart_body,
+)
 from app.core.config import settings
 from app.core.database import get_session
 from app.models.identity import User
@@ -33,6 +39,8 @@ from app.services.retrieval import search_owned_chunks
 from app.services.task_runner import FastAPIBackgroundTaskRunner
 
 router = APIRouter()
+resume_upload_form = authenticated_upload(ResumeUploadForm, lambda: RESUME_MAX_BYTES)
+project_upload_form = authenticated_upload(ProjectUploadForm, lambda: settings.max_archive_bytes)
 
 
 @router.get("/knowledge/search", response_model=ApiResponse[list[KnowledgeSearchResult]])
@@ -127,17 +135,20 @@ async def list_project_versions(
     return success(await PortfolioService(session).list_project_versions(project_id, current_user))
 
 
-@router.post("/resumes", response_model=ApiResponse[ResumeUploadData], status_code=202)
+@router.post(
+    "/resumes", response_model=ApiResponse[ResumeUploadData], status_code=202,
+    openapi_extra=multipart_body(ResumeUploadForm),
+)
 async def upload_resume(
     background_tasks: BackgroundTasks,
-    title: str = Form(min_length=1, max_length=200),
-    file: UploadFile = File(),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
+    form: ResumeUploadForm = Depends(resume_upload_form),
 ) -> ApiResponse[ResumeUploadData]:
+    file = form.file
     content = await file.read(RESUME_MAX_BYTES + 1)
     accepted = await PortfolioService(session).create_resume_upload(
-        title=title,
+        title=form.title,
         filename=file.filename or "resume",
         mime_type=file.content_type or "application/octet-stream",
         content=content,
@@ -168,26 +179,24 @@ async def create_project(
     "/projects/{project_id}/versions",
     response_model=ApiResponse[ProjectVersionUploadData],
     status_code=202,
+    openapi_extra=multipart_body(ProjectUploadForm),
 )
 async def upload_project_version(
     project_id: UUID,
     background_tasks: BackgroundTasks,
-    file: UploadFile = File(),
-    request_id: UUID | None = Form(default=None, alias="requestId"),
-    material_role: Literal["portfolio", "reference"] = Form(
-        default="portfolio", alias="materialRole"
-    ),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
+    form: ProjectUploadForm = Depends(project_upload_form),
 ) -> ApiResponse[ProjectVersionUploadData]:
+    file = form.file
     content = await file.read(settings.max_archive_bytes + 1)
     accepted, created = await PortfolioService(session).create_project_version(
         project_id=project_id,
         filename=file.filename or "project.zip",
         content=content,
         current_user=current_user,
-        request_id=request_id,
-        material_role=material_role,
+        request_id=form.request_id,
+        material_role=form.material_role,
     )
     if created:
         FastAPIBackgroundTaskRunner().submit(

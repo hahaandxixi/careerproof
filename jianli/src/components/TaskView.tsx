@@ -164,7 +164,7 @@ export default function TaskView({ id }: { id: string }) {
     {task && <>
       <section className="panel">
         <div className="flex items-center justify-between"><h2 className="text-lg font-semibold">{LABELS[task.status] ?? task.status}</h2><span className="text-sm text-slate-500">{Math.round(task.progress)}%</span></div>
-        <progress className="task-progress mt-4 h-3 w-full accent-indigo-600" max={100} value={task.progress} aria-label="分析进度" />
+        <progress className={`task-progress mt-4 h-3 w-full ${task.status === "failed" || task.status === "cancelled" ? "task-progress-failed" : ""}`} max={100} value={task.progress} aria-label="分析进度" />
         {/* aria-live stays on this short line only; the history below is not re-announced. */}
         <p role="status" className="task-stage mt-3 text-sm text-slate-700">
           {active && <span className="task-stage-dot" aria-hidden="true" />}

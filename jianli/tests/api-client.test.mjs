@@ -4,6 +4,12 @@ import { api, ApiError, errorMessage, request } from "../src/lib/api/client.ts";
 
 const envelope = (data, status = 200, message = "success") => new Response(JSON.stringify({ code: status === 200 ? 0 : status, message, data, requestId: "test-request" }), { status, headers: { "Content-Type": "application/json" } });
 
+test("application creation transmits the viewed review revision and consent in one request",async()=>{
+ const original=globalThis.fetch;let calls=0;
+ globalThis.fetch=async(url,init)=>{calls++;assert.ok(url.endsWith('/applications'));assert.equal(init.method,'POST');assert.deepEqual(JSON.parse(init.body),{reportId:'r',shareConsent:true,expectedReviewRevision:7});return envelope({id:'a'});};
+ try{assert.deepEqual(await api.createApplication('r',7),{id:'a'});assert.equal(calls,1);}finally{globalThis.fetch=original;}
+});
+
 test("authorized resume download preserves binary bytes and filename after session refresh", async()=>{
   const original=globalThis.fetch;let calls=0;
   globalThis.fetch=async(url,init)=>{

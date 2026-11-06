@@ -1,3 +1,4 @@
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -6,6 +7,7 @@ import { comparisonRows, comparisonCounts, filterComparisonRows, groupComparison
 import * as logic from "../src/lib/report-comparison-display.ts";
 import * as sourceLabels from "../src/lib/source-label.ts";
 import * as levels from "../src/lib/evidence-display.ts";
+import * as pairs from "../src/lib/report-pair.ts";
 
 function source(overrides = {}) {
   return { citationId: "R1-E1", sourceId: "source-1", projectVersionId: "version-1", projectFileId: "file-1", filePath: "version-1/src/service.py", lineStart: 10, lineEnd: 20, snippet: "def register():\n    return save()", contentHash: "hash", provenance: "portfolio", contextComplete: true, contextNote: "", evidenceType: "implementation", ...overrides };
@@ -23,7 +25,7 @@ test("identical saved states produce zero changes and keep unchanged records acc
   assert.deepEqual(comparisonCounts(result), {changed:0,all:1,evidence:0,status:0,needs:0,unchanged:1});
   assert.equal(filterComparisonRows(result,"changed").length,0);
   assert.equal(filterComparisonRows(result,"unchanged").length,1);
-  assert.match(result[0].summary,/没有检测到变化/);
+  assert.match(result[0].summary,/引用集合未变（保留 1 处），判断状态未变/);
   assert.equal(result[0].retained.length,1);
 });
 
@@ -70,6 +72,7 @@ function render(f, filter="changed") {
   const runtime=require("react/jsx-runtime");
   const Explanation=load("../src/components/ReportItemExplanation.tsx",{"react/jsx-runtime":runtime});
   const View=load("../src/components/ReportComparisonView.tsx",{
+    "@/lib/demo-display-identity.js":demoPresentation,
     react:{useState:()=>[filter,()=>{}]},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
     "@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
@@ -102,18 +105,25 @@ test("no-change message, filters, counts and old explanations remain available w
 
 test("panel only displays complete authorized report data and preserves actual read failures", async () => {
   for (const fail of [false,true]) {
-    const f=fixture(), cells=[], refs=[]; let cursor=0, ri=0;
+    const f=fixture(), cells=[]; let cursor=0, effect, started=false, session, comparisons=0;
+    for (const report of [f.base,f.current]) Object.assign(report,{jobId:"job",candidateId:"owner",analysisMode:"rules"});
     const reads=[]; const View=()=>null;
     const Panel=load("../src/components/ReportComparisonPanel.tsx",{
-      react:{useEffect(){},useRef(initial){return refs[ri++]??={current:initial};},useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=v;}];}},
+      react:{useEffect(fn){if(!started){started=true;effect=fn;}},useMemo(fn){return session??=fn();},useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=v;}];}},
       "react/jsx-runtime":require("react/jsx-runtime"),"./ReportComparisonView":{__esModule:true,default:View},
-      "@/lib/api/client":{errorMessage:e=>e.message,api:{previousComparison:async()=>f.value,getReport:async id=>{reads.push(id);if(fail&&id===f.base.id)throw new Error("原报告暂时无法读取");return id===f.base.id?f.base:f.current;}}},
+      "@/lib/report-pair":pairs,
+      "@/lib/demo-display-identity.js":demoPresentation,
+      "@/lib/api/client":{errorMessage:e=>e.message,api:{listReports:async()=>({items:[f.base,f.current],page:1,pageSize:50,total:2}),compareReports:async(a,b)=>{comparisons++;assert.equal(a,f.base.id);assert.equal(b,f.current.id);return f.value;},getReport:async id=>{reads.push(id);if(fail&&id===f.base.id)throw new Error("原报告暂时无法读取");return id===f.base.id?f.base:f.current;}}},
     });
-    const renderPanel=()=>{cursor=0;ri=0;return Panel({reportId:f.current.id,revision:""});};
+    const renderPanel=()=>{cursor=0;const outer=Panel({report:f.current,revision:""});return outer.type(outer.props);};
     function find(node,p){if(!node||typeof node!=="object")return null;if(Array.isArray(node))return node.map(n=>find(n,p)).find(Boolean);return p(node)?node:find(node.props?.children,p);}
-    await find(renderPanel(),n=>n.type==="button").props.onClick();
-    const tree=renderPanel();assert.deepEqual(reads,[f.base.id,f.current.id]);
+    renderPanel();const dispose=effect();
+    for(let i=0;i<8;i++)await Promise.resolve();
+    const button=find(renderPanel(),n=>n.type==="button");assert.equal(button.props.disabled,false);button.props.onClick();
+    for(let i=0;i<8;i++)await Promise.resolve();
+    const tree=renderPanel();assert.deepEqual(reads,[f.base.id,f.current.id]);assert.equal(comparisons,1);
     if(fail){assert.equal(find(tree,n=>n.type===View),undefined);assert.equal(find(tree,n=>n.props?.role==="alert").props.children,"原报告暂时无法读取");}
     else {const view=find(tree,n=>n.type===View);assert.equal(view.props.base,f.base);assert.equal(view.props.current,f.current);}
+    dispose();
   }
 });

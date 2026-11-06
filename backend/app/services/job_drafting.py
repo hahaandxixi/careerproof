@@ -88,7 +88,9 @@ def validate_draft(raw: dict, description: str, model: str, usage: dict | None) 
                 weight_reason=item.weight_reason,
             )
         )
-    return JobDraftResult(requirements=requirements, model=model, usage=usage)
+    return JobDraftResult(
+        normalized_description=description, requirements=requirements, model=model, usage=usage
+    )
 
 
 async def draft_job_requirements(

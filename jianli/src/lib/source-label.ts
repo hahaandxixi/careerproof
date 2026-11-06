@@ -1,7 +1,15 @@
+import { displayMaterialTitle } from "./demo-display-identity.js";
+
 /** Resolve labels only against this report's frozen material list. */
 export interface SourceMaterial {
   kind: string; id: string; title: string; versionNumber: number;
 }
+export function materialPathReadingText(text: string, materials: readonly SourceMaterial[]): string {
+  return materials.filter(material => material.kind === "project").reduce(
+    (value, material) => value.replaceAll(`${material.id}/`, ""), text,
+  );
+}
+
 export interface SourceLocation {
   filePath: string; projectVersionId?: string | null;
 }
@@ -13,7 +21,7 @@ export function compactSourceLabel(source: SourceLocation, materials: readonly S
   if (!material) return { fileName, material: "历史来源 · 完整身份见详情" };
   const peers = materials.filter(m => m.kind === "project" && m.title === material.title && m.versionNumber === material.versionNumber);
   const index = peers.findIndex(m => m.id === material.id);
-  return { fileName, material: `${material.title || "未命名项目"} · 第 ${material.versionNumber} 版${peers.length > 1 ? ` · 材料 ${index + 1}` : ""}` };
+  return { fileName, material: `${displayMaterialTitle(material.title, material.id) || "未命名项目"} · 第 ${material.versionNumber} 版${peers.length > 1 ? ` · 材料 ${index + 1}` : ""}` };
 }
 
 export function sourceLabel(source: SourceLocation, materials: readonly SourceMaterial[] = []): string {
@@ -22,7 +30,7 @@ export function sourceLabel(source: SourceLocation, materials: readonly SourceMa
   if (!material) return source.filePath;
   const prefix = `${material.id}/`;
   const relative = source.filePath.startsWith(prefix) ? source.filePath.slice(prefix.length) : source.filePath;
-  const title = material.title || "未命名项目";
+  const title = displayMaterialTitle(material.title, material.id) || "未命名项目";
   const peers = materials.filter(m => m.kind === "project" && m.title === material.title && m.versionNumber === material.versionNumber);
   let identity = "";
   if (new Set(peers.map(m => m.id)).size > 1) {
