@@ -21,6 +21,7 @@ export function studentFlowLocation(pathname: string, role?: string, search = ""
   if (pathname === "/recommendations" || pathname === "/jobs" || /^\/jobs\/(?!new$|mine$|manage$)[^/]+$/.test(pathname)) return "recommendations";
   if (/^\/growth(?:\/[^/]+)?$/.test(pathname)) return "growth";
   if (pathname === "/reports") return "matching";
+  if (pathname === "/applications") return "application";
   return null;
 }
 

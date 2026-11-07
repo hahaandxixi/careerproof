@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applicationFilterView, filterApplications, mixedComparisonBasis, requirementDifference } from "../src/lib/application-comparison.ts";
+import { applicationFilterView, comparableApplicationGroup, filterApplications, mixedComparisonBasis, requirementDifference } from "../src/lib/application-comparison.ts";
 
 const item = (id, score, verdict, basis = "same", at = "2026-09-28T12:00:00Z") => ({
   id, candidateName: id, createdAt: at, comparisonBasis: basis, overallScore: score,fixedRequirementBasisComplete:true,
@@ -32,6 +32,18 @@ test("missing fixed comparison fields are unknown and cannot imply score-based r
  const values=[{...item("旧记录",99,"supported"),fixedRequirementBasisComplete:undefined},{...item("新记录",20,"partial","same","2026-10-01T00:00:00Z"),fixedRequirementBasisComplete:false}];
  assert.equal(mixedComparisonBasis(values),true);
  assert.deepEqual(filterApplications(values,"","","").map(i=>i.id),["新记录","旧记录"]);
+});
+
+test("2+1 panel keeps the same-basis pair comparable and isolates the unlike/incomplete report", () => {
+  const a = item("A", 60, "supported", "same");
+  const b = item("B", 55, "partial", "same");
+  const c = item("C", 99, "supported", "other");
+  const grouped = comparableApplicationGroup([a, b, c]);
+  assert.deepEqual(grouped.comparable.map(value => value.id), ["A", "B"]);
+  assert.deepEqual(grouped.excluded.map(value => value.id), ["C"]);
+  const missing = { ...item("C-missing", 99, "supported", "same"), fixedRequirementBasisComplete: false };
+  assert.deepEqual(comparableApplicationGroup([a, b, missing]).excluded.map(value => value.id), ["C-missing"]);
+  assert.deepEqual(comparableApplicationGroup([a, b]).excluded, []);
 });
 
 test("filter view reports empty results and selected reports outside the current filter", () => {

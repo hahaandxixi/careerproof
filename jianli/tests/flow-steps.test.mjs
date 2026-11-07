@@ -54,7 +54,8 @@ test("student routes identify location without claiming progress or leaking to o
     assert.equal(studentFlowLocation(url, "student"), key);
     for (const role of [undefined, "enterprise", "admin"]) assert.equal(studentFlowLocation(url, role), null);
   }
-  for (const url of ["/login", "/demo/heatmap", "/notifications", "/jobs/new", "/jobs/mine", "/jobs/manage", "/jobs/job1/edit", "/jobs/job1/applications", "/applications"]) assert.equal(studentFlowLocation(url, "student"), null);
+  assert.equal(studentFlowLocation("/applications", "student"), "application");
+  for (const url of ["/login", "/demo/heatmap", "/notifications", "/jobs/new", "/jobs/mine", "/jobs/manage", "/jobs/job1/edit", "/jobs/job1/applications"]) assert.equal(studentFlowLocation(url, "student"), null);
 });
 
 test("navigation retains all five ordered steps and only one current location", () => {

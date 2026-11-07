@@ -337,9 +337,13 @@ async def test_real_child_hard_stop_then_database_only_recovery(
                 hold = await session.scalar(select(AiBudgetReservation).where(
                     AiBudgetReservation.attempt_id == attempt.id,
                 ))
-                assert hold is not None
-                assert hold.output_bound == attempt.max_output_tokens
-                assert hold.reservation_day == attempt.sending_day
+                if chain == "verification":
+                    assert hold is not None
+                    assert hold.output_bound == attempt.max_output_tokens
+                    assert hold.reservation_day == attempt.sending_day
+                else:
+                    # Matching records attempts/usage without the shared-budget hold.
+                    assert hold is None
             if phase in ("send_intent_committed", "response_observed"):
                 assert attempt.state == "in_flight" and attempt.response_digest is None
                 assert attempt.usage_input_tokens is None and ledger_at_hang == []
@@ -350,9 +354,10 @@ async def test_real_child_hard_stop_then_database_only_recovery(
             if phase in ("receipt_committed", "ledger_committed"):
                 assert (attempt.usage_input_tokens, attempt.usage_output_tokens,
                         attempt.usage_cache_hit_tokens) == expected_usage
-                assert hold.state == "settled"
-                assert (hold.actual_input_tokens, hold.actual_output_tokens) == (123, 45)
-            else:
+                if chain == "verification":
+                    assert hold.state == "settled"
+                    assert (hold.actual_input_tokens, hold.actual_output_tokens) == (123, 45)
+            elif chain == "verification":
                 assert hold.state == "held"
                 assert hold.actual_input_tokens is None
             if phase == "ledger_committed":
@@ -388,7 +393,11 @@ async def test_real_child_hard_stop_then_database_only_recovery(
         await reap(case.factory, str(task_id))
         context = AttemptContext(task_id, owner_id, claim_token, row.step,
                                  row.provider, row.model)
-        service = AttemptService(case.factory, context, budget=SharedBudgetService())
+        service = AttemptService(
+            case.factory,
+            context,
+            budget=SharedBudgetService() if chain == "verification" else None,
+        )
         written_first = await service.reconcile()
         assert http_count(counter_file) == HTTP_AT_HANG[phase]
         written_second = await service.reconcile()
@@ -423,7 +432,8 @@ async def test_real_child_hard_stop_then_database_only_recovery(
             assert summary["usageKnown"] is False
             assert summary["trustedReceiptCount"] == 0
             assert summary["unknownAttemptCount"] == 1 and summary["intentCount"] == 1
-            assert hold.state == "held" and hold.actual_input_tokens is None
+            if chain == "verification":
+                assert hold.state == "held" and hold.actual_input_tokens is None
         elif phase == "receipt_committed":
             assert (written_first, written_second) == (1, 0)
             assert row.state == "booked"
@@ -439,7 +449,7 @@ async def test_real_child_hard_stop_then_database_only_recovery(
             assert row.state == "booked" and len(ledger) == 1
             assert summary["usageKnown"] and summary["usageBooked"]
             assert summary["trustedReceiptCount"] == 1
-        if phase in ("receipt_committed", "ledger_committed"):
+        if chain == "verification" and phase in ("receipt_committed", "ledger_committed"):
             assert hold.state == "settled"
             assert (hold.actual_input_tokens, hold.actual_output_tokens) == (123, 45)
     finally:

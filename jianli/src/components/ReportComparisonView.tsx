@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import type { MatchReport, ReportComparison } from "@/lib/api/domain";
 import { comparisonCounts, comparisonRows, filterComparisonRows, sourceRecordKind, type ComparisonFilter, type ComparisonRow } from "@/lib/report-comparison-display";
-import { compactSourceLabel } from "@/lib/source-label";
+import { compactSourceLabel, materialPathReadingText } from "@/lib/source-label";
+import { aiStatusLabel } from "@/lib/report-display";
 import { evidenceLevelName } from "@/lib/evidence-display";
 import { GROWTH_CHANGES } from "@/lib/growth-workflow";
 import ReportItemExplanation from "./ReportItemExplanation";
@@ -15,15 +16,17 @@ const FILTERS: [ComparisonFilter, string][] = [["changed", "有变化"], ["all",
 function SourceGroup({ label, groups, reportId, requirementId, materials }: {
   label: string; groups: ComparisonRow["added"]; reportId: string; requirementId: string; materials: MatchReport["materials"];
 }) {
-  return <details className="min-w-0 border-t border-slate-100 py-2">
-    <summary className="w-fit cursor-pointer py-1 text-indigo-700">{label} · {groups.length} 处</summary>
-    {!groups.length && <p className="py-2 text-slate-600">没有记录{label}。</p>}
+  // Zero-count groups stay as flat statements, never as an openable empty disclosure.
+  if (!groups.length) return <p className="border-t border-slate-100 py-2 text-sm leading-6 text-slate-500">{label} · 0 处，没有可展开的记录。</p>;
+  return <details open={label === "新增引用"} className="min-w-0 border-t border-slate-100 py-2">
+    <summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">{label} · {groups.length} 处</summary>
     <ul className="min-w-0 divide-y divide-slate-100">{groups.map((group, index) => {
       const source = group.source, short = compactSourceLabel(source, materials);
       const anchor = group.citationIds[0] ? `citation-${group.citationIds[0]}` : `requirement-${requirementId}`;
       return <li key={index} className="min-w-0 space-y-1 py-3">
-        <Link className="break-words font-medium text-indigo-700 underline" href={`/reports/${reportId}#${anchor}`}>{short.fileName} · {source.lineStart > 0 ? `第 ${source.lineStart}–${source.lineEnd} 行` : "行号未记录"}</Link>
+        <Link className="break-words font-medium text-[#1d4a40] underline" href={`/reports/${reportId}#${anchor}`}>{short.fileName} · {source.lineStart > 0 ? `第 ${source.lineStart}–${source.lineEnd} 行` : "行号未记录"}</Link>
         <p className="break-words text-sm leading-6 text-slate-600">{short.material} · {sourceRecordKind(source)}</p>
+        {label === "新增引用" && source.snippet && <pre className="comparison-source-preview">{source.snippet}</pre>}
         {source.provenance === "reference" && <p className="text-xs text-slate-600">第三方参考，不作为个人实践证明。</p>}
         <details className="min-w-0 text-xs leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-1">完整来源与源码</summary>
           <dl className="min-w-0 space-y-1 py-2 [overflow-wrap:anywhere]">
@@ -44,22 +47,25 @@ function SourceGroup({ label, groups, reportId, requirementId, materials }: {
 
 function RequirementChange({ row, value, showTitle = true }: { row: ComparisonRow; value: ReportComparison; showTitle?: boolean }) {
   const { item } = row;
+  const gap = materialPathReadingText(item.targetInformationGap || "", [...value.baseMaterials, ...value.targetMaterials]);
   const tests = row.added.filter(group => sourceRecordKind(group.source) === "测试代码引用").length;
   const records = row.added.filter(group => sourceRecordKind(group.source) === "记录文件引用（需核对原文）").length;
   return <div className="min-w-0 space-y-3">
     <div className="flex flex-wrap items-start justify-between gap-2">{showTitle && <h3 className="min-w-0 flex-1 break-words font-semibold text-slate-900">{item.title}</h3>}<span className="shrink-0 text-xs leading-6 text-slate-600">权重 {item.targetRequirement?.weight ?? item.baseRequirement?.weight ?? "未记录"}</span></div>
-    <p className="flex flex-wrap items-center gap-2 text-sm"><span className="text-slate-600">基准 → 当前</span><span>{row.baseStatus}</span><span aria-hidden="true">→</span><span className={row.statusChanged ? "font-medium text-indigo-700" : "text-slate-700"}>{row.targetStatus}</span></p>
+    <p className="flex flex-wrap items-center gap-2 text-sm"><span className="text-slate-600">基准 → 当前</span><span>{row.baseStatus}</span><span aria-hidden="true">→</span><span className={row.statusChanged ? "font-medium text-[#1d4a40]" : "text-slate-700"}>{row.targetStatus}</span></p>
     <p className="text-base leading-7 text-slate-700">{row.evidenceChanged && item.status==="existing" ? row.statusChanged ? "判断状态已改变，请核对相关来源。" : "引用范围有变化，判断状态未改变。" : row.summary}</p>
-    {item.targetInformationGap&&<p className="text-base leading-7 text-slate-700">仍待核对：{/规则层保存了未发送证据/.test(item.targetInformationGap)?"旧记录只保存了分析范围提示，具体缺口原文无法恢复，请到原报告核对。":item.targetInformationGap}</p>}
+    {row.added.length > 0 && <SourceGroup label="新增引用" groups={row.added} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />}
+    {row.removed.length > 0 && <SourceGroup label="移除展示的引用" groups={row.removed} reportId={value.baseId} requirementId={item.requirementId} materials={value.baseMaterials} />}
+    {row.retained.length > 0 && <SourceGroup label="保留展示的引用（当前版本）" groups={row.retained} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />}
+    {row.added.length === 0 && row.removed.length === 0 && row.retained.length === 0 && <p className="text-sm leading-6 text-slate-600">本项没有新增、移除或保留的可展示引用；判断或文本变化见上。</p>}
+    {item.targetInformationGap&&<p className="text-base leading-7 text-slate-700">仍待核对：{/规则层保存了未发送证据/.test(item.targetInformationGap)?"旧记录只保存了分析范围提示，具体缺口原文无法恢复，请到原报告核对。":gap}</p>}
+    {gap !== (item.targetInformationGap || "") && <details className="text-sm text-slate-600"><summary className="disclosure">保存原文与完整材料定位</summary><p className="break-words leading-7">{item.targetInformationGap}</p></details>}
     {row.levelChanged && <p className="text-xs leading-6 text-slate-600">实践证据等级：{item.baseLevel == null ? "未评级" : evidenceLevelName(item.baseLevel)} → {item.targetLevel == null ? "未评级" : evidenceLevelName(item.targetLevel)}。等级与引用变化同时展示，不推断因果。</p>}
     {(tests > 0 || records > 0) && <p className="text-sm leading-6 text-slate-600">新增测试代码引用 {tests} 处、记录文件引用 {records} 处。运行结果需核对原文与源码版本。</p>}
-    <SourceGroup label="新增引用" groups={row.added} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />
-    <SourceGroup label="移除展示的引用" groups={row.removed} reportId={value.baseId} requirementId={item.requirementId} materials={value.baseMaterials} />
-    <SourceGroup label="保留展示的引用（当前版本）" groups={row.retained} reportId={value.targetId} requirementId={item.requirementId} materials={value.targetMaterials} />
-    <details className="min-w-0 border-t border-slate-100 py-2"><summary className="w-fit cursor-pointer py-1 text-indigo-700">判断依据、建议与复核记录</summary>
+    <details className="min-w-0 border-t border-slate-100 py-2"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">判断依据、建议与复核记录</summary>
       <div className="min-w-0 space-y-3 pt-3 [overflow-wrap:anywhere]">
         {item.changes.includes("requirement") && <p>岗位要求或权重有变化，请结合两份原报告核对比较范围。</p>}
-        <p className="text-xs leading-6 text-slate-600">AI 状态：{item.baseAiStatus ?? "未记录"} → {item.targetAiStatus ?? "未记录"}；本人复核：{item.baseReview ?? "未记录"} → {item.targetReview ?? "未记录"}。复核状态是当前读取值。</p>
+        <p className="text-xs leading-6 text-slate-600">AI 状态：{aiStatusLabel(item.baseAiStatus)} → {aiStatusLabel(item.targetAiStatus)}；本人复核：{item.baseReview ?? "未记录"} → {item.targetReview ?? "未记录"}。复核状态是当前读取值。</p>
         <ReportItemExplanation item={item} targetLabel="当前报告" />
       </div>
     </details>
@@ -71,17 +77,15 @@ export default function ReportComparisonView({ value, base, current }: { value: 
   const rows = comparisonRows(value, base, current), counts = comparisonCounts(rows);
   const visible = filterComparisonRows(rows, filter);
   return <div className="min-w-0 space-y-4 text-base" aria-label="按岗位要求查看证据变化">
-    <div className="grid grid-cols-1 gap-3 border-b border-slate-200 pb-3 sm:grid-cols-2">{[{label:"基准报告",report:base},{label:"当前报告",report:current}].map(side=><div key={side.label}><Link className="font-medium text-indigo-700 underline" href={`/reports/${side.report.id}`}>{side.label} · {new Date(side.report.createdAt).toLocaleString("zh-CN")}</Link><p className="mt-1 text-sm text-slate-700">{side.report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")||"未记录材料版本"}</p></div>)}</div>
     {value.contextChanges.some(key=>/requirement|formula|rubric|job/.test(key))&&<p className="text-sm text-amber-900">比较依据存在变化：{value.contextChanges.map(key=>GROWTH_CHANGES[key]??key).join("、")}。请展开比较范围核对，不能仅按状态高低判断。</p>}
-    <div className="flex flex-wrap gap-2" role="group" aria-label="筛选要求变化">{FILTERS.map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)} className={`min-h-10 rounded-full px-3 py-2 text-sm ${filter === key ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{label} {counts[key]}</button>)}</div>
-    {counts.changed === 0 && <p className="rounded-lg bg-slate-50 p-3">本次没有检测到变化。可切换“全部要求”或“没有变化”查看原记录。</p>}
+    <div className="comparison-filter-bar" role="group" aria-label="筛选要求变化">{FILTERS.map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)} className="comparison-filter">{label}<span className="comparison-filter-count">{counts[key]}</span></button>)}</div>
+    {counts.changed === 0 && <p className="comparison-no-change">本次没有检测到变化。可切换“全部要求”或“没有变化”查看原记录。</p>}
     {visible.length === 0 && counts.changed > 0 && <p className="py-3 text-slate-600">没有符合此筛选的要求。</p>}
-    <div className="min-w-0 space-y-3">{visible.map(row => row.changed
-      ? <article key={row.item.requirementId} className="min-w-0 rounded-xl border border-slate-200 p-4"><RequirementChange row={row} value={value} /></article>
-      : <details key={row.item.requirementId} className="min-w-0 rounded-xl border border-slate-200 p-4"><summary className="cursor-pointer break-words font-medium">{row.item.title} · 没有变化</summary><div className="mt-3"><RequirementChange row={row} value={value} showTitle={false} /></div></details>)}</div>
-    <details className="min-w-0 border-t border-slate-200 pt-3"><summary className="w-fit cursor-pointer py-1 text-indigo-700">两次报告、材料版本与比较范围</summary>
+    <div className="comparison-result-list min-w-0">{visible.map(row => row.changed
+      ? <article key={row.item.requirementId} className="comparison-result-row min-w-0"><RequirementChange row={row} value={value} /></article>
+      : <details key={row.item.requirementId} className="comparison-result-row min-w-0"><summary className="cursor-pointer break-words font-medium">{row.item.title} · 没有变化</summary><div className="mt-3"><RequirementChange row={row} value={value} showTitle={false} /></div></details>)}</div>
+    <details className="min-w-0 border-t border-slate-200 pt-3"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">两次报告、材料版本与比较范围</summary>
       <div className="space-y-3 pt-3 leading-6 [overflow-wrap:anywhere]">
-        <div className="flex flex-wrap gap-4"><Link className="btn-secondary" href={`/reports/${value.baseId}`}>基准报告 · {new Date(base.createdAt).toLocaleString("zh-CN")}</Link><Link className="btn-secondary" href={`/reports/${value.targetId}`}>当前报告 · {new Date(current.createdAt).toLocaleString("zh-CN")}</Link></div>
         <p>变化背景：{value.contextChanges.map(key => GROWTH_CHANGES[key] ?? key).join("、") || "未记录背景变化"}。材料版本发生变化，不代表每一条引用或判断都改变。</p>
         {[{label: "基准材料", rows: value.baseMaterials}, {label: "当前材料", rows: value.targetMaterials}].map(side => <div key={side.label}><h3 className="font-medium">{side.label}</h3><ul>{side.rows.map(m => <li key={`${m.kind}-${m.id}`}>{displayMaterialTitle(m.title, m.id)} · 第 {m.versionNumber} 版<details className="text-xs text-slate-600"><summary className="w-fit cursor-pointer">版本校验信息</summary><p>{m.id} · {m.contentHash}</p></details></li>)}</ul></div>)}
         <p>测试代码引用与运行记录引用分别展示。上传的测试输出仍需核对内容及源码版本，不是平台独立执行结果；未再展示的引用仍可在基准报告中查看。</p>

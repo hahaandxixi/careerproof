@@ -57,7 +57,7 @@ function browser(t, confirm) {
 }
 
 test("cancel project removal does not call API or change any version", async t => {
-  browser(t, message => { assert.match(message, /所有版本.*历史报告.*恢复/); return false; });
+  browser(t, message => { for (const text of ["所有版本", "历史报告", "恢复"]) assert.ok(message.includes(text), text); return false; });
   const ui=workspace(); const before=structuredClone(ui.state[11]);
   await ui.remove(ui.render()).props.onClick();
   assert.deepEqual(ui.calls, []); assert.deepEqual(ui.state[11], before);
@@ -70,7 +70,7 @@ test("confirmed removal calls existing archive and immediately removes every ver
   assert.deepEqual(ui.calls, [["project", "owned", true]]);
   assert.deepEqual(ui.state[11].map(p => p.id), ["empty"]);
   const tree=ui.render(); assert.equal(nodes(tree, n => n.props?.item?.resourceId === "owned").length, 0);
-  assert.match(ui.state[14], /已从当前材料库移除/);
+  assert.match(ui.state[14], /已移出材料库/);
 });
 
 test("failed archive keeps project and shows the actual error without success notice", async t => {

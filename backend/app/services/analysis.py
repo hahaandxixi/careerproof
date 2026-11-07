@@ -214,7 +214,10 @@ def _matching_observer_factory(
             session_factory,
             AttemptContext(task_id, owner_id, run_token, step, provider.name, provider.model),
             authorize=authorize_attempt,
-            budget=SharedBudgetService(),
+            # Matching uses the configured provider and the normal attempt/usage
+            # ledger. The separate shared-budget admission gate is not part of
+            # this product flow; it previously blocked before any physical send.
+            budget=None,
         )
         ledger.services.append(service)
         return DurableRequestObserver(service)
@@ -564,6 +567,12 @@ class AnalysisService:
         # caller is clamped to the last available page instead of an empty page.
         # Rank the full owned history first, so a search/page never makes an old
         # report appear to be the latest or leaks another student's report count.
+        # A legacy task can own a snapshot whose candidate identity differs.
+        # Keep that record available to its existing audit/direct authorization,
+        # but never feed it into this student's personal report/skill history.
+        ownership = [AnalysisTask.created_by == user.id]
+        if scope != "all":
+            ownership.append(MatchReport.candidate_ref == str(user.id))
         history = (
             select(
                 MatchReport.id.label("report_id"),
@@ -574,7 +583,7 @@ class AnalysisService:
                 ).label("job_order"),
             )
             .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
-            .where(AnalysisTask.created_by == user.id)
+            .where(*ownership)
             .cte("owned_report_history")
         )
         conditions = []

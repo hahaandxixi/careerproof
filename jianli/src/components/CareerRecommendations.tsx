@@ -9,7 +9,8 @@ import {
   type CareerPlanResult,
 } from "@/lib/api/domain";
 import { jobAnalysisHref, resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
-import { careerPlanConfigurationBlocked, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
+import { careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
+import { demoJobAlias } from "@/lib/demo-display-identity.js";
 import { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ProjectVersionPicker from "./ProjectVersionPicker";
@@ -39,7 +40,7 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
   const [projects, setProjects] = useState<ProjectHistory[]>([]);
   const [resumeVersionId, setResumeVersionId] = useState("");
   const [projectVersionIds, setProjectVersionIds] = useState<string[]>([]);
-  const [result, setResult] = useState<CareerPlanResult | null>(null);
+  const [savedResult, setResult] = useState<CareerPlanResult | null>(null);
   const [resultKind, setResultKind] = useState<"current" | "history">("current");
   const [expandedCandidates, setExpandedCandidates] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -114,6 +115,7 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
     }
   }
 
+  const result = savedResult ? careerPlanDisplayIdentity(savedResult) : null;
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
   const visibleChanges = result ? visibleCareerChanges(result.changes, visibleRecommendations) : [];
 
@@ -150,7 +152,8 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
     {historyNotice && <p role="status" className="text-sm text-slate-500">{historyNotice}</p>}
     {!result && !loading && !busy && <p role="status" className="panel text-sm text-slate-500">选择材料并生成后，这里只展示本次结果。调整材料后，请重新生成；旧规划保留在账号中。</p>}
 
-    {result && <section className="space-y-4">
+    {result && <section className="space-y-4" data-plan-id={result.planId ?? undefined}>
+      {result.recommendations.some(job => demoJobAlias(job.jobId)) && <p className="text-xs text-slate-500">演示数据说明：本页示例岗位、企业与材料均为虚构，不代表真实招聘或能力认证。</p>}
       <div className="panel"><div className="flex flex-wrap items-center justify-between gap-2"><p className="text-sm text-indigo-600">{resultKind === "history" ? "上次保存的规划 · 历史结果" : result.planId ? "本次生成的规划" : "本次规则候选（未保存为规划）"}</p>{resultKind === "history" && <button type="button" className="btn-quiet btn-compact" onClick={clearDisplayedResult}>收起历史结果</button>}</div>{resultKind === "history" && <p className="mt-2 text-xs text-amber-800">这是上次保存材料的结果，不是当前材料的新分析。下方依据以该规划保存的版本为准。</p>}<p className="mt-3 text-xs text-slate-500">主要推荐方向</p><h2 className="mt-1 text-2xl font-bold">{result.primaryDirection ? CATEGORY_LABELS[result.primaryDirection] ?? result.primaryDirection : "当前材料不足以确定方向"}</h2><p className="mt-3 text-sm leading-7 text-slate-600">{result.summary}</p><p className="mt-2 text-xs text-slate-500">结果依据：{result.materials.map(material => `${material.title} 第 ${material.versionNumber} 版`).join("；")}</p></div>
       {result.aiPlan ? <section className="panel space-y-3"><p className="text-sm text-indigo-600">AI 候选岗位比较 · {result.aiModel}</p><h2 className="text-lg font-semibold">值得优先补证的方向</h2><p className="text-sm leading-7 text-slate-700">{result.aiPlan.comparison}</p><div className="flex flex-wrap gap-3">{result.aiPlan.advice.map(advice => <a key={advice.jobId} className="btn-secondary btn-compact" href={`#plan-job-${advice.jobId}`}>{result.recommendations.find(item => item.jobId === advice.jobId)?.jobTitle ?? "查看候选岗位"}</a>)}</div><p className="text-xs text-slate-500">AI 选择的补证重点：{result.recommendations.find(item => item.jobId === result.aiPlan?.focusJobId)?.jobTitle ?? "暂无"}。岗位顺序仍由本地证据规则确定。</p></section> : result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800">{result.aiStatus !== configurationStatus && <p>{careerPlanFailureMessage(result.aiStatus)}</p>}{!result.planId && <p className="text-xs">本次未保存职业规划，上次保存的规划保持不变。</p>}{(result.aiValidationIssues ?? []).map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</section> : null}
       {!!result.previousPlanId && visibleChanges.length > 0 && <details className="panel"><summary className="cursor-pointer font-semibold">查看这些岗位与上次规划的变化</summary><p className="mt-1 text-xs text-slate-500">分别核对材料版本、岗位基本信息、岗位要求、可定位证据和规则档位；同时变化不证明因果或能力提升。</p><ul className="mt-3 space-y-2">{visibleChanges.map(change => <li key={change.jobId} className="rounded-lg bg-slate-50 p-3 text-sm"><strong>{change.jobTitle}</strong>{change.status === "not_in_current" && <span className="ml-2 rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800">本轮列表未见</span>}<p className="mt-1 text-slate-600">{change.detail}</p>{change.jobDetailsChanged && <p className="mt-1 text-amber-800">岗位基本信息已变，请与材料变化分开核对。</p>}{change.requirementsChanged && <p className="mt-1 text-amber-800">岗位要求已变，本次档位不能归因于补证。</p>}{change.evidenceIds.map(id => <a key={id} href={`#plan-citation-${id}`} className="mr-3 text-xs text-indigo-600 underline">查看新证据 {id}</a>)}</li>)}</ul></details>}

@@ -17,7 +17,8 @@ test('A/B selects any distinct saved reports in the same candidate/job and shows
   assert.equal(h.state.baseId, 'a'); assert.equal(h.state.targetId, 'b');
   h.session.select('targetId', 'c'); await h.session.compare();
   assert.equal(h.state.value.comparison.targetId, 'c'); assert.equal(h.compareCalls, 1);
-  assert.match(reportPairLabel(report('abcd1234-more')), /abcd1234.*规则分析.*V2\(fixed-ve\)/);
+  assert.match(reportPairLabel(report('abcd1234-more')), /项目 v2/);
+  assert.doesNotMatch(reportPairLabel(report('abcd1234-more')), /abcd1234|fixed-ve|规则分析/);
   h.session.select('baseId', 'c'); await h.session.compare(); assert.equal(h.compareCalls, 1); assert.equal(h.state.value, null); assert.match(h.state.error, /不同/);
 });
 test('same-job candidate scope is checked in listing and again after authorization reads', async () => {

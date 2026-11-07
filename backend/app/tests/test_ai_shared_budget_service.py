@@ -153,10 +153,12 @@ async def test_disabled_gate_or_unreserved_old_attempt_cannot_admit(budget_data)
             await service.reserve(session, row)
         await session.rollback()
     async with factory() as session:
-        await new_attempt(session, owner, task)
+        # Matching attempts may be intentionally outside the shared-budget
+        # inventory; an unreserved attempt from any other flow still blocks.
+        await new_attempt(session, owner, other)
         await session.commit()
     async with factory() as session:
-        row = await new_attempt(session, owner, other)
+        row = await new_attempt(session, owner, task)
         with pytest.raises(BudgetAdmissionError, match="inventory_incomplete"):
             await service.reserve(session, row)
         await session.rollback()

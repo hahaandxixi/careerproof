@@ -50,12 +50,18 @@ async def source_scope(factory, job_id, report_id):
     async with factory() as session:
         job = await session.get(Job, UUID(job_id))
         report = await session.get(MatchReport, UUID(report_id))
-        student_id = UUID(report.candidate_ref)
-        user_id = await session.scalar(
-            select(User.id)
-            .join(StudentProfile, StudentProfile.user_id == User.id)
-            .where(StudentProfile.id == student_id)
-        )
+        candidate_ref = UUID(report.candidate_ref)
+        direct_user = await session.get(User, candidate_ref)
+        if direct_user is not None:
+            user_id = direct_user.id
+            student_id = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == user_id)
+            )
+        else:
+            student_id = candidate_ref
+            user_id = await session.scalar(
+                select(StudentProfile.user_id).where(StudentProfile.id == student_id)
+            )
         return {
             "student_id": student_id,
             "report_id": UUID(report_id),
@@ -281,7 +287,7 @@ async def test_match_report_history_pages_with_default_twenty(jobs_db, tmp_path,
                 report = MatchReport(
                     analysis_task_id=task.id,
                     job_id=UUID(job["id"]),
-                    candidate_ref=str(scope["student_id"]),
+                    candidate_ref=str(scope["user_id"]),
                     candidate_name="测试用户",
                     summary=f"Z57 分页报告 {index}",
                     overall_score=50,

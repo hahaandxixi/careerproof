@@ -12,8 +12,9 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
   const adopted = !!adoptedReportExplanation(report, item);
   const first = adopted ? item.evidenceList.findIndex(source => !!source.citationId && item.aiCitationIds.includes(source.citationId)) : 0;
   const [entry, setEntry] = useState({ index: Math.max(0, first), anchor: "", revision: 0, opened: true });
+  // The reader is a persistent part of the report column, not a floating panel.
+  // Keep the existing state for source switching, but never render it as a modal-like closeable card.
   const selected = Math.min(entry.index, Math.max(0, item.evidenceList.length - 1));
-  const openerId = "source-open-" + item.requirementId;
 
   useEffect(() => {
     const selectAnchor = (anchor: string) => {
@@ -50,15 +51,9 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
   }, [entry]);
 
   const choose = (index: number) => setEntry(old => ({ index, anchor: "", revision: old.revision + 1, opened: true }));
-  const close = () => {
-    setEntry(old => ({ ...old, anchor: "", opened: false }));
-    document.getElementById(openerId)?.focus();
-  };
   return <section className="report-source-panel min-w-0" aria-label={item.skill + "的证据来源"}>
     {item.evidenceList.length > 0 && <div className="source-reader-toolbar">
-      <button id={openerId} type="button" className="source-reader-opener" aria-expanded={entry.opened} onClick={() => choose(selected)}>
-        {entry.opened ? "引用原文" : "重新打开来源"} · {item.evidenceList.length} 处
-      </button>
+      <p className="source-reader-title">引用原文 · {item.evidenceList.length} 处</p>
       {item.evidenceList.length > 1 && <div className="flex min-w-0 flex-1 items-end gap-2">
         <label className="min-w-0 flex-1 text-sm">选择来源
           <select className="field mt-1" value={selected} onChange={event => choose(Number(event.target.value))}>
@@ -87,7 +82,6 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
             <p className="mt-1 break-words text-sm">{item.skill} · {label.material} · 第 {source.lineStart}–{source.lineEnd} 行{source.provenance === "reference" ? " · 第三方参考，不计评级" : ""}</p>
             {limit && <p className="source-reader-limit">{limit.label} · {limit.detail}</p>}
           </div>
-          <button type="button" className="source-reader-close" aria-label="关闭源码阅读区" onClick={close}>×</button>
         </header>
         <div className="source-reader-code">
           {limit?.readable !== false && <EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} />}

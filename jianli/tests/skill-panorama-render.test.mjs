@@ -66,3 +66,13 @@ test("normal authentication return path supports skills only for student", () =>
   assert.equal(safeReturnPath("/skills"), "/skills"); assert.equal(roleReturnPath("/skills", "student"), "/skills");
   assert.equal(roleReturnPath("/skills", "admin"), "/jobs"); assert.equal(roleReturnPath("/skills", "enterprise"), "/jobs/mine");
 });
+test("known fixture skills use the same job and fixed-material aliases with a visible disclosure",()=>{
+ const saved=report("saved",[item("sql","SQL","claimed_only")],1,{
+  jobId:"6c8ad563-ebf8-427c-b4a3-82905f37dbd0",jobTitle:"数据工程实习生 · 合成流程验收",
+  materials:[{kind:"resume",id:"4df0cd38-f8d1-45d5-91b5-6f97958eb1dc",title:"本地验收简历",versionNumber:1}],
+ });
+ const before=structuredClone(saved);
+ const html=render({selected:"sql",state:{...state,reports:[saved],summaries:[saved],total:1,hasMore:false}});
+ assert.match(html,/数据工程实习生/);assert.match(html,/数据工程方向简历/);assert.match(html,/演示数据说明/);
+ assert.doesNotMatch(html,/合成流程验收|本地验收简历/);assert.deepEqual(saved,before);
+});

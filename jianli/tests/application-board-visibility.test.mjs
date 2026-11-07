@@ -7,6 +7,7 @@ import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
+import { comparableApplicationGroup, comparableRadarAxes } from "../src/lib/application-comparison.ts";
 import { createApplicationBoardSession, initialApplicationBoardState } from "../src/lib/application-board-session.ts";
 import { evidenceWorkspace } from "../src/lib/evidence-workspace.ts";
 import { createRefreshGate } from "../src/lib/refresh-gate.ts";
@@ -37,7 +38,7 @@ function fixture(count=2,editRow=value=>value,options={}){
  globalThis.requestAnimationFrame=fn=>{frames.set(++frame,fn);return frame;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
  const counts={list:0,open:0,reply:0,detail:0};const queries=[];let authorized=true,waiter=null;
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
- const row=id=>editRow({id,jobId,reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
+ const row=id=>editRow({id,jobId,reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],fixedRequirementBasisComplete:true,comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
  const pageResult=requested=>{const rows=[...(authorized&&count>0?[row("a")]:[]),...Array.from({length:Math.max(0,count-1)},(_,i)=>row(String.fromCharCode(98+i)))];const page=Math.min(requested,Math.max(1,Math.ceil(rows.length/20)));return {items:rows.slice((page-1)*20,page*20),total:rows.length,page,pageSize:20};};
  const api={getJob:async()=>({id:jobId,title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult(page);},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
@@ -47,7 +48,7 @@ function fixture(count=2,editRow=value=>value,options={}){
   "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:ownerId}})},
-  "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false},
+  "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false,comparableApplicationGroup,comparableRadarAxes},
   "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
