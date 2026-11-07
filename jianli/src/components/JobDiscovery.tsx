@@ -47,34 +47,36 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   const reset = () => { setDraft({ q: "", city: "" }); choose({ ...EMPTY_DISCOVERY }); };
   const moreHref = discoveryHref({ ...query, page: 1 });
   const Heading = compact ? "h2" : "h1";
-  return <section aria-labelledby="technical-jobs-title" className="min-w-0 scroll-mt-24 space-y-4" id="technical-jobs">
+  return <section aria-labelledby="technical-jobs-title" className="job-workspace min-w-0 scroll-mt-24 space-y-4" id="technical-jobs">
     <div className="flex flex-wrap items-start justify-between gap-3"><div>
       <Heading id="technical-jobs-title" className={compact ? "section-title" : "page-title"}>{compact ? "探索技术岗位" : "发现技术岗位"}</Heading>
-    </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
-    <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="flex min-w-0 items-center gap-2 rounded-xl border border-indigo-300 bg-white p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100" onSubmit={event => { event.preventDefault(); choose({}); }}>
-      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-indigo-500"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+    </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary job-recommendation-link shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
+    <div className="job-discovery-tools">
+    <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="job-discovery-search flex min-w-0 items-center gap-2" onSubmit={event => { event.preventDefault(); choose({}); }}>
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-[#245c50]"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
       <label htmlFor="job-discovery-keyword" className="sr-only">关键词</label>
-      <input id="job-discovery-keyword" type="search" className="min-h-12 min-w-0 flex-1 rounded-md bg-transparent px-1 text-base text-slate-900 outline-none placeholder:text-sm placeholder:text-slate-400" value={draft.q} maxLength={200} placeholder="搜索岗位名称或技术关键词" onChange={event => setDraft({ ...draft, q: event.target.value })}/>
+      <input id="job-discovery-keyword" type="search" className="job-discovery-keyword min-h-12 min-w-0 flex-1 bg-transparent px-1 text-base text-slate-900 outline-none placeholder:text-sm placeholder:text-slate-400" value={draft.q} maxLength={200} placeholder="搜索岗位名称或技术关键词" onChange={event => setDraft({ ...draft, q: event.target.value })}/>
       <button type="submit" className="btn min-h-12 shrink-0 whitespace-nowrap px-4 sm:px-7">搜索岗位</button>
     </form>
+    <div className="job-discovery-filters grid min-w-0 grid-cols-2 items-end gap-3 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
+      <label className="job-filter-label form-label min-w-0 space-y-1">城市<input form="job-discovery-search" className="job-filter-control" value={draft.city} maxLength={100} placeholder="全部城市" onChange={event => setDraft({ ...draft, city: event.target.value })}/></label>
+      <label className="job-filter-label form-label min-w-0 space-y-1">工作类型<select form="job-discovery-search" className="job-filter-control" value={query.employmentType} onChange={event => choose({ employmentType: event.target.value })}><option value="">全部类型</option>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+      <label className="job-filter-label form-label min-w-0 space-y-1">技术语言<select form="job-discovery-search" className="job-filter-control" value={query.language} onChange={event => choose({ language: event.target.value })}><option value="">不限语言</option>{CAREER_LANGUAGES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+      <button type="button" className="btn-quiet whitespace-nowrap" onClick={reset}>重置筛选</button>
+    </div>
+    {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="btn-secondary btn-compact ml-2" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
+    </div>
     <div className="grid min-w-0 gap-4 lg:grid-cols-[11rem_minmax(0,1fr)]">
-      <nav aria-label="技术职业方向" className="career-directions lg:flex-col lg:gap-1 lg:self-start lg:border-r lg:border-slate-200 lg:pr-3">
+      <nav aria-label="技术职业方向" className="job-direction-rail career-directions lg:flex-col lg:gap-1 lg:self-start lg:border-r lg:border-slate-200 lg:pr-3">
         <button type="button" aria-pressed={!query.direction} onClick={() => choose({ direction: "", specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${!query.direction ? "career-direction-active" : ""}`}><span className="flex h-6 w-6 items-center justify-center rounded-md border border-current text-sm" aria-hidden="true">⊞</span><span>全部岗位</span></button>
         {CAREER_DIRECTIONS.map(item => <button key={item.id} type="button" aria-pressed={query.direction === item.id} onClick={() => choose({ direction: item.id, specialty: "", category: "" })} className={`career-direction lg:min-h-11 lg:rounded-lg lg:py-2 ${query.direction === item.id ? "career-direction-active" : ""}`}><CareerDirectionIcon direction={item.id}/><span>{item.label}</span></button>)}
       </nav>
-      <div className="min-w-0 space-y-3" aria-busy={busy}>
+      <div className="job-results min-w-0 space-y-3" aria-busy={busy}>
         <div className="border-b border-slate-200 pb-3">
           {direction && <div className="scrollbar-quiet mb-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label={`${direction.label}的具体岗位`}>
             <button className={`career-specialty ${!query.specialty ? "career-specialty-active" : ""}`} type="button" aria-pressed={!query.specialty} onClick={() => choose({ specialty: "" })}>全部{direction.label}</button>
             {direction.specialties.map(item => <button key={item.id} type="button" className={`career-specialty ${query.specialty === item.id ? "career-specialty-active" : ""}`} aria-pressed={query.specialty === item.id} onClick={() => choose({ specialty: item.id })}>{item.label}</button>)}
           </div>}
-          <div className="grid min-w-0 grid-cols-2 items-end gap-3 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
-            <label className="form-label min-w-0 space-y-1">城市<input form="job-discovery-search" className="field !bg-slate-50 !py-2" value={draft.city} maxLength={100} placeholder="全部城市" onChange={event => setDraft({ ...draft, city: event.target.value })}/></label>
-            <label className="form-label min-w-0 space-y-1">工作类型<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.employmentType} onChange={event => choose({ employmentType: event.target.value })}><option value="">全部类型</option>{Object.entries(EMPLOYMENT_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-            <label className="form-label min-w-0 space-y-1">技术语言<select form="job-discovery-search" className="field !bg-slate-50 !py-2" value={query.language} onChange={event => choose({ language: event.target.value })}><option value="">不限语言</option>{CAREER_LANGUAGES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-            <button type="button" className="btn-quiet whitespace-nowrap" onClick={reset}>重置筛选</button>
-          </div>
-          {!!query.category && <p className="mt-3 text-xs text-slate-500">旧分类条件：{CATEGORY_LABELS[query.category]} <button type="button" className="btn-secondary btn-compact ml-2" onClick={() => choose({ category: "" })}>清除此条件</button></p>}
         </div>
         <div aria-live="polite" className="flex min-h-8 flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500">
           <p>{busy ? data ? "正在更新筛选，暂时保留上一组结果…" : "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>

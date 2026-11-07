@@ -25,7 +25,7 @@ test("identical saved states produce zero changes and keep unchanged records acc
   assert.deepEqual(comparisonCounts(result), {changed:0,all:1,evidence:0,status:0,needs:0,unchanged:1});
   assert.equal(filterComparisonRows(result,"changed").length,0);
   assert.equal(filterComparisonRows(result,"unchanged").length,1);
-  assert.match(result[0].summary,/没有检测到变化/);
+  assert.match(result[0].summary,/引用集合未变（保留 1 处），判断状态未变/);
   assert.equal(result[0].retained.length,1);
 });
 
@@ -76,16 +76,17 @@ function render(f, filter="changed") {
     react:{useState:()=>[filter,()=>{}]},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
     "@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
+    "@/lib/report-display":{aiStatusLabel:(value)=>value ? String(value) : "未记录"},
     "@/lib/growth-workflow":{GROWTH_CHANGES:{}},"./ReportItemExplanation":{__esModule:true,default:Explanation},
   });
   return renderToStaticMarkup(React.createElement(View,f));
 }
 
-test("real comparison view folds all source groups and keeps removed citations on the base report", () => {
+test("real comparison view opens changed sources and keeps removed citations on the base report", () => {
   const evidence=Array.from({length:25},(_,i)=>source({citationId:`R1-E${i+1}`,lineStart:i+1,lineEnd:i+1,snippet:`original ${i}`}));
   const f=fixture({added:[evidence[0]],removed:evidence.slice(1),changes:["evidence"],sources:[evidence[0]]});
   const html=render(f);
-  assert.doesNotMatch(html,/<details[^>]*\sopen(?:[\s=>])/);
+  assert.equal((html.match(/<details[^>]*\sopen(?:[\s=>])/g)??[]).length,1);
   assert.match(html,/新增引用 · 1 处/); assert.match(html,/移除展示的引用 · 24 处/);
   assert.match(html,/href="\/reports\/base-report#citation-R1-E2"/);
   assert.match(html,/href="\/reports\/current-report#citation-R1-E1"/);
@@ -97,7 +98,7 @@ test("real comparison view folds all source groups and keeps removed citations o
 test("no-change message, filters, counts and old explanations remain available without text rewriting", () => {
   const f=fixture(), original=structuredClone(f);
   assert.match(render(f),/本次没有检测到变化/);
-  const html=render(f,"all"); assert.match(html,/没有变化 1/);
+  const html=render(f,"all"); assert.match(html,/没有变化<span[^>]*>1<\/span>/);
   assert.match(html,/同一解释/);
   assert.doesNotMatch(html,/<details[^>]*\sopen(?:[\s=>])/);
   assert.deepEqual(f,original);
@@ -112,6 +113,7 @@ test("panel only displays complete authorized report data and preserves actual r
       react:{useEffect(fn){if(!started){started=true;effect=fn;}},useMemo(fn){return session??=fn();},useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=v;}];}},
       "react/jsx-runtime":require("react/jsx-runtime"),"./ReportComparisonView":{__esModule:true,default:View},
       "@/lib/report-pair":pairs,
+      "@/lib/demo-display-identity.js":demoPresentation,
       "@/lib/api/client":{errorMessage:e=>e.message,api:{listReports:async()=>({items:[f.base,f.current],page:1,pageSize:50,total:2}),compareReports:async(a,b)=>{comparisons++;assert.equal(a,f.base.id);assert.equal(b,f.current.id);return f.value;},getReport:async id=>{reads.push(id);if(fail&&id===f.base.id)throw new Error("原报告暂时无法读取");return id===f.base.id?f.base:f.current;}}},
     });
     const renderPanel=()=>{cursor=0;const outer=Panel({report:f.current,revision:""});return outer.type(outer.props);};

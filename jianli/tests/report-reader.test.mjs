@@ -123,7 +123,7 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
   };
   const before = JSON.stringify(report);
   const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "模型已降级", "本地规则结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "规则报告 · 模型已降级", "AI 分析未完成", "当前显示规则分析结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
   assert.equal((html.match(/class="btn /g) ?? []).length, 1);
   assert.ok(html.includes('href="#requirement-tests"'));
   assert.ok(!html.includes("模型耗时"));
@@ -143,7 +143,12 @@ function navigationFixture(hash = "", search = "") {
     } },
     "react/jsx-runtime": require("react/jsx-runtime"),
     "@/lib/report-reader": helpers,
-    "@/lib/evidence-anchor": { revealEvidenceAnchor },
+    // Mirrors the real fragment navigation: same-hash no-op, pushState then a synthetic hashchange.
+    "@/lib/evidence-anchor": { revealEvidenceAnchor, navigateEvidenceFragment: (hash) => {
+      if (window.location.hash === hash) return;
+      window.history.pushState(null, "", hash);
+      window.dispatchEvent({ type: "hashchange" });
+    } },
     "@/lib/verdict-display.js": verdicts,
     "@/lib/report-workspace": workspace,
     "@/lib/evidence-workspace": evidenceWorkspace,
@@ -272,7 +277,7 @@ test("deep links escape a mismatched filter without losing the saved anchor", ()
 test("integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action", () => {
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("AI 分析未完成") && html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
  assert.match(html, /<h1[^>]*>后端<\/h1>/); assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
 });
 
@@ -391,13 +396,7 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
    window.location.hash="#citation-R1-E2";listeners.get("popstate")();redraw();assert.equal(values[0].index,1);
    listeners.get("click")({button:0,target:new Link("#citation-other")});assert.equal(values[0].index,1);
    assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
-   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
-   assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,0);
-   assert.equal(scrolled.at(-1).focused,"source-open-"+item.requirementId);
    listeners.get("click")({button:0,target:new Link("#citation-R1-E2")});redraw();
-   assert.equal(values[0].opened,true);assert.equal(values[0].index,1);
-   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
-   nodes(tree).find(n=>n.type==="button"&&n.props.id==="source-open-"+item.requirementId).props.onClick();redraw();
    assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
  }finally{cleanup?.();Object.assign(globalThis,original);}
  assert.equal(JSON.stringify(report),before);

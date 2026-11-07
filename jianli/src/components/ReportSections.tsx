@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
-import { revealEvidenceAnchor } from "@/lib/evidence-anchor";
+import { navigateEvidenceFragment, revealEvidenceAnchor } from "@/lib/evidence-anchor";
 
 type Section = { id: string; label: string; content: ReactNode };
 
@@ -40,7 +40,9 @@ export default function ReportSections({ sections, versions }: { sections: Secti
       <p className="text-base text-slate-600">本报告</p>
       {sections.map(section => <a key={section.id} href={`#${section.id}`} aria-current={active === section.id ? "location" : undefined} aria-controls={section.id} className={active === section.id ? "report-section-active" : undefined} onClick={event => {
         if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
         flushSync(() => setActive(section.id));
+        navigateEvidenceFragment(`#${section.id}`);
         const panel = revealEvidenceAnchor(section.id);
         panel?.scrollIntoView({ block: "start" });
         panel?.focus({ preventScroll: true });

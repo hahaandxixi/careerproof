@@ -4,6 +4,12 @@ import { displayMaterialTitle } from "./demo-display-identity.js";
 export interface SourceMaterial {
   kind: string; id: string; title: string; versionNumber: number;
 }
+export function materialPathReadingText(text: string, materials: readonly SourceMaterial[]): string {
+  return materials.filter(material => material.kind === "project").reduce(
+    (value, material) => value.replaceAll(`${material.id}/`, ""), text,
+  );
+}
+
 export interface SourceLocation {
   filePath: string; projectVersionId?: string | null;
 }
