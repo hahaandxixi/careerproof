@@ -214,7 +214,10 @@ def _matching_observer_factory(
             session_factory,
             AttemptContext(task_id, owner_id, run_token, step, provider.name, provider.model),
             authorize=authorize_attempt,
-            budget=SharedBudgetService(),
+            # Matching uses the configured provider and the normal attempt/usage
+            # ledger. The separate shared-budget admission gate is not part of
+            # this product flow; it previously blocked before any physical send.
+            budget=None,
         )
         ledger.services.append(service)
         return DurableRequestObserver(service)

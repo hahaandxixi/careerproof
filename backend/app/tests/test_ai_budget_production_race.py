@@ -865,7 +865,19 @@ async def test_offline_fixture_contract_dual_pending_and_single_chain_booking(
         )))
         assert {row.analysis_task_id for row in attempts} == {task_ids[0]}
         assert all(row.state == "booked" for row in attempts)
-        assert {row.analysis_task_id for row in reservations} == {task_ids[0]}
-    await assert_settled_exactly_once(
-        case, student_id, task_ids[0], cache_tokens=0, http_calls=len(calls),
-    )
+        assert all(
+            (row.usage_input_tokens, row.usage_output_tokens) == SYNTHETIC_USAGE
+            for row in attempts
+        )
+        # The product Matching entry no longer takes the separate shared-budget
+        # admission hold; request attempts and usage/cost rows are still written.
+        assert reservations == []
+        ledger = list(await session.scalars(select(AiUsageLog).where(
+            AiUsageLog.analysis_task_id == task_ids[0],
+        )))
+        assert len(ledger) == len(attempts)
+        assert {row.attempt_id for row in ledger} == {row.id for row in attempts}
+        assert all(
+            (row.input_tokens, row.output_tokens) == SYNTHETIC_USAGE
+            for row in ledger
+        )
