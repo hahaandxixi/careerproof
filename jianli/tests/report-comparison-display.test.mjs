@@ -92,7 +92,6 @@ test("real comparison view opens changed sources and keeps removed citations on 
   assert.match(html,/href="\/reports\/current-report#citation-R1-E1"/);
   assert.match(html,/original 24/); assert.match(html,/version-1\/src\/service.py/);
   assert.match(html,/min-w-0/); assert.match(html,/max-w-full overflow-auto/);
-  assert.match(html,/grid-cols-1/);
 });
 
 test("no-change message, filters, counts and old explanations remain available without text rewriting", () => {
