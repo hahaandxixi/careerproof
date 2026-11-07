@@ -65,7 +65,7 @@ async def setup(jobs_db, tmp_path, monkeypatch):
         report = MatchReport(
             analysis_task_id=task.id,
             job_id=UUID(job["id"]),
-            candidate_ref=str(profile.id),
+            candidate_ref=user["id"],
             summary="合成证据报告",
             overall_score=50,
             job_snapshot={"title": job["title"], "category": "software"},

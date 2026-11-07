@@ -43,7 +43,7 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
                 report = MatchReport(
                     analysis_task_id=task.id,
                     job_id=UUID(job["id"]) if selected else uuid4(),
-                    candidate_ref=str(scope["student_id"]),
+                    candidate_ref=str(scope["user_id"]),
                     candidate_name="合成学生",
                     summary="固定材料",
                     job_snapshot={"title": "目标100%_岗位" if selected else "其他"},

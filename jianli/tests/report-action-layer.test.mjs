@@ -1,4 +1,4 @@
-import { test } from "node:test";
+﻿import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -71,7 +71,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
 test("identical rules advice and gap appear once in the action panel", () => {
  const value = item("same"); const html=render(report([value],[advice(value)]));
  assert.equal(count(html,value.evidenceLevelGap),1);
- assert.ok(html.includes("本地规则提示")); assert.ok(html.includes("建议怎么补"));
+ assert.ok(html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
 });
 
 test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
@@ -111,7 +111,7 @@ test("review-only and unsupported states do not invent implementation deficienci
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
-  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("建议怎么补")); assert.ok(html.includes("添加项目材料"));
+  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("本项已保存的具体要求")); assert.ok(html.includes("添加项目材料"));
   assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  }
 });
@@ -120,7 +120,7 @@ test("supported requirements lead with conclusions and evidence; optional growth
  const value=item("complete","supported"); const html=render(report([value],[advice(value)]));
  assert.ok(html.includes("判断依据")); assert.ok(!html.includes("材料支持不等于运行成功"));
  assert.ok(html.includes("材料有更新？按需查看补证指导"));
- assert.ok(!html.includes("建议怎么补")); assert.ok(!html.includes(">开始补证</button>"));
+ assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
 });
 
@@ -164,7 +164,7 @@ test("a saved structured plan takes priority over generic instructions", () => {
  const entry=item("plan","gap",{aiStatus:"validated",aiSuggestion:"核对接口",aiInformationGap:"待核对失败路径",aiCitationIds:[],aiTaskPlan:{deliverable:"接口验证材料",steps:["核对异常分支","核对事务回滚"],acceptanceChecks:["版本与引用对应"]}});
  const r={...report([entry],[advice(entry,{source:"ai_suggestion",action:"核对接口"})]),evidenceContextVersion:"source-context-v2"};
  const html=render(r);
- assert.ok(html.includes("建议提交的材料")); assert.ok(html.includes("核对事务回滚"));
+ assert.ok(html.includes("接口验证材料")); assert.ok(html.includes("核对事务回滚"));
  assert.ok(!html.includes("通用核对步骤"));
 });
 
@@ -233,3 +233,4 @@ test("no report requirement mounts task lookup or task plan editing for any save
  assert.ok(!source.includes("GrowthTaskStart"));
  assert.ok(!source.includes("existingGrowthTask"));
 });
+
