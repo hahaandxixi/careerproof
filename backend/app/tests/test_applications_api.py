@@ -525,7 +525,9 @@ async def test_daily_limit_and_membership_revocation_fail_closed(jobs_db, tmp_pa
             report = await session.get(MatchReport, rid)
             current_job = await session.get(Job, UUID(job["id"]))
             student_profile_id = await session.scalar(
-                select(StudentProfile.id).where(StudentProfile.user_id == UUID(report.candidate_ref))
+                select(StudentProfile.id).where(
+                    StudentProfile.user_id == UUID(report.candidate_ref)
+                )
             )
             for index in range(20):
                 prior_job = Job(
