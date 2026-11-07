@@ -47,6 +47,18 @@
 - 更新离线 fixture 合约：Matching 完成、attempt/usage ledger 各一次，无 reservation；
 - 真实报告在普通页面保存并重新打开成功。
 
+## Final regressions and CI
+
+- Matching hard-stop tests now assert real attempt/usage persistence and recovery without a
+  shared-budget hold; verification-chain hard-stop still asserts its hold.
+- Matching attempts are exempted from poisoning the legacy shared-budget inventory of other
+  verification flows; non-Matching unreserved legacy attempts still block admission.
+- `test_real_matching.py` + budget workflow/race regressions: 21 passed, 3 skipped.
+- Frontend full suite: 711/711.
+- CI run 42371303160 on `fdbbd5a`: **success** for frontend, full SQLite and PostgreSQL;
+  Windows offline contracts succeeded on the same commit.
+- No admin/DB switch was added.
+
 ## 未完成
 
 - 企业真实 2+1 页面仍缺第三份 C 报告，不能伪造投递；
