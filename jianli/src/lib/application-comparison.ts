@@ -23,6 +23,21 @@ export function mixedComparisonBasis(items: ApplicationView[]): boolean {
   );
 }
 
+/** Keep one mutually-comparable group for the same-scale surface; leave unlike/incomplete reports out. */
+export function comparableApplicationGroup(items: ApplicationView[]) {
+  const groups: ApplicationView[][] = [];
+  for (const item of items) {
+    const group = groups.find(candidate => comparableRadarAxes(candidate[0], item));
+    if (group) group.push(item);
+    else groups.push([item]);
+  }
+  const comparable = groups
+    .filter(group => group.length > 1)
+    .sort((a, b) => b.length - a.length || (a[0]?.createdAt ?? "").localeCompare(b[0]?.createdAt ?? ""))[0] ?? [];
+  const ids = new Set(comparable.map(item => item.id));
+  return { comparable, excluded: items.filter(item => !ids.has(item.id)) };
+}
+
 export function filterApplications(
   items: ApplicationView[], query: string, focus: string, verdict: string,
 ): ApplicationView[] {

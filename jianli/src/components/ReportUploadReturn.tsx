@@ -40,7 +40,7 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
       <p className="break-words font-medium text-slate-900">{item.requirementTitle}</p>
       <p className="break-words text-slate-600">{displayJobTitle(report!.jobTitle, report!.jobId)}</p>
       <p className="leading-6 text-slate-600">上传新版后，原报告仍引用当时的版本。</p>
-      {uploaded && <p role="status" className="leading-6 text-indigo-800">本次上传已保存，请确认处理完成。之后进入原岗位，明确选择需要分析的简历与项目版本，再主动生成新报告；上传不会自动选择或分析。</p>}
+      {uploaded && <p role="status" className="leading-6 text-[#173c34]">本次上传已保存，请确认处理完成。之后进入原岗位，明确选择需要分析的简历与项目版本，再主动生成新报告；上传不会自动选择或分析。</p>}
       <div className="flex flex-wrap gap-x-3">
         <Link className="action-link" href={`/reports/${reportId}#requirement-${requirementId}`}>返回原报告这项要求</Link>
         <Link className="action-link" href={`/jobs/${report!.jobId}`}>到原岗位选择版本并重新分析</Link>

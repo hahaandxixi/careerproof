@@ -333,13 +333,20 @@ class SharedBudgetService:
             or len(gate.inventory_digest or "") != 64
         ):
             raise BudgetAdmissionError("budget_cutover_evidence_missing")
+        # Matching now records attempts without a shared-budget hold. Those
+        # intentional product-path attempts must not poison the admission
+        # inventory of other budgeted flows.
         query = (
             select(AiRequestAttempt.id)
+            .join(AnalysisTask, AnalysisTask.id == AiRequestAttempt.analysis_task_id)
             .outerjoin(
                 AiBudgetReservation,
                 AiBudgetReservation.attempt_id == AiRequestAttempt.id,
             )
-            .where(AiBudgetReservation.id.is_(None))
+            .where(
+                AiBudgetReservation.id.is_(None),
+                AnalysisTask.task_type != "job_match",
+            )
         )
         if exclude_attempt is not None:
             query = query.where(AiRequestAttempt.id != exclude_attempt)

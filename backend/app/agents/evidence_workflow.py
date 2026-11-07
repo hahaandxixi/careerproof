@@ -29,6 +29,7 @@ from app.agents.provider import (
     get_ai_provider,
 )
 from app.core.config import settings
+from app.services.ai_budget import BudgetAdmissionError
 from app.tools.directed_retrieval import can_search_frozen_sources, search_frozen_sources
 from app.tools.evidence_context import source_key
 from app.tools.evidence_levels import _rule_classification
@@ -289,6 +290,8 @@ def eligible_retrieval_contexts(
 
 
 def _fallback_reason(exc: Exception) -> str:
+    if isinstance(exc, BudgetAdmissionError):
+        return "budget_admission"
     if isinstance(exc, ProviderInputBudgetError):
         return "input_token_limit"
     if isinstance(exc, ProviderOutputBudgetError):

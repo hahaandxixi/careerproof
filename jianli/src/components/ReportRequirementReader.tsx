@@ -2,7 +2,7 @@
 
 import { Children, useEffect, useState, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
-import { revealEvidenceAnchor } from "@/lib/evidence-anchor";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
@@ -34,7 +34,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
         // Capture the original destination: selecting can rerender mobile prev/next links
         // before the browser reads their default-action href, otherwise one click skips an item.
         event.preventDefault();
-        if (window.location.hash !== href) window.location.hash = href;
+        navigateEvidenceFragment(href);
         select(href);
       }
     };
@@ -44,20 +44,6 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     document.addEventListener("click", fromLink, true);
     return () => { window.removeEventListener("hashchange", fromLocation); window.removeEventListener("popstate", fromLocation); document.removeEventListener("click", fromLink, true); };
   }, [items]);
-  useEffect(() => {
-    if (!entry.anchor) return;
-    // Run after the selected panel is visible; opening source details before that would scroll a hidden node.
-    const frame = requestAnimationFrame(() => {
-      const target = revealEvidenceAnchor(entry.anchor!);
-      if (entry.anchor!.startsWith("requirement-")) {
-        const heading = target?.querySelector?.("h3") as HTMLElement | null;
-        heading?.focus?.({ preventScroll: true });
-      }
-      target?.scrollIntoView({ block: "start" });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [entry]);
-
   const articles = Children.toArray(children);
   const currentIndex = Math.max(0, items.findIndex(item => item.requirementId === entry.selected));
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
@@ -85,7 +71,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     <details className="text-sm"><summary className="cursor-pointer py-1 text-slate-600">筛选要求{entry.filter !== "all" ? ` · ${filters.find(filter => filter.key === entry.filter)?.label}` : ""}</summary>
     <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="按已保存的材料支持状态筛选">
       {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
-        onClick={() => changeFilter(filter.key)} className={`min-h-11 rounded-lg border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${entry.filter === filter.key ? "border-indigo-600 bg-indigo-50 text-indigo-950" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300"}`}>
+        onClick={() => changeFilter(filter.key)} className={`min-h-11 rounded-lg border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#245c50] ${entry.filter === filter.key ? "border-[#245c50] bg-[#e7efe9] text-[#173c34]" : "border-slate-200 bg-white text-slate-600 hover:border-[#7ca396]"}`}>
         {filter.label}
       </button>)}
     </div></details>

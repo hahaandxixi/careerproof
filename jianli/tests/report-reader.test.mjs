@@ -45,6 +45,7 @@ const { default: Reader } = await load("components/ReportRequirementReader.tsx")
 const { default: Overview } = await load("components/ReportOverview.tsx");
 const { default: AiExplanation } = await load("components/ReportAiExplanation.tsx");
 const { default: SourcePanel } = await load("components/ReportSourcePanel.tsx");
+const { default: PaperHeader } = await load("components/ReportPaperHeader.tsx");
 
 const items = [
   { requirementId: "implementation", requirementTitle: "持久化", verdict: "supported", weight: 5, evidenceLevel: 3,
@@ -123,7 +124,7 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
   };
   const before = JSON.stringify(report);
   const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "模型已降级", "本地规则结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "规则报告 · 模型已降级", "AI 分析未完成", "当前显示规则分析结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
   assert.equal((html.match(/class="btn /g) ?? []).length, 1);
   assert.ok(html.includes('href="#requirement-tests"'));
   assert.ok(!html.includes("模型耗时"));
@@ -143,7 +144,12 @@ function navigationFixture(hash = "", search = "") {
     } },
     "react/jsx-runtime": require("react/jsx-runtime"),
     "@/lib/report-reader": helpers,
-    "@/lib/evidence-anchor": { revealEvidenceAnchor },
+    // Mirrors the real fragment navigation: same-hash no-op, pushState then a synthetic hashchange.
+    "@/lib/evidence-anchor": { revealEvidenceAnchor, navigateEvidenceFragment: (hash) => {
+      if (window.location.hash === hash) return;
+      window.history.pushState(null, "", hash);
+      window.dispatchEvent({ type: "hashchange" });
+    } },
     "@/lib/verdict-display.js": verdicts,
     "@/lib/report-workspace": workspace,
     "@/lib/evidence-workspace": evidenceWorkspace,
@@ -175,7 +181,7 @@ function navigationFixture(hash = "", search = "") {
   const cleanupListeners = effects[0]();
   return {
     values, events, details, windowListeners, documentListeners,
-    commit() { render(); return effects[1](); },
+    commit() { render(); return () => {}; },
     flush() { for (const [id, fn] of frames) { frames.delete(id); fn(); } },
     click(href, extra = {}) { let prevented = false; documentListeners.get("click")({ target: new Node(href), button: 0, preventDefault() { prevented = true; }, ...extra }); return { prevented, hash: window.location.hash }; },
     hash(value) { window.location.hash = value; windowListeners.get("hashchange")(); },
@@ -189,39 +195,39 @@ function navigationFixture(hash = "", search = "") {
   };
 }
 
-test("direct citation bookmark selects the saved requirement before expanding and scrolling", () => {
+test("direct citation bookmark selects the saved requirement; the report shell owns expansion and scrolling", () => {
   const f = navigationFixture("#citation-saved-alpha");
   try {
     assert.equal(f.values[0].selected, "implementation");
-    assert.deepEqual(f.events, []);
+    assert.deepEqual(f.events, [], "the reader must not perform a second local scroll");
     f.commit(); f.flush();
-    assert.deepEqual(f.events, [{ selected: "implementation", open: true }]);
+    assert.deepEqual(f.events, [], "the shared report shell owns reveal and scrolling");
   } finally { f.cleanup(); }
 });
 
-test("same-fragment clicks reopen evidence without hashchange; back/forward and growth links select their item", () => {
+test("same-fragment clicks and back/forward/growth links select the same item without local scrolling", () => {
   const f = navigationFixture();
   try {
     f.click("#citation-saved-alpha"); f.commit(); f.flush();
-    f.details.open = false;
+    assert.equal(f.values[0].selected, "implementation");
     f.click("#citation-saved-alpha"); f.commit(); f.flush();
-    assert.equal(f.events.length, 2);
-    assert.ok(f.events.every(event => event.selected === "implementation" && event.open));
+    assert.equal(f.values[0].selected, "implementation");
     f.hash("#growth-run"); assert.equal(f.values[0].selected, "run");
     f.hash("#requirement-tests"); assert.equal(f.values[0].selected, "tests");
     f.click("#growth-implementation"); f.commit(); f.flush();
-    assert.deepEqual(f.events.at(-1), { selected: "implementation", open: true });
+    assert.equal(f.values[0].selected, "implementation");
+    assert.deepEqual(f.events, []);
   } finally { f.cleanup(); }
 });
 
-test("modified, external and unknown links keep selection, and unmount removes listeners and pending scroll", () => {
+test("modified, external and unknown links keep selection, and unmount removes listeners", () => {
   const f = navigationFixture();
   try {
     for (const extra of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { altKey: true }, { button: 1 }]) f.click("#requirement-implementation", extra);
     f.click("/reports/other#requirement-implementation"); f.click("#citation-unknown");
     assert.equal(f.values[0].selected, "tests");
-    f.click("#requirement-implementation"); const cancelScroll = f.commit(); cancelScroll(); f.flush();
-    assert.deepEqual(f.events, []);
+    f.click("#requirement-implementation"); f.commit(); f.flush();
+    assert.deepEqual(f.events, [], "selection must not scroll independently of the shell");
   } finally { f.cleanup(); }
   assert.equal(f.windowListeners.size, 0); assert.equal(f.documentListeners.size, 0);
 });
@@ -272,8 +278,11 @@ test("deep links escape a mismatched filter without losing the saved anchor", ()
 test("integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action", () => {
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("模型已降级")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
- assert.match(html, /<h1[^>]*>后端<\/h1>/); assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
+ const header=renderToStaticMarkup(React.createElement(PaperHeader,{report:value}));
+ assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("AI 分析未完成") && html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.match(header, /<h1[^>]*>后端<\/h1>/); assert.ok(header.includes("林舟")); assert.ok(header.includes("AI 分析未完成"));
+ assert.ok(!html.includes("<h1"), "identity belongs to the shared paper header only");
+ assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
 });
 
 test("overview counts saved evidence states, never equating rule coverage or review items with support", () => {
@@ -371,7 +380,7 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
  const report={items:[item],materials:[0,1].map(i=>({kind:"project",id:`v${i}`,title:"报名服务",versionNumber:i+1})),analysisMode:"rules",aiFallbackUsed:false};
  const before=JSON.stringify(report),html=renderToStaticMarkup(React.createElement(SourcePanel,{item,report}));
  assert.equal((html.match(/<option/g)||[]).length,12);assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,11);
- const values=[],effects=[],frames=[],listeners=new Map(),scrolled=[];let cursor=0;
+ const values=[],effects=[],frames=[],listeners=new Map();let cursor=0;
  const original={window:globalThis.window,document:globalThis.document,Element:globalThis.Element,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
  class Link {constructor(href){this.href=href;}closest(){return{getAttribute:()=>this.href};}}
  const hook={useState(initial){const i=cursor++;if(!(i in values))values[i]=initial;return[values[i],v=>values[i]=typeof v==="function"?v(values[i]):v];},useEffect(fn){effects.push(fn);}};
@@ -382,22 +391,16 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
  let tree;const redraw=()=>{cursor=0;effects.length=0;tree=mod.exports.default({report,item});return tree;};let cleanup;
  try{
    globalThis.Element=Link;globalThis.window={location:{hash:"#citation-R1-E12"},addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name)};
-   globalThis.document={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),getElementById:id=>({scrollIntoView(){scrolled.push({id,index:values[0].index});},focus(){scrolled.push({focused:id});}})};
+   globalThis.document={addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),getElementById:()=>null};
    globalThis.requestAnimationFrame=fn=>(frames.push(fn),frames.length);globalThis.cancelAnimationFrame=()=>{};
-   redraw();cleanup=effects[0]();redraw();effects[1]();frames.splice(0).forEach(fn=>fn());assert.equal(values[0].index,11);assert.equal(scrolled.at(-1).id,"citation-R1-E12");
+   redraw();cleanup=effects[0]();redraw();assert.equal(values[0].index,11);
    nodes(tree).find(n=>n.type==="select").props.onChange({target:{value:"3"}});redraw();assert.equal(values[0].index,3);
-   listeners.get("click")({button:0,target:new Link("#citation-R1-E12")});redraw();effects[1]();frames.splice(0).forEach(fn=>fn());assert.equal(values[0].index,11);
+   listeners.get("click")({button:0,target:new Link("#citation-R1-E12")});redraw();assert.equal(values[0].index,11);
    listeners.get("click")({button:0,ctrlKey:true,target:new Link("#citation-R1-E1")});assert.equal(values[0].index,11);
    window.location.hash="#citation-R1-E2";listeners.get("popstate")();redraw();assert.equal(values[0].index,1);
    listeners.get("click")({button:0,target:new Link("#citation-other")});assert.equal(values[0].index,1);
    assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
-   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
-   assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,0);
-   assert.equal(scrolled.at(-1).focused,"source-open-"+item.requirementId);
    listeners.get("click")({button:0,target:new Link("#citation-R1-E2")});redraw();
-   assert.equal(values[0].opened,true);assert.equal(values[0].index,1);
-   nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="关闭源码阅读区").props.onClick();redraw();
-   nodes(tree).find(n=>n.type==="button"&&n.props.id==="source-open-"+item.requirementId).props.onClick();redraw();
    assert.equal(nodes(tree).filter(n=>n.type==="article"&&!n.props.hidden).length,1);
  }finally{cleanup?.();Object.assign(globalThis,original);}
  assert.equal(JSON.stringify(report),before);

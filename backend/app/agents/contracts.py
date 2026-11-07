@@ -119,13 +119,21 @@ class EvidenceTaskPlan(StrictModel):
 def runtime_plan_without_implementation_step(deliverable: str, steps: list[str]) -> bool:
     """A requested runtime artifact needs a corresponding implementation step."""
     work = " ".join([deliverable, *steps])
-    runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果", work))
+    runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果|查询结果", work))
     implementation_step = bool(re.search(
         r"(?:补充|补全|补齐|编写|实现|提供|提交|上传|完善|修复|修改|展示)"
         r".{0,30}(?:客户端调用|读写|缓存逻辑|实现|代码|源码|脚本|配置|查询语句|SQL\s*文件)",
         work,
         re.I,
     ))
+    sql_steps = re.finditer(
+        r"(?:编写|实现|补全|补充|完善|修复|修改)\s*SQL\s*查询(?!结果|输出|截图)",
+        work, re.I,
+    )
+    implementation_step = implementation_step or any(
+        not re.search(r"(?:无需|不必|不用|不要|不需要|不得|未|没有)\s*$", work[:match.start()])
+        for match in sql_steps
+    )
     return runtime_requested and not implementation_step
 
 

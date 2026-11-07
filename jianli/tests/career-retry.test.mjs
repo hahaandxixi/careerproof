@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { careerPlanConfigurationBlocked, careerPlanFailureMessage } from "../src/lib/career-plan-display.ts";
+import { careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage } from "../src/lib/career-plan-display.ts";
+import * as demoDisplay from "../src/lib/demo-display-identity.js";
 const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
 const jsx = require("react/jsx-runtime");
@@ -30,7 +31,8 @@ function fixture({ failMaterials = false, generationResult = null } = {}) {
     "@/lib/api/client":{api,errorMessage:e=>e.message},
     "@/lib/api/domain":{CATEGORY_LABELS:{},EMPLOYMENT_LABELS:{}},
     "@/lib/recommendation-selection":{jobAnalysisHref:()=>"/jobs/job1",resolveInitialMaterialSelection:()=>({resumeVersionId:"",projectVersionIds:[]})},
-    "@/lib/career-plan-display":{careerPlanRecommendations:()=>[],visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
+    "@/lib/career-plan-display":{careerPlanDisplayIdentity,careerPlanRecommendations:()=>[],visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
+    "@/lib/demo-display-identity.js":demoDisplay,
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},

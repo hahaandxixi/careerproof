@@ -182,20 +182,20 @@ test("empty and failure are separate states; cards only use saved public facts",
   assert.ok(!card.includes("社招") && !card.includes("匹配度") && !card.includes("薪资"));
 });
 
-test("fixture IDs never disguise the saved job title; explicit demo data retains its disclosure", async () => {
+test("known diagnostic has a natural sample title, never a false technical claim; raw snapshot is unchanged", async () => {
   const h = harness(""); h.start();
   const known = { ...job("1233f1e2-169f-4ea5-a5a0-542fa940e897"), title: "钢琴演奏验收记录", isDemo: true };
   h.requests[0].resolve({items:[known],total:1,page:1,pageSize:12});await tick();
   const html = renderToStaticMarkup(h.render());
   assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
   const card=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:known}));
-  assert.ok(card.includes("钢琴演奏验收记录"));
+  assert.ok(card.includes("材料证据阅读示例"));assert.equal(known.title,"钢琴演奏验收记录");
   assert.ok(!card.includes("Python 后端开发实习生"));
   const ordinary=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:{...known,id:"ordinary"}}));
   assert.ok(ordinary.includes("钢琴演奏验收记录"));
 });
 
-test("curated technical experience remains disclosed without rewriting saved public facts", async () => {
+test("known technical fixture display aliases retain disclosure and do not mutate saved facts", async () => {
   for (const id of ["72e49e95-4f27-4412-ac94-f1675a5f8970", "6c8ad563-ebf8-427c-b4a3-82905f37dbd0", "f05872f3-1b5f-4bb3-bfcd-9629d170b471"]) {
     const h = harness(""); h.start();
     const experience = { ...job(id), title: "技术岗位原文", companyName: "机构原文", isDemo: false };
@@ -203,7 +203,8 @@ test("curated technical experience remains disclosed without rewriting saved pub
     const html = renderToStaticMarkup(h.render());
     assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
     const card = renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:experience}));
-    assert.ok(card.includes("技术岗位原文") && card.includes("机构原文"));
+    assert.ok(card.includes(demoPresentation.displayJobTitle(experience.title,id)) && card.includes("示例企业"));
+    assert.equal(experience.title,"技术岗位原文");assert.equal(experience.companyName,"机构原文");
   }
-  assert.equal(demoPresentation.demoJobAlias("1233f1e2-169f-4ea5-a5a0-542fa940e897"),undefined);
+  assert.equal(demoPresentation.demoJobAlias("1233f1e2-169f-4ea5-a5a0-542fa940e897").title,"材料证据阅读示例");
 });

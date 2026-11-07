@@ -12,7 +12,7 @@ export default function ReportItemExplanation({ item, baseLabel = "基准报告"
       planWarning: item.targetTaskPlanWarning, current: true },
   ];
   return <div className="grid gap-3 sm:grid-cols-2">
-    {sides.map(side => <div key={side.label} className={`space-y-2 rounded-lg p-3 ${side.current ? "bg-indigo-50" : "bg-slate-50"}`}>
+    {sides.map(side => <div key={side.label} className={`space-y-2 rounded-lg p-3 ${side.current ? "bg-[#e7efe9]" : "bg-slate-50"}`}>
       <p className="font-medium">{side.label}</p>
       <p className="whitespace-pre-wrap break-words">{side.explanation || "未记录解释或无此要求"}</p>
       <p className="break-words text-amber-800">缺口：{side.gap || "未记录"}</p>

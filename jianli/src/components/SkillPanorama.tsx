@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
-import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { demoJobAlias, displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   buildSkillPanorama, createSkillPanoramaSession, initialPanoramaState,
   PANORAMA_CATEGORIES, PANORAMA_PAGE_SIZE, PANORAMA_STATUSES, PANORAMA_STATUS_LABELS, panoramaStatus,
@@ -70,6 +70,7 @@ export function SkillPanoramaView({ state, selected, onSelect, loadMore, retryFa
     <header className={styles.heading}><div><p className={styles.eyebrow}>PERSONAL SKILL LANDSCAPE</p><h1>个人技能全景</h1>
       <p className={styles.subtitle}>把散落在岗位报告中的技能，放回同一张图景。</p></div>
       <p className={styles.scope}>已保存报告中的技能<span>只整理已读取的报告，不重新评估能力。</span></p></header>
+    {reports.some(report => demoJobAlias(report.jobId)) && <p className="text-sm text-slate-600">演示数据说明：示例岗位、企业与材料均为虚构，不代表真实招聘或能力认证。</p>}
     <div className={styles.loadbar} role="status" aria-live="polite">
       <p>已读取 <strong>{state.reports.length}</strong> 份详情 / <strong>{state.summaries.length}</strong> 份摘要{state.total !== null && <> · 共 {state.total} 份报告</>}
         {pending > 0 && <> · {pending} 份详情待读取</>}{failed > 0 && <> · <span className={styles.failureText}>{failed} 份详情失败</span></>}

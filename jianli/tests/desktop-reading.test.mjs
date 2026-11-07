@@ -21,9 +21,10 @@ test("wrapping and expanded reading preserve physical line numbers and copying r
  const cells=[];let cursor=0;const hooks={useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useRef(value){const i=cursor++;return cells[i]??={current:value};}};
  const Snippet=load("EvidenceSnippet",{react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/source-label":{sourceLabel:e=>e.filePath}});
  const evidence={filePath:"app.py",lineStart:20,lineEnd:21,snippet:"    "+"long_identifier".repeat(40)+"\n\treturn 1",contextComplete:true,contextNote:"完整原文"};const original=JSON.stringify(evidence);
- const render=()=>{cursor=0;return Snippet({evidence});};let tree=render();const button=label=>nodes(tree).find(n=>n.type==="button"&&text(n)===label);
+ const render=()=>{cursor=0;return Snippet({evidence});};let tree=render();const button=label=>nodes(tree).find(n=>n.type==="button"&&text(n).startsWith(label));
  assert.match(nodes(tree).find(n=>n.type==="pre").props.className,/max-h-80/);
- button("换行").props.onClick();tree=render();assert.equal(button("换行").props["aria-pressed"],true);assert.ok(nodes(tree).some(n=>n.props?.className?.includes("whitespace-pre-wrap")));
+ assert.equal(button("换行").props["aria-pressed"],true);
+ button("换行").props.onClick();tree=render();assert.equal(button("换行").props["aria-pressed"],false);assert.ok(nodes(tree).some(n=>n.props?.className?.includes("whitespace-pre")));
  button("展开阅读").props.onClick();tree=render();assert.ok(!nodes(tree).find(n=>n.type==="pre").props.className.includes("max-h-80"));
  let focus=0;button("收起阅读").props.ref.current={focus(){focus++;}};button("收起并返回引用").props.onClick();tree=render();assert.equal(focus,1);
  const old=Object.getOwnPropertyDescriptor(globalThis,"navigator");let copied;
@@ -32,6 +33,6 @@ test("wrapping and expanded reading preserve physical line numbers and copying r
  assert.equal(pre.props.tabIndex,0);
  cells.length=0;cursor=0;
  const prose=Snippet({evidence:{...evidence,filePath:"notes/README.md"}});
- assert.equal(nodes(prose).find(n=>n.type==="button"&&text(n)==="换行").props["aria-pressed"],true);
+ assert.equal(nodes(prose).find(n=>n.type==="button"&&text(n).startsWith("换行")).props["aria-pressed"],true);
  assert.match(text(nodes(prose).find(n=>n.type==="pre")),/20/);
 });

@@ -74,7 +74,7 @@ function Workspace(){
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；刷新、撤回造成的 items 变化不再劫持视口。目标不可访问的提示仍由 includeApplicationTarget 的回调负责。
   const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
   useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
-  return <div className="space-y-5"><h1 className="page-title">我的投递</h1>
+  return <div className="application-workspace space-y-5"><h1 className="page-title">我的投递</h1>
     <form className="workspace-sheet workspace-row space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
       <div className="flex min-w-0 flex-wrap items-end gap-3">
         <label className="form-label min-w-0 flex-1 basis-64">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label>

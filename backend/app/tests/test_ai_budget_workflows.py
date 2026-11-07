@@ -51,7 +51,7 @@ async def legacy_output(factory, owner, outputs):
         await session.commit()
 
 
-async def test_matching_disabled_gate_cannot_send_or_fabricate_usage(durable_db, monkeypatch):  # noqa: F811
+async def test_matching_disabled_gate_uses_provider_and_records_usage(durable_db, monkeypatch):  # noqa: F811
     app, factory, _runtime = durable_db
     calls = []
 
@@ -63,19 +63,22 @@ async def test_matching_disabled_gate_cannot_send_or_fabricate_usage(durable_db,
     async with matching_case(app, monkeypatch, provider, "budget-gate-closed") as candidate:
         await close_gate(factory)
         task_id = await submit_case(candidate)
-    assert calls == []
+    assert calls, "Matching must reach the configured provider despite the old gate"
     async with factory() as session:
-        assert list(await session.scalars(select(AiRequestAttempt))) == []
+        attempts = list(await session.scalars(select(AiRequestAttempt)))
+        ledger = list(await session.scalars(select(AiUsageLog)))
+        assert attempts and all(row.state == "booked" for row in attempts)
+        assert len(ledger) == len(attempts)
         assert list(await session.scalars(select(AiBudgetReservation))) == []
-        assert list(await session.scalars(select(AiUsageLog))) == []
         report = await session.scalar(
             select(MatchReport).where(MatchReport.analysis_task_id == task_id)
         )
-        assert report.analysis_metadata["usageKnown"] is False
-        assert report.analysis_metadata["usage"] is None
+        assert report.analysis_metadata["mode"] == "ai_evidence"
+        assert report.analysis_metadata["fallbackUsed"] is False
+        assert report.analysis_metadata["usageKnown"] is True
 
 
-async def test_matching_small_daily_remainder_is_granted_on_actual_wire(durable_db, monkeypatch):  # noqa: F811
+async def test_matching_uses_provider_ceiling_not_shared_daily_remainder(durable_db, monkeypatch):  # noqa: F811
     app, factory, _runtime = durable_db
     calls = []
 
@@ -88,21 +91,20 @@ async def test_matching_small_daily_remainder_is_granted_on_actual_wire(durable_
         monkeypatch.setattr(settings, "ai_daily_output_token_limit", 1000)
         await legacy_output(factory, candidate.owner_id, 800)
         task_id = await submit_case(candidate)
-    assert len(calls) == 1 and calls[0]["max_tokens"] == 200
+    assert len(calls) == 1 and calls[0]["max_tokens"] == 4000
     async with factory() as session:
-        attempt = await session.scalar(
+        attempts = list(await session.scalars(
             select(AiRequestAttempt).where(
                 AiRequestAttempt.analysis_task_id == task_id,
             )
-        )
-        hold = await session.scalar(
-            select(AiBudgetReservation).where(
-                AiBudgetReservation.attempt_id == attempt.id,
-            )
-        )
-        assert attempt.max_output_tokens == hold.output_bound == 200
-        assert attempt.state == "booked" and hold.state == "settled"
-        assert (hold.actual_input_tokens, hold.actual_output_tokens) == (120, 20)
+        ))
+        ledger = list(await session.scalars(
+            select(AiUsageLog).where(AiUsageLog.analysis_task_id == task_id)
+        ))
+        assert attempts and all(row.state == "booked" for row in attempts)
+        assert all(row.max_output_tokens == 4000 for row in attempts)
+        assert len(ledger) == len(attempts)
+        assert list(await session.scalars(select(AiBudgetReservation))) == []
 
 
 async def test_verification_disabled_gate_is_zero_http_with_explicit_failure(case, monkeypatch):  # noqa: F811
