@@ -4,11 +4,11 @@ import { createReportPairSession, reportPairLabel } from '../src/lib/report-pair
 const report = (id, extra = {}) => ({ id, jobId: 'job', candidateId: 'owner', createdAt: '2026-11-05T00:00:00Z', analysisMode: 'rules', materials: [{ id: 'fixed-version', kind: 'project', versionNumber: 2 }], ...extra });
 const page = items => ({ items, page: 1, pageSize: 50, total: items.length });
 const deferred = () => { let resolve, reject; const promise = new Promise((ok, fail) => { resolve = ok; reject = fail; }); return { promise, resolve, reject }; };
-function fixture(overrides = {}) {
+function fixture(overrides = {}, initialBaseId = '') {
   let state, listCalls = 0, compareCalls = 0;
   const reports = ['a', 'b', 'c'].map(id => report(id));
   const api = { listReports: async (p, s, filters) => { listCalls++; assert.deepEqual(filters, { jobId: 'job', scope: 'all' }); return page(reports); }, getReport: async id => reports.find(r => r.id === id), compareReports: async (baseId, targetId) => { compareCalls++; return { baseId, targetId }; }, errorMessage: e => e.message, ...overrides };
-  const session = createReportPairSession(reports[1], api, value => { state = value; });
+  const session = createReportPairSession(reports[1], api, value => { state = value; }, initialBaseId);
   session.activate();
   return { session, get state() { return state; }, get listCalls() { return listCalls; }, get compareCalls() { return compareCalls; } };
 }
@@ -20,6 +20,12 @@ test('A/B selects any distinct saved reports in the same candidate/job and shows
   assert.match(reportPairLabel(report('abcd1234-more')), /项目 v2/);
   assert.doesNotMatch(reportPairLabel(report('abcd1234-more')), /abcd1234|fixed-ve|规则分析/);
   h.session.select('baseId', 'c'); await h.session.compare(); assert.equal(h.compareCalls, 1); assert.equal(h.state.value, null); assert.match(h.state.error, /不同/);
+});
+test('original report is preselected as A while the new report stays B', async () => {
+  const h = fixture({}, 'a');
+  assert.equal(h.state.baseId, 'a'); assert.equal(h.state.targetId, 'b');
+  await h.session.loadMore(); assert.equal(h.state.baseId, 'a'); assert.equal(h.state.targetId, 'b');
+  h.session.select('baseId', 'c'); assert.equal(h.state.baseId, 'c');
 });
 test('same-job candidate scope is checked in listing and again after authorization reads', async () => {
   const h = fixture({ listReports: async () => page([report('a'), report('other-job', { jobId: 'different' }), report('other-owner', { candidateId: 'different' })]), getReport: async id => report(id, { jobId: 'changed' }) });

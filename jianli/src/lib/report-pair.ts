@@ -41,9 +41,16 @@ type PairApi = {
   compareReports(baseId: string, targetId: string): Promise<ReportComparison>;
   errorMessage(error: unknown): string;
 };
-export function createReportPairSession(reference: MatchReport, api: PairApi, publish: (state: ReportPairState) => void) {
+export function createReportPairSession(
+  reference: MatchReport, api: PairApi, publish: (state: ReportPairState) => void,
+  initialBaseId = "",
+) {
   let active = true, listEpoch = 0, compareEpoch = 0;
-  let state: ReportPairState = { reports: [reference], page: 0, hasMore: true, listing: false, baseId: "", targetId: reference.id, busy: false, error: "", value: null };
+  let state: ReportPairState = {
+    reports: [reference], page: 0, hasMore: true, listing: false,
+    baseId: initialBaseId && initialBaseId !== reference.id ? initialBaseId : "",
+    targetId: reference.id, busy: false, error: "", value: null,
+  };
   const emit = (patch: Partial<ReportPairState>) => { if (active) { state = { ...state, ...patch }; publish(state); } };
   return {
     activate() { active = true; emit({ listing: false, busy: false }); },

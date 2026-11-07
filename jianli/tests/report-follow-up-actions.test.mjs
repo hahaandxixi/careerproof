@@ -29,7 +29,7 @@ function fixture(filename, initialProps={}, environment={}) {
  };
  const modules={"@/lib/demo-display-identity.js":demoPresentation,react,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:props=>React.createElement("a",props)},
   "next/navigation":{useSearchParams:()=>environment.query??new URLSearchParams()},
-  "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;}}}};
+  "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;},listResumes(){return Promise.resolve(environment.resumes??[])},listProjects(){return Promise.resolve(environment.projects??[])}}}};
  const code=transform(readFileSync(new URL(`../src/components/${filename}.tsx`,import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  function commit(){index=0;tree=mod.exports.default(props);while(pending.length)pending.shift()();index=0;tree=mod.exports.default(props);}
@@ -70,6 +70,21 @@ test("late copy receipts cannot label a different identity/requirement's guidanc
  }finally{f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
 });
 
+test("reanalysis preselection replaces only the matching version and carries the original comparison base",()=>{
+ const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",materials:[
+  {kind:"resume",id:"44444444-4444-4444-4444-444444444444"},
+  {kind:"project",id:"55555555-5555-5555-5555-555555555555"},
+  {kind:"project",id:"66666666-6666-6666-6666-666666666666"},
+ ]};
+ const resume=helpers.reportReanalysisHref(report,{kind:"resume",versionId:"77777777-7777-7777-7777-777777777777"});
+ assert.ok(resume);const rq=new URLSearchParams(resume.split("?")[1]);
+ assert.equal(rq.get("compareTo"),reportId);assert.equal(rq.get("resumeVersionId"),"77777777-7777-7777-7777-777777777777");
+ assert.deepEqual(rq.getAll("projectVersionId"),["55555555-5555-5555-5555-555555555555","66666666-6666-6666-6666-666666666666"]);
+ const replaced=helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"},"55555555-5555-5555-5555-555555555555");
+ assert.ok(replaced);const pq=new URLSearchParams(replaced.split("?")[1]);
+ assert.deepEqual(pq.getAll("projectVersionId"),["88888888-8888-8888-8888-888888888888","66666666-6666-6666-6666-666666666666"]);
+ assert.equal(helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"}),null,"multi-project uploads are not blindly assigned to all projects");
+});
 test("report upload hints accept only UUID context, never return URLs or version selection instructions",()=>{
  assert.deepEqual(helpers.reportFollowUpContext(query()),{reportId,requirementId});
  for(const bad of ["https://evil.test","../../other","javascript:alert(1)","bad#fragment"]) {
@@ -88,11 +103,28 @@ test("upload return verifies the saved report and exposes navigation only, prese
   const html=f.html();assert.ok(html.includes(`/reports/${reportId}#requirement-${requirementId}`));assert.ok(html.includes(`/jobs/${report.jobId}`));
   assert.ok(!html.includes("本次上传已保存"));
   f.props({uploaded:{kind:"project",versionId:"new-version"}});
-  assert.ok(f.html().includes("请确认处理完成"));assert.ok(f.html().includes("明确选择需要分析的简历与项目版本"));
+  assert.ok(f.html().includes("本次上传仍在处理中")||f.html().includes("尚未找到本次上传版本")||f.html().includes("正在核对本次上传状态"));
   assert.equal(f.calls.length,1);assert.equal(JSON.stringify(report),before);
  }finally{f.cleanup();}
 });
 
+test("completed upload offers a version-replacing reanalysis link that keeps the original report as comparison base",async()=>{
+ const oldProject="77777777-7777-7777-7777-777777777777", otherProject="88888888-8888-8888-8888-888888888888";
+ const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId,sourceProjectVersion:oldProject}),projects:[{id:"project-resource",name:"项目",versions:[{id:"99999999-9999-9999-9999-999999999999",versionNumber:3,status:"completed",createdAt:"2026-11-07T00:00:00Z",originalFilename:"new.zip"}]}]};
+ const f=fixture("ReportUploadReturn",{},env);
+ const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",jobTitle:"原岗位",items:[{requirementId,requirementTitle:"原要求"}],materials:[{id:"44444444-4444-4444-4444-444444444444",kind:"resume",versionNumber:1},{id:oldProject,kind:"project",versionNumber:1},{id:otherProject,kind:"project",versionNumber:2}]};
+ try{
+  await f.settle(f.requests[0],report);
+  f.props({uploaded:{kind:"project",versionId:"99999999-9999-9999-9999-999999999999"}});
+  await new Promise(resolve=>setTimeout(resolve,0));f.commit();
+  const html=f.html();assert.ok(html.includes("使用新版材料重新分析"));assert.ok(!html.includes("本次上传仍在处理中"));
+  const link=html.match(/href="([^"]*\/jobs\/[^"]*)"/)?.[1]??"";
+  const url=new URL(link.replaceAll("&amp;","&"),"http://local.test");
+  assert.equal(url.searchParams.get("compareTo"),reportId);
+  assert.equal(url.searchParams.get("resumeVersionId"),"44444444-4444-4444-4444-444444444444");
+  assert.deepEqual(url.searchParams.getAll("projectVersionId"),["99999999-9999-9999-9999-999999999999",otherProject]);
+ }finally{f.cleanup();}
+});
 test("denied, missing requirements and late upload-context replies never expose another report's navigation",async()=>{
  const env={query:query()},f=fixture("ReportUploadReturn",{},env);
  try{
@@ -145,3 +177,4 @@ test("the original job form explicitly submits chosen new versions without creat
   assert.ok(existsSync(new URL(`../src/app/${route}`,import.meta.url)),route);
  }
 });
+

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 import type { FlowStepKey } from "@/lib/flow-steps";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 
 export default function FlowSteps({ steps, currentKey }: {
   steps: readonly { key: FlowStepKey; label: string; href: string | null; unavailableReason?: string }[];
@@ -17,7 +18,13 @@ export default function FlowSteps({ steps, currentKey }: {
     <nav id={guideId} aria-label="学生操作指南" className={`student-flow ${expanded ? "block" : "hidden sm:block"}`}>
       <ol>{steps.map((step, index) => <li key={step.key} aria-current={step.key === currentKey ? "step" : undefined}>
         {index > 0 && <span className="flow-arrow" aria-hidden="true">→</span>}
-        {step.href && step.key !== currentKey ? <Link href={step.href} className="flow-step">
+        {step.href && step.key !== currentKey ? <Link href={step.href} className="flow-step" onClick={event => {
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          const currentPath = window.location.pathname;
+          if (!step.href?.startsWith(`${currentPath}#`)) return;
+          event.preventDefault();
+          navigateEvidenceFragment(step.href.slice(currentPath.length));
+        }}>
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>
         </Link> : <span className="flow-step" title={step.unavailableReason}>
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>

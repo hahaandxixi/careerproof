@@ -3,6 +3,7 @@
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { sourceContextVerified } from "@/lib/analysis-status";
@@ -36,6 +37,7 @@ export default function ReportDetail({ id }: { id: string }) {
 }
 function ReportWorkspace({ id }: { id: string }) {
   const { user } = useAuth();
+  const compareBase = useSearchParams().get("compareBase") || "";
   const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
   const session = useMemo(() => createReportReviewSession(id, {
@@ -48,6 +50,10 @@ function ReportWorkspace({ id }: { id: string }) {
   const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
   const aiRatedCount = reportAiRatedCount(report);
   const assessedCount = report.items.filter(item => item.verdict !== "unsupported").length;
+  const supplementItems = report.items.filter(item => {
+    const state = evidenceWorkspace([item]);
+    return state.gaps.length > 0 || state.partial.length > 0;
+  });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
@@ -89,7 +95,7 @@ function ReportWorkspace({ id }: { id: string }) {
     <ReportAgentEvidence report={report} canGrow={user?.role === "student"} />
 
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
-    {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
+    {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
     {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}<Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}`}>查看原图与当前核对状态 →</Link></div>)}</section>}
     <details className="text-sm"><summary className="disclosure">材料判据</summary><div className="space-y-2 py-2 leading-7 text-slate-700"><p>保存的等级是材料判定：基础线索、局部操作、任务实现。名称沿用生成报告时的规则，具体原因见逐项判断记录。</p><p>规则结合相关性、实质操作及任务上下文判断；仅声明、无可定位证据、规则未覆盖或复核暂停时不评级。</p><p>岗位权重表示要求的重要性；不按等级或引用数量汇总能力分。旧记录保留当时结果，不自动改用新规则。</p></div></details>
 
@@ -116,9 +122,10 @@ function ReportWorkspace({ id }: { id: string }) {
         </li>)}</ul>
       </> },
       ...(user?.role === "student" ? [
-        { id: "report-supplement", label: "补充证据", content: <>
-          <h2 className="section-title">按岗位要求补充证据</h2><p className="reading-copy">上传新版材料不会改写本报告，也不会自动生成新报告；完成后回到原岗位选择版本并重新分析。</p>
-          {report.items.map(item => <section key={item.requirementId} className="panel space-y-3"><h3 className="text-lg font-semibold">{item.skill} · {workspaceStatusLabel(item)}</h3><p>{item.requirementTitle}</p><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} text={followUpCopyText(report, item)} /></section>)}
+        { id: "report-supplement", label: "按需补证", content: <>
+          <h2 className="section-title">按需补证 · {supplementItems.length} 项实际缺口</h2>
+          <p className="reading-copy">补证是可选的。上传新版材料不会改写本报告，只有你核对预选版本并确认分析后才会生成新报告。</p>
+          {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口；规则暂不支持的要求不会计入补证数量，也不需要为此上传材料。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <section key={item.requirementId} className="panel space-y-3"><h3 className="text-lg font-semibold">{item.skill} · {workspaceStatusLabel(item)}</h3><p>{item.requirementTitle}</p><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} text={followUpCopyText(report, item)} /></section>)}
         </> },
         { id: "report-sharing", label: "投递授权", content: <><h2 className="section-title">投递与授权</h2><ApplicationSubmit key={`${report.id}:${report.reviewRevision}`} reportId={report.id} reviewRevision={report.reviewRevision} blocked={reviewing !== null || needsSync} onRefresh={() => void session.load()} /></> },
       ] : []),

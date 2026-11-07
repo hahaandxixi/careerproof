@@ -19,10 +19,12 @@ export default function JobDetailView({
   id,
   initialResumeVersionId = "",
   initialProjectVersionIds = [],
+  compareTo = "",
 }: {
   id: string;
   initialResumeVersionId?: string;
   initialProjectVersionIds?: string[];
+  compareTo?: string;
 }) {
   const { user } = useAuth();
   const [job, setJob] = useState<JobDetail | null>(null);
@@ -41,7 +43,7 @@ export default function JobDetailView({
     <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="page-title mt-2">{displayJobTitle(job.title, job.id)}</h1><p className="mt-2 text-sm text-slate-500">{demoJobAlias(job.id)?.companyName ?? job.companyName} · {job.city || "城市未填写"}</p>{(job.isDemo || demoJobAlias(job.id)) && <details className="mt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="max-w-2xl py-2 leading-6">本岗位及所列企业为虚构资料，用于体验材料核对流程。</p></details>}</div><span className="status-chip">{job.status === "published" ? (job.isDemo || demoJobAlias(job.id) ? "已发布" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{(demoJobAlias(job.id)?.description ?? job.description) || "暂无岗位描述"}</p>{user?.role === "enterprise" && <div className="card-actions mt-5"><Link className="btn" href={`/jobs/${job.id}/applications`}>查看投递</Link></div>}</section>
     <ScenarioMaterials title={job.title} companyName={job.companyName} isDemo={job.isDemo} />
     <section className="workspace-sheet"><h2 className="section-title px-4 py-3 sm:px-5">岗位要求</h2><ol className="workspace-list border-t border-slate-200">{job.requirements.map((requirement, index) => <li key={requirement.id} className="workspace-row"><p className="font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p>{requirement.sourceQuote && <p className="mt-2 rounded-lg bg-white p-2 text-xs leading-6 text-slate-600">岗位原文：“{requirement.sourceQuote}”</p>}</li>)}</ol></section>
-    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} /></AccessGate>}
+    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} /></AccessGate>}
     {job.status !== "published" && <p className="panel text-sm text-amber-700">该岗位尚未发布或已关闭，目前不能创建新的匹配任务。</p>}
   </div>;
 }
@@ -62,10 +64,12 @@ function MatchForm({
   job,
   initialResumeVersionId,
   initialProjectVersionIds,
+  compareTo,
 }: {
   job: JobDetail;
   initialResumeVersionId: string;
   initialProjectVersionIds: string[];
+  compareTo: string;
 }) {
   const router = useRouter();
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
@@ -104,7 +108,10 @@ function MatchForm({
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current || !resumeVersionId) return;
     submitting.current = true; setBusy(true); setError("");
-    try { const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport }); router.push(`/tasks/${task.taskId}`); }
+    try {
+      const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport });
+      router.push(`/tasks/${task.taskId}${compareTo ? `?compareTo=${encodeURIComponent(compareTo)}` : ""}`);
+    }
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }

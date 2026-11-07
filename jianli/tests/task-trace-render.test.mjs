@@ -34,7 +34,7 @@ function render(payload, eventType = "tool.completed", overrides = {}) {
     "react": { useEffect() {}, useState: initial => [state++ === 0 ? task : initial, () => {}] },
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: ({children, href}) => React.createElement("a", {href}, children) },
-    "next/navigation": { useRouter: () => ({push() { throw Error("unexpected navigation"); }}) },
+    "next/navigation": { useRouter: () => ({push() { throw Error("unexpected navigation"); }}), useSearchParams: () => new URLSearchParams() },
     "@/lib/api/client": { api: {}, errorMessage: String },
     "@/lib/analysis-status": { taskUsedExternalAI: (provider, fallback) => !!provider && provider !== "rules" && !fallback },
     "@/lib/process-trace": trace,
