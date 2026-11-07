@@ -48,6 +48,16 @@
   `source_scope` now accepts both the new User-id form and legacy profile-id form.
 - No product query/business rule was weakened.
 
+## Final CI on 7799a1a
+
+- CI run 42365437939: **success**
+  - frontend: success
+  - backend-unit (full SQLite): success
+  - backend-postgres: success
+- Windows offline contracts run 42365437943: **success**
+- PR #13 head: `7799a1aa554720365d3d9840a808e9c45cdaa5ce`
+- No test skips, deleted assertions, or tamper-check weakening were used.
+
 ## Local verification after fixes
 
 - Frontend full suite: **711/711 passed**
