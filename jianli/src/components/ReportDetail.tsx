@@ -13,7 +13,7 @@ import { createReportReviewSession, initialReportReviewState } from "@/lib/repor
 import { useAuth } from "./AuthProvider";
 import SourceCoverage from "./SourceCoverage";
 import EvidenceLink from "./EvidenceLink";
-import EvidenceAnchorRestore from "./EvidenceAnchorRestore";
+import ReportPaperHeader from "./ReportPaperHeader";
 import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
 import ApplicationSubmit from "./ApplicationSubmit";
@@ -53,11 +53,10 @@ function ReportWorkspace({ id }: { id: string }) {
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
-    <EvidenceAnchorRestore revision={report.id} />
     <div className="report-context-bar">
       <Link className="review-back" href="/reports">← 我的报告</Link>
     </div>
-    <ReportSections versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
+    <ReportSections header={<ReportPaperHeader report={report} />} versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     <ReportOverview report={report} role={user?.role} workbench />
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}

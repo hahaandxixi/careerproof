@@ -12,11 +12,8 @@ export default function ReportOverview({ report, role, workbench = false }: { re
   const readingStatus = reportReadingStatus(report);
   const counts = { resume: report.materials.filter(m => m.kind === "resume").length, personal: report.materials.filter(m => m.kind === "project" && m.materialRole !== "reference").length, reference: report.materials.filter(m => m.materialRole === "reference").length };
   const identity = role === "student" ? "学生" : role === "enterprise" ? "企业" : role === "admin" ? "管理员" : "当前账号";
-  if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="岗位匹配报告" aria-labelledby="report-title">
+  if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="本报告证据状态摘要">
     <div className="report-overview-heading flex flex-wrap items-center justify-between gap-4">
-      <div className="min-w-0"><h1 id="report-title" className="page-title break-words">{displayJobTitle(report.jobTitle, report.jobId)}</h1>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600"><span><IdentityName name={report.candidateName} identityId={report.candidateId}/></span><time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time><span className="font-medium text-[#173c34]">{readingStatus.label}</span></p>
-      </div>
       <dl aria-label="已保存的证据状态摘要" className="grid grid-cols-3 gap-x-6 gap-y-2">
         <div><dt className="text-sm text-emerald-800">有证据支持</dt><dd className="text-2xl font-semibold tabular-nums">{states.supported.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
         <div><dt className="text-sm text-amber-800">待补材料</dt><dd className="text-2xl font-semibold tabular-nums">{states.gaps.length}<span className="ml-1 text-sm font-normal">项</span></dd></div>
@@ -30,7 +27,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
       <EvidenceLink targetId="report-analysis" className="inline-flex min-h-9 items-center text-[#1d4a40] underline">分析详情</EvidenceLink>
     </div>
     {demoJobAlias(report.jobId) && <p className="report-sample-note">演示数据 · 岗位、人物与材料均为虚构，仅用于阅读和操作体验。</p>}
-    {report.aiFallbackUsed && <p className="report-result-notice" role="status">{readingStatus.reason}</p>}
+    {report.aiFallbackUsed && <p className="report-result-notice" role="status"><strong>{readingStatus.label}：</strong>{readingStatus.reason}</p>}
   </section>;
   return <section className="panel min-w-0 space-y-3" aria-labelledby="report-title">
     <div className="flex flex-wrap items-center gap-2 text-xs font-medium">

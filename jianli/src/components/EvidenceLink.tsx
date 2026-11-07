@@ -10,8 +10,15 @@ export default function EvidenceLink({ citationId, targetId, children, className
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     const target = revealEvidenceAnchor(anchor);
+    const reportOwnsNavigation = !!target?.closest?.("[data-report-sections]");
+    const hashChanges = window.location.hash !== `#${anchor}`;
     navigateEvidenceFragment(`#${anchor}`);
-    target?.scrollIntoView({ block: "start" });
-    if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+    // ReportSections owns offset scrolling and focus after it reveals the
+    // target's panel. Keep the local fallback for non-report pages and for a
+    // repeated same-fragment click where no hashchange is emitted.
+    if (!reportOwnsNavigation || !hashChanges) {
+      target?.scrollIntoView({ block: "start" });
+      if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+    }
   }}>{children}</a>;
 }

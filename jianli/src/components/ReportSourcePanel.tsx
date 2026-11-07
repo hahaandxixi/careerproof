@@ -44,12 +44,6 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
     };
   }, [item]);
 
-  useEffect(() => {
-    if (!entry.anchor) return;
-    const frame = requestAnimationFrame(() => document.getElementById(entry.anchor)?.scrollIntoView({ block: "start" }));
-    return () => cancelAnimationFrame(frame);
-  }, [entry]);
-
   const choose = (index: number) => setEntry(old => ({ index, anchor: "", revision: old.revision + 1, opened: true }));
   return <section className="report-source-panel min-w-0" aria-label={item.skill + "的证据来源"}>
     {item.evidenceList.length > 0 && <div className="source-reader-toolbar">

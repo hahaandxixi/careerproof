@@ -2,7 +2,7 @@
 
 import { Children, useEffect, useState, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
-import { navigateEvidenceFragment, revealEvidenceAnchor } from "@/lib/evidence-anchor";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
@@ -44,20 +44,6 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     document.addEventListener("click", fromLink, true);
     return () => { window.removeEventListener("hashchange", fromLocation); window.removeEventListener("popstate", fromLocation); document.removeEventListener("click", fromLink, true); };
   }, [items]);
-  useEffect(() => {
-    if (!entry.anchor) return;
-    // Run after the selected panel is visible; opening source details before that would scroll a hidden node.
-    const frame = requestAnimationFrame(() => {
-      const target = revealEvidenceAnchor(entry.anchor!);
-      if (entry.anchor!.startsWith("requirement-")) {
-        const heading = target?.querySelector?.("h3") as HTMLElement | null;
-        heading?.focus?.({ preventScroll: true });
-      }
-      target?.scrollIntoView({ block: "start" });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [entry]);
-
   const articles = Children.toArray(children);
   const currentIndex = Math.max(0, items.findIndex(item => item.requirementId === entry.selected));
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
