@@ -560,91 +560,6 @@ async def wait_for_loser_rejection(chains):
     assert exception is None, f"the rejected chain crashed instead of degrading: {exception!r}"
 
 
-async def test_matching_entry_same_owner_dual_task_last_slot_race(
-    case, monkeypatch,  # noqa: F811
-):
-    await require_postgres(case)
-    configure_race_settings(monkeypatch)
-    task_ids, student_id = await prepare_two_matching_tasks(case, monkeypatch)
-    async with case.factory() as session:
-        digest_before = verification._digest((await session.get(
-            Application, UUID(case.application_id)
-        )).report_snapshot)
-
-    gate = HttpGate(lambda request: valid_response(request, inputs=123, outputs=45))
-    monkeypatch.setattr(
-        "app.agents.evidence_workflow.get_ai_provider", lambda: gate.provider()
-    )
-    harness = LastSlotRace(task_ids)
-    harness.install(monkeypatch)
-    chains = [
-        asyncio.create_task(analysis_service.execute_match_task(task_id))
-        for task_id in task_ids
-    ]
-    try:
-        await asyncio.wait_for(harness.overlap.wait(), CHAIN_TIMEOUT_SECONDS)
-        await asyncio.wait_for(gate.entered.wait(), CHAIN_TIMEOUT_SECONDS)
-        await wait_for_loser_rejection(chains)
-        winner_task, loser_task = await assert_mid_block_invariants(
-            case, student_id, task_ids, label="matching",
-        )
-        winner_chain = chains[task_ids.index(winner_task)]
-        assert not winner_chain.done()
-        async with case.factory() as session:
-            stored = await session.get(AnalysisTask, loser_task)
-            assert stored.status == TaskStatus.COMPLETED
-            report = await session.scalar(select(MatchReport).where(
-                MatchReport.analysis_task_id == loser_task,
-            ))
-            assert report is not None, "rejected chain degrades to a rule report"
-            metadata = report.analysis_metadata
-            assert metadata["mode"] == "rules" and metadata["fallbackUsed"] is True
-            assert metadata["requestCount"] == 0
-            print_race_evidence("matching-loser", {
-                "taskId": str(loser_task),
-                "fallbackReason": metadata["fallbackReason"],
-                "failureStage": metadata["failureStage"],
-                "skippedReason": metadata["skippedReason"],
-            })
-        await assert_no_locks_across_http(case, student_id, task_ids)
-        assert gate.calls == 1
-        gate.release.set()
-        await asyncio.wait_for(winner_chain, CHAIN_TIMEOUT_SECONDS)
-    finally:
-        gate.release.set()
-        for chain in chains:
-            if not chain.done():
-                chain.cancel()
-                await asyncio.gather(chain, return_exceptions=True)
-    print_race_evidence("matching", {
-        "httpCalls": gate.calls, "httpSteps": gate.steps, **harness.report(),
-    })
-
-    async with case.factory() as session:
-        winner_row = await session.get(AnalysisTask, winner_task)
-        assert winner_row.status == TaskStatus.COMPLETED
-        report = await session.scalar(select(MatchReport).where(
-            MatchReport.analysis_task_id == winner_task,
-        ))
-        assert report.analysis_metadata["mode"] == "ai_evidence"
-        assert report.analysis_metadata["fallbackUsed"] is False
-        summary = report.analysis_metadata["attemptSummary"]
-        assert summary["trustedReceiptCount"] == gate.calls and summary["usageBooked"] is True
-        digest_after = verification._digest((await session.get(
-            Application, UUID(case.application_id)
-        )).report_snapshot)
-    await assert_settled_exactly_once(
-        case, student_id, winner_task, cache_tokens=0, http_calls=gate.calls,
-    )
-    assert digest_after == digest_before
-    _reservations, attempts, ledger, _tasks = await race_state(
-        case.factory, student_id, task_ids
-    )
-    winner_attempts, loser_attempts = split(attempts, winner_task)
-    assert winner_attempts and loser_attempts == []
-    assert {row.analysis_task_id for row in ledger} == {winner_task}
-
-
 def split(rows, winner_task):
     winner = [row for row in rows if row.analysis_task_id == winner_task]
     loser = [row for row in rows if row.analysis_task_id != winner_task]
@@ -740,12 +655,11 @@ async def test_verification_entry_same_owner_dual_task_last_slot_race(
 async def test_cross_role_owner_isolation_and_entry_role_walls(
     case, monkeypatch,  # noqa: F811
 ):
-    """Different roles never share the last slot; neither can enter the other's chain.
+    """Different roles never share an admission path; neither enters the other's chain.
 
-    The student fills their own single daily slot through the real matching
-    entry; the HR verification entry then still admits the HR's own task in
-    the same schema and day, each capacity view contains only its owner's
-    task, and the API role walls reject the cross-role requesters outright.
+    Matching now uses the configured provider without a shared-budget hold;
+    verification still admits through the HR owner's daily capacity, and the
+    API role walls reject cross-role requesters.
     """
     await require_postgres(case)
     configure_race_settings(monkeypatch)
@@ -806,14 +720,24 @@ async def test_cross_role_owner_isolation_and_entry_role_walls(
         daily_rows = list(await session.scalars(select(AiDailyBudget).where(
             AiDailyBudget.budget_day == today,
         )))
-    assert student_capacity.task_ids == frozenset(task_ids[:1])
+    assert student_capacity.task_ids == frozenset()
     assert hr_capacity.task_ids == frozenset([hr_task])
     assert not (student_capacity.task_ids & hr_capacity.task_ids)
-    assert len(daily_rows) == 2
-    assert {row.created_by for row in daily_rows} == {student_id, hr_id}
-    await assert_settled_exactly_once(
-        case, student_id, task_ids[0], cache_tokens=0, http_calls=len(calls),
-    )
+    assert len(daily_rows) == 1
+    assert {row.created_by for row in daily_rows} == {hr_id}
+    async with case.factory() as session:
+        attempts = list(await session.scalars(select(AiRequestAttempt).where(
+            AiRequestAttempt.analysis_task_id == task_ids[0],
+        )))
+        ledger = list(await session.scalars(select(AiUsageLog).where(
+            AiUsageLog.analysis_task_id == task_ids[0],
+        )))
+        student_reservations = list(await session.scalars(select(AiBudgetReservation).where(
+            AiBudgetReservation.created_by == student_id,
+        )))
+    assert attempts and all(row.state == "booked" for row in attempts)
+    assert len(ledger) == len(attempts)
+    assert student_reservations == []
     await assert_settled_exactly_once(
         case, hr_id, hr_task, cache_tokens=17, http_calls=len(verification_calls),
     )
