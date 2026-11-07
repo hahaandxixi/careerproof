@@ -524,6 +524,9 @@ async def test_daily_limit_and_membership_revocation_fail_closed(jobs_db, tmp_pa
         async with factory() as session:
             report = await session.get(MatchReport, rid)
             current_job = await session.get(Job, UUID(job["id"]))
+            student_profile_id = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == UUID(report.candidate_ref))
+            )
             for index in range(20):
                 prior_job = Job(
                     enterprise_id=current_job.enterprise_id,
@@ -537,7 +540,7 @@ async def test_daily_limit_and_membership_revocation_fail_closed(jobs_db, tmp_pa
                 session.add(
                     Application(
                         job_id=prior_job.id,
-                        student_id=UUID(report.candidate_ref),
+                        student_id=student_profile_id,
                         report_id=rid,
                         report_snapshot={"summary": "合成限额记录"},
                         consent_at=datetime.now(UTC),

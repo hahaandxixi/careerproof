@@ -7,7 +7,7 @@ import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
-import { comparableApplicationGroup, comparableRadarAxes, mixedComparisonBasis } from "../src/lib/application-comparison.ts";
+import { comparableApplicationGroup, comparableRadarAxes } from "../src/lib/application-comparison.ts";
 import { createApplicationBoardSession, initialApplicationBoardState } from "../src/lib/application-board-session.ts";
 import { evidenceWorkspace } from "../src/lib/evidence-workspace.ts";
 import { createRefreshGate } from "../src/lib/refresh-gate.ts";
