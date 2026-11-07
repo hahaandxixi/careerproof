@@ -16,7 +16,7 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const reportId = context?.reportId, requirementId = context?.requirementId;
   const [entry, setEntry] = useState<{ reportId: string; report: MatchReport | null; error: string } | null>(null);
   const [revision, setRevision] = useState(0);
-  const [uploadState, setUploadState] = useState<{ ready: boolean; message: string } | null>(null);
+  const [uploadState, setUploadState] = useState<{ key: string; ready: boolean; message: string } | null>(null);
   useEffect(() => {
     if (!reportId || !requirementId || growthTask) return;
     let active = true;
@@ -35,6 +35,10 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   useEffect(() => { onMaterials?.(materials); }, [materials, onMaterials]);
   useEffect(() => {
     if (!uploaded || !report) { setUploadState(null); return; }
+    const key = `${report.id}:${uploaded.kind}:${uploaded.versionId}`;
+    // A previous version's completion is never assumed while the new upload is
+    // still being checked. Bind every result to this exact report/kind/version.
+    setUploadState({ key, ready: false, message: "正在核对本次上传状态…" });
     let active = true, timer: ReturnType<typeof setTimeout> | undefined, attempts = 0;
     const check = async () => {
       attempts += 1;
@@ -46,16 +50,16 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
           : projects.find(value => value.versions.some(version => version.id === uploaded.versionId));
         const version = source?.versions.find(value => value.id === uploaded.versionId);
         if (!source || !version) {
-          setUploadState({ ready: false, message: "当前账号材料列表中尚未找到本次上传版本，尚不能重新分析。" });
+          setUploadState({ key, ready: false, message: "当前账号材料列表中尚未找到本次上传版本，尚不能重新分析。" });
         } else if (version.status !== "completed") {
-          setUploadState({ ready: false, message: version.status === "failed" || version.status === "cancelled" ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。" : "本次上传仍在处理中；处理完成后再回来确认版本。" });
+          setUploadState({ key, ready: false, message: version.status === "failed" || version.status === "cancelled" ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。" : "本次上传仍在处理中；处理完成后再回来确认版本。" });
           if (version.status !== "failed" && version.status !== "cancelled" && attempts < 60) timer = setTimeout(check, 1800);
         } else {
-          setUploadState({ ready: true, message: "本次上传已处理完成，可在原岗位核对预选版本后重新分析。" });
+          setUploadState({ key, ready: true, message: "本次上传已处理完成，可在原岗位核对预选版本后重新分析。" });
         }
       } catch {
         if (active) {
-          setUploadState({ ready: false, message: "暂时无法核对本次上传状态，请刷新材料列表后重试。" });
+          setUploadState({ key, ready: false, message: "暂时无法核对本次上传状态，请刷新材料列表后重试。" });
           if (attempts < 60) timer = setTimeout(check, 1800);
         }
       }
@@ -63,7 +67,9 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
     void check();
     return () => { active = false; if (timer) clearTimeout(timer); };
   }, [uploaded, report]);
-  const reanalysisHref = uploaded && report && uploadState?.ready
+  const uploadKey = uploaded && report ? `${report.id}:${uploaded.kind}:${uploaded.versionId}` : "";
+  const currentUploadState = uploadState?.key === uploadKey ? uploadState : null;
+  const reanalysisHref = uploaded && report && currentUploadState?.ready
     ? reportReanalysisHref(report, uploaded, query.get("sourceProjectVersion"))
     : null;
   // The existing growth-task return path keeps its original fixed-baseline contract.
@@ -74,7 +80,7 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
       <p className="break-words font-medium text-slate-900">{item.requirementTitle}</p>
       <p className="break-words text-slate-600">{displayJobTitle(report!.jobTitle, report!.jobId)}</p>
       <p className="leading-6 text-slate-600">上传新版后，原报告仍引用当时的版本。</p>
-      {uploaded && <p role="status" className={`leading-6 ${uploadState?.ready ? "text-[#173c34]" : "text-amber-900"}`}>{uploadState?.message || "正在核对本次上传状态…"}</p>}
+      {uploaded && <p role="status" className={`leading-6 ${currentUploadState?.ready ? "text-[#173c34]" : "text-amber-900"}`}>{currentUploadState?.message || "正在核对本次上传状态…"}</p>}
       <div className="flex flex-wrap items-center gap-3">
         <Link className="action-link" href={`/reports/${reportId}#requirement-${requirementId}`}>返回原报告这项要求</Link>
         {reanalysisHref

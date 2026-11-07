@@ -1,4 +1,4 @@
-import * as demoPresentation from "../src/lib/demo-display-identity.js";
+﻿import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire, registerHooks } from "node:module";
@@ -29,7 +29,7 @@ function fixture(filename, initialProps={}, environment={}) {
  };
  const modules={"@/lib/demo-display-identity.js":demoPresentation,react,"react/jsx-runtime":require("react/jsx-runtime"),"next/link":{__esModule:true,default:props=>React.createElement("a",props)},
   "next/navigation":{useSearchParams:()=>environment.query??new URLSearchParams()},
-  "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;},listResumes(){return Promise.resolve(environment.resumes??[])},listProjects(){return Promise.resolve(environment.projects??[])}}}};
+  "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;},listResumes(){return environment.lists?environment.lists():Promise.resolve(environment.resumes??[])},listProjects(){return environment.lists?environment.lists():Promise.resolve(environment.projects??[])}}}};
  const code=transform(readFileSync(new URL(`../src/components/${filename}.tsx`,import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  function commit(){index=0;tree=mod.exports.default(props);while(pending.length)pending.shift()();index=0;tree=mod.exports.default(props);}
@@ -108,6 +108,28 @@ test("upload return verifies the saved report and exposes navigation only, prese
  }finally{f.cleanup();}
 });
 
+test("ready state is bound to the current report/kind/version and a delayed B never borrows A's completion",async()=>{
+ const versionA="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",versionB="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+ const lists=deferred();const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId}),lists:()=>lists.promise};
+ const f=fixture("ReportUploadReturn",{},env);const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",items:[{requirementId,requirementTitle:"原要求"}],materials:[{id:"44444444-4444-4444-4444-444444444444",kind:"resume",versionNumber:1}]};
+ const flush=async()=>{await new Promise(r=>setTimeout(r,0));f.commit();};
+ try{
+  await f.settle(f.requests[0],report);
+  f.props({uploaded:{kind:"resume",versionId:versionA}});await flush();
+  lists.resolve([{id:"a-resume",title:"A",versions:[{id:versionA,versionNumber:1,status:"completed"}]}]);
+  await flush();assert.ok(f.html().includes("使用新版材料重新分析"),f.html().slice(0,500));
+  const listsB=deferred();env.lists=()=>listsB.promise;
+  f.props({uploaded:{kind:"resume",versionId:versionB}});await flush();
+  assert.ok(!f.html().includes("使用新版材料重新分析"),"B must not inherit A's ready state");
+  listsB.resolve([{id:"b-resume",title:"B",versions:[{id:versionB,versionNumber:1,status:"processing"}]}]);
+  await flush();assert.ok(!f.html().includes("使用新版材料重新分析"),"processing B is not analyzable");
+  assert.ok(f.html().includes("仍在处理中"));
+  const listsReady=deferred();env.lists=()=>listsReady.promise;
+  f.props({uploaded:{kind:"resume",versionId:versionB}});await flush();
+  listsReady.resolve([{id:"b-resume",title:"B",versions:[{id:versionB,versionNumber:1,status:"completed"}]}]);
+  await flush();assert.ok(f.html().includes("使用新版材料重新分析"),"B opens only after its own completion");
+ }finally{f.cleanup();}
+});
 test("completed upload offers a version-replacing reanalysis link that keeps the original report as comparison base",async()=>{
  const oldProject="77777777-7777-7777-7777-777777777777", otherProject="88888888-8888-8888-8888-888888888888";
  const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId,sourceProjectVersion:oldProject}),projects:[{id:"project-resource",name:"项目",versions:[{id:"99999999-9999-9999-9999-999999999999",versionNumber:3,status:"completed",createdAt:"2026-11-07T00:00:00Z",originalFilename:"new.zip"}]}]};
@@ -177,4 +199,5 @@ test("the original job form explicitly submits chosen new versions without creat
   assert.ok(existsSync(new URL(`../src/app/${route}`,import.meta.url)),route);
  }
 });
+
 
