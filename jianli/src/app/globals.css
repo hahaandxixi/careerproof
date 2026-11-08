@@ -1196,3 +1196,34 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .enterprise-review-page > details.text-xs { order: 6; margin-top: 0; }
 .enterprise-review-page > .enterprise-uncomparable-list { order: 7; }
 .enterprise-review-page > .board-work-layout { margin-top: 0; }
+
+/* Enterprise review color zoning: oat page, green control rail, cream reading, dark code. */
+body:has(.enterprise-review-page) .site-header { background: #143a32; border-color: #2a5147; color: #f3f4ed; }
+main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
+.enterprise-review-page { color: #263b36; }
+.enterprise-review-page .board-work-layout { gap: 14px; }
+.enterprise-review-page .board-filter-rail { padding: 12px; border: 1px solid #c8d4ce; border-right-color: #b9c9c1; background: #dce6e1; }
+.enterprise-review-page .board-filter-rail h2, .enterprise-review-page .enterprise-candidate-groups h3 { color: #143a32; }
+.enterprise-review-page .enterprise-candidate-groups { border-top-color: #b9c9c1; }
+.enterprise-review-page .enterprise-candidate-groups li { border-bottom-color: #c8d4ce; }
+.enterprise-review-page .enterprise-candidate-groups .candidate-select { color: #173c34; }
+.enterprise-review-page .enterprise-candidate-groups .candidate-select[aria-pressed="true"] { background: #1d4a40; color: #fbf9f4; box-shadow: none; }
+.enterprise-review-page .enterprise-candidate-groups .candidate-select[aria-pressed="true"] span { color: #dce6e1; }
+.enterprise-review-page .enterprise-candidate-groups li > label { color: #3f5d55; }
+.enterprise-review-page .enterprise-review-workbench { padding: 12px; border: 1px solid #c6d4cd; background: #e4eeea; }
+.enterprise-review-page .enterprise-matrix-workspace { padding: 10px; border: 1px solid #d3c9b6; background: #fbf9f4; }
+.enterprise-review-page .enterprise-matrix-workspace > .review-section-heading h2 { color: #143a32; }
+.enterprise-review-page .enterprise-matrix { background: #fbf9f4; }
+.enterprise-review-page .enterprise-matrix thead th { background: #e4eeea; color: #143a32; }
+.enterprise-review-page .enterprise-matrix tbody th { background: #fbf9f4; color: #3f514b; }
+.enterprise-review-page .enterprise-matrix tbody td { background: #fbf9f4; border-color: #d3c9b6; }
+.enterprise-review-page .enterprise-matrix > thead > tr > th { border-color: #c6d4cd; }
+.enterprise-review-page .enterprise-source-pane { border-color: #d3c9b6; background: #fbf9f4; }
+.enterprise-review-page .enterprise-source-pane .panel { background: #fbf9f4; }
+.enterprise-review-page .enterprise-source-tabs { border-bottom-color: #d3c9b6; }
+.enterprise-review-page .enterprise-source-tabs button { background: #ede7db; border-color: #d3c9b6; }
+.enterprise-review-page .enterprise-source-tabs button[aria-pressed="true"] { background: #1d4a40; border-color: #1d4a40; color: #fbf9f4; }
+.enterprise-review-page .workbench-difference { border-color: #c6d4cd; background: #dce6e1; }
+.enterprise-review-page .enterprise-uncomparable-list { background: #ede7db; padding: 12px; border: 1px solid #d3c9b6; }
+.enterprise-review-page .review-view-nav { border-bottom: 1px solid #c9bca8; }
+.enterprise-review-page .review-view-nav button[aria-pressed="true"] { border-color: #1d4a40; color: #143a32; }
