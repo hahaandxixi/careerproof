@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import ApplicationReply from "./ApplicationReply";
@@ -250,7 +250,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
   const replyNeedsRead=!!replyResult&&replyResult.refresh!=="complete"&&!replyResult.accessLost;
   async function open(id:string,requirementId="",stay=false){resetReply();setRadarRequirement(requirementId);setRadarSelectionId(requirementId);setRadarEvidenceExpanded(false);if(await session.open(id)&&!stay)setView("report");}
   async function download(){await session.download(file=>{const url=URL.createObjectURL(file.blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=file.filename;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});}
-  return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="review-workspace enterprise-recording-layout space-y-4"><div className="review-section-heading"><div><p className="workspace-meta">授权投递</p><h1 className="page-title">{displayJobTitle(jobTitle || items[0]?.jobTitle || "岗位候选人", jobId)}</h1></div>
+  return <div ref={workspace} style={heldHeight?{minHeight:heldHeight}:undefined} className="review-workspace enterprise-recording-layout enterprise-review-page space-y-4"><div className="review-section-heading"><div><p className="workspace-meta">授权投递</p><h1 className="page-title">{displayJobTitle(jobTitle || items[0]?.jobTitle || "岗位候选人", jobId)}</h1></div>
     {((!error&&!replyNeedsRead&&!readRetrying)||(readRetrying&&retryFromToolbar.current))&&<ReadRetryButton busy={busy} quiet label="刷新授权投递" onRetry={source=>void refreshList(source,true)}/>}</div><nav className="review-view-nav" aria-label="候选人核对视图">{([{key:"list",label:"候选人"},{key:"compare",label:`双人对照（${comparison.length}）`},{key:"report",label:selected?`固定报告 · ${identityLabel(selected.candidateName,selected.candidateId)}`:"固定报告"}] as const).map(tab=><button key={tab.key} type="button" aria-pressed={activeView===tab.key} disabled={tab.key==="compare"?!pairComparable:tab.key==="report"?!selected?.report:false} title={tab.key==="compare"&&!pairComparable&&comparison.length>=2?"所选报告的依据或要求轴不可比，请重新选择":undefined} onClick={()=>setView(tab.key)}>{tab.label}</button>)}</nav>
     <details className="text-xs leading-5 text-slate-500"><summary className="disclosure">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
     {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;rememberNavigation();resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
@@ -438,6 +438,7 @@ export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolea
 export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh,error=""}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:(source:HTMLButtonElement)=>void;error?:string}){
   return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p>{error&&!busy&&<p role="alert" className="text-rose-700">{error}</p>}<textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<ReadRetryButton busy={busy} label="刷新回复状态" onRetry={onRefresh}/>}</div>;
 }
+
 
 
 

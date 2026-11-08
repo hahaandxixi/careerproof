@@ -1186,3 +1186,13 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .enterprise-recording-layout .board-filter-options { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; }
 .enterprise-candidate-groups { padding-top: 7px; }
 .enterprise-candidate-groups ul { max-height: 22vh; }
+
+/* Compact enterprise review page: matrix/source before long notes and pagination. */
+.enterprise-recording-layout.enterprise-review-page { display: flex; flex-direction: column; gap: 10px; }
+.enterprise-review-page > * { order: 5; }
+.enterprise-review-page > .review-section-heading { order: 1; margin: 0; }
+.enterprise-review-page > .review-view-nav { order: 2; margin: 0; }
+.enterprise-review-page > .board-work-layout { order: 3; }
+.enterprise-review-page > details.text-xs { order: 6; margin-top: 0; }
+.enterprise-review-page > .enterprise-uncomparable-list { order: 7; }
+.enterprise-review-page > .board-work-layout { margin-top: 0; }
