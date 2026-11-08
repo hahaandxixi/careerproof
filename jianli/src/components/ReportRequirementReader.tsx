@@ -85,7 +85,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     <div className="report-index-filters" role="group" aria-label="按已保存的材料支持状态筛选">
       {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
         onClick={() => changeFilter(filter.key)} className={entry.filter === filter.key ? "is-active" : ""}>
-        {filter.label}<span>{filter.count}</span>
+        {`${filter.label} ${filter.count}`}
       </button>)}
     </div>
       <nav aria-label="报告中的岗位要求" className="min-w-0">

@@ -1118,3 +1118,23 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .report-heatmap-title { background: #f1eee5; color: #526176; font-size: 11px; }
 .report-heatmap-verdict { color: #173c34; font-weight: 600; }
 @media (max-width: 900px) { .report-heatmap-row { grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(74px, .8fr)); } .report-heatmap-row > * { padding-inline: 6px; font-size: 11px; } }
+
+/* Report detail container: at narrower desktop widths the source reader moves
+   below a full-width judgment instead of squeezing the relationship diagram. */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .report-desk .requirement-reading-panel.requirement-has-sources:has(.requirement-source-context) { display: block; }
+  .report-desk .requirement-document { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .report-desk .requirement-document > .requirement-reading-copy,
+  .report-desk .requirement-document > .requirement-source-context,
+  .report-desk .requirement-document > .requirement-next { grid-column: 1; grid-row: auto; }
+  .report-desk .requirement-document > .requirement-source-context { margin-top: 10px; }
+}
+.report-desk .requirement-document:not(.requirement-has-sources) .requirement-source-context { display: none; }
+.requirement-evidence-flow { grid-template-columns: minmax(130px, 1fr) auto minmax(180px, 1.35fr) auto minmax(120px, .9fr); }
+.report-heatmap-row.is-selected { outline: 2px solid #1d4a40; outline-offset: -2px; background: #edf4f0; }
+.report-heatmap-row > span[data-kind="claim"][data-state="on"] { background: #eef3f7; color: #38566f; }
+.report-heatmap-row > span[data-kind="source"][data-state="on"] { background: #e7efe9; color: #1d4a40; }
+.report-heatmap-row[data-tone="supported"] .report-heatmap-verdict { background: #e2efe9; color: #245c50; }
+.report-heatmap-row[data-tone="partial"] .report-heatmap-verdict { background: #f7efd9; color: #7a5c2e; }
+.report-heatmap-row[data-tone="gap"] .report-heatmap-verdict { background: #f8e7e2; color: #8f3b2d; }
+.report-heatmap-row[data-tone="other"] .report-heatmap-verdict { background: #eceeec; color: #526176; }
