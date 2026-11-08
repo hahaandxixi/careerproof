@@ -32,7 +32,7 @@ export function flowStepsForLocation(pathname: string, search = "") {
   const reportPath = sourceReport ? `/reports/${encodeURIComponent(sourceReport)}` : null;
   return FLOW_STEPS.map(step => ({ ...step,
     label: step.key === "application" && pathname === "/applications" ? "投递记录" : step.label,
-    unavailableReason: step.key === "application" && !reportPath ? "请先打开一份本人报告，再核对分享范围并确认投递。" : undefined,
+    unavailableReason: step.key === "application" && !reportPath && pathname !== "/applications" ? "请先打开一份本人报告，再核对分享范围并确认投递。" : undefined,
     href: step.key === "application" ? (reportPath ? `${reportPath}#application-submit` : null)
       : step.key === "matching" && reportPath ? reportPath
       : step.key === "growth" && reportPath ? `${reportPath}#report-supplement`

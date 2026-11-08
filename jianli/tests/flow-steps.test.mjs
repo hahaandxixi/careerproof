@@ -1,4 +1,4 @@
-﻿import { test } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -83,6 +83,24 @@ test("confirmation is text until a concrete report supplies the existing confirm
   const html = renderToStaticMarkup(React.createElement(FlowSteps, { steps, currentKey: "matching" }));
   assert.ok(html.includes('href="/reports/r1#application-submit"'));
   assert.ok(!html.includes("已完成"));
+});
+
+test("application records are a location, not an unavailable report action; report authorization keeps its prompt", () => {
+  const applications = flowStepsForLocation("/applications");
+  const applicationStep = applications.find(step => step.key === "application");
+  assert.equal(applicationStep.label, "投递记录");
+  assert.equal(applicationStep.unavailableReason, undefined);
+  assert.equal(applicationStep.href, null);
+  const plainPage = flowStepsForLocation("/jobs").find(step => step.key === "application");
+  assert.equal(plainPage.label, "确认投递");
+  assert.match(plainPage.unavailableReason ?? "", /先打开一份本人报告/);
+  const report = flowStepsForLocation("/reports/r1").find(step => step.key === "application");
+  assert.equal(report.label, "确认投递");
+  assert.equal(report.href, "/reports/r1#application-submit");
+  assert.equal(report.unavailableReason, undefined);
+  const html = renderToStaticMarkup(React.createElement(FlowSteps, { steps: applications, currentKey: "application" }));
+  assert.ok(html.includes("投递记录"));
+  assert.ok(!html.includes("请先打开一份本人报告，再确认投递"));
 });
 
 test("portfolio, saved reports and jobs share the five-step guide", () => {

@@ -13,13 +13,14 @@ import ListPagination from "./ListPagination";
 
 export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary; onSameJob?: (jobId: string) => void }) {
   const latest = report.isLatestForJob === true;
-  return <article className={`workspace-row report-record ${latest ? "is-latest" : "is-history"}`}>
+  const history = report.isLatestForJob === false;
+  return <article className={`workspace-row report-record ${latest ? "is-latest" : history ? "is-history" : "is-record"}`}>
     {report.recordProvenance === "test_fixture" && <p className="report-history-flag">历史核验资料 · 非真实招聘岗位</p>}
     <div className="report-record-head">
       <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><Link className="report-record-title" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>{latest && <span className="status-chip report-latest-chip">最新报告</span>}</div>
         <p className="mt-1 text-sm text-slate-600"><IdentityName name={report.candidateName} identityId={report.candidateId}/> · {new Date(report.createdAt).toLocaleString("zh-CN")}{latest && report.materials?.length ? ` · ${report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")}` : ""}</p>
       </div>
-      {report.isLatestForJob === false && <span className="report-followup-mark">有后续报告</span>}
+      {history && <span className="report-followup-mark">有后续报告</span>}
     </div>
     <details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>
       {!latest && !!report.materials?.length && <ul className="mt-3 space-y-1 text-xs leading-5">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="break-words">{displayMaterialTitle(material.title, material.id)} · 第{material.versionNumber}版 · 材料编号 {material.id.slice(0, 8)}</li>)}</ul>}

@@ -1,4 +1,4 @@
-﻿// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
+// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
 // 撤回二次确认与重新投递入口可用，查看/下载不得推断录用。
 // 沿用 sucrase 转译加载真实 .tsx 的做法；卡片是无状态组件，可直接调用于交互验证。
 import { test } from "node:test";
@@ -92,6 +92,8 @@ test("history card displays server-wide history facts and fixed versions only wh
   assert.match(html, /href="\/reports\/report-a"/);
   const unknown = render(React.createElement(ReportHistoryCard, { report: summary }));
   assert.doesNotMatch(unknown, /最新报告|后续报告|固定材料|历史（/);
+  assert.match(unknown, /report-record is-record/);
+  assert.doesNotMatch(unknown, /is-history/);
 });
 test("comparison is bounded at four, removable and does not mutate the caller's selection", () => {
   const ids = ["a", "b", "c", "d"];
