@@ -1227,3 +1227,14 @@ main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
 .enterprise-review-page .enterprise-uncomparable-list { background: #ede7db; padding: 12px; border: 1px solid #d3c9b6; }
 .enterprise-review-page .review-view-nav { border-bottom: 1px solid #c9bca8; }
 .enterprise-review-page .review-view-nav button[aria-pressed="true"] { border-color: #1d4a40; color: #143a32; }
+
+/* Compact enterprise top: job, tabs and refresh on one readable band. */
+.enterprise-compact-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 6px 20px; padding-bottom: 6px; border-bottom: 1px solid #c9bca8; }
+.enterprise-compact-head .review-section-heading { display: flex; flex-wrap: wrap; align-items: end; gap: 4px 16px; margin: 0; }
+.enterprise-compact-head .review-section-heading > div { min-width: 0; }
+.enterprise-compact-head .review-section-heading .workspace-meta { margin: 0; font-size: 11px; }
+.enterprise-compact-head .review-section-heading .page-title { margin: 0; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; }
+.enterprise-compact-head .review-view-nav { margin: 0; border: 0; }
+.enterprise-compact-head .review-view-nav button { min-height: 32px; padding: 4px 9px; }
+.enterprise-compact-head > .review-section-heading > button { align-self: center; }
+@media (max-width: 1180px) { .enterprise-compact-head { align-items: start; } .enterprise-compact-head .review-view-nav { width: 100%; order: 3; } }
