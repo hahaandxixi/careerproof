@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -27,7 +27,8 @@ function commandsFor(pathname: string, role?: string): Command[] {
     { id: "jobs", label: "发现岗位", group: "岗位", href: "/jobs", aliases: "岗位 找工作 发现 推荐" },
     { id: "reports", label: "我的报告", group: "报告", href: "/reports", aliases: "报告 匹配 证据" },
     { id: "applications", label: "我的投递", group: "投递", href: "/applications", aliases: "投递 分享 授权" },
-    { id: "demo", label: "案例库", group: "材料", href: "/demo", aliases: "案例 示例 下载 导入" },
+    { id: "skills", label: "技能全景", group: "报告", href: "/skills", aliases: "技能 技能全景 技能版图 材料支持" },
+    { id: "demo", label: "案例库", group: "材料", href: "/demo", aliases: "案例 案例库 示例项目 示例 下载 导入" },
     { id: "supplement", label: report ? "本报告 · 按需补证" : "按需补证（先选报告）", group: "报告", href: reportHash("#report-supplement"), aliases: "补证 缺口 上传新版 材料" },
     { id: "sharing", label: report ? "本报告 · 投递授权" : "投递授权（先选报告）", group: "投递", href: reportHash("#report-sharing"), aliases: "投递 授权 企业 分享" },
     { id: "sources", label: report ? "本报告 · 材料来源" : "报告材料来源", group: "报告", href: reportHash("#report-materials"), aliases: "来源 文件 版本 引用" },
@@ -131,3 +132,5 @@ export default function QuickCommandPalette() {
     </div>}
   </>;
 }
+
+

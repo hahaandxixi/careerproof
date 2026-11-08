@@ -397,6 +397,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <h1 className="page-title">我的材料</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">浏览案例材料</Link>
           <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>
           {hasCompletedMaterial && <Link href="/jobs" className="btn material-next-action">选择岗位进行对照</Link>}
           <button type="button" className={hasCompletedMaterial ? "btn-secondary" : "btn"} disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.focus({ preventScroll: true }); }); }}>添加材料</button>
@@ -555,4 +556,5 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     </div>
   );
 }
+
 

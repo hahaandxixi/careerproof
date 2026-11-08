@@ -67,9 +67,8 @@ export function SkillPanoramaView({ state, selected, onSelect, loadMore, retryFa
   const empty = !state.busy && state.total === 0;
   return <div className={styles.panorama}>
     <Link href="/reports" className={styles.back}>← 我的报告</Link>
-    <header className={styles.heading}><div><p className={styles.eyebrow}>PERSONAL SKILL LANDSCAPE</p><h1>个人技能全景</h1>
-      <p className={styles.subtitle}>把散落在岗位报告中的技能，放回同一张图景。</p></div>
-      <p className={styles.scope}>已保存报告中的技能<span>只整理已读取的报告，不重新评估能力。</span></p></header>
+    <header className={styles.heading}><div><h1>技能全景</h1>
+      <p className={styles.subtitle}>汇总已保存报告中的技能与材料支持记录。</p></div></header>
     {reports.some(report => demoJobAlias(report.jobId)) && <p className="text-sm text-slate-600">演示数据说明：示例岗位、企业与材料均为虚构，不代表真实招聘或能力认证。</p>}
     <div className={styles.loadbar} role="status" aria-live="polite">
       <p>已读取 <strong>{state.reports.length}</strong> 份详情 / <strong>{state.summaries.length}</strong> 份摘要{state.total !== null && <> · 共 {state.total} 份报告</>}

@@ -81,11 +81,11 @@ test("header keeps each role's original navigation, including admin logout witho
   }
 });
 
-test("student retains five primary entries including cases without a legacy growth task menu entry",()=>{
+test("student retains five primary entries including skills without a legacy growth task menu entry",()=>{
  user={id:"student",role:"student",displayName:"合成学生"};
  const html=render(Header), primary=html.match(/<nav aria-label="主导航"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
  assert.ok(primary);
- assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(value=>value[1]),["/portfolio","/jobs","/reports","/applications","/demo"]);
+ assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(value=>value[1]),["/portfolio","/jobs","/reports","/applications","/skills"]);
  assert.ok(!primary.includes("补证任务"));
  const menu=render(Menu,{role:"student",name:"学生",unreadCount:0,busy:false,onLogout(){}});
  assert.doesNotMatch(menu,/href="\/growth"|历史补证记录/);
@@ -102,3 +102,4 @@ test("registered identity keeps a natural name and puts data provenance in menu 
  assert.equal(saved.displayName,"首页验收学生（合成）");
  user={id:"unknown",role:"student",displayName:"小江"};const actual=render(Header);assert.match(actual,/小江/);assert.doesNotMatch(actual,/示例账号原名/);
 });
+
