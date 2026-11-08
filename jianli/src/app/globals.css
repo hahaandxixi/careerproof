@@ -1309,3 +1309,24 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
   .material-review-layout:has(.material-upload-surface) .material-row-actions .action-link,
   .material-review-layout:has(.material-upload-surface) .material-row-actions summary { white-space: normal; }
 }
+
+/* Enterprise workbench: matrix and single-person radar share one selected candidate/requirement. */
+.enterprise-review-workbench { grid-template-areas: "switch switch" "primary source" "difference difference"; }
+.enterprise-workbench-switch { grid-area: switch; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.enterprise-workbench-switch button { min-height: 32px; padding: 4px 10px; border: 1px solid #b9c9c1; border-radius: 3px; background: #fbf9f4; color: #3f5d55; font-size: 12px; }
+.enterprise-workbench-switch button[aria-pressed="true"] { border-color: #1d4a40; background: #1d4a40; color: #fbf9f4; font-weight: 600; }
+.enterprise-matrix-workspace, .enterprise-radar-workspace { grid-area: primary; }
+.enterprise-radar-workspace { min-width: 0; padding: 12px; border: 1px solid #c6d4cd; background: #fbf9f4; }
+.enterprise-radar-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 6px 16px; margin-bottom: 8px; }
+.enterprise-radar-heading h2 { color: #143a32; font-size: 16px; }
+.enterprise-radar-heading p:not(.workspace-meta) { color: #526176; font-size: 12px; }
+.enterprise-radar-embed > section { border: 0; border-radius: 0; background: transparent; padding: 0; }
+.enterprise-radar-embed [data-radar-detail] { display: none; }
+.enterprise-radar-embed svg { max-width: 100%; }
+.enterprise-review-workbench[data-mode="radar"] .enterprise-matrix-workspace,
+.enterprise-review-workbench[data-mode="matrix"] .enterprise-radar-workspace { display: none; }
+.enterprise-source-pane { grid-area: source; }
+.workbench-difference { grid-area: difference; }
+@media (max-width: 1100px) {
+  .enterprise-review-workbench { grid-template-areas: "switch" "primary" "source" "difference"; }
+}

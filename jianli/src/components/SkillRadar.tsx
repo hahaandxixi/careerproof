@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
@@ -11,12 +11,13 @@ import { resolveSupportScale, supportMeasure, supportScaleNote, type SampleScale
 import SupportMeasureDetails from "./SupportMeasureDetails";
 import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-citations";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange }: {
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false }: {
   dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
   onRequirementChange?: (id: string) => void;
   evidenceExpanded?: boolean;
   sampleScale?: SampleScale;
   onEvidenceExpandedChange?: (open: boolean) => void;
+  compact?: boolean;
 }) {
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
@@ -65,7 +66,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
             const title = d.skill || d.title;
             const short = Array.from(title).length > 8 ? Array.from(title).slice(0, 7).join("") + "…" : title;
             return <g key={d.requirementId}>
-              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke"><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
+              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke" role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${value.text}，查看证据`} aria-pressed={active} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
               <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
                 <title>{title}</title><rect x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
                 <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
@@ -75,7 +76,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           })}
         </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，使用下方逐项证据对照，避免轴标签拥挤。</p>}
       </div>
-      <div id={detailId} className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
+      {!compact && <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
         <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
         <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
@@ -100,7 +101,13 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           {(useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-sm leading-6 text-amber-800">待核对：{useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
 
         </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"} {dimension.verdict === "gap" ? "缺材料不代表没有能力。" : "材料支持程度不代表能力或录用结论。"}</p>}
-      </div>
+      </div>}
     </div>
   </section>;
 }
+
+
+
+
+
+
