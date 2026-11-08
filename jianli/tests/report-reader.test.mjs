@@ -290,10 +290,10 @@ test("overview counts saved evidence states, never equating rule coverage or rev
  const value={candidateName:"合成学生",jobTitle:"后端",createdAt:"2026-10-27T00:00:00Z",items:values,analysisMode:"rules",aiFallbackUsed:false,materials:[]};
  const before=JSON.stringify(value);
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.match(html,/有证据支持<\/dt><dd[^>]*>1</);
- assert.match(html,/待补材料<\/dt><dd[^>]*>1</);
- assert.match(html,/岗位要求<\/dt><dd[^>]*>5</);
- assert.ok(html.includes("另有 1 项部分支持 · 2 项未覆盖或需复核"));
+ assert.match(html,/report-status-name">有证据支持<\/span><strong>1</);
+ assert.match(html,/report-status-name">待补或仅声明<\/span><strong>1</);
+ assert.match(html,/全部 5/);
+ assert.ok(html.includes("待补材料 1 项 · 仅简历声明 0 项 · 暂不支持 1 项 · 合计 5 项要求"));
  assert.equal(JSON.stringify(value),before);
 });
 

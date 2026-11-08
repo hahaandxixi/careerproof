@@ -44,6 +44,18 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     document.addEventListener("click", fromLink, true);
     return () => { window.removeEventListener("hashchange", fromLocation); window.removeEventListener("popstate", fromLocation); document.removeEventListener("click", fromLink, true); };
   }, [items]);
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const next = (event as CustomEvent<{ filter?: WorkspaceFilter }>).detail?.filter;
+      if (!next) return;
+      const list = workspaceRequirements(items, next);
+      const selected = list[0]?.requirementId ?? null;
+      setEntry(previous => ({ ...previous, filter: next, selected, anchor: null, revision: previous.revision + 1 }));
+      if (selected) window.history.replaceState(null, "", `#requirement-${selected}`);
+    };
+    window.addEventListener("careerproof:filter-requirements", handler);
+    return () => window.removeEventListener("careerproof:filter-requirements", handler);
+  }, [items]);
   const articles = Children.toArray(children);
   const currentIndex = Math.max(0, items.findIndex(item => item.requirementId === entry.selected));
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;

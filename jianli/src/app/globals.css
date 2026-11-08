@@ -1005,3 +1005,28 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
   .report-record-headline { flex-wrap: wrap; gap: 6px 18px; }
   .report-record-actions { width: 100%; justify-content: flex-start; }
 }
+
+/* Student report overview: a named, clickable distribution rather than bare counts. */
+.report-overview { padding: 0 0 12px; border-bottom: 1px solid #ddd5c7; }
+.report-overview-title { color: #173c34; font-size: 16px; font-weight: 700; }
+.report-overview-caption { margin-top: 2px; color: #66758a; font-size: 12px; line-height: 1.6; }
+.report-status-all { min-height: 32px; padding: 4px 10px; border: 1px solid #d8d0c2; border-radius: 4px; background: transparent; color: #526176; font-size: 12px; }
+.report-status-all.is-active { border-color: #1d4a40; background: #e7efe9; color: #173c34; font-weight: 600; }
+.report-status-bar { display: flex; height: 8px; overflow: hidden; gap: 2px; border-radius: 2px; background: #e7e0d2; }
+.report-status-bar span[data-tone="supported"] { background: #3f7a68; }
+.report-status-bar span[data-tone="partial"] { background: #b08a3e; }
+.report-status-bar span[data-tone="gap"] { background: #b64531; }
+.report-status-bar span[data-tone="other"] { background: #7b8580; }
+.report-status-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.report-status-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px; min-width: 0; padding: 8px 10px; border: 1px solid #e7e0d2; border-radius: 4px; background: #fffefa; text-align: left; color: #263b36; }
+.report-status-item:hover { border-color: #a89f8c; }
+.report-status-item.is-active { border-color: #1d4a40; box-shadow: inset 0 -2px #1d4a40; background: #f1f6f2; }
+.report-status-item[data-tone="supported"] { border-left: 3px solid #3f7a68; }
+.report-status-item[data-tone="partial"] { border-left: 3px solid #b08a3e; }
+.report-status-item[data-tone="gap"] { border-left: 3px solid #b64531; }
+.report-status-item[data-tone="other"] { border-left: 3px solid #7b8580; }
+.report-status-name { flex: 1 1 100%; color: #526176; font-size: 12px; line-height: 1.4; }
+.report-status-item strong { color: #173c34; font-size: 20px; line-height: 1; }
+.report-status-unit { color: #66758a; font-size: 11px; }
+.report-status-detail { color: #66758a; font-size: 12px; line-height: 1.6; }
+@media (max-width: 900px) { .report-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
