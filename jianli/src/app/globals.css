@@ -1170,3 +1170,19 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .workbench-difference-candidate { display: grid; gap: 1px; padding: 5px 8px; border-left: 2px solid #7ca396; background: #fffefa; }
 .workbench-difference p { grid-column: 1 / -1; color: #526176; font-size: 11px; line-height: 1.5; }
 @media (max-width: 1100px) { .workbench-difference { grid-template-columns: minmax(120px, .8fr) repeat(2, minmax(100px, 1fr)); } }
+
+/* Enterprise review: code-first source pane and tighter top tools. */
+.enterprise-source-code { display: grid; gap: 4px; min-width: 0; }
+.enterprise-source-code-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; color: #526176; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.enterprise-source-code pre { max-height: 210px; margin: 0; padding: 8px 10px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; line-height: 1.55; }
+.enterprise-recording-layout .review-section-heading { margin-bottom: 2px; }
+.enterprise-recording-layout .review-section-heading .page-title { margin: 0; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.2; }
+.enterprise-recording-layout .review-view-nav { margin: 4px 0 0; }
+.enterprise-recording-layout .review-view-nav button { min-height: 34px; padding-block: 5px; }
+.enterprise-recording-layout > details.text-xs { margin-block: 2px 0; }
+.enterprise-recording-layout .board-work-layout { margin-top: 2px; }
+.enterprise-recording-layout .board-filter-rail { gap: 8px; }
+.enterprise-recording-layout .board-filter-rail h2 { font-size: 14px; }
+.enterprise-recording-layout .board-filter-options { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 6px; }
+.enterprise-candidate-groups { padding-top: 7px; }
+.enterprise-candidate-groups ul { max-height: 22vh; }

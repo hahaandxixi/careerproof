@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import ApplicationReply from "./ApplicationReply";
@@ -374,14 +374,14 @@ export function SavedRequirementDetail({ item, report }: { item: ReportItem; rep
 export function SelectedRequirementEvidence({ application, requirementId }: { application: ApplicationView; requirementId: string }) {
   const report = application.report;
   const item = report?.items.find(value => value.requirementId === requirementId);
+  const source = item?.evidenceList[0];
   if (!report) return null;
-  return <section className="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据">
+  return <section className="panel space-y-2 border-indigo-200" aria-label="当前格子的固定报告依据">
     <h2 className="font-semibold"><IdentityName name={application.candidateName} identityId={application.candidateId}/> · {item?.requirementTitle || "该报告未包含这条要求"}</h2>
     {item ? <>
-      <p className="text-sm">{VERDICT[item.verdict] ?? item.verdict}</p>
-      <SavedRequirementInterpretation item={item} report={report}/>
-      {item.evidenceList.slice(0, 2).map((source, index) => <div key={`${source.citationId}-${index}`} className="rounded-lg bg-slate-50 p-3 text-xs"><p><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行 · {source.citationId || "规则引用"}</p><pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}
-      {!item.evidenceList.length && <p className="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p>}
+      <div className="flex flex-wrap items-center gap-2 text-sm"><strong>{VERDICT[item.verdict] ?? item.verdict}</strong><span className="text-slate-600">{report.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}`).join(" · ") || "材料版本未记录"}</span></div>
+      {source ? <div className="enterprise-source-code"><p className="enterprise-source-code-meta"><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行</p><pre>{source.snippet}</pre><SourceIdentityDetails source={source} /></div> : <p className="rounded border border-dashed border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">该固定报告没有可展示的支持引用；这是材料缺口，不能据此推断学生没有相关能力。</p>}
+      <details className="text-sm"><summary className="disclosure">判断说明与完整依据</summary><div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/>{item.evidenceList.slice(1).map((extra, index) => <div key={`${extra.citationId}-${index}`} className="rounded bg-slate-50 p-2 text-xs"><p><SourceIdentity source={extra} materials={report.materials} /> · 第{extra.lineStart}–{extra.lineEnd}行</p><pre className="mt-1 whitespace-pre-wrap break-words">{extra.snippet}</pre></div>)}</div></details>
     </> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}
     <a className="btn-secondary" href="#selected-application-report">查看完整固定报告与回复收件人 →</a>
   </section>;
