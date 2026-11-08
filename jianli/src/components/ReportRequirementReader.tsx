@@ -77,32 +77,23 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     // Preserve the current requirement across refresh without moving focus away from the filter.
     if (selected && selected !== entry.selected) window.history.pushState(null, "", `#requirement-${selected}`);
   };
+  const tone = (item: ReportItem) => ["supported", "verified"].includes(item.verdict) ? "supported" : item.verdict === "partial" ? "partial" : ["gap", "claimed_only"].includes(item.verdict) ? "gap" : "other";
   return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="min-w-0 scroll-mt-24">
-    <div className="requirement-map" role="group" aria-label="岗位要求地图">
-      {items.map(item => {
-        const selected = entry.selected === item.requirementId;
-        return <a key={item.requirementId} href={`#requirement-${item.requirementId}`} className={`requirement-map-item ${selected ? "is-selected" : ""}`} aria-label={`${item.skill || item.requirementTitle}，${workspaceStatusLabel(item)}`}>
-          <span className="requirement-map-name">{item.skill || item.requirementTitle}</span>
-          <span className="requirement-map-state">{workspaceStatusLabel(item)}</span>
-          <span className="requirement-map-source">{item.evidenceList.length ? `${item.evidenceList.length} 处来源` : "无引用"}</span>
-        </a>;
-      })}
-    </div>
     <div className="report-index-layout min-w-0">
     <div className="report-index min-w-0">
     <h2 id="report-requirements-title" className="sr-only">岗位要求</h2>
-    <details className="text-sm"><summary className="cursor-pointer py-1 text-slate-600">筛选要求{entry.filter !== "all" ? ` · ${filters.find(filter => filter.key === entry.filter)?.label}` : ""}</summary>
-    <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="按已保存的材料支持状态筛选">
+    <div className="report-index-filters" role="group" aria-label="按已保存的材料支持状态筛选">
       {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
-        onClick={() => changeFilter(filter.key)} className={`min-h-11 rounded-lg border px-3 py-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#245c50] ${entry.filter === filter.key ? "border-[#245c50] bg-[#e7efe9] text-[#173c34]" : "border-slate-200 bg-white text-slate-600 hover:border-[#7ca396]"}`}>
-        {filter.label}
+        onClick={() => changeFilter(filter.key)} className={entry.filter === filter.key ? "is-active" : ""}>
+        {filter.label}<span>{filter.count}</span>
       </button>)}
-    </div></details>
+    </div>
       <nav aria-label="报告中的岗位要求" className="min-w-0">
         {visible.length ? <ol className="report-index-list">{visible.map(item => {
           const selected = entry.selected === item.requirementId;
           return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={selected ? "true" : undefined}
             className="report-index-link">
+            <span className={`report-index-dot tone-${tone(item)}`} aria-hidden="true" />
             <span className="break-words text-base font-semibold leading-6">{item.skill || item.requirementTitle}</span>
             <span className="text-sm leading-6">{workspaceStatusLabel(item)}</span>
           </a></li>;

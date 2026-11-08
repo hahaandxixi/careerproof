@@ -25,6 +25,9 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
   onCancelWithdraw(): void;
 }) {
   const reportHref = `/reports/${encodeURIComponent(item.reportId)}`;
+  const eventLabel = (type: string) => ({ submitted: "授权投递", viewed: "企业查看", downloaded: "企业下载", replied: "企业回复", withdrawn: "撤回授权" } as Record<string, string>)[type] ?? "投递记录";
+  const eventNodes = item.events.filter(e => e.detail?.trim());
+  const undocumentedEvents = item.events.length - eventNodes.length;
   return <article id={`application-${item.id}`} className="workspace-row application-record">
     <div className="application-record-head">
       <div className="min-w-0"><h2 className="text-xl font-semibold">{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</h2><p className="mt-1 break-words text-sm text-slate-600">{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</p></div>
@@ -36,7 +39,8 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
     {item.status==="withdrawn"&&<p className="text-sm text-slate-600">本次授权已撤回。<Link className="ml-2 text-[#1d4a40] underline" href={`${reportHref}#application-submit`}>重新确认授权并投递</Link>；也可从新版报告投递，原记录与企业回复不会被覆盖。</p>}
     <div className="card-actions application-actions"><Link className="btn-secondary" href={reportHref}>查看关联报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet" onClick={()=>onRequestWithdraw(item.id)}>撤回授权</button>}</div>
     {item.status!=="withdrawn"&&confirming&&<div className="space-y-2 rounded-lg bg-rose-50 p-3"><p className="text-sm text-rose-900">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，如需再次分享，可从报告页重新确认授权；将创建新的投递，旧记录继续保留。</p><div className="flex flex-wrap gap-2"><button type="button" className="btn-danger-quiet border border-rose-300" disabled={busy} onClick={()=>onConfirmWithdraw(item.id)}>确认撤回授权</button><button type="button" className="btn-secondary" disabled={busy} onClick={onCancelWithdraw}>取消</button></div></div>}
-    {!!item.events.filter(e => e.detail?.trim()).length && <ol className="application-event-flow" aria-label="已保存的投递事件">{item.events.filter(e => e.detail?.trim()).map((e,index)=><li key={`${e.type}:${e.at}:${index}`}><span className="application-event-dot" aria-hidden="true"/><div><strong>{e.detail}</strong><time dateTime={e.at}>{new Date(e.at).toLocaleString("zh-CN")}</time></div></li>)}</ol>}
+    {!!eventNodes.length && <ol className="application-event-flow" aria-label="已保存的投递事件">{eventNodes.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}><span className="application-event-dot" aria-hidden="true"/><div><strong>{eventLabel(e.type)}</strong><time dateTime={e.at}>{new Date(e.at).toLocaleString("zh-CN")}</time></div></li>)}</ol>}
+    {undocumentedEvents > 0 && <p className="text-xs text-slate-500">另有 {undocumentedEvents} 条已保存事件缺少说明，仅按时间保留在完整记录中。</p>}
     <details className="text-sm text-slate-600">
       <summary className="disclosure">{applicationEventsSummary(item.events)}</summary>
       <ol className="mt-2 space-y-2">{item.events.map(e=><li key={e.type}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
