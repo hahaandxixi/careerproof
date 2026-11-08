@@ -417,18 +417,11 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .report-desk .report-paper > .panel, .report-desk .report-paper > details.panel { border: 0; border-top: 1px solid #e0dbcd; border-radius: 0; padding: 18px 0; }
 .report-desk .report-paper > .review-utility { padding-block: 12px; }
 .report-desk .report-paper > #report-comparison > section.panel { padding: 20px 0; border: 0; border-top: 1px solid #e0dbcd; border-radius: 0; }
-@media (min-width: 1440px) {
-  .report-desk .requirement-reading-panel.requirement-has-sources:has(.requirement-source-context) { display: grid; grid-template-columns: minmax(0, 680px) minmax(360px, 1fr); align-items: start; column-gap: 24px; row-gap: 16px; }
+@media (min-width: 1024px) {
+  .report-desk .requirement-reading-panel.requirement-has-sources:has(.requirement-source-context) { display: grid; grid-template-columns: minmax(0, 55fr) minmax(300px, 45fr); align-items: start; column-gap: 20px; row-gap: 16px; }
   .report-desk .requirement-reading-panel:not(.requirement-has-sources) { display: block; }
   .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-source-context { max-width: 76ch; margin-top: 14px; }
   .report-desk .requirement-reading-panel:not(.requirement-has-sources) .report-source-empty { max-width: 76ch; }
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) { display: block !important; }
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-document { display: block !important; }
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-document-heading,
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-reading-copy,
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-source-context,
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-next { grid-column: auto !important; grid-row: auto !important; width: 100%; }
-  .report-desk .requirement-reading-panel:not(.requirement-has-sources) .requirement-source-context { max-width: 76ch !important; margin-top: 14px; }
   .report-desk .requirement-reading-panel:has(.requirement-source-context) > .requirement-document-heading { grid-column: 1; grid-row: 1; max-width: none; }
   .report-desk .requirement-document { display: contents; }
   .report-desk .requirement-document > .requirement-reading-copy { grid-column: 1; grid-row: 2; }
@@ -848,6 +841,8 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 
 /* Report reading: keep the shared identity and lift the evidence relationship. */
 .report-desk .report-paper { box-shadow: 0 10px 30px rgba(29,74,64,.045); }
+.report-fixture-notice { flex-basis: 100%; margin: 0 0 12px; padding: 7px 10px; border-left: 2px solid #b64531; background: #fbf3e8; color: #6f4b34; font-size: 12px; line-height: 1.6; }
+.report-fixture-notice strong { color: #7f3f2f; }
 .report-desk .report-paper-heading { border-bottom-color: #c8bfae; }
 .report-desk .requirement-reading-panel { border-top-color: #d8d0c2; }
 .report-desk .requirement-title { color: #173c34; }

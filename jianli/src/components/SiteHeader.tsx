@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -55,9 +55,10 @@ export default function SiteHeader() {
           user?.role === "student" ? <NotificationLink render={count => <StudentAccountMenu name={user.displayName} identityId={user.id} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
           user?.role === "enterprise" ? <NotificationLink render={count => <AccountMenu role="enterprise" name={user.displayName} identityId={user.id} unreadCount={count} busy={busy} onLogout={() => void handleLogout()} />} /> :
           user ? <><span className="site-header-muted max-w-28 truncate" title={user.displayName}>{user.displayName}</span><button className="min-h-11" disabled={busy} onClick={handleLogout}>{busy ? "退出中…" : "退出"}</button></> :
-          <><LoginLink className="inline-flex min-h-11 items-center">登录</LoginLink><LoginLink register className="inline-flex min-h-11 items-center rounded-lg bg-indigo-600 px-3 text-white hover:bg-indigo-500">注册</LoginLink></>}
+          <><LoginLink className="inline-flex min-h-11 items-center">登录</LoginLink><LoginLink register className="inline-flex min-h-11 items-center rounded-lg bg-[#1d4a40] px-3 text-white hover:bg-[#173c34]">注册</LoginLink></>}
       </div>
     </div>
     {error && <p role="alert" className="site-frame pb-3 text-sm text-rose-200">{error}</p>}
   </header>;
 }
+

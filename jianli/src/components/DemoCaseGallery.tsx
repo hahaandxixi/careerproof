@@ -38,9 +38,10 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
           <a href={asset(sample.scriptFilename)} download={sample.scriptFilename}>测试步骤</a>
         </div>
         <DemoCaseImport sample={sample} />
-        <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(sample.jobTitle)}`}>查找对应岗位 →</Link>
+        <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(sample.jobTitle.replace(/（合成演示）/g, "").trim())}`}>查找对应岗位 →</Link>
       </article>)}
     </div>
     {!visible.length && <div className="case-gallery-empty" role="status">当前方向暂无案例。</div>}
   </section>;
 }
+

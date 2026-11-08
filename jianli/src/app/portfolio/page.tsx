@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -74,9 +74,9 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
       </div>
       <div className="text-sm leading-6 text-slate-700">
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
-        {reportVersions && <p className="mt-1 text-indigo-800">原报告使用第 {reportVersions.join("、")} 版</p>}
+        {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
-      <p className={`text-sm font-medium leading-6 ${complete ? "text-emerald-700" : failed ? "text-rose-700" : "text-indigo-700"}`}>{statusText(item.status)}</p>
+      <p className={`text-sm font-medium leading-6 ${complete ? "text-emerald-700" : failed ? "text-rose-700" : "text-[#1d4a40]"}`}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString("zh-CN")}</time>
       <div className="material-row-actions">
         {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
@@ -88,7 +88,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
       <div className="flex items-center gap-3">
         <div role="progressbar" aria-label={`${title}处理进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.progress} className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${failed ? "bg-rose-500" : "bg-indigo-600"}`}
+            className={`h-full rounded-full transition-all duration-500 ${failed ? "bg-rose-500" : "bg-[#1d4a40]"}`}
             style={{ width: `${Math.max(item.progress, item.status === "pending" ? 4 : 0)}%` }}
           />
         </div>
@@ -377,8 +377,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
 
       {historyLoaded && !uploads.length && !projects.length && !historyError &&
-        <Link href="/demo" className="block rounded-xl bg-indigo-50 p-4 text-sm text-indigo-700">下载示例简历和项目 ZIP →</Link>}
-      {notice && <p role="status" className="rounded-xl bg-indigo-50 p-3 text-sm text-indigo-800">{notice}</p>}
+        <Link href="/demo" className="block rounded-xl bg-[#e7efe9] p-4 text-sm text-[#1d4a40]">下载示例简历和项目 ZIP →</Link>}
+      {notice && <p role="status" className="rounded-xl bg-[#e7efe9] p-3 text-sm text-[#173c34]">{notice}</p>}
 
       <div className="material-review-layout">
       <section className="material-register workspace-sheet" aria-labelledby="material-register-title">
@@ -430,7 +430,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 maxLength={200}
                 value={resumeTitle}
                 onChange={(event) => setResumeTitle(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
               />
             </label>
             <MaterialFileDropzone id="resume-file" kind="resume" file={resumeFile} target={resumeTitle.trim() || "新简历"} disabled={resumeBusy} onChange={setResumeFile} onError={setResumeError} />
@@ -439,7 +439,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <button
             type="submit"
             disabled={resumeBusy}
-            className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="mt-5 w-full rounded-lg bg-[#1d4a40] px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
             {resumeBusy ? "正在上传…" : "上传并解析简历"}
           </button>
@@ -466,7 +466,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectName}
                 disabled={projectBusy || !!attempt}
                 onChange={(event) => setProjectName(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
                 placeholder="如：校园二手交易平台"
               />
             </label>
@@ -478,7 +478,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectDescription}
                 disabled={projectBusy || !!attempt}
                 onChange={(event) => setProjectDescription(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
                 placeholder="你负责了什么，解决了什么问题"
               />
             </label>
@@ -494,7 +494,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <button
             type="submit"
             disabled={projectBusy || !!deletingProjectId || !attemptReady}
-            className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="mt-5 w-full rounded-lg bg-[#1d4a40] px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
             {projectBusy ? "正在上传…" : projectError&&attempt ? "重试上传" : attempt?.project ? "上传新版本" : "上传项目"}
           </button>
@@ -509,3 +509,4 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     </div>
   );
 }
+

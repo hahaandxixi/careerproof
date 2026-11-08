@@ -26,10 +26,10 @@ export default function FlowSteps({ steps, currentKey }: {
           navigateEvidenceFragment(step.href.slice(currentPath.length));
         }}>
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>
-        </Link> : <span className="flow-step" title={step.unavailableReason}>
+        </Link> : <span className="flow-step" tabIndex={step.unavailableReason ? 0 : undefined} aria-label={step.unavailableReason ? `${step.label}。${step.unavailableReason}` : undefined} title={step.unavailableReason}>
           <span className="flow-number" aria-hidden="true">{index + 1}</span><span>{step.label}</span>
+          {step.unavailableReason && <span className="sr-only">{step.unavailableReason}</span>}
         </span>}
-        {step.unavailableReason && <span className="flow-unavailable">{step.unavailableReason}</span>}
       </li>)}</ol>
     </nav>
   </div>;
