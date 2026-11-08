@@ -37,15 +37,6 @@ export default function HomePage() {
       </div>
     </section>
 
-    <section className="home-evidence-chain" aria-labelledby="home-chain-title">
-      <div className="home-chain-heading"><p className="workspace-meta">一份报告里发生什么</p><h2 id="home-chain-title">要求 → 材料支持 → 来源或缺口</h2></div>
-      <div className="home-chain-steps">
-        <article><span className="home-chain-index">01</span><h3>岗位要求</h3><p>保留岗位原文、权重和固定版本，逐项进入阅读。</p></article>
-        <article><span className="home-chain-index">02</span><h3>材料支持</h3><p>区分有证据、部分支持、待补、仅声明和暂不支持。</p></article>
-        <article><span className="home-chain-index">03</span><h3>来源与缺口</h3><p>有引用时并读文件、行号和原文；无引用时给下一步，而不是空窗口。</p></article>
-      </div>
-    </section>
-
     <Suspense fallback={<p role="status" className="panel">正在读取技术岗位…</p>}><JobDiscovery compact /></Suspense>
 
     <aside className="home-boundary">
