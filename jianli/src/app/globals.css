@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -895,8 +895,8 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .home-preview-head { margin-bottom: 6px; }
 .home-example-note { margin-top: 8px; }
 .home-v2 { gap: 18px; }
-.site-account a[href="/register"] { border-radius: 4px; background: var(--ink-primary); color: var(--paper-bg); font-weight: 600; }
-.site-account a[href="/register"]:hover { background: #173c34; }
+.site-header .site-account a[href="/register"] { border-radius: 4px; background: var(--ink-primary); color: var(--paper-bg); font-weight: 600; }
+.site-header .site-account a[href="/register"]:hover { background: #173c34; }
 .case-import-button { min-height: 40px; padding: 6px 10px; border: 1px solid #c8bfae; border-radius: 4px; background: #fffefa; color: #1d4a40; font-size: 13px; }
 .case-import-button:hover { border-color: #1d4a40; background: #e7efe9; }
 .case-import-button:disabled { opacity: .5; cursor: wait; }

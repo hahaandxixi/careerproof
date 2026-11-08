@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { useAuth } from "./AuthProvider";
@@ -99,16 +99,25 @@ export default function QuickCommandPalette() {
     if (samePath && hashIndex >= 0) navigateEvidenceFragment(command.href.slice(hashIndex));
     else router.push(command.href);
   };
+  const dialogKeys = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") { event.preventDefault(); close(); return; }
+    if (event.key !== "Tab") return;
+    const focusable = [...(dialog.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href]') ?? [])]
+      .filter(node => node.getClientRects().length > 0);
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1], current = document.activeElement as HTMLElement | null;
+    if (event.shiftKey && (current === first || !focusable.includes(current as HTMLElement))) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && (current === last || !focusable.includes(current as HTMLElement))) { event.preventDefault(); first.focus(); }
+  };
   return <>
     <button type="button" className="quick-command-trigger" onClick={() => window.dispatchEvent(new Event("careerproof:open-quick-command"))} aria-label="打开快捷跳转，Ctrl K">
       <span aria-hidden="true">⌕</span><span className="quick-command-trigger-label">快捷跳转</span><kbd>Ctrl K</kbd>
     </button>
     {open && <div className="quick-command-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) close(); }}>
-      <div ref={dialog} className="quick-command-dialog" role="dialog" aria-modal="true" aria-labelledby="quick-command-title">
+      <div ref={dialog} className="quick-command-dialog" role="dialog" aria-modal="true" aria-labelledby="quick-command-title" onKeyDown={dialogKeys}>
         <div className="quick-command-head"><h2 id="quick-command-title">快捷跳转</h2><button type="button" className="quick-command-close" onClick={close} aria-label="关闭快捷跳转">Esc</button></div>
         <input ref={input} className="quick-command-input" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => {
-          if (event.key === "Escape") { event.preventDefault(); close(); }
-          else if (event.key === "ArrowDown") { event.preventDefault(); setActive(value => Math.min(filtered.length - 1, value + 1)); }
+          if (event.key === "ArrowDown") { event.preventDefault(); setActive(value => Math.min(filtered.length - 1, value + 1)); }
           else if (event.key === "ArrowUp") { event.preventDefault(); setActive(value => Math.max(0, value - 1)); }
           else if (event.key === "Enter") { event.preventDefault(); choose(filtered[active]); }
         }} placeholder="输入页面、报告或动作，例如“补证”“来源”“A/B”" aria-label="搜索页面与功能" role="combobox" aria-expanded="true" aria-controls="quick-command-results" aria-activedescendant={filtered[active] ? `quick-command-${filtered[active].id}` : undefined} />
