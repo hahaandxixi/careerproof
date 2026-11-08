@@ -21,6 +21,7 @@ import ApplicationSubmit from "./ApplicationSubmit";
 import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenceWorkspace";
 import ReportAgentEvidence from "./ReportAgentEvidence";
 import ReportOverview from "./ReportOverview";
+import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
 import { adoptedReportExplanation, workspaceStatusLabel } from "@/lib/report-workspace";
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
@@ -65,6 +66,7 @@ function ReportWorkspace({ id }: { id: string }) {
     <ReportSections header={<ReportPaperHeader report={report} />} versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
+    {user?.role === "student" && <ReportRequirementHeatmap items={report.items} />}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
     <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>

@@ -188,7 +188,7 @@ function navigationFixture(hash = "", search = "") {
     pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
     filter(label) {
       const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
-      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && nodes(node.props.children).filter(child => typeof child === "string").join("") === label);
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && nodes(node.props.children).filter(child => typeof child === "string").join("").startsWith(label));
       assert.ok(button, label); button.props.onClick(); render();
     },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
