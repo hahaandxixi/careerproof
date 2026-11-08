@@ -38,6 +38,7 @@ function render(payload, eventType = "tool.completed", overrides = {}) {
     "@/lib/api/client": { api: {}, errorMessage: String },
     "@/lib/analysis-status": { taskUsedExternalAI: (provider, fallback) => !!provider && provider !== "rules" && !fallback },
     "@/lib/process-trace": trace,
+    "@/lib/task-navigation": { retryTaskHref: () => null },
     "./AccessGate": { ErrorNotice: () => null },
     "./MaterialContentNotice": contentNotice,
   }).default;

@@ -19,6 +19,7 @@ import {
 } from "@/lib/process-trace";
 import { ErrorNotice } from "./AccessGate";
 import MaterialContentNotice from "./MaterialContentNotice";
+import { retryTaskHref } from "@/lib/task-navigation";
 
 const TERMINAL = new Set(["completed", "failed", "cancelled"]);
 const MODEL_STEPS = ["模型证据分析", "千问证据分析"];
@@ -143,7 +144,8 @@ export default function TaskView({ id }: { id: string }) {
     setBusy(true); setError("");
     try {
       const accepted = await api.retryTask(id);
-      if (accepted.taskId !== id) router.push(`/tasks/${accepted.taskId}`);
+      const next = retryTaskHref(id, accepted.taskId, compareTo);
+      if (next) router.push(next);
       else setRevision(value => value + 1);
     } catch (reason) { setError(errorMessage(reason)); }
     finally { setBusy(false); }

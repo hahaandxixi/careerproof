@@ -54,6 +54,7 @@ test("demo page delegates cases to the gallery and retains synthetic boundary co
     "next/link": { __esModule: true, default: props => React.createElement("a", props) },
     "@/components/SourceCoverageDemo": { __esModule: true, default: () => null },
     "@/components/DemoCaseGallery": { __esModule: true, default: ({samples}) => React.createElement("div", {"data-cases": samples.length}) },
+    "@/components/StickyRail": { __esModule: true, default: ({children}) => React.createElement("aside", null, children) },
     "./samples.json": { __esModule: true, default: samples },
     "./coverage.json": { __esModule: true, default: [] },
   };
