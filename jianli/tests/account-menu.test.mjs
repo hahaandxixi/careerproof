@@ -15,6 +15,7 @@ const modules = {
   react: React,
   "react/jsx-runtime": require("react/jsx-runtime"),
   "next/link": { __esModule: true, default: props => React.createElement("a", props) },
+  "./QuickCommandPalette": { __esModule: true, default: () => null },
   "next/navigation": { usePathname: () => "/jobs/mine", useRouter: () => ({}) },
   "./AuthProvider": { useAuth: () => ({ user, status: "authenticated", logout() {}, reload() {} }) },
   "./NotificationLink": { __esModule: true, default: ({ render }) => user && ["student", "enterprise"].includes(user.role) ? render(count) : null },
@@ -80,11 +81,11 @@ test("header keeps each role's original navigation, including admin logout witho
   }
 });
 
-test("student retains four primary entries without a legacy growth task menu entry",()=>{
+test("student retains five primary entries including cases without a legacy growth task menu entry",()=>{
  user={id:"student",role:"student",displayName:"合成学生"};
  const html=render(Header), primary=html.match(/<nav aria-label="主导航"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
  assert.ok(primary);
- assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(value=>value[1]),["/portfolio","/jobs","/reports","/applications"]);
+ assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(value=>value[1]),["/portfolio","/jobs","/reports","/applications","/demo"]);
  assert.ok(!primary.includes("补证任务"));
  const menu=render(Menu,{role:"student",name:"学生",unreadCount:0,busy:false,onLogout(){}});
  assert.doesNotMatch(menu,/href="\/growth"|历史补证记录/);
