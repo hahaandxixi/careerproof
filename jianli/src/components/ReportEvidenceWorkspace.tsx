@@ -5,7 +5,7 @@ import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText, evidenceWorkspace } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
-import { requirementConclusion, savedRequirementAction } from "@/lib/report-workspace";
+import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "@/lib/report-workspace";
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
@@ -39,6 +39,13 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     ?? (projectVersions.length === 1 ? projectVersions[0].id : undefined);
   return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与下一步`}>
     <div className="requirement-reading-copy min-w-0 space-y-4">
+    <div className="requirement-evidence-flow" aria-label="要求、材料来源与判断关系">
+      <div className="requirement-flow-node requirement-flow-requirement"><span>岗位要求</span><strong>{item.skill || item.requirementTitle}</strong></div>
+      <span className="requirement-flow-arrow" aria-hidden="true">→</span>
+      <div className={`requirement-flow-node ${item.evidenceList.length ? "has-source" : "no-source"}`}><span>材料来源</span><strong>{item.evidenceList.length ? `${compactSourceLabel(item.evidenceList[0], report.materials).fileName} 等 ${item.evidenceList.length} 处` : "未记录可定位材料"}</strong></div>
+      <span className="requirement-flow-arrow" aria-hidden="true">→</span>
+      <div className={`requirement-flow-node requirement-flow-result ${supported ? "is-supported" : actionable ? "is-gap" : "is-review"}`}><span>当前判断</span><strong>{workspaceStatusLabel(item)}</strong></div>
+    </div>
     {explanationPanel}
     {!explanationVisible && <div><h4 className="text-base font-semibold text-slate-900">{supported ? "判断依据" : actionable ? "当前缺口" : "当前需核对"}</h4>
       {/[0-9a-f]{8}-[0-9a-f-]{27,}/i.test(conclusion || "") ? <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-[#1d4a40]">查看保存的缺口与材料定位原文</summary><p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700">{conclusion}</p></details> : <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>}

@@ -1055,3 +1055,29 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
   .application-record-summary { flex: 0 0 240px; border-bottom: 0; border-right: 1px solid #e7e0d2; }
   .application-record-detail { padding-left: 0; }
 }
+
+/* Data-driven relationship diagrams: requirement → material/source → judgment. */
+.requirement-evidence-flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.15fr) auto minmax(0, .9fr); align-items: stretch; gap: 8px; padding: 10px; border: 1px solid #d8e2dc; background: #edf4f0; }
+.requirement-flow-node { display: grid; align-content: start; gap: 2px; min-width: 0; padding: 7px 9px; border-left: 2px solid #7ca396; background: #fffefa; }
+.requirement-flow-node span { color: #66758a; font-size: 11px; }
+.requirement-flow-node strong { overflow-wrap: anywhere; color: #173c34; font-size: 13px; line-height: 1.45; }
+.requirement-flow-node.no-source { border-left-color: #b64531; background: #fbf3e8; }
+.requirement-flow-node.is-gap { border-left-color: #b64531; }
+.requirement-flow-node.is-review { border-left-color: #7b8580; }
+.requirement-flow-arrow { align-self: center; color: #7ca396; font-size: 18px; }
+.pair-difference-flow { display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1.6fr) minmax(180px, 1fr); gap: 12px; align-items: stretch; margin-top: 10px; padding: 10px; background: #edf4f0; }
+.pair-difference-requirement { display: grid; align-content: start; gap: 3px; padding: 8px; background: #fffefa; border-left: 2px solid #1d4a40; }
+.pair-difference-requirement span { color: #66758a; font-size: 11px; }
+.pair-difference-requirement strong { color: #173c34; font-size: 14px; }
+.pair-difference-candidates { display: grid; gap: 6px; }
+.pair-difference-candidate { display: grid; gap: 1px; padding: 6px 8px; border: 1px solid #d8e2dc; }
+.pair-difference-candidate strong { color: #173c34; font-size: 13px; }
+.pair-difference-candidate span { color: #526176; font-size: 11px; overflow-wrap: anywhere; }
+.pair-difference-summary { align-self: center; margin: 0; color: #526176; font-size: 12px; line-height: 1.6; }
+.application-event-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; margin: 2px 0 4px; padding: 8px 0; border-top: 1px solid #e7e0d2; border-bottom: 1px solid #e7e0d2; list-style: none; }
+.application-event-flow li { position: relative; display: flex; gap: 8px; min-width: 0; padding: 5px 12px 5px 0; }
+.application-event-flow li:not(:last-child)::after { content: "→"; position: absolute; right: 5px; top: 5px; color: #a89f8c; }
+.application-event-dot { width: 8px; height: 8px; flex: none; margin-top: 5px; border-radius: 999px; background: #1d4a40; }
+.application-event-flow strong { display: block; color: #173c34; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.application-event-flow time { color: #66758a; font-size: 11px; }
+@media (max-width: 1279px) { .requirement-evidence-flow { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } .requirement-evidence-flow .requirement-flow-node:last-child { grid-column: 1 / -1; } .pair-difference-flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); } .pair-difference-summary { grid-column: 1 / -1; } }
