@@ -86,7 +86,7 @@ test("history card displays server-wide history facts and fixed versions only wh
     ],
   }, onSameJob() {} }));
   assert.match(html, /有后续报告/);
-  assert.match(html, /同岗位报告 · 27份/);
+  assert.match(html, /同岗位共 27 份报告/);
   assert.match(html, /同名项目/);assert.match(html, /report-material-version">v1/);
   assert.match(html, /report-material-version">v2/);
   assert.match(html, /href="\/reports\/report-a"/);
@@ -287,5 +287,6 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
  const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
 });
+
 
 

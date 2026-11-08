@@ -17,22 +17,16 @@ export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary
   const analysis = report.aiFallbackUsed ? "模型回退，按规则核对" : report.analysisMode === "rules" ? "规则报告" : "分析报告已保存";
   return <article className={`workspace-row report-record ${latest ? "is-latest" : history ? "is-history" : "is-record"}`}>
     {report.recordProvenance === "test_fixture" && <p className="report-history-flag">历史核验资料 · 非真实招聘岗位</p>}
-    <div className="report-record-grid">
-      <div className="report-record-identity">
-        <div className="flex flex-wrap items-center gap-2"><Link className="report-record-title" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>{latest && <span className="status-chip report-latest-chip">最新报告</span>}{history && <span className="report-followup-mark">有后续报告</span>}</div>
-        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time></p>
-      </div>
-      <div className="report-record-materials">
-        <p className="report-column-label">本报告材料</p>
-        {report.materials?.length ? <ul>{report.materials.map(material => <li key={`${material.kind}-${material.id}`}><span>{displayMaterialTitle(material.title, material.id)}</span><span className="report-material-version">v{material.versionNumber}</span></li>)}</ul> : <p className="report-column-empty">未记录本报告材料。</p>}
-        <p className="report-analysis-state">{analysis}</p>
+    <div className="report-record-headline">
+      <div className="report-record-heading">
+        <div className="report-record-title-line"><Link className="report-record-title" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>{latest && <span className="status-chip report-latest-chip">最新报告</span>}{history && <span className="report-followup-mark">有后续报告</span>}</div>
+        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time>{report.materials?.length ? <> · <span className="report-materials-inline">{report.materials.map((material, index) => <span key={`${material.kind}-${material.id}`}>{index > 0 ? " · " : ""}{displayMaterialTitle(material.title, material.id)} <span className="report-material-version">v{material.versionNumber}</span></span>)}</span></> : null}{onSameJob && <> · <button type="button" className="report-same-job" onClick={() => onSameJob(report.jobId)}>同岗位共{report.jobReportCount !== undefined ? ` ${report.jobReportCount} ` : ""}份报告</button></>}</p>
       </div>
       <div className="report-record-actions"><Link className="btn" href={`/reports/${report.id}`}>查看报告</Link>
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={`/reports/${report.id}#report-comparison`}>版本对比</Link>}
-        {onSameJob && <button type="button" className="btn-quiet" onClick={() => onSameJob(report.jobId)}>同岗位报告{report.jobReportCount !== undefined ? ` · ${report.jobReportCount}份` : ""}</button>}
       </div>
     </div>
-    <details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details>
+    <div className="report-record-foot"><span className="report-analysis-state">{analysis}</span><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
   </article>;
 }
 
