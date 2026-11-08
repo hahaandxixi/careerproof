@@ -1238,3 +1238,74 @@ main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
 .enterprise-compact-head > .review-section-heading > button { align-self: center; }
 @media (max-width: 1180px) { .enterprise-compact-head { align-items: start; } .enterprise-compact-head .review-view-nav { width: 100%; order: 3; } }
 
+
+/* Student four-page palette: oat desk, spruce control rails, ivory reading, ink accents. */
+main.site-frame:has(.report-workspace),
+main.site-frame:has(.application-workspace),
+main.site-frame:has(.case-library-page),
+main.site-frame:has(.material-workspace),
+main.site-frame:has(.report-desk) { background: #ede7db; }
+.report-workspace, .application-workspace, .case-library-page, .material-workspace { color: #263b36; }
+.report-workspace .report-searchbar, .application-workspace .application-toolbar { padding: 10px; border: 1px solid #c8d4ce; background: #dce6e1; }
+.report-audit-toggle { border-left-color: #b9c9c1; color: #3f5d55; }
+.report-workspace .workspace-list { padding: 0 16px; border: 1px solid #d3c9b6; border-radius: 2px; background: #fbf9f4; }
+.report-workspace .workspace-list > .report-record + .report-record { border-top-color: #d3c9b6; }
+.report-workspace .report-record:hover { background: #f1f6f2; }
+.report-workspace .report-record-title { color: #143a32; }
+.report-workspace .status-chip, .report-workspace .report-latest-chip { background: #e4eeea; border-color: #a9c2b7; color: #1d4a40; }
+.application-workspace .application-master-detail { border: 1px solid #c8d4ce; background: #dce6e1; }
+.application-workspace .application-record-list { border-right-color: #b9c9c1; background: #dce6e1; }
+.application-workspace .application-record-summary { border-bottom-color: #c8d4ce; color: #263b36; }
+.application-workspace .application-record-summary:hover { background: #e4eeea; }
+.application-workspace .application-record-summary.is-selected { background: #1d4a40; color: #fbf9f4; box-shadow: none; }
+.application-workspace .application-record-summary.is-selected span { color: #dce6e1; }
+.application-workspace .application-record-summary.is-selected strong { color: #fbf9f4; }
+.application-workspace .application-record-detail { padding: 14px 20px; background: #fbf9f4; }
+.application-workspace .application-record-detail .workspace-row { padding-inline: 0; }
+.application-workspace .application-event-flow { border-color: #d3c9b6; }
+.application-workspace .application-event-dot { background: #1d4a40; }
+.case-library-page .case-library-heading { border-bottom-color: #d3c9b6; }
+.case-library-page .case-gallery-tabs { padding: 2px 8px 0; border: 1px solid #c8d4ce; background: #dce6e1; }
+.case-library-page .case-gallery-tabs button { min-height: 38px; }
+.case-library-page .case-gallery-tabs button.is-active { border-color: #1d4a40; color: #143a32; }
+.case-library-page .case-card { border-color: #d3c9b6; background: #fbf9f4; box-shadow: none; }
+.case-library-page .case-card:hover { border-color: #a9c2b7; }
+.case-library-page .case-library-rail { padding: 12px; border: 1px solid #c8d4ce; background: #dce6e1; }
+.case-library-page .case-library-notes { border-left-color: #b9c9c1; }
+.case-library-page .case-library-note, .case-library-page .case-library-notes details { border-bottom-color: #c8d4ce; }
+.case-library-page .case-library-note h2 { color: #143a32; }
+.tech-tag { display: inline-flex; align-items: center; min-height: 20px; padding: 1px 6px; border: 1px solid transparent; border-radius: 3px; font-size: 10px; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.tech-tag[data-domain="backend"] { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+.tech-tag[data-domain="testing"] { background: #f0fdfa; border-color: #99f6e4; color: #115e59; }
+.tech-tag[data-domain="data"] { background: #fffbeb; border-color: #fde68a; color: #78350f; }
+.tech-tag[data-domain="frontend"] { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+.tech-tag[data-domain="tools"] { background: #f1f5f9; border-color: #e2e8f0; color: #1e293b; }
+.material-workspace .page-title, .material-workspace .section-title { color: #143a32; }
+.material-workspace .material-register { padding: 16px 20px; border: 1px solid #d3c9b6; border-radius: 2px; background: #fbf9f4; }
+.material-workspace .material-register-columns { background: #e4ded0; border-bottom-color: #d3c9b6; color: #3f514b; }
+.material-workspace .material-register-row { border-bottom-color: #d3c9b6; }
+.material-workspace .material-register-row:hover { background: #f1f6f2; }
+.material-workspace .selection-toggle[aria-pressed="true"] { border-color: #1d4a40; background: #1d4a40; color: #fbf9f4; }
+.material-workspace .material-upload-surface { padding: 16px; border: 1px solid #bcd4c8; background: #e4eeea; }
+.material-workspace .material-upload-surface .panel, .material-workspace .material-upload-surface .surface-muted { background: #fbf9f4; }
+.report-desk .report-paper { border-color: #d3c9b6; background: #fbf9f4; }
+.report-desk .report-index { padding: 12px 14px 12px 0; border-right-color: #c8d4ce; background: #dce6e1; }
+.report-desk .report-index-filters { border-bottom-color: #c8d4ce; }
+.report-desk .report-fixture-notice { background: #f7eadf; }
+
+/* Student page shells and upload-panel spacing at 1280. */
+body:has(.report-workspace), body:has(.application-workspace), body:has(.case-library-page), body:has(.material-workspace), body:has(.report-desk) { background: #ede7db; }
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .material-review-layout:has(.material-upload-surface) { grid-template-columns: minmax(0, 1fr) minmax(17rem, 32%); }
+  .material-review-layout:has(.material-upload-surface) .material-register-row,
+  .material-review-layout:has(.material-upload-surface) .material-register-columns {
+    grid-template-columns: minmax(10rem, 1fr) 3.2rem 4.5rem 7.8rem 11rem;
+    gap: 8px;
+  }
+}
+.material-workspace .material-row-heading .break-all { overflow-wrap: anywhere; word-break: normal; }
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .material-review-layout:has(.material-upload-surface) .material-row-actions { flex-wrap: wrap; row-gap: 4px; white-space: normal; }
+  .material-review-layout:has(.material-upload-surface) .material-row-actions .action-link,
+  .material-review-layout:has(.material-upload-surface) .material-row-actions summary { white-space: normal; }
+}

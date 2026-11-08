@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -17,6 +17,20 @@ const groups = [
   { key: "product", label: "产品与运营" },
 ] as const;
 const groupOf = (slug: string) => slug === "qa" ? "qa" : ["analytics", "data-engineering"].includes(slug) ? "data" : ["product", "operations"].includes(slug) ? "product" : "engineering";
+const domainMeta: Record<string, { domain: string; label: string }> = {
+  engineering: { domain: "backend", label: "后端" },
+  data: { domain: "data", label: "数据" },
+  qa: { domain: "testing", label: "测试" },
+  product: { domain: "tools", label: "产品与运营" },
+};
+const domainOf = (slug: string) => {
+  if (slug === "frontend") return { domain: "frontend", label: "前端" };
+  if (slug === "qa") return domainMeta.qa;
+  if (["analytics", "data-engineering"].includes(slug)) return domainMeta.data;
+  if (["product", "operations"].includes(slug)) return domainMeta.product;
+  if (slug === "backend") return domainMeta.engineering;
+  return { domain: "tools", label: "工具与未知" };
+};
 
 export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
   const [group, setGroup] = useState<string>("all");
@@ -26,8 +40,10 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
       {groups.map(item => <button key={item.key} type="button" role="tab" aria-selected={group === item.key} className={group === item.key ? "is-active" : ""} onClick={() => setGroup(item.key)}>{item.label}<span>{item.key === "all" ? samples.length : samples.filter(sample => groupOf(sample.slug) === item.key).length}</span></button>)}
     </div>
     <div className="case-gallery-grid">
-      {visible.map(sample => <article className="case-card" key={sample.caseId}>
-        <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="case-synthetic">合成案例</span></div>
+      {visible.map(sample => {
+        const domain = domainOf(sample.slug);
+        return <article className="case-card" key={sample.caseId}>
+        <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span><span className="case-synthetic">合成案例</span></div>
         <h3>{sample.title}</h3>
         <p className="case-project">{sample.projectTitle}</p>
         <p className="case-job">{sample.jobTitle}</p>
@@ -39,9 +55,10 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
         </div>
         <DemoCaseImport sample={sample} />
         <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(sample.jobTitle.replace(/（合成演示）/g, "").trim())}`}>查找对应岗位 →</Link>
-      </article>)}
+      </article>;})}
     </div>
     {!visible.length && <div className="case-gallery-empty" role="status">当前方向暂无案例。</div>}
   </section>;
 }
+
 
