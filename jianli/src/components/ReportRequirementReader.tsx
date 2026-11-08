@@ -77,7 +77,18 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     // Preserve the current requirement across refresh without moving focus away from the filter.
     if (selected && selected !== entry.selected) window.history.pushState(null, "", `#requirement-${selected}`);
   };
-  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-index-layout min-w-0 scroll-mt-24">
+  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="min-w-0 scroll-mt-24">
+    <div className="requirement-map" role="group" aria-label="岗位要求地图">
+      {items.map(item => {
+        const selected = entry.selected === item.requirementId;
+        return <a key={item.requirementId} href={`#requirement-${item.requirementId}`} className={`requirement-map-item ${selected ? "is-selected" : ""}`} aria-label={`${item.skill || item.requirementTitle}，${workspaceStatusLabel(item)}`}>
+          <span className="requirement-map-name">{item.skill || item.requirementTitle}</span>
+          <span className="requirement-map-state">{workspaceStatusLabel(item)}</span>
+          <span className="requirement-map-source">{item.evidenceList.length ? `${item.evidenceList.length} 处来源` : "无引用"}</span>
+        </a>;
+      })}
+    </div>
+    <div className="report-index-layout min-w-0">
     <div className="report-index min-w-0">
     <h2 id="report-requirements-title" className="sr-only">岗位要求</h2>
     <details className="text-sm"><summary className="cursor-pointer py-1 text-slate-600">筛选要求{entry.filter !== "all" ? ` · ${filters.find(filter => filter.key === entry.filter)?.label}` : ""}</summary>
@@ -105,5 +116,6 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     </div>
     <div className="min-w-0">{!visible.length && <p className="text-sm text-slate-500">选择其他筛选查看判断与行动。</p>}{items.map((item, index) => <div key={item.requirementId} hidden={entry.selected !== item.requirementId}>{articles[index]}</div>)}</div>
     {nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
+    </div>
   </section>;
 }

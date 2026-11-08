@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { demoJobAlias } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -53,6 +53,7 @@ function Workspace(){
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,error,loading:busy}=state;
   const [revokeId,setRevokeId]=useState<string|null>(null);
+  const [selectedId,setSelectedId]=useState<string|null>(null);
   const session=useMemo(()=>createApplicationListSession({
     list:async()=>{const id=applicationAnchorId();const result=await api.myApplications(page.current,20,undefined,filters.current);const items=await includeApplicationTarget(result.items,api.applicationDetail,id,undefined,()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示你的其他投递。");});return {...result,items,pageItemCount:result.items.length};},
     withdraw:api.withdrawApplication,errorMessage,
@@ -73,6 +74,10 @@ function Workspace(){
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；刷新、撤回造成的 items 变化不再劫持视口。目标不可访问的提示仍由 includeApplicationTarget 的回调负责。
   const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
   useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
+  useEffect(()=>{
+    const target=applicationAnchorId();
+    setSelectedId(previous=>items.some(item=>item.id===previous)?previous:(target&&items.some(item=>item.id===target)?target:items[0]?.id??null));
+  },[items]);
   return <div className="application-workspace space-y-4"><div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title">我的投递</h1></div><Link className="btn-secondary" href="/reports">查看我的报告</Link></div>
     <form className="application-toolbar" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
       <div className="flex min-w-0 flex-wrap items-end gap-3">
@@ -82,7 +87,17 @@ function Workspace(){
       <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["all","全部投递"],["waiting","等待企业回复"],["action","待我核对"],["withdrawn","已撤回"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={view===value} disabled={busy} onClick={()=>{setView(value);filters.current={q:query.trim(),view:value};page.current=1;setRevokeId(null);void session.refresh();}}>{label}</button>)}</div>
     </form>
     {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&(filters.current.q||filters.current.view!=="all"?<p className="panel text-sm">没有符合筛选的投递，可以调整条件或重置。</p>:<div className="panel"><p className="reading-copy">暂无投递。先查看匹配报告，再决定是否分享。</p><Link className="btn mt-3" href="/reports">查看我的报告</Link></div>)}
-    <div className={items.length ? "workspace-sheet workspace-list" : undefined}>{items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}</div>
+    {!!items.length && <div className="application-master-detail">
+      <nav className="application-record-list" aria-label="投递记录">
+        {items.map(item=>{const selected=selectedId===item.id;return <button key={item.id} type="button" className={`application-record-summary ${selected?"is-selected":""}`} aria-pressed={selected} onClick={()=>{setSelectedId(item.id);setRevokeId(null);}}>
+          <strong>{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</strong>
+          <span>{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</span>
+          <span className="application-summary-status">{applicationStatusText(item.status)}</span>
+          <span>{new Date(item.events.at(-1)?.at ?? item.createdAt).toLocaleDateString("zh-CN")}</span>
+        </button>})}
+      </nav>
+      <div className="application-record-detail">{selectedId && items.filter(item=>item.id===selectedId).map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}</div>
+    </div>}
     {state.pagination&&<><ListPagination label="投递分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;setRevokeId(null);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的投递，不计入本页记录数。</p>}</>}
   </div>;
 }

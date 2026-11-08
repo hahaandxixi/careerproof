@@ -1030,3 +1030,28 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .report-status-unit { color: #66758a; font-size: 11px; }
 .report-status-detail { color: #66758a; font-size: 12px; line-height: 1.6; }
 @media (max-width: 900px) { .report-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Requirement map and master-detail application reading. */
+.requirement-map { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; margin-bottom: 16px; background: #d8d0c2; border: 1px solid #d8d0c2; }
+.requirement-map-item { display: grid; gap: 2px; min-width: 0; padding: 9px 10px; background: #fffefa; color: #263b36; text-decoration: none; }
+.requirement-map-item:hover { background: #edf4f0; }
+.requirement-map-item.is-selected { background: #edf4f0; box-shadow: inset 0 -2px #1d4a40; }
+.requirement-map-name { overflow-wrap: anywhere; font-size: 13px; font-weight: 700; }
+.requirement-map-state { color: #b64531; font-size: 11px; }
+.requirement-map-source { color: #66758a; font-size: 11px; }
+.application-master-detail { display: grid; grid-template-columns: minmax(260px, 330px) minmax(0, 1fr); gap: 0; border-top: 1px solid #d8d0c2; }
+.application-record-list { display: grid; align-content: start; border-right: 1px solid #d8d0c2; }
+.application-record-summary { display: grid; gap: 2px; min-width: 0; padding: 12px 14px; border: 0; border-bottom: 1px solid #e7e0d2; background: transparent; color: #263b36; text-align: left; }
+.application-record-summary:hover { background: #f6f3ea; }
+.application-record-summary.is-selected { background: #edf4f0; box-shadow: inset 3px 0 #1d4a40; }
+.application-record-summary strong { overflow-wrap: anywhere; font-size: 14px; }
+.application-record-summary span { color: #66758a; font-size: 12px; }
+.application-record-summary .application-summary-status { color: #1d4a40; font-weight: 600; }
+.application-record-detail { min-width: 0; padding: 4px 0 0 20px; }
+.application-record-detail .application-record { padding-top: 12px; }
+@media (max-width: 1023px) {
+  .application-master-detail { grid-template-columns: minmax(0, 1fr); }
+  .application-record-list { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid #d8d0c2; }
+  .application-record-summary { flex: 0 0 240px; border-bottom: 0; border-right: 1px solid #e7e0d2; }
+  .application-record-detail { padding-left: 0; }
+}
