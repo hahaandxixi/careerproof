@@ -1190,8 +1190,7 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 /* Compact enterprise review page: matrix/source before long notes and pagination. */
 .enterprise-recording-layout.enterprise-review-page { display: flex; flex-direction: column; gap: 10px; }
 .enterprise-review-page > * { order: 5; }
-.enterprise-review-page > .review-section-heading { order: 1; margin: 0; }
-.enterprise-review-page > .review-view-nav { order: 2; margin: 0; }
+.enterprise-review-page > .enterprise-compact-head { order: 1; }
 .enterprise-review-page > .board-work-layout { order: 3; }
 .enterprise-review-page > details.text-xs { order: 6; margin-top: 0; }
 .enterprise-review-page > .enterprise-uncomparable-list { order: 7; }
@@ -1238,3 +1237,4 @@ main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
 .enterprise-compact-head .review-view-nav button { min-height: 32px; padding: 4px 9px; }
 .enterprise-compact-head > .review-section-heading > button { align-self: center; }
 @media (max-width: 1180px) { .enterprise-compact-head { align-items: start; } .enterprise-compact-head .review-view-nav { width: 100%; order: 3; } }
+
