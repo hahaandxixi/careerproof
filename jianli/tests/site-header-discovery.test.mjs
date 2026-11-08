@@ -17,6 +17,7 @@ function render(role, status = role ? "authenticated" : "anonymous") {
     "next/link": { __esModule: true, default: Link },
     "next/navigation": { usePathname: () => "/jobs", useRouter: () => ({}) },
     "./AuthProvider": { useAuth: () => ({ user: role ? { role, displayName: "合成身份" } : null, status, logout() {}, reload() {} }) },
+    "./QuickCommandPalette": { __esModule: true, default: () => null },
     "./NotificationLink": { __esModule: true, default: ({ render }) => render(2) },
     "./StudentAccountMenu": { __esModule: true, default: () => React.createElement("span", null, "学生账户") },
     "./AccountMenu": { __esModule: true, default: () => React.createElement("span", null, "企业账户") },
@@ -30,12 +31,12 @@ function render(role, status = role ? "authenticated" : "anonymous") {
   return renderToStaticMarkup(React.createElement(mod.exports.default));
 }
 
-test("public header has one discovery entry while students retain exactly four primary routes", () => {
+test("public header has one discovery entry while students retain five primary routes including the case library", () => {
   const anonymous = render(null);
   assert.ok(anonymous.includes('href="/login"') && anonymous.includes('href="/register"'));
   assert.ok(!anonymous.includes("交互示例") && !anonymous.includes('href="/growth"'));
   const primary = render("student").match(/<nav aria-label="主导航"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/applications"]);
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/applications", "/demo"]);
   assert.ok(primary.includes('aria-current="page"'));
 });
 

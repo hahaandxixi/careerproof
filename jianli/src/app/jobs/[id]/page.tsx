@@ -7,6 +7,7 @@ export default async function JobDetailPage({
   searchParams: Promise<{
     resumeVersionId?: string | string[];
     projectVersionId?: string | string[];
+    compareTo?: string | string[];
   }>;
 }) {
   const { id } = await params;
@@ -19,5 +20,6 @@ export default async function JobDetailPage({
     : query.projectVersionId
       ? [query.projectVersionId]
       : [];
-  return <JobDetailView id={id} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} />;
+  const compareTo = Array.isArray(query.compareTo) ? query.compareTo[0] ?? "" : query.compareTo ?? "";
+  return <JobDetailView id={id} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} />;
 }

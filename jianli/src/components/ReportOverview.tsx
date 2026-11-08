@@ -22,6 +22,8 @@ export default function ReportOverview({ report, role, workbench = false }: { re
     </div>
     {(states.partial.length > 0 || states.other.length > 0) && <p className="text-sm text-slate-600">另有 {states.partial.length} 项部分支持 · {states.other.length} 项未覆盖或需复核。</p>}
     <div className="report-overview-tools flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
+      {role === "student" && <EvidenceLink targetId="report-supplement" className="inline-flex min-h-9 items-center font-medium text-[#1d4a40] underline">查看补证建议（{states.gaps.length + states.partial.length}）</EvidenceLink>}
+      {role === "student" && <EvidenceLink targetId="report-sharing" className="inline-flex min-h-9 items-center font-medium text-[#1d4a40] underline">前往投递授权</EvidenceLink>}
       {role === "student" && <EvidenceLink targetId="report-comparison" className="inline-flex min-h-9 items-center font-medium text-[#1d4a40] underline">版本对比</EvidenceLink>}
       <EvidenceLink targetId="report-materials" className="inline-flex min-h-9 min-w-0 items-center break-words text-slate-700 underline" aria-label="查看本报告材料版本">{report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")||"历史记录未保存材料版本"}</EvidenceLink>
       <EvidenceLink targetId="report-analysis" className="inline-flex min-h-9 items-center text-[#1d4a40] underline">分析详情</EvidenceLink>

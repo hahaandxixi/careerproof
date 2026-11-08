@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useId, useState } from "react";
@@ -42,7 +42,7 @@ export default function HomeScenarioPreview() {
     </div>
     <div role="tablist" aria-label="切换功能场景" className="flex flex-wrap gap-x-5 border-b border-slate-200">
       {SCENARIOS.map((label, index) => <button key={label} type="button" role="tab" id={`${id}-tab-${index}`} aria-selected={active === index} aria-controls={`${id}-panel-${index}`} tabIndex={active === index ? 0 : -1}
-        className={`min-h-11 border-b-2 px-1 text-sm ${active === index ? "border-indigo-600 font-semibold text-indigo-800" : "border-transparent text-slate-600 hover:text-indigo-700"}`}
+        className={`min-h-11 border-b-2 px-1 text-sm ${active === index ? "border-[#1d4a40] font-semibold text-[#173c34]" : "border-transparent text-slate-600 hover:text-[#1d4a40]"}`}
         onClick={() => setActive(index)} onKeyDown={event => {
           const count = SCENARIOS.length;
           const next = event.key === "ArrowRight" ? (index + 1) % count : event.key === "ArrowLeft" ? (index + count - 1) % count : event.key === "Home" ? 0 : event.key === "End" ? count - 1 : null;
@@ -55,3 +55,4 @@ export default function HomeScenarioPreview() {
     <details className="border-t border-slate-200 pt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="pt-1 leading-6">当前为交互样例，使用虚构资料，不调用模型。</p></details>
   </section>;
 }
+

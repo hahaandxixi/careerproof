@@ -7,12 +7,12 @@ import { createReportPairSession, reportPairLabel, reportPairOptionLabel, type R
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import ReportComparisonView from "./ReportComparisonView";
 
-export default function ReportComparisonPanel({ report, revision }: { report: MatchReport; revision: string }) {
-  return <ReportPairPicker key={`${report.candidateId}:${report.jobId}:${report.id}:${revision}`} report={report} />;
+export default function ReportComparisonPanel({ report, initialBaseId = "", revision }: { report: MatchReport; initialBaseId?: string; revision: string }) {
+  return <ReportPairPicker key={`${report.candidateId}:${report.jobId}:${report.id}:${revision}`} report={report} initialBaseId={initialBaseId} />;
 }
-function ReportPairPicker({ report }: { report: MatchReport }) {
+function ReportPairPicker({ report, initialBaseId }: { report: MatchReport; initialBaseId: string }) {
   const [state, setState] = useState<ReportPairState | null>(null);
-  const session = useMemo(() => createReportPairSession(report, { listReports: api.listReports, getReport: api.getReport, compareReports: api.compareReports, errorMessage }, setState), [report]);
+  const session = useMemo(() => createReportPairSession(report, { listReports: api.listReports, getReport: api.getReport, compareReports: api.compareReports, errorMessage }, setState, initialBaseId), [report, initialBaseId]);
   useEffect(() => { session.activate(); void session.loadMore(); return () => session.dispose(); }, [session]);
   const value = state?.value;
   return <section className="panel min-w-0 space-y-4">

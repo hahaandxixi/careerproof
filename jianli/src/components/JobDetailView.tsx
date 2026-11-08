@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -19,10 +19,12 @@ export default function JobDetailView({
   id,
   initialResumeVersionId = "",
   initialProjectVersionIds = [],
+  compareTo = "",
 }: {
   id: string;
   initialResumeVersionId?: string;
   initialProjectVersionIds?: string[];
+  compareTo?: string;
 }) {
   const { user } = useAuth();
   const [job, setJob] = useState<JobDetail | null>(null);
@@ -38,10 +40,10 @@ export default function JobDetailView({
   if (!job) return <p className="py-12 text-center text-slate-500">正在加载岗位…</p>;
   return <div className="space-y-6">
     <Link className="btn-secondary btn-compact" href="/jobs">← 岗位发现</Link>
-    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-indigo-600">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="page-title mt-2">{displayJobTitle(job.title, job.id)}</h1><p className="mt-2 text-sm text-slate-500">{demoJobAlias(job.id)?.companyName ?? job.companyName} · {job.city || "城市未填写"}</p>{(job.isDemo || demoJobAlias(job.id)) && <details className="mt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="max-w-2xl py-2 leading-6">本岗位及所列企业为虚构资料，用于体验材料核对流程。</p></details>}</div><span className="status-chip">{job.status === "published" ? (job.isDemo || demoJobAlias(job.id) ? "已发布" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{(demoJobAlias(job.id)?.description ?? job.description) || "暂无岗位描述"}</p>{user?.role === "enterprise" && <div className="card-actions mt-5"><Link className="btn" href={`/jobs/${job.id}/applications`}>查看投递</Link></div>}</section>
+    <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-[#245c50]">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="page-title mt-2">{displayJobTitle(job.title, job.id)}</h1><p className="mt-2 text-sm text-slate-500">{demoJobAlias(job.id)?.companyName ?? job.companyName} · {job.city || "城市未填写"}</p>{(job.isDemo || demoJobAlias(job.id)) && <details className="mt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="max-w-2xl py-2 leading-6">本岗位及所列企业为虚构资料，用于体验材料核对流程。</p></details>}</div><span className="status-chip">{job.status === "published" ? (job.isDemo || demoJobAlias(job.id) ? "已发布" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{(demoJobAlias(job.id)?.description ?? job.description) || "暂无岗位描述"}</p>{user?.role === "enterprise" && <div className="card-actions mt-5"><Link className="btn" href={`/jobs/${job.id}/applications`}>查看投递</Link></div>}</section>
     <ScenarioMaterials title={job.title} companyName={job.companyName} isDemo={job.isDemo} />
     <section className="workspace-sheet"><h2 className="section-title px-4 py-3 sm:px-5">岗位要求</h2><ol className="workspace-list border-t border-slate-200">{job.requirements.map((requirement, index) => <li key={requirement.id} className="workspace-row"><p className="font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p>{requirement.sourceQuote && <p className="mt-2 rounded-lg bg-white p-2 text-xs leading-6 text-slate-600">岗位原文：“{requirement.sourceQuote}”</p>}</li>)}</ol></section>
-    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} /></AccessGate>}
+    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} /></AccessGate>}
     {job.status !== "published" && <p className="panel text-sm text-amber-700">该岗位尚未发布或已关闭，目前不能创建新的匹配任务。</p>}
   </div>;
 }
@@ -55,17 +57,19 @@ export function JobApplicationStatusNotice({ state, onRetry }: { state: JobAppli
   if (state.kind === "unknown") return null;
   const anchor = `/applications#application-${encodeURIComponent(state.application.id)}`;
   if (state.kind === "withdrawn") return <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600"><p>本岗位此前的投递{applicationStatusText(state.application.status)}。这里只说明该条撤回记录；其他投递状态请查看个人投递。生成新报告不受影响；再次分享仍须从报告页确认授权。</p><Link className="btn-secondary mt-2" href={anchor}>查看该条撤回记录 →</Link></div>;
-  return <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm text-indigo-950"><p className="font-semibold">本岗位已有进行中的投递：{applicationStatusText(state.application.status)}</p><p className="mt-1 text-xs leading-6">下一步：{applicationNextAction(state.application.status)}生成新报告不会替换该投递。</p><Link className="btn-secondary mt-2" href={anchor}>查看本岗位投递状态 →</Link></div>;
+  return <div className="mt-3 rounded-xl border border-[#cfc9b8] bg-[#e7efe9] p-3 text-sm text-indigo-950"><p className="font-semibold">本岗位已有进行中的投递：{applicationStatusText(state.application.status)}</p><p className="mt-1 text-xs leading-6">下一步：{applicationNextAction(state.application.status)}生成新报告不会替换该投递。</p><Link className="btn-secondary mt-2" href={anchor}>查看本岗位投递状态 →</Link></div>;
 }
 
 function MatchForm({
   job,
   initialResumeVersionId,
   initialProjectVersionIds,
+  compareTo,
 }: {
   job: JobDetail;
   initialResumeVersionId: string;
   initialProjectVersionIds: string[];
+  compareTo: string;
 }) {
   const router = useRouter();
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
@@ -104,7 +108,10 @@ function MatchForm({
   async function submit(event: React.FormEvent) {
     event.preventDefault(); if (submitting.current || !resumeVersionId) return;
     submitting.current = true; setBusy(true); setError("");
-    try { const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport }); router.push(`/tasks/${task.taskId}`); }
+    try {
+      const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport });
+      router.push(`/tasks/${task.taskId}${compareTo ? `?compareTo=${encodeURIComponent(compareTo)}` : ""}`);
+    }
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
@@ -118,7 +125,7 @@ function MatchForm({
       <fieldset disabled={busy} className="space-y-4">
         <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={setResumeVersionId} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
-        <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-950">
+        <div className="rounded-xl border border-[#cfc9b8] bg-[#e7efe9] p-4 text-sm text-indigo-950">
           <p className="font-semibold">外部 AI 发送范围与脱敏预览</p>
           <p className="mt-2 text-xs leading-6">外部 AI 可选：不勾选下方同意时，只在本站生成规则匹配报告，不发送材料给外部模型。规则报告也可以查看证据并明确投递。</p>
           <dl className="mt-3 grid gap-2 text-xs leading-6 sm:grid-cols-2">
@@ -127,7 +134,7 @@ function MatchForm({
             <div><dt className="font-medium">自动脱敏</dt><dd>邮箱、手机号、身份证号、带“姓名”标签的姓名，以及可识别格式的密码和访问密钥</dd></div>
             <div><dt className="font-medium">不会主动加入</dt><dd>账号身份、个人资料中的姓名、原始文件、完整简历和原始图片</dd></div>
           </dl>
-          <p className="mt-3 text-xs leading-6 text-indigo-800">自由文本中的别名、地址，以及未经标记或经过编码的密钥可能无法识别，请只选择与岗位分析必要的材料。没有可引用证据或达到用量上限时，系统会自动生成规则报告。报告只保存在你的账号中，不会自动分享给企业。</p>
+          <p className="mt-3 text-xs leading-6 text-[#173c34]">自由文本中的别名、地址，以及未经标记或经过编码的密钥可能无法识别，请只选择与岗位分析必要的材料。没有可引用证据或达到用量上限时，系统会自动生成规则报告。报告只保存在你的账号中，不会自动分享给企业。</p>
           <label className="mt-3 flex items-start gap-2 rounded-lg bg-white/70 p-3 font-medium">
             <input className="mt-1" type="checkbox" checked={externalAiConsent} onChange={event => setExternalAiConsent(event.target.checked)} />
             <span>我已查看上述发送范围，同意将脱敏后的必要片段发送给外部 AI 生成带引用解释。</span>
@@ -139,3 +146,4 @@ function MatchForm({
     </form>}
   </section>;
 }
+

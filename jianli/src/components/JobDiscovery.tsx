@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { demoJobAlias } from "@/lib/demo-display-identity.js";
@@ -99,7 +99,7 @@ export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; co
   const description = alias?.description ?? job.description;
   return <article className="workspace-row discovery-job-row">
     <div className="min-w-0">
-      <Heading><Link className="break-words hover:text-indigo-700 hover:underline" href={`/jobs/${job.id}`}>{alias?.title ?? job.title}</Link></Heading>
+      <Heading><Link className="break-words hover:text-[#1d4a40] hover:underline" href={`/jobs/${job.id}`}>{alias?.title ?? job.title}</Link></Heading>
       <p className="workspace-meta mt-1 break-words">{alias?.companyName ?? job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p>
       {description && <p className="mt-1 line-clamp-2 break-words text-sm leading-6 text-slate-700">{description}</p>}
     </div>
@@ -113,3 +113,4 @@ export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; co
     </div>
   </article>;
 }
+

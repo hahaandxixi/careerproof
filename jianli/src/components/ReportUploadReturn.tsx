@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { MatchReport } from "@/lib/api/domain";
 import type { UploadedMaterial } from "@/lib/material-upload";
-import { reportFollowUpContext } from "@/lib/report-follow-up";
+import { reportFollowUpContext, reportReanalysisHref } from "@/lib/report-follow-up";
 
 export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded?: UploadedMaterial | null; onMaterials?: (materials: MatchReport["materials"] | undefined) => void }) {
   const query = useSearchParams();
@@ -16,6 +16,7 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const reportId = context?.reportId, requirementId = context?.requirementId;
   const [entry, setEntry] = useState<{ reportId: string; report: MatchReport | null; error: string } | null>(null);
   const [revision, setRevision] = useState(0);
+  const [uploadState, setUploadState] = useState<{ key: string; ready: boolean; message: string } | null>(null);
   useEffect(() => {
     if (!reportId || !requirementId || growthTask) return;
     let active = true;
@@ -32,6 +33,45 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const item = report?.items.find(value => value.requirementId === requirementId);
   const materials = item ? report?.materials : undefined;
   useEffect(() => { onMaterials?.(materials); }, [materials, onMaterials]);
+  useEffect(() => {
+    if (!uploaded || !report) { setUploadState(null); return; }
+    const key = `${report.id}:${uploaded.kind}:${uploaded.versionId}`;
+    // A previous version's completion is never assumed while the new upload is
+    // still being checked. Bind every result to this exact report/kind/version.
+    setUploadState({ key, ready: false, message: "正在核对本次上传状态…" });
+    let active = true, timer: ReturnType<typeof setTimeout> | undefined, attempts = 0;
+    const check = async () => {
+      attempts += 1;
+      try {
+        const [resumes, projects] = await Promise.all([api.listResumes(), api.listProjects()]);
+        if (!active) return;
+        const source = uploaded.kind === "resume"
+          ? resumes.find(value => value.versions.some(version => version.id === uploaded.versionId))
+          : projects.find(value => value.versions.some(version => version.id === uploaded.versionId));
+        const version = source?.versions.find(value => value.id === uploaded.versionId);
+        if (!source || !version) {
+          setUploadState({ key, ready: false, message: "当前账号材料列表中尚未找到本次上传版本，尚不能重新分析。" });
+        } else if (version.status !== "completed") {
+          setUploadState({ key, ready: false, message: version.status === "failed" || version.status === "cancelled" ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。" : "本次上传仍在处理中；处理完成后再回来确认版本。" });
+          if (version.status !== "failed" && version.status !== "cancelled" && attempts < 60) timer = setTimeout(check, 1800);
+        } else {
+          setUploadState({ key, ready: true, message: "本次上传已处理完成，可在原岗位核对预选版本后重新分析。" });
+        }
+      } catch {
+        if (active) {
+          setUploadState({ key, ready: false, message: "暂时无法核对本次上传状态，请刷新材料列表后重试。" });
+          if (attempts < 60) timer = setTimeout(check, 1800);
+        }
+      }
+    };
+    void check();
+    return () => { active = false; if (timer) clearTimeout(timer); };
+  }, [uploaded, report]);
+  const uploadKey = uploaded && report ? `${report.id}:${uploaded.kind}:${uploaded.versionId}` : "";
+  const currentUploadState = uploadState?.key === uploadKey ? uploadState : null;
+  const reanalysisHref = uploaded && report && currentUploadState?.ready
+    ? reportReanalysisHref(report, uploaded, query.get("sourceProjectVersion"))
+    : null;
   // The existing growth-task return path keeps its original fixed-baseline contract.
   if (!context || growthTask) return null;
   return <section className="material-followup space-y-3 text-sm" aria-label="补证材料上传与报告接续">
@@ -40,12 +80,14 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
       <p className="break-words font-medium text-slate-900">{item.requirementTitle}</p>
       <p className="break-words text-slate-600">{displayJobTitle(report!.jobTitle, report!.jobId)}</p>
       <p className="leading-6 text-slate-600">上传新版后，原报告仍引用当时的版本。</p>
-      {uploaded && <p role="status" className="leading-6 text-[#173c34]">本次上传已保存，请确认处理完成。之后进入原岗位，明确选择需要分析的简历与项目版本，再主动生成新报告；上传不会自动选择或分析。</p>}
-      <div className="flex flex-wrap gap-x-3">
+      {uploaded && <p role="status" className={`leading-6 ${currentUploadState?.ready ? "text-[#173c34]" : "text-amber-900"}`}>{currentUploadState?.message || "正在核对本次上传状态…"}</p>}
+      <div className="flex flex-wrap items-center gap-3">
         <Link className="action-link" href={`/reports/${reportId}#requirement-${requirementId}`}>返回原报告这项要求</Link>
-        <Link className="action-link" href={`/jobs/${report!.jobId}`}>到原岗位选择版本并重新分析</Link>
+        {reanalysisHref
+          ? <Link className="btn inline-flex min-h-11 items-center" href={reanalysisHref}>使用新版材料重新分析 →</Link>
+          : <Link className="action-link" href={`/jobs/${report!.jobId}`}>到原岗位手动选择版本</Link>}
       </div>
-      <p className="text-xs leading-6 text-slate-600">新报告可读取与同岗位上一份报告的逐项对比；如期间生成过其他报告，请核对实际基准。企业固定快照不会自动更新，AI 外发仍需单独同意。</p>
+      <p className="text-xs leading-6 text-slate-600">按钮只会打开原岗位并把本次上传版本预先选入；你仍可调整简历和每个项目版本。未核对并确认前不会新增分析，也不会勾选外部 AI 同意。新报告保留本次原报告作为 A/B 基准；企业固定快照不会自动更新。</p>
     </>}
   </section>;
 }

@@ -76,8 +76,14 @@ export default function ReportSections({ sections, versions, header }: {
 
     const scrollDeepTarget = (target: HTMLElement) => {
       if (!canScroll()) return;
+      // A source citation is a deep child of its requirement. Keep the
+      // requirement title and judgment in view; scrolling to the code node
+      // alone hides the context under the fixed header.
+      const requirement = target.closest<HTMLElement>('[id^="requirement-"]');
+      const context = requirement && target !== requirement && typeof requirement.getBoundingClientRect === "function"
+        ? requirement : target;
       const offset = stickyOffset();
-      const y = Math.max(0, scrollY() + target.getBoundingClientRect().top - offset);
+      const y = Math.max(0, scrollY() + context.getBoundingClientRect().top - offset);
       window.scrollTo({ top: y, behavior: "auto" });
     };
 

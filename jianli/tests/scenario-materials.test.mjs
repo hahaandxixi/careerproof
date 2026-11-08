@@ -45,7 +45,7 @@ test("ordinary jobs and unrecognized samples do not get unrelated materials", ()
   ]) assert.equal(renderToStaticMarkup(React.createElement(Component, props)), "");
 });
 
-test("demo cases start closed, use one native selection group and retain every download", () => {
+test("demo page delegates cases to the gallery and retains synthetic boundary copy", () => {
   const samples = JSON.parse(readFileSync(new URL("../src/app/demo/samples.json", import.meta.url), "utf8"));
   const page = readFileSync(new URL("../src/app/demo/page.tsx", import.meta.url), "utf8");
   const mod = { exports: {} };
@@ -53,16 +53,13 @@ test("demo cases start closed, use one native selection group and retain every d
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: props => React.createElement("a", props) },
     "@/components/SourceCoverageDemo": { __esModule: true, default: () => null },
-    "@/components/DemoCaseImport": { __esModule: true, default: () => null },
+    "@/components/DemoCaseGallery": { __esModule: true, default: ({samples}) => React.createElement("div", {"data-cases": samples.length}) },
+    "@/components/StickyRail": { __esModule: true, default: ({children}) => React.createElement("aside", null, children) },
     "./samples.json": { __esModule: true, default: samples },
     "./coverage.json": { __esModule: true, default: [] },
   };
   new Function("require", "module", "exports", transform(page, {transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id => { assert.ok(id in modules,id); return modules[id]; },mod,mod.exports);
   const html=renderToStaticMarkup(React.createElement(mod.exports.default));
-  assert.equal((html.match(/<details name="demo-case">/g)||[]).length,samples.length);
-  assert.ok(!html.includes('<details name="demo-case" open'));
-  for(const sample of samples) {
-    for(const field of ["resumeFilename","projectFilename","scriptFilename"]) assert.ok(html.includes(encodeURIComponent(sample[field])),sample[field]);
-  }
+  assert.ok(html.includes(`data-cases="${samples.length}"`));
   assert.ok(html.includes("所有人物、经历和指标均为虚构"));
 });

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { api, errorMessage } from "@/lib/api/client";
@@ -27,10 +27,10 @@ export default function ApplicationSubmit({reportId, reviewRevision, blocked = f
     </ul>
     <label className="flex items-start gap-2 text-sm"><input className="mt-1" type="checkbox" checked={consent} disabled={state.busy || !synchronized} onChange={e=>setConsent(e.target.checked)} /><span>我已确认本份材料适合分享，同意向该岗位所属企业授权上述内容。</span></label>
     {state.done ? <Link href="/applications" className="btn inline-block">查看投递进度 →</Link> : <button type="button" className="btn" disabled={!consent||state.busy||!synchronized} onClick={()=>{if (consent && synchronized) void session.submit();}}>{state.busy?"正在投递…":"确认投递"}</button>}
-    {state.notice&&<p role="status" className={state.done?"text-sm text-indigo-700":"text-sm text-rose-700"}>{state.notice}</p>}
+    {state.notice&&<p role="status" className={state.done?"text-sm text-[#1d4a40]":"text-sm text-rose-700"}>{state.notice}</p>}
     {state.notice && !state.done && onRefresh && <button type="button" className="btn-secondary" disabled={state.busy || blocked} onClick={() => { setConsent(false); onRefresh(); }}>重新读取报告后确认</button>}
     <details className="text-sm leading-6 text-slate-600">
-      <summary className="cursor-pointer select-none text-indigo-700">其他分享说明与限制</summary>
+      <summary className="cursor-pointer select-none text-[#1d4a40]">其他分享说明与限制</summary>
       <ul className="mt-2 list-disc space-y-1 pl-5">
         <li>仅授权本份报告；其他报告与其他简历版本不在授权范围内。</li>
         <li>投递不自动发送邮件、不调用 AI，也不向其他第三方分享。</li>
@@ -40,3 +40,4 @@ export default function ApplicationSubmit({reportId, reviewRevision, blocked = f
     <Link href="/applications" className="btn-secondary">查看我的投递</Link>
   </section>;
 }
+

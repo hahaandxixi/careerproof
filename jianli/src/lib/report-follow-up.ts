@@ -54,6 +54,38 @@ export function reportFollowUpContext(query: Pick<URLSearchParams, "get">) {
   return reportId && requirementId && UUID.test(reportId) && UUID.test(requirementId) ? { reportId, requirementId } : null;
 }
 
+/** A completed upload can replace only the matching material version. Other
+ * selected project versions stay selected; an ambiguous project update is not
+ * guessed from "latest". */
+export function reportReanalysisHref(
+  report: Pick<MatchReport, "id" | "jobId" | "materials">,
+  uploaded: { kind: "resume" | "project"; versionId: string },
+  sourceProjectVersion?: string | null,
+): string | null {
+  if (!UUID.test(report.jobId) || !UUID.test(uploaded.versionId)) return null;
+  const materials = report.materials;
+  const reportResume = materials.find(material => material.kind === "resume")?.id;
+  const reportProjects = materials.filter(material => material.kind === "project").map(material => material.id);
+  let resumeVersionId = reportResume;
+  let projectVersionIds = reportProjects;
+  if (uploaded.kind === "resume") {
+    resumeVersionId = uploaded.versionId;
+  } else {
+    const replace = sourceProjectVersion && reportProjects.includes(sourceProjectVersion)
+      ? sourceProjectVersion
+      : reportProjects.length === 1 ? reportProjects[0] : null;
+    if (!replace) return null;
+    projectVersionIds = reportProjects.map(id => id === replace ? uploaded.versionId : id);
+  }
+  if (!resumeVersionId) return null;
+  const params = new URLSearchParams({
+    resumeVersionId,
+    compareTo: report.id,
+  });
+  for (const id of projectVersionIds) params.append("projectVersionId", id);
+  return `/jobs/${report.jobId}?${params.toString()}`;
+}
+
 /** These parameters are navigation hints only; the receiver checks the owned report. */
 export function reportUploadHref(reportId: string, requirementId: string, projectVersionId?: string): string {
   return UUID.test(reportId) && UUID.test(requirementId)

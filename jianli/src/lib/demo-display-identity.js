@@ -26,6 +26,7 @@ const identities = [
 const jobAliases = new Map([
   ["1233f1e2-169f-4ea5-a5a0-542fa940e897", {
     title: "材料证据阅读示例", companyName: "示例企业", description: undefined,
+    boundaryFixture: true,
   }],
   ["72e49e95-4f27-4412-ac94-f1675a5f8970", {
     title: "Django 后端开发实习生", companyName: "示例企业", description: undefined,
@@ -62,6 +63,11 @@ const materialAliases = new Map([
 
 export function demoJobAlias(id) {
   return jobAliases.get(id);
+}
+
+/** Explicit historical boundary fixture; never used as a default/demo job. */
+export function boundaryFixtureJob(id) {
+  return jobAliases.get(id)?.boundaryFixture === true;
 }
 
 export function displayJobTitle(title, id) {

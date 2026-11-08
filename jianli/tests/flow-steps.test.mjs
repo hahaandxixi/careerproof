@@ -1,4 +1,4 @@
-import { test } from "node:test";
+﻿import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -70,7 +70,7 @@ test("navigation retains all five ordered steps and only one current location", 
   assert.ok(!html.includes('href="#"'));
   assert.ok(!html.includes('href="/applications"'));
   assert.ok(!html.includes('href="/growth"'));
-  assert.equal(flowStepsForLocation("/reports/r1").find(step=>step.key==="growth").href,"/portfolio?add=project&sourceReport=r1");
+  assert.equal(flowStepsForLocation("/reports/r1").find(step=>step.key==="growth").href,"/reports/r1#report-supplement");
   assert.ok(html.includes('aria-expanded="false"'));
   assert.ok(html.includes("完整流程 +"));
   assert.ok(html.includes("hidden sm:block"), "mobile starts compact while desktop retains the five-step navigation");
@@ -98,3 +98,4 @@ test("portfolio, saved reports and jobs share the five-step guide", () => {
  pathname="/jobs/python";assert.ok(renderToStaticMarkup(React.createElement(mod.exports.default)).includes("学生操作指南"));
  role="enterprise";assert.equal(mod.exports.default(),null);
 });
+
