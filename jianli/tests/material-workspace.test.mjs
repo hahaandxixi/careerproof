@@ -34,6 +34,7 @@ function workspace(file, kind, state = {}) {
     "@/components/GrowthUploadReturn": { __esModule: true, default: () => null },
     "@/components/ReportUploadReturn": { __esModule: true, default: () => null },
     "@/components/MaterialUploadIntent": { __esModule: true, default: () => null },
+    "@/components/ListPagination": { __esModule: true, default: () => null },
     "@/components/MaterialFileDropzone": { __esModule: true, default: () => null },
     "@/components/LoginLink": { __esModule: true, default: () => null },
     "@/components/AuthProvider": { useAuth: () => ({}) },

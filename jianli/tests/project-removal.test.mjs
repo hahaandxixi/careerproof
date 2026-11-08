@@ -34,7 +34,7 @@ function workspace(client = {}) {
     "@/lib/demo-display-identity.js": demoPresentation,
     "@/lib/api/client": { api, errorMessage: error => error.message },
   };
-  for (const name of ["ArchivedMaterials", "LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn", "MaterialUploadIntent"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
+  for (const name of ["ArchivedMaterials", "LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn", "MaterialUploadIntent", "ListPagination"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
   const code = transform(`${source}\nexport { PortfolioWorkspace };`, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
   const mod = { exports: {} };
   new Function("require", "module", "exports", code)(id => { assert.ok(id in modules, id); return modules[id]; }, mod, mod.exports);

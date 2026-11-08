@@ -31,7 +31,7 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
         <h3>{sample.title}</h3>
         <p className="case-project">{sample.projectTitle}</p>
         <p className="case-job">{sample.jobTitle}</p>
-        <dl className="case-facts"><div><dt>材料</dt><dd>简历 TXT · 项目 ZIP · 步骤</dd></div><div><dt>边界</dt><dd>{sample.boundary}</dd></div></dl>
+        <dl className="case-facts"><div><dt>边界</dt><dd>{sample.boundary}</dd></div></dl>
         <div className="case-actions">
           <a href={asset(sample.resumeFilename)} download={sample.resumeFilename}>下载简历</a>
           <a href={asset(sample.projectFilename)} download={sample.projectFilename}>下载项目</a>
