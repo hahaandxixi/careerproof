@@ -87,7 +87,7 @@ test("comparison selection survives tab return and revoked candidates are pruned
  for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();}
  h.button(tree,"热力图仅看所选（2）").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
  assert.equal(h.button(tree,"显示本页全部候选人").props["aria-pressed"],true);
- const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,2);
+ const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,4,"matrix and candidate rail both reflect the same two selections");
  h.hide();h.revoke();h.show();tree=await h.settle();
  assert.ok(h.button(tree,"热力图仅看所选（1）").props.disabled);assert.equal(h.counts.open,0);
 });

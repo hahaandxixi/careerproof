@@ -1148,3 +1148,25 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .enterprise-source-pane h2 { color: #173c34; font-size: 15px; line-height: 1.4; }
 @media (max-width: 1439px) { .enterprise-review-workbench { grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); gap: 12px; } }
 @media (max-width: 1100px) { .enterprise-review-workbench { grid-template-columns: minmax(0, 1fr); } .enterprise-source-pane { position: static; max-height: none; } }
+
+/* Enterprise workbench: grouped candidate rail, source switcher, compact difference. */
+.enterprise-candidate-groups { min-width: 0; padding-top: 10px; border-top: 1px solid #d8d0c2; }
+.enterprise-candidate-groups h3 { color: #173c34; font-size: 14px; font-weight: 700; }
+.enterprise-candidate-groups p { margin-top: 2px; color: #66758a; font-size: 11px; line-height: 1.5; }
+.enterprise-candidate-groups ul { display: grid; gap: 2px; max-height: 30vh; overflow: auto; margin-top: 7px; }
+.enterprise-candidate-groups li { display: grid; gap: 3px; padding: 6px 0; border-bottom: 1px solid #e7e0d2; }
+.enterprise-candidate-groups .candidate-select { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 30px; padding: 2px 4px; border: 0; background: transparent; color: #173c34; text-align: left; font-size: 12px; }
+.enterprise-candidate-groups .candidate-select[aria-pressed="true"] { background: #edf4f0; box-shadow: inset 2px 0 #1d4a40; }
+.enterprise-candidate-groups .candidate-select span { color: #66758a; font-size: 10px; }
+.enterprise-candidate-groups li > label { color: #526176; font-size: 11px; }
+.enterprise-candidate-groups .is-isolated { color: #7f3f2f; font-size: 11px; }
+.enterprise-source-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e7e0d2; }
+.enterprise-source-tabs button { min-height: 30px; padding: 3px 7px; border: 1px solid #d8d0c2; border-radius: 3px; background: #fffefa; color: #526176; font-size: 11px; }
+.enterprise-source-tabs button[aria-pressed="true"] { border-color: #1d4a40; background: #edf4f0; color: #173c34; font-weight: 600; }
+.workbench-difference { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1.2fr) minmax(0, 1.2fr); gap: 8px; align-items: center; padding: 9px 10px; border: 1px solid #d8e2dc; background: #edf4f0; }
+.workbench-difference > div:first-child { display: grid; gap: 1px; }
+.workbench-difference span { color: #66758a; font-size: 10px; }
+.workbench-difference strong { color: #173c34; font-size: 12px; line-height: 1.4; }
+.workbench-difference-candidate { display: grid; gap: 1px; padding: 5px 8px; border-left: 2px solid #7ca396; background: #fffefa; }
+.workbench-difference p { grid-column: 1 / -1; color: #526176; font-size: 11px; line-height: 1.5; }
+@media (max-width: 1100px) { .workbench-difference { grid-template-columns: minmax(120px, .8fr) repeat(2, minmax(100px, 1fr)); } }
