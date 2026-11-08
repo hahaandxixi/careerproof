@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -46,10 +46,10 @@ const TERMINAL_STATUSES = new Set(["completed", "failed", "cancelled"]);
 
 function statusText(status: string): string {
   const labels: Record<string, string> = {
-    pending: "等待处理",
-    running: "正在分析",
-    completed: "分析完成",
-    failed: "分析失败",
+    pending: "等待解析",
+    running: "正在解析",
+    completed: "解析完成",
+    failed: "解析失败",
     cancelled: "已取消",
   };
   return labels[status] ?? "历史处理状态待确认";

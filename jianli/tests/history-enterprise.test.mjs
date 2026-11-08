@@ -1,4 +1,4 @@
-// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
+﻿// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
 // 撤回二次确认与重新投递入口可用，查看/下载不得推断录用。
 // 沿用 sucrase 转译加载真实 .tsx 的做法；卡片是无状态组件，可直接调用于交互验证。
 import { test } from "node:test";
@@ -86,7 +86,7 @@ test("history card displays server-wide history facts and fixed versions only wh
     ],
   }, onSameJob() {} }));
   assert.match(html, /有后续报告/);
-  assert.match(html, /历史报告 · 27/);
+  assert.match(html, /同岗位报告 · 27份/);
   assert.match(html, /同名项目 · 第1版 · 材料编号 version-/);
   assert.match(html, /同名项目 · 第2版/);
   assert.match(html, /href="\/reports\/report-a"/);
@@ -285,3 +285,4 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
  const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
 });
+

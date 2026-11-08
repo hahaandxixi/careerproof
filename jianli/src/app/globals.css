@@ -928,3 +928,41 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .case-library-layout .case-library-notes table { width: 100%; }
 @media (max-width: 1279px) { .case-library-layout { grid-template-columns: minmax(0, 1fr) 250px; gap: 16px; } .case-library-layout .case-gallery-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 1023px) { .case-library-layout { grid-template-columns: minmax(0, 1fr); } .case-library-rail { position: static; } .case-library-layout .case-library-notes { border-left: 0; border-top: 1px solid #d8d0c2; padding-left: 0; } }
+
+/* Records pages: scan-first lists, compact tools, explicit next actions. */
+.report-workspace .page-title, .application-workspace .page-title { margin-bottom: 2px; }
+.report-searchbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0 10px; border-bottom: 1px solid #c8bfae; }
+.report-searchbar .field { min-height: 38px; }
+.report-workspace .workspace-list { border-top: 1px solid #c8bfae; }
+.report-record { display: grid; gap: 9px; padding: 15px 4px; }
+.report-record.is-latest { border-left: 3px solid #1d4a40; padding-left: 14px; background: linear-gradient(90deg, #fffefa, #fffefa); }
+.report-record.is-history { padding-block: 11px; }
+.report-record-head { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 8px 16px; }
+.report-record-title { color: #173c34; font-size: 18px; font-weight: 700; line-height: 1.35; text-decoration: none; overflow-wrap: anywhere; }
+.report-record-title:hover { text-decoration: underline; text-underline-offset: 4px; }
+.report-record.is-history .report-record-title { font-size: 16px; }
+.report-latest-chip { border-color: #1d4a40; color: #173c34; background: #e7efe9; }
+.report-followup-mark { color: #66758a; font-size: 12px; white-space: nowrap; }
+.report-history-flag { color: #7f3f2f; font-size: 13px; font-weight: 600; }
+.report-record-details summary { color: #526176; }
+.report-record-actions { gap: 8px; }
+.application-toolbar { display: grid; gap: 9px; padding: 10px 0 12px; border-top: 1px solid #c8bfae; border-bottom: 1px solid #c8bfae; }
+.application-toolbar .field { min-height: 38px; }
+.application-workspace .workspace-list { border-top: 1px solid #c8bfae; }
+.application-record { display: grid; gap: 10px; padding: 16px 4px; }
+.application-record-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.application-record-head h2 { color: #173c34; }
+.application-status { max-width: 260px; white-space: normal; text-align: left; line-height: 1.45; }
+.application-actions { justify-content: flex-start; gap: 8px; }
+.application-notes { padding: 2px 0; }
+.application-notes summary { color: #526176; min-height: 32px; }
+.case-guide-steps { display: grid; gap: 8px; margin: 4px 0 10px; padding: 0; list-style: none; }
+.case-guide-steps li { display: grid; gap: 1px; padding-left: 10px; border-left: 2px solid #d8d0c2; }
+.case-guide-steps strong { color: #173c34; font-size: 13px; }
+.case-guide-steps span { color: #66758a; font-size: 12px; line-height: 1.55; }
+.case-guide-enterprise { margin-top: 4px; }
+.case-guide-enterprise a { display: inline-flex; min-height: 34px; align-items: center; color: #1d4a40; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.case-guide-technical { color: #66758a; }
+.material-workspace .material-register-row { padding-block: 14px; }
+.material-workspace .material-register-columns { padding-block: 7px; }
+.material-workspace .material-review-layout { gap: 14px; }

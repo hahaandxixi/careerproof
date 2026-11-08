@@ -117,7 +117,7 @@ test("企业回复与原报告/问题/引用链接保留", () => {
   assert.ok(html.includes("面试邀请"), html);
   assert.ok(html.includes("周四下午来聊聊"), html);
   assert.ok(!html.includes("阅读企业回复并按其内容跟进"), "已有回复不重复展示阅读指令");
-  assert.ok(html.includes("查看投递报告"), html);
+  assert.ok(html.includes("查看关联报告"), html);
   assert.ok(html.includes('href="/reports/r-9"'), html);
   assert.ok(html.includes('href="/reports/r-9#requirement-q1"'), html);
   assert.ok(html.includes("第1项："), html);
@@ -131,14 +131,14 @@ test("已撤回状态展示重新投递入口并定位到报告页授权锚点�
   const html = renderCard(fixture({ status: "withdrawn" }));
   assert.ok(html.includes("重新确认授权并投递"), html);
   assert.ok(html.includes('href="/reports/r-9#application-submit"'), html);
-  assert.ok(!html.includes("撤回投递授权"), "已撤回后不得再提供撤回入口");
+  assert.ok(!html.includes(">撤回授权</button>"), "已撤回后不得再提供撤回入口");
 });
 
 test("未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回", () => {
   const requests = [];
   const node = element(fixture(), { onRequestWithdraw: id => requests.push(id) });
   const buttons = findButtons(node);
-  const request = buttons.find(b => buttonText(b).includes("撤回投递授权"));
+  const request = buttons.find(b => buttonText(b).includes("撤回授权"));
   assert.ok(request, "必须提供撤回入口");
   request.props.onClick();
   assert.deepEqual(requests, ["app-1"], "第一次点击只能发起二次确认");
@@ -177,3 +177,4 @@ test("enterprise sent reply uses the same metadata and does not substitute appli
  const before=JSON.stringify(item);const html=renderToStaticMarkup(React.createElement(Reply,{application:item,sent:true}));
  assert.match(html,/已发送 · /);assert.match(html,/面试邀请/);assert.match(html,/dateTime="2026-10-31T08:00:00Z"/i);assert.match(html,/原始企业回复/);assert.doesNotMatch(html,/2026-10-12/);assert.equal(JSON.stringify(item),before);
 });
+

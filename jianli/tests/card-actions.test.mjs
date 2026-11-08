@@ -1,4 +1,4 @@
-import { test } from "node:test";
+﻿import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -104,6 +104,7 @@ test("history action still filters the actual job and report links keep the fixe
  let target;
  const report={id:"fixed-report",jobId:"fixed-job",jobTitle:"岗位",candidateName:"小江",createdAt:"2026-10-29T12:00:00Z",summary:"原摘要",jobReportCount:4};
  const tree=ReportHistoryCard({report,onSameJob:id=>target=id});
- nodes(tree).find(n=>n.type==="button"&&text(n)==="历史报告 · 4").props.onClick();
+ nodes(tree).find(n=>n.type==="button"&&text(n)==="同岗位报告 · 4份").props.onClick();
  assert.equal(target,"fixed-job");assert.match(render(tree),/href="\/reports\/fixed-report"/);assert.match(text(tree),/报告详情/);
 });
+
