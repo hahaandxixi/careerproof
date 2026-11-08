@@ -74,7 +74,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
     <article className="material-register-row">
       <div className="material-row-heading">
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="text-sm text-slate-600">{item.kind === "resume" ? "简历" : "项目"}</span>
+          <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
         </div>
         <p className="mt-1 break-words text-sm leading-6 text-slate-600">
@@ -87,7 +87,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
         {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
-      <p className={`text-sm font-medium leading-6 ${complete ? "text-emerald-700" : failed ? "text-rose-700" : "text-[#1d4a40]"}`}>{statusText(item.status)}</p>
+      <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString("zh-CN")}</time>
       <div className="material-row-actions">
         {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
@@ -103,7 +103,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
             style={{ width: `${Math.max(item.progress, item.status === "pending" ? 4 : 0)}%` }}
           />
         </div>
-        <span className="shrink-0 text-xs tabular-nums text-slate-500">{item.progress}%</span>
+        <span className="shrink-0 text-xs tabular-nums text-slate-500">{item.progress > 0 ? `${item.progress}%` : item.status === "pending" ? "等待开始" : "处理中"}</span>
       </div>
       <div className="mt-2 text-xs">
         <span className={`block break-words ${failed ? "font-medium text-rose-700" : "text-slate-500"}`}>{item.errorMessage || item.currentStep}</span>

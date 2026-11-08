@@ -13,6 +13,14 @@ import AccessGate from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import styles from "./SkillPanorama.module.css";
 
+const skillDomains: Record<string, { domain: string; label: string }> = {};
+for (const name of ["python", "java", "javascript", "c", "c++", "c#", "go", "rust", "r", "django", "flask", "fastapi", "spring", "spring boot", "node.js"]) skillDomains[name] = { domain: "backend", label: "后端" };
+for (const name of ["react", "vue", "typescript", "html", "css"]) skillDomains[name] = { domain: "frontend", label: "前端" };
+for (const name of ["sql", "mysql", "postgresql", "redis", "mongodb", "pandas", "numpy", "excel", "数据分析", "数据清洗"]) skillDomains[name] = { domain: "data", label: "数据" };
+for (const name of ["pytest", "单元测试", "软件测试"]) skillDomains[name] = { domain: "testing", label: "测试" };
+for (const name of ["git", "linux", "docker", "kubernetes", "沟通", "团队协作"]) skillDomains[name] = { domain: "tools", label: "工具" };
+const skillDomain = (name: string) => skillDomains[name.trim().toLowerCase()] ?? { domain: "tools", label: "工具与未知" };
+
 export default function SkillPanorama() {
   const { user, status } = useAuth();
   return <AccessGate roles={["student"]}>{status === "authenticated" && user?.role === "student" &&
@@ -94,10 +102,10 @@ export function SkillPanoramaView({ state, selected, onSelect, loadMore, retryFa
           return <section className={styles.group} key={category} aria-label={category}>
             <div className={styles.groupHeading}><span className={styles.groupNumber}>{String(index + 1).padStart(2, "0")}</span><h3>{category}</h3><span>{skills.length} 个技能 · {skills.reduce((total, value) => total + value.contexts.length, 0)} 条记录</span></div>
             <CountBand counts={counts} label={category} />
-            <div className={styles.skills}>{skills.map(value => <button key={value.key} className={styles.skill} aria-pressed={selected === value.key} aria-controls="skill-context-rail" onClick={() => onSelect(value.key)}>
-              <span>{value.name}</span><span className={styles.skillCount}>{value.contexts.length}<span className="sr-only"> 条要求记录</span></span>
+            <div className={styles.skills}>{skills.map(value => { const domain = skillDomain(value.name); return <button key={value.key} className={styles.skill} aria-pressed={selected === value.key} aria-controls="skill-context-rail" onClick={() => onSelect(value.key)}>
+              <span>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span><span className={styles.skillCount}>{value.contexts.length}<span className="sr-only"> 条要求记录</span></span>
               <span className={styles.skillMarks} aria-hidden="true">{PANORAMA_STATUSES.filter(status => value.counts[status]).map(status => <i key={status} data-status={status} />)}</span>
-            </button>)}</div>
+            </button>; })}</div>
           </section>;
         })}
         {!!landscape.unclassified.length && <button className={styles.unclassified} aria-pressed={selected === ""} aria-controls="skill-context-rail" onClick={() => onSelect("")}>未标注技能的要求 <strong>{landscape.unclassified.length}</strong><span>保留原要求，不推测技能名称 →</span></button>}

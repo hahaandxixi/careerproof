@@ -22,6 +22,8 @@ import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenc
 import ReportAgentEvidence from "./ReportAgentEvidence";
 import ReportOverview from "./ReportOverview";
 import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
+import SkillRadar from "./SkillRadar";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { adoptedReportExplanation, workspaceStatusLabel } from "@/lib/report-workspace";
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
@@ -56,6 +58,7 @@ function ReportWorkspace({ id }: { id: string }) {
     return state.gaps.length > 0 || state.partial.length > 0;
   });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
+  const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
@@ -66,7 +69,7 @@ function ReportWorkspace({ id }: { id: string }) {
     <ReportSections header={<ReportPaperHeader report={report} />} versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
-    {user?.role === "student" && <ReportRequirementHeatmap items={report.items} />}
+    {user?.role === "student" && <div className="report-overview-grid"><ReportRequirementHeatmap items={report.items} /><section className="report-radar-overview" aria-label="岗位技能雷达"><div className="report-radar-overview-head"><h2>技能雷达</h2><p>按已保存判断显示材料支持分布；色带与雷达不构成能力总分。</p></div><SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId="" onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} compact /></section></div>}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
     <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>

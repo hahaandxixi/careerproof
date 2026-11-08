@@ -80,3 +80,30 @@
   .canvas { padding-inline: 24px; }
   .heading h1 { font-size: 30px; }
 }
+
+/* Product palette for the skill panorama: oat desk, paper canvas, field tags. */
+.skillDomain { display: inline-flex; align-items: center; min-height: 20px; padding: 1px 6px; border: 1px solid transparent; border-radius: 3px; font-size: 11px; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.skillDomain[data-domain="backend"] { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+.skillDomain[data-domain="frontend"] { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+.skillDomain[data-domain="data"] { background: #fffbeb; border-color: #fde68a; color: #78350f; }
+.skillDomain[data-domain="testing"] { background: #f0fdfa; border-color: #99f6e4; color: #115e59; }
+.skillDomain[data-domain="tools"] { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
+.panorama { color: #1e3a34; }
+.back, .reportLink { color: #1d4a40; }
+.eyebrow { color: #526b61; }
+.heading h1 { color: #143a32; }
+.subtitle { color: #526176; }
+.loadbar { border-color: #d8d0c2; color: #526176; }
+.canvas { border-top: 3px solid #1d4a40; background: #fff; box-shadow: 0 1px 2px rgba(23,45,42,.04); }
+.canvasTitle strong, .materials strong { color: #1d4a40; }
+.skill { border-color: #d9d2c4; background: #fbf9f4; color: #1e3a34; }
+.skill:hover { border-color: #9db8ad; background: #eef4f0; }
+.skill[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; box-shadow: inset 0 0 0 1px #1d4a40; }
+.rail { border-top-color: #1d4a40; }
+.context { border-bottom-color: #d8d0c2; }
+.materials { border-left-color: #c8d4ce; }
+.readingScope { border-top-color: #d8d0c2; }
+.group, .unclassified, .canvasFooter { border-color: #e1ddd2; }
+.readingScope li { border-bottom-color: #e1ddd2; }
+.readingScope a:hover { color: #1d4a40; }
+.legend strong { color: #1d4a40; }

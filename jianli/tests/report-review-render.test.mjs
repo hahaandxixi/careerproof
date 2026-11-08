@@ -1,4 +1,4 @@
-import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
+﻿import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
 import * as sourceLabels from "../src/lib/source-label.ts";
 import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
@@ -15,7 +15,7 @@ function fixture({writeError,readError}={}){
  const hooks={useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useMemo:memo,useEffect(fn,deps){const i=cursor++;if(!cells[i]){cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}}};
  const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials:[],analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
  const api={getReport:async()=>{reads++;if(reads===2&&readError)throw readError;return report;},reviewEvidence:async(...args)=>{writes++;if(writeError)throw writeError;return args;}};
- const stub=()=>null;const modules={"next/navigation":{useSearchParams:()=>new URLSearchParams()},"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":{adoptedReportExplanation:()=>"",workspaceStatusLabel:v=>v.verdict},"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""}};
+ const stub=()=>null;const modules={"./SkillRadar":{__esModule:true,default:stub},"@/lib/evidence-anchor":{navigateEvidenceFragment:()=>{}},"next/navigation":{useSearchParams:()=>new URLSearchParams()},"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":{adoptedReportExplanation:()=>"",workspaceStatusLabel:v=>v.verdict},"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""}};
  modules["@/lib/report-follow-up"]={followUpCopyText:()=>""};
  for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportOverview","ReportRequirementHeatmap","ReportAiExplanation","ReportSourcePanel","ReportSections","ReportPaperHeader","ReportFollowUpActions"])modules[`./${name}`]={__esModule:true,default:stub};
  modules["./ReportEvidenceWorkspace"]={__esModule:true,default:stub,RequirementActionPanel:stub};
@@ -38,3 +38,4 @@ test("read failure after saving exposes a read-only recovery while all review wr
 test("account, role and report keys establish separate workspaces",()=>{
  const h=fixture();const a=h.outer("r").props.children.key;h.setAccount("other");const b=h.outer("r").props.children.key;const c=h.outer("other-report").props.children.key;assert.notEqual(a,b);assert.notEqual(b,c);h.setRole("admin");assert.notEqual(c,h.outer("other-report").props.children.key);
 });
+

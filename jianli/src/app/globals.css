@@ -1330,3 +1330,52 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 @media (max-width: 1100px) {
   .enterprise-review-workbench { grid-template-areas: "switch" "primary" "source" "difference"; }
 }
+main.site-frame:has(.skills-page) { background: #f4f1ea; }
+.skills-page { width: min(1260px, 100%); margin-inline: auto; padding: 6px 18px 64px; }
+@media (max-width: 900px) { .skills-page { padding-inline: 8px; } }
+
+/* Report detail: compact command bar, paired overview with radar. */
+.report-desk .report-paper { background: #fff; border: 1px solid #ded7ca; box-shadow: 0 1px 2px rgba(23,45,42,.04); }
+.report-command-bar { display: block; padding: 14px 18px 10px; margin-bottom: 14px; border: 1px solid #ded7ca; background: #fff; }
+.report-command-identity { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 10px 24px; }
+.report-command-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.report-command-title-row .page-title { margin: 0; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.25; }
+.report-status-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 2px 8px; border: 1px solid #a9c9b9; border-radius: 99px; background: #eef6f1; color: #173c34; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.report-command-subline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 5px; color: #65726d; font-size: 12px; }
+.report-command-facts { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; color: #526176; font-size: 12px; }
+.report-command-facts div { display: flex; align-items: baseline; gap: 5px; }
+.report-command-facts dt { color: #7a8580; }
+.report-command-facts dd { margin: 0; color: #1d4a40; font-weight: 600; }
+.report-material-line { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 7px; margin: 9px 0 0; padding-top: 8px; border-top: 1px solid #e1ddd2; color: #7a8580; font-size: 11px; }
+.report-material-line > span:first-child { margin-right: 2px; color: #526176; font-weight: 600; }
+.report-material-chip { display: inline-flex; max-width: 100%; padding: 1px 6px; border: 1px solid #d9d2c4; border-radius: 3px; background: #fbf9f4; color: #3f514b; overflow-wrap: anywhere; }
+.report-overview-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 320px); gap: 12px; align-items: start; min-width: 0; }
+.report-radar-overview { min-width: 0; max-height: 360px; overflow: auto; padding: 12px; border: 1px solid #ded7ca; background: #fbf9f4; }
+.report-radar-overview-head { margin-bottom: 8px; }
+.report-radar-overview-head h2 { color: #143a32; font-size: 16px; font-weight: 700; }
+.report-radar-overview-head p { margin-top: 2px; color: #65726d; font-size: 11px; line-height: 1.6; }
+.report-radar-overview > section { border: 0; background: transparent; padding: 0; }
+.report-radar-overview .grid { display: block; }
+.report-radar-overview section > div:first-child,
+.report-radar-overview [aria-label="雷达图例"],
+.report-radar-overview [aria-label="选择岗位要求"],
+.report-radar-overview section > p,
+.report-radar-overview section > details { display: none; }
+.report-radar-overview svg { width: min(100%, 250px); height: 250px; max-height: 250px; margin: 0 auto; }
+.report-overview-grid .report-heatmap { min-width: 0; }
+@media (max-width: 1199px) { .report-overview-grid { grid-template-columns: minmax(0, 1fr); } .report-radar-overview { max-height: none; } }
+.material-kind-badge { display: inline-flex; align-items: center; min-height: 20px; padding: 1px 6px; border: 1px solid #cbd5e1; border-radius: 3px; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.material-kind-badge.resume { border-color: #bfdbfe; background: #eff6ff; color: #1e40af; }
+.material-kind-badge.project { border-color: #ddd6fe; background: #f5f3ff; color: #5b21b6; }
+.material-row-status { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-size: 13px; font-weight: 500; line-height: 1.6; }
+.material-row-status::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: currentColor; }
+.material-row-status[data-status="completed"] { color: #667d72; }
+.material-row-status[data-status="running"] { color: #1d4a40; font-weight: 600; }
+.material-row-status[data-status="pending"] { color: #526176; }
+.material-row-status[data-status="failed"] { color: #b42318; font-weight: 600; }
+.material-row-status[data-status="cancelled"] { color: #7a8580; }
+body:has(.enterprise-review-page) .site-header { background: #1a2232; border-color: #29354d; }
+body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { background: #29354d; color: #fff; box-shadow: inset 0 -2px #7dd3fc; }
+
+
+

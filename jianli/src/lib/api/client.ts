@@ -1,4 +1,4 @@
-import type { NotificationPage } from "./domain";
+﻿import type { NotificationPage } from "./domain";
 import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult, ApplicationVerificationTask } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
@@ -435,8 +435,11 @@ export function errorMessage(error: unknown): string {
           : first?.msg
             ? `${String(field ?? "参数")}：${first.msg}`
             : error.message;
+    if (error.code === 4012) return friendly;
     return error.requestId ? `${friendly}（请求编号：${error.requestId}）` : friendly;
   }
   if (error instanceof Error) return error.message;
   return "操作失败，请稍后重试";
 }
+
+
