@@ -10,7 +10,7 @@ import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, wo
 /** All saved articles remain mounted, including their source anchors and private drafts.
  * One control bar (filters + requirement chips) sits above the overview and the reading
  * column, so the page keeps a single left-free layout at every width. */
-export default function ReportRequirementReader({ items, children, overview }: { items: ReportItem[]; children: ReactNode; overview?: ReactNode }) {
+export default function ReportRequirementReader({ items, children, overview, selectedRequirementId, onRequirementChange }: { items: ReportItem[]; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
   const [entry, setEntry] = useState<{ selected: string | null; anchor: string | null; revision: number; filter: WorkspaceFilter }>(() => ({
     selected: initialReportRequirement(items), anchor: null, revision: 0, filter: items.length <= 8 ? "all" : initialWorkspaceFilter(items),
   }));
@@ -58,6 +58,11 @@ export default function ReportRequirementReader({ items, children, overview }: {
     window.addEventListener("careerproof:filter-requirements", handler);
     return () => window.removeEventListener("careerproof:filter-requirements", handler);
   }, [items]);
+  useEffect(() => {
+    if (selectedRequirementId === undefined) return;
+    setEntry(previous => previous.selected === selectedRequirementId ? previous : ({ ...previous, selected: selectedRequirementId, revision: previous.revision + 1 }));
+  }, [selectedRequirementId]);
+  useEffect(() => { onRequirementChange?.(entry.selected); }, [entry.selected, onRequirementChange]);
   const articles = Children.toArray(children);
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
@@ -108,3 +113,4 @@ export default function ReportRequirementReader({ items, children, overview }: {
     </div>
   </section>;
 }
+

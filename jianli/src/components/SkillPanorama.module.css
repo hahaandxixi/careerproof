@@ -1,4 +1,4 @@
-/* Skill panorama: compact groups with a scan-friendly source rail.
+﻿/* Skill panorama: compact groups with a scan-friendly source rail.
    Category chrome stays neutral; evidence status colors live only on bands and marks. */
 .panorama { color: #1e3a34; }
 .back { display: inline-flex; align-items: center; min-height: 36px; color: #1d4a40; font-size: 14px; }
@@ -36,7 +36,13 @@
 /* Quantity band: thin, no inline numbers; counts stay in the accessible label. */
 .band { display: flex; gap: 2px; height: 10px; margin-top: 8px; overflow: hidden; border-radius: 2px; background: #efece3; }
 .band span { flex-basis: 0; min-width: 6px; }
-.skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.skillCard { display: grid; align-content: start; gap: 7px; width: 100%; min-height: 112px; padding: 12px 13px 11px; border: 1px solid #d9d2c4; border-radius: 6px; text-align: left; background: #fbf9f4; color: #1e3a34; overflow-wrap: anywhere; }
+.skillCard:hover { border-color: #9db8ad; background: #f0f5f1; }
+.skillCard[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; box-shadow: inset 0 0 0 1px #1d4a40; }
+.skillCardTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.skillName { min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+.skillSummary { color: #526176; font-size: 11px; line-height: 1.55; }
 .skill { display: inline-flex; align-items: center; min-height: 34px; max-width: 100%; gap: 10px; padding: 5px 11px; border: 1px solid #d9d2c4; border-radius: 5px; text-align: left; background: #fbf9f4; color: #1e3a34; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .skill:hover { border-color: #9db8ad; background: #eef4f0; }
 .skill[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; box-shadow: inset 0 0 0 1px #1d4a40; }
@@ -59,6 +65,16 @@
 .railHeading > p:last-of-type { color: #526176; font-size: 13px; line-height: 1.7; }
 .railNote { color: #617086; font-size: 12px; line-height: 1.7; }
 .context { padding: 10px 0 12px; border-bottom: 1px solid #d8d0c2; }
+.contextActive { border-left: 3px solid #1d4a40; padding-left: 9px; background: #f6faf7; }
+.contextSelect { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.contextSelect:hover h3 { color: #1d4a40; }
+.contextSource { margin-top: 9px; padding: 10px; border: 1px solid #d8d0c2; border-radius: 4px; background: #fff; }
+.contextSource h4 { font-size: 12px; font-weight: 700; color: #173c34; }
+.contextEvidence { margin-top: 7px; padding-top: 7px; border-top: 1px solid #ece7dc; }
+.contextEvidence > p { color: #526176; font-size: 11px; line-height: 1.5; }
+.contextSource pre { background: #142321 !important; color: #e2e8f0; border-radius: 4px; }
+.contextNoSource { color: #7a5c2e; font-size: 12px; line-height: 1.6; }
+.contextReport { display: inline-flex; min-height: 30px; align-items: center; margin-top: 4px; color: #1d4a40; font-size: 12px; font-weight: 600; }
 .contextMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: #617086; font-size: 12px; }
 .contextMeta [data-status] { padding: 2px 7px; border-radius: 3px; font-size: 12px; }
 .context h3 { margin: 6px 0 4px; font-size: 15px; font-weight: 650; }
@@ -84,4 +100,10 @@
   .layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
   .canvas { padding-inline: 16px; }
   .heading h1 { font-size: 26px; }
+  .skills { grid-template-columns: minmax(0, 1fr); }
 }
+
+
+
+.contextJob { display: block; margin: 6px 0 4px; font-size: 15px; font-weight: 650; line-height: 1.45; }
+

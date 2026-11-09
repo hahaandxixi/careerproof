@@ -1370,11 +1370,6 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
    The old double left rail (report directory + requirement index) is gone; the section
    directory is a compact tab strip and the requirement index is a chip row in the single
    control bar, so 1280 keeps the full width for judgment and sources. */
-.report-section-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; margin: 0 0 4px; padding: 4px 0 8px; border-bottom: 1px solid #e1ddd2; }
-.report-section-tabs > a { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px; border: 1px solid transparent; border-radius: 4px; color: #526176; font-size: 14px; text-decoration: none; }
-.report-section-tabs > a:hover { color: #1d4a40; background: #e7efe9; }
-.report-section-tabs > a.report-section-active { border-color: #a9c2b7; background: #e7efe9; color: #173c34; font-weight: 700; }
-.report-tab-versions { display: none; }
 
 /* Single requirement control bar: status filters above a compact numbered chip index. */
 .report-requirement-controls { display: grid; gap: 6px; padding: 8px 0 10px; border-bottom: 1px solid #e1ddd2; }
@@ -1457,3 +1452,26 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 
 
+
+/* Report sections return to a compact left directory; requirement filtering
+   remains inside the paper's reading workspace. */
+.report-document-grid { display: grid; grid-template-columns: 152px minmax(0, 1fr); gap: 20px; align-items: start; }
+.report-section-directory { display: grid; align-content: start; gap: 2px; position: sticky; top: var(--report-sticky-offset, 88px); padding: 10px 0; border-right: 1px solid #d8d0c2; }
+.report-section-directory > p { padding: 0 12px 6px; color: #748197; font-size: 12px; }
+.report-section-directory > a { display: flex; align-items: center; min-height: 40px; margin-right: 10px; padding: 6px 11px; border-left: 2px solid transparent; border-radius: 0 4px 4px 0; color: #526176; font-size: 14px; text-decoration: none; }
+.report-section-directory > a:hover { color: #1d4a40; background: #e7efe9; }
+.report-section-directory > a.report-section-active { border-left-color: #1d4a40; background: #e7efe9; color: #173c34; font-weight: 700; }
+.report-directory-versions { margin: 14px 10px 0; padding-top: 12px; border-top: 1px solid #d8d0c2; color: #64748b; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.report-document-grid > .report-paper { min-width: 0; }
+@media (min-width: 1400px) { .report-document-grid { grid-template-columns: 176px minmax(0, 1fr); gap: 24px; } }
+@media (max-width: 1399px) { .report-document-grid { grid-template-columns: 140px minmax(0, 1fr); gap: 16px; } .report-section-directory > a { font-size: 13px; padding-inline: 9px; } }
+
+.report-radar-empty { padding: 18px 8px; color: #526176; font-size: 13px; line-height: 1.6; }
+
+
+.enterprise-fixed-source { margin-top: 14px; padding-top: 14px; border-top: 1px solid #d8d0c2; }
+
+.enterprise-fixed-review { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, .9fr); gap: 16px; align-items: start; }
+.enterprise-fixed-review > .enterprise-fixed-source { margin-top: 0; padding: 0 0 0 16px; border-top: 0; border-left: 1px solid #d8d0c2; }
+.enterprise-fixed-review .skill-radar-overview .radar-chart-svg { max-width: 420px; }
+@media (max-width: 1100px) { .enterprise-fixed-review { grid-template-columns: minmax(0, 1fr); } .enterprise-fixed-review > .enterprise-fixed-source { padding: 14px 0 0; border-left: 0; border-top: 1px solid #d8d0c2; } }

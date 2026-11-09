@@ -1,4 +1,4 @@
-import test from "node:test";
+﻿import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
@@ -13,6 +13,7 @@ const modules = {
   "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
   "@/lib/api/client": { api: {}, errorMessage: e => e.message },
   "@/lib/demo-display-identity.js": presentation, "@/lib/skill-panorama": panorama,
+  "./EvidenceSnippet": { __esModule: true, default: () => null }, "./SourceIdentity": { __esModule: true, default: () => null, SourceIdentityDetails: () => null },
   "./AuthProvider": { useAuth: () => auth }, "./AccessGate": { __esModule: true, default: ({ children }) => children },
   "./SkillPanorama.module.css": { __esModule: true, default: new Proxy({}, { get: (_, key) => key }) },
 };
@@ -76,3 +77,5 @@ test("known fixture skills use the same job and fixed-material aliases with a vi
  assert.match(html,/数据工程实习生/);assert.match(html,/数据工程方向简历/);assert.doesNotMatch(html,/演示数据说明|合成流程验收|本地验收简历/);
  assert.doesNotMatch(html,/合成流程验收|本地验收简历/);assert.deepEqual(saved,before);
 });
+
+

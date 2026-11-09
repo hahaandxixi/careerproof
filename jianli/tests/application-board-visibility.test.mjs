@@ -71,6 +71,7 @@ function fixture(count=2,editRow=value=>value,options={}){
 test("tab return restores radar requirement/evidence only after GET authorization and clears replies",async()=>{
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();
  h.radar(tree).props.onRequirementChange("r1");tree=h.render();
+ assert.ok(walk(tree).some(n=>n.props?.className==="enterprise-fixed-source"),"fixed report keeps a linked source detail");
  h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"未发送的合成回复"}});tree=h.render();
  const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});
  let resolve;h.waitFor(new Promise(yes=>{resolve=yes;}));tree=h.hide();assert.equal(h.radar(tree),undefined);assert.equal(tree.props.style.minHeight,2400);
@@ -188,3 +189,4 @@ test("popstate reauthorizes the matching history entry and server page clamping 
   await limited.settle();assert.equal(boardHistory.readApplicationBoardHistory(limited.bookmark(),"enterprise-a","job-a").page,1);assert.equal(limited.counts.open,0);limited.unmount();
  }
 });
+

@@ -30,6 +30,7 @@ import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import { followUpCopyText } from "@/lib/report-follow-up";
+import { initialReportRequirement } from "@/lib/report-reader";
 
 
 const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
@@ -43,10 +44,25 @@ function ReportWorkspace({ id }: { id: string }) {
   const compareBase = useSearchParams().get("compareBase") || "";
   const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
+  const [activeRequirementId, setActiveRequirementId] = useState<string | null | undefined>(undefined);
   const session = useMemo(() => createReportReviewSession(id, {
     get: api.getReport, review: api.reviewEvidence, errorMessage,
   }, setState), [id]);
   useEffect(() => { session.activate(); void session.load(); return () => session.dispose(); }, [session]);
+  useEffect(() => {
+    if (!state.report) return;
+    const ids = new Set(state.report.items.map(item => item.requirementId));
+    const sync = () => {
+      const fromHash = window.location.hash.match(/^#requirement-(.+)$/)?.[1];
+      if (fromHash && ids.has(fromHash)) { setActiveRequirementId(fromHash); return; }
+      if (!window.location.hash) { setActiveRequirementId(initialReportRequirement(state.report!.items)); return; }
+      setActiveRequirementId(previous => previous === undefined ? initialReportRequirement(state.report!.items) : previous);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
+  }, [state.report?.id]);
   const { report, error, reviewing, issues, needsSync } = state;
   if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
@@ -58,15 +74,16 @@ function ReportWorkspace({ id }: { id: string }) {
     return state.gaps.length > 0 || state.partial.length > 0;
   });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
+  const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
   const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
   const studentOverview = user?.role === "student" ? <div className="report-overview-band">
-      <ReportRequirementHeatmap items={report.items} />
+      <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
       <section className="report-radar-side" aria-label="岗位技能雷达">
         <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span></div>
-        <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId="" onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" />
+        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
       </section>
     </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
@@ -74,7 +91,7 @@ function ReportWorkspace({ id }: { id: string }) {
       { id: "report-matching", label: "岗位对照", content: <>
     {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
-    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
+    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
 
         <span>{item.skill || "岗位要求"}<span className="requirement-title-state">，{workspaceStatusLabel(item)}</span></span>
@@ -140,4 +157,6 @@ function ReportWorkspace({ id }: { id: string }) {
     ]} />
   </div>;
 }
+
+
 

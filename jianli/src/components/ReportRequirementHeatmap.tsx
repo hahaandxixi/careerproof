@@ -12,19 +12,23 @@ function tone(item: ReportItem) {
 }
 
 /** Compact requirement heatmap from saved fields; no score or invented capability. */
-export default function ReportRequirementHeatmap({ items }: { items: ReportItem[] }) {
+export default function ReportRequirementHeatmap({ items, selectedRequirementId }: { items: ReportItem[]; selectedRequirementId?: string | null }) {
   const read = () => {
     const id = window.location.hash.match(/^#requirement-(.+)$/)?.[1];
     return id && items.some(item => item.requirementId === id) ? id : initialReportRequirement(items);
   };
   const [selected, setSelected] = useState<string | null>(() => items[0] ? initialReportRequirement(items) : null);
   useEffect(() => {
+    if (selectedRequirementId !== undefined) setSelected(selectedRequirementId);
+  }, [selectedRequirementId]);
+  useEffect(() => {
+    if (selectedRequirementId !== undefined) return;
     const sync = () => setSelected(read());
     sync();
     window.addEventListener("hashchange", sync);
     window.addEventListener("popstate", sync);
     return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
-  }, [items]);
+  }, [items, selectedRequirementId]);
   return <section className="report-heatmap" aria-label="岗位要求材料状态热力图">
     <div className="report-heatmap-head"><div><h2>要求状态热力图</h2><p>每行是一项真实要求；列分别表示简历声明、可定位来源与已保存判断。</p></div>
       <div className="report-heatmap-legend" aria-label="状态图例"><span data-tone="supported">有证据支持</span><span data-tone="partial">部分支持</span><span data-tone="gap">待补或仅声明</span><span data-tone="other">暂不支持或需复核</span></div></div>
@@ -39,3 +43,4 @@ export default function ReportRequirementHeatmap({ items }: { items: ReportItem[
     </div>
   </section>;
 }
+

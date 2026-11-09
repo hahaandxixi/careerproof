@@ -11,8 +11,8 @@ import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import ReportRequirementReader from "./ReportRequirementReader";
 
-export default function ReportEvidenceWorkspace({ report, children, overview }: { report: MatchReport; children: ReactNode; overview?: ReactNode }) {
-  return <ReportRequirementReader items={report.items} overview={overview}>{children}</ReportRequirementReader>;
+export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
+  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange}>{children}</ReportRequirementReader>;
 }
 
 export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {
@@ -92,3 +92,4 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     </aside>}
   </div>;
 }
+
