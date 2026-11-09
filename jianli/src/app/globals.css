@@ -119,16 +119,6 @@ details[open] > summary::before { transform: rotate(45deg); }
   .site-primary-nav > a:focus-visible,
   .site-account > :focus-visible,
   .site-account > details > summary:focus-visible { outline-color: #a8c5bc; }
-  .student-flow { max-width: 100%; overflow-x: auto; padding: 5px 4px 12px; scrollbar-width: thin; }
-  .student-flow ol { display: flex; align-items: center; gap: 14px; width: max-content; margin: 0; padding: 0; list-style: none; }
-  .student-flow li { display: flex; align-items: center; gap: 14px; color: var(--flow-text); }
-  .flow-step { display: flex; align-items: center; gap: 8px; min-height: 44px; white-space: nowrap; border-radius: 6px; }
-  .flow-step[href]:hover { color: var(--flow-brand); text-decoration: underline; }
-  .flow-number { display: grid; place-items: center; flex-shrink: 0; width: 25px; height: 25px; border: 1px solid var(--flow-line); border-radius: 50%; background: var(--flow-surface); font-size: 12px; }
-  .student-flow [aria-current="step"] { color: var(--flow-brand); font-weight: 600; }
-  .student-flow [aria-current="step"] .flow-number { color: var(--flow-surface); background: var(--flow-brand); border-color: var(--flow-brand); outline: 3px solid var(--flow-ring); }
-  .flow-step small { display: block; font-size: 12px; }
-  .flow-arrow { color: var(--flow-text); }
   .career-job-card { transition: border-color 120ms; }
   .career-job-card:hover { border-color: #a5b4fc; }
   .career-job-card:has(> details[open]) { border-color: var(--flow-brand); box-shadow: inset 0 0 0 1px var(--flow-brand); }
@@ -196,14 +186,6 @@ details[open] > summary::before { transform: rotate(45deg); }
 @media (max-width: 639px) {
   .site-brand { font-size: 14px; }
   .site-primary-nav > a { padding-inline: 8px; font-size: 12px; }
-  .flow-guide .student-flow { padding-bottom: 4px; }
-  .flow-guide .student-flow ol, .flow-guide .student-flow li { gap: 10px; }
-  .flow-guide .flow-step { min-height: 36px; font-size: 12px; }
-  .flow-guide .flow-step small { display: none; }
-  .flow-guide .flow-number { width: 22px; height: 22px; }
-  .flow-guide .student-flow { overflow: visible; }
-  .flow-guide .student-flow ol { width: 100%; flex-wrap: wrap; gap: 4px 12px; }
-  .flow-guide .flow-arrow { display: none; }
   /* Open mobile account menus join the header grid instead of covering the page. */
   .site-account:has(.account-menu[open]), .account-menu[open] { display: contents; }
   .account-menu[open]::details-content { display: contents; }
@@ -515,17 +497,6 @@ main.site-frame { padding-top: 20px; }
 .site-header-inner { min-height: 64px; gap: 24px; }
 .site-primary-nav > a { padding-inline: 14px; font-size: 15px; }
   .site-primary-nav > a[aria-current="page"] { background: #243b36; color: #fff; box-shadow: inset 0 -2px #d9a491; }
-.flow-guide { margin-bottom: 16px; }
-.student-flow { padding: 0 0 12px; border-bottom: 1px solid #e0dbcd; border-radius: 0; background: transparent; }
-.student-flow ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 12px; width: 100%; }
-.student-flow li { display: block; min-width: 0; color: #617086; }
-.student-flow .flow-step { min-height: 40px; padding: 5px 8px; gap: 8px; font-size: 14px; line-height: 1.5; white-space: normal; }
-.student-flow .flow-number { width: 22px; height: 22px; border-color: #cbd5e1; background: transparent; color: #5f6e83; font-size: 12px; }
-.student-flow .flow-arrow { display: none; }
-.student-flow [aria-current="step"] { color: #1d4a40; }
-.student-flow [aria-current="step"] .flow-step { background: #e7efe9; }
-.student-flow [aria-current="step"] .flow-number { border-color: #245c50; background: #245c50; color: #fff; outline: none; }
-.student-flow .flow-step[href]:hover { color: #1d4a40; background: #e7efe9; text-decoration: none; }
 .scenario-comparison-entry { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid #ce9180; border-radius: 6px; color: #f4e3d8; font-size: 16px; font-weight: 600; }
 .scenario-comparison-entry:hover { background: #243b36; border-color: #e8b8a5; }
 .report-desk { background: transparent; border: 0; }
@@ -553,7 +524,7 @@ main.site-frame { padding-top: 20px; }
 .report-desk .report-overview-tools { grid-column: 1 / -1; gap: 8px 20px; }
 .report-sample-note { color: #718096; font-size: 13px; line-height: 1.6; }
 .report-result-notice { padding: 10px 14px; border-left: 2px solid #d5ab66; background: #fffbf2; color: #8a642c; font-size: 14px; line-height: 1.75; }
-.report-section-directory > a:focus-visible, .scenario-comparison-entry:focus-visible, .student-flow a:focus-visible { outline: 2px solid #8c9bd7; outline-offset: 3px; }
+.report-section-directory > a:focus-visible, .scenario-comparison-entry:focus-visible { outline: 2px solid #8c9bd7; outline-offset: 3px; }
 .report-content-section[hidden] { display: none; }
 .report-content-section > * + * { margin-top: 16px; }
 .report-content-section > .panel, .report-content-section > details.panel { border: 0; border-top: 1px solid #e0dbcd; padding: 20px 0; }
@@ -738,9 +709,6 @@ h2[tabindex="-1"]:focus-visible { outline: none; }
 .account-menu > summary::before { content: none; display: none; }
 /* Tight report entry, no header seam, and directly readable changed references. */
 main.site-frame:has(.report-desk) { padding-top: 10px; }
-main.site-frame:has(.report-desk) .flow-guide { margin-bottom: 8px; }
-main.site-frame:has(.report-desk) .student-flow { padding-bottom: 6px; }
-main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; padding-block: 3px; }
 .report-desk .report-context-bar { min-height: 20px; padding-bottom: 4px; }
 .report-desk .report-paper { padding-top: 16px; }
 .report-desk .report-overview { padding-bottom: 8px; }

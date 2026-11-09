@@ -4,7 +4,6 @@ import {reportPairLabel} from '../src/lib/report-pair.ts';
 import * as pairLabels from '../src/lib/report-pair.ts';
 import {displayJobTitle} from '../src/lib/demo-display-identity.js';
 import * as reportDisplay from '../src/lib/report-display.ts';
-import {studentFlowLocation} from '../src/lib/flow-steps.ts';
 import * as sourceLabels from '../src/lib/source-label.ts';
 import * as evidenceAnchors from '../src/lib/evidence-anchor.ts';
 test('report fragment navigation preserves opaque router history state for route-away/back',()=>{
@@ -22,10 +21,6 @@ test('main text removes only a known frozen material path prefix, keeping unknow
  const raw='请核对 c90a4283-f9ab-4247-8fdc-16ef6e7ae56a/test_pipeline.py 与 unrelated-id/notes.md';
  assert.equal(sourceLabels.materialPathReadingText(raw,materials),'请核对 test_pipeline.py 与 unrelated-id/notes.md');
  assert.equal(sourceLabels.materialPathReadingText(raw,[]),raw);
-});
-test('application workspace uses the same location-only journey without inferring completion',()=>{
- assert.equal(studentFlowLocation('/applications','student'),'application');
- assert.equal(studentFlowLocation('/applications','enterprise'),null);
 });
 const saved=(id,extra={})=>({id,jobId:'6c8ad563-ebf8-427c-b4a3-82905f37dbd0',jobTitle:'数据工程实习生 · 合成流程验收',candidateId:'owner',createdAt:'2026-11-05T12:00:00Z',analysisMode:'rules',materials:[{kind:'project',id:'c90a4283-f9ab-4247-8fdc-16ef6e7ae56a',title:'数据清洗 · 本地验收',versionNumber:2}],...extra});
 test('selector options expose named fixed materials and exact time before selection',()=>{
