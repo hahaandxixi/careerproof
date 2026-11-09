@@ -1443,3 +1443,63 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .enterprise-fixed-review > .enterprise-fixed-source { margin-top: 0; padding: 0 0 0 16px; border-top: 0; border-left: 1px solid #d8d0c2; }
 .enterprise-fixed-review .skill-radar-overview .radar-chart-svg { max-width: 420px; }
 @media (max-width: 1100px) { .enterprise-fixed-review { grid-template-columns: minmax(0, 1fr); } .enterprise-fixed-review > .enterprise-fixed-source { padding: 14px 0 0; border-left: 0; border-top: 1px solid #d8d0c2; } }
+
+/* Shared evidence reader: controls sit in the code header, not on a separate white row. */
+.evidence-code-shell { overflow: hidden; border: 1px solid #d8d0c2; border-radius: 6px; background: #fff; }
+.evidence-code-bar { display: flex; align-items: center; justify-content: flex-end; min-height: 32px; padding: 3px 7px; border-bottom: 1px solid #e1ddd2; background: #f6f3ea; }
+.evidence-code-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 8px; min-width: 0; }
+.evidence-code-bar .btn-quiet { min-height: 26px; padding: 2px 7px; font-size: 12px; }
+.evidence-code-status { color: #526176; font-size: 11px; }
+.evidence-code { margin: 0; padding: 10px 12px; background: #fff; color: #263755; font-size: 13px; line-height: 1.65; }
+.evidence-code-collapse { margin: 0 12px 10px; }
+.source-reader-code .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
+.source-reader-code .evidence-code-bar { border-color: #2e4640; background: #122220; }
+.source-reader-code .evidence-code-bar .btn-quiet { color: #d5ded9; }
+.source-reader-code .evidence-code { padding: 10px 0; background: transparent; color: #e2e8e4; font-size: 15px; line-height: 1.8; }
+.source-reader-code .evidence-code-status { color: #a8d5c4; }
+.contextSource .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
+.contextSource .evidence-code-bar { border-color: #2e4640; background: #122220; }
+.contextSource .evidence-code-bar .btn-quiet { color: #d5ded9; }
+.contextSource .evidence-code { padding: 9px 10px; background: transparent; color: #e2e8f0; font-size: 12px; line-height: 1.55; }
+.contextSource .evidence-code-status { color: #a8d5c4; }
+
+/* Final report flow: the current requirement is one continuous column.
+   Source (heading + full-width code) comes before the short judgement/next step,
+   instead of splitting the active requirement into two narrow inner columns. */
+@media (min-width: 1024px) {
+  .report-desk .requirement-reading-panel.requirement-has-sources:has(.requirement-source-context) { display: block; }
+  .report-desk .requirement-reading-panel:has(.requirement-source-context) > .requirement-document-heading { max-width: none; }
+  .report-desk .requirement-document { display: flex; flex-direction: column; gap: 12px; }
+  .report-desk .requirement-document > .requirement-source-context { order: 1; width: 100%; max-width: none; margin: 0; }
+  .report-desk .requirement-document > .requirement-reading-copy { order: 2; width: 100%; max-width: none; }
+  .report-desk .requirement-document > .requirement-next { order: 3; width: 100%; max-width: none; padding-top: 12px; border-top: 1px solid #e0dbcd; }
+  .report-desk .requirement-reading-panel > details { width: 100%; }
+  .report-desk .requirement-reading-copy > .requirement-evidence-flow { max-width: none; }
+  .report-desk .requirement-reading-copy p { max-width: 86ch; }
+}
+@media (max-width: 1023px) {
+  .report-desk .requirement-document > .requirement-source-context { order: 1; }
+  .report-desk .requirement-document > .requirement-reading-copy { order: 2; }
+  .report-desk .requirement-document > .requirement-next { order: 3; }
+}
+
+.enterprise-radar-select { display: flex; align-items: center; gap: 8px; min-width: 0; color: #526176; font-size: 12px; }
+.enterprise-radar-select span { white-space: nowrap; }
+.enterprise-radar-select select { min-width: 11rem; max-width: min(26rem, 55vw); min-height: 32px; padding: 3px 8px; font-size: 12px; }
+
+
+/* Home quick entries: one padded rail, equal bordered rows, no mixed inline buttons. */
+.home-quick-links { padding: 14px 16px 13px; }
+.home-quick-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.home-quick-link-list { gap: 8px; margin-top: 10px; }
+.home-quick-link-list a { padding: 10px 12px; border: 1px solid #e7e0d2; border-radius: 8px; background: #fbf9f4; }
+.home-quick-link-list a:hover { border-color: #b9cbbf; background: #eef4f0; }
+.home-quick-link-list a + a { border-top: 1px solid #e7e0d2; }
+
+.report-command-bar { padding: 10px 16px 8px; margin-bottom: 10px; }
+.report-command-subline { margin-top: 3px; }
+.report-material-line { margin-top: 6px; padding-top: 6px; }
+
+
+@media (min-width: 1101px) { .enterprise-fixed-review .skill-radar-overview .radar-chart-svg { max-width: 360px; } }
+

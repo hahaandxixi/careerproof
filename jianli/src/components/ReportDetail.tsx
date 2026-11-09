@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
@@ -100,8 +100,6 @@ function ReportWorkspace({ id }: { id: string }) {
       </h3>
       <blockquote className="requirement-original">{item.requirementTitle}</blockquote>
       <p className="text-sm text-slate-500">岗位权重 {item.weight} / 5</p>
-      </div><div className="flex flex-wrap items-center gap-2">
-            {!item.evidenceList.length && user?.role === "student" && <EvidenceLink className="btn-secondary" targetId={`growth-${item.requirementId}`}>核对与补充材料</EvidenceLink>}
       </div></div>
       <RequirementActionPanel
         report={report} item={item} role={user?.role}

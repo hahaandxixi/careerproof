@@ -72,6 +72,8 @@ test("tab return restores radar requirement/evidence only after GET authorizatio
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();
  h.radar(tree).props.onRequirementChange("r1");tree=h.render();
  assert.ok(walk(tree).some(n=>n.props?.className==="enterprise-fixed-source"),"fixed report keeps a linked source detail");
+const fixedSource=walk(tree).find(n=>n.props?.className==="enterprise-fixed-source");
+assert.ok(fixedSource && !text(fixedSource).includes("查看报告与回复"),"fixed report does not link to itself");
  h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"未发送的合成回复"}});tree=h.render();
  const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});
  let resolve;h.waitFor(new Promise(yes=>{resolve=yes;}));tree=h.hide();assert.equal(h.radar(tree),undefined);assert.equal(tree.props.style.minHeight,2400);

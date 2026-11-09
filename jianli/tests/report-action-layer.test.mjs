@@ -1,4 +1,4 @@
-﻿import { test } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -100,12 +100,13 @@ test("non-students retain explanation and advice without private student task co
  }
 });
 
-test("review-only and unsupported states do not invent implementation deficiencies", () => {
- for(const value of [item("review","supported",{confirmationStatus:"rejected"}),item("outside","unsupported")]) {
-  const html=render(report([value]));
-  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("添加项目材料"));
-  assert.ok(!html.includes(">开始补证</button>")); assert.ok(html.includes("不能由此认定实现不存在"));
- }
+test("review-only keeps review guidance while unsupported keeps its rule gap without upload advice", () => {
+ const review=render(report([item("review","supported",{confirmationStatus:"rejected"})]));
+ assert.ok(review.includes("当前需核对")); assert.ok(review.includes("添加项目材料"));
+ assert.ok(!review.includes(">开始补证</button>")); assert.ok(review.includes("不能由此认定实现不存在"));
+ const unsupported=render(report([item("outside","unsupported")]));
+ assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("不能由此认定实现不存在"));
+ assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
 });
 
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
