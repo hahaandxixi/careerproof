@@ -1,4 +1,4 @@
-﻿import test from "node:test";
+import test from "node:test";
 import * as demoIdentity from "../src/lib/demo-display-identity.js";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -69,7 +69,7 @@ test("header keeps each role's original navigation, including admin logout witho
       assert.match(html, /aria-current="page"[^>]*>岗位管理/);
       assert.doesNotMatch(html, /我的材料|我的报告|工作台/);
     } else if (role === "student") {
-      assert.match(html, /学生账户/); assert.match(html, /我的材料|工作台/);
+      assert.match(html, /学生账户/); assert.match(html, /求职概览/); assert.match(html, /href="\/"[^>]*>求职概览/); assert.doesNotMatch(html, /工作台/);
       assert.doesNotMatch(html, /岗位管理|发布岗位/);
     } else if (role === "admin") {
       assert.match(html, /admin-identity/); assert.match(html, />退出<\/button>/);
@@ -102,5 +102,6 @@ test("registered identity keeps a natural name and puts data provenance in menu 
  assert.equal(saved.displayName,"首页验收学生（合成）");
  user={id:"unknown",role:"student",displayName:"小江"};const actual=render(Header);assert.match(actual,/小江/);assert.doesNotMatch(actual,/示例账号原名/);
 });
+
 
 

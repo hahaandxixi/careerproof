@@ -45,9 +45,11 @@ test("student continues the saved report without enterprise actions", () => {
   const html = render("student", { work: { ...EMPTY, reports: [{ id: "report-owned", jobTitle: "后端开发", createdAt: "2026-10-22T10:00:00Z", analysisMode: "rules" }] } });
   assert.ok(html.includes('href="/reports/report-owned"'));
   assert.ok(html.includes("继续核对报告") && html.includes("后端开发"));
+  assert.ok(html.includes("求职概览") && html.includes("继续处理 / 核对"));
+  assert.ok(!html.includes("学生工作台") && !html.includes("企业工作台"));
   assert.ok(html.includes('href="/portfolio"'));
   assert.ok(!html.includes('href="/jobs/new"'));
-  assert.ok(!html.includes("企业工作台"));
+  assert.equal((html.match(/href="\/jobs"/g) || []).length, 1, "the homepage recommends the jobs destination only once");
 });
 
 test("enterprise gets its own job and authorized-application routes, not private student work", () => {
@@ -92,3 +94,4 @@ test("workspace destinations use bounded controls and omit repeated navigation i
  assert.doesNotMatch(html,/到通知页核对来源|上传新版会保留旧版本|打开入口不会自动/);
 });
 test('student home requests only product report records, never implicit audit history',()=>{ assert.match(source,/listReports\(1, 3, \{ scope: "product" \}\)/); });
+
