@@ -7,8 +7,10 @@ import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requi
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 
-/** All saved articles remain mounted, including their source anchors and private drafts. */
-export default function ReportRequirementReader({ items, children }: { items: ReportItem[]; children: ReactNode }) {
+/** All saved articles remain mounted, including their source anchors and private drafts.
+ * One control bar (filters + requirement chips) sits above the overview and the reading
+ * column, so the page keeps a single left-free layout at every width. */
+export default function ReportRequirementReader({ items, children, overview }: { items: ReportItem[]; children: ReactNode; overview?: ReactNode }) {
   const [entry, setEntry] = useState<{ selected: string | null; anchor: string | null; revision: number; filter: WorkspaceFilter }>(() => ({
     selected: initialReportRequirement(items), anchor: null, revision: 0, filter: items.length <= 8 ? "all" : initialWorkspaceFilter(items),
   }));
@@ -31,7 +33,7 @@ export default function ReportRequirementReader({ items, children }: { items: Re
       const href = link?.getAttribute("href");
       // Capture local links too: repeating a fragment, or Next navigation, need not emit hashchange.
       if (href?.startsWith("#") && reportEntryRequirement(items, href)) {
-        // Capture the original destination: selecting can rerender mobile prev/next links
+        // Capture the original destination: selecting can rerender index links
         // before the browser reads their default-action href, otherwise one click skips an item.
         event.preventDefault();
         navigateEvidenceFragment(href);
@@ -57,7 +59,6 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     return () => window.removeEventListener("careerproof:filter-requirements", handler);
   }, [items]);
   const articles = Children.toArray(children);
-  const currentIndex = Math.max(0, items.findIndex(item => item.requirementId === entry.selected));
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
   const visible = workspaceRequirements(items, entry.filter);
@@ -78,38 +79,32 @@ export default function ReportRequirementReader({ items, children }: { items: Re
     if (selected && selected !== entry.selected) window.history.pushState(null, "", `#requirement-${selected}`);
   };
   const tone = (item: ReportItem) => ["supported", "verified"].includes(item.verdict) ? "supported" : item.verdict === "partial" ? "partial" : ["gap", "claimed_only"].includes(item.verdict) ? "gap" : "other";
-  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="min-w-0 scroll-mt-24">
-    <div className="report-index-layout min-w-0">
-    <div className="report-index min-w-0">
-    <h2 id="report-requirements-title" className="sr-only">岗位要求</h2>
-    <div className="report-index-filters" role="group" aria-label="按已保存的材料支持状态筛选">
-      {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
-        onClick={() => changeFilter(filter.key)} className={entry.filter === filter.key ? "is-active" : ""}>
-        {`${filter.label} ${filter.count}`}
-      </button>)}
-    </div>
-      <nav aria-label="报告中的岗位要求" className="min-w-0">
-        {visible.length ? <ol className="report-index-list">{visible.map(item => {
+  return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-reading-desk min-w-0 scroll-mt-24">
+    <div className="report-requirement-controls min-w-0" role="group" aria-label="要求筛选与选择">
+      <div className="report-index-filters" aria-label="按已保存的材料支持状态筛选">
+        {filters.map(filter => <button key={filter.key} type="button" aria-pressed={entry.filter === filter.key}
+          onClick={() => changeFilter(filter.key)} className={entry.filter === filter.key ? "is-active" : ""}>
+          {`${filter.label} ${filter.count}`}
+        </button>)}
+      </div>
+      <nav aria-label="报告中的岗位要求" className="report-index-strip min-w-0">
+        {visible.length ? <ol className="report-index-chips">{visible.map((item, index) => {
           const selected = entry.selected === item.requirementId;
-          return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={selected ? "true" : undefined}
-            className="report-index-link">
+          return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={selected ? "true" : undefined} title={`${item.skill || item.requirementTitle} · ${workspaceStatusLabel(item)}`}
+            className="report-index-chip">
             <span className={`report-index-dot tone-${tone(item)}`} aria-hidden="true" />
-            <span className="break-words text-base font-semibold leading-6">{item.skill || item.requirementTitle}</span>
-            <span className="text-sm leading-6">{workspaceStatusLabel(item)}</span>
+            <span className="report-index-chip-number">{String(index + 1).padStart(2, "0")}</span>
+            <span className="report-index-chip-name">{item.skill || item.requirementTitle}</span>
+            <span className="sr-only">，{workspaceStatusLabel(item)}</span>
           </a></li>;
-        })}</ol> : <p className="rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-600">当前没有这一类要求。<button type="button" className="btn-secondary btn-compact ml-2" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
-        <nav className="mt-3 flex flex-wrap gap-2 lg:hidden" aria-label="逐项阅读导航">
-          {currentIndex > 0 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex - 1].requirementId}`}>上一项</a>}
-          {currentIndex < items.length - 1 && <a className="btn-secondary min-h-11" href={`#requirement-${items[currentIndex + 1].requirementId}`}>下一项</a>}
-          {entry.filter !== "all" && <button type="button" className="btn-secondary" onClick={() => changeFilter("all")}>展开全部要求（{items.length}）</button>}
-        </nav>
+        })}</ol> : <p className="report-index-empty">当前没有这一类要求。<button type="button" className="btn-secondary btn-compact ml-2" onClick={() => changeFilter("all")}>查看全部要求</button></p>}
       </nav>
     </div>
-    <div className="report-requirement-detail-column min-w-0">
+    {overview}
+    <div className="report-requirement-main min-w-0">
       {!visible.length && <p className="text-sm text-slate-500">选择其他筛选查看判断与行动。</p>}
       {items.map((item, index) => <div key={item.requirementId} hidden={entry.selected !== item.requirementId}>{articles[index]}</div>)}
       {nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
-    </div>
     </div>
   </section>;
 }

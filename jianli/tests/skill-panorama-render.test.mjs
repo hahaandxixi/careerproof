@@ -30,7 +30,7 @@ const text = n => typeof n === "string" || typeof n === "number" ? String(n) : R
 test("overview renders actual grouped bands and explicit loaded scope, not radar, scores or empty categories", () => {
   const html = render();
   assert.match(html, /已保存报告中的技能/); assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<svg|<progress|熟练度：|综合评分/);
-  assert.match(html, /规则暂未支持 1 条/); assert.match(html, /12 份摘要未加载/); assert.match(html, /再加载最多 12 份报告/);
+  assert.match(html, /规则暂未支持 1 条/); assert.doesNotMatch(html, /摘要未加载|演示数据说明/); assert.match(html, /再加载最多 12 份报告/);
 });
 test("topic selection exposes every context, original report anchors and fixed versions without latest inference", () => {
   let selected;
@@ -73,6 +73,6 @@ test("known fixture skills use the same job and fixed-material aliases with a vi
  });
  const before=structuredClone(saved);
  const html=render({selected:"sql",state:{...state,reports:[saved],summaries:[saved],total:1,hasMore:false}});
- assert.match(html,/数据工程实习生/);assert.match(html,/数据工程方向简历/);assert.match(html,/演示数据说明/);
+ assert.match(html,/数据工程实习生/);assert.match(html,/数据工程方向简历/);assert.doesNotMatch(html,/演示数据说明|合成流程验收|本地验收简历/);
  assert.doesNotMatch(html,/合成流程验收|本地验收简历/);assert.deepEqual(saved,before);
 });

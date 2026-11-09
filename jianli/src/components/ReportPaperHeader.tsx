@@ -2,6 +2,7 @@ import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
 import { boundaryFixtureJob, displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import { reportReadingStatus } from "@/lib/report-display";
+import Link from "next/link";
 
 /** Identity shared by all report sections; it must stay outside the hidden panels. */
 export default function ReportPaperHeader({ report }: { report: MatchReport }) {
@@ -10,7 +11,8 @@ export default function ReportPaperHeader({ report }: { report: MatchReport }) {
   const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
   const analysisLabel = aiUsed ? "AI 辅助分析" : "规则分析";
   return <header className="report-paper-heading report-command-bar" aria-labelledby="report-title">
-    {boundaryFixture && <p className="report-fixture-notice" role="note"><strong>历史规则核验夹具</strong> · 本报告用于“不支持评估”边界核对，不作为默认岗位样本；原始报告与投递快照保持不变。</p>}
+    <Link className="review-back" href="/reports">← 我的报告</Link>
+    {boundaryFixture && <p className="report-fixture-notice" role="note"><strong>历史核验资料</strong> · 本报告用于核对「暂不支持」判定的边界，不作为默认岗位样本；原始报告与投递快照保持不变。</p>}
     <div className="report-command-identity">
       <div className="min-w-0">
         <p className="workspace-meta">岗位匹配报告</p>

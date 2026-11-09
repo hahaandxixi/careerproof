@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import type { SourceMaterial } from "@/lib/source-label";
@@ -11,16 +11,27 @@ import { resolveSupportScale, supportMeasure, supportScaleNote, type SampleScale
 import SupportMeasureDetails from "./SupportMeasureDetails";
 import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-citations";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false }: {
+/** Radar rendering modes share one scale/plotting core.
+ * - "full": complete reading panel — title, legend, scale note, requirement buttons, chart and evidence detail.
+ * - "overview": chart only, for compact page overview bands; selection, scale notes and evidence
+ *   stay with the surrounding page so the chart never carries repeated headers or inner scrolling. */
+export type SkillRadarVariant = "full" | "overview";
+
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false, variant }: {
   dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
   onRequirementChange?: (id: string) => void;
   evidenceExpanded?: boolean;
   sampleScale?: SampleScale;
   onEvidenceExpandedChange?: (open: boolean) => void;
   compact?: boolean;
+  variant?: SkillRadarVariant;
 }) {
+  const mode: SkillRadarVariant = variant ?? (compact ? "overview" : "full");
   const [selectedId, setSelectedId] = useState(initialRequirementId);
   const detailId = useId();
+  // A parent that changes the external requirement id (index click, matrix cell, A/B switch)
+  // must move the internal selection too; parents that remount via key still work unchanged.
+  useEffect(() => { setSelectedId(previous => previous === initialRequirementId ? previous : initialRequirementId); }, [initialRequirementId]);
   const selectRequirement = (id: string) => { setSelectedId(id); onRequirementChange?.(id); };
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
@@ -32,25 +43,8 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   const measure = supportMeasure(dimension, scale);
   const useAi = !!item && item.aiStatus==="validated" && !aiFallbackUsed && !invalidNarrativeCitations(item).length;
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
-  return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" aria-label="证据联动雷达">
-    <div className="flex flex-wrap items-start justify-between gap-3">
-      <h3 className="text-lg font-semibold">逐项核对</h3>
-      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600">{dimensions.length} 项岗位要求</span>
-    </div>
-    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="雷达图例">
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported} / {RADAR_STATUS.partial}</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-dashed border-slate-400" />{RADAR_STATUS.gap}（不绘点）</span>
-      <span>— {RADAR_STATUS.unsupported}</span>
-    </div>
-    <p className="mt-3 text-sm font-medium text-slate-700">{scale.label}</p>
-    <details className="text-sm leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-2 text-indigo-700">计量详情</summary><p>{supportScaleNote(scale)}</p></details>
-    {scale.mode === "raw" && <p role="status" className="text-sm text-amber-900">{scale.reason}</p>}
-        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
-    <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(460px,0.95fr)_minmax(0,1.05fr)]">
-      <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
 
-        {dimensions.length >= 3 && dimensions.length <= 8 ? <svg className="mx-auto mt-2 w-full max-w-[440px]" viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签或上方要求按钮查看证据`}>
+  const chart = dimensions.length >= 3 && dimensions.length <= 8 ? <svg className={mode === "overview" ? "radar-chart-svg mx-auto w-full" : "mx-auto mt-2 w-full max-w-[440px]"} viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签查看证据`}>
           <circle cx="200" cy="200" r="108" fill="#f8fafc" />
           {[25, 50, 75, 100].map(value => <g key={value}><circle cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
           <text x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
@@ -74,9 +68,31 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
               </g>
             </g>;
           })}
-        </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，使用下方逐项证据对照，避免轴标签拥挤。</p>}
+        </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，请使用逐项证据对照，避免轴标签拥挤。</p>;
+
+  if (mode === "overview") return <section className="skill-radar-overview min-w-0" aria-label="技能雷达概览图">{chart}</section>;
+
+  return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" aria-label="证据联动雷达">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <h3 className="text-lg font-semibold">逐项核对</h3>
+      <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600">{dimensions.length} 项岗位要求</span>
+    </div>
+    <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="雷达图例">
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported} / {RADAR_STATUS.partial}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-dashed border-slate-400" />{RADAR_STATUS.gap}（不绘点）</span>
+      <span>— {RADAR_STATUS.unsupported}</span>
+    </div>
+    <p className="mt-3 text-sm font-medium text-slate-700">{scale.label}</p>
+    <details className="text-sm leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-2 text-indigo-700">计量详情</summary><p>{supportScaleNote(scale)}</p></details>
+    {scale.mode === "raw" && <p role="status" className="text-sm text-amber-900">{scale.reason}</p>}
+        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
+    <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(460px,0.95fr)_minmax(0,1.05fr)]">
+      <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
+
+        {chart}
       </div>
-      {!compact && <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
+      <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
         <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
         <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
@@ -101,7 +117,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           {(useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-sm leading-6 text-amber-800">待核对：{useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
 
         </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"} {dimension.verdict === "gap" ? "缺材料不代表没有能力。" : "材料支持程度不代表能力或录用结论。"}</p>}
-      </div>}
+      </div>
     </div>
   </section>;
 }

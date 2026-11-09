@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { evidenceWorkspace } from "@/lib/evidence-workspace";
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
@@ -62,16 +62,19 @@ function ReportWorkspace({ id }: { id: string }) {
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
+  const studentOverview = user?.role === "student" ? <div className="report-overview-band">
+      <ReportRequirementHeatmap items={report.items} />
+      <section className="report-radar-side" aria-label="岗位技能雷达">
+        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span></div>
+        <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId="" onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" />
+      </section>
+    </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
-    <div className="report-context-bar">
-      <Link className="review-back" href="/reports">← 我的报告</Link>
-    </div>
-    <ReportSections header={<ReportPaperHeader report={report} />} versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
+    <ReportSections header={<ReportPaperHeader report={report} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
-    {user?.role === "student" && <div className="report-overview-grid"><ReportRequirementHeatmap items={report.items} /><section className="report-radar-overview" aria-label="岗位技能雷达"><div className="report-radar-overview-head"><h2>技能雷达</h2><p>按已保存判断显示材料支持分布；色带与雷达不构成能力总分。</p></div><SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId="" onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} compact /></section></div>}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
-    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
+    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
 
         <span>{item.skill || "岗位要求"}<span className="requirement-title-state">，{workspaceStatusLabel(item)}</span></span>
@@ -137,3 +140,4 @@ function ReportWorkspace({ id }: { id: string }) {
     ]} />
   </div>;
 }
+

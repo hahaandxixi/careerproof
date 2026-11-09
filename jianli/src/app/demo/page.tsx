@@ -8,7 +8,7 @@ import coverage from "./coverage.json";
 export default function DemoPage() {
   return <div className="case-library-page">
     <header className="case-library-heading">
-      <div><p className="workspace-meta">案例库 · 合成材料</p><h1 className="page-title">用一套完整材料，走完一次证据核对</h1><p className="reading-copy">按方向浏览案例，下载或导入到自己的材料库走一遍核对流程。所有人物、经历和指标均为虚构，示例内容不证明个人能力或真实运行结果。</p></div>
+      <div><p className="workspace-meta">案例库</p><h1 className="page-title">用一套完整材料，走完一次证据核对</h1><p className="reading-copy">按方向浏览案例，下载或导入到自己的材料库走一遍核对流程。所有人物、经历和指标均为虚构，示例内容不证明个人能力或真实运行结果。</p></div>
       <div className="case-library-entry"><Link href="/portfolio" className="btn-secondary">进入我的材料</Link></div>
     </header>
     <div className="case-library-layout">

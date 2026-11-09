@@ -343,11 +343,8 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .report-desk { background: #fff; border: 1px solid #e0dbcd; }
 .report-context-bar { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 2px 24px; background: #eef0fa; border-bottom: 1px solid #e0dbcd; font-size: 14px; }
 .report-context-bar .action-link { min-height: 40px; }
-.report-document-grid { display: grid; grid-template-columns: 170px minmax(0, 1fr); align-items: stretch; }
-.report-section-directory { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 22px 18px; background: transparent; }
-.report-section-directory > a { display: flex; align-items: center; min-height: 44px; padding: 4px 8px; border-left: 3px solid transparent; color: #334155; font-size: 16px; }
-.report-section-directory > a:hover { color: #1d4a40; background: #e7efe9; }
-.report-section-directory > a.report-section-active { border-color: #245c50; color: #173c34; font-weight: 700; }
+.report-document-grid { display: block; }
+.report-section-directory { display: none; }
 .report-directory-versions { margin-top: 22px; padding-top: 20px; border-top: 1px solid #cfc9b8; color: #475569; font-size: 14px; }
 .report-paper { padding: 20px 34px; }
 .report-paper > * + * { margin-top: 12px; }
@@ -1001,7 +998,7 @@ main.site-frame:has(.report-desk) .student-flow .flow-step { min-height: 34px; p
 .report-analysis-state { color: #526176; font-size: 12px; line-height: 1.55; }
 .report-record-details { flex: 1 1 280px; min-width: 0; }
 .report-record-details summary { min-height: 28px; padding-block: 2px; color: #526176; }
-@media (max-width: 1320px) {
+@media (max-width: 1100px) {
   .report-record-headline { flex-wrap: wrap; gap: 6px 18px; }
   .report-record-actions { width: 100%; justify-content: flex-start; }
 }
@@ -1321,7 +1318,6 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 .enterprise-radar-heading h2 { color: #143a32; font-size: 16px; }
 .enterprise-radar-heading p:not(.workspace-meta) { color: #526176; font-size: 12px; }
 .enterprise-radar-embed > section { border: 0; border-radius: 0; background: transparent; padding: 0; }
-.enterprise-radar-embed [data-radar-detail] { display: none; }
 .enterprise-radar-embed svg { max-width: 100%; }
 .enterprise-review-workbench[data-mode="radar"] .enterprise-matrix-workspace,
 .enterprise-review-workbench[data-mode="matrix"] .enterprise-radar-workspace { display: none; }
@@ -1350,20 +1346,13 @@ main.site-frame:has(.skills-page) { background: #f4f1ea; }
 .report-material-line > span:first-child { margin-right: 2px; color: #526176; font-weight: 600; }
 .report-material-chip { display: inline-flex; max-width: 100%; padding: 1px 6px; border: 1px solid #d9d2c4; border-radius: 3px; background: #fbf9f4; color: #3f514b; overflow-wrap: anywhere; }
 .report-overview-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 320px); gap: 12px; align-items: start; min-width: 0; }
-.report-radar-overview { min-width: 0; max-height: 360px; overflow: auto; padding: 12px; border: 1px solid #ded7ca; background: #fbf9f4; }
-.report-radar-overview-head { margin-bottom: 8px; }
-.report-radar-overview-head h2 { color: #143a32; font-size: 16px; font-weight: 700; }
-.report-radar-overview-head p { margin-top: 2px; color: #65726d; font-size: 11px; line-height: 1.6; }
-.report-radar-overview > section { border: 0; background: transparent; padding: 0; }
-.report-radar-overview .grid { display: block; }
-.report-radar-overview section > div:first-child,
-.report-radar-overview [aria-label="雷达图例"],
-.report-radar-overview [aria-label="选择岗位要求"],
-.report-radar-overview section > p,
-.report-radar-overview section > details { display: none; }
-.report-radar-overview svg { width: min(100%, 250px); height: 250px; max-height: 250px; margin: 0 auto; }
+.report-radar-side { min-width: 0; padding: 12px 12px 8px; border: 1px solid #ded7ca; background: #fbf9f4; }
+.report-radar-side-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 6px; }
+.report-radar-side-head h2 { color: #143a32; font-size: 15px; font-weight: 700; }
+.report-radar-side-head span { color: #65726d; font-size: 11px; }
+.skill-radar-overview .radar-chart-svg { display: block; width: 100%; max-width: 360px; height: auto; margin: 0 auto; }
 .report-overview-grid .report-heatmap { min-width: 0; }
-@media (max-width: 1199px) { .report-overview-grid { grid-template-columns: minmax(0, 1fr); } .report-radar-overview { max-height: none; } }
+@media (max-width: 1199px) { .report-overview-grid { grid-template-columns: minmax(0, 1fr); } }
 .material-kind-badge { display: inline-flex; align-items: center; min-height: 20px; padding: 1px 6px; border: 1px solid #cbd5e1; border-radius: 3px; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; white-space: nowrap; }
 .material-kind-badge.resume { border-color: #bfdbfe; background: #eff6ff; color: #1e40af; }
 .material-kind-badge.project { border-color: #ddd6fe; background: #f5f3ff; color: #5b21b6; }
@@ -1376,6 +1365,95 @@ main.site-frame:has(.skills-page) { background: #f4f1ea; }
 .material-row-status[data-status="cancelled"] { color: #7a8580; }
 body:has(.enterprise-review-page) .site-header { background: #1a2232; border-color: #29354d; }
 body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { background: #29354d; color: #fff; box-shadow: inset 0 -2px #7dd3fc; }
+
+/* ── Report layout v3: one paper column — tabs, control bar, overview band, reading. ──
+   The old double left rail (report directory + requirement index) is gone; the section
+   directory is a compact tab strip and the requirement index is a chip row in the single
+   control bar, so 1280 keeps the full width for judgment and sources. */
+.report-section-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; margin: 0 0 4px; padding: 4px 0 8px; border-bottom: 1px solid #e1ddd2; }
+.report-section-tabs > a { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px; border: 1px solid transparent; border-radius: 4px; color: #526176; font-size: 14px; text-decoration: none; }
+.report-section-tabs > a:hover { color: #1d4a40; background: #e7efe9; }
+.report-section-tabs > a.report-section-active { border-color: #a9c2b7; background: #e7efe9; color: #173c34; font-weight: 700; }
+.report-tab-versions { display: none; }
+
+/* Single requirement control bar: status filters above a compact numbered chip index. */
+.report-requirement-controls { display: grid; gap: 6px; padding: 8px 0 10px; border-bottom: 1px solid #e1ddd2; }
+.report-index-strip { min-width: 0; }
+.report-index-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.report-index-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; min-height: 30px; padding: 3px 9px; border: 1px solid #d9d2c4; border-radius: 4px; background: #fbf9f4; color: #263b36; text-decoration: none; }
+.report-index-chip:hover { border-color: #9db8ad; background: #eef4f0; }
+.report-index-chip[aria-current="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; font-weight: 600; box-shadow: inset 0 0 0 1px #1d4a40; }
+.report-index-chip-number { color: #7a8580; font-size: 11px; font-variant-numeric: tabular-nums; }
+.report-index-chip[aria-current="true"] .report-index-chip-number { color: #1d4a40; }
+.report-index-chip-name { overflow-wrap: anywhere; font-size: 13px; line-height: 1.45; }
+.report-index-empty { padding: 10px 12px; border-radius: 4px; background: #f1eee5; color: #526176; font-size: 13px; }
+
+/* Overview band: full heatmap beside a complete radar (no inner scrolling). */
+.report-overview-band { display: grid; grid-template-columns: minmax(0, 1fr) clamp(280px, 30%, 380px); gap: 12px; align-items: start; margin-top: 12px; min-width: 0; }
+.report-overview-band .report-heatmap { min-width: 0; padding-bottom: 10px; }
+@media (max-width: 1199px) { .report-overview-band { grid-template-columns: minmax(0, 1fr); } .report-radar-side { max-width: 480px; } }
+.report-reading-desk { display: grid; gap: 0; }
+.report-requirement-main { min-width: 0; }
+
+/* Enterprise single radar: complete chart beside its sources without hiding detail nodes. */
+.enterprise-radar-embed .skill-radar-overview .radar-chart-svg { max-width: 460px; }
+.enterprise-radar-heading { align-items: end; }
+.enterprise-radar-heading h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.enterprise-radar-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 0; color: #526176; font-size: 11px; list-style: none; }
+.enterprise-radar-legend li { display: inline-flex; align-items: center; gap: 5px; }
+.enterprise-radar-legend i { width: 9px; height: 9px; border-radius: 99px; }
+.enterprise-radar-legend .dot-supported { background: #4f46e5; }
+.enterprise-radar-legend .dot-claimed { border: 2px solid #b66b08; background: #fff; }
+.enterprise-radar-legend .dot-gap { border: 1px dashed #94a3b8; background: transparent; }
+
+
+
+
+/* At laptop widths the current requirement and source must win the first screen.
+   The full overview stays directly below the active requirement instead of pushing it below the fold. */
+@media (max-width: 999px) {
+  .report-reading-desk { display: flex; flex-direction: column; }
+  .report-requirement-controls { order: 1; }
+  .report-requirement-main { order: 2; }
+  .report-overview-band { order: 3; margin-top: 14px; }
+}
+
+/* Wide desktop: charts and the active requirement read side-by-side, so the
+   requirement, its judgment and its source are visible without scrolling. */
+@media (min-width: 1400px) {
+  .report-reading-desk { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); grid-template-areas: "controls controls" "overview main"; gap: 14px 18px; }
+  .report-requirement-controls { grid-area: controls; }
+  .report-overview-band { grid-area: overview; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 0; align-self: start; }
+  .report-requirement-main { grid-area: main; align-self: start; }
+}
+
+.report-radar-legend { display: flex; flex-wrap: wrap; gap: 3px 10px; margin: 2px 0 4px; color: #526176; font-size: 10px; line-height: 1.5; }
+.report-radar-legend span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.report-radar-legend span::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: currentColor; }
+.report-radar-legend [data-state="supported"] { color: #1d4a40; }
+.report-radar-legend [data-state="claimed"] { color: #b66b08; }
+.report-radar-legend [data-state="gap"] { color: #9a6a18; }
+.report-radar-legend [data-state="unsupported"] { color: #64748b; }
+@media (min-width: 1400px) {
+  .report-radar-side .skill-radar-overview .radar-chart-svg { max-width: 285px; }
+  .report-radar-side { padding: 8px 10px 4px; }
+}
+
+/* Laptop report workspace: compact overview left, active requirement/source right. */
+@media (min-width: 1000px) and (max-width: 1399px) {
+  .report-reading-desk { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); grid-template-areas: "controls controls" "overview main"; gap: 14px 18px; }
+  .report-requirement-controls { grid-area: controls; }
+  .report-overview-band { grid-area: overview; display: flex; flex-direction: column; margin-top: 0; align-self: start; }
+  .report-overview-band .report-radar-side { order: 1; max-width: none; }
+  .report-overview-band .report-radar-side .radar-chart-svg { max-width: 300px; }
+  .report-overview-band .report-heatmap { order: 2; }
+  .report-overview-band .report-heatmap-head p { display: none; }
+  .report-overview-band .report-heatmap-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .report-overview-band .report-heatmap-row > :nth-child(2),
+  .report-overview-band .report-heatmap-row > :nth-child(3) { display: none; }
+  .report-overview-band .report-heatmap-row > * { padding: 5px 7px; font-size: 11px; }
+  .report-requirement-main { grid-area: main; align-self: start; }
+}
 
 
 

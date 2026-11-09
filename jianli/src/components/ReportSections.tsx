@@ -10,7 +10,7 @@ type Section = { id: string; label: string; content: ReactNode };
  * All panels remain mounted: switching must not reset consent, review or follow-up drafts.
  * The shared paper header stays outside the hidden sections so all four views retain identity. */
 export default function ReportSections({ sections, versions, header }: {
-  sections: Section[]; versions: ReactNode; header?: ReactNode;
+  sections: Section[]; versions?: ReactNode; header?: ReactNode;
 }) {
   const [active, setActive] = useState(sections[0].id);
   const root = useRef<HTMLDivElement>(null);
@@ -149,25 +149,24 @@ export default function ReportSections({ sections, versions, header }: {
   }, []);
 
   return <div ref={root} className="report-document-grid" data-report-sections>
-    <nav className="report-section-directory" aria-label="本报告目录">
-      <p className="text-base text-slate-600">本报告</p>
-      {sections.map(section => <a key={section.id} href={`#${section.id}`} aria-current={active === section.id ? "location" : undefined} aria-controls={section.id} className={active === section.id ? "report-section-active" : undefined} onClick={event => {
-        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-        event.preventDefault();
-        flushSync(() => setActive(section.id));
-        const nextHash = `#${section.id}`;
-        if (window.location.hash === nextHash) {
-          // Same-fragment click has no hashchange; still recover the reading
-          // start when the user is deep in the previous panel.
-          recoverReadingStart.current();
-        } else {
-          navigateEvidenceFragment(nextHash);
-        }
-      }}>{section.label}</a>)}
-      <div className="report-directory-versions">{versions}</div>
-    </nav>
     <div className="report-paper min-w-0" data-report-paper>
       {header}
+      <nav className="report-section-tabs" aria-label="本报告目录">
+        {sections.map(section => <a key={section.id} href={`#${section.id}`} aria-current={active === section.id ? "location" : undefined} aria-controls={section.id} className={active === section.id ? "report-section-active" : undefined} onClick={event => {
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          flushSync(() => setActive(section.id));
+          const nextHash = `#${section.id}`;
+          if (window.location.hash === nextHash) {
+            // Same-fragment click has no hashchange; still recover the reading
+            // start when the user is deep in the previous panel.
+            recoverReadingStart.current();
+          } else {
+            navigateEvidenceFragment(nextHash);
+          }
+        }}>{section.label}</a>)}
+        {versions && <div className="report-tab-versions">{versions}</div>}
+      </nav>
       {sections.map(section => <section key={section.id} id={section.id} data-report-section="" tabIndex={-1} aria-label={section.label} hidden={active !== section.id} className="report-content-section">{section.content}</section>)}
     </div>
   </div>;

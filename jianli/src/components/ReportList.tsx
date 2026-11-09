@@ -14,7 +14,8 @@ import ListPagination from "./ListPagination";
 export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary; onSameJob?: (jobId: string) => void }) {
   const latest = report.isLatestForJob === true;
   const history = report.isLatestForJob === false;
-  const analysis = report.aiFallbackUsed ? "模型回退，按规则核对" : report.analysisMode === "rules" ? "规则报告" : "分析报告已保存";
+  // Short source labels only; the normal saved state needs no repeated footnote.
+  const analysis = report.aiFallbackUsed ? "模型回退，按规则核对" : report.analysisMode === "rules" ? "规则分析" : "";
   return <article className={`workspace-row report-record ${latest ? "is-latest" : history ? "is-history" : "is-record"}`}>
     {report.recordProvenance === "test_fixture" && <p className="report-history-flag">历史核验资料 · 非真实招聘岗位</p>}
     <div className="report-record-headline">
@@ -26,7 +27,7 @@ export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={`/reports/${report.id}#report-comparison`}>版本对比</Link>}
       </div>
     </div>
-    <div className="report-record-foot"><span className="report-analysis-state">{analysis}</span><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
+    <div className="report-record-foot">{analysis && <span className="report-analysis-state">{analysis}</span>}<details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
   </article>;
 }
 

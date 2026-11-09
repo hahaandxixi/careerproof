@@ -11,8 +11,8 @@ import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import ReportRequirementReader from "./ReportRequirementReader";
 
-export default function ReportEvidenceWorkspace({ report, children }: { report: MatchReport; children: ReactNode }) {
-  return <ReportRequirementReader items={report.items}>{children}</ReportRequirementReader>;
+export default function ReportEvidenceWorkspace({ report, children, overview }: { report: MatchReport; children: ReactNode; overview?: ReactNode }) {
+  return <ReportRequirementReader items={report.items} overview={overview}>{children}</ReportRequirementReader>;
 }
 
 export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {

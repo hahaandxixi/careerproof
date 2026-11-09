@@ -10,6 +10,10 @@ const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
 registerHooks({
   resolve(specifier, context, next) {
+    if (specifier.startsWith("next/") && !specifier.endsWith(".js")) {
+      try { return next(specifier + ".js", context); } catch {}
+      return next(specifier, context);
+    }
     if (specifier.startsWith("@/")) {
       const base = path.join(SRC, specifier.slice(2));
       for (const name of [base, `${base}.ts`, `${base}.tsx`]) {
@@ -110,7 +114,8 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(!html.includes("正在查看") && !html.includes("当前筛选"));
-  assert.ok(html.includes("逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
+  // The chip index replaced the old rail + prev/next pair; it must list every requirement as a link.
+  assert.equal((html.match(/class="report-index-chip"/g) ?? []).length, items.length);
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {

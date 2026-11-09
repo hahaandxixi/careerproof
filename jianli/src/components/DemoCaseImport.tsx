@@ -7,7 +7,7 @@ import { useAuth } from "./AuthProvider";
 export default function DemoCaseImport({sample}:{sample:{resumeName:string;resumeFilename:string;projectName:string;projectFilename:string}}){
   const {user}=useAuth();const [busy,setBusy]=useState(false),[notice,setNotice]=useState("");const locked=useRef(false);
   if(user?.role!=="student")return null;
-  async function run(){if(locked.current)return;locked.current=true;setBusy(true);setNotice("正在准备本地合成材料…");
+  async function run(){if(locked.current)return;locked.current=true;setBusy(true);setNotice("正在导入案例材料…");
     try{
       const [resumes,projects]=await Promise.all([api.listResumes(true),api.listProjects(true)]);
       const r=resumes.filter(v=>v.title===sample.resumeName),p=projects.filter(v=>v.name===sample.projectName);

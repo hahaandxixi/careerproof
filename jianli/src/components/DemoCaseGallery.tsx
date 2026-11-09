@@ -42,11 +42,13 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
     <div className="case-gallery-grid">
       {visible.map(sample => {
         const domain = domainOf(sample.slug);
+        // The case library header carries the one-line fiction disclosure; cards stay clean.
+        const jobTitle = sample.jobTitle.replace(/（合成演示）/g, "").trim();
         return <article className="case-card" key={sample.caseId}>
-        <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span><span className="case-synthetic">合成案例</span></div>
+        <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span></div>
         <h3>{sample.title}</h3>
         <p className="case-project">{sample.projectTitle}</p>
-        <p className="case-job">{sample.jobTitle}</p>
+        <p className="case-job">{jobTitle}</p>
         <dl className="case-facts"><div><dt>边界</dt><dd>{sample.boundary}</dd></div></dl>
         <div className="case-actions">
           <a href={asset(sample.resumeFilename)} download={sample.resumeFilename}>下载简历</a>
@@ -54,7 +56,7 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
           <a href={asset(sample.scriptFilename)} download={sample.scriptFilename}>测试步骤</a>
         </div>
         <DemoCaseImport sample={sample} />
-        <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(sample.jobTitle.replace(/（合成演示）/g, "").trim())}`}>查找对应岗位 →</Link>
+        <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(jobTitle)}`}>查找对应岗位 →</Link>
       </article>;})}
     </div>
     {!visible.length && <div className="case-gallery-empty" role="status">当前方向暂无案例。</div>}

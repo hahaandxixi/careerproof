@@ -52,7 +52,7 @@ function fixture(count=2,editRow=value=>value,options={}){
   "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
-  "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
+  "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/skill-radar":{RADAR_STATUS:{supported:"有证据支持",partial:"部分证据支持",claimed_only:"仅简历声明",gap:"材料待补充",unsupported:"规则暂未支持"}},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
   "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS}};
  const code=transform(readFileSync(new URL("../src/components/ApplicationBoard.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
@@ -70,13 +70,13 @@ function fixture(count=2,editRow=value=>value,options={}){
 
 test("tab return restores radar requirement/evidence only after GET authorization and clears replies",async()=>{
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();
- h.radar(tree).props.onRequirementChange("r1");tree=h.render();h.radar(tree).props.onEvidenceExpandedChange(true);tree=h.render();
+ h.radar(tree).props.onRequirementChange("r1");tree=h.render();
  h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"未发送的合成回复"}});tree=h.render();
  const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});
  let resolve;h.waitFor(new Promise(yes=>{resolve=yes;}));tree=h.hide();assert.equal(h.radar(tree),undefined);assert.equal(tree.props.style.minHeight,2400);
  const reads=h.counts.list;tree=h.show();await Promise.resolve();assert.equal(h.radar(tree),undefined);
  resolve({items:[{id:"a",jobId:"job-a",reportId:"report-a",candidateName:"候选人a",status:"viewed",replyReferences:[],events:[],dimensions:[]}],total:1,page:1,pageSize:20});
- tree=await h.settle();assert.equal(h.radar(tree).props.initialRequirementId,"r1");assert.equal(h.radar(tree).props.evidenceExpanded,true);
+ tree=await h.settle();assert.equal(h.radar(tree).props.initialRequirementId,"r1");
  assert.equal(h.counts.open,1);assert.equal(h.counts.list,reads+1);assert.equal(h.counts.reply,0);
  assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
  const confirmation=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));assert.equal(h.nodes(confirmation).find(n=>n.type==="input").props.checked,false);
