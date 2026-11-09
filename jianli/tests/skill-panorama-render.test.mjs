@@ -30,7 +30,7 @@ const text = n => typeof n === "string" || typeof n === "number" ? String(n) : R
 
 test("overview renders actual grouped bands and explicit loaded scope, not radar, scores or empty categories", () => {
   const html = render();
-  assert.match(html, /已保存报告中的技能/); assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<svg|<progress|熟练度：|综合评分/);
+  assert.match(html, /已保存报告中的技能/); assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<progress|熟练度：|综合评分|岗位技能雷达/);
   assert.match(html, /规则暂未支持 1 条/); assert.doesNotMatch(html, /摘要未加载|演示数据说明/); assert.match(html, /再加载最多 12 份报告/);
 });
 test("topic selection exposes every context, original report anchors and fixed versions without latest inference", () => {
@@ -112,3 +112,4 @@ test("a status filter keeps a matching skill selected and otherwise moves to a v
   assert.equal(panorama.selectionForFilter(landscape, "python", "claimed_only"), null);
   assert.equal(panorama.selectionForFilter(landscape, null, "gap"), null);
 });
+

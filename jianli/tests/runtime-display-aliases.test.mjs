@@ -25,3 +25,6 @@ test('saved planning identities are display projections only, including material
  assert.equal(shown.changes[0].jobTitle,'数据工程实习生');assert.equal(shown.aiPlan,raw.aiPlan);
  assert.equal(shown.recommendations[0].evidence,raw.recommendations[0].evidence);assert.deepEqual(raw,before);
 });
+
+test('the known acceptance resume id gets the same neutral display name without renaming raw data',()=>{ assert.equal(displayMaterialTitle('验收补证简历-20261107','d18b3087-99dc-4657-9a0d-7d26dc9d1a84'),'数据工程方向简历'); });
+

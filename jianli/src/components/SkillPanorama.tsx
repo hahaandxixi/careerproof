@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
@@ -67,6 +67,18 @@ function CountBand({ counts, label }: { counts: StatusCounts; label: string }) {
   </div>;
 }
 
+/** Small technical glyphs keep cards scannable without inventing capability levels. */
+function SkillIcon({ domain }: { domain: string }) {
+  const paths: Record<string, ReactNode> = {
+    backend: <><path d="M8 7 3 12l5 5" /><path d="m16 7 5 5-5 5" /><path d="m13.5 5-3 14" /></>,
+    data: <><ellipse cx="12" cy="5.5" rx="7" ry="3" /><path d="M5 5.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" /><path d="M5 11.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" /></>,
+    testing: <><path d="M9 3h6" /><path d="M10 3v6l-5 8.5A2.2 2.2 0 0 0 6.9 21h10.2a2.2 2.2 0 0 0 1.9-3.5L14 9V3" /><path d="M7.5 16h9" /></>,
+    frontend: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 8h18" /><path d="m9 12 2 2-2 2" /><path d="m15 12-2 2 2 2" /></>,
+    tools: <><path d="M14.7 6.3a4 4 0 0 0-5-5L12 3.6 9.4 6.2 7.1 3.9a4 4 0 0 0 5 5L21 18l-3 3-9.1-9.1" /></>,
+  };
+  return <span className={styles.skillIcon} data-domain={domain} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[domain] ?? paths.tools}</svg></span>;
+}
+
 function ContextRecord({ context, active, onSelect }: { context: SkillContext; active: boolean; onSelect(key: string): void }) {
   const { item } = context;
   const evidenceList = item.evidenceList ?? [];
@@ -105,10 +117,9 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, onClear
   const jobs = new Set(contexts.map(context => context.jobId)).size;
   return <>
     <div className={styles.railHeading}>
-      <p className={styles.eyebrow}>选中技能</p>
       <h2>{skillName}</h2>
       <p>{filter === "all" ? <>{total} 条要求记录 · {jobs} 个岗位</> : <>命中 <strong>{matched}</strong> 条 / 共 {total} 条 · {jobs} 个岗位</>}</p>
-      <button onClick={onClear} className={styles.reportLink}>返回技能总览</button>
+      <button onClick={onClear} className={styles.clearSelection}>清除选择</button>
     </div>
     {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
     {groups.map(group => {
@@ -163,7 +174,6 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       <button className="btn-secondary" disabled={state.busy} onClick={retryFailed}>仅重试失败详情</button></details>}
     {empty ? <section className={styles.empty}><p className={styles.eyebrow}>从第一份报告开始</p><h2>还没有已保存报告</h2><p>选择岗位，用已有材料生成报告后，这里会整理报告中明确记录的技能。</p><Link href="/jobs" className="btn">选择岗位</Link></section> : <div className={styles.layout}>
       <section className={styles.canvas} aria-label="技能分组全景" aria-busy={state.busy}>
-        <div className={styles.canvasTitle}><h2>技能版图</h2><p><strong>{visibleSkills.length}</strong> 个技能 · <strong>{filter === "all" ? landscape.contextCount : filterCount(filter)}</strong> 条匹配记录</p></div>
         <div className={styles.legend}>
           <ul>{PANORAMA_STATUSES.map(status => <li key={status}><i data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}{landscape.counts[status] > 0 && <strong>{landscape.counts[status]}</strong>}</li>)}</ul></div>
         <div className={styles.filters} role="group" aria-label="按技能记录的材料支持状态筛选">
@@ -180,16 +190,19 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
               const matched = filterSkillContexts(value.contexts, filter).length;
               const selectedCard = selected === value.key;
               return <button key={value.key} className={styles.skillCard} aria-pressed={selectedCard} aria-controls="skill-context-rail" onClick={() => onSelect(value.key)}>
-                <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
-                <CountBand counts={value.counts} label={value.name}/>
-                <span className={styles.skillCounts}>{PANORAMA_STATUSES.filter(status => value.counts[status] > 0).map(status =>
-                  <span key={status} data-status={status}>{PANORAMA_STATUS_LABELS[status]} {value.counts[status]} 条</span>)}</span>
-                <span className={styles.skillFooter}>
-                  <span>{value.contexts.length} 条要求记录</span>
-                  <span>{skillJobCount(value.contexts)} 个岗位</span>
-                  {filter !== "all" && <span className={styles.hit}>命中 {matched} 条</span>}
-                  <span className={styles.cardArrow} aria-hidden="true">{selectedCard ? "已选" : "查看 →"}</span>
+                <SkillIcon domain={domain.domain}/>
+                <span className={styles.skillCardBody}>
+                  <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
+                  <CountBand counts={value.counts} label={value.name}/>
+                  <span className={styles.skillCounts}>{PANORAMA_STATUSES.filter(status => value.counts[status] > 0).map(status =>
+                    <span key={status} data-status={status}>{PANORAMA_STATUS_LABELS[status]} {value.counts[status]} 条</span>)}</span>
+                  <span className={styles.skillFooter}>
+                    <span>{value.contexts.length} 条要求记录</span>
+                    <span>{skillJobCount(value.contexts)} 个岗位</span>
+                    {filter !== "all" && <span className={styles.hit}>命中 {matched} 条</span>}
+                  </span>
                 </span>
+                <span className={styles.cardArrow} aria-hidden="true">{selectedCard ? "已选" : "查看 →"}</span>
               </button>;
             })}</div>
           </section>;
