@@ -1,4 +1,4 @@
-"""Read-policy regression: exact provenance + creator, never title, skill or analysis mode."""
+﻿"""Read-policy regression: exact provenance + creator, never title, skill or analysis mode."""
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
@@ -34,7 +34,7 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         await register(stranger, "provenance-stranger@example.com", "student")
         fixture_id = await seed_job(factory, UUID(org["id"]), owner, title="任意标题")
         normal_id = await seed_job(
-            factory, UUID(org["id"]), owner, title="钢琴演奏与 Python 规则研究",
+            factory, UUID(org["id"]), owner, title="Kubernetes 与 Python 规则研究",
         )
         owner_mismatch_id = await seed_job(factory, UUID(org["id"]), owner, title="合成验收")
         monkeypatch.setattr(fixture_provenance, "FIXTURE_JOB_OWNERS", {
@@ -92,3 +92,4 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         async with factory() as session:
             saved = await session.get(MatchReport, report_ids[1])
             assert saved.summary == "保存原文不变" and saved.analysis_metadata == {"mode": "rules"}
+

@@ -1,4 +1,4 @@
-"""Exercise the persisted upload-to-report workflow without the production database.
+﻿"""Exercise the persisted upload-to-report workflow without the production database.
 
 The fixture uses temporary SQLite by default or a unique disposable PostgreSQL
 schema when CAREERPROOF_TEST_DATABASE_URL is explicitly configured. Parsers still
@@ -723,7 +723,7 @@ async def test_pending_materials_are_rejected_and_operations_documents_are_evalu
         AsyncClient(transport=transport, base_url="http://test") as student,
     ):
         await register(owner, "hr@example.com")
-        job = await create_job(owner, category="operations", skills=("活动策划", "钢琴演奏"))
+        job = await create_job(owner, category="operations", skills=("活动策划", "Kubernetes"))
         await register(student, "student@example.com", "student")
         document = (
             "校园社团招新活动策划书\n"
@@ -759,8 +759,8 @@ async def test_pending_materials_are_rejected_and_operations_documents_are_evalu
         items = {item["skill"]: item for item in report["items"]}
         assert 0 < items["活动策划"]["finalScore"] < 100
         assert items["活动策划"]["evidence"]["evidenceType"] == "document_structure"
-        assert items["钢琴演奏"]["verdict"] == "unsupported"
-        assert items["钢琴演奏"]["finalScore"] is None
+        assert items["Kubernetes"]["verdict"] == "unsupported"
+        assert items["Kubernetes"]["finalScore"] is None
         assert report["overallScore"] == items["活动策划"]["finalScore"]
 
 
@@ -916,7 +916,7 @@ async def test_entirely_unsupported_job_has_null_overall_score(matching_db):
         AsyncClient(transport=transport, base_url="http://test") as student,
     ):
         await register(owner, "hr@example.com")
-        job = await create_job(owner, category="other", skills=("钢琴演奏",))
+        job = await create_job(owner, category="other", skills=("Kubernetes",))
         await register(student, "student@example.com", "student")
         resume, _project, version = await upload_materials(student)
         report = await match_report(student, job, resume, version)
@@ -1212,3 +1212,4 @@ async def test_no_model_context_preserves_uploaded_evidence_and_accurate_step(
         assert "不代表材料中完全没有相关实现" in step["detail"]
         assert "当前材料没有可引用证据" not in step["detail"]
         assert step["payload"]["skippedReason"] == "no_evidence"
+

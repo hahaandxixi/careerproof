@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -32,7 +32,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     let active = true;
     setLoading(true); setErrors([]);
     const requests: { key: keyof SavedWork; label: string; run: () => Promise<SavedWork[keyof SavedWork]> }[] = student ? [
-      { key: "reports", label: "最近报告", run: async () => (await api.listReports(1, 3)).items },
+      { key: "reports", label: "最近报告", run: async () => (await api.listReports(1, 3, { scope: "product" })).items },
       { key: "notifications", label: "未读通知", run: async () => (await api.notifications(1, true, 3)).items },
       { key: "resumes", label: "简历", run: () => api.listResumes() },
       { key: "projects", label: "项目", run: () => api.listProjects() },
@@ -101,4 +101,5 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
 function WorkSection({ title, href, empty, children }: { title: string; href: string; empty: string; children: React.ReactNode[] }) {
   return <section className="workspace-sheet px-4 py-3 sm:px-5"><div className="flex items-center justify-between gap-3"><h2 className="section-title">{title}</h2><Link className="btn-secondary shrink-0" href={href} aria-label={`查看全部${title}`}>查看全部</Link></div>{children.length ? <ul className="divide-y divide-slate-100">{children}</ul> : <p className="mt-3 text-sm leading-6 text-slate-600">{empty}</p>}</section>;
 }
+
 

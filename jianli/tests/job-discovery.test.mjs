@@ -1,4 +1,4 @@
-import * as demoPresentation from "../src/lib/demo-display-identity.js";
+﻿import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -184,15 +184,15 @@ test("empty and failure are separate states; cards only use saved public facts",
 
 test("known diagnostic has a natural sample title, never a false technical claim; raw snapshot is unchanged", async () => {
   const h = harness(""); h.start();
-  const known = { ...job("1233f1e2-169f-4ea5-a5a0-542fa940e897"), title: "钢琴演奏验收记录", isDemo: true };
+  const known = { ...job("1233f1e2-169f-4ea5-a5a0-542fa940e897"), title: "材料证据边界验收", isDemo: true };
   h.requests[0].resolve({items:[known],total:1,page:1,pageSize:12});await tick();
   const html = renderToStaticMarkup(h.render());
   assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
   const card=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:known}));
-  assert.ok(card.includes("材料证据阅读示例"));assert.equal(known.title,"钢琴演奏验收记录");
+  assert.ok(card.includes("材料证据阅读示例"));assert.equal(known.title,"材料证据边界验收");
   assert.ok(!card.includes("Python 后端开发实习生"));
   const ordinary=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:{...known,id:"ordinary"}}));
-  assert.ok(ordinary.includes("钢琴演奏验收记录"));
+  assert.ok(ordinary.includes("材料证据边界验收"));
 });
 
 test("known technical fixture display aliases retain disclosure and do not mutate saved facts", async () => {
@@ -208,3 +208,4 @@ test("known technical fixture display aliases retain disclosure and do not mutat
   }
   assert.equal(demoPresentation.demoJobAlias("1233f1e2-169f-4ea5-a5a0-542fa940e897").title,"材料证据阅读示例");
 });
+

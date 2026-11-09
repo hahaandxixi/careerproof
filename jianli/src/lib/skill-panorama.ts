@@ -1,4 +1,4 @@
-import type { MatchReport, Page, ReportItem, ReportSummary } from "./api/domain.ts";
+﻿import type { MatchReport, Page, ReportItem, ReportSummary } from "./api/domain.ts";
 
 export const PANORAMA_PAGE_SIZE = 12;
 export const PANORAMA_CONCURRENCY = 3;
@@ -113,7 +113,7 @@ export function initialPanoramaState(): PanoramaState {
 
 /** One account, one bounded batch. No persistence, prefetch loop, report writes or latest inference. */
 export function createSkillPanoramaSession(ownerId: string, api: {
-  listReports(page: number, pageSize: number): Promise<Page<ReportSummary>>;
+  listReports(page: number, pageSize: number, filters?: { scope?: "product" | "all" }): Promise<Page<ReportSummary>>;
   getReport(id: string): Promise<MatchReport>;
   errorMessage(error: unknown): string;
 }, publish: (state: PanoramaState) => void) {
@@ -157,7 +157,7 @@ export function createSkillPanoramaSession(ownerId: string, api: {
       const ticket = generation;
       update({ busy: true, listError: "" });
       try {
-        const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE);
+        const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE, { scope: "product" });
         if (!current(ticket)) return;
         if (page.items.some(report => report.candidateId !== ownerId)) { identityFailure(); return; }
         const fresh = page.items.filter(report => !state.summaries.some(value => value.id === report.id));
@@ -178,3 +178,4 @@ export function createSkillPanoramaSession(ownerId: string, api: {
     },
   };
 }
+

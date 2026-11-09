@@ -1,4 +1,4 @@
-import asyncio
+﻿import asyncio
 from dataclasses import replace
 from uuid import uuid4
 
@@ -75,7 +75,7 @@ def test_external_prompt_redacts_direct_identifiers() -> None:
 @pytest.mark.asyncio
 async def test_no_evidence_skips_external_provider(monkeypatch) -> None:
     result = match_candidate(
-        [RequirementInput(uuid4(), "具备钢琴演奏实践", "钢琴演奏", 5)],
+        [RequirementInput(uuid4(), "具备 Kubernetes 集群运维实践", "Kubernetes", 5)],
         parse_resume("暂无相关经历"),
         [],
     )
@@ -98,7 +98,7 @@ async def test_no_evidence_skips_external_provider(monkeypatch) -> None:
 async def test_empty_model_context_does_not_mean_uploaded_source_is_absent(monkeypatch) -> None:
     source = ProjectFileSnapshot("service.py", "def register(name):\n    return {'name': name}\n")
     result = match_candidate(
-        [RequirementInput(uuid4(), "具备钢琴演奏实践", "钢琴演奏", 5)],
+        [RequirementInput(uuid4(), "具备 Kubernetes 集群运维实践", "Kubernetes", 5)],
         parse_resume("报名服务项目"),
         [source],
     )
@@ -412,7 +412,7 @@ def test_grounding_rejects_unknown_citation() -> None:
 
 def test_grounding_rejects_wrong_unsupported_boundary() -> None:
     result = match_candidate(
-        [RequirementInput(uuid4(), "具备钢琴演奏能力", "钢琴演奏", 5)],
+        [RequirementInput(uuid4(), "具备 Kubernetes 集群运维能力", "Kubernetes", 5)],
         parse_resume("暂无相关经历"),
         [],
     )
@@ -594,3 +594,5 @@ async def test_task_cancellation_is_not_swallowed(monkeypatch):
 )
 def test_attributed_test_claim_is_not_endorsed(text, blocked):
     assert bool(overclaim_flags(text)) is blocked
+
+

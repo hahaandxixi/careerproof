@@ -91,3 +91,4 @@ test("workspace destinations use bounded controls and omit repeated navigation i
  assert.match(html,/企业已请求查看报告；不代表录用/);
  assert.doesNotMatch(html,/到通知页核对来源|上传新版会保留旧版本|打开入口不会自动/);
 });
+test('student home requests only product report records, never implicit audit history',()=>{ assert.match(source,/listReports\(1, 3, \{ scope: "product" \}\)/); });
