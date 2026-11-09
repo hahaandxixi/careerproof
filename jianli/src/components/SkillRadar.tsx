@@ -17,8 +17,8 @@ import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-ci
  *   stay with the surrounding page so the chart never carries repeated headers or inner scrolling. */
 export type SkillRadarVariant = "full" | "overview";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false, variant }: {
-  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", selectedRequirementId, synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false, variant }: {
+  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; selectedRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
   onRequirementChange?: (id: string) => void;
   evidenceExpanded?: boolean;
   sampleScale?: SampleScale;
@@ -27,12 +27,13 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   variant?: SkillRadarVariant;
 }) {
   const mode: SkillRadarVariant = variant ?? (compact ? "overview" : "full");
-  const [selectedId, setSelectedId] = useState(initialRequirementId);
+  // The parent may own the requirement id. When it does, the radar only mirrors it;
+  // clicks still move the shared id through onRequirementChange, never a second copy.
+  const [selectedId, setSelectedId] = useState(selectedRequirementId ?? initialRequirementId);
   const detailId = useId();
-  // A parent that changes the external requirement id (index click, matrix cell, A/B switch)
-  // must move the internal selection too; parents that remount via key still work unchanged.
-  useEffect(() => { setSelectedId(previous => previous === initialRequirementId ? previous : initialRequirementId); }, [initialRequirementId]);
-  const selectRequirement = (id: string) => { setSelectedId(id); onRequirementChange?.(id); };
+  const externalId = selectedRequirementId ?? initialRequirementId;
+  useEffect(() => { setSelectedId(previous => previous === externalId ? previous : externalId); }, [externalId]);
+  const selectRequirement = (id: string) => { if (selectedRequirementId === undefined) setSelectedId(id); onRequirementChange?.(id); };
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
   const selectedIndex = dimensions.indexOf(dimension);

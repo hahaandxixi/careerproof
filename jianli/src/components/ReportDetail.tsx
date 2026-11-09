@@ -30,7 +30,7 @@ import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import { followUpCopyText } from "@/lib/report-follow-up";
-import { initialReportRequirement } from "@/lib/report-reader";
+import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
 
 const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
@@ -51,18 +51,20 @@ function ReportWorkspace({ id }: { id: string }) {
   useEffect(() => { session.activate(); void session.load(); return () => session.dispose(); }, [session]);
   useEffect(() => {
     if (!state.report) return;
-    const ids = new Set(state.report.items.map(item => item.requirementId));
+    const items = state.report.items;
     const sync = () => {
-      const fromHash = window.location.hash.match(/^#requirement-(.+)$/)?.[1];
-      if (fromHash && ids.has(fromHash)) { setActiveRequirementId(fromHash); return; }
-      if (!window.location.hash) { setActiveRequirementId(initialReportRequirement(state.report!.items)); return; }
-      setActiveRequirementId(previous => previous === undefined ? initialReportRequirement(state.report!.items) : previous);
+      const fromLocation = reportEntryRequirement(items, window.location.hash, window.location.search);
+      if (fromLocation) { setActiveRequirementId(fromLocation); return; }
+      if (!window.location.hash) { setActiveRequirementId(initialReportRequirement(items)); return; }
+      // Section and unknown legacy anchors do not invent a second selection.
+      // A zero-result filter has already cleared the shared selection explicitly.
+      setActiveRequirementId(previous => previous === undefined ? initialReportRequirement(items) : previous);
     };
     sync();
     window.addEventListener("hashchange", sync);
     window.addEventListener("popstate", sync);
     return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
-  }, [state.report?.id]);
+  }, [state.report]);
   const { report, error, reviewing, issues, needsSync } = state;
   if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
@@ -83,7 +85,7 @@ function ReportWorkspace({ id }: { id: string }) {
       <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
       <section className="report-radar-side" aria-label="岗位技能雷达">
         <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span></div>
-        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
+        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
       </section>
     </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">

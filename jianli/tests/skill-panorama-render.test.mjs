@@ -40,7 +40,29 @@ test("topic selection exposes every context, original report anchors and fixed v
   assert.equal(selected, "python"); const html = render({ selected });
   assert.match(html, /aria-pressed="true"/); assert.match(html, /Original requirement a/);
   assert.match(html, /\/reports\/old#requirement-a/); assert.match(html, /\/reports\/new#requirement-a/);
-  assert.match(html, /v1/); assert.match(html, /v2/); assert.match(html, /历史报告/); assert.doesNotMatch(html, /该岗位最新报告/);
+  assert.match(html, /v1/); assert.match(html, /v2/); assert.match(html, /2 个岗位/); assert.doesNotMatch(html, /该岗位最新报告/);
+});
+test("one jobId collapses older reports into history while a shared title with another jobId stays separate", () => {
+  const older = report("older", [item("a", "Python", "partial")], 1, { jobId: "same-job", jobTitle: "Same job", isLatestForJob: false });
+  const newer = report("newer", [item("a", "Python", "supported")], 2, { jobId: "same-job", jobTitle: "Same job" });
+  const other = report("other", [item("a", "Python", "gap")], 3, { jobId: "other-job", jobTitle: "Same job" });
+  const html = render({ selected: "python", state: { ...state, reports: [older, newer, other], summaries: [older, newer, other], total: 3, hasMore: false } });
+  assert.match(html, /该岗位其他 1 份历史报告/);
+  assert.match(html, /2 个岗位/);
+  assert.match(html, /\/reports\/older#requirement-a/);
+  assert.match(html, /\/reports\/other#requirement-a/);
+  assert.doesNotMatch(html, /该岗位最新报告/);
+});
+test("status filter keeps skills with a matching record and shows hit count against the full history", () => {
+  const supported = report("s", [item("a", "Python", "supported")], 1, { jobId: "job-s" });
+  const claimed = report("c", [item("b", "Python", "claimed_only")], 2, { jobId: "job-c" });
+  const filtered = render({ selected: "python", filter: "claimed_only", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });
+  assert.match(filtered, /命中 <strong>1<\/strong> 条 \/ 共 2 条/);
+  assert.match(filtered, /命中 1 条/);
+  assert.doesNotMatch(filtered, /Original requirement a/);
+  assert.match(filtered, /Original requirement b/);
+  const none = render({ selected: "python", filter: "gap", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });
+  assert.match(none, /当前筛选下，这项技能没有匹配的要求记录/);
 });
 test("unclassified requirements retain original unknown state, never invent a skill label", () => {
   const html = render({ selected: "" });
@@ -79,3 +101,14 @@ test("known fixture skills use the same job and fixed-material aliases with a vi
 });
 
 
+test("a status filter keeps a matching skill selected and otherwise moves to a visible one", () => {
+  const landscape = panorama.buildSkillPanorama([
+    report("one", [item("a", "Python", "supported")], 1, { jobId: "job-one" }),
+    report("two", [item("b", "SQL", "gap")], 2, { jobId: "job-two" }),
+  ]);
+  assert.equal(panorama.selectionForFilter(landscape, "python", "supported"), "python");
+  assert.equal(panorama.selectionForFilter(landscape, "python", "gap"), "sql");
+  assert.equal(panorama.selectionForFilter(landscape, "sql", "supported"), "python");
+  assert.equal(panorama.selectionForFilter(landscape, "python", "claimed_only"), null);
+  assert.equal(panorama.selectionForFilter(landscape, null, "gap"), null);
+});
