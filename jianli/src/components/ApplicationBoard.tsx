@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import ApplicationReply from "./ApplicationReply";
@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
+import EvidenceSnippet from "./EvidenceSnippet";
 import ListPagination from "./ListPagination";
 import CandidatePairComparison from "./CandidatePairComparison";
 import { api, errorMessage } from "@/lib/api/client";
@@ -383,8 +384,8 @@ export function SelectedRequirementEvidence({ application, requirementId, showRe
     <h2 className="font-semibold"><IdentityName name={application.candidateName} identityId={application.candidateId}/> · {item?.requirementTitle || "该报告未包含这条要求"}</h2>
     {item ? <>
       <div className="flex flex-wrap items-center gap-2 text-sm"><strong>{VERDICT[item.verdict] ?? item.verdict}</strong><span className="text-slate-600">{report.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}`).join(" · ") || "材料版本未记录"}</span></div>
-      {source ? <div className="enterprise-source-code"><p className="enterprise-source-code-meta"><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行</p><pre>{source.snippet}</pre><SourceIdentityDetails source={source} /></div> : <p className="rounded border border-dashed border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">该固定报告没有可展示的支持引用；这是材料缺口，不能据此推断学生没有相关能力。</p>}
-      <details className="text-sm"><summary className="disclosure">判断依据</summary><div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/>{item.evidenceList.slice(1).map((extra, index) => <div key={`${extra.citationId}-${index}`} className="rounded bg-slate-50 p-2 text-xs"><p><SourceIdentity source={extra} materials={report.materials} /> · 第{extra.lineStart}–{extra.lineEnd}行</p><pre className="mt-1 whitespace-pre-wrap break-words">{extra.snippet}</pre></div>)}</div></details>
+      {source ? <div className="enterprise-source-code"><p className="enterprise-source-code-meta"><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行</p><EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false}/><SourceIdentityDetails source={source} /></div> : <p className="rounded border border-dashed border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">该固定报告没有可展示的支持引用；这是材料缺口，不能据此推断学生没有相关能力。</p>}
+      <details className="text-sm"><summary className="disclosure">判断依据</summary><div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/>{item.evidenceList.slice(1).map((extra, index) => <div key={`${extra.citationId}-${index}`} className="rounded bg-slate-50 p-2 text-xs"><p><SourceIdentity source={extra} materials={report.materials} /> · 第{extra.lineStart}–{extra.lineEnd}行</p><EvidenceSnippet evidence={extra} materials={report.materials} showContextNote={false}/></div>)}</div></details>
     </> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}
     {showReportLink && <a className="btn-secondary" href="#selected-application-report">查看报告与回复</a>}
   </section>;
@@ -441,6 +442,8 @@ export function CandidateFilterNotice({empty,selectedName,onClear}:{empty:boolea
 export function UnconfirmedReplyDraft({text,onEdit,rejected=false,busy=false,onRefresh,error=""}:{text:string;onEdit:(nextText:string)=>void;rejected?:boolean;busy?:boolean;onRefresh?:(source:HTMLButtonElement)=>void;error?:string}){
   return <div className="panel space-y-2 text-sm"><p>{rejected?"本次发送被拒绝。":"回复是否送达尚未确认，平台不会自动重发。"}以下保留了本页草稿，可继续编辑或复制，长度仍限2000字；请先刷新授权投递并核对该投递的回复状态，再决定是否发送。</p>{error&&!busy&&<p role="alert" className="text-rose-700">{error}</p>}<textarea className="field" maxLength={2000} disabled={busy} value={text} onChange={e=>onEdit(e.target.value)} aria-label={rejected?"未发送的回复草稿":"未确认发送的回复草稿"}/>{onRefresh&&<ReadRetryButton busy={busy} label="刷新回复状态" onRetry={onRefresh}/>}</div>;
 }
+
+
 
 
 

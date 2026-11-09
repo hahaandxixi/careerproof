@@ -1503,3 +1503,10 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 @media (min-width: 1101px) { .enterprise-fixed-review .skill-radar-overview .radar-chart-svg { max-width: 360px; } }
 
+
+.enterprise-source-code .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
+.enterprise-source-code .evidence-code-bar { border-color: #2e4640; background: #122220; }
+.enterprise-source-code .evidence-code-bar .btn-quiet { color: #d5ded9; }
+.enterprise-source-code .evidence-code { padding: 9px 10px; background: transparent; color: #e2e8e4; font-size: 13px; line-height: 1.7; }
+.enterprise-source-code .evidence-code-status { color: #a8d5c4; }
+
