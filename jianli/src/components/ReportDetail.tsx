@@ -29,6 +29,7 @@ import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
 import { RequirementSupplementTarget } from "./RequirementSupplement";
+import PracticeEntry from "./PracticeEntry";
 
 import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
@@ -100,6 +101,7 @@ function ReportWorkspace({ id }: { id: string }) {
       </h3>
       <blockquote className="requirement-original">{item.requirementTitle}</blockquote>
       <p className="text-sm text-slate-500">岗位权重 {item.weight} / 5</p>
+      {user?.role === "student" && <PracticeEntry reportId={report.id} requirementId={item.requirementId} />}
       </div></div>
       <RequirementActionPanel
         report={report} item={item} role={user?.role}

@@ -241,3 +241,43 @@ export interface NotificationItem {
 export interface NotificationPage {
   items: NotificationItem[]; total: number; page: number; pageSize: number; unreadCount: number;
 }
+
+// 文字模拟面试：会话绑定一份报告的某一项要求，材料与知识依据在创建时固定。
+export interface PracticeEvidence {
+  citationId: string | null;
+  filePath: string;
+  lineStart: number;
+  lineEnd: number;
+  snippet: string;
+  contentHash?: string;
+  provenance?: "portfolio" | "reference";
+  projectVersionId?: string | null;
+}
+export interface PracticeKnowledge {
+  knowledgeId: string; title: string; skill: string; document: string; section: string;
+  sourceLocator: string; sourceLabel: string; sourceVersion: string;
+  reviewStatus: string; reviewedAt: string;
+}
+export interface PracticeFeedback {
+  covered: string[]; inconsistent: string[]; missing: string[]; reviewSuggestion: string;
+  citations: PracticeEvidence[]; knowledge: PracticeKnowledge[];
+}
+export interface PracticeTurn {
+  turnIndex: number; kind: "first" | "follow_up"; question: string; focus: string;
+  state: "question" | "answered" | "feedback" | "failed";
+  answerText: string | null; answeredAt: string | null; failureReason: string | null;
+  citations: PracticeEvidence[]; knowledge: PracticeKnowledge[]; feedback: PracticeFeedback | null;
+}
+export interface PracticeSummary {
+  answeredTurns: number; covered: string[]; inconsistent: string[]; remaining: string[];
+  nextStep: string; note: string;
+}
+export interface InterviewSession {
+  id: string; status: "draft" | "in_progress" | "completed";
+  reportId: string; requirementId: string; requirementTitle: string; skill: string; jobTitle: string;
+  materials: MatchReport["materials"]; evidence: PracticeEvidence[]; knowledge: PracticeKnowledge[];
+  consentAt: string | null; consentScope: string | null;
+  currentTurn: number; maxTurns: number;
+  summary: PracticeSummary | null; failureReason: string | null;
+  createdAt: string; updatedAt: string; turns: PracticeTurn[];
+}

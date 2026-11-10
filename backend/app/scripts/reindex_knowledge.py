@@ -55,7 +55,13 @@ async def rebuild() -> tuple[int, dict[str, int]]:
             )
             for file, content in zip(files, contents, strict=True)
         )
-        await session.execute(delete(KnowledgeChunk))
+        # Rebuild only owner-material chunks. Curated technical cards live in
+        # their own table, and any future technical chunk must survive this sweep.
+        await session.execute(
+            delete(KnowledgeChunk).where(
+                KnowledgeChunk.source_type.in_(("resume_section", "project_file"))
+            )
+        )
         count = await index_sources(session, sources)
         await session.commit()
         engines = await session.execute(

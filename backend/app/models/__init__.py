@@ -25,6 +25,7 @@ from app.models.identity import (
     StudentProfile,
     User,
 )
+from app.models.knowledge import TechnicalKnowledgeEntry
 from app.models.login_limit import LoginLimit
 from app.models.notification import Notification
 from app.models.portfolio import (
@@ -83,5 +84,6 @@ __all__ = [
     "SkillAlias",
     "SkillEvidence",
     "StudentProfile",
+    "TechnicalKnowledgeEntry",
     "User",
 ]
