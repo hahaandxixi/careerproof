@@ -1,4 +1,4 @@
-﻿import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
+import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
 import * as sourceLabels from "../src/lib/source-label.ts";
 import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
@@ -23,6 +23,7 @@ function fixture({writeError,readError}={}){
  modules["./ReportRequirementHeatmap"]={__esModule:true,default:props=>{heatmapProps.push(props);return null;}};
  modules["./ReportSections"]={__esModule:true,default:({header,sections})=>React.createElement(React.Fragment,null,header,sections?.[0]?.content)};
  modules["./ReportEvidenceWorkspace"]={__esModule:true,default:Workspace,RequirementActionPanel:stub};
+ modules["./RequirementSupplement"]={__esModule:true,RequirementSupplementJump:stub,RequirementSupplementTarget:stub};
  const source=readFileSync(new URL("../src/components/ReportDetail.tsx",import.meta.url),"utf8")+`
 export {ReportWorkspace};`;
  const mod={exports:{}};new Function("require","module","exports",transform(source,{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
@@ -64,13 +65,3 @@ test("read failure after saving exposes a read-only recovery while all review wr
 test("account, role and report keys establish separate workspaces",()=>{
  const h=fixture();const a=h.outer("r").props.children.key;h.setAccount("other");const b=h.outer("r").props.children.key;const c=h.outer("other-report").props.children.key;assert.notEqual(a,b);assert.notEqual(b,c);h.setRole("admin");assert.notEqual(c,h.outer("other-report").props.children.key);
 });
-
-
-
-
-
-
-
-
-
-

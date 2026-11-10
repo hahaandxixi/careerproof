@@ -9,6 +9,7 @@ import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } f
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
+import { RequirementSupplementJump } from "./RequirementSupplement";
 import ReportRequirementReader from "./ReportRequirementReader";
 
 export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
@@ -23,6 +24,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
   const supported = groups.supported.length > 0;
   const actionable = groups.gaps.length + groups.partial.length > 0;
   const unsupported = !supported && !actionable && item.verdict === "unsupported";
+  const studentSupplement = role === "student" && actionable;
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
   const plan = advice?.taskPlan;
@@ -61,7 +63,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     {unsupported ? <div className="space-y-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
       <h4 className="font-semibold text-slate-900">规则暂未支持</h4>
       <p className="text-sm leading-7 text-slate-700">当前规则不覆盖这项要求，不能据此推断材料缺失，也不能由此认定实现不存在；不提供材料补证或上传指引。请人工核对原始岗位要求与已保存材料。</p>
-    </div> : <>
+    </div> : studentSupplement ? <RequirementSupplementJump item={item}/> : <>
     {!supported && <div className="space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <h4 className="font-semibold text-slate-900">{action || plan ? "本项已保存的具体要求" : "以下为通用补证建议"}</h4>

@@ -47,6 +47,7 @@ const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
+const { RequirementSupplementTarget } = await import(pathToFileURL(path.join(SRC, "components/RequirementSupplement.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
@@ -54,7 +55,24 @@ const advice = (value, extra = {}) => ({ requirementId: value.requirementId, req
 const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan: actions, materials: [] });
 const count = (html, text) => html.split(text).length - 1;
 const render = (value, role = "student") => renderToStaticMarkup(React.createElement(AppRouterContext.Provider, { value: { push() { throw new Error("render must not navigate"); } } },
-  React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId }, React.createElement(RequirementActionPanel, { report: value, item: entry, role }))))));
+  React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId },
+    React.createElement(RequirementActionPanel, { report: value, item: entry, role }),
+    role === "student" && ["gap", "partial", "claimed_only"].includes(entry.verdict) ? React.createElement(RequirementSupplementTarget, { report: value, item: entry }) : null)))));
+
+test("student requirement area links to its own supplement item and leaves guidance there", () => {
+ const value = item("linked");
+ const reportValue = report([value], [advice(value)]);
+ const region = renderToStaticMarkup(React.createElement(RequirementActionPanel, { report: reportValue, item: value, role: "student" }));
+ assert.match(region, /查看本项补证建议 →/);
+ assert.ok(region.includes('href="#supplement-linked"'));
+ assert.doesNotMatch(region, /复制补证建议|上传新版材料|本项已保存的具体要求|通用核对步骤/);
+ const full = render(reportValue);
+ assert.ok(full.includes('id="supplement-linked"'));
+ assert.ok(full.includes("本项补证与岗位对照中的当前要求一致"));
+ assert.ok(full.includes("本项已保存的具体要求"));
+ assert.ok(full.includes("复制补证建议"));
+ assert.ok(full.includes("添加项目材料"));
+});
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
  const items = Array.from({length: 6}, (_, i) => item(`gap${i}`));

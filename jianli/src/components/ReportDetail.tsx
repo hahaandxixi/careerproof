@@ -28,8 +28,8 @@ import { adoptedReportExplanation, workspaceStatusLabel } from "@/lib/report-wor
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
-import ReportFollowUpActions from "./ReportFollowUpActions";
-import { followUpCopyText } from "@/lib/report-follow-up";
+import { RequirementSupplementTarget } from "./RequirementSupplement";
+
 import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
 
@@ -150,13 +150,10 @@ function ReportWorkspace({ id }: { id: string }) {
         { id: "report-supplement", label: "按需补证", content: <>
           <h2 className="section-title">按需补证 · {supplementItems.length} 项实际缺口</h2>
           <p className="reading-copy">补证是可选的。上传新版材料不会改写本报告，只有你核对预选版本并确认分析后才会生成新报告。</p>
-          {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口；规则暂不支持的要求不会计入补证数量，也不需要为此上传材料。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <section key={item.requirementId} className="panel space-y-3"><h3 className="text-lg font-semibold">{item.skill} · {workspaceStatusLabel(item)}</h3><p>{item.requirementTitle}</p><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} text={followUpCopyText(report, item)} /></section>)}
+          {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口；规则暂不支持的要求不会计入补证数量，也不需要为此上传材料。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <RequirementSupplementTarget key={item.requirementId} report={report} item={item} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} />)}
         </> },
         { id: "report-sharing", label: "投递授权", content: <><h2 className="section-title">投递与授权</h2><ApplicationSubmit key={`${report.id}:${report.reviewRevision}`} reportId={report.id} reviewRevision={report.reviewRevision} blocked={reviewing !== null || needsSync} onRefresh={() => void session.load()} /></> },
       ] : []),
     ]} />
   </div>;
 }
-
-
-
