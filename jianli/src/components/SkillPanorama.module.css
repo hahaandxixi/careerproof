@@ -101,9 +101,10 @@
 .contextSource h4 { font-size: 12px; font-weight: 700; color: #173c34; }
 .contextEvidence { margin-top: 7px; padding-top: 7px; border-top: 1px solid #ece7dc; }
 .contextEvidence > p { color: #526176; font-size: 11px; line-height: 1.5; }
-.contextSource pre { background: #142321 !important; color: #e2e8f0; border-radius: 4px; font-size: 12px; line-height: 1.55; }
+/* Dark reader theming (toolbar, code colors) comes from EvidenceSnippet theme="dark";
+   this module only sets the panorama's compact reading typography. */
+.contextSource pre { padding: 9px 10px; font-size: 12px; line-height: 1.55; }
 .contextSource pre code { font-size: 12px; }
-.contextSource .btn-quiet { min-height: 28px; padding: 3px 8px; font-size: 11px; }
 .contextNoSource { color: #7a5c2e; font-size: 12px; line-height: 1.6; }
 .contextReport { display: inline-flex; min-height: 30px; align-items: center; margin-top: 4px; color: #1d4a40; font-size: 12px; font-weight: 600; }
 .contextMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: #617086; font-size: 12px; }

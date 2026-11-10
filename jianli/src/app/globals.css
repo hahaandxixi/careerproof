@@ -381,11 +381,6 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .source-reader-close { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: 4px; color: #dfe6e2; font-size: 28px; line-height: 1; }
 .source-reader-close:hover { color: #fff; background: #2e4640; }
 .source-reader-code { padding: 2px 16px 10px; }
-.source-reader-code .btn-quiet { min-height: 34px; padding: 4px 9px; border-color: #3d5650; background: transparent; color: #d8e1dc; font-size: 13px; }
-.source-reader-code .btn-quiet:hover { background: #2e4640; color: #fff; }
-.source-reader-code pre { margin-top: 12px; padding: 10px 0; background: transparent; color: #e2e8e4; border-radius: 0; font-size: 15px; line-height: 1.8; }
-.source-reader-code pre .text-slate-400 { color: #8fa39a; }
-.source-reader-code [role="status"] { color: #a8d5c4; }
 .source-reader-heading .source-reader-limit { margin-top: 8px; padding: 6px 9px; border-left: 2px solid #edc46f; background: #3b3b39; color: #f6d994; font-size: 14px; line-height: 1.65; }
 .source-reader-details { display: flex; flex-wrap: wrap; align-items: start; gap: 4px 18px; padding: 8px 18px 12px; border-top: 1px solid #2e4640; background: #122220; color: #d5ded9; }
 .source-reader-details .disclosure, .source-reader-details .text-slate-600, .source-reader-details .action-link { color: #d5ded9; }
@@ -1139,7 +1134,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 /* Enterprise review: code-first source pane and tighter top tools. */
 .enterprise-source-code { display: grid; gap: 4px; min-width: 0; }
 .enterprise-source-code-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; color: #526176; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
-.enterprise-source-code pre { max-height: 210px; margin: 0; padding: 8px 10px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; line-height: 1.55; }
 .enterprise-recording-layout .review-section-heading { margin-bottom: 2px; }
 .enterprise-recording-layout .review-section-heading .page-title { margin: 0; font-size: clamp(24px, 2.2vw, 30px); line-height: 1.2; }
 .enterprise-recording-layout .review-view-nav { margin: 4px 0 0; }
@@ -1452,16 +1446,20 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .evidence-code-status { color: #526176; font-size: 11px; }
 .evidence-code { margin: 0; padding: 10px 12px; background: #fff; color: #263755; font-size: 13px; line-height: 1.65; }
 .evidence-code-collapse { margin: 0 12px 10px; }
-.source-reader-code .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
-.source-reader-code .evidence-code-bar { border-color: #2e4640; background: #122220; }
-.source-reader-code .evidence-code-bar .btn-quiet { color: #d5ded9; }
-.source-reader-code .evidence-code { padding: 10px 0; background: transparent; color: #e2e8e4; font-size: 15px; line-height: 1.8; }
-.source-reader-code .evidence-code-status { color: #a8d5c4; }
-.contextSource .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
-.contextSource .evidence-code-bar { border-color: #2e4640; background: #122220; }
-.contextSource .evidence-code-bar .btn-quiet { color: #d5ded9; }
-.contextSource .evidence-code { padding: 9px 10px; background: transparent; color: #e2e8f0; font-size: 12px; line-height: 1.55; }
-.contextSource .evidence-code-status { color: #a8d5c4; }
+/* Shared evidence reader, dark theme: EvidenceSnippet theme="dark" adds evidence-reader-dark
+   on the snippet root, so student source, skill panorama and enterprise source panes share one
+   dark toolbar. Scoped to the component's own class — never to page wrapper or CSS Module names. */
+.evidence-reader-dark .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
+.evidence-reader-dark .evidence-code-bar { border-color: #2e4640; background: #122220; }
+.evidence-reader-dark .evidence-code-shell .btn-quiet { border-color: #3d5650; background: transparent; color: #d8e1dc; }
+.evidence-reader-dark .evidence-code-shell .btn-quiet:hover { background: #2e4640; color: #fff; }
+.evidence-reader-dark .evidence-code-shell .btn-quiet:focus-visible { outline: 2px solid #a8d5c4; outline-offset: 1px; }
+.evidence-reader-dark .evidence-code { background: transparent; color: #e2e8e4; }
+.evidence-reader-dark .evidence-code .text-slate-400 { color: #8fa39a; }
+.evidence-reader-dark .evidence-code-status { color: #a8d5c4; }
+/* Per-surface reading typography inside the shared dark reader. */
+.source-reader-code .evidence-code { margin-top: 12px; padding: 10px 0; font-size: 15px; line-height: 1.8; }
+.enterprise-source-code .evidence-code { padding: 9px 10px; font-size: 13px; line-height: 1.7; }
 
 /* Final report flow: the current requirement is one continuous column.
    Source (heading + full-width code) comes before the short judgement/next step,
@@ -1502,11 +1500,4 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 
 @media (min-width: 1101px) { .enterprise-fixed-review .skill-radar-overview .radar-chart-svg { max-width: 360px; } }
-
-
-.enterprise-source-code .evidence-code-shell { border-color: #2e4640; background: #0b1b18; }
-.enterprise-source-code .evidence-code-bar { border-color: #2e4640; background: #122220; }
-.enterprise-source-code .evidence-code-bar .btn-quiet { color: #d5ded9; }
-.enterprise-source-code .evidence-code { padding: 9px 10px; background: transparent; color: #e2e8e4; font-size: 13px; line-height: 1.7; }
-.enterprise-source-code .evidence-code-status { color: #a8d5c4; }
 

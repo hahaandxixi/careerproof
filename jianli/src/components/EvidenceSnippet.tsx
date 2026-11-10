@@ -3,12 +3,12 @@ import { useRef, useState } from "react";
 import { sourceLabel, type SourceMaterial } from "@/lib/source-label";
 import type { ReportEvidence } from "@/lib/api/domain";
 
-export default function EvidenceSnippet({ evidence, materials = [], showContextNote = true }: { evidence: ReportEvidence; materials?: readonly SourceMaterial[]; showContextNote?: boolean }) {
+export default function EvidenceSnippet({ evidence, materials = [], showContextNote = true, theme = "light" }: { evidence: ReportEvidence; materials?: readonly SourceMaterial[]; showContextNote?: boolean; theme?: "light" | "dark" }) {
   const [wrap, setWrap] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [copy, setCopy] = useState("");
   const expandButton = useRef<HTMLButtonElement>(null);
-  return <div className="min-w-0 evidence-snippet">
+  return <div className={`min-w-0 evidence-snippet${theme === "dark" ? " evidence-reader-dark" : ""}`}>
     {showContextNote && <p className={`mt-2 text-sm leading-6 ${evidence.contextComplete ? "text-slate-500" : "text-amber-800"}`}>
       单个引用片段：{evidence.contextNote || "历史引用未核验上下文完整性"}
     </p>}
