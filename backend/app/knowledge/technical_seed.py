@@ -222,7 +222,8 @@ TECHNICAL_KNOWLEDGE: list[dict] = [
         "principle": (
             "聚合函数的 NULL 口径并不统一：SUM(col) 和 AVG(col) 计算时忽略 NULL，"
             "AVG 的分母是该列非 NULL 的行数；COUNT(col) 统计该列非 NULL 的行数，"
-            "COUNT(*) 统计结果行数。全为 NULL 时 SUM/AVG 返回 NULL，COUNT 返回 0。"
+            "COUNT(*) 统计结果行数。全为 NULL 且存在 N 行时，SUM/AVG 返回 NULL，"
+            "COUNT(col) = 0，COUNT(*) = N。"
             "PostgreSQL 的 array_agg(col) 和 json_agg(col) 会把 NULL 作为元素保留，"
             "不能概括为“所有聚合函数都忽略 NULL”。"
             "只有缺失比例，不能判断已观测平均值相对总体平均偏高还是偏低；"

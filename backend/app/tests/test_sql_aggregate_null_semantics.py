@@ -82,6 +82,8 @@ async def test_seed_text_states_the_distinctions_without_a_fixed_bias():
     )
     assert "COUNT(*)" in text_value
     assert "COUNT(col)" in text_value
+    assert "COUNT(*) = N" in text_value
+    assert "COUNT 返回 0" not in text_value
     assert "array_agg" in text_value
     assert "json_agg" in text_value
     assert "不能" in text_value and "偏高" in text_value
