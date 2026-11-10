@@ -15,7 +15,8 @@ export function ReportHistoryCard({ report, onSameJob }: { report: ReportSummary
   const latest = report.isLatestForJob === true;
   const history = report.isLatestForJob === false;
   // Short source labels only; the normal saved state needs no repeated footnote.
-  const analysis = report.aiFallbackUsed ? "模型回退，按规则核对" : report.analysisMode === "rules" ? "规则分析" : "";
+  // A fallback is a rules result — same short label as the rules mode.
+  const analysis = report.aiFallbackUsed || report.analysisMode === "rules" ? "规则分析" : "";
   return <article className={`workspace-row report-record ${latest ? "is-latest" : history ? "is-history" : "is-record"}`}>
     {report.recordProvenance === "test_fixture" && <p className="report-history-flag">历史核验资料 · 非真实招聘岗位</p>}
     <div className="report-record-headline">

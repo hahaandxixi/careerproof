@@ -48,7 +48,7 @@ function render(payload, eventType = "tool.completed", overrides = {}) {
 test("skipped and degraded model stages show the reason without a success tick", () => {
   for (const [payload, text] of [
     [{provider: "rules", skippedReason: "not-consented"}, "未调用模型"],
-    [{provider: "deepseek", fallbackUsed: true}, "模型已降级"],
+    [{provider: "deepseek", fallbackUsed: true}, "已改用规则分析"],
   ]) {
     const html = render(payload);
     assert.ok(html.includes(text));
@@ -73,7 +73,7 @@ test("actual task page at 25 percent does not label an unobserved AI result as r
   assert.doesNotMatch(html, /规则模式|AI 解释已参与/);
   assert.match(render({provider: "deepseek", fallbackUsed: false}), /AI 解释已参与/);
   assert.match(render({provider: "rules", skippedReason: "consent_not_granted"}), /规则模式（未使用外部 AI）/);
-  assert.match(render({provider: "deepseek", fallbackUsed: true}), /模型已降级，本次为规则结果/);
+  assert.match(render({provider: "deepseek", fallbackUsed: true}), /规则分析（AI 结果未采用）/);
 });
 
 test("local semantic fallback is scoped to retrieval while the real final model result stays visible", () => {

@@ -42,7 +42,7 @@ export function reportModeLabel(
   report: Pick<MatchReport, "analysisMode" | "aiFallbackUsed" | "items"> & { aiProvider?: string | null },
 ): string {
   if (report.aiProvider?.startsWith("mock")) return "Mock 界面验证 · 非真实模型报告";
-  if (report.aiFallbackUsed) return "规则报告 · 模型已降级";
+  if (report.aiFallbackUsed) return "规则证据报告";
   if (report.analysisMode === "rules") return "规则证据报告";
   if (!AI_MODES.has(report.analysisMode)) return "未知报告模式";
   return reportAiRatedCount(report) > 0 ? "AI 证据初评 + 规则校验" : "规则证据 + AI 解释";

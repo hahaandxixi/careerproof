@@ -41,7 +41,7 @@ export function modelStepQualifier(payload: Record<string, unknown> | null | und
   if (!payload) return null;
   const skipped = payload.skippedReason;
   if (typeof skipped === "string" && skipped.trim()) return "未调用模型";
-  if (payload.fallbackUsed === true) return "模型已降级";
+  if (payload.fallbackUsed === true) return "已改用规则分析";
   return null;
 }
 
@@ -76,7 +76,7 @@ export function taskModeLabel(options: { usedAI: boolean; fellBack: boolean; act
   if (options.modelRecorded === false) {
     return options.active ? "处理中，外部 AI 调用结果待确认" : "未记录模型处理结果";
   }
-  if (options.fellBack) return "模型已降级，本次为规则结果";
+  if (options.fellBack) return "规则分析（AI 结果未采用）";
   if (options.usedAI) return "AI 解释已参与";
   return "规则模式（未使用外部 AI）";
 }

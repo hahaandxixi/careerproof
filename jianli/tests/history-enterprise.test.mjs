@@ -62,7 +62,7 @@ test("fixed report overview separates evidence support, gaps and uncovered requi
   const original = JSON.stringify(report);
   const html = render(React.createElement(FixedReportOverview, { application: { candidateName: "合成甲", report } }));
   assert.match(html, /合成甲 · 投递时固定报告/);
-  assert.match(html, /规则报告 · 模型已降级/);
+  assert.match(html, /规则证据报告/);
   assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
   assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
   assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);

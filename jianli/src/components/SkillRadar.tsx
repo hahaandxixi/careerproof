@@ -100,7 +100,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
         {measure.ratio != null && <p className="mt-2 text-base">{scale.label} {measure.text}</p>}
         {measure.issue && dimension.verdict !== "unsupported" && <p role="status" className="mt-2 text-sm text-amber-900">{measure.issue}；原始值 {String(measure.raw ?? "未记录")}。</p>}
         <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><SupportMeasureDetails raw={dimension.score} formulaVersion={dimension.formulaVersion} scale={scale}/><p>岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}，不等于能力认证。</p>}</details>
-        {aiFallbackUsed && <p className="mt-3 text-sm text-amber-900">报告已降级，本处使用规则解释。</p>}
+        {aiFallbackUsed && <p className="mt-3 text-sm text-amber-900">本报告为规则分析，此处显示规则解释。</p>}
         {item && item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="mt-3 text-sm text-amber-900">本项 AI 解释未被采用，请按规则和来源核对。</p>}
         {item&&invalidNarrativeCitations(item).length>0&&<p className="mt-3 text-sm text-amber-900">历史AI解释含未对齐引用，请按规则与固定来源核对。</p>}
         {item ? <>

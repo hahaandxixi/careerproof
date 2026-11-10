@@ -11,7 +11,7 @@ const report = (analysisMode, aiFallbackUsed, items) => ({ analysisMode, aiFallb
 
 test("same saved report uses one rules/AI/fallback label on both surfaces", () => {
   assert.equal(reportModeLabel(report("rules", false, [item("rules")])), "规则证据报告");
-  assert.equal(reportModeLabel(report("ai_evidence", true, [item("ai_preliminary")])), "规则报告 · 模型已降级");
+  assert.equal(reportModeLabel(report("ai_evidence", true, [item("ai_preliminary")])), "规则证据报告"); // fallback is a rules result, same label
   assert.equal(reportModeLabel(report("ai_evidence", false, [item("rules")])), "规则证据 + AI 解释");
   assert.equal(reportModeLabel(report("ai_evidence", false, [item("ai_preliminary"), item("rules")])), "AI 证据初评 + 规则校验");
   assert.equal(reportModeLabel(report("unknown_future_mode", false, [item("rules")])), "未知报告模式");

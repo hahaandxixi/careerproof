@@ -59,7 +59,7 @@ test("seconds are rounded to one decimal and labelled", () => {
 });
 
 test("degraded, AI-assisted and rules-only modes stay distinct", () => {
-  assert.equal(taskModeLabel({ usedAI: true, fellBack: true }), "模型已降级，本次为规则结果");
+  assert.equal(taskModeLabel({ usedAI: true, fellBack: true }), "规则分析（AI 结果未采用）");
   assert.equal(taskModeLabel({ usedAI: true, fellBack: false }), "AI 解释已参与");
   assert.equal(taskModeLabel({ usedAI: false, fellBack: false }), "规则模式（未使用外部 AI）");
 });
@@ -85,7 +85,7 @@ test("production step events and their tick decision", () => {
   // A tick means "this stage finished", not "the model succeeded": that distinction is
   // carried by the qualifier below, not by withholding the tick.
   assert.equal(isCompletedRecord("tool.completed"), true);
-  assert.equal(modelStepQualifier({ fallbackUsed: true }), "模型已降级");
+  assert.equal(modelStepQualifier({ fallbackUsed: true }), "已改用规则分析");
 });
 
 test("connection wording distinguishes unsupported, never-opened and interrupted", () => {
@@ -108,7 +108,7 @@ test("model steps name a skipped or degraded model instead of implying AI succes
   assert.equal(modelStepQualifier({ skippedReason: "external_ai_not_consented" }), "未调用模型");
   assert.equal(modelStepQualifier({ skippedReason: "daily_report_limit" }), "未调用模型");
   assert.equal(modelStepQualifier({ skippedReason: "   " }), null);
-  assert.equal(modelStepQualifier({ fallbackUsed: true }), "模型已降级");
+  assert.equal(modelStepQualifier({ fallbackUsed: true }), "已改用规则分析");
   // A normal model run and non-model payloads carry no qualifier.
   assert.equal(modelStepQualifier({ fallbackUsed: false }), null);
   assert.equal(modelStepQualifier({}), null);
