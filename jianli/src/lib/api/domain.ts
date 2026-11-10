@@ -1,4 +1,4 @@
-export interface Page<T> { items: T[]; total: number; page: number; pageSize: number }
+﻿export interface Page<T> { items: T[]; total: number; page: number; pageSize: number }
 export interface Option { value: string; label: string }
 export interface JobOptions { categories: Option[]; employmentTypes: Option[]; skills: { name: string; category: string }[] }
 export interface Enterprise { id: string; name: string; description: string; isVerified: boolean; role: string }
@@ -275,9 +275,10 @@ export interface PracticeSummary {
 export interface InterviewSession {
   id: string; status: "draft" | "in_progress" | "completed";
   reportId: string; requirementId: string; requirementTitle: string; skill: string; jobTitle: string;
-  materials: MatchReport["materials"]; evidence: PracticeEvidence[]; knowledge: PracticeKnowledge[];
+  materials: MatchReport["materials"]; evidence: PracticeEvidence[]; knowledge: PracticeKnowledge[]; knowledgeOutdated?: boolean;
   consentAt: string | null; consentScope: string | null;
   currentTurn: number; maxTurns: number;
   summary: PracticeSummary | null; failureReason: string | null;
   createdAt: string; updatedAt: string; turns: PracticeTurn[];
 }
+

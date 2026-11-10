@@ -27,6 +27,7 @@ from app.core.exceptions import AppError
 from app.models.analysis import AiUsageLog, AnalysisTask, MatchItem, MatchReport
 from app.models.enums import TaskStatus, UserRole
 from app.models.identity import StudentProfile, User
+from app.models.knowledge import TechnicalKnowledgeEntry
 from app.models.portfolio import InterviewAnswer, InterviewSession
 from app.services.analysis import _daily_ai_budget
 from app.services.technical_knowledge import search_technical_knowledge
@@ -341,6 +342,36 @@ class InterviewPracticeService:
             raise AppError("练习不存在或无权访问", code=4046, status_code=404)
         return row
 
+
+    async def _knowledge_outdated(self, session_row: InterviewSession) -> bool:
+        """A saved practice must not keep generating against an old knowledge card.
+
+        Historical questions, answers and feedback stay untouched; only new
+        questions/feedback are blocked until the student starts a new session.
+        """
+        snapshot = list(session_row.knowledge_snapshot or [])
+        ids = {str(item.get("knowledgeId")) for item in snapshot if item.get("knowledgeId")}
+        if not ids:
+            return False
+        current = {
+            row.knowledge_id: row.content_hash
+            for row in await self.session.scalars(
+                select(TechnicalKnowledgeEntry).where(TechnicalKnowledgeEntry.knowledge_id.in_(ids))
+            )
+        }
+        return any(
+            current.get(str(item.get("knowledgeId"))) != item.get("contentHash")
+            for item in snapshot
+            if item.get("knowledgeId")
+        )
+
+    async def _require_current_knowledge(self, session_row: InterviewSession) -> None:
+        if await self._knowledge_outdated(session_row):
+            raise AppError(
+                "知识依据已更新，请重新开始练习；已保存的旧题目、回答和点评不会被改写。",
+                code=4095,
+                status_code=409,
+            )
     async def _owned_report(self, report_id: UUID, user: User, *, lock: bool = False):
         query = (
             select(MatchReport)
@@ -533,6 +564,7 @@ class InterviewPracticeService:
         turns = await self._turns(session_row.id)
         if turns:
             return session_row
+        await self._require_current_knowledge(session_row)
         if not consent:
             raise AppError("请先确认允许发送的内容", code=4224, status_code=422)
         if not session_row.knowledge_snapshot and not session_row.evidence_snapshot:
@@ -731,6 +763,7 @@ class InterviewPracticeService:
         if duplicate:
             return session_row
 
+        await self._require_current_knowledge(session_row)
         turn = await self._turn(session_row.id, turn_index)
         if not turn:
             raise AppError("这轮问题不存在", code=4048, status_code=404)
@@ -770,6 +803,7 @@ class InterviewPracticeService:
             raise AppError("这轮还没有保存的回答", code=4049, status_code=404)
         if turn.state == "feedback":
             return session_row
+        await self._require_current_knowledge(session_row)
         if session_row.consent_at is None:
             raise AppError("请先确认允许发送的内容", code=4224, status_code=422)
         await self._generate_feedback(session_row, turn, user)
@@ -779,6 +813,7 @@ class InterviewPracticeService:
 
     async def view(self, session_id: UUID, user: User) -> dict:
         session_row = await self._owned_session(session_id, user)
+        knowledge_outdated = await self._knowledge_outdated(session_row)
         turns = await self._turns(session_row.id)
         evidence_by_id = {
             item.get("citationId"): item for item in (session_row.evidence_snapshot or [])
@@ -837,6 +872,7 @@ class InterviewPracticeService:
             "knowledge": [
                 _public_knowledge(item) for item in (session_row.knowledge_snapshot or [])
             ],
+            "knowledgeOutdated": knowledge_outdated,
             "consentAt": session_row.consent_at,
             "consentScope": session_row.consent_scope,
             "currentTurn": session_row.current_turn or 0,
@@ -847,3 +883,5 @@ class InterviewPracticeService:
             "updatedAt": session_row.updated_at,
             "turns": turn_views,
         }
+
+

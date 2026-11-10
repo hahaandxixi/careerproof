@@ -39,6 +39,7 @@ test("a fresh client token is unique and never a fixed constant", () => {
 test("only the in-progress unanswered turn accepts a submission", () => {
   assert.equal(openTurn(session())?.turnIndex, 0);
   assert.equal(canSubmit(session(), openTurn(session())), true);
+assert.equal(canSubmit({ ...session(), knowledgeOutdated: true }, openTurn(session())), false);
   assert.equal(openTurn(session({ status: "completed" })), null);
   assert.equal(canSubmit(session(), turn(0, "feedback")), false);
   assert.equal(canSubmit(session(), turn(0, "answered")), false);
@@ -81,3 +82,4 @@ test("a session that recorded consent but has no question offers a retry, not a 
   );
   assert.match(questionRetryNote(session({ turns: [], failureReason: null })), /首问还没有生成/);
 });
+

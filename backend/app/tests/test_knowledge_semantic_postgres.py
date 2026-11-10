@@ -374,3 +374,28 @@ async def test_query_inference_failure_never_uses_hash_against_semantic_index(
         monkeypatch.setattr(retrieval, "load_semantic_embedder", lambda: FailingEmbedder())
         user = await session.get(User, user_id)
         assert await search_owned_chunks(session, user, content, 10) == []
+
+async def test_postgres_array_and_json_agg_keep_nulls(knowledge_db):
+    """array_agg/json_agg preserve NULL, unlike SUM/AVG/COUNT(col)."""
+    async with knowledge_db() as session:
+        row = (
+            await session.execute(
+                sql_text(
+                    "SELECT array_agg(x)::text, json_agg(x)::text "
+                    "FROM (VALUES (1), (NULL), (3)) AS values_with_nulls(x)"
+                )
+            )
+        ).one()
+        avg, count_col, count_star = (
+            await session.execute(
+                sql_text(
+                    "SELECT AVG(x), COUNT(x), COUNT(*) "
+                    "FROM (VALUES (1), (NULL), (3)) AS values_with_nulls(x)"
+                )
+            )
+        ).one()
+    assert row[0] == "{1,NULL,3}"
+    assert row[1] == "[1, null, 3]"
+    assert avg == 2
+    assert count_col == 2
+    assert count_star == 3

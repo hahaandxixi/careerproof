@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import {
@@ -16,6 +17,7 @@ const MAX_ANSWER = 4000;
 
 export default function InterviewPractice({ id }: { id: string }) {
   const { user } = useAuth();
+  const router = useRouter();
   const [session, setSession] = useState<InterviewSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -23,7 +25,7 @@ export default function InterviewPractice({ id }: { id: string }) {
   const [notice, setNotice] = useState("");
   const [answer, setAnswer] = useState("");
   const [consent, setConsent] = useState(false);
-  const [busy, setBusy] = useState<"start" | number | null>(null);
+  const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
   const draftKeyRef = useRef("");
 
   const load = useCallback(async () => {
@@ -112,6 +114,20 @@ export default function InterviewPractice({ id }: { id: string }) {
     }
   };
 
+  const restartPractice = async () => {
+    if (!session) return;
+    setBusy("restart");
+    setActionError("");
+    try {
+      const { session: next } = await api.createInterviewSession(session.reportId, { requirementId: session.requirementId, restart: true });
+      router.push(`/interview/${next.id}`);
+    } catch (error) {
+      setActionError(errorMessage(error));
+    } finally {
+      setBusy(null);
+    }
+  };
+
   const retry = async (turn: PracticeTurn) => {
     setBusy(turn.turnIndex);
     setActionError("");
@@ -133,6 +149,7 @@ export default function InterviewPractice({ id }: { id: string }) {
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
   const busyIdle = busy === null;
+  const knowledgeOutdated = Boolean(session.knowledgeOutdated);
 
   return <div className={styles.page}>
     <header className={styles.head}>
@@ -163,6 +180,17 @@ export default function InterviewPractice({ id }: { id: string }) {
         {actionError && <ErrorNotice message={actionError} />}
         {notice && <p role="status" className={styles.notice} data-tone="working">{notice}</p>}
 
+        {knowledgeOutdated && <section className={styles.consent} aria-labelledby="practice-knowledge-updated">
+          <h2 id="practice-knowledge-updated">知识依据已更新，请重新开始练习</h2>
+          <p>这条练习保存的知识依据已更新。已保存的旧题目、回答和点评保留在这里，不会自动改写；但为避免继续用旧依据生成新点评，旧练习不再接受新的回答或点评请求。</p>
+          <div className={styles.actions}>
+            <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>
+              {busy === "restart" ? "正在创建新练习…" : "重新开始练习"}
+            </button>
+            <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取当前保存状态</button>
+          </div>
+        </section>}
+
         {session.status === "draft" && <section className={styles.consent} aria-labelledby="practice-consent">
           <h2 id="practice-consent">开始前确认发送范围</h2>
           <p>生成首问和点评需要调用模型。本次只会发送以下内容；不发送简历全文、私人回答草稿或投递记录。</p>
@@ -174,7 +202,7 @@ export default function InterviewPractice({ id }: { id: string }) {
             <span>我已了解并同意把上述内容发送给模型，用于生成这一项要求的练习问题与点评。</span>
           </label>
           <div className={styles.actions}>
-            <button type="button" className="btn" disabled={!consent || !busyIdle} onClick={() => void start()}>
+            <button type="button" className="btn" disabled={!consent || !busyIdle || knowledgeOutdated} onClick={() => void start()}>
               {busy === "start" ? "正在生成首问…" : "同意并生成首问"}
             </button>
             <span className={styles.hint}>不同意也可以返回报告继续核对材料，不会产生模型调用。</span>
@@ -187,7 +215,7 @@ export default function InterviewPractice({ id }: { id: string }) {
           <p>{questionRetryNote(session)}</p>
           <p className={styles.hint}>发送范围已经确认并记录，重试只会重新生成首问，不会改动报告判断、技能状态或投递快照。</p>
           <div className={styles.actions}>
-            <button type="button" className="btn" disabled={!busyIdle} onClick={() => void start()}>
+            <button type="button" className="btn" disabled={!busyIdle || knowledgeOutdated} onClick={() => void start()}>
               {busy === "start" ? "正在重新生成首问…" : "重试生成首问"}
             </button>
             <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
@@ -216,7 +244,7 @@ export default function InterviewPractice({ id }: { id: string }) {
               <div className={styles.footerRow}>
                 <span className={styles.counter}>{answer.length} / {MAX_ANSWER} 字</span>
                 <div className={styles.actions}>
-                  <button type="button" className="btn" disabled={isBusy || !answer.trim()} onClick={() => void submit(turn)}>
+                  <button type="button" className="btn" disabled={isBusy || !answer.trim() || knowledgeOutdated} onClick={() => void submit(turn)}>
                     {isBusy ? "正在生成点评…" : "提交回答并获取点评"}
                   </button>
                 </div>
@@ -228,7 +256,7 @@ export default function InterviewPractice({ id }: { id: string }) {
 
             {turn.state !== "question" && !turn.feedback && <div className={styles.actions}>
               <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{turnNotice(turn)}</span>
-              {turn.state === "failed" && <button type="button" className="btn-secondary" disabled={!busyIdle} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
+              {turn.state === "failed" && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
               <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
             </div>}
 
@@ -315,3 +343,5 @@ export default function InterviewPractice({ id }: { id: string }) {
     </div>
   </div>;
 }
+
+

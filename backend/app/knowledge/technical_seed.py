@@ -212,26 +212,38 @@ TECHNICAL_KNOWLEDGE: list[dict] = [
     },
     {
         "knowledge_id": "tech-sql-aggregate-null",
-        "title": "SQL：聚合函数忽略 NULL，COUNT(*) 不忽略",
+        "title": "SQL：COUNT、SUM、AVG 与数组聚合的 NULL 口径",
         "skill": "SQL",
         "topic": "sql_query",
-        "summary": "SUM/AVG 跳过 NULL，COUNT(*) 统计行数，二者口径不同。",
+        "summary": (
+            "SUM/AVG 忽略 NULL，COUNT(col) 只计非 NULL，COUNT(*) 计行数；"
+            "array_agg/json_agg 会保留 NULL。"
+        ),
         "principle": (
-            "除 COUNT(*) 外，聚合函数在计算时忽略 NULL："
-            "AVG(col) 的分母是非 NULL 的行数，而不是总行数；"
-            "SUM 全为 NULL 时返回 NULL 而不是 0。"
-            "因此“有记录但没填值”的情况会让平均值偏高或结果为空，"
-            "需要用 COALESCE、FILTER 或显式条件把口径写清楚。"
+            "聚合函数的 NULL 口径并不统一：SUM(col) 和 AVG(col) 计算时忽略 NULL，"
+            "AVG 的分母是该列非 NULL 的行数；COUNT(col) 统计该列非 NULL 的行数，"
+            "COUNT(*) 统计结果行数。全为 NULL 时 SUM/AVG 返回 NULL，COUNT 返回 0。"
+            "PostgreSQL 的 array_agg(col) 和 json_agg(col) 会把 NULL 作为元素保留，"
+            "不能概括为“所有聚合函数都忽略 NULL”。"
+            "只有缺失比例，不能判断已观测平均值相对总体平均偏高还是偏低；"
+            "还需要缺失机制、缺失值的业务含义以及缺失值本身的信息。"
+            "“已观测值的平均数”和“把缺失值按零处理的平均数”回答不同的统计问题；"
+            "COALESCE 为零会改变统计口径，必须有明确业务依据，不能作为默认修复。"
         ),
         "reference_points": [
-            "指出 AVG 的分母是非 NULL 行数，会与总行数口径不一致",
-            "说明 SUM 在全部为 NULL 时返回 NULL",
-            "提出用 COALESCE 或 FILTER 明确统计口径",
-            "强调报表字段要标注是否排除缺失值",
+            "区分 COUNT(*) 的行数、COUNT(col) 的非 NULL 数和 AVG 的非 NULL 分母",
+            "说明 array_agg/json_agg 保留 NULL，不能概括所有聚合函数忽略 NULL",
+            "指出只有缺失比例不能推断平均值偏差方向",
+            "区分已观测值平均与缺失按零处理的平均，COALESCE 为零需业务依据",
+            "说明还需要缺失机制与业务定义才能解释统计口径",
         ],
         "question_angles": [
-            "平均分字段有 30% 为空，算出来的平均分偏高还是偏低？为什么？",
-            "怎么统计“有值记录的平均分”和“全部记录的平均分”？",
+            "一张表的 score 有 30% 为 NULL。请分别说明 AVG(score)、COUNT(score)、"
+            "COUNT(*) 回答的统计口径。",
+            "如果要判断平均分是否因缺失值产生偏差，你还需要了解哪些缺失机制或业务信息？不要预设偏高或偏低。",
+            "在 PostgreSQL 中 array_agg(score) 遇到 NULL 会怎样？这与 AVG(score) 的口径有何不同？",
+            "COALESCE(score, 0) 后求平均，与只对非 NULL 值求平均，分别代表什么业务定义？",
+            "相同缺失比例是否可能对应平均值偏高或偏低？请用缺失机制说明。",
         ],
         "document": "PostgreSQL 16 官方文档",
         "section": "函数与运算符 · 聚合函数",
@@ -241,7 +253,7 @@ TECHNICAL_KNOWLEDGE: list[dict] = [
         "source_version": "PostgreSQL 16",
         "review_status": "reviewed",
         "reviewed_at": "2026-11-10",
-        "tags": ["SQL", "聚合", "NULL", "AVG"],
+        "tags": ["SQL", "聚合", "NULL", "COUNT", "AVG", "array_agg"],
     },
     {
         "knowledge_id": "tech-sql-where-having",

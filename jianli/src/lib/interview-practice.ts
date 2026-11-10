@@ -1,4 +1,4 @@
-import type { InterviewSession, PracticeTurn } from "./api/domain.ts";
+﻿import type { InterviewSession, PracticeTurn } from "./api/domain.ts";
 
 export const PRACTICE_DRAFT_PREFIX = "careerproof.interview.draft";
 export const PRACTICE_TOKEN_PREFIX = "careerproof.interview.token";
@@ -37,7 +37,7 @@ export function openTurn(session: InterviewSession | null): PracticeTurn | null 
 }
 
 export function canSubmit(session: InterviewSession | null, turn: PracticeTurn | null) {
-  return !!session && !!turn && session.status === "in_progress" && turn.state === "question";
+  return !!session && !!turn && session.status === "in_progress" && turn.state === "question" && !session.knowledgeOutdated;
 }
 
 export function consentItems(session: InterviewSession): string[] {
@@ -66,3 +66,4 @@ export function summaryLine(summary: InterviewSession["summary"]) {
   if (!summary) return "";
   return `本次共完成 ${summary.answeredTurns} 轮回答；小结不改变报告判断、技能等级与投递快照。`;
 }
+

@@ -14,6 +14,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 
+from app.knowledge.technical_seed import TECHNICAL_KNOWLEDGE, content_digest
 from app.models.analysis import AiUsageLog, AnalysisTask, MatchItem, MatchReport
 from app.models.enums import TaskStatus
 from app.models.growth_answer import GrowthAnswerDraft
@@ -581,3 +582,98 @@ def test_question_validation_rejects_a_statement_and_an_out_of_scope_citation():
             allowed_knowledge=set(),
             has_evidence=True,
         )
+
+async def test_new_sql_session_uses_corrected_aggregate_null_snapshot(practice_db, monkeypatch):
+    app, factory = practice_db
+    student = await client_for(app)
+    user = await register(student, "practice-sql-aggregate@example.com", "student")
+    report_id, requirement_id, _ = await seed(
+        factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="claimed_only"
+    )
+    seed_entry = next(
+        item for item in TECHNICAL_KNOWLEDGE if item["knowledge_id"] == "tech-sql-aggregate-null"
+    )
+    opened = await open_session(student, report_id, requirement_id)
+    assert opened["knowledgeOutdated"] is False
+    async with factory() as session:
+        row = await session.scalar(
+            select(InterviewSession).where(InterviewSession.id == UUID(opened["id"]))
+        )
+        entry = next(
+            item
+            for item in row.knowledge_snapshot
+            if item["knowledgeId"] == "tech-sql-aggregate-null"
+        )
+    assert entry["contentHash"] == content_digest(seed_entry)
+    assert "array_agg" in entry["principle"] and "COUNT(*)" in entry["principle"]
+    provider = use_provider(
+        monkeypatch,
+        [
+            question(
+                "COUNT(col) 和 COUNT(*) 在 NULL 口径上有什么不同？",
+                [],
+                ["tech-sql-aggregate-null"],
+            )
+        ],
+    )
+    started = await student.post(
+        f"/api/v1/interview-sessions/{opened['id']}/start", json={"externalAiConsent": True}
+    )
+    assert started.status_code == 200, started.text
+    payload = provider.calls[0]["data"]["knowledge"]
+    supplied = next(item for item in payload if item["knowledgeId"] == "tech-sql-aggregate-null")
+    assert "array_agg" in supplied["principle"]
+    assert "不能" in supplied["principle"] and "偏高" in supplied["principle"]
+
+
+async def test_outdated_knowledge_session_is_read_only_and_restart_gets_current_snapshot(
+    practice_db, monkeypatch
+):
+    app, factory = practice_db
+    student = await client_for(app)
+    user = await register(student, "practice-sql-stale@example.com", "student")
+    report_id, requirement_id, _ = await seed(
+        factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="claimed_only"
+    )
+    opened = await open_session(student, report_id, requirement_id)
+    async with factory() as session:
+        row = await session.scalar(
+            select(InterviewSession).where(InterviewSession.id == UUID(opened["id"]))
+        )
+        snapshot = [dict(item) for item in row.knowledge_snapshot]
+        old = next(item for item in snapshot if item["knowledgeId"] == "tech-sql-aggregate-null")
+        old["title"] = "旧版错误标题"
+        old["contentHash"] = "0" * 64
+        row.knowledge_snapshot = snapshot
+        await session.commit()
+    stale_view = await student.get(f"/api/v1/interview-sessions/{opened['id']}")
+    assert stale_view.status_code == 200
+    stale_data = stale_view.json()["data"]
+    assert stale_data["knowledgeOutdated"] is True
+    assert any(item["title"] == "旧版错误标题" for item in stale_data["knowledge"])
+    provider = use_provider(monkeypatch, [])
+    blocked = await student.post(
+        f"/api/v1/interview-sessions/{opened['id']}/start", json={"externalAiConsent": True}
+    )
+    assert blocked.status_code == 409
+    assert "知识依据已更新" in blocked.text
+    assert provider.calls == []
+    restarted = await student.post(
+        f"/api/v1/match-reports/{report_id}/interview-sessions",
+        json={"requirementId": requirement_id, "restart": True},
+    )
+    assert restarted.status_code == 200, restarted.text
+    new_id = restarted.json()["data"]["session"]["id"]
+    assert new_id != opened["id"]
+    async with factory() as session:
+        row = await session.scalar(
+            select(InterviewSession).where(InterviewSession.id == UUID(new_id))
+        )
+        entry = next(
+            item
+            for item in row.knowledge_snapshot
+            if item["knowledgeId"] == "tech-sql-aggregate-null"
+        )
+    assert entry["contentHash"] != "0" * 64
+    assert "旧版错误标题" not in entry["title"]
+

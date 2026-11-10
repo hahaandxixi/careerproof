@@ -91,6 +91,7 @@ class InterviewSessionView(APIModel):
     materials: list[dict] = Field(default_factory=list)
     evidence: list[PracticeEvidenceView] = Field(default_factory=list)
     knowledge: list[PracticeKnowledgeView] = Field(default_factory=list)
+    knowledge_outdated: bool = False
     consent_at: datetime | None = None
     consent_scope: str | None = None
     current_turn: int
