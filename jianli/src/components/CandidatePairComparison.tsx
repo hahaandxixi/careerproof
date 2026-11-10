@@ -62,7 +62,7 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
             {dims.map((d,i)=>{const kind=radarPointKind(d,scale);if(kind==="none")return null;const measure=supportMeasure(d,scale),p=radarPosition(i,axes.length,measure.ratio!);return <g key={d.requirementId} role="button" tabIndex={0} className="cursor-pointer" aria-label={`${identityLabel(c.candidateName,c.candidateId)} · ${d.skill||d.title} · ${RADAR_STATUS[d.verdict]} · ${measure.text}`} onClick={()=>setSelectedId(d.requirementId)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setSelectedId(d.requirementId);}}}><circle cx={p.x} cy={p.y} r={ci?5:7} fill={kind==="claimed"?"white":colors[ci]} stroke={colors[ci]} strokeWidth="2.5" vectorEffect="non-scaling-stroke"/><title>{identityLabel(c.candidateName,c.candidateId)} · {RADAR_STATUS[d.verdict]} · {scale.label} {measure.text}</title></g>;})}
           </g>;})}
         </svg>:<p className="text-sm text-slate-600">要求少于3项或超过8项，直接查看逐项证据，避免轴标签拥挤。</p>}
-        <p className="text-xs leading-5 text-slate-600">线色表示候选人，不表示证据等级。仅连接相邻且有证据的点；缺材料和不可评不绘点，不代表能力零分。</p>
+        <p className="text-xs leading-5 text-slate-600">线色表示候选人，不表示证据等级。仅连接相邻且有证据的点；缺材料和不可评不绘点。</p>
         <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">指数换算依据</summary><p className="mt-1 leading-6">{supportScaleNote(scale)}</p></details>
 </aside>}
       </div>
@@ -81,7 +81,7 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
   const measure=axis?supportMeasure(axis,scale):null;
   return <article className="comparison-evidence-column min-w-0 space-y-3 border-t border-slate-200 pt-4 md:border-t-0 md:pt-0 md:first:pr-4 md:last:pl-4" aria-label={`${identityLabel(candidate.candidateName,candidate.candidateId)}的固定证据`}>
     <h3 className="comparison-candidate-name break-words font-semibold" style={{color}}><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/></h3>
-    {report&&<p className="break-words text-sm leading-6 text-slate-600">{reportModeLabel(report)}{report.materials.length ? ` · ${report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ")}` : " · 材料版本未记录"}</p>}
+    {report&&<p className="break-words text-sm leading-6 text-slate-600">{reportModeLabel(report) ? `${reportModeLabel(report)} · ` : ""}{report.materials.length ? report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ") : "材料版本未记录"}</p>}
     {independent&&<label className="block text-sm"><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/>的岗位要求<select className="field mt-1" value={requirementId} onChange={e=>onSelect(e.target.value)}>{candidate.dimensions.map(d=><option key={d.requirementId} value={d.requirementId}>{d.skill||d.title}</option>)}</select></label>}
     {item?<>
       {independent && <p className="break-words text-base font-medium">{item.requirementTitle || item.skill}</p>}

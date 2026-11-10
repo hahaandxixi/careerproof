@@ -7,7 +7,7 @@ function prioritize(items: ReportItem[]) {
 
 export const ACTION_SOURCE_LABELS = {
   ai_suggestion: "AI 证据建议",
-  rules: "本地规则提示",
+  rules: "",
   review: "人工复核后",
 } as const;
 

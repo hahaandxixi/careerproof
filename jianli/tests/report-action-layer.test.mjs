@@ -71,7 +71,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
 test("identical rules advice and gap appear once in the action panel", () => {
  const value = item("same"); const html=render(report([value],[advice(value)]));
  assert.equal(count(html,value.evidenceLevelGap),1);
- assert.ok(html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
+ assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
 });
 
 test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
@@ -95,7 +95,7 @@ test("non-students retain explanation and advice without private student task co
  const value=item("admin");
  for(const role of ["admin","enterprise",undefined]) {
   const html=render(report([value],[advice(value)]),role ?? "anonymous");
-  assert.ok(html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
+  assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
   assert.ok(!html.includes(">开始补证</button>")); assert.ok(!html.includes('id="growth-')); assert.ok(!html.includes('href="/growth"'));
  }
 });
@@ -234,4 +234,3 @@ test("no report requirement mounts task lookup or task plan editing for any save
  assert.ok(!source.includes("GrowthTaskStart"));
  assert.ok(!source.includes("existingGrowthTask"));
 });
-

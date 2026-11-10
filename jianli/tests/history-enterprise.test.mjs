@@ -1,4 +1,4 @@
-﻿// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
+// 传智杯44：我的投递卡片回归。突出岗位/公司/状态/回复/下一动作，事件默认折叠，
 // 撤回二次确认与重新投递入口可用，查看/下载不得推断录用。
 // 沿用 sucrase 转译加载真实 .tsx 的做法；卡片是无状态组件，可直接调用于交互验证。
 import { test } from "node:test";
@@ -62,7 +62,7 @@ test("fixed report overview separates evidence support, gaps and uncovered requi
   const original = JSON.stringify(report);
   const html = render(React.createElement(FixedReportOverview, { application: { candidateName: "合成甲", report } }));
   assert.match(html, /合成甲 · 投递时固定报告/);
-  assert.match(html, /规则证据报告/);
+  assert.ok(!html.includes("规则证据报告"));
   assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
   assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
   assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);
@@ -119,6 +119,9 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
   assert.match(html, /raise CapacityError/);
   assert.doesNotMatch(html, /DO_NOT_LEAK|不能串入的其他要求/);
   assert.match(html, /href="#selected-application-report"/);
+  const controlled = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "r-a", onOpenReport() {} }));
+  assert.match(controlled, /<button[^>]*>查看报告与回复<\/button>/);
+  assert.doesNotMatch(controlled, /href="#selected-application-report"/);
   const missing = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "other-version-r" }));
   assert.match(missing, /不同报告的要求版本可能不同/);
   assert.doesNotMatch(missing, /raise CapacityError/);
@@ -287,6 +290,3 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
  const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
 });
-
-
-

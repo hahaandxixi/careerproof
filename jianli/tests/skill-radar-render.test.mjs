@@ -147,7 +147,7 @@ test("linked detail renders only selected requirement citations and keeps source
  assert.ok(!/<details[^>]*\bopen[= >]/.test(html));
  const gap=render({dimensions,items,initialRequirementId:"pytest"});
  assert.ok(!gap.includes("R1-E1") && !gap.includes("example-source-only"));
- assert.ok(gap.includes("缺材料不代表没有能力"));
+ assert.ok(!gap.includes("不代表没有能力"));
  assert.ok(!gap.includes("<polygon"));
 });
 test("synthetic radar never fabricates citations and supports fewer than three requirements", () => {

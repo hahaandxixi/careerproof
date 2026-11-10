@@ -17,7 +17,7 @@ function mount(overrides={}) {
     useMemo(fn,deps){const i=cursor++;if(changed(cells[i]?.deps,deps))cells[i]={deps,value:fn()};return cells[i].value;},
     useEffect(fn,deps){const i=cursor++;if(changed(cells[i]?.deps,deps)){cells[i]?.cleanup?.();cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}},
   };
-  const modules={react:hooks,'react/jsx-runtime':jsx,'next/link':{__esModule:true,default:()=>null},'@/lib/application-submit-session':{createApplicationSubmitSession},'@/lib/api/client':{api:{createApplication:async(...args)=>{calls.push(args);if(overrides.error)throw overrides.error;return{id:'a'};}},errorMessage:e=>e.message}};
+  const modules={react:hooks,'react/jsx-runtime':jsx,'next/link':{__esModule:true,default:(props)=>React.createElement('a',{href:props.href},props.children)},'@/lib/application-submit-session':{createApplicationSubmitSession},'@/lib/api/client':{api:{createApplication:async(...args)=>{calls.push(args);if(overrides.error)throw overrides.error;return{id:'a'};}},errorMessage:e=>e.message}};
   const source=readFileSync(new URL('../src/components/ApplicationSubmit.tsx',import.meta.url),'utf8');
   const mod={exports:{}};
   new Function('require','module','exports',transform(source,{transforms:['typescript','jsx','imports'],jsxRuntime:'automatic',production:true}).code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
@@ -36,6 +36,7 @@ test('missing/null/nonpositive/noninteger revision fails closed even if event is
 test('a synchronized consent submits the displayed revision exactly once while busy',async()=>{
   const h=mount();h.check(await h.settle());let tree=h.render();assert.equal(h.submit(tree).props.disabled,false);
   h.submit(tree).props.onClick();h.submit(tree).props.onClick();tree=await h.settle();assert.deepEqual(h.calls,[['r',3]]);assert.match(text(tree),/已投递/);
+  const progress=nodes(tree).find(n=>n.props?.href&&String(n.props.href).includes('#application-a'));assert.ok(progress,'成功入口必须定位新建投递');
 });
 test('review synchronization revokes consent; successful reread needs another explicit check',async()=>{
   const h=mount();h.check(await h.settle());h.setProps({blocked:true});let tree=await h.settle();

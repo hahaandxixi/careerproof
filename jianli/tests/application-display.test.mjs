@@ -25,11 +25,13 @@ test("企业回复类型保留三类映射", () => {
   assert.equal(applicationReplyText("declined"), "暂不推进");
 });
 
-test("查看/下载状态的下一步必须等待回复并明示不代表通过筛选，不得推断录用", () => {
+test("查看/下载状态只描述已发生事件，下一步等待回复且不推断录用", () => {
+  assert.equal(applicationStatusText("viewed"), "企业已查看");
+  assert.equal(applicationStatusText("downloaded"), "简历下载已交付");
   for (const status of ["viewed", "downloaded"]) {
     const next = applicationNextAction(status);
     assert.match(next, /等待企业回复/);
-    assert.match(next, /不代表通过筛选/);
+    assert.doesNotMatch(next, /不代表通过筛选/);
     assert.doesNotMatch(next, /录用概率|有望通过|即将进入面试|已录用/);
   }
 });

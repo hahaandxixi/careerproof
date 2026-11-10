@@ -25,17 +25,17 @@ const identities = [
 // report text and diagnostic records stay untouched; example disclosure remains.
 const jobAliases = new Map([
   ["1233f1e2-169f-4ea5-a5a0-542fa940e897", {
-    title: "材料证据阅读示例", companyName: "示例企业", description: undefined,
+    title: "材料核查实习生", companyName: "云栈科技", description: undefined,
     boundaryFixture: true,
   }],
   ["72e49e95-4f27-4412-ac94-f1675a5f8970", {
-    title: "Django 后端开发实习生", companyName: "示例企业", description: undefined,
+    title: "Django 后端开发实习生", companyName: "云栈科技", description: undefined,
   }],
   ["6c8ad563-ebf8-427c-b4a3-82905f37dbd0", {
-    title: "数据工程实习生", companyName: "示例企业", description: undefined,
+    title: "数据工程实习生", companyName: "云栈科技", description: undefined,
   }],
   ["f05872f3-1b5f-4bb3-bfcd-9629d170b471", {
-    title: "数据处理实习生", companyName: "示例企业", description: undefined,
+    title: "数据处理实习生", companyName: "云栈科技", description: undefined,
   }],
 ]);
 

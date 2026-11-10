@@ -1,4 +1,4 @@
-﻿import { test } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -82,16 +82,16 @@ test("closing needs confirmation, cancelling leaves data unchanged; publishing r
  }finally{if(old===undefined)delete globalThis.window;else globalThis.window=old;}
 });
 test("notification short action delegates by id; unavailable and busy states remain guarded",()=>{
- const item={id:"notice-a",type:"replied",title:"企业已回复，请在投递详情核对正文",createdAt:"2026-10-29T12:00:00Z",readAt:null,accessible:true};
+ const item={id:"notice-a",type:"replied",title:"企业已回复",createdAt:"2026-10-29T12:00:00Z",readAt:null,accessible:true};
  const original=JSON.stringify(item),opened=[],read=[];
  const tree=NotificationCard({item,busy:false,onOpen:id=>opened.push(id),onRead:id=>read.push(id)});
- const html=render(tree);assert.match(html,/>企业已回复</);assert.doesNotMatch(html,/核对正文|核对授权并打开/);
+ const html=render(tree);assert.match(html,/>企业已回复</); assert.doesNotMatch(html,/核对授权并打开/);
  for(const button of nodes(tree).filter(n=>n.type==="button"))button.props.onClick();
  assert.deepEqual(opened,["notice-a"]);assert.deepEqual(read,["notice-a"]);assert.equal(JSON.stringify(item),original);
  const unavailable=NotificationCard({item:{...item,accessible:false,readAt:"saved"},busy:false,onOpen(){throw Error("unauthorized");},onRead(){}});
  assert.equal(nodes(unavailable).filter(n=>n.type==="button").length,0);assert.match(text(unavailable),/不可访问/);
  const busy=NotificationCard({item,busy:true,onOpen(){},onRead(){}});assert.ok(nodes(busy).filter(n=>n.type==="button").every(n=>n.props.disabled));
- const other=render(NotificationCard({item:{...item,type:"viewed",title:"已查看，不代表录用"},busy:false,onOpen(){},onRead(){}}));assert.match(other,/已查看，不代表录用/);
+ const other=render(NotificationCard({item:{...item,type:"viewed",title:"企业已查看"},busy:false,onOpen(){},onRead(){}}));assert.match(other,/企业已查看/);
 });
 test("empty candidate list distinguishes an applied filter and offers only real recovery actions",()=>{
  let cleared=0;const filtered=ApplicationEmptyState({filtered:true,onClear:()=>cleared++});
@@ -107,5 +107,3 @@ test("history action still filters the actual job and report links keep the fixe
  nodes(tree).find(n=>n.type==="button"&&text(n)==="同岗位共 4 份报告").props.onClick();
  assert.equal(target,"fixed-job");assert.match(render(tree),/href="\/reports\/fixed-report"/);assert.match(text(tree),/报告详情/);
 });
-
-

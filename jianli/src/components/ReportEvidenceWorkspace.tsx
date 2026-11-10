@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import type { ReactNode } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
@@ -65,7 +65,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     {!supported && <div className="space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <h4 className="font-semibold text-slate-900">{action || plan ? "本项已保存的具体要求" : "以下为通用补证建议"}</h4>
-        {action && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
+        {action && ACTION_SOURCE_LABELS[action.source] && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
       </div>
       {!plan && text?.advice && <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-800">{text.advice}</p>}
       {plan ? <div className="space-y-3 text-sm leading-7">
@@ -98,7 +98,3 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     </aside>}
   </div>;
 }
-
-
-
-

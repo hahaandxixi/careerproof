@@ -86,8 +86,8 @@ test("卡片突出岗位/公司/状态/下一动作，锚点 id 保留", () => {
   const html = renderCard(fixture());
   assert.ok(html.includes("前端工程师"), html);
   assert.ok(html.includes("示例公司"), html);
-  assert.ok(html.includes("企业已查看报告，尚未回复"), html);
-  assert.ok(html.includes("等待企业回复即可；查看报告不代表通过筛选"), html);
+  assert.ok(html.includes("企业已查看"), html);
+  assert.ok(html.includes("等待企业回复即可。"), html);
   assert.ok(html.includes('id="application-app-1"'), html);
 });
 
@@ -103,7 +103,7 @@ test("完整投递记录默认折叠，摘要给条数，内容仍可展开", ()
 test("查看与下载状态的卡片不推断录用", () => {
   for (const status of ["viewed", "downloaded"]) {
     const html = renderCard(fixture({ status }));
-    assert.match(html, /不代表通过筛选/);
+    assert.doesNotMatch(html, /不代表通过筛选|录用概率|已录用|有望通过/);
     assert.doesNotMatch(html, /录用概率|已录用|有望通过/);
   }
 });
@@ -177,4 +177,3 @@ test("enterprise sent reply uses the same metadata and does not substitute appli
  const before=JSON.stringify(item);const html=renderToStaticMarkup(React.createElement(Reply,{application:item,sent:true}));
  assert.match(html,/已发送 · /);assert.match(html,/面试邀请/);assert.match(html,/dateTime="2026-10-31T08:00:00Z"/i);assert.match(html,/原始企业回复/);assert.doesNotMatch(html,/2026-10-12/);assert.equal(JSON.stringify(item),before);
 });
-

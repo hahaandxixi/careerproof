@@ -2,7 +2,7 @@ import type { MatchReport, ReportEvidence } from "./api/domain";
 
 export function agentProcessSummary(report: MatchReport): string {
   if (report.aiFallbackUsed) return "AI 分析未完成，已保留规则结果；补检索记录不代表 AI 结论已采信。";
-  if (report.aiProcess?.skippedReason === "consent_not_granted") return "未授权外部分析，本次未调用模型；下方仍可使用规则证据和补证入口。";
+  if (report.aiProcess?.skippedReason === "consent_not_granted") return "未授权外部分析，本次未调用模型；下方仍可核对已保存材料并使用补证入口。";
   if (report.aiProcess?.skippedReason === "no_evidence") return "没有可用的模型证据上下文，程序跳过外部分析；不代表材料中完全没有相关实现。";
   if (report.aiProcess?.skippedReason === "usage_budget") return "本次预算闸门未放行模型分析，保留规则结果；这不是模型主动停止。";
   if (report.aiProcess?.planningSkippedReason === "report_budget_reserved") return "程序为最终分析预留用量，停止额外工具规划；这不是模型主动选择停止。";

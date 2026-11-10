@@ -2,8 +2,8 @@
 // 供 ApplicationList 卡片与回归测试共用；文案不把查看或下载推断为录用进展。
 export const APPLICATION_STATUS_TEXT: Record<string, string> = {
   submitted: "已投递",
-  viewed: "企业已查看报告，尚未回复",
-  downloaded: "平台已交付简历下载，尚未回复",
+  viewed: "企业已查看",
+  downloaded: "简历下载已交付",
   replied: "企业已回复",
   withdrawn: "已撤回授权",
 };
@@ -14,11 +14,11 @@ export const APPLICATION_REPLY_TEXT: Record<string, string> = {
   declined: "暂不推进",
 };
 
-// 每种状态给求职者一个此刻能执行的下一步；查看/下载都不等于通过筛选。
+// 每种状态给求职者一个此刻能执行的下一步，只说动作，不复述状态。
 export const APPLICATION_NEXT_ACTION: Record<string, string> = {
   submitted: "等待企业查看，稍后可刷新状态。",
-  viewed: "等待企业回复即可；查看报告不代表通过筛选。",
-  downloaded: "等待企业回复即可，无需重复投递；下载也不代表通过筛选。",
+  viewed: "等待企业回复即可。",
+  downloaded: "等待企业回复即可，无需重复投递。",
   replied: "阅读企业回复并按其内容跟进。",
   withdrawn: "如需继续该岗位，可重新确认授权后再次投递。",
 };

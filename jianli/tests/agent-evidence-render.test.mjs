@@ -53,7 +53,7 @@ const render = (report = fixture, canGrow = true) => renderToStaticMarkup(React.
 
 test("component shows actual source and final use before technical logs", () => {
   const html = render();
-  for (const text of ["检索记录", "Mock 界面验证", "project/order.py", "store.rollback()", "最终解释引用了", "对照其他已保存引用", "不能据此还原首轮实际发送"]) assert.ok(html.includes(text), text);
+  for (const text of ["检索记录", "演示结果", "project/order.py", "store.rollback()", "最终解释引用了", "对照其他已保存引用", "不能据此还原首轮实际发送"]) assert.ok(html.includes(text), text);
   assert.match(html,/^<details\b(?![^>]*\bopen)/);
   assert.ok(!html.includes("没有保存初始AI判断"));
   assert.ok(!html.includes("补检索前的已有引用"));

@@ -48,16 +48,16 @@ test('same-time same-version reports retain distinct stable values and understan
 });
 test('historical diagnostic direct report gets a natural title without mutating unrelated titles',()=>{
  const raw='材料证据状态 · 三态合成验收';
- assert.equal(displayJobTitle(raw,'1233f1e2-169f-4ea5-a5a0-542fa940e897'),'材料证据阅读示例');
+ assert.equal(displayJobTitle(raw,'1233f1e2-169f-4ea5-a5a0-542fa940e897'),'材料核查实习生');
  assert.equal(displayJobTitle(raw,'real-job'),raw);
 });
 test('ordinary source labels distinguish AI success, unrequested analysis and budget-blocked fallback honestly',()=>{
  assert.equal(typeof reportDisplay.reportReadingStatus,'function');
- assert.equal(reportDisplay.reportReadingStatus(saved('x')).label,'规则分析结果');
+ assert.equal(reportDisplay.reportReadingStatus(saved('x')),null);
  const blocked=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,items:[{aiStatus:'rules_only'}]}));
- assert.equal(blocked.label,'AI 分析未完成');assert.match(blocked.reason,/当前显示规则分析结果/);
+ assert.equal(blocked.label,'AI 分析未完成');assert.equal(blocked.reason,'');
  const invalid=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,aiProcess:{fallbackReason:'invalid_output_or_config'},items:[{aiStatus:'rules_only'}]}));
- assert.equal(invalid.label,'AI 结果未通过校验');assert.match(invalid.reason,/当前显示规则分析结果/);
+ assert.equal(invalid.label,'AI 结果未通过校验');assert.equal(invalid.reason,'');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true})).label,'暂无可用分析结果');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:false,items:[{aiStatus:'validated'}]})).label,'AI 分析完成');
 });

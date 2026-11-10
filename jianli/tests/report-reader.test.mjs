@@ -129,7 +129,9 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
   };
   const before = JSON.stringify(report);
   const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "规则证据报告", "AI 分析未完成", "当前显示规则分析结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  assert.ok(!html.includes("规则证据报告"));
+  assert.ok(!html.includes("规则分析"));
   assert.equal((html.match(/class="btn /g) ?? []).length, 1);
   assert.ok(html.includes('href="#requirement-tests"'));
   assert.ok(!html.includes("模型耗时"));
@@ -284,7 +286,7 @@ test("integrated overview keeps fixed versions and fallback visible without dupl
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
  const header=renderToStaticMarkup(React.createElement(PaperHeader,{report:value}));
- assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("AI 分析未完成") && html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.ok(html.includes('href="#report-materials"')); assert.ok(!html.includes("规则分析结果") && !html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
  assert.match(header, /<h1[^>]*>后端<\/h1>/); assert.ok(header.includes("林舟")); assert.ok(header.includes("AI 分析未完成"));
  assert.ok(!html.includes("<h1"), "identity belongs to the shared paper header only");
  assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));

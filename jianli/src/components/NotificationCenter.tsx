@@ -13,7 +13,7 @@ export function NotificationCard({ item, busy, onOpen, onRead }: {
   item: NotificationItem; busy: boolean; onOpen(id: string): void; onRead(id: string): void;
 }) {
   return <li className="workspace-row space-y-2">
-    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="flex min-w-0 items-baseline gap-2 font-semibold">{!item.readAt && <span aria-hidden="true" className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full bg-indigo-600" />}<span className="break-words">{item.type === "replied" ? "企业已回复" : item.title}</span></h2><p className="shrink-0 text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
+    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="flex min-w-0 items-baseline gap-2 font-semibold">{!item.readAt && <span aria-hidden="true" className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full bg-indigo-600" />}<span className="break-words">{item.title}</span></h2><p className="shrink-0 text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
     <div className="card-actions">{item.accessible ? <button type="button" className="btn-secondary" disabled={busy} onClick={() => onOpen(item.id)}>查看投递</button> : <p className="text-sm text-slate-600">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button type="button" className="btn-quiet" disabled={busy} onClick={() => onRead(item.id)}>标为已读</button>}</div>
   </li>;
 }
@@ -67,7 +67,6 @@ function Workspace() {
     finally { locked.current = false; if (alive.current && ticket === generation.current) setBusy(false); }
   }
   return <div className="space-y-5"><h1 className="page-title">通知中心</h1>
-    <details className="text-xs text-slate-500"><summary className="cursor-pointer py-2 text-indigo-700">通知说明</summary><p className="mt-2 leading-5">投递、查看、下载、回复和撤回会产生站内通知。阅读通知不等于阅读报告，历史事件不补发。打开投递时仍会核对授权；撤回后旧通知不能打开报告。</p></details>
     <div className="flex flex-wrap items-center gap-3"><button aria-pressed={!unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(false); }}>全部</button><button aria-pressed={unread} className="selection-toggle" disabled={busy} onClick={() => { setPage(1); setUnread(true); }}>未读</button><button className="btn-secondary" disabled={busy} onClick={() => setRevision(value => value + 1)}>刷新</button><button className="btn-quiet" disabled={busy || !data?.unreadCount} onClick={() => void act(api.readAllNotifications)}>全部标为已读</button></div>
     {busy && <p role="status">正在读取或更新通知…</p>}{error && <p role="alert" className="panel text-rose-700">{error}</p>}
     <label className="flex items-center gap-2 text-sm">每页通知数<select className="field w-auto" disabled={busy} value={pageSize} onChange={event => { setPage(1); setPageSize(Number(event.target.value)); }}><option value={20}>20条</option><option value={50}>50条</option></select></label>

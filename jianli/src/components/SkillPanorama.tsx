@@ -103,7 +103,7 @@ function ContextRecord({ context, active, onSelect }: { context: SkillContext; a
       {evidenceList.length ? evidenceList.map((evidence, index) => <div key={`${evidence.citationId}:${index}`} className={styles.contextEvidence}>
         <p><SourceIdentity source={evidence} materials={context.materials} compact/> · 第 {evidence.lineStart}–{evidence.lineEnd} 行</p>
         <EvidenceSnippet evidence={evidence} materials={context.materials} showContextNote={false} theme="dark"/>
-      </div>) : <p className={styles.contextNoSource}>该记录没有可定位引用；保留当前判断与材料状态，可返回原报告核对缺口。</p>}
+      </div>) : <p className={styles.contextNoSource}>{item.verdict === "unsupported" ? "此项暂未评估，请核对岗位要求与材料。" : item.verdict === "claimed_only" ? "暂无此项要求的可定位引用；目前仅见简历声明。" : item.verdict === "gap" ? "暂无此项要求的可定位引用；这是材料缺口。" : "暂无此项要求的可定位引用。"}</p>}
     </section>}
   </article>;
 }

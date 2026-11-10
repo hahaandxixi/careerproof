@@ -107,9 +107,9 @@ test("enterprise status and evidence filters apply immediately while retaining c
  const h=fixture();let tree=await h.settle();
  const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id==="application-a");h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
  h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
- h.button(tree,"已回复").props.onClick();tree=await h.settle();
+ h.button(tree,"企业已回复").props.onClick();tree=await h.settle();
  assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"Python",status:"replied",requirementId:"",verdict:""});
- assert.equal(h.button(tree,"已回复").props["aria-pressed"],true);
+ assert.equal(h.button(tree,"企业已回复").props["aria-pressed"],true);
  h.button(tree,"缺少材料").props.onClick();tree=await h.settle();assert.equal(h.queries.at(-1).verdict,"gap");assert.equal(h.queries.at(-1).status,"replied");
  assert.ok(h.nodes(tree).some(n=>n.type==="button"&&n.props["aria-label"]==="移出对照：候选人a"));
  assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
@@ -148,7 +148,7 @@ test("leaving and returning restores applied filters, page two and three IDs onl
  const h=fixture(24);let tree=await h.settle();
  for(const id of ["a","b"]){choose(h,tree,id);tree=await h.settle();}
  h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
- h.button(tree,"已查看，未回复").props.onClick();tree=await h.settle();
+ h.button(tree,"企业已查看").props.onClick();tree=await h.settle();
  changePage(h,tree,2);tree=await h.settle();choose(h,tree,"u");tree=await h.settle();
  const saved=h.bookmark();assert.equal(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").page,2);
  assert.deepEqual(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").comparisonIds,["a","b","u"]);
@@ -191,4 +191,3 @@ test("popstate reauthorizes the matching history entry and server page clamping 
   await limited.settle();assert.equal(boardHistory.readApplicationBoardHistory(limited.bookmark(),"enterprise-a","job-a").page,1);assert.equal(limited.counts.open,0);limited.unmount();
  }
 });
-

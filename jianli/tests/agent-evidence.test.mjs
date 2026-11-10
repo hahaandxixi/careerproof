@@ -51,7 +51,7 @@ test("history is never represented as an added current source; UI fixtures are n
   const value = report(); value.aiToolCalls[0].tool = "get_previous_report_context";
   const row = agentEvidenceRows(value)[0];
   assert.equal(row.added, undefined); assert.match(row.action, /不作为本轮评级证据/);
-  assert.match(reportModeLabel({ ...value, aiProvider: "mock-ui" }), /非真实模型/);
+  assert.equal(reportModeLabel({ ...value, aiProvider: "mock-ui" }), "演示结果");
 });
 test("no consent, no evidence and budget skips are explicit program outcomes", () => {
   const value = report(); value.aiToolCalls = [];

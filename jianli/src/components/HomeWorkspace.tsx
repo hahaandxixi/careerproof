@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -71,7 +71,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     </div>
   </section>;
   const recentReports = <WorkSection title="最近报告" href="/reports" empty="没有可显示的报告。先选定材料，再进入岗位生成报告。">
-    {work.reports.map(report => <li key={report.id}><Link className="work-row" href={`/reports/${report.id}`}><strong className="block break-words text-sm">{displayJobTitle(report.jobTitle, report.jobId)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(report.createdAt).toLocaleString("zh-CN")} · {report.isLatestForJob === true ? "最新报告" : report.isLatestForJob === false ? "历史报告" : "报告"} · {report.aiFallbackUsed || report.analysisMode === "rules" ? "规则分析" : "AI 辅助分析"} · 打开报告 →</span></Link></li>)}
+    {work.reports.map(report => <li key={report.id}><Link className="work-row" href={`/reports/${report.id}`}><strong className="block break-words text-sm">{displayJobTitle(report.jobTitle, report.jobId)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(report.createdAt).toLocaleString("zh-CN")} · {report.isLatestForJob === true ? "最新报告" : report.isLatestForJob === false ? "历史报告" : "报告"} · 打开报告 →</span></Link></li>)}
   </WorkSection>;
   const unread = <WorkSection title="未读消息" href="/notifications" empty="当前没有可显示的未读消息。">
     {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><span className="flex items-start gap-2">{!notification.readAt && <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#1d4a40]" />}<span className="min-w-0"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")}</span></span></span></Link></li>)}
@@ -101,9 +101,3 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
 function WorkSection({ title, href, empty, children }: { title: string; href: string; empty: string; children: React.ReactNode[] }) {
   return <section className="workspace-sheet px-4 py-3 sm:px-5"><div className="flex items-center justify-between gap-3"><h2 className="section-title">{title}</h2><Link className="btn-secondary shrink-0" href={href} aria-label={`查看全部${title}`}>查看全部</Link></div>{children.length ? <ul className="divide-y divide-slate-100">{children}</ul> : <p className="mt-3 text-sm leading-6 text-slate-600">{empty}</p>}</section>;
 }
-
-
-
-
-
-
