@@ -3,14 +3,15 @@ import type { MatchReport } from "@/lib/api/domain";
 import { boundaryFixtureJob, displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import { reportReadingStatus } from "@/lib/report-display";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 /** Identity shared by all report sections; it must stay outside the hidden panels. */
-export default function ReportPaperHeader({ report }: { report: MatchReport }) {
+export default function ReportPaperHeader({ report, backHref = "/reports", versionTools }: { report: MatchReport; backHref?: string; versionTools?: ReactNode }) {
   const status = reportReadingStatus(report);
   const boundaryFixture = boundaryFixtureJob(report.jobId);
   const analysisLabel = status?.label === "AI 分析完成" ? "AI 分析" : "";
   return <header className="report-paper-heading report-command-bar" aria-labelledby="report-title">
-    <Link className="review-back" href="/reports">← 我的报告</Link>
+    <Link className="review-back" href={backHref}>← 我的报告</Link>
     {boundaryFixture && <p className="report-fixture-notice" role="note"><strong>历史核验资料</strong> · 本报告用于核对「暂不支持」判定的边界，不作为默认岗位样本；原始报告与投递快照保持不变。</p>}
     <div className="report-command-identity">
       <div className="min-w-0">
@@ -35,5 +36,6 @@ export default function ReportPaperHeader({ report }: { report: MatchReport }) {
       <span>材料版本</span>
       {report.materials.map(material => <span key={`${material.kind}-${material.id}`} className="report-material-chip">{displayMaterialTitle(material.title, material.id)} · v{material.versionNumber}</span>)}
     </p>
+    {versionTools}
   </header>;
 }

@@ -41,7 +41,7 @@ function fixture(count=2,editRow=value=>value,options={}){
  const row=id=>editRow({id,jobId,reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],fixedRequirementBasisComplete:true,comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
  const pageResult=requested=>{const rows=[...(authorized&&count>0?[row("a")]:[]),...Array.from({length:Math.max(0,count-1)},(_,i)=>row(String.fromCharCode(98+i)))];const page=Math.min(requested,Math.max(1,Math.ceil(rows.length/20)));return {items:rows.slice((page-1)*20,page*20),total:rows.length,page,pageSize:20};};
  const api={getJob:async()=>({id:jobId,title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult(page);},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
-  openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`}};},
+  openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`,jobId,items:options.fixedItems?.(id)??[]}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
  const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
@@ -118,9 +118,9 @@ test("enterprise status and evidence filters apply immediately while retaining c
 
 test("selected heatmap cell identifies both candidate and requirement after returning to the matrix",async()=>{
  const h=fixture();let tree=await h.settle();
- const cell=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="候选人a · Python要求 · 仅简历声明");
+ const cell=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
  assert.ok(cell);await cell.props.onClick();tree=await h.settle();h.button(tree,"候选人").props.onClick();tree=h.render();
- const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]==="候选人a · Python要求 · 仅简历声明");
+ const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
  assert.equal(selected.props["aria-pressed"],true);assert.match(selected.props.className,/ring-inset/);
  assert.equal(h.counts.reply,0);
 });
@@ -133,7 +133,7 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
  const missing=cell("候选人b · Python要求 · 本报告无此项");assert.ok(missing);assert.equal(missing.props.disabled,true);assert.match(text(missing),/本报告无此项/);
  missing.props.onClick();assert.equal(h.counts.open,0);
  const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
- const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
+ const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported+"复核状态未载入");
  await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
 });
 
@@ -190,4 +190,19 @@ test("popstate reauthorizes the matching history entry and server page clamping 
   const limited=fixture(count,value=>value,{historyState:boardHistory.applicationBoardHistoryState(null,"enterprise-a","job-a",{page:2,filters:{q:"",status:"",requirementId:"",verdict:""},comparisonIds:[]})});
   await limited.settle();assert.equal(boardHistory.readApplicationBoardHistory(limited.bookmark(),"enterprise-a","job-a").page,1);assert.equal(limited.counts.open,0);limited.unmount();
  }
+});
+
+test("matrix keeps the frozen verdict and labels loaded review for the matching candidate", async()=>{
+ const h=fixture(2,row=>({...row,dimensions:row.dimensions.map(d=>({...d,verdict:"supported"}))}),{
+  fixedItems:id=>[{requirementId:"r1",verdict:"supported",confirmationStatus:id==="a"?"rejected":"corrected",evidenceList:[]}],
+ });
+ let tree=await h.settle();
+ const cell=id=>h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人"+id+" · Python要求"));
+ assert.match(text(cell("a")),/有证据支持.*复核状态未载入/);
+ cell("a").props.onClick();tree=await h.settle();
+ assert.match(text(cell("a")),/有证据支持.*本人已驳回/);
+ assert.match(text(cell("b")),/复核状态未载入/);
+ cell("b").props.onClick();tree=await h.settle();
+ assert.match(text(cell("b")),/有证据支持.*本人标记修正/);
+ assert.doesNotMatch(text(cell("a")),/本人标记修正/);
 });

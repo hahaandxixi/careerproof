@@ -7,10 +7,10 @@ import { createReportPairSession, reportPairLabel, reportPairOptionLabel, type R
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import ReportComparisonView from "./ReportComparisonView";
 
-export default function ReportComparisonPanel({ report, initialBaseId = "", revision }: { report: MatchReport; initialBaseId?: string; revision: string }) {
-  return <ReportPairPicker key={`${report.candidateId}:${report.jobId}:${report.id}:${revision}`} report={report} initialBaseId={initialBaseId} />;
+export default function ReportComparisonPanel({ report, initialBaseId = "", origin = "", revision }: { report: MatchReport; initialBaseId?: string; origin?: string; revision: string }) {
+  return <ReportPairPicker key={`${report.candidateId}:${report.jobId}:${report.id}:${revision}`} report={report} initialBaseId={initialBaseId} origin={origin} />;
 }
-function ReportPairPicker({ report, initialBaseId }: { report: MatchReport; initialBaseId: string }) {
+function ReportPairPicker({ report, initialBaseId, origin }: { report: MatchReport; initialBaseId: string; origin: string }) {
   const [state, setState] = useState<ReportPairState | null>(null);
   const session = useMemo(() => createReportPairSession(report, { listReports: api.listReports, getReport: api.getReport, compareReports: api.compareReports, errorMessage }, setState, initialBaseId), [report, initialBaseId]);
   useEffect(() => { session.activate(); void session.loadMore(); return () => session.dispose(); }, [session]);
@@ -22,6 +22,6 @@ function ReportPairPicker({ report, initialBaseId }: { report: MatchReport; init
     <div className="flex flex-wrap gap-3"><button className="btn-secondary" disabled={!state?.baseId || !state.targetId || state.baseId === state.targetId || state.busy} onClick={() => void session.compare()}>{state?.busy ? "读取对比…" : "对比所选报告"}</button>{(!state || state.hasMore) && <button type="button" className="btn-secondary" disabled={state?.listing} onClick={() => void session.loadMore()}>{!state || state.listing ? "读取同岗位报告…" : "加载更多同岗位报告"}</button>}</div>
     {state?.error && <p role="alert" className="text-sm text-rose-700">{state.error}</p>}
     {state && !state.listing && !state.error && state.reports.length < 2 && <p className="text-sm text-slate-600">该岗位暂无其他可比较报告。</p>}
-    {value && <><p className="text-sm text-slate-600">当前结果：A {reportPairOptionLabel(value.base)} → B {reportPairOptionLabel(value.current)}</p><ReportComparisonView key={`${value.comparison.baseId}:${value.comparison.targetId}`} value={value.comparison} base={value.base} current={value.current} /></>}
+    {value && <><p className="text-sm text-slate-600">当前结果：A {reportPairOptionLabel(value.base, state?.reports)} → B {reportPairOptionLabel(value.current, state?.reports)}</p><ReportComparisonView key={`${value.comparison.baseId}:${value.comparison.targetId}`} value={value.comparison} base={value.base} current={value.current} origin={origin} /></>}
   </section>;
 }

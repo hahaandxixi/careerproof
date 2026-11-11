@@ -562,6 +562,7 @@ class AnalysisService:
     async def list_reports(
         self, user: User, page: int = 1, page_size: int = 20,
         *, q: str | None = None, job_id: UUID | None = None, scope: str = "product",
+        view: str = "reports",
     ):
         # The count and the page slice share the same ownership predicate, and a
         # caller is clamped to the last available page instead of an empty page.
@@ -596,6 +597,8 @@ class AnalysisService:
             ))
         if job_id is not None:
             conditions.append(MatchReport.job_id == job_id)
+        if view == "jobs":
+            conditions.append(history.c.job_order == 1)
         total = int(
             await self.session.scalar(
                 select(func.count())

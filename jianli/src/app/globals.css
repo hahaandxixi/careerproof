@@ -479,6 +479,18 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .comparison-result-row { padding: 22px 0; border-top: 1px solid #e0dbcd; border-radius: 0; background: transparent; }
 .comparison-result-row > summary { margin-bottom: 0; }
 .comparison-result-row p { max-width: 76ch; }
+.report-version-tools { max-width: 56rem; margin-top: 12px; overflow-wrap: anywhere; }
+.report-comparison-workbench { display: grid; gap: 20px; align-items: start; }
+.report-comparison-matrix { table-layout: fixed; overflow-wrap: anywhere; }
+.report-comparison-matrix th, .report-comparison-matrix td { padding: 10px 8px; border-bottom: 1px solid #e0dbcd; vertical-align: top; }
+.report-comparison-matrix th:first-child { width: 44%; }
+.report-comparison-matrix thead { background: #f2f1eb; }
+.report-comparison-matrix tr[data-selected="true"] { background: #e8f0ea; }
+.report-comparison-matrix button { min-height: 44px; }
+.report-comparison-reader { border: 1px solid #e0dbcd; padding: 16px; }
+@media (min-width: 1536px) {
+  .report-comparison-workbench { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
 .comparison-no-change { padding: 14px 0; border-block: 1px solid #e0dbcd; color: #65746e; font-size: 15px; line-height: 1.7; }
 
 .home-sample > div:first-child { margin: -24px -24px 10px; padding: 14px 24px; border-radius: 8px 8px 0 0; background: var(--ink-nav); color: #edf2f0; }

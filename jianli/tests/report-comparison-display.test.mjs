@@ -1,3 +1,4 @@
+import * as navigation from "../src/lib/report-navigation.ts";
 import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -75,7 +76,7 @@ function render(f, filter="changed") {
     "@/lib/demo-display-identity.js":demoPresentation,
     react:{useState:()=>[filter,()=>{}]},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
-    "@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
+    "@/lib/report-navigation":navigation,"@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
     "@/lib/report-display":{aiStatusLabel:(value)=>value ? String(value) : "未记录"},
     "@/lib/growth-workflow":{GROWTH_CHANGES:{}},"./ReportItemExplanation":{__esModule:true,default:Explanation},
   });
@@ -125,5 +126,23 @@ test("panel only displays complete authorized report data and preserves actual r
     if(fail){assert.equal(find(tree,n=>n.type===View),undefined);assert.equal(find(tree,n=>n.props?.role==="alert").props.children,"原报告暂时无法读取");}
     else {const view=find(tree,n=>n.type===View);assert.equal(view.props.base,f.base);assert.equal(view.props.current,f.current);}
     dispose();
+  }
+});
+
+test("real rule-version key warns on comparison while preserving original rule identities", () => {
+  for (const [formulaChanged, evidenceChanged] of [[true,false],[false,true],[true,true],[false,false]]) {
+    const changed = formulaChanged || evidenceChanged;
+    const f=fixture({changes:changed?["rule_version"]:[]});
+    f.value.contextChanges=changed?["rule_version"]:[];
+    Object.assign(f.base.items[0],{formulaVersion:"formula-A",evidenceLevelVersion:"evidence-A"});
+    Object.assign(f.current.items[0],{formulaVersion:formulaChanged?"formula-B":"formula-A",evidenceLevelVersion:evidenceChanged?"evidence-B":"evidence-A"});
+    const html=render(f,"all");
+    assert.equal(html.includes("比较依据有变化"),changed);
+    if (changed) {
+      assert.match(html,/formula-A/);
+      assert.match(html,/evidence-A/);
+      assert.equal(html.includes("formula-B"),formulaChanged);
+      assert.equal(html.includes("evidence-B"),evidenceChanged);
+    }
   }
 });

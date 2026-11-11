@@ -58,6 +58,13 @@ export function turnNotice(turn: PracticeTurn) {
   return "";
 }
 
+export function feedbackStatusLabel(turn: PracticeTurn) {
+  if (turn.feedback) return "点评已生成";
+  if (generationPending(turn.feedbackTask)) return turn.feedbackTask?.status === "running" ? "正在生成点评" : "点评等待处理";
+  if (turn.state === "failed" || turn.feedbackTask?.status === "failed") return "点评未生成";
+  return turn.state === "question" ? "待点评" : "点评尚未生成";
+}
+
 export function canRetryFeedback(turn: PracticeTurn) {
   return turn.state === "failed" || (turn.state === "answered" && !turn.feedbackTask);
 }

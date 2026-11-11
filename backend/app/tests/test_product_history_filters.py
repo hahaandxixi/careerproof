@@ -28,8 +28,8 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
             material = deepcopy(original.materials_snapshot)
             base = datetime(2026, 1, 1, tzinfo=UTC)
             old_ids = []
-            for index in range(43):
-                foreign = index == 42
+            for index in range(67):
+                foreign = index == 66
                 task = AnalysisTask(
                     created_by=scope["created_by"] if foreign else scope["user_id"],
                     task_type="job_match",
@@ -37,7 +37,7 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
                 )
                 session.add(task)
                 await session.flush()
-                selected = index < 2 or foreign
+                selected = index < 24 or foreign
                 snapshot = deepcopy(material)
                 snapshot[0]["versionNumber"] = index + 1
                 report = MatchReport(
@@ -46,7 +46,7 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
                     candidate_ref=str(scope["user_id"]),
                     candidate_name="合成学生",
                     summary="固定材料",
-                    job_snapshot={"title": "目标100%_岗位" if selected else "其他"},
+                    job_snapshot={"title": "目标100%_岗位" if index < 2 or foreign else "其他"},
                     materials_snapshot=snapshot,
                     created_at=base + timedelta(minutes=index),
                 )
@@ -82,7 +82,7 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
         assert [row["id"] for row in data["items"]] == list(reversed(old_ids))
         # Original report for this job is newer but does not match the old title;
         # filtering must not make the two historical matches appear "latest".
-        assert all(row["jobReportCount"] == 3 for row in data["items"])
+        assert all(row["jobReportCount"] == 25 for row in data["items"])
         assert all(row["isLatestForJob"] is False for row in data["items"])
         assert [row["materials"][0]["versionNumber"] for row in data["items"]] == [2, 1]
         current = (
@@ -93,9 +93,27 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
                 },
             )
         ).json()["data"]
-        assert current["total"] == 3
+        assert current["total"] == 25
         assert current["items"][0]["id"] == str(rid)
         assert current["items"][0]["isLatestForJob"] is True
+        versions_page = (
+            await student.get("/api/v1/match-reports", params={"jobId": job["id"], "page": 2})
+        ).json()["data"]
+        assert versions_page["total"] == 25 and len(versions_page["items"]) == 5
+        assert all(not row["isLatestForJob"] for row in versions_page["items"])
+        job_pages = [
+            (await student.get(
+                "/api/v1/match-reports", params={"view": "jobs", "page": page},
+            )).json()["data"]
+            for page in (1, 2, 3)
+        ]
+        page_counts = [(page["total"], len(page["items"])) for page in job_pages]
+        assert page_counts == [(43, 20), (43, 20), (43, 3)]
+        job_rows = [row for page in job_pages for row in page["items"]]
+        assert all(row["isLatestForJob"] for row in job_rows)
+        assert len({row["jobId"] for row in job_rows}) == 43
+        assert [row["id"] for row in job_rows if row["jobId"] == job["id"]] == [str(rid)]
+        assert any(row["jobTitle"] == "其他" for row in job_pages[1]["items"])
         empty = (
             await student.get(
                 "/api/v1/match-reports",

@@ -4,31 +4,22 @@ import { displayJobTitle, displayMaterialTitle } from "./demo-display-identity.j
 export function sameReportScope(reference: ReportSummary, report: ReportSummary) {
   return report.jobId === reference.jobId && report.candidateId === reference.candidateId;
 }
-function reportLabelContent(report: ReportSummary) {
-  const time = new Date(report.createdAt).toLocaleString("zh-CN", { hour12: false });
-  const materials = report.materials?.map(material =>
-    `${displayMaterialTitle(material.title || (material.kind === "resume" ? "简历" : "项目"), material.id)} v${material.versionNumber}`,
-  ).join(" / ") || "未记录材料版本";
-  return `${displayJobTitle(report.jobTitle || "岗位报告", report.jobId)} · ${time} · ${materials}`;
-}
-export function reportPairLabel(report: ReportSummary, peers: readonly ReportSummary[] = []) {
-  const label = reportLabelContent(report);
-  const same = peers.filter(row => reportLabelContent(row) === label)
-    .sort((a, b) => a.id.localeCompare(b.id));
-  return same.length > 1 ? `${label} · 同批第 ${same.findIndex(row => row.id === report.id) + 1} 份` : label;
-}
 export function reportPairOptionLabel(report: ReportSummary, peers: readonly ReportSummary[] = []) {
-  const time = new Date(report.createdAt).toLocaleString("zh-CN", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
-  const versions = report.materials?.map(material =>
-    `${displayMaterialTitle(material.title || (material.kind === "resume" ? "简历" : "项目"), material.id)} v${material.versionNumber}`,
-  ).join(" / ") || "未记录材料版本";
-  const same = peers.filter(row =>
-    new Date(row.createdAt).getTime() === new Date(report.createdAt).getTime()
-    && JSON.stringify(row.materials?.map(m => [m.kind, m.versionNumber]))
-      === JSON.stringify(report.materials?.map(m => [m.kind, m.versionNumber])),
-  ).sort((a, b) => a.id.localeCompare(b.id));
-  const duplicate = same.length > 1 ? ` · 同批第 ${same.findIndex(row => row.id === report.id) + 1} 份` : "";
-  return `${time} · ${versions}${duplicate}`;
+  const content = (row: ReportSummary) => {
+    const time = new Date(row.createdAt).toLocaleString("zh-CN", {
+      year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+    });
+    const versions = row.materials?.map(material =>
+      `${displayMaterialTitle(material.title || (material.kind === "resume" ? "简历" : "项目"), material.id)} v${material.versionNumber}`,
+    ).join(" / ") || "未记录材料版本";
+    return `${time} · ${versions}`;
+  };
+  const label = content(report);
+  return peers.some(row => row.id !== report.id && content(row) === label) ? `${label} · 报告 ${report.id}` : label;
+}
+
+export function reportPairLabel(report: ReportSummary, peers: readonly ReportSummary[] = []) {
+  return `${displayJobTitle(report.jobTitle || "岗位报告", report.jobId)} · ${reportPairOptionLabel(report, peers)}`;
 }
 export type ReportPairValue = { comparison: ReportComparison; base: MatchReport; current: MatchReport };
 export type ReportPairState = {
