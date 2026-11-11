@@ -641,8 +641,9 @@ class InterviewPracticeService:
             raise AppError("请先确认允许发送的内容", code=4224, status_code=422)
         if not session_row.knowledge_snapshot and not session_row.evidence_snapshot:
             raise AppError("这项要求缺少出题依据，请先在报告中核对材料", code=4225, status_code=422)
-        session_row.consent_at = session_row.consent_at or datetime.now(UTC)
-        session_row.consent_scope = CONSENT_SCOPE
+        if session_row.consent_at is None:
+            session_row.consent_at = datetime.now(UTC)
+            session_row.consent_scope = CONSENT_SCOPE
         session_row.status = "in_progress"
         session_row.failure_reason = None
         await self.session.flush()
@@ -699,6 +700,9 @@ class InterviewPracticeService:
             ],
         }
         data["needsFollowUp"] = turn.turn_index < (session_row.max_turns or MAX_TURNS) - 1
+        # Historical consent covered only the current question and answer.
+        if session_row.consent_scope != CONSENT_SCOPE:
+            previous = []
         data["previousIssues"] = [issue for item in previous for issue in _issue_records(item)]
         data["previousTurns"] = [
             {"question": item.question_text, "answer": item.answer_text} for item in previous

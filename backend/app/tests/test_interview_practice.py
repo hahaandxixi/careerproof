@@ -787,6 +787,25 @@ async def test_seed_refreshes_fields_and_old_digest_does_not_expire_session(
             assert (await db.get(InterviewSession, session_id)).knowledge_snapshot == [old]
 
 
+def test_legacy_consent_excludes_previous_turns_from_model_payload():
+    service = practice.InterviewPracticeService(None)
+    row = InterviewSession(max_turns=2, consent_scope="当前问题、你的回答")
+    first = InterviewAnswer(
+        turn_index=0,
+        question_text="前轮问题",
+        answer_text="前轮回答",
+        feedback={"missing": ["前轮遗漏"]},
+    )
+    second = InterviewAnswer(turn_index=1, question_text="当前问题", answer_text="当前回答")
+    legacy = service._feedback_data(row, second, [first])
+    assert legacy["answer"] == "当前回答"
+    assert legacy["previousTurns"] == legacy["previousIssues"] == []
+    row.consent_scope = practice.CONSENT_SCOPE
+    current = service._feedback_data(row, second, [first])
+    assert current["previousTurns"] == [{"question": "前轮问题", "answer": "前轮回答"}]
+    assert current["previousIssues"][0]["text"] == "前轮遗漏"
+
+
 def test_summary_resolves_only_the_issue_supported_by_second_answer():
     first = InterviewAnswer(
         turn_index=0,
