@@ -431,6 +431,7 @@ TOPIC_ALIASES = {
     "tech-sql-null-predicate": ("is null", "= null", "三值逻辑", "not in"),
     "tech-sql-join-grain": ("join", "行数放大", "金额翻倍", "结果粒度"),
     "tech-sql-aggregate-null": (
+        "sql 核查异常结果",
         "count(*)",
         "count(col)",
         "avg(",

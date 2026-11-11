@@ -719,6 +719,7 @@ async def test_outdated_knowledge_session_is_read_only_and_restart_gets_current_
         ("pytest", "使用 pytest 检查异常类型", "tech-pytest-raises-boundary"),
         ("pytest", "使用 pytest.raises 检查", "tech-pytest-raises-boundary"),
         ("SQL", "使用 SQL 分组过滤聚合结果", "tech-sql-where-having"),
+        ("SQL", "使用 SQL 核查异常结果", "tech-sql-aggregate-null"),
         ("SQL", "比较 WHERE 与 HAVING", "tech-sql-where-having"),
     ],
 )
