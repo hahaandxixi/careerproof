@@ -456,7 +456,21 @@ async def test_duplicate_submit_and_retry_never_double_call(practice_db, monkeyp
     assert retry.json()["data"]["turns"][0]["state"] == "feedback"
 
 
-async def test_ai_failure_keeps_answer_and_retry_completes(practice_db, monkeypatch):
+@pytest.mark.parametrize(
+    ("failed_output", "notice", "diagnostic"),
+    [
+        (TimeoutError(), "超时", "stage=provider reason=TimeoutError"),
+        (ValueError("private-provider-detail"), "未通过校验", "stage=provider reason=ValueError"),
+        (
+            feedback(["断言范围"], missing=["断言范围"]),
+            "未通过校验",
+            "stage=output_validation reason=同一问点只能有一种点评",
+        ),
+    ],
+)
+async def test_ai_failure_keeps_answer_and_retry_completes(
+    practice_db, monkeypatch, caplog, failed_output, notice, diagnostic
+):
     app, factory = practice_db
     student = await client_for(app, factory)
     user = await register(student, "practice-fail@example.com", "student")
@@ -473,7 +487,7 @@ async def test_ai_failure_keeps_answer_and_retry_completes(practice_db, monkeypa
         monkeypatch,
         [
             question("这条断言覆盖了哪些输入？", ["R3-E1"], [knowledge_id]),
-            TimeoutError(),
+            failed_output,
             feedback(["回答了断言范围"], ["R3-E1"], [knowledge_id]),
             feedback(["追问回答"], [], [knowledge_id]),
         ],
@@ -492,7 +506,10 @@ async def test_ai_failure_keeps_answer_and_retry_completes(practice_db, monkeypa
     assert turn["state"] == "failed"
     assert turn["answerText"] == "只覆盖了正常输入。"
     assert turn["feedback"] is None
-    assert "超时" in turn["failureReason"]
+    assert notice in turn["failureReason"]
+    assert f"task_id={turn['feedbackTask']['id']} operation=feedback {diagnostic}" in caplog.text
+    assert "private-provider-detail" not in caplog.text
+    assert turn["answerText"] not in caplog.text
 
     read = await student.get(f"/api/v1/interview-sessions/{opened['id']}")
     assert read.json()["data"]["turns"][0]["answerText"] == "只覆盖了正常输入。"

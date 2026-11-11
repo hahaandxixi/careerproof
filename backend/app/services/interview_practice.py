@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import logging
 import re
 from contextlib import suppress
 from dataclasses import dataclass
@@ -35,6 +36,8 @@ from app.models.portfolio import InterviewAnswer, InterviewSession
 from app.services.analysis import _daily_ai_budget
 from app.services.task_lifecycle import claim_task, finish_task, heartbeat_task, reset_failed_task
 from app.services.technical_knowledge import search_technical_knowledge
+
+logger = logging.getLogger(__name__)
 
 MAX_ANSWER_CHARS = 4000
 MAX_TURNS = 2
@@ -183,18 +186,22 @@ def _failure_reason(exc: BaseException) -> str:
     return "模型服务暂不可用，可重试"
 
 
+class PracticeOutputError(ValueError):
+    """Validation failure whose message is defined by this module, never by the model."""
+
+
 def _clean_items(value, *, limit: int = 4) -> list[str]:
     if not isinstance(value, list):
-        raise ValueError("期望字符串数组")
+        raise PracticeOutputError("期望字符串数组")
     items: list[str] = []
     for item in value:
         if not isinstance(item, str):
-            raise ValueError("数组元素必须是字符串")
+            raise PracticeOutputError("数组元素必须是字符串")
         text = " ".join(item.split())
         if not text:
             continue
         if len(text) > 400:
-            raise ValueError("单条内容过长")
+            raise PracticeOutputError("单条内容过长")
         items.append(text)
         if len(items) >= limit:
             break
@@ -205,35 +212,35 @@ def _clean_ids(value, allowed: set[str], label: str) -> list[str]:
     if value is None:
         return []
     if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
-        raise ValueError(f"{label} 必须是字符串数组")
+        raise PracticeOutputError(f"{label} 必须是字符串数组")
     unknown = [item for item in value if item not in allowed]
     if unknown:
-        raise ValueError(f"{label} 越出本次允许范围")
+        raise PracticeOutputError(f"{label} 越出本次允许范围")
     return list(dict.fromkeys(value))
 
 
 def _reject_unsupported_code_claims(text: str) -> None:
     if LINE_CLAIM.search(text) or CODE_CLAIM.search(text) or FILE_HINT.search(text):
-        raise ValueError("没有材料引用时不得描述具体代码")
+        raise PracticeOutputError("没有材料引用时不得描述具体代码")
 
 
 def validate_question(
     raw: dict, *, allowed_citations: set[str], allowed_knowledge: set[str], has_evidence: bool
 ) -> dict:
     if not isinstance(raw, dict):
-        raise ValueError("题目格式无效")
+        raise PracticeOutputError("题目格式无效")
     question = " ".join(str(raw.get("question") or "").split())
     focus = " ".join(str(raw.get("focus") or "").split())
     if not 8 <= len(question) <= 600:
-        raise ValueError("题目长度不合适")
+        raise PracticeOutputError("题目长度不合适")
     if len(focus) > 40:
-        raise ValueError("题目焦点过长")
+        raise PracticeOutputError("题目焦点过长")
     if not ASKS.search(question):
-        raise ValueError("题目不是可回答的问题")
+        raise PracticeOutputError("题目不是可回答的问题")
     if not has_evidence:
         _reject_unsupported_code_claims(question)
     if overclaim_flags(question):
-        raise ValueError("题目包含未经核验的结论")
+        raise PracticeOutputError("题目包含未经核验的结论")
     return {
         "question": question,
         "focus": focus,
@@ -244,7 +251,7 @@ def validate_question(
 
 def _answer_quote(value, answer: str) -> str:
     if not isinstance(value, str) or not value.strip() or value.strip() not in answer:
-        raise ValueError("点评引文不在本轮回答中")
+        raise PracticeOutputError("点评引文不在本轮回答中")
     return value.strip()
 
 
@@ -267,45 +274,45 @@ def validate_feedback(
     needs_follow_up: bool = True,
 ) -> dict:
     if not isinstance(raw, dict):
-        raise ValueError("点评格式无效")
+        raise PracticeOutputError("点评格式无效")
     findings = raw.get("findings")
     if not isinstance(findings, list) or not 1 <= len(findings) <= 12:
-        raise ValueError("点评项目格式无效")
+        raise PracticeOutputError("点评项目格式无效")
     categories: dict[str, list[str]] = {"covered": [], "missing": [], "inconsistent": []}
     points: set[str] = set()
     conflict_details = []
     for item in findings:
         if not isinstance(item, dict):
-            raise ValueError("点评项目格式无效")
+            raise PracticeOutputError("点评项目格式无效")
         kind = item.get("kind")
         point = item.get("point")
         text = _clean_items([item.get("text")])
         if not isinstance(kind, str) or kind not in categories or not text:
-            raise ValueError("点评分类或内容无效")
+            raise PracticeOutputError("点评分类或内容无效")
         if not isinstance(point, str) or not 1 <= len(point.strip()) <= 80:
-            raise ValueError("点评项目缺少问点")
+            raise PracticeOutputError("点评项目缺少问点")
         key = "".join(point.casefold().split())
         if key in points:
-            raise ValueError("同一问点只能有一种点评")
+            raise PracticeOutputError("同一问点只能有一种点评")
         points.add(key)
         category = categories[kind]
         if len(category) == 4:
-            raise ValueError("同类点评最多四条")
+            raise PracticeOutputError("同类点评最多四条")
         category.append(text[0])
         if kind == "inconsistent":
             basis = item.get("basisId")
             if not isinstance(basis, str) or basis not in allowed_citations | allowed_knowledge:
-                raise ValueError("不一致项缺少已提供的冲突依据")
+                raise PracticeOutputError("不一致项缺少已提供的冲突依据")
             quote = _answer_quote(item.get("answerQuote"), answer)
             conflict_details.append({"answerQuote": quote, "reason": text[0], "basisId": basis})
     allowed_issues = {item["issueId"] for item in previous_issues}
     resolved = []
     raw_resolved = raw.get("resolvedIssues", [])
     if not isinstance(raw_resolved, list):
-        raise ValueError("已解决事项格式无效")
+        raise PracticeOutputError("已解决事项格式无效")
     for resolution in raw_resolved:
         if not isinstance(resolution, dict) or resolution.get("issueId") not in allowed_issues:
-            raise ValueError("已解决事项不属于前轮待核对项")
+            raise PracticeOutputError("已解决事项不属于前轮待核对项")
         issue_id = resolution["issueId"]
         allowed_issues.remove(issue_id)
         resolved.append(
@@ -317,16 +324,16 @@ def validate_feedback(
     suggestion = " ".join(str(raw.get("reviewSuggestion") or "").split())
     follow_up = " ".join(str(raw.get("followUp") or "").split())
     if not 4 <= len(suggestion) <= 400:
-        raise ValueError("复习建议长度不合适")
+        raise PracticeOutputError("复习建议长度不合适")
     if (needs_follow_up or follow_up) and not 6 <= len(follow_up) <= 400:
-        raise ValueError("追问长度不合适")
+        raise PracticeOutputError("追问长度不合适")
     joined = " ".join(
         [*(line for items in categories.values() for line in items), suggestion, follow_up]
     )
     if not has_evidence:
         _reject_unsupported_code_claims(joined)
     if overclaim_flags(joined):
-        raise ValueError("点评包含未经核验的结论")
+        raise PracticeOutputError("点评包含未经核验的结论")
     citation_ids = _clean_ids(raw.get("citationIds"), allowed_citations, "citationIds")
     knowledge_ids = _clean_ids(raw.get("knowledgeIds"), allowed_knowledge, "knowledgeIds")
     for conflict in conflict_details:
@@ -994,6 +1001,8 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
     turn_index = identity["turnIndex"]
     first = identity["operation"] == "question"
     error = None
+    diagnostic = None
+    stage = "preflight"
     result = None
     model_name = None
     try:
@@ -1040,6 +1049,7 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
             if claimed.rowcount != 1:
                 return
             await session.commit()
+        stage = "provider"
         provider = get_ai_provider()
         if not isinstance(provider, OpenAICompatibleProvider):
             raise AppError("模型暂不可用，请稍后重试", code=5032, status_code=503)
@@ -1053,6 +1063,7 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
             max_tokens=700 if first else 1600,
         )
         model_name = provider.model
+        stage = "output_validation"
         basis = {
             "allowed_citations": {item["citationId"] for item in data["evidence"]},
             "allowed_knowledge": {item["knowledgeId"] for item in data["knowledge"]},
@@ -1070,6 +1081,7 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
             )
     except Exception as exc:
         error = exc.message if isinstance(exc, AppError) else _failure_reason(exc)
+        diagnostic = str(exc) if isinstance(exc, PracticeOutputError) else type(exc).__name__
 
     async with factory() as session:
         service = InterviewPracticeService(session)
@@ -1112,3 +1124,11 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
         else:
             await service._save_feedback(row, turn, result, model_name)
         await session.commit()
+        if diagnostic is not None:
+            logger.warning(
+                "Interview task failed task_id=%s operation=%s stage=%s reason=%s",
+                task_id,
+                identity["operation"],
+                stage,
+                diagnostic,
+            )
