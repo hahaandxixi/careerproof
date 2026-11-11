@@ -185,3 +185,17 @@ test("overview axes for rejected and corrected items show review status without 
  assert.match(html,/pytest：材料支持度指数/);
  assert.equal(dimensions[0].score,65);
 });
+
+test("same-skill radar axes expose separate full requirements and readable chart labels", () => {
+  const dimensions = [
+    {...knownDim("query", "supported", 65), skill:"SQL", title:"查询启用用户"},
+    {...knownDim("index", "partial", 40), skill:"SQL", title:"验证查询索引"},
+    knownDim("pytest", "gap", 0),
+  ];
+  const html = render({dimensions, variant:"overview"});
+  assert.match(html, /要求 1 · 查询启用用户/);
+  assert.match(html, /要求 2 · 验证查询索引/);
+  assert.match(html, />1·查询启用用户<\/text>/);
+  assert.match(html, />2·验证查询索引<\/text>/);
+  assert.equal(dimensions[0].score,65);
+});
