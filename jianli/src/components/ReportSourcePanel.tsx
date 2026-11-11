@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { adoptedReportExplanation } from "@/lib/report-workspace";
+import { materialReportContext } from "@/lib/material-report-link";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
 import EvidenceSnippet from "./EvidenceSnippet";
 import { SourceIdentityDetails } from "./SourceIdentity";
@@ -66,8 +67,12 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
       const limit = sourceLimit(report, source);
       const locationId = sourceLocationId(item.requirementId, source, index);
       const ownedVersion = report.materials.some(material => material.kind === "project" && material.id === source.projectVersionId);
+      const params = materialReportContext(report.id, item.requirementId, locationId);
+      params.set("lineStart", String(source.lineStart));
+      params.set("lineEnd", String(source.lineEnd));
+      if (source.projectFileId) params.set("fileId", source.projectFileId);
       const fileHref = ownedVersion && source.projectFileId
-        ? "/materials/project/" + source.projectVersionId + "?" + new URLSearchParams({ fileId: source.projectFileId, lineStart: String(source.lineStart), lineEnd: String(source.lineEnd) })
+        ? `/materials/project/${source.projectVersionId}?${params}`
         : null;
       return <article key={locationId} id={locationId} hidden={!entry.opened || selected !== index} aria-label={"来源 " + (index + 1) + "：" + label.fileName} className="report-source-reader scroll-mt-24">
         <header className="source-reader-heading">

@@ -414,10 +414,10 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
             dict.fromkeys(
                 item["text"] for item in pending.values() if item["kind"] == "inconsistent"
             )
-        )[:3],
+        ),
         "remaining": list(
             dict.fromkeys(item["text"] for item in pending.values() if item["kind"] == "missing")
-        )[:4],
+        ),
         "resolvedIssues": resolved,
         "nextStep": suggestion,
         "note": "小结只根据本次练习的点评整理，不改变报告判断、技能等级或投递快照。",

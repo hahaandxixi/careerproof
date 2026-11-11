@@ -1013,3 +1013,21 @@ async def test_slow_feedback_duplicate_retry_and_late_result(practice_db, monkey
                 await db.scalars(select(AiUsageLog).where(AiUsageLog.analysis_task_id == task_id))
             )
             assert len({entry.run_token for entry in usage}) == len(usage) == 2
+
+def test_summary_keeps_unresolved_issues_from_both_turns():
+    turns = [
+        InterviewAnswer(
+            turn_index=index,
+            answer_text="已保存回答",
+            feedback={
+                "missing": [f"第{index + 1}轮遗漏{i}" for i in range(4)],
+                "inconsistent": [f"第{index + 1}轮需修正{i}" for i in range(4)],
+            },
+        )
+        for index in range(2)
+    ]
+    summary = practice.build_summary(turns)
+    assert len(summary["remaining"]) == 8
+    assert summary["remaining"][-1] == "第2轮遗漏3"
+    assert len(summary["inconsistent"]) == 8
+    assert summary["inconsistent"][-1] == "第2轮需修正3"

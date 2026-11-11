@@ -6,6 +6,8 @@ import type { SourceMaterial } from "@/lib/source-label";
 import EvidenceSnippet from "./EvidenceSnippet";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import { RADAR_STATUS, radarPointKind, radarSegments, radarSelection, radarPosition } from "@/lib/skill-radar";
+import { effectiveReportStatus } from "@/lib/evidence-workspace";
+import { workspaceStatusLabel } from "@/lib/report-workspace";
 import { evidenceLevelName } from "@/lib/evidence-display";
 import { resolveSupportScale, supportMeasure, supportScaleNote, type SampleScale } from "@/lib/support-index.js";
 import SupportMeasureDetails from "./SupportMeasureDetails";
@@ -43,26 +45,33 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   const scale = resolveSupportScale(dimensions, synthetic ? sampleScale : undefined);
   const measure = supportMeasure(dimension, scale);
   const useAi = !!item && item.aiStatus==="validated" && !aiFallbackUsed && !invalidNarrativeCitations(item).length;
-  const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
+  const reviewItems = new Map(items.filter(item => {
+    const state = effectiveReportStatus(item);
+    return state === "rejected" || state === "corrected";
+  }).map(item => [item.requirementId, item]));
+  const status = (d: typeof dimension) => {
+    const review = reviewItems.get(d.requirementId);
+    return review ? workspaceStatusLabel(review) : RADAR_STATUS[d.verdict] ?? "暂不可评";
+  };
 
   const chart = dimensions.length >= 3 && dimensions.length <= 8 ? <svg className={mode === "overview" ? "radar-chart-svg mx-auto w-full" : "mx-auto mt-2 w-full max-w-[440px]"} viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签查看证据`}>
           <circle cx="200" cy="200" r="108" fill="#f8fafc" />
           {[25, 50, 75, 100].map(value => <g key={value}><circle cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
           <text x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
           {dimensions.map((d, index) => { const end = point(index, 1); return <line key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} stroke={index === selectedIndex ? "#aaa5d8" : "#e0e5ee"} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
-          {radarSegments(dimensions, scale).map(([a, b]) => {
+          {radarSegments(dimensions, scale).filter(([a, b]) => !reviewItems.has(dimensions[a].requirementId) && !reviewItems.has(dimensions[b].requirementId)).map(([a, b]) => {
             const start = point(a, supportMeasure(dimensions[a], scale).ratio!), end = point(b, supportMeasure(dimensions[b], scale).ratio!);
             return <line className="radar-data-edge" key={a} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />;
           })}
           {dimensions.map((d, i) => {
             const value = supportMeasure(d, scale);
             const rawLabel = point(i, 1.6), label = {x:Math.max(72,Math.min(328,rawLabel.x)),y:Math.max(30,Math.min(370,rawLabel.y))}, dot = point(i, value.ratio ?? 0);
-            const kind = radarPointKind(d, scale), active = i === selectedIndex;
+            const kind = reviewItems.has(d.requirementId) ? "none" : radarPointKind(d, scale), active = i === selectedIndex;
             const title = d.skill || d.title;
             const short = Array.from(title).length > 8 ? Array.from(title).slice(0, 7).join("") + "…" : title;
             return <g key={d.requirementId}>
               {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke" role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${value.text}，查看证据`} aria-pressed={active} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
-              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
+              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={mode === "full" ? detailId : undefined} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
                 <title>{title}</title><rect x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
                 <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
                 <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="14" fill="#64748b">{kind === "none" ? status(d) : `${value.text} · ${status(d)}`}</text>
@@ -87,7 +96,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     <p className="mt-3 text-sm font-medium text-slate-700">{scale.label}</p>
     <details className="text-sm leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-2 text-indigo-700">计量详情</summary><p>{supportScaleNote(scale)}</p></details>
     {scale.mode === "raw" && <p role="status" className="text-sm text-amber-900">{scale.reason}</p>}
-        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={detailId} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
+        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={mode === "full" ? detailId : undefined} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{d.skill || d.title}</button>)}</div>
     <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(460px,0.95fr)_minmax(0,1.05fr)]">
       <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
 
@@ -97,7 +106,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
         <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
         <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
-        {measure.ratio != null && <p className="mt-2 text-base">{scale.label} {measure.text}</p>}
+        {measure.ratio != null && <p className="mt-2 text-base">{reviewItems.has(dimension.requirementId) && "原报告 · "}{scale.label} {measure.text}</p>}
         {measure.issue && dimension.verdict !== "unsupported" && <p role="status" className="mt-2 text-sm text-amber-900">{measure.issue}；原始值 {String(measure.raw ?? "未记录")}。</p>}
         <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><SupportMeasureDetails raw={dimension.score} formulaVersion={dimension.formulaVersion} scale={scale}/><p>岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}</p>}</details>
 

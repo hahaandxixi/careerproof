@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
@@ -9,12 +8,11 @@ import type { WorkspaceFilter } from "@/lib/report-workspace";
 import { reportModeLabel, reportSummaryText } from "@/lib/report-display";
 import EvidenceLink from "./EvidenceLink";
 
-export default function ReportOverview({ report, role, workbench = false }: { report: MatchReport; role?: string; workbench?: boolean }) {
+export default function ReportOverview({ report, role, workbench = false, filter = "all", onFilterChange }: { report: MatchReport; role?: string; workbench?: boolean; filter?: WorkspaceFilter; onFilterChange?: (filter: WorkspaceFilter) => void }) {
   const first = report.items.find(item => item.requirementId === initialReportRequirement(report.items));
   const states = evidenceWorkspace(report.items);
   const counts = { resume: report.materials.filter(m => m.kind === "resume").length, personal: report.materials.filter(m => m.kind === "project" && m.materialRole !== "reference").length, reference: report.materials.filter(m => m.materialRole === "reference").length };
   const identity = role === "student" ? "学生" : role === "enterprise" ? "企业" : role === "admin" ? "管理员" : "当前账号";
-  const [filter, setFilter] = useState<WorkspaceFilter | null>(null);
   const claimed = states.gaps.filter(item => effectiveReportStatus(item) === "claimed_only").length;
   const missing = states.gaps.filter(item => effectiveReportStatus(item) === "gap").length;
   const unsupported = states.other.filter(item => effectiveReportStatus(item) === "unsupported").length;
@@ -24,14 +22,11 @@ export default function ReportOverview({ report, role, workbench = false }: { re
     { key: "gaps", label: "待补或仅声明", count: states.gaps.length, tone: "gap" },
     { key: "other", label: "暂不支持或需复核", count: states.other.length, tone: "other" },
   ];
-  const choose = (next: WorkspaceFilter | null) => {
-    setFilter(next);
-    window.dispatchEvent(new CustomEvent("careerproof:filter-requirements", { detail: { filter: next ?? "all" } }));
-  };
+  const choose = (next: WorkspaceFilter) => onFilterChange?.(next);
   if (workbench) return <section className="report-overview min-w-0 space-y-3" aria-label="本报告证据状态摘要">
     <div className="report-overview-heading flex flex-wrap items-end justify-between gap-3">
       <div><h2 className="report-overview-title">材料支持状态</h2><p className="report-overview-caption">按已保存判断归类，每项要求只归入一类；点击查看对应要求。</p></div>
-      <button type="button" className={`report-status-all ${filter === null ? "is-active" : ""}`} aria-pressed={filter === null} onClick={() => choose(null)}>全部 {report.items.length}</button>
+      <button type="button" className={`report-status-all ${filter === "all" ? "is-active" : ""}`} aria-pressed={filter === "all"} onClick={() => choose("all")}>全部 {report.items.length}</button>
     </div>
     <div className="report-status-bar" aria-hidden="true">
       {segments.filter(segment => segment.count > 0).map(segment => <span key={segment.key} data-tone={segment.tone} style={{ flexGrow: segment.count }} />)}

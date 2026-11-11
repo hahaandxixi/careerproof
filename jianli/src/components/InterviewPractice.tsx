@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api, errorMessage } from "@/lib/api/client";
+import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
@@ -15,6 +15,17 @@ import { ErrorNotice } from "./AccessGate";
 import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
+
+function SummaryIssues({ lines, visibleCount }: { lines: string[]; visibleCount: number }) {
+  const remaining = lines.slice(visibleCount);
+  return <>
+    <ul>{lines.slice(0, visibleCount).map((line, index) => <li key={index}>{line}</li>)}</ul>
+    {remaining.length > 0 && <details>
+      <summary>查看其余 {remaining.length} 条（共 {lines.length} 条）</summary>
+      <ul>{remaining.map((line, index) => <li key={index}>{line}</li>)}</ul>
+    </details>}
+  </>;
+}
 
 export default function InterviewPractice({ id }: { id: string }) {
   const { user, status } = useAuth();
@@ -44,7 +55,10 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
       }
       return next;
     } catch (error) {
-      if (active.current) setLoadError(errorMessage(error));
+      if (active.current) {
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status)) setSession(null);
+        setLoadError(errorMessage(error));
+      }
       return null;
     } finally {
       if (active.current) setLoading(false);
@@ -67,8 +81,14 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         const next = await api.getInterviewSession(id);
         if (!current) return;
         setSession(next);
+        setLoadError("");
         setActionError("");
       } catch (error) {
+        if (current && error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+          setSession(null);
+          setLoadError(errorMessage(error));
+          return;
+        }
         if (current) setActionError(`暂未读取到练习进度。${errorMessage(error)}`);
       }
       if (current) timer = setTimeout(read, 1500);
@@ -182,7 +202,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   };
 
   if (loading) return <p className={styles.loading}>正在读取练习…</p>;
-  if (loadError) return <ErrorNotice message={loadError} retry={() => void load()} />;
+  if (loadError && !session) return <ErrorNotice message={loadError} retry={() => void load()} />;
   if (!session) return <ErrorNotice message="练习不存在或无权访问" retry={() => void load()} />;
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
@@ -191,6 +211,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
 
   return <div className={styles.page}>
+    {loadError && <ErrorNotice message={loadError} retry={() => void load()} />}
     <header className={styles.head}>
       <nav className={styles.crumb} aria-label="练习位置">
         <Link href="/reports">我的报告</Link><span aria-hidden="true">/</span>
@@ -275,7 +296,8 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             </div>
             <p className={styles.question}>{turn.question}</p>
             {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
-            {!!turn.citations.length && <div className={styles.basisNote} aria-label="本题依据的材料片段">
+            {!!turn.citations.length && <div className={styles.basisNote} aria-label={turn.kind === "follow_up" ? "首问关联材料" : "本题依据的材料片段"}>
+              {turn.kind === "follow_up" && <strong>首问关联材料：</strong>}
               {turn.citations.map(item => <span key={item.citationId || `${item.filePath}:${item.lineStart}`}>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行</span>)}
             </div>}
 
@@ -349,9 +371,9 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
           <div className={styles.summaryGrid}>
             <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
-            <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <ul>{session.summary.remaining.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
+            <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
           </div>
-          {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><ul>{session.summary.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul></section>}
+          {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={session.summary.inconsistent} visibleCount={3} /></section>}
           {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
             {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
           </ul></section>}

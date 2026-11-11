@@ -5,15 +5,15 @@ import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText, effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
-import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "@/lib/report-workspace";
+import { requirementConclusion, savedRequirementAction, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import { RequirementSupplementJump } from "./RequirementSupplement";
 import ReportRequirementReader from "./ReportRequirementReader";
 
-export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
-  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange}>{children}</ReportRequirementReader>;
+export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange, filter, onFilterChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void; filter?: WorkspaceFilter; onFilterChange?: (filter: WorkspaceFilter) => void }) {
+  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange} filter={filter} onFilterChange={onFilterChange}>{children}</ReportRequirementReader>;
 }
 
 export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {

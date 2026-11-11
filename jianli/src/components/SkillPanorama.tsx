@@ -86,7 +86,7 @@ function ContextRecord({ context, active, onSelect }: { context: SkillContext; a
   return <article className={`${styles.context} ${active ? styles.contextActive : ""}`}>
     <button type="button" className={styles.contextSelect} aria-pressed={active} onClick={() => onSelect(context.key)}>
       <span className={styles.contextMeta}>
-        <span data-status={panoramaStatus(item.verdict)}>{PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
+        <span data-status={panoramaStatus(item.verdict)}>原报告 · {PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
         {context.isLatestForJob === true && <span>该岗位最新报告</span>}
         <time dateTime={context.createdAt}>{new Date(context.createdAt).toLocaleDateString("zh-CN")}</time>
       </span>
@@ -123,16 +123,25 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, onClear
     </div>
     {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
     {groups.map(group => {
-      const [primary, ...rest] = group.contexts;
+      const byReport = new Map<string, SkillContext[]>();
+      for (const context of group.contexts) {
+        const records = byReport.get(context.reportId);
+        if (records) records.push(context);
+        else byReport.set(context.reportId, [context]);
+      }
+      const [primary, ...rest] = [...byReport.values()];
+      const renderRecords = (records: SkillContext[]) => records.map(context =>
+        <ContextRecord key={context.key} context={context} active={activeKey === context.key} onSelect={setPickedContext}/>,
+      );
       return <section key={group.jobId} className={styles.jobGroup} aria-label={`${displayJobTitle(group.jobTitle, group.jobId)} 的报告要求`}>
         <header className={styles.jobHeading}>
           <span className={styles.contextJob}>{displayJobTitle(group.jobTitle, group.jobId)}</span>
-          <span className={styles.jobMeta}>{group.contexts.length} 份报告</span>
+          <span className={styles.jobMeta}>{byReport.size} 份报告 · {group.contexts.length} 条要求</span>
         </header>
-        <ContextRecord context={primary} active={activeKey === primary.key} onSelect={setPickedContext}/>
+        {renderRecords(primary)}
         {!!rest.length && <details className={styles.history}>
           <summary>该岗位其他 {rest.length} 份历史报告</summary>
-          {rest.map(context => <ContextRecord key={context.key} context={context} active={activeKey === context.key} onSelect={setPickedContext}/>)}
+          {rest.map(records => <div key={records[0].reportId}>{renderRecords(records)}</div>)}
         </details>}
       </section>;
     })}
@@ -176,7 +185,8 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       <section className={styles.canvas} aria-label="技能分组全景" aria-busy={state.busy}>
         <div className={styles.legend}>
           <ul>{PANORAMA_STATUSES.map(status => <li key={status}><i data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}{landscape.counts[status] > 0 && <strong>{landscape.counts[status]}</strong>}</li>)}</ul></div>
-        <div className={styles.filters} role="group" aria-label="按技能记录的材料支持状态筛选">
+        <p className={styles.contextNoSource}>筛选和色带按原报告状态统计；本人复核单独标记。</p>
+        <div className={styles.filters} role="group" aria-label="按原报告状态筛选">
           {PANORAMA_FILTERS.map(value => <button key={value} type="button" aria-pressed={filter === value}
             onClick={() => onFilterChange?.(value)}>
             {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
@@ -198,6 +208,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
                     <span key={status} data-status={status}>{PANORAMA_STATUS_LABELS[status]} {value.counts[status]} 条</span>)}</span>
                   <span className={styles.skillFooter}>
                     <span>{value.contexts.length} 条要求记录</span>
+                    {value.contexts.some(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") && <span>需复核 {value.contexts.filter(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected").length} 条</span>}
                     <span>{skillJobCount(value.contexts)} 个岗位</span>
                     {filter !== "all" && <span className={styles.hit}>命中 {matched} 条</span>}
                   </span>

@@ -7,7 +7,7 @@ import type { ResumePreview, ProjectFileSummary, ProjectFileContent } from "@/li
 import { ErrorNotice } from "./AccessGate";
 import VisualEvidencePanel from "./VisualEvidencePanel";
 
-export default function MaterialPreview({ id, kind, initialFileId, initialLineStart, initialLineEnd }: { id: string; kind: "resume" | "project"; initialFileId?: string; initialLineStart?: number; initialLineEnd?: number }) {
+export default function MaterialPreview({ id, kind, initialFileId, initialLineStart, initialLineEnd, reportReturnHref }: { id: string; kind: "resume" | "project"; initialFileId?: string; initialLineStart?: number; initialLineEnd?: number; reportReturnHref?: string }) {
   const [resume, setResume] = useState<ResumePreview | null>(null);
   const [files, setFiles] = useState<ProjectFileSummary[]>([]);
   const [selected, setSelected] = useState<ProjectFileContent | null>(null);
@@ -53,7 +53,10 @@ export default function MaterialPreview({ id, kind, initialFileId, initialLineSt
     document.getElementById(`source-line-${initialLineStart}`)?.scrollIntoView({ block: "center" });
   }, [selected, initialFileId, initialLineStart]);
   return <div className="space-y-6">
-    <Link href="/portfolio" className="btn-secondary btn-compact">← 我的材料</Link>
+    <nav aria-label="返回" className="flex flex-wrap items-center gap-3">
+      {reportReturnHref && <Link href={reportReturnHref} className="btn-secondary btn-compact">← {reportReturnHref.includes("#report-materials") ? "返回报告材料" : "返回报告 · 这项要求"}</Link>}
+      <Link href="/portfolio" className={reportReturnHref ? "btn-quiet btn-compact" : "btn-secondary btn-compact"}>← 我的材料</Link>
+    </nav>
     <div><h1 className="text-2xl font-bold">{kind === "resume" ? "简历解析预览" : "项目 / 作品文本预览"}</h1><p className="mt-2 text-sm leading-6 text-slate-500">核对系统实际读取到的内容。扫描件与图片由本地 OCR 提取文字，识别结果需对照原图。</p></div>
     {!loading && !error && kind === "project" && <VisualEvidencePanel key={id} versionId={id} />}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}

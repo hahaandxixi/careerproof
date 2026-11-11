@@ -100,6 +100,7 @@ test("saved citation and rule-source identities resolve exactly across same-name
 
 test("enterprise reply entry selects its saved requirement and never overrides a known citation", () => {
   assert.equal(helpers.reportEntryRequirement(items, "", "?enterpriseReply=run"), "run");
+  assert.equal(helpers.reportEntryRequirement(items, "#report-matching", "?enterpriseReply=run"), null);
   assert.equal(helpers.reportEntryRequirement(items, "#citation-saved-alpha", "?enterpriseReply=run"), "implementation");
   assert.equal(helpers.reportEntryRequirement(items, "", "?enterpriseReply=unknown"), null);
 });
@@ -391,7 +392,7 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
  const original={window:globalThis.window,document:globalThis.document,Element:globalThis.Element,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
  class Link {constructor(href){this.href=href;}closest(){return{getAttribute:()=>this.href};}}
  const hook={useState(initial){const i=cursor++;if(!(i in values))values[i]=initial;return[values[i],v=>values[i]=typeof v==="function"?v(values[i]):v];},useEffect(fn){effects.push(fn);}};
- const stub=()=>null,modules={react:hook,"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/report-workspace":workspace,"@/lib/source-label":sourceHelpers,"@/lib/source-limits":limits,"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{SourceIdentityDetails:stub}};
+ const stub=()=>null,modules={react:hook,"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/report-workspace":workspace,"@/lib/source-label":sourceHelpers,"@/lib/source-limits":limits,"@/lib/material-report-link":await load("lib/material-report-link.ts"),"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{SourceIdentityDetails:stub}};
  const code=transform(readFileSync(path.join(SRC,"components/ReportSourcePanel.tsx"),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];

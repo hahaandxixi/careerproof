@@ -1,3 +1,4 @@
+import * as evidenceWorkspace from "../src/lib/evidence-workspace.ts";
 // E2E-02-R1 回归：回复失败（请求失败/响应丢失）后草稿必须真实可编辑。
 // 测试环境没有浏览器 DOM 且禁止安装依赖：这里用 sucrase 同步转译加载真实 .tsx 组件代码，
 // 再用 react-dom/server 渲染真实元素并直接调用真实 onChange 管线——不匹配源码字符串。
@@ -119,11 +120,12 @@ test("unknown versions keep a whole raw chart; anomalous known raw values remain
 });
 
 test("actual requirement buttons and keyboard axes change the selected evidence without changing index coordinates",async()=>{
+ const reportWorkspace=await import("../src/lib/report-workspace.ts");
  const lib=await import("../src/lib/skill-radar.ts"), support=await import("../src/lib/support-index.js"), citations=await import("../src/lib/report-citations.ts");
  const cells=[];let cursor=0;
  const hooks={useId:()=>"radar-detail",useEffect(){},useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=v;}];}};
  const stub=()=>null;
- const modules={react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{default:stub,SourceIdentityDetails:stub,__esModule:true},"./SupportMeasureDetails":{default:stub,__esModule:true},"@/lib/skill-radar":lib,"@/lib/evidence-display":{evidenceLevelName:String},"@/lib/support-index.js":support,"@/lib/report-citations":citations};
+ const modules={react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{default:stub,SourceIdentityDetails:stub,__esModule:true},"./SupportMeasureDetails":{default:stub,__esModule:true},"@/lib/skill-radar":lib,"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/report-workspace":reportWorkspace,"@/lib/evidence-display":{evidenceLevelName:String},"@/lib/support-index.js":support,"@/lib/report-citations":citations};
  const code=transform(readFileSync(path.join(SRC,"components/SkillRadar.tsx"),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];
@@ -170,3 +172,16 @@ for(const [aiStatus,fallback,adopted] of [["validated",false,true],["rejected",f
  if(!adopted)assert.ok(html.includes("规则依据")&&html.includes("规则缺口"));
  });
 }
+
+test("overview axes for rejected and corrected items show review status without a plotted score", () => {
+ const dimensions=[knownDim("FastAPI","supported",65),knownDim("SQL","supported",65),knownDim("pytest","partial",40)];
+ const items=[
+   {requirementId:"FastAPI",verdict:"supported",confirmationStatus:"rejected",evidenceList:[]},
+   {requirementId:"SQL",verdict:"supported",confirmationStatus:"corrected",evidenceList:[]},
+ ];
+ const html=render({dimensions,items,variant:"overview"});
+ assert.match(html,/FastAPI，[^"，]*需复核/);
+ assert.doesNotMatch(html,/FastAPI：材料支持度指数|SQL：材料支持度指数|aria-controls=/);
+ assert.match(html,/pytest：材料支持度指数/);
+ assert.equal(dimensions[0].score,65);
+});

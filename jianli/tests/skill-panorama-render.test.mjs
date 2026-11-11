@@ -113,3 +113,17 @@ test("a status filter keeps a matching skill selected and otherwise moves to a v
   assert.equal(panorama.selectionForFilter(landscape, null, "gap"), null);
 });
 
+
+test("two requirements from one report stay together and show separate review counts", () => {
+  const records = [report("sql", [
+    { ...item("query", "SQL", "supported"), confirmationStatus: "rejected" },
+    { ...item("index", "SQL", "supported"), confirmationStatus: "corrected" },
+  ], 1)];
+  const html = render({ selected: "sql", state: { ...state, reports: records, summaries: records } });
+  assert.match(html, /1 份报告 · 2 条要求/);
+  assert.match(html, /需复核 2 条/);
+  assert.match(html, /原报告 · 有证据支持/);
+  assert.match(html, /\/reports\/sql#requirement-query/);
+  assert.match(html, /\/reports\/sql#requirement-index/);
+  assert.doesNotMatch(html, /该岗位其他/);
+});
