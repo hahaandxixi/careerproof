@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "edition": "20261023-B1",
+  "status": "pre-review-draft",
+  "finalCandidateCommit": null,
+  "finalBindingStatus": "待任务A完成后同步",
+  "productAcceptedCommit": "e95504feed306e5cf5ee013a6e546976013639c0",
+  "documentationAndSourceCommit": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+  "branch": "codex/contest-delivery-20261023",
+  "materialsRevision": "Resolve git log -1 --format=%H -- docs/submission/candidate-manifest.json; avoids a self-referential hash",
+  "ci": {
+    "commit": "f6bf1ed9c20fe0629976cd9505f2f1258146cedb",
+    "url": "https://github.com/hahaandxixi/careerproof/actions/runs/39947184769",
+    "jobs": "3 success",
+    "evidence": "docs/submission/evidence/ci-f6bf1ed.json"
+  },
+  "environmentTemplates": {
+    "README.md": "d5da8a62473a5cf270d2bc66a4167cb5b3f003c57b421811c19814e14fafb872",
+    "backend/.env.example": "81b8235e38933d1a0575cfb184aa1ff6e964d93233c10137ca09bca41f641337",
+    "jianli/.env.example": "d72b78ccff8d2df83e6be41ce094445163ff2db4c2a44319a4919bf7c8f77012"
+  },
+  "artifacts": [
+    {
+      "path": "output/pdf/CareerProof-技术说明-预审版-20261023-B1.pdf",
+      "sha256": "2a50a303ae4e506df60705cbb27d4470bc4064609af758bf02471f7e3a88e962",
+      "bytes": 1092193,
+      "status": "draft"
+    },
+    {
+      "path": "output/source/CareerProof-source-20261023-B1-f6bf1ed.zip",
+      "sha256": "47f9d641a87ef53ecc437fc240d616387baad931e9a97ea3869c9f35d78f5a8d",
+      "bytes": 2319126,
+      "status": "draft"
+    },
+    {
+      "path": "output/video/CareerProof-演示逐字稿与镜头计划-20261023-B1.md",
+      "sha256": "8c7494c2c89a1ee47af1935ffb98d39544bb8b9123b242e20d0f88e8ccd564f5",
+      "bytes": 11434,
+      "status": "draft"
+    },
+    {
+      "path": "output/video/CareerProof-镜头清单-20261023-B1.json",
+      "sha256": "108e77a1b9f7d427ac30c6433cb838b818f8e53617a9a4570f5cacd873a7a4a2",
+      "bytes": 8677,
+      "status": "draft"
+    },
+    {
+      "path": "docs/submission/AI-技术证据索引.md",
+      "sha256": "65b49cf4aac9f725e86bf5d402a2e861f5c0cc58d32b73dc1a9a40764d217d2b",
+      "bytes": 6963,
+      "status": "draft"
+    },
+    {
+      "path": "docs/submission/评委快速体验指南.md",
+      "sha256": "b11603287599b1607a7efe28de2eba3fb3d6a009d6f22de396cbc4c069cb5a6e",
+      "bytes": 5270,
+      "status": "draft"
+    }
+  ],
+  "video": {
+    "path": null,
+    "sha256": null,
+    "status": "script only; recording/voice/subtitles/review pending"
+  },
+  "screenshots": {
+    "manifest": "docs/submission/evidence/assets.json",
+    "acceptedBuild": "HNdt9SK706tuGRbc0NPbL",
+    "historicalAgentImageSeparate": true
+  },
+  "openAcceptance": [
+    "真实200%缩放/离窗最小化",
+    "首次独立用户",
+    "人工两处理由澄清",
+    "新选证当前真实AI效果",
+    "最终候选材料同步"
+  ],
+  "humanActions": [
+    "确认赛事个人中心与校内通知",
+    "评审账号访问检查",
+    "许可方案",
+    "团队/教师信息与真实签署",
+    "实际上传与回执"
+  ],
+  "onlineDemo": "feasibility only; not deployed",
+  "repositoryVisibility": "not changed; reviewer access pending team confirmation"
+}

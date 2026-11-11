@@ -1,0 +1,59 @@
+{
+  "status": "fail",
+  "live": true,
+  "toolCalls": [
+    {
+      "tool": "retrieve_more_evidence",
+      "requirementId": "bd5d7af4-e047-4c61-92ec-30359626ed1e",
+      "query": "register 满额与重复报名拒绝、cancel 取消后恢复名额并防止重复取消",
+      "resultCount": 1,
+      "status": "completed",
+      "scope": "current-upload-index",
+      "citationId": "R1-E3",
+      "round": 1
+    }
+  ],
+  "toolCompleted": true,
+  "analysisCitations": [
+    "R1-E1",
+    "R1-E2",
+    "R1-E3"
+  ],
+  "requestCount": 2,
+  "attempts": [
+    {
+      "stage": "planning_1",
+      "status": "receipt_observed",
+      "usage": {
+        "prompt_tokens": 2040,
+        "completion_tokens": 98,
+        "total_tokens": 2138,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 504
+      }
+    },
+    {
+      "stage": "analysis",
+      "status": "receipt_observed",
+      "usage": {
+        "prompt_tokens": 3961,
+        "completion_tokens": 389,
+        "total_tokens": 4350,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 1529
+      }
+    }
+  ],
+  "fallback": false,
+  "fallbackReason": null,
+  "contextEvidenceBefore": 2,
+  "inputTokens": 6001,
+  "outputTokens": 487,
+  "costYuanAtPeak": "0.015898"
+}

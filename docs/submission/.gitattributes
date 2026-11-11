@@ -1,0 +1,6 @@
+*.md text eol=lf
+*.json text eol=lf
+tools/*.py text eol=lf
+.gitattributes text eol=lf
+evidence/originals/** binary
+assets/** binary
