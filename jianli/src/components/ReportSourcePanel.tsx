@@ -9,7 +9,7 @@ import EvidenceSnippet from "./EvidenceSnippet";
 import { SourceIdentityDetails } from "./SourceIdentity";
 import { sourceLimit } from "@/lib/source-limits";
 
-export default function ReportSourcePanel({ report, item }: { report: MatchReport; item: ReportItem }) {
+export default function ReportSourcePanel({ report, item, canOpenMaterial = false }: { report: MatchReport; item: ReportItem; canOpenMaterial?: boolean }) {
   const adopted = !!adoptedReportExplanation(report, item);
   const first = adopted ? item.evidenceList.findIndex(source => !!source.citationId && item.aiCitationIds.includes(source.citationId)) : 0;
   const [entry, setEntry] = useState({ index: Math.max(0, first), anchor: "", revision: 0, opened: true });
@@ -71,7 +71,7 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
       params.set("lineStart", String(source.lineStart));
       params.set("lineEnd", String(source.lineEnd));
       if (source.projectFileId) params.set("fileId", source.projectFileId);
-      const fileHref = ownedVersion && source.projectFileId
+      const fileHref = canOpenMaterial && ownedVersion && source.projectFileId
         ? `/materials/project/${source.projectVersionId}?${params}`
         : null;
       return <article key={locationId} id={locationId} hidden={!entry.opened || selected !== index} aria-label={"来源 " + (index + 1) + "：" + label.fileName} className="report-source-reader scroll-mt-24">

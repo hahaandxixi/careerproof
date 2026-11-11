@@ -290,3 +290,19 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
  const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
 });
+
+test("pair review status affects only the corresponding fixed report and removes its plotted support", () => {
+ for(const status of ["rejected","corrected"]) for(const explanation of ["历史支持说明",""]){
+  const a=pairCandidate("A"), b=pairCandidate("B");
+  a.report.items[1]={...a.report.items[1],confirmationStatus:status,explanation};
+  const before=JSON.stringify([a,b]);
+  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,b],busy:false,onOpen(){},initialIds:["r2"]}));
+  assert.match(html,/对照要求：pytest；合成A：[^"]*需复核/);
+  assert.doesNotMatch(html,/aria-label="合成A · pytest ·/);
+  assert.match(html,/aria-label="合成B · pytest ·/);
+  assert.match(html,/原判断：有证据支持/);
+  assert.match(html,/本项存在需复核的材料判断/);
+  assert.equal((html.match(/class="radar-data-edge"/g)||[]).length,1);
+  assert.equal(JSON.stringify([a,b]),before);
+ }
+});

@@ -39,6 +39,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [actionError, setActionError] = useState("");
+  const [progressError, setProgressError] = useState("");
   const [notice, setNotice] = useState("");
   const [answer, setAnswer] = useState("");
   const [consent, setConsent] = useState(false);
@@ -52,6 +53,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
       if (active.current) {
         setSession(next);
         setLoadError("");
+        setProgressError("");
       }
       return next;
     } catch (error) {
@@ -82,14 +84,14 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         if (!current) return;
         setSession(next);
         setLoadError("");
-        setActionError("");
+        setProgressError("");
       } catch (error) {
         if (current && error instanceof ApiError && [401, 403, 404].includes(error.status)) {
           setSession(null);
           setLoadError(errorMessage(error));
           return;
         }
-        if (current) setActionError(`暂未读取到练习进度。${errorMessage(error)}`);
+        if (current) setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
       }
       if (current) timer = setTimeout(read, 1500);
     };
@@ -237,6 +239,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
     <div className={styles.layout}>
       <div className={styles.main}>
+        {progressError && <ErrorNotice message={progressError} retry={() => void load()} />}
         {actionError && <ErrorNotice message={actionError} />}
         {notice && <p role="status" className={styles.notice} data-tone="working">{notice}</p>}
 
@@ -288,7 +291,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
         {session.turns.map(turn => {
           const isBusy = busy === turn.turnIndex;
-          const evidence = turn.feedback?.citations?.length ? turn.feedback.citations : turn.citations;
+          const evidence = turn.feedback?.citations ?? [];
           return <article key={turn.turnIndex} className={styles.turn} data-state={turn.state} aria-label={turnLabel(turn)}>
             <div className={styles.turnHead}>
               <span className={styles.turnLabel}>{turnLabel(turn)}<b>{turn.kind === "follow_up" ? "根据上一轮回答追问" : `围绕 ${session.skill || "本项要求"}`}</b></span>
@@ -296,8 +299,8 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             </div>
             <p className={styles.question}>{turn.question}</p>
             {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
-            {!!turn.citations.length && <div className={styles.basisNote} aria-label={turn.kind === "follow_up" ? "首问关联材料" : "本题依据的材料片段"}>
-              {turn.kind === "follow_up" && <strong>首问关联材料：</strong>}
+            {!!turn.citations.length && <div className={styles.basisNote} aria-label="首问关联材料">
+              <strong>首问关联材料：</strong>
               {turn.citations.map(item => <span key={item.citationId || `${item.filePath}:${item.lineStart}`}>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行</span>)}
             </div>}
 

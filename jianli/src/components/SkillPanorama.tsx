@@ -56,7 +56,7 @@ export function SkillPanoramaWorkspace({ ownerId }: { ownerId: string }) {
   };
   return <SkillPanoramaView state={state} selected={selected} filter={filter} onFilterChange={chooseFilter}
     onSelect={value => { selectedByUser.current = true; setSelected(value); }}
-    loadMore={() => void session.loadMore()} retryFailed={() => void session.retryFailed()} />;
+    loadMore={() => void session.loadMore()} refresh={() => { setSelected(null); selectedByUser.current = false; void session.refresh(); }} retryFailed={() => void session.retryFailed()} />;
 }
 
 /** Quantity band inside one skill card. Status colors never leak onto the domain tag. */
@@ -148,9 +148,9 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, onClear
   </>;
 }
 
-export function SkillPanoramaView({ state, selected, filter = "all", onSelect, onFilterChange, loadMore, retryFailed }: {
+export function SkillPanoramaView({ state, selected, filter = "all", onSelect, onFilterChange, loadMore, refresh, retryFailed }: {
   state: PanoramaState; selected: string | null; filter?: PanoramaFilter;
-  onSelect(key: string | null): void; onFilterChange?(filter: PanoramaFilter): void; loadMore(): void; retryFailed(): void;
+  onSelect(key: string | null): void; onFilterChange?(filter: PanoramaFilter): void; loadMore(): void; refresh?(): void; retryFailed(): void;
 }) {
   const reports = state.summaries.flatMap(summary => state.reports.filter(report => report.id === summary.id));
   const landscape = buildSkillPanorama(reports);
@@ -177,6 +177,10 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       <p>{state.busy ? "正在分批读取报告…" : <>已读取 <strong>{state.reports.length}</strong>{state.total !== null && <> / {state.total}</>} 份报告</>}
         {failed > 0 && <> · <span className={styles.failureText}>{failed} 份详情失败</span></>}</p>
       {state.hasMore && !state.busy && <button className="btn-secondary btn-compact" disabled={state.busy} onClick={loadMore}>再加载最多 {PANORAMA_PAGE_SIZE} 份报告</button>}
+      {!state.hasMore && state.total !== null && state.summaries.length !== state.total && !state.blocked && <div>
+        <p>列表有更新。已读记录与当前总数不同，可从第一页重新读取。</p>
+        {refresh && <button className="btn-secondary btn-compact" disabled={state.busy} onClick={refresh}>重新读取报告列表</button>}
+      </div>}
     </div>
     {state.listError && <div role="alert" className={styles.error}><p>报告列表读取失败：{state.listError}</p>{!state.blocked && <button className="btn-secondary" disabled={state.busy} onClick={loadMore}>重试列表读取</button>}</div>}
     {failed > 0 && <details className={styles.failures}><summary>{failed} 份报告详情暂不可用，已读取内容仍保留</summary><ul>{state.summaries.filter(report => state.failures[report.id]).map(report => <li key={report.id}>{displayJobTitle(report.jobTitle, report.jobId)} · {new Date(report.createdAt).toLocaleString("zh-CN")}：{state.failures[report.id]}</li>)}</ul>

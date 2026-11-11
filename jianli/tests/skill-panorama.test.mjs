@@ -108,3 +108,49 @@ test("empty account does not request detail or render artificial categories", as
 test('skill history requests product scope explicitly even though the backend defaults to product',async()=>{ const scopes=[]; const h=harness({ listReports: async (_n,_size,filters)=>{ scopes.push(filters); return page([]); } }); await h.session.loadMore(); assert.deepEqual(scopes,[{ scope: 'product' }]); assert.deepEqual(h.calls,[]); });
 
 test('skill history requests product scope explicitly even though the backend defaults to product',async()=>{ const scopes=[]; const h=harness({ listReports: async (_n,_size,filters)=>{ scopes.push(filters); return page([]); } }); await h.session.loadMore(); assert.deepEqual(scopes,[{ scope: 'product' }]); assert.deepEqual(h.calls,[]); });
+
+test("list metadata survives detail retry and is refreshed without writing frozen reports", async () => {
+ let listing=[report("a",[],{isLatestForJob:true,jobReportCount:3}),report("b",[],{isLatestForJob:false,jobReportCount:3}),report("c")];
+ const frozen=Object.freeze(report("a",[item("1","SQL")]));
+ let fail=true;
+ const h=harness({listReports:async()=>page(listing),getReport:async id=>{
+  if(id==="a"&&fail)throw Error("offline");
+  return id==="a"?frozen:report(id,[item("1","SQL")]);
+ }});
+ await h.session.loadMore();
+ fail=false;
+ await h.session.retryFailed();
+ const context=()=>Object.fromEntries(buildSkillPanorama(h.state.reports).skills[0].contexts.map(c=>[c.reportId,[c.isLatestForJob,c.jobReportCount]]));
+ assert.deepEqual(context(),{a:[true,3],b:[false,3],c:[undefined,undefined]});
+ assert.equal(frozen.isLatestForJob,undefined);
+ listing=[report("a",[],{isLatestForJob:false,jobReportCount:2}),report("c",[],{isLatestForJob:true,jobReportCount:2})];
+ await h.session.refresh();
+ assert.deepEqual(context(),{a:[false,2],c:[true,2]});
+});
+
+test("a duplicate offset page advances and a failed page retries before reaching the end", async () => {
+ const original=Array.from({length:24},(_,i)=>report("old-"+i));
+ let rows=original, fail=true; const visited=[];
+ const h=harness({listReports:async n=>{
+  visited.push(n);
+  if(n===3&&fail){fail=false;throw Error("retry page 3");}
+  return page(rows.slice((n-1)*12,n*12),rows.length,n);
+ },getReport:async id=>rows.find(r=>r.id===id)});
+ await h.session.loadMore();
+ rows=[...Array.from({length:12},(_,i)=>report("new-"+i)),...rows];
+ await h.session.loadMore();
+ assert.equal(h.state.reports.length,12);
+ assert.equal(h.state.hasMore,true);
+ await h.session.loadMore();
+ assert.match(h.state.listError,/retry page 3/);
+ await h.session.loadMore();
+ assert.deepEqual(visited,[1,2,3,3]);
+ assert.equal(h.state.reports.length,24);
+ assert.equal(h.state.total,36);
+ assert.equal(h.state.hasMore,false);
+ rows=rows.slice(0,8);
+ await h.session.refresh();
+ assert.equal(h.state.reports.length,8);
+ assert.equal(h.state.total,8);
+ assert.equal(h.state.hasMore,false);
+});
