@@ -123,8 +123,9 @@ test("review-only keeps review guidance while unsupported keeps its rule gap wit
  assert.ok(review.includes("当前需核对")); assert.ok(review.includes("添加项目材料"));
  assert.ok(!review.includes(">开始补证</button>")); assert.ok(review.includes("不能由此认定实现不存在"));
  const unsupported=render(report([item("outside","unsupported")]));
- assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("不能由此认定实现不存在"));
+ assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("请人工核对岗位要求和已保存材料"));
  assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
+ assert.ok(!unsupported.includes("查看本项补证建议")); assert.ok(!unsupported.includes('href="/portfolio"'));
 });
 
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
