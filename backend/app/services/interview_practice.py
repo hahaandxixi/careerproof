@@ -908,6 +908,7 @@ class InterviewPracticeService:
             "id": session_row.id,
             "status": session_row.status,
             "reportId": session_row.report_id,
+            "jobId": session_row.job_id,
             "requirementId": session_row.requirement_id,
             "requirementTitle": session_row.requirement_title or "",
             "skill": session_row.skill or "",

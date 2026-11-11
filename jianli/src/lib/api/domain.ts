@@ -283,7 +283,7 @@ export interface PracticeSummary {
 }
 export interface InterviewSession {
   id: string; status: "draft" | "in_progress" | "completed";
-  reportId: string; requirementId: string; requirementTitle: string; skill: string; jobTitle: string;
+  reportId: string; jobId: string; requirementId: string; requirementTitle: string; skill: string; jobTitle: string;
   materials: MatchReport["materials"]; evidence: PracticeEvidence[]; knowledge: PracticeKnowledge[]; knowledgeOutdated?: boolean;
   consentAt: string | null; consentScope: string | null;
   currentTurn: number; maxTurns: number;

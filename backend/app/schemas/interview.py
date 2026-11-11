@@ -107,6 +107,7 @@ class InterviewSessionView(APIModel):
     id: UUID
     status: Literal["draft", "in_progress", "completed"]
     report_id: UUID
+    job_id: UUID
     requirement_id: UUID
     requirement_title: str
     skill: str

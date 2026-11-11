@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
+import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel,
   canRetryFeedback, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
@@ -185,6 +186,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   if (!session) return <ErrorNotice message="练习不存在或无权访问" retry={() => void load()} />;
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
+  const jobTitle = displayJobTitle(session.jobTitle, session.jobId);
   const busyIdle = busy === null;
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
 
@@ -192,11 +194,11 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     <header className={styles.head}>
       <nav className={styles.crumb} aria-label="练习位置">
         <Link href="/reports">我的报告</Link><span aria-hidden="true">/</span>
-        <Link href={reportHref}>{session.jobTitle || "岗位报告"}</Link><span aria-hidden="true">/</span>
+        <Link href={reportHref}>{jobTitle || "岗位报告"}</Link><span aria-hidden="true">/</span>
         <span>模拟面试</span>
       </nav>
       <div className={styles.titleRow}>
-        <h1 className={styles.title}>{session.jobTitle || "岗位练习"}</h1>
+        <h1 className={styles.title}>模拟面试</h1>
         <span className={styles.status}>{practiceStatusLabel(session.status)}</span>
       </div>
       <div className={styles.requirement}>
@@ -206,7 +208,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
       <div className={styles.meta}>
         <span>技能 <b>{session.skill || "未标注"}</b></span>
         {session.materials.map(material => (
-          <span key={`${material.kind}:${material.id}`}>{material.title} <b>v{material.versionNumber}</b></span>
+          <span key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} <b>v{material.versionNumber}</b></span>
         ))}
         <span>材料与知识依据在创建练习时固定</span>
       </div>

@@ -230,6 +230,8 @@ async def test_python_evidence_runs_two_turns_and_persists_summary(practice_db, 
     )
 
     async with factory() as session:
+        report = await session.get(MatchReport, UUID(report_id))
+        job_id = str(report.job_id)
         knowledge = list(
             await session.scalars(
                 select(TechnicalKnowledgeEntry).where(TechnicalKnowledgeEntry.skill == "pytest")
@@ -260,6 +262,7 @@ async def test_python_evidence_runs_two_turns_and_persists_summary(practice_db, 
 
     opened = await open_session(student, report_id, requirement_id)
     assert opened["status"] == "draft"
+    assert opened["jobId"] == job_id
     assert opened["evidence"][0]["citationId"] == "R3-E1"
     assert opened["knowledge"][0]["knowledgeId"] == knowledge_id
     assert opened["turns"] == []
