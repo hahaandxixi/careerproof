@@ -796,6 +796,7 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
     answer = "COUNT(*) 统计所有行，包括含 NULL 的行。"
     previous = practice._issue_records(first)
     raw = feedback(["正确说明行计数"])
+    raw["missing"] = ["COUNT(*) 口径", "异常覆盖范围", "尚未给出样例"]
     raw["resolvedIssues"] = [{"issueId": previous[0]["issueId"], "answerQuote": answer}]
     options = dict(
         allowed_citations=set(),
@@ -806,7 +807,7 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
     resolved = practice.validate_feedback(raw, answer=answer, **options)
     second = InterviewAnswer(turn_index=1, answer_text=answer, feedback=resolved)
     summary = practice.build_summary([first, second])
-    assert summary["remaining"] == ["异常覆盖范围"]
+    assert summary["remaining"] == ["异常覆盖范围", "尚未给出样例"]
     assert summary["resolvedIssues"][0]["answerQuote"] == answer
     second.feedback = practice.validate_feedback(
         feedback(["只谈到改进计划"]), answer="我以后会补测试。", **options
