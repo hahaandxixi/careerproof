@@ -1,0 +1,55 @@
+import collections, hashlib, json, pathlib, re, shutil, subprocess
+ROOT=pathlib.Path(r'D:\jbcode\web ai\jianli');OUT=ROOT/'backend/.tmp/github-sync-20261027';WT=ROOT/'backend/.tmp/github-evidence-20261027'
+d=json.loads((OUT/'plan.json').read_text(encoding='utf8'));paths=[]
+for x in d['files']:
+    if x['category'] not in ('evidence','source-archive','delivery'):continue
+    src=pathlib.Path(x['worktree'])/x['path'];data=src.read_bytes()
+    assert hashlib.sha256(data).hexdigest()==x['sha256'],f'concurrent change: {x["path"]}'
+    dest=WT/x['remote_path'];dest.parent.mkdir(parents=True,exist_ok=True)
+    if dest.exists():assert dest.read_bytes()==data,str(dest)
+    dest.write_bytes(data);paths.append(x['remote_path'])
+    # All new historical text payloads were scanned; raw credential logs/reviews excluded.
+    if b'\0' not in data[:8192] and len(data)<20_000_000:
+        s=data.decode('utf8',errors='replace')
+        assert not re.search(r'\bsk-[A-Za-z0-9_-]{20,}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----|\beyJ[A-Za-z0-9_-]{15,}\.[A-Za-z0-9_-]{15,}\.',s),x['path']
+base=WT/'docs/archive/20261027-local-sync'
+base.mkdir(parents=True,exist_ok=True)
+(base/'.gitattributes').write_text('* -text\n**/* -text\n',encoding='utf8');paths.append('docs/archive/20261027-local-sync/.gitattributes')
+readme='''# 本地成果历史归档（2026-10-27）
+
+这是文件归档，不是当前产品版本，也不是最终比赛交付。按工作树保留原始字节；`.gitattributes` 对附件关闭换行转换。原始工作区仍保持不动。
+
+- `root/`：主工作区尚未上传的文档、原始验收输出、合成场景及历史交付稿。
+- 其余工作树名目录：尚未上传、且内容不与远端相同的历史替代实现或验收附件。
+- Markdown 历史附件使用 `.md.txt` 后缀，保留原文，避免将旧本机路径、旧相对链接或旧任务状态变成当前导航。其原始路径和远端归档位置见完整文件清单。
+- 6 个旧 MP4 为历史演示草稿，含一份旧合成配音稿，不是用户本轮配音的最终成片；未录制新视频。23 页 PDF 是 10/22 历史稿，不能代替 B1 或当前候选；B1 在独立交付分支保存。
+- 家庭试用的脚本/说明仅作为历史源码保留。镜像、打包副本、账号文件、环境配置和本机数据未上传；不是可直接发给家人的完整安装包。
+- 旧补证导航、UUID helper 和页面替代实现不允许覆盖 PR #1。归档不表示已接受其功能。
+
+完整分类、排除清单、提交位置、安全边界和本轮日志见 [同步审查入口](../../evidence/20261027-github-sync/README.md)。原有失败、报告与人工原件未被改写。
+'''
+(base/'README.md').write_text(readme,encoding='utf8');paths.append('docs/archive/20261027-local-sync/README.md')
+logdir=WT/'docs/evidence/20261027-github-sync/logs';logdir.mkdir(parents=True,exist_ok=True)
+for p in OUT.iterdir():
+    if p.name.endswith(('.log','.xml')) or p.name in [n+'.json' for n in ['backend-target','ruff','frontend-tests','frontend-lint','frontend-typecheck','frontend-build','runner-test']]:
+        dest=logdir/p.name;shutil.copyfile(p,dest);paths.append(dest.relative_to(WT).as_posix())
+f=OUT/'archive-paths.nul';f.write_bytes(b'\0'.join(p.encode('utf8') for p in paths)+b'\0')
+subprocess.run(['git','-c','core.longpaths=true','add','-f','--pathspec-from-file='+str(f),'--pathspec-file-nul'],cwd=WT,check=True,capture_output=True)
+staged=set(filter(None,subprocess.check_output(['git','diff','--cached','--name-only','-z'],cwd=WT).decode('utf8').split('\0')))
+assert staged==set(paths)
+# Check the actual staged bytes, not only the source snapshot.
+entries={}
+for item in subprocess.check_output(['git','ls-files','--stage','-z'],cwd=WT).decode('utf8').split('\0'):
+    if not item:continue
+    meta,path=item.split('\t',1);entries[path]=meta.split()[1]
+assets=[x for x in d['files'] if x['category'] in ('evidence','source-archive','delivery')]
+ids=[entries[x['remote_path']] for x in assets]
+raw=subprocess.check_output(['git','cat-file','--batch'],cwd=WT,input=('\n'.join(ids)+'\n').encode('ascii'))
+pos=0
+for x in assets:
+    end=raw.index(b'\n',pos);head=raw[pos:end].split();size=int(head[2]);pos=end+1
+    blob=raw[pos:pos+size];pos+=size+1
+    assert hashlib.sha256(blob).hexdigest()==x['sha256'],x['path']
+print(json.dumps({'asset_files':sum(x['category'] in ('evidence','source-archive','delivery') for x in d['files']),'staged_files':len(paths),'bytes':sum(x['size'] or 0 for x in d['files'] if x['category'] in ('evidence','source-archive','delivery'))},ensure_ascii=False))
+subprocess.run(['git','commit','-m','archive: preserve reviewed local evidence and historical delivery assets'],cwd=WT,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=WT).decode().strip();(OUT/'asset-commit.txt').write_text(sha,encoding='ascii');print('asset commit',sha)

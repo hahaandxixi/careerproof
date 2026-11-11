@@ -1,0 +1,78 @@
+services:
+  database:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: careerproof_family
+      POSTGRES_USER: family
+      POSTGRES_PASSWORD: ${TRIAL_DB_PASSWORD:?Use 01-Start.cmd}
+    volumes:
+      - family_database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U family -d careerproof_family']
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  backend:
+    image: careerproof-family-backend:8ca91cc
+    build:
+      context: ./source
+      dockerfile: ../support/backend.Dockerfile
+    # Keep the existing seed tool's loopback-only database guard intact.
+    network_mode: 'service:database'
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      APP_ENV: development
+      DEBUG: 'false'
+      DATABASE_URL: postgresql+asyncpg://family:${TRIAL_DB_PASSWORD}@127.0.0.1:5432/careerproof_family
+      JWT_SECRET: ${TRIAL_JWT_SECRET:?Use 01-Start.cmd}
+      STORAGE_BASE_DIR: /data/materials
+      AI_EXTERNAL_ENABLED: 'false'
+      AI_PROVIDER: mock
+      SEMANTIC_RETRIEVAL_ENABLED: 'false'
+      FRONTEND_ORIGINS: '["http://127.0.0.1:3150"]'
+      DEMO_STUDENT_EMAIL: family.student@example.com
+      DEMO_ENTERPRISE_EMAIL: family.company@example.com
+      DEMO_PASSWORD: ${TRIAL_LOGIN_PASSWORD:?Use 01-Start.cmd}
+      PYTHONUNBUFFERED: '1'
+    volumes:
+      - family_materials:/data/materials
+    command: [sh, -c, 'python -m alembic upgrade head && exec python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --no-proxy-headers']
+    healthcheck:
+      test: [CMD, python, -c, 'import urllib.request; urllib.request.urlopen("http://127.0.0.1:8000/api/v1/health", timeout=3)']
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 15s
+  frontend:
+    image: careerproof-family-frontend:8ca91cc
+    build:
+      context: ./source/jianli
+      dockerfile: ../../support/frontend.Dockerfile
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      BACKEND_ORIGIN: http://database:8000
+      NEXT_TELEMETRY_DISABLED: '1'
+      NODE_ENV: production
+    networks:
+      - default
+      - browser
+    ports:
+      - '127.0.0.1:3150:3000'
+    healthcheck:
+      test: [CMD, node, -e, 'fetch("http://127.0.0.1:3000").then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+volumes:
+  family_database:
+  family_materials:
+
+networks:
+  default:
+    internal: true
+  browser: {}

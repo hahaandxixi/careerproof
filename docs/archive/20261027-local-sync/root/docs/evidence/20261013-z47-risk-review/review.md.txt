@@ -1,0 +1,123 @@
+# 传智杯47：guard / launcher 独立风险审查（ZCode GLM-5.3，2026-10-13）
+
+Git 根 `D:\jbcode\web ai\jianli`，HEAD `71a2fd3`，审查对象为当前未提交 diff 中
+`contracts.py` / `provider.py` / `task_boundaries.py` / `Start-Local.ps1` / `Stop-Local.ps1` /
+`scripts/local-runtime.ps1` 六文件终态（源 hash 见 `source-hashes.json`）。只读审查；
+唯一写本目录与 `backend/.tmp/z47-risk-review/`。未改任何业务/启动/测试代码。
+
+## 一、AI 守卫（G3：权限/快照可靠）
+
+### 结论：不阻塞签收，但有 1×P2 + 2×P3
+
+**A1 [P2|漏拒] 无关子句的已解决/历史状态词吞掉当前不可归属事实（跨子句状态串扰）**
+- 位置：`backend/app/tools/task_boundaries.py:137-140`（`_RESOLVED_SCOPE`/`_HISTORICAL_SCOPE`
+  在拼接后的全 scope 上 `re.search`，而击败器 `current_claim`（:133-136）要求"当前标记 +
+  不可归属短语"同子句——两侧作用域不对称）。
+- 触发（可复现，`raw/03-probe-ai-guard.txt` G1b/G1c/G1d/G1f）：
+  - `登录缺陷已解决，仓库仍共用账号，提交未区分作者` → `shared_history_attribution_impossible` 返回 **False**（应 True）
+  - `此前版本另有缺陷，当前共用账号，历史记录无法区分作者` → **False**（应 True；39 号 holdout 2 同句删去"此前"子句时为 True）
+  - 连带：G1b 源 + "从版本历史筛出本人署名的提交"提取计划 → `task_boundary_error` 返回 **None（漏放行）**
+- 39 号 holdout 之所以全过：其"已改用/此前"都在归因相关子句内。无关子句（缺陷修复、
+  "服务不再崩溃"）的状态词同样触发整行豁免，把当前时不可归属事实判成已解决。
+- 对照组行为正确：`raw/03` G1a（当前历史 True）、G1e（39 holdout 1 已解决豁免 False）。
+- 最小修复建议：豁免词表检查同样收窄到子句级——历史/已解决词仅当与
+  `_SHARED_ACCOUNT` 或不可归属短语**同子句**时才参与豁免；`current_claim` 不动
+  （推演：G1b→True、G1e 仍 False，两侧都成立）。
+
+**A2 [P3|误拒] `_EXTRACTION_SHAPE` 的"具名提交清单"分支把新建具名路径一并拒绝**
+- 位置：`backend/app/tools/task_boundaries.py:35-37` + `:146-159`。注释声明
+  "obtaining NEW independent proof stays legal"，但 `具名提交清单` 字面不限定
+  "从既有历史"。
+- 触发（G2b）：源 `项目当前共用账号，提交未区分作者` + 计划
+  `今后以个人账号提交新代码形成的具名提交清单`（未来新建，非历史提取）→ 返回
+  extraction error（应放行）。
+- 对照：G2c `独立具名的贡献证明` + 待核验 → 放行 ✓（provider.py:300 提示词用词恰与
+  放行路径协调，降低了触发概率，但学生自然语言仍可命中）。
+- 最小修复建议：`具名提交清单` 分支加"从.{0,6}(?:历史|既有|版本历史)"前置限定，
+  或把该分支改写为与"筛出"同族的历史限定形状。
+
+**A3 [P3|保守面] 转述型"已上线"措辞被 outcome-without-record 门拒绝**
+- 位置：`backend/app/agents/contracts.py:190-203`。
+- 触发（G4a）：deliverable `已上线功能的补充截图` + steps 无运行记录词 → 返回
+  "asserts a deployment or runtime outcome without a runtime-record step"。
+- 定性：与 33 号冻结拒绝用例"已部署接口证明"（test_weekend_plan_boundaries.py:33）同构，
+  属该门设计内的保守面/词面局限（守卫无法区分 AI 新断言与转述学生已声称事实），
+  非 36 号修复引入的回归；36 号 07-probes 已留档词面局限同族。G4b（`修改后新版功能的
+  部署截图`，材料变化措辞）放行 ✓，G4c（同计划+运行记录步骤）放行 ✓。
+
+**未发现放宽**：diff 对 contracts/task_boundaries 全部为新增守卫与集成，无删除/弱化
+既有检查；provider.py:294-307 提示词为纯收紧（null 收紧、共用账号改道独立具名证明、
+缓存失效写明机制）。"本人贡献尚不明/需要补实现或日志"合法路径由 36 号测试
+`test_future_deployment_evidence_plan_is_allowed`、`test_material_upload_and_location_wording_is_allowed`
+覆盖并全绿（`raw/01`）。跨要求维度：`personal_source_texts` 按单要求传入，无混用。
+
+## 二、Launcher（G4：演示可恢复）
+
+### 结论：不阻塞签收，1×P3 + 2×P4 备注
+
+**先证溯源**：launcher 三文件当前 hash 与 37/40 号冻结记录逐一相等
+（`source-hashes.json` `matches_prior_evidence` 全 true）——launcher 自 40 号交付后
+零改动，本节实为对 35+37+40 合并终态的复核。
+
+**L1 [P3|漏停] 记录根进程已死时，其存活孤儿后代不停且 manifest 随后被删**
+- 位置：`scripts/local-runtime.ps1:128`（`Get-ValidatedLocalProcesses` 内
+  `if (!$process) { continue }`）→ 根死则该 record 不进 `$live`，其存活后代
+  （Windows 孤儿进程 ParentProcessId 仍指向死根）不进入任何停止计划；
+  `Stop-Local.ps1:17` 随后 `Remove-Item` manifest → 孤儿失管（占端口需人工清理）。
+- 复现（纯 mock，`raw/04` P1）：根 4242 死 + 孤儿 9101 活（ParentProcessId=4242）→
+  `live=0`、`orphanStopped=False`、`LEAK=True`。
+- 定性：失败安全方向（少停不误停），37 号两阶段设计固有边界；当前 uvicorn/next
+  均单根单进程，实际风险低。修复需在根死分支改为"仍以记录 PID 为锚做后代遍历"。
+
+**验证通过项**（`raw/04`）：
+- P2：40 号真实 ticks 形状（CIM=.NET−2）根 + 同微秒子进程 → 两阶段全停
+  （4244 先于 4243，逆序正确），无误拒——floor 栅格规则行为与 40 号结论一致。
+- P3：根 CIM 时间漂移 >1μs（−12 ticks）→ 拒绝且零 Stop 调用。
+- 静态复核：`Save-LocalRunManifest` 的 `$ownsTemporary` 仅在 CreateNew 成功后置真、
+  catch 仅拥有时清理（40 号 F5 语义保持）；`Read-LocalRunManifest` 空文件/坏 JSON
+  保守报错不删除；`Get-LocalCimMicrosecondTicks` DivRem 整数无 double；后代遍历与
+  采样交叉校验的栅格归一正确应用于全部跨 API 比较点；`Assert-LocalReusableManifest`
+  要求 schemaVersion=2 且 ≥2 记录；Start catch 先释放 launchLock 再调 Stop、
+  `Invoke-LocalCleanupSafely` 保留原异常（`raw/02` A/E 组 33/33 内含）；
+  `Get-LocalBackendDigest` 已纳入 alembic.ini + alembic/*.py|mako（排除 __pycache__，
+  `-match` 大小写不敏感）。
+
+**P4 备注**（不计缺陷）：Save 中途进程死亡时 GUID 临时文件可能残留无人清理；两阶段
+第二阶段 throw（采样后漂移）理论上可留部分停止（TOCTOU 固有，manifest 未删可重试）；
+`Read-LocalRunManifest` 的 Test-Path→读之间存在 reparse 替换微窗口。
+
+## 三、测试运行记录（均为纯模块，`.venv-dependency23` / PS5.1）
+
+| 命令 | 结果 | 原始输出 |
+|---|---|---|
+| `python -m pytest app/tests/test_weekend_plan_boundaries.py app/tests/test_shared_history_current_boundary.py --basetemp=backend/.tmp/z47-risk-review/pytest-tmp -q` | **32 passed, exit 0** | `raw/01` |
+| `powershell -File scripts/local-launcher-recovery.test.ps1`（纯 mock：Stop-Process 本地 shadow、自有 GUID scratch） | **33 PASS / 0 FAIL, exit 0** | `raw/02` |
+| `python .tmp/z47-risk-review/probe_ai_guard.py`（纯函数反例） | 12 例：6 对照全 OK + 6 命中 | `raw/03` |
+| `powershell -File .tmp/z47-risk-review/probe-launcher.ps1`（纯 mock 探针） | P1 漏停命中；P2/P3 行为正确 | `raw/04` |
+
+探针纯度声明：Python 探针仅 import 纯函数；PS 探针 shadow 了
+`Get-Process`/`Get-CimInstance`/`Stop-Process`，未启动、未停止任何真实进程。
+
+## 四、未验证项 / 残余
+
+- **真实停止路径（非 ValidateOnly 的 Stop-Process）未实跑**（卡面禁止，归 Codex）；
+  40 号 real-identity 只读探针本轮未重跑（其会启动 nonce 短命子进程，超出 47 号纯模块边界）。
+- **真实页面 / 8001/3001 服务 / 浏览器登录未触碰**（Codex 正在企业页面 run）。
+- **任意自然语言语义不保证**：全部守卫为显式词面窄规则；首次设计来源的
+  来源不可见残余、`_causal_negation_prefix` 16 字窗外的同子句否定（>16 字无标点），
+  均未验证、维持既有留档口径。
+- 36 号全量套件本轮未重跑（1173 绿/1 pyjwt pin 预存在失败的基线在 36 号证据目录）；
+  A1 修复落地后需补 G1 家族红测试再验。
+
+## 五、分级汇总
+
+| 编号 | 级别 | 方向 | 一句话 | 位置 |
+|---|---|---|---|---|
+| A1 | P2 | 漏拒 | 无关子句"已解决/此前"豁免吞掉当前不可归属事实，提取计划漏放行 | task_boundaries.py:137-140 |
+| A2 | P3 | 误拒 | "具名提交清单"无历史限定，新建具名路径被拒（与注释意图不符） | task_boundaries.py:35-37 |
+| A3 | P3 | 保守面 | 转述型"已上线"被 outcome 门拒（33 号设计内，非回归） | contracts.py:190-203 |
+| L1 | P3 | 漏停 | 根死则存活孤儿后代不停且 manifest 被删（失败安全方向） | local-runtime.ps1:128 |
+
+两类独立结论：**AI 守卫——36/39 修复本体成立、既有用例全绿、无放宽，但 39 的子句
+作用域存在 A1 窄漏拒（建议修复后再签收该维度）；Launcher——35/37/40 合并终态通过
+本轮全部纯模块验证，L1 为已知设计边界的确认，不阻塞。**

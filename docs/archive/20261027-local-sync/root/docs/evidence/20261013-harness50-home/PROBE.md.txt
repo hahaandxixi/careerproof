@@ -1,0 +1,6 @@
+# 已失效的临时文件
+
+`page.syntax-check.mjs` 与 `PROBE.md` 是本次自检的中间产物：沙箱（workspace-write）不允许 `pwsh` 删除已创建的证据文件，因此保留在此但不作为结论依据。
+
+- 有效证据请读同目录 `VERIFICATION.md` 与 `structure-check.mjs`。
+- `node --check` 无法解析 JSX（在首个标签处报 `Unexpected token '<'`），故不作为验证手段。

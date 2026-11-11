@@ -1,0 +1,19 @@
+{
+  "baseCommit": "9128559378198473697b808be595a4108e61cf15",
+  "reportId": "93bc1b91-177b-4755-a9f6-55ca2dc96b4c",
+  "taskId": "4019e2d2-9436-4ec0-9c4d-f358de22a933",
+  "baseline": "unchanged production selection/context modules, same V2 frozen input; not a saved V1 report",
+  "source": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\rule-narrative-20261021\\source-r2\\backend",
+  "database": "cp_agent_display_20261021",
+  "dbPort": 55442,
+  "storage": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\agent-display-20261021\\storage",
+  "apiPort": 51766,
+  "externalAi": false,
+  "historicalRowsUnchanged": true,
+  "oldReportsUnchanged": true,
+  "referencesAndRatingsUnchanged": true,
+  "pausedDisplayIncluded": false,
+  "normalSiteTouched": false,
+  "originalPreviewRestarted": false,
+  "ownedApiStopped": true
+}

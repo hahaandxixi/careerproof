@@ -1,0 +1,217 @@
+warning: in the working copy of 'Start-Local.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Stop-Local.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/local-runtime.ps1', LF will be replaced by CRLF the next time Git touches it
+diff --git a/Start-Local.ps1 b/Start-Local.ps1
+index 58dd277..134bf82 100644
+--- a/Start-Local.ps1
++++ b/Start-Local.ps1
+@@ -91,12 +91,13 @@ try {
+     catch { throw 'Another local launch/stop is in progress. Wait for it to finish.' }
+     $configHash = Get-LocalConfigDigest $envPath
+     $backendDigest = Get-LocalBackendDigest $backendRoot
+-    if (Test-Path -LiteralPath $statePath) {
+-        $existing = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+-        $live = @(Get-ValidatedLocalProcesses $existing)
++    $existing = Read-LocalRunManifest $statePath
++    if ($null -ne $existing) {
++        $live = @(Get-ValidatedLocalProcesses $existing $statePath)
+         if ($live.Count) {
+             if ($BuildOnly) { throw 'Stop the owned local run before rebuilding its frontend.' }
+-            if ($Rebuild -or $existing.schemaVersion -ne 2 -or $existing.backendVenv -ne $BackendVenv -or $existing.backendDigest -ne $backendDigest -or $existing.frontendRoot -ne $frontendRoot -or $existing.configHash -ne $configHash -or !$buildState.reusable) { throw 'Existing run differs from the selected code/runtime/config/build. Stop-Local.ps1, then start again.' }
++            Assert-LocalReusableManifest $existing $statePath
++            if ($Rebuild -or $existing.backendVenv -ne $BackendVenv -or $existing.backendDigest -ne $backendDigest -or $existing.frontendRoot -ne $frontendRoot -or $existing.configHash -ne $configHash -or !$buildState.reusable) { throw 'Existing run differs from the selected code/runtime/config/build. Stop-Local.ps1, then start again.' }
+             Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $existing.processes[0]
+             Wait-LocalService 'http://127.0.0.1:3000' 3000 $existing.processes[1]
+             Write-Output 'Existing owned CareerProof services are healthy; reused without migration or rebuild.'
+@@ -134,18 +135,19 @@ try {
+     $manifest = @{ schemaVersion = 2; backendVenv = $BackendVenv; backendDigest = $backendDigest; frontendRoot = $frontendRoot; configHash = $configHash; createdAt = (Get-Date).ToUniversalTime().ToString('o'); processes = @() }
+     $backendProcess = Start-Process -FilePath $pythonPath -ArgumentList '-m uvicorn app.main:app --host 127.0.0.1 --port 8000' -WorkingDirectory $backendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'backend.out.log') -RedirectStandardError (Join-Path $stateRoot 'backend.err.log')
+     $owned += @{ Id = $backendProcess.Id; Started = $backendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $pythonPath; Invocation = 'uvicorn app.main:app --host 127.0.0.1 --port 8000' }
+-    $manifest.processes = @($owned); $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $statePath -Encoding utf8
++    $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
+     Wait-LocalService 'http://127.0.0.1:8000/api/v1/health' 8000 $owned[0]
+     $frontendProcess = Start-Process -FilePath $nodeExecutable -ArgumentList @(('"' + $nextPath + '"'), 'start', '-H', '127.0.0.1', '-p', '3000') -WorkingDirectory $frontendRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $stateRoot 'frontend.out.log') -RedirectStandardError (Join-Path $stateRoot 'frontend.err.log')
+     $owned += @{ Id = $frontendProcess.Id; Started = $frontendProcess.StartTime.ToUniversalTime().ToString('o'); Needle = $nextPath; Invocation = $nextPath }
+-    $manifest.processes = @($owned); $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $statePath -Encoding utf8
++    $manifest.processes = @($owned); Save-LocalRunManifest $statePath $manifest
+     Wait-LocalService 'http://127.0.0.1:3000' 3000 $owned[1]
+     Write-Output 'CareerProof is ready at http://127.0.0.1:3000'
+     Write-Output 'Stop website: ./Stop-Local.ps1. Stop PostgreSQL too: add -Database.'
+ } catch {
++    $originalError = $_
+     if ($launchLock) { $launchLock.Dispose(); $launchLock = $null }
+-    if ($owned.Count -gt 0) { & (Join-Path $projectRoot 'Stop-Local.ps1') }
+-    throw
++    if ($owned.Count -gt 0) { Invoke-LocalCleanupSafely { & (Join-Path $projectRoot 'Stop-Local.ps1') } }
++    throw $originalError
+ } finally {
+     $env:BACKEND_ORIGIN = $savedBackendOrigin
+     $env:NEXT_DIST_DIR = $savedNextDistDir
+diff --git a/Stop-Local.ps1 b/Stop-Local.ps1
+index a61e54a..482bb81 100644
+--- a/Stop-Local.ps1
++++ b/Stop-Local.ps1
+@@ -8,35 +8,12 @@ if (Test-Path -LiteralPath (Split-Path $statePath -Parent)) {
+     try { $stopLock = [System.IO.File]::Open((Join-Path (Split-Path $statePath -Parent) 'launcher.lock'), 'OpenOrCreate', 'ReadWrite', 'None') }
+     catch { throw 'A local launch/stop is in progress. No processes stopped.' }
+ }
+-if (Test-Path -LiteralPath $statePath) {
+-    # ConvertFrom-Json can emit a JSON array as one pipeline object. Assign first so
+-    # foreach receives each process record instead of one nested Object[].
+-    $records = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
++$records = Read-LocalRunManifest $statePath
++if ($null -ne $records) {
+     # Validate EVERY root before stopping any, so a mismatched second record
+     # cannot leave the first service terminated.
+-    $live = @(Get-ValidatedLocalProcesses $records)
++    $live = @(Stop-ValidatedLocalProcesses $records $statePath -ValidateOnly:$CheckOnly)
+     if ($CheckOnly) { Write-Output "Validated $($live.Count) owned root processes; no process or database stopped."; return }
+-    foreach ($record in $live) {
+-        $allProcesses = @(Get-CimInstance Win32_Process)
+-        $descendants = @([int]$record.Id)
+-        for ($index = 0; $index -lt $descendants.Count; $index++) {
+-            $children = @($allProcesses | Where-Object { $_.ParentProcessId -eq $descendants[$index] })
+-            foreach ($child in $children) { if ($descendants -notcontains [int]$child.ProcessId -and ([datetime]$child.CreationDate).ToUniversalTime() -ge ([datetime]$record.Started).ToUniversalTime()) { $descendants += [int]$child.ProcessId } }
+-        }
+-        [array]::Reverse($descendants)
+-        $identities = @{}
+-        foreach ($ownedId in $descendants) {
+-            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+-            if ($ownedProcess) { $identities[$ownedId] = $ownedProcess.StartTime.ToUniversalTime().Ticks }
+-        }
+-        foreach ($ownedId in $descendants) {
+-            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
+-            if ($ownedProcess -and $identities.ContainsKey($ownedId)) {
+-                if ($ownedProcess.StartTime.ToUniversalTime().Ticks -ne $identities[$ownedId]) { throw 'A descendant PID was reused; refusing to stop it.' }
+-                Stop-Process -Id $ownedId -Force -ErrorAction SilentlyContinue
+-            }
+-        }
+-    }
+     Remove-Item -LiteralPath $statePath -Force
+ }
+ if ($CheckOnly) { Write-Output 'No local run record; no process or database stopped.'; return }
+diff --git a/scripts/local-runtime.ps1 b/scripts/local-runtime.ps1
+index 6a0bc36..8a57b1a 100644
+--- a/scripts/local-runtime.ps1
++++ b/scripts/local-runtime.ps1
+@@ -23,6 +23,14 @@ function Get-LocalConfigDigest([string]$Path) {
+ function Get-LocalBackendDigest([string]$Root) {
+     $files = @(Get-ChildItem -LiteralPath (Join-Path $Root 'app') -Recurse -File -Filter '*.py' | Where-Object { $_.FullName -notmatch '[\\/]tests[\\/]' } | Sort-Object FullName)
+     $files += Get-Item -LiteralPath (Join-Path $Root 'pyproject.toml')
++    $alembicIni = Join-Path $Root 'alembic.ini'
++    if (Test-Path -LiteralPath $alembicIni) { $files += Get-Item -LiteralPath $alembicIni }
++    $alembicRoot = Join-Path $Root 'alembic'
++    if (Test-Path -LiteralPath $alembicRoot) {
++        # Migrations and alembic config invalidate reuse; the bytecode cache and
++        # non-config scratch must not.
++        $files += @(Get-ChildItem -LiteralPath $alembicRoot -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]__pycache__[\\/]' -and $_.Extension -match '^\.(py|mako)$' } | Sort-Object FullName)
++    }
+     $parts = foreach ($file in $files) { $file.FullName.Substring($Root.Length) + ':' + (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash }
+     $sha = [System.Security.Cryptography.SHA256]::Create()
+     try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes(($parts -join "`n")))).Replace('-', '') }
+@@ -38,27 +46,91 @@ function Get-LocalEnvValue([string]$Path, [string]$Name) {
+     return $null
+ }
+ 
++function Assert-LocalStatePath([string]$Path) {
++    foreach ($candidate in @($Path, (Split-Path -Parent $Path))) {
++        if (!$candidate) { continue }
++        $item = Get-Item -LiteralPath $candidate -ErrorAction SilentlyContinue
++        if ($item -and ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { throw "Local run state path must not be a reparse point: $candidate" }
++    }
++}
++
++function Read-LocalRunManifest([string]$Path) {
++    if (!(Test-Path -LiteralPath $Path)) { return $null }
++    Assert-LocalStatePath $Path
++    $raw = Get-Content -LiteralPath $Path -Raw
++    if ([string]::IsNullOrWhiteSpace($raw)) { throw "Local run record at $Path is empty. Corruption is not proof that nothing is running: confirm no services are live, then move the file aside manually; it was not removed automatically." }
++    try { $parsed = $raw | ConvertFrom-Json -ErrorAction Stop } catch { throw "Local run record at $Path is unreadable JSON. Corruption is not proof that nothing is running: confirm no services are live, then move the file aside manually; it was not removed automatically. ($($_.Exception.Message))" }
++    if ($null -eq $parsed) { throw "Local run record at $Path holds no readable process data. Confirm no services are live, then move the file aside manually; it was not removed automatically." }
++    return $parsed
++}
++
++function Save-LocalRunManifest([string]$Path, $Manifest) {
++    Assert-LocalStatePath $Path
++    $temporary = "$Path.tmp"
++    try {
++        $Manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $temporary -Encoding utf8
++        Move-Item -LiteralPath $temporary -Destination $Path -Force
++    } catch {
++        Remove-Item -LiteralPath $temporary -ErrorAction SilentlyContinue
++        throw "Failed to save local run record at $Path; the previous record was left untouched. ($($_.Exception.Message))"
++    }
++}
++
+ function Get-LocalRunRecords($Manifest) {
+     if ($Manifest.schemaVersion -eq 2) { return @($Manifest.processes) }
+     return @($Manifest) # compatibility with saved pre-upgrade process arrays
+ }
+ 
+-function Get-ValidatedLocalProcesses($Manifest) {
++function Get-ValidatedLocalProcesses($Manifest, [string]$StatePath) {
++    $where = if ($StatePath) { " in $StatePath" } else { '' }
+     $records = @(Get-LocalRunRecords $Manifest)
+-    if ($records.Count -eq 0) { throw 'Empty local process record; refusing to guess.' }
++    if ($records.Count -eq 0) { throw "Empty local process record$where; refusing to guess." }
+     $live = @()
+     foreach ($record in $records) {
+-        if (!$record.Id -or !$record.Started -or [string]::IsNullOrWhiteSpace($record.Needle)) { throw 'Invalid local process identity.' }
++        if (!$record.Id -or !$record.Started -or [string]::IsNullOrWhiteSpace($record.Needle)) { throw "Invalid local process identity$where." }
+         $process = Get-Process -Id $record.Id -ErrorAction SilentlyContinue
+         if (!$process) { continue }
+-        if ($process.StartTime.ToUniversalTime().Ticks -ne ([datetime]$record.Started).ToUniversalTime().Ticks) { throw 'PID reused; no processes stopped.' }
++        if ($process.StartTime.ToUniversalTime().Ticks -ne ([datetime]$record.Started).ToUniversalTime().Ticks) { throw "PID reused; no processes stopped$where." }
+         $details = Get-CimInstance Win32_Process -Filter "ProcessId = $($record.Id)"
+-        if (!$details.CommandLine -or !$details.CommandLine.Contains([string]$record.Needle)) { throw 'Local process command changed; no processes stopped.' }
++        if (!$details.CommandLine -or !$details.CommandLine.Contains([string]$record.Needle)) { throw "Local process command changed; no processes stopped$where." }
+         $live += $record
+     }
+     return $live
+ }
+ 
++function Assert-LocalReusableManifest($Manifest, [string]$StatePath) {
++    if (!$Manifest -or $Manifest.schemaVersion -ne 2 -or @(Get-LocalRunRecords $Manifest).Count -lt 2) {
++        throw "Local run record at $StatePath is incomplete or from an older format; refusing to reuse it. Run Stop-Local.ps1 to stop any recorded services, then start again."
++    }
++}
++
++function Stop-ValidatedLocalProcesses($Manifest, [string]$StatePath, [switch]$ValidateOnly) {
++    $live = @(Get-ValidatedLocalProcesses $Manifest $StatePath)
++    if ($ValidateOnly) { return $live }
++    foreach ($record in $live) {
++        $allProcesses = @(Get-CimInstance Win32_Process)
++        $descendants = @([int]$record.Id)
++        for ($index = 0; $index -lt $descendants.Count; $index++) {
++            $children = @($allProcesses | Where-Object { $_.ParentProcessId -eq $descendants[$index] })
++            foreach ($child in $children) { if ($descendants -notcontains [int]$child.ProcessId -and ([datetime]$child.CreationDate).ToUniversalTime() -ge ([datetime]$record.Started).ToUniversalTime()) { $descendants += [int]$child.ProcessId } }
++        }
++        [array]::Reverse($descendants)
++        $identities = @{}
++        foreach ($ownedId in $descendants) {
++            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
++            if ($ownedProcess) { $identities[$ownedId] = $ownedProcess.StartTime.ToUniversalTime().Ticks }
++        }
++        foreach ($ownedId in $descendants) {
++            $ownedProcess = Get-Process -Id $ownedId -ErrorAction SilentlyContinue
++            if ($ownedProcess -and $identities.ContainsKey($ownedId)) {
++                if ($ownedProcess.StartTime.ToUniversalTime().Ticks -ne $identities[$ownedId]) { throw 'A descendant PID was reused; refusing to stop it.' }
++                Stop-Process -Id $ownedId -Force -ErrorAction SilentlyContinue
++            }
++        }
++    }
++    return $live
++}
++
+ function Test-LocalPortOwner([int]$Port, $Record) {
+     if (!$Record -or [string]::IsNullOrWhiteSpace($Record.Invocation)) { return $false }
+     $listeners = @(Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue)
+@@ -89,3 +161,8 @@ function Wait-LocalService([string]$Url, [int]$Port, $Record) {
+     }
+     throw "Service failed its owned health check (port $Port); inspect backend/.tmp/local-run logs."
+ }
++
++function Invoke-LocalCleanupSafely([scriptblock]$Cleanup) {
++    # Startup cleanup is best effort: its own failure must not mask the error that triggered it.
++    try { & $Cleanup } catch { Write-Warning "Startup cleanup did not complete: $($_.Exception.Message)" }
++}

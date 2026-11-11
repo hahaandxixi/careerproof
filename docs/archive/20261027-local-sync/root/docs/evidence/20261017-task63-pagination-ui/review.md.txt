@@ -1,0 +1,47 @@
+# task63 · 分页双端页面补验 — 交棒（页面部分受阻）
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。未改任何业务源码（本卡禁止）。
+
+## 判定：**真实浏览器补验未完成（阻塞），离线可判定部分已验通过**
+
+任务卡要求「补真实企业列表与四类列表 390px 验收……环境未提供时先完成离线可运行脚本并标记页面阻塞」。
+本环境无可驱动浏览器：`jianli/node_modules` 无 `playwright`/`puppeteer`；仓内既有 E2E 走 raw CDP
+且需 3001 前端服务，本卡「不启停服务」——故按卡内条款标记**页面阻塞**，不把静态断言当浏览器通过。
+
+## 已验通过（离线、可复现）
+
+- 新增 `verify-pagination-surfaces.test.mjs` → **4 passed**（`verify-pagination-surfaces.raw.out`）：
+  1. 五个列表（投递/候选人/报告/补证任务/通知）各自渲染 `ListPagination` 并使用独立 `label`；
+  2. 企业候选人页明示「筛选仅作用于当前页」「每页20份」，且通知补入记录用
+     `pageItemCount` 排除、文案「不计入本页记录数」可见（`ApplicationBoard.tsx:104,111`）；
+  3. 通知中心显示页码、两种空态文案，下一页以服务端 `total` 为界（`NotificationCenter.tsx:59-62`）；
+  4. `pageBounds`：整除末页（total=40,page=2）`next=false`、空集 `start=end=0`。
+- 既有分页/会话测试 *list-pagination / application-list-session / application-board-session*
+  → **20 passed, 0 failed**（`t63-existing-pagination-tests.raw.out`）。已覆盖：首页/末页/空集、
+  `page=99` 夹取、101 号记录、过期页不得覆盖新页元数据、当前页外不交付下载、通知目标不增页成员。
+
+## 未验（必须由有浏览器环境的一方补做）
+
+1. **四类列表 + 企业列表在 390px 的真实渲染**（无横向溢出、整页不撑宽）。
+2. **键盘操作**（Tab 顺序、按钮可激活）。
+3. **越界后的真实页面表现**（服务端夹取回到末页时 UI 是否同步）。
+4. 依据 `docs/evidence/20261017-pagination-integration/README.md:27`，学生侧报告翻页与通知 390px
+   已有真实截图证据，但**企业侧「未做本批企业浏览器登录/翻页」**——本卡正是补这一块，仍未补上。
+5. 截图必须来自真实渲染；本轮无截图，不伪造。
+
+## 命令 / 结果
+
+- `node --experimental-strip-types --test docs/evidence/20261017-task63-pagination-ui/verify-pagination-surfaces.test.mjs`
+  → 4 passed（exit 0）
+- `node --experimental-strip-types --test tests/list-pagination.test.mjs tests/application-list-session.test.mjs tests/application-board-session.test.mjs`
+  → 20 passed（exit 0）
+
+## 剩余问题
+
+- 企业候选人页的 390px 与键盘验收是唯一实质缺口；实现侧已具备分页控件与当前页筛选提示，
+  静态层面未见矛盾，但不能据此声明页面通过。
+
+## 证据
+
+`verify-pagination-surfaces.test.mjs` / `.raw.out`、`t63-existing-pagination-tests.raw.out`、
+`source-hashes.txt`（本目录）。

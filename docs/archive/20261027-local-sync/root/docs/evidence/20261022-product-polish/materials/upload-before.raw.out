@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: actual upload forms accept supported uppercase image files
+not ok 1 - actual upload forms accept supported uppercase image files
+  ---
+  duration_ms: 28.2088
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\jianli\\tests\\material-workspace.test.mjs:58:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    resume: ;简历仅支持 PDF、DOCX 或 TXT
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/jianli/tests/material-workspace.test.mjs:68:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 319.9934

@@ -1,0 +1,114 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.0.3, pluggy-1.6.0 -- D:\jbcode\web ai\jianli\backend\.venv-dependency23\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\jbcode\web ai\jianli\backend
+configfile: pyproject.toml
+plugins: anyio-4.15.0, platformdirs-4.12.2, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 16 items
+
+app/tests/test_weekend_plan_boundaries.py::test_source_presence_causal_runtime_claim_is_rejected FAILED [  6%]
+app/tests/test_weekend_plan_boundaries.py::test_runtime_keyword_in_steps_cannot_bypass_causal_claim FAILED [ 12%]
+app/tests/test_weekend_plan_boundaries.py::test_runtime_records_elsewhere_cannot_bypass_causal_acceptance FAILED [ 18%]
+app/tests/test_weekend_plan_boundaries.py::test_deployment_outcome_without_record_step_is_rejected FAILED [ 25%]
+app/tests/test_weekend_plan_boundaries.py::test_future_deployment_evidence_plan_is_allowed PASSED [ 31%]
+app/tests/test_weekend_plan_boundaries.py::test_negative_conditional_and_refusal_runtime_wording_is_allowed PASSED [ 37%]
+app/tests/test_weekend_plan_boundaries.py::test_frozen_e2fd_rejection_keeps_existing_wording_guard PASSED [ 43%]
+app/tests/test_weekend_plan_boundaries.py::test_shared_account_history_extraction_is_rejected FAILED [ 50%]
+app/tests/test_weekend_plan_boundaries.py::test_source_visible_shared_account_contract_rejects_extraction FAILED [ 56%]
+app/tests/test_weekend_plan_boundaries.py::test_independent_named_proof_with_pending_state_is_allowed PASSED [ 62%]
+app/tests/test_weekend_plan_boundaries.py::test_full_contract_allows_independent_named_proof_plan PASSED [ 68%]
+app/tests/test_weekend_plan_boundaries.py::test_shared_account_without_impossibility_fact_allows_extraction_plan PASSED [ 75%]
+app/tests/test_weekend_plan_boundaries.py::test_history_conditional_and_negative_source_wording_do_not_trigger PASSED [ 81%]
+app/tests/test_weekend_plan_boundaries.py::test_paraphrased_refusal_in_plan_is_not_extraction PASSED [ 87%]
+app/tests/test_weekend_plan_boundaries.py::test_source_invisible_residual_keeps_old_acceptance PASSED [ 93%]
+app/tests/test_weekend_plan_boundaries.py::test_existing_contract_rejections_stay_intact PASSED [100%]
+
+================================== FAILURES ===================================
+____________ test_source_presence_causal_runtime_claim_is_rejected ____________
+
+    def test_source_presence_causal_runtime_claim_is_rejected():
+        context = supported_python_context()
+>       with pytest.raises(ValueError, match="deployment or runtime"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_weekend_plan_boundaries.py:91: Failed
+__________ test_runtime_keyword_in_steps_cannot_bypass_causal_claim ___________
+
+    def test_runtime_keyword_in_steps_cannot_bypass_causal_claim():
+        context = supported_python_context()
+        plan = E2FD_NEUTRAL_V1.model_copy(
+            update={"steps": ["整理 metrics.py 源码文件并运行一次"]}
+        )
+>       with pytest.raises(ValueError, match="deployment or runtime"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_weekend_plan_boundaries.py:100: Failed
+_______ test_runtime_records_elsewhere_cannot_bypass_causal_acceptance ________
+
+    def test_runtime_records_elsewhere_cannot_bypass_causal_acceptance():
+        context = supported_python_context()
+        plan = E2FD_NEUTRAL_V1.model_copy(
+            update={"steps": ["调用接口并保存响应与时间戳"]}
+        )
+>       with pytest.raises(ValueError, match="deployment or runtime"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_weekend_plan_boundaries.py:109: Failed
+___________ test_deployment_outcome_without_record_step_is_rejected ___________
+
+    def test_deployment_outcome_without_record_step_is_rejected():
+        context = supported_python_context()
+        plan = EvidenceTaskPlan(
+            deliverable="已部署接口证明",
+            steps=["整理 metrics.py 源码文件"],
+            acceptance_checks=["接口在服务器上稳定运行"],
+        )
+>       with pytest.raises(ValueError, match="without a runtime-record step"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_weekend_plan_boundaries.py:120: Failed
+_____________ test_shared_account_history_extraction_is_rejected ______________
+
+    def test_shared_account_history_extraction_is_rejected():
+        error = task_boundary_error(
+            deliverable=FROZEN_EXTRACTION_PLAN.deliverable,
+            steps=list(FROZEN_EXTRACTION_PLAN.steps),
+            acceptance_checks=list(FROZEN_EXTRACTION_PLAN.acceptance_checks),
+            personal_source_texts=[SHARED_ACCOUNT_SOURCE],
+        )
+>       assert error is not None
+E       assert None is not None
+
+app\tests\test_weekend_plan_boundaries.py:172: AssertionError
+_______ test_source_visible_shared_account_contract_rejects_extraction ________
+
+    def test_source_visible_shared_account_contract_rejects_extraction():
+        context = shared_account_context()
+>       with pytest.raises(ValueError, match="shared-account"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+app\tests\test_weekend_plan_boundaries.py:178: Failed
+============================== warnings summary ===============================
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:475: PytestCacheWarning: cache could not write path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\nodeids: [Errno 13] Permission denied: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache\\nodeids'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429
+  D:\jbcode\web ai\jianli\backend\.venv-dependency23\Lib\site-packages\_pytest\cacheprovider.py:429: PytestCacheWarning: could not create cache path D:\jbcode\web ai\jianli\backend\.pytest_cache\v\cache\lastfailed: [WinError 5] 拒绝访问。: 'D:\\jbcode\\web ai\\jianli\\backend\\.pytest_cache\\v\\cache'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_weekend_plan_boundaries.py::test_source_presence_causal_runtime_claim_is_rejected
+FAILED app/tests/test_weekend_plan_boundaries.py::test_runtime_keyword_in_steps_cannot_bypass_causal_claim
+FAILED app/tests/test_weekend_plan_boundaries.py::test_runtime_records_elsewhere_cannot_bypass_causal_acceptance
+FAILED app/tests/test_weekend_plan_boundaries.py::test_deployment_outcome_without_record_step_is_rejected
+FAILED app/tests/test_weekend_plan_boundaries.py::test_shared_account_history_extraction_is_rejected
+FAILED app/tests/test_weekend_plan_boundaries.py::test_source_visible_shared_account_contract_rejects_extraction
+================== 6 failed, 10 passed, 2 warnings in 0.12s ===================

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "D:\jbcode\web ai\jianli\docs\evidence\20261011-AI-plan-consistency-codex\source-attribution-probe.py", line 20, in <module>
+    assert bad is None, "Baseline changed: reassess the proposed regression before implementation"
+           ^^^^^^^^^^^
+AssertionError: Baseline changed: reassess the proposed regression before implementation
+exit=1

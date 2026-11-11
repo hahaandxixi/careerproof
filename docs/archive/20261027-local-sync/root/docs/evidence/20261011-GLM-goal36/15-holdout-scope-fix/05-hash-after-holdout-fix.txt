@@ -1,0 +1,2 @@
+cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280 *app/agents/contracts.py
+c622a87b57ffe514c6b2dae8986e7994d754452eaa3e6cbdf50da795eb07bfa8 *app/tests/test_weekend_plan_boundaries.py

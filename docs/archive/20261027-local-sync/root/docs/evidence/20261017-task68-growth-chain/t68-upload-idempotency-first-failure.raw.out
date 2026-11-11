@@ -1,0 +1,20 @@
+# 首次运行摘录（新测试构造问题，非产品缺陷）
+# 完整控制台输出在 D:\jbcode\.probe\t68-upload-idem\newcase.out
+# 两次调用 archive() 分别生成 ZIP，zip 时间戳不同 -> 原始字节不同 -> 命中 4092。
+# 修正：复用同一份 alice_content 字节后通过。
+
+        # Replaying the original key against the original project is still idempotent.
+        replay = await student.post(
+            alice_path,
+            data={"requestId": key},
+            files={"file": ("alice.zip", archive("alice.txt", "alice"), "application/zip")},
+        )
+>       assert replay.status_code == 202, replay.text
+E       AssertionError: {"code":4092,"message":"同一上传请求编号不能用于不同文件或材料归属","data":{},"requestId":"a9b24134-a731-4473-b726-3efa107338f1"}
+E       assert 409 == 202
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+app\tests\test_portfolio_api.py:374: AssertionError
+=========================== short test summary info ===========================
+FAILED app/tests/test_portfolio_api.py::test_upload_request_key_is_scoped_to_owner_and_project
+1 failed, 5 warnings in 2.74s

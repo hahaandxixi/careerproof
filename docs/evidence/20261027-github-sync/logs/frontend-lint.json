@@ -1,0 +1,12 @@
+{
+  "name": "frontend-lint",
+  "command": [
+    "npm.cmd",
+    "run",
+    "lint"
+  ],
+  "cwd": "D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\github-source-20261027\\jianli",
+  "exit": 0,
+  "seconds": 7.65,
+  "scope": "isolated exact pending-source snapshot; not main or browser acceptance"
+}

@@ -1,0 +1,31 @@
+{
+  "baseCommit": "01232d2",
+  "stage": "backend/.tmp/product-polish-20261022/source",
+  "files": [
+    {
+      "path": "jianli/src/components/ReportDetail.tsx",
+      "acceptedSha256": "c1b295e68db44be3a34d3e8cfaeb2d695f51180a8cd4db8e59b5190df9560a4c",
+      "workingSha256": "15f7fa1a43642de93b123ba4b7e20368637a68cbbfca6cadaf08259a4615a191"
+    },
+    {
+      "path": "jianli/src/components/ReportOverview.tsx",
+      "acceptedSha256": "eaf929199d622cafa99129163d6c2bfb1a7f74393e92fc51afac5f1f8342a16b",
+      "workingSha256": "eaf929199d622cafa99129163d6c2bfb1a7f74393e92fc51afac5f1f8342a16b"
+    },
+    {
+      "path": "jianli/src/components/ReportRequirementReader.tsx",
+      "acceptedSha256": "ca67dc8165e29424ab9c812c291f23f47ad7ca5b3dfc2c2c3d125b6dfa4de26c",
+      "workingSha256": "ca67dc8165e29424ab9c812c291f23f47ad7ca5b3dfc2c2c3d125b6dfa4de26c"
+    },
+    {
+      "path": "jianli/src/lib/report-reader.ts",
+      "acceptedSha256": "eec1a81ddef912ef1dbf69ef99f8c7be96ac38de89375e5bf145642b81b8bd09",
+      "workingSha256": "eec1a81ddef912ef1dbf69ef99f8c7be96ac38de89375e5bf145642b81b8bd09"
+    },
+    {
+      "path": "jianli/tests/report-reader.test.mjs",
+      "acceptedSha256": "f3ae85590b53bb30ae70d62ed4d3fc5529feaf65ac6c024abc301ed981d1428e",
+      "workingSha256": "f3ae85590b53bb30ae70d62ed4d3fc5529feaf65ac6c024abc301ed981d1428e"
+    }
+  ]
+}

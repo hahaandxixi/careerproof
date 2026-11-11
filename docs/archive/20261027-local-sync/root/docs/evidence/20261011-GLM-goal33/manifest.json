@@ -1,0 +1,20 @@
+{
+ "goal": "20261011-GLM-goal33-AI-boundaries",
+ "baseHead": "80d4253",
+ "hashes": {
+  "backend/app/agents/contracts.py": "3ffcdce17279cc678f3de1bebaf9c8ea9204e836cb56936274dc85c523ab378d",
+  "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+  "backend/app/tools/task_boundaries.py": "4a0486ea025117a6caf8b1ea83e3056cae31b9af6a555b7bf879b51c854d3deb",
+  "backend/app/tests/test_weekend_plan_boundaries.py": "5ed0e87853d749e7285ab1ff0c380f5005b14d70c88a304581a56900aabb5728",
+  "docs/evidence/20261011-GLM-goal33/red-run.out": "1a77eb92ed3e53994104c7d61c70106a1349e6e29a9159105a9acfa402574a71",
+  "docs/evidence/20261011-GLM-goal33/target-green.out": "05b4646aa96bb591b77d8b3f333f50b70d631ba9342e5c6c612e14aea5d35910",
+  "docs/evidence/20261011-GLM-goal33/affected-contract-plan-evals.out": "c94b534d855d77d82b81db96274aea62d51c4847a0161a988f6cf49c25f91776",
+  "docs/evidence/20261011-GLM-goal33/affected-consumers-workflow.out": "4dff8a5558003bad37af6e71ac1918f97187ee4a863c0206fb43aa0f8366f4a0",
+  "docs/evidence/20261011-GLM-goal33/codex-probe-after-fix.out": "4459b80559a79611ccff9cfa581baf0ec2d6ae73754d600e50b7493c5c1581ca",
+  "docs/evidence/20261011-GLM-goal33/postfix-boundary-verify.py": "298ca405ea0a5f841468d5365f7cc1ed33ea4a7cccde85481133d21ccbd4bd69",
+  "docs/evidence/20261011-GLM-goal33/postfix-boundary-verify.out": "d8c41c06c5e5d180af23925c26949dc28a195c6f98850f7f72daad1e705a0cf2",
+  "docs/evidence/20261011-GLM-goal33/diff-goal33-backend.patch": "b38b91e18bd4ef3416053d87d2c31f6a76b90acbcb4d524b14aedf808696fcf1",
+  "docs/evidence/20261011-GLM-goal33/commands.out": "6a17dca517f991e870d6cc888bfb14a7a15d727adbb927cd0c13b1978275dc9e",
+  "docs/evidence/20261011-GLM-goal33/handoff.md": "a9e6bc17106caf1b0c33a1ef6a75327e1f68adee5e88b7bec7bf723b5573b811"
+ }
+}

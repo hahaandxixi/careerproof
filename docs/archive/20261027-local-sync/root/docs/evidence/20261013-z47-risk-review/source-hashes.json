@@ -1,0 +1,21 @@
+{
+  "head": "71a2fd395cd8c296f923546b1e9c223c780e0e9d",
+  "algorithm": "sha256",
+  "files": {
+    "backend/app/agents/contracts.py": "cd6d6eb6466b78ac2b50d6880d324c42f61adf337416b53126d540222f2fe280",
+    "backend/app/agents/provider.py": "700f2544e5c06b3883769caac6e2eaaefa35cc710ec64e78730eb285ac962297",
+    "backend/app/tools/task_boundaries.py": "f6c126ed34406eb50b4fb2dbf5f39c0b70544bfa279bbd12eb00eb7bf090aec8",
+    "Start-Local.ps1": "a5834c9ae52ea8b3e5ff6d1d8286ba46d2a05e387f3afe8d3aab6ff38feb62d1",
+    "Stop-Local.ps1": "025ed42126162d6934f8068b19a1a14ab6ff0bc99f1f6c0daf7a59c84a86a6b2",
+    "scripts/local-runtime.ps1": "037f5fe4d9fc553732b640541f41868e2cbd9d5ed4ef22a96ca0003cfbfb84a5",
+    "scripts/local-launcher-recovery.test.ps1": "e2cc0fe177ce70546a610133f877142c8cfca2eed7bd147e9c4ca55d7abac461",
+    "backend/app/tests/test_weekend_plan_boundaries.py": "c622a87b57ffe514c6b2dae8986e7994d754452eaa3e6cbdf50da795eb07bfa8",
+    "backend/app/tests/test_shared_history_current_boundary.py": "ae662fae20926d150e8ab7a6a6d4451eb14fbd2dd30610515a54ac22646e99d4"
+  },
+  "matches_prior_evidence": {
+    "scripts/local-runtime.ps1 == goal40 final 037f5fe4": true,
+    "Start-Local.ps1 == goal37 frozen a5834c9a": true,
+    "Stop-Local.ps1 == goal37 frozen 025ed421": true,
+    "task_boundaries.py == goal39 final f6c126ed": true
+  }
+}

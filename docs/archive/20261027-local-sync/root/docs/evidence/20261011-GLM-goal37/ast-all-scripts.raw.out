@@ -1,0 +1,5 @@
+AST scripts\local-runtime.ps1 errors=0
+AST scripts\local-launcher-recovery.test.ps1 errors=0
+AST Start-Local.ps1 errors=0
+AST Stop-Local.ps1 errors=0
+AST scripts\local-runtime.test.ps1 errors=0

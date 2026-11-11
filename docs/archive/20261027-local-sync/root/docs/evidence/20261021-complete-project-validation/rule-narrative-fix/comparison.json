@@ -1,0 +1,47 @@
+[
+  {
+    "skill": "FastAPI",
+    "referencesUnchanged": true,
+    "level": 3,
+    "beforeExplanation": "存在FastAPI路由实现；只评价材料支持程度，需核查本人贡献。",
+    "afterExplanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/api.py 第36—38行（create_event）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+    "beforeGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "afterGap": "先对照接口输入校验、响应与错误分支，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
+  },
+  {
+    "skill": "SQL",
+    "referencesUnchanged": true,
+    "level": 3,
+    "beforeExplanation": "存在建表实现，不代表查询优化能力；只评价材料支持程度，需核查本人贡献。",
+    "afterExplanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/schema.sql 第1—8行（源码片段）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第32—36行（list_events、SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+    "beforeGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "afterGap": "先对照SQL读写条件、参数与事务边界，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
+  },
+  {
+    "skill": "Python",
+    "referencesUnchanged": true,
+    "level": 3,
+    "beforeExplanation": "存在Python函数实现；只评价材料支持程度，需核查本人贡献。",
+    "afterExplanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/storage.py 第21—30行（transaction、显式抛错、commit调用、rollback调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第25—54行（register、条件分支、显式抛错、带参数的SQL调用）；6db170c9-ea2b-4036-84d1-47260c687014/campus_signup/service.py 第56—77行（cancel、条件分支、显式抛错、带参数的SQL调用）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+    "beforeGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "afterGap": "先对照上述函数的输入、条件分支、返回值与异常路径，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
+  },
+  {
+    "skill": "pytest",
+    "referencesUnchanged": true,
+    "level": 3,
+    "beforeExplanation": "存在包含断言的pytest测试；只评价材料支持程度，需核查本人贡献。",
+    "afterExplanation": "本项静态引用：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py 第29—39行（test_registration_persists_across_application_restart、assert断言）。上述是源码中可见的结构，不代表本项全部业务条件已满足、运行成功或本人贡献。",
+    "beforeGap": "仍需可核对的运行结果与验证记录，不能确认本人贡献。",
+    "afterGap": "先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。已上传测试命名文件：6db170c9-ea2b-4036-84d1-47260c687014/tests/test_registration.py；已上传文本/JSON材料：6db170c9-ea2b-4036-84d1-47260c687014/runtime/README.txt、6db170c9-ea2b-4036-84d1-47260c687014/runtime/http-observations.json。已有材料无需重复上传；先定位其中与本项有关的断言和记录，核对输入、预期/实际输出及源码版本，仅补充尚未覆盖的场景。文件存在不代表运行成功；记录真实性、业务覆盖和本人贡献仍未确认。"
+  },
+  {
+    "skill": "Redis",
+    "referencesUnchanged": true,
+    "level": null,
+    "beforeExplanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+    "afterExplanation": "简历与个人作品中均未找到足够信息，当前无法确认该能力",
+    "beforeGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。",
+    "afterGap": "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。"
+  }
+]

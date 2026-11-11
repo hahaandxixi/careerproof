@@ -1,0 +1,44 @@
+# PyJWT 漂移：只读诊断
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。**未安装、未升级、未改任何依赖文件。**
+
+## 结论：环境漂移，不是源码依赖不一致
+
+`pyproject.toml` 的声明与锁定的意图本身**自洽**（单值 pin，无冲突）；失败来自
+**当前虚拟环境里实际装的版本落后于声明**。即：源码要求 2.15.0，环境里仍是 2.10.1。
+
+## 证据链
+
+| 项 | 值 | 来源 |
+| --- | --- | --- |
+| **声明**（唯一真源） | `PyJWT==2.15.0` | `backend/pyproject.toml:22`（`[project].dependencies` 内） |
+| **锁定 / 约束文件** | **不存在**：`backend/` 下无 `poetry.lock` / `requirements*.txt` / `uv.lock` / `constraints.txt` | `Get-ChildItem backend -Filter '*lock*'`、`-Filter 'requirements*.txt'` 均为空 |
+| **实际安装** | `2.10.1` | `python -c "import importlib.metadata as m; m.version('PyJWT')"` |
+| **检查命令** | `pytest app/tests/test_fastembed_dependency_compatibility.py::test_installed_pins_match_pyproject_exactly` | `backend/` 目录下 |
+| **检查结果** | `AssertionError: pyjwt: installed 2.10.1 != pin 2.15.0` → `1 failed` | 本轮实跑 |
+
+## 判定依据
+
+1. 测试 `test_installed_pins_match_pyproject_exactly` 的设计就是"已装 == 声明"，它读的是
+   `pyproject.toml` 的 `[project].dependencies`（`_project_pins()`），失败信息直接给出两侧版本。
+2. 声明侧只有一个 `==2.15.0`，`_project_pins()` 内的 `assert len(requirement.specifier) == 1`
+   也未触发，说明**声明本身没有格式或范围冲突**。
+3. 仓库内**没有**任何锁文件可以"覆盖"该声明，因此不存在"锁文件与 pyproject 互相矛盾"的情况；
+   唯一的偏差在**已安装环境**。
+4. 该失败在 Z61 交棒与本轮 task76 全量中**稳定复现于同一断言**，且本轮未触碰 `pyproject.toml`
+   与任何依赖文件（`git status` 中无 `pyproject.toml`、无锁文件改动）。
+
+## 影响与处置建议（不自行执行）
+
+- **影响**：仅 `test_installed_pins_match_pyproject_exactly` 失败；本轮其他 1351 项通过，
+  说明功能面未因此中断。但"锁文件不可漂移"是 76 号卡的验收前提，故 **76 维持等待状态**。
+- **建议由 Codex 决定二选一**（均需授权，本轮不做）：
+  1. 把该 venv 的 PyJWT 重装到 `2.15.0`，使环境与声明一致；
+  2. 若确定仍要 2.10.1，则**显式改声明**并说明理由——不允许"环境与声明长期不一致"。
+- 判断依据应是 `pyproject.toml` 与真实账单环境的一致性，而不是"让测试变绿"。
+
+## 未验证项
+
+- 未核验 2.15.0 与本项目 JWT 用法（签发/校验/算法白名单）的兼容性；未做任何升级试验。
+- 未检查是否有其他包也漂移（本轮只按失败断言诊断 pyjwt；全量中仅此一条失败）。
+- 未查外层 shell 的 `python`（3.13）与 `backend/.venv`（3.12）差异对本项的影响——本项只看 venv。

@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "paths": [
+    {
+      "path": "backend/app/agents/input_budget.py",
+      "expectedSha256": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
+      "actualSha256": "e2e1650e09bdec07230af652791acfe841e47716f01426d0aea64a7f1f6f2e7d",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/agents/provider.py",
+      "expectedSha256": "2155f15cd07598a4dfe91e00b299eb26fce1436e93720b0b69311bae19bf1cff",
+      "actualSha256": "2155f15cd07598a4dfe91e00b299eb26fce1436e93720b0b69311bae19bf1cff",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/agents/evidence_workflow.py",
+      "expectedSha256": "e76c04dd327be8caf50e83a16674c7d8ff0515bae976c84cf92c8bd88d9b0615",
+      "actualSha256": "e76c04dd327be8caf50e83a16674c7d8ff0515bae976c84cf92c8bd88d9b0615",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/agents/contracts.py",
+      "expectedSha256": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+      "actualSha256": "8fb59d9ebda61bdedaf29cd01b7196ce1413262878bd88583934f4e588641602",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/tools/code_analyzer.py",
+      "expectedSha256": "a353c2961474f04caf0cbf9aeb2c20f4e485f5ff3df9ab0f551f9264c8f57186",
+      "actualSha256": "a353c2961474f04caf0cbf9aeb2c20f4e485f5ff3df9ab0f551f9264c8f57186",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/tools/matcher.py",
+      "expectedSha256": "8ca77bd966b79822fea1882ca5e8e164fd0aa6ca6e8b5f34992f44b6c6b3647d",
+      "actualSha256": "8ca77bd966b79822fea1882ca5e8e164fd0aa6ca6e8b5f34992f44b6c6b3647d",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/tools/evidence_context.py",
+      "expectedSha256": "c991ca4e9d905977d1520ef55b003e745d277a1d220cb106435e6480990099b4",
+      "actualSha256": "c991ca4e9d905977d1520ef55b003e745d277a1d220cb106435e6480990099b4",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "expectedSha256": "1959307d269338fd7e1ae9f7bafc10afdac16b668629e09ec0a7ae9f5aa6d7e4",
+      "actualSha256": "1959307d269338fd7e1ae9f7bafc10afdac16b668629e09ec0a7ae9f5aa6d7e4",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/evals/verify_agent_run.py",
+      "expectedSha256": "19897bc48265039460f6d2e479dff8c1819774d60bc93806a8b5af56ed135694",
+      "actualSha256": "19897bc48265039460f6d2e479dff8c1819774d60bc93806a8b5af56ed135694",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/evals/agent_source_equivalence.py",
+      "expectedSha256": "97824377373239ea3053b3b676c10fbe006f2d84c7a0511ec6e7604063f4756d",
+      "actualSha256": "97824377373239ea3053b3b676c10fbe006f2d84c7a0511ec6e7604063f4756d",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/evals/check_run_paths.py",
+      "expectedSha256": "99278dbc27202473466785fceb03275f58a7bb0fb4f236f90fabd7fd369e4970",
+      "actualSha256": "99278dbc27202473466785fceb03275f58a7bb0fb4f236f90fabd7fd369e4970",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    },
+    {
+      "path": "backend/evals/tool_choice_smoke.py",
+      "expectedSha256": "3621d786bb30421b83e11f8a263b674fb1c28c1126e59ef5ea9635aed46f8a12",
+      "actualSha256": "3621d786bb30421b83e11f8a263b674fb1c28c1126e59ef5ea9635aed46f8a12",
+      "dirty": false,
+      "untracked": false,
+      "passed": true
+    }
+  ]
+}

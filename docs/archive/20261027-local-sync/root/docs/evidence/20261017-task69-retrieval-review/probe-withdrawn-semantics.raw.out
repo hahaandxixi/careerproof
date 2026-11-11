@@ -1,0 +1,21 @@
+﻿
+admission path used: retrieval._allowed_source_ids (post-fix helper)
+admitted ids: 5
+[FAIL] D1 superseded resume v1 section excluded from admitted set :: admitted=True
+[PASS] D2 current resume v2 section retained
+[FAIL] D3 superseded project portfolio v1 file excluded :: admitted=True
+[PASS] D4 current project portfolio v2 file retained
+[PASS] D5 current reference-role work at v3 retained (legitimate recall kept)
+[PASS] D6 other owner's resume excluded
+[PASS] D7 other owner's project file excluded
+
+replayed ranking (limit=2) over 5 admitted chunks:
+   distance=-0.000000 source_id=5050f214-5da4-43a7-8ae6-5676a5d10f9a content='STALE-RESUME-V1-�����ϵľɰ��������'
+   distance=0.244987 source_id=e3b35648-dfd5-4cfb-bb1a-ed582487a0be content='RESUME-V2-��ǰ�汾����'
+[FAIL] D8 superseded v1 section does not occupy a result slot :: stale_in_top=True
+   -> RED: the stale section is an exact query match and wins a slot, displacing current-version material.
+
+--- summary: 8 checks, 3 failed ---
+FAILED: D1 superseded resume v1 section excluded from admitted set
+FAILED: D3 superseded project portfolio v1 file excluded
+FAILED: D8 superseded v1 section does not occupy a result slot

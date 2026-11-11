@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: nearby evidence uses only accepted AI interpretation (status=invalid_citations, fallback=false)
+not ok 1 - nearby evidence uses only accepted AI interpretation (status=invalid_citations, fallback=false)
+  ---
+  duration_ms: 5.4368
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:133:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:150:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=rejected, fallback=false)
+not ok 2 - nearby evidence uses only accepted AI interpretation (status=rejected, fallback=false)
+  ---
+  duration_ms: 1.0044
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:133:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:150:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=validated, fallback=true)
+not ok 3 - nearby evidence uses only accepted AI interpretation (status=validated, fallback=true)
+  ---
+  duration_ms: 0.2736
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:133:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /规则解释/. Input:
+    
+    '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:150:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: nearby evidence uses only accepted AI interpretation (status=validated, fallback=false)
+not ok 4 - nearby evidence uses only accepted AI interpretation (status=validated, fallback=false)
+  ---
+  duration_ms: 0.2116
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\history-enterprise.test.mjs:133:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /AI解释/. Input:
+    
+    '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<section class="panel space-y-3 border-indigo-200" aria-label="当前格子的固定报告依据"><h2 class="font-semibold">合成评审甲 · SQL事务</h2><p class="text-sm">有证据支持 · 模型原文：应当仅在有效状态显示</p><p class="text-sm text-slate-700">待核对：模型缺口：应当仅在有效状态显示</p><p class="text-sm text-slate-600">该固定报告没有可展示的支持引用；不能据此推断学生没有相关能力。</p><a class="text-sm text-indigo-700 underline" href="#selected-application-report">查看完整固定报告与回复收件人 →</a></section>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/history-enterprise.test.mjs:145:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 795.3982

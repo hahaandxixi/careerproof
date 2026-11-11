@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: finished task does not send students to an upload they cannot save
+ok 1 - finished task does not send students to an upload they cannot save
+  ---
+  duration_ms: 31.5237
+  type: 'test'
+  ...
+# Subtest: in-flight task keeps the processing route without an upload dead end
+ok 2 - in-flight task keeps the processing route without an upload dead end
+  ---
+  duration_ms: 17.4867
+  type: 'test'
+  ...
+# Subtest: planned, selected and failed tasks retain explicit upload and save
+ok 3 - planned, selected and failed tasks retain explicit upload and save
+  ---
+  duration_ms: 21.9022
+  type: 'test'
+  ...
+# Subtest: completed versions are newest-first without mutating saved order or choosing one
+ok 4 - completed versions are newest-first without mutating saved order or choosing one
+  ---
+  duration_ms: 1.1276
+  type: 'test'
+  ...
+# Subtest: search excludes unfinished versions and finds historical filenames without mutating history
+ok 5 - search excludes unfinished versions and finds historical filenames without mutating history
+  ---
+  duration_ms: 0.4073
+  type: 'test'
+  ...
+# Subtest: hiding selected versions by search does not discard the selection
+ok 6 - hiding selected versions by search does not discard the selection
+  ---
+  duration_ms: 0.1315
+  type: 'test'
+  ...
+# Subtest: ten-version limit keeps selected versions removable and does not duplicate IDs
+ok 7 - ten-version limit keeps selected versions removable and does not duplicate IDs
+  ---
+  duration_ms: 0.1815
+  type: 'test'
+  ...
+# Subtest: project display groups prioritize named pairs without removing discoverable old fixtures
+ok 8 - project display groups prioritize named pairs without removing discoverable old fixtures
+  ---
+  duration_ms: 0.468
+  type: 'test'
+  ...
+# Subtest: browser suffix and byte contract matches the backend including uppercase images
+ok 9 - browser suffix and byte contract matches the backend including uppercase images
+  ---
+  duration_ms: 1.6127
+  type: 'test'
+  ...
+# Subtest: only valid source timestamps are displayed; missing history never becomes now
+ok 10 - only valid source timestamps are displayed; missing history never becomes now
+  ---
+  duration_ms: 13.0787
+  type: 'test'
+  ...
+# Subtest: single file selection rejects multiple files without choosing an arbitrary first one
+ok 11 - single file selection rejects multiple files without choosing an arbitrary first one
+  ---
+  duration_ms: 0.5514
+  type: 'test'
+  ...
+# Subtest: latest upload summaries keep independent resume/project identities and pending newest versions
+ok 12 - latest upload summaries keep independent resume/project identities and pending newest versions
+  ---
+  duration_ms: 0.2809
+  type: 'test'
+  ...
+# Subtest: proposed material versions are compared against server-saved identities, not filenames/order
+ok 13 - proposed material versions are compared against server-saved identities, not filenames/order
+  ---
+  duration_ms: 0.1808
+  type: 'test'
+  ...
+# Subtest: returned upload uses only a validated hint and does not encode selection/save actions
+ok 14 - returned upload uses only a validated hint and does not encode selection/save actions
+  ---
+  duration_ms: 0.3215
+  type: 'test'
+  ...
+# Subtest: real dropzone shares chooser/drop validation and retains a native keyboard file input
+ok 15 - real dropzone shares chooser/drop validation and retains a native keyboard file input
+  ---
+  duration_ms: 11.7763
+  type: 'test'
+  ...
+# Subtest: real returned-version review highlights only current owned data and never selects or saves
+ok 16 - real returned-version review highlights only current owned data and never selects or saves
+  ---
+  duration_ms: 29.5689
+  type: 'test'
+  ...
+# Subtest: actual project picker highlights a returned version without selecting it or marking search results newest
+ok 17 - actual project picker highlights a returned version without selecting it or marking search results newest
+  ---
+  duration_ms: 24.1476
+  type: 'test'
+  ...
+# Subtest: actual upload forms accept supported uppercase image files
+ok 18 - actual upload forms accept supported uppercase image files
+  ---
+  duration_ms: 51.1575
+  type: 'test'
+  ...
+# Subtest: unsupported and oversize files stop actual form handlers before API
+ok 19 - unsupported and oversize files stop actual form handlers before API
+  ---
+  duration_ms: 29.1156
+  type: 'test'
+  ...
+# Subtest: returning workspace shows one latest version first and keeps history collapsed
+ok 20 - returning workspace shows one latest version first and keeps history collapsed
+  ---
+  duration_ms: 10.7316
+  type: 'test'
+  ...
+# Subtest: empty loaded workspace opens preparation without making two uploads mandatory
+ok 21 - empty loaded workspace opens preparation without making two uploads mandatory
+  ---
+  duration_ms: 3.8038
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 386.8036

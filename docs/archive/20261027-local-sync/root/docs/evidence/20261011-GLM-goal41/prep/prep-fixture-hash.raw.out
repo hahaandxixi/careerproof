@@ -1,0 +1,21 @@
+== read-only counts (cp_e2e_question-chain-20261010, server-enforced READ ONLY) ==
+growth_answer_drafts|0
+evidence_growth_tasks(student)|1
+applications|3
+applications(reply_text not null)|1
+match_reports|5
+analysis_tasks|9
+ai_usage_logs|1
+notifications|10
+
+== stored report_snapshot text sample (floats prevent byte-exact JS replication) ==
+overallScore": 55.0
+overallScore": 55.0
+overallScore": 55.0
+
+== canonicalSnapshotHash replication vs fixture snapshotSha256 (informative) ==
+A2 0f33a790-d61c-49be-9ae1-73c38cc17b51 canonical=1a85493ef426… fixture=bd97832212b1… MISMATCH
+A 931f5b55-2c29-410a-843b-f7a43a3edfe1 canonical=d15639177a97… fixture=6fbc729f6095… MISMATCH
+B be1cd581-85b9-40b4-b17c-8bc0c0b113f7 canonical=65ea52178428… fixture=dcfb141106f2… MISMATCH
+agreement=0/3
+Decision: the runner keeps this cross-check INFORMATIVE ONLY; the hard invariant is the raw before/after equality of the stored rows (and the seeder enforces frozen snapshots at its own --verify-only runs).

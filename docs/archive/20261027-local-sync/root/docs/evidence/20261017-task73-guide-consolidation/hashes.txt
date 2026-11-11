@@ -1,0 +1,3 @@
+7638fb1bf388f640abf7f787df435f2b4ef2d63d09757f3e9a26d3a6cf44859d *docs/guides/使用与启动.md
+e230610abbfb198a01a8a3d1eb47006040a38df3febaee09ab19189c37b4e20e *docs/guides/功能演示.md
+2430a02abc3515e2b58319a021d78fcb321a2a38a01c736f68c95b54538b0e47 *docs/guides/证据与产品能力.md

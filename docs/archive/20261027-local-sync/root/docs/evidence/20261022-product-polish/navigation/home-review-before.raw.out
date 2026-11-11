@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: a failed read is unknown, while verified empty work can offer the first-material route
+not ok 1 - a failed read is unknown, while verified empty work can offer the first-material route
+  ---
+  duration_ms: 31.96
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\home-workspace.test.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(unknown.includes("打开我的材料"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/home-workspace.test.mjs:34:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: student continues the saved report without enterprise actions
+ok 2 - student continues the saved report without enterprise actions
+  ---
+  duration_ms: 21.1544
+  type: 'test'
+  ...
+# Subtest: enterprise gets its own job and authorized-application routes, not private student work
+ok 3 - enterprise gets its own job and authorized-application routes, not private student work
+  ---
+  duration_ms: 6.898
+  type: 'test'
+  ...
+# Subtest: admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+not ok 4 - admin uses its own allowed entries and cannot be rendered as an enterprise workspace
+  ---
+  duration_ms: 5.1717
+  type: 'test'
+  location: 'D:\\jbcode\\web ai\\jianli\\backend\\.tmp\\product-polish-20261022\\source\\jianli\\tests\\home-workspace.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(html.includes("管理员工作区"))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///D:/jbcode/web%20ai/jianli/backend/.tmp/product-polish-20261022/source/jianli/tests/home-workspace.test.mjs:59:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: authentication loading and error never render the saved identity as confirmed
+ok 5 - authentication loading and error never render the saved identity as confirmed
+  ---
+  duration_ms: 5.4538
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 310.6079

@@ -1,0 +1,18 @@
+Isolated settings verified; reading initial facts
+Initial facts read; starting local API flow
+POST /auth/login
+GET /match-reports/fda4ec24-3534-4a4e-80aa-2d5959b0c87e
+GET /project-versions/6db170c9-ea2b-4036-84d1-47260c687014/files
+POST /resumes
+GET /analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3
+GET /analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3
+GET /analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3
+GET /analysis-tasks/88016c16-a605-482e-b781-db90bfc9a9c3
+GET /resume-versions/152e8749-8be4-41e6-8977-6feb0ec06b86/preview
+POST /matches
+GET /analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a
+GET /analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a
+GET /analysis-tasks/034c7bc7-d95e-458c-8f78-e9f8f9f1b53a
+GET /match-reports/59ac4fa1-4792-4c14-b268-51119b129076
+GET /match-reports/fda4ec24-3534-4a4e-80aa-2d5959b0c87e
+{"passed": true, "imageVersionId": "152e8749-8be4-41e6-8977-6feb0ec06b86", "imageTaskId": "88016c16-a605-482e-b781-db90bfc9a9c3", "ocrCharacters": 247, "rulesReportId": "59ac4fa1-4792-4c14-b268-51119b129076", "rulesTaskId": "034c7bc7-d95e-458c-8f78-e9f8f9f1b53a", "requirements": 5, "oldReportUnchanged": true, "databaseFactsUnchanged": true}

@@ -1,0 +1,108 @@
+# 71 复核（第二轮）：异常转换、资源清理、字符上限 P2 只读梳理
+
+HEAD `33ba7136bd5f516360e5d2d59bacfb4c4e4f39ce`。`document_parser.py` hash `2b109489…01a72`（与上轮一致，未被他人改动）。
+本轮**只复核**上轮的异常转换与清理，未扩大转换范围、未改进程协议、未改 P2 行为。
+
+## 1. 异常分类终表（四类界限）
+
+| 类别 | 具体异常 | 处理 | 守住它的测试 |
+| --- | --- | --- | --- |
+| 预期输入拒绝 | 损坏/截断 PDF、零字节、假 PDF、口令加密 PDF、损坏 DOCX | `AppError(4024)`，固定文案 | 6 条（参数化 3 + 加密 + DOCX + 原 4024/4026 语义） |
+| 底层解析异常 | `fitz.FileDataError`（含子类 `EmptyFileError`）、`fitz.FileNotFoundError`、`ValueError`、`BadZipFile`、`KeyError` | 窄元组转换，`from error` 保留原因 | 同上 |
+| 程序错误 / 未知异常 | `RuntimeError`、`TypeError`、`AttributeError`、`ModuleNotFoundError` | **继续传播**，不伪装为输入错误 | `test_programming_error_...`、`test_missing_ocr_dependency_...` |
+| 内存耗尽 | `MemoryError` | **继续传播**（不在任何窄元组内） | 本轮新增 `test_memory_exhaustion_...` |
+| 进程故障 | 子进程崩溃/超时 | 仍归 `task_runner`（4025/4026），本轮未动 | 上轮探针复核 |
+
+**用户可见文案不泄露内部信息**：`AppError` 文案为固定中文串，不含路径；异常链由 `__cause__`
+保留给内部诊断。实测断言：消息不含 `str(path)`、不含 `tmp_path`、不含原始库异常类名。
+
+**未知异常不会泄露到 HTTP**：`install_exception_handlers`（`app/core/exceptions.py:32-54`）只注册
+`AppError` 与 `RequestValidationError`；未捕获异常走 FastAPI 默认 500，响应体不含异常文本或路径。
+
+## 2. 资源清理：发现并修正了一个**假测试**
+
+上轮的 `path.unlink()` 断言是无效的：CPython 引用计数会在函数返回时关闭句柄，所以即使解析器
+完全不 close，`unlink()` 依然成功。本轮实测：
+
+| 源码 | encrypted 用例的 `Document.close` 调用数 |
+| --- | --- |
+| 正常（`with fitz.open`） | **2** |
+| 突变（去掉 `with`，故意泄漏） | **1**（仅 GC 终结器） |
+
+因此改为**开/关计数相等**断言（`_open_calls == _close_calls`）。突变验证：
+
+```text
+正常:   15 passed
+突变:   1 failed — AssertionError: opened 2 document(s) but closed 1
+恢复:   26 passed（含 test_document_ocr.py）, ruff All checks passed
+```
+
+**如实声明局限**：PyMuPDF 在 GC 时也会 close，所以该断言能抓"开了从不释放"，
+**不能**区分"显式 with 关闭"与"终结器关闭"。这一条已写进测试 docstring，不夸大为"显式释放已验证"。
+
+另按失败形态分两类断言：
+- 打开后失败（加密 PDF）：文件可删除 + 关闭数==打开数；
+- 从未打开（损坏 PDF/DOCX）：`close` 计数必须为 **0**，不得凭空关闭。
+
+## 2b. 第三轮：用替身彻底摆脱 GC 兜底（已完成）
+
+上面的计数断言仍受 GC 影响，不足以证明「释放是显式发生的」。本轮改用**替身对象**：
+
+- 新文件 `test_parser_release_double.py`（**3 passed**），对**未修改的** `parse_document` 注入替身；
+- 替身 `RecordingDocument` 实现 `__enter__` / `__exit__` / `close` 并记录事件顺序，
+  **不实现 `__del__`**、不接触真实文件，故释放不可能来自解释器或 OS；
+- 测试持有强引用直到断言结束（`assert created == [document]`）；
+- 覆盖两条路径：
+  1. 正常读取 → 事件必须是 `["enter", "exit(none)"]`，且 `close` **未**被调用（释放走上下文协议）；
+  2. 读取中抛出预期解析异常 → 事件必须是 `["enter", "exit(ValueError)"]`，异常被转换为
+     `AppError(4024)`，且 `close` 仍未被调用（转换不得绕过上下文退出）。
+
+**回归证明（不改坏共享工作区）**：`probe_release_test_double.py` 把 `document_parser.py`
+复制到 `backend/.tmp/t71-copybreak/broken_parser.py` 并删除 `with` 上下文管理，
+用同目录 `conftest.py` 在测试导入前替换 `sys.modules['app.tools.document_parser']`，
+其余 `app.*` 仍来自真实后端。结果：
+
+```text
+替身测试（真实源码）: 3 passed
+替身测试（损坏副本）: 2 failed, 1 passed
+  AssertionError: []            <- 两个 exit 断言都看到空事件，证明没发生上下文退出
+```
+
+损坏副本仅用临时目录，**共享工作区 `document_parser.py` 哈希未变**
+（`2b109489…01a72`），临时目录用后已删除。
+
+**仍未做到的**：真实 PyMuPDF 文档对象在异常路径上的释放仍无法与"GC 兜底"区分——
+本轮证明的是**生产解析函数的控制流**确实执行了上下文退出，不是 PyMuPDF 内部句柄的最终释放。
+
+## 3. 字符上限 P2（只读梳理，未改行为）
+
+`max_document_characters`（`app/core/config.py:43`，默认 500,000）**不在 `parse_document` 内执行**。
+实际入口与检查位置：
+
+| 入口 | 检查位置 | 错误码 | 是否在解析后 |
+| --- | --- | --- | --- |
+| 简历解析重跑 `services/portfolio.py:427` | 传入 `process_document(..., max_characters)` | 4027 | 是（先全量 parse） |
+| 项目文档解析 `services/portfolio.py:519` | 同上 | 4027 | 是 |
+| 报告材料组装 `services/matching_materials.py:131` | `len(resume_text) > settings.max_document_characters` | 4023 | 是 |
+| 直接上传文本 / 图片 OCR | 无 | — | **未覆盖** |
+| 项目 ZIP 内各文件 | 无逐文件上限（`process_project` 只在非 zip 分支调 `process_document`） | — | **未覆盖** |
+
+已覆盖：PDF/DOCX 走 `process_document` 的两条调用链；报告组装侧另有一道 4023。
+未确认：
+1. 直接上传 `.txt`/`.md` 是否有任何长度上限（本轮未见检查）；
+2. 图片 OCR 结果是否有长度上限（未见）；
+3. ZIP 内每个文本文件的字符数是否受 `max_extracted_bytes` 之外的限制（未见字符级上限）；
+4. 4027 与 4023 两套码在前端是否都有对应文案（未查前端）。
+超限文档会**先被完整解析再被拒绝**（本轮 task71 探针：506,203 字符 PDF 被完整抽成 9 段），
+这是内存/时间面的既有特征，本轮**未改**。
+
+## 4. 未验证项
+
+1. 真实 HTTP 上传链路上这 5 类输入的实际状态码仍未在服务上确认（不放行 3000/3001）。
+2. 原生崩溃（MuPDF 段错误）用例仍未构造。
+3. P2 的 4 个未确认项未做代码改动或进一步验证。
+4. `MemoryError` 传播已断言，但未测"解析中途真实 OOM"的系统行为。
+
+## 5. 证据
+
+`probe-post-fix.raw.out`（上轮）、本轮测试结果见提交说明；`fix-record.md` 为已撤回/更正的历史记录。

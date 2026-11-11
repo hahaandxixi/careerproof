@@ -1,0 +1,582 @@
+# CareerProof（职证）整改清单
+
+> 分析对象：`D:\jbcode\web ai\jianli`
+> 基线：`main` 分支，HEAD `71a2fd3`，302 次提交，工作树含 7 个未签收修改
+> 分析方法：静态代码审查 + 独立运行验证（ruff / pytest / 依赖钉校验）+ 5 路并行深度分析，关键结论逐条回源复核
+> 本文档只列问题与验收条件，**未改动任何项目文件**
+
+---
+
+## 证据标记说明
+
+| 标记 | 含义 |
+|---|---|
+| ✅ | **我直接运行或阅读源码复核过**，可信任 |
+| ◻ | 来自委派分析，未逐条回源；引用行号基本可靠，采纳前建议抽查 |
+| ⚠️ | 我复核后**修正过**的结论（子代理原判断有误） |
+
+---
+
+## 一、执行摘要
+
+### 一句话判断
+
+> **技术底子足够好，但有三件事在拖它：自动化门禁为零、界面数值与引擎能力脱节、硬性交付物三项为零。**
+
+其中最反常的是：**第三件比前两件都重要，却一项都不需要写代码。** 项目在 27 天里产出 59 MB 验收证据、302 次提交、23k 行测试，却没有录一个视频、没有定许可证、没有给评委一条访问路径。
+
+### 分维度评分
+
+| 维度 | 评分 | 主要依据 |
+|---|---|---|
+| 工程严谨度 | **A** | 收据式 AI 计量、DB CAS 任务租约、`pg_blocking_pids` 验证真实行锁竞态、随机 schema 测试隔离、启动器防 PID 复用 ✅ |
+| 边界设计 | **A−** | AI 无法改分（`final_score` 全仓唯一赋值点 `matcher.py:165`）✅、评级上限纯本地算 + 读时二次复核、第三方程式码永不提级、逐图同意、provider 端点白名单 |
+| 诚实度 | **A** | `humanReview` 必须恰为 `false` 否则 runner raise、语义指标恒 null 并注明原因、自列 5 项未完成上线要求 |
+| 前端 | **B** | 类型安全优秀（`any` 0 处、`strict: true`）✅、401 单飞刷新 + 竞态单测质量高；但 lint 不可运行、长列表无分页、`React.memo` 0 处 |
+| 数据层 | **C+** | 全库无 jsonb / GIN / pg_trgm ✅、CHECK 只存在于 3 个模型文件 ✅、索引按单列建而查询按复合+排序用、账号注销路径被锁死 |
+| API 契约 | **C** | 24 个端点返回裸 `dict`、三种分页风格并存、两处静默截断 100 条 |
+| 产品表达 | **D** | 分数真实区间 0–65 却标「0—100」✅、证据等级实际 3 级却标「X/5」✅ |
+| 交付就绪度 | **D** | 视频、LICENSE、评审访问、签署全部为零 |
+| 可运维性 | **D** | 无 CI、无覆盖率阈值、启动链路 Windows-only、Dockerfile 不在 compose 里且不跑迁移、`DEBUG` 与 `APP_ENV` 脱钩 ✅ |
+
+### 最该先做的 5 件事
+
+1. 改前端两处数值标签（`0—100` → `0–65`、`X/5` → `X/3`）——**~1 小时，消除对用户和评委的核心误导**
+2. 删 `backend/README.md:190` 的「通知中心……尚未实现」——**1 分钟，消除唯一的文档自相矛盾**
+3. 补 LICENSE + 录 5–8 分钟视频 + 定评审访问方案——**半天，三项硬性交付从 0 到 1**
+4. 把 `debug` 与 `app_env` 绑定；生产拒绝默认 JWT 密钥——**10 行，关掉两个安全口子**
+5. 加 GitHub Actions（ruff + pytest + tsc + npm test）——**半天，唯一能防回归的杠杆**
+
+---
+
+## 二、批次 1：对外可信度（成本最低，收益最高）
+
+### P0-1.1 分数区间标注错误 ✅
+
+| 项 | 内容 |
+|---|---|
+| **问题** | 界面标注「0—100分」，引擎实际上限 **65**，且单项分数只可能是 `{0, 10, 15, 30, 40, 65}` 六个值 |
+| **证据** | `backend/app/tools/matcher.py:18` (`STRENGTH_SCORE` 最大 0.65)、`:165` (`final_score = rule_score * 100`)、`:171` (`overall_score` 上限 65)；`backend/app/tests/test_matcher.py:22` 断言 `overall_score == 65` |
+| **前端位置** | `jianli/src/components/ApplicationBoard.tsx:116`（「数值为原报告0—100分」）、`:120`（`{item.finalScore} / 100`）、`jianli/src/lib/types.ts:89`（`// 0-100`） |
+| **根因** | 前端测试夹具 `jianli/tests/application-list.test.mjs:64` 用了 `score: 80` —— **一个后端永远不可能产出的值**，所以这个错位从未被测试发现 |
+| **影响** | 拿到最强证据的学生看到「65 / 100」，会认为自己只达到 65%，而 **65 就是公式上限**，实际已满分 |
+| **修法 A（保守，推荐）** | 3 处文案/注释改为 `0–65`；同时把测试夹具改为真实可达值 |
+| **修法 B（激进）** | `matcher.py:171` 改为按 0.65 归一化到 0–100。**注意：历史报告快照存的是 65，改归一化会让新旧报告口径不一致**，需同时处理快照兼容 |
+| **验收** | `grep -rn "0—100\|\/ 100\|0-100" jianli/src` 无残留；前端测试不再使用不可达分数 |
+
+### P0-1.2 证据等级实际 3 级，界面标成「/5」 ✅
+
+| 项 | 内容 |
+|---|---|
+| **问题** | 引擎只产出等级 1/2/3，界面 7 处渲染为 `X/5` |
+| **证据** | `backend/app/tools/evidence_levels.py:229` 的标签表只有 `{1: "基础线索", 2: "局部操作", 3: "任务实现", None: ...}`；`docs/guides/证据与产品能力.md:41` 明确写「**4/5 级授予**……不能列为已完成能力」 |
+| **前端位置** | `ReportDetail.tsx:77`、`SkillRadar.tsx:56`、`ApplicationBoard.tsx:116` 与 `:120`、`GrowthComparison.tsx:36`、`ReportComparisonPanel.tsx:35`、`ActionPlan.tsx:28` |
+| **影响** | 报告页 H1 就是「**逐项实践证据等级**」，最高档显示「实践证据 3/5」——用户合理推断还剩 2 级要爬，而那 2 级**不存在且项目声明不授予**。这直接抵消了 `ReportDetail.tsx:67` 刻意加的「不对应考试证书级别」免责说明 |
+| **补充** | `skill_rubric.py:1` 注释「skill-map inspired hierarchy」说明 `/5` 参照的是外部 5 级技能标准，而引擎只实现到 3 级，**暗示了并不存在的对齐关系** |
+| **修法** | 改为 `X/3`；或直接显示引擎已有的 `evidenceLevelLabel`（基础线索 / 局部操作 / 任务实现），不再用数字比例 |
+| **验收** | 前端无证据等级 `/5` 残留；**补一条前端测试断言该标签**（当前零覆盖） |
+
+### P0-1.3 文档过期反向声称 ✅
+
+| 项 | 内容 |
+|---|---|
+| **问题** | `backend/README.md:190` 写「在线面试、**通知中心和SMTP邮件尚未实现**」，但通知中心早已上线 |
+| **已上线证据** | `backend/app/api/v1/notifications.py`、`models/notification.py`、`services/notifications.py`、`backend/app/tests/test_notifications.py`、`jianli/src/app/notifications/page.tsx`、`jianli/src/components/NotificationCenter.tsx`；`docs/guides/功能演示.md:87` 已写进演示路线；`docs/evidence/历史验收汇编.md:1802-1842` 于 09-29 验收 |
+| **SMTP 部分** | 属实。全仓 `smtp\|aiosmtplib` 零命中 ✅ |
+| **影响** | 违反项目自己的规则 `docs/guides/比赛交付.md:20`「文档与产品说法一致」。这是**全项目唯一一处文档与代码矛盾**（其余均为诚实或低报），而修复成本最低 |
+| **修法** | 删掉「通知中心」，保留「在线面试」「SMTP邮件」 |
+| **验收** | `grep -n "通知中心" backend/README.md` 仅出现在正确语境 |
+
+---
+
+## 三、批次 2：安全
+
+### P0-2.1 生产 JWT 默认密钥可通过校验 ✅
+
+| 项 | 内容 |
+|---|---|
+| **问题** | `config.py:22` 默认值 `"development-only-secret-change-before-production"`（48 字符）；`:77-83` 的校验器只在 `app_env == "production"` **且 `len(value) < 32`** 时拒绝 |
+| **后果** | 48 字符的默认值**直接通过生产校验**。任何 `APP_ENV=production` 但忘记设 `JWT_SECRET` 的部署，等于用写在仓库里的公开密钥签发所有会话令牌 |
+| **修法** | 生产环境显式拒绝该已知默认值（或拒绝任何出现在仓库中的值） |
+| **验收** | 新增测试：`APP_ENV=production` + 默认密钥 → `Settings()` 抛错 |
+
+### P0-2.2 `DEBUG` 与 `APP_ENV` 脱钩 ✅
+
+| 项 | 内容 |
+|---|---|
+| **问题** | `config.py:19` `debug: bool = True`，**没有任何校验器把它与 `app_env` 绑定**（对比 `jwt_secret` 的校验器是绑了的）；`.env.example:3` 也把 `DEBUG=true` 作为示例值 |
+| **后果** | `APP_ENV=production` + 忘记改 `DEBUG` → FastAPI 以 debug 模式运行 → 未捕获异常把 traceback 渲染进响应体（`main.py:48`）。`core/exceptions.py:30-51` 只接管 `AppError` 与 `RequestValidationError`，500 类异常无人处理 |
+| **修法** | `app_env == "production"` 时强制 `debug=False`，或在字段校验器里拒绝 |
+| **验收** | `APP_ENV=production` 下 `settings.debug is False` |
+
+### P1-2.3 API 文档生产环境公开
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `main.py:49-50` 无条件设置 `docs_url="/docs"`、`redoc_url="/redoc"` |
+| **修法** | 非 development 环境关闭，或加认证 |
+| **验收** | 生产环境 `/docs` 返回 404 |
+
+### P1-2.4 无任何安全响应头
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `jianli/next.config.mjs` 只有 `rewrites()`，**没有 `headers()`** → 无 CSP、无 HSTS、无 `X-Frame-Options` → **无点击劫持防护** ✅ |
+| **唯一例外** | 图片端点设了 `X-Content-Type-Options: nosniff`（`api/v1/visual.py:29`），notifications 设了 `Cache-Control`（`api/v1/notifications.py:13-14`） |
+| **修法** | 在 `next.config.mjs` 加 `headers()`，至少补 `X-Frame-Options`、`Referrer-Policy`、`X-Content-Type-Options`；生产加 HSTS |
+| **验收** | 响应头包含上述字段 |
+
+### P1-2.5 登录无限流与锁定
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `backend/app/services/auth.py:54-62` —— 无失败计数、无退避、无锁定、无验证码 |
+| **修法** | 按邮箱 + IP 限流（应用层或反向代理层） |
+| **验收** | 连续 N 次失败后返回 429 |
+
+### P1-2.6 Refresh Token 无重用检测
+
+| 项 | 内容 |
+|---|---|
+| **问题** | `auth.py:64-75` 只把旧 token 标 `revoked_at` 并签发新的。**攻击者使用已撤销的 refresh 时，系统仅返回 401，不撤销该用户全部会话、不写审计** |
+| **已做对的部分** | 轮换 ✅、JTI 只存 SHA256 哈希（DB 泄露不暴露可用令牌）✅ |
+| **修法** | 检测到已撤销 refresh 被再次使用时，撤销该用户全部会话并写审计日志 |
+| **验收** | 重放已撤销 refresh → 该用户所有会话失效 |
+
+### P1-2.7 Access Token 不可撤销
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `auth.py:77-87` logout 只撤销 refresh + 删 Cookie；**无 denylist** → 已泄露的 access token 仍有效最长 30 分钟 |
+| **修法（短期）** | access 有效期降到 5–10 分钟，靠 refresh 续期（前端已有 401 单飞刷新，改动可控） |
+| **修法（长期）** | jti denylist（可用 Redis 或 `refresh_tokens` 同表） |
+| **验收** | 要么实现 denylist，要么在文档中明确该窗口并接受 |
+
+### P2-2.8 注册接口泄露账号存在性
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `auth.py:38-39` 返回 409「邮箱已被注册」 |
+| **修法** | 统一响应文案 + 依赖邮件验证；或明确接受此风险并记录 |
+| **验收** | 若采纳：注册响应不区分邮箱是否已存在 |
+
+### P2-2.9 裸字符串角色判断
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `backend/app/services/analysis.py:499` 用 `user.role.value != "admin"`，而其余 **13 处**统一使用 `UserRole.ADMIN` |
+| **后果** | 枚举值一旦改名，这一处会**静默地变成拒绝管理员**（方向安全，但会变成难查的功能故障） |
+| **修法** | 统一为 `UserRole.ADMIN` |
+| **验收** | `grep -rn 'role\.value ==' backend/app` 无命中 |
+
+### 已确认做对、不要动的安全项 ✅
+
+| 项 | 证据 |
+|---|---|
+| Provider 端点白名单 | `provider.py:981-989` 要求 base_url **恰为** `https://api.deepseek.com` 且模型恰为 `deepseek-flash`；Zhipu 拒绝付费模型；Bailian 要求 HTTPS aliyuncs.com；遗留适配器直接 raise（`:1004-1006`） |
+| 存储路径逃逸校验 | `tools/storage.py:18-22` |
+| 压缩包 zip-slip / 符号链接 / 大小数量上限 | `tools/archive_scanner.py:53-108` |
+| 生产代码无 SQL 字符串拼接 | 全仓 `exec_driver_sql(f"...")` 只出现在测试文件 |
+| 用量记账拒绝伪造 | `provider.py:621-655`：缺失或非法 usage → 标记 `usage_present=False`，只作展示用 0，**永不作为账目事实** |
+| Cookie 配置 | `api/v1/auth.py:20-25`：HttpOnly + SameSite=Lax + 生产 Secure |
+| CSRF 缺失可接受 | 我枚举了全部 38 个 GET 端点，**无一个改状态**，因此 `SameSite=Lax` 足以覆盖 |
+| `summarize_match` 剥离身份 | `provider.py:718` `del candidate_name` —— 不把候选人姓名发给外部模型 |
+
+---
+
+## 四、批次 3：交付硬缺口（**全部不需要写代码**）
+
+### P0-3.1 LICENSE 未决
+
+| 项 | 内容 |
+|---|---|
+| **证据** | 根目录无 `LICENSE`/`NOTICE` ✅；`THIRD_PARTY_NOTICES.md:56-64` 自述 PyMuPDF 为 AGPL-3.0/商业双授权，明确「在作出选择前不在根目录添加 MIT/Apache」 |
+| **影响** | 比赛期间私有可以规避，但**公开发布及最终许可证是明确的待办**（`README.md:51`） |
+| **三条路** | (a) 接受 AGPL，整仓按 AGPL 发布；(b) 购买 PyMuPDF 商业授权，再选 MIT/Apache；(c) 替换为许可证宽松的 PDF 解析库 |
+| **附带问题** | `THIRD_PARTY_NOTICES.md` 版本清单**已过期 6 项**：FastAPI 0.116.1 vs `pyproject.toml` 0.143.0、PyJWT 2.10.1 vs 2.15.0、python-multipart 0.0.20 vs 0.0.31、pytest 8.4.2 vs 9.0.3、pytest-asyncio 1.1.0 vs 1.4.0、starlette 未列 |
+| **验收** | 根目录有 LICENSE；清单与 `pyproject.toml` 逐项对齐 |
+
+### P0-3.2 演示视频为零
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `git ls-files` 中**无任何 `.mp4`**；`历史验收汇编.md:4166` 要求 **5–8 分钟 1080p MP4** |
+| **有利条件** | `docs/guides/功能演示.md` 已经写好 5 分钟预览 + 双端投递/通知/缺口补证/撤回重投的逐步演示路线，**脚本素材是现成的** |
+| **验收** | 仓库外有 MP4，时长 ≥5 分钟、分辨率 1080p |
+
+### P0-3.3 评审访问方式缺失
+
+| 项 | 内容 |
+|---|---|
+| **证据** | 仓库为私有 `hahaandxixi/careerproof`（`历史验收汇编.md:4707`）；**无任何授权方案** |
+| **候选方案** | 临时协作者邀请 / 公开只读镜像 / 提交含录屏的访问包 |
+| **验收** | `docs/guides/比赛交付.md` 填写方案，且**实际可验证**（不是写个链接就算） |
+
+### P1-3.4 团队签署与提交哈希未签
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `docs/guides/比赛交付.md:38-42` 空签名行，写「学校/组别/成员/指导教师：待填写」 |
+| **矛盾** | 这些信息**实际已确认**：`README.md:51` 与 `历史验收汇编.md:4722-4727`（广州软件学院 / B组 / 江博、郑振南 / 指导教师杨斌） |
+| **验收** | 无「待填写」字样 |
+
+### P1-3.5 候选 PDF 是 11 天前的硬编码快照
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `output/pdf/CareerProof-技术文档-提交候选稿.pdf`：9 页、153,370 字节、ReportLab 生成；页脚「技术文档候选稿 v2 · 2026-10-02」硬编码于 `scripts/build_submission_pdf.py:86`；封面「104 个真实提交」硬编码于 `:102` |
+| **影响** | 之后 11 天的技术增量（MCP 集成、缺口补证闭环、证据工作台、前端测试扩充）**全部未进文档**。`README.md:51` 自己承认「基于旧版能力描述，重制前不作为正式提交」 |
+| **修法** | 让生成脚本从仓库当前状态读取数据（测试数、提交数、能力清单），而不是硬编码 |
+| **验收** | 重建后的 PDF 数字可从仓库当前状态复现 |
+
+### P2-3.6 演示资产 CP05 / CP06 是空的
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `demo/roles/product` 与 `demo/roles/operations` **没有 `project/` 子目录**，`demo/build_role_packs.py:25-40` 静默降级 → CP05/CP06 的「项目 ZIP」**只含两份说明 txt，零产物**（`jianli/src/app/demo/page.tsx:25` 已如实标注） |
+| **另一处残留** | `jianli/public/demo-assets/roles/` 的 50 个跟踪文件中**只有 dba 与 devops 两个角色 ZIP**，其余 6 个职业缺失 |
+| **影响** | 宣传的「九套职业案例」，**实际只有 7 套含项目材料** |
+| **验收** | 要么补齐 2 套材料，要么把页面文案改为「7 套含完整项目材料」 |
+
+### P2-3.7 文档断链 11 处
+
+| # | 位置 | 指向 |
+|---|---|---|
+| 1–8 | `阶段1-比赛需求拆解与项目总控.md`（`:5,:15,:17,:25,:58` 等 8 处） | `docs/archive/**` —— 该目录已于 10-13 整理删除（`docs/README.md:22`） |
+| 9 | `THIRD_PARTY_NOTICES.md:66` | `docs/发布许可决策.md` —— 不存在 |
+| 10–11 | `backend/README.md:175` | 两处 `docs/archive/验收记录/*.md` —— 不存在 |
+
+**另两处误导（非断链）**：
+
+- `docs/guides/使用与启动.md:114` 给出原型 URL `127.0.0.1:8124/evidence-workspace.html`，但 `scripts/` 与启动脚本中 `8124` **零命中，该端口无任何服务**；原型实际是本地文件 `docs/prototypes/evidence-workspace.html`
+- `使用与启动.md:58` 提到的依赖目录未标注相对 `backend`（实际位于 `backend\.venv-dependency23`、`backend\.tmp\dep-frontend-20261010`）
+
+---
+
+## 五、批次 4：自动化门禁
+
+### P0-4.1 补 CI
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `.github` 目录**不存在** ✅；无 `.gitlab-ci.yml`/`.circleci`/`Jenkinsfile`/`.travis.yml`；`pyproject.toml:48-50` 只有 `testpaths` 与 `asyncio_mode`，**无 coverage、无 fail_under、无 addopts** |
+| **现状** | 唯一检查是 `backend/README.md:72-73` 让你手敲的 `ruff check .` 与 `pytest`；实际门禁形态是「另一个 LLM 签收」的人工评审协议（`docs/协作规则.md`、`scripts/Start-E2E.ps1:1-6`） |
+| **内容** | `ruff check` + `pytest` + `tsc --noEmit` + `npm test` |
+| **注意** | 启动/E2E 链路是 Windows-only（`.cmd`、`Get-CimInstance`、reparse point），**不能直接搬进 Linux CI**；CI 只跑后端 pytest 与前端 node:test 是可行的 |
+| **验收** | PR 上自动运行并阻塞合并 |
+
+### P0-4.2 让 `ruff check .` 恢复可用 ✅
+
+| 项 | 内容 |
+|---|---|
+| **实测** | `ruff check --no-cache app evals scripts alembic` → **All checks passed**；`ruff check --no-cache .` → **Found 11 errors** |
+| **根因** | 11 个报错**全部来自未提交的临时残留目录** `backend/.tmp-plan-audit-30/probe.py` 与 `probe2_source_visible.py` |
+| **附带实测** | `ruff check .`（带缓存）**直接崩溃**：`Failed to create temporary file ... .ruff_cache\0.12.12` —— 该缓存目录存在权限问题 |
+| **修法** | 根 `.gitignore` 与 `backend/.gitignore` 都加 `.tmp*` 规则（当前只有 `backend/.gitignore` 的 `.tmp/`，**`.tmp-*` 不匹配**，`git check-ignore` 实测为 NOT-IGNORED）；清理残留目录 |
+| **验收** | 干净工作树上 `ruff check .` 返回 0，且 `.tmp*` 被 git 忽略 |
+
+### P0-4.3 把 10 个 PostgreSQL 竞态测试接进 CI
+
+| 项 | 内容 |
+|---|---|
+| **证据** | 10 个文件以 `CAREERPROOF_TEST_DATABASE_URL` 为开关，未设置即 **skip**：`test_ai_budget_production_race`、`test_durable_matching`、`test_attempt_hard_stop`、`test_visual_postgres_concurrency`、`test_mcp_postgres_isolation`、`test_real_matching`、`test_durable_attempt_service`、`test_ai_request_attempt_migration`、`test_knowledge_semantic_postgres`、`test_ai_budget_fault_recovery`；全文 23 处 skip（例：`test_durable_attempt_service.py:212`、`test_ai_shared_budget_service.py:283`） |
+| **影响** | **默认 `pytest` 的「全绿」从未执行任何并发断言** —— 这是本项目最有价值的 10 个测试，却默认不跑 |
+| **修法** | CI 起 postgres service container（`pgvector/pgvector:pg17`），注入该环境变量 |
+| **验收** | CI 日志出现这 10 个文件的通过记录，而非 skip |
+
+### P1-4.4 修掉「刀锋式」评测闸门
+
+| 项 | 内容 |
+|---|---|
+| **问题** | `backend/evals/run_ai_evidence_baseline.py:107-114` 要求 5 项指标**精确等于** `(1,1,1,1,1)`；`run_evidence_trust.py:216-218` 要求全部 attempt 通过 |
+| **实测抖动** | 同一 prompt + 同一模型 + 同一 fixture：`docs/evidence/.../drift-v22-runs-20260927.json` 显示 `changed=2/11`、`wordingChanged=8/11`；`route-body` 案例 run1 因「AI rating level disagrees with criterion decisions」失败、run2 通过；`acceptedRate` 在 **0.875 ↔ 1.0** 之间跳动（12.5% flake） |
+| **后果** | **该闸门必然间歇性红灯，而红灯与代码质量无关**，会持续消耗排查成本 |
+| **修法** | 允许 N 例失败；或引入重复性统计（跑 3 次取中位数） |
+| **验收** | 同一提交连跑 3 次结果一致 |
+
+### P1-4.5 环境与依赖同步 ✅
+
+| 项 | 内容 |
+|---|---|
+| **实测** | `backend/.venv` 与 `pyproject.toml` 钉版本**不一致 7 项**：fastapi (0.116.1 vs 0.143.0)、starlette (0.47.3 vs 1.3.1)、Mako (1.4.1 vs 1.4.2)、PyJWT (2.10.1 vs 2.15.0)、python-multipart (0.0.20 vs 0.0.31)、Pillow (11.3.0 vs 12.3.0)、fastembed (0.7.4 vs 0.8.1) |
+| **对照组** | `backend/.venv-dependency23` → **0 项不一致** ✅ |
+| **后果** | 按 `backend/README.md:72` 手敲 `pytest` 会踩到 `test_fastembed_dependency_compatibility.py::test_installed_pins_match_pyproject_exactly` 失败（我实测确认）。`Start-Local.ps1` 会用 `evals.verify_dependency_environment` 拒绝陈旧 venv，所以启动没事——**但文档与文档指向的环境不一致** |
+| **修法** | 重建 `.venv`，或把 README 改为指向 `.venv-dependency23` |
+| **验收** | `.\.venv\Scripts\pytest.exe` 全绿（PG 类 skip 除外） |
+
+---
+
+## 六、批次 5：数据层
+
+### P1-5.1 `applications.status` 无 CHECK，却承载核心不变量 ✅
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `backend/alembic/versions/0018_application_reconsent.py:31-33` 原文：<br>`batch.create_index(INDEX, ["job_id","student_id"], unique=True, postgresql_where=sa.text("status != 'withdrawn'"), ...)` |
+| **同时被用作授权过滤** | `services/applications.py:375`、`services/notifications.py:69` |
+| **CHECK 约束分布（我实测）** | `ai_budget.py` 11 条、`ai_request_attempt.py` 9 条、`analysis.py` 2 条；**`recruitment.py`（jobs/applications）、`portfolio.py`、`identity.py`、`evidence_growth.py`、`growth_answer.py`、`notification.py`、`audit.py` 全部为 0** |
+| **后果** | `applications.status` 是 `String(30)` 自由字符串。**一次状态拼写错误即可绕过唯一性，让同一学生对同一岗位产生多条 active 投递，并让两处授权判断同时失效**。Pydantic 层限了取值（`schemas/applications.py:26`），DB 层完全裸奔 |
+| **修法** | 加 `CHECK (status IN ('submitted','viewed','downloaded','replied','withdrawn'))`；同类问题一并处理 `jobs.status`、`normalized_status`、`reply_kind`、`evidence_growth_tasks.status`、`match_items.verdict`（`enums.py:44-47` 的 `MatchVerdict` 已定义却从未用于约束） |
+| **验收** | 非法 status 写入被 DB 拒绝 |
+
+### P1-5.2 `match_items` 缺唯一约束
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `models/analysis.py:146-153` 无 `UNIQUE(report_id, requirement_id)`；而 `services/analysis.py:601-604` 与 `services/report_history.py:88-92` **都用 `session.scalar()` 假设只有一行** |
+| **后果** | 重复行会被静默取第一条 → **证据复核可能改错行** |
+| **附带收益** | 该唯一约束同时补上缺失的查询索引 |
+| **验收** | 重复插入被拒绝；两处查询改为 `scalar_one_or_none()` 并加测试 |
+
+### P1-5.3 迁移 0012 在升级事务内清空向量表且不重建 ✅
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `alembic/versions/0012_semantic_knowledge_embedding.py:24` `op.execute("DELETE FROM knowledge_chunks")` → `:25` DROP INDEX → `:26` ALTER COLUMN TYPE `vector(384)` → `:28` CREATE INDEX。**没有回填** |
+| **后果** | 从 `alembic upgrade head` 到运维手动执行 `app/scripts/reindex_knowledge.py`（该脚本 `:58` 自己也先全删）之间的窗口里，`/knowledge/search` **恒返回 `[]`**（`retrieval.py:245-252`） |
+| **downgrade** | `0012:37-38` 会**再清一次** |
+| **修法** | 在迁移内加回填，或在 `比赛交付.md` / 部署文档中把它列为**必须的后续手动步骤**并加就绪探针 |
+| **验收** | 升级后 `/knowledge/search` 无需人工干预即可返回结果（或部署文档显式列出该步骤） |
+
+### P1-5.4 pgvector 检索在过滤场景下不可信
+
+| 项 | 内容 |
+|---|---|
+| **做对的部分** | HNSW 索引存在且正确：`models/analysis.py:211` `postgresql_using="hnsw"`、`0001:53-56` 建、`0012:27-30` 重建；`vector_cosine_ops` 与 `retrieval.py:264` 的 `<=>` 匹配；384 维在模型/迁移/检索三方一致 |
+| **问题** | `services/retrieval.py:268` 在 `ORDER BY embedding <=> :query` 之上叠加 `source_id IN (allowed_ids)`（单用户可能上千个 chunk id）。走 HNSW 时这是**后置过滤**：默认 `hnsw.ef_search=40` 下，高选择性过滤可能返回远少于 `limit`、甚至返回空 |
+| **未调优证据** | 全仓 **0 处** `SET hnsw.ef_search`、**0 处** iterative scan；`docker-compose.yml:3` 用 `pgvector/pgvector:pg17` **未固定扩展版本**，iterative scan 是否可用不确定 |
+| **另一处隐患** | `retrieval.py:143-161` 只把混合引擎记为 `mixedEngines` 标志，`:248-263` 仍用「最新 chunk 的引擎」给**全部** allowed_ids 排序 → 历史不同引擎的向量被无意义比较 |
+| **修法** | 固定扩展版本并启用 iterative scan；或提高 `ef_search`；或在应用层先过滤 id 再算距离 |
+| **验收** | 构造"上千 allowed_ids + 少量真实命中"的用例，验证返回数量符合预期 |
+
+### P2-5.5 索引与查询模式系统性不匹配
+
+**根因**：pgvector 之外**全部是单列索引**，而真实查询几乎都是「多谓词 + `ORDER BY created_at DESC`」。
+
+| 缺失索引 | 查询证据 |
+|---|---|
+| `applications(student_id, created_at DESC)` | `services/applications.py:356-358` |
+| `applications(job_id, created_at DESC)` | `services/applications.py:372-378` |
+| `analysis_tasks(status, created_at, id)` | `services/task_dispatcher.py:35-37` |
+| `analysis_tasks(created_by, task_type, status, created_at DESC)` | `services/career_planning.py:480-485`、`services/analysis.py:556-557` |
+| `match_reports(job_id, candidate_ref, created_at DESC)` | `services/report_history.py:26-37`、`repositories/jobs.py:99` |
+| `match_items` UNIQUE(report_id, requirement_id) | 见 P1-5.2 |
+| `skill_evidence(skill_id)`、`(evidence_source_id)` | `services/analysis.py:96-99`，FK 无索引 |
+| `evidence_sources(resume_section_id / project_file_id / interview_answer_id)` | `services/analysis.py:74-82`；级联删除每层全表扫 |
+| `resume_versions.analysis_task_id`、`project_versions.analysis_task_id` | `services/task_dispatcher.py:47,53`、`services/task_lifecycle.py:208,213`、`services/portfolio.py:600,608` |
+| `refresh_tokens(user_id)` | `models/identity.py:27` |
+| `interview_sessions(student_id/job_id)` | `services/portfolio.py:115-116`；该表**除主键外零索引** |
+| `ai_request_attempts(analysis_task_id / created_by / sending_day)` | `services/ai_budget.py:168-169`（全表载入内存）、`:584-596`（全表排序） |
+| `ai_budget_reservations(created_by, reservation_day)` | `services/ai_budget.py:390-396` |
+| `audit_logs(action, resource_id)` | `services/mcp_tools.py:320`，`resource_id` 无索引 |
+| `notifications(recipient_id) WHERE read_at IS NULL` | `services/notifications.py:78`、`:142`；单次列表调用触发 3 次 count |
+| `jobs(status, created_at DESC)` + pg_trgm GIN | `repositories/jobs.py:34,37-41,49-60`：`created_at` 无索引（全表排序）、`ILIKE '%q%'` 全扫、`ix_jobs_title` 对 ILIKE 完全无效 |
+| `knowledge_chunks(source_type, source_id)` | `services/retrieval.py:169-172`、`:212-213` |
+
+**反向问题**：低基数单列索引过多 —— `jobs` 有 6 个单列索引（`0001:152-154` + `0003:23`）；`analysis_tasks.status`（`0001:107`）每次心跳/终态都更新 → 写放大；`applications.status`（`0001:219`）在 0018 之后基本无用；`ai_usage_logs` 每次调用写 2 个唯一索引（`analysis.py:172-182`）。
+
+### P2-5.6 全库 JSON 是 `json` 而非 `jsonb` ✅
+
+| 项 | 内容 |
+|---|---|
+| **实测** | 全仓搜索 `jsonb\|JSONB\|pg_trgm\|GIN` → **零命中**（唯一 `using=` 是 `analysis.py:211` 的 hnsw） |
+| **实测** | **19 个列全部声明为 `JSON`**（SQLAlchemy `JSON` → PG 原生 `json`，不是 `jsonb`）：`ai_request_attempt.py:86`、`analysis.py:48,62,84,120,137,138,139,141,142,164,192,219`、`audit.py:22`、`evidence_growth.py:19,20,21`、`growth_answer.py:19`、`recruitment.py:86,91` |
+| **后果（架构级，加索引修不好）** | `repositories/jobs.py:106` 的 `input_snapshot->>'jobId'` **在 `json` 类型上无法建任何索引**；`:37-41` 的关键词搜索 `ILIKE '%q%'` 全表扫描 |
+| **修法** | `json` → `jsonb`（需迁移 + 重建 GIN 索引）；同时装 `pg_trgm` 支撑模糊搜索 |
+| **验收** | `EXPLAIN` 显示 jobs 关键词查询与 input_snapshot 查询不再全表扫 |
+
+### P2-5.7 账号注销路径被 RESTRICT 锁死
+
+| 项 | 内容 |
+|---|---|
+| **证据** | `users → analysis_tasks` 是 CASCADE（`models/analysis.py:34`）、`analysis_tasks → match_reports` 是 CASCADE（`:128`）；但 `applications.report_id` 是 **RESTRICT**（`models/recruitment.py:84`）、`ai_request_attempts.analysis_task_id` RESTRICT（`0016:38`）、`ai_budget_reservations.analysis_task_id` RESTRICT（`0017:48`） |
+| **后果** | 一旦有投递或 AI/budget 事实行，**`DELETE FROM users` 必然失败 → 账号注销功能不可实现**。这与 `docs/guides/AI与数据边界.md:55`「用户自助永久删除……仍需上线前逐项核对」对应，是**已知但未解决**的上线要求 |
+| **修法** | 软删除 + 匿名化（项目已有 `is_archived` 的先例）；或将 RESTRICT 改为 `SET NULL` + 保留匿名化快照 |
+| **验收** | 有投递历史的账号可完成注销，且审计记录保留 |
+
+### P2-5.8 分页静默截断 100 条 ✅
+
+| 端点 | 风格 | 风险 |
+|---|---|---|
+| `/jobs`、`/jobs/mine` | page/pageSize + total（20/100） | ✅ 与前端一致 |
+| `/notifications` | page + `page_size`（**无 alias**，`api/v1/notifications.py:23`） | 参数名与 `/jobs`（`jobs.py:103`）、`/match-reports`（`analysis.py:108`）的 `alias="pageSize"` 不一致；前端永远无法改页大小 |
+| `/match-reports` | page/pageSize，**返回裸 list 无 total**（`analysis.py:105,112`） | 服务端默认 50、前端假设 20（`client.ts:284`、`ReportList.tsx:30` 用 `length < 20` 猜下一页）；**末页正好 20 条时点下一页得空页** |
+| `/applications/mine`、`/jobs/{id}/applications`、`/growth-tasks` | **无任何分页参数** | 硬编码 `.limit(100)`（`applications.py:358,378`、`evidence_growth.py:136`）→ **静默截断，第 101 条投递或补证任务永远看不到**，无 total / 无 hasMore / 无游标 |
+
+**修法**：统一为一种分页契约，全部返回 `total`/`hasMore`；硬编码 100 的三处改为真分页。
+
+### P3-5.9 其他数据层项
+
+| 项 | 证据 |
+|---|---|
+| 4 个迁移忘了撤销临时 `server_default` → 模型/DB 默认值漂移；`alembic/env.py:36` 未开 `compare_server_default`，autogenerate **看不见** | `0007:16`、`0008:24`、`0011:17`、`0016:60` |
+| 时间戳无 `server_default=func.now()` → 绕过 ORM 的 INSERT 撞 NOT NULL | `models/base.py:17-22`；`services/ai_budget.py:363-365,151-152` 被迫显式传时间戳即现场证据 |
+| `evidence_growth_tasks.requirement_id` 裸列无 FK | `models/evidence_growth.py:18`、`0009:26` |
+| 2 处 revision id 与文件名不一致（链靠 revision 串接，无断链，但脚本化回滚会错位） | `0011:7` `0011_reply_refs` vs 文件名 `0011_application_reply_references.py`；`0012:15` `0012_knowledge_vec384` vs 文件名 `0012_semantic_knowledge_embedding.py` |
+| 4 个迁移有数据即拒绝 downgrade（**这是正确取舍，不要改**） | `0003:51-57`、`0016:122-135`、`0017:163-168`、`0018:38-42` |
+| 金额 `Numeric(12,6)` 单次亚微元成本被舍入为 0 | `models/analysis.py:42,193` |
+| 范围约束缺失且同库自相矛盾：`ai_request_attempt.py:39-62` 有 8 条 non-negative CHECK，而结构同源的 `analysis.py`（tokens/latency/progress/confidence/score）**一条都没有** | `models/analysis.py:39,42,45,100,135,157-160,189-194` |
+| `weight` 无 CHECK，而 API 层限 1..5 | `models/recruitment.py:64` vs `schemas/jobs.py:20` |
+
+---
+
+## 七、批次 6：代码质量与可维护性
+
+| # | 问题 | 证据 | 建议 |
+|---|---|---|---|
+| 6.1 | **`execute_match_task` 单函数约 510 行**，混合编排、授权、额度结算、持久化与 6 段展示文案，含 6 层嵌套三元、内联构造 6 个 AgentStep | `services/analysis.py:695-1205`、`1072-1116` | 按阶段拆分；异常分支优先 |
+| 6.2 | **24 个端点返回裸 `dict`**，无 `response_model` | `api/v1/applications.py:24-127`（10 个）、`evidence_growth.py:20-129`（9 个）、`notifications.py`（5 个）；`api/v1/mcp_tools.py:48,57,78`（3 个无 response_model） | 补 Pydantic 响应模型 |
+| 6.3 | **`next lint` 不可运行**：声明了脚本但 devDeps 无 `eslint`，仓库无任何 eslint 配置 → 类型之外**零静态检查**，34 个 `useEffect` 的依赖正确性全靠人工 | `jianli/package.json:10` vs `:20-28` | 装 eslint + `eslint-plugin-react-hooks` |
+| 6.4 | **死代码**：`EvidenceChain.tsx`、`ScoreRing.tsx` 零引用；`jianli/src/lib/types.ts`（97 行）是废弃模型集，仍被 3 个组件引用，字段与新模型冲突（`score` vs `finalScore`、`MatchItem` vs `ReportItem`） | `EvidenceChain.tsx:1`、`EvidenceCard.tsx:1`、`VerdictBadge.tsx:1` | 删除或迁移到 `api/domain.ts` |
+| 6.5 | **判定标签 5 处重复且文案已漂移**（「仅自述」/「仅简历声明」/「仅声明」）—— 而「证据结论表述一致」恰是本产品核心卖点 | `ApplicationBoard.tsx:21`、`ReportDetail.tsx:21`、`ReportEvidenceWorkspace.tsx:19`、`VerdictBadge.tsx:5`、`lib/skill-radar.ts` | 抽为单一常量模块 |
+| 6.6 | 长列表无分页/虚拟化 + `React.memo` **0 处**：`ApplicationBoard.tsx:116` 一次渲染 100 投递×N 要求全表；`MaterialPreview.tsx:49` 把源码**逐行**渲染成 `<span>`（数千 DOM） | 同名文件 | 虚拟化 + memo |
+| 6.7 | **静默降级/吞异常**：检索与上下文能力失效时**无任何可观测信号** | `services/matching_materials.py:199,242`、`services/retrieval.py:177-178` | 加 WARN 日志 + 结构化降级标记 |
+| 6.8 | **AI 额度双轨**（已核实非并发漏洞，而是记账精度问题）：`career_plan`、`job_draft`、`visual` 三条链路用旧 `_daily_ai_budget`，不产生可信收据 → provider 未返回合法 token 时用量计为 0，与项目自身原则「没有可信收据不能把 unknown 计为零」冲突。**视觉是图片 token，单价最高，恰落在这一档** | `career_planning.py:543`、`job_drafting.py:101`、`visual_evidence.py:183` vs `analysis.py:208-212`、`application_verification.py:621-626` | 统一到收据式体系；`docs/guides/AI与数据边界.md:39` 已自陈「不能推及所有其他 AI 链」 |
+| 6.9 | **AI 校验的四处错配** | ① `confidence` 是死字段：prompt schema 要求（`provider.py:326`）、契约必填（`contracts.py:260`），但全模块 grep 只有 3 处、**无人消费**；② 长度约束 3.75 倍空隙：prompt 说 80 字，契约上限 300（`contracts.py:101,106`）；③ prompt 要求每项填 `information_gap`，校验只在特定 verdict 下强制（`contracts.py:390-396`）；④ 两个「生产漂移」评测**没跑生产路径**：`run_ai_evidence_baseline.py:14-19` 全量发送含 `evidence: []` 的用例、`run_evidence_trust.py:90` 用 `max_evidence=3`，而生产是 `evidence_workflow.py:376-377` 的过滤 + `max_evidence=2` | 逐项对齐 |
+| 6.10 | 循环依赖 `analysis ↔ application_verification`，仅靠函数内 import 破环 | `services/analysis.py:501-504`、`application_verification.py:55` | 抽公共模块 |
+| 6.11 | 隐式全局状态：`_active`、`_MODEL_SEMAPHORE` 为进程内状态，**多 worker 下并发限额失效** | `services/task_dispatcher.py:24`、`agents/evidence_workflow.py:61-68` | 改用 DB 或 Redis 计数 |
+| 6.12 | 重复逻辑：三处「证据身份」函数语义重叠 | `career_planning.py:142`、`report_comparison.py:17,85`、`evidence_growth.py:27` | 合并 |
+| 6.13 | SSE 流每秒新建一个数据库会话，无退避、无超时上限 | `api/v1/analysis.py:135-178`（`:138` 新建 session、`:178` sleep 1s） | 改 `LISTEN/NOTIFY` 或加退避；**注意不要破坏** `:130-133` 的「进入长连接前 commit 释放连接」与 `:143-151` 的「循环内重新鉴权」，这两处做对了 |
+| 6.14 | 容器无法运行整体产品 | `backend/docker-compose.yml` 只有 postgres；`backend/Dockerfile` **不被任何 compose 引用**、`CMD` 只有 uvicorn **不跑 `alembic upgrade`**、root 运行、无 healthcheck、未装 `mcp` extra | 补 app 服务 + 入口脚本跑迁移 + 非 root + healthcheck |
+
+---
+
+## 八、边界：明确不要做的事
+
+| 不要 | 原因 |
+|---|---|
+| 不要改动历史报告快照（`MatchReport` / `job_snapshot` / `materials_snapshot`） | 不可变快照 + 版本冻结是核心不变量，`REL-03`/`G3` 门槛依赖它 |
+| 不要为「整理」改动 `docs/evidence/**/*.raw.out` | `.gitattributes` 专门声明不规范化这些原始日志；篡改原始证据违反项目自己的规则 |
+| 不要在没有独立人工标注的情况下把语义指标从 `null` 改成数字 | `run_quality_dimensions.py:834-836` 与 `run_quality_review_benchmark.py:349-350` 恒置 null 是**正确的诚实表达**；51 个产物里 50 个 `humanSemanticReview` 仍是 pending，人工结论 0 个 |
+| 不要放松 `humanReview` 必须为 `false` 的强制校验 | `run_quality_review_benchmark.py:123-128` 在 `humanReview != false` 时 raise——这是机器强制的事实声明 |
+| 不要 `git reset` / `git clean` 工作树 | 7 个未签收修改（`contracts.py`/`provider.py`/`task_boundaries.py`/`Start-Local.ps1`/`Stop-Local.ps1`/`local-runtime.ps1`/`当前接力.md`）横跨 5+ 轮任务卡，需保留 |
+| 不要用清库/重播种的方式「修复」失败的演示 run | 原失败 run 是证据，项目规则明确禁止 |
+| 不要删除 4 个「有数据即拒绝 downgrade」的迁移保护 | 那是**正确取舍**，防止回滚删历史 |
+| 不要试图把 PC 用户枚举、`/docs` 公开等问题用「本地演示」搪塞 | 这些是**部署前检查项**（`REL-08`），不是当前演示阻断项 |
+
+---
+
+## 九、验证方法（可直接执行）
+
+```powershell
+# ── 工作目录
+cd 'D:\jbcode\web ai\jianli'
+
+# 1. 依赖钉一致性（应全绿；当前 .venv 会失败 7 项）
+.\backend\.venv\Scripts\python.exe -c "import importlib.metadata as m,tomllib; \
+ pins=tomllib.load(open('backend/pyproject.toml','rb'))['project']['dependencies']; \
+ print([f\"{s.split('==')[0]}: {m.version(s.split('==')[0].split('[')[0])} != {s.split('==')[1]}\" \
+ for s in pins if m.version(s.split('==')[0].split('[')[0]) != s.split('==')[1]])"
+
+# 2. ruff（正式代码应全绿；`.` 当前会报 11 个临时目录错误）
+.\backend\.venv\Scripts\ruff.exe check --no-cache backend\app backend\evals backend\scripts backend\alembic
+.\backend\.venv\Scripts\ruff.exe check --no-cache .   # ← 当前失败，见 P0-4.2
+
+# 3. 后端测试（需把 TMP 指向工作区内，否则 tmp_path fixture 会权限失败）
+$env:TMP='D:\jbcode\_pytmp'; $env:TEMP=$env:TMP
+.\backend\.venv\Scripts\python.exe -m pytest backend -q --no-header -p no:cacheprovider
+
+# 4. 前端类型与测试
+cd jianli
+npx tsc --noEmit
+npm test
+
+# 5. 迁移链完整性（应单头无分支）
+cd ..\backend
+.\.venv\Scripts\alembic.exe heads
+.\.venv\Scripts\alembic.exe check
+
+# 6. 确认本次分析未改动项目文件
+cd 'D:\jbcode\web ai\jianli'
+git status --porcelain --untracked-files=no
+# 期望：仍是开始时那 7 个 M
+```
+
+**关于 pytest 的环境坑**：DSH 沙箱会把 `TMP` 重定向到 `C:\Users\<用户>\AppData\Local\Temp\dsh-*`，导致 `tmp_path` fixture 报 `PermissionError`（我实测 447 个 error 全部由此产生，**不是项目缺陷**）。把 `TMP`/`TEMP` 指到工作区内可规避。另外 `--basetemp` 在会话结束时会因沙箱 ACL 崩溃，属同一原因。
+
+---
+
+## 十、已知环境问题（与分析结论无关，但会干扰你复现）
+
+### 10.1 `D:\jbcode` 曾在会话开始时完全不可写
+
+会话开始时 `pwsh` 全部失败于 `SetNamedSecurityInfoW failed (Win32 5): grantWrite(D:\jbcode)`——工作区根缺少用户的 `WRITE_OWNER` 权限。已按 DSH 诊断技能修复（给当前用户补完全控制，备份在 `D:\jbcode-acl-recovery\`，撤销命令在该目录的报告里）。
+
+### 10.2 84 个 `.tmp-*` 残留目录无法删除
+
+仓库里 `backend/.tmp-*`（**84 个**）与 `tmp/` 下大量残留，是历史沙箱化测试创建的，**当前身份连读取它的 ACL 都做不到**（`Get-Acl` 报「未经授权的操作」）。这就是我最初 `rg`/`glob` 全库搜索直接失败的原因。
+
+**清理需在提权终端执行**（普通权限和 DSH 沙箱内都不行）：
+
+```powershell
+# 以管理员身份运行 PowerShell，逐个处理确认过的路径
+takeown /f "D:\jbcode\web ai\jianli\backend\.tmp-plan-audit-30" /r /d y
+icacls "D:\jbcode\web ai\jianli\backend\.tmp-plan-audit-30" /grant "$env:USERNAME:(F)" /t
+Remove-Item "D:\jbcode\web ai\jianli\backend\.tmp-plan-audit-30" -Recurse -Force
+```
+
+另外 `.gitignore` **未覆盖 `.tmp*`**：根 `.gitignore` 无该规则，`backend/.gitignore` 只有 `.tmp/`（`.tmp-*` 不匹配），`git check-ignore` 实测 `backend/.tmp-budget-admin-sqlite` 为 NOT-IGNORED。目前仅靠权限拒绝兜底——**这是隐患**：一旦权限被放开（例如提权清理时），这些目录会直接进入 `git status`。
+
+### 10.3 我留下的临时目录
+
+`D:\jbcode` 下有 `_pytmp` ~ `_pytmp7`，是我跑 pytest 时创建的，同样因沙箱 ACL 无法删除。清理方式同 10.2。它们**不在项目仓库内**，不影响 git 状态。
+
+---
+
+## 附录 A：结论可信度分级（评测体系）
+
+| 级别 | 内容 | 可否对外引用 |
+|---|---|---|
+| **A 可信** | `run_rule_baseline.py`（7 例纯函数，`FORMULA_VERSION=evidence-v3` 与 `matcher.py:19` 一致）；`run_offline_retrieval_comparison.py` 的**引擎间相对比较**（R@2 0.712→0.923，4 次重跑逐位相同，模型哈希已钉死）；`run_role_matrix.py` 覆盖矩阵；`release_smoke.py` 的 E2E 结构断言；`check_output_drift.py` 的哈希漂移检测；`test_quality_review_benchmark_holdout.py` | ✅ 可作回归基线 |
+| **B 方向可信** | 检索套件的**绝对** R@2 / spanR（gold 由作者自造，`retrieval_cases.py:225` 落款 `"createdBy": "project assistant"`、`:227` 自写 `"not a holdout"`）；3/8 严格通过率（分母是作者合成草稿，`generatedWebsiteOutputs: 0`）；`verify_*` 系列单次付费记录（n=1） | ⚠️ 必须标注来源与样本量 |
+| **C 不可信** | 任何 AI **语义**质量率（`semanticQualityPassRate`、`conclusionSupportRate`、`humanOverclaimRate`、`generatedPlanOperabilityRate` **全部为 null 或 0 样本**）；`acceptedRate` 与 `==1` 闸门（已实测 12.5% 抖动）；`drift-offline-self-check-*`（同一文件自比，只证明比较器确定性） | ❌ 不可引用 |
+
+**关于那个 3/8**：它证明的是**判分器有区分度**（3 份满分、1 份全零、其余分层）且**评测敢于保留失败**，**不是**产品质量好，也**不是**产品质量差。分母是作者合成草稿（input 的 `kind` 被强制为 `authored-synthetic-drafts-not-website-model-output`），`review.json` 的 `scopeNote` 自己写着「本评分不代表网站模型真实输出质量」。
+
+---
+
+## 附录 B：项目做得对、不要推翻的部分
+
+这份清单读下来容易只看到问题，但以下这些是**真实的、超出同规模项目水平**的设计，整改时不应破坏：
+
+| 项 | 证据 |
+|---|---|
+| **AI 完全无法改动分数** | `final_score` 全仓**唯一**生产赋值点是 `matcher.py:165`，`analysis.py:663,999` 只是转发 ✅ |
+| **评级上限纯本地计算 + 读时二次复核** | `evidence_workflow.py:117-121` 算 ceiling；`contracts.py:513-522` 强制 `level == 连续成立判据数` 且 `≤ ceiling`；`evidence_levels.py:217-228` 展示时重算一遍 |
+| **依赖/配置声明被正确降级** | `code_analyzer.py:652-666`：证据类型名命中 `dependency\|config\|build\|...` 统一降为 `low` + 解释「仅有依赖或配置声明，未据此确认功能实现」——**与 rubric 的 `operation` 判据完全一致**（我一开始怀疑这里有 bug，核实后撤回） |
+| **空壳实现用 AST 检测，不执行代码** | `evidence_levels.py:11-64`，识别 `pass` / `...` / `raise NotImplementedError`，能跳过 docstring |
+| **行区间并集覆盖**（精确算法而非启发式） | `function_coverage.py:8-42` |
+| **反重复索取守卫** | `function_coverage.py:135-184`：识别 AI「要求提交已完整覆盖的源码」并拒绝，且覆盖已保存的旧计划字段 |
+| **内部机制泄漏防护** | `function_coverage.py:187-188`：拦截 AI 输出中的 `rating_ceiling`、`context_complete`、`provenance`、「受到程序上限限制」等内部措辞 |
+| **第三方程式码永不提级** | `matcher.py:93`、`evidence_levels.py:92-94` 双重排除 `provenance="reference"` |
+| **不可评项不进分母且明确告知用户** | `matcher.py:149-151` + 解释「不代表用户缺少该能力」 |
+| **防注入是架构性的，不是措辞性的** | verdict / `rule_score` / ceiling / 引用白名单 / 覆盖率事实全部服务端算好后**作为数据注入**（`evidence_workflow.py:105-122`），模型只能在给定集合内选引用与写叙述 |
+| **DB CAS 任务租约，非内存锁** | `task_lifecycle.py:24-74`，`run_token` 保证旧令牌不能覆盖重试结果 |
+| **收据式额度：未知用量不回滚、不伪造 0** | `ai_request_attempts.py:436-471`；`provider.py:621-655` 的 `usage_present` 机制 |
+| **并发测试用真实行锁而非 sleep** | `test_ai_budget_production_race.py`：用 `pg_blocking_pids` 证明败者真在等锁，第三个 session 用 `FOR UPDATE NOWAIT` 证明 HTTP 期间无锁持有 |
+| **PG 测试隔离是随机 schema + 白名单校验** | `test_durable_matching.py:42-125`：写前用 `pg_class/pg_namespace` 逐表校验，teardown 只 `DROP SCHEMA "cp_test_*"` 并二次正则断言 |
+| **启动器防 PID 复用** | `scripts/local-runtime.ps1:109-135`：manifest 记 PID + 启动时间 + cmdline，复用时按 CIM 微秒网格比对；只停自己核验过身份的进程 |
+| **尺度诚实的措辞** | 「分数为材料支持度，不是能力或录用结论」「不推断服务已运行」「不能从断言存在推断测试通过」「需核查本人贡献」 |
+| **自陈未完成项** | `docs/guides/AI与数据边界.md:55-57` 列出 5 项上线前必须核对的要求，并写「不能用局部权限测试宣称全面隐私合规」 |
+
+---
+
+## 附录 C：一个元观察
+
+三轮分析中，我**三次推翻委派分析给出的强结论**：
+
+| 被推翻的结论 | 实际情况 |
+|---|---|
+| ⚠️「图片无脱敏出境」是 P0 疏漏 | 已在 `AI与数据边界.md:23` 明确披露 + `visual_evidence.py:172-175` 逐图强制同意 + 提示用户自行去敏。**是显式设计取舍，不是隐藏缺陷** |
+| ⚠️「额度双轨」是并发绕过漏洞 | `analysis.py:304-346` 的 `_daily_ai_budget` **持用户行锁跨付费调用**（`with_for_update(key_share=True)`），并发无法通过同一快照；且文档自陈覆盖范围。**真问题是记账精度，不是并发** |
+| ⚠️「FastAPI 断言校验提示词没写」 | rubric 通过 `evidence_workflow.py:114` 注入、`provider.py:329` 明确指令「按 rating_rubric 逐项判断」、`skill_rubric.py:15` 已写明该规则。**模型是被告知的**；真正的错配窄得多（片段窗口 vs 字面校验） |
+
+**这个规律本身就是对项目的评价**：CareerProof 的自我文档化（`AI与数据边界.md`、各 README、代码内注释）**比一个外部读者的第一印象更准确**。在一个学生比赛项目里这是反常的。
+
+它意味着：**攻击这个项目时最容易出错的地方，是低估它。** 它的真问题不在「藏了坏东西」，而在三件事——**记录太多但零自动化门禁、界面标签与引擎能力脱节、以及硬性交付物还是零**。
+
+唯一的例外是 `backend/README.md:190` 那句关于通知中心的过期声称（见 P0-1.3），也是修复成本最低的一处。
+
+---
+
+*本文档基于静态分析与独立运行验证，未修改任何项目文件。所有标注行号以 HEAD `71a2fd3` 为基线；若工作树后续变动，行号可能漂移。*

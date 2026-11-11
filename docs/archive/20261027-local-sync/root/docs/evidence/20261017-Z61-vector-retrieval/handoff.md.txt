@@ -1,0 +1,57 @@
+# Z61 交接 · 知识库搜索召回稳定性（2026-10-17）
+
+执行端 ZCode（GLM）。基线 33ba713。未提交、未推送、未动任何禁改文件。页面：不适用——本卡不改任何 API 契约与 UI。
+
+## 改动文件（我的全部 delta）
+
+- `backend/app/services/retrieval.py`（sha256 `62d53a64b5ca6a0e868f134407f05886d42d190737aa53afbc4dd841ab928e62`，修复前为 `978cdba` blob）
+- `backend/app/tests/test_retrieval_filtered_recall.py`（新增，sha256 `bac255b73aa62576a163860f3dbaa8084b0cf16cf5f7eafffdf7643577e75f6b`）
+- 本证据目录 `docs/evidence/20261017-Z61-vector-retrieval/`
+
+注意：工作区里 `docs/任务清单.md`、`docs/当前接力.md` 的 M 状态是本会话开始前已存在的改动（Codex 域），非我所写。`git diff` 复核过：我的源码 delta 只有 retrieval.py 一个文件。
+
+## 修复前复现（合成数据、一次性实例，`repro-before.raw.txt`）
+
+数据：单学生自有 3 个简历 section → 24 个自有 chunk，混入 3000 条与查询向量几乎重合的语料 chunk，共 3024 行；查询词与语料同词、与自有内容零重叠；`hnsw.ef_search=40`、`hnsw.iterative_scan=off`（镜像 pgvector/pgvector:pg17 = PG 17.11 + pgvector 0.8.6）。
+
+| 口径 | 修复前 | 修复后 |
+| --- | --- | --- |
+| 现行平铺语句（默认计划） | HNSW Index Scan + Filter，**0 行** | 同语句仍 0 行（作为对照保留） |
+| 同语句关索引扫描对照 | Seq Scan + Sort，**10 行**（与暴力 top-10 集合一致） | — |
+| `search_owned_chunks` 实际交付 | **0 行、无报错**（min(10,24)=10 未达成） | **10 行** |
+| 普通子查询 `(SELECT…) t` | — | 本次计划选了 Seq Scan 得 10 行，**但属规划器巧合、无保证**（`plan-A-subquery.txt`） |
+| `WITH … AS MATERIALIZED` | — | CTE Scan 24 行 + 外层 Sort → 10 行，**确定性预过滤**（`plan-A-materialized-cte.txt`） |
+| 空表（有自有材料、无索引） | 返回 `[]`，与"短召"不可区分 | 返回 `[]` + 结构化日志 `outcome=no-indexed-chunks` |
+
+两份 EXPLAIN 全文见 `plan-A-default.txt` / `plan-A-no-indexscan.txt`；精确命令、数据集行数在 `repro_z61.py` 与两份 raw 日志头部。复现与验收全部跑在专用一次性容器 `careerproof-z61-pg-20261017`（环回 127.0.0.1:55433，无卷，`--restart=no`），业务库 5432 与 3000/3001 服务全程未触碰。
+
+## 修复内容（retrieval.py，仅 `search_owned_chunks` + 导入/logger）
+
+- 排序改为在 `WITH owned_chunks AS MATERIALIZED (SELECT … WHERE source_id IN (:allowed_ids))` 之上做距离排序，`limit` 照旧外层截断 → 过滤先于排序，召回与计划无关。选 MATERIALIZED 而非普通子查询的依据就是上表两行 fix-shape 对照。窗口函数 `count(*) OVER ()` 在同一查询里顺带取回自有命中总数，不额外发 COUNT。
+- 计数器进每个返回行的既有 `metadata` dict：`requested` / `delivered` / `ownedMatches` / `shortfall`（`shortfall = delivered < min(limit, ownedMatches)`，语料本身小于 limit 不算 short）。`KnowledgeSearchResult.metadata: dict` 原样透传，无需改 schema（已核对 schemas/portfolio.py:13-18）。
+- 每次检索一行结构化日志（JSON，`outcome` ∈ ok / no-profile / no-allowed-sources / no-indexed-chunks / engine-unavailable / invalid-query-vector），空表与短召从此可区分。
+- 不变量核对：`select_query_engine`、`queryEngine`/`mixedEngines`、`local_embedding`、SEMANTIC_ENGINE 嵌入路径、`_valid_vector`、返回 dict 形状 `{id,sourceType,sourceId,content,metadata}` 全部未动；`index_sources`、`delete_source_chunks` 未动；未加/改/删任何索引或迁移。SQLAlchemy 2.0.43 的物化写法是 `cte(...).prefix_with("MATERIALIZED")`（该版本 CTE 无 `.materialized()` 方法，已用编译输出验证）。
+
+## 测试（`test_retrieval_filtered_recall.py`，PG 为主体、零跳过）
+
+- 修复前红：4 failed（`tests-before.raw.txt`）；修复后绿：**4 passed**。
+- PG 验收跑法：`CAREERPROOF_TEST_DATABASE_URL='postgresql+asyncpg://…@127.0.0.1:55433/careerproof' ./.venv/Scripts/python.exe -m pytest app/tests/test_retrieval_filtered_recall.py -q --basetemp=./.tmp-z61-ev10 -p no:cacheprovider` → **4 passed, 0 skipped**。用例：高选择性下恰好 `min(limit, owned)=10` 且与测试内暴力排序一致（含"等距并列只锁集合与单调性、不锁并列内顺序"的容差判定）、单来源 3 命中 limit=5 交付 3 且 shortfall=False、250 个 allowed_ids 大列表、空表日志区分（`outcome=no-indexed-chunks` vs `outcome=ok`）。
+- 检索相关既有套件（local/directed/hybrid/retrieval_evaluation/knowledge_embedding_engine/semantic + knowledge_semantic_postgres）：与新增套件合并 **54 passed, 0 skipped**（`tests-after.raw.txt`）。
+- 全量 SQLite（不设 PG 环境变量）：**1 failed, 1351 passed, 71 skipped**（`full-sqlite.raw.txt`）。唯一失败 `test_fastembed_dependency_compatibility::test_installed_pins_match_pyproject_exactly`（pyjwt installed 2.10.1 ≠ pin 2.15.0）是本机依赖漂移的预存失败（Z36/Z48 会话即存在），与本卡无关——未动 pyproject、未装任何包。71 个跳过为既有 PG 门控套件按设计跳过，其中 4 个是本测试文件在无 PG URL 时的同款跳过（原因串与兄弟套件一致）。
+- ruff `check app`：**All checks passed**（含新测试文件）。
+- basetemp/沙箱：全程 `--basetemp=./.tmp-*`（仓库内），未用任何绕行 flag；无 fixture 被拒。
+
+## 环境终态
+
+- 容器 `careerproof-z61-pg-20261017` 已停止（Exited 0，保留供 Codex `docker start` 独立复验）。
+- 一次性库内 `cp_test_*` 遗留 schema：**0**（容器内 psql 复核）；public 无残留表。
+- `backend/.tmp-z61-*` 临时目录已清理。
+- Docker Desktop 由我启动（启动前 netstat 证实 5432 无监听）；引擎起来时 `backend-postgres-1` 显示 Exited(255)，是其重启策略=no 的容器在宿主 daemon 重启后的状态对账，我未对该容器做任何操作。
+
+## 未验证项（留给 Codex）
+
+1. 真实语料与真实流量：全部数据为合成且已标注 synthetic，不构成任何延迟或质量承诺（本机观测 MATERIALIZED 形态 ~0.27ms vs HNSW 后置 ~0.35ms、修复前无召回，仅作参考）。
+2. 线上 PG 版本/插件与 0.8.6 的差异；`hnsw.iterative_scan` 在部署镜像上是否可用（本镜像为 off）。
+3. 0012 清空后 `ix_knowledge_chunks_embedding_hnsw` 仍为空，直到 reindex_knowledge.py 跑过——空表现在以 `outcome=no-indexed-chunks` 日志暴露，调用方日志侧仍需自行告警。
+4. 全量 PostgreSQL 严格集与硬停模块（Codex 域）未跑。
+5. 语义引擎路径（真实 MiniLM 向量）下未做端到端检索验收——本机模型缓存可用，但本卡测试按既有套件惯例全部走 hash 引擎断言；语义路径仅共享排序块，未改判定逻辑。
