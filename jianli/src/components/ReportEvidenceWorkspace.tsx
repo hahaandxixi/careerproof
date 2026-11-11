@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
-import { ACTION_SOURCE_LABELS, distinctActionText, evidenceWorkspace } from "@/lib/evidence-workspace";
+import { ACTION_SOURCE_LABELS, distinctActionText, effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
 import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "@/lib/report-workspace";
@@ -20,10 +20,10 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
   report: MatchReport; item: ReportItem; role?: string; explanationVisible?: boolean;
   explanationPanel?: ReactNode; sourcePanel?: ReactNode;
 }) {
-  const groups = evidenceWorkspace([item]);
-  const supported = groups.supported.length > 0;
-  const actionable = groups.gaps.length + groups.partial.length > 0;
-  const unsupported = !supported && !actionable && item.verdict === "unsupported";
+  const tone = reportStatusTone(item);
+  const supported = tone === "supported";
+  const actionable = tone === "gap" || tone === "partial";
+  const unsupported = effectiveReportStatus(item) === "unsupported";
   const studentSupplement = role === "student" && actionable;
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
@@ -62,7 +62,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     {(!supported || role === "student") && <aside className="requirement-next min-w-0 space-y-4" aria-label="补证与后续操作">
     {unsupported ? <div className="space-y-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
       <h4 className="font-semibold text-slate-900">规则暂未支持</h4>
-      <p className="text-sm leading-7 text-slate-700">当前规则不覆盖这项要求，不能据此推断材料缺失，也不能由此认定实现不存在；不提供材料补证或上传指引。请人工核对原始岗位要求与已保存材料。</p>
+      <p className="text-sm leading-7 text-slate-700">请人工核对岗位要求和已保存材料。</p>
     </div> : studentSupplement ? <RequirementSupplementJump item={item}/> : <>
     {!supported && <div className="space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-2">

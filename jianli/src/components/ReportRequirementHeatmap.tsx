@@ -4,12 +4,7 @@ import type { ReportItem } from "@/lib/api/domain";
 import { initialReportRequirement } from "@/lib/report-reader";
 import { workspaceStatusLabel } from "@/lib/report-workspace";
 
-function tone(item: ReportItem) {
-  if (["supported", "verified"].includes(item.verdict) && !["rejected", "corrected"].includes(item.confirmationStatus ?? "")) return "supported";
-  if (item.verdict === "partial") return "partial";
-  if (["gap", "claimed_only"].includes(item.verdict)) return "gap";
-  return "other";
-}
+import { reportStatusTone } from "@/lib/evidence-workspace";
 
 /** Compact requirement heatmap from saved fields; no score or invented capability. */
 export default function ReportRequirementHeatmap({ items, selectedRequirementId }: { items: ReportItem[]; selectedRequirementId?: string | null }) {
@@ -34,7 +29,7 @@ export default function ReportRequirementHeatmap({ items, selectedRequirementId 
       <div className="report-heatmap-legend" aria-label="状态图例"><span data-tone="supported">有证据支持</span><span data-tone="partial">部分支持</span><span data-tone="gap">待补或仅声明</span><span data-tone="other">暂不支持或需复核</span></div></div>
     <div className="report-heatmap-grid" role="table">
       <div className="report-heatmap-row report-heatmap-title" role="row"><span role="columnheader">岗位要求</span><span role="columnheader">简历声明</span><span role="columnheader">可定位来源</span><span role="columnheader">当前判断</span></div>
-      {items.map(item => <a key={item.requirementId} href={`#requirement-${item.requirementId}`} className={`report-heatmap-row ${selected === item.requirementId ? "is-selected" : ""}`} role="row" data-tone={tone(item)} aria-current={selected === item.requirementId ? "true" : undefined}>
+      {items.map(item => <a key={item.requirementId} href={`#requirement-${item.requirementId}`} className={`report-heatmap-row ${selected === item.requirementId ? "is-selected" : ""}`} role="row" data-tone={reportStatusTone(item)} aria-current={selected === item.requirementId ? "true" : undefined}>
         <strong role="cell">{item.skill || item.requirementTitle}</strong>
         <span role="cell" data-kind="claim" data-state={item.claimed ? "on" : "off"}>{item.claimed ? "有声明" : "未识别"}</span>
         <span role="cell" data-kind="source" data-state={item.evidenceList.length ? "on" : "off"}>{item.evidenceList.length ? `${item.evidenceList.length} 处` : "无引用"}</span>

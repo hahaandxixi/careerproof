@@ -3,7 +3,7 @@ import { useState } from "react";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
-import { evidenceWorkspace, evidenceWorkspaceSummary } from "@/lib/evidence-workspace";
+import { effectiveReportStatus, evidenceWorkspace, evidenceWorkspaceSummary } from "@/lib/evidence-workspace";
 import { initialReportRequirement } from "@/lib/report-reader";
 import type { WorkspaceFilter } from "@/lib/report-workspace";
 import { reportModeLabel, reportSummaryText } from "@/lib/report-display";
@@ -15,8 +15,9 @@ export default function ReportOverview({ report, role, workbench = false }: { re
   const counts = { resume: report.materials.filter(m => m.kind === "resume").length, personal: report.materials.filter(m => m.kind === "project" && m.materialRole !== "reference").length, reference: report.materials.filter(m => m.materialRole === "reference").length };
   const identity = role === "student" ? "学生" : role === "enterprise" ? "企业" : role === "admin" ? "管理员" : "当前账号";
   const [filter, setFilter] = useState<WorkspaceFilter | null>(null);
-  const claimed = report.items.filter(item => item.verdict === "claimed_only").length;
-  const unsupported = report.items.filter(item => item.verdict === "unsupported").length;
+  const claimed = states.gaps.filter(item => effectiveReportStatus(item) === "claimed_only").length;
+  const missing = states.gaps.filter(item => effectiveReportStatus(item) === "gap").length;
+  const unsupported = states.other.filter(item => effectiveReportStatus(item) === "unsupported").length;
   const segments: { key: WorkspaceFilter; label: string; count: number; tone: string }[] = [
     { key: "supported", label: "有证据支持", count: states.supported.length, tone: "supported" },
     { key: "partial", label: "部分支持", count: states.partial.length, tone: "partial" },
@@ -40,7 +41,7 @@ export default function ReportOverview({ report, role, workbench = false }: { re
         <span className="report-status-name">{segment.label}</span><strong>{segment.count}</strong><span className="report-status-unit">项</span>
       </button>)}
     </div>
-    <p className="report-status-detail">待补材料 {states.gaps.length - claimed} 项 · 仅简历声明 {claimed} 项 · 暂不支持 {unsupported} 项 · 合计 {report.items.length} 项要求。</p>
+    <p className="report-status-detail">待补材料 {missing} 项 · 仅简历声明 {claimed} 项 · 暂不支持 {unsupported} 项 · 合计 {report.items.length} 项要求。</p>
     <div className="report-overview-tools flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-slate-600">
       {role === "student" && <EvidenceLink targetId="report-supplement" className="inline-flex min-h-9 items-center font-medium text-[#1d4a40] underline">查看补证建议（{states.gaps.length + states.partial.length}）</EvidenceLink>}
       {role === "student" && <EvidenceLink targetId="report-sharing" className="inline-flex min-h-9 items-center font-medium text-[#1d4a40] underline">前往投递授权</EvidenceLink>}

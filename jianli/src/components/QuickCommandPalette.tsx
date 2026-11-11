@@ -46,6 +46,7 @@ export default function QuickCommandPalette() {
   const [active, setActive] = useState(0);
   const dialog = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+  const results = useRef<HTMLDivElement>(null);
   const restoreFocus = useRef<HTMLElement | null>(null);
   const commands = useMemo(() => commandsFor(pathname, user?.role), [pathname, user?.role]);
   const filtered = useMemo(() => {
@@ -75,6 +76,17 @@ export default function QuickCommandPalette() {
     return () => cancelAnimationFrame(frame);
   }, [open]);
   useEffect(() => { setActive(0); }, [query]);
+  useEffect(() => {
+    const list = results.current;
+    const option = list?.querySelector('[aria-selected="true"]');
+    if (!list || !option) return;
+    const viewport = list.getBoundingClientRect();
+    const item = option.getBoundingClientRect();
+    const top = viewport.top + list.clientTop;
+    const bottom = top + list.clientHeight;
+    if (item.top < top) list.scrollTop += item.top - top;
+    else if (item.bottom > bottom) list.scrollTop += item.bottom - bottom;
+  }, [active, filtered, open]);
   useEffect(() => {
     if (!open) return;
     const previous = document.body.style.overflow;
@@ -118,11 +130,11 @@ export default function QuickCommandPalette() {
       <div ref={dialog} className="quick-command-dialog" role="dialog" aria-modal="true" aria-labelledby="quick-command-title" onKeyDown={dialogKeys}>
         <div className="quick-command-head"><h2 id="quick-command-title">快捷跳转</h2><button type="button" className="quick-command-close" onClick={close} aria-label="关闭快捷跳转">Esc</button></div>
         <input ref={input} className="quick-command-input" value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => {
-          if (event.key === "ArrowDown") { event.preventDefault(); setActive(value => Math.min(filtered.length - 1, value + 1)); }
+          if (event.key === "ArrowDown") { event.preventDefault(); setActive(value => Math.min(Math.max(0, filtered.length - 1), value + 1)); }
           else if (event.key === "ArrowUp") { event.preventDefault(); setActive(value => Math.max(0, value - 1)); }
           else if (event.key === "Enter") { event.preventDefault(); choose(filtered[active]); }
         }} placeholder="输入页面、报告或动作，例如“补证”“来源”“A/B”" aria-label="搜索页面与功能" role="combobox" aria-expanded="true" aria-controls="quick-command-results" aria-activedescendant={filtered[active] ? `quick-command-${filtered[active].id}` : undefined} />
-        <div id="quick-command-results" className="quick-command-results" role="listbox" aria-label="可跳转页面">
+        <div ref={results} id="quick-command-results" className="quick-command-results" role="listbox" aria-label="可跳转页面">
           {filtered.length ? filtered.map((command, index) => <button id={`quick-command-${command.id}`} key={command.id} role="option" aria-selected={index === active} type="button" className={`quick-command-item ${index === active ? "is-active" : ""}`} onMouseEnter={() => setActive(index)} onClick={() => choose(command)}>
             <span className="quick-command-item-main"><strong>{command.label}</strong><span>{command.aliases.split(" ").slice(0, 4).join(" · ")}</span></span><span className="quick-command-group">{command.group}</span>
           </button>) : <div className="quick-command-empty" role="status"><strong>没有匹配的页面或功能。</strong><p>试试“报告”“补证”“投递”或“案例”。</p></div>}

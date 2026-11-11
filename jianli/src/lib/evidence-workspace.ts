@@ -23,14 +23,39 @@ export function distinctActionText(action: MatchReport["actionPlan"][number], di
   };
 }
 
+export function effectiveReportStatus(item: ReportItem) {
+  if (item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") return item.confirmationStatus;
+  switch (item.verdict) {
+    case "verified": return "supported";
+    case "not_evaluated": return "not_evaluated";
+    case "supported": case "partial": case "gap": case "claimed_only": case "unsupported": return item.verdict;
+    default: return "unknown";
+  }
+}
+
+export function reportStatusTone(item: ReportItem) {
+  const status = effectiveReportStatus(item);
+  if (status === "supported" || status === "partial") return status;
+  return status === "gap" || status === "claimed_only" ? "gap" : "other";
+}
+
+export function nextReportGap(gaps: ReportItem[], selected: string | null) {
+  const index = gaps.findIndex(item => item.requirementId === selected);
+  if (index < 0) return gaps[0];
+  return gaps.length > 1 ? gaps[(index + 1) % gaps.length] : undefined;
+}
+
 export function evidenceWorkspace(items: ReportItem[]) {
-  const supported = items.filter(item => ["supported", "verified"].includes(item.verdict) && !["rejected", "corrected"].includes(item.confirmationStatus ?? ""));
-  const partial = items.filter(item => item.verdict === "partial" && !["rejected", "corrected"].includes(item.confirmationStatus ?? ""));
-  const gaps = items.filter(item => ["gap", "claimed_only"].includes(item.verdict) && !["rejected", "corrected"].includes(item.confirmationStatus ?? ""));
-  const other = items.filter(item => !supported.includes(item) && !partial.includes(item) && !gaps.includes(item));
-  // Equal weight and level retain report order; never calculate an ability score.
-  const priorities = prioritize(items.filter(item => gaps.includes(item) || partial.includes(item)));
-  return { supported: prioritize(supported), partial: prioritize(partial), gaps: prioritize(gaps), other: prioritize(other), priorities };
+  const groups: Record<"supported" | "partial" | "gap" | "other", ReportItem[]> = {
+    supported: [], partial: [], gap: [], other: [],
+  };
+  for (const item of prioritize(items)) groups[reportStatusTone(item)].push(item);
+  const { supported, partial, gap: gaps, other } = groups;
+  const priorities = prioritize(items.filter(item => {
+    const tone = reportStatusTone(item);
+    return tone === "gap" || tone === "partial";
+  }));
+  return { supported, partial, gaps, other, priorities };
 }
 
 export function evidenceWorkspaceSummary(items: ReportItem[]) {

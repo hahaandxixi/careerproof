@@ -4,7 +4,7 @@ import { Children, useEffect, useState, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
-import { evidenceWorkspace } from "@/lib/evidence-workspace";
+import { evidenceWorkspace, nextReportGap, reportStatusTone } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 
 type ReaderEntry = { selected: string | null; anchor: string | null; revision: number; filter: WorkspaceFilter };
@@ -88,7 +88,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
   const visible = workspaceRequirements(items, entry.filter);
-  const nextGap = selected ? state.gaps.find(item => item.requirementId !== selected) : state.gaps[0];
+  const nextGap = nextReportGap(state.gaps, selected);
   const filters: { key: WorkspaceFilter; label: string; count: number }[] = [
     { key: "priority", label: "优先处理", count: state.priorities.length + state.other.length },
     { key: "all", label: "全部要求", count: items.length },
@@ -110,7 +110,6 @@ export default function ReportRequirementReader({ items, children, overview, sel
       window.history.pushState(null, "", `#requirement-${next}`);
     }
   };
-  const tone = (item: ReportItem) => ["supported", "verified"].includes(item.verdict) ? "supported" : item.verdict === "partial" ? "partial" : ["gap", "claimed_only"].includes(item.verdict) ? "gap" : "other";
   return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-reading-desk min-w-0 scroll-mt-24">
     <div className="report-requirement-controls min-w-0" role="group" aria-label="要求筛选与选择">
       <div className="report-index-filters" aria-label="按已保存的材料支持状态筛选">
@@ -124,7 +123,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
           const isSelected = selected === item.requirementId;
           return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={isSelected ? "true" : undefined} title={`${item.skill || item.requirementTitle} · ${workspaceStatusLabel(item)}`}
             className="report-index-chip">
-            <span className={`report-index-dot tone-${tone(item)}`} aria-hidden="true" />
+            <span className={`report-index-dot tone-${reportStatusTone(item)}`} aria-hidden="true" />
             <span className="report-index-chip-number">{String(index + 1).padStart(2, "0")}</span>
             <span className="report-index-chip-name">{item.skill || item.requirementTitle}</span>
             <span className="sr-only">，{workspaceStatusLabel(item)}</span>
