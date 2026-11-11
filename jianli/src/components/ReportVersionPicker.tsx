@@ -6,6 +6,7 @@ import { api, errorMessage } from "@/lib/api/client";
 import type { MatchReport, ReportSummary } from "@/lib/api/domain";
 import { reportOrigin, reportVersionHref } from "@/lib/report-navigation";
 import { reportPairOptionLabel } from "@/lib/report-pair";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 
 const PAGE_SIZE = 20;
 
@@ -44,7 +45,11 @@ function Picker({ report, origin, scope }: { report: MatchReport; origin: string
   return <div className="report-version-tools">
     {historical && <p className="text-sm font-medium">正在查看历史报告</p>}
     <div className="flex flex-wrap items-center gap-2">
-      {rows.some(row => row.id !== report.id) && <Link className="action-link" href={reportVersionHref(report.id, origin, "#report-comparison")}>版本对比</Link>}
+      {rows.some(row => row.id !== report.id) && <a className="action-link" href="#report-comparison" onClick={event => {
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        navigateEvidenceFragment("#report-comparison");
+      }}>版本对比</a>}
       <button type="button" className="btn-secondary" aria-expanded={open} aria-controls="report-version-picker" onClick={() => setOpen(value => !value)}>切换版本</button>
     </div>
     <div id="report-version-picker" hidden={!open} className="mt-2 min-w-0 space-y-2">
