@@ -105,9 +105,11 @@ def feedback(
     follow_up="追问：如果输入是空列表，你的断言会怎样？",
 ):
     return {
-        "covered": list(covered),
-        "inconsistent": [],
-        "missing": list(missing),
+        "findings": [
+            {"point": text, "kind": kind, "text": text}
+            for kind, values in (("covered", covered), ("missing", missing))
+            for text in values
+        ],
         "reviewSuggestion": "补充一条边界输入，并写出期望结果。",
         "followUp": follow_up,
         "citationIds": list(citation_ids),
@@ -817,8 +819,7 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
     )
     answer = "COUNT(*) 统计所有行，包括含 NULL 的行。"
     previous = practice._issue_records(first)
-    raw = feedback(["正确说明行计数"])
-    raw["missing"] = ["COUNT(*) 口径", "异常覆盖范围", "尚未给出样例"]
+    raw = feedback(["正确说明行计数"], missing=["COUNT(*) 口径", "异常覆盖范围", "尚未给出样例"])
     raw["resolvedIssues"] = [{"issueId": previous[0]["issueId"], "answerQuote": answer}]
     options = dict(
         allowed_citations=set(),
@@ -856,10 +857,12 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
             "COUNT(*) 不计含 NULL 的行。",
             {
                 **feedback([]),
-                "inconsistent": [
+                "findings": [
                     {
+                        "point": "COUNT(*) 行数口径",
+                        "kind": "inconsistent",
+                        "text": "COUNT(*) 统计所有行。",
                         "answerQuote": "COUNT(*) 不计含 NULL 的行。",
-                        "reason": "COUNT(*) 统计所有行。",
                         "basisId": "sql",
                     }
                 ],
@@ -882,6 +885,43 @@ def test_feedback_classification_contract(answer, raw, expected):
         assert not saved["inconsistent"]
     else:
         assert saved["conflictDetails"][0]["answerQuote"] == answer
+
+
+def test_answered_incorrectly_cannot_also_be_missing_for_the_same_point():
+    answer = "COUNT(*) 不统计含 NULL 的行"
+    raw = feedback([])
+    conflict = {
+        "point": "COUNT(*) 行数口径",
+        "kind": "inconsistent",
+        "text": "COUNT(*) 统计结果行数，与列是否为 NULL 无关。",
+        "answerQuote": answer,
+        "basisId": "sql",
+    }
+    options = dict(
+        answer=answer,
+        previous_issues=[],
+        allowed_knowledge={"sql"},
+        allowed_citations=set(),
+        has_evidence=False,
+    )
+    raw["findings"] = [
+        conflict,
+        {
+            "point": "count(*)行数口径",
+            "kind": "missing",
+            "text": "未说明 COUNT(*) 回答的是结果行数这一统计口径",
+        },
+    ]
+    with pytest.raises(ValueError, match="同一问点"):
+        practice.validate_feedback(raw, **options)
+    raw["findings"][1] = {
+        "point": "缺失机制对均值的影响",
+        "kind": "missing",
+        "text": "未说明缺失机制对观测均值的影响。",
+    }
+    saved = practice.validate_feedback(raw, **options)
+    assert saved["inconsistent"] == [conflict["text"]]
+    assert saved["missing"] == [raw["findings"][1]["text"]]
 
 
 async def test_slow_feedback_duplicate_retry_and_late_result(practice_db, monkeypatch):
