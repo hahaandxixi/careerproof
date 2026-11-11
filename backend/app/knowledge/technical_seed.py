@@ -422,14 +422,51 @@ TECHNICAL_KNOWLEDGE: list[dict] = [
 ]
 
 
+# Narrow topic phrases supplement the existing cards without changing stored source text.
+TOPIC_ALIASES = {
+    "tech-python-clean-input-types": ("输入类型", "类型契约", "清洗输入"),
+    "tech-python-clean-exception-boundary": ("异常边界", "错误处理", "坏行", "裸 except"),
+    "tech-python-missing-values": ("缺失值", "空字符串", "真值检验", "假值"),
+    "tech-python-csv-reading": ("csv", "newline", "unicodeDecodeError"),
+    "tech-sql-null-predicate": ("is null", "= null", "三值逻辑", "not in"),
+    "tech-sql-join-grain": ("join", "行数放大", "金额翻倍", "结果粒度"),
+    "tech-sql-aggregate-null": (
+        "count(*)",
+        "count(col)",
+        "avg(",
+        "sum(",
+        "array_agg",
+        "json_agg",
+        "聚合口径",
+        "聚合函数的 null",
+        "null 口径",
+    ),
+    "tech-sql-where-having": ("having", "分组过滤", "聚合过滤", "分组后筛选", "过滤聚合"),
+    "tech-pytest-assertion-specific": ("断言", "可复现的 pytest 测试", "具体断言"),
+    "tech-pytest-raises-boundary": ("pytest.raises", "异常类型", "抛出异常", "异常断言"),
+    "tech-pytest-parametrize": ("parametrize", "参数化", "边界组合"),
+    "tech-pytest-isolation": ("fixture", "测试隔离", "tmp_path"),
+}
+
+# Map row fields to their names in persisted practice snapshots. These fields
+# identify the generation basis. Search/maintenance metadata is stored separately.
+GENERATION_FIELDS = {
+    "title": "title",
+    "principle": "principle",
+    "reference_points": "referencePoints",
+    "question_angles": "questionAngles",
+    "document": "document",
+    "section": "section",
+    "source_locator": "sourceLocator",
+    "source_label": "sourceLabel",
+    "source_url": "sourceUrl",
+    "source_version": "sourceVersion",
+}
+
+
 def content_digest(entry: dict) -> str:
     payload = json.dumps(
-        {
-            "title": entry["title"],
-            "principle": entry["principle"],
-            "referencePoints": entry["reference_points"],
-            "sourceVersion": entry["source_version"],
-        },
+        {name: entry[key] for key, name in GENERATION_FIELDS.items()},
         ensure_ascii=False,
         sort_keys=True,
     )

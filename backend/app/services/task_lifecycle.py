@@ -7,7 +7,7 @@ import logging
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
-from sqlalchemy import and_, or_, update
+from sqlalchemy import and_, case, or_, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -197,7 +197,13 @@ async def recover_interrupted_tasks(session_factory) -> int:
                 run_token=None,
                 completed_at=now,
                 current_step="任务中断",
-                error_message="任务执行已中断或等待超时，请重试；已上传文件仍然保留",
+                error_message=case(
+                    (
+                        AnalysisTask.task_type == "interview_practice",
+                        "练习生成已中断或等待超时，请重试",
+                    ),
+                    else_="任务执行已中断或等待超时，请重试；已上传文件仍然保留",
+                ),
             )
             .returning(AnalysisTask.id)
         )

@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  PRACTICE_DRAFT_PREFIX, canSubmit, consentItems, draftKey, newClientToken, openTurn,
-  practiceStatusLabel, questionRetryNote, summaryLine, tokenKey, turnLabel, turnNotice,
+  PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, newClientToken, openTurn,
+  practiceStatusLabel, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "../src/lib/interview-practice.ts";
 
 const evidence = (id, path = "version-1/test_pipeline.py") => ({
@@ -39,7 +39,7 @@ test("a fresh client token is unique and never a fixed constant", () => {
 test("only the in-progress unanswered turn accepts a submission", () => {
   assert.equal(openTurn(session())?.turnIndex, 0);
   assert.equal(canSubmit(session(), openTurn(session())), true);
-assert.equal(canSubmit({ ...session(), knowledgeOutdated: true }, openTurn(session())), false);
+  assert.equal(canSubmit({ ...session(), knowledgeOutdated: true }, openTurn(session())), false);
   assert.equal(openTurn(session({ status: "completed" })), null);
   assert.equal(canSubmit(session(), turn(0, "feedback")), false);
   assert.equal(canSubmit(session(), turn(0, "answered")), false);
@@ -60,8 +60,21 @@ test("the consent list states the sent scope without exposing principles", () =>
 test("failed turns keep the saved answer and never claim a finished critique", () => {
   assert.match(turnNotice(turn(0, "failed")), /点评未生成/);
   assert.match(turnNotice({ ...turn(0, "failed"), failureReason: "模型响应超时，回答已保存，可稍后重试" }), /超时/);
-  assert.match(turnNotice(turn(0, "answered")), /等待点评/);
+  const legacy = turn(0, "answered");
+  const pending = { ...legacy, feedbackTask: { status: "pending" } };
+  assert.match(turnNotice(legacy), /尚未生成/);
+  assert.equal(canRetryFeedback(legacy), true);
+  assert.match(turnNotice(pending), /等待点评/);
+  assert.equal(canRetryFeedback(pending), false);
+  assert.match(turnNotice({ ...pending, feedbackTask: { status: "running" } }), /正在生成点评/);
   assert.equal(turnNotice(turn(0, "feedback")), "");
+});
+
+test("a delayed response can only clear the exact saved submission", () => {
+  const result = session({ turns: [{ ...turn(0, "answered"), answerText: "原回答" }] });
+  assert.ok(savedSubmission(result, 0, "原回答"));
+  assert.ok(!savedSubmission(result, 0, "后来编辑的回答"));
+  assert.ok(!savedSubmission(result, 1, "原回答"));
 });
 
 test("labels distinguish the first question from a follow-up and the summary caveat", () => {

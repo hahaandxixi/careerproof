@@ -260,17 +260,26 @@ export interface PracticeKnowledge {
 }
 export interface PracticeFeedback {
   covered: string[]; inconsistent: string[]; missing: string[]; reviewSuggestion: string;
+  conflictDetails?: { answerQuote: string; reason: string; basisId: string }[];
   citations: PracticeEvidence[]; knowledge: PracticeKnowledge[];
 }
+export interface PracticeGeneration {
+  id: string;
+  status: "pending" | "running" | "completed" | "failed" | "cancelled";
+  errorMessage: string | null;
+}
+
 export interface PracticeTurn {
   turnIndex: number; kind: "first" | "follow_up"; question: string; focus: string;
   state: "question" | "answered" | "feedback" | "failed";
   answerText: string | null; answeredAt: string | null; failureReason: string | null;
   citations: PracticeEvidence[]; knowledge: PracticeKnowledge[]; feedback: PracticeFeedback | null;
+  feedbackTask?: PracticeGeneration | null;
 }
 export interface PracticeSummary {
   answeredTurns: number; covered: string[]; inconsistent: string[]; remaining: string[];
   nextStep: string; note: string;
+  resolvedIssues?: { issueId: string; kind: "missing" | "inconsistent"; text: string; answerQuote: string; turnIndex: number }[];
 }
 export interface InterviewSession {
   id: string; status: "draft" | "in_progress" | "completed";
@@ -279,6 +288,7 @@ export interface InterviewSession {
   consentAt: string | null; consentScope: string | null;
   currentTurn: number; maxTurns: number;
   summary: PracticeSummary | null; failureReason: string | null;
+  questionTask?: PracticeGeneration | null;
   createdAt: string; updatedAt: string; turns: PracticeTurn[];
 }
 

@@ -6,13 +6,15 @@ report verdict, growth draft or application.
 
 from __future__ import annotations
 
+import asyncio
 import json
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.knowledge.technical_seed import TECHNICAL_KNOWLEDGE, content_digest
 from app.models.analysis import AiUsageLog, AnalysisTask, MatchItem, MatchReport
@@ -23,7 +25,9 @@ from app.models.knowledge import TechnicalKnowledgeEntry
 from app.models.portfolio import InterviewAnswer, InterviewSession
 from app.models.recruitment import Job, JobRequirement
 from app.services import interview_practice as practice
-from app.services.technical_knowledge import seed_technical_knowledge
+from app.services.task_dispatcher import dispatch_pending_tasks, wait_for_dispatched_tasks
+from app.services.task_lifecycle import recover_interrupted_tasks
+from app.services.technical_knowledge import rank_entries, seed_technical_knowledge
 from app.tests.test_jobs_api import register
 
 pytest_plugins = ["app.tests.test_jobs_api", "app.tests.test_real_matching"]
@@ -46,7 +50,7 @@ EVIDENCE = {
 }
 SQL_ITEM = {
     "skill": "SQL",
-    "requirementTitle": "使用 SQL 核查异常结果",
+    "requirementTitle": "使用 SQL JOIN 核查金额翻倍的原因",
     "claimed": True,
     "claimText": "简历声明会写 SQL",
     "evidenceList": [],
@@ -178,7 +182,26 @@ async def seed(factory, user_id: str, *, item_snapshot: dict, skill: str, verdic
         return str(report.id), str(requirement.id), str(profile.id)
 
 
-async def client_for(app):
+class SettledPracticeClient(AsyncClient):
+    def __init__(self, app, factory):
+        super().__init__(transport=ASGITransport(app=app), base_url="http://test")
+        self.factory = factory
+
+    async def post(self, url, **kwargs):
+        response = await super().post(url, **kwargs)
+        if (
+            response.status_code == 200
+            and url.startswith("/api/v1/interview-sessions/")
+            and await dispatch_pending_tasks(self.factory)
+        ):
+            await wait_for_dispatched_tasks()
+            return await self.get("/".join(url.split("/")[:5]))
+        return response
+
+
+async def client_for(app, factory=None):
+    if factory:
+        return SettledPracticeClient(app, factory)
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
@@ -200,7 +223,7 @@ def use_provider(monkeypatch, responses):
 
 async def test_python_evidence_runs_two_turns_and_persists_summary(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-a@example.com", "student")
     report_id, requirement_id, _ = await seed(
         factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
@@ -318,7 +341,7 @@ async def test_python_evidence_runs_two_turns_and_persists_summary(practice_db, 
 
 async def test_sql_claim_only_cannot_borrow_code_or_citations(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-sql@example.com", "student")
     report_id, requirement_id, _ = await seed(
         factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="claimed_only"
@@ -326,7 +349,7 @@ async def test_sql_claim_only_cannot_borrow_code_or_citations(practice_db, monke
     async with factory() as session:
         knowledge_id = await session.scalar(
             select(TechnicalKnowledgeEntry.knowledge_id).where(
-                TechnicalKnowledgeEntry.skill == "SQL"
+                TechnicalKnowledgeEntry.knowledge_id == "tech-sql-join-grain"
             )
         )
 
@@ -345,7 +368,9 @@ async def test_sql_claim_only_cannot_borrow_code_or_citations(practice_db, monke
     rejected = await student.post(
         f"/api/v1/interview-sessions/{opened['id']}/start", json={"externalAiConsent": True}
     )
-    assert rejected.status_code == 503
+    assert rejected.status_code == 200
+    assert rejected.json()["data"]["questionTask"]["status"] == "failed"
+    assert rejected.json()["data"]["turns"] == []
     async with factory() as session:
         assert list(await session.scalars(select(InterviewAnswer))) == []
         failed = await session.scalar(
@@ -382,7 +407,7 @@ async def test_sql_claim_only_cannot_borrow_code_or_citations(practice_db, monke
 
 async def test_duplicate_submit_and_retry_never_double_call(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-dup@example.com", "student")
     report_id, requirement_id, _ = await seed(
         factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
@@ -428,7 +453,7 @@ async def test_duplicate_submit_and_retry_never_double_call(practice_db, monkeyp
 
 async def test_ai_failure_keeps_answer_and_retry_completes(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-fail@example.com", "student")
     report_id, requirement_id, _ = await seed(
         factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
@@ -474,8 +499,8 @@ async def test_ai_failure_keeps_answer_and_retry_completes(practice_db, monkeypa
 
 async def test_other_student_cannot_read_or_continue(practice_db, monkeypatch):
     app, factory = practice_db
-    owner = await client_for(app)
-    stranger = await client_for(app)
+    owner = await client_for(app, factory)
+    stranger = await client_for(app, factory)
     user = await register(owner, "practice-owner@example.com", "student")
     await register(stranger, "practice-stranger@example.com", "student")
     report_id, requirement_id, _ = await seed(
@@ -500,7 +525,7 @@ async def test_other_student_cannot_read_or_continue(practice_db, monkeypatch):
 
 async def test_practice_does_not_rewrite_report_or_start_new_sessions(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-frozen@example.com", "student")
     report_id, requirement_id, _ = await seed(
         factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
@@ -583,12 +608,17 @@ def test_question_validation_rejects_a_statement_and_an_out_of_scope_citation():
             has_evidence=True,
         )
 
+
 async def test_new_sql_session_uses_corrected_aggregate_null_snapshot(practice_db, monkeypatch):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-sql-aggregate@example.com", "student")
     report_id, requirement_id, _ = await seed(
-        factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="claimed_only"
+        factory,
+        user["id"],
+        item_snapshot={**SQL_ITEM, "requirementTitle": "核对 COUNT(*) 与 AVG(score) 的 NULL 口径"},
+        skill="SQL",
+        verdict="claimed_only",
     )
     seed_entry = next(
         item for item in TECHNICAL_KNOWLEDGE if item["knowledge_id"] == "tech-sql-aggregate-null"
@@ -630,10 +660,14 @@ async def test_outdated_knowledge_session_is_read_only_and_restart_gets_current_
     practice_db, monkeypatch
 ):
     app, factory = practice_db
-    student = await client_for(app)
+    student = await client_for(app, factory)
     user = await register(student, "practice-sql-stale@example.com", "student")
     report_id, requirement_id, _ = await seed(
-        factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="claimed_only"
+        factory,
+        user["id"],
+        item_snapshot={**SQL_ITEM, "requirementTitle": "核对 COUNT(*) 与 AVG(score) 的 NULL 口径"},
+        skill="SQL",
+        verdict="claimed_only",
     )
     opened = await open_session(student, report_id, requirement_id)
     async with factory() as session:
@@ -677,3 +711,224 @@ async def test_outdated_knowledge_session_is_read_only_and_restart_gets_current_
     assert entry["contentHash"] != "0" * 64
     assert "旧版错误标题" not in entry["title"]
 
+
+@pytest.mark.parametrize(
+    ("skill", "query", "expected"),
+    [
+        ("Python", "处理 Python 缺失值和空字符串", "tech-python-missing-values"),
+        ("pytest", "使用 pytest 检查异常类型", "tech-pytest-raises-boundary"),
+        ("pytest", "使用 pytest.raises 检查", "tech-pytest-raises-boundary"),
+        ("SQL", "使用 SQL 分组过滤聚合结果", "tech-sql-where-having"),
+        ("SQL", "比较 WHERE 与 HAVING", "tech-sql-where-having"),
+    ],
+)
+def test_concrete_knowledge_topic_beats_family(skill, query, expected):
+    entries = [
+        TechnicalKnowledgeEntry(**item, content_hash=content_digest(item))
+        for item in TECHNICAL_KNOWLEDGE
+    ]
+    assert rank_entries(entries, skill=skill, text=query)[0].knowledge_id == expected
+    assert rank_entries(entries, skill=skill, text="如何折叠纸飞机") == []
+
+
+async def test_seed_refreshes_fields_and_old_digest_does_not_expire_session(
+    practice_db, monkeypatch
+):
+    from app.services import technical_knowledge
+
+    app, factory = practice_db
+    async with await client_for(app) as student:
+        user = await register(student, "practice-refresh@example.com", "student")
+        report_id, requirement_id, _ = await seed(
+            factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
+        )
+        opened = await open_session(student, report_id, requirement_id)
+        session_id = UUID(opened["id"])
+        async with factory() as db:
+            row = await db.get(InterviewSession, session_id)
+            old = {**row.knowledge_snapshot[0], "contentHash": "legacy-hash"}
+            old.pop("sourceUrl")
+            row.knowledge_snapshot = [old]
+            await db.commit()
+        key = old["knowledgeId"]
+        original = next(card for card in TECHNICAL_KNOWLEDGE if card["knowledge_id"] == key)
+        route = f"/api/v1/interview-sessions/{session_id}"
+        for field, value, stale in [
+            ("tags", ["维护标签"], False),
+            ("reviewed_at", "2026-11-11", False),
+            ("summary", "只改摘要", False),
+            ("source_url", "https://docs.pytest.org/en/stable/", False),
+            ("source_locator", "新的具体章节", True),
+            ("question_angles", ["仅修改出题角度"], True),
+        ]:
+            monkeypatch.setattr(
+                technical_knowledge, "TECHNICAL_KNOWLEDGE", [{**original, field: value}]
+            )
+            async with factory() as db:
+                assert await seed_technical_knowledge(db) == 1
+                await db.commit()
+                assert await seed_technical_knowledge(db) == 0
+                card = await db.scalar(
+                    select(TechnicalKnowledgeEntry).where(
+                        TechnicalKnowledgeEntry.knowledge_id == key
+                    )
+                )
+                assert getattr(card, field) == value
+            current = (await student.get(route)).json()["data"]
+            assert current["knowledgeOutdated"] is stale
+        new = await student.post(
+            f"/api/v1/match-reports/{report_id}/interview-sessions",
+            json={"requirementId": requirement_id, "restart": True},
+        )
+        async with factory() as db:
+            row = await db.get(InterviewSession, UUID(new.json()["data"]["session"]["id"]))
+            assert row.knowledge_snapshot[0]["questionAngles"] == ["仅修改出题角度"]
+            assert (await db.get(InterviewSession, session_id)).knowledge_snapshot == [old]
+
+
+def test_summary_resolves_only_the_issue_supported_by_second_answer():
+    first = InterviewAnswer(
+        turn_index=0,
+        answer_text="我会补充异常处理。",
+        feedback={"missing": ["COUNT(*) 口径", "异常覆盖范围"]},
+    )
+    answer = "COUNT(*) 统计所有行，包括含 NULL 的行。"
+    previous = practice._issue_records(first)
+    raw = feedback(["正确说明行计数"])
+    raw["resolvedIssues"] = [{"issueId": previous[0]["issueId"], "answerQuote": answer}]
+    options = dict(
+        allowed_citations=set(),
+        allowed_knowledge={"sql"},
+        has_evidence=False,
+        previous_issues=previous,
+    )
+    resolved = practice.validate_feedback(raw, answer=answer, **options)
+    second = InterviewAnswer(turn_index=1, answer_text=answer, feedback=resolved)
+    summary = practice.build_summary([first, second])
+    assert summary["remaining"] == ["异常覆盖范围"]
+    assert summary["resolvedIssues"][0]["answerQuote"] == answer
+    second.feedback = practice.validate_feedback(
+        feedback(["只谈到改进计划"]), answer="我以后会补测试。", **options
+    )
+    assert practice.build_summary([first, second])["remaining"] == ["COUNT(*) 口径", "异常覆盖范围"]
+    with pytest.raises(ValueError, match="引文"):
+        practice.validate_feedback(raw, answer="我以后会补测试。", **options)
+    raw["resolvedIssues"][0]["issueId"] = "2:missing:0"
+    with pytest.raises(ValueError, match="不属于"):
+        practice.validate_feedback(raw, answer=answer, **options)
+
+
+@pytest.mark.parametrize(
+    ("answer", "raw", "expected"),
+    [
+        ("我会检查空值。", feedback(["提到空值"], missing=["未说明 COUNT(*)"]), "missing"),
+        ("以后会补异常处理，旧代码尚未包含。", feedback(["区分了当前实现与计划"]), "covered"),
+        (
+            "可以用 COUNT(*) - COUNT(score) 统计缺失行。",
+            feedback(["给出可行的替代统计办法"]),
+            "covered",
+        ),
+        (
+            "COUNT(*) 不计含 NULL 的行。",
+            {
+                **feedback([]),
+                "inconsistent": [
+                    {
+                        "answerQuote": "COUNT(*) 不计含 NULL 的行。",
+                        "reason": "COUNT(*) 统计所有行。",
+                        "basisId": "sql",
+                    }
+                ],
+            },
+            "inconsistent",
+        ),
+    ],
+)
+def test_feedback_classification_contract(answer, raw, expected):
+    saved = practice.validate_feedback(
+        raw,
+        answer=answer,
+        previous_issues=[],
+        allowed_knowledge={"sql"},
+        allowed_citations=set(),
+        has_evidence=False,
+    )
+    assert saved[expected]
+    if expected != "inconsistent":
+        assert not saved["inconsistent"]
+    else:
+        assert saved["conflictDetails"][0]["answerQuote"] == answer
+
+
+async def test_slow_feedback_duplicate_retry_and_late_result(practice_db, monkeypatch):
+    app, factory = practice_db
+    async with await client_for(app) as student:
+        user = await register(student, "practice-slow@example.com", "student")
+        report_id, requirement_id, _ = await seed(
+            factory, user["id"], item_snapshot=PYTEST_ITEM, skill="pytest", verdict="supported"
+        )
+        entered, release = asyncio.Event(), asyncio.Event()
+        provider = use_provider(
+            monkeypatch,
+            [question("这条测试覆盖什么情况？"), feedback(["旧迟到点评"]), feedback(["新点评"])],
+        )
+        original = provider.generate_bounded_json
+
+        async def slow(**kwargs):
+            response = await original(**kwargs)
+            if len(provider.calls) == 2:
+                entered.set()
+                await release.wait()
+            return response
+
+        monkeypatch.setattr(provider, "generate_bounded_json", slow)
+        opened = await open_session(student, report_id, requirement_id)
+        route = f"/api/v1/interview-sessions/{opened['id']}"
+        first = await student.post(f"{route}/start", json={"externalAiConsent": True})
+        assert first.json()["data"]["questionTask"]["status"] == "pending"
+        await dispatch_pending_tasks(factory)
+        await wait_for_dispatched_tasks()
+        payload = {"answerText": "只覆盖正常输入。", "clientToken": "token-slow"}
+        submitted, duplicate = await asyncio.gather(
+            *[student.post(f"{route}/turns/0/answers", json=payload) for _ in range(2)]
+        )
+        task = submitted.json()["data"]["turns"][0]["feedbackTask"]
+        assert duplicate.json()["data"]["turns"][0]["feedbackTask"]["id"] == task["id"]
+        assert task["status"] == "pending"
+        task_id = UUID(task["id"])
+        running = asyncio.create_task(practice.execute_interview_task(task_id, factory))
+        await asyncio.wait_for(entered.wait(), timeout=3)
+        try:
+            assert await dispatch_pending_tasks(factory) == 0
+            retry = await student.post(f"{route}/turns/0/retry")
+            assert retry.json()["data"]["turns"][0]["feedbackTask"] == {**task, "status": "running"}
+            assert len(provider.calls) == 2
+            async with factory() as db:
+                await db.execute(
+                    update(AnalysisTask)
+                    .where(AnalysisTask.id == task_id)
+                    .values(heartbeat_at=datetime.now(UTC) - timedelta(days=1))
+                )
+                await db.commit()
+            assert await recover_interrupted_tasks(factory) == 1
+            read = (await student.get(route)).json()["data"]["turns"][0]
+            assert read["state"] == "failed" and read["answerText"] == payload["answerText"]
+            assert "上传" not in read["failureReason"]
+            retry = await student.post(f"{route}/turns/0/retry")
+            assert retry.json()["data"]["turns"][0]["feedbackTask"]["id"] == task["id"]
+            await dispatch_pending_tasks(factory)
+            # The late response can finish while the replacement lease owns the task.
+            release.set()
+            await wait_for_dispatched_tasks()
+        finally:
+            release.set()
+            await running
+        saved = (await student.get(route)).json()["data"]
+        assert saved["currentTurn"] == 1 and len(saved["turns"]) == 2
+        assert saved["turns"][0]["feedback"]["covered"] == ["新点评"]
+        async with factory() as db:
+            assert (await db.get(AnalysisTask, task_id)).attempt == 2
+            usage = list(
+                await db.scalars(select(AiUsageLog).where(AiUsageLog.analysis_task_id == task_id))
+            )
+            assert len({entry.run_token for entry in usage}) == len(usage) == 2

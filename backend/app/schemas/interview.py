@@ -48,13 +48,34 @@ class PracticeKnowledgeView(APIModel):
     reviewed_at: str = ""
 
 
+class PracticeConflictView(APIModel):
+    answer_quote: str
+    reason: str
+    basis_id: str
+
+
 class PracticeFeedbackView(APIModel):
     covered: list[str] = Field(default_factory=list)
     inconsistent: list[str] = Field(default_factory=list)
+    conflict_details: list[PracticeConflictView] = Field(default_factory=list)
     missing: list[str] = Field(default_factory=list)
     review_suggestion: str = ""
     citations: list[PracticeEvidenceView] = Field(default_factory=list)
     knowledge: list[PracticeKnowledgeView] = Field(default_factory=list)
+
+
+class PracticeGenerationView(APIModel):
+    id: UUID
+    status: Literal["pending", "running", "completed", "failed", "cancelled"]
+    error_message: str | None = None
+
+
+class ResolvedPracticeIssue(APIModel):
+    issue_id: str
+    kind: Literal["missing", "inconsistent"]
+    text: str
+    answer_quote: str
+    turn_index: int
 
 
 class PracticeTurnView(APIModel):
@@ -69,6 +90,7 @@ class PracticeTurnView(APIModel):
     citations: list[PracticeEvidenceView] = Field(default_factory=list)
     knowledge: list[PracticeKnowledgeView] = Field(default_factory=list)
     feedback: PracticeFeedbackView | None = None
+    feedback_task: PracticeGenerationView | None = None
 
 
 class PracticeSummaryView(APIModel):
@@ -76,6 +98,7 @@ class PracticeSummaryView(APIModel):
     covered: list[str] = Field(default_factory=list)
     inconsistent: list[str] = Field(default_factory=list)
     remaining: list[str] = Field(default_factory=list)
+    resolved_issues: list[ResolvedPracticeIssue] = Field(default_factory=list)
     next_step: str = ""
     note: str = ""
 
@@ -97,6 +120,7 @@ class InterviewSessionView(APIModel):
     current_turn: int
     max_turns: int
     summary: PracticeSummaryView | None = None
+    question_task: PracticeGenerationView | None = None
     failure_reason: str | None = None
     created_at: datetime
     updated_at: datetime

@@ -143,3 +143,26 @@ async def test_seeding_twice_keeps_one_row_per_card(tmp_path):
         count = await session.scalar(sa.text("SELECT COUNT(*) FROM technical_knowledge_entries"))
         assert count == len(TECHNICAL_KNOWLEDGE)
     await engine.dispose()
+
+
+def test_task_links_preserve_historical_rows(tmp_path):
+    engine = sa.create_engine(f"sqlite:///{tmp_path / 'task-links.db'}")
+    with engine.begin() as connection:
+        connection.exec_driver_sql("PRAGMA foreign_keys=ON")
+        legacy_database(connection)
+        connection.exec_driver_sql("CREATE TABLE analysis_tasks (id CHAR(32) PRIMARY KEY)")
+        module = migration("0023_interview_tasks.py")
+        with Operations.context(MigrationContext.configure(connection)):
+            module.upgrade()
+        assert connection.exec_driver_sql(
+            "SELECT status, version, question_task_id FROM interview_sessions WHERE id='s1'"
+        ).one() == ("pending", 3, None)
+        assert connection.exec_driver_sql(
+            "SELECT answer_text, version, feedback_task_id FROM interview_answers WHERE id='a1'"
+        ).one() == ("旧回答", 2, None)
+        connection.exec_driver_sql("INSERT INTO analysis_tasks VALUES ('task1')")
+        connection.exec_driver_sql("UPDATE interview_answers SET feedback_task_id='task1'")
+        connection.exec_driver_sql("DELETE FROM analysis_tasks WHERE id='task1'")
+        assert connection.exec_driver_sql(
+            "SELECT answer_text, feedback_task_id FROM interview_answers WHERE id='a1'"
+        ).one() == ("旧回答", None)

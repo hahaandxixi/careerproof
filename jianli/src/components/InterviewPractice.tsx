@@ -7,7 +7,7 @@ import { api, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import {
   canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel,
-  questionRetryNote, summaryLine, tokenKey, turnLabel, turnNotice,
+  canRetryFeedback, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
@@ -16,7 +16,12 @@ import styles from "./InterviewPractice.module.css";
 const MAX_ANSWER = 4000;
 
 export default function InterviewPractice({ id }: { id: string }) {
-  const { user } = useAuth();
+  const { user, status } = useAuth();
+  if (status === "loading") return <p className={styles.loading}>正在确认账号…</p>;
+  return <PracticeWorkspace key={`${user?.id ?? "anonymous"}:${id}`} id={id} userId={user?.id} />;
+}
+
+function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const router = useRouter();
   const [session, setSession] = useState<InterviewSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,36 +32,63 @@ export default function InterviewPractice({ id }: { id: string }) {
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
   const draftKeyRef = useRef("");
+  const active = useRef(false);
 
   const load = useCallback(async () => {
     try {
       const next = await api.getInterviewSession(id);
-      setSession(next);
-      setLoadError("");
+      if (active.current) {
+        setSession(next);
+        setLoadError("");
+      }
       return next;
     } catch (error) {
-      setLoadError(errorMessage(error));
+      if (active.current) setLoadError(errorMessage(error));
       return null;
     } finally {
-      setLoading(false);
+      if (active.current) setLoading(false);
     }
   }, [id]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    active.current = true;
+    void load();
+    return () => { active.current = false; };
+  }, [load]);
+
+  const pending = generationPending(session?.questionTask) || Boolean(session?.turns.some(turn => generationPending(turn.feedbackTask)));
+  useEffect(() => {
+    if (!pending || busy !== null) return;
+    let current = true;
+    let timer: ReturnType<typeof setTimeout>;
+    const read = async () => {
+      try {
+        const next = await api.getInterviewSession(id);
+        if (!current) return;
+        setSession(next);
+        setActionError("");
+      } catch (error) {
+        if (current) setActionError(`暂未读取到练习进度。${errorMessage(error)}`);
+      }
+      if (current) timer = setTimeout(read, 1500);
+    };
+    timer = setTimeout(read, 1000);
+    return () => { current = false; clearTimeout(timer); };
+  }, [busy, id, pending]);
 
   const current = openTurn(session);
   useEffect(() => {
-    if (!user || !session || !current) return;
-    const key = draftKey(user.id, session.id, current.turnIndex);
+    if (!userId || !session || !current) return;
+    const key = draftKey(userId, session.id, current.turnIndex);
     if (draftKeyRef.current === key) return;
     draftKeyRef.current = key;
     try { setAnswer(window.sessionStorage.getItem(key) ?? ""); } catch { setAnswer(""); }
-  }, [user, session, current]);
+  }, [userId, session, current]);
 
   const updateAnswer = (value: string) => {
     setAnswer(value);
-    if (!user || !session || !current) return;
-    try { window.sessionStorage.setItem(draftKey(user.id, session.id, current.turnIndex), value); } catch { /* private mode */ }
+    if (!userId || !session || !current) return;
+    try { window.sessionStorage.setItem(draftKey(userId, session.id, current.turnIndex), value); } catch { /* private mode */ }
   };
 
   const start = async () => {
@@ -76,38 +108,43 @@ export default function InterviewPractice({ id }: { id: string }) {
   };
 
   const submit = async (turn: PracticeTurn) => {
-    if (!user || !session) return;
+    if (!userId || !session) return;
     const text = answer.trim();
     if (!text) { setActionError("请先输入回答"); return; }
-    const key = tokenKey(user.id, session.id, turn.turnIndex);
+    const key = tokenKey(userId, session.id, turn.turnIndex);
     let token = "";
     try { token = window.sessionStorage.getItem(key) || ""; } catch { /* private mode */ }
     if (!token) { token = newClientToken(); try { window.sessionStorage.setItem(key, token); } catch { /* private mode */ } }
     setBusy(turn.turnIndex);
     setActionError("");
-    setNotice("正在生成点评，可能需要几十秒。可以先留在本页，不要重复提交。");
-    try {
-      const next = await api.submitInterviewAnswer(session.id, turn.turnIndex, { answerText: text, clientToken: token });
-      setSession(next);
-      setNotice("");
+    setNotice("正在提交回答…");
+    const clearSavedDraft = () => {
       try {
-        window.sessionStorage.removeItem(draftKey(user.id, session.id, turn.turnIndex));
+        window.sessionStorage.removeItem(draftKey(userId, session.id, turn.turnIndex));
         window.sessionStorage.removeItem(key);
       } catch { /* private mode */ }
-      setAnswer("");
+      if (active.current) setAnswer("");
+    };
+    try {
+      const next = await api.submitInterviewAnswer(session.id, turn.turnIndex, { answerText: text, clientToken: token });
+      if (!active.current) return;
+      setSession(next);
+      if (savedSubmission(next, turn.turnIndex, text)) {
+        clearSavedDraft();
+        setNotice("");
+      } else {
+        setNotice("已保留你的输入，请核对服务器保存的回答。");
+      }
     } catch (error) {
-      // The result may be unknown: read the saved state before offering a retry.
       const latest = await load();
-      setActionError(errorMessage(error));
-      if (latest) {
-        const saved = latest.turns.find(item => item.turnIndex === turn.turnIndex);
-        setNotice(saved?.state === "feedback" ? "点评已生成，已读取保存结果。" : "回答已保存，可读取状态或重试点评。");
-        if (saved?.state === "feedback" && user) {
-          try {
-            window.sessionStorage.removeItem(draftKey(user.id, session.id, turn.turnIndex));
-            window.sessionStorage.removeItem(key);
-          } catch { /* private mode */ }
-        }
+      if (!active.current) return;
+      const saved = savedSubmission(latest, turn.turnIndex, text);
+      if (saved) {
+        clearSavedDraft();
+        setNotice(saved.feedback ? "已读取保存的点评。" : "");
+      } else {
+        setActionError(errorMessage(error));
+        setNotice(latest ? "未确认这次回答已保存，输入仍保留。" : "暂时无法核对保存状态，输入仍保留。");
       }
     } finally {
       setBusy(null);
@@ -120,7 +157,7 @@ export default function InterviewPractice({ id }: { id: string }) {
     setActionError("");
     try {
       const { session: next } = await api.createInterviewSession(session.reportId, { requirementId: session.requirementId, restart: true });
-      router.push(`/interview/${next.id}`);
+      if (active.current) router.push(`/interview/${next.id}`);
     } catch (error) {
       setActionError(errorMessage(error));
     } finally {
@@ -182,7 +219,7 @@ export default function InterviewPractice({ id }: { id: string }) {
 
         {knowledgeOutdated && <section className={styles.consent} aria-labelledby="practice-knowledge-updated">
           <h2 id="practice-knowledge-updated">知识依据已更新，请重新开始练习</h2>
-          <p>这条练习保存的知识依据已更新。已保存的旧题目、回答和点评保留在这里，不会自动改写；但为避免继续用旧依据生成新点评，旧练习不再接受新的回答或点评请求。</p>
+          <p>可以继续查看已保存的题目、回答和点评。开始新练习后，系统会用更新后的知识出题。</p>
           <div className={styles.actions}>
             <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>
               {busy === "restart" ? "正在创建新练习…" : "重新开始练习"}
@@ -209,6 +246,10 @@ export default function InterviewPractice({ id }: { id: string }) {
           </div>
           {session.failureReason && <p className={styles.notice} data-tone="failed">{session.failureReason}</p>}
         </section>}
+
+        {generationPending(session.questionTask) && <p role="status" className={styles.notice} data-tone="working">
+          {session.questionTask?.status === "running" ? "正在生成首问" : "已保存发送确认，等待生成首问"}
+        </p>}
 
         {!!questionRetryNote(session) && <section className={styles.consent} aria-labelledby="practice-question-retry">
           <h2 id="practice-question-retry">首问还没有生成</h2>
@@ -245,7 +286,7 @@ export default function InterviewPractice({ id }: { id: string }) {
                 <span className={styles.counter}>{answer.length} / {MAX_ANSWER} 字</span>
                 <div className={styles.actions}>
                   <button type="button" className="btn" disabled={isBusy || !answer.trim() || knowledgeOutdated} onClick={() => void submit(turn)}>
-                    {isBusy ? "正在生成点评…" : "提交回答并获取点评"}
+                    {isBusy ? "正在提交回答…" : "提交回答并获取点评"}
                   </button>
                 </div>
               </div>
@@ -256,13 +297,24 @@ export default function InterviewPractice({ id }: { id: string }) {
 
             {turn.state !== "question" && !turn.feedback && <div className={styles.actions}>
               <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{turnNotice(turn)}</span>
-              {turn.state === "failed" && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
+              {canRetryFeedback(turn) && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
               <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
             </div>}
 
             {turn.feedback && <section className={styles.feedback} aria-label="本轮点评">
               {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>讲清的内容</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
-              {!!turn.feedback.inconsistent.length && <div className={styles.feedbackBlock} data-kind="inconsistent"><h4>与材料或原理不一致</h4><ul>{turn.feedback.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
+              {!!turn.feedback.inconsistent.length && <div className={styles.feedbackBlock} data-kind="inconsistent">
+                <h4>与材料或原理不一致</h4>
+                <ul>{turn.feedback.conflictDetails?.length ? turn.feedback.conflictDetails.map((conflict, index) => {
+                  const file = evidence.find(item => item.citationId === conflict.basisId);
+                  const principle = turn.feedback?.knowledge.find(item => item.knowledgeId === conflict.basisId);
+                  return <li key={index}>
+                    <q>{conflict.answerQuote}</q> {conflict.reason}
+                    {file && <p>{file.filePath.split("/").pop()} · 第 {file.lineStart}–{file.lineEnd} 行</p>}
+                    {principle && <p>{principle.title}</p>}
+                  </li>;
+                }) : turn.feedback.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul>
+              </div>}
               {!!turn.feedback.missing.length && <div className={styles.feedbackBlock} data-kind="missing"><h4>遗漏的关键点</h4><ul>{turn.feedback.missing.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
               {!!turn.feedback.reviewSuggestion && <div className={styles.suggestion}><strong>复习建议：</strong>{turn.feedback.reviewSuggestion}</div>}
               {!!evidence.length && <div className={styles.citations}>
@@ -298,9 +350,13 @@ export default function InterviewPractice({ id }: { id: string }) {
             <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <ul>{session.summary.remaining.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
           </div>
           {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><ul>{session.summary.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul></section>}
+          {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
+            {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
+          </ul></section>}
           {!!session.summary.nextStep && <p className={styles.suggestion}><strong>下一步：</strong>{session.summary.nextStep}</p>}
           <p className={styles.summaryNote}>{session.summary.note}</p>
           <div className={styles.actions}>
+            {!knowledgeOutdated && <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>{busy === "restart" ? "正在创建新练习…" : "再练一次"}</button>}
             <Link className="btn-secondary" href={reportHref}>回到报告这项要求</Link>
             <Link className="btn-quiet" href="/reports">查看我的报告</Link>
           </div>

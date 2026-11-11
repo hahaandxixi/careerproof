@@ -8,12 +8,11 @@ same rows answer the same way in tests and production.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.knowledge.technical_seed import TECHNICAL_KNOWLEDGE, content_digest
+from app.knowledge.technical_seed import TECHNICAL_KNOWLEDGE, TOPIC_ALIASES, content_digest
 from app.models.knowledge import TechnicalKnowledgeEntry
 
 SKILL_FAMILIES = {
@@ -31,13 +30,15 @@ SKILL_FAMILIES = {
     "单元测试": "pytest",
 }
 
-TOKEN_PATTERN = re.compile(r"[A-Za-z][A-Za-z0-9_.+#-]*|[\u4e00-\u9fff]{2,}")
+WORD = re.compile(r"[a-z][a-z0-9_.+#-]*")
+BACKGROUND_WORDS = {*SKILL_FAMILIES, "清洗", "聚合", "分组", "异常"}
 
 
-@dataclass(frozen=True)
-class RankedEntry:
-    entry: TechnicalKnowledgeEntry
-    score: int
+def _phrase_match(phrase: str, query: str) -> bool:
+    phrase = phrase.casefold()
+    if phrase.isascii() and phrase[-1].isalnum():
+        return bool(re.search(r"(?<![a-z0-9_.])" + re.escape(phrase) + r"(?![a-z0-9_.])", query))
+    return phrase in query
 
 
 def skill_family(skill: str) -> str:
@@ -61,24 +62,26 @@ def rank_entries(
     text: str = "",
     limit: int = 3,
 ) -> list[TechnicalKnowledgeEntry]:
-    """Prefer the requirement's skill family, then lexical overlap.
-
-    Ties fall back to the stable knowledge id so repeated calls are identical.
-    """
+    """Rank explicit topics before lexical matches, with family as a tie-break."""
     family = skill_family(skill)
-    terms = {token.casefold() for token in TOKEN_PATTERN.findall(text or "")}
-    scored: list[tuple[int, str, TechnicalKnowledgeEntry]] = []
+    query = text.casefold()
+    terms = set(WORD.findall(query)) - BACKGROUND_WORDS
+    scored: list[tuple[int, int, bool, str, TechnicalKnowledgeEntry]] = []
     for entry in entries:
-        score = 0
-        if family and entry_family(entry) == family:
-            score += 6
+        topics = sum(
+            _phrase_match(phrase, query) for phrase in TOPIC_ALIASES.get(entry.knowledge_id, ())
+        )
         haystack = f"{entry.title} {entry.summary} {' '.join(entry.tags or [])}".casefold()
-        score += sum(1 for term in terms if term and term in haystack)
-        if score <= 0:
-            continue
-        scored.append((-score, entry.knowledge_id, entry))
-    scored.sort(key=lambda item: (item[0], item[1]))
-    return [entry for _score, _key, entry in scored[:limit]]
+        words = terms.intersection(WORD.findall(haystack))
+        tags = {tag.casefold() for tag in entry.tags or []} - BACKGROUND_WORDS
+        lexical = len(words | {tag for tag in tags if _phrase_match(tag, query)})
+        if topics or lexical:
+            scored.append(
+                (-topics, -lexical, entry_family(entry) != family, entry.knowledge_id, entry)
+            )
+    scored.sort(key=lambda item: item[:4])
+    explicit = [item for item in scored if item[0] < 0]
+    return [item[-1] for item in (explicit or scored)[:limit]]
 
 
 async def load_entries(session: AsyncSession) -> list[TechnicalKnowledgeEntry]:
@@ -103,16 +106,12 @@ async def seed_technical_knowledge(session: AsyncSession) -> int:
     for item in TECHNICAL_KNOWLEDGE:
         digest = content_digest(item)
         row = existing.get(item["knowledge_id"])
-        values = {
-            key: value
-            for key, value in item.items()
-            if key != "knowledge_id"
-        }
+        values = {key: value for key, value in item.items() if key != "knowledge_id"}
         values["content_hash"] = digest
         if row is None:
             session.add(TechnicalKnowledgeEntry(knowledge_id=item["knowledge_id"], **values))
             changed += 1
-        elif row.content_hash != digest:
+        elif any(getattr(row, key) != value for key, value in values.items()):
             for key, value in values.items():
                 setattr(row, key, value)
             changed += 1

@@ -138,17 +138,16 @@ class InterviewSession(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     materials_snapshot: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
     evidence_snapshot: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
     knowledge_snapshot: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
-    consent_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
+    question_task_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("analysis_tasks.id", ondelete="SET NULL"), nullable=True
     )
+    consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     consent_scope: Mapped[str | None] = mapped_column(String(200), nullable=True)
     current_turn: Mapped[int | None] = mapped_column(Integer, default=0, nullable=True)
     max_turns: Mapped[int | None] = mapped_column(Integer, default=2, nullable=True)
     summary: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     failure_reason: Mapped[str | None] = mapped_column(String(200), nullable=True)
-    completed_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class InterviewAnswer(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
@@ -191,12 +190,11 @@ class InterviewAnswer(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     feedback: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     feedback_citation_ids: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
     feedback_knowledge_ids: Mapped[list | None] = mapped_column(JSON, default=list, nullable=True)
+    feedback_task_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("analysis_tasks.id", ondelete="SET NULL"), nullable=True
+    )
     client_token: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    answered_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
-    feedback_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    feedback_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     ai_model: Mapped[str | None] = mapped_column(String(100), nullable=True)
     failure_reason: Mapped[str | None] = mapped_column(String(200), nullable=True)
