@@ -281,6 +281,16 @@ export interface PracticeSummary {
   nextStep: string; note: string;
   resolvedIssues?: { issueId: string; kind: "missing" | "inconsistent"; text: string; answerQuote: string; turnIndex: number }[];
 }
+export interface InterviewSessionSummary {
+  id: string;
+  jobId: string;
+  jobTitle: string | null;
+  requirementTitle: string | null;
+  skill: string | null;
+  status: string;
+  needsAttention: boolean;
+  updatedAt: string;
+}
 export interface InterviewSession {
   id: string; status: "draft" | "in_progress" | "completed";
   reportId: string; jobId: string; requirementId: string; requirementTitle: string; skill: string; jobTitle: string;

@@ -714,7 +714,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .enterprise-uncomparable-list li + li { border-top: 1px solid #e0dbcd; }
 
 /* ===== 2026-11 desktop UI rollout: warm paper / ink green reading surfaces ===== */
-.nav-short { display: none; }
 .quick-command-trigger { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 9px; border: 1px solid #3d5650; border-radius: 6px; background: transparent; color: #dce5df; font-size: 12px; white-space: nowrap; }
 .quick-command-trigger:hover { background: #243b36; color: #fffefa; }
 .quick-command-trigger kbd { padding: 1px 4px; border: 1px solid #5c746c; border-radius: 3px; color: #b7c2ba; font: inherit; }
@@ -819,8 +818,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
   .report-section-directory { top: var(--report-sticky-offset, 88px); }
 }
 @media (max-width: 1366px) {
-  .nav-long { display: none; }
-  .nav-short { display: inline; }
   .site-primary-nav { gap: 0; }
   .site-primary-nav > a { padding-inline: 8px; }
   .quick-command-trigger-label { display: none; }

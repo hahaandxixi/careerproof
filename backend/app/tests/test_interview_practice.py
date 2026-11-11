@@ -1031,3 +1031,55 @@ def test_summary_keeps_unresolved_issues_from_both_turns():
     assert summary["remaining"][-1] == "第2轮遗漏3"
     assert len(summary["inconsistent"]) == 8
     assert summary["inconsistent"][-1] == "第2轮需修正3"
+
+async def test_interview_index_is_paginated_private_and_read_only(practice_db, monkeypatch):
+    app, factory = practice_db
+    owner = await client_for(app)
+    other = await client_for(app)
+    company = await client_for(app)
+    user = await register(owner, "practice-index-owner@example.com", "student")
+    foreign = await register(other, "practice-index-other@example.com", "student")
+    await register(company, "practice-index-company@example.com", "enterprise")
+    provider = use_provider(monkeypatch, [])
+    endpoint = "/api/v1/interview-sessions"
+
+    empty = await owner.get(endpoint)
+    assert empty.status_code == 200
+    assert empty.json()["data"]["total"] == 0
+    report_id, requirement_id, _ = await seed(
+        factory, user["id"], item_snapshot=SQL_ITEM, skill="SQL", verdict="supported"
+    )
+    first = await open_session(owner, report_id, requirement_id)
+    second = await owner.post(
+        f"/api/v1/match-reports/{report_id}/interview-sessions",
+        json={"requirementId": requirement_id, "restart": True},
+    )
+    assert second.status_code == 200
+    second_id = second.json()["data"]["session"]["id"]
+    assert second_id != first["id"]
+
+    for page_number, expected in [(1, second_id), (2, first["id"])]:
+        response = await owner.get(endpoint, params={"page": page_number, "pageSize": 1})
+        assert response.status_code == 200
+        data = response.json()["data"]
+        assert data["total"] == 2
+        assert data["page"] == page_number
+        row, = data["items"]
+        assert row["id"] == expected
+        assert row["status"] == "draft"
+        assert row["requirementTitle"] == SQL_ITEM["requirementTitle"]
+        assert set(row) == {
+            "id", "jobId", "jobTitle", "requirementTitle", "skill",
+            "status", "needsAttention", "updatedAt",
+        }
+    assert (await owner.get(endpoint, params={"pageSize": 51})).status_code == 422
+    assert (await other.get(endpoint)).json()["data"]["total"] == 0
+    assert (await company.get(endpoint)).status_code == 403
+    assert (await other.get(f"{endpoint}/{first['id']}")).status_code == 404
+
+    async with factory() as session:
+        report = await session.get(MatchReport, UUID(report_id))
+        report.candidate_ref = foreign["id"]
+        await session.commit()
+    assert (await owner.get(endpoint)).json()["data"]["total"] == 0
+    assert provider.calls == []

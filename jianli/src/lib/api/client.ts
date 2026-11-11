@@ -3,7 +3,7 @@ import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDet
 
 const API_PREFIX = "/backend/api/v1";
 import type { VisualReview } from "./domain";
-import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, InterviewSession, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
+import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, InterviewSession, InterviewSessionSummary, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -338,6 +338,9 @@ export const api = {
   // 文字模拟面试：创建不调用模型；同意外发后才生成首问。
   createInterviewSession(reportId: string, payload: { requirementId: string; restart?: boolean }) {
     return request<{ session: InterviewSession; resumed: boolean }>(`/match-reports/${reportId}/interview-sessions`, { method: "POST", ...jsonBody(payload) });
+  },
+  listInterviewSessions(page = 1, pageSize = 12) {
+    return request<Page<InterviewSessionSummary>>(`/interview-sessions?page=${page}&pageSize=${pageSize}`);
   },
   getInterviewSession(id: string) { return request<InterviewSession>(`/interview-sessions/${id}`); },
   startInterviewSession(id: string, externalAiConsent: boolean) {

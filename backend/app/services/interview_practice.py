@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.contracts import overclaim_flags
@@ -437,6 +437,35 @@ class InterviewPracticeService:
         if not profile:
             raise AppError("学生资料不存在", code=4044, status_code=404)
         return profile
+
+    async def list_sessions(self, user: User, page: int, page_size: int):
+        profile = await self._student(user)
+        scoped = (
+            select(
+                InterviewSession.id,
+                InterviewSession.job_id,
+                InterviewSession.job_title,
+                InterviewSession.requirement_title,
+                InterviewSession.skill,
+                InterviewSession.status,
+                InterviewSession.failure_reason.is_not(None).label("needs_attention"),
+                InterviewSession.updated_at,
+            )
+            .join(MatchReport, MatchReport.id == InterviewSession.report_id)
+            .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
+            .where(
+                InterviewSession.student_id == profile.id,
+                AnalysisTask.created_by == user.id,
+                MatchReport.candidate_ref == str(user.id),
+            )
+        )
+        total = await self.session.scalar(select(func.count()).select_from(scoped.subquery()))
+        rows = await self.session.execute(
+            scoped.order_by(InterviewSession.updated_at.desc(), InterviewSession.id.desc())
+            .offset((page - 1) * page_size)
+            .limit(page_size)
+        )
+        return rows.mappings().all(), total or 0
 
     async def _owned_session(self, session_id: UUID, user: User, *, lock: bool = False):
         profile = await self._student(user)
