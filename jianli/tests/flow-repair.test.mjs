@@ -1,9 +1,8 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { revealEvidenceAnchor } from '../src/lib/evidence-anchor.ts';
-import { flowStepsForLocation, studentFlowLocation, FLOW_STEPS } from '../src/lib/flow-steps.ts';
 const require = createRequire(import.meta.url), React = require('react'), { transform } = require('sucrase');
 const nodes = node => !node || typeof node !== 'object' ? [] : [node, ...React.Children.toArray(node.props?.children).flatMap(nodes)];
 function fixture(hash = '') {
@@ -114,16 +113,14 @@ test('source bookmark, disclosure opening, sharing bookmark, back to no hash and
     revealEvidenceAnchor('application-submit'); h.render(); assert.equal(h.active, '#report-sharing');
   } finally { h.cleanup(); }
 });
-test('journey labels are shared, context is location-only, source report and requirement survive material return', () => {
-  assert.deepEqual(FLOW_STEPS.map(step => step.label), ['准备材料', '选择岗位', '查看匹配', '按需补证', '确认投递']);
-  assert.equal(studentFlowLocation('/portfolio', 'student', '?sourceReport=r1&sourceRequirement=q1'), 'growth');
-  assert.equal(studentFlowLocation('/reports/r1', 'student', '', '#report-sharing'), 'application');
-  const steps = flowStepsForLocation('/portfolio', '?sourceReport=r1&sourceRequirement=q1');
-  assert.equal(steps.find(step => step.key === 'matching').href, '/reports/r1');
-  assert.equal(steps.find(step => step.key === 'growth').href, '/reports/r1#report-supplement');
-  assert.equal(steps.at(-1).href, '/reports/r1#application-submit');
-  assert.equal(steps.find(step => step.key === 'growth').href, '/reports/r1#report-supplement');
-  assert.match(flowStepsForLocation('/jobs').at(-1).unavailableReason, /请先打开/);
+test('the persistent five-step flow guide is fully removed from the product source', () => {
+  // 常驻五步条已取消：源码不再存在任何挂载点或实现文件。
+  const here = new URL('.', import.meta.url);
+  for (const removed of ['../src/components/StudentFlowGuide.tsx', '../src/components/FlowSteps.tsx', '../src/lib/flow-steps.ts']) {
+    assert.equal(existsSync(new URL(removed, here)), false, `${removed} 必须删除，不能只隐藏`);
+  }
+  const layout = readFileSync(new URL('../src/app/layout.tsx', here), 'utf8');
+  assert.doesNotMatch(layout, /StudentFlowGuide|FlowSteps/);
 });
 
 

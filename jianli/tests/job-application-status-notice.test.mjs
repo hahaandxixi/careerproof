@@ -80,7 +80,7 @@ test("active(submitted)：复用共享文案“已投递”，链接定位到 /a
 
 test("active(viewed)：共享状态文案按状态映射，含下一步指引", () => {
   const html = render({ kind: "active", application: { id: "app-1", status: "viewed", createdAt: "2026-10-12T08:00:00Z" } });
-  assert.ok(html.includes("企业已查看报告，尚未回复"), html);
+  assert.ok(html.includes("企业已查看"), html);
   assert.match(html, /下一步/);
 });
 

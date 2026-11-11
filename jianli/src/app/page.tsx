@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import HomeWorkspace from "@/components/HomeWorkspace";
 import { Suspense } from "react";
 import HomeScenarioPreview from "@/components/HomeScenarioPreview";
@@ -21,7 +21,7 @@ export default function HomePage() {
         <div className="home-hero-actions">
           <a href="#technical-jobs" className="btn">从岗位开始</a>
           <Link href="/portfolio" className={routeEntry}>整理我的材料 <span aria-hidden="true">→</span></Link>
-          <Link href="/demo" className={routeEntry}>浏览案例库 <span aria-hidden="true">→</span></Link>
+          <Link href="/demo" className={routeEntry}>浏览案例材料 <span aria-hidden="true">→</span></Link>
         </div>
         <ol className="home-entry-list" aria-label="从材料到报告">
           {entries.map(([number, title, description]) => <li key={number}>
@@ -48,3 +48,4 @@ export default function HomePage() {
     </aside>
   </div></HomeWorkspace>;
 }
+

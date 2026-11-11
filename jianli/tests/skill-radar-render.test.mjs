@@ -121,7 +121,7 @@ test("unknown versions keep a whole raw chart; anomalous known raw values remain
 test("actual requirement buttons and keyboard axes change the selected evidence without changing index coordinates",async()=>{
  const lib=await import("../src/lib/skill-radar.ts"), support=await import("../src/lib/support-index.js"), citations=await import("../src/lib/report-citations.ts");
  const cells=[];let cursor=0;
- const hooks={useId:()=>"radar-detail",useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=v;}];}};
+ const hooks={useId:()=>"radar-detail",useEffect(){},useState(value){const i=cursor++;if(!(i in cells))cells[i]=value;return[cells[i],v=>{cells[i]=v;}];}};
  const stub=()=>null;
  const modules={react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"./EvidenceSnippet":{default:stub,__esModule:true},"./SourceIdentity":{default:stub,SourceIdentityDetails:stub,__esModule:true},"./SupportMeasureDetails":{default:stub,__esModule:true},"@/lib/skill-radar":lib,"@/lib/evidence-display":{evidenceLevelName:String},"@/lib/support-index.js":support,"@/lib/report-citations":citations};
  const code=transform(readFileSync(path.join(SRC,"components/SkillRadar.tsx"),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
@@ -147,7 +147,7 @@ test("linked detail renders only selected requirement citations and keeps source
  assert.ok(!/<details[^>]*\bopen[= >]/.test(html));
  const gap=render({dimensions,items,initialRequirementId:"pytest"});
  assert.ok(!gap.includes("R1-E1") && !gap.includes("example-source-only"));
- assert.ok(gap.includes("缺材料不代表没有能力"));
+ assert.ok(!gap.includes("不代表没有能力"));
  assert.ok(!gap.includes("<polygon"));
 });
 test("synthetic radar never fabricates citations and supports fewer than three requirements", () => {

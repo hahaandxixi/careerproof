@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { ApplicationView } from "@/lib/api/client";
 import type { ReportItem } from "@/lib/api/domain";
 import type { SourceMaterial } from "@/lib/source-label";
@@ -11,16 +11,29 @@ import { resolveSupportScale, supportMeasure, supportScaleNote, type SampleScale
 import SupportMeasureDetails from "./SupportMeasureDetails";
 import { invalidNarrativeCitations, readableCitationText } from "@/lib/report-citations";
 
-export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange }: {
-  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
+/** Radar rendering modes share one scale/plotting core.
+ * - "full": complete reading panel — title, legend, scale note, requirement buttons, chart and evidence detail.
+ * - "overview": chart only, for compact page overview bands; selection, scale notes and evidence
+ *   stay with the surrounding page so the chart never carries repeated headers or inner scrolling. */
+export type SkillRadarVariant = "full" | "overview";
+
+export default function SkillRadar({ dimensions, items = [], initialRequirementId = "", selectedRequirementId, synthetic = false, sampleScale, materials = [], aiFallbackUsed = false, onRequirementChange, evidenceExpanded, onEvidenceExpandedChange, compact = false, variant }: {
+  dimensions: ApplicationView["dimensions"]; items?: ReportItem[]; initialRequirementId?: string; selectedRequirementId?: string; synthetic?: boolean; materials?: readonly SourceMaterial[]; aiFallbackUsed?: boolean;
   onRequirementChange?: (id: string) => void;
   evidenceExpanded?: boolean;
   sampleScale?: SampleScale;
   onEvidenceExpandedChange?: (open: boolean) => void;
+  compact?: boolean;
+  variant?: SkillRadarVariant;
 }) {
-  const [selectedId, setSelectedId] = useState(initialRequirementId);
+  const mode: SkillRadarVariant = variant ?? (compact ? "overview" : "full");
+  // The parent may own the requirement id. When it does, the radar only mirrors it;
+  // clicks still move the shared id through onRequirementChange, never a second copy.
+  const [selectedId, setSelectedId] = useState(selectedRequirementId ?? initialRequirementId);
   const detailId = useId();
-  const selectRequirement = (id: string) => { setSelectedId(id); onRequirementChange?.(id); };
+  const externalId = selectedRequirementId ?? initialRequirementId;
+  useEffect(() => { setSelectedId(previous => previous === externalId ? previous : externalId); }, [externalId]);
+  const selectRequirement = (id: string) => { if (selectedRequirementId === undefined) setSelectedId(id); onRequirementChange?.(id); };
   const { dimension, item } = radarSelection(dimensions, selectedId, items);
   if (!dimension) return null;
   const selectedIndex = dimensions.indexOf(dimension);
@@ -31,6 +44,35 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   const measure = supportMeasure(dimension, scale);
   const useAi = !!item && item.aiStatus==="validated" && !aiFallbackUsed && !invalidNarrativeCitations(item).length;
   const status = (d: typeof dimension) => RADAR_STATUS[d.verdict] ?? "暂不可评";
+
+  const chart = dimensions.length >= 3 && dimensions.length <= 8 ? <svg className={mode === "overview" ? "radar-chart-svg mx-auto w-full" : "mx-auto mt-2 w-full max-w-[440px]"} viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签查看证据`}>
+          <circle cx="200" cy="200" r="108" fill="#f8fafc" />
+          {[25, 50, 75, 100].map(value => <g key={value}><circle cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
+          <text x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
+          {dimensions.map((d, index) => { const end = point(index, 1); return <line key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} stroke={index === selectedIndex ? "#aaa5d8" : "#e0e5ee"} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
+          {radarSegments(dimensions, scale).map(([a, b]) => {
+            const start = point(a, supportMeasure(dimensions[a], scale).ratio!), end = point(b, supportMeasure(dimensions[b], scale).ratio!);
+            return <line className="radar-data-edge" key={a} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />;
+          })}
+          {dimensions.map((d, i) => {
+            const value = supportMeasure(d, scale);
+            const rawLabel = point(i, 1.6), label = {x:Math.max(72,Math.min(328,rawLabel.x)),y:Math.max(30,Math.min(370,rawLabel.y))}, dot = point(i, value.ratio ?? 0);
+            const kind = radarPointKind(d, scale), active = i === selectedIndex;
+            const title = d.skill || d.title;
+            const short = Array.from(title).length > 8 ? Array.from(title).slice(0, 7).join("") + "…" : title;
+            return <g key={d.requirementId}>
+              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke" role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${value.text}，查看证据`} aria-pressed={active} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
+              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
+                <title>{title}</title><rect x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
+                <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
+                <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="14" fill="#64748b">{kind === "none" ? status(d) : `${value.text} · ${status(d)}`}</text>
+              </g>
+            </g>;
+          })}
+        </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，请使用逐项证据对照，避免轴标签拥挤。</p>;
+
+  if (mode === "overview") return <section className="skill-radar-overview min-w-0" aria-label="技能雷达概览图">{chart}</section>;
+
   return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6" aria-label="证据联动雷达">
     <div className="flex flex-wrap items-start justify-between gap-3">
       <h3 className="text-lg font-semibold">逐项核对</h3>
@@ -49,40 +91,16 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(460px,0.95fr)_minmax(0,1.05fr)]">
       <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
 
-        {dimensions.length >= 3 && dimensions.length <= 8 ? <svg className="mx-auto mt-2 w-full max-w-[440px]" viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签或上方要求按钮查看证据`}>
-          <circle cx="200" cy="200" r="108" fill="#f8fafc" />
-          {[25, 50, 75, 100].map(value => <g key={value}><circle cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
-          <text x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
-          {dimensions.map((d, index) => { const end = point(index, 1); return <line key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} stroke={index === selectedIndex ? "#aaa5d8" : "#e0e5ee"} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
-          {radarSegments(dimensions, scale).map(([a, b]) => {
-            const start = point(a, supportMeasure(dimensions[a], scale).ratio!), end = point(b, supportMeasure(dimensions[b], scale).ratio!);
-            return <line className="radar-data-edge" key={a} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />;
-          })}
-          {dimensions.map((d, i) => {
-            const value = supportMeasure(d, scale);
-            const rawLabel = point(i, 1.6), label = {x:Math.max(72,Math.min(328,rawLabel.x)),y:Math.max(30,Math.min(370,rawLabel.y))}, dot = point(i, value.ratio ?? 0);
-            const kind = radarPointKind(d, scale), active = i === selectedIndex;
-            const title = d.skill || d.title;
-            const short = Array.from(title).length > 8 ? Array.from(title).slice(0, 7).join("") + "…" : title;
-            return <g key={d.requirementId}>
-              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke"><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
-              <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={detailId} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
-                <title>{title}</title><rect x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
-                <text x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16" fill={active ? "#4338ca" : "#334155"}>{dimensions.length > 6 ? `要求 ${i + 1}` : short}</text>
-                <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="14" fill="#64748b">{kind === "none" ? status(d) : `${value.text} · ${status(d)}`}</text>
-              </g>
-            </g>;
-          })}
-        </svg> : <p className="py-6 text-sm text-slate-500">要求少于3项或超过8项时，使用下方逐项证据对照，避免轴标签拥挤。</p>}
+        {chart}
       </div>
-      <div id={detailId} className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
+      <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
         <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
         <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
         {measure.ratio != null && <p className="mt-2 text-base">{scale.label} {measure.text}</p>}
         {measure.issue && dimension.verdict !== "unsupported" && <p role="status" className="mt-2 text-sm text-amber-900">{measure.issue}；原始值 {String(measure.raw ?? "未记录")}。</p>}
-        <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><SupportMeasureDetails raw={dimension.score} formulaVersion={dimension.formulaVersion} scale={scale}/><p>岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}，不等于能力认证。</p>}</details>
-        {aiFallbackUsed && <p className="mt-3 text-sm text-amber-900">报告已降级，本处使用规则解释。</p>}
+        <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><SupportMeasureDetails raw={dimension.score} formulaVersion={dimension.formulaVersion} scale={scale}/><p>岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}</p>}</details>
+
         {item && item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="mt-3 text-sm text-amber-900">本项 AI 解释未被采用，请按规则和来源核对。</p>}
         {item&&invalidNarrativeCitations(item).length>0&&<p className="mt-3 text-sm text-amber-900">历史AI解释含未对齐引用，请按规则与固定来源核对。</p>}
         {item ? <>
@@ -99,7 +117,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           </details>
           {(useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap) && <p className="mt-3 break-words text-sm leading-6 text-amber-800">待核对：{useAi ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap}</p>}
 
-        </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"} {dimension.verdict === "gap" ? "缺材料不代表没有能力。" : "材料支持程度不代表能力或录用结论。"}</p>}
+        </> : <p className="mt-4 text-sm leading-6 text-slate-600">{synthetic ? "这是预设的合成状态示例，没有真实来源文件。" : "本项没有提供可定位的报告引用。"}</p>}
       </div>
     </div>
   </section>;

@@ -1,26 +1,27 @@
-.panorama { color: #17253b; }
-.back { display: inline-flex; align-items: center; min-height: 36px; color: #4338ca; font-size: 14px; }
+/* Skill panorama: compact groups with a scan-friendly source rail.
+   Category chrome stays neutral; evidence status colors live only on bands and marks. */
+.panorama { color: #1e3a34; }
+.back { display: inline-flex; align-items: center; min-height: 36px; color: #1d4a40; font-size: 14px; }
 .back:hover, .reportLink:hover { text-decoration: underline; }
-.heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 16px 0 28px; }
-.eyebrow { color: #6366a1; font-size: 12px; letter-spacing: .12em; font-weight: 700; }
-.heading h1 { margin: 6px 0 10px; font-size: 34px; line-height: 1.3; font-weight: 750; letter-spacing: -.03em; }
-.subtitle { color: #526176; font-size: 17px; }
-.scope { flex-shrink: 0; border-left: 3px solid #6366f1; padding: 4px 0 4px 16px; color: #3730a3; font-size: 15px; font-weight: 650; }
-.scope span { display: block; margin-top: 4px; color: #617086; font-size: 13px; font-weight: 400; }
-.loadbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 0; border-block: 1px solid #d8dfe9; font-size: 14px; color: #526176; }
-.loadbar > span { font-size: 13px; }
-.loadbar strong { color: #263755; font-variant-numeric: tabular-nums; }
+.heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding: 10px 0 16px; }
+.headMeta { color: #526176; font-size: 13px; text-align: right; }
+.headMeta strong { color: #1d4a40; font-size: 17px; font-variant-numeric: tabular-nums; }
+.eyebrow { color: #526b61; font-size: 12px; letter-spacing: .12em; font-weight: 700; }
+.heading h1 { margin: 2px 0 4px; font-size: 28px; line-height: 1.3; font-weight: 750; letter-spacing: -.02em; color: #143a32; }
+.subtitle { color: #526176; font-size: 14px; }
+.loadbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 8px 0; border-block: 1px solid #d8d0c2; font-size: 13px; color: #526176; }
+.loadbar strong { color: #1d4a40; font-variant-numeric: tabular-nums; }
 .failureText { color: #9a4b08; }
-.layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 30px; align-items: start; padding-top: 28px; }
-.canvas { min-width: 0; background: #fff; padding: 26px 30px 20px; border-top: 3px solid #4f46e5; }
+.layout { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: 24px; align-items: start; padding-top: 16px; }
+.canvas { min-width: 0; background: #fff; padding: 16px 20px 14px; border-top: 3px solid #1d4a40; box-shadow: 0 1px 2px rgba(23,45,42,.04); }
 .canvasTitle { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.canvasTitle h2, .rail h2, .empty h2 { font-size: 22px; font-weight: 700; line-height: 1.5; }
-.canvasTitle p { color: #617086; font-size: 14px; }
-.canvasTitle strong { color: #3730a3; font-size: 20px; }
-.legend { padding: 12px 0 20px; color: #617086; font-size: 13px; }
-.legend ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; color: #43516a; }
+.canvasTitle h2, .rail h2, .empty h2 { font-size: 19px; font-weight: 700; line-height: 1.4; }
+.canvasTitle p { color: #617086; font-size: 13px; }
+.canvasTitle strong { color: #1d4a40; font-size: 16px; }
+.legend { padding: 6px 0 10px; color: #617086; font-size: 12px; border-bottom: 1px solid #e1ddd2; }
+.legend ul { display: flex; flex-wrap: wrap; gap: 6px 16px; color: #43516a; }
 .legend li { display: inline-flex; align-items: center; gap: 6px; }
-.legend strong { font-variant-numeric: tabular-nums; }
+.legend strong { color: #1d4a40; font-variant-numeric: tabular-nums; }
 .legend i, .skillMarks i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .panorama [data-status="supported"] { background: #147d78; color: #fff; }
 .panorama [data-status="partial"] { background: #6564b7; color: #fff; }
@@ -28,55 +29,128 @@
 .panorama [data-status="gap"] { background: #e4c68d; color: #57390b; }
 .panorama [data-status="unsupported"] { background: #64748b; color: #fff; }
 .panorama [data-status="unknown"] { background: repeating-linear-gradient(135deg, #e2e8f0, #e2e8f0 3px, #c3cddc 3px, #c3cddc 5px); color: #263755; }
-.group { padding: 22px 0 24px; border-top: 1px solid #e1e6ee; }
+.group { padding: 12px 0 14px; border-top: 1px solid #e1ddd2; }
+.group:first-of-type { border-top: 0; }
 .groupHeading { display: flex; align-items: baseline; gap: 10px; }
-.groupHeading h3 { font-size: 17px; font-weight: 650; }
-.groupHeading > span:last-child { margin-left: auto; color: #617086; font-size: 13px; }
+.groupHeading h3 { font-size: 15px; font-weight: 650; }
+.groupHeading > span:last-child { margin-left: auto; color: #617086; font-size: 12px; }
 .groupNumber { color: #7c87a0; font-size: 12px; font-variant-numeric: tabular-nums; }
-.band { display: flex; gap: 2px; min-height: 25px; margin-top: 13px; overflow: hidden; border-radius: 3px; }
-.band span { min-width: 28px; flex-basis: 0; text-align: center; font-size: 13px; line-height: 25px; font-weight: 650; }
-.skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.skill { display: inline-flex; align-items: center; min-height: 46px; max-width: 100%; gap: 12px; padding: 8px 13px; border: 1px solid #d9e0ec; border-radius: 5px; text-align: left; background: #fff; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
-.skill:hover { border-color: #818cf8; background: #f5f6ff; }
-.skill[aria-pressed="true"] { border-color: #4f46e5; background: #eef0ff; color: #312e81; box-shadow: inset 0 0 0 1px #4f46e5; }
-.skillCount { color: #67758c; font-size: 13px; font-weight: 500; }
+/* Quantity band: thin, no inline numbers; counts stay in the accessible label. */
+.band { display: flex; gap: 2px; height: 10px; margin-top: 2px; overflow: hidden; border-radius: 3px; background: #efece3; }
+.band span { flex-basis: 0; min-width: 6px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 12px; border-bottom: 1px solid #e1ddd2; }
+.filters button { min-height: 34px; padding: 5px 11px; border: 1px solid #d9d2c4; border-radius: 4px; background: #fff; color: #334155; font-size: 12px; }
+.filters button:hover { border-color: #9db8ad; background: #f0f5f1; }
+.filters button span { margin-left: 4px; color: #7c87a0; font-variant-numeric: tabular-nums; }
+.filters button[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; font-weight: 650; }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+/* A domain with one real skill must not leave a decorative empty column. */
+.skills > :only-child { grid-column: 1 / -1; }
+/* One card per real skill: technical glyph, name, own status band and counts. */
+.skillCard { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center; gap: 10px 13px; width: 100%; min-height: 104px; padding: 12px 14px; border: 1px solid #d9d2c4; border-radius: 8px; text-align: left; background: #fbf9f4; color: #1e3a34; overflow-wrap: anywhere; }
+.skillCard:hover { border-color: #9db8ad; background: #f0f5f1; }
+.skillCard[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; box-shadow: inset 0 0 0 1px #1d4a40; }
+.skillIcon { display: grid; place-items: center; align-self: stretch; width: 46px; min-height: 72px; border-radius: 7px; background: #eef4f0; color: #1d4a40; }
+.skillIcon svg { width: 26px; height: 26px; }
+.skillIcon[data-domain="data"] { background: #fff6dc; color: #8a5a12; }
+.skillIcon[data-domain="testing"] { background: #e8f6f3; color: #146c63; }
+.skillIcon[data-domain="frontend"] { background: #f0eefc; color: #51429a; }
+.skillIcon[data-domain="tools"] { background: #eef2f7; color: #334155; }
+.skillCardBody { display: grid; min-width: 0; gap: 5px; }
+.skillCardTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.skillName { min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.skillSummary { color: #526176; font-size: 11px; line-height: 1.55; }
+.skillCounts { display: flex; flex-wrap: wrap; gap: 2px 9px; color: #3f4f66; font-size: 11px; line-height: 1.45; }
+.skillCounts span[data-status] { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: #3f4f66; }
+.skillCounts span[data-status]::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
+.skillCounts span[data-status="supported"]::before { background: #147d78; }
+.skillCounts span[data-status="partial"]::before { background: #6564b7; }
+.skillCounts span[data-status="claimed_only"]::before { background: #b77913; }
+.skillCounts span[data-status="gap"]::before { background: #c99a3c; }
+.skillCounts span[data-status="unsupported"]::before { background: #64748b; }
+.skillCounts span[data-status="unknown"]::before { background: #b9c3d3; }
+.skillFooter { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 11px; margin-top: 1px; padding-top: 5px; border-top: 1px solid #e7e1d4; color: #526176; font-size: 11px; }
+.hit { color: #8a4b0f; font-weight: 650; }
+.cardArrow { align-self: center; color: #1d4a40; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.skill { display: inline-flex; align-items: center; min-height: 34px; max-width: 100%; gap: 10px; padding: 5px 11px; border: 1px solid #d9d2c4; border-radius: 5px; text-align: left; background: #fbf9f4; color: #1e3a34; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.skill:hover { border-color: #9db8ad; background: #eef4f0; }
+.skill[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; box-shadow: inset 0 0 0 1px #1d4a40; }
+.skillCount { color: #67758c; font-size: 12px; font-weight: 500; }
 .skillMarks { display: inline-flex; gap: 3px; flex-shrink: 0; }
-.unclassified { display: flex; align-items: baseline; flex-wrap: wrap; width: 100%; text-align: left; gap: 8px; border-top: 1px solid #e1e6ee; padding: 20px 0; color: #475569; }
+.skillDomain { display: inline-flex; align-items: center; min-height: 20px; padding: 1px 6px; border: 1px solid transparent; border-radius: 3px; font-size: 11px; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.skillDomain[data-domain="backend"] { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+.skillDomain[data-domain="frontend"] { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+.skillDomain[data-domain="data"] { background: #fffbeb; border-color: #fde68a; color: #78350f; }
+.skillDomain[data-domain="testing"] { background: #f0fdfa; border-color: #99f6e4; color: #115e59; }
+.skillDomain[data-domain="tools"] { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
+.unclassified { display: flex; align-items: baseline; flex-wrap: wrap; width: 100%; text-align: left; gap: 8px; border-top: 1px solid #e1ddd2; padding: 12px 0 4px; color: #475569; }
 .unclassified span { font-size: 13px; margin-left: auto; }
 .unclassified[aria-pressed="true"] { color: #4338ca; }
-.canvasFooter { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid #e1e6ee; padding-top: 18px; }
+.canvasFooter { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid #e1ddd2; padding-top: 14px; }
 .canvasFooter p { font-size: 13px; color: #617086; }
-.rail { min-width: 0; border-top: 3px solid #334155; overflow-wrap: anywhere; }
-.railHeading { padding: 24px 0 16px; }
-.railHeading h2 { margin: 6px 0 8px; }
-.railHeading > p:last-of-type { color: #526176; font-size: 14px; line-height: 1.9; }
-.railNote { color: #617086; font-size: 13px; line-height: 1.8; }
-.context { padding: 22px 0; border-bottom: 1px solid #d8dfe9; }
-.contextMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: #617086; font-size: 12px; }
-.contextMeta [data-status] { padding: 3px 8px; border-radius: 3px; font-size: 13px; }
-.context h3 { margin: 10px 0 6px; font-size: 16px; font-weight: 650; }
-.requirement { white-space: pre-wrap; font-size: 15px; line-height: 1.85; }
-.date { color: #617086; font-size: 13px; margin-top: 6px; }
-.materials { margin: 12px 0 8px; padding-left: 12px; border-left: 2px solid #c8d0df; font-size: 13px; line-height: 1.9; color: #526176; }
-.materials > p:first-child { font-weight: 600; color: #334155; }
-.materials strong { color: #3730a3; }
-.reportLink { display: inline-flex; align-items: center; gap: 8px; color: #4338ca; font-size: 14px; min-height: 38px; }
-.readingScope { border-top: 1px solid #d8dfe9; padding-top: 20px; }
+.rail { min-width: 0; border-top: 3px solid #1d4a40; overflow-wrap: anywhere; }
+.railHeading { padding: 14px 0 10px; }
+.railHeading h2 { margin: 4px 0 6px; }
+.railHeading > p:last-of-type { color: #526176; font-size: 13px; line-height: 1.7; }
+.railNote { color: #617086; font-size: 12px; line-height: 1.7; }
+.context { padding: 10px 0 12px; border-bottom: 1px solid #d8d0c2; }
+.contextActive { border-left: 3px solid #1d4a40; padding-left: 9px; background: #f6faf7; }
+.contextSelect { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.contextSelect:hover h3 { color: #1d4a40; }
+.contextSource { margin-top: 9px; padding: 10px; border: 1px solid #d8d0c2; border-radius: 4px; background: #fff; }
+.contextSource h4 { font-size: 12px; font-weight: 700; color: #173c34; }
+.contextEvidence { margin-top: 7px; padding-top: 7px; border-top: 1px solid #ece7dc; }
+.contextEvidence > p { color: #526176; font-size: 11px; line-height: 1.5; }
+/* Dark reader theming (toolbar, code colors) comes from EvidenceSnippet theme="dark";
+   this module only sets the panorama's compact reading typography. */
+.contextSource pre { padding: 9px 10px; font-size: 12px; line-height: 1.55; }
+.contextSource pre code { font-size: 12px; }
+.contextNoSource { color: #7a5c2e; font-size: 12px; line-height: 1.6; }
+.contextReport { display: inline-flex; min-height: 30px; align-items: center; margin-top: 4px; color: #1d4a40; font-size: 12px; font-weight: 600; }
+.contextMeta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: #617086; font-size: 12px; }
+.contextMeta [data-status] { padding: 2px 7px; border-radius: 3px; font-size: 12px; }
+.context h3 { margin: 6px 0 4px; font-size: 15px; font-weight: 650; }
+.requirement { display: block; margin-top: 3px; white-space: pre-wrap; font-size: 13px; line-height: 1.65; }
+.date { display: block; color: #617086; font-size: 12px; margin-top: 4px; }
+.materials { display: block; margin: 5px 0 0; color: #526176; font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
+.clearSelection { min-height: 28px; margin-top: 2px; padding: 2px 0; border: 0; background: transparent; color: #1d4a40; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.reportLink { display: inline-flex; align-items: center; gap: 8px; color: #1d4a40; font-size: 13px; min-height: 32px; }
+.readingScope { border-top: 1px solid #d8d0c2; padding-top: 20px; }
 .readingScope h3 { font-size: 15px; font-weight: 650; }
 .readingScope > p { margin: 8px 0; color: #617086; font-size: 13px; }
-.readingScope li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid #e1e6ee; font-size: 14px; }
-.readingScope a:hover { color: #4338ca; text-decoration: underline; }
+.readingScope li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid #e1ddd2; font-size: 14px; }
+.readingScope a:hover { color: #1d4a40; text-decoration: underline; }
 .readingScope li span { color: #617086; font-size: 13px; }
-.error, .failures { background: #fff7e8; border-left: 3px solid #b77913; margin-top: 16px; padding: 14px 18px; color: #79430a; font-size: 14px; }
+.error, .failures { background: #fff7e8; border-left: 3px solid #b77913; margin-top: 12px; padding: 12px 16px; color: #79430a; font-size: 13px; }
 .error { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .failures summary { cursor: pointer; min-height: 32px; }
 .failures ul { margin-block: 8px 12px; }
-.noRecords { padding: 32px 0; color: #617086; }
-.empty { padding: 60px 0; }
+.noRecords { padding: 24px 0; color: #617086; }
+.empty { padding: 40px 0; }
 .empty h2 { margin-top: 8px; }
-.empty > p:not(:first-child) { color: #617086; margin: 12px 0 22px; }
+.empty > p:not(:first-child) { color: #617086; margin: 12px 0 18px; }
 @media (max-width: 1350px) {
-  .layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; }
-  .canvas { padding-inline: 24px; }
-  .heading h1 { font-size: 30px; }
+  .layout { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: 18px; }
+  .canvas { padding-inline: 16px; }
+  .heading h1 { font-size: 26px; }
+  .skills { grid-template-columns: minmax(0, 1fr); }
 }
+@media (max-width: 1050px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+
+.contextJob { display: block; margin: 6px 0 4px; font-size: 15px; font-weight: 650; line-height: 1.45; }
+
+/* Right rail: selected skill → job groups → records → sources. */
+.rail { background: #fffefa; border: 1px solid #e0dbcd; border-top: 3px solid #1d4a40; padding: 0 12px 8px; }
+.jobGroup { border-top: 1px solid #e1ddd2; padding-top: 8px; margin-top: 6px; }
+.jobHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.jobHeading .contextJob { margin: 2px 0 0; font-size: 14px; }
+.jobMeta { flex-shrink: 0; color: #617086; font-size: 11px; font-variant-numeric: tabular-nums; }
+.history { margin-top: 4px; }
+.history > summary { min-height: 32px; padding: 6px 0; cursor: pointer; color: #1d4a40; font-size: 12px; }
+.history > summary:hover { text-decoration: underline; }
+.sourceScope { margin-bottom: 7px; color: #526176; font-size: 11px; line-height: 1.6; }
+

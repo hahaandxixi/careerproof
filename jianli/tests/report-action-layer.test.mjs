@@ -1,4 +1,4 @@
-﻿import { test } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { readFileSync } from "node:fs";
@@ -47,6 +47,7 @@ const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
+const { RequirementSupplementTarget } = await import(pathToFileURL(path.join(SRC, "components/RequirementSupplement.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
@@ -54,7 +55,24 @@ const advice = (value, extra = {}) => ({ requirementId: value.requirementId, req
 const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan: actions, materials: [] });
 const count = (html, text) => html.split(text).length - 1;
 const render = (value, role = "student") => renderToStaticMarkup(React.createElement(AppRouterContext.Provider, { value: { push() { throw new Error("render must not navigate"); } } },
-  React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId }, React.createElement(RequirementActionPanel, { report: value, item: entry, role }))))));
+  React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId },
+    React.createElement(RequirementActionPanel, { report: value, item: entry, role }),
+    role === "student" && ["gap", "partial", "claimed_only"].includes(entry.verdict) ? React.createElement(RequirementSupplementTarget, { report: value, item: entry }) : null)))));
+
+test("student requirement area links to its own supplement item and leaves guidance there", () => {
+ const value = item("linked");
+ const reportValue = report([value], [advice(value)]);
+ const region = renderToStaticMarkup(React.createElement(RequirementActionPanel, { report: reportValue, item: value, role: "student" }));
+ assert.match(region, /查看本项补证建议 →/);
+ assert.ok(region.includes('href="#supplement-linked"'));
+ assert.doesNotMatch(region, /复制补证建议|上传新版材料|本项已保存的具体要求|通用核对步骤/);
+ const full = render(reportValue);
+ assert.ok(full.includes('id="supplement-linked"'));
+ assert.ok(full.includes("本项补证与岗位对照中的当前要求一致"));
+ assert.ok(full.includes("本项已保存的具体要求"));
+ assert.ok(full.includes("复制补证建议"));
+ assert.ok(full.includes("添加项目材料"));
+});
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
  const items = Array.from({length: 6}, (_, i) => item(`gap${i}`));
@@ -71,7 +89,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
 test("identical rules advice and gap appear once in the action panel", () => {
  const value = item("same"); const html=render(report([value],[advice(value)]));
  assert.equal(count(html,value.evidenceLevelGap),1);
- assert.ok(html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
+ assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
 });
 
 test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
@@ -95,17 +113,19 @@ test("non-students retain explanation and advice without private student task co
  const value=item("admin");
  for(const role of ["admin","enterprise",undefined]) {
   const html=render(report([value],[advice(value)]),role ?? "anonymous");
-  assert.ok(html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
+  assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
   assert.ok(!html.includes(">开始补证</button>")); assert.ok(!html.includes('id="growth-')); assert.ok(!html.includes('href="/growth"'));
  }
 });
 
-test("review-only and unsupported states do not invent implementation deficiencies", () => {
- for(const value of [item("review","supported",{confirmationStatus:"rejected"}),item("outside","unsupported")]) {
-  const html=render(report([value]));
-  assert.ok(html.includes("当前需核对")); assert.ok(html.includes("添加项目材料"));
-  assert.ok(!html.includes(">开始补证</button>")); assert.ok(html.includes("不能由此认定实现不存在"));
- }
+test("review-only keeps review guidance while unsupported keeps its rule gap without upload advice", () => {
+ const review=render(report([item("review","supported",{confirmationStatus:"rejected"})]));
+ assert.ok(review.includes("当前需核对")); assert.ok(review.includes("添加项目材料"));
+ assert.ok(!review.includes(">开始补证</button>")); assert.ok(review.includes("不能由此认定实现不存在"));
+ const unsupported=render(report([item("outside","unsupported")]));
+ assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("请人工核对岗位要求和已保存材料"));
+ assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
+ assert.ok(!unsupported.includes("查看本项补证建议")); assert.ok(!unsupported.includes('href="/portfolio"'));
 });
 
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
@@ -233,4 +253,3 @@ test("no report requirement mounts task lookup or task plan editing for any save
  assert.ok(!source.includes("GrowthTaskStart"));
  assert.ok(!source.includes("existingGrowthTask"));
 });
-

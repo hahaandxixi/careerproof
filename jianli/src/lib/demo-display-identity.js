@@ -25,17 +25,17 @@ const identities = [
 // report text and diagnostic records stay untouched; example disclosure remains.
 const jobAliases = new Map([
   ["1233f1e2-169f-4ea5-a5a0-542fa940e897", {
-    title: "材料证据阅读示例", companyName: "示例企业", description: undefined,
+    title: "材料核查实习生", companyName: "云栈科技", description: undefined,
     boundaryFixture: true,
   }],
   ["72e49e95-4f27-4412-ac94-f1675a5f8970", {
-    title: "Django 后端开发实习生", companyName: "示例企业", description: undefined,
+    title: "Django 后端开发实习生", companyName: "云栈科技", description: undefined,
   }],
   ["6c8ad563-ebf8-427c-b4a3-82905f37dbd0", {
-    title: "数据工程实习生", companyName: "示例企业", description: undefined,
+    title: "数据工程实习生", companyName: "云栈科技", description: undefined,
   }],
   ["f05872f3-1b5f-4bb3-bfcd-9629d170b471", {
-    title: "数据处理实习生", companyName: "示例企业", description: undefined,
+    title: "数据处理实习生", companyName: "云栈科技", description: undefined,
   }],
 ]);
 
@@ -50,6 +50,7 @@ const materialAliases = new Map([
   ["374469a7-f893-4f4c-9960-198fc65cf43e", "Python 技能说明"],
   ["b827831f-f31a-4f71-b1c0-ee9e6459a58e", "Python 技能说明"],
   ["10149ddd-d310-4c22-bf28-a499715c6d4d", "数据工程方向简历"],
+  ["d18b3087-99dc-4657-9a0d-7d26dc9d1a84", "数据工程方向简历"],
   ["4df0cd38-f8d1-45d5-91b5-6f97958eb1dc", "数据工程方向简历"],
   ["80fc3405-f09e-4a01-95e7-940a02827104", "个人简历初稿"],
   ["eec74199-e26a-48a2-8a9a-058d27ad3a88", "个人简历初稿"],

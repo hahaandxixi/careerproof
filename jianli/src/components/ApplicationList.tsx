@@ -25,20 +25,24 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
   onCancelWithdraw(): void;
 }) {
   const reportHref = `/reports/${encodeURIComponent(item.reportId)}`;
-  return <article id={`application-${item.id}`} className="workspace-row space-y-3">
-    <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-      <h2 className="text-xl font-semibold">{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</h2>
-      <p className="text-sm text-slate-700">{demoJobAlias(item.jobId)?.companyName ?? item.companyName} · {applicationStatusText(item.status)}</p>
+  const eventLabel = (type: string) => ({ submitted: "授权投递", viewed: "企业查看", downloaded: "企业下载", replied: "企业回复", withdrawn: "撤回授权" } as Record<string, string>)[type] ?? "投递记录";
+  const eventNodes = item.events.filter(e => e.detail?.trim());
+  const undocumentedEvents = item.events.length - eventNodes.length;
+  return <article id={`application-${item.id}`} className="workspace-row application-record">
+    <div className="application-record-head">
+      <div className="min-w-0"><h2 className="text-xl font-semibold">{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</h2><p className="mt-1 break-words text-sm text-slate-600">{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</p></div>
+      <span className="status-chip application-status">{applicationStatusText(item.status)}</span>
     </div>
-    {!item.replyText&&item.status!=="withdrawn"&&<p className="text-sm text-slate-600">{applicationNextAction(item.status)}</p>}
+    {!item.replyText&&item.status!=="withdrawn"&&<p className="text-sm leading-6 text-slate-600">{applicationNextAction(item.status)}</p>}
     <ApplicationReply application={item}/>
-    {!!item.replyReferences?.length&&<div className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-medium">企业回复对应的原报告位置</p><ul className="mt-2 space-y-2">{item.replyReferences.map(reference=><li key={reference.requirementId} className="break-words"><Link className="text-indigo-700 underline" href={`${reportHref}#requirement-${encodeURIComponent(reference.requirementId)}`}>{`第${item.dimensions.findIndex(d=>d.requirementId===reference.requirementId)+1}项：`}{item.dimensions.find(d=>d.requirementId===reference.requirementId)?.title || "查看岗位要求"}</Link><Link className="ml-2 text-xs text-indigo-700 underline" href={`${reportHref}?enterpriseReply=${encodeURIComponent(reference.requirementId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>带着这项问题补证 →</Link>{reference.citationIds.length>0&&<span className="ml-2 text-xs">引用：{reference.citationIds.map((id,index)=><span key={id}>{index>0?"、":""}<Link className="text-indigo-700 underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>{id}</Link></span>)}</span>}</li>)}</ul><p className="mt-2 text-xs text-slate-500">这些链接定位本次投递的原报告；引用不自动证明能力或本人贡献。</p></div>}
-    {item.status==="withdrawn"&&<p className="text-sm text-slate-600">本次授权已撤回。<Link className="ml-2 text-indigo-700 underline" href={`${reportHref}#application-submit`}>重新确认授权并投递</Link>；也可从新版报告投递，原记录与企业回复不会被覆盖。</p>}
-    <div className="card-actions"><Link className="btn-secondary" href={reportHref}>查看投递报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet ml-auto" onClick={()=>onRequestWithdraw(item.id)}>撤回投递授权</button>}</div>
+    {!!item.replyReferences?.length&&<div className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-medium">企业回复对应的原报告位置</p><ul className="mt-2 space-y-2">{item.replyReferences.map(reference=><li key={reference.requirementId} className="break-words"><Link className="text-[#1d4a40] underline" href={`${reportHref}#requirement-${encodeURIComponent(reference.requirementId)}`}>{`第${item.dimensions.findIndex(d=>d.requirementId===reference.requirementId)+1}项：`}{item.dimensions.find(d=>d.requirementId===reference.requirementId)?.title || "查看岗位要求"}</Link><Link className="ml-2 text-xs text-[#1d4a40] underline" href={`${reportHref}?enterpriseReply=${encodeURIComponent(reference.requirementId)}#requirement-${encodeURIComponent(reference.requirementId)}`}>带着这项问题补证 →</Link>{reference.citationIds.length>0&&<span className="ml-2 text-xs">引用：{reference.citationIds.map((id,index)=><span key={id}>{index>0?"、":""}<Link className="text-[#1d4a40] underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>{id}</Link></span>)}</span>}</li>)}</ul></div>}
+    {item.status==="withdrawn"&&<p className="text-sm text-slate-600">本次授权已撤回。<Link className="ml-2 text-[#1d4a40] underline" href={`${reportHref}#application-submit`}>重新确认授权并投递</Link>；也可从新版报告投递，原记录与企业回复不会被覆盖。</p>}
+    <div className="card-actions application-actions"><Link className="btn-secondary" href={reportHref}>查看关联报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet" onClick={()=>onRequestWithdraw(item.id)}>撤回授权</button>}</div>
     {item.status!=="withdrawn"&&confirming&&<div className="space-y-2 rounded-lg bg-rose-50 p-3"><p className="text-sm text-rose-900">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，如需再次分享，可从报告页重新确认授权；将创建新的投递，旧记录继续保留。</p><div className="flex flex-wrap gap-2"><button type="button" className="btn-danger-quiet border border-rose-300" disabled={busy} onClick={()=>onConfirmWithdraw(item.id)}>确认撤回授权</button><button type="button" className="btn-secondary" disabled={busy} onClick={onCancelWithdraw}>取消</button></div></div>}
+    {!!eventNodes.length && <ol className="application-event-flow" aria-label="已保存的投递事件">{eventNodes.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}><span className="application-event-dot" aria-hidden="true"/><div><strong>{eventLabel(e.type)}</strong><time dateTime={e.at}>{new Date(e.at).toLocaleString("zh-CN")}</time></div></li>)}</ol>}
+    {undocumentedEvents > 0 && <p className="text-xs text-slate-500">另有 {undocumentedEvents} 条已保存事件缺少说明，仅按时间保留在完整记录中。</p>}
     <details className="text-sm text-slate-600">
       <summary className="disclosure">{applicationEventsSummary(item.events)}</summary>
-      <p className="mt-2">本次投递保留授权时的报告和材料版本，后续报告不会替换它。</p>
       <ol className="mt-2 space-y-2">{item.events.map(e=><li key={e.type}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
     </details>
   </article>;
@@ -54,6 +58,7 @@ function Workspace(){
   const [anchorNotice,setAnchorNotice]=useState("");
   const {items,error,loading:busy}=state;
   const [revokeId,setRevokeId]=useState<string|null>(null);
+  const [selectedId,setSelectedId]=useState<string|null>(null);
   const session=useMemo(()=>createApplicationListSession({
     list:async()=>{const id=applicationAnchorId();const result=await api.myApplications(page.current,20,undefined,filters.current);const items=await includeApplicationTarget(result.items,api.applicationDetail,id,undefined,()=>{if(id)clearApplicationAnchor(id);setAnchorNotice("通知对应的投递已不可访问；下方仍显示你的其他投递。");});return {...result,items,pageItemCount:result.items.length};},
     withdraw:api.withdrawApplication,errorMessage,
@@ -74,17 +79,31 @@ function Workspace(){
   // B-15：只对新出现的显式锚点导航（进入页面或 hashchange）滚动一次；刷新、撤回造成的 items 变化不再劫持视口。目标不可访问的提示仍由 includeApplicationTarget 的回调负责。
   const anchor=useMemo(()=>createApplicationAnchorRevealer({parseAnchorId:applicationAnchorId}),[]);
   useEffect(()=>{anchor.attempt(items.map(item=>item.id),items.map(item=>item.id));},[anchor,items]);
-  return <div className="application-workspace space-y-5"><h1 className="page-title">我的投递</h1>
-    <form className="workspace-sheet workspace-row space-y-3" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
+  useEffect(()=>{
+    const target=applicationAnchorId();
+    setSelectedId(previous=>items.some(item=>item.id===previous)?previous:(target&&items.some(item=>item.id===target)?target:items[0]?.id??null));
+  },[items]);
+  return <div className="application-workspace space-y-4"><div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title">我的投递</h1></div><Link className="btn-secondary" href="/reports">查看我的报告</Link></div>
+    <form className="application-toolbar" onSubmit={event=>{event.preventDefault();filters.current={q:query.trim(),view};page.current=1;setRevokeId(null);void session.refresh();}}>
       <div className="flex min-w-0 flex-wrap items-end gap-3">
         <label className="form-label min-w-0 flex-1 basis-64">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)}/></label>
         <button className="btn min-h-11 whitespace-nowrap" disabled={busy}>搜索</button><button className="btn-quiet whitespace-nowrap" type="button" disabled={busy} onClick={()=>{setQuery("");setView("all");filters.current={q:"",view:"all"};page.current=1;setRevokeId(null);void session.refresh();}}>重置</button><button type="button" className="btn-secondary whitespace-nowrap" disabled={busy} onClick={()=>{setRevokeId(null);void session.refresh();}}>刷新</button>
       </div>
       <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">{[["all","全部投递"],["waiting","等待企业回复"],["action","待我核对"],["withdrawn","已撤回"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={view===value} disabled={busy} onClick={()=>{setView(value);filters.current={q:query.trim(),view:value};page.current=1;setRevokeId(null);void session.refresh();}}>{label}</button>)}</div>
     </form>
-    <details className="text-sm leading-6 text-slate-600"><summary className="cursor-pointer select-none text-indigo-700">状态与刷新说明</summary><p className="mt-2">状态来自平台请求与企业明确回复。查看或下载不代表通过筛选；未回复不能推断录用概率。刷新获取最新状态。</p></details>
     {error&&<p role="alert" className="text-rose-700">{error}</p>}{anchorNotice&&<p role="status" className="text-amber-800">{anchorNotice}</p>}{busy&&<p role="status">正在核对本人投递…</p>}{!items.length&&!busy&&!error&&(filters.current.q||filters.current.view!=="all"?<p className="panel text-sm">没有符合筛选的投递，可以调整条件或重置。</p>:<div className="panel"><p className="reading-copy">暂无投递。先查看匹配报告，再决定是否分享。</p><Link className="btn mt-3" href="/reports">查看我的报告</Link></div>)}
-    <div className={items.length ? "workspace-sheet workspace-list" : undefined}>{items.map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}</div>
+    {!!items.length && <div className="application-master-detail">
+      <nav className="application-record-list" aria-label="投递记录">
+        {items.map(item=>{const selected=selectedId===item.id;return <button key={item.id} type="button" className={`application-record-summary ${selected?"is-selected":""}`} aria-pressed={selected} onClick={()=>{setSelectedId(item.id);setRevokeId(null);}}>
+          <strong>{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</strong>
+          <span>{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</span>
+          <span className="application-summary-status">{applicationStatusText(item.status)}</span>
+          <span>{new Date(item.events.at(-1)?.at ?? item.createdAt).toLocaleDateString("zh-CN")}</span>
+        </button>})}
+      </nav>
+      <div className="application-record-detail">{selectedId && items.filter(item=>item.id===selectedId).map(item=><ApplicationItemCard key={item.id} item={item} confirming={revokeId===item.id} busy={busy} onRequestWithdraw={setRevokeId} onConfirmWithdraw={id=>{setRevokeId(null);void session.withdraw(id);}} onCancelWithdraw={()=>setRevokeId(null)} />)}</div>
+    </div>}
     {state.pagination&&<><ListPagination label="投递分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;setRevokeId(null);void session.refresh();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了通知指向的投递，不计入本页记录数。</p>}</>}
   </div>;
 }
+

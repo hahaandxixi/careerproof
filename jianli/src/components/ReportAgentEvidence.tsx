@@ -20,7 +20,7 @@ export default function ReportAgentEvidence({ report, canGrow }: { report: Match
   const mock = report.aiProvider?.startsWith("mock") === true;
   return <details className="min-w-0 space-y-3 border-t border-slate-200 pt-2">
     <summary id="agent-evidence-title" className="disclosure">检索记录（{rows.length}）</summary>
-    {mock && <p className="rounded-lg border border-[#c8d8d0] bg-[#e7efe9] p-3 text-sm font-medium text-[#173c34]">Mock 界面验证：材料与片段可核对，工具选择和模型输出为预设，不是真实模型运行证据。</p>}
+    {mock && <p className="rounded-lg border border-[#c8d8d0] bg-[#e7efe9] p-3 text-sm font-medium text-[#173c34]">演示结果：材料与片段可核对，工具选择和模型输出为预设。</p>}
     <p className="text-sm leading-7 text-slate-700">{agentProcessSummary(report)}</p>
     {rows.map(({ call, item, added, otherSaved, action, influence }, index) => <article key={index} className="min-w-0 space-y-3 rounded-xl border border-[#d8e3dc] bg-[#e7efe9]/30 p-4">
       <h3 className="break-words font-semibold text-slate-900">{item?.requirementTitle ?? "本次分析的工具记录"}</h3>

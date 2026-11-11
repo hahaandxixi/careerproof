@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -57,7 +57,7 @@ class AuthService:
                     admitted_pair_key: str | None = None) -> IssuedTokens:
         user = await self.users.get_by_email(str(request.email))
         if not user or not verify_password(request.password, user.password_hash):
-            raise AppError("邮箱或密码错误", code=4012, status_code=401)
+            raise AppError("账号或密码错误", code=4012, status_code=401)
         if not user.is_active:
             raise AppError("账号已停用", code=4032, status_code=403)
         if admitted_pair_key is not None:
@@ -127,3 +127,4 @@ def access_cookie_max_age() -> int:
 
 def refresh_cookie_max_age() -> int:
     return settings.refresh_token_days * 24 * 60 * 60
+

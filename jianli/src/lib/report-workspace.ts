@@ -1,6 +1,6 @@
 import type { MatchReport, ReportItem } from "./api/domain.ts";
 import { validatedGrowthAdvice } from "./analysis-status";
-import { evidenceWorkspace } from "./evidence-workspace";
+import { effectiveReportStatus, evidenceWorkspace } from "./evidence-workspace";
 import { VERDICT_LABELS } from "./verdict-display.js";
 
 export type WorkspaceFilter = "priority" | "all" | "supported" | "partial" | "gaps" | "other";
@@ -21,9 +21,11 @@ export function filterForRequirement(items: ReportItem[], filter: WorkspaceFilte
 }
 
 export function workspaceStatusLabel(item: ReportItem): string {
-  if (item.confirmationStatus === "rejected") return "本人已驳回 · 需复核";
-  if (item.confirmationStatus === "corrected") return "本人标记修正 · 需复核";
-  return VERDICT_LABELS[item.verdict] ?? item.verdict;
+  const status = effectiveReportStatus(item);
+  if (status === "rejected") return "本人已驳回 · 需复核";
+  if (status === "corrected") return "本人标记修正 · 需复核";
+  if (status === "not_evaluated") return "尚未评估";
+  return status === "unknown" ? "暂无判断" : VERDICT_LABELS[status];
 }
 
 /** Keep raw technical explanations intact in the evidence reader, not in the scan list. */

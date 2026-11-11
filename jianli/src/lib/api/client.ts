@@ -1,9 +1,9 @@
-import type { NotificationPage } from "./domain";
+﻿import type { NotificationPage } from "./domain";
 import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult, ApplicationVerificationTask } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
 import type { VisualReview } from "./domain";
-import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
+import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, InterviewSession, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -335,6 +335,20 @@ export const api = {
   saveAnswerDraft(taskId: string, payload: PrivateAnswerSave) { return request<PrivateAnswerDraft>(`/growth-tasks/${taskId}/answer-draft`, { method: "PUT", ...jsonBody(payload) }); },
   listAnswerDraftReferences(taskId: string) { return request<PrivateAnswerReferenceOption[]>(`/growth-tasks/${taskId}/answer-draft/references`); },
   getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
+  // 文字模拟面试：创建不调用模型；同意外发后才生成首问。
+  createInterviewSession(reportId: string, payload: { requirementId: string; restart?: boolean }) {
+    return request<{ session: InterviewSession; resumed: boolean }>(`/match-reports/${reportId}/interview-sessions`, { method: "POST", ...jsonBody(payload) });
+  },
+  getInterviewSession(id: string) { return request<InterviewSession>(`/interview-sessions/${id}`); },
+  startInterviewSession(id: string, externalAiConsent: boolean) {
+    return request<InterviewSession>(`/interview-sessions/${id}/start`, { method: "POST", ...jsonBody({ externalAiConsent }) });
+  },
+  submitInterviewAnswer(id: string, turnIndex: number, payload: { answerText: string; clientToken: string }) {
+    return request<InterviewSession>(`/interview-sessions/${id}/turns/${turnIndex}/answers`, { method: "POST", ...jsonBody(payload) });
+  },
+  retryInterviewFeedback(id: string, turnIndex: number) {
+    return request<InterviewSession>(`/interview-sessions/${id}/turns/${turnIndex}/retry`, { method: "POST" });
+  },
   reviewEvidence(reportId: string, requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected", note?: string) {
     return request<MatchReport["items"][number]>(`/match-reports/${reportId}/items/${requirementId}/review`, {
       method: "PATCH",
@@ -435,8 +449,11 @@ export function errorMessage(error: unknown): string {
           : first?.msg
             ? `${String(field ?? "参数")}：${first.msg}`
             : error.message;
+    if (error.code === 4012) return friendly;
     return error.requestId ? `${friendly}（请求编号：${error.requestId}）` : friendly;
   }
   if (error instanceof Error) return error.message;
   return "操作失败，请稍后重试";
 }
+
+

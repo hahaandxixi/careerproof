@@ -2,26 +2,29 @@
 
 import type { ReactNode } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
-import { ACTION_SOURCE_LABELS, distinctActionText, evidenceWorkspace } from "@/lib/evidence-workspace";
+import { ACTION_SOURCE_LABELS, distinctActionText, effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
-import { requirementConclusion, savedRequirementAction } from "@/lib/report-workspace";
+import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "@/lib/report-workspace";
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
+import { RequirementSupplementJump } from "./RequirementSupplement";
 import ReportRequirementReader from "./ReportRequirementReader";
 
-export default function ReportEvidenceWorkspace({ report, children }: { report: MatchReport; children: ReactNode }) {
-  return <ReportRequirementReader items={report.items}>{children}</ReportRequirementReader>;
+export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
+  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange}>{children}</ReportRequirementReader>;
 }
 
 export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {
   report: MatchReport; item: ReportItem; role?: string; explanationVisible?: boolean;
   explanationPanel?: ReactNode; sourcePanel?: ReactNode;
 }) {
-  const groups = evidenceWorkspace([item]);
-  const supported = groups.supported.length > 0;
-  const actionable = groups.gaps.length + groups.partial.length > 0;
+  const tone = reportStatusTone(item);
+  const supported = tone === "supported";
+  const actionable = tone === "gap" || tone === "partial";
+  const unsupported = effectiveReportStatus(item) === "unsupported";
+  const studentSupplement = role === "student" && actionable;
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
   const plan = advice?.taskPlan;
@@ -39,6 +42,13 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     ?? (projectVersions.length === 1 ? projectVersions[0].id : undefined);
   return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与下一步`}>
     <div className="requirement-reading-copy min-w-0 space-y-4">
+    <div className="requirement-evidence-flow" aria-label="要求、材料来源与判断关系">
+      <div className="requirement-flow-node requirement-flow-requirement"><span>岗位要求</span><strong>{item.skill || item.requirementTitle}</strong></div>
+      <span className="requirement-flow-arrow" aria-hidden="true">→</span>
+      <div className={`requirement-flow-node ${item.evidenceList.length ? "has-source" : "no-source"}`}><span>材料来源</span><strong>{item.evidenceList.length ? `${compactSourceLabel(item.evidenceList[0], report.materials).fileName} 等 ${item.evidenceList.length} 处` : "未记录可定位材料"}</strong></div>
+      <span className="requirement-flow-arrow" aria-hidden="true">→</span>
+      <div className={`requirement-flow-node requirement-flow-result ${supported ? "is-supported" : actionable ? "is-gap" : "is-review"}`}><span>当前判断</span><strong>{workspaceStatusLabel(item)}</strong></div>
+    </div>
     {explanationPanel}
     {!explanationVisible && <div><h4 className="text-base font-semibold text-slate-900">{supported ? "判断依据" : actionable ? "当前缺口" : "当前需核对"}</h4>
       {/[0-9a-f]{8}-[0-9a-f-]{27,}/i.test(conclusion || "") ? <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-[#1d4a40]">查看保存的缺口与材料定位原文</summary><p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700">{conclusion}</p></details> : <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>}
@@ -50,10 +60,14 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     </div>
     {sourcePanel && <div className="requirement-source-context min-w-0">{sourcePanel}</div>}
     {(!supported || role === "student") && <aside className="requirement-next min-w-0 space-y-4" aria-label="补证与后续操作">
+    {unsupported ? <div className="space-y-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
+      <h4 className="font-semibold text-slate-900">规则暂未支持</h4>
+      <p className="text-sm leading-7 text-slate-700">请人工核对岗位要求和已保存材料。</p>
+    </div> : studentSupplement ? <RequirementSupplementJump item={item}/> : <>
     {!supported && <div className="space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <h4 className="font-semibold text-slate-900">{action || plan ? "本项已保存的具体要求" : "以下为通用补证建议"}</h4>
-        {action && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
+        {action && ACTION_SOURCE_LABELS[action.source] && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
       </div>
       {!plan && text?.advice && <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-800">{text.advice}</p>}
       {plan ? <div className="space-y-3 text-sm leading-7">
@@ -82,6 +96,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
         <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId ?? undefined} text={followUpCopyText(report, item)} />
       </div>}
     </div>}
+    </>}
     </aside>}
   </div>;
 }

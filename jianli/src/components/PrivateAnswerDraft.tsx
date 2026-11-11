@@ -138,7 +138,6 @@ export function PrivateAnswerDraftPanel(props: {
     <p className="text-sm leading-6 text-slate-600">切换标签页或最小化窗口会暂存当前任务的本机编辑，返回后可继续。刷新页面、退出账号或切换任务前请先点击“保存草稿”；未保存内容不会跨身份或任务保留，也不会发送给企业。</p>
     <p role="status" className="text-sm font-medium text-indigo-800">{state.saving ? "保存中…" : state.error ? "保存或读取失败，请核对下方提示" : dirty ? "有未保存修改" : state.saved ? "已保存" : "尚未保存"}</p>
     {state.saved && <details className="text-xs text-slate-600"><summary className="cursor-pointer">保存记录</summary><p>版本 {state.saved.revision} · {state.saved.updatedAt ?? "保存时间未知"}</p></details>}
-    <p className="text-xs leading-6 text-slate-600">草稿不发送给企业，不进入投递快照，不改变分析与评级。</p>
     {problem && <p role="alert" className="text-sm text-rose-700">{problem}</p>}
     {state.reading && <p role="status">正在读取已保存草稿…</p>}
     {state.saving && <p role="status">正在保存…</p>}
@@ -155,7 +154,7 @@ export function PrivateAnswerDraftPanel(props: {
       <textarea id="private-answer-text" className="field min-h-32 w-full" aria-label="私人回答草稿正文"
         maxLength={PRIVATE_ANSWER_MAX_TEXT} value={state.text} disabled={state.reading}
         onChange={event => props.onText(event.target.value)}
-        placeholder="写下你自己的回答草稿…（仅本人可见，不会发送给企业）" />
+        placeholder="写下你的回答草稿…" />
       <p className="text-xs text-slate-500">最多 {PRIVATE_ANSWER_MAX_TEXT} 字；换行按原样保存。清空内容也需要明确点击“保存草稿”才会替换服务器上的草稿。</p>
     </div>
     <div className="flex flex-wrap items-center gap-2">
@@ -166,7 +165,7 @@ export function PrivateAnswerDraftPanel(props: {
     <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-indigo-700">引用证据 · 已选 {state.selected.length}/20 条 · 展开核对</summary>
     <fieldset disabled={state.reading} className="space-y-2 rounded-xl border border-indigo-200 p-3">
       <legend className="px-1 text-sm font-medium">从服务端可选引用中选择证据（原要求：{props.requirementTitle}）</legend>
-      {state.options.length === 0 && <p className="text-xs leading-6 text-slate-600">本任务当前没有可选引用；没有草稿也可以先选择，保存时一并提交。</p>}
+      {state.options.length === 0 && <p className="text-xs leading-6 text-slate-600">当前没有可用引用，你仍可先保存回答草稿。</p>}
       <ul className="space-y-1">
         {state.options.map(option => {
           const key = privateAnswerReferenceKey(option.reportId, option.requirementId, option.citationId);

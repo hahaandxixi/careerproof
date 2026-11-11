@@ -10,6 +10,10 @@ const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
 registerHooks({
   resolve(specifier, context, next) {
+    if (specifier.startsWith("next/") && !specifier.endsWith(".js")) {
+      try { return next(specifier + ".js", context); } catch {}
+      return next(specifier, context);
+    }
     if (specifier.startsWith("@/")) {
       const base = path.join(SRC, specifier.slice(2));
       for (const name of [base, `${base}.ts`, `${base}.tsx`]) {
@@ -110,7 +114,8 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   assert.equal((html.match(/aria-current="true"/g) ?? []).length, 1);
   assert.equal((html.match(/<div hidden="">/g) ?? []).length, 2);
   assert.ok(!html.includes("正在查看") && !html.includes("当前筛选"));
-  assert.ok(html.includes("逐项阅读导航") && html.includes("下一项") && html.includes("上一项"));
+  // The chip index replaced the old rail + prev/next pair; it must list every requirement as a link.
+  assert.equal((html.match(/class="report-index-chip"/g) ?? []).length, items.length);
 });
 
 test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
@@ -124,7 +129,9 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
   };
   const before = JSON.stringify(report);
   const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "规则报告 · 模型已降级", "AI 分析未完成", "当前显示规则分析结果", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  assert.ok(!html.includes("规则证据报告"));
+  assert.ok(!html.includes("规则分析"));
   assert.equal((html.match(/class="btn /g) ?? []).length, 1);
   assert.ok(html.includes('href="#requirement-tests"'));
   assert.ok(!html.includes("模型耗时"));
@@ -188,7 +195,7 @@ function navigationFixture(hash = "", search = "") {
     pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
     filter(label) {
       const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
-      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && node.props.children === label);
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && (typeof node.props.children === "string" ? node.props.children : nodes(node.props.children).filter(child => typeof child === "string").join("")).startsWith(label));
       assert.ok(button, label); button.props.onClick(); render();
     },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
@@ -279,7 +286,7 @@ test("integrated overview keeps fixed versions and fallback visible without dupl
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
  const header=renderToStaticMarkup(React.createElement(PaperHeader,{report:value}));
- assert.ok(html.includes('href="#report-materials"')); assert.ok(html.includes("AI 分析未完成") && html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
+ assert.ok(html.includes('href="#report-materials"')); assert.ok(!html.includes("规则分析结果") && !html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
  assert.match(header, /<h1[^>]*>后端<\/h1>/); assert.ok(header.includes("林舟")); assert.ok(header.includes("AI 分析未完成"));
  assert.ok(!html.includes("<h1"), "identity belongs to the shared paper header only");
  assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
@@ -290,10 +297,10 @@ test("overview counts saved evidence states, never equating rule coverage or rev
  const value={candidateName:"合成学生",jobTitle:"后端",createdAt:"2026-10-27T00:00:00Z",items:values,analysisMode:"rules",aiFallbackUsed:false,materials:[]};
  const before=JSON.stringify(value);
  const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.match(html,/有证据支持<\/dt><dd[^>]*>1</);
- assert.match(html,/待补材料<\/dt><dd[^>]*>1</);
- assert.match(html,/岗位要求<\/dt><dd[^>]*>5</);
- assert.ok(html.includes("另有 1 项部分支持 · 2 项未覆盖或需复核"));
+ assert.match(html,/report-status-name">有证据支持<\/span><strong>1</);
+ assert.match(html,/report-status-name">待补或仅声明<\/span><strong>1</);
+ assert.match(html,/全部 5/);
+ assert.ok(html.includes("待补材料 1 项 · 仅简历声明 0 项 · 暂不支持 1 项 · 合计 5 项要求"));
  assert.equal(JSON.stringify(value),before);
 });
 

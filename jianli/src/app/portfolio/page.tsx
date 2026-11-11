@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { latestMaterialVersions, materialFileError, materialFileSize, type Uploa
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
 import ReportUploadReturn from "@/components/ReportUploadReturn";
 import MaterialUploadIntent from "@/components/MaterialUploadIntent";
+import ListPagination from "@/components/ListPagination";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ErrorNotice } from "@/components/AccessGate";
@@ -44,12 +45,22 @@ interface UploadRecord {
 
 const TERMINAL_STATUSES = new Set(["completed", "failed", "cancelled"]);
 
+// Display-only pagination for the material register. Full data (uploads, report
+// versions, polling, follow-up context) keeps using the unfiltered lists.
+const MATERIAL_PAGE_SIZE = 6;
+const MATERIAL_FILTERS = [
+  { key: "all", label: "全部" },
+  { key: "resume", label: "简历" },
+  { key: "project", label: "项目" },
+] as const;
+type MaterialFilter = (typeof MATERIAL_FILTERS)[number]["key"];
+
 function statusText(status: string): string {
   const labels: Record<string, string> = {
-    pending: "等待处理",
-    running: "正在分析",
-    completed: "分析完成",
-    failed: "分析失败",
+    pending: "等待解析",
+    running: "正在解析",
+    completed: "解析完成",
+    failed: "解析失败",
     cancelled: "已取消",
   };
   return labels[status] ?? "历史处理状态待确认";
@@ -63,7 +74,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
     <article className="material-register-row">
       <div className="material-row-heading">
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="text-sm text-slate-600">{item.kind === "resume" ? "简历" : "项目"}</span>
+          <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
         </div>
         <p className="mt-1 break-words text-sm leading-6 text-slate-600">
@@ -76,7 +87,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
         {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
-      <p className={`text-sm font-medium leading-6 ${complete ? "text-emerald-700" : failed ? "text-rose-700" : "text-[#1d4a40]"}`}>{statusText(item.status)}</p>
+      <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString("zh-CN")}</time>
       <div className="material-row-actions">
         {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
@@ -92,7 +103,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
             style={{ width: `${Math.max(item.progress, item.status === "pending" ? 4 : 0)}%` }}
           />
         </div>
-        <span className="shrink-0 text-xs tabular-nums text-slate-500">{item.progress}%</span>
+        <span className="shrink-0 text-xs tabular-nums text-slate-500">{item.progress > 0 ? `${item.progress}%` : item.status === "pending" ? "等待开始" : "处理中"}</span>
       </div>
       <div className="mt-2 text-xs">
         <span className={`block break-words ${failed ? "font-medium text-rose-700" : "text-slate-500"}`}>{item.errorMessage || item.currentStep}</span>
@@ -154,6 +165,9 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [reportMaterials, setReportMaterials] = useState<MatchReport["materials"]>();
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState("");
+  // Append-only hook order: tests inject initial state by useState index.
+  const [materialFilter, setMaterialFilter] = useState<MaterialFilter>("all");
+  const [materialPage, setMaterialPage] = useState(1);
   const deletingProject = useRef(false);
 
   const rememberAttempt = useCallback((next: ProjectAttempt | null) => {
@@ -219,6 +233,22 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   }
   const newestUploads = latestMaterialVersions(uploads).sort(
     (a, b) => Number(reportVersions.has(`${b.kind}:${b.resourceId}`)) - Number(reportVersions.has(`${a.kind}:${a.resourceId}`)),
+  );
+  const filteredUploads = materialFilter === "all"
+    ? newestUploads
+    : newestUploads.filter(item => item.kind === materialFilter);
+  const materialFilterCounts = {
+    all: newestUploads.length,
+    resume: newestUploads.filter(item => item.kind === "resume").length,
+    project: newestUploads.filter(item => item.kind === "project").length,
+  } satisfies Record<MaterialFilter, number>;
+  const materialPageCount = Math.max(1, Math.ceil(filteredUploads.length / MATERIAL_PAGE_SIZE));
+  // Refreshes and archive restore can shrink the list while page > 1; fall
+  // back to the last valid page at render time instead of showing a blank page.
+  const materialPageCurrent = Math.min(materialPage, materialPageCount);
+  const pagedUploads = filteredUploads.slice(
+    (materialPageCurrent - 1) * MATERIAL_PAGE_SIZE,
+    materialPageCurrent * MATERIAL_PAGE_SIZE,
   );
   const hasCompletedMaterial = historyLoaded && !historyError && newestUploads.some(item => item.status === "completed");
   const uploadTarget = attempt?.project && newestUploads.find(item => item.kind === "project" && item.resourceId === attempt.project?.id);
@@ -365,10 +395,9 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="page-title">我的材料</h1>
-          {(!historyLoaded || uploads.length > 0 || projects.length > 0 || historyError) &&
-            <details className="mt-1 text-sm"><summary className="disclosure">材料帮助</summary><Link href="/demo" className="btn-secondary">示例材料与下载</Link></details>}
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">浏览案例材料</Link>
           <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>
           {hasCompletedMaterial && <Link href="/jobs" className="btn material-next-action">选择岗位进行对照</Link>}
           <button type="button" className={hasCompletedMaterial ? "btn-secondary" : "btn"} disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.focus({ preventScroll: true }); }); }}>添加材料</button>
@@ -384,6 +413,16 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <section className="material-register workspace-sheet" aria-labelledby="material-register-title">
         <div className="review-section-heading border-b border-slate-200 pb-3">
           <h2 id="material-register-title" className="section-title">项目与简历</h2>
+          {uploads.length > 0 && (
+            <div className="flex flex-wrap gap-2" role="group" aria-label="材料类型筛选">
+              {MATERIAL_FILTERS.map(filter => (
+                <button key={filter.key} type="button" className="selection-toggle" aria-pressed={materialFilter === filter.key}
+                  onClick={() => { setMaterialFilter(filter.key); setMaterialPage(1); }}>
+                  {filter.label} {materialFilterCounts[filter.key]}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         {historyError && (
           <p role="alert" className="mb-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
@@ -399,7 +438,15 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             <div aria-hidden="true" className="material-register-columns">
               <span>材料名称</span><span>版本</span><span>处理状态</span><span>更新时间</span><span>操作</span>
             </div>
-            {newestUploads.map(item => <section key={item.key} className="min-w-0"><UploadProgress item={item} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)} onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} onDeleteProject={item.kind === "project" ? () => void deleteProject(item.resourceId, item.title) : undefined} deleteDisabled={projectBusy || !!deletingProjectId} />{uploads.some(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key)&&<details className="mt-2 text-sm"><summary className="disclosure">历史版本（{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).length}）</summary><div className="space-y-2">{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).map(version=><UploadProgress key={version.key} item={version}/>)}</div></details>}</section>)}
+            {pagedUploads.map(item => <section key={item.key} className="min-w-0"><UploadProgress item={item} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)} onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} onDeleteProject={item.kind === "project" ? () => void deleteProject(item.resourceId, item.title) : undefined} deleteDisabled={projectBusy || !!deletingProjectId} />{uploads.some(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key)&&<details className="mt-2 text-sm"><summary className="disclosure">历史版本（{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).length}）</summary><div className="space-y-2">{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).map(version=><UploadProgress key={version.key} item={version}/>)}</div></details>}</section>)}
+          </div>
+        )}
+        {uploads.length > 0 && !filteredUploads.length && (
+          <p className="py-6 text-sm text-slate-500">当前筛选类型暂无材料。</p>
+        )}
+        {materialPageCount > 1 && (
+          <div className="mt-3">
+            <ListPagination label="材料分页" value={{ total: filteredUploads.length, page: materialPageCurrent, pageSize: MATERIAL_PAGE_SIZE }} busy={false} onPage={setMaterialPage} />
           </div>
         )}
         {historyLoaded && !historyError && !uploads.length && !projects.length && (
@@ -509,4 +556,5 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     </div>
   );
 }
+
 

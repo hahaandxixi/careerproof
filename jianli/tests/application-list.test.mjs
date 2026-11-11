@@ -86,8 +86,8 @@ test("卡片突出岗位/公司/状态/下一动作，锚点 id 保留", () => {
   const html = renderCard(fixture());
   assert.ok(html.includes("前端工程师"), html);
   assert.ok(html.includes("示例公司"), html);
-  assert.ok(html.includes("企业已查看报告，尚未回复"), html);
-  assert.ok(html.includes("等待企业回复即可；查看报告不代表通过筛选"), html);
+  assert.ok(html.includes("企业已查看"), html);
+  assert.ok(html.includes("等待企业回复即可。"), html);
   assert.ok(html.includes('id="application-app-1"'), html);
 });
 
@@ -103,7 +103,7 @@ test("完整投递记录默认折叠，摘要给条数，内容仍可展开", ()
 test("查看与下载状态的卡片不推断录用", () => {
   for (const status of ["viewed", "downloaded"]) {
     const html = renderCard(fixture({ status }));
-    assert.match(html, /不代表通过筛选/);
+    assert.doesNotMatch(html, /不代表通过筛选|录用概率|已录用|有望通过/);
     assert.doesNotMatch(html, /录用概率|已录用|有望通过/);
   }
 });
@@ -117,7 +117,7 @@ test("企业回复与原报告/问题/引用链接保留", () => {
   assert.ok(html.includes("面试邀请"), html);
   assert.ok(html.includes("周四下午来聊聊"), html);
   assert.ok(!html.includes("阅读企业回复并按其内容跟进"), "已有回复不重复展示阅读指令");
-  assert.ok(html.includes("查看投递报告"), html);
+  assert.ok(html.includes("查看关联报告"), html);
   assert.ok(html.includes('href="/reports/r-9"'), html);
   assert.ok(html.includes('href="/reports/r-9#requirement-q1"'), html);
   assert.ok(html.includes("第1项："), html);
@@ -131,14 +131,14 @@ test("已撤回状态展示重新投递入口并定位到报告页授权锚点�
   const html = renderCard(fixture({ status: "withdrawn" }));
   assert.ok(html.includes("重新确认授权并投递"), html);
   assert.ok(html.includes('href="/reports/r-9#application-submit"'), html);
-  assert.ok(!html.includes("撤回投递授权"), "已撤回后不得再提供撤回入口");
+  assert.ok(!html.includes(">撤回授权</button>"), "已撤回后不得再提供撤回入口");
 });
 
 test("未撤回状态先请求确认：点击撤回只进入二次确认，不直接撤回", () => {
   const requests = [];
   const node = element(fixture(), { onRequestWithdraw: id => requests.push(id) });
   const buttons = findButtons(node);
-  const request = buttons.find(b => buttonText(b).includes("撤回投递授权"));
+  const request = buttons.find(b => buttonText(b).includes("撤回授权"));
   assert.ok(request, "必须提供撤回入口");
   request.props.onClick();
   assert.deepEqual(requests, ["app-1"], "第一次点击只能发起二次确认");

@@ -104,3 +104,7 @@ test("empty account does not request detail or render artificial categories", as
   assert.equal(h.state.total, 0); assert.equal(h.state.hasMore, false); assert.equal(h.state.busy, false); assert.deepEqual(h.calls, []);
   assert.deepEqual(buildSkillPanorama([]).skills, []);
 });
+
+test('skill history requests product scope explicitly even though the backend defaults to product',async()=>{ const scopes=[]; const h=harness({ listReports: async (_n,_size,filters)=>{ scopes.push(filters); return page([]); } }); await h.session.loadMore(); assert.deepEqual(scopes,[{ scope: 'product' }]); assert.deepEqual(h.calls,[]); });
+
+test('skill history requests product scope explicitly even though the backend defaults to product',async()=>{ const scopes=[]; const h=harness({ listReports: async (_n,_size,filters)=>{ scopes.push(filters); return page([]); } }); await h.session.loadMore(); assert.deepEqual(scopes,[{ scope: 'product' }]); assert.deepEqual(h.calls,[]); });

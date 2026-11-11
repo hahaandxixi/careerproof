@@ -62,7 +62,7 @@ test("fixed report overview separates evidence support, gaps and uncovered requi
   const original = JSON.stringify(report);
   const html = render(React.createElement(FixedReportOverview, { application: { candidateName: "合成甲", report } }));
   assert.match(html, /合成甲 · 投递时固定报告/);
-  assert.match(html, /规则报告 · 模型已降级/);
+  assert.ok(!html.includes("规则证据报告"));
   assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
   assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
   assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);
@@ -86,12 +86,14 @@ test("history card displays server-wide history facts and fixed versions only wh
     ],
   }, onSameJob() {} }));
   assert.match(html, /有后续报告/);
-  assert.match(html, /历史报告 · 27/);
-  assert.match(html, /同名项目 · 第1版 · 材料编号 version-/);
-  assert.match(html, /同名项目 · 第2版/);
+  assert.match(html, /同岗位共 27 份报告/);
+  assert.match(html, /同名项目/);assert.match(html, /report-material-version">v1/);
+  assert.match(html, /report-material-version">v2/);
   assert.match(html, /href="\/reports\/report-a"/);
   const unknown = render(React.createElement(ReportHistoryCard, { report: summary }));
   assert.doesNotMatch(unknown, /最新报告|后续报告|固定材料|历史（/);
+  assert.match(unknown, /report-record is-record/);
+  assert.doesNotMatch(unknown, /is-history/);
 });
 test("comparison is bounded at four, removable and does not mutate the caller's selection", () => {
   const ids = ["a", "b", "c", "d"];
@@ -117,6 +119,9 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
   assert.match(html, /raise CapacityError/);
   assert.doesNotMatch(html, /DO_NOT_LEAK|不能串入的其他要求/);
   assert.match(html, /href="#selected-application-report"/);
+  const controlled = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "r-a", onOpenReport() {} }));
+  assert.match(controlled, /<button[^>]*>查看报告与回复<\/button>/);
+  assert.doesNotMatch(controlled, /href="#selected-application-report"/);
   const missing = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "other-version-r" }));
   assert.match(missing, /不同报告的要求版本可能不同/);
   assert.doesNotMatch(missing, /raise CapacityError/);

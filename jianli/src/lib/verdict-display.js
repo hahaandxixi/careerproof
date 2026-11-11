@@ -12,9 +12,9 @@ export const VERDICT_LABELS = {
 /** @type {Record<string, string>} */
 export const APPLICATION_STATUS_LABELS = {
   submitted: "已投递",
-  viewed: "已查看",
-  downloaded: "已下载",
-  replied: "已回复",
+  viewed: "企业已查看",
+  downloaded: "简历下载已交付",
+  replied: "企业已回复",
   withdrawn: "已撤回授权",
 };
 

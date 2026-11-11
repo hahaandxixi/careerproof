@@ -21,12 +21,17 @@ import ApplicationSubmit from "./ApplicationSubmit";
 import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenceWorkspace";
 import ReportAgentEvidence from "./ReportAgentEvidence";
 import ReportOverview from "./ReportOverview";
+import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
+import SkillRadar from "./SkillRadar";
+import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { adoptedReportExplanation, workspaceStatusLabel } from "@/lib/report-workspace";
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
-import ReportFollowUpActions from "./ReportFollowUpActions";
-import { followUpCopyText } from "@/lib/report-follow-up";
+import { RequirementSupplementTarget } from "./RequirementSupplement";
+import PracticeEntry from "./PracticeEntry";
+
+import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
 
 const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
@@ -40,10 +45,27 @@ function ReportWorkspace({ id }: { id: string }) {
   const compareBase = useSearchParams().get("compareBase") || "";
   const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
+  const [activeRequirementId, setActiveRequirementId] = useState<string | null | undefined>(undefined);
   const session = useMemo(() => createReportReviewSession(id, {
     get: api.getReport, review: api.reviewEvidence, errorMessage,
   }, setState), [id]);
   useEffect(() => { session.activate(); void session.load(); return () => session.dispose(); }, [session]);
+  useEffect(() => {
+    if (!state.report) return;
+    const items = state.report.items;
+    const sync = () => {
+      const fromLocation = reportEntryRequirement(items, window.location.hash, window.location.search);
+      if (fromLocation) { setActiveRequirementId(fromLocation); return; }
+      if (!window.location.hash) { setActiveRequirementId(initialReportRequirement(items)); return; }
+      // Section and unknown legacy anchors do not invent a second selection.
+      // A zero-result filter has already cleared the shared selection explicitly.
+      setActiveRequirementId(previous => previous === undefined ? initialReportRequirement(items) : previous);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
+  }, [state.report]);
   const { report, error, reviewing, issues, needsSync } = state;
   if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
@@ -55,26 +77,31 @@ function ReportWorkspace({ id }: { id: string }) {
     return state.gaps.length > 0 || state.partial.length > 0;
   });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
+  const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
+  const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
+  const studentOverview = user?.role === "student" ? <div className="report-overview-band">
+      <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
+      <section className="report-radar-side" aria-label="岗位技能雷达">
+        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span></div>
+        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
+      </section>
+    </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
-    <div className="report-context-bar">
-      <Link className="review-back" href="/reports">← 我的报告</Link>
-    </div>
-    <ReportSections header={<ReportPaperHeader report={report} />} versions={report.materials.map(material => <p key={material.id}>{displayMaterialTitle(material.title, material.id)}<span className="block text-sm">第 {material.versionNumber} 版</span></p>)} sections={[
+    <ReportSections header={<ReportPaperHeader report={report} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
-    <ReportOverview report={report} role={user?.role} workbench />
+    {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
-    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
+    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
 
         <span>{item.skill || "岗位要求"}<span className="requirement-title-state">，{workspaceStatusLabel(item)}</span></span>
       </h3>
       <blockquote className="requirement-original">{item.requirementTitle}</blockquote>
       <p className="text-sm text-slate-500">岗位权重 {item.weight} / 5</p>
-      </div><div className="flex flex-wrap items-center gap-2">
-            {!item.evidenceList.length && user?.role === "student" && <EvidenceLink className="btn-secondary" targetId={`growth-${item.requirementId}`}>核对与补充材料</EvidenceLink>}
+      {user?.role === "student" && <PracticeEntry reportId={report.id} requirementId={item.requirementId} />}
       </div></div>
       <RequirementActionPanel
         report={report} item={item} role={user?.role}
@@ -99,8 +126,8 @@ function ReportWorkspace({ id }: { id: string }) {
     {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}<Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}`}>查看原图与当前核对状态 →</Link></div>)}</section>}
     <details className="text-sm"><summary className="disclosure">材料判据</summary><div className="space-y-2 py-2 leading-7 text-slate-700"><p>保存的等级是材料判定：基础线索、局部操作、任务实现。名称沿用生成报告时的规则，具体原因见逐项判断记录。</p><p>规则结合相关性、实质操作及任务上下文判断；仅声明、无可定位证据、规则未覆盖或复核暂停时不评级。</p><p>岗位权重表示要求的重要性；不按等级或引用数量汇总能力分。旧记录保留当时结果，不自动改用新规则。</p></div></details>
 
-    <details className="panel text-sm" aria-label="报告处理与范围说明"><summary className="cursor-pointer py-1 font-medium text-slate-700">分析详情</summary><div id="report-analysis" className="scroll-mt-24"><p className="mt-3 text-sm text-slate-600">规则覆盖范围：{assessedCount}/{report.items.length} 项（不是证据支持数量）。{assessedCount === 0 ? "当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? "未覆盖要求不评级。" : "全部要求有对应规则，不代表证据完整或能力已被证实。"}</p><p className="mt-3 text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
-      <p className="mt-3 leading-7 text-slate-700">{aiUsed ? (sourceContextVerified(report.evidenceContextVersion) ? "生成时记录了来源定位校验；请以逐项异常提示核对当前解释。平台未执行代码，运行结果、测试质量和本人贡献均未认证。" : "历史报告仅核验引用编号，未通过本轮完整上下文与过度推断检查，建议重新生成报告。") : "有证据支持不等于能力认证；没有找到证据不代表没有能力。暂不支持的技能不评级。"}</p>
+    <details className="panel text-sm" aria-label="报告处理与范围说明"><summary className="cursor-pointer py-1 font-medium text-slate-700">分析详情</summary><div id="report-analysis" className="scroll-mt-24"><p className="mt-3 text-sm text-slate-600">规则覆盖范围：{assessedCount}/{report.items.length} 项（不是证据支持数量）。{assessedCount === 0 ? "当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? "未覆盖要求不评级。" : ""}</p><p className="mt-3 text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
+      <p className="mt-3 leading-7 text-slate-700">{aiUsed ? (sourceContextVerified(report.evidenceContextVersion) ? "生成时记录了来源定位校验；请以逐项异常提示核对当前解释。平台未执行代码，运行结果、测试质量和本人贡献均未认证。" : "历史报告仅核验引用编号，未通过本轮完整上下文与过度推断检查，建议重新生成报告。") : "规则未覆盖的要求暂不评级。"}</p>
       {report.aiModel && <p className="mt-3 text-xs leading-6 text-slate-600">保存的模型：{report.aiModel}</p>}
       {(report.aiProcess?.planningSkippedReason || report.aiProcess?.skippedReason) && <p className="mt-3 text-sm text-slate-600">{agentProcessSummary(report)}</p>}
       {report.aiUsage && <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-600">
@@ -125,7 +152,7 @@ function ReportWorkspace({ id }: { id: string }) {
         { id: "report-supplement", label: "按需补证", content: <>
           <h2 className="section-title">按需补证 · {supplementItems.length} 项实际缺口</h2>
           <p className="reading-copy">补证是可选的。上传新版材料不会改写本报告，只有你核对预选版本并确认分析后才会生成新报告。</p>
-          {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口；规则暂不支持的要求不会计入补证数量，也不需要为此上传材料。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <section key={item.requirementId} className="panel space-y-3"><h3 className="text-lg font-semibold">{item.skill} · {workspaceStatusLabel(item)}</h3><p>{item.requirementTitle}</p><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} text={followUpCopyText(report, item)} /></section>)}
+          {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口。规则未覆盖的要求请人工核对。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <RequirementSupplementTarget key={item.requirementId} report={report} item={item} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} />)}
         </> },
         { id: "report-sharing", label: "投递授权", content: <><h2 className="section-title">投递与授权</h2><ApplicationSubmit key={`${report.id}:${report.reviewRevision}`} reportId={report.id} reviewRevision={report.reviewRevision} blocked={reviewing !== null || needsSync} onRefresh={() => void session.load()} /></> },
       ] : []),

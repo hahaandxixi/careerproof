@@ -6,10 +6,13 @@ export interface ApplicationSubmitState {
   notice: string;
   // 最近一次提交是否成功：决定提示的语义颜色（成功靛蓝/失败玫红）。
   done: boolean;
+  // 服务器确认创建的投递 id；空串表示响应未带回可用 id（结果未知时不伪造，
+  // 成功入口退回普通列表链接）。仅成功分支会写入。
+  applicationId: string;
 }
 
 export function createApplicationSubmitSession(
-  api: { submit(): Promise<unknown>; errorMessage(error: unknown): string },
+  api: { submit(): Promise<{ id: string }>; errorMessage(error: unknown): string },
   publish: (value: ApplicationSubmitState) => void,
 ) {
   let inFlight = false;
@@ -17,11 +20,12 @@ export function createApplicationSubmitSession(
     async submit() {
       if (inFlight) return;
       inFlight = true;
-      publish({ busy: true, notice: "", done: false });
+      publish({ busy: true, notice: "", done: false, applicationId: "" });
       try {
-        await api.submit();
+        const created = await api.submit();
+        const applicationId = typeof created?.id === "string" ? created.id : "";
         inFlight = false;
-        publish({ busy: false, notice: "已投递，可在“我的投递”查看企业回应与撤回授权。", done: true });
+        publish({ busy: false, notice: "已投递，可在“我的投递”查看企业回应与撤回授权。", done: true, applicationId });
       } catch (error) {
         inFlight = false;
         const status = (error as {status?: number} | null)?.status;
@@ -30,7 +34,7 @@ export function createApplicationSubmitSession(
         const notice = unknown
           ? `投递结果尚未确认：${api.errorMessage(error)}。请先到“我的投递”查看；如需重试，将仍使用本次报告版本。`
           : api.errorMessage(error);
-        publish({ busy: false, notice, done: false });
+        publish({ busy: false, notice, done: false, applicationId: "" });
       }
     },
   };

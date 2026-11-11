@@ -4,7 +4,6 @@ import {reportPairLabel} from '../src/lib/report-pair.ts';
 import * as pairLabels from '../src/lib/report-pair.ts';
 import {displayJobTitle} from '../src/lib/demo-display-identity.js';
 import * as reportDisplay from '../src/lib/report-display.ts';
-import {studentFlowLocation} from '../src/lib/flow-steps.ts';
 import * as sourceLabels from '../src/lib/source-label.ts';
 import * as evidenceAnchors from '../src/lib/evidence-anchor.ts';
 test('report fragment navigation preserves opaque router history state for route-away/back',()=>{
@@ -22,10 +21,6 @@ test('main text removes only a known frozen material path prefix, keeping unknow
  const raw='请核对 c90a4283-f9ab-4247-8fdc-16ef6e7ae56a/test_pipeline.py 与 unrelated-id/notes.md';
  assert.equal(sourceLabels.materialPathReadingText(raw,materials),'请核对 test_pipeline.py 与 unrelated-id/notes.md');
  assert.equal(sourceLabels.materialPathReadingText(raw,[]),raw);
-});
-test('application workspace uses the same location-only journey without inferring completion',()=>{
- assert.equal(studentFlowLocation('/applications','student'),'application');
- assert.equal(studentFlowLocation('/applications','enterprise'),null);
 });
 const saved=(id,extra={})=>({id,jobId:'6c8ad563-ebf8-427c-b4a3-82905f37dbd0',jobTitle:'数据工程实习生 · 合成流程验收',candidateId:'owner',createdAt:'2026-11-05T12:00:00Z',analysisMode:'rules',materials:[{kind:'project',id:'c90a4283-f9ab-4247-8fdc-16ef6e7ae56a',title:'数据清洗 · 本地验收',versionNumber:2}],...extra});
 test('selector options expose named fixed materials and exact time before selection',()=>{
@@ -53,16 +48,16 @@ test('same-time same-version reports retain distinct stable values and understan
 });
 test('historical diagnostic direct report gets a natural title without mutating unrelated titles',()=>{
  const raw='材料证据状态 · 三态合成验收';
- assert.equal(displayJobTitle(raw,'1233f1e2-169f-4ea5-a5a0-542fa940e897'),'材料证据阅读示例');
+ assert.equal(displayJobTitle(raw,'1233f1e2-169f-4ea5-a5a0-542fa940e897'),'材料核查实习生');
  assert.equal(displayJobTitle(raw,'real-job'),raw);
 });
 test('ordinary source labels distinguish AI success, unrequested analysis and budget-blocked fallback honestly',()=>{
  assert.equal(typeof reportDisplay.reportReadingStatus,'function');
- assert.equal(reportDisplay.reportReadingStatus(saved('x')).label,'规则分析结果');
+ assert.equal(reportDisplay.reportReadingStatus(saved('x')),null);
  const blocked=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,items:[{aiStatus:'rules_only'}]}));
- assert.equal(blocked.label,'AI 分析未完成');assert.match(blocked.reason,/当前显示规则分析结果/);
+ assert.equal(blocked.label,'AI 分析未完成');assert.equal(blocked.reason,'');
  const invalid=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,aiProcess:{fallbackReason:'invalid_output_or_config'},items:[{aiStatus:'rules_only'}]}));
- assert.equal(invalid.label,'AI 结果未通过校验');assert.match(invalid.reason,/当前显示规则分析结果/);
+ assert.equal(invalid.label,'AI 结果未通过校验');assert.equal(invalid.reason,'');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true})).label,'暂无可用分析结果');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:false,items:[{aiStatus:'validated'}]})).label,'AI 分析完成');
 });

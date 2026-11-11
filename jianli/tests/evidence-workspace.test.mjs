@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { evidenceWorkspace, evidenceWorkspaceSummary, distinctActionText } from "../src/lib/evidence-workspace.ts";
+import { evidenceWorkspace, evidenceWorkspaceSummary, distinctActionText, effectiveReportStatus, nextReportGap, reportStatusTone } from "../src/lib/evidence-workspace.ts";
 const item = (id, verdict, weight = 1, confirmationStatus = "pending") => ({ requirementId: id, verdict, weight, confirmationStatus });
 test("unsupported, rejected, corrected and unknown states never inflate support counts", () => {
  const result = evidenceWorkspace([item("a", "supported"), item("b", "verified"), item("c", "partial"), item("d", "gap"), item("e", "claimed_only"), item("f", "unsupported"), item("g", "supported", 5, "rejected"), item("h", "partial", 5, "corrected"), item("i", "future")]);
@@ -40,4 +40,27 @@ test("deduplication hides identical saved advice and gaps while retaining distin
  assert.deepEqual(distinctActionText({ action: "补充实现材料。", evidenceGap: "补充实现材料。" }, "补充实现材料。"), { advice: "", gap: "" });
  assert.deepEqual(distinctActionText({ action: "核对  运行结果", evidenceGap: "核对\n运行结果" }), { advice: "核对  运行结果", gap: "" });
  assert.deepEqual(distinctActionText({ action: "保存接口运行记录", evidenceGap: "缺少失败分支记录" }, "缺少参数校验"), { advice: "保存接口运行记录", gap: "缺少失败分支记录" });
+});
+
+test("next gap follows the sorted sequence, wraps, and never links to itself", () => {
+ const gaps = evidenceWorkspace([item("C", "gap", 1), item("A", "gap", 3), item("B", "claimed_only", 2)]).gaps;
+ assert.deepEqual(["supported", "A", "B", "C"].map(id => nextReportGap(gaps, id)?.requirementId), ["A", "B", "C", "A"]);
+ assert.equal(nextReportGap([gaps[0]], "A"), undefined);
+ assert.equal(nextReportGap([gaps[0]], null), gaps[0]);
+ assert.equal(nextReportGap([], null), undefined);
+});
+
+test("manual review overrides every verdict in counts and colors", () => {
+ const verdicts = ["supported", "verified", "partial", "gap", "claimed_only", "unsupported", "not_evaluated", "future"];
+ for (const verdict of verdicts) {
+  for (const confirmation of ["rejected", "corrected"]) {
+   const reviewed = item(verdict, verdict, 1, confirmation);
+   assert.equal(effectiveReportStatus(reviewed), confirmation);
+   assert.equal(reportStatusTone(reviewed), "other");
+   const state = evidenceWorkspace([reviewed]);
+   assert.deepEqual([state.supported.length, state.partial.length, state.gaps.length, state.other.length], [0,0,0,1]);
+  }
+ }
+ assert.equal(effectiveReportStatus(item("u", "not_evaluated")), "not_evaluated");
+ assert.equal(effectiveReportStatus(item("f", "future")), "unknown");
 });

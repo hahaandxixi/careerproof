@@ -9,12 +9,13 @@ import {
 const item = source => ({ evidenceLevelSource: source });
 const report = (analysisMode, aiFallbackUsed, items) => ({ analysisMode, aiFallbackUsed, items });
 
-test("same saved report uses one rules/AI/fallback label on both surfaces", () => {
-  assert.equal(reportModeLabel(report("rules", false, [item("rules")])), "规则证据报告");
-  assert.equal(reportModeLabel(report("ai_evidence", true, [item("ai_preliminary")])), "规则报告 · 模型已降级");
-  assert.equal(reportModeLabel(report("ai_evidence", false, [item("rules")])), "规则证据 + AI 解释");
-  assert.equal(reportModeLabel(report("ai_evidence", false, [item("ai_preliminary"), item("rules")])), "AI 证据初评 + 规则校验");
-  assert.equal(reportModeLabel(report("unknown_future_mode", false, [item("rules")])), "未知报告模式");
+test("non-AI and fallback reports render no analysis badge while validated AI keeps a short one", () => {
+  assert.equal(reportModeLabel(report("rules", false, [item("rules")])), "");
+  assert.equal(reportModeLabel(report("ai_evidence", true, [item("ai_preliminary")])), "");
+  assert.equal(reportModeLabel(report("ai_evidence", false, [item("rules")])), "");
+  assert.equal(reportModeLabel(report("ai_evidence", false, [item("ai_preliminary"), item("rules")])), "AI 分析");
+  assert.equal(reportModeLabel({...report("ai_evidence", false, [item("rules")]), aiProvider:"mock"}), "演示结果");
+  assert.equal(reportModeLabel(report("unknown_future_mode", false, [item("rules")])), "");
   assert.equal(reportAiRatedCount(report("ai_evidence", false, [item("ai_preliminary"), item("rules")])), 1);
 });
 

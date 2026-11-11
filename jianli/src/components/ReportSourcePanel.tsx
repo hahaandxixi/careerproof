@@ -78,7 +78,7 @@ export default function ReportSourcePanel({ report, item }: { report: MatchRepor
           </div>
         </header>
         <div className="source-reader-code">
-          {limit?.readable !== false && <EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} />}
+          {limit?.readable !== false && <EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} theme="dark" />}
         </div>
         <div className="source-reader-details">
           {fileHref && <a href={fileHref} className="action-link">查看完整文件 ↗</a>}

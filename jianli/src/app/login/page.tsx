@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,11 +40,11 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-slate-500">继续整理材料，查看属于你的匹配报告。</p>
         </div>
 
-        <Link href="/demo" className="mb-5 block rounded-lg bg-indigo-50 p-3 text-sm text-indigo-700">首次测试？查看演示账号、样例下载和操作指南 →</Link>
+        <Link href="/demo" className="mb-5 block rounded-lg border border-[#d8d0c2] bg-[#f3f7f2] p-3 text-sm text-[#1d4a40]">首次测试？查看演示账号、样例下载和操作指南 →</Link>
         {returnTo && <p className="mb-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">登录后返回刚才的页面；仅继续你有权访问的内容。</p>}
         <form onSubmit={onSubmit} className="space-y-4">
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">邮箱</span>
+            <span className="text-sm font-medium text-slate-700">账号（邮箱）</span>
             <input
               type="email"
               autoComplete="email"
@@ -52,7 +52,7 @@ export default function LoginPage() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               className="field mt-1"
-              placeholder="name@example.com"
+              placeholder="请输入邮箱账号"
             />
           </label>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
         <p className="mt-5 text-center text-sm text-slate-500">
           还没有账号？
-          <Link href={authEntry("/register", returnTo)} className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
+          <Link href={authEntry("/register", returnTo)} className="ml-1 font-medium text-[#245c50] hover:text-[#173c34]">
             立即注册
           </Link>
         </p>
@@ -94,3 +94,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+

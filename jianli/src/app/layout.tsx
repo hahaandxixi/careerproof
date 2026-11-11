@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/components/AuthProvider";
 import SiteHeader from "@/components/SiteHeader";
-import StudentFlowGuide from "@/components/StudentFlowGuide";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +20,7 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3 focus:text-indigo-700">跳到主要内容</a>
         <AuthProvider>
           <SiteHeader />
-          <main id="main-content" tabIndex={-1} className="site-frame py-5 sm:py-8"><StudentFlowGuide />{children}</main>
+          <main id="main-content" tabIndex={-1} className="site-frame py-5 sm:py-8">{children}</main>
           <footer className="site-frame py-8 text-center text-xs leading-5 text-slate-500">
             材料证据可追溯 · 投递需本人确认
           </footer>

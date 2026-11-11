@@ -41,7 +41,7 @@ export function modelStepQualifier(payload: Record<string, unknown> | null | und
   if (!payload) return null;
   const skipped = payload.skippedReason;
   if (typeof skipped === "string" && skipped.trim()) return "未调用模型";
-  if (payload.fallbackUsed === true) return "模型已降级";
+  if (payload.fallbackUsed === true) return "AI 结果未采用";
   return null;
 }
 
@@ -70,15 +70,16 @@ export function formatSeconds(seconds: number) {
 
 /**
  * The three processing modes are reported separately and never merged: a degraded
- * model run, an AI-assisted run, and a rules-only run.
+ * model run, an AI-assisted run, and a rules-only run. A rules-only run carries
+ * no source label — the row is omitted instead (empty string).
  */
 export function taskModeLabel(options: { usedAI: boolean; fellBack: boolean; active?: boolean; modelRecorded?: boolean }) {
   if (options.modelRecorded === false) {
     return options.active ? "处理中，外部 AI 调用结果待确认" : "未记录模型处理结果";
   }
-  if (options.fellBack) return "模型已降级，本次为规则结果";
+  if (options.fellBack) return "AI 结果未采用";
   if (options.usedAI) return "AI 解释已参与";
-  return "规则模式（未使用外部 AI）";
+  return "";
 }
 
 /**

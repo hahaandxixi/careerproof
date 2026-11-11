@@ -1,4 +1,4 @@
-// Render the actual header with controlled identities; no network, effects or browser claims.
+﻿// Render the actual header with controlled identities; no network, effects or browser claims.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
@@ -31,13 +31,14 @@ function render(role, status = role ? "authenticated" : "anonymous") {
   return renderToStaticMarkup(React.createElement(mod.exports.default));
 }
 
-test("public header has one discovery entry while students retain five primary routes including the case library", () => {
+test("public header has one discovery entry while students have five primary routes including the skill panorama", () => {
   const anonymous = render(null);
   assert.ok(anonymous.includes('href="/login"') && anonymous.includes('href="/register"'));
   assert.ok(!anonymous.includes("交互示例") && !anonymous.includes('href="/growth"'));
   const primary = render("student").match(/<nav aria-label="主导航"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/applications", "/demo"]);
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/skills", "/applications"]);
   assert.ok(primary.includes('aria-current="page"'));
+  assert.ok(primary.includes("技能全景") && !primary.includes("案例库"));
 });
 
 test("enterprise and admin retain their original routes and authentication failures offer recovery", () => {
@@ -49,3 +50,5 @@ test("enterprise and admin retain their original routes and authentication failu
   }
   assert.ok(render(null, "error").includes("连接异常 · 重试"));
 });
+
+

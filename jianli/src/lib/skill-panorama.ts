@@ -1,4 +1,4 @@
-import type { MatchReport, Page, ReportItem, ReportSummary } from "./api/domain.ts";
+﻿import type { MatchReport, Page, ReportItem, ReportSummary } from "./api/domain.ts";
 
 export const PANORAMA_PAGE_SIZE = 12;
 export const PANORAMA_CONCURRENCY = 3;
@@ -9,6 +9,42 @@ export const PANORAMA_STATUS_LABELS: Record<PanoramaStatus, string> = {
   gap: "材料待补充", unsupported: "规则暂未支持", unknown: "状态未知 / 未评估",
 };
 export type StatusCounts = Record<PanoramaStatus, number>;
+export const PANORAMA_FILTERS = ["all", "supported", "partial", "claimed_only", "gap"] as const;
+export type PanoramaFilter = typeof PANORAMA_FILTERS[number];
+export const PANORAMA_FILTER_LABELS: Record<PanoramaFilter, string> = {
+  all: "全部记录", supported: "有证据支持", partial: "部分支持", claimed_only: "仅简历声明", gap: "待补材料",
+};
+/** One record can match several views; the original saved status is never rewritten. */
+export function panoramaFilterMatches(status: PanoramaStatus, filter: PanoramaFilter): boolean {
+  return filter === "all" || status === filter;
+}
+export function filterSkillContexts(contexts: SkillContext[], filter: PanoramaFilter): SkillContext[] {
+  return contexts.filter(context => panoramaFilterMatches(panoramaStatus(context.item.verdict), filter));
+}
+export function skillJobCount(contexts: SkillContext[]): number {
+  return new Set(contexts.map(context => context.jobId)).size;
+}
+export interface JobContextGroup { jobId: string; jobTitle: string; contexts: SkillContext[]; }
+/** Group by the saved jobId, never by a display title that two jobs may share. */
+export function groupContextsByJob(contexts: SkillContext[]): JobContextGroup[] {
+  const groups = new Map<string, JobContextGroup>();
+  for (const context of contexts) {
+    const group = groups.get(context.jobId);
+    if (group) { group.contexts.push(context); continue; }
+    groups.set(context.jobId, { jobId: context.jobId, jobTitle: context.jobTitle, contexts: [context] });
+  }
+  for (const group of groups.values()) {
+    group.contexts.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+    // The newest saved report is shown first, but only an explicit server flag is
+    // ever labelled "最新报告"; recency in a loaded batch is not a global claim.
+    const flagged = group.contexts.find(context => context.isLatestForJob === true);
+    if (flagged && group.contexts[0] !== flagged) {
+      group.contexts = [flagged, ...group.contexts.filter(context => context !== flagged)];
+    }
+  }
+  return [...groups.values()].sort((a, b) =>
+    (Date.parse(b.contexts[0]?.createdAt ?? "") || 0) - (Date.parse(a.contexts[0]?.createdAt ?? "") || 0));
+}
 export interface SkillContext {
   key: string; reportId: string; jobId: string; jobTitle: string; createdAt: string;
   isLatestForJob?: boolean; materials: MatchReport["materials"]; item: ReportItem;
@@ -56,6 +92,17 @@ export function buildSkillPanorama(reports: MatchReport[]) {
   return { skills, unclassified, counts: countContexts(contexts), contextCount: contexts.length };
 }
 
+/** Keep the selected skill while it has a record in the new filter; otherwise move
+ * to the first skill that does, so the rail never describes a hidden card. */
+export function selectionForFilter(landscape: ReturnType<typeof buildSkillPanorama>, selected: string | null, filter: PanoramaFilter): string | null {
+  if (selected === null) return null;
+  const contexts = selected === "" ? landscape.unclassified : landscape.skills.find(skill => skill.key === selected)?.contexts ?? [];
+  if (filterSkillContexts(contexts, filter).length) return selected;
+  const first = landscape.skills.find(skill => filterSkillContexts(skill.contexts, filter).length);
+  if (first) return first.key;
+  return filterSkillContexts(landscape.unclassified, filter).length ? "" : null;
+}
+
 export interface PanoramaState {
   summaries: ReportSummary[]; reports: MatchReport[]; total: number | null;
   failures: Record<string, string>; listError: string; busy: boolean; hasMore: boolean; blocked: boolean;
@@ -66,7 +113,7 @@ export function initialPanoramaState(): PanoramaState {
 
 /** One account, one bounded batch. No persistence, prefetch loop, report writes or latest inference. */
 export function createSkillPanoramaSession(ownerId: string, api: {
-  listReports(page: number, pageSize: number): Promise<Page<ReportSummary>>;
+  listReports(page: number, pageSize: number, filters?: { scope?: "product" | "all" }): Promise<Page<ReportSummary>>;
   getReport(id: string): Promise<MatchReport>;
   errorMessage(error: unknown): string;
 }, publish: (state: PanoramaState) => void) {
@@ -110,7 +157,7 @@ export function createSkillPanoramaSession(ownerId: string, api: {
       const ticket = generation;
       update({ busy: true, listError: "" });
       try {
-        const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE);
+        const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE, { scope: "product" });
         if (!current(ticket)) return;
         if (page.items.some(report => report.candidateId !== ownerId)) { identityFailure(); return; }
         const fresh = page.items.filter(report => !state.summaries.some(value => value.id === report.id));
@@ -131,3 +178,4 @@ export function createSkillPanoramaSession(ownerId: string, api: {
     },
   };
 }
+

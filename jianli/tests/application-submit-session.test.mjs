@@ -7,21 +7,22 @@ function deferred() { let resolve, reject; const promise = new Promise((yes, no)
 function setup(overrides = {}) {
   const snapshots = [];
   const session = createApplicationSubmitSession(
-    { submit: async () => ({}), errorMessage: e => e.message, ...overrides },
+    { submit: async () => ({ id: "created-application" }), errorMessage: e => e.message, ...overrides },
     state => snapshots.push(state),
   );
   return { session, state: () => snapshots.at(-1) };
 }
 
-test("提交成功：先进入忙碌，结束后 busy 归零并给出成功提示", async () => {
+test("提交成功：先进入忙碌，结束后 busy 归零并保存真实投递 ID", async () => {
   const gate = deferred();
   const h = setup({ submit: () => gate.promise });
   const running = h.session.submit();
-  assert.deepEqual(h.state(), { busy: true, notice: "", done: false }, "请求未返回前必须处于忙碌态");
-  gate.resolve({});
+  assert.deepEqual(h.state(), { busy: true, notice: "", done: false, applicationId: "" }, "请求未返回前必须处于忙碌态");
+  gate.resolve({ id: "created-application" });
   await running;
   assert.equal(h.state().busy, false);
   assert.equal(h.state().done, true);
+  assert.equal(h.state().applicationId, "created-application");
   assert.match(h.state().notice, /已投递/);
 });
 

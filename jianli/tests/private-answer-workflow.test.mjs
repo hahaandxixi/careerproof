@@ -805,7 +805,9 @@ test("面板：正文可编辑不受保存忙态锁死，边界说明不含任�
   assert.ok(!/\breadonly\b/i.test(openTag), "保存期间也要允许继续编辑");
   assert.ok(html.includes("正在编辑的草稿"));
   assert.ok(!/<button[^>]*>[^<]*发送/.test(html), "不得出现任何发送入口");
-  assert.ok(html.includes("不发送给企业") || html.includes("未发送给企业"));
+  assert.match(html, /不(?:会)?发送给企业/);
+  assert.equal(html.split("仅本人可见").length - 1, 1);
+  assert.ok(html.includes("当前没有可用引用，你仍可先保存回答草稿"));
   assert.ok(html.includes("正在保存"));
 });
 

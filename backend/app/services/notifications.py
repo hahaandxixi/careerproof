@@ -13,10 +13,10 @@ from app.services.jobs import JobService
 
 MESSAGES = {
     "submitted": "投递已提交",
-    "viewed": "企业已请求查看报告；不代表进入面试或录用",
-    "downloaded": "平台已交付简历下载响应；不证明对方保存或阅读",
-    "replied": "企业已回复，请在投递详情核对正文",
-    "withdrawn": "投递授权已撤回；已下载副本无法追回",
+    "viewed": "企业已查看",
+    "downloaded": "简历下载已交付",
+    "replied": "企业已回复",
+    "withdrawn": "投递授权已撤回",
 }
 
 

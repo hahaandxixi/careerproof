@@ -32,7 +32,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     let active = true;
     setLoading(true); setErrors([]);
     const requests: { key: keyof SavedWork; label: string; run: () => Promise<SavedWork[keyof SavedWork]> }[] = student ? [
-      { key: "reports", label: "最近报告", run: async () => (await api.listReports(1, 3)).items },
+      { key: "reports", label: "最近报告", run: async () => (await api.listReports(1, 3, { scope: "product" })).items },
       { key: "notifications", label: "未读通知", run: async () => (await api.notifications(1, true, 3)).items },
       { key: "resumes", label: "简历", run: () => api.listResumes() },
       { key: "projects", label: "项目", run: () => api.listProjects() },
@@ -60,7 +60,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
   const resumeLabel = activeMaterial ? (activeMaterial.status === "failed" ? "处理上传问题" : "查看材料处理") : work.reports[0] ? "继续核对报告" : errors.length ? "打开我的材料" : "准备第一份材料";
   const continueWork = <section className="workspace-sheet home-continue">
     <div className="workspace-toolbar workspace-row items-center">
-      <div className="min-w-0"><h2 className="section-title">{student ? "继续工作" : "岗位管理"}</h2>
+      <div className="min-w-0"><h2 className="section-title">{student ? "继续处理 / 核对" : "岗位管理"}</h2>
         {student && activeMaterial ? <p className="workspace-meta break-words">{activeMaterial.status === "failed" ? "处理失败" : activeMaterial.status === "pending" ? "等待处理" : "正在处理"} · {activeMaterial.originalFilename ?? "已上传材料"}</p> :
           student && work.reports[0] ? <p className="workspace-meta">{displayJobTitle(work.reports[0].jobTitle, work.reports[0].jobId)}</p> : null}
       </div>
@@ -71,15 +71,15 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     </div>
   </section>;
   const recentReports = <WorkSection title="最近报告" href="/reports" empty="没有可显示的报告。先选定材料，再进入岗位生成报告。">
-    {work.reports.map(report => <li key={report.id}><Link className="work-row" href={`/reports/${report.id}`}><strong className="block break-words text-sm">{displayJobTitle(report.jobTitle, report.jobId)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(report.createdAt).toLocaleString("zh-CN")} · {report.aiFallbackUsed ? "模型已回退，请核对规则结果" : report.analysisMode === "rules" ? "规则报告" : "查看分析方式与依据"}</span></Link></li>)}
+    {work.reports.map(report => <li key={report.id}><Link className="work-row" href={`/reports/${report.id}`}><strong className="block break-words text-sm">{displayJobTitle(report.jobTitle, report.jobId)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(report.createdAt).toLocaleString("zh-CN")} · {report.isLatestForJob === true ? "最新报告" : report.isLatestForJob === false ? "历史报告" : "报告"} · 打开报告 →</span></Link></li>)}
   </WorkSection>;
   const unread = <WorkSection title="未读消息" href="/notifications" empty="当前没有可显示的未读消息。">
     {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><span className="flex items-start gap-2">{!notification.readAt && <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#1d4a40]" />}<span className="min-w-0"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")}</span></span></span></Link></li>)}
   </WorkSection>;
-  const quickLinks = <section className="workspace-sheet home-quick-links"><div className="flex items-center justify-between gap-3"><h2 className="section-title">材料与岗位</h2><span className="workspace-meta">快捷入口</span></div><div className="home-quick-link-list"><Link href="/portfolio"><strong>管理我的材料</strong><span>简历、项目版本与上传</span></Link><Link href="/jobs"><strong>探索岗位</strong><span>按材料寻找匹配岗位</span></Link><Link className="btn-secondary" href="/recommendations"><strong>职业与岗位推荐</strong><span>基于当前材料的下一步</span></Link></div></section>;
+  const quickLinks = <section className="workspace-sheet home-quick-links"><div className="home-quick-heading"><h2 className="section-title">材料与岗位</h2><span className="workspace-meta">快捷入口</span></div><div className="home-quick-link-list"><Link href="/portfolio"><strong>管理我的材料</strong><span>简历、项目版本与上传</span></Link><Link href="/recommendations"><strong>职业与岗位推荐</strong><span>基于当前材料的下一步</span></Link></div></section>;
   return <div className="space-y-6 home-dashboard">
     <header className="workspace-toolbar border-b border-slate-200 pb-4">
-      <h1 className="page-title">{student ? "学生工作台" : "企业工作台"}</h1>
+      <h1 className="page-title">{student ? "求职概览" : "企业工作台"}</h1>
       <p className="workspace-meta"><IdentityName name={user.displayName} identityId={user.id}/></p>
     </header>
     {loading ? <p role="status" className="panel text-sm text-slate-600">正在读取最近保存的工作…</p> : <>
@@ -101,4 +101,3 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
 function WorkSection({ title, href, empty, children }: { title: string; href: string; empty: string; children: React.ReactNode[] }) {
   return <section className="workspace-sheet px-4 py-3 sm:px-5"><div className="flex items-center justify-between gap-3"><h2 className="section-title">{title}</h2><Link className="btn-secondary shrink-0" href={href} aria-label={`查看全部${title}`}>查看全部</Link></div>{children.length ? <ul className="divide-y divide-slate-100">{children}</ul> : <p className="mt-3 text-sm leading-6 text-slate-600">{empty}</p>}</section>;
 }
-

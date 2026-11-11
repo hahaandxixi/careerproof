@@ -7,10 +7,12 @@ import { dirname, join } from "node:path";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
+// .next-*/** covers every generated Next build dir, including the batch
+// output dirs (.next-e2e, .next-final-*, .next-integrated-*) next to the repo.
 const generatedIgnores = [
   "node_modules/**",
   ".next/**",
-  ".next-e2e/**",
+  ".next-*/**",
   "out/**",
   "next-env.d.ts",
 ];

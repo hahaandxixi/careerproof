@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -16,10 +16,9 @@ export default function SiteHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const current = (href: string) => pathname === href ||
-    (href === "/reports" && pathname === "/skills") ||
     (href === "/portfolio" && pathname.startsWith("/materials/")) ||
     (href === "/jobs/mine" && /^\/jobs\/[^/]+\/applications$/.test(pathname)) ||
-    (["/portfolio", "/reports", "/growth", "/applications", "/demo"].includes(href) && pathname.startsWith(`${href}/`)) ||
+    (["/portfolio", "/reports", "/growth", "/applications", "/skills"].includes(href) && pathname.startsWith(`${href}/`)) ||
     (href === "/jobs" && (pathname === "/recommendations" || /^\/jobs\/(?!new$|mine$|manage$)[^/]+$/.test(pathname))) ? "page" as const : undefined;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -37,8 +36,8 @@ export default function SiteHeader() {
           <Link href="/portfolio" aria-current={current("/portfolio")}><span className="nav-long">我的材料</span><span className="nav-short">材料库</span></Link>
           <Link href="/jobs" aria-current={current("/jobs")}><span className="nav-long">发现岗位</span><span className="nav-short">岗位</span></Link>
           <Link href="/reports" aria-current={current("/reports")}><span className="nav-long">我的报告</span><span className="nav-short">报告</span></Link>
+          <Link href="/skills" aria-current={current("/skills")}><span className="nav-long">技能全景</span><span className="nav-short">技能</span></Link>
           <Link href="/applications" aria-current={current("/applications")}><span className="nav-long">我的投递</span><span className="nav-short">投递</span></Link>
-          <Link href="/demo" aria-current={current("/demo")}><span className="nav-long">案例库</span><span className="nav-short">案例</span></Link>
         </> : <>
           <Link href="/jobs" aria-current={current("/jobs")}>岗位发现</Link>
           {(user?.role === "enterprise" || user?.role === "admin") && <>
@@ -61,4 +60,5 @@ export default function SiteHeader() {
     {error && <p role="alert" className="site-frame pb-3 text-sm text-rose-200">{error}</p>}
   </header>;
 }
+
 

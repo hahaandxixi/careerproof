@@ -7,6 +7,7 @@ from app.api.v1 import (
     enterprises,
     evidence_growth,
     health,
+    interview,
     jobs,
     mcp_tools,
     notifications,
@@ -23,6 +24,7 @@ router.include_router(enterprises.router, prefix="/enterprises", tags=["enterpri
 router.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
 router.include_router(portfolio.router, tags=["portfolio"])
 router.include_router(analysis.router, tags=["analysis"])
+router.include_router(interview.router, tags=["interview"])
 router.include_router(applications.router, tags=["applications"])
 router.include_router(evidence_growth.router, tags=["evidence-growth"])
 router.include_router(visual.router, tags=["visual"])

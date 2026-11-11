@@ -45,14 +45,14 @@ function fixture(count=2,editRow=value=>value,options={}){
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
  const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
-  "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
+  "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./EvidenceSnippet":{default:stub("evidence"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:ownerId}})},
   "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false,comparableApplicationGroup,comparableRadarAxes},
   "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
-  "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
+  "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/skill-radar":{RADAR_STATUS:{supported:"有证据支持",partial:"部分证据支持",claimed_only:"仅简历声明",gap:"材料待补充",unsupported:"规则暂未支持"}},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
   "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS}};
  const code=transform(readFileSync(new URL("../src/components/ApplicationBoard.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
@@ -70,13 +70,16 @@ function fixture(count=2,editRow=value=>value,options={}){
 
 test("tab return restores radar requirement/evidence only after GET authorization and clears replies",async()=>{
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();
- h.radar(tree).props.onRequirementChange("r1");tree=h.render();h.radar(tree).props.onEvidenceExpandedChange(true);tree=h.render();
+ h.radar(tree).props.onRequirementChange("r1");tree=h.render();
+ assert.ok(walk(tree).some(n=>n.props?.className==="enterprise-fixed-source"),"fixed report keeps a linked source detail");
+const fixedSource=walk(tree).find(n=>n.props?.className==="enterprise-fixed-source");
+assert.ok(fixedSource && !text(fixedSource).includes("查看报告与回复"),"fixed report does not link to itself");
  h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"未发送的合成回复"}});tree=h.render();
  const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});
  let resolve;h.waitFor(new Promise(yes=>{resolve=yes;}));tree=h.hide();assert.equal(h.radar(tree),undefined);assert.equal(tree.props.style.minHeight,2400);
  const reads=h.counts.list;tree=h.show();await Promise.resolve();assert.equal(h.radar(tree),undefined);
  resolve({items:[{id:"a",jobId:"job-a",reportId:"report-a",candidateName:"候选人a",status:"viewed",replyReferences:[],events:[],dimensions:[]}],total:1,page:1,pageSize:20});
- tree=await h.settle();assert.equal(h.radar(tree).props.initialRequirementId,"r1");assert.equal(h.radar(tree).props.evidenceExpanded,true);
+ tree=await h.settle();assert.equal(h.radar(tree).props.initialRequirementId,"r1");
  assert.equal(h.counts.open,1);assert.equal(h.counts.list,reads+1);assert.equal(h.counts.reply,0);
  assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
  const confirmation=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));assert.equal(h.nodes(confirmation).find(n=>n.type==="input").props.checked,false);
@@ -87,7 +90,7 @@ test("comparison selection survives tab return and revoked candidates are pruned
  for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();}
  h.button(tree,"热力图仅看所选（2）").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
  assert.equal(h.button(tree,"显示本页全部候选人").props["aria-pressed"],true);
- const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,2);
+ const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,4,"matrix and candidate rail both reflect the same two selections");
  h.hide();h.revoke();h.show();tree=await h.settle();
  assert.ok(h.button(tree,"热力图仅看所选（1）").props.disabled);assert.equal(h.counts.open,0);
 });
@@ -104,9 +107,9 @@ test("enterprise status and evidence filters apply immediately while retaining c
  const h=fixture();let tree=await h.settle();
  const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id==="application-a");h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
  h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
- h.button(tree,"已回复").props.onClick();tree=await h.settle();
+ h.button(tree,"企业已回复").props.onClick();tree=await h.settle();
  assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"Python",status:"replied",requirementId:"",verdict:""});
- assert.equal(h.button(tree,"已回复").props["aria-pressed"],true);
+ assert.equal(h.button(tree,"企业已回复").props["aria-pressed"],true);
  h.button(tree,"缺少材料").props.onClick();tree=await h.settle();assert.equal(h.queries.at(-1).verdict,"gap");assert.equal(h.queries.at(-1).status,"replied");
  assert.ok(h.nodes(tree).some(n=>n.type==="button"&&n.props["aria-label"]==="移出对照：候选人a"));
  assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
@@ -145,7 +148,7 @@ test("leaving and returning restores applied filters, page two and three IDs onl
  const h=fixture(24);let tree=await h.settle();
  for(const id of ["a","b"]){choose(h,tree,id);tree=await h.settle();}
  h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
- h.button(tree,"已查看，未回复").props.onClick();tree=await h.settle();
+ h.button(tree,"企业已查看").props.onClick();tree=await h.settle();
  changePage(h,tree,2);tree=await h.settle();choose(h,tree,"u");tree=await h.settle();
  const saved=h.bookmark();assert.equal(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").page,2);
  assert.deepEqual(boardHistory.readApplicationBoardHistory(saved,"enterprise-a","job-a").comparisonIds,["a","b","u"]);
