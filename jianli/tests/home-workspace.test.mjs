@@ -1,3 +1,4 @@
+import { jobWorkspaceNextStep } from "../src/lib/job-workspace-next-step.ts";
 import * as demoPresentation from "../src/lib/demo-display-identity.js";
 // Real component SSR with controlled saved state. Effects/network are deliberately
 // not executed; this does not verify late responses, identity races or browser behavior.
@@ -13,7 +14,7 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const { transform } = require("sucrase");
 const component = process.env.CAREERPROOF_HOME_REVIEW_SOURCE || new URL("../src/components/HomeWorkspace.tsx", import.meta.url);
 const source = readFileSync(component, "utf8");
-const EMPTY = { reports: [], growth: [], notifications: [], jobs: [], resumes: [], projects: [] };
+const EMPTY = { notifications: [], jobs: [] };
 
 function render(role, { work = EMPTY, errors = [], loading = false, status = "authenticated" } = {}) {
   let cursor = 0;
@@ -21,6 +22,7 @@ function render(role, { work = EMPTY, errors = [], loading = false, status = "au
   const modules = {
     react: { ...React, useState: () => [values[cursor++], () => {}], useEffect: () => {} },
  "@/lib/demo-display-identity.js":demoPresentation,
+    "next/navigation": { useRouter: () => ({ replace() {} }) },
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
     "@/lib/api/client": { api: new Proxy({}, { get() { throw new Error("SSR must not request data"); } }), errorMessage: String },
@@ -33,23 +35,23 @@ function render(role, { work = EMPTY, errors = [], loading = false, status = "au
   return renderToStaticMarkup(React.createElement(mod.exports.default, null, "公共介绍"));
 }
 
-test("a failed read is unknown, while verified empty work can offer the first-material route", () => {
-  const unknown = render("student", { errors: ["最近报告读取失败"] });
-  assert.ok(unknown.includes("打开我的材料"));
-  assert.ok(unknown.includes('role="alert"'));
-  assert.ok(!unknown.includes("准备第一份材料"));
-  assert.ok(render("student").includes("准备第一份材料"));
+test("a failed read does not present an unknown workspace as empty", () => {
+  const unknown = jobWorkspaceNextStep({ versions: [], incomplete: true });
+  assert.equal(unknown.action, "重试读取");
+  assert.equal(unknown.href, undefined);
+  assert.equal(jobWorkspaceNextStep({ versions: [], incomplete: false }).href, "/portfolio");
+  assert.equal(jobWorkspaceNextStep({ versions: [{status:"completed", createdAt:"2026-11-12"}], incomplete:false }).href, "/jobs");
 });
 
-test("student continues the saved report without enterprise actions", () => {
-  const html = render("student", { work: { ...EMPTY, reports: [{ id: "report-owned", jobTitle: "后端开发", createdAt: "2026-10-22T10:00:00Z", analysisMode: "rules" }] } });
-  assert.ok(html.includes('href="/reports/report-owned"'));
-  assert.ok(html.includes("继续核对报告") && html.includes("后端开发"));
-  assert.ok(html.includes("求职概览") && html.includes("继续处理 / 核对"));
-  assert.ok(!html.includes("学生工作台") && !html.includes("企业工作台"));
-  assert.ok(html.includes('href="/portfolio"'));
-  assert.ok(!html.includes('href="/jobs/new"'));
-  assert.equal((html.match(/href="\/jobs"/g) || []).length, 1, "the homepage recommends the jobs destination only once");
+test("a saved material task takes precedence over reports even without an application", () => {
+  const report = { id: "report-owned", title: "后端开发" };
+  const failed = {status:"failed", taskId:"task-a", originalFilename:"项目.zip", createdAt:"2026-11-12"};
+  const next = jobWorkspaceNextStep({ versions: [failed], report, incomplete: false });
+  assert.deepEqual(next, { description:"处理失败 · 项目.zip", href:"/tasks/task-a", action:"处理上传问题" });
+  assert.equal(jobWorkspaceNextStep({ versions: [], report, incomplete: false }).href, "/reports/report-owned");
+  const html = render("student");
+  assert.match(html,/正在打开求职工作台/);
+  assert.doesNotMatch(html,/最近报告|未读消息|快捷入口|企业工作台|公共介绍/);
 });
 
 test("enterprise gets its own job and authorized-application routes, not private student work", () => {
@@ -80,22 +82,8 @@ test("authentication loading and error never render the saved identity as confir
   assert.ok(!error.includes("当前用户"));
 });
 
-test("old growth tasks cannot replace report continuation or form a second student work area",()=>{
- const html=render("student",{work:{...EMPTY,reports:[{id:"report-owned",jobTitle:"当前岗位",createdAt:"2026-10-22T10:00:00Z",analysisMode:"rules"}],growth:[{id:"old-task",requirementTitle:"旧记录",status:"planned"}]}});
- assert.ok(html.includes("继续核对报告") && html.includes("当前岗位"));
- assert.ok(!html.includes("最近补证任务")&&!html.includes('href="/growth'));
- assert.ok(!source.includes("api.listGrowthTasks"),"home must not depend on the legacy task list API");
+test("legacy growth cannot supply the current task and the report lookup only requests product history",()=>{
+  const next = readFileSync(new URL("../src/components/JobWorkspaceNextStep.tsx", import.meta.url),"utf8");
+  assert.doesNotMatch(next,/listGrowthTasks|\/growth|api.notifications/);
+  assert.match(next,/listReports\(1, 1, \{ scope: "product" \}\)/);
 });
-
-test("workspace destinations use bounded controls and omit repeated navigation instructions",()=>{
- const html=render("student",{work:{...EMPTY,notifications:[{id:"n",title:"企业已请求查看报告；不代表录用",createdAt:"2026-10-29T12:00:00Z"}]}});
- for(const href of ["/reports","/notifications"])assert.match(html,new RegExp(`<a[^>]*class="btn-secondary[^\"]*"[^>]*href="${href}"|<a[^>]*href="${href}"[^>]*class="btn-secondary`));
- assert.ok(html.includes('href="/recommendations"'));
- assert.match(html,/home-quick-heading/);
- assert.match(html,/企业已请求查看报告；不代表录用/);
- assert.doesNotMatch(html,/到通知页核对来源|上传新版会保留旧版本|打开入口不会自动/);
-});
-test('student home requests only product report records, never implicit audit history',()=>{ assert.match(source,/listReports\(1, 3, \{ scope: "product" \}\)/); });
-
-
-

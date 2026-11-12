@@ -62,6 +62,11 @@ async def test_real_events_dedup_pagination_read_scope_and_revocation(
         assert (await listing(student, "?page=2&page_size=2"))["items"][0]["id"] != result["items"][
             0
         ]["id"]
+        assert all(
+            (row["jobId"], row["jobTitle"], row["companyName"])
+            == (job["id"], job["title"], job["companyName"])
+            for row in result["items"]
+        )
         student_nid = result["items"][0]["id"]
         target = (await student.get(f"/api/v1/notifications/{student_nid}/target")).json()["data"]
         assert target["href"] == f"/applications#application-{aid}"
@@ -198,5 +203,40 @@ async def test_authorized_target_detail_is_read_only_and_last_page_recovers(
         await student.post(f"/api/v1/applications/{aid}/withdraw")
         assert (await hr.get(f"/api/v1/applications/{aid}")).status_code == 404
         assert (await student.get(f"/api/v1/applications/{aid}")).status_code == 200
+    finally:
+        await close(hr, student, other)
+
+async def test_student_product_scope_excludes_fixture_without_consuming_it(
+    jobs_db, tmp_path, monkeypatch
+):
+    from uuid import UUID
+
+    from app.models.recruitment import Job
+    from app.tools.fixture_provenance import FIXTURE_JOB_OWNERS
+
+    hr, student, other, job, rid, _resume, _raw, factory = await setup(
+        jobs_db, tmp_path, monkeypatch
+    )
+    try:
+        response = await student.post(
+            "/api/v1/applications", json=await application_payload(student, rid)
+        )
+        assert response.status_code == 201
+        notice = (await listing(student))["items"][0]
+        job_id = UUID(job["id"])
+        async with factory() as session:
+            saved_job = await session.get(Job, job_id)
+            monkeypatch.setitem(FIXTURE_JOB_OWNERS, job_id, saved_job.created_by)
+        assert (await listing(student)) == {
+            "items": [], "total": 0, "page": 1, "pageSize": 20, "unreadCount": 0,
+        }
+        path = f"/api/v1/notifications/{notice['id']}"
+        assert (await student.get(f"{path}/target")).status_code == 404
+        assert (await student.post(f"{path}/read")).status_code == 404
+        response = await student.post("/api/v1/notifications/read-all")
+        assert response.json()["data"]["unreadCount"] == 0
+        async with factory() as session:
+            assert (await session.get(Notification, UUID(notice["id"]))).read_at is None
+        assert (await listing(hr))["total"] == 1
     finally:
         await close(hr, student, other)

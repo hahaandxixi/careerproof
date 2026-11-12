@@ -40,3 +40,27 @@ export async function includeApplicationTarget<T extends { id: string; jobId: st
   }
   return [...items, target];
 }
+
+/** Read and open only the authorized application. Each await may outlive the drawer. */
+export async function openStudentNotification<T extends { id: string }>(
+  id: string,
+  api: {
+    notificationTarget(id: string): Promise<{ href: string }>;
+    applicationDetail(id: string): Promise<T>;
+    readNotification(id: string): Promise<unknown>;
+  },
+  current: () => boolean,
+  onRead: () => void,
+): Promise<T | undefined> {
+  const { href } = await api.notificationTarget(id);
+  if (!current()) return;
+  const target = href.startsWith("/applications#") && notificationHref(href)
+    ? applicationAnchorId(href.slice("/applications".length)) : null;
+  if (!target) throw new Error("通知目的地无效，请刷新。");
+  const item = await api.applicationDetail(target);
+  if (!current()) return;
+  if (item.id !== target) throw new Error("通知对应的投递已不可访问，请刷新。");
+  await api.readNotification(id);
+  onRead();
+  return current() ? item : undefined;
+}

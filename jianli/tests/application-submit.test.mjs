@@ -82,11 +82,11 @@ test("高级说明默认折叠且内容完整，不得隐藏其余分享风险",
   }
 });
 
-test("保留确认投递入口、授权文案与查看我的投递链接及报告页锚点", () => {
+test("保留确认投递入口、授权文案与打开求职工作台链接及报告页锚点", () => {
   const html = render();
   assert.ok(html.includes("确认投递"), html);
   assert.ok(html.includes("同意向该岗位所属企业授权"), html);
   assert.ok(html.includes('href="/applications"'), html);
-  assert.ok(html.includes("查看我的投递"), html);
+  assert.ok(html.includes("打开求职工作台"), html);
   assert.ok(html.includes('id="application-submit"'), "报告页 application-submit 锚点必须保留，供我的投递重新授权跳转");
 });
