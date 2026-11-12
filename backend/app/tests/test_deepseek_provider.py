@@ -6,7 +6,13 @@ from pydantic import SecretStr
 
 from app.agents.contracts import validate_grounded_analysis
 from app.agents.evidence_workflow import build_evidence_contexts
-from app.agents.provider import DeepSeekProvider, ProviderOutputTruncatedError, get_ai_provider
+from app.agents.provider import (
+    DeepSeekProvider,
+    ProviderOutputTruncatedError,
+    evidence_analysis_messages,
+    get_ai_provider,
+    sanitize_outgoing_messages,
+)
 from app.core.config import settings
 from app.tests.test_ai_evidence_workflow import evidenced_result
 
@@ -21,6 +27,41 @@ def provider(**overrides):
             **overrides,
         }
     )
+
+
+def test_structured_requirement_uuid_survives_both_sanitization_passes():
+    context = build_evidence_contexts(evidenced_result())[0]
+    phone = "13800138000"
+    requirement_id = f"aaaaaaaa-aaaa-4aaa-8aaa-{phone}a"
+    context = context.model_copy(update={
+        "requirement_id": requirement_id,
+        "requirement_title": f"联系方式：{phone}",
+        "evidence": [context.evidence[0].model_copy(update={"snippet": f'phone = "{phone}"'})],
+    })
+    messages = sanitize_outgoing_messages(evidence_analysis_messages([context]))
+    sent = json.loads(messages[1]["content"])["requirements"][0]
+    assert sent["requirement_id"] == requirement_id
+    assert sent["requirement_title"] == "联系方式：[已脱敏手机号]"
+    assert sent["evidence"][0]["snippet"] == 'phone = "[已脱敏手机号]"'
+
+
+
+@pytest.mark.parametrize("field", ["requirement_id", "requirementId"])
+def test_only_requirement_uuid_fields_are_preserved(field):
+    phone = "13800138000"
+    requirement_id = f"aaaaaaaa-aaaa-4aaa-8aaa-{phone}a"
+    messages = sanitize_outgoing_messages([
+        {"role": "user", "content": json.dumps([
+            {field: requirement_id, "sessionId": requirement_id},
+            {field: phone, "description": f"电话：{phone}", "password": "fixture-password"},
+        ])},
+    ])
+    identified, untrusted = json.loads(messages[0]["content"])
+    assert identified[field] == requirement_id
+    assert "[已脱敏手机号]" in identified["sessionId"]
+    assert untrusted[field] == "[已脱敏手机号]"
+    assert untrusted["description"] == "电话：[已脱敏手机号]"
+    assert untrusted["password"] != "fixture-password"
 
 
 @pytest.mark.parametrize(
