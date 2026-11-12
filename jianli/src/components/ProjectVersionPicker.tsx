@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { ProjectHistory } from "@/lib/api/client";
 import { materialVersionTime } from "@/lib/material-upload";
 import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "@/lib/material-picker";
+import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import cases from "@/app/demo/samples.json";
 
 const DEMO_NAMES = cases.map(item => item.projectName);
@@ -35,7 +36,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
   const latestAvailable = new Map(selectableProjects.map(project => [project.id, project.versions[0]?.id]));
   const historyCount = selectableProjects.filter(project => projectDisplayCategory(project.name, DEMO_NAMES) === "history").length;
   const selected = selectableProjects.flatMap(project => project.versions
-    .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: project.name })));
+    .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: displayMaterialTitle(project.name, version.id) })));
 
   return <section aria-label="项目或作品版本选择" className="space-y-3">
     <div className="flex flex-wrap items-center justify-between gap-2">
@@ -45,12 +46,11 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
     {selected.length > 0 ? <ul aria-label="已选项目版本" className="space-y-2">
       {selected.map(version => <li key={version.id} className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
         <span className="min-w-0 break-words">{version.name} · 第 {version.versionNumber} 版
-          <span className="mt-1 block text-xs text-slate-600">{version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
-          <span className="mt-1 block text-xs text-slate-600">已解析{materialVersionTime(version.createdAt) && <> · <time dateTime={version.createdAt}>上传于 {materialVersionTime(version.createdAt)}</time></>}</span>
+          {version.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
         </span>
         <button type="button" className="btn-quiet btn-compact shrink-0" aria-label={`移除 ${version.name} 第 ${version.versionNumber} 版`} onClick={() => onChange(toggleMaterialVersion(selectedIds, version.id, false))}>移除</button>
       </li>)}
-    </ul> : <p className="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p>}
+    </ul> : null}
     {selectableProjects.length > 0 ? <details key={highlightedVersionId || "projects"} open={!!highlightedVersionId} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
@@ -70,7 +70,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
             return rows.length ? <section key={group.key} aria-label={group.label} className="space-y-2">
               <h3 className="text-xs font-semibold text-slate-500">{group.label} · {rows.length} 个项目</h3>
               {rows.map(project => <details key={project.id} open={project.versions.some(version => version.id === highlightedVersionId)} className="rounded-lg bg-slate-50">
-            <summary className="cursor-pointer p-3 text-sm font-medium break-words">{project.name}
+            <summary className="cursor-pointer p-3 text-sm font-medium break-words">{displayMaterialTitle(project.name, project.versions[0]?.id)}
               <span className="ml-2 text-xs font-normal text-slate-500">{project.versions.length} 个版本 · 已选 {project.versions.filter(version => selectedIds.includes(version.id)).length}</span>
             </summary>
             <div className="space-y-2 px-3 pb-3">

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
+import { demoJobAlias, displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -117,7 +117,8 @@ function MatchForm({
   }
   const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
-  const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
+  const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id))
+    .map(version => `${displayMaterialTitle(project.name, version.id)} · 第 ${version.versionNumber} 版`));
   return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">查看我的投递</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
@@ -129,7 +130,7 @@ function MatchForm({
           <p className="font-semibold">外部 AI 发送范围与脱敏预览</p>
           <p className="mt-2 text-xs leading-6">外部 AI 可选：不勾选下方同意时，只在本站生成规则匹配报告，不发送材料给外部模型。规则报告也可以查看证据并明确投递。</p>
           <dl className="mt-3 grid gap-2 text-xs leading-6 sm:grid-cols-2">
-            <div><dt className="font-medium">本次材料</dt><dd>{selectedResume ? `${selectedResume.title} · 第 ${selectedResume.versionNumber} 版` : "尚未选择简历"}{selectedProjects.length ? `；${selectedProjects.join("；")}` : "；未选择项目材料"}</dd></div>
+            <div><dt className="font-medium">本次材料</dt><dd>{selectedResume ? `${displayMaterialTitle(selectedResume.title, selectedResume.id)} · 第 ${selectedResume.versionNumber} 版` : "尚未选择简历"}{selectedProjects.length ? `；${selectedProjects.join("；")}` : "；未选择项目材料"}</dd></div>
             <div><dt className="font-medium">只发送</dt><dd>{job.requirements.length} 项岗位要求、规则结论和每项最多 3 条必要证据片段</dd></div>
             <div><dt className="font-medium">自动脱敏</dt><dd>邮箱、手机号、身份证号、带“姓名”标签的姓名，以及可识别格式的密码和访问密钥</dd></div>
             <div><dt className="font-medium">不会主动加入</dt><dd>账号身份、个人资料中的姓名、原始文件、完整简历和原始图片</dd></div>

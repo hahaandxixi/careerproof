@@ -27,7 +27,7 @@ export function ReportHistoryCard({ report, onSameJob, origin }: { report: Repor
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={reportVersionHref(report.id, origin, "#report-comparison")}>版本对比</Link>}
       </div>
     </div>
-    <div className="report-record-foot"><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary>{!!report.materials?.length && <ReportMaterialList materials={report.materials} />}<p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
+    <div className="report-record-foot"><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary>{!!report.materials?.length && <ReportMaterialList materials={report.materials} />}<p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p></details></div>
   </article>;
 }
 

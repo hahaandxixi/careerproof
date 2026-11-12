@@ -39,7 +39,7 @@ const jobAliases = new Map([
   }],
 ]);
 
-const resumeAliasesWithOriginalFileDetails = new Map([
+const resumeAliasesWithoutOriginalFilename = new Map([
   ["d18b3087-99dc-4657-9a0d-7d26dc9d1a84", "数据工程方向简历"],
   ["1495ceaf-3251-4ab3-b84e-71b312f82009", "数据工程方向简历"],
   ["b827831f-f31a-4f71-b1c0-ee9e6459a58e", "Python 技能说明"],
@@ -47,7 +47,7 @@ const resumeAliasesWithOriginalFileDetails = new Map([
 ]);
 
 const materialAliases = new Map([
-  ...resumeAliasesWithOriginalFileDetails,
+  ...resumeAliasesWithoutOriginalFilename,
   ["32593aad-3fbd-47fb-9397-70b5e6f32b95", "数据清洗工具"],
   ["c90a4283-f9ab-4247-8fdc-16ef6e7ae56a", "数据清洗工具"],
   ["4e22b722-44c7-4c19-8eb6-f22b5e8a2f8a", "数据清洗工具"],
@@ -84,9 +84,9 @@ export function displayMaterialTitle(title, id) {
   return materialAliases.get(id) ?? title;
 }
 
-/** Only these verified historical fixtures tuck the original filename into details. */
-export function showResumeFilenameInDetails(versionId) {
-  return resumeAliasesWithOriginalFileDetails.has(versionId);
+/** Suppress fixture filenames only for these verified historical versions. */
+export function hideOriginalResumeFilename(versionId) {
+  return resumeAliasesWithoutOriginalFilename.has(versionId);
 }
 
 export function displayIdentity(originalName, identityId) {

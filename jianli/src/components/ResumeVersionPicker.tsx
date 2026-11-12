@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import type { ResumeHistory } from "@/lib/api/client";
 import { filterResumeMaterials, resumeDisplayCategory } from "@/lib/resume-picker";
+import { displayMaterialTitle, hideOriginalResumeFilename } from "@/lib/demo-display-identity.js";
 import cases from "@/app/demo/samples.json";
 
 const DEMO_TITLES = cases.map(item => item.resumeName);
@@ -39,11 +40,11 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
   return <section aria-label="简历版本选择" className="space-y-3">
     <p className="text-sm font-medium">简历版本（选择一份）</p>
     {selected && selectedResume ? <div aria-label="已选简历版本" className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
-      <span className="min-w-0 break-words">{selectedResume.title} · 第 {selected.versionNumber} 版
-        <span className="mt-1 block text-xs text-slate-600">{selected.originalFilename} · {selected.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
+      <span className="min-w-0 break-words">{displayMaterialTitle(selectedResume.title, selected.id)} · 第 {selected.versionNumber} 版
+        {selected.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
       </span>
       <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
-    </div> : <p className="text-xs text-slate-500">尚未选择简历；请展开并选择已完成解析的版本，不会自动加入历史材料。</p>}
+    </div> : null}
     {all.length ? <details ref={chooser} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
@@ -63,7 +64,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
             return rows.length ? <section key={group.key} aria-label={group.label} className="space-y-2">
               <h3 className="text-xs font-semibold text-slate-500">{group.label} · {rows.length} 份</h3>
               {rows.map(resume => <div key={resume.id} className="rounded-lg bg-slate-50 p-3">
-                <p className="break-words text-sm font-medium">{resume.title}</p>
+                <p className="break-words text-sm font-medium">{displayMaterialTitle(resume.title, resume.versions[0]?.id)}</p>
                 {resume.versions.length === 1 ? renderVersion(resume.versions[0], resume.title) : <details className="mt-2">
                   <summary className="cursor-pointer text-xs text-indigo-700">展开 {resume.versions.length} 个版本{resume.versions.some(version => version.id === selectedId) ? " · 包含已选版本" : ""}</summary>
                   <div className="mt-2 space-y-2">{resume.versions.map(version => renderVersion(version, resume.title))}</div>
@@ -78,9 +79,11 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
   </section>;
 
   function renderVersion(version: ResumeHistory["versions"][number], title: string) {
+    const filename = hideOriginalResumeFilename(version.id) ? "" : version.originalFilename;
+    const versionName = `第 ${version.versionNumber} 版`;
     return <label key={version.id} className="material-version mt-2 flex cursor-pointer items-start gap-2 rounded-lg bg-white p-2 text-sm">
-      <input className="mt-1 shrink-0" type="radio" name={radioName} aria-label={`${title} 第 ${version.versionNumber} 版 ${version.originalFilename ?? ""}`} checked={selectedId === version.id} onChange={() => choose(version.id)} />
-      <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename}
+      <input className="mt-1 shrink-0" type="radio" name={radioName} aria-label={[displayMaterialTitle(title, version.id), versionName, filename].filter(Boolean).join(" ")} checked={selectedId === version.id} onChange={() => choose(version.id)} />
+      <span className="min-w-0 break-words">{versionName}{filename && ` · ${filename}`}
         <span className="block text-xs text-slate-500">{version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
       </span>
     </label>;

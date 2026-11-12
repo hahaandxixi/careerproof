@@ -1,6 +1,6 @@
 "use client";
 
-import { displayMaterialTitle, showResumeFilenameInDetails } from "@/lib/demo-display-identity.js";
+import { displayMaterialTitle, hideOriginalResumeFilename } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import LoginLink from "@/components/LoginLink";
 import MaterialFileDropzone from "@/components/MaterialFileDropzone";
@@ -72,7 +72,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
   archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
 }) {
   const title = displayMaterialTitle(item.title, item.versionId);
-  const showFileOnRequest = item.kind === "resume" && showResumeFilenameInDetails(item.versionId);
+  const showFilename = item.kind !== "resume" || !hideOriginalResumeFilename(item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   const date = new Date(item.createdAt);
@@ -84,10 +84,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
           {isTarget && <span className="text-sm font-medium text-[#1d4a40]">当前上传目标</span>}
         </div>}
-        {showFileOnRequest ? <details className="mt-1 text-sm leading-6 text-slate-600">
-          <summary className="disclosure">原文件信息</summary>
-          <p className="[overflow-wrap:anywhere]">{item.filename}{item.sizeBytes != null && ` · ${materialFileSize(item.sizeBytes)}`}</p>
-        </details> : <p className="mt-1 break-words text-sm leading-6 text-slate-600">
+        {showFilename && <p className="mt-1 break-words text-sm leading-6 text-slate-600">
           <span className="break-all">{item.filename}</span>
           {item.sizeBytes != null && <span className="whitespace-nowrap"> · {materialFileSize(item.sizeBytes)}</span>}
           {item.kind === "project" && <span className="whitespace-nowrap"> · {item.materialRole === "reference" ? "第三方参考" : "个人作品"}</span>}
