@@ -1,4 +1,5 @@
 import type { MatchReport, ReportItem } from "./api/domain.ts";
+import { isMaterialGap } from "./verdict-display.js";
 
 // Match the saved plan's ordering without inheriting its three-item limit.
 function prioritize(items: ReportItem[]) {
@@ -35,8 +36,8 @@ export function effectiveReportStatus(item: ReportItem) {
 
 export function reportStatusTone(item: ReportItem) {
   const status = effectiveReportStatus(item);
-  if (status === "supported" || status === "partial") return status;
-  return status === "gap" || status === "claimed_only" ? "gap" : "other";
+  if (status === "supported") return status;
+  return isMaterialGap(status) || status === "claimed_only" ? "gap" : "other";
 }
 
 export function nextReportGap(gaps: ReportItem[], selected: string | null) {
@@ -46,22 +47,18 @@ export function nextReportGap(gaps: ReportItem[], selected: string | null) {
 }
 
 export function evidenceWorkspace(items: ReportItem[]) {
-  const groups: Record<"supported" | "partial" | "gap" | "other", ReportItem[]> = {
-    supported: [], partial: [], gap: [], other: [],
+  const groups: Record<"supported" | "gap" | "other", ReportItem[]> = {
+    supported: [], gap: [], other: [],
   };
   for (const item of prioritize(items)) groups[reportStatusTone(item)].push(item);
-  const { supported, partial, gap: gaps, other } = groups;
-  const priorities = prioritize(items.filter(item => {
-    const tone = reportStatusTone(item);
-    return tone === "gap" || tone === "partial";
-  }));
-  return { supported, partial, gaps, other, priorities };
+  const { supported, gap: gaps, other } = groups;
+  return { supported, gaps, other, priorities: gaps };
 }
 
 export function evidenceWorkspaceSummary(items: ReportItem[]) {
   if (!items.length) return "这份报告尚无逐项要求，暂不能概括材料支持状态。";
   const state = evidenceWorkspace(items);
-  const counts = `${items.length} 项要求：${state.supported.length} 项有证据支持、${state.partial.length} 项部分支持、${state.gaps.length} 项待补材料、${state.other.length} 项未覆盖或需复核。`;
+  const counts = `${items.length} 项要求：${state.supported.length} 项有证据支持、${state.gaps.length} 项待补或仅声明、${state.other.length} 项未覆盖或需复核。`;
   const first = state.priorities[0];
   return first ? `${counts}按岗位权重，先补「${first.requirementTitle}」的材料缺口。` : counts;
 }

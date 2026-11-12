@@ -1,4 +1,4 @@
-import { VERDICT_LABELS, APPLICATION_STATUS_LABELS } from "../src/lib/verdict-display.js";
+import { VERDICT_LABELS, APPLICATION_STATUS_LABELS, EVIDENCE_FILTERS } from "../src/lib/verdict-display.js";
 import * as supportIndex from "../src/lib/support-index.js";
 import * as demoIdentity from "../src/lib/demo-display-identity.js";
 // Execute the real Workspace/event handlers with deterministic hooks and API
@@ -53,7 +53,7 @@ function fixture(count=2,editRow=value=>value,options={}){
   "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
   "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/skill-radar":{RADAR_STATUS:{supported:"有证据支持",partial:"部分证据支持",claimed_only:"仅简历声明",gap:"材料待补充",unsupported:"规则暂未支持"}},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
-  "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS}};
+  "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS,EVIDENCE_FILTERS}};
  const code=transform(readFileSync(new URL("../src/components/ApplicationBoard.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const render=()=>{cursor=0;const outer=mod.exports.default({jobId});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
@@ -182,7 +182,7 @@ test("enterprise status and evidence filters apply immediately while retaining c
  h.button(tree,"企业已回复").props.onClick();tree=await h.settle();
  assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"Python",status:"replied",requirementId:"",verdict:""});
  assert.equal(h.button(tree,"企业已回复").props["aria-pressed"],true);
- h.button(tree,"缺少材料").props.onClick();tree=await h.settle();assert.equal(h.queries.at(-1).verdict,"gap");assert.equal(h.queries.at(-1).status,"replied");
+ h.button(tree,"材料待补充").props.onClick();tree=await h.settle();assert.equal(h.queries.at(-1).verdict,"needs_material");assert.equal(h.queries.at(-1).status,"replied");
  assert.ok(h.nodes(tree).some(n=>n.type==="button"&&n.props["aria-label"]==="移出对照：候选人a"));
  assert.equal(h.counts.open,0);assert.equal(h.counts.reply,0);
  h.button(tree,"重置").props.onClick();await h.settle();assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"",status:"",requirementId:"",verdict:""});

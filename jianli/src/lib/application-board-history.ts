@@ -22,13 +22,14 @@ export function readApplicationBoardHistory(historyState: unknown, ownerId: stri
   const saved = record(record(historyState)[key]);
   const valid = saved.version === 1 && saved.ownerId === ownerId && saved.jobId === jobId && !!ownerId;
   const filters = valid ? record(saved.filters) : {};
+  const verdict = filters.verdict === "supported" ? "supported_only" : filters.verdict === "gap" ? "needs_material" : filters.verdict;
   return {
     page: valid && Number.isSafeInteger(saved.page) && (saved.page as number) > 0 ? saved.page as number : 1,
     filters: {
       q: text(filters.q, 200),
       status: ["submitted", "viewed", "downloaded", "replied"].includes(String(filters.status)) ? String(filters.status) : "",
       requirementId: text(filters.requirementId, 100),
-      verdict: ["supported", "claimed_only", "gap", "unsupported"].includes(String(filters.verdict)) ? String(filters.verdict) : "",
+      verdict: ["supported_only", "claimed_only", "needs_material", "unsupported"].includes(String(verdict)) ? String(verdict) : "",
     },
     comparisonIds: valid && Array.isArray(saved.comparisonIds)
       ? [...new Set(saved.comparisonIds.filter((id): id is string => typeof id === "string" && !!id && id.length <= 100))].slice(0, 4) : [],

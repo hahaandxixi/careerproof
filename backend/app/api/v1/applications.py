@@ -55,7 +55,9 @@ async def candidates(
     q: str | None = Query(default=None, max_length=200),
     status: Literal["submitted", "viewed", "downloaded", "replied"] | None = None,
     requirement_id: UUID | None = Query(default=None, alias="requirementId"),
-    verdict: Literal["supported", "claimed_only", "gap", "unsupported"] | None = None,
+    verdict: Literal[
+        "supported", "claimed_only", "gap", "unsupported", "supported_only", "needs_material"
+    ] | None = None,
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):

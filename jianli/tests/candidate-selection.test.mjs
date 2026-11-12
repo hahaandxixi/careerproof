@@ -4,12 +4,13 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { HEATMAP_DEMO, DEMO_REQUIREMENTS, DEMO_LABELS, demoCellClass } from "../src/lib/heatmap-demo.ts";
 import { filterApplications } from "../src/lib/application-comparison.ts";
+import { EVIDENCE_FILTERS } from "../src/lib/verdict-display.js";
 import * as supportIndex from "../src/lib/support-index.js";
 const require=createRequire(import.meta.url);
 const {transform}=require("sucrase");
 function fixture(){
  const state=[];let cursor=0;
- const modules={react:{useState(v){const i=cursor++;if(!(i in state))state[i]=v;return[state[i],v=>state[i]=v];}},"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/application-comparison":{filterApplications},"@/lib/heatmap-demo":{HEATMAP_DEMO,DEMO_REQUIREMENTS,DEMO_LABELS,demoCellClass},"@/lib/support-index.js":supportIndex,"./SkillRadar":{default:()=>null,__esModule:true}};
+ const modules={react:{useState(v){const i=cursor++;if(!(i in state))state[i]=v;return[state[i],v=>state[i]=v];}},"react/jsx-runtime":require("react/jsx-runtime"),"@/lib/application-comparison":{filterApplications},"@/lib/verdict-display.js":{EVIDENCE_FILTERS},"@/lib/heatmap-demo":{HEATMAP_DEMO,DEMO_REQUIREMENTS,DEMO_LABELS,demoCellClass},"@/lib/support-index.js":supportIndex,"./SkillRadar":{default:()=>null,__esModule:true}};
  const code=transform(readFileSync(new URL("../src/components/HeatmapDemo.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const render=()=>{cursor=0;return mod.exports.default();};

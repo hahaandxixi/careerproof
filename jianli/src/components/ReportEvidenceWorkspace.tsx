@@ -22,7 +22,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
 }) {
   const tone = reportStatusTone(item);
   const supported = tone === "supported";
-  const actionable = tone === "gap" || tone === "partial";
+  const actionable = tone === "gap";
   const unsupported = effectiveReportStatus(item) === "unsupported";
   const studentSupplement = role === "student" && actionable;
   const action = savedRequirementAction(report, item);

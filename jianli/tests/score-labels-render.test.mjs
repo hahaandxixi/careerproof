@@ -84,7 +84,7 @@ test("判定用语由同一来源提供，历史值和未评估不混为新结�
 });
 
 for (const [verdict, label] of Object.entries({
-  supported: "有证据支持", partial: "部分证据支持", claimed_only: "仅简历声明",
+  supported: "有证据支持", partial: "材料待补充", claimed_only: "仅简历声明",
   gap: "材料待补充", unsupported: "规则暂未支持", verified: "有证据支持",
 })) {
   test(`徽标与雷达实际渲染统一判定：${verdict}`, () => {

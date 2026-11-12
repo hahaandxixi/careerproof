@@ -1,18 +1,20 @@
 ﻿import type { MatchReport, Page, ReportItem, ReportSummary } from "./api/domain.ts";
 
+import { isMaterialGap, VERDICT_LABELS } from "./verdict-display.js";
+
 export const PANORAMA_PAGE_SIZE = 12;
 export const PANORAMA_CONCURRENCY = 3;
-export const PANORAMA_STATUSES = ["supported", "partial", "claimed_only", "gap", "unsupported", "unknown"] as const;
+export const PANORAMA_STATUSES = ["supported", "claimed_only", "gap", "unsupported", "unknown"] as const;
 export type PanoramaStatus = typeof PANORAMA_STATUSES[number];
 export const PANORAMA_STATUS_LABELS: Record<PanoramaStatus, string> = {
-  supported: "有证据支持", partial: "部分支持", claimed_only: "仅简历声明",
-  gap: "材料待补充", unsupported: "规则暂未支持", unknown: "状态未知 / 未评估",
+  supported: VERDICT_LABELS.supported, claimed_only: VERDICT_LABELS.claimed_only,
+  gap: VERDICT_LABELS.gap, unsupported: VERDICT_LABELS.unsupported, unknown: "状态未知 / 未评估",
 };
 export type StatusCounts = Record<PanoramaStatus, number>;
-export const PANORAMA_FILTERS = ["all", "supported", "partial", "claimed_only", "gap"] as const;
+export const PANORAMA_FILTERS = ["all", "supported", "claimed_only", "gap"] as const;
 export type PanoramaFilter = typeof PANORAMA_FILTERS[number];
 export const PANORAMA_FILTER_LABELS: Record<PanoramaFilter, string> = {
-  all: "全部记录", supported: "有证据支持", partial: "部分支持", claimed_only: "仅简历声明", gap: "待补材料",
+  all: "全部记录", supported: VERDICT_LABELS.supported, claimed_only: VERDICT_LABELS.claimed_only, gap: VERDICT_LABELS.gap,
 };
 /** One record can match several views; the original saved status is never rewritten. */
 export function panoramaFilterMatches(status: PanoramaStatus, filter: PanoramaFilter): boolean {
@@ -64,6 +66,7 @@ export const PANORAMA_CATEGORIES = [...categories.map(([name]) => name), "其他
 export function skillDisplayName(value: string): string { return value.trim().replace(/\s+/g, " "); }
 export function panoramaStatus(verdict: string): PanoramaStatus {
   if (verdict === "verified") return "supported";
+  if (isMaterialGap(verdict)) return "gap";
   return PANORAMA_STATUSES.includes(verdict as PanoramaStatus) ? verdict as PanoramaStatus : "unknown";
 }
 export function countContexts(contexts: SkillContext[]): StatusCounts {

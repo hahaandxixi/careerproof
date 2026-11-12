@@ -101,7 +101,7 @@ test("known whole-chart index changes geometry and readable values together; sel
  const before=JSON.stringify(dimensions);
  const first=render({dimensions,initialRequirementId:"FastAPI"}), second=render({dimensions,initialRequirementId:"SQL"});
  for(const html of [first,second]){
-   assert.match(html,/材料支持度指数 100/);assert.match(html,/61.5 · 部分证据支持/);assert.match(html,/15.4 · 仅简历声明/);
+   assert.match(html,/材料支持度指数 100/);assert.match(html,/61.5 · 材料待补充/);assert.match(html,/15.4 · 仅简历声明/);
    assert.match(html,/原始分值/);assert.match(html,/evidence-v4/);assert.doesNotMatch(html,/65%|100%/);
  }
  // Same plotted coordinates after selecting another requirement; highlight/radius can differ.
@@ -113,7 +113,7 @@ test("known whole-chart index changes geometry and readable values together; sel
 });
 test("unknown versions keep a whole raw chart; anomalous known raw values remain visible without a dot",()=>{
  const dimensions=[knownDim("FastAPI","supported",65),{...knownDim("SQL","partial",40),formulaVersion:"unknown"},knownDim("pytest","gap",0)];
- const html=render({dimensions});assert.match(html,/未换算/);assert.match(html,/65 · 有证据支持/);assert.match(html,/40 · 部分证据支持/);
+ const html=render({dimensions});assert.match(html,/未换算/);assert.match(html,/65 · 有证据支持/);assert.match(html,/40 · 材料待补充/);
  const bad=render({dimensions:[knownDim("FastAPI","supported",66),knownDim("SQL","partial",40),knownDim("pytest","gap",0)]});
  assert.match(bad,/超过已确认规则上限65/);assert.match(bad,/原始值 66/);
  assert.doesNotMatch(bad,/<title>FastAPI：材料支持度指数/);

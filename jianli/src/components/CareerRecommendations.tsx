@@ -144,11 +144,6 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
       </fieldset>}
     </form>
 
-    <details className="text-sm text-slate-600">
-      <summary className="disclosure">推荐依据</summary>
-      <p className="max-w-3xl leading-7">系统先用本地证据规则筛出岗位，再由 AI 比较不同方向的候选岗位、指出缺口和可补充材料。上传新版后可以重新生成。推荐顺序不代表能力认证或录用概率。</p>
-    </details>
-
     <div className="flex flex-wrap items-center gap-3 text-sm">
       <button type="button" className="btn-secondary" disabled={busy || loading || historyLoading} onClick={viewPreviousPlan}>{historyLoading ? "正在读取上次规划…" : "查看上次保存的规划"}</button>
       <span className="text-xs text-slate-500">仅查看，不会调用 AI；不会替换当前选择的材料。</span>

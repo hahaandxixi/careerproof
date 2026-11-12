@@ -37,7 +37,7 @@ test("demo and real heatmaps use evidence states even when the current rule cap 
   assert.equal(heatmapCellClass(d.verdict, d.score), demoCellClass(d.verdict));
  }
  assert.match(heatmapCellClass("supported", 65), /emerald/);
- assert.match(heatmapCellClass("partial", 40), /indigo/);
+ assert.equal(heatmapCellClass("partial", 40), heatmapCellClass("gap", 0));
  // Historic high self claims must remain self claims, never look evidence-backed.
  assert.match(heatmapCellClass("claimed_only", 90), /amber.*border-dashed/);
  assert.match(heatmapCellClass("gap", 0), /border-dashed/);

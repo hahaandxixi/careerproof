@@ -259,8 +259,7 @@ test("workspace filters partition real states, include review priority and prese
  const before=JSON.stringify(values);
  assert.deepEqual(workspace.workspaceRequirements(values,"priority").map(x=>x.requirementId),["tests","run","review","outside"]);
  assert.deepEqual(workspace.workspaceRequirements(values,"supported").map(x=>x.requirementId),["implementation"]);
- assert.equal(workspace.workspaceRequirements(values,"partial").length,1);
- assert.equal(workspace.workspaceRequirements(values,"gaps").length,1);
+assert.deepEqual(workspace.workspaceRequirements(values,"gaps").map(x=>x.requirementId),["tests","run"]);
  assert.equal(workspace.workspaceRequirements(values,"other").length,2);
  assert.equal(workspace.workspaceRequirements(values,"all").length,5);
  assert.equal(JSON.stringify(values),before);
@@ -294,15 +293,16 @@ test("shared report header displays analysis mode once and gives missing version
 });
 
 test("one reader filter group counts saved evidence states and distinguishes review and coverage", () => {
- const values=[...items,{...items[0],requirementId:"rejected",confirmationStatus:"rejected"},{...items[0],requirementId:"outside",verdict:"unsupported"}];
+ const values=[...items,{...items[1],requirementId:"rejected",confirmationStatus:"rejected"},{...items[0],requirementId:"outside",verdict:"unsupported"}];
  const value={candidateName:"合成学生",jobTitle:"后端",createdAt:"2026-10-27T00:00:00Z",items:values,analysisMode:"rules",aiFallbackUsed:false,materials:[]};
  const before=JSON.stringify(value);
  const html=renderToStaticMarkup(React.createElement(Reader,{items:values},...articles));
  assert.equal((html.match(/按已保存的材料支持状态筛选/g) ?? []).length,1);
  assert.match(html,/有证据支持 <strong>1<\/strong>/);
- assert.match(html,/待补或仅声明 <strong>1<\/strong>/);
+ assert.match(html,/待补或仅声明 <strong>2<\/strong>/);
  assert.match(html,/全部要求 <strong>5<\/strong>/);
  assert.match(html,/未覆盖或需复核 <strong>2<\/strong>/);
+ assert.doesNotMatch(html,/部分(?:证据)?支持/);
  assert.equal(JSON.stringify(value),before);
 });
 

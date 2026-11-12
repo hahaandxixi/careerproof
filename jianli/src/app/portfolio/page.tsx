@@ -1,10 +1,10 @@
 "use client";
 
-import { displayMaterialTitle, hideOriginalResumeFilename } from "@/lib/demo-display-identity.js";
+import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import LoginLink from "@/components/LoginLink";
 import MaterialFileDropzone from "@/components/MaterialFileDropzone";
-import { latestMaterialVersions, materialFileError, materialFileSize, type UploadedMaterial } from "@/lib/material-upload";
+import { latestMaterialVersions, materialFileError, type UploadedMaterial } from "@/lib/material-upload";
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
 import ReportUploadReturn from "@/components/ReportUploadReturn";
 import MaterialUploadIntent from "@/components/MaterialUploadIntent";
@@ -39,7 +39,6 @@ interface UploadRecord {
   progress: number;
   currentStep: string;
   errorMessage?: string;
-  sizeBytes?: number | null;
 }
 
 const TERMINAL_STATUSES = new Set(["completed", "failed", "cancelled"]);
@@ -72,29 +71,24 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
   archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
 }) {
   const title = displayMaterialTitle(item.title, item.versionId);
-  const showFilename = item.kind !== "resume" || !hideOriginalResumeFilename(item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   const date = new Date(item.createdAt);
   return (
     <article className="material-register-row" data-upload-target={isTarget || undefined} data-historical={historical || undefined}>
       <div className="material-row-heading">
-        {!historical && <div className="flex flex-wrap items-baseline gap-x-2">
+        <div className="flex flex-wrap items-baseline gap-x-2">
           <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
           {isTarget && <span className="text-sm font-medium text-[#1d4a40]">当前上传目标</span>}
-        </div>}
-        {showFilename && <p className="mt-1 break-words text-sm leading-6 text-slate-600">
-          <span className="break-all">{item.filename}</span>
-          {item.sizeBytes != null && <span className="whitespace-nowrap"> · {materialFileSize(item.sizeBytes)}</span>}
-          {item.kind === "project" && <span className="whitespace-nowrap"> · {item.materialRole === "reference" ? "第三方参考" : "个人作品"}</span>}
-        </p>}
+        </div>
+        {item.materialRole === "reference" && <span className="text-sm text-slate-600">第三方参考</span>}
+        {!complete && <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>}
       </div>
       <div className="text-sm leading-6 text-slate-700">
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
         {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
-      <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
         {complete && item.kind === "project" && <Link className="action-link" href={`/materials/project/${item.versionId}`}>查看内容</Link>}
@@ -483,7 +477,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         {pagedUploads.length > 0 && (
           <div className="divide-y divide-slate-200">
             <div aria-hidden="true" className="material-register-columns">
-              <span>材料名称</span><span>版本</span><span>处理状态</span><span>更新时间</span><span>操作</span>
+              <span>材料名称</span><span>版本</span><span>更新时间</span><span>操作</span>
             </div>
             {pagedUploads.map(item => {
               const history = uploads.filter(version => version.kind === item.kind && version.resourceId === item.resourceId && version.key !== item.key);

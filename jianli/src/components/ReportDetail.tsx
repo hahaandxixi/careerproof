@@ -90,7 +90,7 @@ function ReportWorkspace({ id }: { id: string }) {
   const projectMaterials = report.materials.filter(material => material.kind === "project");
   const supplementItems = report.items.filter(item => {
     const state = evidenceWorkspace([item]);
-    return state.gaps.length > 0 || state.partial.length > 0;
+    return state.gaps.length > 0;
   });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
   const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
@@ -116,7 +116,7 @@ function ReportWorkspace({ id }: { id: string }) {
   const studentOverview = user?.role === "student" ? <div className="report-overview-band">
       <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
       <section className="report-radar-side" aria-label="岗位技能雷达">
-        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span>{report.items.some(item => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") && <span>需复核（不绘点）</span>}</div>
+        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充</span><span data-state="unsupported">规则暂未支持</span>{report.items.some(item => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") && <span>需复核（不绘点）</span>}</div>
         {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
       </section>
     </div> : null;
