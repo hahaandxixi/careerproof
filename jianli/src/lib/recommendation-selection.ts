@@ -31,3 +31,15 @@ export function resolveInitialMaterialSelection(
       .slice(0, 10),
   };
 }
+
+export function unavailableRequestedMaterials(
+  selection: ReturnType<typeof resolveInitialMaterialSelection>,
+  requestedResumeId: string,
+  requestedProjectIds: string[],
+) {
+  const missing = [...new Set(requestedProjectIds)].filter(id => !selection.projectVersionIds.includes(id));
+  return [
+    ...(requestedResumeId && !selection.resumeVersionId ? ["简历版本"] : []),
+    ...(missing.length ? [`${missing.length} 个项目版本`] : []),
+  ];
+}

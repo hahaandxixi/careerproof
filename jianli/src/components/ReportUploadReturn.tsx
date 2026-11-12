@@ -7,16 +7,17 @@ import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { MatchReport } from "@/lib/api/domain";
 import type { UploadedMaterial } from "@/lib/material-upload";
-import { reportFollowUpContext, reportReanalysisHref } from "@/lib/report-follow-up";
+import { reportFollowUpContext, reportJobHref, reportReanalysisHref } from "@/lib/report-follow-up";
 
 export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded?: UploadedMaterial | null; onMaterials?: (materials: MatchReport["materials"] | undefined) => void }) {
   const query = useSearchParams();
   const context = reportFollowUpContext(query);
   const growthTask = query.get("growthTask");
+  const sourceProjectVersion = query.get("sourceProjectVersion");
   const reportId = context?.reportId, requirementId = context?.requirementId;
   const [entry, setEntry] = useState<{ reportId: string; report: MatchReport | null; error: string } | null>(null);
   const [revision, setRevision] = useState(0);
-  const [uploadState, setUploadState] = useState<{ key: string; ready: boolean; message: string } | null>(null);
+  const [uploadState, setUploadState] = useState<{ key: string; ready: boolean; message: string; projectVersionIds?: string[] } | null>(null);
   useEffect(() => {
     if (!reportId || !requirementId || growthTask) return;
     let active = true;
@@ -55,7 +56,10 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
           setUploadState({ key, ready: false, message: version.status === "failed" || version.status === "cancelled" ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。" : "本次上传仍在处理中；处理完成后再回来确认版本。" });
           if (version.status !== "failed" && version.status !== "cancelled" && attempts < 60) timer = setTimeout(check, 1800);
         } else {
-          setUploadState({ key, ready: true, message: "本次上传已处理完成，可在原岗位核对预选版本后重新分析。" });
+          setUploadState({
+            key, ready: true, message: "本次上传已处理完成。",
+            projectVersionIds: uploaded.kind === "project" ? source.versions.map(value => value.id) : undefined,
+          });
         }
       } catch {
         if (active) {
@@ -70,7 +74,9 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const uploadKey = uploaded && report ? `${report.id}:${uploaded.kind}:${uploaded.versionId}` : "";
   const currentUploadState = uploadState?.key === uploadKey ? uploadState : null;
   const reanalysisHref = uploaded && report && currentUploadState?.ready
-    ? reportReanalysisHref(report, uploaded, query.get("sourceProjectVersion"))
+    ? reportReanalysisHref(report, uploaded, currentUploadState.projectVersionIds
+      ? { versionIds: currentUploadState.projectVersionIds, sourceVersionId: sourceProjectVersion }
+      : undefined, requirementId)
     : null;
   // The existing growth-task return path keeps its original fixed-baseline contract.
   if (!context || growthTask) return null;
@@ -85,9 +91,9 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
         <Link className="action-link" href={`/reports/${reportId}#requirement-${requirementId}`}>返回原报告这项要求</Link>
         {reanalysisHref
           ? <Link className="btn inline-flex min-h-11 items-center" href={reanalysisHref}>使用新版材料重新分析 →</Link>
-          : <Link className="action-link" href={`/jobs/${report!.jobId}`}>到原岗位手动选择版本</Link>}
+          : <Link className="action-link" href={reportJobHref(report!, requirementId)}>到原岗位手动选择版本</Link>}
       </div>
-      <p className="text-xs leading-6 text-slate-600">按钮只会打开原岗位并把本次上传版本预先选入；你仍可调整简历和每个项目版本。未核对并确认前不会新增分析，也不会勾选外部 AI 同意。新报告保留本次原报告作为 A/B 基准；企业固定快照不会自动更新。</p>
+      <p className="text-xs leading-6 text-slate-600">{reanalysisHref ? "将预选本次上传版本，请在原岗位核对后主动分析。" : "在原岗位选择要使用的版本。"}原报告保留为对比基准。</p>
     </>}
   </section>;
 }

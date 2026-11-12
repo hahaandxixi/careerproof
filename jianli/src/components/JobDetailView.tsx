@@ -8,7 +8,8 @@ import { api, errorMessage, type ResumeHistory, type ProjectHistory } from "@/li
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobDetail } from "@/lib/api/domain";
 import { applicationNextAction, applicationStatusText } from "@/lib/application-display";
 import { bindJobApplicationStatusLifecycle, createJobApplicationStatusSession, type JobApplicationStatusState } from "@/lib/job-application-status";
-import { resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
+import { resolveInitialMaterialSelection, unavailableRequestedMaterials } from "@/lib/recommendation-selection";
+import { matchTaskHref } from "@/lib/task-navigation";
 import { useAuth } from "./AuthProvider";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import ProjectVersionPicker from "./ProjectVersionPicker";
@@ -20,11 +21,13 @@ export default function JobDetailView({
   initialResumeVersionId = "",
   initialProjectVersionIds = [],
   compareTo = "",
+  sourceRequirement = "",
 }: {
   id: string;
   initialResumeVersionId?: string;
   initialProjectVersionIds?: string[];
   compareTo?: string;
+  sourceRequirement?: string;
 }) {
   const { user } = useAuth();
   const [job, setJob] = useState<JobDetail | null>(null);
@@ -43,7 +46,7 @@ export default function JobDetailView({
     <section className="panel"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-sm text-[#245c50]">{CATEGORY_LABELS[job.category] ?? job.category} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p><h1 className="page-title mt-2">{displayJobTitle(job.title, job.id)}</h1><p className="mt-2 text-sm text-slate-500">{demoJobAlias(job.id)?.companyName ?? job.companyName} · {job.city || "城市未填写"}</p>{(job.isDemo || demoJobAlias(job.id)) && <details className="mt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="max-w-2xl py-2 leading-6">本岗位及所列企业为虚构资料，用于体验材料核对流程。</p></details>}</div><span className="status-chip">{job.status === "published" ? (job.isDemo || demoJobAlias(job.id) ? "已发布" : "招聘中") : job.status === "draft" ? "草稿" : "已关闭"}</span></div><p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-slate-600">{(demoJobAlias(job.id)?.description ?? job.description) || "暂无岗位描述"}</p>{user?.role === "enterprise" && job.recordProvenance !== "test_fixture" && <div className="card-actions mt-5"><Link className="btn" href={`/jobs/${job.id}/applications`}>查看投递</Link></div>}</section>
     <ScenarioMaterials title={job.title} companyName={job.companyName} isDemo={job.isDemo} />
     <section className="workspace-sheet"><h2 className="section-title px-4 py-3 sm:px-5">岗位要求</h2><ol className="workspace-list border-t border-slate-200">{job.requirements.map((requirement, index) => <li key={requirement.id} className="workspace-row"><p className="font-medium">{index + 1}. {requirement.rawText}</p><p className="mt-2 text-xs text-slate-500">{requirement.skillName} · 重要程度 {requirement.weight} / 5 · {requirement.isRequired ? "必要要求" : "加分项"}</p>{requirement.sourceQuote && <p className="mt-2 rounded-lg bg-white p-2 text-xs leading-6 text-slate-600">岗位原文：“{requirement.sourceQuote}”</p>}</li>)}</ol></section>
-    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} /></AccessGate>}
+    {job.status === "published" && (!user || user.role === "student") && <AccessGate roles={["student"]}><MatchForm key={user?.id} job={job} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} sourceRequirement={sourceRequirement} /></AccessGate>}
     {job.status !== "published" && <p className="panel text-sm text-amber-700">该岗位尚未发布或已关闭，目前不能创建新的匹配任务。</p>}
   </div>;
 }
@@ -65,11 +68,13 @@ function MatchForm({
   initialResumeVersionId,
   initialProjectVersionIds,
   compareTo,
+  sourceRequirement,
 }: {
   job: JobDetail;
   initialResumeVersionId: string;
   initialProjectVersionIds: string[];
   compareTo: string;
+  sourceRequirement: string;
 }) {
   const router = useRouter();
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
@@ -83,6 +88,7 @@ function MatchForm({
   const [busy, setBusy] = useState(false);
   const submitting = useRef(false);
   const [revision, setRevision] = useState(0);
+  const [unavailable, setUnavailable] = useState<string[]>([]);
   // 传智杯56：投递状态读取与材料加载完全解耦——独立会话、独立错误与重试；
   // 状态读取失败只影响提示行，不重置材料、不阻断生成报告。
   const [applicationStatus, setApplicationStatus] = useState<JobApplicationStatusState>({ kind: "loading" });
@@ -102,6 +108,7 @@ function MatchForm({
       );
       setResumeVersionId(selection.resumeVersionId);
       setProjectVersionIds(selection.projectVersionIds);
+      setUnavailable(unavailableRequestedMaterials(selection, initialResumeVersionId, initialProjectVersionIds));
     }).catch(reason => { if (current) setError(errorMessage(reason)); }).finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
   }, [initialProjectVersionIds, initialResumeVersionId, revision]);
@@ -110,7 +117,8 @@ function MatchForm({
     submitting.current = true; setBusy(true); setError("");
     try {
       const task = await api.createMatch({ jobId: job.id, resumeVersionId, projectVersionIds, externalAiConsent, usePreviousReport });
-      router.push(`/tasks/${task.taskId}${compareTo ? `?compareTo=${encodeURIComponent(compareTo)}` : ""}`);
+      const requirement = job.requirements.find(item => item.id === sourceRequirement);
+      router.push(matchTaskHref(task.taskId, compareTo, requirement?.id));
     }
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
@@ -124,6 +132,7 @@ function MatchForm({
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
       <fieldset disabled={busy} className="space-y-4">
+        {unavailable.length > 0 && <p role="status" className="text-sm text-amber-900">原选择中的{unavailable.join("、")}未载入。请核对下方已选版本。</p>}
         <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={setResumeVersionId} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
         <div className="rounded-xl border border-[#cfc9b8] bg-[#e7efe9] p-4 text-sm text-indigo-950">

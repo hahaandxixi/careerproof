@@ -8,10 +8,11 @@ import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn,
-  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
+  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
+import EvidenceSnippet from "./EvidenceSnippet";
 import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
@@ -220,6 +221,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
   const jobTitle = displayJobTitle(session.jobTitle, session.jobId);
   const turn = selectedPracticeTurn(session, selectedTurnIndex);
+  const summaryNextStep = visibleSummaryNextStep(session.summary, turn);
   const isBusy = !!turn && busy === turn.turnIndex;
   const busyIdle = busy === null;
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
@@ -375,7 +377,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
               <p className={styles.summaryNote}>{session.summary.note}</p>
             </div>
           </details>
-          {!!session.summary.nextStep && <p className={styles.suggestion}><strong>下一步：</strong>{session.summary.nextStep}</p>}
+          {summaryNextStep && <p className={styles.suggestion}><strong>下一步：</strong>{summaryNextStep}</p>}
           <div className={styles.actions}>
             {!knowledgeOutdated && <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>{busy === "restart" ? "正在创建新练习…" : "再练一次"}</button>}
             <Link className="btn-secondary" href={reportHref}>回到报告这项要求</Link>
@@ -407,7 +409,7 @@ function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session
               <strong>{filename} · 第 {item.lineStart}{item.lineEnd === item.lineStart ? "" : `–${item.lineEnd}`} 行</strong>
               <span>{material && <>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版 · </>}{item.provenance === "reference" ? "第三方参考，不计评级" : item.provenance === "portfolio" ? "本人材料" : "报告材料"}</span>
             </summary>
-            {item.snippet ? <pre className={styles.snippet} tabIndex={0} aria-label={`${filename} 原文，第 ${item.lineStart} 至 ${item.lineEnd} 行`}><code>{item.snippet}</code></pre>
+            {item.snippet ? <div className={styles.sourceSnippet}><EvidenceSnippet evidence={item} materials={session.materials} showContextNote={false} theme="dark"/></div>
               : <p className={styles.empty}>没有保存源码片段。</p>}
             {filename !== path && <p className={styles.sourcePath}>{path}</p>}
           </details>

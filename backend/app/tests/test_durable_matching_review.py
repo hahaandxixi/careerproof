@@ -19,6 +19,7 @@ from app.models.analysis import AiUsageLog, AnalysisTask, MatchReport
 from app.models.enums import TaskStatus
 from app.models.identity import User
 from app.models.portfolio import ProjectVersion, ResumeVersion
+from app.models.recruitment import JobRequirement
 from app.services import analysis as analysis_service
 from app.services.ai_request_attempts import AttemptService
 from app.services.task_lifecycle import recover_interrupted_tasks
@@ -330,6 +331,10 @@ async def test_report_transaction_before_commit_failure_keeps_prior_ledger_commi
 ):
     app, factory, _runtime = durable_db
     calls, failed = [], []
+    requirement_id = UUID("aaaaaaaa-aaaa-4aaa-8aaa-13800138000a")
+
+    def assign_phone_shaped_requirement_id(_mapper, _connection, target):
+        target.id = requirement_id
 
     def handler(request):
         calls.append(request)
@@ -343,18 +348,25 @@ async def test_report_transaction_before_commit_failure_keeps_prior_ledger_commi
             raise RuntimeError("synthetic failure of flushed report transaction before_commit")
 
     provider = synthetic_provider(handler)
-    async with matching_case(app, monkeypatch, provider, "review-commit-failure") as case:
-        event.listen(Session, "before_commit", fail_report_commit)
-        try:
-            task_id = await submit_case(case)
-        finally:
-            event.remove(Session, "before_commit", fail_report_commit)
+    event.listen(JobRequirement, "before_insert", assign_phone_shaped_requirement_id)
+    try:
+        async with matching_case(app, monkeypatch, provider, "review-commit-failure") as case:
+            event.listen(Session, "before_commit", fail_report_commit)
+            try:
+                task_id = await submit_case(case)
+            finally:
+                event.remove(Session, "before_commit", fail_report_commit)
+    finally:
+        event.remove(JobRequirement, "before_insert", assign_phone_shaped_requirement_id)
     assert failed == [task_id]
     await assert_one_fee_no_report(factory, task_id)
     async with factory() as session:
         task = await session.get(AnalysisTask, task_id)
         assert task.status == TaskStatus.FAILED
     assert len(calls) == 1
+    assert classify_request(calls[0]) == "analysis"
+    source = json.loads(json.loads(calls[0].content)["messages"][1]["content"])
+    assert source["requirements"][0]["requirement_id"] == str(requirement_id)
 
 
 @pytest.mark.parametrize("change", [

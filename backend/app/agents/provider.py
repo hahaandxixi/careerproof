@@ -53,6 +53,7 @@ _EXTERNAL_TEXT_REDACTIONS = (
         r"\1：[已脱敏姓名]",
     ),
 )
+_REQUIREMENT_UUID = re.compile(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")
 
 
 def _python_name_annotation_starts(value: str) -> set[int]:
@@ -98,7 +99,13 @@ def _redact_personal_value(value):
     if isinstance(value, dict):
         path = value.get("file_path", value.get("filePath", value.get("file", "")))
         return {
-            key: redact_external_text(item, python_source=True)
+            # The model must echo the generated key byte-for-byte. Free text
+            # and non-UUID values still pass through the personal-data filter.
+            key: item
+            if key in {"requirement_id", "requirementId"}
+            and isinstance(item, str)
+            and _REQUIREMENT_UUID.fullmatch(item)
+            else redact_external_text(item, python_source=True)
             if key == "snippet"
             and isinstance(item, str)
             and isinstance(path, str)

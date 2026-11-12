@@ -8,6 +8,7 @@ export default async function JobDetailPage({
     resumeVersionId?: string | string[];
     projectVersionId?: string | string[];
     compareTo?: string | string[];
+    sourceRequirement?: string | string[];
   }>;
 }) {
   const { id } = await params;
@@ -21,5 +22,6 @@ export default async function JobDetailPage({
       ? [query.projectVersionId]
       : [];
   const compareTo = Array.isArray(query.compareTo) ? query.compareTo[0] ?? "" : query.compareTo ?? "";
-  return <JobDetailView id={id} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} />;
+  const sourceRequirement = typeof query.sourceRequirement === "string" ? query.sourceRequirement : "";
+  return <JobDetailView id={id} initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} compareTo={compareTo} sourceRequirement={sourceRequirement} />;
 }

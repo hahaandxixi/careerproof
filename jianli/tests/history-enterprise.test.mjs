@@ -110,7 +110,7 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
     explanation: "容量不足时拒绝报名", aiExplanation: null, aiInformationGap: null,
     evidenceList: [{ citationId: "R1-E1", filePath: "version-a/service.py", projectVersionId: "version-a", lineStart: 12, lineEnd: 17, snippet: "raise CapacityError()", contentHash: "hash-a", evidenceType: "project_code" }],
   };
-  const application = { id: "application-a", candidateName: "合成甲", report: {
+  const application = { id: "application-a", candidateName: "合成甲", jobId: summary.jobId, reportId: summary.id, report: {
     ...summary, materials: [{ id: "version-a", kind: "project", title: "报名项目", versionNumber: 3 }],
     items: [item, { ...item, requirementId: "r-b", requirementTitle: "不能串入的其他要求", evidenceList: [{...item.evidenceList[0], snippet:"DO_NOT_LEAK"}] }],
   } };
@@ -127,6 +127,10 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
   const missing = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "other-version-r" }));
   assert.match(missing, /不同报告的要求版本可能不同/);
   assert.doesNotMatch(missing, /raise CapacityError/);
+  const revoked = render(React.createElement(SelectedRequirementEvidence, { application: {...application,status:"withdrawn"}, requirementId: "r-a" }));
+  const mismatched = render(React.createElement(SelectedRequirementEvidence, { application: {...application,reportId:"another-report"}, requirementId: "r-a" }));
+  assert.equal(revoked, "");
+  assert.equal(mismatched, "");
 });
 
 
@@ -170,7 +174,7 @@ for (const [aiStatus, fallback, accepted] of [
   ["validated", true, false], ["validated", false, true],
 ]) {
   test(`nearby evidence uses only accepted AI interpretation (status=${aiStatus}, fallback=${fallback})`, () => {
-    const application = { id: "snapshot-application", candidateName: "合成评审甲", report: {
+    const application = { id: "snapshot-application", candidateName: "合成评审甲", jobId: summary.jobId, reportId: summary.id, report: {
       ...summary, aiFallbackUsed: fallback, materials: [], items: [{
         requirementId: "sql-requirement", requirementTitle: "SQL事务", verdict: "supported",
         explanation: "规则说明：源码包含显式回滚调用", evidenceLevelGap: "规则缺口：未核实实际运行环境",
@@ -220,10 +224,11 @@ for (const [aiStatus, fallback, accepted] of [
       assert.match(html, /规则缺口：实际运行环境待核对/);
       assert.doesNotMatch(html, /MODEL_FULL_EXPLANATION|MODEL_FULL_GAP|AI解释/);
     }
-    assert.match(html, /R1-E1/);
+    assert.match(html, /storage\.py/);
+    assert.doesNotMatch(html, /R1-E1/);
     assert.match(html, /第20—25行/);
     assert.match(html, /connection.rollback/);
-    assert.match(html, /fixed-hash/);
+    assert.doesNotMatch(html, /fixed-hash/);
     assert.equal(JSON.stringify(report), before);
   });
 }

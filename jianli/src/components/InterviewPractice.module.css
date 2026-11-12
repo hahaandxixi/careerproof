@@ -61,8 +61,6 @@
 .feedbackBlock ul { display: grid; gap: 4px; margin: 0; padding-left: 18px; }
 .feedbackBlock li, .feedbackBlock p { font-size: 14px; line-height: 1.55; }
 .suggestion { padding: 8px 10px; border-left: 3px solid #739487; background: #f1f5ef; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
-.snippet { max-height: 320px; padding: 10px 12px; border-radius: 6px; background: #14211d; color: #e8efe9; font-size: 14px; line-height: 1.6; overflow: auto; }
-.snippet code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
 
 .summary { display: grid; gap: 12px; padding: 20px; border: 1px solid #b9cdc1; border-radius: 10px; background: #f2f7f2; }
 .summaryDetails > summary { width: fit-content; cursor: pointer; font-size: 16px; font-weight: 700; color: #173f35; }
@@ -84,7 +82,7 @@
 .evidenceItem { min-width: 0; border: 1px solid #e2dccd; border-radius: 6px; background: #fffdf7; }
 .evidenceItem summary { padding: 8px 10px; cursor: pointer; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
 .evidenceItem summary span { display: block; color: #4d5e55; font-size: 13px; }
-.evidenceItem .snippet, .evidenceItem .empty { margin: 0 8px 8px; }
+.sourceSnippet, .evidenceItem .empty { margin: 0 8px 8px; }
 .sourcePath { margin: 0 8px 8px; font-size: 13px; color: #4d5e55; overflow-wrap: anywhere; }
 .materials { padding-left: 18px; list-style: disc; overflow-wrap: anywhere; }
 .empty { font-size: 14px; line-height: 1.55; color: #4d5e55; }

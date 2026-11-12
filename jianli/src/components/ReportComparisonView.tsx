@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { MatchReport, ReportComparison } from "@/lib/api/domain";
 import { comparisonCounts, comparisonRows, comparisonSourceKey, filterComparisonRows, groupComparisonSources, sourceRecordKind, type ComparisonFilter, type ComparisonRow } from "@/lib/report-comparison-display";
-import { compactSourceLabel, materialPathReadingText, sourceLocationId } from "@/lib/source-label";
+import { compactSourceLabel, materialPathReadingText, sourceLocationId, sourceRelativePath } from "@/lib/source-label";
 import { aiStatusLabel } from "@/lib/report-display";
 import { evidenceLevelName } from "@/lib/evidence-display";
 import { GROWTH_CHANGES } from "@/lib/growth-workflow";
@@ -21,7 +21,7 @@ function SourceGroup({ label, groups, reportId, requirementId, materials, source
 }) {
   return <section className="min-w-0" aria-label={label}>
     <ul className="min-w-0 divide-y divide-slate-100">{groups.map((group, index) => {
-      const source = group.source, short = compactSourceLabel(source, materials);
+      const source = group.source, short = compactSourceLabel(source, materials), path = sourceRelativePath(source);
       const sourceIndex = sources?.evidenceList.findIndex(entry => comparisonSourceKey(entry) === comparisonSourceKey(source)) ?? -1;
       const anchor = group.citationIds[0] ? `citation-${group.citationIds[0]}`
         : sourceIndex >= 0 ? sourceLocationId(requirementId, source, sourceIndex) : `requirement-${requirementId}`;
@@ -31,16 +31,9 @@ function SourceGroup({ label, groups, reportId, requirementId, materials, source
         {index === 0 && source.snippet && <pre className="comparison-source-preview">{source.snippet}</pre>}
         {source.provenance === "reference" && <p className="text-xs text-slate-600">第三方参考，不作为个人实践证明。</p>}
         <details className="min-w-0 text-xs leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-1">完整来源与源码</summary>
-          <dl className="min-w-0 space-y-1 py-2 [overflow-wrap:anywhere]">
-            <div><dt className="inline">原始路径：</dt><dd className="inline">{source.filePath}</dd></div>
-            <div><dt className="inline">引用标识：</dt><dd className="inline">{group.citationIds.join("、") || "未记录模型引用标识"}</dd></div>
-            <div><dt className="inline">材料版本 ID：</dt><dd className="inline">{source.projectVersionId || "未记录项目版本"}</dd></div>
-            <div><dt className="inline">来源 ID：</dt><dd className="inline">{group.sourceIds.join("、") || "未记录"}</dd></div>
-            <div><dt className="inline">文件 ID：</dt><dd className="inline">{source.projectFileId || "未记录"}</dd></div>
-            <div><dt className="inline">内容摘要：</dt><dd className="inline">{source.contentHash || "未记录"}</dd></div>
-          </dl>
+          {path !== short.fileName && <p className="break-all">文件路径：{path}</p>}
           <p className="break-words">{source.contextComplete ? "保存的片段上下文完整" : "保存的片段上下文不完整，请到原报告核对"}{source.contextNote ? `：${source.contextNote}` : ""}</p>
-          {source.snippet ? <pre className="mt-2 max-h-64 max-w-full overflow-auto rounded-lg bg-slate-50 p-3 text-xs leading-6">{source.snippet}</pre> : <p>未保存源码片段，请打开原报告核对。</p>}
+          {source.snippet ? index > 0 && <pre className="mt-2 max-h-64 max-w-full overflow-auto rounded-lg bg-slate-50 p-3 text-xs leading-6">{source.snippet}</pre> : <p>未保存源码片段，请打开原报告核对。</p>}
         </details>
       </li>;
     })}</ul>

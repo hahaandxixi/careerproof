@@ -65,16 +65,18 @@ test("same filename distinguishes projects and versions in the rendered label", 
   assert.ok(labels[2].includes("库存服务 · 第 1 版 · service.py"));
 });
 
-test("details preserve full identity while a legal UUID inside code and filename survives", () => {
+test("details keep relative source paths and links without showing internal calibration fields", () => {
   const evidence = Object.freeze(source(A1, {
     filePath: `${A1}/src/${LEGAL}/service.py`, lineStart: 21, lineEnd: 22,
     snippet: `path = "${LEGAL}/service.py"\nassert left < right and value != '&'`,
   }));
   const label = render(SourceIdentity, { source: evidence, materials });
   assert.ok(label.includes(`src/${LEGAL}/service.py`));
-  const details = render(SourceIdentityDetails, { source: evidence });
-  for (const text of [evidence.filePath, A1, "R1-E1", evidence.contentHash, "第 21–22 行", "python_code"]) {
-    assert.ok(details.includes(text), text);
+  const details = render(SourceIdentityDetails, { source: evidence, children: React.createElement("a",{href:"#citation-R1-E1"},"打开原引用") });
+  assert.ok(details.includes(`src/${LEGAL}/service.py`));
+  assert.ok(details.includes('href="#citation-R1-E1"'));
+  for (const text of [evidence.filePath, A1, evidence.contentHash, "材料版本ID", "引用编号", "python_code"]) {
+    assert.ok(!details.includes(text), text);
   }
   const html = render(EvidenceSnippet, { evidence, materials });
   assert.ok(html.includes("订单服务 · 第 1 版"));
@@ -86,13 +88,13 @@ test("details preserve full identity while a legal UUID inside code and filename
   assert.equal(lines.join("\n"), evidence.snippet);
 });
 
-test("legacy source retains raw UUID-shaped path and declares missing version", () => {
+test("legacy source retains a real UUID-shaped path without claiming version or citation metadata", () => {
   const evidence = source(null, { filePath: `${LEGAL}/service.py`, citationId: null });
   assert.ok(render(SourceIdentity, { source: evidence, materials }).includes(evidence.filePath));
   const details = render(SourceIdentityDetails, { source: evidence });
   assert.ok(details.includes(evidence.filePath));
-  assert.ok(details.includes("历史版本未记录，保留原始路径"));
-  assert.ok(details.includes("规则层来源，无模型引用编号"));
+  assert.ok(!details.includes("校验信息"));
+  assert.ok(!details.includes("规则层来源"));
 });
 
 test("coverage keeps separate ranges and links of the same file", () => {

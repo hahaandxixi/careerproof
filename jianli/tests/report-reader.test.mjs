@@ -376,7 +376,7 @@ test("source directory keeps all original anchors, snippets and versions with on
  ]};
  const report={analysisMode:"ai_evidence",aiFallbackUsed:false,items:[item],materials:[{kind:"project",id:"project-v1",title:"库存",versionNumber:1},{kind:"project",id:"project-v2",title:"库存",versionNumber:2}]};
  const before=JSON.stringify(report);const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
- for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版','完整来源与校验信息']) assert.ok(html.includes(text),text);
+ for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版','来源详情']) assert.ok(html.includes(text),text);
  assert.equal((html.match(/<article/g)||[]).length,2);
  assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,1);
  assert.match(html,/选择来源/);

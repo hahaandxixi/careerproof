@@ -113,7 +113,8 @@ test("real comparison view opens changed sources and keeps removed citations on 
   const removed=render(f,"changed","removed");
   assert.match(removed,/href="\/reports\/base-report#citation-R1-E2" target="_blank"/);
   assert.match(removed,/original 24/);
-  assert.match(removed,/version-1\/src\/service.py/);
+  assert.match(removed,/文件路径：src\/service.py/);
+  assert.doesNotMatch(removed,/version-1\/src\/service.py|材料版本 ID|内容摘要/);
   assert.match(removed,/max-w-full overflow-auto/);
 });
 

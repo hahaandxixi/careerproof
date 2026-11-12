@@ -13,6 +13,7 @@ registerHooks({resolve(id,context,next){
  return next(url,context);
 }});
 const helpers=await import("../src/lib/report-follow-up.ts");
+const taskNavigation=await import("../src/lib/task-navigation.ts");
 const reportId="11111111-1111-1111-1111-111111111111", requirementId="22222222-2222-2222-2222-222222222222";
 const query=()=>new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId});
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return{promise,resolve,reject};};
@@ -80,10 +81,42 @@ test("reanalysis preselection replaces only the matching version and carries the
  assert.ok(resume);const rq=new URLSearchParams(resume.split("?")[1]);
  assert.equal(rq.get("compareTo"),reportId);assert.equal(rq.get("resumeVersionId"),"77777777-7777-7777-7777-777777777777");
  assert.deepEqual(rq.getAll("projectVersionId"),["55555555-5555-5555-5555-555555555555","66666666-6666-6666-6666-666666666666"]);
- const replaced=helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"},"55555555-5555-5555-5555-555555555555");
+ const replaced=helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"},{versionIds:["55555555-5555-5555-5555-555555555555","88888888-8888-8888-8888-888888888888"]});
  assert.ok(replaced);const pq=new URLSearchParams(replaced.split("?")[1]);
  assert.deepEqual(pq.getAll("projectVersionId"),["88888888-8888-8888-8888-888888888888","66666666-6666-6666-6666-666666666666"]);
- assert.equal(helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"}),null,"multi-project uploads are not blindly assigned to all projects");
+ assert.equal(helpers.reportReanalysisHref(report,{kind:"project",versionId:"88888888-8888-8888-8888-888888888888"}),null,"a URL hint cannot replace the missing owned project history");
+});
+
+test("a first or different project is added without replacing a prior report selection",()=>{
+ const resume="44444444-4444-4444-4444-444444444444";
+ const previous="55555555-5555-5555-5555-555555555555";
+ const uploaded={kind:"project",versionId:"88888888-8888-8888-8888-888888888888"};
+ const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",materials:[{kind:"resume",id:resume}]};
+ const project={versionIds:[uploaded.versionId],sourceVersionId:previous};
+ for(const projectIds of [[],[previous]]){
+  const base={...report,materials:[...report.materials,...projectIds.map(id=>({kind:"project",id}))]};
+  const url=new URL(helpers.reportReanalysisHref(base,uploaded,project,requirementId),"http://local.test");
+  assert.equal(url.searchParams.get("compareTo"),reportId);
+  assert.equal(url.searchParams.get("sourceRequirement"),requirementId);
+  assert.equal(url.searchParams.get("resumeVersionId"),resume);
+  assert.deepEqual(url.searchParams.getAll("projectVersionId"),[...projectIds,uploaded.versionId]);
+ }
+});
+
+test("ambiguous same-project history and a full project selection retain the original form context",()=>{
+ const first="55555555-5555-5555-5555-555555555555", second="66666666-6666-6666-6666-666666666666";
+ const uploaded={kind:"project",versionId:"88888888-8888-8888-8888-888888888888"};
+ const resume={kind:"resume",id:"44444444-4444-4444-4444-444444444444"};
+ const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",materials:[resume,...[first,second].map(id=>({kind:"project",id}))]};
+ assert.equal(helpers.reportReanalysisHref(report,uploaded,{versionIds:[first,second,uploaded.versionId]}),null);
+ const confirmed=new URL(helpers.reportReanalysisHref(report,uploaded,{versionIds:[first,second,uploaded.versionId],sourceVersionId:second},requirementId),"http://local.test");
+ assert.deepEqual(confirmed.searchParams.getAll("projectVersionId"),[first,uploaded.versionId]);
+ const full={...report,materials:[resume,...Array.from({length:10},(_,i)=>({kind:"project",id:`existing-${i}`}))]};
+ assert.equal(helpers.reportReanalysisHref(full,uploaded,{versionIds:[uploaded.versionId]}),null);
+ const manual=new URL(helpers.reportJobHref(full,requirementId),"http://local.test");
+ assert.equal(manual.searchParams.get("compareTo"),reportId);
+ assert.equal(manual.searchParams.get("sourceRequirement"),requirementId);
+ assert.deepEqual(manual.searchParams.getAll("projectVersionId"),full.materials.slice(1).map(item=>item.id));
 });
 test("report upload hints accept only UUID context, never return URLs or version selection instructions",()=>{
  assert.deepEqual(helpers.reportFollowUpContext(query()),{reportId,requirementId});
@@ -132,7 +165,7 @@ test("ready state is bound to the current report/kind/version and a delayed B ne
 });
 test("completed upload offers a version-replacing reanalysis link that keeps the original report as comparison base",async()=>{
  const oldProject="77777777-7777-7777-7777-777777777777", otherProject="88888888-8888-8888-8888-888888888888";
- const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId,sourceProjectVersion:oldProject}),projects:[{id:"project-resource",name:"项目",versions:[{id:"99999999-9999-9999-9999-999999999999",versionNumber:3,status:"completed",createdAt:"2026-11-07T00:00:00Z",originalFilename:"new.zip"}]}]};
+ const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId,sourceProjectVersion:oldProject}),projects:[{id:"project-resource",name:"项目",versions:[{id:oldProject,versionNumber:1,status:"completed"},{id:"99999999-9999-9999-9999-999999999999",versionNumber:3,status:"completed",createdAt:"2026-11-07T00:00:00Z",originalFilename:"new.zip"}]}]};
  const f=fixture("ReportUploadReturn",{},env);
  const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",jobTitle:"原岗位",items:[{requirementId,requirementTitle:"原要求"}],materials:[{id:"44444444-4444-4444-4444-444444444444",kind:"resume",versionNumber:1},{id:oldProject,kind:"project",versionNumber:1},{id:otherProject,kind:"project",versionNumber:2}]};
  try{
@@ -143,6 +176,7 @@ test("completed upload offers a version-replacing reanalysis link that keeps the
   const link=html.match(/href="([^"]*\/jobs\/[^"]*)"/)?.[1]??"";
   const url=new URL(link.replaceAll("&amp;","&"),"http://local.test");
   assert.equal(url.searchParams.get("compareTo"),reportId);
+  assert.equal(url.searchParams.get("sourceRequirement"),requirementId);
   assert.equal(url.searchParams.get("resumeVersionId"),"44444444-4444-4444-4444-444444444444");
   assert.deepEqual(url.searchParams.getAll("projectVersionId"),["99999999-9999-9999-9999-999999999999",otherProject]);
  }finally{f.cleanup();}
@@ -179,13 +213,13 @@ test("the original job form explicitly submits chosen new versions without creat
   "@/lib/api/client":{errorMessage:String,api:new Proxy({async createMatch(payload){sent.push(payload);return{taskId:"new-analysis"};}},{get(target,key){if(key in target)return target[key];return()=>{throw Error(`unexpected API ${String(key)}`);};}})},
   "@/lib/api/domain":{},"@/lib/application-display":{},
   "@/lib/job-application-status":{createJobApplicationStatusSession:()=>({})},
-  "@/lib/recommendation-selection":{},"./AuthProvider":{},"./AccessGate":{__esModule:true,default:()=>null,ErrorNotice:()=>null},
+  "@/lib/recommendation-selection":{},"@/lib/task-navigation":taskNavigation,"./AuthProvider":{},"./AccessGate":{__esModule:true,default:()=>null,ErrorNotice:()=>null},
   "./ProjectVersionPicker":{__esModule:true,default:ProjectPicker},"./ResumeVersionPicker":{__esModule:true,default:ResumePicker},"./ScenarioMaterials":{__esModule:true,default:()=>null},
  };
  const source=readFileSync(new URL("../src/components/JobDetailView.tsx",import.meta.url),"utf8");
  const code=transform(source+"\nexport { MatchForm };",{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
- const render=()=>{index=0;return mod.exports.MatchForm({job:{id:reportId,requirements:[]},initialResumeVersionId:"",initialProjectVersionIds:[]});};
+ const render=(context={})=>{index=0;return mod.exports.MatchForm({job:{id:reportId,requirements:[{id:requirementId}]},initialResumeVersionId:"",initialProjectVersionIds:[],...context});};
  const submit=tree=>nodes(tree).find(node=>node.type==="form").props.onSubmit({preventDefault(){}});
  let tree=render();await submit(tree);assert.equal(sent.length,0,"no matching request before choosing a resume");
  nodes(tree).find(node=>node.type===ResumePicker).props.onChange("new-resume");
@@ -194,6 +228,9 @@ test("the original job form explicitly submits chosen new versions without creat
  await submit(tree);
  assert.deepEqual(sent,[{jobId:reportId,resumeVersionId:"new-resume",projectVersionIds:["new-project"],externalAiConsent:false,usePreviousReport:false}]);
  assert.deepEqual(navigated,["/tasks/new-analysis"]);
+ await submit(render({compareTo:reportId,sourceRequirement:"another-requirement"}));
+ await submit(render({compareTo:reportId,sourceRequirement:requirementId}));
+ assert.deepEqual(navigated.slice(1),[`/tasks/new-analysis?compareTo=${reportId}`,`/tasks/new-analysis?compareTo=${reportId}&sourceRequirement=${requirementId}`]);
  assert.equal(JSON.stringify({resumes,projects}),frozen);
  for(const route of ["portfolio/page.tsx","jobs/[id]/page.tsx","reports/[id]/page.tsx","tasks/[id]/page.tsx","growth/page.tsx","growth/[id]/page.tsx"]){
   assert.ok(existsSync(new URL(`../src/app/${route}`,import.meta.url)),route);
