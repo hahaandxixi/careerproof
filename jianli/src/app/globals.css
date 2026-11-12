@@ -1024,7 +1024,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-heatmap { display: grid; gap: 7px; padding: 0 0 14px; border-bottom: 1px solid #ddd5c7; }
 .report-heatmap-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 18px; }
 .report-heatmap-head h2 { color: #173c34; font-size: 15px; font-weight: 700; }
-.report-heatmap-head p { margin-top: 2px; color: #66758a; font-size: 11px; line-height: 1.5; }
 .report-heatmap-legend { display: flex; flex-wrap: wrap; gap: 3px 10px; color: #526176; font-size: 10px; }
 .report-heatmap-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 2px; background: #7b8580; vertical-align: 1px; }
 .report-heatmap-legend span[data-tone="supported"]::before { background: #3f7a68; }
@@ -1221,6 +1220,7 @@ main.site-frame:has(.report-desk) { background: #ede7db; }
 .material-workspace .material-register-row { border-bottom-color: #d3c9b6; }
 .material-workspace .material-register-row:hover { background: #f1f6f2; }
 .material-workspace [data-upload-target="true"] { background: #e7efe9; box-shadow: inset 3px 0 #2b6355; }
+.material-workspace .material-register-row[data-upload-target="true"] { padding-inline-start: 12px; }
 .material-workspace .material-register-row[data-upload-target="true"]:hover { background: #e7efe9; }
 .material-workspace .material-register-row[data-historical="true"] { padding-block: 8px; background: #f8f6ef; }
 .material-workspace .selection-toggle[aria-pressed="true"] { border-color: #1d4a40; background: #1d4a40; color: #fbf9f4; }
@@ -1420,7 +1420,6 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
   .report-overview-band .report-radar-side { order: 1; max-width: none; }
   .report-overview-band .report-radar-side .radar-chart-svg { max-width: 300px; }
   .report-overview-band .report-heatmap { order: 2; }
-  .report-overview-band .report-heatmap-head p { display: none; }
   .report-overview-band .report-heatmap-row { grid-template-columns: minmax(0, 1fr) auto; }
   .report-overview-band .report-heatmap-row > :nth-child(2),
   .report-overview-band .report-heatmap-row > :nth-child(3) { display: none; }
