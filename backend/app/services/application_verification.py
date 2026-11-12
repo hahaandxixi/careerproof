@@ -36,6 +36,7 @@ from app.agents.provider import (
 from app.core.config import settings
 from app.core.database import async_session_factory
 from app.core.exceptions import AppError
+from app.models.ai_budget import AiBudgetCutover
 from app.models.analysis import AgentStep, AiUsageLog, AnalysisTask
 from app.models.audit import AuditLog
 from app.models.enums import TaskStatus, UserRole
@@ -45,7 +46,7 @@ from app.schemas.application_verification import (
     ApplicationVerificationRequest,
     VerificationAnalysis,
 )
-from app.services.ai_budget import BudgetAdmissionError, SharedBudgetService
+from app.services.ai_budget import GATE_ID, BudgetAdmissionError, SharedBudgetService
 from app.services.ai_request_attempts import (
     MODE,
     AttemptContext,
@@ -55,6 +56,7 @@ from app.services.ai_request_attempts import (
 from app.services.analysis import _shared_budget_display
 from app.services.jobs import JobService
 from app.services.task_lifecycle import claim_task, finish_task, heartbeat_task
+from app.tools.fixture_provenance import is_fixture_job
 from app.tools.function_coverage import redundant_source_request
 from app.tools.visible_checks import (
     VisibleCodeFactConflict,
@@ -253,6 +255,7 @@ async def _authorized(session, application_id, user_id, *, lock=False):
         or not item.report_snapshot
         or item.status == "withdrawn"
         or not job
+        or (job is not None and is_fixture_job(job))
         or not await JobService(session).can_manage(job, user)
     ):
         raise AppError("投递不存在或无权访问", code=4049, status_code=404)
@@ -349,6 +352,14 @@ class ApplicationVerificationService:
             return await self._budget_view(existing, item.report_snapshot, reused=True)
         if not item.report_snapshot.get("items"):
             raise AppError("固定报告没有可核验的岗位要求", code=4096, status_code=409)
+        enabled = await self.session.scalar(
+            select(AiBudgetCutover.enabled).where(AiBudgetCutover.id == GATE_ID)
+        )
+        if not enabled:
+            raise AppError(
+                "AI 核验暂未开放，未发送材料。可继续核对固定报告。",
+                code=4097, status_code=409,
+            )
         pending_count = await self.session.scalar(
             select(func.count())
             .select_from(AnalysisTask)
@@ -588,6 +599,7 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
     provider = None
     analysis = None
     failure = None
+    stage = "authorization"
     try:
         if task.task_type != TASK_TYPE or not saved.get("externalAiConsent"):
             raise ValueError("Invalid verification task")
@@ -606,6 +618,7 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 # current authorization under its own short lock below.
                 request_data = _verification_input(item.report_snapshot, context)
                 await session.commit()
+                stage = "provider_configuration"
                 candidate = get_ai_provider()
                 if not isinstance(candidate, OpenAICompatibleProvider):
                     raise ValueError("External provider unavailable")
@@ -630,6 +643,7 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 # Built-in retries would otherwise resend withdrawn snippets
                 # after backoff without a new authorization check.
                 provider._max_attempts = 1
+                stage = "invalid_model_output"
                 raw = await provider.generate_bounded_json(
                     system=VERIFICATION_PROMPT,
                     data=request_data,
@@ -638,6 +652,12 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 analysis = validate_verification(raw, item.report_snapshot)
     except Exception as exc:
         failure = _failure_kind(exc)
+        if (
+            failure == "configuration_or_invalid_output"
+            and isinstance(exc, ValueError)
+            and stage != "authorization"
+        ):
+            failure = stage
         if isinstance(exc, BudgetAdmissionError):
             failure = str(exc)
         if isinstance(exc, ProviderInputBudgetError):

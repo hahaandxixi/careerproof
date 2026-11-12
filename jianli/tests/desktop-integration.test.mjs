@@ -6,6 +6,7 @@ import {displayJobTitle} from '../src/lib/demo-display-identity.js';
 import * as reportDisplay from '../src/lib/report-display.ts';
 import * as sourceLabels from '../src/lib/source-label.ts';
 import * as evidenceAnchors from '../src/lib/evidence-anchor.ts';
+import { readReportListState, reportListHref, reportOrigin, reportVersionHref } from '../src/lib/report-navigation.ts';
 test('report fragment navigation preserves opaque router history state for route-away/back',()=>{
  assert.equal(typeof evidenceAnchors.navigateEvidenceFragment,'function');
  const opaque={routerTree:['reports','saved'],marker:'opaque-router-state'};
@@ -42,7 +43,7 @@ test('report selector uses natural job, exact time and named fixed versions, nev
 test('same-time same-version reports retain distinct stable values and understandable duplicate labels',()=>{
  const a=saved('report-a'),b=saved('report-b');const peers=[b,a];
  assert.notEqual(reportPairLabel(a,peers),reportPairLabel(b,peers));
- assert.match(reportPairLabel(a,peers),/同批第 1 份/);assert.match(reportPairLabel(b,peers),/同批第 2 份/);
+ assert.match(reportPairLabel(a,peers),/报告 report-a/);assert.match(reportPairLabel(b,peers),/报告 report-b/);
  assert.equal(reportPairLabel(a,peers),reportPairLabel(a,[a,b]));
  assert.equal(a.id,'report-a');assert.equal(a.materials[0].id,'c90a4283-f9ab-4247-8fdc-16ef6e7ae56a');
 });
@@ -60,4 +61,20 @@ test('ordinary source labels distinguish AI success, unrequested analysis and bu
  assert.equal(invalid.label,'AI 结果未通过校验');assert.equal(invalid.reason,'');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true})).label,'暂无可用分析结果');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:false,items:[{aiStatus:'validated'}]})).label,'AI 分析完成');
+});
+
+test("reports preserve a validated list origin across detail and historical links",()=>{
+ const jobId="6c8ad563-ebf8-427c-b4a3-82905f37dbd0";
+ const state=readReportListState(new URLSearchParams({q:"SQL",jobId,page:"2",history:"1",scope:"all"}));
+ const detail=new URL(reportVersionHref("history",reportListHref(state).split("?")[1]),"http://localhost");
+ assert.equal(reportListHref(reportOrigin(detail.searchParams.get("from"))),`/reports?q=SQL&jobId=${jobId}&page=2&history=1`);
+ assert.equal(reportListHref({...state,q:"",jobId:"",page:1}),"/reports?history=1");
+ assert.equal(reportListHref(reportOrigin("jobId=https://example.invalid&page=-5&scope=external")),"/reports");
+ assert.equal(reportListHref(reportOrigin(`q=SQL&jobId=${jobId}&page=2&scope=all`)),`/reports?q=SQL&jobId=${jobId}&page=2`);
+ assert.equal(reportListHref({...state,includeHistory:false}),`/reports?q=SQL&jobId=${jobId}&page=2`);
+});
+test("visible option times separate different seconds within a minute",()=>{
+ const a=saved("first",{createdAt:"2026-11-05T12:00:05Z"});
+ const b=saved("second",{createdAt:"2026-11-05T12:00:45Z"});
+ assert.notEqual(pairLabels.reportPairOptionLabel(a,[a,b]),pairLabels.reportPairOptionLabel(b,[a,b]));
 });

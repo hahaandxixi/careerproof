@@ -5,15 +5,15 @@ import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText, effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
-import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "@/lib/report-workspace";
+import { requirementConclusion, savedRequirementAction, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 import { followUpCopyText, GENERAL_FOLLOW_UP, REVIEW_FOLLOW_UP } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
 import { RequirementSupplementJump } from "./RequirementSupplement";
 import ReportRequirementReader from "./ReportRequirementReader";
 
-export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void }) {
-  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange}>{children}</ReportRequirementReader>;
+export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange, filter, onFilterChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void; filter?: WorkspaceFilter; onFilterChange?: (filter: WorkspaceFilter) => void }) {
+  return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange} filter={filter} onFilterChange={onFilterChange}>{children}</ReportRequirementReader>;
 }
 
 export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {
@@ -36,7 +36,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
   // The AI explanation already renders a locator for its cited sources; do not
   // repeat the exact same file/range directly below it.
   const inlineSources = new Set(explanationVisible ? item.aiCitationIds : []);
-  const citationSources = item.evidenceList.filter(source => !source.citationId || !inlineSources.has(source.citationId));
+  const citationSources = item.evidenceList.map((source, index) => ({ source, index })).filter(({ source }) => !source.citationId || !inlineSources.has(source.citationId));
   const projectVersions = report.materials.filter(material => material.kind === "project");
   const projectVersionId = item.evidenceList.find(source => projectVersions.some(material => material.id === source.projectVersionId))?.projectVersionId
     ?? (projectVersions.length === 1 ? projectVersions[0].id : undefined);
@@ -56,7 +56,7 @@ export function RequirementActionPanel({ report, item, role, explanationVisible 
     </div>}
     {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
     {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning} 已隐藏该任务草稿。</p>}
-    {citationSources.length > 0 && <nav className="requirement-citation-links" aria-label="本项引用">{citationSources.map((source, index) => <EvidenceLink key={sourceLocationId(item.requirementId, source, index)} targetId={sourceLocationId(item.requirementId, source, index)} className="report-citation-chip">{source.citationId && adviceSources.has(source.citationId) && <span className="sr-only">建议依据：</span>}{compactSourceLabel(source, report.materials).fileName} · {source.lineStart}–{source.lineEnd}行 ↗</EvidenceLink>)}</nav>}
+    {citationSources.length > 0 && <nav className="requirement-citation-links" aria-label="本项引用">{citationSources.map(({ source, index }) => <EvidenceLink key={sourceLocationId(item.requirementId, source, index)} targetId={sourceLocationId(item.requirementId, source, index)} className="report-citation-chip">{source.citationId && adviceSources.has(source.citationId) && <span className="sr-only">建议依据：</span>}{compactSourceLabel(source, report.materials).fileName} · {source.lineStart}–{source.lineEnd}行 ↗</EvidenceLink>)}</nav>}
     </div>
     {sourcePanel && <div className="requirement-source-context min-w-0">{sourcePanel}</div>}
     {(!supported || role === "student") && <aside className="requirement-next min-w-0 space-y-4" aria-label="补证与后续操作">

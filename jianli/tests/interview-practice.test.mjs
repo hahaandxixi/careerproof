@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, newClientToken, openTurn,
-  practiceStatusLabel, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
+  feedbackStatusLabel, practiceStatusLabel, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "../src/lib/interview-practice.ts";
 
 const evidence = (id, path = "version-1/test_pipeline.py") => ({
@@ -96,3 +96,12 @@ test("a session that recorded consent but has no question offers a retry, not a 
   assert.match(questionRetryNote(session({ turns: [], failureReason: null })), /首问还没有生成/);
 });
 
+
+test("round feedback status follows its saved task and feedback rather than the session status",()=>{
+ const saved={...turn(1,"answered"),answerText:"原回答"};
+ assert.equal(feedbackStatusLabel(saved),"点评尚未生成");
+ assert.equal(feedbackStatusLabel({...saved,feedbackTask:{status:"pending"}}),"点评等待处理");
+ assert.equal(feedbackStatusLabel({...saved,feedbackTask:{status:"running"}}),"正在生成点评");
+ assert.equal(feedbackStatusLabel({...saved,feedbackTask:{status:"failed"}}),"点评未生成");
+ assert.equal(feedbackStatusLabel({...saved,feedback:{covered:[]},feedbackTask:{status:"completed"}}),"点评已生成");
+});

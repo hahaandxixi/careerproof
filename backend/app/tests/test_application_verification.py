@@ -500,7 +500,11 @@ async def test_finite_model_failure_preserves_screen_and_safe_diagnostics(
     await case.execute(started)
     result = await case.result(started)
     assert result["status"] == "failed" and result["analysis"] is None
-    assert result["failureKind"] and result["errorMessage"]
+    assert result["failureKind"] == {
+        "timeout": "provider_timeout", "http": "provider_http_503",
+        "malformed": "invalid_model_output", "truncated": "output_truncated",
+    }[failure]
+    assert result["errorMessage"]
     assert len(requests) == 1
     assert SYNTHETIC_KEY not in json.dumps(result)
     assert "private provider error" not in json.dumps(result)

@@ -33,6 +33,15 @@
 
 .turn { display: grid; gap: 12px; padding: 18px 20px 20px; border: 1px solid #ded7c7; border-radius: 10px; background: #fffdf8; min-width: 0; }
 .turn[data-state="feedback"] { border-color: #cbd9cf; }
+.turnTrack { display: flex; flex-wrap: wrap; gap: 10px; }
+.turnTrack a { display: grid; gap: 2px; padding: 8px 14px; border: 1px solid #cbd9cf; border-radius: 6px; font-size: 14px; }
+.turnTrack a[aria-current="step"] { background: #e5eee8; border-color: #739487; }
+.turnAnchor, .previousTurn { scroll-margin-top: 100px; min-width: 0; }
+.previousTurn { border: 1px solid #cbd9cf; border-radius: 8px; background: #fffdf8; }
+.previousTurn > summary { padding: 14px 16px; cursor: pointer; }
+.previousTurn > summary span { display: inline-block; margin-inline-start: 12px; font-size: 14px; color: #52605a; }
+.previousTurn .turn { border-width: 1px 0 0; border-radius: 0; }
+.feedbackCounts { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 8px 12px; background: #eef3ee; font-size: 14px; font-weight: 600; }
 .turnHead { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
 .turnLabel { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; letter-spacing: .08em; color: #7a6a45; }
 .turnLabel b { font-size: 13px; letter-spacing: 0; color: #1d4a40; }

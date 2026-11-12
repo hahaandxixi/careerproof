@@ -13,10 +13,12 @@ type ReaderEntry = { selected: string | null; anchor: string | null; revision: n
  * When the report workspace owns the current requirement (selectedRequirementId is
  * defined) this reader mirrors it and never writes a second copy back. Without a
  * parent it keeps the standalone hash navigation used by the reader's own tests. */
-export default function ReportRequirementReader({ items, children, overview, selectedRequirementId, onRequirementChange }: {
+export default function ReportRequirementReader({ items, children, overview, selectedRequirementId, onRequirementChange, filter: sharedFilter, onFilterChange }: {
   items: ReportItem[]; children: ReactNode; overview?: ReactNode;
   selectedRequirementId?: string | null;
   onRequirementChange?: (id: string | null) => void;
+  filter?: WorkspaceFilter;
+  onFilterChange?: (filter: WorkspaceFilter) => void;
 }) {
   const [entry, setEntry] = useState<ReaderEntry>(() => ({
     selected: initialReportRequirement(items), anchor: null, revision: 0,
@@ -24,6 +26,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
   }));
   const controlled = selectedRequirementId !== undefined;
   const selected = controlled ? selectedRequirementId : entry.selected;
+  const filter = sharedFilter ?? entry.filter;
 
   // Standalone rendering keeps hash/back-forward/link selection. The product report
   // supplies a controlled id and owns these listeners once.
@@ -76,10 +79,10 @@ export default function ReportRequirementReader({ items, children, overview, sel
   // A deep link may point outside the active filter. Only the filter adapts; the
   // parent remains the single owner of the requirement itself.
   useEffect(() => {
-    if (!controlled || !selected) return;
+    if (sharedFilter !== undefined || !controlled || !selected) return;
     if (workspaceRequirements(items, entry.filter).some(item => item.requirementId === selected)) return;
     setEntry(previous => ({ ...previous, filter: filterForRequirement(items, previous.filter, selected), anchor: null, revision: previous.revision + 1 }));
-  }, [controlled, selected, items, entry.filter]);
+  }, [controlled, selected, items, entry.filter, sharedFilter]);
 
   // Standalone readers still report their selection; controlled use has no loop.
   useEffect(() => { if (!controlled) onRequirementChange?.(entry.selected); }, [controlled, entry.selected, onRequirementChange]);
@@ -87,7 +90,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
   const articles = Children.toArray(children);
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
-  const visible = workspaceRequirements(items, entry.filter);
+  const visible = workspaceRequirements(items, filter);
   const nextGap = nextReportGap(state.gaps, selected);
   const filters: { key: WorkspaceFilter; label: string; count: number }[] = [
     { key: "priority", label: "优先处理", count: state.priorities.length + state.other.length },
@@ -98,6 +101,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
     { key: "other", label: "未覆盖或需复核", count: state.other.length },
   ];
   const changeFilter = (filter: WorkspaceFilter) => {
+    if (onFilterChange) { onFilterChange(filter); return; }
     const list = workspaceRequirements(items, filter);
     const next = list.some(item => item.requirementId === selected) ? selected : list[0]?.requirementId ?? null;
     setEntry(previous => ({ ...previous, filter, selected: next, anchor: null, revision: previous.revision + 1 }));
@@ -113,8 +117,8 @@ export default function ReportRequirementReader({ items, children, overview, sel
   return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-reading-desk min-w-0 scroll-mt-24">
     <div className="report-requirement-controls min-w-0" role="group" aria-label="要求筛选与选择">
       <div className="report-index-filters" aria-label="按已保存的材料支持状态筛选">
-        {filters.map(option => <button key={option.key} type="button" aria-pressed={entry.filter === option.key}
-          onClick={() => changeFilter(option.key)} className={entry.filter === option.key ? "is-active" : ""}>
+        {filters.map(option => <button key={option.key} type="button" aria-pressed={filter === option.key}
+          onClick={() => changeFilter(option.key)} className={filter === option.key ? "is-active" : ""}>
           {`${option.label} ${option.count}`}
         </button>)}
       </div>
@@ -135,7 +139,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
     <div className="report-requirement-main min-w-0">
       {!visible.length && <p className="text-sm text-slate-500">{controlled ? "当前筛选没有要求，旧判断与来源已清除。请选择其他筛选。" : "选择其他筛选查看判断与行动。"}</p>}
       {items.map((item, index) => <div key={item.requirementId} hidden={selected !== item.requirementId}>{articles[index]}</div>)}
-      {nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
+      {visible.length > 0 && nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
     </div>
   </section>;
 }

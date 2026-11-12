@@ -26,6 +26,7 @@ from app.schemas.common import PaginatedData
 from app.services.analysis import AnalysisService
 from app.services.jobs import JobService
 from app.services.notifications import notify_application_event
+from app.tools.fixture_provenance import fixture_job_ids, is_fixture_job
 from app.tools.storage import LocalStorage
 
 CONSENT_VERSION = "application-report-v1"
@@ -183,6 +184,7 @@ class ApplicationService:
             if (
                 user.role != UserRole.ENTERPRISE
                 or item.status == "withdrawn"
+                or (job is not None and is_fixture_job(job))
                 or not await JobService(self.session).can_manage(job, user)
             ):
                 raise AppError("投递不存在或无权访问", status_code=404, code=4049)
@@ -395,7 +397,7 @@ class ApplicationService:
 
     async def mine(
         self, user, page: int = 1, page_size: int = 20, job_id=None,
-        *, q: str | None = None, view: str = "all",
+        *, q: str | None = None, view: str = "all", product: bool = False,
     ):
         student = await self._student(user)
         # The count and the page slice share one predicate, so a caller can never see a
@@ -405,6 +407,8 @@ class ApplicationService:
             Application.student_id == student.id,
             Application.consent_at.is_not(None),
         ]
+        if product:
+            conditions.append(Application.job_id.not_in(fixture_job_ids()))
         if job_id is not None:
             conditions.append(Application.job_id == job_id)
         if view == "waiting":
@@ -450,6 +454,7 @@ class ApplicationService:
         if (
             not job
             or user.role != UserRole.ENTERPRISE
+            or is_fixture_job(job)
             or not await JobService(self.session).can_manage(job, user)
         ):
             raise AppError("岗位不存在或无管理权限", status_code=404, code=4040)
@@ -521,11 +526,13 @@ class ApplicationService:
             page_size=page_size,
         )
 
-    async def detail(self, application_id, user):
+    async def detail(self, application_id, user, *, product=False):
         # A notification may reference an application older than the recent list.
         item, job = await self._access(
             application_id, user, enterprise=user.role == UserRole.ENTERPRISE
         )
+        if product and is_fixture_job(job):
+            raise AppError("投递不存在或无权访问", status_code=404, code=4049)
         return await self.view(item, job)
 
     async def open(self, application_id, user):

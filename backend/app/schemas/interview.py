@@ -9,6 +9,17 @@ from pydantic import Field
 from app.schemas.common import APIModel
 
 
+class InterviewSessionSummary(APIModel):
+    id: UUID
+    job_id: UUID
+    job_title: str | None
+    requirement_title: str | None
+    skill: str | None
+    status: str
+    needs_attention: bool
+    updated_at: datetime
+
+
 class InterviewSessionCreate(APIModel):
     requirement_id: UUID
     restart: bool = False

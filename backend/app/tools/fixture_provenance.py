@@ -16,6 +16,10 @@ FIXTURE_JOB_OWNERS = {
 }
 
 
+def is_fixture_job(job: Job) -> bool:
+    return FIXTURE_JOB_OWNERS.get(job.id) == job.created_by
+
+
 def fixture_job_predicate():
     return or_(*(and_(Job.id == job_id, Job.created_by == owner_id)
                  for job_id, owner_id in FIXTURE_JOB_OWNERS.items()))

@@ -562,6 +562,7 @@ class AnalysisService:
     async def list_reports(
         self, user: User, page: int = 1, page_size: int = 20,
         *, q: str | None = None, job_id: UUID | None = None, scope: str = "product",
+        view: str = "reports", candidate_id: str | None = None,
     ):
         # The count and the page slice share the same ownership predicate, and a
         # caller is clamped to the last available page instead of an empty page.
@@ -573,13 +574,23 @@ class AnalysisService:
         ownership = [AnalysisTask.created_by == user.id]
         if scope != "all":
             ownership.append(MatchReport.candidate_ref == str(user.id))
+        if candidate_id is not None:
+            ownership.append(MatchReport.candidate_ref == candidate_id)
+        version_group = (MatchReport.job_id, MatchReport.candidate_ref)
+        newest_first = (MatchReport.created_at.desc(), MatchReport.id.desc())
         history = (
             select(
                 MatchReport.id.label("report_id"),
-                func.count().over(partition_by=MatchReport.job_id).label("job_count"),
+                func.count().over(partition_by=version_group).label("job_count"),
+                func.row_number().over(
+                    partition_by=version_group, order_by=newest_first,
+                ).label("version_order"),
                 func.row_number().over(
                     partition_by=MatchReport.job_id,
-                    order_by=(MatchReport.created_at.desc(), MatchReport.id.desc()),
+                    order_by=(
+                        (MatchReport.candidate_ref == str(user.id)).desc(),
+                        *newest_first,
+                    ),
                 ).label("job_order"),
             )
             .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
@@ -596,6 +607,8 @@ class AnalysisService:
             ))
         if job_id is not None:
             conditions.append(MatchReport.job_id == job_id)
+        if view == "jobs":
+            conditions.append(history.c.job_order == 1)
         total = int(
             await self.session.scalar(
                 select(func.count())
@@ -607,7 +620,7 @@ class AnalysisService:
         )
         page = min(page, max(1, (total + page_size - 1) // page_size))
         rows = await self.session.execute(
-            select(MatchReport, history.c.job_count, history.c.job_order)
+            select(MatchReport, history.c.job_count, history.c.version_order)
             .join(history, history.c.report_id == MatchReport.id)
             .where(*conditions)
             .order_by(MatchReport.created_at.desc(), MatchReport.id.desc())
@@ -627,7 +640,9 @@ class AnalysisService:
             page_size=page_size,
         )
 
-    async def _locked_report(self, report_id: UUID, user: User, *, write=False) -> MatchReport:
+    async def _locked_report(
+        self, report_id: UUID, user: User, *, write=False, product=False,
+    ) -> MatchReport:
         # Scope authorization before locking; only the report is a lock target.
         # Shared reads keep report comparisons from acquiring opposite exclusive
         # locks, while review writes exclude readers through their transaction.
@@ -638,6 +653,10 @@ class AnalysisService:
         )
         if user.role is not UserRole.ADMIN:
             query = query.where(AnalysisTask.created_by == user.id)
+        if product:
+            query = query.where(MatchReport.job_id.not_in(fixture_job_ids()))
+            if user.role is UserRole.STUDENT:
+                query = query.where(MatchReport.candidate_ref == str(user.id))
         report = await self.session.scalar(
             query.with_for_update(read=not write, of=MatchReport)
             .execution_options(populate_existing=True)
@@ -647,10 +666,12 @@ class AnalysisService:
         await self.get_task(report.analysis_task_id, user)
         return report
 
-    async def get_report(self, report_id: UUID, user: User) -> MatchReportView:
+    async def get_report(
+        self, report_id: UUID, user: User, *, product=False,
+    ) -> MatchReportView:
         # Do not commit here: a consent caller must hold this shared lock until
         # its fixed snapshot and Application are committed together.
-        report = await self._locked_report(report_id, user)
+        report = await self._locked_report(report_id, user, product=product)
         items = await self.analysis.report_items(report.id)
         evidence_ids = [item.evidence_id for item in items if item.evidence_id]
         evidence_by_id = {

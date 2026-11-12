@@ -47,7 +47,7 @@ export function groupContextsByJob(contexts: SkillContext[]): JobContextGroup[] 
 }
 export interface SkillContext {
   key: string; reportId: string; jobId: string; jobTitle: string; createdAt: string;
-  isLatestForJob?: boolean; materials: MatchReport["materials"]; item: ReportItem;
+  isLatestForJob?: boolean; jobReportCount?: number; materials: MatchReport["materials"]; item: ReportItem;
 }
 export interface PanoramaSkill {
   key: string; name: string; category: string; contexts: SkillContext[]; counts: StatusCounts;
@@ -78,7 +78,7 @@ export function buildSkillPanorama(reports: MatchReport[]) {
     if (seen.has(key)) continue;
     seen.add(key);
     const context: SkillContext = { key, reportId: report.id, jobId: report.jobId, jobTitle: report.jobTitle,
-      createdAt: report.createdAt, isLatestForJob: report.isLatestForJob, materials: report.materials, item };
+      createdAt: report.createdAt, isLatestForJob: report.isLatestForJob, jobReportCount: report.jobReportCount, materials: report.materials, item };
     const name = skillDisplayName(item.skill || "");
     if (!name) { unclassified.push(context); continue; }
     const normalized = name.toLowerCase();
@@ -130,6 +130,10 @@ export function createSkillPanoramaSession(ownerId: string, api: {
     block("登录状态已失效，已清空本次读取。请重新登录后查看。");
     return true;
   }
+  function withListMetadata(report: MatchReport, summary: ReportSummary): MatchReport {
+    if (report.isLatestForJob === summary.isLatestForJob && report.jobReportCount === summary.jobReportCount) return report;
+    return { ...report, isLatestForJob: summary.isLatestForJob, jobReportCount: summary.jobReportCount };
+  }
   async function details(ids: string[], ticket: number) {
     let cursor = 0;
     await Promise.all(Array.from({ length: Math.min(PANORAMA_CONCURRENCY, ids.length) }, async () => {
@@ -141,7 +145,7 @@ export function createSkillPanoramaSession(ownerId: string, api: {
           const summary = state.summaries.find(value => value.id === id);
           if (report.id !== id || report.candidateId !== ownerId || report.jobId !== summary?.jobId) { identityFailure(); return; }
           const failures = { ...state.failures }; delete failures[id];
-          update({ reports: [...state.reports.filter(value => value.id !== id), report], failures });
+          update({ reports: [...state.reports.filter(value => value.id !== id), withListMetadata(report, summary)], failures });
         } catch (error) {
           if (!current(ticket) || sessionFailure(error)) return;
           update({ failures: { ...state.failures, [id]: api.errorMessage(error) } });
@@ -149,25 +153,41 @@ export function createSkillPanoramaSession(ownerId: string, api: {
       }
     }));
   }
+  async function loadMore() {
+    if (!active || state.busy || !state.hasMore || state.blocked) return;
+    const ticket = generation;
+    update({ busy: true, listError: "" });
+    try {
+      const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE, { scope: "product" });
+      if (!current(ticket)) return;
+      if (page.items.some(report => report.candidateId !== ownerId)) { identityFailure(); return; }
+      const summariesById = new Map(state.summaries.map(summary => [summary.id, summary]));
+      const fresh = new Set<string>();
+      for (const summary of page.items) {
+        const previous = summariesById.get(summary.id);
+        if (previous && previous.jobId !== summary.jobId) { identityFailure(); return; }
+        if (!previous) fresh.add(summary.id);
+        summariesById.set(summary.id, summary);
+      }
+      const summaries = [...summariesById.values()];
+      const reports = state.reports.map(report => withListMetadata(report, summariesById.get(report.id)!));
+      nextPage = page.page + 1;
+      update({ summaries, reports, total: page.total, hasMore: page.page * page.pageSize < page.total });
+      await details([...fresh], ticket);
+    } catch (error) {
+      if (current(ticket) && !sessionFailure(error)) update({ listError: api.errorMessage(error) });
+    } finally { if (current(ticket)) update({ busy: false }); }
+  }
   return {
     activate() { active = true; generation++; nextPage = 1; update(initialPanoramaState()); },
     dispose() { active = false; generation++; },
-    async loadMore() {
-      if (!active || state.busy || !state.hasMore || state.blocked) return;
-      const ticket = generation;
-      update({ busy: true, listError: "" });
-      try {
-        const page = await api.listReports(nextPage, PANORAMA_PAGE_SIZE, { scope: "product" });
-        if (!current(ticket)) return;
-        if (page.items.some(report => report.candidateId !== ownerId)) { identityFailure(); return; }
-        const fresh = page.items.filter(report => !state.summaries.some(value => value.id === report.id));
-        const summaries = [...state.summaries, ...fresh];
-        nextPage = page.page + 1;
-        update({ summaries, total: page.total, hasMore: fresh.length > 0 && summaries.length < page.total && page.page * page.pageSize < page.total });
-        await details(fresh.map(report => report.id), ticket);
-      } catch (error) {
-        if (current(ticket) && !sessionFailure(error)) update({ listError: api.errorMessage(error) });
-      } finally { if (current(ticket)) update({ busy: false }); }
+    loadMore,
+    async refresh() {
+      if (!active || state.busy || state.blocked) return;
+      generation++;
+      nextPage = 1;
+      update(initialPanoramaState());
+      await loadMore();
     },
     async retryFailed() {
       if (!active || state.busy || state.blocked) return;

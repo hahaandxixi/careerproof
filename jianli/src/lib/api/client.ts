@@ -3,7 +3,7 @@ import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDet
 
 const API_PREFIX = "/backend/api/v1";
 import type { VisualReview } from "./domain";
-import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, InterviewSession, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
+import type { EnterpriseReplyContext, GrowthPlan, GrowthTask, InterviewSession, InterviewSessionSummary, PrivateAnswerDraft, PrivateAnswerReferenceOption, PrivateAnswerSave } from "./domain";
 
 export type UserRole = "student" | "enterprise" | "admin";
 export type TaskStatus = "pending" | "running" | "completed" | "failed" | "cancelled";
@@ -266,8 +266,8 @@ export const api = {
   readAllNotifications() { return request<{ unreadCount: number }>("/notifications/read-all", { method: "POST" }); },
   notificationTarget(id: string) { return request<{ href: string }>(`/notifications/${id}/target`); },
   createApplication(reportId: string, expectedReviewRevision: number) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true, expectedReviewRevision }) })); },
-  applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}`); },
-  myApplications(page = 1, pageSize = 20, jobId?: string, filters: { q?: string; view?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); if (jobId) query.set("jobId", jobId); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
+  applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}?scope=product`); },
+  myApplications(page = 1, pageSize = 20, jobId?: string, filters: { q?: string; view?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize), scope: "product" }); if (jobId) query.set("jobId", jobId); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
   jobApplications(jobId: string, page = 1, pageSize = 20, filters: { q?: string; status?: string; requirementId?: string; verdict?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/jobs/${jobId}/applications?${query}`); },
   openApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/view`, { method: "POST" })); },
   replyApplication(id: string, kind: string, text: string, references: ApplicationView["replyReferences"] = []) { return applicationEvent(request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text, references }) })); },
@@ -316,7 +316,7 @@ export const api = {
     return request<CareerPlanResult>("/career-plans", { method: "POST", ...jsonBody(payload) });
   },
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
-  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string; scope?: "product" | "all" } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
+  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string; candidateId?: string; scope?: "product" | "all"; view?: "reports" | "jobs" } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
   compareReports(baseId: string, targetId: string) { return request<ReportComparison>(`/match-reports/${baseId}/comparison/${targetId}`); },
   previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
   existingGrowthTask(reportId: string, requirementId: string) { return request<GrowthTask | null>(`/match-reports/${reportId}/growth-tasks/${requirementId}`); },
@@ -334,10 +334,13 @@ export const api = {
   getAnswerDraft(taskId: string) { return request<PrivateAnswerDraft | null>(`/growth-tasks/${taskId}/answer-draft`); },
   saveAnswerDraft(taskId: string, payload: PrivateAnswerSave) { return request<PrivateAnswerDraft>(`/growth-tasks/${taskId}/answer-draft`, { method: "PUT", ...jsonBody(payload) }); },
   listAnswerDraftReferences(taskId: string) { return request<PrivateAnswerReferenceOption[]>(`/growth-tasks/${taskId}/answer-draft/references`); },
-  getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
+  getReport(id: string) { return request<MatchReport>(`/match-reports/${id}?scope=product`); },
   // 文字模拟面试：创建不调用模型；同意外发后才生成首问。
   createInterviewSession(reportId: string, payload: { requirementId: string; restart?: boolean }) {
     return request<{ session: InterviewSession; resumed: boolean }>(`/match-reports/${reportId}/interview-sessions`, { method: "POST", ...jsonBody(payload) });
+  },
+  listInterviewSessions(page = 1, pageSize = 12) {
+    return request<Page<InterviewSessionSummary>>(`/interview-sessions?page=${page}&pageSize=${pageSize}`);
   },
   getInterviewSession(id: string) { return request<InterviewSession>(`/interview-sessions/${id}`); },
   startInterviewSession(id: string, externalAiConsent: boolean) {

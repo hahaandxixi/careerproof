@@ -85,7 +85,7 @@ test("history card displays server-wide history facts and fixed versions only wh
       { kind: "project", id: "version-b222222", title: "同名项目", versionNumber: 2 },
     ],
   }, onSameJob() {} }));
-  assert.match(html, /有后续报告/);
+  assert.match(html, /历史报告/);
   assert.match(html, /同岗位共 27 份报告/);
   assert.match(html, /同名项目/);assert.match(html, /report-material-version">v1/);
   assert.match(html, /report-material-version">v2/);
@@ -120,7 +120,7 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
   assert.doesNotMatch(html, /DO_NOT_LEAK|不能串入的其他要求/);
   assert.match(html, /href="#selected-application-report"/);
   const controlled = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "r-a", onOpenReport() {} }));
-  assert.match(controlled, /<button[^>]*>查看报告与回复<\/button>/);
+  assert.match(controlled, /<button[^>]*>查看合成甲的报告与回复<\/button>/);
   assert.doesNotMatch(controlled, /href="#selected-application-report"/);
   const missing = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "other-version-r" }));
   assert.match(missing, /不同报告的要求版本可能不同/);
@@ -236,6 +236,17 @@ test('two fixed reports use identity colors and linked requirement columns, with
  assert.match(html,/pair-reading-grid/);
 });
 
+test("enterprise pair puts code before report actions and keeps material identity", () => {
+ const candidates=[pairCandidate("A"),pairCandidate("B")];
+ const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){},onOpenReport(){},workbench:true,initialIds:["r2"]}));
+ assert.match(html,/并排看/);
+ assert.match(html,/双人同轴材料支持度雷达/);
+ assert.match(html,/项目A · 第 2 版/);
+ assert.ok(html.indexOf("A-r2-source") < html.indexOf("查看合成A的报告与回复"));
+ assert.ok(html.indexOf("B-r2-source") < html.indexOf("查看合成B的报告与回复"));
+ assert.doesNotMatch(html,/UNADOPTED_AI|UNADOPTED_GAP/);
+});
+
 test("entire pair resolves a shared cap while retaining exact per-axis version compatibility",()=>{
  const a=pairCandidate('A'),b=pairCandidate('B');
  for(const c of [a,b]){c.dimensions[1].formulaVersion='evidence-v4';c.report.items[1].formulaVersion='evidence-v4';}
@@ -289,4 +300,20 @@ test("registered example names agree across the matrix, pair legend and fixed ev
  assert.match(html,/林同学/);assert.match(html,/陈同学/);assert.doesNotMatch(html,/· 示例/);assert.doesNotMatch(html,/原记录名称：Python 实现材料学生/);
  assert.match(html,/双人同轴材料支持度雷达/);assert.equal(JSON.stringify(candidates),before);
  const fixed=render(React.createElement(FixedReportOverview,{application:candidates[0]}));assert.match(fixed,/林同学/);assert.doesNotMatch(fixed,/· 示例/);
+});
+
+test("pair review status affects only the corresponding fixed report and removes its plotted support", () => {
+ for(const status of ["rejected","corrected"]) for(const explanation of ["历史支持说明",""]){
+  const a=pairCandidate("A"), b=pairCandidate("B");
+  a.report.items[1]={...a.report.items[1],confirmationStatus:status,explanation};
+  const before=JSON.stringify([a,b]);
+  const html=render(React.createElement(CandidatePairComparison,{candidates:[a,b],busy:false,onOpen(){},initialIds:["r2"]}));
+  assert.match(html,/对照要求：pytest；合成A：[^"]*需复核/);
+  assert.doesNotMatch(html,/aria-label="合成A · pytest ·/);
+  assert.match(html,/aria-label="合成B · pytest ·/);
+  assert.match(html,/原判断：有证据支持/);
+  assert.match(html,/本项存在需复核的材料判断/);
+  assert.equal((html.match(/class="radar-data-edge"/g)||[]).length,1);
+  assert.equal(JSON.stringify([a,b]),before);
+ }
 });

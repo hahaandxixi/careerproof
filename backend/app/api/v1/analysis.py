@@ -110,11 +110,14 @@ async def list_match_reports(
     q: str | None = Query(default=None, max_length=200),
     job_id: UUID | None = Query(default=None, alias="jobId"),
     scope: Literal["product", "all"] = Query(default="product"),
+    candidate_id: str | None = Query(default=None, alias="candidateId", max_length=200),
+    view: Literal["reports", "jobs"] = Query(default="reports"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[PaginatedData[MatchReportHistorySummary]]:
     return success(await AnalysisService(session).list_reports(
         current_user, page, page_size, q=q, job_id=job_id, scope=scope,
+        view=view, candidate_id=candidate_id,
     ))
 
 
@@ -193,10 +196,13 @@ async def task_events(
 @router.get("/match-reports/{report_id}", response_model=ApiResponse[MatchReportView])
 async def get_match_report(
     report_id: UUID,
+    scope: Literal["product", "all"] = Query(default="all"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[MatchReportView]:
-    return success(await AnalysisService(session).get_report(report_id, current_user))
+    return success(await AnalysisService(session).get_report(
+        report_id, current_user, product=scope == "product",
+    ))
 
 
 @router.patch(

@@ -38,11 +38,12 @@ async def mine(
     job_id: UUID | None = Query(default=None, alias="jobId"),
     q: str | None = Query(default=None, max_length=200),
     view: Literal["all", "waiting", "action", "withdrawn"] = "all",
+    scope: Literal["product", "all"] = "all",
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     return success(await ApplicationService(session).mine(
-        user, page, page_size, job_id, q=q, view=view,
+        user, page, page_size, job_id, q=q, view=view, product=scope == "product",
     ))
 
 
@@ -68,11 +69,14 @@ async def candidates(
 async def detail(
     application_id: UUID,
     response: Response,
+    scope: Literal["product", "all"] = "all",
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
     response.headers["Cache-Control"] = "private, no-store"
-    return success(await ApplicationService(session).detail(application_id, user))
+    return success(await ApplicationService(session).detail(
+        application_id, user, product=scope == "product",
+    ))
 
 
 @router.post("/applications/{application_id}/view", response_model=ApiResponse[dict])

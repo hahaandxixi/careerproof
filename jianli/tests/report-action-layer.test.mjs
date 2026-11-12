@@ -253,3 +253,24 @@ test("no report requirement mounts task lookup or task plan editing for any save
  assert.ok(!source.includes("GrowthTaskStart"));
  assert.ok(!source.includes("existingGrowthTask"));
 });
+
+test("mixed citations retain their original source slots and only student material actions are enabled", () => {
+ const source = {projectVersionId:"v1",projectFileId:"f1",filePath:"app.py",snippet:"saved line",contextComplete:true};
+ const entry = item("mixed","supported",{aiCitationIds:["AI-1"],evidenceList:[
+   {...source,citationId:"AI-1",lineStart:1,lineEnd:2},
+   {...source,citationId:null,lineStart:5,lineEnd:6},
+   {...source,citationId:null,lineStart:9,lineEnd:10},
+ ]});
+ const r = {...report([entry]),id:"report-1",materials:[{kind:"project",id:"v1",title:"项目",versionNumber:1}]};
+ const action=renderToStaticMarkup(React.createElement(RequirementActionPanel,{report:r,item:entry,role:"student",explanationVisible:true}));
+ const readonly=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:entry}));
+ const student=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:entry,canOpenMaterial:true}));
+ for(const slot of [2,3]){
+  assert.ok(action.includes(`href="#rule-source-mixed-${slot}"`));
+  assert.ok(readonly.includes(`id="rule-source-mixed-${slot}"`));
+  assert.ok(student.includes(`sourceId=rule-source-mixed-${slot}`));
+ }
+ assert.ok(!action.includes('href="#rule-source-mixed-1"'));
+ assert.ok(!readonly.includes('href="/materials/'));
+ assert.ok(readonly.includes("saved line"));
+});

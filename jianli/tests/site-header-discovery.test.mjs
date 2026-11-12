@@ -9,13 +9,13 @@ const { renderToStaticMarkup } = require("react-dom/server");
 const { transform } = require("sucrase");
 const source = readFileSync(new URL("../src/components/SiteHeader.tsx", import.meta.url), "utf8");
 
-function render(role, status = role ? "authenticated" : "anonymous") {
+function render(role, status = role ? "authenticated" : "anonymous", pathname = "/jobs") {
   const Link = ({ children, ...props }) => React.createElement("a", props, children);
   const modules = {
     react: React,
     "react/jsx-runtime": require("react/jsx-runtime"),
     "next/link": { __esModule: true, default: Link },
-    "next/navigation": { usePathname: () => "/jobs", useRouter: () => ({}) },
+    "next/navigation": { usePathname: () => pathname, useRouter: () => ({}) },
     "./AuthProvider": { useAuth: () => ({ user: role ? { role, displayName: "合成身份" } : null, status, logout() {}, reload() {} }) },
     "./QuickCommandPalette": { __esModule: true, default: () => null },
     "./NotificationLink": { __esModule: true, default: ({ render }) => render(2) },
@@ -31,12 +31,12 @@ function render(role, status = role ? "authenticated" : "anonymous") {
   return renderToStaticMarkup(React.createElement(mod.exports.default));
 }
 
-test("public header has one discovery entry while students have five primary routes including the skill panorama", () => {
+test("public header has one discovery entry while students have six primary routes including the skill panorama", () => {
   const anonymous = render(null);
   assert.ok(anonymous.includes('href="/login"') && anonymous.includes('href="/register"'));
   assert.ok(!anonymous.includes("交互示例") && !anonymous.includes('href="/growth"'));
   const primary = render("student").match(/<nav aria-label="主导航"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/skills", "/applications"]);
+  assert.deepEqual([...primary.matchAll(/href="([^"]+)"/g)].map(match => match[1]), ["/portfolio", "/jobs", "/reports", "/skills", "/interview", "/applications"]);
   assert.ok(primary.includes('aria-current="page"'));
   assert.ok(primary.includes("技能全景") && !primary.includes("案例库"));
 });
@@ -52,3 +52,13 @@ test("enterprise and admin retain their original routes and authentication failu
 });
 
 
+
+test("interview index and session highlight only the student interview entry", () => {
+  for(const path of ["/interview","/interview/session-1"]){
+    const html=render("student","authenticated",path);
+    assert.match(html, /href="\/interview" aria-current="page"/);
+    assert.equal((html.match(/aria-current="page"/g) || []).length,1);
+    assert.match(html, /href="\/interview" aria-current="page">模拟面试<\/a>/);
+  }
+  assert.doesNotMatch(render("enterprise"),/href="\/interview"/);
+});

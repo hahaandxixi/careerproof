@@ -18,6 +18,7 @@ from app.schemas.jobs import (
     JobUpdate,
     JobView,
 )
+from app.tools.fixture_provenance import is_fixture_job
 from app.tools.technical_careers import TAXONOMY, classify_title
 
 
@@ -269,5 +270,6 @@ class JobService:
             created_at=job.created_at,
             is_demo=job.is_demo,
             discovery_visible=job.discovery_visible,
+            record_provenance="test_fixture" if is_fixture_job(job) else None,
             requirements=[JobRequirementView.model_validate(item) for item in requirements],
         )

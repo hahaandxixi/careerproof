@@ -3,18 +3,29 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api, errorMessage } from "@/lib/api/client";
+import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel,
-  canRetryFeedback, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
+  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
 import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
+
+function SummaryIssues({ lines, visibleCount }: { lines: string[]; visibleCount: number }) {
+  const remaining = lines.slice(visibleCount);
+  return <>
+    <ul>{lines.slice(0, visibleCount).map((line, index) => <li key={index}>{line}</li>)}</ul>
+    {remaining.length > 0 && <details>
+      <summary>查看其余 {remaining.length} 条（共 {lines.length} 条）</summary>
+      <ul>{remaining.map((line, index) => <li key={index}>{line}</li>)}</ul>
+    </details>}
+  </>;
+}
 
 export default function InterviewPractice({ id }: { id: string }) {
   const { user, status } = useAuth();
@@ -28,10 +39,12 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [actionError, setActionError] = useState("");
+  const [progressError, setProgressError] = useState("");
   const [notice, setNotice] = useState("");
   const [answer, setAnswer] = useState("");
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
+  const [feedbackReadTurn, setFeedbackReadTurn] = useState<number | null>(null);
   const draftKeyRef = useRef("");
   const active = useRef(false);
 
@@ -41,10 +54,15 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
       if (active.current) {
         setSession(next);
         setLoadError("");
+        setProgressError("");
+        setFeedbackReadTurn(null);
       }
       return next;
     } catch (error) {
-      if (active.current) setLoadError(errorMessage(error));
+      if (active.current) {
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status)) setSession(null);
+        setLoadError(errorMessage(error));
+      }
       return null;
     } finally {
       if (active.current) setLoading(false);
@@ -67,9 +85,15 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         const next = await api.getInterviewSession(id);
         if (!current) return;
         setSession(next);
-        setActionError("");
+        setLoadError("");
+        setProgressError("");
       } catch (error) {
-        if (current) setActionError(`暂未读取到练习进度。${errorMessage(error)}`);
+        if (current && error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+          setSession(null);
+          setLoadError(errorMessage(error));
+          return;
+        }
+        if (current) setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
       }
       if (current) timer = setTimeout(read, 1500);
     };
@@ -171,18 +195,25 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     setActionError("");
     setNotice("正在重新生成点评…");
     try {
-      setSession(await api.retryInterviewFeedback(session!.id, turn.turnIndex));
-      setNotice("");
-    } catch (error) {
-      setActionError(errorMessage(error));
+      const next = await api.retryInterviewFeedback(session!.id, turn.turnIndex);
+      if (active.current) {
+        setSession(next);
+        setFeedbackReadTurn(null);
+      }
+    } catch {
+      if (!active.current) return;
+      setFeedbackReadTurn(turn.turnIndex);
       await load();
     } finally {
-      setBusy(null);
+      if (active.current) {
+        setNotice("");
+        setBusy(null);
+      }
     }
   };
 
   if (loading) return <p className={styles.loading}>正在读取练习…</p>;
-  if (loadError) return <ErrorNotice message={loadError} retry={() => void load()} />;
+  if (loadError && !session) return <ErrorNotice message={loadError} retry={() => void load()} />;
   if (!session) return <ErrorNotice message="练习不存在或无权访问" retry={() => void load()} />;
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
@@ -191,6 +222,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
 
   return <div className={styles.page}>
+    {loadError && <ErrorNotice message={loadError} retry={() => void load()} />}
     <header className={styles.head}>
       <nav className={styles.crumb} aria-label="练习位置">
         <Link href="/reports">我的报告</Link><span aria-hidden="true">/</span>
@@ -216,6 +248,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
     <div className={styles.layout}>
       <div className={styles.main}>
+        {progressError && <ErrorNotice message={progressError} retry={() => void load()} />}
         {actionError && <ErrorNotice message={actionError} />}
         {notice && <p role="status" className={styles.notice} data-tone="working">{notice}</p>}
 
@@ -265,17 +298,24 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           </div>
         </section>}
 
+        {session.turns.length > 1 && <nav className={styles.turnTrack} aria-label="练习轮次">
+          {session.turns.map(turn => <a key={turn.turnIndex} href={`#practice-turn-${turn.turnIndex}`} aria-current={turn === session.turns.at(-1) ? "step" : undefined}>
+            <strong>第 {turn.turnIndex + 1} 轮</strong><span>{feedbackStatusLabel(turn)}</span>
+          </a>)}
+        </nav>}
         {session.turns.map(turn => {
           const isBusy = busy === turn.turnIndex;
-          const evidence = turn.feedback?.citations?.length ? turn.feedback.citations : turn.citations;
-          return <article key={turn.turnIndex} className={styles.turn} data-state={turn.state} aria-label={turnLabel(turn)}>
+          const evidence = turn.feedback?.citations ?? [];
+          const previous = !!turn.feedback && turn !== session.turns.at(-1);
+          const content = <article className={styles.turn} data-state={turn.state} aria-label={turnLabel(turn)}>
             <div className={styles.turnHead}>
               <span className={styles.turnLabel}>{turnLabel(turn)}<b>{turn.kind === "follow_up" ? "根据上一轮回答追问" : `围绕 ${session.skill || "本项要求"}`}</b></span>
-              <span className={styles.turnState}>{turn.state === "question" ? "待回答" : turn.state === "feedback" ? "已生成点评" : turn.state === "failed" ? "点评未生成" : "回答已保存"}</span>
+              <span className={styles.turnState}>{turn.state === "question" ? "待回答" : "回答已保存"}<span aria-hidden="true"> · </span>{feedbackStatusLabel(turn)}</span>
             </div>
             <p className={styles.question}>{turn.question}</p>
             {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
-            {!!turn.citations.length && <div className={styles.basisNote} aria-label="本题依据的材料片段">
+            {!!turn.citations.length && <div className={styles.basisNote} aria-label="首问关联材料">
+              <strong>首问关联材料：</strong>
               {turn.citations.map(item => <span key={item.citationId || `${item.filePath}:${item.lineStart}`}>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行</span>)}
             </div>}
 
@@ -298,12 +338,13 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             {turn.state !== "question" && !!turn.answerText && <div className={styles.answerSaved} aria-label="已保存的回答">{turn.answerText}</div>}
 
             {turn.state !== "question" && !turn.feedback && <div className={styles.actions}>
-              <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{turnNotice(turn)}</span>
-              {canRetryFeedback(turn) && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
+              <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{feedbackReadTurn === turn.turnIndex ? "暂时无法确认点评重试结果，请读取保存状态。" : turnNotice(turn)}</span>
+              {feedbackReadTurn !== turn.turnIndex && canRetryFeedback(turn) && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
               <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
             </div>}
 
             {turn.feedback && <section className={styles.feedback} aria-label="本轮点评">
+              <p className={styles.feedbackCounts}><span>讲清 {turn.feedback.covered.length}</span><span>需修正 {turn.feedback.inconsistent.length}</span><span>待补充 {turn.feedback.missing.length}</span></p>
               {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>讲清的内容</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
               {!!turn.feedback.inconsistent.length && <div className={styles.feedbackBlock} data-kind="inconsistent">
                 <h4>与材料或原理不一致</h4>
@@ -338,10 +379,15 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                   </li>)}
                 </ul>
               </div>}
-              {!evidence.length && <p className={styles.hint}>这项要求没有已保存的代码引用；点评只依据岗位原文与技术知识，未描述不存在的项目实现。</p>}
+              {!evidence.length && <p className={styles.hint}>本轮点评没有保存材料引用。</p>}
               <Link className={styles.reportLink} href={reportHref}>核对原报告这项要求 →</Link>
             </section>}
           </article>;
+          const anchor = `practice-turn-${turn.turnIndex}`;
+          return previous ? <details key={turn.turnIndex} id={anchor} className={styles.previousTurn}>
+            <summary><strong>第 {turn.turnIndex + 1} 轮 · 已点评</strong><span>讲清 {turn.feedback!.covered.length} · 需修正 {turn.feedback!.inconsistent.length} · 待补充 {turn.feedback!.missing.length}</span></summary>
+            {content}
+          </details> : <div key={turn.turnIndex} id={anchor} className={styles.turnAnchor}>{content}</div>;
         })}
 
         {session.summary && <section className={styles.summary} aria-label="练习小结">
@@ -349,9 +395,9 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
           <div className={styles.summaryGrid}>
             <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
-            <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <ul>{session.summary.remaining.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
+            <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
           </div>
-          {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><ul>{session.summary.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul></section>}
+          {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={session.summary.inconsistent} visibleCount={3} /></section>}
           {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
             {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
           </ul></section>}

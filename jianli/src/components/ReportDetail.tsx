@@ -15,6 +15,8 @@ import { useAuth } from "./AuthProvider";
 import SourceCoverage from "./SourceCoverage";
 import EvidenceLink from "./EvidenceLink";
 import ReportPaperHeader from "./ReportPaperHeader";
+import ReportVersionPicker from "./ReportVersionPicker";
+import { reportListHref, reportListQuery, reportOrigin } from "@/lib/report-navigation";
 import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
 import ApplicationSubmit from "./ApplicationSubmit";
@@ -24,11 +26,12 @@ import ReportOverview from "./ReportOverview";
 import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
 import SkillRadar from "./SkillRadar";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
-import { adoptedReportExplanation, workspaceStatusLabel } from "@/lib/report-workspace";
+import { adoptedReportExplanation, filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
 import { RequirementSupplementTarget } from "./RequirementSupplement";
+import { materialReportContext, readWorkspaceFilter } from "@/lib/material-report-link";
 import PracticeEntry from "./PracticeEntry";
 
 import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
@@ -42,9 +45,12 @@ export default function ReportDetail({ id }: { id: string }) {
 }
 function ReportWorkspace({ id }: { id: string }) {
   const { user } = useAuth();
-  const compareBase = useSearchParams().get("compareBase") || "";
+  const params = useSearchParams();
+  const compareBase = params.get("compareBase") || "";
+  const origin = reportListQuery(reportOrigin(params.get("from"))).toString();
   const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
+  const [reportFilter, setReportFilter] = useState<WorkspaceFilter>();
   const [activeRequirementId, setActiveRequirementId] = useState<string | null | undefined>(undefined);
   const session = useMemo(() => createReportReviewSession(id, {
     get: api.getReport, review: api.reviewEvidence, errorMessage,
@@ -54,9 +60,25 @@ function ReportWorkspace({ id }: { id: string }) {
     if (!state.report) return;
     const items = state.report.items;
     const sync = () => {
+      const locationParams = new URLSearchParams(window.location.search);
+      const savedFilter = readWorkspaceFilter(locationParams.get("filter"));
       const fromLocation = reportEntryRequirement(items, window.location.hash, window.location.search);
-      if (fromLocation) { setActiveRequirementId(fromLocation); return; }
-      if (!window.location.hash) { setActiveRequirementId(initialReportRequirement(items)); return; }
+      if (fromLocation) {
+        setActiveRequirementId(fromLocation);
+        setReportFilter(filterForRequirement(items, savedFilter ?? (items.length <= 8 ? "all" : initialWorkspaceFilter(items)), fromLocation));
+        return;
+      }
+      if (savedFilter) {
+        setReportFilter(savedFilter);
+        const visible = workspaceRequirements(items, savedFilter);
+        setActiveRequirementId(previous => visible.find(item => item.requirementId === previous)?.requirementId ?? visible[0]?.requirementId ?? null);
+        return;
+      }
+      if (!window.location.hash) {
+        setActiveRequirementId(initialReportRequirement(items));
+        setReportFilter(undefined);
+        return;
+      }
       // Section and unknown legacy anchors do not invent a second selection.
       // A zero-result filter has already cleared the shared selection explicitly.
       setActiveRequirementId(previous => previous === undefined ? initialReportRequirement(items) : previous);
@@ -67,7 +89,7 @@ function ReportWorkspace({ id }: { id: string }) {
     return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
   }, [state.report]);
   const { report, error, reviewing, issues, needsSync } = state;
-  if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
+  if (error) return <div className="space-y-3"><ErrorNotice message={error} retry={() => void session.load()} /><Link className="btn-secondary" href={reportListHref(reportOrigin(origin))}>返回我的报告</Link></div>;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
   const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
   const aiRatedCount = reportAiRatedCount(report);
@@ -78,6 +100,21 @@ function ReportWorkspace({ id }: { id: string }) {
   });
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
   const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
+  const filter = reportFilter ?? (report.items.length <= 8 ? "all" : initialWorkspaceFilter(report.items));
+  const materialContext = materialReportContext(report.id, undefined, undefined, filter, origin);
+  const changeFilter = (next: WorkspaceFilter) => {
+    const matches = workspaceRequirements(report.items, next);
+    const selection = matches.find(item => item.requirementId === radarRequirementId) ?? matches[0];
+    setReportFilter(next);
+    setActiveRequirementId(selection?.requirementId ?? null);
+    const url = new URL(window.location.href);
+    url.searchParams.set("filter", next);
+    url.hash = selection ? `requirement-${selection.requirementId}` : "report-matching";
+    if (url.href !== window.location.href) {
+      window.history.pushState(window.history.state, "", url);
+      window.dispatchEvent(new Event("hashchange"));
+    }
+  };
   const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
@@ -85,16 +122,16 @@ function ReportWorkspace({ id }: { id: string }) {
   const studentOverview = user?.role === "student" ? <div className="report-overview-band">
       <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
       <section className="report-radar-side" aria-label="岗位技能雷达">
-        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span></div>
+        <div className="report-radar-side-head"><h2>技能雷达</h2><span>点击轴标签切换当前要求</span></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持 / 部分支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充（不绘点）</span><span data-state="unsupported">规则暂未支持</span>{report.items.some(item => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") && <span>需复核（不绘点）</span>}</div>
         {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
       </section>
     </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
-    <ReportSections header={<ReportPaperHeader report={report} />} sections={[
+    <ReportSections header={<ReportPaperHeader report={report} backHref={reportListHref(reportOrigin(origin))} versionTools={user?.role === "student" && <ReportVersionPicker report={report} origin={origin} />} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
-    {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench />}
+    {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench filter={filter} onFilterChange={changeFilter} />}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
-    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
+    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId} filter={filter} onFilterChange={changeFilter}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
 
         <span>{item.skill || "岗位要求"}<span className="requirement-title-state">，{workspaceStatusLabel(item)}</span></span>
@@ -107,7 +144,7 @@ function ReportWorkspace({ id }: { id: string }) {
         report={report} item={item} role={user?.role}
         explanationVisible={!!adoptedReportExplanation(report, item)}
         explanationPanel={<ReportAiExplanation report={report} item={item} />}
-        sourcePanel={<ReportSourcePanel report={report} item={item} />}
+        sourcePanel={<ReportSourcePanel report={report} item={item} canOpenMaterial={user?.role === "student"} filter={filter} origin={origin} />}
       />
       <details className="mt-4 border-t border-slate-200 pt-2"><summary className="disclosure">判据与核对记录</summary><div id={`judgement-${item.requirementId}`} className="min-w-0 scroll-mt-24">
       <details className="mt-3 text-sm"><summary className="disclosure">规则判断原文</summary><p className="mt-2 whitespace-pre-wrap break-words reading-copy">{item.explanation}</p></details>
@@ -122,8 +159,8 @@ function ReportWorkspace({ id }: { id: string }) {
     <ReportAgentEvidence report={report} canGrow={user?.role === "student"} />
 
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
-    {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
-    {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}<Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}`}>查看原图与当前核对状态 →</Link></div>)}</section>}
+    {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} origin={origin} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
+    {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}{user?.role === "student" && <Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}?${materialContext}`}>查看原图与当前核对状态 →</Link>}</div>)}</section>}
     <details className="text-sm"><summary className="disclosure">材料判据</summary><div className="space-y-2 py-2 leading-7 text-slate-700"><p>保存的等级是材料判定：基础线索、局部操作、任务实现。名称沿用生成报告时的规则，具体原因见逐项判断记录。</p><p>规则结合相关性、实质操作及任务上下文判断；仅声明、无可定位证据、规则未覆盖或复核暂停时不评级。</p><p>岗位权重表示要求的重要性；不按等级或引用数量汇总能力分。旧记录保留当时结果，不自动改用新规则。</p></div></details>
 
     <details className="panel text-sm" aria-label="报告处理与范围说明"><summary className="cursor-pointer py-1 font-medium text-slate-700">分析详情</summary><div id="report-analysis" className="scroll-mt-24"><p className="mt-3 text-sm text-slate-600">规则覆盖范围：{assessedCount}/{report.items.length} 项（不是证据支持数量）。{assessedCount === 0 ? "当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? "未覆盖要求不评级。" : ""}</p><p className="mt-3 text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
@@ -144,7 +181,7 @@ function ReportWorkspace({ id }: { id: string }) {
         <ul className="space-y-4">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="panel space-y-2">
           <h3 className="text-lg font-semibold">{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</h3>
           <p>{material.kind === "resume" ? "简历" : material.materialRole === "reference" ? "第三方参考 · 不证明本人实践" : "个人项目 / 作品"}</p>
-          {user?.role === "student" && <Link className="btn-secondary" href={`/materials/${material.kind}/${material.id}`}>预览此固定版本</Link>}
+          {user?.role === "student" && <Link className="btn-secondary" href={`/materials/${material.kind}/${material.id}?${materialContext}`}>预览此固定版本</Link>}
           <details><summary className="disclosure">版本校验信息</summary><p className="break-all text-sm">版本：{material.id}<br />内容摘要：{material.contentHash}</p></details>
         </li>)}</ul>
       </> },

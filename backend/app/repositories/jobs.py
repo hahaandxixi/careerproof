@@ -35,10 +35,11 @@ class JobRepository:
         conditions = []
         if manager_id is not None:
             conditions.append(Job.enterprise_id.in_(self.managed_enterprise_ids(manager_id)))
+            conditions.append(Job.id.not_in(fixture_job_ids()))
         elif not include_all:
             # Discovery (and only discovery): published, and explicitly visible. Count and
             # slice share these conditions, so a hidden posting is neither counted nor
-            # paged into a gap. Management listings above stay unfiltered.
+            # paged into a gap.
             conditions.append(Job.status == "published")
             conditions.append(Job.discovery_visible.is_(True))
             conditions.append(Job.id.not_in(fixture_job_ids()))

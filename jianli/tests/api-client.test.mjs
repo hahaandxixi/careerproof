@@ -237,7 +237,7 @@ test("successful application events refresh notification count; failed requests 
   try {
     await api.withdrawApplication("a");assert.equal(changed,1);
     await api.applicationDetail("a");await api.existingGrowthTask("report","requirement");assert.equal(changed,1);
-    assert.deepEqual(urls.slice(1),[["/backend/api/v1/applications/a","GET"],["/backend/api/v1/match-reports/report/growth-tasks/requirement","GET"]]);
+    assert.deepEqual(urls.slice(1),[["/backend/api/v1/applications/a?scope=product","GET"],["/backend/api/v1/match-reports/report/growth-tasks/requirement","GET"]]);
     globalThis.fetch=async()=>envelope(null,503,"failure");await assert.rejects(api.withdrawApplication("a"));assert.equal(changed,1);
   }finally{globalThis.fetch=oldFetch;if(oldWindow===undefined)delete globalThis.window;else globalThis.window=oldWindow;}
 });
