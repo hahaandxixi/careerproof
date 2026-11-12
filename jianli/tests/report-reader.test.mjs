@@ -45,6 +45,7 @@ const { revealEvidenceAnchor } = await load("lib/evidence-anchor.ts");
 const verdicts = await load("lib/verdict-display.js");
 const workspace = await load("lib/report-workspace.ts");
 const evidenceWorkspace = await load("lib/evidence-workspace.ts");
+const radarLabels = await load("lib/skill-radar.ts");
 const { default: Reader } = await load("components/ReportRequirementReader.tsx");
 const { default: AiExplanation } = await load("components/ReportAiExplanation.tsx");
 const { default: SourcePanel } = await load("components/ReportSourcePanel.tsx");
@@ -159,6 +160,7 @@ function navigationFixture(hash = "", search = "") {
     "@/lib/verdict-display.js": verdicts,
     "@/lib/report-workspace": workspace,
     "@/lib/evidence-workspace": evidenceWorkspace,
+    "@/lib/skill-radar": radarLabels,
   };
   const mod = { exports: {} };
   const code = transform(readFileSync(path.join(SRC, "components/ReportRequirementReader.tsx"), "utf8"), {

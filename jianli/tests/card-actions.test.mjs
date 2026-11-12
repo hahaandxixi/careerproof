@@ -59,14 +59,18 @@ test("managed job actions retain destinations, true counts and state outside the
  const html=render(tree);
  assert.match(html,/投递 3 · 待回复 2/);assert.match(html,/已发布/);
  for(const href of ["/jobs/job-a","/jobs/job-a/edit","/jobs/job-a/applications"])assert.ok(html.includes(`href="${href}"`));
- assert.match(html,/<a class="btn-secondary" href="\/jobs\/job-a">查看岗位<\/a>/);
+ const detailLinks=nodes(tree).filter(n=>n.props?.href==="/jobs/job-a");
+ assert.equal(detailLinks.length,1);
+ assert.equal(text(detailLinks[0]),"Python 后端");
  assert.match(html,/关闭岗位/);assert.match(html,/card-actions\b/);
  const groups=nodes(tree).filter(n=>n.props?.className?.split(" ").includes("card-actions"));
  assert.equal(groups.length,1);
- assert.deepEqual(nodes(groups[0]).filter(n=>n.type==="button"||n.props?.href).map(text),["编辑岗位","查看投递","查看岗位","关闭岗位"]);
+ assert.deepEqual(nodes(groups[0]).filter(n=>n.type==="button"||n.props?.href).map(text),["编辑岗位","查看投递","关闭岗位"]);
+ assert.equal(nodes(groups[0]).find(n=>n.props?.className==="btn")?.props.href,"/jobs/job-a/applications");
  assert.doesNotMatch(text(groups[0]),/已发布|投递 3 · 待回复 2/);
  const draft=render(React.createElement(ManagedJobCard,{job:{...job,status:"draft"},changing:"job-a",onStatusChange(){}}));
  assert.match(draft,/草稿/);assert.match(draft,/更新中…/);assert.match(draft,/<button[^>]*disabled/);assert.match(draft,/查看投递/);
+ assert.match(draft,/<a class="btn" href="\/jobs\/job-a\/edit">编辑岗位<\/a>/);
 });
 test("closing needs confirmation, cancelling leaves data unchanged; publishing remains explicit",()=>{
  const original=JSON.stringify(job);const old=globalThis.window;const calls=[];

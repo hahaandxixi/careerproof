@@ -3,22 +3,23 @@ import { useEffect, useState } from "react";
 import type { ReportItem } from "@/lib/api/domain";
 import { initialReportRequirement } from "@/lib/report-reader";
 import { workspaceStatusLabel } from "@/lib/report-workspace";
+import { reportRequirementLabels } from "@/lib/skill-radar";
 
 import { reportStatusTone } from "@/lib/evidence-workspace";
 
 /** Compact requirement heatmap from saved fields; no score or invented capability. */
 export default function ReportRequirementHeatmap({ items, selectedRequirementId }: { items: ReportItem[]; selectedRequirementId?: string | null }) {
-  const read = () => {
-    const id = window.location.hash.match(/^#requirement-(.+)$/)?.[1];
-    return id && items.some(item => item.requirementId === id) ? id : initialReportRequirement(items);
-  };
+  const labels = reportRequirementLabels(items);
   const [selected, setSelected] = useState<string | null>(() => items[0] ? initialReportRequirement(items) : null);
   useEffect(() => {
     if (selectedRequirementId !== undefined) setSelected(selectedRequirementId);
   }, [selectedRequirementId]);
   useEffect(() => {
     if (selectedRequirementId !== undefined) return;
-    const sync = () => setSelected(read());
+    const sync = () => {
+      const id = window.location.hash.match(/^#requirement-(.+)$/)?.[1];
+      setSelected(id && items.some(item => item.requirementId === id) ? id : initialReportRequirement(items));
+    };
     sync();
     window.addEventListener("hashchange", sync);
     window.addEventListener("popstate", sync);
@@ -30,7 +31,7 @@ export default function ReportRequirementHeatmap({ items, selectedRequirementId 
     <div className="report-heatmap-grid" role="table">
       <div className="report-heatmap-row report-heatmap-title" role="row"><span role="columnheader">岗位要求</span><span role="columnheader">简历声明</span><span role="columnheader">可定位来源</span><span role="columnheader">当前判断</span></div>
       {items.map(item => <a key={item.requirementId} href={`#requirement-${item.requirementId}`} className={`report-heatmap-row ${selected === item.requirementId ? "is-selected" : ""}`} role="row" data-tone={reportStatusTone(item)} aria-current={selected === item.requirementId ? "true" : undefined}>
-        <strong role="cell">{item.skill || item.requirementTitle}</strong>
+        <strong role="cell" title={item.requirementTitle}>{labels.get(item.requirementId)?.label}</strong>
         <span role="cell" data-kind="claim" data-state={item.claimed ? "on" : "off"}>{item.claimed ? "有声明" : "未识别"}</span>
         <span role="cell" data-kind="source" data-state={item.evidenceList.length ? "on" : "off"}>{item.evidenceList.length ? `${item.evidenceList.length} 处` : "无引用"}</span>
         <span role="cell" className="report-heatmap-verdict">{workspaceStatusLabel(item)}</span>

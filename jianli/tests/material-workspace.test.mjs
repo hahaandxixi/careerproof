@@ -114,12 +114,12 @@ test("adding materials first offers a type choice and mounts only the chosen for
 
 test("preparing an existing project version does not claim an upload has started", () => {
  const project={id:"existing",name:"报名服务",description:""};
- const attempt=upload.newProjectAttempt(project.name,project.description,project);
- const value=workspace(null,"project",{15:attempt});
+ const value=workspace(null,"project",{11:[{...project,versions:[{id:"v1",versionNumber:1,status:"completed",createdAt:"2026-11-05T00:00:00Z"}]}],25:project});
  const headings=value.collect(value.tree,"h2").map(node=>node.props.children);
  assert.ok(headings.includes("上传新版本"));
  const copy=JSON.stringify(value.tree);
- assert.ok(copy.includes("目标项目：报名服务"));assert.ok(!copy.includes("正在上传到"));
+ assert.ok(copy.includes("报名服务"));assert.ok(copy.includes("当前第 1 版"));assert.ok(!copy.includes("正在上传到"));
+ assert.ok(!copy.includes("上传材料类型"));
  assert.equal(value.calls.length,0);
 });
 
@@ -132,7 +132,7 @@ test("completed material promotes job comparison while empty and pending work re
     assert.equal(actions.length, status === "completed" ? 1 : 0);
     if(actions.length) assert.equal(actions[0].props.href,"/jobs");
     const add=value.collect(value.tree,"button").find(node=>node.props.children==="添加材料");
-    assert.equal(add.props.className,status==="completed"?"btn-secondary":"btn");
+    assert.equal(add.props.className,"btn");
     assert.equal(value.calls.length,0);
   }
   const empty=workspace(null,null,{12:true,17:false,18:null});

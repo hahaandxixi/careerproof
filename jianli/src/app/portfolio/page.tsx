@@ -66,17 +66,28 @@ function statusText(status: string): string {
   return labels[status] ?? "历史处理状态待确认";
 }
 
-function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject, deleteDisabled = false }: { item: UploadRecord; reportVersions?: number[]; onUploadVersion?: () => void; onDeleteProject?: () => void; deleteDisabled?: boolean }) {
+const materialTime = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+
+function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, archiveDisabled = false, uploadDisabled = false, isTarget = false, historical = false }: {
+  item: UploadRecord; reportVersions?: number[]; onUploadVersion?: () => void; onArchive?: () => void;
+  archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
+}) {
   const title = displayMaterialTitle(item.title, item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
+  const extraActions = [
+    complete && item.taskId ? <Link key="record" className="btn-secondary" href={`/tasks/${item.taskId}`}>处理记录</Link> : null,
+    onArchive ? <button key="archive" type="button" className="btn-danger-quiet" disabled={archiveDisabled} onClick={onArchive}>移出材料库</button> : null,
+  ].filter(action => action !== null);
+  const date = new Date(item.createdAt);
   return (
-    <article className="material-register-row">
+    <article className="material-register-row" data-upload-target={isTarget || undefined} data-historical={historical || undefined}>
       <div className="material-row-heading">
-        <div className="flex flex-wrap items-baseline gap-x-2">
+        {!historical && <div className="flex flex-wrap items-baseline gap-x-2">
           <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
-        </div>
+          {isTarget && <span className="text-sm font-medium text-[#1d4a40]">当前上传目标</span>}
+        </div>}
         <p className="mt-1 break-words text-sm leading-6 text-slate-600">
           <span className="break-all">{item.filename}</span>
           {item.sizeBytes != null && <span className="whitespace-nowrap"> · {materialFileSize(item.sizeBytes)}</span>}
@@ -88,12 +99,14 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onDeleteProject
         {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
       <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
-      <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString("zh-CN")}</time>
+      <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
         {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
-        {onUploadVersion && <button type="button" className="btn-secondary" onClick={onUploadVersion}>上传新版</button>}
+        {onUploadVersion && <button type="button" className="btn-secondary" disabled={uploadDisabled} onClick={onUploadVersion}>上传新版</button>}
         {!complete && item.taskId && <Link className={failed ? "btn" : "btn-secondary"} href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
-        <details className="text-sm text-slate-600"><summary className="disclosure">更多操作</summary><div className="flex flex-wrap gap-2 py-2">{item.taskId && <Link className="btn-secondary" href={`/tasks/${item.taskId}`}>处理记录</Link>}{onDeleteProject && <button type="button" className="btn-danger-quiet" disabled={deleteDisabled} onClick={onDeleteProject}>移出材料库</button>}</div></details>
+        {extraActions.length > 1 ? <details className="relative text-sm text-slate-600">
+          <summary className="disclosure">更多操作</summary><div className="absolute right-0 z-10 mt-1 grid w-max gap-1 rounded-lg border border-slate-200 bg-white p-2 shadow-md">{extraActions}</div>
+        </details> : extraActions[0]}
       </div>
       {!complete && <div className="material-row-progress">
       <div className="flex items-center gap-3">
@@ -169,6 +182,12 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [materialFilter, setMaterialFilter] = useState<MaterialFilter>("all");
   const [materialPage, setMaterialPage] = useState(1);
   const deletingProject = useRef(false);
+  const [selectedProject, setSelectedProject] = useState<ProjectView | null>(null);
+  const [resumingUpload, setResumingUpload] = useState(false);
+  const [materialSearch, setMaterialSearch] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
+  const activeAttempt = resumingUpload ? attempt : null;
+  const targetProject = activeAttempt ? activeAttempt.project : selectedProject;
 
   const rememberAttempt = useCallback((next: ProjectAttempt | null) => {
     attemptRef.current = next;
@@ -181,6 +200,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     attemptRef.current = saved;
     setAttempt(saved);
     if (saved) {
+      setResumingUpload(true);
       setUploadKind("project"); setUploadOpen(true);
       setProjectName(saved.name);
       setProjectDescription(saved.description);
@@ -234,9 +254,13 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const newestUploads = latestMaterialVersions(uploads).sort(
     (a, b) => Number(reportVersions.has(`${b.kind}:${b.resourceId}`)) - Number(reportVersions.has(`${a.kind}:${a.resourceId}`)),
   );
-  const filteredUploads = materialFilter === "all"
-    ? newestUploads
-    : newestUploads.filter(item => item.kind === materialFilter);
+  const query = materialSearch.trim().toLocaleLowerCase();
+  const searchedResources = new Set(uploads.filter(item => !query ||
+    [displayMaterialTitle(item.title, item.versionId), item.filename].some(value => value.toLocaleLowerCase().includes(query))
+  ).map(item => `${item.kind}:${item.resourceId}`));
+  const filteredUploads = newestUploads.filter(item =>
+    (materialFilter === "all" || item.kind === materialFilter) && searchedResources.has(`${item.kind}:${item.resourceId}`),
+  );
   const materialFilterCounts = {
     all: newestUploads.length,
     resume: newestUploads.filter(item => item.kind === "resume").length,
@@ -251,7 +275,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     materialPageCurrent * MATERIAL_PAGE_SIZE,
   );
   const hasCompletedMaterial = historyLoaded && !historyError && newestUploads.some(item => item.status === "completed");
-  const uploadTarget = attempt?.project && newestUploads.find(item => item.kind === "project" && item.resourceId === attempt.project?.id);
+  const uploadTarget = targetProject && newestUploads.find(item => item.kind === "project" && item.resourceId === targetProject.id);
   const targetReportVersions = uploadTarget ? reportVersions.get(`project:${uploadTarget.resourceId}`) : undefined;
 
   const activeTaskIds = useMemo(
@@ -303,6 +327,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   async function submitProject(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (projectSubmitting.current || deletingProject.current) return;
+    if (attemptRef.current && !resumingUpload) return;
     setProjectError("");
     if (!projectFile) {
       setProjectError("请选择项目压缩包或作品文档");
@@ -317,11 +342,14 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     projectSubmitting.current = true;
     setProjectBusy(true);
     try {
-      const current = attemptRef.current ?? newProjectAttempt(projectName.trim(), projectDescription.trim(), null, projectRole);
+      const current = attemptRef.current ?? newProjectAttempt(projectName.trim(), projectDescription.trim(), selectedProject, projectRole);
+      setResumingUpload(true);
       rememberAttempt(current);
       const saved = await submitProjectAttempt(api, current, projectFile, rememberAttempt);
       setRecentUpload({ kind: "project", versionId: saved.versionId });
       rememberAttempt(null);
+      setResumingUpload(false);
+      setSelectedProject(null);
       setNotice("项目文件已保存，可以在下方查看处理状态。");
       setProjectName("");
       setProjectDescription("");
@@ -340,44 +368,57 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     }
   }
 
-  function selectProject(project: ProjectView | null) {
-    if (projectSubmitting.current || deletingProject.current) return;
+  function openUpload(kind: "resume" | "project" | null, project: ProjectView | null = null, resumeAttempt = false) {
+    if (projectSubmitting.current || deletingProject.current || resumeBusy) return;
     setUploadOpen(true);
-    setUploadKind("project");
+    setUploadKind(kind);
     requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.scrollIntoView({ block: "nearest" }); target?.focus({ preventScroll: true }); });
-    const role = newestUploads.find(item=>item.kind==="project"&&item.resourceId===project?.id)?.materialRole ?? projectRole;
-    rememberAttempt(project ? newProjectAttempt(project.name, project.description, project, role) : null);
-    setProjectName(project?.name ?? "");
-    setProjectDescription(project?.description ?? "");
+    setSelectedProject(project);
+    setResumingUpload(resumeAttempt);
+    const saved = resumeAttempt ? attemptRef.current : null;
+    setProjectName(saved?.name ?? project?.name ?? "");
+    setProjectDescription(saved?.description ?? project?.description ?? "");
+    setProjectRole(saved?.materialRole ?? newestUploads.find(item => item.kind === "project" && item.resourceId === project?.id)?.materialRole ?? "portfolio");
     setProjectFile(null);
     setProjectError("");
     const input = document.getElementById("project-file") as HTMLInputElement | null;
     if (input) input.value = "";
   }
 
-  async function deleteProject(projectId: string, name: string) {
+  function discardUpload() {
+    if (!window.confirm("放弃本地上传恢复？如果服务器已收到上次文件，已保存的材料仍会保留。")) return;
+    rememberAttempt(null);
+    if (resumingUpload) openUpload("project");
+  }
+
+  async function archiveMaterial(kind: UploadRecord["kind"], resourceId: string, name: string) {
     if (projectSubmitting.current || deletingProject.current) return;
+    if (kind === "project" && attemptRef.current?.project?.id === resourceId) {
+      setDeleteError("请先继续或放弃该项目的未完成上传，再移出材料库。");
+      return;
+    }
     if (!window.confirm(`将「${name}」及其所有版本移出当前材料库？\n\n可在归档材料中恢复。历史报告、已授权投递和引用文件均保留。`)) return;
     deletingProject.current = true;
-    setDeletingProjectId(projectId);
+    setDeletingProjectId(resourceId);
     setDeleteError("");
     setNotice("");
     try {
-      await api.archiveMaterial("project", projectId, true);
+      await api.archiveMaterial(kind, resourceId, true);
       // Ignore a list request started before the archive was committed.
       ++historyRequest.current;
-      setProjects(current => current.filter(project => project.id !== projectId));
-      if (attemptRef.current?.project?.id === projectId) {
-        rememberAttempt(null);
-        setProjectName("");
-        setProjectDescription("");
-        setProjectFile(null);
-        const input = document.getElementById("project-file") as HTMLInputElement | null;
-        if (input) input.value = "";
+      if (kind === "project") {
+        setProjects(current => current.filter(project => project.id !== resourceId));
+        if (selectedProject?.id === resourceId) {
+          setSelectedProject(null);
+          setUploadOpen(false);
+          setProjectFile(null);
+        }
+      } else {
+        setResumes(current => current.filter(resume => resume.id !== resourceId));
       }
       setNotice("已移出材料库。历史报告、已授权投递和引用文件均保留。");
     } catch (reason) {
-      setDeleteError(`移除项目失败：${errorMessage(reason)}`);
+      setDeleteError(`移除材料失败：${errorMessage(reason)}`);
     } finally {
       deletingProject.current = false;
       setDeletingProjectId(null);
@@ -389,7 +430,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <Suspense fallback={null}><GrowthUploadReturn uploaded={recentUpload} /></Suspense>
       <Suspense fallback={null}><MaterialUploadIntent projects={projects} ready={historyLoaded && attemptReady} onOpen={projectId => {
         if (attemptRef.current || projectSubmitting.current || deletingProject.current || resumeBusy) return false;
-        selectProject(projects.find(project => project.id === projectId) ?? null);
+        openUpload("project", projects.find(project => project.id === projectId) ?? null);
         return true;
       }} /></Suspense>
       <header className="flex flex-wrap items-start justify-between gap-3">
@@ -398,9 +439,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">浏览案例材料</Link>
-          <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>
-          {hasCompletedMaterial && <Link href="/jobs" className="btn material-next-action">选择岗位进行对照</Link>}
-          <button type="button" className={hasCompletedMaterial ? "btn-secondary" : "btn"} disabled={projectBusy||resumeBusy} onClick={() => { setUploadKind(null); setUploadOpen(true); requestAnimationFrame(() => { const target = document.getElementById("upload-workspace-title"); target?.focus({ preventScroll: true }); }); }}>添加材料</button>
+          {hasCompletedMaterial && <Link href="/jobs" className="btn-secondary">选择岗位进行对照</Link>}
+          <button type="button" className="btn" disabled={projectBusy || resumeBusy || !!deletingProjectId} onClick={() => openUpload(null)}>添加材料</button>
         </div>
       </header>
 
@@ -413,6 +453,19 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <section className="material-register workspace-sheet" aria-labelledby="material-register-title">
         <div className="review-section-heading border-b border-slate-200 pb-3">
           <h2 id="material-register-title" className="section-title">项目与简历</h2>
+          <div className="flex flex-wrap items-center gap-2">
+            {!showArchived && <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>}
+            <button type="button" className="btn-secondary" aria-pressed={showArchived} onClick={() => setShowArchived(!showArchived)}>已归档</button>
+          </div>
+        </div>
+        {showArchived ? <ArchivedMaterials onRestore={() => void loadHistory()} /> : <>
+        <div className="flex flex-wrap items-center gap-3 py-3">
+          <label className="flex min-w-0 flex-1 items-center gap-2 text-sm text-slate-700">
+            <span className="shrink-0">搜索材料</span>
+            <input type="search" className="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2" placeholder="名称或文件名"
+              value={materialSearch} onChange={event => { setMaterialSearch(event.target.value); setMaterialPage(1); }} />
+          </label>
+          {materialSearch && <button type="button" className="btn-quiet" onClick={() => { setMaterialSearch(""); setMaterialPage(1); }}>清除搜索</button>}
           {uploads.length > 0 && (
             <div className="flex flex-wrap gap-2" role="group" aria-label="材料类型筛选">
               {MATERIAL_FILTERS.map(filter => (
@@ -431,18 +484,35 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         )}
         {!historyLoaded && !historyError && <p className="py-6 text-sm text-slate-500">正在加载已保存材料…</p>}
         {deleteError && <p role="alert" className="mb-3 text-sm text-rose-700">{deleteError}</p>}
-        {deletingProjectId && <p role="status" className="mb-3 text-sm text-slate-600">正在移除项目…</p>}
-        {projects.filter(project => !project.versions.length).map(project => <div key={project.id} className="surface-muted mb-3 flex flex-wrap items-center justify-between gap-3 p-4"><div><p className="break-words font-medium">{displayMaterialTitle(project.name, project.id)}</p><p className="text-sm text-slate-600">项目已创建，尚未保存文件。</p></div><div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary" disabled={projectBusy || !!deletingProjectId} onClick={() => selectProject(project)}>继续上传</button><details className="text-sm text-slate-600"><summary className="disclosure">更多操作</summary><button type="button" className="btn-danger-quiet" disabled={projectBusy || !!deletingProjectId} onClick={() => void deleteProject(project.id, project.name)}>移出材料库</button></details></div></div>)}
-        {uploads.length > 0 && (
+        {deletingProjectId && <p role="status" className="mb-3 text-sm text-slate-600">正在移除材料…</p>}
+        {projects.filter(project => !project.versions.length && materialFilter !== "resume" &&
+          displayMaterialTitle(project.name, project.id).toLocaleLowerCase().includes(query)
+        ).map(project => <div key={project.id} data-upload-target={uploadOpen && targetProject?.id === project.id || undefined} className="surface-muted mb-3 flex flex-wrap items-center justify-between gap-3 p-4"><div><p className="break-words font-medium">{displayMaterialTitle(project.name, project.id)}</p><p className="text-sm text-slate-600">{uploadOpen && targetProject?.id === project.id ? "当前上传目标 · " : ""}尚未保存文件</p></div><div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary" disabled={projectBusy || resumeBusy || !!deletingProjectId} onClick={() => openUpload("project", project)}>继续上传</button><button type="button" className="btn-danger-quiet" disabled={projectBusy || !!deletingProjectId} onClick={() => void archiveMaterial("project", project.id, project.name)}>移出材料库</button></div></div>)}
+        {pagedUploads.length > 0 && (
           <div className="divide-y divide-slate-200">
             <div aria-hidden="true" className="material-register-columns">
               <span>材料名称</span><span>版本</span><span>处理状态</span><span>更新时间</span><span>操作</span>
             </div>
-            {pagedUploads.map(item => <section key={item.key} className="min-w-0"><UploadProgress item={item} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)} onUploadVersion={item.kind === "project" ? () => { const project = projects.find(value => value.id === item.resourceId); if (project) selectProject(project); } : undefined} onDeleteProject={item.kind === "project" ? () => void deleteProject(item.resourceId, item.title) : undefined} deleteDisabled={projectBusy || !!deletingProjectId} />{uploads.some(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key)&&<details className="mt-2 text-sm"><summary className="disclosure">历史版本（{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).length}）</summary><div className="space-y-2">{uploads.filter(v=>v.kind===item.kind&&v.resourceId===item.resourceId&&v.key!==item.key).map(version=><UploadProgress key={version.key} item={version}/>)}</div></details>}</section>)}
+            {pagedUploads.map(item => {
+              const history = uploads.filter(version => version.kind === item.kind && version.resourceId === item.resourceId && version.key !== item.key);
+              const project = item.kind === "project" ? projects.find(value => value.id === item.resourceId) : undefined;
+              return <section key={item.key} className="min-w-0">
+                <UploadProgress item={item} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)}
+                  isTarget={uploadOpen && targetProject?.id === project?.id && !!project}
+                  onUploadVersion={project ? () => openUpload("project", project) : undefined}
+                  uploadDisabled={projectBusy || resumeBusy || !!deletingProjectId}
+                  onArchive={() => void archiveMaterial(item.kind, item.resourceId, item.title)}
+                  archiveDisabled={projectBusy || !!deletingProjectId} />
+                {history.length > 0 && <details className="text-sm">
+                  <summary className="disclosure">历史版本（{history.length}）</summary>
+                  <div>{history.map(version => <UploadProgress key={version.key} item={version} historical />)}</div>
+                </details>}
+              </section>;
+            })}
           </div>
         )}
         {uploads.length > 0 && !filteredUploads.length && (
-          <p className="py-6 text-sm text-slate-500">当前筛选类型暂无材料。</p>
+          <p className="py-6 text-sm text-slate-500">{query ? "没有匹配的已上传材料。" : "当前筛选类型暂无材料。"}</p>
         )}
         {materialPageCount > 1 && (
           <div className="mt-3">
@@ -454,19 +524,26 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             暂无材料，请添加简历或项目。
           </div>
         )}
+        </>}
       </section>
       <aside className="material-review-side min-w-0" aria-label="补证上下文与材料上传">
       <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} onMaterials={setReportMaterials} /></Suspense>
       {uploadOpen && <section id="add-materials" className="material-upload-surface">
           <div className="material-upload-heading">
-            <h2 id="upload-workspace-title" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold">{uploadKind === "resume" ? "上传简历" : uploadKind === "project" ? (attempt?.project ? "上传新版本" : "上传项目") : "添加材料"}</h2>
+            <h2 id="upload-workspace-title" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold">{uploadKind === "resume" ? "上传简历" : uploadKind === "project" ? (activeAttempt ? "继续上次上传" : uploadTarget ? "上传新版本" : "上传项目") : "添加材料"}</h2>
             <button type="button" className="btn-quiet" disabled={resumeBusy||projectBusy} onClick={()=>setUploadOpen(false)}>收起</button>
           </div>
-          <div className="material-upload-kind-switch" role="group" aria-label="上传材料类型">
-            <button type="button" aria-pressed={uploadKind === "resume"} onClick={()=>{setUploadKind("resume");setResumeError("");}}>上传简历</button>
-            <button type="button" aria-pressed={uploadKind === "project"} onClick={()=>{setUploadKind("project");setProjectError("");}}>上传项目</button>
-            {!uploadKind && attempt && <button type="button" onClick={()=>setUploadKind("project")}>继续上次上传</button>}
-          </div>
+          {!targetProject && !activeAttempt && <div className="material-upload-kind-switch" role="group" aria-label="上传材料类型">
+            <button type="button" disabled={projectBusy || resumeBusy} aria-pressed={uploadKind === "resume"} onClick={() => { setUploadKind("resume"); setResumeError(""); }}>上传简历</button>
+            <button type="button" disabled={projectBusy || resumeBusy} aria-pressed={uploadKind === "project"} onClick={() => { setUploadKind("project"); setProjectError(""); }}>上传项目</button>
+          </div>}
+          {attempt && !activeAttempt && <div className="mb-4">
+            <p className="text-sm text-slate-700">另有未完成的项目上传。请先继续或放弃该次上传，再提交其他项目。</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button type="button" className="btn-secondary" disabled={resumeBusy || projectBusy} onClick={() => openUpload("project", null, true)}>继续上次上传</button>
+              <button type="button" className="btn-quiet" disabled={resumeBusy || projectBusy} onClick={discardUpload}>放弃恢复</button>
+            </div>
+          </div>}
       <div className="max-w-3xl">
         {uploadKind === "resume" && <form onSubmit={submitResume} className="min-w-0">
           <div className="space-y-4">
@@ -493,25 +570,24 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         </form>}
 
         {uploadKind === "project" && <form onSubmit={submitProject} className="min-w-0">
-          {attempt && (
+          {(targetProject || activeAttempt) && (
             <div className="mb-4 border-l-2 border-indigo-300 pl-3 text-sm text-slate-700">
-              <p>{attempt.project ? `目标项目：${displayMaterialTitle(attempt.project.name, attempt.project.id)}` : "已保留未完成上传，请重新选择原文件继续。"}</p>
-              {uploadTarget && targetReportVersions && <p className="mt-1">原报告使用第 {targetReportVersions.join("、")} 版 · 当前第 {uploadTarget.versionNumber} 版</p>}
-              {projectError&&<p className="mt-1">重试将复用原项目和上传标识，请选择原文件。</p>}
-              <button type="button" disabled={projectBusy} onClick={() => selectProject(null)} className="btn-secondary mt-2">
-                改为创建另一个项目
-              </button>
+              <p>{targetProject && displayMaterialTitle(targetProject.name, targetProject.id)}
+                {uploadTarget && ` · 当前第 ${uploadTarget.versionNumber} 版`}</p>
+              {targetReportVersions && <p className="mt-1">原报告使用第 {targetReportVersions.join("、")} 版</p>}
+              {activeAttempt && <p className="mt-1">继续时请选择原文件，系统会沿用上次的上传标识。</p>}
+              <button type="button" disabled={projectBusy} onClick={() => openUpload(null)} className="btn-quiet mt-2">改为添加材料</button>
             </div>
           )}
           <div className="space-y-4">
-            {!attempt?.project && <>
+            {!targetProject && <>
             <label className="block">
               <span className="text-sm font-medium text-slate-700">项目名称</span>
               <input
                 required
                 maxLength={200}
                 value={projectName}
-                disabled={projectBusy || !!attempt}
+                disabled={projectBusy || !!activeAttempt}
                 onChange={(event) => setProjectName(event.target.value)}
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
                 placeholder="如：校园二手交易平台"
@@ -523,27 +599,27 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 rows={2}
                 maxLength={5000}
                 value={projectDescription}
-                disabled={projectBusy || !!attempt}
+                disabled={projectBusy || !!activeAttempt}
                 onChange={(event) => setProjectDescription(event.target.value)}
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
                 placeholder="你负责了什么，解决了什么问题"
               />
             </label>
             </>}
-            <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={attempt?.project ? `${displayMaterialTitle(attempt.project.name, attempt.project.id)} · 新版本` : projectName.trim() ? `${projectName.trim()} · 新项目` : "新项目（请先填写名称）"} disabled={projectBusy} onChange={setProjectFile} onError={setProjectError} />
+            <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={targetProject ? displayMaterialTitle(targetProject.name, targetProject.id) : projectName.trim() || "新项目（请先填写名称）"} disabled={projectBusy} onChange={setProjectFile} onError={setProjectError} />
             <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
               <legend className="px-1 font-medium text-slate-700">材料归属</legend>
-              <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(attempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("portfolio")} /><span>个人作品</span></label>
-              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(attempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!attempt} onChange={() => setProjectRole("reference")} /><span>参考资料（不计个人实践评级）</span></label>
+              <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(activeAttempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("portfolio")} /><span>个人作品</span></label>
+              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(activeAttempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("reference")} /><span>参考资料（不计个人实践评级）</span></label>
             </fieldset>
           </div>
           {projectError && <p className="mt-3 text-sm text-rose-600">{projectError}</p>}
           <button
             type="submit"
-            disabled={projectBusy || !!deletingProjectId || !attemptReady}
+            disabled={projectBusy || !!deletingProjectId || !attemptReady || (!!attempt && !activeAttempt)}
             className="mt-5 w-full rounded-lg bg-[#1d4a40] px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
           >
-            {projectBusy ? "正在上传…" : projectError&&attempt ? "重试上传" : attempt?.project ? "上传新版本" : "上传项目"}
+            {projectBusy ? "正在上传…" : activeAttempt ? "重试上传" : uploadTarget ? "上传新版本" : "上传项目"}
           </button>
         </form>}
       </div>
@@ -552,7 +628,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       </aside>
       </div>
 
-      <ArchivedMaterials onRestore={()=>void loadHistory()} />
     </div>
   );
 }
