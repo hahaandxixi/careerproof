@@ -1044,8 +1044,7 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-heatmap-verdict { color: #173c34; font-weight: 600; }
 @media (max-width: 900px) { .report-heatmap-row { grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(74px, .8fr)); } .report-heatmap-row > * { padding-inline: 6px; font-size: 11px; } }
 
-/* Report detail container: at narrower desktop widths the source reader moves
-   below a full-width judgment instead of squeezing the relationship diagram. */
+/* Report detail container: at narrower desktop widths keep the source readable. */
 @media (min-width: 1024px) and (max-width: 1399px) {
   .report-desk .requirement-reading-panel.requirement-has-sources:has(.requirement-source-context) { display: block; }
   .report-desk .requirement-document { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -1054,7 +1053,7 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
   .report-desk .requirement-document > .requirement-next { grid-column: 1; grid-row: auto; }
   .report-desk .requirement-document > .requirement-source-context { margin-top: 10px; }
 }
-.report-desk .requirement-document:not(.requirement-has-sources) .requirement-source-context { display: none; }
+.report-desk .requirement-document:not(.requirement-has-sources) .requirement-source-context { order: 2; }
 .report-heatmap-row.is-selected { outline: 2px solid #1d4a40; outline-offset: -2px; background: #edf4f0; }
 .report-heatmap-row > span[data-kind="claim"][data-state="on"] { background: #eef3f7; color: #38566f; }
 .report-heatmap-row > span[data-kind="source"][data-state="on"] { background: #e7efe9; color: #1d4a40; }
