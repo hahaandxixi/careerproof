@@ -50,6 +50,13 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
     const state = effectiveReportStatus(item);
     return state === "rejected" || state === "corrected";
   }).map(item => [item.requirementId, item]));
+  const edges = radarSegments(dimensions, scale)
+    .filter(([a, b]) => !reviewItems.has(dimensions[a].requirementId) && !reviewItems.has(dimensions[b].requirementId))
+    .map(([a, b]) => ({
+      key: a,
+      start: point(a, supportMeasure(dimensions[a], scale).ratio!),
+      end: point(b, supportMeasure(dimensions[b], scale).ratio!),
+    }));
   const status = (d: typeof dimension) => {
     const review = reviewItems.get(d.requirementId);
     return review ? workspaceStatusLabel(review) : RADAR_STATUS[d.verdict] ?? "暂不可评";
@@ -57,13 +64,11 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
 
   const chart = dimensions.length >= 3 && dimensions.length <= 8 ? <svg className={mode === "overview" ? "radar-chart-svg mx-auto w-full" : "mx-auto mt-2 w-full max-w-[440px]"} viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签查看证据`}>
           <circle cx="200" cy="200" r="108" fill="#f8fafc" />
+          {edges.map(({ key, start, end }) => <path key={key} className="radar-data-fill" d={`M 200 200 L ${start.x} ${start.y} L ${end.x} ${end.y} Z`} fill="#4f46e5" fillOpacity="0.14" stroke="none" pointerEvents="none" aria-hidden="true" />)}
           {[25, 50, 75, 100].map(value => <g key={value}><circle className="radar-grid-ring" data-outer={value === 100} cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text className="radar-grid-tick" x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
           <text className="radar-grid-tick" x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
           {dimensions.map((d, index) => { const end = point(index, 1); return <line className="radar-grid-axis" data-selected={index === selectedIndex} key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} stroke={index === selectedIndex ? "#aaa5d8" : "#e0e5ee"} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
-          {radarSegments(dimensions, scale).filter(([a, b]) => !reviewItems.has(dimensions[a].requirementId) && !reviewItems.has(dimensions[b].requirementId)).map(([a, b]) => {
-            const start = point(a, supportMeasure(dimensions[a], scale).ratio!), end = point(b, supportMeasure(dimensions[b], scale).ratio!);
-            return <line className="radar-data-edge" key={a} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />;
-          })}
+          {edges.map(({ key, start, end }) => <line className="radar-data-edge" key={key} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />)}
           {dimensions.map((d, i) => {
             const value = supportMeasure(d, scale);
             const rawLabel = point(i, 1.6), label = {x:Math.max(72,Math.min(328,rawLabel.x)),y:Math.max(30,Math.min(370,rawLabel.y))}, dot = point(i, value.ratio ?? 0);

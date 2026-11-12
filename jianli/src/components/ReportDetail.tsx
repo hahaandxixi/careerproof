@@ -180,7 +180,6 @@ function ReportWorkspace({ id }: { id: string }) {
           <h3 className="text-lg font-semibold">{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</h3>
           <p>{material.kind === "resume" ? "简历" : material.materialRole === "reference" ? "第三方参考 · 不证明本人实践" : "个人项目 / 作品"}</p>
           {user?.role === "student" && material.kind === "project" && <Link className="btn-secondary" href={`/materials/project/${material.id}?${materialContext}`}>预览此固定版本</Link>}
-          <details><summary className="disclosure">版本校验信息</summary><p className="break-all text-sm">版本：{material.id}<br />内容摘要：{material.contentHash}</p></details>
         </li>)}</ul>
       </> },
       ...(user?.role === "student" ? [

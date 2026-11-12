@@ -174,7 +174,7 @@ export default function ReportComparisonView({ value, base, current, origin }: {
     <details className="min-w-0 border-t border-slate-200 pt-3"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">两次报告、材料版本与比较范围</summary>
       <div className="space-y-3 pt-3 leading-6 [overflow-wrap:anywhere]">
         {!!value.contextChanges.length && <p>变化背景：{value.contextChanges.map(key => GROWTH_CHANGES[key] ?? key).join("、")}</p>}
-        {[{label: "基准材料", rows: value.baseMaterials}, {label: "当前材料", rows: value.targetMaterials}].map(side => <div key={side.label}><h3 className="font-medium">{side.label}</h3><ul>{side.rows.map(m => <li key={`${m.kind}-${m.id}`}>{displayMaterialTitle(m.title, m.id)} · 第 {m.versionNumber} 版<details className="text-xs text-slate-600"><summary className="w-fit cursor-pointer">版本校验信息</summary><p>{m.id} · {m.contentHash}</p></details></li>)}</ul></div>)}
+        {[{label: "基准材料", rows: value.baseMaterials}, {label: "当前材料", rows: value.targetMaterials}].map(side => <div key={side.label}><h3 className="font-medium">{side.label}</h3><ul>{side.rows.map(m => <li key={`${m.kind}-${m.id}`}>{displayMaterialTitle(m.title, m.id)} · 第 {m.versionNumber} 版</li>)}</ul></div>)}
         <p>上传的测试记录须结合对应源码版本核对，平台未独立运行测试。</p>
         <ul className="space-y-1 text-xs text-slate-600">{value.limitations.map(note => <li key={note}>{note}</li>)}</ul>
       </div>
