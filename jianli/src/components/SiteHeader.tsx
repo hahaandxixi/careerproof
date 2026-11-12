@@ -30,7 +30,7 @@ export default function SiteHeader() {
   }
   return <header className={`site-header sticky top-0 z-40 border-b ${!user ? "site-header-public" : ""}`}>
     <div className="site-header-inner site-frame">
-      <Link href="/" className="site-brand shrink-0 py-2 font-semibold">职证 CareerProof</Link>
+      <Link href={user?.role === "student" ? "/applications" : "/"} className="site-brand shrink-0 py-2 font-semibold">职证 CareerProof</Link>
       <nav aria-label="主导航" className="site-primary-nav text-sm">
         {user?.role === "student" ? <>
           <Link href="/portfolio" aria-current={current("/portfolio")}>我的材料</Link>
@@ -38,7 +38,7 @@ export default function SiteHeader() {
           <Link href="/reports" aria-current={current("/reports")}>我的报告</Link>
           <Link href="/skills" aria-current={current("/skills")}>技能全景</Link>
           <Link href="/interview" aria-current={current("/interview")}>模拟面试</Link>
-          <Link href="/applications" aria-current={current("/applications")}>我的投递</Link>
+          <Link href="/applications" aria-current={current("/applications")}>求职工作台</Link>
         </> : <>
           <Link href="/jobs" aria-current={current("/jobs")}>岗位发现</Link>
           {(user?.role === "enterprise" || user?.role === "admin") && <>

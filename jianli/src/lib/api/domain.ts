@@ -244,6 +244,7 @@ export interface ReportComparison {
 export interface NotificationItem {
   id: string; type: string; title: string; createdAt: string;
   readAt: string | null; accessible: boolean;
+  jobId?: string; jobTitle?: string; companyName?: string;
 }
 export interface NotificationPage {
   items: NotificationItem[]; total: number; page: number; pageSize: number; unreadCount: number;

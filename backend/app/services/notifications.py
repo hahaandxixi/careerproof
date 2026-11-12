@@ -10,6 +10,7 @@ from app.models.identity import EnterpriseMembership, StudentProfile, User
 from app.models.notification import Notification
 from app.models.recruitment import Application, ApplicationEvent, Job
 from app.services.jobs import JobService
+from app.tools.fixture_provenance import fixture_job_ids, is_fixture_job
 
 MESSAGES = {
     "submitted": "投递已提交",
@@ -45,10 +46,22 @@ class NotificationService:
     def __init__(self, session):
         self.session = session
 
+    @staticmethod
+    def _recipient_scope(user):
+        conditions = [Notification.recipient_id == user.id]
+        if user.role == UserRole.STUDENT:
+            fixture_events = (
+                select(ApplicationEvent.id)
+                .join(Application, Application.id == ApplicationEvent.application_id)
+                .where(Application.job_id.in_(fixture_job_ids()))
+            )
+            conditions.append(Notification.event_id.not_in(fixture_events))
+        return conditions
+
     async def _owned(self, notification_id, user):
         row = await self.session.scalar(
             select(Notification).where(
-                Notification.id == notification_id, Notification.recipient_id == user.id
+                Notification.id == notification_id, *self._recipient_scope(user)
             )
         )
         if row is None:
@@ -60,28 +73,28 @@ class NotificationService:
         item = await self.session.get(Application, event.application_id)
         job = await self.session.get(Job, item.job_id)
         if not item.consent_at or not item.report_snapshot:
-            return event, None
+            return event, None, job
         if user.role == UserRole.STUDENT:
             student = await self.session.get(StudentProfile, item.student_id)
-            if student.user_id == user.id:
-                return event, f"/applications#application-{item.id}"
+            if student.user_id == user.id and not is_fixture_job(job):
+                return event, f"/applications#application-{item.id}", job
         elif user.role == UserRole.ENTERPRISE:
             if item.status != "withdrawn" and await JobService(self.session).can_manage(job, user):
-                return event, f"/jobs/{job.id}/applications#application-{item.id}"
-        return event, None
+                return event, f"/jobs/{job.id}/applications#application-{item.id}", job
+        return event, None, job
 
     async def count(self, user):
         return int(
             await self.session.scalar(
                 select(func.count())
                 .select_from(Notification)
-                .where(Notification.recipient_id == user.id, Notification.read_at.is_(None))
+                .where(*self._recipient_scope(user), Notification.read_at.is_(None))
             )
             or 0
         )
 
     async def list(self, user, page, page_size, unread_only):
-        conditions = [Notification.recipient_id == user.id]
+        conditions = self._recipient_scope(user)
         if unread_only:
             conditions.append(Notification.read_at.is_(None))
         total = await self.session.scalar(
@@ -97,7 +110,7 @@ class NotificationService:
         )
         items = []
         for row in rows:
-            event, href = await self._target(row, user)
+            event, href, job = await self._target(row, user)
             # Never store or expose candidate identity, evidence or reply text in a notice.
             title = MESSAGES.get(event.event_type, "投递状态已更新")
             if user.role == UserRole.ENTERPRISE and event.event_type == "submitted":
@@ -112,6 +125,15 @@ class NotificationService:
                     "createdAt": row.created_at.isoformat(),
                     "readAt": row.read_at.isoformat() if row.read_at else None,
                     "accessible": href is not None,
+                    **(
+                        {
+                            "jobId": str(job.id),
+                            "jobTitle": job.title,
+                            "companyName": job.company_name,
+                        }
+                        if user.role == UserRole.STUDENT and href is not None
+                        else {}
+                    ),
                 }
             )
         return {
@@ -128,7 +150,7 @@ class NotificationService:
             update(Notification)
             .where(
                 Notification.id == notification_id,
-                Notification.recipient_id == user.id,
+                *self._recipient_scope(user),
                 Notification.read_at.is_(None),
             )
             .values(read_at=datetime.now(UTC))
@@ -139,7 +161,7 @@ class NotificationService:
     async def read_all(self, user):
         await self.session.execute(
             update(Notification)
-            .where(Notification.recipient_id == user.id, Notification.read_at.is_(None))
+            .where(*self._recipient_scope(user), Notification.read_at.is_(None))
             .values(read_at=datetime.now(UTC))
         )
         await self.session.commit()
@@ -147,7 +169,7 @@ class NotificationService:
 
     async def target(self, notification_id, user):
         row = await self._owned(notification_id, user)
-        _event, href = await self._target(row, user)
+        _event, href, _job = await self._target(row, user)
         if href is None:
             raise AppError("投递已撤回或当前无访问权限，请刷新通知", status_code=404, code=4049)
         return {"href": href}

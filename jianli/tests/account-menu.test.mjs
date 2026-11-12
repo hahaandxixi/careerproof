@@ -69,7 +69,7 @@ test("header keeps each role's original navigation, including admin logout witho
       assert.match(html, /aria-current="page"[^>]*>岗位管理/);
       assert.doesNotMatch(html, /我的材料|我的报告|工作台/);
     } else if (role === "student") {
-      assert.match(html, /学生账户/); assert.match(html, /求职概览/); assert.match(html, /href="\/"[^>]*>求职概览/); assert.doesNotMatch(html, /工作台/);
+      assert.match(html, /学生账户/); assert.match(html, /href="\/applications"[^>]*>求职工作台/); assert.match(html, /href="\/applications\?messages=1"[^>]*>消息/); assert.doesNotMatch(html, /求职概览/);
       assert.doesNotMatch(html, /岗位管理|发布岗位/);
     } else if (role === "admin") {
       assert.match(html, /admin-identity/); assert.match(html, />退出<\/button>/);

@@ -6,8 +6,8 @@ import { createApplicationListSession } from "../src/lib/application-list-sessio
 import { createRefreshGate } from "../src/lib/refresh-gate.ts";
 import * as demoPresentation from "../src/lib/demo-display-identity.js";
 const require=createRequire(import.meta.url), React=require("react"), {transform}=require("sucrase");
-const oldDocument=globalThis.document,oldWindow=globalThis.window;
-afterEach(()=>{globalThis.document=oldDocument;globalThis.window=oldWindow;});
+const oldDocument=globalThis.document,oldWindow=globalThis.window,oldLocation=globalThis.location,oldHistory=globalThis.history;
+afterEach(()=>{globalThis.document=oldDocument;globalThis.window=oldWindow;globalThis.location=oldLocation;globalThis.history=oldHistory;});
 const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes)];
 const text=n=>typeof n==="string"?n:React.Children.toArray(n?.props?.children).map(text).join("");
 function mount(filename, additions, props={}, unwrap=true) {
@@ -24,8 +24,18 @@ function mount(filename, additions, props={}, unwrap=true) {
 }
 test("application status applies immediately with query and pagination reset; search has a stable accurate action name",async()=>{
  const calls=[];
- const h=mount("ApplicationList",{"@/lib/api/client":{api:{myApplications:async(page,size,_,filters)=>{calls.push({page,...filters});return{items:[],total:0,page,pageSize:size};},withdrawApplication:()=>assert.fail("no mutation")},errorMessage:String},"@/lib/notification-session":{applicationAnchorId:()=>null,includeApplicationTarget:async rows=>rows,clearApplicationAnchor(){}},"@/lib/application-anchor":{createApplicationAnchorRevealer:()=>({attempt(){}})},"@/lib/application-list-session":{createApplicationListSession},"@/lib/refresh-gate":{createRefreshGate},"@/lib/application-display":{applicationEventsSummary:String,applicationNextAction:String,applicationReplyText:String,applicationStatusText:String}});
- let tree=await h.settle();nodes(tree).find(n=>n.type==="input").props.onChange({target:{value:"Python"}});tree=h.render();
+ globalThis.location=new URL("http://localhost/applications?page=3");
+ globalThis.history={pushState(_state,_title,url){globalThis.location=new URL(url);}};
+ const h=mount("ApplicationList",{
+  "@/lib/api/client":{api:{myApplications:async(page,size,_,filters)=>{calls.push({page,...filters});return{items:[],total:0,page,pageSize:size};},withdrawApplication:()=>assert.fail("no mutation")},errorMessage:String},
+  "@/lib/notification-session":{applicationAnchorId:()=>null},
+  "@/lib/application-list-session":{createApplicationListSession},"@/lib/refresh-gate":{createRefreshGate},
+  "@/lib/application-display":{applicationEventsSummary:String,applicationNextAction:String,applicationReplyText:String,applicationStatusText:String},
+  "next/navigation":{useSearchParams:()=>location.searchParams},
+  "./NotificationCenter":{NotificationWorkspace:()=>null},"./NotificationLink":{default:()=>null},
+  "./JobWorkspaceNextStep":{default:()=>null},
+ });
+ let tree=await h.settle();assert.equal(calls.at(-1).page,3);nodes(tree).find(n=>n.type==="input").props.onChange({target:{value:"Python"}});tree=h.render();
  nodes(tree).find(n=>n.type==="button"&&text(n)==="待我核对").props.onClick();tree=await h.settle();
  assert.deepEqual(calls.at(-1),{page:1,q:"Python",view:"action"});
  assert.equal(nodes(tree).find(n=>n.type==="button"&&text(n)==="待我核对").props["aria-pressed"],true);

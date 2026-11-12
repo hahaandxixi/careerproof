@@ -119,7 +119,7 @@ function MatchForm({
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
   const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id))
     .map(version => `${displayMaterialTitle(project.name, version.id)} · 第 ${version.versionNumber} 版`));
-  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">查看我的投递</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
+  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">打开求职工作台</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
