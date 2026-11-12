@@ -1221,6 +1221,7 @@ main.site-frame:has(.report-desk) { background: #ede7db; }
 .material-workspace .material-register-row { border-bottom-color: #d3c9b6; }
 .material-workspace .material-register-row:hover { background: #f1f6f2; }
 .material-workspace [data-upload-target="true"] { background: #e7efe9; box-shadow: inset 3px 0 #2b6355; }
+.material-workspace .material-register-row[data-upload-target="true"] { padding-inline-start: 12px; }
 .material-workspace .material-register-row[data-upload-target="true"]:hover { background: #e7efe9; }
 .material-workspace .material-register-row[data-historical="true"] { padding-block: 8px; background: #f8f6ef; }
 .material-workspace .selection-toggle[aria-pressed="true"] { border-color: #1d4a40; background: #1d4a40; color: #fbf9f4; }
