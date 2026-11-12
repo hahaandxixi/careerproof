@@ -84,6 +84,21 @@ function render(f, filter="changed", citationGroup) {
   return renderToStaticMarkup(React.createElement(View,f));
 }
 
+test("comparison lists a shared fixed version once and keeps distinct same-title versions on their own sides", () => {
+  const f = fixture();
+  const [project] = f.value.baseMaterials;
+  const resume = { ...project, kind: "resume", id: "resume-version", title: "数据工程简历" };
+  const alternate = { ...project, id: "different-project-version" };
+  f.value.baseMaterials = [resume, project];
+  f.value.targetMaterials = [resume, alternate];
+
+  const html = render(f);
+  assert.match(html, /两份报告共用<\/h3><ul><li>数据工程简历 · 第 1 版<\/li>/);
+  assert.match(html, /仅 A 基准<\/h3><ul><li>报名服务 · 第 1 版<\/li>/);
+  assert.match(html, /仅 B 对照<\/h3><ul><li>报名服务 · 第 1 版<\/li>/);
+  assert.equal((html.match(/数据工程简历 · 第 1 版/g) ?? []).length, 1);
+});
+
 test("real comparison view opens changed sources and keeps removed citations on the base report", () => {
   const evidence=Array.from({length:25},(_,i)=>source({citationId:`R1-E${i+1}`,lineStart:i+1,lineEnd:i+1,snippet:`original ${i}`}));
   const f=fixture({added:[evidence[0]],removed:evidence.slice(1),changes:["evidence"],sources:[evidence[0]]});

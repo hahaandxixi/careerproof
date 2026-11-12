@@ -50,7 +50,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
         </span>
         <button type="button" className="btn-quiet btn-compact shrink-0" aria-label={`移除 ${version.name} 第 ${version.versionNumber} 版`} onClick={() => onChange(toggleMaterialVersion(selectedIds, version.id, false))}>移除</button>
       </li>)}
-    </ul> : <p className="text-xs text-slate-500">尚未选择项目；展开列表选择，不会自动加入历史版本。</p>}
+    </ul> : null}
     {selectableProjects.length > 0 ? <details key={highlightedVersionId || "projects"} open={!!highlightedVersionId} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">

@@ -43,7 +43,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
         <span className="mt-1 block text-xs text-slate-600">{selected.originalFilename} · {selected.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
       </span>
       <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
-    </div> : <p className="text-xs text-slate-500">尚未选择简历；请展开并选择已完成解析的版本，不会自动加入历史材料。</p>}
+    </div> : null}
     {all.length ? <details ref={chooser} className="rounded-xl border border-slate-200">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
