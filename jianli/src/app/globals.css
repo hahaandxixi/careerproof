@@ -1316,18 +1316,27 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 .enterprise-pair-workbench, .enterprise-pair-content { display: contents; }
 .pair-workbench-heading { grid-area: pair-heading; min-width: 0; }
 .pair-workbench-chart { grid-area: primary; }
-.pair-workbench-sources .pair-source-column[data-selected="false"] { display: none; }
+.enterprise-review-workbench[data-mode="compare"] { grid-template-columns: minmax(0, 1fr) minmax(0, 54%); }
+.pair-current-requirement { padding: 6px 0 8px; border-bottom: 1px solid #c6d4cd; }
+.pair-workbench-sources .pair-source-column[data-selected="false"],
+.pair-workbench-sources .pair-both-sources { display: none; }
 .pair-workbench-sources .comparison-evidence-column { padding-inline: 0; }
+.pair-source-identity, .pair-source-followup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.pair-source-identity .comparison-candidate-name { margin: 0; padding: 0; border: 0; }
+.pair-workbench-sources .comparison-source summary { overflow-wrap: anywhere; }
+.pair-source-material { margin-inline-start: 8px; color: #526176; font-size: 14px; font-weight: 400; }
 @media (min-width: 1600px) {
   .enterprise-review-workbench { grid-template-columns: minmax(0, 1fr) minmax(440px, 48%); }
-  .pair-workbench-sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .pair-workbench-sources .pair-source-tabs { display: none; }
-  .pair-workbench-sources .pair-source-column[data-selected="false"] { display: block; }
-  .pair-workbench-sources .pair-source-column + .pair-source-column { border-inline-start: 1px solid #d8d0c2; padding-inline-start: 12px; }
+  .enterprise-review-workbench[data-mode="compare"] { grid-template-columns: minmax(0, 1fr) minmax(0, 66%); }
+  .pair-workbench-sources[data-reading="auto"] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pair-workbench-sources .pair-source-tabs { grid-column: 1 / -1; }
+  .pair-workbench-sources[data-reading="auto"] .pair-source-column[data-selected="false"] { display: block; }
+  .pair-workbench-sources[data-reading="auto"] .pair-source-column + .pair-source-column { border-inline-start: 1px solid #d8d0c2; padding-inline-start: 10px; }
+  .pair-workbench-sources[data-reading="single"] .pair-both-sources { display: inline-flex; }
 }
 @media (max-width: 1100px) {
   .enterprise-review-workbench { grid-template-areas: "primary" "source" "difference"; }
-  .enterprise-review-workbench[data-mode="compare"] { grid-template-areas: "pair-heading" "primary" "source"; }
+  .enterprise-review-workbench[data-mode="compare"] { grid-template-columns: minmax(0, 1fr); grid-template-areas: "pair-heading" "primary" "source"; }
 }
 main.site-frame:has(.skills-page) { background: #f4f1ea; }
 .skills-page { width: min(1260px, 100%); margin-inline: auto; padding: 6px 18px 64px; }

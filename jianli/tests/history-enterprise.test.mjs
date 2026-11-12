@@ -236,6 +236,17 @@ test('two fixed reports use identity colors and linked requirement columns, with
  assert.match(html,/pair-reading-grid/);
 });
 
+test("enterprise pair puts code before report actions and keeps material identity", () => {
+ const candidates=[pairCandidate("A"),pairCandidate("B")];
+ const html=render(React.createElement(CandidatePairComparison,{candidates,busy:false,onOpen(){},onOpenReport(){},workbench:true,initialIds:["r2"]}));
+ assert.match(html,/并排看/);
+ assert.match(html,/双人同轴材料支持度雷达/);
+ assert.match(html,/项目A · 第 2 版/);
+ assert.ok(html.indexOf("A-r2-source") < html.indexOf("查看合成A的报告与回复"));
+ assert.ok(html.indexOf("B-r2-source") < html.indexOf("查看合成B的报告与回复"));
+ assert.doesNotMatch(html,/UNADOPTED_AI|UNADOPTED_GAP/);
+});
+
 test("entire pair resolves a shared cap while retaining exact per-axis version compatibility",()=>{
  const a=pairCandidate('A'),b=pairCandidate('B');
  for(const c of [a,b]){c.dimensions[1].formulaVersion='evidence-v4';c.report.items[1].formulaVersion='evidence-v4';}

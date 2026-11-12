@@ -33,6 +33,11 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
 }) {
   const [selectedId,setFirst]=useState(initialIds?.[0]||candidates[0].dimensions[0]?.requirementId||"");
   const [sourceSide, setSourceSide] = useState(initialSourceSide);
+  const [singleSource, setSingleSource] = useState(false);
+  const readCandidate = (index: number) => {
+    setSourceSide(index);
+    setSingleSource(true);
+  };
   const [secondId,setSecond]=useState(initialIds?.[1]||candidates[1].dimensions[0]?.requirementId||"");
   const setSelectedId=(id:string)=>{setFirst(id);onRequirementChange?.(id,0);};
   const setSecondId=(id:string)=>{setSecond(id);onRequirementChange?.(id,1);};
@@ -64,7 +69,7 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
       {aligned&&<>
         <div className="review-view-nav" aria-label="双人共同岗位要求">{axes.map(d=><button key={d.requirementId} type="button" aria-pressed={current?.requirementId===d.requirementId} onClick={()=>setSelectedId(d.requirementId)}>{labels.get(d.requirementId)?.label}</button>)}</div>
       </>}
-      {aligned && current && <div className="comparison-current-requirement border-b border-slate-200 pb-3"><h3 className="text-lg font-semibold">{current.title}</h3><p className="mt-1 text-sm text-slate-600">岗位权重 {current.weight} · 投递时固定报告</p>{!workbench && firstItem && secondItem && <div className="pair-difference-flow" aria-label="当前要求的候选人材料差异">
+      {aligned && current && <div className={workbench ? "pair-current-requirement" : "comparison-current-requirement border-b border-slate-200 pb-3"}><h3 className="text-lg font-semibold">{current.title}</h3>{!workbench && <p className="mt-1 text-sm text-slate-600">岗位权重 {current.weight} · 投递时固定报告</p>}{!workbench && firstItem && secondItem && <div className="pair-difference-flow" aria-label="当前要求的候选人材料差异">
         <div className="pair-difference-requirement"><span>要求</span><strong>{current.skill || current.title}</strong></div>
         <div className="pair-difference-candidates">{candidates.map((candidate, index) => {const item = index === 0 ? firstItem : secondItem; return <div key={candidate.id} className={`pair-difference-candidate ${heatmapCellClass(reviewLabel(item) ? "unsupported" : item.verdict)}`}><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/><strong>{reviewLabel(item) ?? RADAR_STATUS[item.verdict] ?? item.verdict}</strong><span>{item.evidenceList.length ? `${compactSourceLabel(item.evidenceList[0], candidate.report?.materials).fileName} · 第${item.evidenceList[0].lineStart}–${item.evidenceList[0].lineEnd}行` : "无可定位引用"}</span></div>;})}</div>
         <p className="pair-difference-summary" aria-label="当前要求的可见差异">{currentNeedsReview ? "本项存在需复核的材料判断，请分别查看固定来源与原报告记录。" : requirementDifference(firstItem, secondItem, comparableSupport)}</p>
@@ -72,15 +77,16 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
     </>}
     </div>
     {ready&&<div className={workbench ? "enterprise-pair-content" : `grid min-w-0 items-start gap-5 ${overlay?"pair-reading-grid":""}`}>
-        <div className={workbench ? "enterprise-source-pane pair-workbench-sources" : "grid min-w-0 gap-5 md:grid-cols-2 md:gap-0 md:divide-x md:divide-slate-200"}>
+        <div className={workbench ? "enterprise-source-pane pair-workbench-sources" : "grid min-w-0 gap-5 md:grid-cols-2 md:gap-0 md:divide-x md:divide-slate-200"} data-reading={singleSource ? "single" : "auto"}>
           {workbench && <div className="enterprise-source-tabs pair-source-tabs" role="group" aria-label="双人证据来源">
-            {candidates.map((candidate,index)=><button key={candidate.id} type="button" aria-pressed={sourceSide===index} onClick={()=>setSourceSide(index)}>{index===0?"A":"B"} · {identityLabel(candidate.candidateName,candidate.candidateId)}</button>)}
+            {candidates.map((candidate,index)=><button key={candidate.id} type="button" aria-pressed={sourceSide===index} onClick={()=>readCandidate(index)}>{index===0?"A":"B"} · {identityLabel(candidate.candidateName,candidate.candidateId)}</button>)}
+            <button className="pair-both-sources" type="button" onClick={()=>setSingleSource(false)}>并排看</button>
           </div>}
           {candidates.map((candidate,index)=>{
             const requirementId = aligned ? current?.requirementId ?? "" : index===0 ? selectedId : secondId;
             return <div className={workbench ? "pair-source-column" : "contents"} data-selected={sourceSide===index} key={candidate.id}>
               <EvidenceColumn candidate={candidate} color={colors[index]} scale={aligned ? scale : resolveSupportScale(candidate.dimensions)}
-                requirementId={requirementId} independent={!aligned} onSelect={index===0 ? setSelectedId : setSecondId}
+                requirementId={requirementId} independent={!aligned} compact={workbench} onSelect={index===0 ? setSelectedId : setSecondId}
                 onOpenReport={onOpenReport ? ()=>onOpenReport(candidate,requirementId) : undefined}/>
             </div>;
           })}
@@ -91,7 +97,7 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
           {axes.map((d,i)=>{const end=radarPosition(i,axes.length,1),raw=radarPosition(i,axes.length,1.6),label={x:Math.max(61,Math.min(339,raw.x)),y:Math.max(30,Math.min(370,raw.y))};const reviews=candidates.flatMap((candidate,ci)=>{const status=reviewByCandidate[ci].get(d.requirementId);return status?[identityLabel(candidate.candidateName,candidate.candidateId)+"："+status]:[]});return <g key={d.requirementId}><line x1="200" y1="200" x2={end.x} y2={end.y} stroke={current?.requirementId===d.requirementId?"#aaa5d8":"#e0e5ee"} strokeWidth={current?.requirementId===d.requirementId?1.2:0.8}/><g role="button" tabIndex={0} aria-label={[`对照要求：${labels.get(d.requirementId)?.label ?? d.title}`, ...reviews].join("；")} aria-pressed={current?.requirementId===d.requirementId} className="cursor-pointer" onClick={()=>setSelectedId(d.requirementId)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setSelectedId(d.requirementId);}}}><title>{d.title}</title><rect x={label.x-58} y={label.y-18} width="116" height="36" rx="8" fill={current?.requirementId===d.requirementId?"#eef2ff":"white"} stroke="#e2e8f0"/><text x={label.x} y={label.y+4} textAnchor="middle" fontSize="14" fill="#334155">{labels.get(d.requirementId)?.chart}</text></g></g>;})}
           {candidates.map((c,ci)=>{const dims=axes.map(d=>c.dimensions.find(v=>v.requirementId===d.requirementId)!);return <g key={c.id} aria-label={`${identityLabel(c.candidateName,c.candidateId)}的材料支持度`}>
             {radarSegments(dims,scale).filter(([a,b])=>!reviewByCandidate[ci].has(dims[a].requirementId)&&!reviewByCandidate[ci].has(dims[b].requirementId)).map(([a,b])=>{const start=radarPosition(a,axes.length,supportMeasure(dims[a],scale).ratio!),end=radarPosition(b,axes.length,supportMeasure(dims[b],scale).ratio!);return <line className="radar-data-edge" key={`${a}:${b}`} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors[ci]} strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" strokeDasharray={ci?"7 4":undefined}/>;})}
-            {dims.map((d,i)=>{const kind=radarPointKind(d,scale);if(kind==="none"||reviewByCandidate[ci].has(d.requirementId))return null;const measure=supportMeasure(d,scale),p=radarPosition(i,axes.length,measure.ratio!);return <g key={d.requirementId} role="button" tabIndex={0} className="cursor-pointer" aria-label={`${identityLabel(c.candidateName,c.candidateId)} · ${labels.get(d.requirementId)?.label ?? d.title} · ${RADAR_STATUS[d.verdict]} · ${measure.text}`} onClick={()=>{setSourceSide(ci);setSelectedId(d.requirementId);}} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setSourceSide(ci);setSelectedId(d.requirementId);}}}><circle cx={p.x} cy={p.y} r={ci?5:7} fill={kind==="claimed"?"white":colors[ci]} stroke={colors[ci]} strokeWidth="2.5" vectorEffect="non-scaling-stroke"/><title>{`${identityLabel(c.candidateName,c.candidateId)} · ${RADAR_STATUS[d.verdict]} · ${scale.label} ${measure.text}`}</title></g>;})}
+            {dims.map((d,i)=>{const kind=radarPointKind(d,scale);if(kind==="none"||reviewByCandidate[ci].has(d.requirementId))return null;const measure=supportMeasure(d,scale),p=radarPosition(i,axes.length,measure.ratio!);return <g key={d.requirementId} role="button" tabIndex={0} className="cursor-pointer" aria-label={`${identityLabel(c.candidateName,c.candidateId)} · ${labels.get(d.requirementId)?.label ?? d.title} · ${RADAR_STATUS[d.verdict]} · ${measure.text}`} onClick={()=>{readCandidate(ci);setSelectedId(d.requirementId);}} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();readCandidate(ci);setSelectedId(d.requirementId);}}}><circle cx={p.x} cy={p.y} r={ci?5:7} fill={kind==="claimed"?"white":colors[ci]} stroke={colors[ci]} strokeWidth="2.5" vectorEffect="non-scaling-stroke"/><title>{`${identityLabel(c.candidateName,c.candidateId)} · ${RADAR_STATUS[d.verdict]} · ${scale.label} ${measure.text}`}</title></g>;})}
           </g>;})}
         </svg>:<p className="text-sm text-slate-600">要求少于3项或超过8项，直接查看逐项证据，避免轴标签拥挤。</p>}
         <p className="text-xs leading-5 text-slate-600">线色表示候选人，不表示证据等级。仅连接相邻且有证据的点；缺材料和不可评不绘点。{reviewByCandidate.some(reviews => reviews.size > 0) && "需复核项不绘点。"}</p>
@@ -101,7 +107,7 @@ export default function CandidatePairComparison({candidates, busy, onOpen, initi
   </section>;
 }
 
-export function EvidenceColumn({candidate,color,requirementId,independent,onSelect,onOpenReport,scale=resolveSupportScale(candidate.dimensions)}:{candidate:ApplicationView;color:string;requirementId:string;independent:boolean;onSelect:(id:string)=>void;onOpenReport?:()=>void;scale?:SupportScale}) {
+export function EvidenceColumn({candidate,color,requirementId,independent,onSelect,onOpenReport,compact=false,scale=resolveSupportScale(candidate.dimensions)}:{candidate:ApplicationView;color:string;requirementId:string;independent:boolean;onSelect:(id:string)=>void;onOpenReport?:()=>void;compact?:boolean;scale?:SupportScale}) {
   const report=candidate.report;
   const item=report?.items.find(d=>d.requirementId===requirementId);
   const review=reviewLabel(item);
@@ -111,27 +117,34 @@ export function EvidenceColumn({candidate,color,requirementId,independent,onSele
   const gap=(useAi?item?.aiInformationGap:null)||item?.evidenceLevelGap;
   const axis=item?{score:item.finalScore,verdict:item.verdict,formulaVersion:item.formulaVersion}:null;
   const measure=axis?supportMeasure(axis,scale):null;
+  const materials = report ? report.materials.map(m=>`${displayMaterialTitle(m.title,m.id)} v${m.versionNumber}`).join(" · ") : "";
+  const openReport = onOpenReport && <button type="button" className="btn-secondary" onClick={onOpenReport}>查看{identityLabel(candidate.candidateName,candidate.candidateId)}的报告与回复</button>;
+  const evidenceStatus = item && <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+    <strong className={`rounded border px-2 py-1 text-sm ${heatmapCellClass(review ? "unsupported" : item.verdict)}`}>{review ?? RADAR_STATUS[item.verdict] ?? item.verdict}</strong>
+    {!review&&measure?.ratio!=null&&<span className="text-sm text-slate-700">{scale.label} {measure.text}</span>}
+  </div>;
+  const interpretation = item && <p className="break-words text-base leading-7">{review ? "当前请核对固定来源和原报告判断记录。" : useAi&&report?<ReportNarrative text={explanation} item={item} report={report} sourcePrefix={`pair-${candidate.id}-`}/>:requirementConclusion(item)}</p>;
   return <article className="comparison-evidence-column min-w-0 space-y-3 border-t border-slate-200 pt-4 md:border-t-0 md:pt-0 md:first:pr-4 md:last:pl-4" aria-label={`${identityLabel(candidate.candidateName,candidate.candidateId)}的固定证据`}>
-    <h3 className="comparison-candidate-name break-words font-semibold" style={{color}}><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/></h3>
-    {onOpenReport&&<button type="button" className="btn-secondary" onClick={onOpenReport}>查看{identityLabel(candidate.candidateName,candidate.candidateId)}的报告与回复</button>}
-    {report&&<p className="break-words text-sm leading-6 text-slate-600">{reportModeLabel(report) ? `${reportModeLabel(report)} · ` : ""}{report.materials.length ? report.materials.map(m=>`${displayMaterialTitle(m.title, m.id)} v${m.versionNumber}`).join(" · ") : "材料版本未记录"}</p>}
+    <header className={compact ? "pair-source-identity" : "space-y-3"}>
+      <h3 className="comparison-candidate-name break-words font-semibold" style={{color}}><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/></h3>
+      {compact ? evidenceStatus : <>{openReport}{report&&<p className="break-words text-sm leading-6 text-slate-600">{reportModeLabel(report) ? `${reportModeLabel(report)} · ` : ""}{materials || "材料版本未记录"}</p>}</>}
+    </header>
     {independent&&<label className="block text-sm"><IdentityName name={candidate.candidateName} identityId={candidate.candidateId}/>的岗位要求<select className="field mt-1" value={requirementId} onChange={e=>onSelect(e.target.value)}>{Array.from(radarRequirementLabels(candidate.dimensions), ([id, label])=><option key={id} value={id}>{label.label}</option>)}</select></label>}
     {item?<>
       {independent && <p className="break-words text-base font-medium">{item.requirementTitle || item.skill}</p>}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <strong className={`rounded border px-2 py-1 text-sm ${heatmapCellClass(review ? "unsupported" : item.verdict)}`}>{review ?? RADAR_STATUS[item.verdict] ?? item.verdict}</strong>
-        {!review&&measure?.ratio!=null&&<span className="text-sm text-slate-700">{scale.label} {measure.text}</span>}
-      </div>
+      {!compact && evidenceStatus}
       {!review&&measure?.issue&&item.verdict!=="unsupported"&&<p role="status" className="text-sm text-amber-900">{measure.issue}；原始值 {String(measure.raw??"未记录")}。</p>}
       {invalid.length>0&&<p className="text-sm text-amber-900">历史AI解释含未对齐引用，当前按规则判断与固定来源核对。</p>}
-      <p className="break-words text-base leading-7">{review ? "当前请核对固定来源和原报告判断记录。" : useAi&&report?<ReportNarrative text={explanation} item={item} report={report} sourcePrefix={`pair-${candidate.id}-`}/>:requirementConclusion(item)}</p>
-      {item.evidenceList.length?<ul className="space-y-2">{item.evidenceList.map((source,index)=>{const limit=report?sourceLimit(report,source):null;return <li key={`${source.citationId}:${index}`} className="comparison-source min-w-0 border-t border-slate-100 pt-2"><details id={`pair-${candidate.id}-citation-${source.citationId??index}`} open={index===0} className="text-sm"><summary className="cursor-pointer py-2 text-indigo-700">{compactSourceLabel(source,report?.materials).fileName} · 第{source.lineStart}–{source.lineEnd}行{limit?` · ${limit.label}`:""}</summary>{limit&&<p className="text-sm leading-6 text-amber-900">{limit.detail}</p>}{limit?.readable!==false&&<EvidenceSnippet evidence={source} materials={report?.materials} showContextNote={false}/>}<SourceIdentityDetails source={source}/></details>{source.provenance==="reference"&&<p className="text-sm text-amber-900">第三方参考，不作为本人实践证明。</p>}</li>;})}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}
+      {!compact && interpretation}
+      {item.evidenceList.length?<ul className="space-y-2">{item.evidenceList.map((source,index)=>{const limit=report?sourceLimit(report,source):null;return <li key={`${source.citationId}:${index}`} className="comparison-source min-w-0 border-t border-slate-100 pt-2"><details id={`pair-${candidate.id}-citation-${source.citationId??index}`} open={index===0} className="text-sm"><summary className="cursor-pointer py-2 text-indigo-700">{compactSourceLabel(source,report?.materials).fileName} · 第{source.lineStart}–{source.lineEnd}行{limit?` · ${limit.label}`:""}{compact && <span className="pair-source-material">{compactSourceLabel(source,report?.materials).material}</span>}</summary>{limit&&<p className="text-sm leading-6 text-amber-900">{limit.detail}</p>}{limit?.readable!==false&&<EvidenceSnippet evidence={source} materials={report?.materials} showContextNote={false}/>}<SourceIdentityDetails source={source}/></details>{source.provenance==="reference"&&<p className="text-sm text-amber-900">第三方参考，不作为本人实践证明。</p>}</li>;})}</ul>:<p className="text-sm text-slate-600">当前授权报告没有对应引用，不能据此推断候选人没有该能力。</p>}
+      {compact && <div className="pair-source-followup">{openReport}</div>}
       {gap&&<p className="break-words text-base leading-7 text-slate-700">报告缺口：{gap}</p>}
       <details className="text-sm"><summary className="disclosure">原报告判断记录</summary>
         {review && <p>原判断：{RADAR_STATUS[item.verdict] ?? item.verdict}</p>}
         <SupportMeasureDetails raw={item.finalScore} formulaVersion={item.formulaVersion} scale={scale}/>
-        <p className="mt-2 break-words leading-6">{useAi?item.aiExplanation:item.explanation}</p>
+        {compact && report && <p className="mt-2 break-words text-slate-600">{reportModeLabel(report) ? `${reportModeLabel(report)} · ` : ""}{materials || "材料版本未记录"}</p>}
+        {compact ? interpretation : <p className="mt-2 break-words leading-6">{useAi?item.aiExplanation:item.explanation}</p>}
       </details>
-    </>:<p className="text-sm text-slate-600">当前授权报告没有对应要求，请按该报告的固定要求核对。</p>}
+    </>:<><p className="text-sm text-slate-600">当前授权报告没有对应要求，请按该报告的固定要求核对。</p>{compact && openReport}</>}
   </article>;
 }
