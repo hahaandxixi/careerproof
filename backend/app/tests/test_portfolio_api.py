@@ -7,7 +7,7 @@ row-lock semantics or apply the production Alembic migration.
 import asyncio
 import io
 import zipfile
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -18,6 +18,7 @@ from app.core.config import settings
 from app.core.database import Base, get_session
 from app.main import create_app
 from app.models.analysis import AnalysisTask
+from app.models.audit import AuditLog
 from app.models.identity import RefreshToken, StudentProfile, User
 from app.models.login_limit import LoginLimit
 from app.models.portfolio import (
@@ -58,6 +59,7 @@ async def app_database(tmp_path, monkeypatch):
             LoginLimit,
             StudentProfile,
             AnalysisTask,
+            AuditLog,
             Resume,
             ResumeVersion,
             ResumeSection,
@@ -400,6 +402,11 @@ async def test_preview_and_document_projects_are_private(student, app_database):
     preview_path = f"/api/v1/resume-versions/{resume['versionId']}/preview"
     preview = (await student.get(preview_path)).json()["data"]
     assert preview["status"] == "completed"
+    assert preview["id"] == resume["versionId"]
+    assert preview["title"] == "运营简历"
+    assert preview["originalFilename"] == "resume.txt"
+    assert preview["versionNumber"] == 1
+    assert preview["sections"][0]["sectionType"] == "document"
     assert "用户调研" in preview["sections"][0]["content"]
     project = (await student.post("/api/v1/projects", json={"name": "运营作品"})).json()["data"]
     version = (
@@ -423,6 +430,65 @@ async def test_preview_and_document_projects_are_private(student, app_database):
         await register(bob, "preview-bob@example.com")
         for path in (preview_path, files_path, content_path):
             assert (await bob.get(path)).status_code == 404
+        await register(bob, "preview-enterprise@example.com", role="enterprise")
+        assert (await bob.get(preview_path)).status_code == 403
+
+
+async def test_resume_preview_reads_the_requested_version_even_when_archived(student):
+    uploaded = await student.post(
+        "/api/v1/resumes",
+        data={"title": "项目实习简历"},
+        files={"file": ("old.txt", b"Old saved resume text.", "text/plain")},
+    )
+    assert uploaded.status_code == 202, uploaded.text
+    ids = uploaded.json()["data"]
+    # Create a historical two-version fixture in the test database only.
+    async with portfolio_service.async_session_factory() as session:
+        newer = ResumeVersion(
+            resume_id=UUID(ids["resumeId"]),
+            version_number=2,
+            storage_key="fixture/new.pdf",
+            content_hash="newer-content",
+            mime_type="application/pdf",
+            size_bytes=100,
+            parse_status="completed",
+            original_filename=None,
+        )
+        session.add(newer)
+        await session.flush()
+        for page in (2, 1):
+            session.add(ResumeSection(
+                resume_version_id=newer.id,
+                section_type="ocr_page" if page == 2 else "page",
+                content=f"Page {page} of newer material",
+                page_number=page,
+            ))
+        await session.commit()
+        newer_id = newer.id
+    archive = await student.patch(
+        f"/api/v1/materials/resume/{ids['resumeId']}/archive",
+        json={"archived": True},
+    )
+    assert archive.status_code == 200, archive.text
+    assert (await student.get("/api/v1/resumes")).json()["data"] == []
+    old = await student.get(f"/api/v1/resume-versions/{ids['versionId']}/preview")
+    assert old.status_code == 200, old.text
+    old_data = old.json()["data"]
+    assert (old_data["title"], old_data["originalFilename"], old_data["versionNumber"]) == (
+        "项目实习简历", "old.txt", 1,
+    )
+    assert old_data["sections"][0]["content"] == "Old saved resume text."
+    new = await student.get(f"/api/v1/resume-versions/{newer_id}/preview")
+    assert new.status_code == 200, new.text
+    new_data = new.json()["data"]
+    assert new_data["originalFilename"] is None
+    assert new_data["versionNumber"] == 2
+    assert [
+        (section["pageNumber"], section["sectionType"]) for section in new_data["sections"]
+    ] == [
+        (1, "page"),
+        (2, "ocr_page"),
+    ]
 
 
 async def test_corrupt_document_fails_without_internal_paths(student):
@@ -436,3 +502,7 @@ async def test_corrupt_document_fails_without_internal_paths(student):
     assert version["status"] == "failed"
     assert "文件" in version["errorMessage"]
     assert "storage" not in version["errorMessage"]
+    preview = await student.get(f"/api/v1/resume-versions/{version['id']}/preview")
+    assert preview.status_code == 200, preview.text
+    assert preview.json()["data"]["status"] == "failed"
+    assert preview.json()["data"]["sections"] == []

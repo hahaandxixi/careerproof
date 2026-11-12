@@ -136,11 +136,12 @@ class PortfolioRepository:
         return int(value or 0) + 1
 
     async def owned_resume_version(self, version_id: UUID, student_id: UUID):
-        return await self.session.scalar(
-            select(ResumeVersion)
+        result = await self.session.execute(
+            select(ResumeVersion, Resume.title)
             .join(Resume)
             .where(ResumeVersion.id == version_id, Resume.student_id == student_id)
         )
+        return result.one_or_none()
 
     async def owned_project_version(self, version_id: UUID, student_id: UUID):
         return await self.session.scalar(
