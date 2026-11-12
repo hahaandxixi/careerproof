@@ -53,7 +53,8 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         managed = (await hr.get("/api/v1/jobs/mine")).json()["data"]
         assert managed["total"] == 2
         assert {UUID(row["id"]) for row in managed["items"]} == {normal_id, owner_mismatch_id}
-        assert (await hr.get(f"/api/v1/jobs/{fixture_id}")).json()["data"]["recordProvenance"] == "test_fixture"
+        job_detail = (await hr.get(f"/api/v1/jobs/{fixture_id}")).json()["data"]
+        assert job_detail["recordProvenance"] == "test_fixture"
         assert (await hr.get(f"/api/v1/jobs/{fixture_id}/applications")).status_code == 404
         assert (await hr.get(f"/api/v1/jobs/{owner_mismatch_id}/applications")).status_code == 200
         async with factory() as session:
@@ -93,7 +94,8 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         assert (await student.get(f"/api/v1/applications/{application_id}")).status_code == 200
         assert (await hr.get(f"/api/v1/applications/{application_id}")).status_code == 404
         assert (await hr.post(f"/api/v1/applications/{application_id}/view")).status_code == 404
-        assert (await hr.get(f"/api/v1/applications/{application_id}/verification")).status_code == 404
+        verification = await hr.get(f"/api/v1/applications/{application_id}/verification")
+        assert verification.status_code == 404
         normal, fixture = map(str, report_ids)
         default = (await student.get("/api/v1/match-reports")).json()["data"]
         assert default["total"] == 1 and default["items"][0]["id"] == normal

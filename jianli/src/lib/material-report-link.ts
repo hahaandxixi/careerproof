@@ -32,6 +32,7 @@ export function materialReportReturn({ reportId, requirementId, sourceId, filter
   const params = new URLSearchParams();
   const savedFilter = readWorkspaceFilter(filter);
   if (savedFilter) params.set("filter", savedFilter);
-  if (from) params.set("from", from.slice(0, 512));
+  // A 200-character search can be over 512 bytes after URL encoding.
+  if (from) params.set("from", from.slice(0, 4096));
   return `/reports/${reportId}${params.size ? "?" + params : ""}#${fragment}`;
 }

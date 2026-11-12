@@ -137,7 +137,8 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
                     analysis_task_id=task.id, job_id=UUID(job["id"]),
                     candidate_ref=legacy_candidate, candidate_name="历史核验候选人",
                     summary="历史材料", job_snapshot={"title": "历史岗位"},
-                    materials_snapshot=[], created_at=datetime.now(UTC) + timedelta(days=1, seconds=index),
+                    materials_snapshot=[],
+                    created_at=datetime.now(UTC) + timedelta(days=1, seconds=index),
                 ))
             await session.commit()
         filters = {"scope": "all", "jobId": job["id"], "candidateId": str(scope["user_id"])}
@@ -145,18 +146,24 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
         assert first["total"] == 25 and len(first["items"]) == 20
         assert first["items"][0]["id"] == str(rid) and first["items"][0]["isLatestForJob"]
         assert all(row["candidateId"] == filters["candidateId"] for row in first["items"])
-        second = (await student.get("/api/v1/match-reports", params={**filters, "page": 2})).json()["data"]
+        second = (await student.get(
+            "/api/v1/match-reports", params={**filters, "page": 2},
+        )).json()["data"]
         assert second["total"] == 25 and len(second["items"]) == 5
-        assert all(row["jobReportCount"] == 25 and not row["isLatestForJob"] for row in second["items"])
+        assert all(
+            row["jobReportCount"] == 25 and not row["isLatestForJob"] for row in second["items"]
+        )
         legacy = (await student.get(
             "/api/v1/match-reports", params={**filters, "candidateId": legacy_candidate},
         )).json()["data"]
         assert legacy["total"] == 21 and legacy["items"][0]["isLatestForJob"]
         public_history = (await student.get(
-            "/api/v1/match-reports", params={**filters, "scope": "product", "candidateId": legacy_candidate},
+            "/api/v1/match-reports",
+            params={**filters, "scope": "product", "candidateId": legacy_candidate},
         )).json()["data"]
         assert public_history["total"] == 0
-        assert (await outsider.get("/api/v1/match-reports", params=filters)).json()["data"]["total"] == 0
+        unauthorized = (await outsider.get("/api/v1/match-reports", params=filters)).json()["data"]
+        assert unauthorized["total"] == 0
         group = (await student.get(
             "/api/v1/match-reports", params={"scope": "all", "view": "jobs", "jobId": job["id"]},
         )).json()["data"]

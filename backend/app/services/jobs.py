@@ -10,7 +10,6 @@ from app.models.enums import UserRole
 from app.models.identity import User
 from app.models.recruitment import Application, Job, JobRequirement
 from app.repositories.jobs import JobRepository
-from app.tools.fixture_provenance import is_fixture_job
 from app.schemas.common import PaginatedData
 from app.schemas.jobs import (
     JobCreate,
@@ -19,6 +18,7 @@ from app.schemas.jobs import (
     JobUpdate,
     JobView,
 )
+from app.tools.fixture_provenance import is_fixture_job
 from app.tools.technical_careers import TAXONOMY, classify_title
 
 

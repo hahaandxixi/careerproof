@@ -25,8 +25,8 @@ from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.schemas.common import PaginatedData
 from app.services.analysis import AnalysisService
 from app.services.jobs import JobService
-from app.tools.fixture_provenance import is_fixture_job
 from app.services.notifications import notify_application_event
+from app.tools.fixture_provenance import is_fixture_job
 from app.tools.storage import LocalStorage
 
 CONSENT_VERSION = "application-report-v1"

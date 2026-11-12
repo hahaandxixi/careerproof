@@ -356,7 +356,10 @@ class ApplicationVerificationService:
             select(AiBudgetCutover.enabled).where(AiBudgetCutover.id == GATE_ID)
         )
         if not enabled:
-            raise AppError("AI 核验暂未开放，未发送材料。可继续核对固定报告。", code=4097, status_code=409)
+            raise AppError(
+                "AI 核验暂未开放，未发送材料。可继续核对固定报告。",
+                code=4097, status_code=409,
+            )
         pending_count = await self.session.scalar(
             select(func.count())
             .select_from(AnalysisTask)
@@ -649,7 +652,11 @@ async def _execute_claimed_verification(session, task_id, token, session_factory
                 analysis = validate_verification(raw, item.report_snapshot)
     except Exception as exc:
         failure = _failure_kind(exc)
-        if failure == "configuration_or_invalid_output" and isinstance(exc, ValueError) and stage != "authorization":
+        if (
+            failure == "configuration_or_invalid_output"
+            and isinstance(exc, ValueError)
+            and stage != "authorization"
+        ):
             failure = stage
         if isinstance(exc, BudgetAdmissionError):
             failure = str(exc)

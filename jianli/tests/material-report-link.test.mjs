@@ -27,3 +27,15 @@ test("full source return restores each report filter without accepting arbitrary
  }
  assert.equal(materialReportReturn({reportId:"report-1",requirementId:"req-1",filter:"invalid"}),"/reports/report-1#requirement-req-1");
 });
+
+test("material-level returns retain a full encoded search and its history scope", () => {
+  const origin = new URLSearchParams({
+    q: "岗位".repeat(100), jobId: "1a234567-1234-1234-1234-123456789abc",
+    candidateId: "candidate-1", page: "2", scope: "all",
+  }).toString();
+  const params = materialReportContext("report-1", undefined, undefined, "gaps", origin);
+  const target = new URL(materialReportReturn(Object.fromEntries(params)), "http://localhost");
+  assert.equal(target.hash, "#report-materials");
+  assert.equal(target.searchParams.get("filter"), "gaps");
+  assert.equal(target.searchParams.get("from"), origin);
+});

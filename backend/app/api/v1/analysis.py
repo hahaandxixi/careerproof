@@ -116,7 +116,8 @@ async def list_match_reports(
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[PaginatedData[MatchReportHistorySummary]]:
     return success(await AnalysisService(session).list_reports(
-        current_user, page, page_size, q=q, job_id=job_id, scope=scope, view=view, candidate_id=candidate_id,
+        current_user, page, page_size, q=q, job_id=job_id, scope=scope,
+        view=view, candidate_id=candidate_id,
     ))
 
 
