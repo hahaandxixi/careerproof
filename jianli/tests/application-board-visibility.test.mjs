@@ -206,3 +206,30 @@ test("matrix keeps the frozen verdict and labels loaded review for the matching 
  assert.match(text(cell("b")),/有证据支持.*本人标记修正/);
  assert.doesNotMatch(text(cell("a")),/本人标记修正/);
 });
+
+
+test("review switcher explains comparison readiness and uses the fixed report basis", async () => {
+ const h=fixture(3,row=>row.id==="b"?{...row,fixedRequirementBasisComplete:false}:row);
+ let tree=await h.settle();
+ const hint=()=>text(h.nodes(tree).find(n=>n.props?.className==="enterprise-view-hint"));
+ const pairButton=()=>h.button(tree,"双人对照");
+ const check=id=>h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`).props.children;
+ function select(id){h.nodes(check(id).at(-1)).find(n=>n.type==="input").props.onChange();}
+ assert.match(hint(),/点击状态格查看材料来源，勾选两位候选人后开始对照/);
+ assert.equal(pairButton().props.disabled,true);
+ select("a");tree=await h.settle();
+ assert.match(hint(),/再选择一位候选人/);
+ assert.equal(pairButton().props.disabled,true);
+ select("b");tree=await h.settle();
+ assert.match(hint(),/报告缺少投递时的岗位要求/);
+ assert.equal(pairButton().props.disabled,true);
+ select("c");tree=await h.settle();
+ const selectors=h.nodes(tree).filter(n=>n.type==="select"&&n.props.value==="b");
+ assert.ok(selectors.length);
+ selectors.at(-1).props.onChange({target:{value:"c"}});tree=h.render();
+ assert.equal(pairButton().props.disabled,false);
+ pairButton().props.onClick();tree=h.render();
+ assert.match(hint(),/核对两份固定报告的材料来源/);
+ assert.equal(pairButton().props["aria-pressed"],true);
+ assert.equal(h.counts.open,0);
+});

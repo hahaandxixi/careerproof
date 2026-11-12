@@ -1201,10 +1201,15 @@ main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
 .enterprise-compact-head .review-section-heading > div { min-width: 0; }
 .enterprise-compact-head .review-section-heading .workspace-meta { margin: 0; font-size: 11px; }
 .enterprise-compact-head .review-section-heading .page-title { margin: 0; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; }
-.enterprise-compact-head .review-view-nav { margin: 0; border: 0; }
-.enterprise-compact-head .review-view-nav button { min-height: 32px; padding: 4px 9px; }
+.enterprise-compact-head .enterprise-review-switcher { display: grid; justify-items: end; gap: 5px; min-width: 0; }
+.enterprise-compact-head .enterprise-review-views { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid #a7bdb2; border-radius: 10px; background: #e4eeea; }
+.enterprise-compact-head .enterprise-review-views button { min-height: 36px; padding: 5px 13px; border: 1px solid transparent; border-radius: 6px; background: #fbf9f4; color: #173c34; font-size: 14px; font-weight: 600; }
+.enterprise-compact-head .enterprise-review-views button:hover:not(:disabled) { border-color: #78978a; }
+.enterprise-compact-head .enterprise-review-views button[aria-pressed="true"] { border-color: #143a32; background: #143a32; color: #fffefa; }
+.enterprise-compact-head .enterprise-review-views button:disabled { background: transparent; color: #566961; cursor: not-allowed; }
+.enterprise-compact-head .enterprise-view-hint { margin: 0; color: #385249; font-size: 14px; line-height: 1.45; }
 .enterprise-compact-head > .review-section-heading > button { align-self: center; }
-@media (max-width: 1180px) { .enterprise-compact-head { align-items: start; } .enterprise-compact-head .review-view-nav { width: 100%; order: 3; } }
+@media (max-width: 1180px) { .enterprise-compact-head { align-items: start; } .enterprise-compact-head .enterprise-review-switcher { justify-items: start; } }
 
 
 /* Student four-page palette: oat desk, spruce control rails, ivory reading, ink accents. */
