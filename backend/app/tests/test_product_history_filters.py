@@ -96,6 +96,12 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
         assert current["total"] == 25
         assert current["items"][0]["id"] == str(rid)
         assert current["items"][0]["isLatestForJob"] is True
+        job_latest = (await student.get(
+            "/api/v1/match-reports",
+            params={"jobId": job["id"], "view": "jobs", "page": 2},
+        )).json()["data"]
+        assert job_latest["total"] == 1 and job_latest["page"] == 1
+        assert [row["id"] for row in job_latest["items"]] == [str(rid)]
         versions_page = (
             await student.get("/api/v1/match-reports", params={"jobId": job["id"], "page": 2})
         ).json()["data"]

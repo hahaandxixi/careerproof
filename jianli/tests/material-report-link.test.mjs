@@ -31,7 +31,7 @@ test("full source return restores each report filter without accepting arbitrary
 test("material-level returns retain a full encoded search and its history scope", () => {
   const origin = new URLSearchParams({
     q: "岗位".repeat(100), jobId: "1a234567-1234-1234-1234-123456789abc",
-    candidateId: "candidate-1", page: "2", scope: "all",
+    candidateId: "candidate-1", page: "2", history: "1",
   }).toString();
   const params = materialReportContext("report-1", undefined, undefined, "gaps", origin);
   const target = new URL(materialReportReturn(Object.fromEntries(params)), "http://localhost");

@@ -65,11 +65,13 @@ test('ordinary source labels distinguish AI success, unrequested analysis and bu
 
 test("reports preserve a validated list origin across detail and historical links",()=>{
  const jobId="6c8ad563-ebf8-427c-b4a3-82905f37dbd0";
- const state=readReportListState(new URLSearchParams({q:"SQL",jobId,page:"2",scope:"all"}));
+ const state=readReportListState(new URLSearchParams({q:"SQL",jobId,page:"2",history:"1",scope:"all"}));
  const detail=new URL(reportVersionHref("history",reportListHref(state).split("?")[1]),"http://localhost");
- assert.equal(reportListHref(reportOrigin(detail.searchParams.get("from"))),`/reports?q=SQL&jobId=${jobId}&page=2&scope=all`);
- assert.equal(reportListHref({...state,q:"",jobId:"",page:1}),"/reports?scope=all");
+ assert.equal(reportListHref(reportOrigin(detail.searchParams.get("from"))),`/reports?q=SQL&jobId=${jobId}&page=2&history=1`);
+ assert.equal(reportListHref({...state,q:"",jobId:"",page:1}),"/reports?history=1");
  assert.equal(reportListHref(reportOrigin("jobId=https://example.invalid&page=-5&scope=external")),"/reports");
+ assert.equal(reportListHref(reportOrigin(`q=SQL&jobId=${jobId}&page=2&scope=all`)),`/reports?q=SQL&jobId=${jobId}&page=2`);
+ assert.equal(reportListHref({...state,includeHistory:false}),`/reports?q=SQL&jobId=${jobId}&page=2`);
 });
 test("visible option times separate different seconds within a minute",()=>{
  const a=saved("first",{createdAt:"2026-11-05T12:00:05Z"});

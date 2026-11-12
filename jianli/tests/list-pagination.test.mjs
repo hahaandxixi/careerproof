@@ -71,6 +71,7 @@ test("HTTP adapters pass canonical paging and filter job status before paginatio
     await api.myApplications(3, 20, "only-this-job"); await api.jobApplications("job", 6, 20);
     await api.listReports(2, 20); await api.listGrowthTasks(4, 20); await api.notifications(2, true, 50);
     assert.equal(urls[0].searchParams.get("jobId"), "only-this-job");
+    assert.equal(urls[0].searchParams.get("scope"), "product");
     assert.deepEqual(urls.map(url => url.searchParams.get("page")), ["3", "6", "2", "4", "2"]);
     assert.deepEqual(urls.map(url => url.searchParams.get("pageSize")), ["20", "20", "20", "20", "50"]);
     assert.equal(urls[4].searchParams.get("unread_only"), "true");

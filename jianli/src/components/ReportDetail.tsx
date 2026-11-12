@@ -16,7 +16,7 @@ import SourceCoverage from "./SourceCoverage";
 import EvidenceLink from "./EvidenceLink";
 import ReportPaperHeader from "./ReportPaperHeader";
 import ReportVersionPicker from "./ReportVersionPicker";
-import { reportListHref, reportOrigin } from "@/lib/report-navigation";
+import { reportListHref, reportListQuery, reportOrigin } from "@/lib/report-navigation";
 import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
 import ApplicationSubmit from "./ApplicationSubmit";
@@ -47,7 +47,7 @@ function ReportWorkspace({ id }: { id: string }) {
   const { user } = useAuth();
   const params = useSearchParams();
   const compareBase = params.get("compareBase") || "";
-  const origin = params.get("from") || "";
+  const origin = reportListQuery(reportOrigin(params.get("from"))).toString();
   const [state, setState] = useState(initialReportReviewState);
   const [reviewNotes, setReviewNotes] = useState<Record<string, string>>({});
   const [reportFilter, setReportFilter] = useState<WorkspaceFilter>();
@@ -89,7 +89,7 @@ function ReportWorkspace({ id }: { id: string }) {
     return () => { window.removeEventListener("hashchange", sync); window.removeEventListener("popstate", sync); };
   }, [state.report]);
   const { report, error, reviewing, issues, needsSync } = state;
-  if (error) return <ErrorNotice message={error} retry={() => void session.load()} />;
+  if (error) return <div className="space-y-3"><ErrorNotice message={error} retry={() => void session.load()} /><Link className="btn-secondary" href={reportListHref(reportOrigin(origin))}>返回我的报告</Link></div>;
   if (!report) return <p className="py-12 text-center text-slate-500">正在加载报告…</p>;
   const aiUsed = ["ai_evidence", "ai_evidence_manual"].includes(report.analysisMode) && !report.aiFallbackUsed;
   const aiRatedCount = reportAiRatedCount(report);

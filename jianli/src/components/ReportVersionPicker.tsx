@@ -4,18 +4,17 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { MatchReport, ReportSummary } from "@/lib/api/domain";
-import { reportOrigin, reportVersionHref } from "@/lib/report-navigation";
+import { reportVersionHref } from "@/lib/report-navigation";
 import { reportPairOptionLabel } from "@/lib/report-pair";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 
 const PAGE_SIZE = 20;
 
 export default function ReportVersionPicker({ report, origin }: { report: MatchReport; origin: string }) {
-  const scope = reportOrigin(origin).scope;
-  return <Picker key={`${report.id}:${scope}`} report={report} origin={origin} scope={scope} />;
+  return <Picker key={report.id} report={report} origin={origin} />;
 }
 
-function Picker({ report, origin, scope }: { report: MatchReport; origin: string; scope: "all" | "product" }) {
+function Picker({ report, origin }: { report: MatchReport; origin: string }) {
   const [page, setPage] = useState(1);
   const [revision, setRevision] = useState(0);
   const [data, setData] = useState<{ page: number; rows: ReportSummary[]; total: number }>();
@@ -23,7 +22,7 @@ function Picker({ report, origin, scope }: { report: MatchReport; origin: string
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState("");
   const { jobId, candidateId } = report;
-  const read = useCallback((page: number) => api.listReports(page, PAGE_SIZE, { jobId, candidateId, scope }), [jobId, candidateId, scope]);
+  const read = useCallback((page: number) => api.listReports(page, PAGE_SIZE, { jobId, candidateId, scope: "product" }), [jobId, candidateId]);
   useEffect(() => {
     let active = true;
     read(page).then(result => {

@@ -85,7 +85,7 @@ test("history card displays server-wide history facts and fixed versions only wh
       { kind: "project", id: "version-b222222", title: "同名项目", versionNumber: 2 },
     ],
   }, onSameJob() {} }));
-  assert.match(html, /有后续报告/);
+  assert.match(html, /历史报告/);
   assert.match(html, /同岗位共 27 份报告/);
   assert.match(html, /同名项目/);assert.match(html, /report-material-version">v1/);
   assert.match(html, /report-material-version">v2/);

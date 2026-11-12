@@ -37,8 +37,8 @@ export default function InterviewHub() {
 function Workspace() {
   return <div className="mx-auto max-w-5xl space-y-6">
     <h1 className="page-title">模拟面试</h1>
-    <Sessions />
     <StartPractice />
+    <Sessions />
   </div>;
 }
 
@@ -49,7 +49,7 @@ function Sessions() {
     <h2 id="saved-interviews" className="section-title">继续练习</h2>
     {busy && <p role="status">正在读取练习…</p>}
     {error && <ErrorNotice message={`暂时无法读取已有练习。 ${error}`} retry={retry} />}
-    {data?.total === 0 && <p className="text-slate-600">还没有练习。可以在下方选择一项岗位要求开始。</p>}
+    {data?.total === 0 && <p className="text-slate-600">还没有练习。可以选择一项岗位要求开始。</p>}
     {!!data?.items.length && <ul className="divide-y divide-slate-200">
       {data.items.map(session => {
         const status = session.status === "draft" || session.status === "in_progress" || session.status === "completed"

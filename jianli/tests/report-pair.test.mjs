@@ -7,7 +7,7 @@ const deferred = () => { let resolve, reject; const promise = new Promise((ok, f
 function fixture(overrides = {}, initialBaseId = '') {
   let state, listCalls = 0, compareCalls = 0;
   const reports = ['a', 'b', 'c'].map(id => report(id));
-  const api = { listReports: async (p, s, filters) => { listCalls++; assert.deepEqual(filters, { jobId: 'job', candidateId: 'owner', scope: 'all' }); return page(reports); }, getReport: async id => reports.find(r => r.id === id), compareReports: async (baseId, targetId) => { compareCalls++; return { baseId, targetId }; }, errorMessage: e => e.message, ...overrides };
+  const api = { listReports: async (p, s, filters) => { listCalls++; assert.deepEqual(filters, { jobId: 'job', candidateId: 'owner', scope: 'product' }); return page(reports); }, getReport: async id => reports.find(r => r.id === id), compareReports: async (baseId, targetId) => { compareCalls++; return { baseId, targetId }; }, errorMessage: e => e.message, ...overrides };
   const session = createReportPairSession(reports[1], api, value => { state = value; }, initialBaseId);
   session.activate();
   return { session, get state() { return state; }, get listCalls() { return listCalls; }, get compareCalls() { return compareCalls; } };

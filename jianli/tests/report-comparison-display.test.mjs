@@ -69,12 +69,13 @@ function load(path, modules) {
   new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
   return mod.exports.default;
 }
-function render(f, filter="changed") {
+function render(f, filter="changed", citationGroup) {
+  let stateCall=0;
   const runtime=require("react/jsx-runtime");
   const Explanation=load("../src/components/ReportItemExplanation.tsx",{"react/jsx-runtime":runtime});
   const View=load("../src/components/ReportComparisonView.tsx",{
     "@/lib/demo-display-identity.js":demoPresentation,
-    react:{useState:()=>[filter,()=>{}]},"react/jsx-runtime":runtime,
+    react:{useState:initial=>{const call=stateCall++;return[call===0?filter:call===2&&citationGroup?citationGroup:initial,()=>{}];}},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
     "@/lib/report-navigation":navigation,"@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
     "@/lib/report-display":{aiStatusLabel:(value)=>value ? String(value) : "未记录"},
@@ -87,12 +88,26 @@ test("real comparison view opens changed sources and keeps removed citations on 
   const evidence=Array.from({length:25},(_,i)=>source({citationId:`R1-E${i+1}`,lineStart:i+1,lineEnd:i+1,snippet:`original ${i}`}));
   const f=fixture({added:[evidence[0]],removed:evidence.slice(1),changes:["evidence"],sources:[evidence[0]]});
   const html=render(f);
-  assert.equal((html.match(/<details[^>]*\sopen(?:[\s=>])/g)??[]).length,1);
-  assert.match(html,/新增引用 · 1 处/); assert.match(html,/移除展示的引用 · 24 处/);
-  assert.match(html,/href="\/reports\/base-report#citation-R1-E2"/);
-  assert.match(html,/href="\/reports\/current-report#citation-R1-E1"/);
-  assert.match(html,/original 24/); assert.match(html,/version-1\/src\/service.py/);
-  assert.match(html,/min-w-0/); assert.match(html,/max-w-full overflow-auto/);
+  assert.match(html,/引用数量变化/);
+  assert.match(html,/data-kind="added" aria-pressed="true"/);
+  assert.match(html,/新增<\/span>.*1 处/);
+  assert.match(html,/未再引用<\/span>.*24 处/);
+  assert.match(html,/沿用<\/span>.*0 处/);
+  assert.match(html,/href="\/reports\/current-report#citation-R1-E1" target="_blank"/);
+  assert.doesNotMatch(html,/href="\/reports\/base-report#citation-R1-E2"/);
+  const removed=render(f,"changed","removed");
+  assert.match(removed,/href="\/reports\/base-report#citation-R1-E2" target="_blank"/);
+  assert.match(removed,/original 24/);
+  assert.match(removed,/version-1\/src\/service.py/);
+  assert.match(removed,/max-w-full overflow-auto/);
+});
+
+test("status changes without sources still render both judgments and a single zero-reference line", () => {
+  const html=render(fixture({oldVerdict:"claimed_only",verdict:"gap",sources:[],oldSources:[]}));
+  assert.match(html,/data-verdict="claimed_only">仅简历声明/);
+  assert.match(html,/data-verdict="gap">材料待补充/);
+  assert.equal((html.match(/引用：A 0 处 → B 0 处/g)??[]).length,1);
+  assert.doesNotMatch(html,/引用数量变化|没有可展开的记录/);
 });
 
 test("no-change message, filters, counts and old explanations remain available without text rewriting", () => {
@@ -137,7 +152,7 @@ test("real rule-version key warns on comparison while preserving original rule i
     Object.assign(f.base.items[0],{formulaVersion:"formula-A",evidenceLevelVersion:"evidence-A"});
     Object.assign(f.current.items[0],{formulaVersion:formulaChanged?"formula-B":"formula-A",evidenceLevelVersion:evidenceChanged?"evidence-B":"evidence-A"});
     const html=render(f,"all");
-    assert.equal(html.includes("比较依据有变化"),changed);
+    assert.equal(html.includes("比较依据变化"),changed);
     if (changed) {
       assert.match(html,/formula-A/);
       assert.match(html,/evidence-A/);

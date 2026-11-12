@@ -1,4 +1,4 @@
-type ReportListState = { q: string; jobId: string; page: number; scope: "product" | "all"; candidateId?: string };
+type ReportListState = { q: string; jobId: string; page: number; includeHistory: boolean; candidateId?: string };
 
 export function readReportListState(params: Pick<URLSearchParams, "get">): ReportListState {
   const jobId = params.get("jobId") ?? "";
@@ -9,7 +9,7 @@ export function readReportListState(params: Pick<URLSearchParams, "get">): Repor
     jobId: /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(jobId) ? jobId : "",
     ...(candidateId && /^[\w-]{1,200}$/.test(candidateId) ? { candidateId } : {}),
     page: Number.isSafeInteger(page) && page > 0 ? page : 1,
-    scope: params.get("scope") === "all" ? "all" : "product",
+    includeHistory: params.get("history") === "1",
   };
 }
 
@@ -21,7 +21,7 @@ export function reportListQuery(state: ReportListState) {
     if (state.candidateId) params.set("candidateId", state.candidateId);
   }
   if (state.page > 1) params.set("page", String(state.page));
-  if (state.scope === "all") params.set("scope", state.scope);
+  if (state.includeHistory) params.set("history", "1");
   return params;
 }
 

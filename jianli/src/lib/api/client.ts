@@ -266,8 +266,8 @@ export const api = {
   readAllNotifications() { return request<{ unreadCount: number }>("/notifications/read-all", { method: "POST" }); },
   notificationTarget(id: string) { return request<{ href: string }>(`/notifications/${id}/target`); },
   createApplication(reportId: string, expectedReviewRevision: number) { return applicationEvent(request<ApplicationView>("/applications", { method: "POST", ...jsonBody({ reportId, shareConsent: true, expectedReviewRevision }) })); },
-  applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}`); },
-  myApplications(page = 1, pageSize = 20, jobId?: string, filters: { q?: string; view?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); if (jobId) query.set("jobId", jobId); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
+  applicationDetail(id: string) { return request<ApplicationView>(`/applications/${id}?scope=product`); },
+  myApplications(page = 1, pageSize = 20, jobId?: string, filters: { q?: string; view?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize), scope: "product" }); if (jobId) query.set("jobId", jobId); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/applications/mine?${query}`); },
   jobApplications(jobId: string, page = 1, pageSize = 20, filters: { q?: string; status?: string; requirementId?: string; verdict?: string } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ApplicationView>>(`/jobs/${jobId}/applications?${query}`); },
   openApplication(id: string) { return applicationEvent(request<ApplicationView>(`/applications/${id}/view`, { method: "POST" })); },
   replyApplication(id: string, kind: string, text: string, references: ApplicationView["replyReferences"] = []) { return applicationEvent(request<ApplicationView>(`/applications/${id}/reply`, { method: "POST", ...jsonBody({ kind, text, references }) })); },
@@ -334,7 +334,7 @@ export const api = {
   getAnswerDraft(taskId: string) { return request<PrivateAnswerDraft | null>(`/growth-tasks/${taskId}/answer-draft`); },
   saveAnswerDraft(taskId: string, payload: PrivateAnswerSave) { return request<PrivateAnswerDraft>(`/growth-tasks/${taskId}/answer-draft`, { method: "PUT", ...jsonBody(payload) }); },
   listAnswerDraftReferences(taskId: string) { return request<PrivateAnswerReferenceOption[]>(`/growth-tasks/${taskId}/answer-draft/references`); },
-  getReport(id: string) { return request<MatchReport>(`/match-reports/${id}`); },
+  getReport(id: string) { return request<MatchReport>(`/match-reports/${id}?scope=product`); },
   // 文字模拟面试：创建不调用模型；同意外发后才生成首问。
   createInterviewSession(reportId: string, payload: { requirementId: string; restart?: boolean }) {
     return request<{ session: InterviewSession; resumed: boolean }>(`/match-reports/${reportId}/interview-sessions`, { method: "POST", ...jsonBody(payload) });

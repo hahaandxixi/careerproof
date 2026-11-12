@@ -92,6 +92,12 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
             application_id = application.id
             await session.commit()
         assert (await student.get(f"/api/v1/applications/{application_id}")).status_code == 200
+        product_detail = await student.get(f"/api/v1/applications/{application_id}?scope=product")
+        assert product_detail.status_code == 404
+        product_mine = (await student.get("/api/v1/applications/mine?scope=product")).json()["data"]
+        assert product_mine["total"] == 0 and product_mine["items"] == []
+        audit_mine = (await student.get("/api/v1/applications/mine?scope=all")).json()["data"]
+        assert audit_mine["total"] == 1 and audit_mine["items"][0]["id"] == str(application_id)
         assert (await hr.get(f"/api/v1/applications/{application_id}")).status_code == 404
         assert (await hr.post(f"/api/v1/applications/{application_id}/view")).status_code == 404
         verification = await hr.get(f"/api/v1/applications/{application_id}/verification")
@@ -106,6 +112,11 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         assert fixture_row["recordProvenance"] == "test_fixture"
         direct = await student.get(f"/api/v1/match-reports/{fixture}")
         assert direct.status_code == 200 and direct.json()["data"]["summary"] == "保存原文不变"
+        hidden = await student.get(f"/api/v1/match-reports/{fixture}?scope=product")
+        assert hidden.status_code == 404
+        normal_detail = await student.get(f"/api/v1/match-reports/{normal}?scope=product")
+        assert normal_detail.status_code == 200
+        assert normal_detail.json()["data"]["summary"] == "保存原文不变"
         assert (await stranger.get(f"/api/v1/match-reports/{fixture}")).status_code == 404
         assert (await stranger.get("/api/v1/match-reports?scope=all")).json()["data"]["total"] == 0
         for target in (normal, fixture):

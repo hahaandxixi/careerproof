@@ -640,7 +640,9 @@ class AnalysisService:
             page_size=page_size,
         )
 
-    async def _locked_report(self, report_id: UUID, user: User, *, write=False) -> MatchReport:
+    async def _locked_report(
+        self, report_id: UUID, user: User, *, write=False, product=False,
+    ) -> MatchReport:
         # Scope authorization before locking; only the report is a lock target.
         # Shared reads keep report comparisons from acquiring opposite exclusive
         # locks, while review writes exclude readers through their transaction.
@@ -651,6 +653,10 @@ class AnalysisService:
         )
         if user.role is not UserRole.ADMIN:
             query = query.where(AnalysisTask.created_by == user.id)
+        if product:
+            query = query.where(MatchReport.job_id.not_in(fixture_job_ids()))
+            if user.role is UserRole.STUDENT:
+                query = query.where(MatchReport.candidate_ref == str(user.id))
         report = await self.session.scalar(
             query.with_for_update(read=not write, of=MatchReport)
             .execution_options(populate_existing=True)
@@ -660,10 +666,12 @@ class AnalysisService:
         await self.get_task(report.analysis_task_id, user)
         return report
 
-    async def get_report(self, report_id: UUID, user: User) -> MatchReportView:
+    async def get_report(
+        self, report_id: UUID, user: User, *, product=False,
+    ) -> MatchReportView:
         # Do not commit here: a consent caller must hold this shared lock until
         # its fixed snapshot and Application are committed together.
-        report = await self._locked_report(report_id, user)
+        report = await self._locked_report(report_id, user, product=product)
         items = await self.analysis.report_items(report.id)
         evidence_ids = [item.evidence_id for item in items if item.evidence_id]
         evidence_by_id = {
