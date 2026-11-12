@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import {
   MATERIAL_ACCEPT, materialFileError, materialFileSize, materialFileType,
   pickMaterialFile, latestMaterialVersions, materialSelectionChanged, materialVersionTime,
@@ -152,6 +153,7 @@ test("actual project picker highlights a returned version without selecting it o
       react: { useState: value => [index++ === 0 ? query : value, () => {}] },
       "react/jsx-runtime": runtime, "next/link": { __esModule: true, default: props => runtime.jsx("a", props) },
       "@/lib/material-upload": contract, "@/lib/material-picker": pickerLogic, "@/app/demo/samples.json": { __esModule: true, default: [] },
+      "@/lib/demo-display-identity.js": demoPresentation,
     }).default;
     return component({ projects, selectedIds, onChange() { assert.fail("render must not select"); }, highlightedVersionId: "new" });
   }
@@ -163,6 +165,10 @@ test("actual project picker highlights a returned version without selecting it o
   assert.doesNotMatch(html, /checked=""/);
   assert.match(html, /已解析.*<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026/);
   assert.doesNotMatch(renderToStaticMarkup(picker("old.zip")), /最新可用版本/);
-  const selected = renderToStaticMarkup(picker("", ["new"]));
-  assert.equal((selected.match(/<time dateTime="2026-10-22T08:15:00\+08:00">/g) || []).length, 2, "selected summary and selectable row both retain actual upload time");
+  const selectedTree = picker("", ["new"]);
+  const selectedSummary = renderToStaticMarkup(find(selectedTree, node => node.props?.["aria-label"] === "已选项目版本"));
+  assert.match(selectedSummary, /作品 · 第 2 版/);
+  assert.doesNotMatch(selectedSummary, /new\.zip|<time|已解析|上传于/);
+  const selected = renderToStaticMarkup(selectedTree);
+  assert.match(selected, /new\.zip.*<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026.*最新可用版本/);
 });

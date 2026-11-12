@@ -117,7 +117,8 @@ function MatchForm({
   }
   const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
   const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
-  const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id)).map(version => `${project.name} · 第 ${version.versionNumber} 版`));
+  const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id))
+    .map(version => `${displayMaterialTitle(project.name, version.id)} · 第 ${version.versionNumber} 版`));
   return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">查看我的投递</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
