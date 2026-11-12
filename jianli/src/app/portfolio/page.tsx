@@ -1,6 +1,6 @@
 "use client";
 
-import { displayMaterialTitle, isLegacyAcceptanceResume } from "@/lib/demo-display-identity.js";
+import { displayMaterialTitle, showResumeFilenameInDetails } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import ArchivedMaterials from "@/components/ArchivedMaterials";
 import LoginLink from "@/components/LoginLink";
@@ -73,7 +73,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
   archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
 }) {
   const title = displayMaterialTitle(item.title, item.versionId);
-  const showFileOnRequest = item.kind === "resume" && isLegacyAcceptanceResume(item.versionId);
+  const showFileOnRequest = item.kind === "resume" && showResumeFilenameInDetails(item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   const extraActions = [

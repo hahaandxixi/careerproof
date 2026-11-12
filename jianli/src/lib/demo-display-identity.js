@@ -39,13 +39,15 @@ const jobAliases = new Map([
   }],
 ]);
 
-const legacyAcceptanceResumes = new Map([
+const resumeAliasesWithOriginalFileDetails = new Map([
   ["d18b3087-99dc-4657-9a0d-7d26dc9d1a84", "数据工程方向简历"],
   ["1495ceaf-3251-4ab3-b84e-71b312f82009", "数据工程方向简历"],
+  ["b827831f-f31a-4f71-b1c0-ee9e6459a58e", "Python 技能说明"],
+  ["e6a6d7b2-8e26-48c0-a989-d9af8dda26db", "林同学的简历"],
 ]);
 
 const materialAliases = new Map([
-  ...legacyAcceptanceResumes,
+  ...resumeAliasesWithOriginalFileDetails,
   ["32593aad-3fbd-47fb-9397-70b5e6f32b95", "数据清洗工具"],
   ["c90a4283-f9ab-4247-8fdc-16ef6e7ae56a", "数据清洗工具"],
   ["4e22b722-44c7-4c19-8eb6-f22b5e8a2f8a", "数据清洗工具"],
@@ -54,13 +56,11 @@ const materialAliases = new Map([
   ["398da206-77d7-4ac8-b342-ded4c6d60a67", "数据清洗脚本"],
   ["d3caa012-3ea5-4c49-9dc3-a4d9ebe17fe8", "数据清洗脚本"],
   ["374469a7-f893-4f4c-9960-198fc65cf43e", "Python 技能说明"],
-  ["b827831f-f31a-4f71-b1c0-ee9e6459a58e", "Python 技能说明"],
   ["10149ddd-d310-4c22-bf28-a499715c6d4d", "数据工程方向简历"],
   ["4df0cd38-f8d1-45d5-91b5-6f97958eb1dc", "数据工程方向简历"],
   ["80fc3405-f09e-4a01-95e7-940a02827104", "个人简历初稿"],
   ["eec74199-e26a-48a2-8a9a-058d27ad3a88", "个人简历初稿"],
   ["cc6e7c3d-63f5-4109-b581-9b3ae9a7224d", "林同学的简历"],
-  ["e6a6d7b2-8e26-48c0-a989-d9af8dda26db", "林同学的简历"],
   ["7a17865f-1a64-41cd-8f31-984f060f32b9", "数据工程方向简历"],
   ["d5e9073d-3df2-44ee-832e-70ced6e69487", "数据工程方向简历"],
   ["cf78e715-485b-4b2a-94fa-bcb4256ac4dd", "唐同学的简历"],
@@ -85,8 +85,8 @@ export function displayMaterialTitle(title, id) {
 }
 
 /** Only these verified historical fixtures tuck the original filename into details. */
-export function isLegacyAcceptanceResume(versionId) {
-  return legacyAcceptanceResumes.has(versionId);
+export function showResumeFilenameInDetails(versionId) {
+  return resumeAliasesWithOriginalFileDetails.has(versionId);
 }
 
 export function displayIdentity(originalName, identityId) {
