@@ -123,7 +123,6 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
     <section>
       <p className="text-sm text-indigo-600">学生职业探索</p>
       <h1 className="mt-1 text-3xl font-bold">根据我的材料推荐职业与岗位</h1>
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">系统先用本地证据规则筛出岗位，再由 AI 优先比较不同职业方向的候选岗位、指出缺口和下一份可提交材料。上传新版本后再次生成，可查看证据变化。推荐顺序不代表能力认证或录用概率。</p>
     </section>
 
     {error && <ErrorNotice message={error}
@@ -135,7 +134,7 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
       }} />}
     {selectionNotice && <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{selectionNotice}</p>}
     <form className="panel space-y-5" onSubmit={submit}>
-      <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">请选择一份简历，可勾选最多 10 份作品；测试材料请选择同一 CP 编号的一对简历与项目。第三方参考材料不会计入个人评级。</p></div>
+      <div><h2 className="text-lg font-semibold">选择材料版本</h2><p className="mt-1 text-sm text-slate-500">选择一份简历，最多可勾选 10 份作品。第三方参考材料不会计入个人评级。</p></div>
       {loading ? <p className="text-sm text-slate-500">正在加载材料…</p> : <fieldset disabled={busy || historyLoading} className="space-y-4">
         <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={id => { setResumeVersionId(id); clearDisplayedResult(); }} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={ids => { setProjectVersionIds(ids); clearDisplayedResult(); }} />
@@ -144,6 +143,11 @@ export default function CareerRecommendations({ initialResumeVersionId = "", ini
         {configurationStatus && <p role="status" className="text-sm text-amber-800">{careerPlanFailureMessage(configurationStatus)}</p>}
       </fieldset>}
     </form>
+
+    <details className="text-sm text-slate-600">
+      <summary className="disclosure">推荐依据</summary>
+      <p className="max-w-3xl leading-7">系统先用本地证据规则筛出岗位，再由 AI 比较不同方向的候选岗位、指出缺口和可补充材料。上传新版后可以重新生成。推荐顺序不代表能力认证或录用概率。</p>
+    </details>
 
     <div className="flex flex-wrap items-center gap-3 text-sm">
       <button type="button" className="btn-secondary" disabled={busy || loading || historyLoading} onClick={viewPreviousPlan}>{historyLoading ? "正在读取上次规划…" : "查看上次保存的规划"}</button>

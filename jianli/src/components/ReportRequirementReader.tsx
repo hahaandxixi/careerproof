@@ -6,6 +6,7 @@ import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
 import { evidenceWorkspace, nextReportGap, reportStatusTone } from "@/lib/evidence-workspace";
 import { filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
+import { reportRequirementLabels } from "@/lib/skill-radar";
 
 type ReaderEntry = { selected: string | null; anchor: string | null; revision: number; filter: WorkspaceFilter };
 
@@ -91,6 +92,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
   if (!items.length) return <section className="panel text-sm text-slate-600">本报告尚无逐项要求，请核对处理记录。</section>;
   const state = evidenceWorkspace(items);
   const visible = workspaceRequirements(items, filter);
+  const labels = reportRequirementLabels(items);
   const nextGap = nextReportGap(state.gaps, selected);
   const filters: { key: WorkspaceFilter; label: string; count: number }[] = [
     { key: "priority", label: "优先处理", count: state.priorities.length + state.other.length },
@@ -123,13 +125,12 @@ export default function ReportRequirementReader({ items, children, overview, sel
         </button>)}
       </div>
       <nav aria-label="报告中的岗位要求" className="report-index-strip min-w-0">
-        {visible.length ? <ol className="report-index-chips">{visible.map((item, index) => {
+        {visible.length ? <ol className="report-index-chips">{visible.map(item => {
           const isSelected = selected === item.requirementId;
-          return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={isSelected ? "true" : undefined} title={`${item.skill || item.requirementTitle} · ${workspaceStatusLabel(item)}`}
+          return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={isSelected ? "true" : undefined} title={`${item.requirementTitle} · ${workspaceStatusLabel(item)}`}
             className="report-index-chip">
             <span className={`report-index-dot tone-${reportStatusTone(item)}`} aria-hidden="true" />
-            <span className="report-index-chip-number">{String(index + 1).padStart(2, "0")}</span>
-            <span className="report-index-chip-name">{item.skill || item.requirementTitle}</span>
+            <span className="report-index-chip-name">{labels.get(item.requirementId)?.label}</span>
             <span className="sr-only">，{workspaceStatusLabel(item)}</span>
           </a></li>;
         })}</ol> : <p className="report-index-empty">当前没有这一类要求。<button type="button" className="btn-secondary btn-compact ml-2" onClick={() => changeFilter("all")}>查看全部要求</button></p>}

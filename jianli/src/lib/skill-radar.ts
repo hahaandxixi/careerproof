@@ -23,6 +23,10 @@ export function radarRequirementLabels(dimensions: readonly Pick<RadarDimension,
   }));
 }
 
+export function reportRequirementLabels(items: readonly Pick<ReportItem, "requirementId" | "requirementTitle" | "skill">[]) {
+  return radarRequirementLabels(items.map(({ requirementId, requirementTitle, skill }) => ({ requirementId, title: requirementTitle, skill })));
+}
+
 export function radarPosition(index: number, count: number, ratio: number) {
   const angle = index * 2 * Math.PI / count - 3 * Math.PI / 4;
   return { x: 200 + 108 * ratio * Math.cos(angle), y: 200 + 108 * ratio * Math.sin(angle) };
