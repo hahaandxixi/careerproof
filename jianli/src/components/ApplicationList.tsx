@@ -150,9 +150,17 @@ function Workspace() {
 
   useEffect(() => {
     session.activate();
-    const syncAnchor = () => {
+    const openAnchor = () => {
       const id = applicationAnchorId();
-      if (id && id !== selected.current) { setRevokeId(null); void loadDetail(id, true); }
+      if (!id || document.visibilityState === "hidden") return;
+      setRevokeId(null);
+      void loadDetail(id, true);
+    };
+    const onHashChange = () => {
+      if (!applicationAnchorId()) return;
+      dialog.current?.close();
+      setMessagesOpen(false);
+      openAnchor();
     };
     const refresh = () => {
       if (document.visibilityState === "hidden") return;
@@ -172,18 +180,18 @@ function Workspace() {
     };
     const focusWindow = () => gate.trigger();
     const blurWindow = () => gate.reset();
-    if (document.visibilityState !== "hidden") syncAnchor();
+    openAnchor();
     document.addEventListener("visibilitychange", visibility);
     window.addEventListener("focus", focusWindow);
     window.addEventListener("blur", blurWindow);
-    window.addEventListener("hashchange", syncAnchor);
+    window.addEventListener("hashchange", onHashChange);
     return () => {
       invalidateDetail();
       session.dispose();
       document.removeEventListener("visibilitychange", visibility);
       window.removeEventListener("focus", focusWindow);
       window.removeEventListener("blur", blurWindow);
-      window.removeEventListener("hashchange", syncAnchor);
+      window.removeEventListener("hashchange", onHashChange);
     };
   }, [invalidateDetail, loadDetail, session]);
 
