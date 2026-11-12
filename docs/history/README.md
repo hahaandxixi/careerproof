@@ -15,3 +15,5 @@
 [迁移保真清单](../evidence/20261023-doc-governance/migration.json)记录每份源文的原始/LF哈希、行数及逐行链接转换；[检查入口](../evidence/20261023-doc-governance/README.md)说明如何逆向还原验证。
 
 新增开发记录按实际日期和任务写入月份文件或相应evidence，标明源码与验证范围；不要继续把旧状态追加到当前接力、活动看板或用户指南。
+
+清理前已跟踪的历史运行截图可按原路径查阅[清理前 Git 快照](https://github.com/hahaandxixi/careerproof/tree/0a08b73f7d1b2f97b30209bf09bad6831787d92a/docs/evidence)。旧证据记录中的图片路径和校验值以当时版本为准。
