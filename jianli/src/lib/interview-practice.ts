@@ -100,6 +100,12 @@ export function summaryLine(summary: InterviewSession["summary"]) {
 }
 
 
+export function visibleSummaryNextStep(summary: InterviewSession["summary"], turn: PracticeTurn | null) {
+  const nextStep = summary?.nextStep;
+  const normalize = (value?: string) => value?.trim().replace(/\s+/g, " ");
+  return normalize(nextStep) !== normalize(turn?.feedback?.reviewSuggestion) ? nextStep || "" : "";
+}
+
 export function generationPending(task?: PracticeGeneration | null) {
   return task?.status === "pending" || task?.status === "running";
 }

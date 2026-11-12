@@ -1,9 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
-import { sourceLabel, type SourceMaterial } from "@/lib/source-label";
+import { sourceLabel, type SourceLocation, type SourceMaterial } from "@/lib/source-label";
 import type { ReportEvidence } from "@/lib/api/domain";
 
-export default function EvidenceSnippet({ evidence, materials = [], showContextNote = true, theme = "light" }: { evidence: ReportEvidence; materials?: readonly SourceMaterial[]; showContextNote?: boolean; theme?: "light" | "dark" }) {
+type SnippetSource = SourceLocation & Pick<ReportEvidence, "lineStart" | "lineEnd" | "snippet">
+  & Partial<Pick<ReportEvidence, "contextComplete" | "contextNote">>;
+
+export default function EvidenceSnippet({ evidence, materials = [], showContextNote = true, theme = "light" }: { evidence: SnippetSource; materials?: readonly SourceMaterial[]; showContextNote?: boolean; theme?: "light" | "dark" }) {
   const [wrap, setWrap] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [copy, setCopy] = useState("");

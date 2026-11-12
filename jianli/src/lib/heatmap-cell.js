@@ -16,3 +16,13 @@ export function heatmapCellClass(verdict, score = 0) {
     default: return "bg-slate-100 text-slate-600";
   }
 }
+
+/** Review is only known after the matching frozen requirement has been read.
+ * @param {{confirmationStatus?: string | null}} [item]
+ */
+export function heatmapReview(item) {
+  if (!item) return { state: "unread", label: "复核未载入" };
+  if (item.confirmationStatus === "rejected") return { state: "rejected", label: "本人已驳回 · 需复核" };
+  if (item.confirmationStatus === "corrected") return { state: "corrected", label: "本人标记修正 · 需复核" };
+  return { state: "read", label: "" };
+}

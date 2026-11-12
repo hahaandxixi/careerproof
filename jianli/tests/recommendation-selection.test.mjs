@@ -4,7 +4,18 @@ import {
   careerPlanHref,
   jobAnalysisHref,
   resolveInitialMaterialSelection,
+  unavailableRequestedMaterials,
 } from "../src/lib/recommendation-selection.ts";
+
+test("missing requested versions are reported without replacing valid selections", () => {
+  const requested = ["current", "archived", "outside-account", "archived"];
+  const selection = resolveInitialMaterialSelection(["resume"], ["current", "newer"], "resume", requested);
+  assert.deepEqual(selection, { resumeVersionId: "resume", projectVersionIds: ["current"] });
+  assert.deepEqual(unavailableRequestedMaterials(selection, "resume", requested), ["2 个项目版本"]);
+  assert.deepEqual(unavailableRequestedMaterials(selection, "", []), []);
+  const missingResume = resolveInitialMaterialSelection(["resume"], ["current"], "removed", []);
+  assert.deepEqual(unavailableRequestedMaterials(missingResume, "removed", []), ["简历版本"]);
+});
 
 test("growth continuation carries its exact material versions without starting AI", () => {
   const url = new URL(careerPlanHref("resume-v2", ["project-v2", "project-v3"]), "http://careerproof.local");

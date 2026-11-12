@@ -1,5 +1,6 @@
 import { VERDICT_LABELS, APPLICATION_STATUS_LABELS, EVIDENCE_FILTERS } from "../src/lib/verdict-display.js";
 import * as supportIndex from "../src/lib/support-index.js";
+import * as heatmap from "../src/lib/heatmap-cell.js";
 import * as demoIdentity from "../src/lib/demo-display-identity.js";
 // Execute the real Workspace/event handlers with deterministic hooks and API
 // promises. These are component behavior tests, not real browser visibility.
@@ -50,7 +51,7 @@ function fixture(count=2,editRow=value=>value,options={}){
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:ownerId}})},
   "@/lib/application-comparison":{applicationFilterView:(items)=>({visible:items,empty:false,selectedOutside:false}),mixedComparisonBasis:()=>false,comparableApplicationGroup,comparableRadarAxes},
   "@/lib/support-index.js":supportIndex,"./SupportMeasureDetails":{default:stub("measure-details"),__esModule:true},"@/lib/evidence-workspace":{evidenceWorkspace},"@/lib/evidence-display":{RULE_SCORE_CAP_NOTE:"规则说明",evidenceLevelName:String},"@/lib/report-display":{reportModeLabel:()=>"规则",reportSummaryText:String},
-  "@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
+  "@/lib/heatmap-cell.js":heatmap,"@/lib/application-board-session":{createApplicationBoardSession,initialApplicationBoardState},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-board-history":boardHistory,"@/lib/read-retry-focus":{trackReadRetryFocus},
   "./ApplicationVerification":{default:stub("verification"),__esModule:true},"@/lib/skill-radar":{RADAR_STATUS:{supported:"有证据支持",partial:"部分证据支持",claimed_only:"仅简历声明",gap:"材料待补充",unsupported:"规则暂未支持"}},"@/lib/verification-reply-draft":{activeVerificationReplyReferences:()=>[],appendVerificationReplyQuestion:()=>{}},
   "@/lib/verdict-display.js":{VERDICT_LABELS,APPLICATION_STATUS_LABELS,EVIDENCE_FILTERS}};
@@ -205,7 +206,9 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
  const missing=cell("候选人b · Python要求 · 本报告无此项");assert.ok(missing);assert.equal(missing.props.disabled,true);assert.match(text(missing),/本报告无此项/);
  missing.props.onClick();assert.equal(h.counts.open,0);
  const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
- const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported+"复核状态未载入");
+ const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
+ assert.equal(unsupported.props["data-review"],"unread");assert.match(unsupported.props.className,/bg-slate-100/);
+ assert.match(zero.props.className,/bg-emerald-100/);
  await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
 });
 
@@ -264,19 +267,31 @@ test("popstate reauthorizes the matching history entry and server page clamping 
  }
 });
 
-test("matrix keeps the frozen verdict and labels loaded review for the matching candidate", async()=>{
- const h=fixture(2,row=>({...row,dimensions:row.dimensions.map(d=>({...d,verdict:"supported"}))}),{
-  fixedItems:id=>[{requirementId:"r1",verdict:"supported",confirmationStatus:id==="a"?"rejected":"corrected",evidenceList:[]}],
+test("matrix shows saved judgment colors before reading and marks review for the matching candidate", async()=>{
+ const verdicts={a:"supported",b:"claimed_only",c:"gap",d:"unsupported"};
+ const h=fixture(4,row=>({...row,dimensions:row.dimensions.map(d=>({...d,verdict:verdicts[row.id]}))}),{
+  fixedItems:id=>[{requirementId:"r1",verdict:verdicts[id],confirmationStatus:({a:"rejected",b:"corrected",c:"pending"})[id],evidenceList:[]}],
  });
  let tree=await h.settle();
  const cell=id=>h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人"+id+" · Python要求"));
- assert.match(text(cell("a")),/有证据支持.*复核状态未载入/);
+ for(const [id,color] of Object.entries({a:"bg-emerald-100",b:"bg-amber-50",c:"bg-white",d:"bg-slate-100"})){
+  assert.equal(cell(id).props["data-review"],"unread");
+  assert.match(cell(id).props["aria-label"],/复核未载入/);
+  assert.doesNotMatch(text(cell(id)),/复核未载入/);
+  assert.match(cell(id).props.className,new RegExp(color));
+ }
+ assert.equal(h.counts.open,0);
  cell("a").props.onClick();tree=await h.settle();
  assert.match(text(cell("a")),/有证据支持.*本人已驳回/);
- assert.match(text(cell("b")),/复核状态未载入/);
+ assert.equal(cell("a").props["data-review"],"rejected");
+ assert.match(cell("a").props.className,/bg-emerald-100/);
+ assert.equal(cell("b").props["data-review"],"unread");
  cell("b").props.onClick();tree=await h.settle();
- assert.match(text(cell("b")),/有证据支持.*本人标记修正/);
+ assert.match(text(cell("b")),/仅简历声明.*本人标记修正/);
  assert.doesNotMatch(text(cell("a")),/本人标记修正/);
+ cell("c").props.onClick();tree=await h.settle();
+ assert.equal(cell("c").props["data-review"],"read");
+ assert.doesNotMatch(cell("c").props["aria-label"],/复核未载入|需复核/);
 });
 
 

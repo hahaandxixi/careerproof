@@ -1411,10 +1411,9 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 @media (min-width: 1000px) and (max-width: 1399px) {
   .report-reading-desk { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); grid-template-areas: "controls controls" "overview main"; gap: 14px 18px; }
   .report-requirement-controls { grid-area: controls; }
-  .report-overview-band { grid-area: overview; display: flex; flex-direction: column; margin-top: 0; align-self: start; }
-  .report-overview-band .report-radar-side { order: 1; max-width: none; }
+  .report-overview-band { grid-area: overview; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 0; align-self: start; }
+  .report-overview-band .report-radar-side { max-width: none; }
   .report-overview-band .report-radar-side .radar-chart-svg { max-width: 300px; }
-  .report-overview-band .report-heatmap { order: 2; }
   .report-overview-band .report-heatmap-row { grid-template-columns: minmax(0, 1fr) auto; }
   .report-overview-band .report-heatmap-row > :nth-child(2),
   .report-overview-band .report-heatmap-row > :nth-child(3) { display: none; }

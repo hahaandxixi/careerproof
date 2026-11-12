@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, newClientToken, openTurn,
-  feedbackStatusLabel, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
+  feedbackStatusLabel, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "../src/lib/interview-practice.ts";
 
 const evidence = (id, path = "version-1/test_pipeline.py") => ({
@@ -84,6 +84,17 @@ test("labels distinguish the first question from a follow-up and the summary cav
   assert.equal(practiceStatusLabel("completed"), "练习已完成");
   assert.match(summaryLine({ answeredTurns: 2, covered: [], inconsistent: [], remaining: [], nextStep: "", note: "" }), /不改变报告判断/);
   assert.equal(summaryLine(null), "");
+});
+
+test("summary hides only a suggestion already visible in the current round", () => {
+  const nextStep = "解释空金额处理，再补一条测试。";
+  const summary = { nextStep, covered: ["校验 ID"], remaining: ["金额边界"], inconsistent: [] };
+  const latest = { feedback: { reviewSuggestion: " 解释空金额处理，再补一条测试。 " } };
+  const earlier = { feedback: { reviewSuggestion: "展示重复 ID 的更新逻辑。" } };
+  assert.equal(visibleSummaryNextStep(summary, latest), "");
+  assert.equal(visibleSummaryNextStep(summary, earlier), nextStep);
+  assert.equal(visibleSummaryNextStep(summary, null), nextStep);
+  assert.deepEqual(summary.remaining, ["金额边界"]);
 });
 
 test("a session that recorded consent but has no question offers a retry, not a blank page", () => {

@@ -34,7 +34,9 @@ interface TaskProgressEvent {
 
 export default function TaskView({ id }: { id: string }) {
   const router = useRouter();
-  const compareTo = useSearchParams().get("compareTo") || "";
+  const query = useSearchParams();
+  const compareTo = query.get("compareTo") || "";
+  const requirementId = query.get("sourceRequirement");
   const [task, setTask] = useState<AnalysisTask | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -144,7 +146,7 @@ export default function TaskView({ id }: { id: string }) {
     setBusy(true); setError("");
     try {
       const accepted = await api.retryTask(id);
-      const next = retryTaskHref(id, accepted.taskId, compareTo);
+      const next = retryTaskHref(id, accepted.taskId, compareTo, requirementId);
       if (next) router.push(next);
       else setRevision(value => value + 1);
     } catch (reason) { setError(errorMessage(reason)); }
@@ -181,7 +183,7 @@ export default function TaskView({ id }: { id: string }) {
           {duration !== null && <div><dt className="inline">实际处理时长：</dt><dd className="inline">{formatSeconds(duration)}</dd></div>}
           <div><dt className="inline">进度连接：</dt><dd className="inline">{connectionText}</dd></div>
         </dl>
-        <div className="mt-5 flex flex-wrap gap-3">{task.reportId && <Link className="btn" href={`/reports/${task.reportId}${compareTo ? `?compareBase=${encodeURIComponent(compareTo)}` : ""}`}>查看匹配报告</Link>}{task.status === "failed" && <button className="btn-secondary" disabled={busy} onClick={() => void retry()}>{busy ? "提交重试…" : "重试此任务"}</button>}{task.status === "completed" && !task.reportId && <Link className="btn" href="/portfolio">返回材料，查看解析结果</Link>}</div>
+        <div className="mt-5 flex flex-wrap gap-3">{task.reportId && <Link className="btn" href={`/reports/${task.reportId}${compareTo ? `?compareBase=${encodeURIComponent(compareTo)}` : ""}${compareTo && requirementId ? `#requirement-${encodeURIComponent(requirementId)}` : ""}`}>查看匹配报告</Link>}{task.status === "failed" && <button className="btn-secondary" disabled={busy} onClick={() => void retry()}>{busy ? "提交重试…" : "重试此任务"}</button>}{task.status === "completed" && !task.reportId && <Link className="btn" href="/portfolio">返回材料，查看解析结果</Link>}</div>
         {task.status === "failed" && <p className="mt-3 text-xs text-slate-500">重试会复用原材料版本。如果文件本身不受支持，请上传修正后的新版本。</p>}
       </section>
       {task.steps.filter(step => step.eventType === "material.content_warning").map(step =>

@@ -54,13 +54,12 @@ export function reportFollowUpContext(query: Pick<URLSearchParams, "get">) {
   return reportId && requirementId && UUID.test(reportId) && UUID.test(requirementId) ? { reportId, requirementId } : null;
 }
 
-/** A completed upload can replace only the matching material version. Other
- * selected project versions stay selected; an ambiguous project update is not
- * guessed from "latest". */
+/** A completed upload replaces a version only within the same owned project. */
 export function reportReanalysisHref(
   report: Pick<MatchReport, "id" | "jobId" | "materials">,
   uploaded: { kind: "resume" | "project"; versionId: string },
-  sourceProjectVersion?: string | null,
+  project?: { versionIds: readonly string[]; sourceVersionId?: string | null },
+  requirementId?: string,
 ): string | null {
   if (!UUID.test(report.jobId) || !UUID.test(uploaded.versionId)) return null;
   const materials = report.materials;
@@ -71,17 +70,28 @@ export function reportReanalysisHref(
   if (uploaded.kind === "resume") {
     resumeVersionId = uploaded.versionId;
   } else {
-    const replace = sourceProjectVersion && reportProjects.includes(sourceProjectVersion)
-      ? sourceProjectVersion
-      : reportProjects.length === 1 ? reportProjects[0] : null;
-    if (!replace) return null;
-    projectVersionIds = reportProjects.map(id => id === replace ? uploaded.versionId : id);
+    if (!project?.versionIds.includes(uploaded.versionId)) return null;
+    const sameProject = reportProjects.filter(id => project.versionIds.includes(id));
+    const replace = sameProject.length === 1 ? sameProject[0] : sameProject.find(id => id === project.sourceVersionId);
+    if (sameProject.length && !replace) return null;
+    if (!replace && reportProjects.length >= 10) return null;
+    projectVersionIds = replace
+      ? reportProjects.map(id => id === replace ? uploaded.versionId : id)
+      : [...reportProjects, uploaded.versionId];
   }
   if (!resumeVersionId) return null;
-  const params = new URLSearchParams({
-    resumeVersionId,
-    compareTo: report.id,
-  });
+  return reportJobHref(report, requirementId, resumeVersionId, projectVersionIds);
+}
+
+export function reportJobHref(
+  report: Pick<MatchReport, "id" | "jobId" | "materials">,
+  requirementId?: string,
+  resumeVersionId = report.materials.find(material => material.kind === "resume")?.id,
+  projectVersionIds = report.materials.filter(material => material.kind === "project").map(material => material.id),
+) {
+  const params = new URLSearchParams({ compareTo: report.id });
+  if (resumeVersionId) params.set("resumeVersionId", resumeVersionId);
+  if (requirementId && UUID.test(requirementId)) params.set("sourceRequirement", requirementId);
   for (const id of projectVersionIds) params.append("projectVersionId", id);
   return `/jobs/${report.jobId}?${params.toString()}`;
 }
