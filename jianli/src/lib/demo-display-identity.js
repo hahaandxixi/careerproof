@@ -39,7 +39,13 @@ const jobAliases = new Map([
   }],
 ]);
 
+const legacyAcceptanceResumes = new Map([
+  ["d18b3087-99dc-4657-9a0d-7d26dc9d1a84", "数据工程方向简历"],
+  ["1495ceaf-3251-4ab3-b84e-71b312f82009", "数据工程方向简历"],
+]);
+
 const materialAliases = new Map([
+  ...legacyAcceptanceResumes,
   ["32593aad-3fbd-47fb-9397-70b5e6f32b95", "数据清洗工具"],
   ["c90a4283-f9ab-4247-8fdc-16ef6e7ae56a", "数据清洗工具"],
   ["4e22b722-44c7-4c19-8eb6-f22b5e8a2f8a", "数据清洗工具"],
@@ -50,7 +56,6 @@ const materialAliases = new Map([
   ["374469a7-f893-4f4c-9960-198fc65cf43e", "Python 技能说明"],
   ["b827831f-f31a-4f71-b1c0-ee9e6459a58e", "Python 技能说明"],
   ["10149ddd-d310-4c22-bf28-a499715c6d4d", "数据工程方向简历"],
-  ["d18b3087-99dc-4657-9a0d-7d26dc9d1a84", "数据工程方向简历"],
   ["4df0cd38-f8d1-45d5-91b5-6f97958eb1dc", "数据工程方向简历"],
   ["80fc3405-f09e-4a01-95e7-940a02827104", "个人简历初稿"],
   ["eec74199-e26a-48a2-8a9a-058d27ad3a88", "个人简历初稿"],
@@ -77,6 +82,11 @@ export function displayJobTitle(title, id) {
 
 export function displayMaterialTitle(title, id) {
   return materialAliases.get(id) ?? title;
+}
+
+/** Only these verified historical fixtures keep raw text behind a disclosure. */
+export function isLegacyAcceptanceResume(versionId) {
+  return legacyAcceptanceResumes.has(versionId);
 }
 
 export function displayIdentity(originalName, identityId) {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ResumePreview, ProjectFileSummary, ProjectFileContent } from "@/lib/api/domain";
-import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { displayMaterialTitle, isLegacyAcceptanceResume } from "@/lib/demo-display-identity.js";
 import { ErrorNotice } from "./AccessGate";
 import VisualEvidencePanel from "./VisualEvidencePanel";
 
@@ -25,27 +25,41 @@ const RESUME_STATUS: Readonly<Record<string, string>> = {
 function ResumeContent({ resume }: { resume: ResumePreview }) {
   const ready = resume.status === "completed";
   const failed = resume.status === "failed";
+  const showRawOnRequest = isLegacyAcceptanceResume(resume.id);
+  const originalFilename = resume.originalFilename ?? "原文件名未记录";
+  const sections = <div className="divide-y divide-slate-200">
+    {resume.sections.map(section => <section className="py-4" key={section.id}>
+      <h3 className="mb-2 text-sm font-semibold text-slate-600">
+        {SECTION_LABEL[section.sectionType] ?? "解析文本"}
+        {section.pageNumber != null && ` · 第 ${section.pageNumber} 页`}
+      </h3>
+      <p className="whitespace-pre-wrap text-base leading-7 text-slate-800 [overflow-wrap:anywhere]">{section.content}</p>
+    </section>)}
+  </div>;
   return <article className="workspace-sheet mx-auto max-w-4xl px-6 py-5 lg:px-8">
     <header className="border-b border-slate-200 pb-4">
       <h1 className="page-title [overflow-wrap:anywhere]">{displayMaterialTitle(resume.title, resume.id)}</h1>
       <p className="mt-2 text-sm leading-6 text-slate-600 [overflow-wrap:anywhere]">
-        第 {resume.versionNumber} 版 <span aria-hidden="true">·</span> {resume.originalFilename ?? "原文件名未记录"}
+        第 {resume.versionNumber} 版{!showRawOnRequest && <> <span aria-hidden="true">·</span> {originalFilename}</>}
       </p>
+      {showRawOnRequest && <details className="mt-2 text-sm text-slate-600">
+        <summary className="disclosure">原文件信息</summary>
+        <p className="[overflow-wrap:anywhere]">{originalFilename}</p>
+      </details>}
       {!ready && <p role={failed ? "alert" : "status"} className={`mt-2 text-sm ${failed ? "text-rose-700" : "text-slate-600"}`}>
         {RESUME_STATUS[resume.status] ?? "解析状态待确认"}
       </p>}
     </header>
-    {resume.sections.length ? <div className="divide-y divide-slate-200" aria-label="解析内容">
-      {resume.sections.map(section => <section className="py-4" key={section.id}>
-        <h2 className="mb-2 text-sm font-semibold text-slate-600">
-          {SECTION_LABEL[section.sectionType] ?? "解析文本"}
-          {section.pageNumber != null && ` · 第 ${section.pageNumber} 页`}
-        </h2>
-        <p className="whitespace-pre-wrap text-base leading-7 text-slate-800 [overflow-wrap:anywhere]">{section.content}</p>
-      </section>)}
-    </div> : <p className="pt-4 text-sm text-slate-600">
-      {ready ? "此版本没有提取到可预览的文字。" : "此版本暂没有可预览的文字。"}
-    </p>}
+    <div className="pt-4">
+      <h2 className="text-base font-semibold text-slate-900">核对解析内容</h2>
+      {resume.sections.length > 0 && <p className="mt-1 text-sm leading-6 text-slate-600">检查系统提取的文字是否漏字、错字或顺序有误。</p>}
+      {resume.sections.length ? (showRawOnRequest
+        ? <details className="mt-2"><summary className="disclosure">查看原始解析内容</summary>{sections}</details>
+        : sections
+      ) : <p className="mt-2 text-sm text-slate-600">
+        {ready ? "此版本没有提取到可预览的文字。" : "此版本暂没有可预览的文字。"}
+      </p>}
+    </div>
   </article>;
 }
 
