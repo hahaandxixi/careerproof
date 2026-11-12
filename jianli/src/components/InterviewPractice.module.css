@@ -4,9 +4,6 @@
   display: grid; gap: 10px; min-width: 0; padding: 20px 24px 18px;
   border-radius: 10px; background: #143a33; color: #f5f1e6;
 }
-.crumb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: #bcd6cc; }
-.crumb a { color: #d7e8e1; text-decoration: none; }
-.crumb a:hover { text-decoration: underline; }
 .titleRow { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: baseline; justify-content: space-between; }
 .title { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: .01em; }
 .status { flex: none; padding: 3px 10px; border: 1px solid #5d8578; border-radius: 999px; font-size: 12px; color: #dcece5; }
