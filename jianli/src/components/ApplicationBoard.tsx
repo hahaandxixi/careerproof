@@ -135,11 +135,12 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
   const retryScope=useRef<"list"|"detail"|undefined>(undefined);
   const [readRetrying,setReadRetrying]=useState(false),[readComplete,setReadComplete]=useState(false);
   const replyDraftGeneration=useRef(0);
+  const replyAttempted=useRef(false);
   const [replyDraftNotice,setReplyDraftNotice]=useState("");
   const [replyQuestions,setReplyQuestions]=useState<VerificationReplyQuestion[]>([]);
   const replyReferences=activeVerificationReplyReferences(replyText,replyQuestions);
-  const verificationUnavailable=useCallback(()=>{replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);void session.refresh();},[session]);
-  function resetReply(){replyDraftGeneration.current+=1;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);}
+  const resetReply=useCallback(()=>{replyDraftGeneration.current+=1;replyAttempted.current=false;setReplyText("");setReplyQuestions([]);setConfirmReply(false);setReplyDraftNotice("");setUnconfirmedReply(false);setReplyResult(null);setReadComplete(false);},[]);
+  const verificationUnavailable=useCallback(()=>{resetReply();void session.refresh();},[resetReply,session]);
   async function refreshList(source:HTMLButtonElement,toolbar=false){
     if(retryLock.current||busy)return;
     retryLock.current=true;retryFromToolbar.current=toolbar;retryScope.current="list";setReadRetrying(true);resetReply();
@@ -186,6 +187,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
     let alive=true;
     let releaseFrame:number|undefined;
     let pendingResume:ReturnType<typeof session.resume>|undefined;
+    let away=false;
     const holdLayout=()=>{
       const height=workspace.current?.getBoundingClientRect().height;
       if(height)setHeldHeight(previous=>previous??height);
@@ -194,7 +196,10 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
     const refresh=()=>{if(restoredHistoryUrl===window.location.href){restoredHistoryUrl="";return;}setAnchorNotice("");resetReply();setHeldHeight(undefined);void session.refresh();};
     const resume=()=>{
       if(document.visibilityState!=="visible")return;
-      holdLayout();resetReply();
+      away=false;
+      holdLayout();setConfirmReply(false);
+      if(replyAttempted.current)resetReply();
+      const draftGeneration=replyDraftGeneration.current;
       const pending=session.resume(comparisonBookmark.current);
       if(pendingResume===pending)return;
       pendingResume=pending;
@@ -204,6 +209,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
         setCompareIds(previous=>previous.length===remaining.length&&previous.every((id,i)=>id===remaining[i])?previous:remaining);
         setCompareMode(previous=>previous&&remaining.length>=2);
         if(!result.selectedId){setRadarSelectionId("");}
+        if(!result.canReply&&replyDraftGeneration.current===draftGeneration)resetReply();
         // Keep the old page height until authorized content has rendered. No
         // scroll command or anchor navigation runs during an ordinary return.
         releaseFrame=requestAnimationFrame(()=>{if(alive&&document.visibilityState==="visible")setHeldHeight(undefined);});
@@ -214,19 +220,21 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
     const historyReturn=()=>{
       if(window.location.pathname!==`/jobs/${jobId}/applications`)return;
       restoredHistoryUrl=window.location.href;
-      setAnchorNotice("");navigationReady.current=false;session.clear();restoreNavigation();gate.reset();gate.trigger();
+      setAnchorNotice("");resetReply();navigationReady.current=false;session.clear();restoreNavigation();gate.reset();gate.trigger();
     };
-    const visibility=()=>{
-      resetReply();
-      if(document.visibilityState==="hidden"){
-        holdLayout();
-        if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);
-        session.suspend();gate.reset();
-      }else gate.trigger();
+    const blurWindow=()=>{
+      if(away)return;
+      away=true;
+      // Keep only the in-memory, never-submitted draft. The report and draft
+      // form stay hidden until resume reauthorizes the same fixed snapshot.
+      setConfirmReply(false);
+      if(replyAttempted.current)resetReply();
+      holdLayout();
+      if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);
+      session.suspend();gate.reset();
     };
-    const focusWindow=()=>{if(document.visibilityState==="visible"){resetReply();gate.trigger();}};
-    // 离开窗口后即使 3 秒内返回，也必须重新核对投递授权。
-    const blurWindow=()=>{resetReply();gate.reset();};
+    const focusWindow=()=>{if(document.visibilityState==="visible")gate.trigger();};
+    const visibility=()=>{if(document.visibilityState==="hidden")blurWindow();else focusWindow();};
     gate.trigger();
     document.addEventListener("visibilitychange",visibility);
     window.addEventListener("focus",focusWindow);
@@ -236,7 +244,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
     window.addEventListener("hashchange",refresh);
     window.addEventListener("popstate",historyReturn);
     return ()=>{alive=false;navigationReady.current=false;if(releaseFrame!==undefined)cancelAnimationFrame(releaseFrame);session.dispose();document.removeEventListener("visibilitychange",visibility);window.removeEventListener("focus",focusWindow);window.removeEventListener("blur",blurWindow);window.removeEventListener("pageshow",gate.trigger);window.removeEventListener("hashchange",refresh);window.removeEventListener("popstate",historyReturn);};
-  },[session,ownerId,jobId]);
+  },[session,ownerId,jobId,resetReply]);
   const dimensions=Array.from(new Map(items.flatMap(i=>i.dimensions).map(d=>[d.requirementId,d])).values());
   // Predicates are applied before server counting/pagination; local sorting must
   // not drop matches found in the fixed report's text outside visible labels.
@@ -299,7 +307,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
   const replyNeedsRead=!!replyResult&&replyResult.refresh!=="complete"&&!replyResult.accessLost;
   async function open(id: string, requirementId = "", stay = false, expectedReportId?: string) {
     const candidate = selected?.id === id ? selected : visible.find(item => item.id === id) ?? comparison.find(item => item.id === id);
-    const desired = requirementId || radarSelectionId;
+    const desired = requirementId || radarSelectionId || focus;
     const requirement = candidate?.dimensions.some(dimension => dimension.requirementId === desired)
       ? desired : candidate?.dimensions[0]?.requirementId ?? "";
     setRadarSelectionId(requirement);
@@ -327,7 +335,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
         ? <button type="button" className="btn-secondary btn-compact" onClick={()=>setView("list")}>返回核对视图 · {identityLabel(selected.candidateName,selected.candidateId)}</button>
         : viewHint && <p role="status" className="enterprise-view-hint">{viewHint}</p>}
     </div></div>
-    <details className="text-xs leading-5 text-slate-500"><summary className="disclosure">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面时先核对授权，再恢复本次会话的选中状态；离开窗口会清空未发送的回复，请发送前再次核对。学生撤回不会追回已下载副本。</p></details>
+    <details className="text-xs leading-5 text-slate-500"><summary className="disclosure">查看授权范围与使用说明</summary><p className="mt-2">仅显示向本岗位明确投递的报告，未投递或已撤回的学生不可见。每页20份，可翻页查看更早投递；筛选作用于本岗位全部已授权投递，并在计数和分页前执行。通知目标会单独核对授权后补入。翻页和筛选保留本次会话的对照名单；切回页面后先核对授权。同一固定报告的未发送草稿可继续编辑，发送需重新确认。学生撤回不会追回已下载副本。</p></details>
     {activeView==="list"&&state.pagination&&<><ListPagination label="候选人分页" value={state.pagination} busy={busy} onPage={value=>{page.current=value;rememberNavigation();resetReply();void session.filter();}}/>{items.length>state.pagination.pageItemCount&&<p className="text-xs text-slate-600">另外展示了当前页之外的已授权候选人，不计入本页记录数。</p>}</>}
     {notice&&<p role="status" className="panel text-amber-800">{notice}</p>}
     {anchorNotice&&<p role="status" className="panel text-amber-800">{anchorNotice}</p>}
@@ -337,7 +345,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
       <h2 className="font-semibold">筛选投递</h2>
       <div className="flex flex-wrap items-end gap-2"><label className="min-w-0 flex-1 basis-full text-sm">查找候选人<input type="search" className="field mt-1" placeholder="姓名或报告内容" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)}/></label><button className="btn" disabled={busy}>搜索</button><button className="btn-quiet" type="button" disabled={busy} onClick={clearFilters}>重置</button></div>
       <div role="group" aria-label="投递状态" className="board-filter-options border-t border-slate-200 pt-3">{[["","全部状态"],["submitted","已投递"],["viewed","企业已查看"],["downloaded","简历下载已交付"],["replied","企业已回复"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={status===value} disabled={busy} onClick={()=>{setStatus(value);applyFilters({q:query.trim(),status:value,requirementId:focus,verdict});}}>{label}</button>)}</div>
-      <details className="border-t border-slate-100 pt-1"><summary className="disclosure">要求与证据筛选</summary><div className="grid gap-3 py-2 lg:grid-cols-[minmax(12rem,1fr)_2fr]"><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);applyFilters({q:query.trim(),status,requirementId:id,verdict});}}/><div><p className="mb-2 text-sm">证据状态</p><div role="group" aria-label="证据状态" className="flex flex-wrap gap-2">{[["","全部"],["supported","有证据或部分支持"],["claimed_only","仅简历自述"],["gap","缺少材料"],["unsupported","暂不可评"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={verdict===value} disabled={busy} onClick={()=>{setVerdict(value);applyFilters({q:query.trim(),status,requirementId:focus,verdict:value});}}>{label}</button>)}</div></div></div></details>
+      <details className="border-t border-slate-100 pt-1"><summary className="disclosure">要求与证据筛选</summary><div className="grid gap-3 py-2 lg:grid-cols-[minmax(12rem,1fr)_2fr]"><RequirementFocusSelect dimensions={dimensions} value={focus} selectedLabel={focusLabel} onChange={(id,label)=>{setFocus(id);setFocusLabel(label);if(selected?.dimensions.some(item=>item.requirementId===id))setRadarSelectionId(id);applyFilters({q:query.trim(),status,requirementId:id,verdict});}}/><div><p className="mb-2 text-sm">证据状态</p><div role="group" aria-label="证据状态" className="flex flex-wrap gap-2">{[["","全部"],["supported","有证据或部分支持"],["claimed_only","仅简历自述"],["gap","缺少材料"],["unsupported","暂不可评"]].map(([value,label])=><button key={value} type="button" className="selection-toggle" aria-pressed={verdict===value} disabled={busy} onClick={()=>{setVerdict(value);applyFilters({q:query.trim(),status,requirementId:focus,verdict:value});}}>{label}</button>)}</div></div></div></details>
       <div className="enterprise-candidate-groups" aria-label="候选人分组与选择">
         <h3>候选人选择</h3>
         <p>同依据可对照；不同依据单独核对。</p>
@@ -382,7 +390,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
         <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="btn-quiet btn-compact shrink-0" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
-        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const result=await session.reply(replyKind,text,references);const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);if(outcome==="ignore")return;if(outcome==="reset")resetReply();else{setConfirmReply(false);setUnconfirmedReply(outcome==="mark-unconfirmed");}setReplyResult(result);}}>确认发送站内回复</button>
+        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{replyAttempted.current=true;const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const result=await session.reply(replyKind,text,references);const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);if(outcome==="ignore")return;if(outcome==="reset")resetReply();else{setConfirmReply(false);setUnconfirmedReply(outcome==="mark-unconfirmed");}setReplyResult(result);}}>确认发送站内回复</button>
       </div>}
       <ApplicationReply application={selected} sent/>
     </details>}
@@ -424,7 +432,8 @@ export function RequirementFocusSelect({ dimensions, value, selectedLabel, onCha
   // A zero-result filter cannot discard its selected option. Its label was
   // captured from an already authorized row; no broader metadata is fetched.
   const selectedMissing = !!value && !dimensions.some(item => item.requirementId === value);
-  return <label className="text-sm">聚焦岗位要求<select className="field mt-2" value={value} onChange={event => onChange(event.target.value, event.target.selectedOptions[0]?.textContent ?? "")}><option value="">全部要求</option>{selectedMissing && <option value={value}>{selectedLabel || "已选要求（当前结果未包含）"}</option>}{dimensions.map(item => <option key={item.requirementId} value={item.requirementId}>{item.skill || item.title}</option>)}</select></label>;
+  const labels = radarRequirementLabels(dimensions);
+  return <label className="text-sm">聚焦岗位要求<select className="field mt-2" value={value} onChange={event => onChange(event.target.value, event.target.selectedOptions[0]?.textContent ?? "")}><option value="">全部要求</option>{selectedMissing && <option value={value}>{selectedLabel || "已选要求（当前结果未包含）"}</option>}{dimensions.map(item => <option key={item.requirementId} value={item.requirementId} title={item.title}>{labels.get(item.requirementId)?.label}</option>)}</select></label>;
 }
 
 export function toggleComparisonCandidate(ids: string[], id: string): string[] {

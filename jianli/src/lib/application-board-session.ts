@@ -30,6 +30,7 @@ interface Dependencies {
 export interface ApplicationBoardResume {
   authorizedIds: string[];
   selectedId: string | null;
+  canReply: boolean;
 }
 
 export interface ApplicationReplyResult {
@@ -245,7 +246,8 @@ export function createApplicationBoardSession(
             notice: rejected.size ? "部分投递已无法确认授权或固定报告，已清除对应的报告和选中状态。" : "",
           });
           if (current(ticket) && !Array.isArray(response)) response.onAccepted?.();
-          return { authorizedIds: authorizedIds.filter(id => !rejected.has(id)), selectedId: selected?.id ?? null };
+          return { authorizedIds: authorizedIds.filter(id => !rejected.has(id)), selectedId: selected?.id ?? null,
+            canReply: !!selected && selected.status !== "replied" };
         } catch (error) {
           if (!current(ticket)) continue;
           resumeWanted = false;
@@ -253,7 +255,7 @@ export function createApplicationBoardSession(
           comparisonCache.clear(); comparisonIds = [];
           set({ items: [], selected: null, loading: false, error: api.errorMessage(error), errorScope: "list",
             notice: saved || requested.length ? "授权未确认，已清除报告和对照。" : "" });
-          return { authorizedIds: [], selectedId: null };
+          return { authorizedIds: [], selectedId: null, canReply: false };
         }
       }
       return null;

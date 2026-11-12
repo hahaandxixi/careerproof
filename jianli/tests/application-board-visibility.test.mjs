@@ -62,13 +62,15 @@ function fixture(count=2,editRow=value=>value,options={}){
  return{render,settle,counts,queries,Radar,nodes:walk,row,
   bookmark(){return structuredClone(win.history.state);},unmount(){cells.forEach(cell=>cell?.cleanup?.());},
   backTo(state){win.history.state=structuredClone(state);win.dispatchEvent(new Event("popstate"));},
+  blur(){win.dispatchEvent(new Event("blur"));return render();},
+  focus(){win.dispatchEvent(new Event("focus"));return render();},
   hide(){doc.visibilityState="hidden";doc.dispatchEvent(new Event("visibilitychange"));return render();},
   show(){doc.visibilityState="visible";doc.dispatchEvent(new Event("visibilitychange"));win.dispatchEvent(new Event("focus"));win.dispatchEvent(new Event("pageshow"));return render();},
   revoke(){authorized=false;},waitFor(value){waiter=value;},button(tree,label){const found=walk(tree).find(n=>n.type==="button"&&text(n)===label);assert.ok(found,label);return found;},
   radar(tree){return walk(tree).find(n=>n.type===Radar);}};
 }
 
-test("tab return restores radar requirement/evidence only after GET authorization and clears replies",async()=>{
+test("tab return reauthorizes the fixed report before showing an unsent draft and requires confirmation again",async()=>{
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();
  h.radar(tree).props.onRequirementChange("r1");tree=h.render();
  assert.ok(walk(tree).some(n=>n.props?.className==="enterprise-fixed-source"),"fixed report keeps a linked source detail");
@@ -78,11 +80,65 @@ assert.ok(fixedSource && !text(fixedSource).includes("查看报告与回复"),"f
  const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});
  let resolve;h.waitFor(new Promise(yes=>{resolve=yes;}));tree=h.hide();assert.equal(h.radar(tree),undefined);assert.equal(tree.props.style.minHeight,2400);
  const reads=h.counts.list;tree=h.show();await Promise.resolve();assert.equal(h.radar(tree),undefined);
+ assert.ok(!h.nodes(tree).some(n=>n.type==="textarea"));
  resolve({items:[{id:"a",jobId:"job-a",reportId:"report-a",candidateName:"候选人a",status:"viewed",replyReferences:[],events:[],dimensions:[]}],total:1,page:1,pageSize:20});
  tree=await h.settle();assert.equal(h.radar(tree).props.initialRequirementId,"r1");
  assert.equal(h.counts.open,1);assert.equal(h.counts.list,reads+1);assert.equal(h.counts.reply,0);
- assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
+ assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"未发送的合成回复");
  const confirmation=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));assert.equal(h.nodes(confirmation).find(n=>n.type==="input").props.checked,false);
+});
+
+test("a focus-only window switch rechecks access and retains the unsent text",async()=>{
+ const h=fixture();let tree=await h.settle();
+ h.button(tree,"候选人a").props.onClick();tree=await h.settle();
+ h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"切窗草稿"}});h.render();
+ const reads=h.counts.list;
+ tree=h.blur();assert.ok(!h.nodes(tree).some(n=>n.type==="textarea"));
+ h.focus();tree=await h.settle();
+ assert.equal(h.counts.list,reads+1);
+ assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"切窗草稿");
+ assert.equal(h.counts.reply,0);
+});
+
+for (const change of ["revoked","new-snapshot","already-replied","read-failed"]) {
+ test(`tab return drops the unsent draft when authorization is ${change}`,async()=>{
+  const h=fixture();let tree=await h.settle();
+  h.button(tree,"候选人a").props.onClick();tree=await h.settle();
+  h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"旧固定报告的未发送回复"}});h.render();
+  h.hide();
+  if(change==="revoked")h.revoke();
+  else if(change==="read-failed"){
+   const failed=Promise.reject(Error("授权读取失败"));void failed.catch(()=>{});h.waitFor(failed);
+  }
+  else h.waitFor(Promise.resolve({items:[{...h.row("a"),...(change==="new-snapshot"?{reportId:"another-report"}:{status:"replied"})},h.row("b")],total:2,page:1,pageSize:20}));
+  h.show();tree=await h.settle();
+  assert.ok(!h.nodes(tree).some(n=>n.type==="textarea"));
+  assert.equal(!!h.radar(tree),change==="already-replied");
+  if(change==="read-failed"){
+   assert.ok(h.nodes(tree).some(n=>n.props?.error==="授权读取失败"));
+   h.waitFor(null);h.blur();h.focus();tree=await h.settle();
+  }
+  h.button(tree,"候选人总览").props.onClick();tree=h.render();
+  h.button(tree,"候选人b").props.onClick();tree=await h.settle();
+  assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
+  assert.equal(h.counts.reply,0);
+ });
+}
+
+test("a draft involved in an unconfirmed send is not restored as a new unsent draft",async()=>{
+ const h=fixture();let tree=await h.settle();
+ h.button(tree,"候选人a").props.onClick();tree=await h.settle();
+ h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"等待核对的回复"}});tree=h.render();
+ const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));
+ h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});tree=h.render();
+ await h.button(tree,"确认发送站内回复").props.onClick();tree=await h.settle();
+ assert.ok(h.nodes(tree).some(n=>n.type?.name==="UnconfirmedReplyDraft"&&n.props.text==="等待核对的回复"));
+ h.hide();h.show();tree=await h.settle();
+ assert.ok(!h.nodes(tree).some(n=>n.type?.name==="UnconfirmedReplyDraft"));
+ h.button(tree,"候选人a").props.onClick();tree=await h.settle();
+ assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
+ assert.equal(h.button(tree,"确认发送站内回复").props.disabled,true);
+ assert.equal(h.counts.reply,1,"the one simulated send is never retried");
 });
 
 test("comparison selection survives tab return and revoked candidates are pruned",async()=>{
