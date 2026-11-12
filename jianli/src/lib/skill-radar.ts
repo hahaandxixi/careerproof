@@ -6,7 +6,7 @@ import { resolveSupportScale, supportMeasure, type SupportScale } from "./suppor
 export type RadarDimension = ApplicationView["dimensions"][number];
 export const RADAR_STATUS = VERDICT_LABELS;
 /** Keep selection keyed by requirementId, even when skills or titles repeat. */
-export function radarRequirementLabels(dimensions: readonly RadarDimension[]) {
+export function radarRequirementLabels(dimensions: readonly Pick<RadarDimension, "requirementId" | "title" | "skill">[]) {
   const primary = dimensions.map(dimension => dimension.skill?.trim() || dimension.title.trim());
   const counts = new Map<string, number>();
   for (const name of primary) counts.set(name.toLowerCase(), (counts.get(name.toLowerCase()) ?? 0) + 1);

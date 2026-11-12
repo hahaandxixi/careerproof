@@ -153,6 +153,17 @@ test("zero matches retain the selected requirement label and exact filter value"
   assert.doesNotMatch(reset, /旧标签/);
 });
 
+test("requirements sharing a skill are distinguished by saved titles and original IDs", () => {
+  const html = render(React.createElement(RequirementFocusSelect, {
+    dimensions: [
+      {requirementId:"query",title:"查询启用中的用户",skill:"SQL"},
+      {requirementId:"index",title:"为高频查询评估索引",skill:"SQL"},
+    ], value:"index", selectedLabel:"", onChange() {},
+  }));
+  assert.match(html, /<option value="query" title="查询启用中的用户">要求 1 · 查询启用中的用户<\/option>/);
+  assert.match(html, /<option value="index" title="为高频查询评估索引" selected="">要求 2 · 为高频查询评估索引<\/option>/);
+});
+
 
 for (const [aiStatus, fallback, accepted] of [
   ["invalid_citations", false, false], ["rejected", false, false],
