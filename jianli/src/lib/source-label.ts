@@ -23,7 +23,7 @@ export function sourceRelativePath(source: SourceLocation): string {
     : source.filePath;
 }
 
-/** Short mobile identity; the untouched path and UUID remain in source details. */
+/** Short identity for compact source labels and selectors. */
 export function compactSourceLabel(source: SourceLocation, materials: readonly SourceMaterial[] = []) {
   const fileName = source.filePath.split(/[\\/]/).filter(Boolean).at(-1) || source.filePath;
   const material = materials.find(m => m.kind === "project" && m.id === source.projectVersionId);

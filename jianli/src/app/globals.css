@@ -1409,6 +1409,11 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 /* Laptop report workspace: compact overview left, active requirement/source right. */
 @media (min-width: 1000px) and (max-width: 1399px) {
+  .report-desk .report-command-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "back back" "identity versions"; align-items: center; gap: 4px 16px; }
+  .report-command-bar > .review-back { grid-area: back; justify-self: start; }
+  .report-command-bar .report-command-identity { grid-area: identity; align-items: center; }
+  .report-command-identity > div > .workspace-meta { display: none; }
+  .report-command-bar > .report-version-tools { grid-area: versions; max-width: 280px; margin-top: 0; }
   .report-reading-desk { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); grid-template-areas: "controls controls" "overview main"; gap: 14px 18px; }
   .report-requirement-controls { grid-area: controls; }
   .report-overview-band { grid-area: overview; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 0; align-self: start; }
