@@ -595,7 +595,7 @@ main.site-frame { padding-top: 20px; }
 .material-workspace .material-register .review-section-heading { padding-bottom: 12px; }
 .material-workspace .material-register-columns { padding: 9px 10px; background: #f1eee5; color: #526176; font-size: 14px; }
 .material-workspace .material-register-row { padding-block: 18px; border-bottom: 1px solid #e0dbcd; }
-.material-workspace .material-row-actions { flex-wrap: nowrap; align-items: center; gap: 6px; white-space: nowrap; margin-top: -3px; }
+.material-workspace .material-row-actions { flex-wrap: wrap; align-items: center; gap: 4px 6px; white-space: nowrap; margin-top: -3px; }
 .material-workspace .material-row-actions .btn-secondary { min-height: 34px; padding: 5px 9px; }
 .material-workspace .material-row-actions .action-link { white-space: nowrap; }
 @container (min-width: 880px) {
@@ -676,7 +676,7 @@ main.site-frame { padding-top: 20px; }
   }
   .material-review-layout:has(.material-upload-surface) .material-row-heading,
   .material-review-layout:has(.material-upload-surface) .material-row-actions { grid-column: auto; }
-  .material-review-layout:has(.material-upload-surface) .material-row-actions { flex-wrap: nowrap; gap: 4px; }
+  .material-review-layout:has(.material-upload-surface) .material-row-actions { gap: 4px; }
   .material-review-layout:has(.material-upload-surface) .material-row-actions .btn-secondary { min-height: 32px; padding-inline: 7px; }
 }
 @media (min-width: 1440px) {
@@ -1242,7 +1242,7 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 }
 .material-workspace .material-row-heading .break-all { overflow-wrap: anywhere; word-break: normal; }
 @media (min-width: 1024px) and (max-width: 1439px) {
-  .material-review-layout:has(.material-upload-surface) .material-row-actions { flex-wrap: wrap; row-gap: 4px; white-space: normal; }
+  .material-review-layout:has(.material-upload-surface) .material-row-actions { white-space: normal; }
   .material-review-layout:has(.material-upload-surface) .material-row-actions .action-link,
   .material-review-layout:has(.material-upload-surface) .material-row-actions summary { white-space: normal; }
 }
