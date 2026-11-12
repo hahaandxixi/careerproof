@@ -224,17 +224,12 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   return <div className={styles.page}>
     {loadError && <ErrorNotice message={loadError} retry={() => void load()} />}
     <header className={styles.head}>
-      <nav className={styles.crumb} aria-label="练习位置">
-        <Link href="/reports">我的报告</Link><span aria-hidden="true">/</span>
-        <Link href={reportHref}>{jobTitle || "岗位报告"}</Link><span aria-hidden="true">/</span>
-        <span>模拟面试</span>
-      </nav>
       <div className={styles.titleRow}>
         <h1 className={styles.title}>模拟面试</h1>
         <span className={styles.status}>{practiceStatusLabel(session.status)}</span>
       </div>
       <div className={styles.requirement}>
-        <span>本项岗位要求</span>
+        <span>{jobTitle ? `${jobTitle} · 本项岗位要求` : "本项岗位要求"}</span>
         <strong>{session.requirementTitle || session.skill}</strong>
       </div>
       <div className={styles.meta}>
