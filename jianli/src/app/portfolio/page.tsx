@@ -2,7 +2,6 @@
 
 import { displayMaterialTitle, showResumeFilenameInDetails } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
-import ArchivedMaterials from "@/components/ArchivedMaterials";
 import LoginLink from "@/components/LoginLink";
 import MaterialFileDropzone from "@/components/MaterialFileDropzone";
 import { latestMaterialVersions, materialFileError, materialFileSize, type UploadedMaterial } from "@/lib/material-upload";
@@ -183,7 +182,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [selectedProject, setSelectedProject] = useState<ProjectView | null>(null);
   const [resumingUpload, setResumingUpload] = useState(false);
   const [materialSearch, setMaterialSearch] = useState("");
-  const [showArchived, setShowArchived] = useState(false);
   const activeAttempt = resumingUpload ? attempt : null;
   const targetProject = activeAttempt ? activeAttempt.project : selectedProject;
 
@@ -395,7 +393,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       setDeleteError("请先继续或放弃该项目的未完成上传，再移出材料库。");
       return;
     }
-    if (!window.confirm(`删除「${name}」及其所有版本？可从「已归档」恢复，历史报告不受影响。`)) return;
+    if (!window.confirm(`从材料库删除「${name}」及其所有版本？历史报告会保留。`)) return;
     deletingProject.current = true;
     setDeletingProjectId(resourceId);
     setDeleteError("");
@@ -451,12 +449,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       <section className="material-register workspace-sheet" aria-labelledby="material-register-title">
         <div className="review-section-heading border-b border-slate-200 pb-3">
           <h2 id="material-register-title" className="section-title">项目与简历</h2>
-          <div className="flex flex-wrap items-center gap-2">
-            {!showArchived && <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>}
-            <button type="button" className="btn-secondary" aria-pressed={showArchived} onClick={() => setShowArchived(!showArchived)}>已归档</button>
-          </div>
+          <button type="button" onClick={() => void loadHistory()} className="btn-quiet shrink-0 whitespace-nowrap">刷新列表</button>
         </div>
-        {showArchived ? <ArchivedMaterials onRestore={() => void loadHistory()} /> : <>
         <div className="flex flex-wrap items-center gap-3 py-3">
           <label className="flex min-w-0 flex-1 items-center gap-2 text-sm text-slate-700">
             <span className="shrink-0">搜索材料</span>
@@ -525,7 +519,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             暂无材料，请添加简历或项目。
           </div>
         )}
-        </>}
       </section>
       <aside className="material-review-side min-w-0" aria-label="补证上下文与材料上传">
       <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} onMaterials={setReportMaterials} /></Suspense>
