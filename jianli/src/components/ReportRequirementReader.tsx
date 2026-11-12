@@ -97,7 +97,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
     { key: "all", label: "全部要求", count: items.length },
     { key: "supported", label: "有证据支持", count: state.supported.length },
     { key: "partial", label: "部分支持", count: state.partial.length },
-    { key: "gaps", label: "待补材料", count: state.gaps.length },
+    { key: "gaps", label: "待补或仅声明", count: state.gaps.length },
     { key: "other", label: "未覆盖或需复核", count: state.other.length },
   ];
   const changeFilter = (filter: WorkspaceFilter) => {
@@ -116,10 +116,10 @@ export default function ReportRequirementReader({ items, children, overview, sel
   };
   return <section id="evidence-workspace-title" aria-label="岗位要求与证据" className="report-reading-desk min-w-0 scroll-mt-24">
     <div className="report-requirement-controls min-w-0" role="group" aria-label="要求筛选与选择">
-      <div className="report-index-filters" aria-label="按已保存的材料支持状态筛选">
-        {filters.map(option => <button key={option.key} type="button" aria-pressed={filter === option.key}
+      <div className="report-index-filters" role="group" aria-label="按已保存的材料支持状态筛选">
+        {filters.map(option => <button key={option.key} type="button" aria-pressed={filter === option.key} data-status={option.key}
           onClick={() => changeFilter(option.key)} className={filter === option.key ? "is-active" : ""}>
-          {`${option.label} ${option.count}`}
+          {option.label} <strong>{option.count}</strong>
         </button>)}
       </div>
       <nav aria-label="报告中的岗位要求" className="report-index-strip min-w-0">
@@ -137,7 +137,6 @@ export default function ReportRequirementReader({ items, children, overview, sel
     </div>
     {overview}
     <div className="report-requirement-main min-w-0">
-      {!visible.length && <p className="text-sm text-slate-500">{controlled ? "当前筛选没有要求，旧判断与来源已清除。请选择其他筛选。" : "选择其他筛选查看判断与行动。"}</p>}
       {items.map((item, index) => <div key={item.requirementId} hidden={selected !== item.requirementId}>{articles[index]}</div>)}
       {visible.length > 0 && nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
     </div>

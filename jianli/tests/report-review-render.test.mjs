@@ -28,11 +28,10 @@ function fixture({writeError,readError,search=""}={}){
  const hooks={useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useMemo:memo,useEffect(fn,deps){const i=cursor++;const previous=cells[i];if(!previous||JSON.stringify(previous.deps)!==JSON.stringify(deps)){cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}}};
  const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials:[],analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
  const api={getReport:async()=>{reads++;if(reads===2&&readError)throw readError;return report;},reviewEvidence:async(...args)=>{writes++;if(writeError)throw writeError;return args;}};
- const stub=()=>null;const radarProps=[],heatmapProps=[],workspaceProps=[],overviewProps=[];const Radar=props=>{radarProps.push(props);return null;};const Workspace=props=>{workspaceProps.push(props);return React.createElement(React.Fragment,null,props.overview,props.children);};const modules={"./SkillRadar":{__esModule:true,default:Radar},"@/lib/evidence-anchor":{navigateEvidenceFragment:()=>{}},"next/navigation":{useSearchParams:()=>new URLSearchParams()},"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":workspace,"@/lib/material-report-link":materialReportLinks,"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/report-reader":{initialReportRequirement:items=>items[0]?.requirementId??"",reportEntryRequirement}};
+ const stub=()=>null;const radarProps=[],heatmapProps=[],workspaceProps=[];const Radar=props=>{radarProps.push(props);return null;};const Workspace=props=>{workspaceProps.push(props);return React.createElement(React.Fragment,null,props.overview,props.children);};const modules={"./SkillRadar":{__esModule:true,default:Radar},"@/lib/evidence-anchor":{navigateEvidenceFragment:()=>{}},"next/navigation":{useSearchParams:()=>new URLSearchParams()},"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":workspace,"@/lib/material-report-link":materialReportLinks,"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/report-reader":{initialReportRequirement:items=>items[0]?.requirementId??"",reportEntryRequirement}};
  modules["@/lib/report-navigation"]=reportNavigation;
  modules["@/lib/report-follow-up"]={followUpCopyText:()=>""};
- for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportOverview","ReportAiExplanation","ReportSourcePanel","ReportSections","ReportPaperHeader","ReportVersionPicker","ReportFollowUpActions","PracticeEntry"])modules[`./${name}`]={__esModule:true,default:stub};
- modules["./ReportOverview"]={__esModule:true,default:props=>{overviewProps.push(props);return null;}};
+ for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportAiExplanation","ReportSourcePanel","ReportSections","ReportPaperHeader","ReportVersionPicker","ReportFollowUpActions","PracticeEntry"])modules[`./${name}`]={__esModule:true,default:stub};
  modules["./ReportRequirementHeatmap"]={__esModule:true,default:props=>{heatmapProps.push(props);return null;}};
  modules["./ReportSections"]={__esModule:true,default:({header,sections})=>React.createElement(React.Fragment,null,header,sections?.[0]?.content)};
  modules["./ReportEvidenceWorkspace"]={__esModule:true,default:Workspace,RequirementActionPanel:stub};
@@ -41,7 +40,7 @@ function fixture({writeError,readError,search=""}={}){
 export {ReportWorkspace};`;
  const mod={exports:{}};new Function("require","module","exports",transform(source,{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
  const render=()=>{cursor=0;return mod.exports.ReportWorkspace({id:"r"});};
- return {radarProps,heatmapProps,workspaceProps,overviewProps,render,html(){return renderToStaticMarkup(this.render());},async settle(){for(let i=0;i<10;i++){render();while(effects.length)effects.shift()();await Promise.resolve();}return render();},navigate(hash){globalThis.window.location.hash=hash;(listeners.hashchange??[]).forEach(fn=>fn());},get reads(){return reads;},get writes(){return writes;},dispose(){for(const c of cells)c?.cleanup?.();globalThis.window=savedWindow;},outer(id){return mod.exports.default({id});},setAccount(id){account=id;},setRole(value){role=value;}};
+ return {radarProps,heatmapProps,workspaceProps,render,html(){return renderToStaticMarkup(this.render());},async settle(){for(let i=0;i<10;i++){render();while(effects.length)effects.shift()();await Promise.resolve();}return render();},navigate(hash){globalThis.window.location.hash=hash;(listeners.hashchange??[]).forEach(fn=>fn());},get reads(){return reads;},get writes(){return writes;},dispose(){for(const c of cells)c?.cleanup?.();globalThis.window=savedWindow;},outer(id){return mod.exports.default({id});},setAccount(id){account=id;},setRole(value){role=value;}};
 }
 test("report radar is wired to the shared active requirement, not a constant empty id", () => {
  const source = readFileSync(new URL("../src/components/ReportDetail.tsx", import.meta.url), "utf8");
@@ -79,21 +78,20 @@ test("account, role and report keys establish separate workspaces",()=>{
  const h=fixture();const a=h.outer("r").props.children.key;h.setAccount("other");const b=h.outer("r").props.children.key;const c=h.outer("other-report").props.children.key;assert.notEqual(a,b);assert.notEqual(b,c);h.setRole("admin");assert.notEqual(c,h.outer("other-report").props.children.key);
 });
 
-test("summary and requirement index share a filter and an empty category cannot revive a reply link", async () => {
+test("one shared requirement index owns filtering and an empty category cannot revive a reply link", async () => {
  const h=fixture({search:"?enterpriseReply=b"});
  try {
    h.setRole("admin");
    await h.settle(); h.html();
    assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
-   h.overviewProps.at(-1).onFilterChange("other");
+   h.workspaceProps.at(-1).onFilterChange("other");
    h.navigate("#report-matching");
    await h.settle(); h.html();
-   assert.equal(h.overviewProps.at(-1).filter,"other");
    assert.equal(h.workspaceProps.at(-1).filter,"other");
    assert.equal(h.workspaceProps.at(-1).selectedRequirementId,null);
    h.navigate("#requirement-b");
    await h.settle(); h.html();
-   assert.equal(h.overviewProps.at(-1).filter,"all");
+   assert.equal(h.workspaceProps.at(-1).filter,"all");
    assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
  } finally { h.dispose(); }
 });

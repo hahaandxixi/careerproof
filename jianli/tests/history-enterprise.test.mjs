@@ -87,11 +87,13 @@ test("history card displays server-wide history facts and fixed versions only wh
   }, onSameJob() {} }));
   assert.match(html, /历史报告/);
   assert.match(html, /同岗位共 27 份报告/);
-  assert.match(html, /同名项目/);assert.match(html, /report-material-version">v1/);
-  assert.match(html, /report-material-version">v2/);
+  assert.match(html, /report-record-meta[^<]*>[\s\S]*?本次材料 2 份/);
+  assert.doesNotMatch(html.split("report-record-foot")[0], /同名项目/);
+  assert.match(html, /报告详情<\/summary>[\s\S]*同名项目 · 第 1 版[\s\S]*同名项目 · 第 2 版/);
   assert.match(html, /href="\/reports\/report-a"/);
   const unknown = render(React.createElement(ReportHistoryCard, { report: summary }));
   assert.doesNotMatch(unknown, /最新报告|后续报告|固定材料|历史（/);
+  assert.match(unknown, /材料版本未记录/);
   assert.match(unknown, /report-record is-record/);
   assert.doesNotMatch(unknown, /is-history/);
 });

@@ -58,7 +58,8 @@ test("status filter keeps skills with a matching record and shows hit count agai
   const claimed = report("c", [item("b", "Python", "claimed_only")], 2, { jobId: "job-c" });
   const filtered = render({ selected: "python", filter: "claimed_only", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });
   assert.match(filtered, /命中 <strong>1<\/strong> 条 \/ 共 2 条/);
-  assert.match(filtered, /命中 1 条/);
+  assert.doesNotMatch(filtered, /命中 1 条/);
+  assert.match(filtered, /所选技能的全部已加载记录，按原报告状态/);
   assert.doesNotMatch(filtered, /Original requirement a/);
   assert.match(filtered, /Original requirement b/);
   const none = render({ selected: "python", filter: "gap", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });

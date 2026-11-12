@@ -21,7 +21,6 @@
 .legend { padding: 6px 0 10px; color: #617086; font-size: 12px; border-bottom: 1px solid #e1ddd2; }
 .legend ul { display: flex; flex-wrap: wrap; gap: 6px 16px; color: #43516a; }
 .legend li { display: inline-flex; align-items: center; gap: 6px; }
-.legend strong { color: #1d4a40; font-variant-numeric: tabular-nums; }
 .legend i, .skillMarks i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .panorama [data-status="supported"] { background: #147d78; color: #fff; }
 .panorama [data-status="partial"] { background: #6564b7; color: #fff; }
@@ -60,17 +59,9 @@
 .skillCardTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .skillName { min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
 .skillSummary { color: #526176; font-size: 11px; line-height: 1.55; }
-.skillCounts { display: flex; flex-wrap: wrap; gap: 2px 9px; color: #3f4f66; font-size: 11px; line-height: 1.45; }
-.skillCounts span[data-status] { display: inline-flex; align-items: center; gap: 4px; background: transparent; color: #3f4f66; }
-.skillCounts span[data-status]::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; }
-.skillCounts span[data-status="supported"]::before { background: #147d78; }
-.skillCounts span[data-status="partial"]::before { background: #6564b7; }
-.skillCounts span[data-status="claimed_only"]::before { background: #b77913; }
-.skillCounts span[data-status="gap"]::before { background: #c99a3c; }
-.skillCounts span[data-status="unsupported"]::before { background: #64748b; }
-.skillCounts span[data-status="unknown"]::before { background: #b9c3d3; }
+.skillCounts { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 8px 0; color: #43516a; font-size: 13px; }
 .skillFooter { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 11px; margin-top: 1px; padding-top: 5px; border-top: 1px solid #e7e1d4; color: #526176; font-size: 11px; }
-.hit { color: #8a4b0f; font-weight: 650; }
+.reviewMark { color: #8a4b0f; font-weight: 700; }
 .cardArrow { align-self: center; color: #1d4a40; font-size: 12px; font-weight: 650; white-space: nowrap; }
 .skill { display: inline-flex; align-items: center; min-height: 34px; max-width: 100%; gap: 10px; padding: 5px 11px; border: 1px solid #d9d2c4; border-radius: 5px; text-align: left; background: #fbf9f4; color: #1e3a34; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .skill:hover { border-color: #9db8ad; background: #eef4f0; }

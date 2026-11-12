@@ -61,7 +61,12 @@ function rowChanges(row: ComparisonRow) {
     ...(row.levelChanged ? ["等级变化"] : []),
   ];
   if (row.item.status !== "existing") labels.push(row.item.status === "added" ? "新增要求" : "移除要求");
-  return [...new Set(labels.length ? labels : [row.changed ? "其他变化" : "无变化"])];
+  const primaryLabels = new Set(["判断变化", "引用变化", "复核变化", "要求变化", "新增要求", "移除要求"]);
+  const changes = [...new Set(labels)];
+  return {
+    primary: changes.filter(label => primaryLabels.has(label)),
+    secondary: changes.filter(label => !primaryLabels.has(label)),
+  };
 }
 
 function StatusFlow({ row }: { row: ComparisonRow }) {
@@ -104,14 +109,16 @@ function CitationChanges({ row, value, origin }: { row: ComparisonRow; value: Re
 
 function RequirementChange({ row, value, origin }: { row: ComparisonRow; value: ReportComparison; origin?: string }) {
   const { item } = row;
+  const { secondary } = rowChanges(row);
   const gap = materialPathReadingText(item.targetInformationGap || "", [...value.baseMaterials, ...value.targetMaterials]);
   return <div className="min-w-0 space-y-3">
     <h3 className="break-words font-semibold text-slate-900">{item.title}</h3>
     <StatusFlow row={row} />
     <CitationChanges row={row} value={value} origin={origin} />
     {gap && <p className="text-sm leading-6 text-slate-700">待核对：{/规则层保存了未发送证据/.test(gap) ? "旧报告未保存具体缺口，请查看原报告。" : gap}</p>}
-    <details className="min-w-0 border-t border-slate-100 pt-2"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">判断依据、建议与复核</summary>
+    <details className="min-w-0 border-t border-slate-100 pt-2"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">{secondary.length ? `其他变化 ${secondary.length} 项与判断依据` : "判断依据、建议与复核"}</summary>
       <div className="min-w-0 space-y-3 pt-2 [overflow-wrap:anywhere]">
+        {!!secondary.length && <p className="text-sm text-slate-700">{secondary.join("、")}</p>}
         {item.changes.includes("rule_version") && <dl className="space-y-1 text-sm">
           <div><dt className="inline">判断公式：</dt><dd className="inline">A {row.old?.formulaVersion || "未记录"} → B {row.now?.formulaVersion || "未记录"}</dd></div>
           <div><dt className="inline">证据等级规则：</dt><dd className="inline">A {row.old?.evidenceLevelVersion || "未记录"} → B {row.now?.evidenceLevelVersion || "未记录"}</dd></div>
@@ -133,6 +140,11 @@ export default function ReportComparisonView({ value, base, current, origin }: {
   const [selectedId, setSelectedId] = useState("");
   const selected = visible.find(row => row.item.requirementId === selectedId) ?? visible[0];
   const basisChanges = value.contextChanges.filter(key => BASIS_CHANGES.has(key));
+  const skillCounts = new Map<string, number>();
+  for (const row of rows) {
+    const skill = row.now?.skill || row.old?.skill;
+    if (skill) skillCounts.set(skill, (skillCounts.get(skill) ?? 0) + 1);
+  }
   return <div className="min-w-0 space-y-4 text-base" aria-label="按岗位要求查看证据变化">
     {!!basisChanges.length && <p role="note" className="rounded-md bg-amber-50 p-3 text-sm text-amber-950">比较依据变化：{basisChanges.map(key => GROWTH_CHANGES[key] ?? key).join("、")}。</p>}
     <div className="comparison-filter-bar" role="group" aria-label="筛选要求变化">{FILTERS.map(([key, label]) => <button key={key} type="button" aria-pressed={filter === key} onClick={() => setFilter(key)} className="comparison-filter">{label}<span className="comparison-filter-count">{counts[key]}</span></button>)}</div>
@@ -142,12 +154,19 @@ export default function ReportComparisonView({ value, base, current, origin }: {
       <div className="min-w-0">
         <table className="report-comparison-matrix w-full text-left text-sm">
           <thead><tr><th scope="col">岗位要求</th><th scope="col">A 基准 → B 对照</th><th scope="col">变化</th></tr></thead>
-          <tbody>{visible.map(row => <tr key={row.item.requirementId} data-selected={selected === row}>
+          <tbody>{visible.map(row => {
+            const { primary, secondary } = rowChanges(row);
+            const skill = row.now?.skill || row.old?.skill;
+            return <tr key={row.item.requirementId} data-selected={selected === row}>
             <th scope="row"><button type="button" className="w-full text-left" aria-pressed={selected === row} aria-controls="comparison-requirement-reader" onClick={() => setSelectedId(row.item.requirementId)}>
-              <span className="block font-semibold" title={row.item.title}>{row.now?.skill || row.old?.skill || row.item.title}</span>
+              <span className="block font-semibold" title={row.item.title}>{skill || row.item.title}</span>
+              {skill && (skillCounts.get(skill) ?? 0) > 1 && skill !== row.item.title && <small className="block text-slate-600">{row.item.title}</small>}
             </button></th>
-            <td><StatusFlow row={row} /></td><td><span className="comparison-change-tags">{rowChanges(row).map(label => <span key={label}>{label}</span>)}</span></td>
-          </tr>)}</tbody>
+            <td><StatusFlow row={row} /></td><td><span className="comparison-change-tags">{primary.map(label => <span key={label}>{label}</span>)}
+              {secondary.length > 0 && <small>其他 {secondary.length} 项</small>}
+              {!primary.length && !secondary.length && <small>{row.changed ? "查看变化" : "无变化"}</small>}
+            </span></td>
+          </tr>})}</tbody>
         </table>
       </div>
       {selected && <article id="comparison-requirement-reader" className="report-comparison-reader min-w-0" key={selected.item.requirementId}><RequirementChange row={selected} value={value} origin={origin} /></article>}

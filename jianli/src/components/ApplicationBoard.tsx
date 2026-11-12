@@ -1,6 +1,7 @@
 "use client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
+import ReportMaterialVersions from "./ReportMaterialVersions";
 import ApplicationReply from "./ApplicationReply";
 import { identityLabel } from "@/lib/demo-display-identity.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -318,8 +319,8 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
     {((!error&&!replyNeedsRead&&!readRetrying)||(readRetrying&&retryFromToolbar.current))&&<ReadRetryButton busy={busy} quiet label="刷新授权投递" onRetry={source=>void refreshList(source,true)}/>}</div>
     <div className="enterprise-review-switcher">
       <nav className="enterprise-review-views" aria-label="候选人核对视图">
-        <button type="button" aria-pressed={activeView==="list"&&mode==="matrix"} onClick={()=>{setWorkbenchMode("matrix");setView("list");}}>热力矩阵</button>
-        <button type="button" aria-pressed={activeView==="list"&&mode==="radar"} disabled={busy||!(selected||matrixItems[0]||items[0])} onClick={()=>{enterPersonalRadar();setView("list");}}>个人雷达</button>
+        <button type="button" aria-pressed={activeView==="list"&&mode==="matrix"} onClick={()=>{setWorkbenchMode("matrix");setView("list");}}>候选人总览</button>
+        <button type="button" aria-pressed={activeView==="list"&&mode==="radar"} disabled={busy||!(selected||matrixItems[0]||items[0])} onClick={()=>{enterPersonalRadar();setView("list");}}>单人核对</button>
         <button type="button" aria-pressed={activeView==="list"&&mode==="compare"} disabled={!pairComparable} title={!pairComparable?pairHint:undefined} onClick={()=>{setWorkbenchMode("compare");setView("list");}}>双人对照</button>
       </nav>
       {activeView==="report"&&selected
@@ -462,13 +463,15 @@ export function SelectedRequirementEvidence({ application, requirementId, showRe
   const report = application.report;
   const item = report?.items.find(value => value.requirementId === requirementId);
   const source = item?.evidenceList[0];
+  const review = item ? frozenReview(item) : "";
   if (!report) return null;
   return <section className="panel space-y-2 border-indigo-200" aria-label="当前格子的固定报告依据">
     <h2 className="font-semibold"><IdentityName name={application.candidateName} identityId={application.candidateId}/> · {item?.requirementTitle || "该报告未包含这条要求"}</h2>
     {item ? <>
-      <div className="flex flex-wrap items-center gap-2 text-sm"><strong>{VERDICT[item.verdict] ?? item.verdict}</strong><span className="text-slate-600">{report.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}`).join(" · ") || "材料版本未记录"}</span></div>
-      {source ? <div className="enterprise-source-code"><p className="enterprise-source-code-meta"><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行</p><EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} theme="dark"/><SourceIdentityDetails source={source} /></div> : <p className="rounded border border-dashed border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">{item.verdict === "unsupported" ? "此项暂未评估，请核对岗位要求与材料。" : item.verdict === "claimed_only" ? "暂无此项要求的可定位引用；目前仅见简历声明。" : "暂无此项要求的可定位引用；这是材料缺口。"}</p>}
+      <div className="flex flex-wrap items-baseline gap-x-3 text-sm"><strong>{VERDICT[item.verdict] ?? item.verdict}</strong>{review && <span className="font-medium text-amber-900">{review}</span>}</div>
+      {source ? <div className="enterprise-source-code"><p className="enterprise-source-code-meta"><SourceIdentity source={source} materials={report.materials} /> · 第{source.lineStart}–{source.lineEnd}行</p><EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} theme="dark"/><SourceIdentityDetails source={source} /></div> : <p className="rounded border border-dashed border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">{item.verdict === "unsupported" ? "此项暂未评估，请核对岗位要求与材料。" : item.verdict === "claimed_only" ? "暂无可定位引用；目前仅见简历声明。" : "这份固定报告没有记录可定位引用。"}</p>}
       <details className="text-sm"><summary className="disclosure">判断依据</summary><div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/>{item.evidenceList.slice(1).map((extra, index) => <div key={`${extra.citationId}-${index}`} className="rounded bg-slate-50 p-2 text-xs"><p><SourceIdentity source={extra} materials={report.materials} /> · 第{extra.lineStart}–{extra.lineEnd}行</p><EvidenceSnippet evidence={extra} materials={report.materials} showContextNote={false}/></div>)}</div></details>
+      <ReportMaterialVersions materials={report.materials} />
     </> : <p className="text-sm text-slate-600">不同报告的要求版本可能不同；请按各自固定要求核对，不能把空格子当作能力不足。</p>}
     {showReportLink && (onOpenReport ? <button type="button" className="btn-secondary" onClick={onOpenReport}>查看{identityLabel(application.candidateName,application.candidateId)}的报告与回复</button> : <a className="btn-secondary" href="#selected-application-report">查看报告与回复</a>)}
   </section>;

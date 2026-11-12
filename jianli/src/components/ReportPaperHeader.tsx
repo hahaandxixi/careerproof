@@ -1,14 +1,14 @@
 import IdentityName from "./IdentityName";
 import type { MatchReport } from "@/lib/api/domain";
-import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import { reportReadingStatus } from "@/lib/report-display";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import ReportMaterialVersions from "./ReportMaterialVersions";
 
 /** Identity shared by all report sections; it must stay outside the hidden panels. */
 export default function ReportPaperHeader({ report, backHref = "/reports", versionTools }: { report: MatchReport; backHref?: string; versionTools?: ReactNode }) {
   const status = reportReadingStatus(report);
-  const analysisLabel = status?.label === "AI 分析完成" ? "AI 分析" : "";
   return <header className="report-paper-heading report-command-bar" aria-labelledby="report-title">
     <Link className="review-back" href={backHref}>← 我的报告</Link>
     <div className="report-command-identity">
@@ -24,16 +24,8 @@ export default function ReportPaperHeader({ report, backHref = "/reports", versi
           <time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleString("zh-CN")}</time>
         </p>
       </div>
-      <dl className="report-command-facts">
-        {analysisLabel && <div><dt>分析来源</dt><dd>{analysisLabel}</dd></div>}
-        <div><dt>要求</dt><dd>{report.items.length} 项</dd></div>
-        <div><dt>固定材料</dt><dd>{report.materials.length} 份</dd></div>
-      </dl>
+      <ReportMaterialVersions materials={report.materials} />
     </div>
-    <p className="report-material-line" title={report.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}`).join(" · ")}>
-      <span>材料版本</span>
-      {report.materials.map(material => <span key={`${material.kind}-${material.id}`} className="report-material-chip">{displayMaterialTitle(material.title, material.id)} · v{material.versionNumber}</span>)}
-    </p>
     {versionTools}
   </header>;
 }

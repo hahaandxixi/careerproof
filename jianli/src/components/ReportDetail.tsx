@@ -22,7 +22,6 @@ import McpAccessPanel from "./McpAccessPanel";
 import ApplicationSubmit from "./ApplicationSubmit";
 import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenceWorkspace";
 import ReportAgentEvidence from "./ReportAgentEvidence";
-import ReportOverview from "./ReportOverview";
 import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
 import SkillRadar from "./SkillRadar";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
@@ -129,7 +128,6 @@ function ReportWorkspace({ id }: { id: string }) {
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
     <ReportSections header={<ReportPaperHeader report={report} backHref={reportListHref(reportOrigin(origin))} versionTools={user?.role === "student" && <ReportVersionPicker report={report} origin={origin} />} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
-    {user?.role !== "student" && <ReportOverview report={report} role={user?.role} workbench filter={filter} onFilterChange={changeFilter} />}
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
     <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId} filter={filter} onFilterChange={changeFilter}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
@@ -176,8 +174,8 @@ function ReportWorkspace({ id }: { id: string }) {
     </details>
       </> },
       { id: "report-materials", label: "材料来源", content: <>
-        <h2 className="section-title">本次使用的固定材料版本（{report.materials.length}份）</h2>
-        <p className="reading-copy">以下为这份报告生成时使用的材料，不随新上传自动替换。</p>
+        <h2 className="section-title">固定材料版本</h2>
+        <p className="reading-copy">{report.materials.length ? "以下为这份报告生成时使用的材料，不随新上传自动替换。" : "历史报告未记录材料版本清单，请核对已保存的来源。"}</p>
         <ul className="space-y-4">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="panel space-y-2">
           <h3 className="text-lg font-semibold">{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</h3>
           <p>{material.kind === "resume" ? "简历" : material.materialRole === "reference" ? "第三方参考 · 不证明本人实践" : "个人项目 / 作品"}</p>
