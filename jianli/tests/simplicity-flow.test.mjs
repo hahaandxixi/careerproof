@@ -33,10 +33,13 @@ test("application status applies immediately with query and pagination reset; se
  nodes(tree).find(n=>n.type==="button"&&text(n)==="重置").props.onClick();await h.settle();assert.deepEqual(calls.at(-1),{page:1,q:"",view:"all"});
 });
 test("legacy task URL only reads saved records and clears private content on hide",async()=>{
- const task={id:"t",baseReportId:"r",jobTitle:"Python",requirementId:"q",requirementTitle:"接口",gap:"缺运行记录",originalAction:"运行测试",plan:{deliverable:"记录",steps:[],acceptanceChecks:[]},materials:[],comparison:null};let reads=0;
+ const task={id:"t",baseReportId:"r",jobTitle:"Python",requirementId:"q",requirementTitle:"接口",gap:"缺运行记录",originalAction:"运行测试",plan:{deliverable:"记录",steps:[],acceptanceChecks:[]},materials:[{id:"resume-v1",kind:"resume",title:"个人简历",versionNumber:1},{id:"project-v2",kind:"project",title:"业务项目",versionNumber:2}],comparison:null};let reads=0;
  const api=new Proxy({growthTask:async()=>{reads++;return task;},getAnswerDraft:async()=>({text:"私人历史草稿"})},{get(target,key){if(key in target)return target[key];assert.fail(`unexpected API ${String(key)}`);}});
  const h=mount("GrowthHistory",{"@/lib/api/client":{api,errorMessage:String},"./GrowthComparison":{__esModule:true,default:()=>null}},{id:"t"});
  let tree=await h.settle();assert.match(text(tree),/缺运行记录/);assert.match(text(tree),/私人历史草稿/);
+ assert.match(text(tree),/个人简历 · 第 1 版/);
+ assert.ok(!nodes(tree).some(n=>n.props?.href?.startsWith("/materials/resume/")));
+ assert.ok(nodes(tree).some(n=>n.props?.href==="/materials/project/project-v2"&&text(n)==="业务项目 · 第 2 版"));
  assert.deepEqual(nodes(tree).filter(n=>n.type==="button").map(text),["刷新"]);
  document.visibilityState="hidden";document.dispatchEvent(new Event("visibilitychange"));assert.equal(h.render(),null);
  document.visibilityState="visible";document.dispatchEvent(new Event("visibilitychange"));tree=await h.settle();assert.match(text(tree),/私人历史草稿/);assert.equal(reads,2);

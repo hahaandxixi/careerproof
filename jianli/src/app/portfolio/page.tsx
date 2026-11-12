@@ -1,6 +1,6 @@
 "use client";
 
-import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { displayMaterialTitle, showResumeFilenameInDetails } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import ArchivedMaterials from "@/components/ArchivedMaterials";
 import LoginLink from "@/components/LoginLink";
@@ -73,6 +73,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
   archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
 }) {
   const title = displayMaterialTitle(item.title, item.versionId);
+  const showFileOnRequest = item.kind === "resume" && showResumeFilenameInDetails(item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   const extraActions = [
@@ -88,11 +89,14 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
           {isTarget && <span className="text-sm font-medium text-[#1d4a40]">当前上传目标</span>}
         </div>}
-        <p className="mt-1 break-words text-sm leading-6 text-slate-600">
+        {showFileOnRequest ? <details className="mt-1 text-sm leading-6 text-slate-600">
+          <summary className="disclosure">原文件信息</summary>
+          <p className="[overflow-wrap:anywhere]">{item.filename}{item.sizeBytes != null && ` · ${materialFileSize(item.sizeBytes)}`}</p>
+        </details> : <p className="mt-1 break-words text-sm leading-6 text-slate-600">
           <span className="break-all">{item.filename}</span>
           {item.sizeBytes != null && <span className="whitespace-nowrap"> · {materialFileSize(item.sizeBytes)}</span>}
           {item.kind === "project" && <span className="whitespace-nowrap"> · {item.materialRole === "reference" ? "第三方参考" : "个人作品"}</span>}
-        </p>
+        </p>}
       </div>
       <div className="text-sm leading-6 text-slate-700">
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
@@ -101,7 +105,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
       <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
-        {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>查看内容</Link>}
+        {complete && item.kind === "project" && <Link className="action-link" href={`/materials/project/${item.versionId}`}>查看内容</Link>}
         {onUploadVersion && <button type="button" className="btn-secondary" disabled={uploadDisabled} onClick={onUploadVersion}>上传新版</button>}
         {!complete && item.taskId && <Link className={failed ? "btn" : "btn-secondary"} href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
         {extraActions.length > 1 ? <details className="relative text-sm text-slate-600">
