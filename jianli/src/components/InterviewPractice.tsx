@@ -7,7 +7,7 @@ import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel,
+  canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn,
   canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
@@ -45,6 +45,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
   const [feedbackReadTurn, setFeedbackReadTurn] = useState<number | null>(null);
+  const [selectedTurnIndex, setSelectedTurnIndex] = useState<number | null>(null);
   const draftKeyRef = useRef("");
   const active = useRef(false);
 
@@ -218,6 +219,8 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
   const jobTitle = displayJobTitle(session.jobTitle, session.jobId);
+  const turn = selectedPracticeTurn(session, selectedTurnIndex);
+  const isBusy = !!turn && busy === turn.turnIndex;
   const busyIdle = busy === null;
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
 
@@ -232,14 +235,15 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         <span>{jobTitle ? `${jobTitle} · 本项岗位要求` : "本项岗位要求"}</span>
         <strong>{session.requirementTitle || session.skill}</strong>
       </div>
-      <div className={styles.meta}>
-        <span>技能 <b>{session.skill || "未标注"}</b></span>
-        {session.materials.map(material => (
-          <span key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} <b>v{material.versionNumber}</b></span>
-        ))}
-        <span>材料与知识依据在创建练习时固定</span>
-      </div>
+      <Link className={styles.headLink} href={reportHref}>回到原报告定位这项要求 →</Link>
     </header>
+
+    {session.turns.length > 1 && <div className={styles.turnTrack} role="group" aria-label="练习轮次">
+      {session.turns.map(item => <button type="button" key={item.turnIndex} aria-pressed={item === turn}
+        onClick={() => setSelectedTurnIndex(item === session.turns.at(-1) || item === current ? null : item.turnIndex)}>
+        <strong>第 {item.turnIndex + 1} 轮</strong><span>{item.state === "question" ? "待回答" : feedbackStatusLabel(item)}</span>
+      </button>)}
+    </div>}
 
     <div className={styles.layout}>
       <div className={styles.main}>
@@ -293,58 +297,50 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           </div>
         </section>}
 
-        {session.turns.length > 1 && <nav className={styles.turnTrack} aria-label="练习轮次">
-          {session.turns.map(turn => <a key={turn.turnIndex} href={`#practice-turn-${turn.turnIndex}`} aria-current={turn === session.turns.at(-1) ? "step" : undefined}>
-            <strong>第 {turn.turnIndex + 1} 轮</strong><span>{feedbackStatusLabel(turn)}</span>
-          </a>)}
-        </nav>}
-        {session.turns.map(turn => {
-          const isBusy = busy === turn.turnIndex;
-          const evidence = turn.feedback?.citations ?? [];
-          const previous = !!turn.feedback && turn !== session.turns.at(-1);
-          const content = <article className={styles.turn} data-state={turn.state} aria-label={turnLabel(turn)}>
-            <div className={styles.turnHead}>
-              <span className={styles.turnLabel}>{turnLabel(turn)}<b>{turn.kind === "follow_up" ? "根据上一轮回答追问" : `围绕 ${session.skill || "本项要求"}`}</b></span>
-              <span className={styles.turnState}>{turn.state === "question" ? "待回答" : "回答已保存"}<span aria-hidden="true"> · </span>{feedbackStatusLabel(turn)}</span>
-            </div>
-            <p className={styles.question}>{turn.question}</p>
-            {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
-            {!!turn.citations.length && <div className={styles.basisNote} aria-label="首问关联材料">
-              <strong>首问关联材料：</strong>
-              {turn.citations.map(item => <span key={item.citationId || `${item.filePath}:${item.lineStart}`}>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行</span>)}
-            </div>}
+        {turn && <article key={turn.turnIndex} className={styles.turn} aria-label={turnLabel(turn)}>
+          <div className={styles.turnHead}>
+            <h2>第 {turn.turnIndex + 1} 轮{turn.kind === "follow_up" ? " · 追问" : " · 首问"}</h2>
+            <span className={styles.turnState}>{turn.state === "question" ? "待回答" : "回答已保存"}</span>
+          </div>
+          <p className={styles.question}>{turn.question}</p>
+          {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
 
-            {turn.state === "question" && <div>
-              <label className="text-sm font-medium" htmlFor={`practice-answer-${turn.turnIndex}`}>你的回答</label>
-              <textarea id={`practice-answer-${turn.turnIndex}`} className={styles.answerBox} value={answer} maxLength={MAX_ANSWER}
-                placeholder="用具体例子说明你的做法、取舍和验证方式。可以分点写。" disabled={!canSubmit(session, turn) || isBusy}
-                onChange={event => updateAnswer(event.target.value)} />
-              <div className={styles.footerRow}>
-                <span className={styles.counter}>{answer.length} / {MAX_ANSWER} 字</span>
-                <div className={styles.actions}>
-                  <button type="button" className="btn" disabled={isBusy || !answer.trim() || knowledgeOutdated} onClick={() => void submit(turn)}>
-                    {isBusy ? "正在提交回答…" : "提交回答并获取点评"}
-                  </button>
-                </div>
+          {turn === current && <div>
+            <label className="text-sm font-medium" htmlFor={`practice-answer-${turn.turnIndex}`}>你的回答</label>
+            <textarea id={`practice-answer-${turn.turnIndex}`} className={styles.answerBox} value={answer} maxLength={MAX_ANSWER}
+              placeholder="用具体例子说明你的做法、取舍和验证方式。可以分点写。" disabled={!canSubmit(session, turn) || isBusy}
+              onChange={event => updateAnswer(event.target.value)} />
+            <div className={styles.footerRow}>
+              <span className={styles.counter}>{answer.length} / {MAX_ANSWER} 字</span>
+              <div className={styles.actions}>
+                <button type="button" className="btn" disabled={isBusy || !answer.trim() || knowledgeOutdated} onClick={() => void submit(turn)}>
+                  {isBusy ? "正在提交回答…" : "提交回答并获取点评"}
+                </button>
               </div>
-              <p className={styles.hint}>未提交的内容会在这台设备上按账号暂存；提交后回答立即保存，模型失败也不会丢失。</p>
-            </div>}
+            </div>
+            <p className={styles.hint}>未提交的内容会在这台设备上按账号暂存；提交后回答立即保存，模型失败也不会丢失。</p>
+          </div>}
 
-            {turn.state !== "question" && !!turn.answerText && <div className={styles.answerSaved} aria-label="已保存的回答">{turn.answerText}</div>}
+          {!!turn.answerText && <details className={styles.savedDetails} open={turn.feedback ? undefined : true}>
+            <summary>查看已保存的回答</summary>
+            <div className={styles.answerSaved}>{turn.answerText}</div>
+          </details>}
 
-            {turn.state !== "question" && !turn.feedback && <div className={styles.actions}>
-              <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{feedbackReadTurn === turn.turnIndex ? "暂时无法确认点评重试结果，请读取保存状态。" : turnNotice(turn)}</span>
-              {feedbackReadTurn !== turn.turnIndex && canRetryFeedback(turn) && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
-              <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
-            </div>}
+          {turn.state !== "question" && !turn.feedback && <div className={styles.actions}>
+            <span className={styles.notice} data-tone={turn.state === "failed" ? "failed" : "info"}>{feedbackReadTurn === turn.turnIndex ? "暂时无法确认点评重试结果，请读取保存状态。" : turnNotice(turn)}</span>
+            {feedbackReadTurn !== turn.turnIndex && canRetryFeedback(turn) && <button type="button" className="btn-secondary" disabled={!busyIdle || knowledgeOutdated} onClick={() => void retry(turn)}>{isBusy ? "正在重试…" : "重试点评"}</button>}
+            <button type="button" className="btn-quiet" disabled={!busyIdle} onClick={() => void load()}>读取保存状态</button>
+          </div>}
 
-            {turn.feedback && <section className={styles.feedback} aria-label="本轮点评">
-              <p className={styles.feedbackCounts}><span>讲清 {turn.feedback.covered.length}</span><span>需修正 {turn.feedback.inconsistent.length}</span><span>待补充 {turn.feedback.missing.length}</span></p>
-              {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>讲清的内容</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
+          {turn.feedback && <section className={styles.feedback} aria-label="本轮点评">
+            <h3>回答诊断</h3>
+            <div className={styles.diagnosis}>
+              {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>已讲清 · {turn.feedback.covered.length}</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
+              {!!turn.feedback.missing.length && <div className={styles.feedbackBlock} data-kind="missing"><h4>待补充 · {turn.feedback.missing.length}</h4><ul>{turn.feedback.missing.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
               {!!turn.feedback.inconsistent.length && <div className={styles.feedbackBlock} data-kind="inconsistent">
-                <h4>与材料或原理不一致</h4>
+                <h4>需修正 · {turn.feedback.inconsistent.length}</h4>
                 <ul>{turn.feedback.conflictDetails?.length ? turn.feedback.conflictDetails.map((conflict, index) => {
-                  const file = evidence.find(item => item.citationId === conflict.basisId);
+                  const file = turn.feedback?.citations.find(item => item.citationId === conflict.basisId);
                   const principle = turn.feedback?.knowledge.find(item => item.knowledgeId === conflict.basisId);
                   return <li key={index}>
                     <q>{conflict.answerQuote}</q> {conflict.reason}
@@ -353,51 +349,33 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                   </li>;
                 }) : turn.feedback.inconsistent.map((line, index) => <li key={index}>{line}</li>)}</ul>
               </div>}
-              {!!turn.feedback.missing.length && <div className={styles.feedbackBlock} data-kind="missing"><h4>遗漏的关键点</h4><ul>{turn.feedback.missing.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
-              {!!turn.feedback.reviewSuggestion && <div className={styles.suggestion}><strong>复习建议：</strong>{turn.feedback.reviewSuggestion}</div>}
-              {!!evidence.length && <div className={styles.citations}>
-                <h4>点评依据的材料片段</h4>
-                <ul className={styles.citationList}>
-                  {evidence.map(item => <li key={item.citationId || `${item.filePath}:${item.lineStart}`}>
-                    <strong>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行</strong>
-                    <span>{item.filePath}{item.provenance === "reference" ? " · 第三方参考，不计评级" : ""}</span>
-                    <pre className={styles.snippet} tabIndex={0} aria-label={`原文 ${item.filePath} 第 ${item.lineStart} 至 ${item.lineEnd} 行`}><code>{item.snippet}</code></pre>
-                  </li>)}
-                </ul>
-              </div>}
-              {!!turn.feedback.knowledge.length && <div className={styles.citations}>
-                <h4>点评依据的技术知识</h4>
-                <ul className={styles.knowledgeList}>
-                  {turn.feedback.knowledge.map(item => <li key={item.knowledgeId}>
-                    <strong>{item.title}</strong>
-                    <span>{item.sourceLabel} · {item.sourceVersion} · {item.section}</span>
-                  </li>)}
-                </ul>
-              </div>}
-              {!evidence.length && <p className={styles.hint}>本轮点评没有保存材料引用。</p>}
-              <Link className={styles.reportLink} href={reportHref}>核对原报告这项要求 →</Link>
-            </section>}
-          </article>;
-          const anchor = `practice-turn-${turn.turnIndex}`;
-          return previous ? <details key={turn.turnIndex} id={anchor} className={styles.previousTurn}>
-            <summary><strong>第 {turn.turnIndex + 1} 轮 · 已点评</strong><span>讲清 {turn.feedback!.covered.length} · 需修正 {turn.feedback!.inconsistent.length} · 待补充 {turn.feedback!.missing.length}</span></summary>
-            {content}
-          </details> : <div key={turn.turnIndex} id={anchor} className={styles.turnAnchor}>{content}</div>;
-        })}
+            </div>
+            {!turn.feedback.covered.length && !turn.feedback.inconsistent.length && !turn.feedback.missing.length &&
+              <p className={styles.empty}>本轮点评没有保存诊断条目。</p>}
+            {!!turn.feedback.reviewSuggestion && <div className={styles.suggestion}><strong>改进建议：</strong>{turn.feedback.reviewSuggestion}</div>}
+          </section>}
+          {current && turn !== current && <div className={styles.actions}>
+            <button type="button" className="btn" onClick={() => setSelectedTurnIndex(null)}>继续回答第 {current.turnIndex + 1} 轮</button>
+          </div>}
+        </article>}
 
         {session.summary && <section className={styles.summary} aria-label="练习小结">
-          <h2>练习小结</h2>
-          <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
-          <div className={styles.summaryGrid}>
-            <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
-            <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
-          </div>
-          {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={session.summary.inconsistent} visibleCount={3} /></section>}
-          {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
-            {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
-          </ul></section>}
+          <details className={styles.summaryDetails}>
+            <summary>查看整场练习小结</summary>
+            <div>
+              <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
+              <div className={styles.summaryGrid}>
+                <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
+                <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
+              </div>
+              {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={session.summary.inconsistent} visibleCount={3} /></section>}
+              {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
+                {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
+              </ul></section>}
+              <p className={styles.summaryNote}>{session.summary.note}</p>
+            </div>
+          </details>
           {!!session.summary.nextStep && <p className={styles.suggestion}><strong>下一步：</strong>{session.summary.nextStep}</p>}
-          <p className={styles.summaryNote}>{session.summary.note}</p>
           <div className={styles.actions}>
             {!knowledgeOutdated && <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>{busy === "restart" ? "正在创建新练习…" : "再练一次"}</button>}
             <Link className="btn-secondary" href={reportHref}>回到报告这项要求</Link>
@@ -406,41 +384,51 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         </section>}
       </div>
 
-      <aside className={styles.basis} aria-label="练习依据">
-        <div className={styles.basisHead}>
-          <h2>练习依据</h2>
-          <p>来自这份报告的固定材料版本与技术知识；作答前只展示标题与出处，不展示参考要点。</p>
-        </div>
-        <div className={styles.basisGroup}>
-          <h3>材料引用 · {session.evidence.length} 处</h3>
-          {session.evidence.length ? <ul className={styles.evidenceList}>
-            {session.evidence.map(item => <li className={styles.evidenceItem} key={item.citationId || `${item.filePath}:${item.lineStart}`}>
-              <details>
-                <summary>{item.filePath.split("/").pop()} · 第 {item.lineStart}–{item.lineEnd} 行<span>{item.provenance === "reference" ? "第三方参考" : "本人材料"} · {item.filePath}</span></summary>
-                <pre className={styles.snippet} tabIndex={0} aria-label={`原文 ${item.filePath} 第 ${item.lineStart} 至 ${item.lineEnd} 行`}><code>{item.snippet}</code></pre>
-              </details>
-            </li>)}
-          </ul> : <p className={styles.empty}>这项要求没有已保存的代码引用。练习会依据岗位原文与技术知识出场景题，不会编造项目实现。</p>}
-        </div>
-        <div className={styles.basisGroup}>
-          <h3>技术知识 · {session.knowledge.length} 条</h3>
-          {session.knowledge.length ? <ul className={styles.knowledgeList}>
-            {session.knowledge.map(item => <li key={item.knowledgeId}>
-              <strong>{item.title}</strong>
-              <span>{item.sourceLabel} · {item.sourceVersion}</span>
-              <span>{item.document} · {item.section}{item.sourceLocator ? ` · ${item.sourceLocator}` : ""}</span>
-              <span className={styles.reviewTag}>{item.reviewStatus === "reviewed" ? `已对照官方文档整理 · ${item.reviewedAt}` : "待复核"}</span>
-            </li>)}
-          </ul> : <p className={styles.empty}>暂无可用的技术知识条目；练习只依据这份报告的材料出题。</p>}
-        </div>
-        <div className={styles.basisGroup}>
-          <h3>回答范围</h3>
-          <p className={styles.empty}>练习独立保存，不写入成长任务草稿，也不改写报告判断、技能状态或企业已收到的投递快照。</p>
-          <Link className={styles.reportLink} href={reportHref}>回到原报告定位这项要求 →</Link>
-        </div>
-      </aside>
+      <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />
     </div>
   </div>;
 }
 
-
+function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session: InterviewSession }) {
+  const { citations, knowledge, kind } = practiceTurnSources(turn, session);
+  const title = kind === "session" ? "练习资料" : kind === "feedback" ? "本轮点评依据" : kind === "first-related" ? "首问关联依据" : "本轮题目依据";
+  return <aside className={styles.basis} aria-label={title}>
+    <h2>{title}</h2>
+    {kind === "first-related" && <p className={styles.empty}>本轮沿用首问保存的依据。</p>}
+    {citations.length ? <ul className={styles.evidenceList}>
+      {citations.map((item, index) => {
+        const material = session.materials.find(entry => entry.id === item.projectVersionId);
+        const segments = item.filePath.split(/[/\\]/);
+        const filename = segments.at(-1) || item.filePath;
+        const path = segments[0] === item.projectVersionId ? segments.slice(1).join("/") : item.filePath;
+        return <li className={styles.evidenceItem} key={item.citationId || `${item.filePath}:${item.lineStart}:${index}`}>
+          <details open={kind !== "session" && index === 0}>
+            <summary>
+              <strong>{filename} · 第 {item.lineStart}{item.lineEnd === item.lineStart ? "" : `–${item.lineEnd}`} 行</strong>
+              <span>{material && <>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版 · </>}{item.provenance === "reference" ? "第三方参考，不计评级" : item.provenance === "portfolio" ? "本人材料" : "报告材料"}</span>
+            </summary>
+            {item.snippet ? <pre className={styles.snippet} tabIndex={0} aria-label={`${filename} 原文，第 ${item.lineStart} 至 ${item.lineEnd} 行`}><code>{item.snippet}</code></pre>
+              : <p className={styles.empty}>没有保存源码片段。</p>}
+            {filename !== path && <p className={styles.sourcePath}>{path}</p>}
+          </details>
+        </li>;
+      })}
+    </ul> : <p className={styles.empty}>{kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
+    {!!knowledge.length && <section className={styles.basisGroup}>
+      <h3>技术知识</h3>
+      <ul className={styles.knowledgeList}>
+        {knowledge.map(item => <li key={item.knowledgeId}>
+          <strong>{item.title}</strong>
+          <span>{item.sourceLabel} · {item.sourceVersion} · {item.section}</span>
+          <details><summary>出处详情</summary><span>{item.document}{item.sourceLocator ? ` · ${item.sourceLocator}` : ""}</span></details>
+        </li>)}
+      </ul>
+    </section>}
+    {session.materials.length > 0 && <details className={styles.savedDetails}>
+      <summary>练习使用的固定版本</summary>
+      <ul className={styles.materials}>
+        {session.materials.map(material => <li key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</li>)}
+      </ul>
+    </details>}
+  </aside>;
+}

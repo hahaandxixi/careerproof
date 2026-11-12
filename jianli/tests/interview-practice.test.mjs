@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, newClientToken, openTurn,
-  feedbackStatusLabel, practiceStatusLabel, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
+  feedbackStatusLabel, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice,
 } from "../src/lib/interview-practice.ts";
 
 const evidence = (id, path = "version-1/test_pipeline.py") => ({
@@ -104,4 +104,40 @@ test("round feedback status follows its saved task and feedback rather than the 
  assert.equal(feedbackStatusLabel({...saved,feedbackTask:{status:"running"}}),"正在生成点评");
  assert.equal(feedbackStatusLabel({...saved,feedbackTask:{status:"failed"}}),"点评未生成");
  assert.equal(feedbackStatusLabel({...saved,feedback:{covered:[]},feedbackTask:{status:"completed"}}),"点评已生成");
+});
+
+test("reading a historical turn leaves the unanswered turn and its draft identity unchanged", () => {
+  const previous = turn(0, "feedback");
+  const current = turn(1, "question", "follow_up");
+  const practice = session({ turns: [previous, current], currentTurn: 1 });
+  assert.equal(selectedPracticeTurn(practice, null), current);
+  assert.equal(selectedPracticeTurn(practice, 0), previous);
+  assert.equal(openTurn(practice), current);
+  assert.equal(canSubmit(practice, selectedPracticeTurn(practice, 0)), false);
+  assert.equal(selectedPracticeTurn(practice, 99), current);
+});
+
+test("saved feedback sources stay scoped to the selected turn, even if its citations are empty", () => {
+  const firstFile = evidence("first");
+  const citedFile = evidence("feedback", "version-2/service.py");
+  const topic = { knowledgeId: "topic", title: "事务边界" };
+  const first = { ...turn(0, "feedback"), feedback: { citations: [citedFile], knowledge: [] } };
+  const followUp = { ...turn(1, "question", "follow_up"), citations: [firstFile], knowledge: [topic] };
+  const practice = session({ turns: [first, followUp] });
+  assert.deepEqual(practiceTurnSources(selectedPracticeTurn(practice, 0), practice), {
+    kind: "feedback", citations: [citedFile], knowledge: [],
+  });
+  assert.deepEqual(practiceTurnSources(selectedPracticeTurn(practice, null), practice), {
+    kind: "first-related", citations: [firstFile], knowledge: [topic],
+  });
+  assert.deepEqual(practiceTurnSources({ ...followUp, feedback: { citations: [], knowledge: [topic] } }, practice), {
+    kind: "feedback", citations: [], knowledge: [topic],
+  });
+});
+
+test("before the first question the confirmed scope can be reviewed from saved session material", () => {
+  const practice = session({ status: "draft", turns: [] });
+  assert.deepEqual(practiceTurnSources(selectedPracticeTurn(practice, null), practice), {
+    kind: "session", citations: practice.evidence, knowledge: practice.knowledge,
+  });
 });

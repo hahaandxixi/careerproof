@@ -36,6 +36,24 @@ export function openTurn(session: InterviewSession | null): PracticeTurn | null 
   return session.turns.find(turn => turn.state === "question") ?? null;
 }
 
+export function selectedPracticeTurn(session: InterviewSession, selectedIndex: number | null) {
+  return session.turns.find(turn => turn.turnIndex === selectedIndex) ?? openTurn(session) ?? session.turns.at(-1) ?? null;
+}
+
+export function practiceTurnSources(turn: PracticeTurn | null, session: Pick<InterviewSession, "evidence" | "knowledge">) {
+  if (!turn) {
+    return { kind: "session", citations: session.evidence, knowledge: session.knowledge } as const;
+  }
+  if (turn.feedback) {
+    return { kind: "feedback", citations: turn.feedback.citations, knowledge: turn.feedback.knowledge } as const;
+  }
+  return {
+    kind: turn.kind === "follow_up" ? "first-related" : "question",
+    citations: turn.citations,
+    knowledge: turn.knowledge,
+  } as const;
+}
+
 export function canSubmit(session: InterviewSession | null, turn: PracticeTurn | null) {
   return !!session && !!turn && session.status === "in_progress" && turn.state === "question" && !session.knowledgeOutdated;
 }
