@@ -16,7 +16,7 @@ export default function MaterialUploadIntent({ projects, ready, onOpen }: { proj
     if (handled.current === key) return;
     handled.current = key;
     const project = version ? projects.find(value => value.versions.some(item => item.id === version)) : undefined;
-    if (version && !project) { setNotice("原项目不在当前材料库，请核对账号或归档材料后选择上传目标。"); return; }
+    if (version && !project) { setNotice("原项目不在当前材料库，请核对账号或选择其他上传目标。"); return; }
     setNotice(onOpen(project?.id) ? "" : "当前有未完成的上传，请先处理后再切换项目。");
   }, [add, version, ready, projects, onOpen]);
   return notice ? <p role="status" className="text-sm text-amber-800">{notice}</p> : null;

@@ -57,17 +57,6 @@ test("pending uploads are kept instead of being overwritten by a navigation hint
  const h=mount("MaterialUploadIntent",{"next/navigation":{useSearchParams:()=>new URLSearchParams({add:"project"})}},{ready:true,projects:[],onOpen:()=>false},false);
  assert.match(text(await h.settle()),/未完成的上传/);
 });
-test("opening the archive reads both kinds; only explicit restore changes the list",async()=>{
- const calls=[],reads=[];let restored=0;
- const api={listResumes:async value=>{reads.push(["resume",value]);return [{id:"r",title:"旧简历",isArchived:true}];},listProjects:async value=>{reads.push(["project",value]);return [{id:"archived",name:"旧项目",isArchived:true},{id:"active",name:"活动项目",isArchived:false}];},archiveMaterial:async(...args)=>{calls.push(args);}};
- const h=mount("ArchivedMaterials",{"@/lib/api/client":{api,errorMessage:String}},{onRestore:()=>restored++},false);
- const initial=h.render();assert.match(text(initial),/正在读取/);assert.doesNotMatch(text(initial),/暂无归档/);
- let tree=await h.settle();assert.match(text(tree),/旧项目/);assert.match(text(tree),/旧简历/);assert.doesNotMatch(text(tree),/活动项目/);
- assert.deepEqual(reads,[["resume",true],["project",true]]);assert.deepEqual(calls,[]);
- await nodes(tree).filter(n=>n.type==="button"&&text(n)==="恢复到材料库").at(-1).props.onClick();
- assert.deepEqual(calls,[["project","archived",false]]);assert.equal(restored,1);
- tree=await h.settle();assert.doesNotMatch(text(tree),/旧项目/);assert.match(text(tree),/旧简历/);
-});
 test("reading saved enterprise advice is not presented as generation and only explicit consent can generate",async()=>{
  let publish;const calls={read:0,generate:0};
  const state={task:null,loading:false,error:"",notice:""};

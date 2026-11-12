@@ -34,7 +34,7 @@ function workspace(client = {}) {
     "@/lib/demo-display-identity.js": demoPresentation,
     "@/lib/api/client": { api, errorMessage: error => error.message },
   };
-  for (const name of ["ArchivedMaterials", "LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn", "MaterialUploadIntent", "ListPagination"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
+  for (const name of ["LoginLink", "MaterialFileDropzone", "GrowthUploadReturn", "ReportUploadReturn", "MaterialUploadIntent", "ListPagination"]) modules[`@/components/${name}`] = { default: () => null, __esModule: true };
   const code = transform(`${source}\nexport { PortfolioWorkspace };`, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
   const mod = { exports: {} };
   new Function("require", "module", "exports", code)(id => { assert.ok(id in modules, id); return modules[id]; }, mod, mod.exports);
@@ -57,7 +57,11 @@ function browser(t, confirm) {
 }
 
 test("cancel project removal does not call API or change any version", async t => {
-  browser(t, message => { for (const text of ["所有版本", "历史报告", "恢复"]) assert.ok(message.includes(text), text); return false; });
+  browser(t, message => {
+    assert.match(message, /从材料库删除「报名服务」及其所有版本？历史报告会保留/);
+    assert.doesNotMatch(message, /已归档|恢复|永久/);
+    return false;
+  });
   const ui=workspace(); const before=structuredClone(ui.state[11]);
   await ui.remove(ui.render()).props.onClick();
   assert.deepEqual(ui.calls, []); assert.deepEqual(ui.state[11], before);
