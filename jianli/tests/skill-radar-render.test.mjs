@@ -145,7 +145,8 @@ test("linked detail renders only selected requirement citations and keeps source
  const dimensions=[dim("Python","supported",65),dim("SQL","partial",40),dim("pytest","gap",0)];
  const items=[{requirementId:"Python",explanation:"Python依据",evidenceList:[{citationId:"R1-E1",filePath:"main.py",lineStart:1,lineEnd:3,snippet:"example-source-only",contextComplete:true}]}];
  const html=render({dimensions,items,initialRequirementId:"Python"});
- assert.ok(html.includes("R1-E1") && html.includes("example-source-only"));
+ assert.ok(html.includes("main.py") && html.includes("example-source-only"));
+ assert.ok(!html.includes("R1-E1"));
  assert.ok(!/<details[^>]*\bopen[= >]/.test(html));
  const gap=render({dimensions,items,initialRequirementId:"pytest"});
  assert.ok(!gap.includes("R1-E1") && !gap.includes("example-source-only"));

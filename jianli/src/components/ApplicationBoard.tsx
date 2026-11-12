@@ -477,7 +477,7 @@ export function SavedRequirementDetail({ item, report }: { item: ReportItem; rep
     {measure.issue&&item.verdict!=="unsupported"&&<p role="status" className="mt-2 text-amber-900">{measure.issue}；原始值 {String(measure.raw??"未记录")}。</p>}
     <details className="mt-2 text-sm"><summary className="cursor-pointer text-indigo-700">原报告计量与等级</summary><SupportMeasureDetails raw={item.finalScore} formulaVersion={item.formulaVersion} scale={scale}/><p>{item.evidenceLevelLabel??"未评级"} · {item.evidenceLevelReason}</p></details>
     <div className="mt-2 space-y-2"><SavedRequirementInterpretation item={item} report={report}/></div>
-    <details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((source, index) => <div key={index} className="mt-2 text-xs"><p className="break-all">{source.citationId ?? "引用"} · <SourceIdentity source={source} materials={report.materials ?? []} /> · 第{source.lineStart}—{source.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}</details>
+    <details className="mt-2"><summary className="cursor-pointer text-indigo-700">查看本次授权引用片段</summary>{item.evidenceList.map((source, index) => <div key={index} className="mt-2 text-xs"><p className="break-all"><SourceIdentity source={source} materials={report.materials ?? []} /> · 第{source.lineStart}—{source.lineEnd}行</p><pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><SourceIdentityDetails source={source} /></div>)}</details>
   </li>;
 }
 

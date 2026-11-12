@@ -224,10 +224,11 @@ for (const [aiStatus, fallback, accepted] of [
       assert.match(html, /规则缺口：实际运行环境待核对/);
       assert.doesNotMatch(html, /MODEL_FULL_EXPLANATION|MODEL_FULL_GAP|AI解释/);
     }
-    assert.match(html, /R1-E1/);
+    assert.match(html, /storage\.py/);
+    assert.doesNotMatch(html, /R1-E1/);
     assert.match(html, /第20—25行/);
     assert.match(html, /connection.rollback/);
-    assert.match(html, /fixed-hash/);
+    assert.doesNotMatch(html, /fixed-hash/);
     assert.equal(JSON.stringify(report), before);
   });
 }

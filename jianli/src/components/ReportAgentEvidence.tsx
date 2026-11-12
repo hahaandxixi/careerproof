@@ -10,7 +10,7 @@ function Source({ evidence, report }: { evidence: ReportEvidence; report: MatchR
     <p className="break-all text-xs leading-6 text-slate-700"><SourceIdentity source={evidence} materials={report.materials} /> · 第 {evidence.lineStart}—{evidence.lineEnd} 行</p>
     <EvidenceSnippet evidence={evidence} materials={report.materials} />
     <SourceIdentityDetails source={evidence} />
-    {evidence.citationId && <EvidenceLink citationId={evidence.citationId} className="mt-2 inline-block text-sm text-[#1d4a40] underline">定位完整引用 {evidence.citationId} →</EvidenceLink>}
+    {evidence.citationId && <EvidenceLink citationId={evidence.citationId} className="mt-2 inline-block text-sm text-[#1d4a40] underline">定位完整引用 →</EvidenceLink>}
   </div>;
 }
 

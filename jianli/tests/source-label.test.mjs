@@ -39,12 +39,13 @@ test("same project file in two saved versions stays distinguishable", () => {
   assert.notEqual(a, b);
 });
 
-test("duplicate title and version do not collapse even when IDs share eight characters", () => {
+test("duplicate title and version stay distinct without displaying IDs", () => {
   const materials = [material(VERSION_A, "服务", 1), material(VERSION_B, "服务", 1)];
   const labels = [VERSION_A, VERSION_B].map(projectVersionId => sourceLabel({
     filePath: `${projectVersionId}/service.py`, projectVersionId,
   }, materials));
   assert.equal(new Set(labels).size, 2);
+  assert.ok(labels.every(label => !label.includes(VERSION_A) && !label.includes(VERSION_B)));
 });
 
 test("only the proven leading version prefix is shortened, never a nested UUID", () => {
@@ -64,10 +65,11 @@ test("UUID in a legitimate filename and a non-matching leading UUID are preserve
   }
 });
 
-test("historical or unrecognized metadata leaves the full raw source available", () => {
+test("only an explicit version identity removes a storage prefix", () => {
   const filePath = `${VERSION_A}/service.py`;
   assert.ok(sourceLabel({ filePath }).includes(filePath));
-  assert.ok(sourceLabel({ filePath, projectVersionId: VERSION_A }, []).includes(filePath));
+  assert.equal(sourceLabel({ filePath, projectVersionId: VERSION_A }, []), "service.py");
+  assert.equal(sourceLabel({ filePath: `${VERSION_A}\\src\\service.py`, projectVersionId: VERSION_A }, []), "src\\service.py");
   assert.ok(sourceLabel({ filePath, projectVersionId: null }, [
     material(VERSION_A, "当前同名项目", 9),
   ]).includes(filePath));
@@ -80,7 +82,7 @@ test("labels use the supplied fixed snapshot rather than another report's curren
   assert.ok(fixed.includes("投递时名称"));
   assert.ok(compact(fixed).includes("第1版"));
   assert.ok(!unrelated.includes("后来重命名项目"));
-  assert.ok(unrelated.includes(source.filePath));
+  assert.equal(unrelated, "service.py");
 });
 
 test("formatting does not mutate paths, snippets, IDs, ranges or frozen material metadata", () => {

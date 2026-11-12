@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { ReportEvidence } from "@/lib/api/domain";
-import { compactSourceLabel, sourceLabel, type SourceMaterial } from "@/lib/source-label";
+import { compactSourceLabel, sourceLabel, sourceRelativePath, type SourceMaterial } from "@/lib/source-label";
 
 type Source = Pick<ReportEvidence, "filePath" | "projectVersionId">;
 
@@ -15,15 +15,14 @@ export default function SourceIdentity({ source, materials = [], compact = false
 }
 
 export function SourceIdentityDetails({ source, children }: {
-  source: Pick<ReportEvidence, "filePath" | "projectVersionId" | "lineStart" | "lineEnd" | "citationId" | "contentHash" | "evidenceType">; children?: ReactNode;
+  source: Source; children?: ReactNode;
 }) {
+  const path = sourceRelativePath(source);
+  const hasDirectories = /[/\\]/.test(path);
+  if (!hasDirectories && !children) return null;
   return <details className="mt-3 text-xs leading-6 text-slate-600">
-    <summary className="cursor-pointer">完整来源与校验信息</summary>
+    <summary className="cursor-pointer">来源详情</summary>
+    {hasDirectories && <p className="mt-2 break-all">文件路径：{path}</p>}
     {children}
-    <p className="mt-2 break-all">保存路径：{source.filePath}<br />
-      材料版本ID：{source.projectVersionId || "历史版本未记录，保留原始路径"}<br />
-      原文范围：第 {source.lineStart}–{source.lineEnd} 行<br />
-      引用编号：{source.citationId || "规则层来源，无模型引用编号"}<br />
-      证据类型：{source.evidenceType}<br />内容摘要：{source.contentHash || "历史未记录"}</p>
   </details>;
 }
