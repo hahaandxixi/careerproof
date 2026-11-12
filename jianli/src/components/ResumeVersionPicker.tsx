@@ -41,10 +41,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
     <p className="text-sm font-medium">简历版本（选择一份）</p>
     {selected && selectedResume ? <div aria-label="已选简历版本" className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
       <span className="min-w-0 break-words">{displayMaterialTitle(selectedResume.title, selected.id)} · 第 {selected.versionNumber} 版
-        <span className="mt-1 block text-xs text-slate-600">
-          {!hideOriginalResumeFilename(selected.id) && selected.originalFilename && `${selected.originalFilename} · `}
-          {selected.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}
-        </span>
+        {selected.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
       </span>
       <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
     </div> : null}
