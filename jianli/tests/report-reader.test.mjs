@@ -46,7 +46,6 @@ const verdicts = await load("lib/verdict-display.js");
 const workspace = await load("lib/report-workspace.ts");
 const evidenceWorkspace = await load("lib/evidence-workspace.ts");
 const { default: Reader } = await load("components/ReportRequirementReader.tsx");
-const { default: Overview } = await load("components/ReportOverview.tsx");
 const { default: AiExplanation } = await load("components/ReportAiExplanation.tsx");
 const { default: SourcePanel } = await load("components/ReportSourcePanel.tsx");
 const { default: PaperHeader } = await load("components/ReportPaperHeader.tsx");
@@ -119,7 +118,7 @@ test("real reader SSR keeps every article and draft mounted, with one visible se
   assert.equal((html.match(/class="report-index-chip"/g) ?? []).length, items.length);
 });
 
-test("overview renders fixed identity, truthful fallback and a single existing-priority action", () => {
+test("shared report header keeps identity, fallback and both fixed versions accessible", () => {
   const report = {
     candidateName: "林舟", jobTitle: "后端开发", createdAt: "2026-10-22T10:00:00Z",
     analysisMode: "ai_evidence", aiProvider: "deepseek", aiFallbackUsed: true,
@@ -129,12 +128,11 @@ test("overview renders fixed identity, truthful fallback and a single existing-p
     ],
   };
   const before = JSON.stringify(report);
-  const html = renderToStaticMarkup(React.createElement(Overview, { report, role: "enterprise" }));
-  for (const text of ["企业查看", "林舟", "后端开发", "2 份个人作品", "本次固定版本", "核对材料", "保存的报告摘要"]) assert.ok(html.includes(text), text);
+  const html = renderToStaticMarkup(React.createElement(PaperHeader, { report }));
+  for (const text of ["林舟", "后端开发", "本次材料 2 份", "库存服务 · 第 1 版", "库存服务 · 第 2 版", "AI 分析未完成"]) assert.ok(html.includes(text), text);
   assert.ok(!html.includes("规则证据报告"));
   assert.ok(!html.includes("规则分析"));
-  assert.equal((html.match(/class="btn /g) ?? []).length, 1);
-  assert.ok(html.includes('href="#requirement-tests"'));
+  assert.match(html, /<details[^>]*><summary[^>]*>本次材料 2 份/);
   assert.ok(!html.includes("模型耗时"));
   assert.equal(JSON.stringify(report), before);
 });
@@ -196,7 +194,7 @@ function navigationFixture(hash = "", search = "") {
     pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
     filter(label) {
       const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
-      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && (typeof node.props.children === "string" ? node.props.children : nodes(node.props.children).filter(child => typeof child === "string").join("")).startsWith(label));
+      const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && React.Children.toArray(node.props.children).filter(child => typeof child === "string").join("").startsWith(label));
       assert.ok(button, label); button.props.onClick(); render();
     },
     cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
@@ -283,25 +281,26 @@ test("deep links escape a mismatched filter without losing the saved anchor", ()
  assert.equal(helpers.requirementForReportAnchor(items,"judgement-tests"),"tests");
 });
 
-test("integrated overview keeps fixed versions and fallback visible without duplicate counts or primary action", () => {
+test("shared report header displays analysis mode once and gives missing versions no count", () => {
  const value={candidateName:"林舟",jobTitle:"后端",createdAt:"2026-10-22T10:00:00Z",items,analysisMode:"ai_evidence",aiFallbackUsed:true,summary:"旧摘要",materials:[{title:"库存",versionNumber:2,kind:"project",id:"p"}]};
- const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
  const header=renderToStaticMarkup(React.createElement(PaperHeader,{report:value}));
- assert.ok(html.includes('href="#report-materials"')); assert.ok(!html.includes("规则分析结果") && !html.includes("当前显示规则分析结果")); assert.ok(!html.includes("这份材料说明了什么")); assert.ok(!html.includes("先核对「"));
- assert.match(header, /<h1[^>]*>后端<\/h1>/); assert.ok(header.includes("林舟")); assert.ok(header.includes("AI 分析未完成"));
- assert.ok(!html.includes("<h1"), "identity belongs to the shared paper header only");
- assert.ok(html.includes('href="#report-analysis"') && html.includes('href="#report-comparison"'));
+ assert.match(header, /<h1[^>]*>后端<\/h1>/); assert.ok(header.includes("林舟"));
+ assert.equal((header.match(/AI 分析未完成/g) ?? []).length,1);
+ const legacy=renderToStaticMarkup(React.createElement(PaperHeader,{report:{...value,materials:[]}}));
+ assert.match(legacy,/材料版本未记录/);
+ assert.doesNotMatch(legacy,/本次材料 0 份/);
 });
 
-test("overview counts saved evidence states, never equating rule coverage or review items with support", () => {
+test("one reader filter group counts saved evidence states and distinguishes review and coverage", () => {
  const values=[...items,{...items[0],requirementId:"rejected",confirmationStatus:"rejected"},{...items[0],requirementId:"outside",verdict:"unsupported"}];
  const value={candidateName:"合成学生",jobTitle:"后端",createdAt:"2026-10-27T00:00:00Z",items:values,analysisMode:"rules",aiFallbackUsed:false,materials:[]};
  const before=JSON.stringify(value);
- const html=renderToStaticMarkup(React.createElement(Overview,{report:value,role:"student",workbench:true}));
- assert.match(html,/report-status-name">有证据支持<\/span><strong>1</);
- assert.match(html,/report-status-name">待补或仅声明<\/span><strong>1</);
- assert.match(html,/全部 5/);
- assert.ok(html.includes("待补材料 1 项 · 仅简历声明 0 项 · 暂不支持 1 项 · 合计 5 项要求"));
+ const html=renderToStaticMarkup(React.createElement(Reader,{items:values},...articles));
+ assert.equal((html.match(/按已保存的材料支持状态筛选/g) ?? []).length,1);
+ assert.match(html,/有证据支持 <strong>1<\/strong>/);
+ assert.match(html,/待补或仅声明 <strong>1<\/strong>/);
+ assert.match(html,/全部要求 <strong>5<\/strong>/);
+ assert.match(html,/未覆盖或需复核 <strong>2<\/strong>/);
  assert.equal(JSON.stringify(value),before);
 });
 

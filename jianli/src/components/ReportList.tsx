@@ -1,5 +1,5 @@
 "use client";
-import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import IdentityName from "./IdentityName";
 
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { readReportListState, reportListHref, reportListQuery, reportVersionHref
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
 import ListPagination from "./ListPagination";
+import { ReportMaterialList, reportMaterialCount } from "./ReportMaterialVersions";
 
 export function ReportHistoryCard({ report, onSameJob, origin }: { report: ReportSummary; onSameJob?: (jobId: string, candidateId: string) => void; origin?: string }) {
   const latest = report.isLatestForJob === true;
@@ -20,13 +21,13 @@ export function ReportHistoryCard({ report, onSameJob, origin }: { report: Repor
     <div className="report-record-headline">
       <div className="report-record-heading">
         <div className="report-record-title-line"><Link className="report-record-title" href={reportVersionHref(report.id, origin)}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>{latest && <span className="status-chip report-latest-chip">最新报告</span>}{history && <span className="report-followup-mark">历史报告</span>}</div>
-        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time>{report.materials?.length ? <> · <span className="report-materials-inline">{report.materials.map((material, index) => <span key={`${material.kind}-${material.id}`}>{index > 0 ? " · " : ""}{displayMaterialTitle(material.title, material.id)} <span className="report-material-version">v{material.versionNumber}</span></span>)}</span></> : null}{onSameJob && <> · <button type="button" className="report-same-job" onClick={() => onSameJob(report.jobId, report.candidateId)}>同岗位共{report.jobReportCount !== undefined ? ` ${report.jobReportCount} ` : ""}份报告</button></>}</p>
+        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time>{" · "}{reportMaterialCount(report.materials)}{onSameJob && <> · <button type="button" className="report-same-job" onClick={() => onSameJob(report.jobId, report.candidateId)}>同岗位共{report.jobReportCount !== undefined ? ` ${report.jobReportCount} ` : ""}份报告</button></>}</p>
       </div>
       <div className="report-record-actions"><Link className="btn" href={reportVersionHref(report.id, origin)}>查看报告</Link>
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={reportVersionHref(report.id, origin, "#report-comparison")}>版本对比</Link>}
       </div>
     </div>
-    <div className="report-record-foot"><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary><p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
+    <div className="report-record-foot"><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary>{!!report.materials?.length && <ReportMaterialList materials={report.materials} />}<p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p>{report.evidenceContextVersion && <p className="mt-2 text-xs text-slate-500">材料证据范围：{report.evidenceContextVersion}</p>}</details></div>
   </article>;
 }
 

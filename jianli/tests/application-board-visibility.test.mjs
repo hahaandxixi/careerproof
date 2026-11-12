@@ -44,7 +44,7 @@ function fixture(count=2,editRow=value=>value,options={}){
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`,jobId,items:options.fixedItems?.(id)??[]}};},
   replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
- const modules={"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
+ const modules={"./ReportMaterialVersions":{__esModule:true,default:stub("materials")},"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
   "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./EvidenceSnippet":{default:stub("evidence"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
   "@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/notification-session":{applicationAnchorId:()=>null,clearApplicationAnchor:()=>{},includeApplicationTarget:async rows=>rows},
   "@/lib/application-anchor":{createApplicationAnchorRevealer},"./AccessGate":{default:stub("gate"),__esModule:true},"./AuthProvider":{useAuth:()=>({user:{id:ownerId}})},
@@ -99,7 +99,7 @@ test("comparison selection survives tab return and revoked candidates are pruned
 test("three and four selected candidates retain the heatmap and offer only a two-person deep view",async()=>{
  const h=fixture(4);let tree=await h.settle();
  for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"显示本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
- if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`热力图仅看所选（${count}）`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,"双人对照").props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"热力矩阵").props.onClick();tree=h.render();}}
+ if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`热力图仅看所选（${count}）`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,"双人对照").props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"候选人总览").props.onClick();tree=h.render();}}
  h.button(tree,"清空对照").props.onClick();tree=await h.settle();assert.ok(!h.nodes(tree).some(n=>Array.isArray(n.props?.candidates)));
 });
 
@@ -119,7 +119,7 @@ test("enterprise status and evidence filters apply immediately while retaining c
 test("selected heatmap cell identifies both candidate and requirement after returning to the matrix",async()=>{
  const h=fixture();let tree=await h.settle();
  const cell=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
- assert.ok(cell);await cell.props.onClick();tree=await h.settle();h.button(tree,"热力矩阵").props.onClick();tree=h.render();
+ assert.ok(cell);await cell.props.onClick();tree=await h.settle();h.button(tree,"候选人总览").props.onClick();tree=h.render();
  const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
  assert.equal(selected.props["aria-pressed"],true);assert.match(selected.props.className,/ring-inset/);
  assert.equal(h.counts.reply,0);
