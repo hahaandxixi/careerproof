@@ -1295,6 +1295,12 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 .enterprise-radar-heading p:not(.workspace-meta) { color: #526176; font-size: 12px; }
 .enterprise-radar-embed > section { border: 0; border-radius: 0; background: transparent; padding: 0; }
 .enterprise-radar-embed svg { max-width: 100%; }
+.enterprise-review-page .radar-grid-ring, .enterprise-review-page .radar-grid-axis {
+  stroke: #a3b4ad; stroke-width: 1.1px; vector-effect: non-scaling-stroke;
+}
+.enterprise-review-page .radar-grid-ring[data-outer="true"] { stroke: #859b92; stroke-width: 1.35px; }
+.enterprise-review-page .radar-grid-axis[data-selected="true"] { stroke: #6e897e; stroke-width: 1.5px; }
+.enterprise-review-page .radar-grid-tick { fill: #52665e; }
 .enterprise-review-workbench[data-mode="radar"] .enterprise-matrix-workspace,
 .enterprise-review-workbench[data-mode="matrix"] .enterprise-radar-workspace { display: none; }
 .enterprise-source-pane { grid-area: source; }
