@@ -86,6 +86,9 @@ class ResumeSectionView(APIModel):
 
 class ResumePreview(APIModel):
     id: UUID
+    title: str
+    original_filename: str | None
+    version_number: int
     status: str
     sections: list[ResumeSectionView]
 

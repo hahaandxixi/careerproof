@@ -252,11 +252,15 @@ class PortfolioService:
 
     async def preview_resume(self, version_id: UUID, current_user: User) -> ResumePreview:
         student = await self._student(current_user)
-        version = await self.portfolios.owned_resume_version(version_id, student.id)
-        if not version:
+        result = await self.portfolios.owned_resume_version(version_id, student.id)
+        if result is None:
             raise AppError("简历版本不存在或无权访问", code=4045, status_code=404)
+        version, title = result
         return ResumePreview(
             id=version.id,
+            title=title,
+            original_filename=version.original_filename,
+            version_number=version.version_number,
             status=version.parse_status,
             sections=[
                 ResumeSectionView.model_validate(item)

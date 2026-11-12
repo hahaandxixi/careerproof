@@ -27,7 +27,14 @@ export interface JobInput {
   title: string; companyName: string; description: string; enterpriseId: string;
   category: string; city: string; employmentType: string; status: string; requirements: RequirementInput[];
 }
-export interface ResumePreview { id: string; status: string; sections: { id: string; sectionType: string; content: string; pageNumber: number | null }[] }
+export interface ResumePreview {
+  id: string;
+  title: string;
+  originalFilename: string | null;
+  versionNumber: number;
+  status: string;
+  sections: { id: string; sectionType: string; content: string; pageNumber: number | null }[];
+}
 export interface ProjectFileSummary { id: string; relativePath: string; language: string; sizeBytes: number; lineCount: number }
 export interface ProjectFileContent { id: string; relativePath: string; content: string; projectVersionId: string }
 export interface ReportSummary {
