@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { applicationBoardHistoryState, readApplicationBoardHistory } from "../src/lib/application-board-history.ts";
 
-const navigation = { page: 2, filters: { q: "Python", status: "viewed", requirementId: "fastapi", verdict: "supported" }, comparisonIds: ["a", "b", "u"] };
+const navigation = { page: 2, filters: { q: "Python", status: "viewed", requirementId: "fastapi", verdict: "supported_only" }, comparisonIds: ["a", "b", "u"] };
 
 test("history retains only navigation fields and preserves Next router state", () => {
   const previous = { __NA: true, __PRIVATE_NEXTJS_INTERNALS_TREE: ["saved-route"] };

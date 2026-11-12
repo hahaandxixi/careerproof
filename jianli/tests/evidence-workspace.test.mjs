@@ -4,7 +4,7 @@ import { evidenceWorkspace, evidenceWorkspaceSummary, distinctActionText, effect
 const item = (id, verdict, weight = 1, confirmationStatus = "pending") => ({ requirementId: id, verdict, weight, confirmationStatus });
 test("unsupported, rejected, corrected and unknown states never inflate support counts", () => {
  const result = evidenceWorkspace([item("a", "supported"), item("b", "verified"), item("c", "partial"), item("d", "gap"), item("e", "claimed_only"), item("f", "unsupported"), item("g", "supported", 5, "rejected"), item("h", "partial", 5, "corrected"), item("i", "future")]);
- assert.deepEqual([result.supported.length, result.partial.length, result.gaps.length, result.other.length], [2,1,2,4]);
+ assert.deepEqual([result.supported.length, result.gaps.length, result.other.length], [2,3,4]);
  assert.deepEqual(result.priorities.map(x => x.requirementId), ["c","d","e"]);
 });
 test("priorities preserve requirement identities, stable equal weights and original report order", () => {
@@ -23,13 +23,13 @@ test("all gaps survive a three-item action plan; priority uses weight, level the
  const state = evidenceWorkspace(items);
  assert.equal(state.gaps.length, 6);
  assert.deepEqual(state.gaps.map(value => value.requirementId), ["r2", "r3", "r4", "r5", "r0", "r1"]);
- assert.equal(state.supported.length + state.partial.length + state.gaps.length + state.other.length, items.length);
+ assert.equal(state.supported.length + state.gaps.length + state.other.length, items.length);
 });
 
 test("summary preserves every saved status, excludes reviewed items from support and invents no recommendation", () => {
  const items = [{ ...item("a", "supported"), requirementTitle: "接口" }, { ...item("b", "claimed_only", 5), requirementTitle: "Python" }, { ...item("c", "supported", 5, "rejected"), requirementTitle: "SQL" }];
  const summary = evidenceWorkspaceSummary(items);
- assert.match(summary, /3 项要求：1 项有证据支持、0 项部分支持、1 项待补材料、1 项未覆盖或需复核/);
+ assert.match(summary, /3 项要求：1 项有证据支持、1 项待补或仅声明、1 项未覆盖或需复核/);
  assert.ok(summary.includes("先补「Python」的材料缺口"));
  assert.ok(!evidenceWorkspaceSummary([items[0]]).includes("先补"));
  assert.ok(!evidenceWorkspaceSummary([]).includes("0 项有证据支持"));
@@ -58,7 +58,7 @@ test("manual review overrides every verdict in counts and colors", () => {
    assert.equal(effectiveReportStatus(reviewed), confirmation);
    assert.equal(reportStatusTone(reviewed), "other");
    const state = evidenceWorkspace([reviewed]);
-   assert.deepEqual([state.supported.length, state.partial.length, state.gaps.length, state.other.length], [0,0,0,1]);
+   assert.deepEqual([state.supported.length, state.gaps.length, state.other.length], [0,0,1]);
   }
  }
  assert.equal(effectiveReportStatus(item("u", "not_evaluated")), "not_evaluated");

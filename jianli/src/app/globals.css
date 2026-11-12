@@ -219,7 +219,7 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 .material-register { container-type: inline-size; }
 .material-register-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.35fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
   align-items: start;
   gap: 8px 12px;
   padding: 14px 0;
@@ -230,7 +230,7 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 @container (min-width: 880px) {
   .material-register-row, .material-register-columns {
     display: grid;
-    grid-template-columns: minmax(11rem, 1.4fr) minmax(6rem, .62fr) minmax(6rem, .55fr) minmax(9rem, .82fr) minmax(15rem, 1fr);
+    grid-template-columns: minmax(11rem, 1.4fr) minmax(6rem, .62fr) minmax(9rem, .82fr) minmax(15rem, 1fr);
     gap: 16px;
   }
   .material-register-columns {
@@ -601,7 +601,7 @@ main.site-frame { padding-top: 20px; }
 @container (min-width: 880px) {
   .material-workspace .material-register-row,
   .material-workspace .material-register-columns {
-    grid-template-columns: minmax(12rem, 1fr) 5.2rem 6.5rem 9rem 17.5rem;
+    grid-template-columns: minmax(12rem, 1fr) 5.2rem 9rem 17.5rem;
     gap: 14px;
   }
   .material-workspace .material-row-heading { min-width: 0; }
@@ -671,7 +671,7 @@ main.site-frame { padding-top: 20px; }
   .material-review-layout:has(.material-upload-surface) .material-register-columns { display: grid; align-items: center; }
   .material-review-layout:has(.material-upload-surface) .material-register-row,
   .material-review-layout:has(.material-upload-surface) .material-register-columns {
-    grid-template-columns: minmax(9rem, 1fr) 4rem 5rem 9rem 14.5rem;
+    grid-template-columns: minmax(9rem, 1fr) 4rem 9rem 14.5rem;
     gap: 8px;
   }
   .material-review-layout:has(.material-upload-surface) .material-row-heading,
@@ -682,7 +682,7 @@ main.site-frame { padding-top: 20px; }
 @media (min-width: 1440px) {
   .material-review-layout:has(.material-upload-surface) .material-register-row,
   .material-review-layout:has(.material-upload-surface) .material-register-columns {
-    grid-template-columns: minmax(10rem, 1fr) 4.5rem 6rem 9rem 16rem;
+    grid-template-columns: minmax(10rem, 1fr) 4.5rem 9rem 16rem;
     gap: 10px;
   }
 }
@@ -1011,7 +1011,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-index-filters button.is-active { border-color: #1d4a40; background: #edf4f0; color: #173c34; font-weight: 600; }
 .report-index-filters button strong { font-variant-numeric: tabular-nums; }
 .report-index-filters button[data-status="supported"] { border-inline-start-color: #3f7a68; }
-.report-index-filters button[data-status="partial"] { border-inline-start-color: #6861a2; }
 .report-index-filters button[data-status="gaps"] { border-inline-start-color: #b77913; }
 .report-index-filters button[data-status="other"] { border-inline-start-color: #7b8580; }
 .report-index-dot { width: 7px; height: 7px; margin-top: 6px; border-radius: 999px; background: #7b8580; }
@@ -1027,7 +1026,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-heatmap-legend { display: flex; flex-wrap: wrap; gap: 3px 10px; color: #526176; font-size: 10px; }
 .report-heatmap-legend span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 2px; background: #7b8580; vertical-align: 1px; }
 .report-heatmap-legend span[data-tone="supported"]::before { background: #3f7a68; }
-.report-heatmap-legend span[data-tone="partial"]::before { background: #b08a3e; }
 .report-heatmap-legend span[data-tone="gap"]::before { background: #b64531; }
 .report-heatmap-grid { display: grid; gap: 1px; background: #d8d0c2; border: 1px solid #d8d0c2; }
 .report-heatmap-row { display: grid; grid-template-columns: minmax(150px, 1.3fr) repeat(3, minmax(100px, .8fr)); gap: 1px; background: #fffefa; color: #263b36; text-decoration: none; }
@@ -1035,7 +1033,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-heatmap-row strong { color: #173c34; }
 .report-heatmap-row:hover { background: #edf4f0; }
 .report-heatmap-row[data-tone="supported"] { box-shadow: inset 3px 0 #3f7a68; }
-.report-heatmap-row[data-tone="partial"] { box-shadow: inset 3px 0 #b08a3e; }
 .report-heatmap-row[data-tone="gap"] { box-shadow: inset 3px 0 #b64531; }
 .report-heatmap-row[data-tone="other"] { box-shadow: inset 3px 0 #7b8580; }
 .report-heatmap-row > span[data-state="on"] { background: #edf4f0; }
@@ -1057,7 +1054,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-heatmap-row > span[data-kind="claim"][data-state="on"] { background: #eef3f7; color: #38566f; }
 .report-heatmap-row > span[data-kind="source"][data-state="on"] { background: #e7efe9; color: #1d4a40; }
 .report-heatmap-row[data-tone="supported"] .report-heatmap-verdict { background: #e2efe9; color: #245c50; }
-.report-heatmap-row[data-tone="partial"] .report-heatmap-verdict { background: #f7efd9; color: #7a5c2e; }
 .report-heatmap-row[data-tone="gap"] .report-heatmap-verdict { background: #f8e7e2; color: #8f3b2d; }
 .report-heatmap-row[data-tone="other"] .report-heatmap-verdict { background: #eceeec; color: #526176; }
 
@@ -1236,11 +1232,10 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
   .material-review-layout:has(.material-upload-surface) { grid-template-columns: minmax(0, 1fr) minmax(17rem, 32%); }
   .material-review-layout:has(.material-upload-surface) .material-register-row,
   .material-review-layout:has(.material-upload-surface) .material-register-columns {
-    grid-template-columns: minmax(10rem, 1fr) 3.2rem 4.5rem 7.8rem 11rem;
+    grid-template-columns: minmax(10rem, 1fr) 3.2rem 7.8rem 11rem;
     gap: 8px;
   }
 }
-.material-workspace .material-row-heading .break-all { overflow-wrap: anywhere; word-break: normal; }
 @media (min-width: 1024px) and (max-width: 1439px) {
   .material-review-layout:has(.material-upload-surface) .material-row-actions { white-space: normal; }
   .material-review-layout:has(.material-upload-surface) .material-row-actions .action-link,

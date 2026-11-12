@@ -29,12 +29,12 @@ test("same requirement across reports/jobs retains distinct verdicts, fixed mate
   assert.deepEqual(s.contexts.map(c => c.item.verdict), ["partial", "supported"]);
   assert.deepEqual(s.contexts.map(c => c.materials[0].versionNumber), [1, 2]);
   assert.deepEqual(s.contexts.map(c => c.isLatestForJob), [false, undefined]);
-  assert.equal(s.counts.partial, 1); assert.equal(s.counts.supported, 1);
+  assert.equal(s.counts.gap, 1); assert.equal(s.counts.supported, 1);
 });
 test("all evidence states are counted; unsupported and unknown are not proficiency zero", () => {
   const verdicts = ["supported", "partial", "claimed_only", "gap", "unsupported", "new_server_status", "not_evaluated", "verified"];
   const result = buildSkillPanorama([report("a", verdicts.map((v, i) => item(String(i), "Python", v)))]);
-  assert.deepEqual(result.counts, { supported: 2, partial: 1, claimed_only: 1, gap: 1, unsupported: 1, unknown: 2 });
+  assert.deepEqual(result.counts, { supported: 2, claimed_only: 1, gap: 2, unsupported: 1, unknown: 2 });
   assert.equal(panoramaStatus(""), "unknown"); assert.equal(result.contextCount, verdicts.length);
 });
 test("first scope is one page, details concurrency is bounded, load more is explicit, repeated clicks do not duplicate", async () => {

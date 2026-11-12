@@ -23,7 +23,6 @@
 .legend li { display: inline-flex; align-items: center; gap: 6px; }
 .legend i, .skillMarks i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .panorama [data-status="supported"] { background: #147d78; color: #fff; }
-.panorama [data-status="partial"] { background: #6564b7; color: #fff; }
 .panorama [data-status="claimed_only"] { background: #b77913; color: #fff; }
 .panorama [data-status="gap"] { background: #e4c68d; color: #57390b; }
 .panorama [data-status="unsupported"] { background: #64748b; color: #fff; }

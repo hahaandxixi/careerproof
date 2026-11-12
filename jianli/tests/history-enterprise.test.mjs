@@ -64,9 +64,9 @@ test("fixed report overview separates evidence support, gaps and uncovered requi
   assert.match(html, /合成甲 · 投递时固定报告/);
   assert.ok(!html.includes("规则证据报告"));
   assert.match(html, /有证据支持<\/dt><dd[^>]*>1<\/dd>/);
-  assert.match(html, /待补材料<\/dt><dd[^>]*>2<\/dd>/);
+  assert.match(html, /待补材料<\/dt><dd[^>]*>3<\/dd>/);
   assert.match(html, /岗位要求<\/dt><dd[^>]*>5<\/dd>/);
-  assert.match(html, /部分支持 1 项 · 未覆盖或需复核 1 项/);
+  assert.match(html, /未覆盖或需复核 1 项/);
   assert.match(html, /<details[^>]*><summary[^>]*>报告时间、材料版本与判断范围<\/summary>/);
   assert.match(html, /报名服务 · 第2版/);
   assert.match(html, /保留的完整判断/);

@@ -1,5 +1,6 @@
 import type { ReportItem } from "./api/domain";
 import type { ApplicationView } from "./api/client";
+import { isMaterialGap } from "./verdict-display.js";
 
 /** Snapshot basis plus actual axes must agree; never align unlike requirements by position. */
 export function comparableRadarAxes(a: ApplicationView, b: ApplicationView): boolean {
@@ -46,8 +47,11 @@ export function filterApplications(
   return items.filter(item => {
     const text = `${item.candidateName} ${item.dimensions.map(d => `${d.skill} ${d.title}`).join(" ")}`;
     const dimensions = focus ? item.dimensions.filter(d => d.requirementId === focus) : item.dimensions;
-    const matchesVerdict = !verdict || dimensions.some(d => verdict === "supported"
-      ? ["supported", "partial", "verified"].includes(d.verdict) : d.verdict === verdict);
+    const matchesVerdict = !verdict || dimensions.some(d => {
+      if (verdict === "supported_only") return d.verdict === "supported" || d.verdict === "verified";
+      if (verdict === "needs_material") return isMaterialGap(d.verdict);
+      return verdict === "supported" ? ["supported", "partial", "verified"].includes(d.verdict) : d.verdict === verdict;
+    });
     return text.toLocaleLowerCase().includes(keyword) && matchesVerdict;
   }).sort((a, b) => {
     if (mixed) return b.createdAt.localeCompare(a.createdAt);

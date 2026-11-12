@@ -98,7 +98,6 @@ export default function ReportRequirementReader({ items, children, overview, sel
     { key: "priority", label: "优先处理", count: state.priorities.length + state.other.length },
     { key: "all", label: "全部要求", count: items.length },
     { key: "supported", label: "有证据支持", count: state.supported.length },
-    { key: "partial", label: "部分支持", count: state.partial.length },
     { key: "gaps", label: "待补或仅声明", count: state.gaps.length },
     { key: "other", label: "未覆盖或需复核", count: state.other.length },
   ];

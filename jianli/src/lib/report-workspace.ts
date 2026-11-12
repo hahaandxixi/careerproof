@@ -3,7 +3,7 @@ import { validatedGrowthAdvice } from "./analysis-status";
 import { effectiveReportStatus, evidenceWorkspace } from "./evidence-workspace";
 import { VERDICT_LABELS } from "./verdict-display.js";
 
-export type WorkspaceFilter = "priority" | "all" | "supported" | "partial" | "gaps" | "other";
+export type WorkspaceFilter = "priority" | "all" | "supported" | "gaps" | "other";
 
 /** Reading filters project saved states; they never change a verdict or material. */
 export function workspaceRequirements(items: ReportItem[], filter: WorkspaceFilter): ReportItem[] {

@@ -234,8 +234,10 @@ async def test_enterprise_filters_use_same_snapshot_item_before_count_and_page(
         required, other_requirement = str(uuid4()), str(uuid4())
         base = datetime(2026, 1, 1, tzinfo=UTC)
         expected = None
+        candidates = {}
         async with factory() as session:
             for index in range(28):
+                verdict = ("supported", "partial", "partial")[index] if index < 3 else "gap"
                 user = User(
                     email=f"candidate-{index}-{uuid4().hex}@example.test",
                     password_hash="synthetic",
@@ -268,7 +270,8 @@ async def test_enterprise_filters_use_same_snapshot_item_before_count_and_page(
                                 "skill": "Python",
                                 "explanation": "非法输入拒绝" if index == 0 else "其他说明",
                                 "aiExplanation": "持久化提交一致性" if index == 0 else None,
-                                "verdict": "supported" if index == 0 else "gap",
+                                "verdict": verdict,
+                                "confirmationStatus": "rejected" if index == 2 else "pending",
                             },
                             {
                                 "requirementId": other_requirement,
@@ -280,6 +283,7 @@ async def test_enterprise_filters_use_same_snapshot_item_before_count_and_page(
                 )
                 session.add(item)
                 await session.flush()
+                candidates[index] = str(item.id)
                 if index == 0:
                     expected = str(item.id)
             await session.commit()
@@ -294,8 +298,20 @@ async def test_enterprise_filters_use_same_snapshot_item_before_count_and_page(
         )
         assert filtered.status_code == 200, filtered.text
         data = filtered.json()["data"]
-        assert data["total"] == data["page"] == 1
-        assert [row["id"] for row in data["items"]] == [expected]
+        assert data["total"] == 3 and data["page"] == 1
+        assert [row["id"] for row in data["items"]] == [candidates[2], candidates[1], expected]
+        for verdict, total, included, excluded in (
+            ("supported_only", 1, {expected}, {candidates[1], candidates[2], candidates[3]}),
+            ("needs_material", 25, {candidates[1], candidates[3]}, {expected, candidates[2]}),
+        ):
+            response = await hr.get(
+                endpoint, params={"requirementId": required, "verdict": verdict, "pageSize": 100}
+            )
+            assert response.status_code == 200, response.text
+            page = response.json()["data"]
+            found = {row["id"] for row in page["items"]}
+            assert page["total"] == len(found) == total
+            assert included <= found and excluded.isdisjoint(found)
         keyword = await hr.get(endpoint, params={"q": "100%_"})
         assert keyword.json()["data"]["total"] == 1
         assert keyword.json()["data"]["items"][0]["id"] == expected

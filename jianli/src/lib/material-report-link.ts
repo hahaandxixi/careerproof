@@ -9,7 +9,8 @@ type ReportSourceContext = {
 };
 
 export function readWorkspaceFilter(value?: string | null): WorkspaceFilter | undefined {
-  const filters: readonly WorkspaceFilter[] = ["priority", "all", "supported", "partial", "gaps", "other"];
+  if (value === "partial") return "gaps";
+  const filters: readonly WorkspaceFilter[] = ["priority", "all", "supported", "gaps", "other"];
   return filters.find(filter => filter === value);
 }
 

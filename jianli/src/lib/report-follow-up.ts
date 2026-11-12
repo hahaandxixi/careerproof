@@ -22,7 +22,7 @@ export function followUpGuidance(report: MatchReport, item: ReportItem, savedPla
   const action = savedRequirementAction(report, item);
   const plan = savedPlan ?? advice?.taskPlan;
   const state = evidenceWorkspace([item]);
-  const actionable = state.gaps.length + state.partial.length > 0;
+  const actionable = state.gaps.length > 0;
   return {
     gap: advice?.gap || item.evidenceLevelGap?.trim() || action?.evidenceGap?.trim() || requirementConclusion(item),
     action, plan,

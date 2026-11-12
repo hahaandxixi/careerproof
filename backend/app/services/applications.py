@@ -499,10 +499,17 @@ class ApplicationService:
             if requirement_id is not None:
                 item_conditions.append(saved["requirementId"].as_string() == str(requirement_id))
             if verdict:
-                accepted = ("supported", "partial", "verified") if verdict == "supported" else (
-                    verdict,
-                )
+                accepted = {
+                    "supported": ("supported", "partial", "verified"),
+                    "supported_only": ("supported", "verified"),
+                    "needs_material": ("partial", "gap"),
+                }.get(verdict, (verdict,))
                 item_conditions.append(saved["verdict"].as_string().in_(accepted))
+                if verdict in {"supported_only", "needs_material"}:
+                    item_conditions.append(
+                        func.coalesce(saved["confirmationStatus"].as_string(), "")
+                        .not_in(("rejected", "corrected"))
+                    )
             conditions.append(select(1).select_from(entries).where(*item_conditions).exists())
         total = int(
             await self.session.scalar(
