@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { GrowthTask, PrivateAnswerDraft } from "@/lib/api/domain";
+import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import { useAuth } from "./AuthProvider";
 import ListPagination from "./ListPagination";
 import GrowthComparison from "./GrowthComparison";
@@ -52,7 +53,15 @@ function History({ id }: { id?: string }) {
     {task && <>
       <section className="panel space-y-3"><h2 className="text-lg font-semibold">{task.requirementTitle}</h2><p className="text-sm text-slate-600">{task.jobTitle}</p><p className="whitespace-pre-wrap">{task.gap}</p><p className="whitespace-pre-wrap">{task.originalAction}</p><Link className="btn-secondary" href={`/reports/${task.baseReportId}#requirement-${task.requirementId}`}>原报告</Link>{task.targetReportId && <Link className="btn-secondary ml-3" href={`/reports/${task.targetReportId}`}>后续报告</Link>}
         {task.actionNeedsRecheck && <p role="alert" className="text-amber-800">原建议需重新核对。{task.taskPlanWarning}</p>}
-        <details><summary className="cursor-pointer py-2">保存的计划与材料</summary><p>{task.plan.deliverable}</p><ol className="list-decimal pl-5">{task.plan.steps.map((step, i) => <li key={i}>{step}</li>)}</ol><ul className="mt-2 list-disc pl-5">{task.plan.acceptanceChecks.map((check, i) => <li key={i}>{check}</li>)}</ul><ul className="mt-3 space-y-2">{task.materials.map(material => <li key={material.id}><Link className="text-indigo-700" href={`/materials/${material.kind}/${material.id}`}>{material.title} · 第 {material.versionNumber} 版</Link></li>)}</ul></details>
+        <details><summary className="cursor-pointer py-2">保存的计划与材料</summary><p>{task.plan.deliverable}</p><ol className="list-decimal pl-5">{task.plan.steps.map((step, i) => <li key={i}>{step}</li>)}</ol><ul className="mt-2 list-disc pl-5">{task.plan.acceptanceChecks.map((check, i) => <li key={i}>{check}</li>)}</ul>
+          <ul className="mt-3 space-y-2">{task.materials.map(material => {
+            const name = `${displayMaterialTitle(material.title, material.id)} · 第 ${material.versionNumber} 版`;
+            return <li key={material.id}>{material.kind === "project"
+              ? <Link className="text-indigo-700" href={`/materials/project/${material.id}`}>{name}</Link>
+              : name
+            }</li>;
+          })}</ul>
+        </details>
       </section>
       {task.comparison && <GrowthComparison task={task} />}
       {draft && <details className="panel"><summary className="cursor-pointer">已保存的私人草稿</summary><p className="mt-3 whitespace-pre-wrap">{draft.text}</p></details>}

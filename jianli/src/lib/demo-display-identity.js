@@ -84,7 +84,7 @@ export function displayMaterialTitle(title, id) {
   return materialAliases.get(id) ?? title;
 }
 
-/** Only these verified historical fixtures keep raw text behind a disclosure. */
+/** Only these verified historical fixtures tuck the original filename into details. */
 export function isLegacyAcceptanceResume(versionId) {
   return legacyAcceptanceResumes.has(versionId);
 }

@@ -105,7 +105,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
       <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
-        {complete && <Link className="action-link" href={`/materials/${item.kind}/${item.versionId}`}>{item.kind === "resume" ? "核对解析内容" : "查看内容"}</Link>}
+        {complete && item.kind === "project" && <Link className="action-link" href={`/materials/project/${item.versionId}`}>查看内容</Link>}
         {onUploadVersion && <button type="button" className="btn-secondary" disabled={uploadDisabled} onClick={onUploadVersion}>上传新版</button>}
         {!complete && item.taskId && <Link className={failed ? "btn" : "btn-secondary"} href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
         {extraActions.length > 1 ? <details className="relative text-sm text-slate-600">
