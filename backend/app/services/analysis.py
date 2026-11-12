@@ -562,7 +562,7 @@ class AnalysisService:
     async def list_reports(
         self, user: User, page: int = 1, page_size: int = 20,
         *, q: str | None = None, job_id: UUID | None = None, scope: str = "product",
-        view: str = "reports",
+        view: str = "reports", candidate_id: str | None = None,
     ):
         # The count and the page slice share the same ownership predicate, and a
         # caller is clamped to the last available page instead of an empty page.
@@ -574,13 +574,23 @@ class AnalysisService:
         ownership = [AnalysisTask.created_by == user.id]
         if scope != "all":
             ownership.append(MatchReport.candidate_ref == str(user.id))
+        if candidate_id is not None:
+            ownership.append(MatchReport.candidate_ref == candidate_id)
+        version_group = (MatchReport.job_id, MatchReport.candidate_ref)
+        newest_first = (MatchReport.created_at.desc(), MatchReport.id.desc())
         history = (
             select(
                 MatchReport.id.label("report_id"),
-                func.count().over(partition_by=MatchReport.job_id).label("job_count"),
+                func.count().over(partition_by=version_group).label("job_count"),
+                func.row_number().over(
+                    partition_by=version_group, order_by=newest_first,
+                ).label("version_order"),
                 func.row_number().over(
                     partition_by=MatchReport.job_id,
-                    order_by=(MatchReport.created_at.desc(), MatchReport.id.desc()),
+                    order_by=(
+                        (MatchReport.candidate_ref == str(user.id)).desc(),
+                        *newest_first,
+                    ),
                 ).label("job_order"),
             )
             .join(AnalysisTask, AnalysisTask.id == MatchReport.analysis_task_id)
@@ -610,7 +620,7 @@ class AnalysisService:
         )
         page = min(page, max(1, (total + page_size - 1) // page_size))
         rows = await self.session.execute(
-            select(MatchReport, history.c.job_count, history.c.job_order)
+            select(MatchReport, history.c.job_count, history.c.version_order)
             .join(history, history.c.report_id == MatchReport.id)
             .where(*conditions)
             .order_by(MatchReport.created_at.desc(), MatchReport.id.desc())

@@ -13,7 +13,7 @@ import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
 import ListPagination from "./ListPagination";
 
-export function ReportHistoryCard({ report, onSameJob, origin }: { report: ReportSummary; onSameJob?: (jobId: string) => void; origin?: string }) {
+export function ReportHistoryCard({ report, onSameJob, origin }: { report: ReportSummary; onSameJob?: (jobId: string, candidateId: string) => void; origin?: string }) {
   const latest = report.isLatestForJob === true;
   const history = report.isLatestForJob === false;
   return <article className={`workspace-row report-record ${latest ? "is-latest" : history ? "is-history" : "is-record"}`}>
@@ -21,7 +21,7 @@ export function ReportHistoryCard({ report, onSameJob, origin }: { report: Repor
     <div className="report-record-headline">
       <div className="report-record-heading">
         <div className="report-record-title-line"><Link className="report-record-title" href={reportVersionHref(report.id, origin)}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>{latest && <span className="status-chip report-latest-chip">最新报告</span>}{history && <span className="report-followup-mark">有后续报告</span>}</div>
-        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time>{report.materials?.length ? <> · <span className="report-materials-inline">{report.materials.map((material, index) => <span key={`${material.kind}-${material.id}`}>{index > 0 ? " · " : ""}{displayMaterialTitle(material.title, material.id)} <span className="report-material-version">v{material.versionNumber}</span></span>)}</span></> : null}{onSameJob && <> · <button type="button" className="report-same-job" onClick={() => onSameJob(report.jobId)}>同岗位共{report.jobReportCount !== undefined ? ` ${report.jobReportCount} ` : ""}份报告</button></>}</p>
+        <p className="report-record-meta"><IdentityName name={report.candidateName} identityId={report.candidateId}/><time dateTime={report.createdAt}> · {new Date(report.createdAt).toLocaleString("zh-CN")}</time>{report.materials?.length ? <> · <span className="report-materials-inline">{report.materials.map((material, index) => <span key={`${material.kind}-${material.id}`}>{index > 0 ? " · " : ""}{displayMaterialTitle(material.title, material.id)} <span className="report-material-version">v{material.versionNumber}</span></span>)}</span></> : null}{onSameJob && <> · <button type="button" className="report-same-job" onClick={() => onSameJob(report.jobId, report.candidateId)}>同岗位共{report.jobReportCount !== undefined ? ` ${report.jobReportCount} ` : ""}份报告</button></>}</p>
       </div>
       <div className="report-record-actions"><Link className="btn" href={reportVersionHref(report.id, origin)}>查看报告</Link>
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={reportVersionHref(report.id, origin, "#report-comparison")}>版本对比</Link>}
@@ -39,13 +39,13 @@ function HistoryWorkspace() {
   const { user } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
-  const { q, jobId, page, scope } = readReportListState(params);
-  const state = { q, jobId, page, scope };
+  const { q, jobId, candidateId, page, scope } = readReportListState(params);
+  const state = { q, jobId, candidateId, page, scope };
   const origin = reportListQuery(state).toString();
   const [draft, setDraft] = useState(q);
   const [revision, setRevision] = useState(0);
   const [result, setResult] = useState<{ key: string; data?: Page<ReportSummary>; error?: string }>();
-  const key = JSON.stringify([q, jobId, page, scope, revision]);
+  const key = JSON.stringify([q, jobId, candidateId, page, scope, revision]);
   const current = result?.key === key ? result : undefined;
   const data = current?.data;
   const error = current?.error;
@@ -54,23 +54,23 @@ function HistoryWorkspace() {
   useEffect(() => setDraft(q), [q]);
   useEffect(() => {
     let current = true;
-    api.listReports(page, 20, { q, jobId, scope, view: jobId ? "reports" : "jobs" }).then(data => {
+    api.listReports(page, 20, { q, jobId, candidateId: jobId ? candidateId : undefined, scope, view: jobId ? "reports" : "jobs" }).then(data => {
       if (!current) return;
       if (data.page !== page) {
-        router.replace(reportListHref({ q, jobId, scope, page: data.page }), { scroll: false });
+        router.replace(reportListHref({ q, jobId, candidateId, scope, page: data.page }), { scroll: false });
         return;
       }
       setResult({ key, data });
     }, reason => { if (current) setResult({ key, error: errorMessage(reason) }); });
     return () => { current = false; };
-  }, [key, q, jobId, page, scope, router]);
+  }, [key, q, jobId, candidateId, page, scope, router]);
   return <div className="report-workspace space-y-5"><div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title">我的报告</h1></div><div className="flex flex-wrap gap-2">{user?.role === "student" && <><Link className="btn-quiet" href="/skills">个人技能全景</Link><Link className="btn-secondary" href="/applications">我的投递</Link></>}<Link className="btn-secondary" href="/jobs">选择岗位</Link></div></div>
-    <form className="report-searchbar" role="search" onSubmit={event => { event.preventDefault(); navigate({ q: draft.trim(), page: 1 }); }}><label className="report-search-field min-w-0 flex-1 text-sm"><span className="sr-only">按岗位名称查找全部报告</span><input className="field" type="search" maxLength={200} value={draft} onChange={event => setDraft(event.target.value)} placeholder="按岗位名称查找报告" /></label><button className="btn" disabled={loading}>查找</button><label className="report-audit-toggle"><input type="checkbox" checked={scope === "all"} onChange={event => navigate({ scope: event.target.checked ? "all" : "product", page: 1 })} />包含历史核验资料</label>{(q || jobId) && <button className="btn-quiet" type="button" onClick={() => { setDraft(""); navigate({ q: "", jobId: "", page: 1 }); }}>清除筛选</button>}</form>
+    <form className="report-searchbar" role="search" onSubmit={event => { event.preventDefault(); navigate({ q: draft.trim(), page: 1 }); }}><label className="report-search-field min-w-0 flex-1 text-sm"><span className="sr-only">按岗位名称查找全部报告</span><input className="field" type="search" maxLength={200} value={draft} onChange={event => setDraft(event.target.value)} placeholder="按岗位名称查找报告" /></label><button className="btn" disabled={loading}>查找</button><label className="report-audit-toggle"><input type="checkbox" checked={scope === "all"} onChange={event => navigate({ scope: event.target.checked ? "all" : "product", candidateId: undefined, page: 1 })} />包含历史核验资料</label>{(q || jobId) && <button className="btn-quiet" type="button" onClick={() => { setDraft(""); navigate({ q: "", jobId: "", candidateId: undefined, page: 1 }); }}>清除筛选</button>}</form>
     {jobId && <p role="status" className="text-sm text-slate-700">正在查看同一岗位的报告。</p>}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     {loading && <p role="status" className="text-sm text-slate-600">正在加载报告…</p>}
     {!loading && !error && data?.items.length === 0 && <div className="panel space-y-3 text-sm text-slate-600"><p>{q || jobId ? "没有符合条件的报告，可以修改或清除筛选。" : "还没有匹配报告。选择岗位，用已上传的材料生成报告，再决定是否投递。"}</p><Link className="btn-secondary" href="/jobs">去选择岗位 →</Link></div>}
-    <div className={data?.items.length ? "workspace-sheet workspace-list" : undefined} aria-busy={loading}>{data?.items.map(report => <ReportHistoryCard report={report} key={report.id} origin={origin} onSameJob={!jobId && (report.jobReportCount ?? 0) > 1 ? id => { setDraft(""); navigate({ q: "", jobId: id, page: 1 }); } : undefined} />)}</div>
+    <div className={data?.items.length ? "workspace-sheet workspace-list" : undefined} aria-busy={loading}>{data?.items.map(report => <ReportHistoryCard report={report} key={report.id} origin={origin} onSameJob={!jobId && (report.jobReportCount ?? 0) > 1 ? (id, candidateId) => { setDraft(""); navigate({ q: "", jobId: id, candidateId, page: 1 }); } : undefined} />)}</div>
     {data && <ListPagination label={jobId ? "报告分页" : "岗位分页"} value={data} busy={loading} onPage={next => navigate({ page: next })} />}
   </div>;
 }

@@ -10,6 +10,7 @@ from app.models.enums import UserRole
 from app.models.identity import User
 from app.models.recruitment import Application, Job, JobRequirement
 from app.repositories.jobs import JobRepository
+from app.tools.fixture_provenance import is_fixture_job
 from app.schemas.common import PaginatedData
 from app.schemas.jobs import (
     JobCreate,
@@ -269,5 +270,6 @@ class JobService:
             created_at=job.created_at,
             is_demo=job.is_demo,
             discovery_visible=job.discovery_visible,
+            record_provenance="test_fixture" if is_fixture_job(job) else None,
             requirements=[JobRequirementView.model_validate(item) for item in requirements],
         )

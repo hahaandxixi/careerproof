@@ -120,7 +120,7 @@ test("nearby cell evidence stays in the selected application's frozen requiremen
   assert.doesNotMatch(html, /DO_NOT_LEAK|不能串入的其他要求/);
   assert.match(html, /href="#selected-application-report"/);
   const controlled = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "r-a", onOpenReport() {} }));
-  assert.match(controlled, /<button[^>]*>查看报告与回复<\/button>/);
+  assert.match(controlled, /<button[^>]*>查看合成甲的报告与回复<\/button>/);
   assert.doesNotMatch(controlled, /href="#selected-application-report"/);
   const missing = render(React.createElement(SelectedRequirementEvidence, { application, requirementId: "other-version-r" }));
   assert.match(missing, /不同报告的要求版本可能不同/);

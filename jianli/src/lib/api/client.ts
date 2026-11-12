@@ -316,7 +316,7 @@ export const api = {
     return request<CareerPlanResult>("/career-plans", { method: "POST", ...jsonBody(payload) });
   },
   latestCareerPlan() { return request<CareerPlanResult | null>("/career-plans/latest"); },
-  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string; scope?: "product" | "all"; view?: "reports" | "jobs" } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
+  listReports(page = 1, pageSize = 20, filters: { q?: string; jobId?: string; candidateId?: string; scope?: "product" | "all"; view?: "reports" | "jobs" } = {}) { const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize) }); for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value); return request<Page<ReportSummary>>(`/match-reports?${query}`); },
   compareReports(baseId: string, targetId: string) { return request<ReportComparison>(`/match-reports/${baseId}/comparison/${targetId}`); },
   previousComparison(id: string) { return request<ReportComparison | null>(`/match-reports/${id}/previous-comparison`); },
   existingGrowthTask(reportId: string, requirementId: string) { return request<GrowthTask | null>(`/match-reports/${reportId}/growth-tasks/${requirementId}`); },

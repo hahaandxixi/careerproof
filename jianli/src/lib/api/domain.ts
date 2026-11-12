@@ -22,7 +22,7 @@ export interface JobSummary {
   applicationCount?: number | null; pendingApplicationCount?: number | null;
   careerDirection?: string | null; technicalTags?: string[];
 }
-export interface JobDetail extends JobSummary { enterpriseId: string | null; createdBy: string; requirements: JobRequirement[] }
+export interface JobDetail extends JobSummary { enterpriseId: string | null; createdBy: string; requirements: JobRequirement[]; recordProvenance?: "test_fixture" | null }
 export interface JobInput {
   title: string; companyName: string; description: string; enterpriseId: string;
   category: string; city: string; employmentType: string; status: string; requirements: RequirementInput[];

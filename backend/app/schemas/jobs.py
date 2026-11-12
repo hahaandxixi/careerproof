@@ -116,6 +116,7 @@ class JobView(APIModel):
     employment_type: EmploymentType
     created_at: datetime
     requirements: list[JobRequirementView]
+    record_provenance: str | None = None
     is_demo: bool = False
     discovery_visible: bool = True
 

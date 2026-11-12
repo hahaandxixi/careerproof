@@ -124,6 +124,44 @@ async def test_report_history_search_is_owned_global_and_preserves_material_vers
             )
         ).json()["data"]
         assert empty["total"] == 0 and empty["page"] == 1 and empty["items"] == []
+        legacy_candidate = str(uuid4())
+        async with factory() as session:
+            for index in range(21):
+                task = AnalysisTask(
+                    created_by=scope["user_id"], task_type="job_match",
+                    status=TaskStatus.COMPLETED,
+                )
+                session.add(task)
+                await session.flush()
+                session.add(MatchReport(
+                    analysis_task_id=task.id, job_id=UUID(job["id"]),
+                    candidate_ref=legacy_candidate, candidate_name="历史核验候选人",
+                    summary="历史材料", job_snapshot={"title": "历史岗位"},
+                    materials_snapshot=[], created_at=datetime.now(UTC) + timedelta(days=1, seconds=index),
+                ))
+            await session.commit()
+        filters = {"scope": "all", "jobId": job["id"], "candidateId": str(scope["user_id"])}
+        first = (await student.get("/api/v1/match-reports", params=filters)).json()["data"]
+        assert first["total"] == 25 and len(first["items"]) == 20
+        assert first["items"][0]["id"] == str(rid) and first["items"][0]["isLatestForJob"]
+        assert all(row["candidateId"] == filters["candidateId"] for row in first["items"])
+        second = (await student.get("/api/v1/match-reports", params={**filters, "page": 2})).json()["data"]
+        assert second["total"] == 25 and len(second["items"]) == 5
+        assert all(row["jobReportCount"] == 25 and not row["isLatestForJob"] for row in second["items"])
+        legacy = (await student.get(
+            "/api/v1/match-reports", params={**filters, "candidateId": legacy_candidate},
+        )).json()["data"]
+        assert legacy["total"] == 21 and legacy["items"][0]["isLatestForJob"]
+        public_history = (await student.get(
+            "/api/v1/match-reports", params={**filters, "scope": "product", "candidateId": legacy_candidate},
+        )).json()["data"]
+        assert public_history["total"] == 0
+        assert (await outsider.get("/api/v1/match-reports", params=filters)).json()["data"]["total"] == 0
+        group = (await student.get(
+            "/api/v1/match-reports", params={"scope": "all", "view": "jobs", "jobId": job["id"]},
+        )).json()["data"]
+        assert group["total"] == 1 and group["items"][0]["id"] == str(rid)
+
     finally:
         await close(hr, student, outsider)
 

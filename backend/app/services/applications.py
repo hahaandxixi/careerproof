@@ -25,6 +25,7 @@ from app.schemas.applications import ApplicationCreate, ApplicationReply
 from app.schemas.common import PaginatedData
 from app.services.analysis import AnalysisService
 from app.services.jobs import JobService
+from app.tools.fixture_provenance import is_fixture_job
 from app.services.notifications import notify_application_event
 from app.tools.storage import LocalStorage
 
@@ -183,6 +184,7 @@ class ApplicationService:
             if (
                 user.role != UserRole.ENTERPRISE
                 or item.status == "withdrawn"
+                or (job is not None and is_fixture_job(job))
                 or not await JobService(self.session).can_manage(job, user)
             ):
                 raise AppError("投递不存在或无权访问", status_code=404, code=4049)
@@ -450,6 +452,7 @@ class ApplicationService:
         if (
             not job
             or user.role != UserRole.ENTERPRISE
+            or is_fixture_job(job)
             or not await JobService(self.session).can_manage(job, user)
         ):
             raise AppError("岗位不存在或无管理权限", status_code=404, code=4040)

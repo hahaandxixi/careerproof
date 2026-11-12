@@ -309,7 +309,14 @@ export function createApplicationBoardSession(
       // other mutable fields come from the fresh authorized row/detail.
       return run(async () => ({ selected: selected ?? undefined }), selected?.id, true);
     },
-    open(id: string) { return run(async () => ({ selected: await api.open(id) }), id); },
+    open(id: string, expectedReportId?: string) {
+      return run(async () => {
+        const selected = await api.open(id);
+        if (selected.id !== id || (expectedReportId && selected.reportId !== expectedReportId) ||
+            selected.report?.id !== selected.reportId) throw new Error("投递与固定报告不一致，请重新核对。");
+        return { selected };
+      }, id);
+    },
     download(deliver: (file: { blob: Blob; filename: string }) => void) {
       const id = state.selected?.id;
       if (!id || state.loading) return Promise.resolve(false);

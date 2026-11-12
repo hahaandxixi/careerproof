@@ -110,12 +110,13 @@ async def list_match_reports(
     q: str | None = Query(default=None, max_length=200),
     job_id: UUID | None = Query(default=None, alias="jobId"),
     scope: Literal["product", "all"] = Query(default="product"),
+    candidate_id: str | None = Query(default=None, alias="candidateId", max_length=200),
     view: Literal["reports", "jobs"] = Query(default="reports"),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
 ) -> ApiResponse[PaginatedData[MatchReportHistorySummary]]:
     return success(await AnalysisService(session).list_reports(
-        current_user, page, page_size, q=q, job_id=job_id, scope=scope, view=view,
+        current_user, page, page_size, q=q, job_id=job_id, scope=scope, view=view, candidate_id=candidate_id,
     ))
 
 

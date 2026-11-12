@@ -3,9 +3,12 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import select
 
 from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import TaskStatus
+from app.models.identity import StudentProfile
+from app.models.recruitment import Application
 from app.repositories.jobs import JobRepository
 from app.tests.test_job_discovery_curation import jobs_db, owner_of, seed_job  # noqa: F401
 from app.tests.test_jobs_api import organization, register
@@ -48,7 +51,11 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
         }
         assert (await student.get(f"/api/v1/jobs/{fixture_id}")).status_code == 200
         managed = (await hr.get("/api/v1/jobs/mine")).json()["data"]
-        assert managed["total"] == 3
+        assert managed["total"] == 2
+        assert {UUID(row["id"]) for row in managed["items"]} == {normal_id, owner_mismatch_id}
+        assert (await hr.get(f"/api/v1/jobs/{fixture_id}")).json()["data"]["recordProvenance"] == "test_fixture"
+        assert (await hr.get(f"/api/v1/jobs/{fixture_id}/applications")).status_code == 404
+        assert (await hr.get(f"/api/v1/jobs/{owner_mismatch_id}/applications")).status_code == 200
         async with factory() as session:
             candidates = await JobRepository(session).recommendation_candidates(100)
             assert {job.id for job in candidates} == {normal_id, owner_mismatch_id}
@@ -71,7 +78,22 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
                 session.add(report)
                 await session.flush()
                 report_ids.append(report.id)
+            student_id = await session.scalar(
+                select(StudentProfile.id).where(StudentProfile.user_id == UUID(user["id"]))
+            )
+            application = Application(
+                job_id=fixture_id, student_id=student_id, report_id=report_ids[1],
+                report_snapshot={"summary": "固定投递原文", "items": []},
+                consent_at=datetime.now(UTC), consent_version="application-report-v1",
+            )
+            session.add(application)
+            await session.flush()
+            application_id = application.id
             await session.commit()
+        assert (await student.get(f"/api/v1/applications/{application_id}")).status_code == 200
+        assert (await hr.get(f"/api/v1/applications/{application_id}")).status_code == 404
+        assert (await hr.post(f"/api/v1/applications/{application_id}/view")).status_code == 404
+        assert (await hr.get(f"/api/v1/applications/{application_id}/verification")).status_code == 404
         normal, fixture = map(str, report_ids)
         default = (await student.get("/api/v1/match-reports")).json()["data"]
         assert default["total"] == 1 and default["items"][0]["id"] == normal

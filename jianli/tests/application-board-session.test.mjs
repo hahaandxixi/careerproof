@@ -220,7 +220,7 @@ for (const presentInList of [true, false]) {
     let replied = false;
     const fixedReport = { id: "fixed-report", summary: "immutable authorization snapshot" };
     const references = [{ requirementId: "requirement-a", citationIds: ["R1-E1"] }];
-    const remote = () => ({ id: "a", jobId: "job-a", status: replied ? "replied" : "viewed",
+    const remote = () => ({ id: "a", jobId: "job-a", reportId: fixedReport.id, status: replied ? "replied" : "viewed",
       replyKind: replied ? "continue" : null, replyText: replied ? "企业在另一窗口已回复" : null,
       replyReferences: replied ? references : [], events: replied ? [{ type: "replied", at: "2026-10-22T10:00:00Z", detail: "已回复" }] : [],
     });
@@ -339,4 +339,13 @@ test('late pair opening cannot repopulate hidden or disposed reports; changed fi
   await h.session.resume(['a','b']);assert.ok(!h.state().comparison.find(c=>c.id==='b').report);
   await h.session.openComparison(['a','b']);newer=true;await h.session.filter();assert.deepEqual(h.state().comparison.map(c=>c.id),['a']);
   h.session.dispose();h.session.activate();await h.session.refresh();assert.deepEqual(h.state().comparison,[]);
+});
+
+test("an explicit report target rejects a returned report belonging to another selection", async () => {
+  const h = setup({
+    open: async () => ({ id: "a", reportId: "wrong", report: { id: "wrong" }, status: "viewed" }),
+  });
+  assert.equal(await h.session.open("a", "expected"), false);
+  assert.equal(h.state().selected, null);
+  assert.match(h.state().error, /固定报告不一致/);
 });

@@ -1297,6 +1297,38 @@ body:has(.report-workspace), body:has(.application-workspace), body:has(.case-li
 @media (max-width: 1100px) {
   .enterprise-review-workbench { grid-template-areas: "switch" "primary" "source" "difference"; }
 }
+.enterprise-matrix-workspace, .enterprise-radar-workspace { grid-area: primary; }
+.enterprise-radar-workspace { min-width: 0; padding: 12px; border: 1px solid #c6d4cd; background: #fbf9f4; }
+.enterprise-radar-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 6px 16px; margin-bottom: 8px; }
+.enterprise-radar-heading h2 { color: #143a32; font-size: 16px; }
+.enterprise-radar-heading p:not(.workspace-meta) { color: #526176; font-size: 12px; }
+.enterprise-radar-embed > section { border: 0; border-radius: 0; background: transparent; padding: 0; }
+.enterprise-radar-embed svg { max-width: 100%; }
+.enterprise-source-pane { grid-area: source; }
+.workbench-difference { grid-area: difference; }
+.enterprise-radar-embed .skill-radar-overview .radar-chart-svg { max-width: 460px; }
+.enterprise-radar-heading { align-items: end; }
+.enterprise-radar-heading h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+
+/* All three review views use the same chart and source columns. */
+.enterprise-review-workbench { grid-template-areas: "primary source" "difference difference"; }
+.enterprise-review-workbench[data-mode="compare"] { grid-template-areas: "pair-heading pair-heading" "primary source"; }
+.enterprise-pair-workbench, .enterprise-pair-content { display: contents; }
+.pair-workbench-heading { grid-area: pair-heading; min-width: 0; }
+.pair-workbench-chart { grid-area: primary; }
+.pair-workbench-sources .pair-source-column[data-selected="false"] { display: none; }
+.pair-workbench-sources .comparison-evidence-column { padding-inline: 0; }
+@media (min-width: 1600px) {
+  .enterprise-review-workbench { grid-template-columns: minmax(0, 1fr) minmax(440px, 48%); }
+  .pair-workbench-sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pair-workbench-sources .pair-source-tabs { display: none; }
+  .pair-workbench-sources .pair-source-column[data-selected="false"] { display: block; }
+  .pair-workbench-sources .pair-source-column + .pair-source-column { border-inline-start: 1px solid #d8d0c2; padding-inline-start: 12px; }
+}
+@media (max-width: 1100px) {
+  .enterprise-review-workbench { grid-template-areas: "primary" "source" "difference"; }
+  .enterprise-review-workbench[data-mode="compare"] { grid-template-areas: "pair-heading" "primary" "source"; }
+}
 main.site-frame:has(.skills-page) { background: #f4f1ea; }
 .skills-page { width: min(1260px, 100%); margin-inline: auto; padding: 6px 18px 64px; }
 @media (max-width: 900px) { .skills-page { padding-inline: 8px; } }

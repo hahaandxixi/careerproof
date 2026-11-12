@@ -101,6 +101,7 @@ function ReportWorkspace({ id }: { id: string }) {
   const referenceCount = report.items.reduce((count, item) => count + item.evidenceList.filter(evidence => evidence.provenance === "reference").length, 0);
   const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
   const filter = reportFilter ?? (report.items.length <= 8 ? "all" : initialWorkspaceFilter(report.items));
+  const materialContext = materialReportContext(report.id, undefined, undefined, filter, origin);
   const changeFilter = (next: WorkspaceFilter) => {
     const matches = workspaceRequirements(report.items, next);
     const selection = matches.find(item => item.requirementId === radarRequirementId) ?? matches[0];
@@ -159,7 +160,7 @@ function ReportWorkspace({ id }: { id: string }) {
 
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
     {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} origin={origin} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
-    {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}{user?.role === "student" && <Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}?${materialReportContext(report.id)}`}>查看原图与当前核对状态 →</Link>}</div>)}</section>}
+    {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.model} · {visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}{user?.role === "student" && <Link className="text-[#1d4a40] underline" href={`/materials/project/${visual.projectVersionId}?${materialContext}`}>查看原图与当前核对状态 →</Link>}</div>)}</section>}
     <details className="text-sm"><summary className="disclosure">材料判据</summary><div className="space-y-2 py-2 leading-7 text-slate-700"><p>保存的等级是材料判定：基础线索、局部操作、任务实现。名称沿用生成报告时的规则，具体原因见逐项判断记录。</p><p>规则结合相关性、实质操作及任务上下文判断；仅声明、无可定位证据、规则未覆盖或复核暂停时不评级。</p><p>岗位权重表示要求的重要性；不按等级或引用数量汇总能力分。旧记录保留当时结果，不自动改用新规则。</p></div></details>
 
     <details className="panel text-sm" aria-label="报告处理与范围说明"><summary className="cursor-pointer py-1 font-medium text-slate-700">分析详情</summary><div id="report-analysis" className="scroll-mt-24"><p className="mt-3 text-sm text-slate-600">规则覆盖范围：{assessedCount}/{report.items.length} 项（不是证据支持数量）。{assessedCount === 0 ? "当前规则不覆盖该岗位要求，暂不评级，请人工审阅材料。" : assessedCount < report.items.length ? "未覆盖要求不评级。" : ""}</p><p className="mt-3 text-sm text-slate-600">本报告 {aiRatedCount}/{report.items.length} 项完成 AI 判据初评；其余项显示规则结果或复核状态。历史报告不会自动补写 AI 等级。</p>
@@ -180,7 +181,7 @@ function ReportWorkspace({ id }: { id: string }) {
         <ul className="space-y-4">{report.materials.map(material => <li key={`${material.kind}-${material.id}`} className="panel space-y-2">
           <h3 className="text-lg font-semibold">{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</h3>
           <p>{material.kind === "resume" ? "简历" : material.materialRole === "reference" ? "第三方参考 · 不证明本人实践" : "个人项目 / 作品"}</p>
-          {user?.role === "student" && <Link className="btn-secondary" href={`/materials/${material.kind}/${material.id}?${materialReportContext(report.id)}`}>预览此固定版本</Link>}
+          {user?.role === "student" && <Link className="btn-secondary" href={`/materials/${material.kind}/${material.id}?${materialContext}`}>预览此固定版本</Link>}
           <details><summary className="disclosure">版本校验信息</summary><p className="break-all text-sm">版本：{material.id}<br />内容摘要：{material.contentHash}</p></details>
         </li>)}</ul>
       </> },

@@ -14,14 +14,15 @@ const deferred = () => { let resolve, reject; const promise = new Promise((yes, 
 test("failed saved task distinguishes a pre-send budget stop from model rejection without leaking provider text", async () => {
   const view = fixture({ latest: async () => ({ ...task("failed"), failureKind: "input_budget", errorMessage: "private-provider-body" }) });
   await view.session.load();
-  assert.match(view.latest().error, /外发前停止/);
+  assert.match(view.latest().error, /未发送/);
   assert.equal(view.calls.create, 0);
+  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "budget_cutover_not_enabled" }), /暂未开放，未发送材料/);
   assert.doesNotMatch(view.latest().error, /private-provider-body/);
-  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "visible_code_fact_conflict" }), /事实冲突/);
-  assert.match(verificationFailureMessage({ ...task("completed"), failureKind: "saved_validation_failed" }), /已保存的核验建议未通过/);
-  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "provider_http_503", errorMessage: "private-provider-body" }), /没有自动重试/);
+  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "visible_code_fact_conflict" }), /授权代码冲突/);
+  assert.match(verificationFailureMessage({ ...task("completed"), failureKind: "saved_validation_failed" }), /已保存建议未通过/);
+  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "provider_http_503", errorMessage: "private-provider-body" }), /继续核对固定报告/);
   assert.doesNotMatch(verificationFailureMessage({ ...task("failed"), errorMessage: "private-provider-body" }), /private-provider-body/);
-  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "__proto__" }), /没有自动重试/);
+  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "__proto__" }), /继续核对固定报告/);
   view.session.dispose();
 });
 const eventually = async condition => {
@@ -49,6 +50,7 @@ test("generation requires explicit consent; loading saved suggestions never gene
   await view.session.load();
   await view.session.generate(false);
   assert.equal(view.calls.create, 0);
+  assert.match(verificationFailureMessage({ ...task("failed"), failureKind: "budget_cutover_not_enabled" }), /暂未开放，未发送材料/);
   assert.equal(view.latest().task, null);
   await view.session.generate(true);
   assert.equal(view.calls.create, 1);
@@ -100,7 +102,7 @@ test("polling is finite and a later manual read resumes an existing task", async
   const view = fixture({ latest: async () => task("running"), read: async () => { reads++; return task("running"); } }, { maxPolls: 2 });
   await view.session.load();
   await eventually(() => !view.latest().loading);
-  assert.equal(reads, 2); assert.match(view.latest().notice, /停止自动查询/);
+  assert.equal(reads, 2); assert.match(view.latest().notice, /请稍后刷新结果/);
   await view.session.load();
   await eventually(() => !view.latest().loading);
   assert.equal(reads, 4); assert.equal(view.calls.create, 0); view.session.dispose();
@@ -111,7 +113,7 @@ test("a failed poll clears AI result and does not loop or generate", async () =>
   const view = fixture({ latest: async () => task("pending"), read: async () => { reads++; throw new Error("服务暂不可用"); } });
   await view.session.load();
   await eventually(() => !view.latest().loading);
-  assert.equal(view.latest().task, null); assert.match(view.latest().error, /原报告仍可/);
+  assert.equal(view.latest().task, null); assert.match(view.latest().error, /刷新结果/);
   assert.equal(reads, 1); assert.equal(view.calls.create, 0); view.session.dispose();
 });
 

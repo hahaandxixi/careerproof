@@ -23,12 +23,12 @@ function Picker({ report, origin, scope }: { report: MatchReport; origin: string
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState("");
   const { jobId, candidateId } = report;
-  const read = useCallback((page: number) => api.listReports(page, PAGE_SIZE, { jobId, scope }), [jobId, scope]);
+  const read = useCallback((page: number) => api.listReports(page, PAGE_SIZE, { jobId, candidateId, scope }), [jobId, candidateId, scope]);
   useEffect(() => {
     let active = true;
     read(page).then(result => {
       if (!active) return;
-      const rows = result.items.filter(row => row.jobId === jobId && row.candidateId === candidateId);
+      const rows = result.items;
       setData(previous => ({
         page: result.page,
         rows: page === 1 ? rows : [...new Map([...(previous?.rows ?? []), ...rows].map(row => [row.id, row])).values()],
@@ -37,7 +37,7 @@ function Picker({ report, origin, scope }: { report: MatchReport; origin: string
       setError("");
     }, reason => { if (active) setError(errorMessage(reason)); });
     return () => { active = false; };
-  }, [read, page, revision, jobId, candidateId]);
+  }, [read, page, revision]);
   const rows = data?.rows ?? [];
   const latest = rows.find(row => row.isLatestForJob);
   const historical = !!latest && latest.id !== report.id;

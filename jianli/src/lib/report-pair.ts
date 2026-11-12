@@ -27,7 +27,7 @@ export type ReportPairState = {
   baseId: string; targetId: string; busy: boolean; error: string; value: ReportPairValue | null;
 };
 type PairApi = {
-  listReports(page: number, size: number, filters: { jobId: string; scope: "all" }): Promise<Page<ReportSummary>>;
+  listReports(page: number, size: number, filters: { jobId: string; candidateId: string; scope: "all" }): Promise<Page<ReportSummary>>;
   getReport(id: string): Promise<MatchReport>;
   compareReports(baseId: string, targetId: string): Promise<ReportComparison>;
   errorMessage(error: unknown): string;
@@ -55,7 +55,7 @@ export function createReportPairSession(
       const ticket = ++listEpoch, page = state.page + 1;
       emit({ listing: true, error: "" });
       try {
-        const result = await api.listReports(page, 50, { jobId: reference.jobId, scope: "all" });
+        const result = await api.listReports(page, 50, { jobId: reference.jobId, candidateId: reference.candidateId, scope: "all" });
         if (!active || ticket !== listEpoch) return;
         const reports = [...new Map([...state.reports, ...result.items.filter(report => sameReportScope(reference, report))].map(report => [report.id, report])).values()];
         emit({ reports, page: result.page, hasMore: result.page * result.pageSize < result.total,

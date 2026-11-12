@@ -115,15 +115,23 @@ async def test_verification_disabled_gate_is_zero_http_with_explicit_failure(cas
         return completion(model_answer(case.snapshot))
 
     inject_provider(monkeypatch, handler)
-    await close_gate(case.factory)
     started = await case.start()
+    await close_gate(case.factory)
+    blocked = await case.hr.post(case.path, json={"externalAiConsent": True})
+    assert blocked.status_code == 202 and blocked.json()["data"]["reused"]
     await case.execute(started)
+    rejected = await case.hr.post(case.path, json={"externalAiConsent": True})
+    assert rejected.status_code == 409
+    assert "未发送材料" in rejected.json()["message"]
     result = await case.result(started)
     assert calls == [] and result["analysis"] is None
     async with case.factory() as session:
         task = await session.get(AnalysisTask, UUID(started["taskId"]))
         assert task.status == TaskStatus.FAILED
-        assert "budget_cutover_not_enabled" in str(task.input_snapshot)
+        assert task.input_snapshot["failureKind"] == "budget_cutover_not_enabled"
+        assert len(list(await session.scalars(
+            select(AnalysisTask).where(AnalysisTask.task_type == "application_verification")
+        ))) == 1
         assert list(await session.scalars(select(AiRequestAttempt))) == []
         assert list(await session.scalars(select(AiBudgetReservation))) == []
 

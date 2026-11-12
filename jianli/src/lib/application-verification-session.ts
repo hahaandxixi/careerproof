@@ -14,20 +14,31 @@ export const initialApplicationVerificationState: ApplicationVerificationState =
 // Show safe, actionable categories rather than arbitrary provider error text.
 export function verificationFailureMessage(task: ApplicationVerificationTask): string {
   const messages: Record<string, string> = {
-    input_budget: "本次输入超过保守预算，已在外发前停止。请缩小授权材料范围后再核对。",
-    output_budget: "本次输出额度不足，建议未生成。请核对额度后再操作。",
-    daily_budget: "今日 AI 用量已达上限。可继续人工核对原报告，或稍后读取已保存建议。",
-    output_truncated: "模型回答被截断，未保存为有效建议。原报告仍可用于人工核验。",
-    visible_code_fact_conflict: "模型回答与可见代码事实冲突，已拒绝展示。请核对原报告引用。",
-    saved_validation_failed: "已保存的核验建议未通过当前固定报告校验，已隐藏。请核对原报告；重新生成需要再次确认模型外发范围。",
-    authorization_revoked: "投递授权已变化，请刷新授权投递重新核对。",
-    snapshot_changed: "岗位或投递快照已变化，请刷新授权投递重新核对。",
-    provider_timeout: "模型服务响应超时；没有自动重试。可继续人工核对原报告。",
-    workflow_timeout: "生成任务超时；没有自动重试。可继续人工核对原报告。",
-    provider_network: "模型服务连接失败；没有自动重试。可继续人工核对原报告。",
+    budget_cutover_not_enabled: "AI 核验暂未开放，未发送材料。可继续核对固定报告。",
+    budget_cutover_evidence_missing: "AI 核验暂不可用，未发送材料。请联系管理员。",
+    input_budget: "本次材料超出可发送范围，未发送。请人工核对固定报告。",
+    output_budget: "本次生成额度不足，请稍后再试。",
+    daily_budget: "今日 AI 用量已达上限。可继续核对固定报告。",
+    daily_input_token_limit: "今日 AI 用量已达上限。可继续核对固定报告。",
+    daily_output_token_limit: "今日 AI 用量已达上限。可继续核对固定报告。",
+    output_truncated: "模型回答不完整，未保存建议。可继续核对固定报告。",
+    visible_code_fact_conflict: "模型回答与授权代码冲突，未保存建议。请核对原报告引用。",
+    saved_validation_failed: "已保存建议未通过固定报告校验。请核对原报告。",
+    authorization_revoked: "投递授权已变化，请刷新授权投递。",
+    snapshot_changed: "岗位或投递快照已变化，请刷新授权投递。",
+    provider_timeout: "模型响应超时。可刷新结果或继续核对固定报告。",
+    workflow_timeout: "生成超时。可刷新结果或继续核对固定报告。",
+    provider_network: "模型服务连接失败。可稍后重试。",
+    provider_http_401: "模型服务鉴权失败，请联系管理员。",
+    provider_http_403: "模型服务拒绝访问，请联系管理员。",
+    provider_http_402: "模型服务额度不足，请联系管理员。",
+    provider_http_429: "模型服务请求受限，请稍后再试。",
+    provider_configuration: "模型服务未配置完成，请联系管理员。",
+    invalid_model_output: "模型回答未通过校验。请核对固定报告。",
+    receipt_persistence_failed: "本次模型结果未能确认，请刷新结果。",
   };
   const kind = task.failureKind || "";
-  return Object.hasOwn(messages, kind) ? messages[kind] : "本次 AI 核验建议未生成或未通过校验；没有自动重试。请继续核对原报告。";
+  return Object.hasOwn(messages, kind) ? messages[kind] : "本次没有有效的核验建议。可继续核对固定报告。";
 }
 
 interface Dependencies {
@@ -93,7 +104,7 @@ export function createApplicationVerificationSession(
     set({ task, loading: !!waiting, error: failed ? verificationFailureMessage(task) : "", notice: "" });
     if (waiting && task) {
       if (polls >= maxPolls) {
-        set({ ...state, loading: false, notice: "任务仍在处理中，已停止自动查询。稍后点击“读取已保存建议”核对结果；读取不会新增模型调用。" });
+        set({ ...state, loading: false, notice: "任务仍在处理中，请稍后刷新结果。" });
         return;
       }
       timer = setTimeout(() => { timer = undefined; ++polls; void read(() => api.read(task.taskId, controller!.signal), ticket); }, pollMs);
@@ -107,11 +118,11 @@ export function createApplicationVerificationSession(
     } catch (error) {
       if (!current(ticket)) return;
       if (api.unavailable(error)) {
-        set({ ...initialApplicationVerificationState, error: "该投递的 AI 建议已不可访问，已清除建议。请刷新授权投递重新核对。" });
+        set({ ...initialApplicationVerificationState, error: "该投递的核验建议已不可访问，请刷新授权投递。" });
         api.onUnavailable();
       } else {
         // A read failure stops polling and removes previously displayed AI text.
-        set({ ...initialApplicationVerificationState, error: `${api.errorMessage(error)} 原报告仍可用于人工核验；可稍后读取已保存建议。` });
+        set({ ...initialApplicationVerificationState, error: `${api.errorMessage(error)} 可刷新结果。` });
       }
     }
   }
