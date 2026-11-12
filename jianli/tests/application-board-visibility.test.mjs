@@ -40,9 +40,9 @@ function fixture(count=2,editRow=value=>value,options={}){
  const report={id:"report-a",summary:"合成固定报告",createdAt:"2026-10-27T00:00:00Z",items:[],materials:[],aiFallbackUsed:false};
  const row=id=>editRow({id,jobId,reportId:`report-${id}`,candidateName:`候选人${id}`,status:"viewed",replyKind:null,replyText:null,replyReferences:[],overallScore:10,events:[],fixedRequirementBasisComplete:true,comparisonBasis:"same",dimensions:[{requirementId:"r1",title:"Python要求",skill:"Python",score:10,verdict:"claimed_only",weight:1}]});
  const pageResult=requested=>{const rows=[...(authorized&&count>0?[row("a")]:[]),...Array.from({length:Math.max(0,count-1)},(_,i)=>row(String.fromCharCode(98+i)))];const page=Math.min(requested,Math.max(1,Math.ceil(rows.length/20)));return {items:rows.slice((page-1)*20,page*20),total:rows.length,page,pageSize:20};};
- const api={getJob:async()=>({id:jobId,title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult(page);},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");return row(id);},
+ const api={getJob:async()=>({id:jobId,title:"测试岗位"}),jobApplications:async(_job,page,size,filters)=>{counts.list++;queries.push({page,size,...filters});return waiter?waiter:pageResult(page);},applicationDetail:async id=>{counts.detail++;if(id==="a"&&!authorized)throw Error("已撤回授权");if(counts.reply&&options.confirmedReplyReadFails)throw Error("回执后的读取失败");return row(id);},
   openApplication:async id=>{counts.open++;return {...row(id),report:{...report,id:`report-${id}`,jobId,items:options.fixedItems?.(id)??[]}};},
-  replyApplication:async()=>{counts.reply++;throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
+  replyApplication:async id=>{counts.reply++;if(options.confirmedReplyReadFails)return {...row(id),status:"replied"};throw Error("test must not send");},downloadApplicationResume:async()=>{throw Error("test must not download");}};
  const stub=name=>Object.assign(()=>null,{testName:name});const Radar=stub("radar");
  const modules={"./ReportMaterialVersions":{__esModule:true,default:stub("materials")},"@/lib/demo-display-identity.js":demoIdentity,"./IdentityName":{__esModule:true,default:Object.assign(({name})=>name,{testName:"identity"})},"@/lib/report-citations":{invalidNarrativeCitations,readableCitationText},react:hooks,"react/jsx-runtime":require("react/jsx-runtime"),"next/dynamic":{default:()=>Radar,__esModule:true},"next/link":{default:stub("link"),__esModule:true},
   "./ApplicationReply":{default:stub("reply"),__esModule:true},"./CandidatePairComparison":{default:stub("pair"),__esModule:true},"./SourceIdentity":{default:stub("source"),SourceIdentityDetails:stub("source-details"),__esModule:true},"./EvidenceSnippet":{default:stub("evidence"),__esModule:true},"./ListPagination":{default:stub("pagination"),__esModule:true},
@@ -139,6 +139,22 @@ test("a draft involved in an unconfirmed send is not restored as a new unsent dr
  assert.equal(h.nodes(tree).find(n=>n.type==="textarea").props.value,"");
  assert.equal(h.button(tree,"确认发送站内回复").props.disabled,true);
  assert.equal(h.counts.reply,1,"the one simulated send is never retried");
+});
+
+test("return after a confirmed send and failed read does not retain a stale retry",async()=>{
+ const h=fixture(2, row=>row,{confirmedReplyReadFails:true});let tree=await h.settle();
+ h.button(tree,"候选人a").props.onClick();tree=await h.settle();
+ h.nodes(tree).find(n=>n.type==="textarea").props.onChange({target:{value:"已确认送达的合成回复"}});tree=h.render();
+ const confirm=h.nodes(tree).find(n=>n.type==="label"&&text(n).includes("我已核对正文"));
+ h.nodes(confirm).find(n=>n.type==="input").props.onChange({target:{checked:true}});tree=h.render();
+ await h.button(tree,"确认发送站内回复").props.onClick();tree=await h.settle();
+ assert.ok(h.nodes(tree).some(n=>n.props?.result?.write==="confirmed"&&n.props.result.refresh==="failed"));
+ tree=h.blur();
+ assert.ok(!h.nodes(tree).some(n=>n.props?.result?.write==="confirmed"&&n.props.result.refresh==="failed"));
+ h.focus();tree=await h.settle();
+ assert.ok(!h.nodes(tree).some(n=>n.props?.result?.write==="confirmed"&&n.props.result.refresh==="failed"));
+ assert.ok(!h.nodes(tree).some(n=>n.type==="textarea"));
+ assert.equal(h.counts.reply,1);
 });
 
 test("comparison selection survives tab return and revoked candidates are pruned",async()=>{

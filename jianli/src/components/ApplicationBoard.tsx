@@ -164,6 +164,22 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
       setReplyResult(result);
     }finally{retryLock.current=false;setReadRetrying(false);finish();}
   }
+  async function sendReply(){
+    replyAttempted.current=true;
+    const generation=replyDraftGeneration.current;
+    const result=await session.reply(replyKind,replyText,replyReferences);
+    const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);
+    if(outcome==="ignore")return;
+    if(outcome==="reset"){
+      resetReply();
+      // Clearing submitted text must not turn its receipt into draft state.
+      replyAttempted.current=true;
+    }else{
+      setConfirmReply(false);
+      setUnconfirmedReply(outcome==="mark-unconfirmed");
+    }
+    setReplyResult(result);
+  }
   function useVerificationQuestion(question: VerificationReplyQuestion){
     const result=appendVerificationReplyQuestion(replyText,question);
     if(result.status==="too_long"){setReplyDraftNotice("回复已接近 2000 字上限，请缩短正文后重试。");return;}
@@ -390,7 +406,7 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
         <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="btn-quiet btn-compact shrink-0" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
         <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
-        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={async()=>{replyAttempted.current=true;const text=replyText,references=replyReferences;const generation=replyDraftGeneration.current;const result=await session.reply(replyKind,text,references);const outcome=replySendOutcome(result,replyDraftGeneration.current===generation);if(outcome==="ignore")return;if(outcome==="reset")resetReply();else{setConfirmReply(false);setUnconfirmedReply(outcome==="mark-unconfirmed");}setReplyResult(result);}}>确认发送站内回复</button>
+        <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={sendReply}>确认发送站内回复</button>
       </div>}
       <ApplicationReply application={selected} sent/>
     </details>}
