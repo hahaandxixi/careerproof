@@ -43,7 +43,7 @@ function workspace(client = {}) {
     const card = nodes(tree, n => n.props?.item?.resourceId === id && n.props?.onArchive)[0];
     const container = card ? card.type(card.props) : nodes(tree, n => n.type === "div" && n.key === id)[0];
     assert.ok(container, `project ${id} must have its own removal control`);
-    const button = nodes(container, n => n.type === "button" && n.props.children === "移出材料库")[0];
+    const button = nodes(container, n => n.type === "button" && n.props.children === "删除")[0];
     assert.ok(button, `project ${id} removal control must be present`);
     return button;
   }
