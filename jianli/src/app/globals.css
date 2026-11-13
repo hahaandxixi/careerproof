@@ -1071,11 +1071,12 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .enterprise-candidate-groups { min-width: 0; padding-top: 10px; border-top: 1px solid #d8d0c2; }
 .enterprise-candidate-groups h3 { color: #173c34; font-size: 14px; font-weight: 700; }
 .enterprise-candidate-groups p { margin-top: 2px; color: #66758a; font-size: 11px; line-height: 1.5; }
-.enterprise-candidate-groups ul { display: grid; gap: 2px; max-height: 30vh; overflow: auto; margin-top: 7px; }
+.enterprise-candidate-groups ul { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; max-height: 30vh; overflow: auto; margin-top: 7px; }
 .enterprise-candidate-groups li { display: grid; gap: 3px; padding: 6px 0; border-bottom: 1px solid #e7e0d2; }
-.enterprise-candidate-groups .candidate-select { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 30px; padding: 2px 4px; border: 0; background: transparent; color: #173c34; text-align: left; font-size: 12px; }
+.enterprise-candidate-groups .candidate-select { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 6px; min-height: 30px; padding: 2px 4px; border: 0; background: transparent; color: #173c34; text-align: left; font-size: 12px; }
 .enterprise-candidate-groups .candidate-select[aria-pressed="true"] { background: #edf4f0; box-shadow: inset 2px 0 #1d4a40; }
-.enterprise-candidate-groups .candidate-select span { color: #66758a; font-size: 10px; }
+.enterprise-candidate-groups .candidate-roster-name { min-width: 0; overflow-wrap: anywhere; }
+.enterprise-candidate-groups .candidate-roster-status { color: #40554c; font-size: 12px; }
 .enterprise-candidate-groups li > label { color: #526176; font-size: 11px; }
 .enterprise-candidate-groups .is-isolated { color: #7f3f2f; font-size: 11px; }
 .enterprise-source-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e7e0d2; }
@@ -1124,7 +1125,6 @@ main.site-frame:has(.enterprise-review-page) { background: #ede7db; }
 .enterprise-review-page .enterprise-candidate-groups li { border-bottom-color: #c8d4ce; }
 .enterprise-review-page .enterprise-candidate-groups .candidate-select { color: #173c34; }
 .enterprise-review-page .enterprise-candidate-groups .candidate-select[aria-pressed="true"] { background: #1d4a40; color: #fbf9f4; box-shadow: none; }
-.enterprise-review-page .enterprise-candidate-groups .candidate-select[aria-pressed="true"] span { color: #dce6e1; }
 .enterprise-review-page .enterprise-candidate-groups li > label { color: #3f5d55; }
 .enterprise-review-page .enterprise-review-workbench { padding: 12px; border: 1px solid #c6d4cd; background: #e4eeea; }
 .enterprise-review-page .enterprise-matrix-workspace { padding: 10px; border: 1px solid #d3c9b6; background: #fbf9f4; }
@@ -1529,6 +1529,7 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 @media (max-width: 760px) { .job-workspace-overview { grid-template-columns: minmax(0, 1fr); } }
 .enterprise-review-page .enterprise-matrix thead th:has(.candidate-select[aria-pressed="true"]) { background: #cfe1d8; }
 .enterprise-review-page .enterprise-matrix .candidate-select { overflow-wrap: anywhere; }
+.career-job-card > details > summary::before { display: none; }
 .enterprise-review-page .enterprise-matrix tbody th[scope="row"] { overflow-wrap: anywhere; }
 .job-workspace-applications { display: grid; gap: 8px; min-width: 0; }
 .job-workspace-list-message, .job-workspace-pagination { padding: 12px; }
