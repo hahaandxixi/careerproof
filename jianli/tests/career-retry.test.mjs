@@ -43,8 +43,9 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
   const render=()=>{cursor=effectCursor=0;return mod.exports.default({}).type({initialResumeVersionId:"",initialProjectVersionIds:emptyIds});};
   const settle=async()=>{while(effects.length)effects.shift()();for(let i=0;i<8;i++)await Promise.resolve();};
   const nodes=(node)=>{if(!node||typeof node!=="object")return [];return [node,...[node.props?.children].flat(Infinity).flatMap(nodes)];};
+  const visibleNodes = node => !node || typeof node !== "object" || node.props?.hidden ? [] : [node, ...[node.props?.children].flat(Infinity).flatMap(visibleNodes)];
   const get=(tree,type)=>{const n=nodes(tree).find(n=>n.type===type);assert.ok(n, String(type.testName||type));return n;};
-  return {render,settle,get,ResumePicker,ProjectPicker,ErrorNotice,nodes,calls:()=>({createCalls,listCalls,historyCalls})};
+  return {render,settle,get,ResumePicker,ProjectPicker,ErrorNotice,nodes,visibleNodes,calls:()=>({createCalls,listCalls,historyCalls})};
 }
 
 test("failed generation retry retains chosen versions and consent without automatically calling AI",async()=>{
@@ -94,8 +95,19 @@ test("a disabled AI result blocks repeated generation even after material select
  await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
  const button=f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="当前 AI 配置不可用");
  assert.ok(button?.props.disabled);
- assert.ok(f.nodes(tree).some(n=>n.type==="p"&&n.props.children===careerPlanFailureMessage("external_ai_disabled")));
+ assert.ok(f.visibleNodes(tree).some(n=>n.type==="p"&&n.props.children===careerPlanFailureMessage("external_ai_disabled")));
  f.get(tree,f.ResumePicker).props.onChange("resume-v3");tree=f.render();
  await f.get(tree,"form").props.onSubmit({preventDefault(){}});
  assert.equal(f.calls().createCalls,1,"changing material does not repair environment configuration");
+});
+
+test("a successful new plan replaces an earlier history-read error",async()=>{
+ const f=fixture({failHistory:true,generationResult:{planId:"new",materials:[],recommendations:[],changes:[],summary:"新规划"}});
+ f.render();await f.settle();let tree=f.render();
+ assert.ok(f.get(tree,f.ErrorNotice));
+ f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
+ f.get(tree,"input").props.onChange({target:{checked:true}});tree=f.render();
+ await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
+ assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="new"));
+ assert.ok(!f.nodes(tree).some(n=>n.type===f.ErrorNotice));
 });

@@ -10,7 +10,6 @@ import {
 } from "@/lib/api/domain";
 import { jobAnalysisHref, resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
 import { careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
-import { demoJobAlias } from "@/lib/demo-display-identity.js";
 import { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ProjectVersionPicker from "./ProjectVersionPicker";
@@ -116,7 +115,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!resumeVersionId || !externalAiConsent || busy || historyLoading || configurationStatus) return;
-    setBusy(true); setError(""); setErrorSource("generation"); setResult(null); setHistoryNotice("");
+    setBusy(true); setError(""); setErrorSource("generation"); setResult(null); setHistoryNotice(""); setHistoryError("");
     setResultKind("current"); setExpandedCandidates(false);
     try {
       const next = await api.createCareerPlan({ resumeVersionId, projectVersionIds, limit: 10, externalAiConsent });
@@ -192,14 +191,14 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
             {resultKind === "history" && <button type="button" className="btn-quiet btn-compact" onClick={clearDisplayedResult}>收起历史结果</button>}
           </div>
         </div>
-        <p className="text-sm leading-6 text-slate-700">{result.summary}</p>
         <details className="text-sm text-slate-600">
-          <summary className="cursor-pointer font-medium">本规划使用的材料</summary>
+          <summary className="cursor-pointer font-medium">方向说明与材料版本</summary>
+          <p className="mt-2 leading-6 text-slate-700">{result.summary}</p>
           <ul className="mt-2">{result.materials.map(material => <li key={material.id}>{material.title} · 第 {material.versionNumber} 版</li>)}</ul>
         </details>
       </header>
       {materialForm}
-      {result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800">{result.aiStatus !== configurationStatus && <p>{careerPlanFailureMessage(result.aiStatus)}</p>}{!result.planId && <p className="text-xs">本次未保存职业规划，上次保存的规划保持不变。</p>}{!!result.aiValidationIssues?.length && <details className="space-y-2"><summary className="cursor-pointer font-medium">查看校验详情</summary>{result.aiValidationIssues.map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</details>}</section> : null}
+      {result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800"><p>{careerPlanFailureMessage(result.aiStatus)}</p>{!result.planId && <p className="text-xs">本次未保存职业规划，上次保存的规划保持不变。</p>}{!!result.aiValidationIssues?.length && <details className="space-y-2"><summary className="cursor-pointer font-medium">查看校验详情</summary>{result.aiValidationIssues.map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</details>}</section> : null}
       {!result.recommendations.length && <div className="panel text-sm text-slate-500">当前没有可推荐的已发布岗位。</div>}
       {visibleRecommendations.map(item => <article id={`plan-job-${item.jobId}`} className="career-job-card panel scroll-mt-24 !p-3" key={item.jobId}>
         <details className="group/job">
@@ -207,12 +206,12 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
             <h3 className="break-words text-lg font-semibold">{item.jobTitle}</h3>
-            <p className="break-words text-sm text-slate-600">{item.companyName} · {item.city} · {EMPLOYMENT_LABELS[item.employmentType] ?? item.employmentType}{demoJobAlias(item.jobId) && " · 示例岗位"}</p>
+            <p className="break-words text-sm text-slate-600">{item.companyName} · {item.city} · {EMPLOYMENT_LABELS[item.employmentType] ?? item.employmentType}</p>
           </div>
           <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm text-indigo-700">{PRIORITY_LABELS[item.priority]}</span>
         </div>
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm">
-          <span className="text-slate-700">材料支持 {item.supportedCount} 项（含部分支持） · 仅简历声明 {item.claimedCount} 项 · 规则可评 {item.assessedCount}/{item.requirementCount} 项</span>
+          <span className="text-slate-700">材料支持 {item.supportedCount} 项 · 仅简历声明 {item.claimedCount} 项 · 已评估 {item.assessedCount}/{item.requirementCount} 项</span>
           <span className="font-medium text-indigo-700"><span aria-hidden="true">› </span><span className="group-open/job:hidden">核对依据与建议</span><span className="hidden group-open/job:inline">收起详情</span></span>
         </div>
         </summary>
