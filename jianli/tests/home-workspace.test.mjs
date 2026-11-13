@@ -85,5 +85,6 @@ test("authentication loading and error never render the saved identity as confir
 test("legacy growth cannot supply the current task and the report lookup only requests product history",()=>{
   const next = readFileSync(new URL("../src/components/JobWorkspaceNextStep.tsx", import.meta.url),"utf8");
   assert.doesNotMatch(next,/listGrowthTasks|\/growth|api.notifications/);
-  assert.match(next,/listReports\(1, 1, \{ scope: "product" \}\)/);
+  assert.match(next,/myApplications\(1, 3, undefined, \{ view: "action" \}\)/);
+  assert.match(next,/listReports\(1, 3, \{ scope: "product", view: "jobs" \}\)/);
 });

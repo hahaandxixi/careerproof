@@ -10,7 +10,7 @@ const jsx = require("react/jsx-runtime");
 
 // Execute the real component with deterministic hooks and synthetic APIs.
 // This tests state transitions, not browser rendering or a real model request.
-function fixture({ failMaterials = false, generationResult = null } = {}) {
+function fixture({ failMaterials = false, generationResult = null, historyResult = null, failHistory = false } = {}) {
   const cells = [], effects = [], dependencies = [];
   let cursor = 0, effectCursor = 0, createCalls = 0, listCalls = 0, historyCalls = 0;
   const same = (a,b) => a && a.length === b.length && a.every((v,i) => Object.is(v,b[i]));
@@ -22,7 +22,7 @@ function fixture({ failMaterials = false, generationResult = null } = {}) {
     async listResumes(){listCalls++;if(failMaterials)throw Error("synthetic list unavailable");return [{versions:[{id:"resume-v2",status:"completed"}]}];},
     async listProjects(){return [{versions:[{id:"project-v3",status:"completed"}]}];},
     async createCareerPlan(){createCalls++;if(generationResult)return generationResult;throw Error("synthetic generation unavailable");},
-    async latestCareerPlan(){historyCalls++;throw Error("synthetic history unavailable");},
+    async latestCareerPlan(){historyCalls++;if(failHistory)throw Error("synthetic history unavailable");return historyResult;},
   };
   const picker = name => Object.assign(()=>null,{testName:name});
   const ResumePicker=picker("resume"),ProjectPicker=picker("project"),ErrorNotice=picker("error");
@@ -39,11 +39,13 @@ function fixture({ failMaterials = false, generationResult = null } = {}) {
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
   const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
-  const render=()=>{cursor=effectCursor=0;return mod.exports.default({});};
+  const emptyIds=[];
+  const render=()=>{cursor=effectCursor=0;return mod.exports.default({}).type({initialResumeVersionId:"",initialProjectVersionIds:emptyIds});};
   const settle=async()=>{while(effects.length)effects.shift()();for(let i=0;i<8;i++)await Promise.resolve();};
   const nodes=(node)=>{if(!node||typeof node!=="object")return [];return [node,...[node.props?.children].flat(Infinity).flatMap(nodes)];};
+  const visibleNodes = node => !node || typeof node !== "object" || node.props?.hidden ? [] : [node, ...[node.props?.children].flat(Infinity).flatMap(visibleNodes)];
   const get=(tree,type)=>{const n=nodes(tree).find(n=>n.type===type);assert.ok(n, String(type.testName||type));return n;};
-  return {render,settle,get,ResumePicker,ProjectPicker,ErrorNotice,nodes,calls:()=>({createCalls,listCalls,historyCalls})};
+  return {render,settle,get,ResumePicker,ProjectPicker,ErrorNotice,nodes,visibleNodes,calls:()=>({createCalls,listCalls,historyCalls})};
 }
 
 test("failed generation retry retains chosen versions and consent without automatically calling AI",async()=>{
@@ -56,7 +58,7 @@ test("failed generation retry retains chosen versions and consent without automa
  assert.equal(f.get(tree,f.ResumePicker).props.selectedId,"resume-v2");
  assert.deepEqual(f.get(tree,f.ProjectPicker).props.selectedIds,["project-v3"]);
  assert.equal(f.get(tree,"input").props.checked,true);
- assert.deepEqual(f.calls(),{createCalls:1,listCalls:1,historyCalls:0});
+ assert.deepEqual(f.calls(),{createCalls:1,listCalls:1,historyCalls:1});
 });
 
 test("material list failure retry really rereads the list",async()=>{
@@ -66,13 +68,23 @@ test("material list failure retry really rereads the list",async()=>{
 });
 
 test("history retry is a read and does not reload material selection or create a plan",async()=>{
- const f=fixture();let tree=f.render();await f.settle();tree=f.render();
+ const f=fixture({failHistory:true});let tree=f.render();await f.settle();tree=f.render();
  f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
- const history=f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划");assert.ok(history);
- await history.props.onClick();tree=f.render();
- await f.get(tree,f.ErrorNotice).props.retry();await f.settle();tree=f.render();
+ f.get(tree,f.ErrorNotice).props.retry();f.render();await f.settle();tree=f.render();
  assert.equal(f.get(tree,f.ResumePicker).props.selectedId,"resume-v2");
  assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:2});
+});
+
+test("an existing plan is read and shown ahead of the material form without creating a plan",async()=>{
+ const f=fixture({historyResult:{planId:"saved",materials:[],recommendations:[],changes:[],summary:"已保存的推荐依据"}});
+ f.render();await f.settle();let tree=f.render();
+ const nodes=f.nodes(tree);
+ assert.ok(nodes.findIndex(n=>n.props?.["data-plan-id"]==="saved")<nodes.findIndex(n=>n.type==="form"));
+ assert.equal(nodes.find(n=>n.props?.id==="career-material-selection").props.hidden,true);
+ nodes.find(n=>n.type==="button"&&n.props.children==="更换材料").props.onClick();
+ tree=f.render();
+ assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-selection").props.hidden,false);
+ assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:1});
 });
 
 test("a disabled AI result blocks repeated generation even after material selection changes",async()=>{
@@ -83,8 +95,19 @@ test("a disabled AI result blocks repeated generation even after material select
  await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
  const button=f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="当前 AI 配置不可用");
  assert.ok(button?.props.disabled);
- assert.ok(f.nodes(tree).some(n=>n.type==="p"&&n.props.children===careerPlanFailureMessage("external_ai_disabled")));
+ assert.ok(f.visibleNodes(tree).some(n=>n.type==="p"&&n.props.children===careerPlanFailureMessage("external_ai_disabled")));
  f.get(tree,f.ResumePicker).props.onChange("resume-v3");tree=f.render();
  await f.get(tree,"form").props.onSubmit({preventDefault(){}});
  assert.equal(f.calls().createCalls,1,"changing material does not repair environment configuration");
+});
+
+test("a successful new plan replaces an earlier history-read error",async()=>{
+ const f=fixture({failHistory:true,generationResult:{planId:"new",materials:[],recommendations:[],changes:[],summary:"新规划"}});
+ f.render();await f.settle();let tree=f.render();
+ assert.ok(f.get(tree,f.ErrorNotice));
+ f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
+ f.get(tree,"input").props.onChange({target:{checked:true}});tree=f.render();
+ await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
+ assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="new"));
+ assert.ok(!f.nodes(tree).some(n=>n.type===f.ErrorNotice));
 });

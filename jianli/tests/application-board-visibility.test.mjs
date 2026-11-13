@@ -160,10 +160,10 @@ test("return after a confirmed send and failed read does not retain a stale retr
 
 test("comparison selection survives tab return and revoked candidates are pruned",async()=>{
  const h=fixture();let tree=await h.settle();
- for(const id of ["a","b"]){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();}
+ for(const id of ["a","b"]){choose(h,tree,id);tree=await h.settle();}
  h.button(tree,"热力图仅看所选（2）").props.onClick();tree=h.render();h.hide();h.show();tree=await h.settle();
  assert.equal(h.button(tree,"显示本页全部候选人").props["aria-pressed"],true);
- const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,4,"matrix and candidate rail both reflect the same two selections");
+ const checks=h.nodes(tree).filter(n=>n.type==="input"&&n.props.type==="checkbox");assert.equal(checks.filter(n=>n.props.checked).length,2,"only the candidate rail exposes membership controls");
  h.hide();h.revoke();h.show();tree=await h.settle();
  assert.ok(h.button(tree,"热力图仅看所选（1）").props.disabled);assert.equal(h.counts.open,0);
 });
@@ -171,14 +171,14 @@ test("comparison selection survives tab return and revoked candidates are pruned
 
 test("three and four selected candidates retain the heatmap and offer only a two-person deep view",async()=>{
  const h=fixture(4);let tree=await h.settle();
- for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"显示本页全部候选人").props.onClick();tree=await h.settle();}const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
+ for(const id of ["a","b","c","d"]){if(id==="d"){h.button(tree,"显示本页全部候选人").props.onClick();tree=await h.settle();}choose(h,tree,id);tree=await h.settle();
  if(["c","d"].includes(id)){const count=id==="c"?3:4;h.button(tree,`热力图仅看所选（${count}）`).props.onClick();tree=await h.settle();assert.equal(h.nodes(tree).filter(n=>n.type==="th"&&n.props.id?.startsWith("application-")).length,count);h.button(tree,"双人对照").props.onClick();tree=h.render();const pair=h.nodes(tree).find(n=>Array.isArray(n.props?.candidates));assert.equal(pair.props.candidates.length,2);assert.equal(h.counts.open,0);h.button(tree,"候选人总览").props.onClick();tree=h.render();}}
  h.button(tree,"清空对照").props.onClick();tree=await h.settle();assert.ok(!h.nodes(tree).some(n=>Array.isArray(n.props?.candidates)));
 });
 
 test("enterprise status and evidence filters apply immediately while retaining cross-page comparison",async()=>{
  const h=fixture();let tree=await h.settle();
- const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id==="application-a");h.nodes(th).find(n=>n.type==="input").props.onChange();tree=await h.settle();
+ choose(h,tree,"a");tree=await h.settle();
  h.nodes(tree).find(n=>n.type==="input"&&n.props.type==="search").props.onChange({target:{value:"Python"}});tree=h.render();
  h.button(tree,"企业已回复").props.onClick();tree=await h.settle();
  assert.deepEqual(h.queries.at(-1),{page:1,size:20,q:"Python",status:"replied",requirementId:"",verdict:""});
@@ -213,7 +213,7 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
 });
 
 const shortlist=tree=>walk(tree).find(n=>n.props?.["aria-label"]==="跨页对照名单");
-function choose(h,tree,id){const th=h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`);assert.ok(th,id);h.nodes(th).find(n=>n.type==="input").props.onChange();}
+function choose(h,tree,id){const row=h.nodes(tree).find(n=>n.props?.["data-candidate-id"]===id);assert.ok(row,id);h.nodes(row).find(n=>n.type==="input"&&n.props.type==="checkbox").props.onChange();}
 function changePage(h,tree,page){h.nodes(tree).find(n=>n.type?.testName==="pagination").props.onPage(page);}
 const savedHistory=()=>boardHistory.applicationBoardHistoryState({__NA:true},"enterprise-a","job-a",{
  page:2,filters:{q:"Python",status:"viewed",requirementId:"r1",verdict:"claimed_only"},comparisonIds:["a","b","u"],
@@ -300,8 +300,7 @@ test("review switcher explains comparison readiness and uses the fixed report ba
  let tree=await h.settle();
  const hint=()=>text(h.nodes(tree).find(n=>n.props?.className==="enterprise-view-hint"));
  const pairButton=()=>h.button(tree,"双人对照");
- const check=id=>h.nodes(tree).find(n=>n.type==="th"&&n.props.id===`application-${id}`).props.children;
- function select(id){h.nodes(check(id).at(-1)).find(n=>n.type==="input").props.onChange();}
+ const select=id=>choose(h,tree,id);
  assert.match(hint(),/点击状态格查看材料来源，勾选两位候选人后开始对照/);
  assert.equal(pairButton().props.disabled,true);
  select("a");tree=await h.settle();
@@ -319,4 +318,17 @@ test("review switcher explains comparison readiness and uses the fixed report ba
  assert.match(hint(),/核对两份固定报告的材料来源/);
  assert.equal(pairButton().props["aria-pressed"],true);
  assert.equal(h.counts.open,0);
+});
+
+test("dense matrices keep usable column widths and selection controls in the roster", async()=>{
+ for(const count of [2,4,20]){
+   const h=fixture(count);const tree=await h.settle();
+   const table=h.nodes(tree).find(node=>node.type==="table");
+   assert.equal(table.props.style.minWidth,200+152*count);
+   const columns=h.nodes(table).filter(node=>node.type==="col");
+   assert.equal(columns.length,count+1);
+   assert.equal(columns[0].props.style.width,200);
+   assert.equal(h.nodes(table).filter(node=>node.type==="input").length,0);
+   assert.equal(h.nodes(tree).filter(node=>node.type==="input"&&node.props.type==="checkbox").length,count);
+ }
 });

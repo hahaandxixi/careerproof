@@ -10,7 +10,7 @@ test("configuration, transport, output and evidence failures have distinct hones
   assert.match(careerPlanFailureMessage("model_quota_exceeded"), /额度不足/);
   assert.match(careerPlanFailureMessage("model_output_truncated"), /长度上限/);
   assert.match(careerPlanFailureMessage("model_output_schema_invalid"), /必要字段或结构/);
-  assert.match(careerPlanFailureMessage("model_business_validation_failed"), /引用、证据或表述校验/);
+  assert.match(careerPlanFailureMessage("model_business_validation_failed"), /AI 建议暂不可用.*核对下方岗位与材料/);
   assert.ok(!careerPlanFailureMessage("model_unavailable_or_invalid").includes("通过校验"), "legacy unknown failures cannot be relabelled as validation failures");
   for (const status of ["external_ai_disabled", "mock_provider", "model_configuration_error", "model_auth_error", "model_request_rejected", "model_quota_exceeded"]) assert.equal(careerPlanConfigurationBlocked(status), true);
   for (const status of ["model_timeout", "model_network_error", "validated"]) assert.equal(careerPlanConfigurationBlocked(status), false);
