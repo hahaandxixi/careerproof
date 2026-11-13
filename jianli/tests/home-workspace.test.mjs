@@ -39,16 +39,14 @@ test("a failed read does not present an unknown workspace as empty", () => {
   const unknown = jobWorkspaceNextStep({ versions: [], incomplete: true });
   assert.equal(unknown.action, "重试读取");
   assert.equal(unknown.href, undefined);
-  assert.equal(jobWorkspaceNextStep({ versions: [], incomplete: false }).href, "/portfolio");
-  assert.equal(jobWorkspaceNextStep({ versions: [{status:"completed", createdAt:"2026-11-12"}], incomplete:false }).href, "/jobs");
+  assert.deepEqual(jobWorkspaceNextStep({ versions: [], incomplete: false }), {description:"暂无待处理事项。", href:"/portfolio", action:"准备材料"});
+  assert.deepEqual(jobWorkspaceNextStep({ versions: [{status:"completed", createdAt:"2026-11-12"}], incomplete:false }), {description:"暂无待处理事项。", href:"/jobs", action:"发现岗位"});
 });
 
-test("a saved material task takes precedence over reports even without an application", () => {
-  const report = { id: "report-owned", title: "后端开发" };
+test("a saved material task is surfaced even without an application", () => {
   const failed = {status:"failed", taskId:"task-a", originalFilename:"项目.zip", createdAt:"2026-11-12"};
-  const next = jobWorkspaceNextStep({ versions: [failed], report, incomplete: false });
+  const next = jobWorkspaceNextStep({ versions: [failed], incomplete: true });
   assert.deepEqual(next, { description:"处理失败 · 项目.zip", href:"/tasks/task-a", action:"处理上传问题" });
-  assert.equal(jobWorkspaceNextStep({ versions: [], report, incomplete: false }).href, "/reports/report-owned");
   const html = render("student");
   assert.match(html,/正在打开求职工作台/);
   assert.doesNotMatch(html,/最近报告|未读消息|快捷入口|企业工作台|公共介绍/);

@@ -426,10 +426,11 @@ test("filter actions keep an included selection and a zero-count filter remains 
  } finally {f.cleanup();}
 });
 
-test("material preview keeps an exact report return and omits generic material navigation", async () => {
+test("material preview keeps an exact report return and offers materials for direct visits", async () => {
  const {default: Preview}=await load("components/MaterialPreview.tsx");
  const plain=renderToStaticMarkup(React.createElement(Preview,{id:"v1",kind:"project"}));
- assert.doesNotMatch(plain, /aria-label="返回"|href="\/portfolio"/);
+ assert.match(plain, /href="\/portfolio"/);
+ assert.doesNotMatch(plain, /本地 OCR/);
  const href="/reports/report-1#rule-source-req-2";
  const fromReport=renderToStaticMarkup(React.createElement(Preview,{id:"v1",kind:"project",reportReturnHref:href}));
  assert.ok(fromReport.includes(`href="${href}"`));

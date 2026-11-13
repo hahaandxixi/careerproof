@@ -66,16 +66,16 @@ function statusText(status: string): string {
 
 const materialTime = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
 
-function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, archiveDisabled = false, uploadDisabled = false, isTarget = false, historical = false }: {
+function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, archiveDisabled = false, uploadDisabled = false, isTarget = false, historical = false, previewQuery }: {
   item: UploadRecord; reportVersions?: number[]; onUploadVersion?: () => void; onArchive?: () => void;
-  archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean;
+  archiveDisabled?: boolean; uploadDisabled?: boolean; isTarget?: boolean; historical?: boolean; previewQuery?: string;
 }) {
   const title = displayMaterialTitle(item.title, item.versionId);
   const complete = item.status === "completed";
   const failed = item.status === "failed" || item.status === "cancelled";
   const date = new Date(item.createdAt);
   return (
-    <article className="material-register-row" data-upload-target={isTarget || undefined} data-historical={historical || undefined}>
+    <article id={`material-${item.versionId}`} className="material-register-row scroll-mt-24" data-upload-target={isTarget || undefined} data-historical={historical || undefined}>
       <div className="material-row-heading">
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
@@ -91,7 +91,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
       </div>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
-        {complete && item.kind === "project" && <Link className="action-link" href={`/materials/project/${item.versionId}`}>查看内容</Link>}
+        {complete && item.kind === "project" && <Link className="action-link" href={`/materials/project/${item.versionId}${previewQuery ? `?${previewQuery}` : ""}`}>查看内容</Link>}
         {onUploadVersion && <button type="button" className="btn-secondary" disabled={uploadDisabled} onClick={onUploadVersion}>上传新版</button>}
         {!complete && item.taskId && <Link className={failed ? "btn" : "btn-secondary"} href={`/tasks/${item.taskId}`}>{failed ? "查看原因 / 重试任务" : "查看处理记录"}</Link>}
         {onArchive && <button type="button" className="btn-danger-quiet" disabled={archiveDisabled} onClick={onArchive}>删除</button>}
@@ -166,7 +166,6 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [reportMaterials, setReportMaterials] = useState<MatchReport["materials"]>();
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState("");
-  // Append-only hook order: tests inject initial state by useState index.
   const [materialFilter, setMaterialFilter] = useState<MaterialFilter>("all");
   const [materialPage, setMaterialPage] = useState(1);
   const deletingProject = useRef(false);
@@ -253,6 +252,32 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     resume: newestUploads.filter(item => item.kind === "resume").length,
     project: newestUploads.filter(item => item.kind === "project").length,
   } satisfies Record<MaterialFilter, number>;
+  const [returnVersion, setReturnVersion] = useState<string | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location?.search);
+    const version = params.get("materialVersion");
+    if (!version) return;
+    setMaterialFilter(MATERIAL_FILTERS.find(filter => filter.key === params.get("materialType"))?.key ?? "all");
+    const page = Number(params.get("materialPage"));
+    setMaterialPage(Number.isSafeInteger(page) && page > 0 ? page : 1);
+    setMaterialSearch(params.get("materialSearch") ?? "");
+    setReturnVersion(version);
+  }, []);
+  const restoredVersion = useRef<string | null>(null);
+  useEffect(() => {
+    if (!historyLoaded || !returnVersion || restoredVersion.current === returnVersion) return;
+    const row = document.getElementById(`material-${returnVersion}`);
+    if (!row) return;
+    const history = row.closest("details");
+    if (history) history.open = true;
+    restoredVersion.current = returnVersion;
+    row.scrollIntoView({ block: "nearest" });
+    row.querySelector<HTMLElement>("a[href*='/materials/project/']")?.focus({ preventScroll: true });
+  }, [historyLoaded, returnVersion]);
+  function previewQuery(versionId: string) {
+    return new URLSearchParams({ from: "portfolio", materialType: materialFilter,
+      materialPage: String(materialPageCurrent), materialSearch, materialVersion: versionId }).toString();
+  }
   const materialPageCount = Math.max(1, Math.ceil(filteredUploads.length / MATERIAL_PAGE_SIZE));
   // Refreshes and archive restore can shrink the list while page > 1; fall
   // back to the last valid page at render time instead of showing a blank page.
@@ -483,7 +508,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
               const history = uploads.filter(version => version.kind === item.kind && version.resourceId === item.resourceId && version.key !== item.key);
               const project = item.kind === "project" ? projects.find(value => value.id === item.resourceId) : undefined;
               return <section key={item.key} className="min-w-0">
-                <UploadProgress item={item} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)}
+                <UploadProgress item={item} previewQuery={previewQuery(item.versionId)} reportVersions={reportVersions.get(`${item.kind}:${item.resourceId}`)}
                   isTarget={uploadOpen && targetProject?.id === project?.id && !!project}
                   onUploadVersion={project ? () => openUpload("project", project) : undefined}
                   uploadDisabled={projectBusy || resumeBusy || !!deletingProjectId}
@@ -491,7 +516,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                   archiveDisabled={projectBusy || !!deletingProjectId} />
                 {history.length > 0 && <details className="text-sm">
                   <summary className="disclosure">历史版本（{history.length}）</summary>
-                  <div>{history.map(version => <UploadProgress key={version.key} item={version} historical />)}</div>
+                  <div>{history.map(version => <UploadProgress key={version.key} item={version} historical previewQuery={previewQuery(version.versionId)} />)}</div>
                 </details>}
               </section>;
             })}

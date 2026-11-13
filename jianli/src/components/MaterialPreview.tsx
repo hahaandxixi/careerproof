@@ -51,10 +51,10 @@ export default function MaterialPreview({ id, initialFileId, initialLineStart, i
     document.getElementById(`source-line-${initialLineStart}`)?.scrollIntoView({ block: "center" });
   }, [selected, initialFileId, initialLineStart]);
   return <div className="space-y-6">
-    {reportReturnHref && <nav aria-label="返回">
-      <Link href={reportReturnHref} className="btn-secondary btn-compact">← {reportReturnHref.includes("#report-materials") ? "返回报告材料" : "返回报告 · 这项要求"}</Link>
-    </nav>}
-    <div><h1 className="text-2xl font-bold">项目 / 作品文本预览</h1><p className="mt-2 text-sm leading-6 text-slate-500">核对系统实际读取到的内容。扫描件与图片由本地 OCR 提取文字，识别结果需对照原图。</p></div>
+    <nav aria-label="返回">
+      <Link href={reportReturnHref ?? "/portfolio"} className="btn-secondary btn-compact">← {reportReturnHref?.startsWith("/portfolio?") ? "返回材料列表" : reportReturnHref?.startsWith("/recommendations") ? "返回推荐依据" : reportReturnHref?.includes("#report-materials") ? "返回报告材料" : reportReturnHref ? "返回报告 · 这项要求" : "前往我的材料"}</Link>
+    </nav>
+    <div><h1 className="text-2xl font-bold">项目 / 作品文本预览</h1></div>
     {!loading && !error && <VisualEvidencePanel key={id} versionId={id} />}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     {loading && <p className="text-sm text-slate-500">加载解析结果…</p>}

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage } from "../src/lib/career-plan-display.ts";
+import { sourceRelativePath } from "../src/lib/source-label.ts";
 import * as demoDisplay from "../src/lib/demo-display-identity.js";
 const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
@@ -31,8 +32,9 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "@/lib/api/client":{api,errorMessage:e=>e.message},
     "@/lib/api/domain":{CATEGORY_LABELS:{},EMPLOYMENT_LABELS:{}},
     "@/lib/recommendation-selection":{jobAnalysisHref:()=>"/jobs/job1",resolveInitialMaterialSelection:()=>({resumeVersionId:"",projectVersionIds:[]})},
-    "@/lib/career-plan-display":{careerPlanDisplayIdentity,careerPlanRecommendations:()=>[],visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
+    "@/lib/career-plan-display":{careerPlanDisplayIdentity,careerPlanRecommendations:result=>result.recommendations,visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
     "@/lib/demo-display-identity.js":demoDisplay,
+    "@/lib/source-label":{sourceRelativePath},
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},
@@ -110,4 +112,18 @@ test("a successful new plan replaces an earlier history-read error",async()=>{
  await f.get(tree,"form").props.onSubmit({preventDefault(){}});tree=f.render();
  assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="new"));
  assert.ok(!f.nodes(tree).some(n=>n.type===f.ErrorNotice));
+});
+
+test("recommendation evidence removes only the associated frozen project prefix", async()=>{
+ const recommendation={jobId:"job",jobTitle:"岗位",companyName:"企业",gaps:[],matchedSkills:[],evidence:[
+  {filePath:"saved-version/src/module.py",projectVersionId:"saved-version",lineStart:2,lineEnd:4,citationId:"J1-E1"},
+  {filePath:"unrelated/src/module.py",projectVersionId:"unrelated",lineStart:1,lineEnd:2,citationId:"J1-E2"},
+  {filePath:"archive/saved-version/src/module.py",projectVersionId:"saved-version",lineStart:5,lineEnd:6,citationId:"J1-E3"}
+ ]};
+ const f=fixture({historyResult:{planId:"saved",materials:[{kind:"project",id:"saved-version",title:"项目",versionNumber:2}],recommendations:[recommendation],changes:[],summary:"已保存"}});
+ f.render();await f.settle();const nodes=f.nodes(f.render());
+ const paths=nodes.filter(n=>n.type==="span"&&n.props.className==="break-all text-slate-400").map(n=>n.props.children[0]);
+ assert.deepEqual(paths,["src/module.py","unrelated/src/module.py","archive/saved-version/src/module.py"]);
+ assert.ok(nodes.some(n=>n.props?.id==="plan-citation-J1-E1"));
+ assert.ok(nodes.some(n=>n.props?.href==="/jobs/job1"&&n.props.children==="查看岗位"));
 });

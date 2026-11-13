@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
+import { openStudentMessages } from "./StudentMessages";
 import { useAuth } from "./AuthProvider";
 
 type Command = { id: string; label: string; group: string; href: string; aliases: string };
@@ -27,7 +28,7 @@ function commandsFor(pathname: string, role?: string): Command[] {
     { id: "jobs", label: "发现岗位", group: "岗位", href: "/jobs", aliases: "岗位 找工作 发现 推荐" },
     { id: "reports", label: "我的报告", group: "报告", href: "/reports", aliases: "报告 匹配 证据" },
     { id: "applications", label: role === "student" ? "求职工作台" : "我的投递", group: "投递", href: "/applications", aliases: "我的投递 求职概览 投递 分享 授权" },
-    ...(role === "student" ? [{ id: "messages", label: "求职工作台 · 消息", group: "投递", href: "/applications?messages=1", aliases: "通知中心 通知 消息 未读" }] : []),
+    ...(role === "student" ? [{ id: "messages", label: "消息", group: "投递", href: "/applications?messages=1", aliases: "通知中心 通知 消息 未读" }] : []),
     { id: "skills", label: "技能全景", group: "报告", href: "/skills", aliases: "技能 技能全景 技能版图 材料支持" },
     ...(role === "student" ? [{ id: "interview", label: "模拟面试", group: "报告", href: "/interview", aliases: "模拟面试 面试 面试练习" }] : []),
     { id: "demo", label: "案例库", group: "材料", href: "/demo", aliases: "案例 案例库 示例项目 示例 下载 导入" },
@@ -110,9 +111,14 @@ export default function QuickCommandPalette() {
     if (!command) return;
     const hashIndex = command.href.indexOf("#");
     const samePath = command.href.split("#")[0] === pathname;
+    if (command.id === "messages") {
+      setOpen(false);
+      openStudentMessages(restoreFocus.current?.getClientRects().length && restoreFocus.current !== document.body
+        ? restoreFocus.current : document.querySelector<HTMLElement>(".quick-command-trigger"));
+      return;
+    }
     close();
-    if (pathname === "/applications" && command.id === "messages") window.dispatchEvent(new Event("careerproof:open-workspace-messages"));
-    else if (samePath && hashIndex >= 0) navigateEvidenceFragment(command.href.slice(hashIndex));
+    if (samePath && hashIndex >= 0) navigateEvidenceFragment(command.href.slice(hashIndex));
     else router.push(command.href);
   };
   const dialogKeys = (event: ReactKeyboardEvent<HTMLDivElement>) => {
