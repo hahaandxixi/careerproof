@@ -1539,6 +1539,7 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .student-job-workspace .application-record { scroll-margin-top: 96px; overflow-wrap: anywhere; }
 .job-workspace-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(100%, 480px); max-width: 100%; height: 100dvh; max-height: 100dvh; padding: 0; overflow: auto; overscroll-behavior: contain; border: 0; border-inline-start: 1px solid #b9c9c1; background: #f9f7ef; color: #263b36; }
 .job-workspace-drawer::backdrop { background: rgb(20 34 30 / 46%); }
+:root:has(dialog.job-workspace-drawer[open]) { overflow: hidden; }
 .job-workspace-drawer-inner { min-height: 100%; padding: 16px; }
 .job-workspace-drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .job-workspace-drawer .workspace-row { padding: 12px; }
