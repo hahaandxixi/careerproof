@@ -32,6 +32,7 @@ test("application status applies immediately with query and pagination reset; se
   "@/lib/application-list-session":{createApplicationListSession},"@/lib/refresh-gate":{createRefreshGate},
   "@/lib/application-display":{applicationEventsSummary:String,applicationNextAction:String,applicationReplyText:String,applicationStatusText:String},
   "next/navigation":{useSearchParams:()=>location.searchParams},
+  "./StudentMessages":{openStudentMessages:()=>{}},
   "./NotificationCenter":{NotificationWorkspace:()=>null},"./NotificationLink":{default:()=>null},
   "./JobWorkspaceNextStep":{default:()=>null},
  });

@@ -15,6 +15,7 @@ const modules = {
   react: React,
   "react/jsx-runtime": require("react/jsx-runtime"),
   "next/link": { __esModule: true, default: props => React.createElement("a", props) },
+  "./StudentMessages":{openStudentMessages:()=>{}},
   "./QuickCommandPalette": { __esModule: true, default: () => null },
   "next/navigation": { usePathname: () => "/jobs/mine", useRouter: () => ({}) },
   "./AuthProvider": { useAuth: () => ({ user, status: "authenticated", logout() {}, reload() {} }) },

@@ -14,7 +14,7 @@ import AccessGate from "./AccessGate";
 import ApplicationReply from "./ApplicationReply";
 import { useAuth } from "./AuthProvider";
 import NotificationLink from "./NotificationLink";
-import { NotificationWorkspace } from "./NotificationCenter";
+import { openStudentMessages } from "./StudentMessages";
 import JobWorkspaceNextStep from "./JobWorkspaceNextStep";
 
 // 传智杯44：单条投递卡片是无状态展示组件，突出岗位/公司/状态/企业回复/下一动作；
@@ -73,12 +73,9 @@ function Workspace() {
   const [state, setState] = useState<ApplicationListState>({ items: [], loading: true, error: "" });
   const [detail, setDetail] = useState<Detail | null>(null);
   const [revokeId, setRevokeId] = useState<string | null>(null);
-  const [messagesOpen, setMessagesOpen] = useState(false);
   const [overviewRevision, setOverviewRevision] = useState(0);
   const selected = useRef<string | null>(null);
   const detailTicket = useRef(0);
-  const messageButton = useRef<HTMLButtonElement>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
 
   const session = useMemo(() => createApplicationListSession({
     list: () => api.myApplications(criteria.current.page, 20, undefined, { q: criteria.current.q, view: criteria.current.view }),
@@ -113,34 +110,13 @@ function Workspace() {
     selected.current = item.id;
     storeSelection(item.id);
     setRevokeId(null);
-    dialog.current?.close();
-    setMessagesOpen(false);
     setDetail({ id: item.id, item, focus: true });
   }, []);
-  const canUseMessages = useCallback(() => Boolean(dialog.current?.open) && document.visibilityState !== "hidden", []);
-
-  function closeMessages() {
-    dialog.current?.close();
-    setMessagesOpen(false);
-    messageButton.current?.focus();
-  }
-
-  const messageIntent = search.get("messages");
   useEffect(() => {
-    if (messageIntent !== "1") return;
-    const url = new URL(location.href);
-    url.searchParams.delete("messages");
-    history.replaceState(null, "", url);
-    setMessagesOpen(true);
-  }, [messageIntent]);
-  useEffect(() => {
-    const open = () => setMessagesOpen(true);
-    window.addEventListener("careerproof:open-workspace-messages", open);
-    return () => window.removeEventListener("careerproof:open-workspace-messages", open);
-  }, []);
-  useEffect(() => {
-    if (messagesOpen && !dialog.current?.open) dialog.current?.showModal();
-  }, [messagesOpen]);
+    const open = (event: Event) => openMessageTarget((event as CustomEvent<ApplicationView>).detail);
+    window.addEventListener("careerproof:message-application", open);
+    return () => window.removeEventListener("careerproof:message-application", open);
+  }, [openMessageTarget]);
   useEffect(() => {
     if (detail?.focus && detail.item) {
       const card = document.getElementById(`application-${detail.id}`);
@@ -159,9 +135,7 @@ function Workspace() {
     };
     const onHashChange = () => {
       if (!applicationAnchorId()) return;
-      dialog.current?.close();
-      setMessagesOpen(false);
-      openAnchor();
+          openAnchor();
     };
     const refresh = () => {
       if (document.visibilityState === "hidden") return;
@@ -234,8 +208,8 @@ function Workspace() {
   return <div className="application-workspace student-job-workspace">
     <header className="job-workspace-header">
       <h1 className="page-title">求职工作台</h1>
-      <NotificationLink render={count => <button type="button" ref={messageButton} className="btn-secondary" aria-haspopup="dialog"
-        aria-expanded={messagesOpen} aria-controls="job-workspace-messages" onClick={() => setMessagesOpen(true)}>
+      <NotificationLink render={count => <button type="button" className="btn-secondary" aria-haspopup="dialog"
+        aria-controls="job-workspace-messages" onClick={event => openStudentMessages(event.currentTarget)}>
         消息{count !== null ? ` · 未读 ${count}` : ""}
       </button>} />
     </header>
@@ -301,16 +275,5 @@ function Workspace() {
         </div>
       </div>
     </section>
-    <dialog id="job-workspace-messages" ref={dialog} className="job-workspace-drawer" aria-labelledby="job-workspace-message-title"
-      onCancel={event => { event.preventDefault(); closeMessages(); }}
-      onClick={event => { if (event.target === event.currentTarget) closeMessages(); }}>
-      <div className="job-workspace-drawer-inner">
-        <header className="job-workspace-drawer-heading">
-          <h2 id="job-workspace-message-title" className="section-title">消息</h2>
-          <button type="button" className="btn-secondary" onClick={closeMessages}>关闭消息</button>
-        </header>
-        <NotificationWorkspace active={messagesOpen} onApplication={openMessageTarget} canAct={canUseMessages} />
-      </div>
-    </dialog>
   </div>;
 }

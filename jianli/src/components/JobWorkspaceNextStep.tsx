@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { api, type ApplicationView, type ProjectHistory, type ResumeHistory } from "@/lib/api/client";
 import { applicationReplyInfo } from "@/lib/application-display";
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
-import type { ReportSummary } from "@/lib/api/domain";
+import { CATEGORY_LABELS, type CareerPlanResult, type ReportSummary } from "@/lib/api/domain";
+import { careerPlanDisplayIdentity, careerPlanRecommendations } from "@/lib/career-plan-display";
+import { jobAnalysisHref } from "@/lib/recommendation-selection";
 import { jobWorkspaceNextStep } from "@/lib/job-workspace-next-step";
 
 type WorkspaceState = {
@@ -22,6 +24,8 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
   onViewReplies: () => void;
 }) {
   const [state, setState] = useState<WorkspaceState | null>(null);
+  const [plan, setPlan] = useState<CareerPlanResult | null | undefined>(undefined);
+  const [planFailed, setPlanFailed] = useState(false);
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     let current = true;
@@ -46,14 +50,35 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
     return () => { current = false; };
   }, [refreshVersion, revision]);
 
+  useEffect(() => {
+    let active = true;
+    setPlanFailed(false);
+    void api.latestCareerPlan().then(value => {
+      if (active) setPlan(value && careerPlanDisplayIdentity(value));
+    }).catch(() => { if (active) { setPlan(null); setPlanFailed(true); } });
+    return () => { active = false; };
+  }, [refreshVersion, revision]);
+  const jobs = plan ? careerPlanRecommendations(plan, false).slice(0, 2) : [];
+  const resume = plan?.materials.find(material => material.kind === "resume");
+  const projects = plan?.materials.filter(material => material.kind === "project").map(material => material.id) ?? [];
+
   const next = state && jobWorkspaceNextStep({ versions: state.versions, incomplete: state.tasksIncomplete });
   const reply = state?.reply;
   const replyInfo = reply && applicationReplyInfo(reply);
-  const showNext = next?.href && (!reply || next.href.startsWith("/tasks/"));
+
   return <div className="job-workspace-overview">
     <section className="job-workspace-next" aria-labelledby="job-workspace-next-label">
-      <h2 id="job-workspace-next-label">当前待办</h2>
-      {!state && <p role="status">正在读取待办…</p>}
+      <div className="job-workspace-next-row">
+        <h2 id="job-workspace-next-label">职业推荐</h2>
+        <Link className="btn-quiet btn-compact" href="/recommendations">{jobs.length ? "查看完整推荐" : "查看推荐"}</Link>
+      </div>
+      {plan?.primaryDirection && <p>{CATEGORY_LABELS[plan.primaryDirection] ?? plan.primaryDirection}</p>}
+      {jobs.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-1">{jobs.map(job => <li key={job.jobId}>
+        <Link className="action-link" href={resume ? jobAnalysisHref(job.jobId, resume.id, projects) : `/jobs/${encodeURIComponent(job.jobId)}`}>{job.jobTitle}</Link>
+      </li>)}</ul>}
+      {planFailed ? <p role="status">暂时无法读取推荐。 <button type="button" className="action-link" onClick={() => setRevision(value => value + 1)}>重试读取</button></p>
+        : plan === undefined ? <p role="status">正在读取推荐…</p>
+        : !jobs.length && <p>{plan?.primaryDirection ? "这份推荐暂无可展示的岗位。" : "暂无已保存的推荐。"}</p>}
       {reply && replyInfo && <div className="job-workspace-next-row">
         <div className="min-w-0">
           <strong>{displayJobTitle(reply.jobTitle, reply.jobId)}</strong>
@@ -62,9 +87,9 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
         <button type="button" className="btn-secondary btn-compact" onClick={() => onOpenReply(reply.id)}>查看企业回复</button>
       </div>}
       {(state?.replyCount ?? 0) > 1 && <button type="button" className="btn-quiet btn-compact" onClick={onViewReplies}>查看全部企业回复</button>}
-      {showNext && <div className="job-workspace-next-row">
+      {next?.href?.startsWith("/tasks/") && <div className="job-workspace-next-row">
         <p>{next.description}</p>
-        <Link className={next.href.startsWith("/tasks/") ? "btn-secondary btn-compact" : "btn-quiet btn-compact"} href={next.href}>{next.action}</Link>
+        <Link className="btn-secondary btn-compact" href={next.href}>{next.action}</Link>
       </div>}
       {state?.tasksIncomplete && <p role="status">待办暂未完整读取。 <button type="button" className="action-link" onClick={() => { setState(null); setRevision(value => value + 1); }}>重试读取</button></p>}
     </section>

@@ -1,4 +1,5 @@
 ﻿"use client";
+import { openStudentMessages } from "./StudentMessages";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -41,9 +42,9 @@ export default function AccountMenu({ name: originalName, identityId, unreadCoun
       {!enterprise && <Link className={linkClass} href="/applications" onClick={close}>求职工作台</Link>}
       <Link className={linkClass} href={enterprise ? "/notifications" : "/applications?messages=1"} onClick={event => {
         close();
-        if (!enterprise && pathname === "/applications" && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+        if (!enterprise && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
           event.preventDefault();
-          window.dispatchEvent(new Event("careerproof:open-workspace-messages"));
+          openStudentMessages(menu.current?.querySelector("summary"));
         }
       }}>{enterprise ? "通知" : "消息"}{unreadCount === null ? "" : `（${unreadCount} 未读）`}</Link>
       <div className="mt-1 border-t border-slate-100 pt-1"><button className={`${linkClass} w-full text-left`} disabled={busy} onClick={()=>{close();onLogout();}}>{busy ? "退出中…" : "退出登录"}</button></div>
