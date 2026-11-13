@@ -1543,3 +1543,7 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .job-workspace-drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .job-workspace-drawer .workspace-row { padding: 12px; }
 .job-workspace-drawer .card-actions { border: 0; padding-top: 2px; }
+
+.enterprise-recording-layout .board-filter-options .selection-toggle { min-height: 34px; padding: 4px 8px; }
+.enterprise-candidate-groups li > .candidate-roster-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.candidate-roster-meta label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #3f5d55; }

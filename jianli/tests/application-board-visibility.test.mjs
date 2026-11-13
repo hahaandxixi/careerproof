@@ -192,7 +192,7 @@ test("enterprise status and evidence filters apply immediately while retaining c
 test("selected heatmap cell identifies both candidate and requirement after returning to the matrix",async()=>{
  const h=fixture();let tree=await h.settle();
  const cell=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
- assert.ok(cell);await cell.props.onClick();tree=await h.settle();h.button(tree,"候选人总览").props.onClick();tree=h.render();
+ assert.ok(cell);await cell.props.onClick({detail:1});tree=await h.settle();h.button(tree,"候选人总览").props.onClick();tree=h.render();
  const selected=h.nodes(tree).find(n=>n.type==="button"&&n.props["aria-label"]?.startsWith("候选人a · Python要求 · 仅简历声明"));
  assert.equal(selected.props["aria-pressed"],true);assert.match(selected.props.className,/ring-inset/);
  assert.equal(h.counts.reply,0);
@@ -204,12 +204,12 @@ test("matrix missing item differs from unsupported and numeric zero, without ope
  let tree=await h.settle();
  const cell=part=>h.nodes(tree).find(n=>n.type==="button"&&String(n.props["aria-label"]).includes(part));
  const missing=cell("候选人b · Python要求 · 本报告无此项");assert.ok(missing);assert.equal(missing.props.disabled,true);assert.match(text(missing),/本报告无此项/);
- missing.props.onClick();assert.equal(h.counts.open,0);
+ missing.props.onClick({detail:1});assert.equal(h.counts.open,0);
  const zero=cell("候选人a · Python要求");assert.equal(zero.props.disabled,false);assert.match(text(zero),/有证据支持/);
  const unsupported=cell("候选人c · Python要求");assert.equal(unsupported.props.disabled,false);assert.equal(text(unsupported),VERDICT_LABELS.unsupported);
  assert.equal(unsupported.props["data-review"],"unread");assert.match(unsupported.props.className,/bg-slate-100/);
  assert.match(zero.props.className,/bg-emerald-100/);
- await unsupported.props.onClick();tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
+ await unsupported.props.onClick({detail:1});tree=await h.settle();assert.equal(h.counts.open,1);assert.ok(h.nodes(tree).some(n=>n.type?.testName==="radar"&&n.props.initialRequirementId==="r1"));
 });
 
 const shortlist=tree=>walk(tree).find(n=>n.props?.["aria-label"]==="跨页对照名单");
@@ -281,15 +281,15 @@ test("matrix shows saved judgment colors before reading and marks review for the
   assert.match(cell(id).props.className,new RegExp(color));
  }
  assert.equal(h.counts.open,0);
- cell("a").props.onClick();tree=await h.settle();
+ cell("a").props.onClick({detail:1});tree=await h.settle();
  assert.match(text(cell("a")),/有证据支持.*本人已驳回/);
  assert.equal(cell("a").props["data-review"],"rejected");
  assert.match(cell("a").props.className,/bg-emerald-100/);
  assert.equal(cell("b").props["data-review"],"unread");
- cell("b").props.onClick();tree=await h.settle();
+ cell("b").props.onClick({detail:1});tree=await h.settle();
  assert.match(text(cell("b")),/仅简历声明.*本人标记修正/);
  assert.doesNotMatch(text(cell("a")),/本人标记修正/);
- cell("c").props.onClick();tree=await h.settle();
+ cell("c").props.onClick({detail:1});tree=await h.settle();
  assert.equal(cell("c").props["data-review"],"read");
  assert.doesNotMatch(cell("c").props["aria-label"],/复核未载入|需复核/);
 });

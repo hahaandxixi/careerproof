@@ -13,7 +13,7 @@ type WorkspaceState = {
   reports: ReportSummary[] | null;
   reply?: ApplicationView;
   replyCount: number;
-  incomplete: boolean;
+  tasksIncomplete: boolean;
 };
 
 export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onViewReplies }: {
@@ -40,13 +40,13 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
       setState({
         versions, reply, replyCount: applications.status === "fulfilled" ? applications.value.total : 0,
         reports: reports.status === "fulfilled" ? reports.value.items : null,
-        incomplete: [resumes, projects, reports, applications].some(result => result.status === "rejected"),
+        tasksIncomplete: [resumes, projects, applications].some(result => result.status === "rejected"),
       });
     });
     return () => { current = false; };
   }, [refreshVersion, revision]);
 
-  const next = state && jobWorkspaceNextStep({ versions: state.versions, incomplete: state.incomplete });
+  const next = state && jobWorkspaceNextStep({ versions: state.versions, incomplete: state.tasksIncomplete });
   const reply = state?.reply;
   const replyInfo = reply && applicationReplyInfo(reply);
   const showNext = next?.href && (!reply || next.href.startsWith("/tasks/"));
@@ -64,9 +64,9 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
       {(state?.replyCount ?? 0) > 1 && <button type="button" className="btn-quiet btn-compact" onClick={onViewReplies}>查看全部企业回复</button>}
       {showNext && <div className="job-workspace-next-row">
         <p>{next.description}</p>
-        <Link className="btn-secondary btn-compact" href={next.href}>{next.action}</Link>
+        <Link className={next.href.startsWith("/tasks/") ? "btn-secondary btn-compact" : "btn-quiet btn-compact"} href={next.href}>{next.action}</Link>
       </div>}
-      {state?.incomplete && <p role="status">部分资料暂未读取。 <button type="button" className="action-link" onClick={() => { setState(null); setRevision(value => value + 1); }}>重试读取</button></p>}
+      {state?.tasksIncomplete && <p role="status">待办暂未完整读取。 <button type="button" className="action-link" onClick={() => { setState(null); setRevision(value => value + 1); }}>重试读取</button></p>}
     </section>
     <section className="job-workspace-recent" aria-labelledby="job-workspace-recent-label">
       <div className="job-workspace-next-row">
@@ -74,7 +74,7 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
         <Link className="btn-quiet btn-compact" href="/reports">全部报告</Link>
       </div>
       {!state && <p role="status">正在读取报告…</p>}
-      {state?.reports === null && <p>报告暂未读取。</p>}
+      {state?.reports === null && <p role="status">报告暂未读取。 <button type="button" className="action-link" onClick={() => setRevision(value => value + 1)}>重试读取</button></p>}
       {state?.reports?.length === 0 && <p>暂无报告。</p>}
       {!!state?.reports?.length && <ul>{state.reports.map(report => <li key={report.id}>
         <Link className="action-link" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>
