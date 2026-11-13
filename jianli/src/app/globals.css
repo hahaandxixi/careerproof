@@ -1517,9 +1517,19 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 /* Student job workspace. Notification controls keep their own scrolling surface. */
 .student-job-workspace { display: grid; gap: 15px; }
 .job-workspace-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.job-workspace-next { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 10px 14px; background: #e5ede8; border-inline-start: 3px solid #3e725f; }
-.job-workspace-next h2 { font-size: 14px; font-weight: 700; }
-.job-workspace-next p { margin-top: 2px; color: #40554c; overflow-wrap: anywhere; }
+.job-workspace-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 16px; }
+.job-workspace-next, .job-workspace-recent { min-width: 0; padding: 10px 14px; background: #fbf9f4; border-block: 1px solid #d3c9b6; }
+.job-workspace-next { background: #e5ede8; border-inline-start: 3px solid #3e725f; }
+.job-workspace-overview h2 { font-size: 16px; font-weight: 700; }
+.job-workspace-overview p { margin-top: 2px; color: #40554c; overflow-wrap: anywhere; }
+.job-workspace-next-row, .job-workspace-recent li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; min-width: 0; }
+.job-workspace-next-row { padding-block: 4px; }
+.job-workspace-recent li { padding-block: 3px; font-size: 14px; }
+.job-workspace-recent time { color: #40554c; }
+@media (max-width: 760px) { .job-workspace-overview { grid-template-columns: minmax(0, 1fr); } }
+.enterprise-review-page .enterprise-matrix thead th:has(.candidate-select[aria-pressed="true"]) { background: #cfe1d8; }
+.enterprise-review-page .enterprise-matrix .candidate-select { overflow-wrap: anywhere; }
+.enterprise-review-page .enterprise-matrix tbody th[scope="row"] { overflow-wrap: anywhere; }
 .job-workspace-applications { display: grid; gap: 8px; min-width: 0; }
 .job-workspace-list-message, .job-workspace-pagination { padding: 12px; }
 .job-workspace-outside { color: #59695f; font-size: 14px; margin-bottom: 6px; }

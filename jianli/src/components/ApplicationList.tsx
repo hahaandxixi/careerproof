@@ -74,6 +74,7 @@ function Workspace() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [revokeId, setRevokeId] = useState<string | null>(null);
   const [messagesOpen, setMessagesOpen] = useState(false);
+  const [overviewRevision, setOverviewRevision] = useState(0);
   const selected = useRef<string | null>(null);
   const detailTicket = useRef(0);
   const messageButton = useRef<HTMLButtonElement>(null);
@@ -166,6 +167,7 @@ function Workspace() {
       if (document.visibilityState === "hidden") return;
       setRevokeId(null);
       void session.refresh();
+      setOverviewRevision(value => value + 1);
       if (selected.current) void loadDetail(selected.current);
     };
     const gate = createRefreshGate(refresh);
@@ -225,6 +227,7 @@ function Workspace() {
   const refresh = () => {
     setRevokeId(null);
     void session.refresh();
+    setOverviewRevision(value => value + 1);
     if (selected.current) void loadDetail(selected.current);
   };
 
@@ -236,7 +239,11 @@ function Workspace() {
         消息{count !== null ? ` · 未读 ${count}` : ""}
       </button>} />
     </header>
-    <JobWorkspaceNextStep />
+    <JobWorkspaceNextStep refreshVersion={overviewRevision} onViewReplies={() => filter("", "action")} onOpenReply={id => {
+      storeSelection(id);
+      setRevokeId(null);
+      void loadDetail(id, true);
+    }} />
     <section className="job-workspace-applications" aria-labelledby="workspace-applications-title">
       <h2 id="workspace-applications-title" className="section-title">投递记录</h2>
       <form className="application-toolbar" onSubmit={event => { event.preventDefault(); filter(query, view); }}>
@@ -288,6 +295,7 @@ function Workspace() {
             onConfirmWithdraw={async id => {
               setRevokeId(null);
               await session.withdraw(id);
+              setOverviewRevision(value => value + 1);
               if (selected.current === id && document.visibilityState !== "hidden") await loadDetail(id);
             }} />}
         </div>
