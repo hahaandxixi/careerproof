@@ -124,21 +124,25 @@ def runtime_plan_without_implementation_step(
     runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果|查询结果", work))
     if skill and skill.casefold() == "sql":
         action = r"编写|设计|实现|补全|补充|完善|修复|修改|提供|提交|上传"
-        sql_query = r"SQL\s*(?>查询(?:语句|脚本)?|语句|脚本|代码|文件)(?!\s*(?:的)?\s*(?:(?:运行|执行)?(?:结果|输出|截图|日志|记录)))"
+        output_suffix = r"\s*的?\s*(?:运行|执行)?(?:结果|输出|截图|日志|记录)"
+        sql_query = rf"SQL\s*(?>查询(?:语句|脚本)?|语句|脚本|代码|文件)(?!{output_suffix})"
         query_script = r"(?:查询语句|查询脚本)(?!\s*(?:结果|输出|截图|日志|记录))"
+        negation = r"无需|不必|不用|不要|不需要|不提交|不编写|不得|尚未|未实现|没有|只交|仅交"
+        promised_artifact = rf"^\s*(?:一份|一个|一条)?\s*(?:{sql_query})(?:[（(、\s]|$)"
+        sql_reference = r"(?:用|使用|通过|基于)\s*SQL(?![a-zA-Z0-9_])"
         for sentence in re.split(r"[。！？；;\n]", "；".join([deliverable, *steps])):
             sql_context = False
             for clause in re.split(r"[，,]", sentence):
-                if re.search(r"无需|不必|不用|不要|不需要|不提交|不编写|不得|尚未|未实现|没有|只交|仅交", clause):
+                if re.search(negation, clause):
                     sql_context = False
                     continue
                 if re.search(rf"(?:{action}).{{0,30}}?(?:{sql_query})", clause, re.I):
                     return False
-                if re.match(rf"^\s*(?:一份|一个|一条)?\s*(?:{sql_query})(?:[（(、\s]|$)", clause, re.I):
+                if re.match(promised_artifact, clause, re.I):
                     return False
                 if sql_context and re.search(rf"(?:{action})\s*{query_script}", clause):
                     return False
-                sql_context = bool(re.search(r"(?:用|使用|通过|基于)\s*SQL\b", clause, re.I | re.ASCII))
+                sql_context = bool(re.search(sql_reference, clause, re.I))
         return runtime_requested
     implementation = re.compile(
         r"(?:补充|补全|补齐|编写|实现|提供|提交|上传|完善|修复|修改|展示)"

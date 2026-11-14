@@ -349,8 +349,12 @@ def validate_feedback(
     if not isinstance(raw_resolved, list):
         raise PracticeOutputError("已解决事项格式无效")
     for resolution in raw_resolved:
-        if (not isinstance(resolution, dict) or not isinstance(resolution.get("issueId"), str)
-                or resolution["issueId"] not in allowed_issues or resolution["issueId"] in recalled):
+        if (
+            not isinstance(resolution, dict)
+            or not isinstance(resolution.get("issueId"), str)
+            or resolution["issueId"] not in allowed_issues
+            or resolution["issueId"] in recalled
+        ):
             raise PracticeOutputError("已解决事项不属于前轮待核对项")
         issue_id = resolution["issueId"]
         allowed_issues.remove(issue_id)
