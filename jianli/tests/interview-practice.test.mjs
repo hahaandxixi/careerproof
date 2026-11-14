@@ -1,10 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, newClientToken, openTurn,
+  PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn,
   feedbackStatusLabel, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "../src/lib/interview-practice.ts";
 
+test("issue-specific basis stays with its original and follow-up rounds", () => {
+  const conflict = id => ({answerQuote:"原话",reason:"说明",basisId:id});
+  const issue = {origin:{issueId:"0:inconsistent:0",conflict:conflict("first")},turnIndex:1,conflict:conflict("second")};
+  assert.equal(issueBasisId(issue,0),"first");
+  assert.equal(issueBasisId(issue,1),"second");
+  assert.equal(issueBasisId({...issue,answerQuote:"补答"},1),undefined);
+  assert.equal(issueBasisId({...issue,answerQuote:"补答"},0),"first");
+});
 const evidence = (id, path = "version-1/test_pipeline.py") => ({
   citationId: id, filePath: path, lineStart: 3, lineEnd: 4, snippet: "assert True", provenance: "portfolio",
 });

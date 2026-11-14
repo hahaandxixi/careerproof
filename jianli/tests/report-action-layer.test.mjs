@@ -58,13 +58,14 @@ const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan
 test("career supplement keeps saved details and valid citations after showing the gap", () => {
  const input = {keyGap:"缺少查询",nextTask:"整理结果",reason:"需要核对",citationIds:["one","missing","one"],taskPlan:{deliverable:"查询脚本",acceptanceChecks:["检查条件","核对结果"],steps:["编写查询","保存输出"]}};
  const job = {assessedCount:1,evidence:[{citationId:"one",skill:"SQL",filePath:"src/app.py",lineStart:2,lineEnd:4}]};
- const html = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:input,job,onEvidence(){}}));
+ const html = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:input,job,planId:"saved-plan"}));
  for (const text of ["缺少查询","整理结果","需要核对","查询脚本","检查条件","核对结果","编写查询","保存输出","plan-citation-one"]) assert.ok(html.includes(text),text);
  assert.equal((html.match(/plan-citation-one/g)??[]).length,1);
+ assert.ok(html.includes("returnPlan=saved-plan#plan-citation-one"));
  assert.doesNotMatch(html,/plan-citation-missing/);
  assert.match(html,/<details>/);
  const repeated = {...input,taskPlan:{...input.taskPlan,acceptanceChecks:["同一内容","同一内容"],steps:["同一步","同一步"]}};
- const saved = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:repeated,job,onEvidence(){}}));
+ const saved = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:repeated,job,planId:"saved-plan"}));
  assert.equal((saved.match(/同一内容/g)??[]).length,2);
  assert.equal((saved.match(/同一步/g)??[]).length,2);
 });
