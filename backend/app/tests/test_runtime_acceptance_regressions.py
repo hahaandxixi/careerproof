@@ -34,6 +34,11 @@ def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     "补充针对缺失值的 SQL 聚合统计查询脚本并记录执行输出",
     "编写SQL查询语句并保存执行输出",
     "提交SQL脚本并记录运行结果",
+    "编写 SQL 去重查询语句并保存执行输出",
+    "编写 SQL 联表查询脚本并保存运行结果",
+    "编写 SQL 空值去重查询脚本并保存运行输出",
+    "使用 SQL 排查异常，编写一段查询脚本并保存输出",
+    "提交 SQL 查询脚本，不提交截图，保存运行日志",
 ])
 def test_saved_sql_rejection_excerpt_contains_implementation(step):
     assert not career_runtime_plan_without_implementation(
@@ -53,6 +58,9 @@ def test_saved_sql_rejection_excerpt_contains_implementation(step):
     "使用 SQL 查询数据，不编写查询脚本，只交运行输出",
     "同学建议提交 SQL 查询脚本，我先附上运行结果日志",
     "提交 SQL 查询的验证结果",
+    "提交SQL查询的核对结果与异常输出",
+    "编写SQL查询语句，但无需提交SQL代码，只交运行结果",
+    "先在本地编写SQL查询脚本，不提交查询脚本，只交运行结果截图",
     "编写 SQL 查询语句不是必须的，不用提交代码，只交运行结果",
 ])
 def test_unrelated_or_negated_implementation_does_not_cover_sql(step):
