@@ -107,7 +107,6 @@ function ReportWorkspace({ id }: { id: string }) {
     url.hash = selection ? `requirement-${selection.requirementId}` : "report-matching";
     if (url.href !== window.location.href) {
       window.history.pushState(window.history.state, "", url);
-      window.dispatchEvent(new Event("hashchange"));
     }
   };
   const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));

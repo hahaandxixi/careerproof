@@ -110,7 +110,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
       onRequirementChange?.(next);
       // A zero-result filter must clear the old requirement, radar highlight and
       // source instead of leaving the previous article visible.
-      navigateEvidenceFragment(next ? `#requirement-${next}` : "#report-matching");
+      window.history.pushState(window.history.state, "", next ? `#requirement-${next}` : "#report-matching");
     } else if (next && next !== selected) {
       window.history.pushState(null, "", `#requirement-${next}`);
     }
