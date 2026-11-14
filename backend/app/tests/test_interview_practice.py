@@ -103,10 +103,12 @@ def feedback(
     knowledge_ids=(),
     missing=(),
     follow_up="追问：如果输入是空列表，你的断言会怎样？",
+    question_quote="你还需要补哪些边界",
 ):
     return {
         "findings": [
-            {"point": text, "kind": kind, "text": text}
+            {"point": text, "kind": kind, "text": text,
+             **({"questionQuote": question_quote} if kind == "missing" else {})}
             for kind, values in (("covered", covered), ("missing", missing))
             for text in values
         ],
@@ -881,6 +883,20 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     raw["findings"][1]["previousIssueId"] = "0:missing:0"
     with pytest.raises(ValueError, match="关联无效"):
         practice.validate_feedback(raw, **options)
+
+
+def test_missing_requires_a_quote_from_the_actual_question():
+    question_text = "说明 AVG(score) 的分母，并给出缺失偏差的数值例子。"
+    options = dict(allowed_citations=set(), allowed_knowledge=set(), has_evidence=False,
+                   answer="AVG 只用非空行数作分母。", previous_issues=[], question=question_text)
+    raw = feedback(["解释了 AVG 分母"], missing=["没有说明缺失机制的定义"],
+                   question_quote="缺失机制的定义")
+    with pytest.raises(ValueError, match="遗漏项缺少本轮题目原文"):
+        practice.validate_feedback(raw, **options)
+    raw = feedback(["解释了 AVG 分母"], missing=["缺少缺失偏差的数值例子"],
+                   question_quote="给出缺失偏差的数值例子")
+    saved = practice.validate_feedback(raw, **options)
+    assert saved["issueRecords"][0]["questionQuote"] == "给出缺失偏差的数值例子"
 
 
 @pytest.mark.parametrize(

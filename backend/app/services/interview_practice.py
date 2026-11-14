@@ -72,6 +72,9 @@ FEEDBACK_PROMPT = (
     "若仍缺给定样例的具体行数，只写缺少该样例的计数。"
     "kind 为 covered 时，text 只写学生正确说出的内容；等价例子也算回答。"
     "kind 为 missing 时，text 写没有回应的问点。答错等于回应过，只能列为 inconsistent，"
+    "每项 missing 必须附 questionQuote，逐字引用本轮题目中明确要求回答的一段，"
+    "text 只指出该段明确要求而未回答的内容。不能用知识条目或岗位要求追加题目没问的遗漏；"
+    "相关延伸只可放在复习建议。所有明确要求已答完时，不输出 missing。"
     "例如回答 COUNT(*) 不计 NULL 行是错误，不能再把 COUNT(*) 行数口径列为遗漏。"
     "inconsistent 的 text 说明冲突，另给 answerQuote（本轮原文）及 basisId（材料或知识 ID）。"
     "正确但偏题的陈述不是冲突。只将尚未回答的具体问点列为 missing。"
@@ -91,7 +94,8 @@ FEEDBACK_PROMPT = (
     "6. needsFollowUp 为 true 时，followUp 是同一要求下针对薄弱点的追问；为 false 时返回空字符串。"
     "只返回 JSON 对象："
     "{findings:[{point:string,kind:covered|missing|inconsistent,text:string,"
-    " answerQuote?:string,basisId?:string,previousIssueId?:string}], reviewSuggestion:string,"
+    " answerQuote?:string,questionQuote?:string,basisId?:string,previousIssueId?:string}],"
+    " reviewSuggestion:string,"
     " followUp:string, citationIds:string[],"
     " knowledgeIds:string[], resolvedIssues:[{issueId:string,answerQuote:string}]}。"
 )
@@ -287,6 +291,7 @@ def validate_feedback(
     has_evidence: bool,
     answer: str,
     previous_issues: list[dict],
+    question: str | None = None,
     needs_follow_up: bool = True,
 ) -> dict:
     if not isinstance(raw, dict):
@@ -342,9 +347,18 @@ def validate_feedback(
                 raise PracticeOutputError("前轮问点关联无效")
             (covered_links if kind == "covered" else recalled).add(previous_id)
         if kind != "covered":
+            question_quote = item.get("questionQuote")
+            if kind == "missing" and question is not None and (
+                not isinstance(question_quote, str)
+                or len(question_quote.strip()) < 6
+                or question_quote.strip() not in question
+            ):
+                raise PracticeOutputError("遗漏项缺少本轮题目原文")
             issue_records.append({
                 "kind": kind, "index": len(category), "text": text[0], "point": point.strip(),
                 **({"previousIssueId": previous_id} if previous_id else {}),
+                **({"questionQuote": question_quote.strip()}
+                   if kind == "missing" and isinstance(question_quote, str) else {}),
             })
         category.append(text[0])
     if not any(categories.values()):
@@ -1158,6 +1172,7 @@ async def _run_interview_task(factory, task_id: UUID, token: UUID) -> None:
                 **basis,
                 answer=data["answer"],
                 previous_issues=data["previousIssues"],
+                question=data["question"],
                 needs_follow_up=data["needsFollowUp"],
             )
     except Exception as exc:
