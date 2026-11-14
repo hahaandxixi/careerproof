@@ -11,7 +11,7 @@ const jsx = require("react/jsx-runtime");
 
 // Execute the real component with deterministic hooks and synthetic APIs.
 // This tests state transitions, not browser rendering or a real model request.
-function fixture({ failMaterials = false, generationResult = null, historyResult = null, failHistory = false } = {}) {
+function fixture({ failMaterials = false, generationResult = null, historyResult = null, failHistory = false, query = "" } = {}) {
   const cells = [], effects = [], dependencies = [];
   let cursor = 0, effectCursor = 0, createCalls = 0, listCalls = 0, historyCalls = 0;
   const same = (a,b) => a && a.length === b.length && a.every((v,i) => Object.is(v,b[i]));
@@ -24,6 +24,7 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     async listProjects(){return [{versions:[{id:"project-v3",status:"completed"}]}];},
     async createCareerPlan(){createCalls++;if(generationResult)return generationResult;throw Error("synthetic generation unavailable");},
     async latestCareerPlan(){historyCalls++;if(failHistory)throw Error("synthetic history unavailable");return historyResult;},
+    async getCareerPlan(){historyCalls++;return historyResult;},
   };
   const picker = name => Object.assign(()=>null,{testName:name});
   const ResumePicker=picker("resume"),ProjectPicker=picker("project"),ErrorNotice=picker("error");
@@ -37,11 +38,11 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "@/lib/source-label":{sourceRelativePath},
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
-    "./CareerSupplementRoute":{default:picker("supplement route"),__esModule:true},
+    "./CareerPlanReportEntry":{default:picker("report entry"),__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
-  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
+  const mod={exports:{}};new Function("require","module","exports","location",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports,{search:query,hash:""});
   const emptyIds=[];
   const render=()=>{cursor=effectCursor=0;return mod.exports.default({}).type({initialResumeVersionId:"",initialProjectVersionIds:emptyIds});};
   const settle=async()=>{while(effects.length)effects.shift()();for(let i=0;i<8;i++)await Promise.resolve();};
@@ -61,7 +62,7 @@ test("failed generation retry retains chosen versions and consent without automa
  assert.equal(f.get(tree,f.ResumePicker).props.selectedId,"resume-v2");
  assert.deepEqual(f.get(tree,f.ProjectPicker).props.selectedIds,["project-v3"]);
  assert.equal(f.get(tree,"input").props.checked,true);
- assert.deepEqual(f.calls(),{createCalls:1,listCalls:1,historyCalls:1});
+ assert.deepEqual(f.calls(),{createCalls:1,listCalls:1,historyCalls:0});
 });
 
 test("material list failure retry really rereads the list",async()=>{
@@ -73,14 +74,18 @@ test("material list failure retry really rereads the list",async()=>{
 test("history retry is a read and does not reload material selection or create a plan",async()=>{
  const f=fixture({failHistory:true});let tree=f.render();await f.settle();tree=f.render();
  f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
+ f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); tree=f.render();
  f.get(tree,f.ErrorNotice).props.retry();f.render();await f.settle();tree=f.render();
  assert.equal(f.get(tree,f.ResumePicker).props.selectedId,"resume-v2");
  assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:2});
 });
 
-test("an existing plan is read and shown ahead of the material form without creating a plan",async()=>{
+test("materials are shown first and a saved plan opens only on request",async()=>{
  const f=fixture({historyResult:{planId:"saved",materials:[],recommendations:[],changes:[],summary:"已保存的推荐依据"}});
  f.render();await f.settle();let tree=f.render();
+ assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-selection").props.hidden,false);
+ assert.equal(f.calls().historyCalls,0);
+ f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); tree=f.render();
  const nodes=f.nodes(tree);
  assert.ok(nodes.findIndex(n=>n.props?.["data-plan-id"]==="saved")<nodes.findIndex(n=>n.type==="form"));
  assert.equal(nodes.find(n=>n.props?.id==="career-material-selection").props.hidden,true);
@@ -107,6 +112,7 @@ test("a disabled AI result blocks repeated generation even after material select
 test("a successful new plan replaces an earlier history-read error",async()=>{
  const f=fixture({failHistory:true,generationResult:{planId:"new",materials:[],recommendations:[],changes:[],summary:"新规划"}});
  f.render();await f.settle();let tree=f.render();
+ f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); tree=f.render();
  assert.ok(f.get(tree,f.ErrorNotice));
  f.get(tree,f.ResumePicker).props.onChange("resume-v2");tree=f.render();
  f.get(tree,"input").props.onChange({target:{checked:true}});tree=f.render();
@@ -122,9 +128,25 @@ test("recommendation evidence removes only the associated frozen project prefix"
   {filePath:"archive/saved-version/src/module.py",projectVersionId:"saved-version",lineStart:5,lineEnd:6,citationId:"J1-E3"}
  ]};
  const f=fixture({historyResult:{planId:"saved",materials:[{kind:"project",id:"saved-version",title:"项目",versionNumber:2}],recommendations:[recommendation],changes:[],summary:"已保存"}});
- f.render();await f.settle();const nodes=f.nodes(f.render());
+ f.render();await f.settle(); let tree=f.render();
+ f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); const nodes=f.nodes(f.render());
  const paths=nodes.filter(n=>n.type==="span"&&n.props.className==="break-all text-slate-400").map(n=>n.props.children[0]);
  assert.deepEqual(paths,["src/module.py","unrelated/src/module.py","archive/saved-version/src/module.py"]);
  assert.ok(nodes.some(n=>n.props?.id==="plan-citation-J1-E1"));
  assert.ok(nodes.some(n=>n.props?.href==="/jobs/job1"&&n.props.children==="查看岗位"));
+});
+
+test("first explicit history request reports an empty saved plan",async()=>{
+ const f=fixture(); f.render(); await f.settle(); let tree=f.render();
+ f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); tree=f.render();
+ assert.ok(f.nodes(tree).some(n=>n.props?.role==="status"&&n.props.children==="暂无保存的职业规划。"));
+ assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:1});
+});
+
+test("a source return restores the requested saved plan without generating a new one",async()=>{
+ const saved={planId:"older",materials:[],recommendations:[],changes:[],summary:"保存的规划"};
+ const f=fixture({historyResult:saved,query:"?returnPlan=older"});
+ f.render(); await f.settle(); f.render(); await f.settle(); const tree=f.render();
+ assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="older"));
+ assert.equal(f.calls().createCalls,0); assert.equal(f.calls().historyCalls,1);
 });

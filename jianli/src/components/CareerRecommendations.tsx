@@ -52,7 +52,6 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   const [savedResult, setResult] = useState<CareerPlanResult | null>(null);
   const [resultKind, setResultKind] = useState<"current" | "history">("current");
   const [expandedCandidates, setExpandedCandidates] = useState(false);
-  const hasInitialSelection = Boolean(initialResumeVersionId || initialProjectVersionIds.length);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyRequest, setHistoryRequest] = useState(0);
   const [historyError, setHistoryError] = useState("");
@@ -113,7 +112,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         setResultKind("history");
         setExpandedCandidates(false);
         setEditingMaterials(false);
-      } else if (historyRequest > 1 || hasInitialSelection) {
+      } else {
         setHistoryNotice("暂无保存的职业规划。");
       }
     }).catch(reason => {
@@ -122,7 +121,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       if (current) setHistoryLoading(false);
     });
     return () => { current = false; };
-  }, [historyRequest, hasInitialSelection]);
+  }, [historyRequest]);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -256,7 +255,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         </div>
         </summary>
         <div className="mt-2 border-t border-slate-100 pt-1">
-        {advice && result.planId && <CareerPlanReportEntry plan={result} jobId={item.jobId} />}
+        {advice && result.planId && <CareerPlanReportEntry key={`${result.planId}:${item.jobId}`} plan={result} jobId={item.jobId} />}
         {!!item.matchedSkills.length && <div className="mt-4"><p className="text-sm font-medium">匹配线索</p><div className="mt-2 flex flex-wrap gap-2">{item.matchedSkills.map(skill => <span key={skill} className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700">{skill}</span>)}</div></div>}
         {!!item.evidence.length && <details className="mt-4 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-medium">材料依据</summary><ul className="mt-3 space-y-3">{item.evidence.map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-indigo-700 underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}`}>打开原始文件并定位行号</Link>}</li>)}</ul></details>}
         {!advice && gaps}
