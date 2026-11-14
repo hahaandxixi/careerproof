@@ -64,6 +64,7 @@ test("career supplement keeps saved details and valid citations after showing th
  assert.ok(html.includes("returnPlan=saved-plan#plan-citation-one"));
  assert.doesNotMatch(html,/plan-citation-missing/);
  assert.match(html,/<details>/);
+ for (const text of ["查询脚本","检查条件","编写查询"]) assert.ok(html.indexOf(text) < html.indexOf("<details"), text);
  const repeated = {...input,taskPlan:{...input.taskPlan,acceptanceChecks:["同一内容","同一内容"],steps:["同一步","同一步"]}};
  const saved = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:repeated,job,planId:"saved-plan"}));
  assert.equal((saved.match(/同一内容/g)??[]).length,2);
