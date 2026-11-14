@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { ProjectFileSummary, ProjectFileContent } from "@/lib/api/domain";
@@ -52,7 +51,7 @@ export default function MaterialPreview({ id, initialFileId, initialLineStart, i
   }, [selected, initialFileId, initialLineStart]);
   return <div className="space-y-6">
     <nav aria-label="返回">
-      <Link href={reportReturnHref ?? "/portfolio"} className="btn-secondary btn-compact">← {reportReturnHref?.startsWith("/portfolio?") ? "返回材料列表" : reportReturnHref?.startsWith("/recommendations") ? "返回推荐依据" : reportReturnHref?.includes("#report-materials") ? "返回报告材料" : reportReturnHref ? "返回报告 · 这项要求" : "前往我的材料"}</Link>
+      <a href={reportReturnHref ?? "/portfolio"} className="btn-secondary btn-compact">← {reportReturnHref?.startsWith("/portfolio?") ? "返回材料列表" : reportReturnHref?.startsWith("/recommendations") ? "返回推荐依据" : reportReturnHref?.includes("#report-materials") ? "返回报告材料" : reportReturnHref ? "返回报告 · 这项要求" : "前往我的材料"}</a>
     </nav>
     <div><h1 className="text-2xl font-bold">项目 / 作品文本预览</h1></div>
     {!loading && !error && <VisualEvidencePanel key={id} versionId={id} />}

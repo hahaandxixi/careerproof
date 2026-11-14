@@ -102,18 +102,12 @@ export default function ReportSections({ sections, versions, header }: {
       focusTarget(target);
     };
 
-    const restore = (event?: Event) => {
+    const restore = () => {
       cancelAnimationFrame(scrollFrame.current);
       let id: string;
       try { id = decodeURIComponent(window.location.hash.slice(1)); } catch { return; }
       if (!id) {
         flushSync(() => setActive(sectionsRef.current[0].id));
-        return;
-      }
-      // A traversed in-page selection restores the shared requirement through
-      // ReportDetail. Leave the browser's scroll restoration and focus alone.
-      if (event?.type === "hashchange" && event.isTrusted && window.history.state?.reportInlineSelection === window.location.hash) {
-        setActive(sectionsRef.current[0].id);
         return;
       }
       const section = sectionsRef.current.find(item => item.id === id);
@@ -142,7 +136,7 @@ export default function ReportSections({ sections, versions, header }: {
     // the report's measured offset once load/pageshow has settled.
     window.addEventListener("load", restore);
     window.addEventListener("pageshow", restore);
-    const frame = requestAnimationFrame(() => restore());
+    const frame = requestAnimationFrame(restore);
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(scrollFrame.current);

@@ -26,6 +26,7 @@ export function reportEntryRequirement(items: ReportItem[], hash: string, search
   const linked = requirementForReportAnchor(items, reportAnchorId(hash));
   if (linked) return linked;
   if (hash) return null;
-  const reply = new URLSearchParams(search).get("enterpriseReply");
+  const params = new URLSearchParams(search);
+  const reply = params.get("requirement") ?? params.get("enterpriseReply");
   return items.some(item => item.requirementId === reply) ? reply : null;
 }

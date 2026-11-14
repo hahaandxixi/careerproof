@@ -92,27 +92,22 @@ function ReportWorkspace({ id }: { id: string }) {
   const radarRequirementId = activeRequirementId === undefined ? initialReportRequirement(report.items) : activeRequirementId;
   const filter = reportFilter ?? (report.items.length <= 8 ? "all" : initialWorkspaceFilter(report.items));
   const materialContext = materialReportContext(report.id, undefined, undefined, filter, origin);
+  const updateReadingSelection = (next: WorkspaceFilter, requirementId: string | null) => {
+    setReportFilter(next);
+    setActiveRequirementId(requirementId);
+    const url = new URL(window.location.href);
+    url.searchParams.set("filter", next);
+    url.searchParams.set("requirement", requirementId ?? "");
+    url.hash = "";
+    if (url.href !== window.location.href) window.history.pushState(window.history.state, "", url);
+  };
   const changeFilter = (next: WorkspaceFilter) => {
     const matches = workspaceRequirements(report.items, next);
     const selection = matches.find(item => item.requirementId === radarRequirementId) ?? matches[0];
-    setReportFilter(next);
-    setActiveRequirementId(selection?.requirementId ?? null);
-    const url = new URL(window.location.href);
-    url.searchParams.set("filter", next);
-    url.hash = selection ? `requirement-${selection.requirementId}` : "report-matching";
-    if (url.href !== window.location.href) {
-      window.history.pushState({ ...window.history.state, reportInlineSelection: url.hash }, "", url);
-    }
+    updateReadingSelection(next, selection?.requirementId ?? null);
   };
   const chooseRequirement = (id: string | null) => {
-    if (!id) return;
-    const nextFilter = filterForRequirement(report.items, filter, id);
-    setActiveRequirementId(id);
-    setReportFilter(nextFilter);
-    const url = new URL(window.location.href);
-    url.searchParams.set("filter", nextFilter);
-    url.hash = `requirement-${id}`;
-    if (url.href !== window.location.href) window.history.pushState({ ...window.history.state, reportInlineSelection: url.hash }, "", url);
+    if (id) updateReadingSelection(filterForRequirement(report.items, filter, id), id);
   };
   const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
