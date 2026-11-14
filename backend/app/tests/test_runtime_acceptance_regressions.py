@@ -24,10 +24,14 @@ def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     assert runtime_plan_without_implementation_step("SQL 查询结果截图", steps)
 
 
-def test_saved_sql_rejection_excerpt_contains_implementation():
+@pytest.mark.parametrize("step", [
+    "编写针对示例数据的 SQL 查询，覆盖异常值筛选。",
+    "针对清洗前后的数据设计一条能查出异常记录的 SQL 查询。",
+])
+def test_saved_sql_rejection_excerpt_contains_implementation(step):
     assert not runtime_plan_without_implementation_step(
-        "SQL 查询脚本（含查询语句和注释）及异常结果解释文档。",
-        ["编写针对示例数据的 SQL 查询，覆盖异常值筛选。", "运行查询并保存结果输出。"],
+        "一份 SQL 异常核查记录文档。",
+        [step, "运行查询并保存结果输出。"],
         skill="SQL",
     )
 

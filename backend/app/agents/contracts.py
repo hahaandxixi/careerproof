@@ -128,7 +128,7 @@ def runtime_plan_without_implementation_step(
         re.I,
     )
     sql_step = re.compile(
-        r"(?:编写|实现|补全|补充|完善|修复|修改)[^。！？；;，,]{0,18}"
+        r"(?:编写|设计|实现|补全|补充|完善|修复|修改)[^。！？；;，,]{0,24}"
         r"SQL\s*查询(?!\s*(?:结果|输出|截图))", re.I,
     )
     sql_artifact = re.compile(r"^\s*SQL\s*查询脚本(?:\s|[（(、，,。]|$)", re.I)
