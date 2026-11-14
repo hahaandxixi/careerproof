@@ -1,16 +1,23 @@
 """Fresh administrator authority, immutable decisions, and conservative cutover."""
 
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 from sqlalchemy import select
 
 from app.models.ai_budget import AiBudgetAdjustment, AiBudgetCutover, AiBudgetReservation
 from app.models.ai_request_attempt import AiRequestAttempt
-from app.models.analysis import AnalysisTask
+from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.audit import AuditLog
 from app.models.enums import TaskStatus, UserRole
 from app.models.identity import User
-from app.services.ai_budget import GATE_ID, BudgetAdmissionError, SharedBudgetService
+from app.services.ai_budget import (
+    GATE_ID,
+    LEGACY_CUTOVER_ACTION,
+    BudgetAdmissionError,
+    SharedBudgetService,
+    inventory_hash,
+)
 from app.services.ai_request_attempts import AttemptContext, AttemptService
 from app.tests.test_ai_shared_budget_service import NOW, POLICY, new_attempt
 from app.tests.test_ai_shared_budget_service import budget_data as budget_data
@@ -20,6 +27,55 @@ from app.tests.test_durable_matching import durable_db as durable_db
 async def admin_id(factory):
     async with factory() as session:
         return await session.scalar(select(User.id).where(User.role == UserRole.ADMIN))
+
+
+async def test_reviewed_prior_day_unknown_is_audited_without_creating_usage(budget_data):  # noqa: F811
+    factory, _runtime, owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    await disable_fixture_gate(factory)
+    async with factory() as session:
+        rows = list(await session.scalars(select(AnalysisTask)))
+        for row in rows:
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = NOW
+        await session.commit()
+    async with factory() as session:
+        with pytest.raises(BudgetAdmissionError, match="active_administrator_required"):
+            await service.legacy_cutover_inventory(session, actor_id=owner)
+        with pytest.raises(BudgetAdmissionError, match="legacy_external_run_requires"):
+            await service.legacy_cutover_inventory(session, actor_id=actor)
+        for row in await session.scalars(select(AnalysisTask)):
+            row.created_at = row.completed_at = row.updated_at = NOW - timedelta(days=1)
+        await session.commit()
+    async with factory() as session:
+        plan = await service.legacy_cutover_inventory(session, actor_id=actor)
+        assert plan["entries"]
+        assert all(row["status"] == "historical_usage_unknown" for row in plan["entries"])
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(session, actor_id=actor, reason="audit", legacy_digest="wrong")
+        await session.rollback()
+    async with factory() as session:
+        gate = await session.get(AiBudgetCutover, GATE_ID)
+        assert not gate.enabled
+        plan_digest = inventory_hash(plan)
+        digest = await service.activate(
+            session, actor_id=actor, reason="audit", legacy_digest=plan_digest,
+        )
+        await session.commit()
+    async with factory() as session:
+        assert await service.activate(
+            session, actor_id=actor, reason="replay", legacy_digest=plan_digest,
+        ) == digest
+        audits = list(await session.scalars(
+            select(AuditLog).where(AuditLog.action == LEGACY_CUTOVER_ACTION)
+        ))
+        assert len(audits) == 1
+        assert audits[0].details == {**plan, "reason": "audit"}
+        assert await service.legacy_cutover_inventory(session, actor_id=actor) == plan
+        assert list(await session.scalars(select(AiUsageLog))) == []
+        assert list(await session.scalars(select(AiRequestAttempt))) == []
 
 
 async def disable_fixture_gate(factory):

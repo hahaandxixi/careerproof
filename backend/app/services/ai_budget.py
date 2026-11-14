@@ -25,12 +25,18 @@ from app.models.ai_budget import (
     AiDailyBudget,
 )
 from app.models.ai_request_attempt import AiRequestAttempt
-from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.analysis import AiUsageLog, AnalysisTask, MatchReport
+from app.models.audit import AuditLog
 from app.models.enums import TaskStatus, UserRole
 from app.models.identity import User
 
 SHANGHAI = timezone(timedelta(hours=8))
 GATE_ID = "shared_daily_v1"
+LEGACY_CUTOVER_ACTION = "ai_budget.legacy_cutover"
+
+
+def inventory_hash(payload) -> str:
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
 
 
 class BudgetAdmissionError(RuntimeError):
@@ -131,7 +137,71 @@ class SharedBudgetService:
         if actor is None:
             raise BudgetAdmissionError("active_administrator_required")
 
-    async def activate(self, session, *, actor_id, reason):
+    async def legacy_cutover_inventory(self, session, *, actor_id):
+        await self._administrator(session, actor_id)
+        return await self._legacy_inventory(session)
+
+    async def _legacy_inventory(self, session, *, lock=False):
+        statement = select(AnalysisTask).order_by(AnalysisTask.id)
+        if lock:
+            # Task writers can acquire the task lock before entering the budget gate.
+            # Abort activation if such a writer is active instead of waiting on it.
+            statement = statement.with_for_update(nowait=True).execution_options(
+                populate_existing=True
+            )
+        tasks = list(await session.scalars(statement))
+        modern = set(await session.scalars(select(AiRequestAttempt.analysis_task_id)))
+        entries = []
+        for task in tasks:
+            snapshot = task.input_snapshot or {}
+            if snapshot.get("externalAiConsent") is not True:
+                continue
+            if task.status in {TaskStatus.PENDING, TaskStatus.RUNNING}:
+                raise BudgetAdmissionError("external_claims_must_drain_before_cutover")
+            if task.id in modern and snapshot.get("usageAccountingMode") == "attempt_v1":
+                continue
+            report = await session.scalar(
+                select(MatchReport.analysis_metadata).where(MatchReport.analysis_task_id == task.id)
+            )
+            ledger = (await session.execute(
+                select(AiUsageLog.id, AiUsageLog.created_at, AiUsageLog.input_tokens,
+                       AiUsageLog.output_tokens, AiUsageLog.cost_rmb)
+                .where(AiUsageLog.analysis_task_id == task.id).order_by(AiUsageLog.id)
+            )).all()
+            # A completed match cannot be retried. The verification route starts a
+            # new task, so only the explicit old admission rejection is eligible.
+            denied = (task.task_type == "application_verification"
+                      and task.status == TaskStatus.FAILED
+                      and snapshot.get("failureKind") == "budget_cutover_not_enabled"
+                      and task.id not in modern and not ledger)
+            immutable = task.task_type == "job_match" and task.status == TaskStatus.COMPLETED
+            timestamps = (task.created_at, task.completed_at, task.updated_at)
+            if (
+                not (denied or immutable)
+                or any(value is None for value in timestamps)
+                or task.created_at > task.completed_at
+                or task.completed_at > task.updated_at
+                or max(value.replace(tzinfo=value.tzinfo or UTC).astimezone(SHANGHAI).date()
+                       for value in timestamps) >= self.today()
+            ):
+                raise BudgetAdmissionError("legacy_external_run_requires_audit_gate_remains_closed")
+            skipped = (report or {}).get("skippedReason") == "no_evidence"
+            unsent = denied or (
+                skipped and (report or {}).get("requestCount") == 0
+                and task.id not in modern and not ledger
+            )
+            entries.append({
+                "taskId": str(task.id),
+                "status": "proven_not_sent" if unsent else "historical_usage_unknown",
+                "completedAt": task.completed_at.isoformat(),
+                "evidenceDigest": inventory_hash([
+                    snapshot, report, timestamps, task.status,
+                    [tuple(row) for row in ledger], task.id in modern,
+                ]),
+            })
+        return {"cutoverDay": str(self.today()), "entries": entries}
+
+    async def activate(self, session, *, actor_id, reason, legacy_digest=None):
         """Audit/drain/backfill before activation; never infer unknown legacy fees.
 
         Old external runs without physical provenance keep the gate closed.
@@ -164,7 +234,19 @@ class SharedBudgetService:
         if gate.enabled:
             # Activation evidence cannot be overwritten by another caller.
             await self.assert_gate(session)
+            if legacy_digest is not None:
+                audit = await session.scalar(select(AuditLog).where(
+                    AuditLog.action == LEGACY_CUTOVER_ACTION, AuditLog.resource_id == GATE_ID,
+                ))
+                if audit is None or audit.request_id != legacy_digest:
+                    raise BudgetAdmissionError("legacy_inventory_changed")
             return gate.inventory_digest
+        reviewed_legacy = None
+        if legacy_digest is not None:
+            reviewed_legacy = await self._legacy_inventory(session, lock=True)
+            if inventory_hash(reviewed_legacy) != legacy_digest:
+                raise BudgetAdmissionError("legacy_inventory_changed")
+        reviewed_ids = {row["taskId"] for row in (reviewed_legacy or {}).get("entries", [])}
         tasks = list(await session.scalars(select(AnalysisTask)))
         modern_ids = set(await session.scalars(select(AiRequestAttempt.analysis_task_id)))
         for task in tasks:
@@ -173,7 +255,9 @@ class SharedBudgetService:
                 continue
             if task.status in {TaskStatus.PENDING, TaskStatus.RUNNING}:
                 raise BudgetAdmissionError("external_claims_must_drain_before_cutover")
-            if task.id not in modern_ids or snapshot.get("usageAccountingMode") != "attempt_v1":
+            if str(task.id) not in reviewed_ids and (
+                task.id not in modern_ids or snapshot.get("usageAccountingMode") != "attempt_v1"
+            ):
                 # COMPLETED/FAILED and even a partial old aggregate ledger do
                 # not prove the physical request inventory is complete.
                 raise BudgetAdmissionError("legacy_external_run_requires_audit_gate_remains_closed")
@@ -256,9 +340,14 @@ class SharedBudgetService:
             )
         )
         payload = {"attempts": inventory, "legacy": [tuple(row) for row in legacy]}
-        digest = hashlib.sha256(
-            json.dumps(payload, sort_keys=True, default=str).encode()
-        ).hexdigest()
+        if reviewed_legacy is not None:
+            payload["legacyReview"] = reviewed_legacy
+            session.add(AuditLog(
+                actor_id=actor_id, action=LEGACY_CUTOVER_ACTION, resource_type="ai_budget",
+                resource_id=GATE_ID, request_id=legacy_digest,
+                details={**reviewed_legacy, "reason": reason.strip()},
+            ))
+        digest = inventory_hash(payload)
         gate.enabled, gate.inventory_digest = True, digest
         gate.activated_by, gate.activated_at, gate.reason = actor_id, now, reason.strip()
         await session.flush()
