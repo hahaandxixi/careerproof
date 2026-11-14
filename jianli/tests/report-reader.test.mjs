@@ -315,7 +315,9 @@ test("single list and mounted panels replace the second action-list rendering", 
  const source=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
  assert.equal((source.match(/<ReportEvidenceWorkspace /g)||[]).length,1);
  assert.ok(!source.includes("ReportActionLayer")); assert.ok(source.includes("<RequirementActionPanel"));
- assert.ok(source.includes('item.aiStatus === "validated" && !report.aiFallbackUsed && !!item.ratingCriteria'));
+ assert.doesNotMatch(source, /判据与核对记录|规则判断原文|判据、声明与覆盖范围/);
+ assert.ok(source.includes("<RequirementSupplementTarget"));
+ assert.ok(source.includes("记录你对本项证据的意见"));
 });
 
 

@@ -20,6 +20,12 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
     return { x: 250 + Math.cos(angle) * 112 * ratio, y: 225 + Math.sin(angle) * 112 * ratio };
   };
   const measures = visible.map(skillRecordMeasure);
+  const area = visible.length > 0 && measures.every(measure => measure.ratio !== null)
+    ? measures.map((measure, index) => {
+      const { x, y } = point(index, measure.ratio!);
+      return `${x},${y}`;
+    }).join(" ")
+    : "";
   return <section className={styles.radar} aria-label="技能记录概览">
     <div className={styles.radarHeading}><h2>技能记录概览</h2>
       {pages > 1 && <div className={styles.radarPages}><button type="button" className="btn-secondary btn-compact" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>上一组</button><span>{currentPage + 1} / {pages} 组</span><button type="button" className="btn-secondary btn-compact" disabled={currentPage + 1 >= pages} onClick={() => setPage(currentPage + 1)}>下一组</button></div>}
@@ -29,6 +35,7 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
     {visible.length ? <svg className={styles.radarSvg} viewBox={visible.length === 3 ? "0 20 500 345" : "0 0 500 450"} role="group" aria-label="已加载记录中有证据支持的占比，选择技能查看来源">
       {[25, 50, 75, 100].map(value => <g key={value}><circle cx="250" cy="225" r={112 * value / 100} fill="none" stroke="#b4c6bd" strokeWidth="1"/><text x="254" y={225 - 112 * value / 100 - 3} className={styles.radarTick}>{value}%</text></g>)}
       {visible.map((skill, index) => { const end=point(index,1); return <line key={skill.key} x1="250" y1="225" x2={end.x} y2={end.y} stroke="#cbd7d0" />; })}
+      {area && <polygon points={area} fill="#1d6c5a" fillOpacity={0.18} aria-hidden="true" />}
       {visible.map((skill, index) => { const next=(index+1)%visible.length, a=measures[index].ratio, b=measures[next].ratio; if (a === null || b === null) return null; const x=point(index,a), y=point(next,b); return <line key={skill.key} x1={x.x} y1={x.y} x2={y.x} y2={y.y} stroke="#1d6c5a" strokeWidth="2.5"/>; })}
       {visible.map((skill, index) => {
         const m=measures[index], mark=m.ratio === null ? null : point(index,m.ratio), raw=point(index,1.58);

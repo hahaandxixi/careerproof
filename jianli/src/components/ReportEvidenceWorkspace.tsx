@@ -2,85 +2,43 @@
 
 import type { ReactNode } from "react";
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
-import { ACTION_SOURCE_LABELS, distinctActionText, effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspace";
+import { reportStatusTone } from "@/lib/evidence-workspace";
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
 import { requirementConclusion, savedRequirementAction, type WorkspaceFilter } from "@/lib/report-workspace";
-import { followUpCopyText } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
-import ReportFollowUpActions from "./ReportFollowUpActions";
-import { RequirementSupplementJump } from "./RequirementSupplement";
 import ReportRequirementReader from "./ReportRequirementReader";
 
 export default function ReportEvidenceWorkspace({ report, children, overview, selectedRequirementId, onRequirementChange, filter, onFilterChange }: { report: MatchReport; children: ReactNode; overview?: ReactNode; selectedRequirementId?: string | null; onRequirementChange?: (id: string | null) => void; filter?: WorkspaceFilter; onFilterChange?: (filter: WorkspaceFilter) => void }) {
   return <ReportRequirementReader items={report.items} overview={overview} selectedRequirementId={selectedRequirementId} onRequirementChange={onRequirementChange} filter={filter} onFilterChange={onFilterChange}>{children}</ReportRequirementReader>;
 }
 
-export function RequirementActionPanel({ report, item, role, explanationVisible = false, explanationPanel, sourcePanel }: {
-  report: MatchReport; item: ReportItem; role?: string; explanationVisible?: boolean;
+export function RequirementActionPanel({ report, item, explanationVisible = false, explanationPanel, sourcePanel }: {
+  report: MatchReport; item: ReportItem; explanationVisible?: boolean;
   explanationPanel?: ReactNode; sourcePanel?: ReactNode;
 }) {
   const tone = reportStatusTone(item);
   const supported = tone === "supported";
   const actionable = tone === "gap";
-  const unsupported = effectiveReportStatus(item) === "unsupported";
-  const studentSupplement = role === "student" && actionable;
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
-  const plan = advice?.taskPlan;
   const explanation = requirementConclusion(item);
   const gap = advice?.gap || item.evidenceLevelGap?.trim();
   const conclusion = actionable ? gap || action?.evidenceGap?.trim() || explanation : explanation;
-  const text = action ? distinctActionText(action, conclusion) : null;
   const adviceSources = new Set(action?.citationIds ?? []);
   // The AI explanation already renders a locator for its cited sources; do not
   // repeat the exact same file/range directly below it.
   const inlineSources = new Set(explanationVisible ? item.aiCitationIds : []);
   const citationSources = item.evidenceList.map((source, index) => ({ source, index })).filter(({ source }) => !source.citationId || !inlineSources.has(source.citationId));
-  const projectVersions = report.materials.filter(material => material.kind === "project");
-  const projectVersionId = item.evidenceList.find(source => projectVersions.some(material => material.id === source.projectVersionId))?.projectVersionId
-    ?? (projectVersions.length === 1 ? projectVersions[0].id : undefined);
-  return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与下一步`}>
+  return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与来源`}>
     <div className="requirement-reading-copy min-w-0 space-y-4">
     {explanationPanel}
     {!explanationVisible && <div><h4 className="text-base font-semibold text-slate-900">{supported ? "判断依据" : actionable ? "当前缺口" : "当前需核对"}</h4>
       {/[0-9a-f]{8}-[0-9a-f-]{27,}/i.test(conclusion || "") ? <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-[#1d4a40]">查看保存的缺口与材料定位原文</summary><p className="mt-2 whitespace-pre-wrap break-words leading-7 text-slate-700">{conclusion}</p></details> : <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7 text-slate-700">{conclusion || "这项要求尚无已保存的判断说明，请核对岗位原文与材料来源。"}</p>}
-      {role !== "student" && explanation && explanation !== conclusion && <details className="mt-2 text-sm"><summary className="cursor-pointer py-1 text-[#1d4a40]">规则判断原文</summary><p className="mt-2 break-words leading-7">{explanation}</p></details>}
     </div>}
-    {item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项 AI 解释未被采用，当前按规则及复核结果核对。</p>}
-    {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning} 已隐藏该任务草稿。</p>}
+    {!report.aiFallbackUsed && item.aiStatus && !["validated", "not_used", "not_requested", "rules_only", "skipped"].includes(item.aiStatus) && <p className="text-sm leading-6 text-amber-900">本项保留规则判断，AI 解释未采用。</p>}
     {citationSources.length > 0 && <nav className="requirement-citation-links" aria-label="本项引用">{citationSources.map(({ source, index }) => <EvidenceLink key={sourceLocationId(item.requirementId, source, index)} targetId={sourceLocationId(item.requirementId, source, index)} className="report-citation-chip">{source.citationId && adviceSources.has(source.citationId) && <span className="sr-only">建议依据：</span>}{compactSourceLabel(source, report.materials).fileName} · {source.lineStart}–{source.lineEnd}行 ↗</EvidenceLink>)}</nav>}
     </div>
     {sourcePanel && <div className="requirement-source-context min-w-0">{sourcePanel}</div>}
-    {(!supported || role === "student") && <aside className="requirement-next min-w-0 space-y-4" aria-label="补证与后续操作">
-    {unsupported ? <div className="space-y-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 p-3">
-      <h4 className="font-semibold text-slate-900">规则暂未支持</h4>
-      <p className="text-sm leading-7 text-slate-700">请人工核对岗位要求和已保存材料。</p>
-    </div> : studentSupplement ? <RequirementSupplementJump item={item}/> : <>
-    {!supported && <div className="space-y-3">
-      <div className="flex flex-wrap items-baseline gap-x-2">
-        <h4 className="font-semibold text-slate-900">{action || plan ? "本项已保存的具体要求" : "本项尚无已保存的具体建议"}</h4>
-        {action && ACTION_SOURCE_LABELS[action.source] && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
-      </div>
-      {!plan && text?.advice && <p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-800">{text.advice}</p>}
-      {plan ? <div className="space-y-3 text-sm leading-7">
-        <p className="whitespace-pre-wrap break-words">{plan.deliverable}</p>
-        <ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul>
-        <p className="font-medium text-slate-800">执行步骤</p>
-        <ol aria-label="建议行动" className="list-decimal space-y-2 pl-5">{plan.steps.slice(0, 4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol>
-        {plan.steps.length > 4 && <details><summary className="cursor-pointer py-2 text-[#1d4a40]">其余执行步骤</summary><ol start={5} className="list-decimal pl-5">{plan.steps.slice(4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol></details>}
-      </div> : null}
-      {action && (text?.gap || (plan && text?.advice)) ? <details className="text-sm leading-7"><summary className="disclosure">报告补充说明</summary>
-        {plan && text?.advice && <p className="whitespace-pre-wrap break-words">{text.advice}</p>}
-        {text?.gap && <p className="whitespace-pre-wrap break-words text-slate-600">{text.gap}</p>}
-      </details> : null}
-    </div>}
-    {role === "student" && <div>
-      {supported ? <details className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm font-medium text-slate-600">材料有更新？按需查看补证指导</summary><div id={`growth-${item.requirementId}`} className="scroll-mt-24"><ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId ?? undefined} text={followUpCopyText(report, item)} /></div></details> : <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
-        <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId ?? undefined} text={followUpCopyText(report, item)} />
-      </div>}
-    </div>}
-    </>}
-    </aside>}
   </div>;
 }

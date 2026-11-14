@@ -157,3 +157,6 @@
 .radarAxis { cursor: pointer; }
 .radarAxis:focus-visible { outline: 2px solid #1d6c5a; outline-offset: 2px; }
 
+
+.recordPicker { display: grid; gap: 4px; font-size: 13px; color: #526176; }
+.recordPicker select { min-width: 0; width: 100%; }

@@ -9,8 +9,6 @@ import { api, errorMessage } from "@/lib/api/client";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import { createReportReviewSession, initialReportReviewState } from "@/lib/report-review-session";
 import { useAuth } from "./AuthProvider";
-import SourceCoverage from "./SourceCoverage";
-import EvidenceLink from "./EvidenceLink";
 import ReportPaperHeader from "./ReportPaperHeader";
 import ReportVersionPicker from "./ReportVersionPicker";
 import { reportListHref, reportListQuery, reportOrigin } from "@/lib/report-navigation";
@@ -34,7 +32,6 @@ import ReportCareerAdvice from "./ReportCareerAdvice";
 import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
 
-const CRITERION_LABELS: Record<string, string> = { relevance: "与要求相关", operation: "实质操作", task: "完整任务" };
 const REVIEW_LABELS: Record<string, string> = { pending: "待本人核对", accepted: "本人已采纳", rejected: "本人已驳回", corrected: "本人标记已修正" };
 export default function ReportDetail({ id }: { id: string }) {
   const { user } = useAuth();
@@ -134,22 +131,16 @@ function ReportWorkspace({ id }: { id: string }) {
       {user?.role === "student" && <PracticeEntry reportId={report.id} requirementId={item.requirementId} />}
       </div></div>
       <RequirementActionPanel
-        report={report} item={item} role={user?.role}
+        report={report} item={item}
         explanationVisible={!!adoptedReportExplanation(report, item)}
         explanationPanel={<ReportAiExplanation report={report} item={item} />}
         sourcePanel={<ReportSourcePanel report={report} item={item} canOpenMaterial={user?.role === "student"} filter={filter} origin={origin} />}
       />
-      <details className="mt-4 border-t border-slate-200 pt-2"><summary className="disclosure">判据与核对记录</summary><div id={`judgement-${item.requirementId}`} className="min-w-0 scroll-mt-24">
-      <details className="mt-3 text-sm"><summary className="disclosure">规则判断原文</summary><p className="mt-2 whitespace-pre-wrap break-words reading-copy">{item.explanation}</p></details>
-<details className="mt-3 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer py-1 text-sm font-medium text-[#1d4a40]">判据、声明与覆盖范围</summary><p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm">{item.claimed ? `简历声明：${item.claimText || item.skill}` : "未从简历中识别到该技能声明"}</p>
-      <div className="mt-3 break-words rounded-lg bg-slate-50 p-3 text-sm leading-6"><p className="mb-2 text-xs text-[#1d4a40]">{item.skillPath?.join(" → ")} · {item.evidenceLevelSource === "ai_preliminary" ? "AI 初评 · 待独立核验" : item.evidenceLevelSource === "review_suspended" ? "人工复核已暂停等级" : "规则评级 · 未采用 AI 评级"}</p><p>{item.evidenceLevelLabel}：{item.evidenceLevelReason}</p><p className="mt-1 text-slate-600">仍缺少：{item.evidenceLevelGap}</p><p className="mt-2 text-xs text-slate-500">等级规则 {item.evidenceLevelVersion}</p></div>
-      {item.aiStatus === "validated" && !report.aiFallbackUsed && !!item.ratingCriteria?.length && <ul className="mt-3 space-y-2 text-sm">{item.ratingCriteria.map(criterion => <li key={criterion.criterion} className="rounded-lg border border-slate-200 p-3"><strong>{CRITERION_LABELS[criterion.criterion] ?? criterion.criterion}：{criterion.supported ? "AI 判断支持" : "尚未支持"}</strong><p className="mt-1 text-slate-600">{criterion.reason}</p><div className="mt-2 flex gap-3">{criterion.citation_ids.map(citation => <EvidenceLink className="text-xs text-[#245c50] underline" key={citation} citationId={citation}>{citation}</EvidenceLink>)}</div></li>)}</ul>}
-      <SourceCoverage item={item} materials={report.materials} />
-      </details>
+      <div id={`judgement-${item.requirementId}`} className="min-w-0 scroll-mt-24">
       {item.evidenceId && user?.role === "student" && <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4"><summary className="cursor-pointer py-1 text-sm font-medium">记录你对本项证据的意见（可选） · {REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</summary><p className="mt-2 text-xs leading-6 text-slate-600">不是教师或企业认证；不记录也可以继续补证。</p><textarea aria-label={`${item.requirementTitle}的证据意见`} className="mt-3 min-h-20 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm" maxLength={1000} placeholder="可选：记录采纳、驳回或修正原因" value={reviewNotes[item.requirementId] ?? item.reviewerNote ?? ""} onChange={event => setReviewNotes(notes => ({ ...notes, [item.requirementId]: event.target.value }))} /><div className="mt-3 flex flex-wrap gap-2"><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "accepted")}>采纳证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "rejected")}>驳回证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "corrected")}>标记已修正</button>{item.confirmationStatus !== "pending" && <button className="btn-quiet" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "pending")}>恢复待核对</button>}</div><p className="mt-2 text-xs leading-6 text-slate-600">驳回或标记修正：将更新当前报告的证据展示，已投递快照不变。</p>{reviewing === item.requirementId && <p role="status" className="mt-2 text-sm text-slate-600">正在同步核对记录…</p>}{issues[item.requirementId] && <div role="alert" className="mt-3 space-y-2 text-sm text-rose-800"><p>{issues[item.requirementId].message}</p>{issues[item.requirementId].readRequired && <button type="button" className="btn-secondary" disabled={reviewing !== null} onClick={() => void session.refresh(item.requirementId)}>重新读取核对记录</button>}</div>}{item.confirmedAt && <p className="mt-2 text-xs text-slate-500">核对时间：{new Date(item.confirmedAt).toLocaleString("zh-CN")}</p>}</details>}
-      </div></details>
+      </div>
     </article>)}</ReportEvidenceWorkspace>
-    <ReportAgentEvidence report={report} canGrow={user?.role === "student"} />
+    <ReportAgentEvidence report={report} />
 
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
     {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} origin={origin} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
@@ -167,7 +158,8 @@ function ReportWorkspace({ id }: { id: string }) {
         { id: "report-supplement", label: "按需补证", content: <>
           <h2 className="section-title">按需补证 · {supplementItems.length} 项实际缺口</h2>
           {user?.role === "student" && params.get("careerPlan") && params.get("careerJob") && <ReportCareerAdvice report={report} planId={params.get("careerPlan")!} jobId={params.get("careerJob")!} />}
-          <p className="reading-copy">补证是可选的。上传新版材料不会改写本报告，只有你核对预选版本并确认分析后才会生成新报告。</p>
+          {report.items.filter(item => !supplementItems.includes(item)).map(item =>
+            <span key={item.requirementId} id={`growth-${item.requirementId}`} className="block scroll-mt-24" />)}
           {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口。规则未覆盖的要求请人工核对。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <RequirementSupplementTarget key={item.requirementId} report={report} item={item} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} />)}
         </> },
         { id: "report-sharing", label: "投递授权", content: <><h2 className="section-title">投递与授权</h2><ApplicationSubmit key={`${report.id}:${report.reviewRevision}`} reportId={report.id} reviewRevision={report.reviewRevision} blocked={reviewing !== null || needsSync} onRefresh={() => void session.load()} /></> },

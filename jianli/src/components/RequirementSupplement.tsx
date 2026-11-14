@@ -4,18 +4,7 @@ import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { ACTION_SOURCE_LABELS, distinctActionText } from "@/lib/evidence-workspace";
 import { followUpGuidance, followUpCopyText } from "@/lib/report-follow-up";
 import { workspaceStatusLabel } from "@/lib/report-workspace";
-import EvidenceLink from "./EvidenceLink";
 import ReportFollowUpActions from "./ReportFollowUpActions";
-
-/** One explicit entry from the current requirement to its saved supplement item. */
-export function RequirementSupplementJump({ item }: { item: ReportItem }) {
-  return <EvidenceLink
-    targetId={`supplement-${item.requirementId}`}
-    className="btn inline-flex min-h-11 items-center"
-  >
-    查看补证建议
-  </EvidenceLink>;
-}
 
 /** The supplement item owns the saved advice and the existing copy/upload actions. */
 export function RequirementSupplementTarget({ report, item, projectVersionId }: {
@@ -28,9 +17,9 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
     <div className="min-w-0">
       <h3 className="break-words text-lg font-semibold">{item.skill || "岗位要求"} · {workspaceStatusLabel(item)}</h3>
       <p className="mt-1 break-words text-sm leading-6 text-slate-700">{item.requirementTitle}</p>
-      <p className="mt-1 text-xs leading-5 text-slate-500">本项补证与岗位对照中的当前要求一致。</p>
     </div>
     <div className="space-y-3">
+      {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning}</p>}
       {(plan || text?.advice) &&
       <div className="flex flex-wrap items-baseline gap-x-2">
         <h4 className="font-semibold text-slate-900">本项已保存的具体要求</h4>
