@@ -37,6 +37,12 @@ def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     "编写 SQL 去重查询语句并保存执行输出",
     "编写 SQL 联表查询脚本并保存运行结果",
     "编写 SQL 空值去重查询脚本并保存运行输出",
+    "编写 SQL 分页查询语句并保存运行结果",
+    "编写 SQL 索引查询脚本并保存执行输出",
+    "使用 SQL 排查异常，编写完整的查询脚本并保存输出",
+    "编写并提交 SQL 查询脚本并保存运行输出，不要只交运行结果截图",
+    "不要只交运行结果截图而应提交 SQL 查询脚本",
+    "提交 SQL 查询脚本和运行输出；测试脚本不是必须提交",
     "编写 SQL 排序查询语句并保存执行输出",
     "编写 SQL 窗口查询脚本并保存运行输出",
     "编写 SQL 连接查询语句并保存运行结果",
@@ -61,6 +67,9 @@ def test_saved_sql_rejection_excerpt_contains_implementation(step):
     "使用 SQL 查询数据，不编写查询脚本，只交运行输出",
     "同学建议提交 SQL 查询脚本，我先附上运行结果日志",
     "提交 SQL 查询的验证结果",
+    "编写 SQL 查询语句，最终只提供执行输出日志",
+    "编写 SQL 查询脚本；只需要提交查询结果",
+    "编写 SQL 查询脚本；不提交查询脚本，只交运行结果截图",
     "提交 SQL 排序查询语句的验证结果",
     "提交 SQL 窗口查询脚本的运行日志",
     "编写 SQL 连接查询脚本，但不提交查询脚本，只交运行结果",
@@ -71,3 +80,10 @@ def test_saved_sql_rejection_excerpt_contains_implementation(step):
 ])
 def test_unrelated_or_negated_implementation_does_not_cover_sql(step):
     assert career_runtime_plan_without_implementation("SQL 查询结果截图", [step], skill="SQL")
+
+
+def test_sql_final_delivery_applies_across_steps():
+    assert career_runtime_plan_without_implementation(
+        "运行结果截图", ["编写 SQL 查询脚本", "无需提交 SQL 代码，只交运行结果截图"],
+        skill="SQL",
+    )

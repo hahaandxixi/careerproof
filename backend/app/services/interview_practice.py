@@ -455,24 +455,19 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
         for item in feedback.get("covered") or []:
             if item not in covered:
                 covered.append(item)
-        corrected = set()
         for item in feedback.get("resolvedIssues") or []:
-            previous = pending.pop(item["issueId"], None)
+            origin = origins.get(item["issueId"])
+            previous = pending.pop(origin["issueId"], None) if origin else None
             if previous:
-                corrected.add((previous["kind"], previous["text"]))
                 resolved.append(
-                    {**previous, "answerQuote": item["answerQuote"], "turnIndex": turn.turn_index}
+                    {
+                        **previous,
+                        "answerQuote": item["answerQuote"],
+                        "turnIndex": turn.turn_index,
+                        "questionQuote": None,
+                    }
                 )
-        pending = {
-            issue_id: item
-            for issue_id, item in pending.items()
-            if (item["kind"], item["text"]) not in corrected
-        }
         for item in _issue_records(turn):
-            if (item["kind"], item["text"]) in corrected:
-                continue
-            pending.pop(item.get("previousIssueId"), None)
-            origins[item["issueId"]] = origins.get(item.get("previousIssueId"), item)
             current = {**item, "turnIndex": turn.turn_index}
             if item["kind"] == "inconsistent":
                 # Both arrays preserve the validator's accepted inconsistent-finding order.
@@ -485,7 +480,10 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
                     and reasons[index] == conflicts[index]["reason"] == item["text"]
                 ):
                     current["conflict"] = conflicts[index]
-            pending[item["issueId"]] = current
+            origin = origins.get(item.get("previousIssueId"), current)
+            origins[item["issueId"]] = origin
+            pending.pop(origin["issueId"], None)
+            pending[origin["issueId"]] = current
         if feedback.get("reviewSuggestion"):
             suggestion = feedback["reviewSuggestion"]
     return {
@@ -1055,7 +1053,7 @@ class InterviewPracticeService:
             "currentTurn": session_row.current_turn or 0,
             "maxTurns": session_row.max_turns or MAX_TURNS,
             "summary": (
-                {**session_row.summary, "issueTrail": build_summary(turns)["issueTrail"]}
+                {**session_row.summary, **build_summary(turns)}
                 if session_row.summary is not None
                 and any("issueRecords" in (turn.feedback or {}) for turn in turns)
                 else session_row.summary
