@@ -337,10 +337,10 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           {turn.feedback && <section className={styles.feedback} aria-label="本轮点评">
             <h3>回答诊断</h3>
             <div className={styles.diagnosis}>
-              {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>已讲清 · {turn.feedback.covered.length}</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
-              {!!turn.feedback.missing.length && <div className={styles.feedbackBlock} data-kind="missing"><h4>待补充 · {turn.feedback.missing.length}</h4><ul>{turn.feedback.missing.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
+              {!!turn.feedback.covered.length && <div className={styles.feedbackBlock} data-kind="covered"><h4>✓ 已讲清 · {turn.feedback.covered.length}</h4><ul>{turn.feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
+              {!!turn.feedback.missing.length && <div className={styles.feedbackBlock} data-kind="missing"><h4>○ 待补充 · {turn.feedback.missing.length}</h4><ul>{turn.feedback.missing.map((line, index) => <li key={index}>{line}</li>)}</ul></div>}
               {!!turn.feedback.inconsistent.length && <div className={styles.feedbackBlock} data-kind="inconsistent">
-                <h4>需修正 · {turn.feedback.inconsistent.length}</h4>
+                <h4>! 需修正 · {turn.feedback.inconsistent.length}</h4>
                 <ul>{turn.feedback.conflictDetails?.length ? turn.feedback.conflictDetails.map((conflict, index) => {
                   const file = turn.feedback?.citations.find(item => item.citationId === conflict.basisId);
                   const principle = turn.feedback?.knowledge.find(item => item.knowledgeId === conflict.basisId);
@@ -372,18 +372,22 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                     const originIndex = Number(issue.origin.issueId.split(":")[0]);
                     const original = session.turns.find(turn => turn.turnIndex === originIndex);
                     const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
+                    const sourceTurn = followUp ?? original;
+                    const state = issue.answerQuote ? "covered" : issue.kind;
                     return <li key={issue.issueId}><details>
                       <summary><strong>{issue.origin.point || issue.origin.text}</strong>
-                        <span>第 {originIndex + 1} 轮缺口{issue.turnIndex != null && issue.turnIndex !== originIndex &&
+                        <span>第 {originIndex + 1} 轮{issue.origin.issueId.includes(":inconsistent:") ? "需修正" : "缺口"}{issue.turnIndex != null && issue.turnIndex !== originIndex &&
                           ` → 第 ${issue.turnIndex + 1} 轮${issue.answerQuote ? "补答" : "仍待核对"}`}</span>
-                        <span data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "已修正" : issue.kind === "inconsistent" ? "需修正" : "仍待补"}</span>
+                        <span className={styles.issueStatus} data-kind={state} data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "✓ 已修正" : issue.kind === "inconsistent" ? "! 需修正" : "○ 仍待补"}</span>
                       </summary>
                       <div className={styles.issueDetails}>
-                        <p>{issue.origin.text}</p>
-                        {(issue.origin.questionQuote || original?.question) && <blockquote>{issue.origin.questionQuote || original?.question}</blockquote>}
-                        {issue.text !== issue.origin.text && <p>{issue.text}</p>}
+                        {(issue.answerQuote || issue.text !== issue.origin.text) && <p><strong>第 {originIndex + 1} 轮原点评</strong><br />{issue.origin.text}</p>}
+                        {!issue.answerQuote && issue.conflict && <><p>第 {(issue.turnIndex ?? originIndex) + 1} 轮回答原话</p><blockquote>{issue.conflict.answerQuote}</blockquote></>}
+                        {!issue.answerQuote && <p>{issue.text}</p>}
                         {issue.answerQuote && <><p>补答原话</p><blockquote>{issue.answerQuote}</blockquote></>}
-                        {(followUp || original) && <PracticeSources session={session} turn={followUp ?? original ?? null} />}
+                        {(issue.origin.questionQuote || original?.question) && <><p>第 {originIndex + 1} 轮题目</p><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></>}
+                        {sourceTurn?.feedback && <PracticeSources session={session} turn={sourceTurn} compact
+                          basisId={issue.answerQuote ? undefined : issue.conflict?.basisId} />}
                       </div>
                     </details></li>;
                   })}
@@ -404,7 +408,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
               </>}
             </div>
           </details>
-          {summaryNextStep && <p className={styles.suggestion}><strong>下一步：</strong>{summaryNextStep}</p>}
+          {summaryNextStep && <p className={styles.nextStep}><strong>下一步：</strong>{summaryNextStep}</p>}
           <div className={styles.actions}>
             {!knowledgeOutdated && <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>{busy === "restart" ? "正在创建新练习…" : "再练一次"}</button>}
             <Link className="btn-secondary" href={reportHref}>回到报告这项要求</Link>
@@ -418,11 +422,15 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   </div>;
 }
 
-function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session: InterviewSession }) {
-  const { citations, knowledge, kind } = practiceTurnSources(turn, session);
+function PracticeSources({ turn, session, compact = false, basisId }: {
+  turn: PracticeTurn | null; session: InterviewSession; compact?: boolean; basisId?: string;
+}) {
+  const sources = practiceTurnSources(turn, session);
+  const { kind } = sources;
+  const citations = basisId ? sources.citations.filter(item => item.citationId === basisId) : sources.citations;
+  const knowledge = basisId ? sources.knowledge.filter(item => item.knowledgeId === basisId) : sources.knowledge;
   const title = kind === "session" ? "练习资料" : kind === "feedback" ? "本轮点评依据" : kind === "first-related" ? "首问关联依据" : "本轮题目依据";
-  return <aside className={styles.basis} aria-label={title}>
-    <h2>{title}</h2>
+  const content = <>
     {kind === "first-related" && <p className={styles.empty}>本轮沿用首问保存的依据。</p>}
     {citations.length ? <ul className={styles.evidenceList}>
       {citations.map((item, index) => {
@@ -431,7 +439,7 @@ function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session
         const filename = segments.at(-1) || item.filePath;
         const path = segments[0] === item.projectVersionId ? segments.slice(1).join("/") : item.filePath;
         return <li className={styles.evidenceItem} key={item.citationId || `${item.filePath}:${item.lineStart}:${index}`}>
-          <details open={kind !== "session" && index === 0}>
+          <details open={!compact && kind !== "session" && index === 0}>
             <summary>
               <strong>{filename} · 第 {item.lineStart}{item.lineEnd === item.lineStart ? "" : `–${item.lineEnd}`} 行</strong>
               <span>{material && <>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版 · </>}{item.provenance === "reference" ? "第三方参考，不计评级" : item.provenance === "portfolio" ? "本人材料" : "报告材料"}</span>
@@ -442,7 +450,7 @@ function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session
           </details>
         </li>;
       })}
-    </ul> : <p className={styles.empty}>{kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
+    </ul> : !compact && <p className={styles.empty}>{kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
     {!!knowledge.length && <section className={styles.basisGroup}>
       <h3>技术知识</h3>
       <ul className={styles.knowledgeList}>
@@ -453,11 +461,19 @@ function PracticeSources({ turn, session }: { turn: PracticeTurn | null; session
         </li>)}
       </ul>
     </section>}
-    {session.materials.length > 0 && <details className={styles.savedDetails}>
+    {!compact && session.materials.length > 0 && <details className={styles.savedDetails}>
       <summary>练习使用的固定版本</summary>
       <ul className={styles.materials}>
         {session.materials.map(material => <li key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</li>)}
       </ul>
     </details>}
-  </aside>;
+  </>;
+  if (compact && turn) {
+    const label = `第 ${turn.turnIndex + 1} 轮点评依据`;
+    return citations.length || knowledge.length ? <details className={styles.inlineBasis}>
+      <summary>{label}</summary>
+      {content}
+    </details> : <p className={styles.empty}>第 {turn.turnIndex + 1} 轮点评未保存依据。</p>;
+  }
+  return <aside className={styles.basis} aria-label={title}><h2>{title}</h2>{content}</aside>;
 }

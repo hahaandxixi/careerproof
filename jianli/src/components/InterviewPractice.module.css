@@ -60,9 +60,9 @@
 .feedbackBlock h4 { font-size: 14px; font-weight: 700; }
 .feedbackBlock ul { display: grid; gap: 4px; margin: 0; padding-left: 18px; }
 .feedbackBlock li, .feedbackBlock p { font-size: 14px; line-height: 1.55; }
-.suggestion { padding: 8px 10px; border-left: 3px solid #739487; background: #f1f5ef; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.suggestion, .nextStep { padding: 8px 10px; border-left: 3px solid #81a5c6; background: #edf5fc; font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
 
-.summary { display: grid; gap: 12px; padding: 20px; border: 1px solid #b9cdc1; border-radius: 10px; background: #f2f7f2; }
+.summary { display: grid; gap: 12px; padding: 20px; border: 1px solid #ded7c7; border-radius: 10px; background: #faf8f2; }
 .summaryDetails > summary { width: fit-content; cursor: pointer; font-size: 16px; font-weight: 700; color: #173f35; }
 .summaryDetails > div { display: grid; gap: 10px; margin-top: 8px; }
 .summaryGrid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -72,20 +72,25 @@
 .summaryGrid p { font-size: 14px; line-height: 1.7; }
 .summaryNote { font-size: 12px; line-height: 1.7; color: #56705f; }
 .issueTrail { list-style: none; margin: 0; padding: 0; }
-.issueTrail li { border-top: 1px solid #b9cdc1; }
-.issueTrail summary { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; cursor: pointer; padding: 10px 0; overflow-wrap: anywhere; }
-.issueTrail summary span { font-size: 14px; color: #52645b; }
-.issueTrail summary span[data-resolved="false"] { color: #8c4b15; }
-.issueTrail summary span[data-resolved="true"] { color: #215745; }
-.issueTrail summary strong::before { content: "› "; }
-.issueTrail li > details > summary::before { content: none; display: none; }
-.issueTrail summary strong { min-width: 0; text-align: left; }
-.issueTrail details[open] summary strong::before { content: "⌄ "; }
+.issueTrail > li { border-top: 1px solid #b9cdc1; }
+.issueTrail > li > details > summary { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; cursor: pointer; padding: 10px 0; overflow-wrap: anywhere; }
+.issueTrail > li > details > summary > span { font-size: 14px; color: #52645b; }
+.issueStatus { padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.issueTrail .issueStatus[data-kind="covered"] { background: #e4f3ec; color: #215745; }
+.issueTrail .issueStatus[data-kind="missing"] { background: #fbefd4; color: #6f4316; }
+.issueTrail .issueStatus[data-kind="inconsistent"] { background: #f8e6df; color: #783a2c; }
+.inlineBasis { padding: 8px 10px; background: #f0ede5; border-radius: 6px; }
+.inlineBasis > summary { cursor: pointer; color: #37574a; }
+.nextStep { border-left: 0; border-radius: 6px; background: #e3effa; }
+.issueTrail > li > details > summary > strong::before { content: "› "; }
+.issueTrail > li > details > summary::before { content: none; display: none; }
+.issueTrail > li > details > summary > strong { min-width: 0; text-align: left; }
+.issueTrail > li > details[open] > summary > strong::before { content: "⌄ "; }
 .issueDetails { display: grid; gap: 8px; padding: 0 0 12px; overflow-wrap: anywhere; }
-.issueDetails blockquote { margin: 0; padding-left: 12px; border-left: 2px solid #739487; }
+.issueDetails blockquote { margin: 0; padding-left: 12px; border-left: 2px solid #a89e8b; background: #f3efe7; }
 @media (max-width: 760px) {
-  .issueTrail summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
-  .issueTrail summary strong { grid-column: 1 / -1; }
+  .issueTrail > li > details > summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+  .issueTrail > li > details > summary > strong { grid-column: 1 / -1; }
 }
 
 .basis { display: grid; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #ded7c7; border-radius: 10px; background: #fbf8ef; }

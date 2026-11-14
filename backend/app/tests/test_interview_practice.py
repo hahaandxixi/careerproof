@@ -915,6 +915,28 @@ def test_missing_requires_a_quote_from_the_actual_question():
     assert saved["issueRecords"][0]["questionQuote"] == "给出缺失偏差的数值例子"
 
 
+def test_issue_trail_keeps_conflict_quote_separate_from_resolution():
+    from app.schemas.interview import PracticeSummaryView
+
+    raw = feedback([])
+    raw["findings"] = [{
+        "kind": "inconsistent", "point": "计数口径", "text": "计数口径有误",
+        "answerQuote": "COUNT 不统计任何行", "basisId": "sql-count",
+    }]
+    answer = "COUNT 不统计任何行"
+    saved = practice.validate_feedback(
+        raw, allowed_citations=set(), allowed_knowledge={"sql-count"},
+        has_evidence=False, answer=answer, previous_issues=[],
+    )
+    turn = InterviewAnswer(turn_index=0, answer_text=answer, feedback=saved)
+    summary = PracticeSummaryView.model_validate(practice.build_summary([turn]))
+    issue = summary.issue_trail[0]
+    assert issue.answer_quote is None
+    assert issue.conflict.answer_quote == answer
+    assert issue.conflict.basis_id == "sql-count"
+    assert issue.conflict.reason == "计数口径有误"
+
+
 @pytest.mark.parametrize(
     ("answer", "raw", "expected"),
     [

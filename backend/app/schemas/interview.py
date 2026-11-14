@@ -118,6 +118,7 @@ class PracticeIssueTrail(APIModel):
     origin: PracticeIssueOrigin
     answer_quote: str | None = None
     turn_index: int | None = None
+    conflict: PracticeConflictView | None = None
 
 
 class PracticeSummaryView(APIModel):

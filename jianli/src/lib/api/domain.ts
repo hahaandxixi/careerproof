@@ -291,6 +291,7 @@ export interface PracticeSummary {
   issueTrail?: {
     issueId: string; kind: "missing" | "inconsistent"; text: string;
     answerQuote?: string | null; turnIndex?: number | null;
+    conflict?: { answerQuote: string; reason: string; basisId: string } | null;
     origin: { issueId: string; point?: string | null; text: string; questionQuote?: string | null };
   }[] | null;
 }

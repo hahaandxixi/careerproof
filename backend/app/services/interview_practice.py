@@ -473,7 +473,19 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
                 continue
             pending.pop(item.get("previousIssueId"), None)
             origins[item["issueId"]] = origins.get(item.get("previousIssueId"), item)
-            pending[item["issueId"]] = {**item, "turnIndex": turn.turn_index}
+            current = {**item, "turnIndex": turn.turn_index}
+            if item["kind"] == "inconsistent":
+                # Both arrays preserve the validator's accepted inconsistent-finding order.
+                conflicts = feedback.get("conflictDetails") or []
+                reasons = feedback.get("inconsistent") or []
+                index = int(item["issueId"].rsplit(":", 1)[1])
+                if (
+                    len(conflicts) == len(reasons)
+                    and index < len(conflicts)
+                    and reasons[index] == conflicts[index]["reason"] == item["text"]
+                ):
+                    current["conflict"] = conflicts[index]
+            pending[item["issueId"]] = current
         if feedback.get("reviewSuggestion"):
             suggestion = feedback["reviewSuggestion"]
     return {
