@@ -445,6 +445,8 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
     resolved: list[dict] = []
     suggestion = ""
     answered = 0
+    tracked = any("issueRecords" in (turn.feedback or {}) for turn in turns)
+    origins: dict[str, dict] = {}
     for turn in turns:
         if not turn.answer_text:
             continue
@@ -470,6 +472,7 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
             if (item["kind"], item["text"]) in corrected:
                 continue
             pending.pop(item.get("previousIssueId"), None)
+            origins[item["issueId"]] = origins.get(item.get("previousIssueId"), item)
             pending[item["issueId"]] = item
         if feedback.get("reviewSuggestion"):
             suggestion = feedback["reviewSuggestion"]
@@ -485,6 +488,10 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
             dict.fromkeys(item["text"] for item in pending.values() if item["kind"] == "missing")
         ),
         "resolvedIssues": resolved,
+        **({"issueTrail": [
+            {**item, "origin": origins[item["issueId"]]}
+            for item in [*pending.values(), *resolved]
+        ]} if tracked else {}),
         "nextStep": suggestion,
         "note": "小结只根据本次练习的点评整理，不改变报告判断、技能等级或投递快照。",
     }
@@ -1035,7 +1042,12 @@ class InterviewPracticeService:
             "consentScope": session_row.consent_scope,
             "currentTurn": session_row.current_turn or 0,
             "maxTurns": session_row.max_turns or MAX_TURNS,
-            "summary": session_row.summary,
+            "summary": (
+                {**session_row.summary, "issueTrail": build_summary(turns)["issueTrail"]}
+                if session_row.summary is not None
+                and any("issueRecords" in (turn.feedback or {}) for turn in turns)
+                else session_row.summary
+            ),
             "failureReason": (question_task.error_message if question_task else None)
             or session_row.failure_reason,
             "questionTask": generation(question_task),

@@ -879,6 +879,12 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     summary = practice.build_summary([first, second])
     assert summary["remaining"] == ["未说明缺失偏差", "还没说明 AVG 排除空值"]
     assert summary["resolvedIssues"][0]["text"] == "未算出示例行数"
+    trail = summary["issueTrail"]
+    assert [item["origin"]["issueId"] for item in trail] == [
+        "0:missing:2", "0:missing:1", "0:missing:0"
+    ]
+    assert trail[1]["text"] == "还没说明 AVG 排除空值"
+    assert trail[2]["answerQuote"] == answer
     assert first.feedback["missing"][1] == "未说明 AVG 的分母"
     raw["findings"][1]["previousIssueId"] = "0:missing:0"
     with pytest.raises(ValueError, match="关联无效"):
