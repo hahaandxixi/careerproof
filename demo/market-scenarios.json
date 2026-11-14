@@ -151,5 +151,22 @@
       ],
       "materialBoundary":"仅提供合成岗位要求，暂无专属配套项目包；请使用自己的学习材料核对。"
     }
+  ],
+  "additionalScenarios": [
+    {
+      "key": "activity-analytics",
+      "sourceKey": "python",
+      "title": "数据分析实习生",
+      "category": "data_analysis",
+      "city": "不限",
+      "employmentType": "internship",
+      "description": "围绕校园活动的报名、到场和反馈数据整理周报，和活动组织者核对指标口径，解释变化并指出样本限制。此为职证体验岗位。",
+      "requirements": [
+        {"skillName":"SQL","rawText":"对报名和签到数据按活动汇总，说明去重、空值和未签到记录的处理。","weight":5,"isRequired":true},
+        {"skillName":"Python","rawText":"使用 Python 清洗日期和异常记录，并留下可复用的处理步骤。","weight":4,"isRequired":true},
+        {"skillName":"数据分析","rawText":"明确报名转化率和到场率的分母，并用小样本核查计算。","weight":5,"isRequired":true},
+        {"skillName":"数据可视化","rawText":"绘制带时间范围和单位的趋势图，说明结论适用的范围。","weight":3,"isRequired":false}
+      ]
+    }
   ]
 }

@@ -241,12 +241,18 @@ async def enable_read_only(session):
         raise ValueError("Unsupported plan database")
 
 
-async def seed_scenarios(session, owner_id):
+async def seed_scenarios(session, owner_id, *, scenario_keys=None):
     """Called only by the explicit development demo seeder, never by startup/migration."""
     owner = await session.scalar(select(User).where(User.id == owner_id).with_for_update())
     if owner is None or not owner.is_active or owner.role != UserRole.ENTERPRISE:
         raise ValueError("Demo seed requires an active enterprise identity")
     payload = load_scenarios()
+    if scenario_keys is not None:
+        catalog = [*payload["scenarios"], *payload.get("additionalScenarios", [])]
+        selected = [spec for spec in catalog if spec["key"] in scenario_keys]
+        if {spec["key"] for spec in selected} != set(scenario_keys):
+            raise ValueError("Unknown scenario key")
+        payload = {**payload, "scenarios": selected}
     organizations = await _rows(
         session,
         select(Enterprise)
@@ -273,7 +279,8 @@ async def seed_scenarios(session, owner_id):
         await session.flush()
     else:
         target = targets[0]
-    return await apply_plan(session, payload, target.id, legacy[0].id if legacy else None)
+    legacy_id = legacy[0].id if legacy and scenario_keys is None else None
+    return await apply_plan(session, payload, target.id, legacy_id)
 
 
 def validate_local_url(value):
