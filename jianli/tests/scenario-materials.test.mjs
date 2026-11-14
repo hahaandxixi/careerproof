@@ -63,6 +63,6 @@ test("demo page delegates cases to the gallery and retains synthetic boundary co
   new Function("require", "module", "exports", transform(page, {transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code)(id => { assert.ok(id in modules,id); return modules[id]; },mod,mod.exports);
   const html=renderToStaticMarkup(React.createElement(mod.exports.default));
   assert.ok(html.includes(`data-cases="${samples.length}"`));
-  assert.ok(html.includes("合成材料"));
+  assert.ok(html.includes("选择案例材料"));
   assert.doesNotMatch(html, /规则覆盖与来源演示|enterprise-scenario|demo\/heatmap/);
 });

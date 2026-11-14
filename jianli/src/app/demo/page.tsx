@@ -6,7 +6,7 @@ import samples from "./samples.json";
 export default function DemoPage() {
   return <div className="case-library-page">
     <header className="case-library-heading">
-      <div><p className="workspace-meta">案例库</p><h1 className="page-title">用一套完整材料，走完一次证据核对</h1><p className="reading-copy">按方向选择一套合成材料，下载或导入材料库。</p></div>
+      <div><p className="workspace-meta">案例库</p><h1 className="page-title">用一套完整材料，走完一次证据核对</h1><p className="reading-copy">选择案例材料，下载或导入材料库。</p></div>
       <div className="case-library-entry"><Link href="/portfolio" className="btn-secondary">进入我的材料</Link></div>
     </header>
     <div className="case-library-layout">
