@@ -40,7 +40,7 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
-  const mod={exports:{}};new Function("require","module","exports","location","document",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports,{search:query,hash},{getElementById:()=>null});
+  const mod={exports:{}};new Function("require","module","exports","location","document","window",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports,{search:query,hash},{getElementById:()=>null},{addEventListener(){},removeEventListener(){}});
   const emptyIds=[];
   const render=()=>{cursor=effectCursor=0;return mod.exports.default({}).type({initialResumeVersionId:"",initialProjectVersionIds:emptyIds});};
   const settle=async()=>{while(effects.length)effects.shift()();for(let i=0;i<8;i++)await Promise.resolve();};

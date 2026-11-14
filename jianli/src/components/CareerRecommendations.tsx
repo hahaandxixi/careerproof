@@ -52,6 +52,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   const [expandedCandidates, setExpandedCandidates] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [readingCitation, setReadingCitation] = useState("");
+  const [fragmentRevision, refreshFragment] = useState(0);
   const [historyRequest, setHistoryRequest] = useState(0);
   const [historyError, setHistoryError] = useState("");
   const [editingMaterials, setEditingMaterials] = useState(false);
@@ -162,12 +163,20 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   const result = savedResult ? careerPlanDisplayIdentity(savedResult) : null;
   const projectIds = new Set(result?.materials.filter(material => material.kind === "project").map(material => material.id));
   useEffect(() => {
+    const changed = () => refreshFragment(value => value + 1);
+    window.addEventListener("hashchange", changed);
+    return () => window.removeEventListener("hashchange", changed);
+  }, []);
+  useEffect(() => {
     if (!savedResult) return;
     const params = new URLSearchParams(location.search);
     const originalPlan = params.get("returnPlan");
     if (originalPlan && originalPlan !== savedResult.planId) return;
     const hash = location.hash;
-    if (!hash.startsWith("#plan-citation-") && !hash.startsWith("#plan-job-")) return;
+    if (!hash.startsWith("#plan-citation-")) {
+      if (readingCitation) setReadingCitation("");
+      if (!hash.startsWith("#plan-job-")) return;
+    }
     let id: string;
     try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
     if (id.startsWith("plan-citation-") && readingCitation !== id.slice("plan-citation-".length)) {
@@ -186,7 +195,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
     }
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: "start" });
-  }, [savedResult, expandedCandidates, readingCitation]);
+  }, [savedResult, expandedCandidates, readingCitation, fragmentRevision]);
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
   const visibleChanges = result ? visibleCareerChanges(result.changes, visibleRecommendations) : [];
 
