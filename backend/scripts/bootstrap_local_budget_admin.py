@@ -24,7 +24,7 @@ async def initialize(database: str) -> str:
         or url.host not in {"localhost", "127.0.0.1", "::1"}
         or url.database != database
     ):
-        raise ValueError("Configured database must be the explicitly named local PostgreSQL database")
+        raise ValueError("Use the explicitly named local PostgreSQL database")
 
     async with async_session_factory.begin() as session:
         await session.execute(text("SELECT pg_advisory_xact_lock(1824472911)"))
@@ -37,7 +37,7 @@ async def initialize(database: str) -> str:
                 )
             )
             if existing.role != UserRole.ADMIN or not existing.is_active or audit is None:
-                raise ValueError("Reserved identity already exists without a valid bootstrap record")
+                raise ValueError("Reserved identity lacks a valid bootstrap record")
             return "Existing local budget audit administrator verified"
 
         # The local operator uses this identity for audited database commands.
