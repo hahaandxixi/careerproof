@@ -19,20 +19,19 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
   const stepsInRoute = !checks.length && steps.length > 0;
   const extraTask = advice.nextTask?.trim() !== deliverable ? advice.nextTask?.trim() : "";
   const route = [
-    { label: "缺口", content: advice.keyGap?.trim() },
-    { label: "提交什么", content: deliverable },
-    { label: "如何核对", content: checks[0] },
-    { label: "怎么做", content: stepsInRoute ? steps[0] : undefined },
+    { tone: "amber", label: "缺口", content: advice.keyGap?.trim() },
+    { tone: "blue", label: "提交什么", content: deliverable },
+    { tone: "green", label: "如何核对", content: checks[0] },
+    { tone: "blue", label: "怎么做", content: stepsInRoute ? steps[0] : undefined },
   ].filter(point => point.content);
 
   return <section aria-label="补证建议" className="mt-4 space-y-3 border-t border-slate-200 pt-3">
     <h4 className="text-base font-semibold">补证建议</h4>
     {job.assessedCount === 0 && <p className="text-sm text-amber-800">岗位要求未进入规则评估范围，请人工核对材料。</p>}
     {route.length > 0 && <ol className="grid gap-3 md:grid-cols-3">
-      {route.map(({ label, content }, index) => <li key={label} className="flex min-w-0 items-start gap-2 rounded-lg bg-slate-50 p-3">
-        <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-800">{index + 1}</span>
+      {route.map(({ tone, label, content }, index) => <li key={label} className="reading-band min-w-0" data-reading-tone={tone}>
         <div className="min-w-0 break-words text-sm leading-6">
-          <p className="font-semibold text-slate-900">{label}</p>
+          <p className="reading-role"><span aria-hidden="true">{index + 1} · </span>{label}</p>
           <p className="text-slate-700">{content}</p>
           {label === "如何核对" && checks.length > 1 && <span className="text-slate-600">共 {checks.length} 条核对项</span>}
         </div>
@@ -40,7 +39,7 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
     </ol>}
     {(advice.reason?.trim() || extraTask || steps.length > Number(stepsInRoute) || checks.length > 1 || sources.length > 0) &&
       <details>
-        <summary className="cursor-pointer text-sm font-medium">{checks.length > 1 ? `查看其余 ${checks.length - 1} 条核对项与详情` : "查看判断依据与完整步骤"}</summary>
+        <summary className="reading-band cursor-pointer text-sm font-medium" data-reading-tone="purple">{checks.length > 1 ? `查看其余 ${checks.length - 1} 条核对项与详情` : "查看判断依据与完整步骤"}</summary>
         <div className="mt-2 space-y-2 break-words text-sm leading-6 text-slate-700">
           {advice.reason?.trim() && <p>{advice.reason}</p>}
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">
