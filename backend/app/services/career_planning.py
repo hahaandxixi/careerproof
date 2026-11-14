@@ -131,7 +131,9 @@ def career_runtime_plan_without_implementation(
     output_suffix = (
         r"\s*的?\s*(?:运行|执行|验证|测试|统计|核对|异常|分析)?(?:结果|输出|截图|日志|记录)"
     )
-    modifier = r"(?:聚合|统计|异常|缺失值|空值|去重|联表|分组|校验|核对|筛选|的|\s)"
+    modifier = (
+        r"(?:聚合|统计|异常|缺失值|空值|去重|联表|连接|排序|窗口|分组|校验|核对|筛选|的|\s)"
+    )
     artifact = r"(?:查询(?:语句|脚本)?|语句|脚本|代码|文件)"
     sql_query = rf"(?<![a-zA-Z0-9_])SQL\s*(?>{modifier}{{0,8}}{artifact})(?!{output_suffix})"
     query_script = rf"(?:查询语句|查询脚本)(?!{output_suffix})"
