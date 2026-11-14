@@ -31,7 +31,7 @@ function commandsFor(pathname: string, role?: string): Command[] {
     ...(role === "student" ? [{ id: "messages", label: "消息", group: "投递", href: "/applications?messages=1", aliases: "通知中心 通知 消息 未读" }] : []),
     { id: "skills", label: "技能全景", group: "报告", href: "/skills", aliases: "技能 技能全景 技能版图 材料支持" },
     ...(role === "student" ? [{ id: "interview", label: "模拟面试", group: "报告", href: "/interview", aliases: "模拟面试 面试 面试练习" }] : []),
-    { id: "demo", label: "案例库", group: "材料", href: "/demo", aliases: "案例 案例库 示例项目 示例 下载 导入" },
+    { id: "demo", label: "材料库", group: "材料", href: "/demo", aliases: "案例 材料库 示例项目 示例 下载 导入" },
     { id: "supplement", label: report ? "本报告 · 按需补证" : "按需补证（先选报告）", group: "报告", href: reportHash("#report-supplement"), aliases: "补证 缺口 上传新版 材料" },
     { id: "sharing", label: report ? "本报告 · 投递授权" : "投递授权（先选报告）", group: "投递", href: reportHash("#report-sharing"), aliases: "投递 授权 企业 分享" },
     { id: "sources", label: report ? "本报告 · 材料来源" : "报告材料来源", group: "报告", href: reportHash("#report-materials"), aliases: "来源 文件 版本 引用" },
