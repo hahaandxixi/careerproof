@@ -25,7 +25,9 @@ test("each canonical sample renders its own real downloadable files", () => {
       assert.ok(html.includes(`/demo-assets/scenarios/${scenario[field]}`), scenario.title);
       assert.ok(existsSync(new URL(`../public/demo-assets/scenarios/${scenario[field]}`, import.meta.url)));
     }
-    assert.match(html, /不会自动写入你的账号/);
+    assert.match(html, /href="\/portfolio"/);
+    assert.equal((html.match(/\bdownload=""/g) ?? []).length, 2);
+    assert.doesNotMatch(html, /<form\b|<button\b/);
   }
 });
 
