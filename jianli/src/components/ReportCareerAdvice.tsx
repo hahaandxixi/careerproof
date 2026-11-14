@@ -17,7 +17,7 @@ export default function ReportCareerAdvice({ report, planId, jobId }: { report: 
         if (planId) setError("这份规划与本报告的岗位或材料版本不一致。");
       }
       else setPlan(value);
-    }, reason => { if (active && planId) setError(errorMessage(reason)); });
+    }, reason => { if (active) setError(planId ? errorMessage(reason) : "暂时无法读取已保存的职业规划。"); });
     return () => { active = false; };
   }, [planId, jobId, report]);
   if (error) return <p role="alert">{error}</p>;

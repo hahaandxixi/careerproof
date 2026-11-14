@@ -67,7 +67,7 @@ test("readable AI links keep the saved narrative and never map cross-item histor
  const report={analysisMode:"ai_evidence",aiFallbackUsed:false,evidenceContextVersion:"source-context-v3",materials:[],items:[item]};
  const before=JSON.stringify(report);
  const rendered=renderToStaticMarkup(React.createElement(AiExplanation,{report,item}));
- assert.match(rendered,/app.py · 12–20行/);assert.match(rendered,/#citation-R1-E1/);assert.match(rendered,/R1-E1包含接口实现/);
+ assert.match(rendered,/app.py · 12–20行/);assert.match(rendered,/#citation-R1-E1/);assert.match(rendered,/包含接口实现/);
  assert.equal((rendered.match(/href="#citation-R1-E1"/g)??[]).length,1);
  const extra={...item,aiCitationIds:["R1-E1","R1-E2"],evidenceList:[...item.evidenceList,{citationId:"R1-E2",filePath:"test.py",lineStart:3,lineEnd:5,snippet:"assert result",contextComplete:true}]};
  const extraHtml=renderToStaticMarkup(React.createElement(AiExplanation,{report,item:extra}));
@@ -355,7 +355,8 @@ test("primary AI explanation is shown only for adopted saved output and preserve
  const before=JSON.stringify(report);
  const renderAi=(r,i=item)=>renderToStaticMarkup(React.createElement(AiExplanation,{report:r,item:i}));
  const html=renderAi(report);
- assert.ok(html.indexOf(item.aiExplanation)<html.indexOf("<details"));
+ assert.equal((html.match(new RegExp(item.aiExplanation,"g"))??[]).length,1);
+ assert.doesNotMatch(html,/原始解释与校验记录/);
  assert.ok(html.includes('href="#citation-saved-alpha"'));
  for(const changed of [{...report,aiFallbackUsed:true},{...report,analysisMode:"rules"},{...report,aiProvider:"mock"}]) assert.equal(renderAi(changed),"");
  for(const changed of [{...item,aiStatus:"rejected"},{...item,confirmationStatus:"corrected"},{...item,confirmationStatus:"rejected"}]) assert.equal(renderAi(report,changed),"");

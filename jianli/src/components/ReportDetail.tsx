@@ -16,7 +16,6 @@ import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
 import ApplicationSubmit from "./ApplicationSubmit";
 import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenceWorkspace";
-import ReportAgentEvidence from "./ReportAgentEvidence";
 import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
 import SkillRadar from "./SkillRadar";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
@@ -140,7 +139,6 @@ function ReportWorkspace({ id }: { id: string }) {
       {item.evidenceId && user?.role === "student" && <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4"><summary className="cursor-pointer py-1 text-sm font-medium">记录你对本项证据的意见（可选） · {REVIEW_LABELS[item.confirmationStatus ?? "pending"]}</summary><p className="mt-2 text-xs leading-6 text-slate-600">不是教师或企业认证；不记录也可以继续补证。</p><textarea aria-label={`${item.requirementTitle}的证据意见`} className="mt-3 min-h-20 w-full rounded-lg border border-slate-200 bg-white p-3 text-sm" maxLength={1000} placeholder="可选：记录采纳、驳回或修正原因" value={reviewNotes[item.requirementId] ?? item.reviewerNote ?? ""} onChange={event => setReviewNotes(notes => ({ ...notes, [item.requirementId]: event.target.value }))} /><div className="mt-3 flex flex-wrap gap-2"><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "accepted")}>采纳证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "rejected")}>驳回证据</button><button className="btn-secondary" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "corrected")}>标记已修正</button>{item.confirmationStatus !== "pending" && <button className="btn-quiet" disabled={reviewing !== null || needsSync} onClick={() => review(item.requirementId, "pending")}>恢复待核对</button>}</div><p className="mt-2 text-xs leading-6 text-slate-600">驳回或标记修正：将更新当前报告的证据展示，已投递快照不变。</p>{reviewing === item.requirementId && <p role="status" className="mt-2 text-sm text-slate-600">正在同步核对记录…</p>}{issues[item.requirementId] && <div role="alert" className="mt-3 space-y-2 text-sm text-rose-800"><p>{issues[item.requirementId].message}</p>{issues[item.requirementId].readRequired && <button type="button" className="btn-secondary" disabled={reviewing !== null} onClick={() => void session.refresh(item.requirementId)}>重新读取核对记录</button>}</div>}{item.confirmedAt && <p className="mt-2 text-xs text-slate-500">核对时间：{new Date(item.confirmedAt).toLocaleString("zh-CN")}</p>}</details>}
       </div>
     </article>)}</ReportEvidenceWorkspace>
-    <ReportAgentEvidence report={report} />
 
     {user?.role === "student" && <McpAccessPanel key={id} reportId={id} />}
     {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} origin={origin} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}

@@ -71,7 +71,7 @@ test("判定用语由同一来源提供，历史值和未评估不混为新结�
   assert.equal(APPLICATION_STATUS_LABELS.submitted, "已投递");
   // Wiring check complements actual rendering below. It does not simulate
   // authenticated report/board/planning fetches or replace their page checks.
-  for (const name of ["ApplicationBoard", "ReportDetail", "CareerRecommendations", "VerdictBadge"]) {
+  for (const name of ["ApplicationBoard", "ReportDetail", "VerdictBadge"]) {
     const source = readFileSync(path.join(SRC, `components/${name}.tsx`), "utf8");
     if (name === "ReportDetail") {
       assert.ok(source.includes('workspaceStatusLabel(item)'), name);

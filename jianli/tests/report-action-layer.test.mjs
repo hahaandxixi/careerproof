@@ -69,22 +69,33 @@ test("career supplement keeps saved details and valid citations after showing th
  assert.equal((saved.match(/同一内容/g)??[]).length,2);
  assert.equal((saved.match(/同一步/g)??[]).length,2);
 });
+test("career citation uses a report anchor only for one matching saved source", () => {
+ const evidence = {citationId:"plan-one",skill:"SQL",filePath:"query.sql",projectVersionId:"v1",projectFileId:"f1",lineStart:1,lineEnd:2};
+ const job={assessedCount:1,evidence:[evidence]};
+ const input={keyGap:"缺少输出",citationIds:["plan-one"]};
+ const source={...evidence,citationId:"report-one"};
+ const renderRoute=items=>renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:input,job,planId:"saved-plan",report:{items}}));
+ const a=item("a","supported",{evidenceList:[source]});
+ assert.match(renderRoute([a]), /href="#citation-report-one"/);
+ const b=item("b","supported",{evidenceList:[{...source,citationId:"report-two"}]});
+ assert.match(renderRoute([a,b]), /returnPlan=saved-plan#plan-citation-plan-one/);
+ assert.doesNotMatch(renderRoute([a,b]), /href="#citation-report-/);
+});
 const count = (html, text) => html.split(text).length - 1;
 const render = (value, role = "student") => renderToStaticMarkup(React.createElement(AppRouterContext.Provider, { value: { push() { throw new Error("render must not navigate"); } } },
   React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId },
     React.createElement(RequirementActionPanel, { report: value, item: entry, role }),
-    role === "student" && ["gap", "partial", "claimed_only"].includes(entry.verdict) ? React.createElement(RequirementSupplementTarget, { report: value, item: entry }) : null)))));
+    role === "student" && (["gap", "partial", "claimed_only"].includes(entry.verdict) || entry.confirmationStatus === "rejected") ? React.createElement(RequirementSupplementTarget, { report: value, item: entry }) : null)))));
 
-test("student requirement area links to its own supplement item and leaves guidance there", () => {
+test("student requirement area leaves guidance to the supplement section", () => {
  const value = item("linked");
  const reportValue = report([value], [advice(value)]);
  const region = renderToStaticMarkup(React.createElement(RequirementActionPanel, { report: reportValue, item: value, role: "student" }));
- assert.match(region, /查看补证建议/);
- assert.ok(region.includes('href="#supplement-linked"'));
+ assert.doesNotMatch(region, /查看补证建议|href="#supplement-linked"/);
  assert.doesNotMatch(region, /复制补证建议|上传新版材料|本项已保存的具体要求|通用核对步骤/);
  const full = render(reportValue);
  assert.ok(full.includes('id="supplement-linked"'));
- assert.ok(full.includes("本项补证与岗位对照中的当前要求一致"));
+ assert.ok(!full.includes("本项补证与岗位对照中的当前要求一致"));
  assert.ok(!full.includes("本项已保存的具体要求"));
  assert.ok(full.includes("复制补证建议"));
  assert.ok(full.includes("添加项目材料"));
@@ -129,7 +140,7 @@ test("non-students retain explanation and advice without private student task co
  const value=item("admin");
  for(const role of ["admin","enterprise",undefined]) {
   const html=render(report([value],[advice(value)]),role ?? "anonymous");
-  assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes(value.explanation));
+  assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes(value.evidenceLevelGap));
   assert.ok(!html.includes(">开始补证</button>")); assert.ok(!html.includes('id="growth-')); assert.ok(!html.includes('href="/growth"'));
  }
 });
@@ -155,7 +166,7 @@ test("partial support and gaps expose their existing plan and explicit task trig
 test("supported requirements lead with conclusions and evidence; optional growth stays secondary", () => {
  const value=item("complete","supported"); const html=render(report([value],[advice(value)]));
  assert.ok(html.includes("判断依据")); assert.ok(!html.includes("材料支持不等于运行成功"));
- assert.ok(html.includes("材料有更新？按需查看补证指导"));
+ assert.ok(!html.includes("材料有更新？按需查看补证指导"));
  assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
 });
@@ -249,13 +260,13 @@ test("copied guidance keeps saved sources and conditional instructions; rejected
  assert.ok(!text.includes("已成功运行"));
 });
 
-test("legacy growth anchors resolve to current copy/upload guidance without reopening task creation",()=>{
- for(const verdict of ["gap","supported"]){
-  const html=render(report([item("legacy",verdict)]));
-  assert.equal(count(html,'id="growth-legacy"'),1);
-  assert.ok(html.includes("复制补证建议")&&html.includes("添加项目材料"));
-  assert.ok(!html.includes("自定义补证计划")&&!html.includes("查看已有补证记录"));
- }
+test("legacy growth anchors lead to the supplement section",()=>{
+ const html=render(report([item("legacy","gap")]));
+ assert.equal(count(html,'id="growth-legacy"'),1);
+ assert.ok(html.includes("复制补证建议")&&html.includes("添加项目材料"));
+ const source=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
+ assert.ok(source.indexOf("id={`growth-${item.requirementId}`}") > source.indexOf('id: "report-supplement"'));
+ assert.ok(!html.includes("自定义补证计划")&&!html.includes("查看已有补证记录"));
 });
 
 test("no report requirement mounts task lookup or task plan editing for any saved evidence state",()=>{

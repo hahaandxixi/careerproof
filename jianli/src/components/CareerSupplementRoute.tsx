@@ -50,11 +50,12 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">
             {sources.map(({ id, evidence }) => {
               const label = `${evidence.skill} · ${evidence.filePath.split(/[\\/]/).pop()} · ${evidence.lineStart}–${evidence.lineEnd} 行`;
-              const target = report?.items.flatMap(item => item.evidenceList.flatMap((source, index) =>
+              const targets = report?.items.flatMap(item => item.evidenceList.flatMap((source, index) =>
                 evidence.projectFileId && source.projectFileId === evidence.projectFileId &&
                 source.projectVersionId === evidence.projectVersionId && source.lineStart === evidence.lineStart &&
                 source.lineEnd === evidence.lineEnd ? [sourceLocationId(item.requirementId, source, index)] : []
-              ))[0];
+              )) ?? [];
+              const target = targets.length === 1 ? targets[0] : undefined;
               return <li key={id}>{target ? <EvidenceLink className="action-link" targetId={target}>{label}</EvidenceLink> :
                 <Link className="action-link" href={`/recommendations?${new URLSearchParams({ returnPlan: planId })}#plan-citation-${encodeURIComponent(id)}`}>{label}</Link>}</li>;
             })}

@@ -1,5 +1,6 @@
 import type { MatchReport, ReportEvidence } from "@/lib/api/domain";
 import { agentEvidenceRows, agentProcessSummary } from "@/lib/agent-evidence";
+import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import EvidenceLink from "./EvidenceLink";
 import EvidenceSnippet from "./EvidenceSnippet";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
@@ -13,7 +14,7 @@ function Source({ evidence, report }: { evidence: ReportEvidence; report: MatchR
   </div>;
 }
 
-export default function ReportAgentEvidence({ report }: { report: MatchReport }) {
+export default function ReportAgentEvidence({ report, canGrow }: { report: MatchReport; canGrow: boolean }) {
   const rows = agentEvidenceRows(report);
   if (!rows.length) return null;
   const mock = report.aiProvider?.startsWith("mock") === true;
@@ -28,8 +29,12 @@ export default function ReportAgentEvidence({ report }: { report: MatchReport })
       {added && <div><p className="mb-2 text-sm font-medium text-[#173c34]">补充找到的证据</p><Source evidence={added} report={report} /></div>}
       {added && otherSaved.length > 0 && <details className="rounded-lg border border-slate-200 bg-white p-3"><summary className="cursor-pointer text-sm font-medium text-slate-700">对照其他已保存引用 · {otherSaved.length} 条</summary><p className="mt-2 text-xs leading-6 text-slate-600">这里排除本轮记录的新增编号；没有保存补检索前的完整输入，不能据此还原首轮实际发送了哪些片段。</p><div className="mt-3 space-y-3">{otherSaved.map(evidence => <Source key={evidence.citationId} evidence={evidence} report={report} />)}</div></details>}
       <p className="text-sm leading-7 text-slate-700"><strong>结论中的作用：</strong>{influence}</p>
-      {item && <a href={`#requirement-${item.requirementId}`} className="btn-secondary">查看对应要求</a>}
+      {item && <><p className="whitespace-pre-wrap break-words text-sm leading-7 text-slate-700"><strong>最终保存的解释：</strong>{item.aiStatus === "validated" && !report.aiFallbackUsed ? item.aiExplanation || item.explanation : item.explanation}</p>
+        <p className="break-words text-sm leading-7 text-slate-700"><strong>当前仍待确认：</strong>{item.aiStatus === "validated" && !report.aiFallbackUsed ? item.aiInformationGap || item.evidenceLevelGap : item.evidenceLevelGap || "请核对逐项缺口。"}</p>
+        {validatedGrowthAdvice(report, item)?.suggestion && <p className="break-words text-sm leading-7 text-slate-700"><strong>下一步建议：</strong>{validatedGrowthAdvice(report, item)?.suggestion}</p>}
+        <div className="flex flex-wrap gap-4 text-sm"><a href={`#requirement-${item.requirementId}`} className="btn-secondary">核对完整要求与结论 →</a>{canGrow && <a href={`#growth-${item.requirementId}`} className="btn-secondary">从这条要求继续补证 →</a>}</div></>}
     </article>)}
+    {canGrow && !rows.some(row => row.item) && <a className="btn-secondary" href="#evidence-workspace-title">核对报告缺口与补证计划 →</a>}
     <details className="text-xs text-slate-600"><summary className="cursor-pointer">技术记录与范围</summary><ul className="mt-2 space-y-2">{rows.map(({ call }, index) => <li key={index} className="break-all">{call.tool} · {call.status ?? "未保存状态"} · {call.scope ?? "未保存范围"}{call.round ? ` · 第${call.round}轮` : ""}</li>)}</ul></details>
   </details>;
 }
