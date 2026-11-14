@@ -838,7 +838,8 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
     )
     answer = "COUNT(*) 统计所有行，包括含 NULL 的行。"
     previous = practice._issue_records(first)
-    raw = feedback(["正确说明行计数"], missing=["COUNT(*) 口径", "异常覆盖范围", "尚未给出样例"])
+    raw = feedback(["正确说明行计数"], missing=["异常覆盖范围", "尚未给出样例"])
+    raw["findings"][1]["previousIssueId"] = previous[1]["issueId"]
     raw["resolvedIssues"] = [{"issueId": previous[0]["issueId"], "answerQuote": answer}]
     options = dict(
         allowed_citations=set(),
@@ -899,6 +900,49 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     raw["findings"][1]["previousIssueId"] = "0:missing:0"
     with pytest.raises(ValueError, match="关联无效"):
         practice.validate_feedback(raw, **options)
+
+
+def test_summary_resolves_distinct_issues_with_identical_reasons_by_id():
+    def ambiguous_feedback():
+        return {
+            "inconsistent": ["口径有误", "口径有误"],
+            "issueRecords": [
+                {"kind": "inconsistent", "index": i, "text": "口径有误", "point": point}
+                for i, point in enumerate(("COUNT", "AVG"))
+            ],
+            "conflictDetails": [
+                {"reason": "口径有误", "answerQuote": "空值算零", "basisId": basis}
+                for basis in ("count", "avg")
+            ],
+        }
+
+    first_feedback = ambiguous_feedback()
+    first = InterviewAnswer(turn_index=0, answer_text="空值算零", feedback=first_feedback)
+    second_feedback = ambiguous_feedback()
+    for field in ("inconsistent", "issueRecords", "conflictDetails"):
+        second_feedback[field] = second_feedback[field][1:]
+    second_feedback["issueRecords"][0].update(index=0, previousIssueId="0:inconsistent:1")
+    second_feedback["resolvedIssues"] = [
+        {"issueId": "0:inconsistent:0", "answerQuote": "COUNT(*) 包含全部行"}
+    ]
+    second = InterviewAnswer(
+        turn_index=1, answer_text="COUNT(*) 包含全部行；空值算零", feedback=second_feedback,
+    )
+    summary = practice.build_summary([first, second])
+    pending, resolved = summary["issueTrail"]
+    assert summary["inconsistent"] == ["口径有误"]
+    assert pending["issueId"] == "1:inconsistent:0"
+    assert pending["origin"]["issueId"] == "0:inconsistent:1"
+    assert pending["conflict"]["basisId"] == "avg"
+    assert resolved["origin"]["conflict"]["basisId"] == "count"
+    for alias in ("0:inconsistent:1", "1:inconsistent:0"):
+        third = InterviewAnswer(turn_index=2, answer_text="AVG 忽略空值", feedback={
+            "resolvedIssues": [{"issueId": alias, "answerQuote": "AVG 忽略空值"}],
+        })
+        result = practice.build_summary([first, second, third])
+        assert not result["inconsistent"]
+        assert len(result["resolvedIssues"]) == 2
+    assert first.feedback == ambiguous_feedback()
 
 
 def test_missing_requires_a_quote_from_the_actual_question():

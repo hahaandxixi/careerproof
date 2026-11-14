@@ -373,6 +373,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                     const original = session.turns.find(turn => turn.turnIndex === originIndex);
                     const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
                     const sourceTurn = followUp ?? original;
+                    const crossRound = !!followUp && followUp !== original;
                     const state = issue.answerQuote ? "covered" : issue.kind;
                     return <li key={issue.issueId}><details>
                       <summary><strong>{issue.origin.point || issue.origin.text}</strong>
@@ -381,11 +382,17 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                         <span className={styles.issueStatus} data-kind={state} data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "✓ 已修正" : issue.kind === "inconsistent" ? "! 需修正" : "○ 仍待补"}</span>
                       </summary>
                       <div className={styles.issueDetails}>
-                        {(issue.answerQuote || issue.text !== issue.origin.text) && <p><strong>第 {originIndex + 1} 轮原点评</strong><br />{issue.origin.text}</p>}
-                        {!issue.answerQuote && issue.conflict && <><p>第 {(issue.turnIndex ?? originIndex) + 1} 轮回答原话</p><blockquote>{issue.conflict.answerQuote}</blockquote></>}
-                        {!issue.answerQuote && <p>{issue.text}</p>}
-                        {issue.answerQuote && <><p>补答原话</p><blockquote>{issue.answerQuote}</blockquote></>}
                         {(issue.origin.questionQuote || original?.question) && <><p>第 {originIndex + 1} 轮题目</p><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></>}
+                        {crossRound && <>
+                          {issue.origin.conflict && <><p>第 {originIndex + 1} 轮回答原话</p><blockquote>{issue.origin.conflict.answerQuote}</blockquote></>}
+                          <p><strong>第 {originIndex + 1} 轮原点评</strong><br />{issue.origin.text}</p>
+                          {original?.feedback && <PracticeSources session={session} turn={original} compact basisId={issue.origin.conflict?.basisId} />}
+                          {(issue.questionQuote || followUp.question) && <><p>第 {followUp.turnIndex + 1} 轮题目</p><blockquote>{issue.questionQuote || followUp.question}</blockquote></>}
+                        </>}
+                        {issue.answerQuote ? <><p>补答原话</p><blockquote>{issue.answerQuote}</blockquote></> : <>
+                          {(issue.conflict?.answerQuote || (crossRound && followUp.answerText)) && <><p>第 {(issue.turnIndex ?? originIndex) + 1} 轮回答原话</p><blockquote>{issue.conflict?.answerQuote || followUp?.answerText}</blockquote></>}
+                          <p><strong>第 {(issue.turnIndex ?? originIndex) + 1} 轮点评</strong><br />{issue.text}</p>
+                        </>}
                         {sourceTurn?.feedback && <PracticeSources session={session} turn={sourceTurn} compact
                           basisId={issue.answerQuote ? undefined : issue.conflict?.basisId} />}
                       </div>

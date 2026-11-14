@@ -292,7 +292,11 @@ export interface PracticeSummary {
     issueId: string; kind: "missing" | "inconsistent"; text: string;
     answerQuote?: string | null; turnIndex?: number | null;
     conflict?: { answerQuote: string; reason: string; basisId: string } | null;
-    origin: { issueId: string; point?: string | null; text: string; questionQuote?: string | null };
+    questionQuote?: string | null;
+    origin: {
+      issueId: string; point?: string | null; text: string; questionQuote?: string | null;
+      conflict?: { answerQuote: string; reason: string; basisId: string } | null;
+    };
   }[] | null;
 }
 export interface InterviewSessionSummary {

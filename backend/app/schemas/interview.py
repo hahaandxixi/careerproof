@@ -109,6 +109,7 @@ class PracticeIssueOrigin(APIModel):
     point: str | None = None
     text: str
     question_quote: str | None = None
+    conflict: PracticeConflictView | None = None
 
 
 class PracticeIssueTrail(APIModel):
@@ -118,6 +119,7 @@ class PracticeIssueTrail(APIModel):
     origin: PracticeIssueOrigin
     answer_quote: str | None = None
     turn_index: int | None = None
+    question_quote: str | None = None
     conflict: PracticeConflictView | None = None
 
 
