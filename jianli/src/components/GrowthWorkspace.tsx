@@ -126,7 +126,6 @@ function GrowthContent({ id }: { id?: string }) {
         <p role="status" className="text-sm font-medium text-indigo-800">{GROWTH_STATUS[task.status]}</p>
         <EvidenceLink targetId={next.target} className="btn">{next.label} →</EvidenceLink>
         {task.targetReportId && <Link className="ml-4 inline-flex min-h-11 items-center text-sm text-indigo-700 underline" href={`/reports/${task.targetReportId}`}>打开新报告 / 继续补证</Link>}
-        <p className="text-xs leading-6 text-slate-600">任务进度不代表能力认证；原报告和企业已收到的投递保持固定。</p>
       </section>
       {task.comparison && <div id="growth-result" className="scroll-mt-32"><details className="panel"><summary className="cursor-pointer font-semibold">查看本次逐项变化 · {task.comparison.items.length} 项要求 · 待人工核验</summary><div className="mt-4"><GrowthComparison task={task} /></div></details></div>}
       {task.enterpriseReply && <EnterpriseReplyContext context={task.enterpriseReply} />}

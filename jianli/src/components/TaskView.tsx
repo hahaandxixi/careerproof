@@ -6,14 +6,10 @@ import { useEffect, useState } from "react";
 import { api, errorMessage, type AnalysisTask } from "@/lib/api/client";
 import { taskUsedExternalAI } from "@/lib/analysis-status";
 import {
-  completionCount,
   connectionLabel,
   formatSeconds,
-  isCompletedRecord,
-  modelStepQualifier,
   realDurationSeconds,
   stageText,
-  retrievalStageDetail,
   taskModeLabel,
   type ConnectionState,
 } from "@/lib/process-trace";
@@ -159,7 +155,6 @@ export default function TaskView({ id }: { id: string }) {
   // A missing model record during retrieval is not evidence of a rules-only run.
   const modeLabel = taskModeLabel({ usedAI, fellBack, active, modelRecorded: !!aiStep });
   const duration = task ? realDurationSeconds(task.startedAt, task.completedAt) : null;
-  const completionRecords = task ? completionCount(task.steps) : 0;
   const connectionText = connectionLabel(connection, streamSupported, streamOpened);
   return <div className="analysis-task-view mx-auto max-w-3xl space-y-6">
     <div className="flex gap-4 text-sm text-indigo-600"><Link href="/portfolio">我的材料</Link><Link href="/reports">匹配报告</Link></div>
@@ -188,29 +183,7 @@ export default function TaskView({ id }: { id: string }) {
       </section>
       {task.steps.filter(step => step.eventType === "material.content_warning").map(step =>
         <MaterialContentNotice key={step.step} report={step.payload} />)}
-      <details className="panel">
-        <summary className="cursor-pointer font-semibold">实际处理记录{completionRecords > 0 && <span className="ml-2 text-xs font-normal text-slate-500">已有 {completionRecords} 条完成记录</span>}</summary>
-        {!task.steps.length
-          ? <p className="mt-3 text-sm text-slate-500">{active ? "任务仍在执行，当前阶段会在上方实时更新。" : "该材料处理任务未记录细分步骤。"}</p>
-          : <ol className="mt-4 space-y-4">{task.steps.map((step, index) => <li key={`${step.step}-${index}`} className="border-l-2 border-indigo-200 pl-4">
-              <p className="text-sm font-medium">
-                {isCompletedRecord(step.eventType) && !(MODEL_STEPS.includes(step.name) && modelStepQualifier(step.payload))
-                  ? <span className="mr-1 text-indigo-700" aria-hidden="true">✓</span>
-                  : null}
-                <span>{step.name}</span>
-                {/* A model step records tool.completed even when the model was skipped
-                    or degraded; name that state so the tick is not read as AI success. */}
-                {MODEL_STEPS.includes(step.name) && (() => {
-                  const qualifier = modelStepQualifier(step.payload);
-                  return qualifier ? <span className="ml-2 text-xs font-normal text-slate-700">{qualifier}</span> : null;
-                })()}
-                {isCompletedRecord(step.eventType) && <span className="sr-only">（已完成记录）</span>}
-              </p>
-              <p className="mt-1 whitespace-pre-wrap text-base leading-7 text-slate-700">{retrievalStageDetail(step)}</p>
-              {retrievalStageDetail(step) !== step.detail && <details className="mt-1 text-sm text-slate-600"><summary className="cursor-pointer py-1">原始阶段记录</summary><p className="mt-1">{step.detail}</p></details>}
-              {MODEL_STEPS.includes(step.name) && typeof step.payload.latencyMs === "number" && step.payload.latencyMs > 0 && <p className="mt-1 text-xs text-slate-400">耗时 {Math.round((step.payload.latencyMs as number) / 100) / 10} 秒 · 输入 {String(step.payload.inputTokens ?? 0)} tokens · 输出 {String(step.payload.outputTokens ?? 0)} tokens</p>}
-            </li>)}</ol>}
-      </details>
+
     </>}
   </div>;
 }
