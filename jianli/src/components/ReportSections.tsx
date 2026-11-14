@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
@@ -142,7 +142,7 @@ export default function ReportSections({ sections, versions, header }: {
     // the report's measured offset once load/pageshow has settled.
     window.addEventListener("load", restore);
     window.addEventListener("pageshow", restore);
-    const frame = requestAnimationFrame(restore);
+    const frame = requestAnimationFrame(() => restore());
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(scrollFrame.current);
