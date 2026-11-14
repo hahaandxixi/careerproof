@@ -120,7 +120,7 @@ test("rejected, unvalidated, fallback and stale-context AI text never becomes ac
  const entry=item("ai","gap",{aiStatus:"validated",aiSuggestion:"不应展示为有效的AI建议",aiInformationGap:"旧AI缺口",aiCitationIds:[]});
  for (const change of [{aiFallbackUsed:true},{evidenceContextVersion:"legacy"},{items:[{...entry,aiStatus:"rejected"}]},{items:[{...entry,confirmationStatus:"corrected"}]}]) {
   const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap})]),evidenceContextVersion:"source-context-v2",...change};
-  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("通用核对步骤与材料清单"));
+  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("本项尚无已保存的具体建议")); assert.ok(!html.includes("通用核对步骤与材料清单"));
  }
 });
 
@@ -136,7 +136,7 @@ test("non-students retain explanation and advice without private student task co
 test("review-only keeps review guidance while unsupported keeps its rule gap without upload advice", () => {
  const review=render(report([item("review","supported",{confirmationStatus:"rejected"})]));
  assert.ok(review.includes("当前需核对")); assert.ok(review.includes("添加项目材料"));
- assert.ok(!review.includes(">开始补证</button>")); assert.ok(review.includes("不能由此认定实现不存在"));
+ assert.ok(!review.includes(">开始补证</button>")); assert.ok(!review.includes("通用核对步骤与材料清单"));
  const unsupported=render(report([item("outside","unsupported")]));
  assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("请人工核对岗位要求和已保存材料"));
  assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
@@ -168,7 +168,7 @@ test("support survives incomplete context without duplicating the source pane's 
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
  const value=item("current"); const html=render(report([value],[advice(item("foreign"),{action:"外部报告的建议"})]));
- assert.ok(html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
+ assert.ok(html.includes("本项尚无已保存的具体建议")); assert.ok(!html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
  assert.ok(!html.includes('href="#requirement-foreign"'));
 });
 
@@ -185,11 +185,11 @@ test("saved structured plans retain deliverable, steps and checks without changi
  assert.equal(JSON.stringify(r),before);
 });
 
-test("generic checking guidance is explicitly separate from saved advice and never invents Redis facts", () => {
+test("saved advice remains without generic steps or invented Redis facts", () => {
  const entry=item("cache","gap",{requirementTitle:"使用 Redis 缓存并在写入后失效"});
  const r=report([entry],[advice(entry,{action:"核对候选与要求的对应关系，补充直接相关的材料。"})]);
  const before=JSON.stringify(r); const html=render(r);
- for(const text of ["通用核对步骤","检查已有实现","已有实现","尚未实现","提交新版材料","已提交的材料只需定位"]) assert.ok(html.includes(text),text);
+ for(const text of ["通用核对步骤","检查已有实现","尚未实现","建议提交的材料"]) assert.ok(!html.includes(text),text);
  assert.equal(count(html, r.actionPlan[0].action),1);
  assert.ok(!html.includes("cache.py") && !html.includes("Redis 已实现"));
  assert.equal(JSON.stringify(r),before);
@@ -242,7 +242,8 @@ test("copied guidance keeps saved sources and conditional instructions; rejected
  const entry=item("cache","gap",{requirementTitle:"缓存失效要求",aiStatus:"rejected",aiSuggestion:"未经采用的旧建议"});
  const r={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion})]),jobTitle:"后端岗位"};
  const text=followUpCopyText(r,entry);
- for(const value of ["后端岗位","缓存失效要求",entry.evidenceLevelGap,"通用核对步骤","未检索到引用不代表没有实现","旧报告和企业投递快照"]) assert.ok(text.includes(value),value);
+ for(const value of ["后端岗位","缓存失效要求",entry.evidenceLevelGap,"旧报告和企业投递快照"]) assert.ok(text.includes(value),value);
+ assert.ok(!text.includes("通用核对步骤") && !text.includes("检查已有实现"));
  assert.ok(!text.includes(entry.aiSuggestion));
  assert.ok(!text.includes("已成功运行"));
 });

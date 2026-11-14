@@ -29,6 +29,7 @@ import ReportSections from "./ReportSections";
 import { RequirementSupplementTarget } from "./RequirementSupplement";
 import { materialReportContext, readWorkspaceFilter } from "@/lib/material-report-link";
 import PracticeEntry from "./PracticeEntry";
+import ReportCareerAdvice from "./ReportCareerAdvice";
 
 import { initialReportRequirement, reportEntryRequirement } from "@/lib/report-reader";
 
@@ -166,6 +167,7 @@ function ReportWorkspace({ id }: { id: string }) {
       ...(user?.role === "student" ? [
         { id: "report-supplement", label: "按需补证", content: <>
           <h2 className="section-title">按需补证 · {supplementItems.length} 项实际缺口</h2>
+          {user?.role === "student" && params.get("careerPlan") && params.get("careerJob") && <ReportCareerAdvice report={report} planId={params.get("careerPlan")!} jobId={params.get("careerJob")!} />}
           <p className="reading-copy">补证是可选的。上传新版材料不会改写本报告，只有你核对预选版本并确认分析后才会生成新报告。</p>
           {supplementItems.length === 0 ? <div className="panel space-y-3"><p className="text-sm leading-6 text-slate-700">当前没有可补的材料缺口。规则未覆盖的要求请人工核对。</p><Link className="btn inline-flex min-h-11 items-center" href="#report-sharing">前往投递授权</Link></div> : supplementItems.map(item => <RequirementSupplementTarget key={item.requirementId} report={report} item={item} projectVersionId={item.evidenceList.find(source => source.projectVersionId)?.projectVersionId ?? (report.materials.filter(material => material.kind === "project").length === 1 ? report.materials.find(material => material.kind === "project")?.id : undefined)} />)}
         </> },

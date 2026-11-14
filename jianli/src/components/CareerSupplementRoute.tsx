@@ -1,12 +1,12 @@
-import type { MouseEvent } from "react";
+import Link from "next/link";
 import type { CareerPlanResult, JobRecommendation } from "@/lib/api/domain";
 
 type Advice = NonNullable<CareerPlanResult["aiPlan"]>["advice"][number];
 
-export default function CareerSupplementRoute({ advice, job, onEvidence }: {
+export default function CareerSupplementRoute({ advice, job, planId }: {
   advice: Advice;
   job: JobRecommendation;
-  onEvidence: (event: MouseEvent<HTMLAnchorElement>, citationId: string) => void;
+  planId: string;
 }) {
   const plan = advice.taskPlan;
   const deliverable = plan?.deliverable?.trim() || "";
@@ -45,9 +45,9 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
           {detailsDeliverable && <div><p className="font-medium">提交什么</p><p>{detailsDeliverable}</p></div>}
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">
             {sources.map(({ id, evidence }) => <li key={id}>
-              <a className="action-link" href={`#plan-citation-${id}`} onClick={event => onEvidence(event, id)}>
+              <Link className="action-link" href={`/recommendations?${new URLSearchParams({ returnPlan: planId })}#plan-citation-${encodeURIComponent(id)}`}>
                 {evidence.skill} · {evidence.filePath.split(/[\\/]/).pop()} · {evidence.lineStart}–{evidence.lineEnd} 行
-              </a>
+              </Link>
             </li>)}
           </ul>}
           {extraTask && <p>{extraTask}</p>}

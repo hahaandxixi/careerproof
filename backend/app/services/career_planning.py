@@ -560,13 +560,16 @@ PLAN_PROMPT = (
 )
 
 
-async def latest_plan(session: AsyncSession, user: User) -> CareerPlanResult | None:
+async def latest_plan(
+    session: AsyncSession, user: User, plan_id: UUID | None = None
+) -> CareerPlanResult | None:
     task = await session.scalar(
         select(AnalysisTask)
         .where(
             AnalysisTask.created_by == user.id,
             AnalysisTask.task_type == "career_plan",
             AnalysisTask.status == TaskStatus.COMPLETED,
+            *((AnalysisTask.id == plan_id,) if plan_id is not None else ()),
         )
         .order_by(AnalysisTask.created_at.desc(), AnalysisTask.id.desc())
         .limit(1)
