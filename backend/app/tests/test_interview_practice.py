@@ -866,6 +866,7 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     first = InterviewAnswer(
         turn_index=0, answer_text="COUNT(*) 统计行数。",
         feedback={"missing": ["未算出示例行数", "未说明 AVG 的分母", "未说明缺失偏差"]},
+        feedback_knowledge_ids=["initial-basis"],
     )
     answer = "样例外连接保留三行，所以 COUNT(*) = 3。"
     raw = feedback(["算出三行"], missing=["还没说明 AVG 排除空值"])
@@ -875,10 +876,25 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     options = dict(allowed_citations=set(), allowed_knowledge=set(), has_evidence=False,
                    answer=answer, previous_issues=practice._issue_records(first))
     second = InterviewAnswer(turn_index=1, answer_text=answer,
-                             feedback=practice.validate_feedback(raw, **options))
+                             feedback=practice.validate_feedback(raw, **options),
+                             feedback_knowledge_ids=["follow-up-basis"])
     summary = practice.build_summary([first, second])
     assert summary["remaining"] == ["未说明缺失偏差", "还没说明 AVG 排除空值"]
     assert summary["resolvedIssues"][0]["text"] == "未算出示例行数"
+    trail = summary["issueTrail"]
+    assert [item["origin"]["issueId"] for item in trail] == [
+        "0:missing:2", "0:missing:1", "0:missing:0"
+    ]
+    assert trail[1]["text"] == "还没说明 AVG 排除空值"
+    assert trail[2]["answerQuote"] == answer
+    from app.schemas.interview import PracticeSummaryView
+
+    view = PracticeSummaryView.model_validate(summary).model_dump(by_alias=True)
+    assert view["issueTrail"][2]["answerQuote"] == answer
+    pending = view["issueTrail"][1]
+    assert pending["answerQuote"] is None
+    assert [first, second][pending["turnIndex"]].feedback_knowledge_ids == ["follow-up-basis"]
+    assert view["issueTrail"][0]["turnIndex"] == 0
     assert first.feedback["missing"][1] == "未说明 AVG 的分母"
     raw["findings"][1]["previousIssueId"] = "0:missing:0"
     with pytest.raises(ValueError, match="关联无效"):

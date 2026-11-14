@@ -288,6 +288,11 @@ export interface PracticeSummary {
   answeredTurns: number; covered: string[]; inconsistent: string[]; remaining: string[];
   nextStep: string; note: string;
   resolvedIssues?: { issueId: string; kind: "missing" | "inconsistent"; text: string; answerQuote: string; turnIndex: number }[];
+  issueTrail?: {
+    issueId: string; kind: "missing" | "inconsistent"; text: string;
+    answerQuote?: string | null; turnIndex?: number | null;
+    origin: { issueId: string; point?: string | null; text: string; questionQuote?: string | null };
+  }[] | null;
 }
 export interface InterviewSessionSummary {
   id: string;

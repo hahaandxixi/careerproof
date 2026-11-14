@@ -366,6 +366,33 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             <summary>查看整场练习小结</summary>
             <div>
               <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
+              {session.summary.issueTrail ? <>
+                {session.summary.issueTrail.length ? <ul className={styles.issueTrail}>
+                  {session.summary.issueTrail.map(issue => {
+                    const originIndex = Number(issue.origin.issueId.split(":")[0]);
+                    const original = session.turns.find(turn => turn.turnIndex === originIndex);
+                    const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
+                    return <li key={issue.issueId}><details>
+                      <summary><strong>{issue.origin.point || issue.origin.text}</strong>
+                        <span>第 {originIndex + 1} 轮缺口{issue.turnIndex != null && issue.turnIndex !== originIndex &&
+                          ` → 第 ${issue.turnIndex + 1} 轮${issue.answerQuote ? "补答" : "仍待核对"}`}</span>
+                        <span data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "已修正" : issue.kind === "inconsistent" ? "需修正" : "仍待补"}</span>
+                      </summary>
+                      <div className={styles.issueDetails}>
+                        <p>{issue.origin.text}</p>
+                        {(issue.origin.questionQuote || original?.question) && <blockquote>{issue.origin.questionQuote || original?.question}</blockquote>}
+                        {issue.text !== issue.origin.text && <p>{issue.text}</p>}
+                        {issue.answerQuote && <><p>补答原话</p><blockquote>{issue.answerQuote}</blockquote></>}
+                        {(followUp || original) && <PracticeSources session={session} turn={followUp ?? original ?? null} />}
+                      </div>
+                    </details></li>;
+                  })}
+                </ul> : <p className={styles.empty}>本次点评没有记录待补问点。</p>}
+                {!!session.turns[0]?.feedback?.covered.length && <details>
+                  <summary>首轮已讲清 · {session.turns[0].feedback.covered.length} 项</summary>
+                  <ul>{session.turns[0].feedback.covered.map(line => <li key={line}>{line}</li>)}</ul>
+                </details>}
+              </> : <>
               <div className={styles.summaryGrid}>
                 <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
                 <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
@@ -374,7 +401,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
               {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
                 {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
               </ul></section>}
-              <p className={styles.summaryNote}>{session.summary.note}</p>
+              </>}
             </div>
           </details>
           {summaryNextStep && <p className={styles.suggestion}><strong>下一步：</strong>{summaryNextStep}</p>}

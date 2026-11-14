@@ -104,12 +104,29 @@ class PracticeTurnView(APIModel):
     feedback_task: PracticeGenerationView | None = None
 
 
+class PracticeIssueOrigin(APIModel):
+    issue_id: str
+    point: str | None = None
+    text: str
+    question_quote: str | None = None
+
+
+class PracticeIssueTrail(APIModel):
+    issue_id: str
+    kind: Literal["missing", "inconsistent"]
+    text: str
+    origin: PracticeIssueOrigin
+    answer_quote: str | None = None
+    turn_index: int | None = None
+
+
 class PracticeSummaryView(APIModel):
     answered_turns: int = 0
     covered: list[str] = Field(default_factory=list)
     inconsistent: list[str] = Field(default_factory=list)
     remaining: list[str] = Field(default_factory=list)
     resolved_issues: list[ResolvedPracticeIssue] = Field(default_factory=list)
+    issue_trail: list[PracticeIssueTrail] | None = None
     next_step: str = ""
     note: str = ""
 
