@@ -71,17 +71,33 @@ export function demoJobAlias(id) {
   return jobAliases.get(id);
 }
 
-export function experienceJobCopy(job) {
-  if (!job.isDemo || job.companyName !== "职证场景实验室（虚构）") return job;
-  return {
-    ...job,
-    companyName: scenarioCompanyLabel(job.companyName),
-    description: job.description.replace(/(?:此为原创体验岗位，不是真实招聘。|合成示例岗位，不是真实招聘。|此为职证体验岗位。)$/, ""),
-  };
+const scenarioCompany = "职证场景实验室（虚构）";
+const scenarioCompanyName = "云栈科技";
+const scenarioOrganizationId = "4d659934-55ec-42f7-a08c-3c26ba44a7f1";
+const scenarioJobIds = new Set([
+  "8af9efe0-2cfa-4a8d-b480-e8cc54a23e87",
+  "7cb8c8cb-0d07-4633-954f-1889b4040dd5",
+  "5c57739e-bb61-498b-ae4b-5664f9e067a2",
+  "9e2ffbba-0bdd-4073-9250-1fa097f19e9f",
+  "0baea00e-e0eb-422a-bb43-3907d9a8a72a",
+]);
+
+export function displayJobCompany(name, jobId) {
+  return jobAliases.get(jobId)?.companyName
+    ?? (scenarioJobIds.has(jobId) && name === scenarioCompany ? scenarioCompanyName : name);
 }
 
-export function scenarioCompanyLabel(name) {
-  return name === "职证场景实验室（虚构）" ? "职证场景实验室" : name;
+export function displayOrganizationName(name, id) {
+  return id === scenarioOrganizationId && name === scenarioCompany ? scenarioCompanyName : name;
+}
+
+export function experienceJobCopy(job) {
+  if (!job.isDemo || job.companyName !== scenarioCompany) return job;
+  return {
+    ...job,
+    companyName: scenarioCompanyName,
+    description: job.description.replace(/(?:此为原创体验岗位，不是真实招聘。|合成示例岗位，不是真实招聘。|此为职证体验岗位。)$/, ""),
+  };
 }
 
 /** Explicit historical boundary fixture; never used as a default/demo job. */

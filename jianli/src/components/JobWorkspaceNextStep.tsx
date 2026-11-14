@@ -6,13 +6,11 @@ import { api, type ApplicationView, type ProjectHistory, type ResumeHistory } fr
 import { applicationReplyInfo } from "@/lib/application-display";
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import { CATEGORY_LABELS, type CareerPlanResult, type ReportSummary } from "@/lib/api/domain";
-import { careerPlanDisplayIdentity, careerPlanRecommendations } from "@/lib/career-plan-display";
-import { jobAnalysisHref } from "@/lib/recommendation-selection";
 import { jobWorkspaceNextStep } from "@/lib/job-workspace-next-step";
 
 type WorkspaceState = {
   versions: Parameters<typeof jobWorkspaceNextStep>[0]["versions"];
-  reports: ReportSummary[] | null;
+  report: ReportSummary | null | undefined;
   reply?: ApplicationView;
   replyCount: number;
   tasksIncomplete: boolean;
@@ -30,7 +28,7 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
   useEffect(() => {
     let current = true;
     void Promise.allSettled([
-      api.listResumes(), api.listProjects(), api.listReports(1, 3, { scope: "product", view: "jobs" }),
+      api.listResumes(), api.listProjects(), api.listReports(1, 1, { scope: "product", view: "jobs" }),
       api.myApplications(1, 3, undefined, { view: "action" }),
     ]).then(([resumes, projects, reports, applications]) => {
       if (!current) return;
@@ -43,7 +41,7 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
         : undefined;
       setState({
         versions, reply, replyCount: applications.status === "fulfilled" ? applications.value.total : 0,
-        reports: reports.status === "fulfilled" ? reports.value.items : null,
+        report: reports.status === "fulfilled" ? (reports.value.items[0] ?? null) : undefined,
         tasksIncomplete: [resumes, projects, applications].some(result => result.status === "rejected"),
       });
     });
@@ -54,57 +52,55 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
     let active = true;
     setPlanFailed(false);
     void api.latestCareerPlan().then(value => {
-      if (active) setPlan(value && careerPlanDisplayIdentity(value));
+      if (active) setPlan(value);
     }).catch(() => { if (active) { setPlan(null); setPlanFailed(true); } });
     return () => { active = false; };
   }, [refreshVersion, revision]);
-  const jobs = plan ? careerPlanRecommendations(plan, false).slice(0, 2) : [];
-  const resume = plan?.materials.find(material => material.kind === "resume");
-  const projects = plan?.materials.filter(material => material.kind === "project").map(material => material.id) ?? [];
-
+  const direction = plan?.primaryDirection;
   const next = state && jobWorkspaceNextStep({ versions: state.versions, incomplete: state.tasksIncomplete });
+  const task = next?.href?.startsWith("/tasks/") ? next : null;
   const reply = state?.reply;
   const replyInfo = reply && applicationReplyInfo(reply);
+  const report = state?.report;
+  const retry = () => setRevision(value => value + 1);
 
-  return <div className="job-workspace-overview">
-    <section className="job-workspace-next" aria-labelledby="job-workspace-next-label">
-      <div className="job-workspace-next-row">
-        <h2 id="job-workspace-next-label">职业推荐</h2>
-        <Link className="btn-quiet btn-compact" href="/recommendations">{jobs.length ? "查看完整推荐" : "查看推荐"}</Link>
+  return <>
+    <header className="job-workspace-header">
+      <h1 className="page-title">求职工作台</h1>
+      <div className="job-workspace-recommendation">
+        {plan && direction && <span>{CATEGORY_LABELS[direction] ?? direction} · {plan.recommendations.length} 个岗位</span>}
+        <Link className="btn-quiet btn-compact" href="/recommendations">职业推荐</Link>
+        {planFailed && <span role="status">推荐读取失败 <button className="action-link" type="button" onClick={retry}>重试</button></span>}
       </div>
-      {plan?.primaryDirection && <p>{CATEGORY_LABELS[plan.primaryDirection] ?? plan.primaryDirection}</p>}
-      {jobs.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-1">{jobs.map(job => <li key={job.jobId}>
-        <Link className="action-link" href={resume ? jobAnalysisHref(job.jobId, resume.id, projects) : `/jobs/${encodeURIComponent(job.jobId)}`}>{job.jobTitle}</Link>
-      </li>)}</ul>}
-      {planFailed ? <p role="status">暂时无法读取推荐。 <button type="button" className="action-link" onClick={() => setRevision(value => value + 1)}>重试读取</button></p>
-        : plan === undefined ? <p role="status">正在读取推荐…</p>
-        : !jobs.length && <p>{plan?.primaryDirection ? "这份推荐暂无可展示的岗位。" : "暂无已保存的推荐。"}</p>}
-      {reply && replyInfo && <div className="job-workspace-next-row">
-        <div className="min-w-0">
-          <strong>{displayJobTitle(reply.jobTitle, reply.jobId)}</strong>
-          <p>{replyInfo.kind}{replyInfo.at && <> · <time dateTime={replyInfo.at}>{new Date(replyInfo.at).toLocaleDateString("zh-CN")}</time></>}</p>
+    </header>
+    <section className="job-workspace-actions" aria-label="待办与最近报告">
+      {!state && <p role="status">正在读取待办与报告…</p>}
+      {reply && replyInfo && <div className="job-workspace-action job-workspace-reply">
+        <div>
+          <strong>{replyInfo.kind}</strong>
+          <p>{displayJobTitle(reply.jobTitle, reply.jobId)}{replyInfo.at && <> · <time dateTime={replyInfo.at}>{new Date(replyInfo.at).toLocaleDateString("zh-CN")}</time></>}</p>
         </div>
         <button type="button" className="btn-secondary btn-compact" onClick={() => onOpenReply(reply.id)}>查看企业回复</button>
+        {(state?.replyCount ?? 0) > 1 && <button type="button" className="btn-quiet btn-compact" onClick={onViewReplies}>全部企业回复</button>}
       </div>}
-      {(state?.replyCount ?? 0) > 1 && <button type="button" className="btn-quiet btn-compact" onClick={onViewReplies}>查看全部企业回复</button>}
-      {next?.href?.startsWith("/tasks/") && <div className="job-workspace-next-row">
-        <p>{next.description}</p>
+      {task?.href && <div className="job-workspace-action job-workspace-task">
+        <p>{task.description}</p>
+        <Link className="btn-secondary btn-compact" href={task.href}>{task.action}</Link>
+      </div>}
+      {state?.tasksIncomplete && <p role="status">部分待办未能读取。 <button type="button" className="action-link" onClick={retry}>重试</button></p>}
+      {report && <div className="job-workspace-action job-workspace-report">
+        <div>
+          <strong>最近报告</strong>
+          <Link className="action-link" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>
+          <time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleDateString("zh-CN")}</time>
+        </div>
+        <Link className="btn-quiet btn-compact" href="/reports">全部报告</Link>
+      </div>}
+      {state && report === undefined && <p role="status">报告未能读取。 <button type="button" className="action-link" onClick={retry}>重试</button></p>}
+      {report === null && !reply && !task && !state?.tasksIncomplete && next?.href && <div className="job-workspace-action">
+        <p>暂无报告</p>
         <Link className="btn-secondary btn-compact" href={next.href}>{next.action}</Link>
       </div>}
-      {state?.tasksIncomplete && <p role="status">待办暂未完整读取。 <button type="button" className="action-link" onClick={() => { setState(null); setRevision(value => value + 1); }}>重试读取</button></p>}
     </section>
-    <section className="job-workspace-recent" aria-labelledby="job-workspace-recent-label">
-      <div className="job-workspace-next-row">
-        <h2 id="job-workspace-recent-label">最近报告</h2>
-        <Link className="btn-quiet btn-compact" href="/reports">全部报告</Link>
-      </div>
-      {!state && <p role="status">正在读取报告…</p>}
-      {state?.reports === null && <p role="status">报告暂未读取。 <button type="button" className="action-link" onClick={() => setRevision(value => value + 1)}>重试读取</button></p>}
-      {state?.reports?.length === 0 && <p>暂无报告。</p>}
-      {!!state?.reports?.length && <ul>{state.reports.map(report => <li key={report.id}>
-        <Link className="action-link" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>
-        <time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleDateString("zh-CN")}</time>
-      </li>)}</ul>}
-    </section>
-  </div>;
+  </>;
 }

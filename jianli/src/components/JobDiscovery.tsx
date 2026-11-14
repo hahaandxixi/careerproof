@@ -106,7 +106,7 @@ export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; co
       {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="mt-1 flex flex-wrap gap-1.5">{job.technicalTags.slice(0, 4).map(tag => <li key={tag} className="career-meta text-sm">{tag}</li>)}</ul>}
     </div>
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 md:justify-end">
-      <span className="workspace-meta tabular-nums">{job.requirementCount} 项要求</span>
+      <span className="workspace-meta tabular-nums">{job.requirementCount} 项要求{job.isDemo && " · 体验岗位"}</span>
       <Link className="action-link whitespace-nowrap" href={`/jobs/${job.id}`}>查看要求 →</Link>
     </div>
   </article>;

@@ -44,11 +44,11 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
         const domain = domainOf(sample.slug);
         const jobTitle = sample.jobTitle.replace(/（合成演示）/g, "").trim();
         return <article className="case-card" key={sample.caseId}>
-        <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span></div>
+        <div className="case-card-top"><span className="case-id">{sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span></div>
         <h3>{sample.projectTitle}</h3>
         <p className="case-project">{sample.title}</p>
         <p className="case-job">{jobTitle}</p>
-        <dl className="case-facts"><div><dt>边界</dt><dd>{sample.boundary}</dd></div></dl>
+        <p className="case-facts">{sample.boundary}</p>
         <div className="case-actions">
           <a href={asset(sample.resumeFilename)} download={sample.resumeFilename}>下载简历</a>
           <a href={asset(sample.projectFilename)} download={sample.projectFilename}>下载项目</a>

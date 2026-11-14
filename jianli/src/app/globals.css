@@ -792,10 +792,7 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .case-card h3 { margin-top: 12px; color: #173c34; font-size: 20px; font-weight: 700; line-height: 1.3; }
 .case-project { margin-top: 4px; color: #526176; font-size: 13px; }
 .case-job { margin-top: 9px; color: #1d4a40; font-size: 12px; line-height: 1.5; }
-.case-facts { display: grid; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #e7e0d2; }
-.case-facts div { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; font-size: 12px; line-height: 1.6; }
-.case-facts dt { color: #66758a; }
-.case-facts dd { color: #3f514b; }
+.case-facts { margin-top: 12px; padding-top: 10px; border-top: 1px solid #e7e0d2; color: #3f514b; font-size: 14px; line-height: 1.6; }
 .case-actions { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 14px; font-size: 12px; }
 .case-actions a { color: #1d4a40; text-decoration: underline; text-underline-offset: 3px; }
 .case-find-job { margin-top: auto; padding-top: 14px; color: #1d4a40; font-size: 13px; font-weight: 600; }
@@ -1517,17 +1514,54 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 /* Student job workspace. Notification controls keep their own scrolling surface. */
 .student-job-workspace { display: grid; gap: 15px; }
-.job-workspace-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.job-workspace-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 16px; }
-.job-workspace-next, .job-workspace-recent { min-width: 0; padding: 10px 14px; background: #fbf9f4; border-block: 1px solid #d3c9b6; }
-.job-workspace-next { background: #e5ede8; border-inline-start: 3px solid #3e725f; }
-.job-workspace-overview h2 { font-size: 16px; font-weight: 700; }
-.job-workspace-overview p { margin-top: 2px; color: #40554c; overflow-wrap: anywhere; }
-.job-workspace-next-row, .job-workspace-recent li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; min-width: 0; }
-.job-workspace-next-row { padding-block: 4px; }
-.job-workspace-recent li { padding-block: 3px; font-size: 14px; }
-.job-workspace-recent time { color: #40554c; }
-@media (max-width: 760px) { .job-workspace-overview { grid-template-columns: minmax(0, 1fr); } }
+.job-workspace-header, .job-workspace-recommendation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+.job-workspace-header { justify-content: space-between; }
+.job-workspace-recommendation, .job-workspace-actions { color: #40554c; font-size: 14px; }
+.job-workspace-actions { display: grid; gap: 4px; }
+.job-workspace-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  min-width: 0;
+  padding: 5px 10px;
+  border-inline-start: 3px solid #b9c9c1;
+  background: #fbf9f4;
+  overflow-wrap: anywhere;
+}
+.job-workspace-action > div:first-child, .job-workspace-action > p:first-child { flex: 1 1 15rem; }
+.job-workspace-reply { background: #eaf2ec; border-inline-start-color: #3e725f; }
+.job-workspace-task { border-inline-start-color: #aa743d; }
+.job-workspace-report > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.student-job-workspace .application-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 16px;
+  background: #f4f2e9;
+}
+.application-search-actions { display: flex; align-items: center; gap: 6px; flex: 1 1 24rem; min-width: 0; }
+.application-search-actions label { flex: 1 1 14rem; }
+.application-view-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.student-job-workspace .application-record-summary { border-inline-start: 3px solid transparent; }
+.student-job-workspace .application-record-summary.is-selected,
+.student-job-workspace .application-record-summary.is-selected:hover {
+  border-inline-start-color: #286250;
+  background: #e1eee6;
+  color: #173c34;
+}
+.student-job-workspace .application-record-summary.is-selected strong,
+.student-job-workspace .application-record-summary.is-selected span { color: inherit; }
+.student-job-workspace .application-record-summary.is-selected:focus-visible { outline-color: #3e725f; }
+.student-job-workspace .application-event-flow { display: flex; flex-wrap: wrap; gap: 0 10px; }
+.student-job-workspace .application-event-flow li { padding-inline-end: 12px; }
+.student-job-workspace .application-event-flow li:not(:last-child)::after { content: none; }
 .enterprise-review-page .enterprise-matrix thead th:has(.candidate-select[aria-pressed="true"]) { background: #cfe1d8; }
 .enterprise-review-page .enterprise-matrix .candidate-select { overflow-wrap: anywhere; }
 .enterprise-review-page .enterprise-matrix tbody th[scope="row"] { overflow-wrap: anywhere; }

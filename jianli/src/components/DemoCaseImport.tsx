@@ -7,7 +7,7 @@ import { useAuth } from "./AuthProvider";
 export default function DemoCaseImport({sample}:{sample:{resumeName:string;resumeFilename:string;projectName:string;projectFilename:string}}){
   const {user}=useAuth();const [busy,setBusy]=useState(false),[notice,setNotice]=useState("");const locked=useRef(false);
   if(user?.role!=="student")return null;
-  async function run(){if(locked.current)return;locked.current=true;setBusy(true);setNotice("正在导入案例材料…");
+  async function run(){if(locked.current)return;locked.current=true;setBusy(true);setNotice("正在导入材料…");
     try{
       const [resumes,projects]=await Promise.all([api.listResumes(true),api.listProjects(true)]);
       const r=resumes.filter(v=>v.title===sample.resumeName),p=projects.filter(v=>v.name===sample.projectName);
@@ -16,7 +16,7 @@ export default function DemoCaseImport({sample}:{sample:{resumeName:string;resum
       if(r[0]&&(!rv||rv.length!==1||rv[0].status!=="completed"))throw new Error("同名简历尚未解析成功或版本冲突，请先核对再重试。");
       if(p[0]&&p[0].description!=="合成静态测试作品，未执行，不代表本人贡献。")throw new Error("同名项目的说明不同，请核对；不会覆盖已有作品。");
       if(p[0]&&pv?.length&& (pv.length!==1||pv[0].status!=="completed"))throw new Error("项目正在解析或版本冲突，请稍后检查。");
-      async function file(name:string,mime:string){const response=await fetch(`/demo-assets/cases/${encodeURIComponent(name)}`,{cache:"no-store"});if(!response.ok)throw new Error("测试文件暂不可用");return new File([await response.blob()],name,{type:mime});}
+      async function file(name:string,mime:string){const response=await fetch(`/demo-assets/cases/${encodeURIComponent(name)}`,{cache:"no-store"});if(!response.ok)throw new Error("材料文件暂不可用");return new File([await response.blob()],name,{type:mime});}
       // Fetch both before the first mutation. All writes use the current student's session.
       const [resumeFile,projectFile]=await Promise.all([file(sample.resumeFilename,"text/plain"),file(sample.projectFilename,"application/zip")]);
       if(!r[0])await api.uploadResume(sample.resumeName,resumeFile);
@@ -24,8 +24,8 @@ export default function DemoCaseImport({sample}:{sample:{resumeName:string;resum
       const project=p[0]??await api.createProject({name:sample.projectName,description:"合成静态测试作品，未执行，不代表本人贡献。",requestId:crypto.randomUUID()});
       if(p[0]?.isArchived)await api.archiveMaterial("project",project.id,false);
       if(!pv?.length)await api.uploadProjectVersion(project.id,projectFile,crypto.randomUUID());
-      setNotice("对应材料已保存到当前账号。到“个人材料”查看解析进度，待简历和项目均解析完成后，再按同编号选择；没有生成 AI 报告。");
+      setNotice("材料已导入。解析完成后，可在岗位页选择这份简历和项目。");
     }catch(e){setNotice(errorMessage(e));}finally{locked.current=false;setBusy(false);}
   }
-  return <div className="mt-3 space-y-2"><button type="button" disabled={busy} className="case-import-button" onClick={()=>void run()}>{busy?"正在导入…":"导入这套材料到我的账号"}</button>{notice&&<><p role="status" className="text-xs leading-6 text-slate-600">{notice}</p><Link href="/portfolio" className="btn-secondary">查看个人材料与解析进度 →</Link></>}</div>;
+  return <div className="mt-3 space-y-2"><button type="button" disabled={busy} className="case-import-button" onClick={()=>void run()}>{busy?"正在导入…":"导入到我的材料"}</button>{notice&&<><p role="status" className="text-xs leading-6 text-slate-600">{notice}</p><Link href="/portfolio" className="btn-secondary">查看我的材料</Link></>}</div>;
 }

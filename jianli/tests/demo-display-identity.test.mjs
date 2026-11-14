@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {displayIdentity,displayJobTitle,displayMaterialTitle,identityLabel} from "../src/lib/demo-display-identity.js";
+import {displayJobCompany,displayOrganizationName,displayIdentity,displayJobTitle,displayMaterialTitle,identityLabel} from "../src/lib/demo-display-identity.js";
 test("only registered identities get aliases; name keywords never establish example status",()=>{
  for(const name of ["首页验收学生（合成）","Python 实现材料学生（合成）","真实姓名","小江"]){
   assert.deepEqual(displayIdentity(name,"unregistered"),{name,originalName:name,isExample:false});
@@ -21,4 +21,13 @@ test("only registered job and material ids replace saved display names", () => {
   assert.equal(displayMaterialTitle(material, "32593aad-3fbd-47fb-9397-70b5e6f32b95"), "数据清洗工具");
   assert.equal(displayJobTitle(title, "unregistered"), title);
   assert.equal(displayMaterialTitle(material, "unregistered"), material);
+});
+
+test("the known organization and its jobs share an alias without renaming other employers", () => {
+  const original = "职证场景实验室（虚构）";
+  assert.equal(displayOrganizationName(original, "4d659934-55ec-42f7-a08c-3c26ba44a7f1"), "云栈科技");
+  assert.equal(displayJobCompany(original, "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "云栈科技");
+  assert.equal(displayOrganizationName(original, "other"), original);
+  assert.equal(displayJobCompany(original, "other"), original);
+  assert.equal(displayJobCompany("实际企业", "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "实际企业");
 });
