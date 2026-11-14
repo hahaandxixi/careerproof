@@ -1,5 +1,5 @@
 import type { CareerPlanResult, JobRecommendation } from "./api/domain.ts";
-import { demoJobAlias, displayJobTitle, displayMaterialTitle } from "./demo-display-identity.js";
+import { demoJobAlias, displayJobTitle, displayMaterialTitle, scenarioCompanyLabel } from "./demo-display-identity.js";
 
 /** Display projection only: preserve saved IDs, versions, evidence and model text. */
 export function careerPlanDisplayIdentity(result: CareerPlanResult): CareerPlanResult {
@@ -10,7 +10,7 @@ export function careerPlanDisplayIdentity(result: CareerPlanResult): CareerPlanR
     })),
     recommendations: result.recommendations.map(job => ({
       ...job, jobTitle: displayJobTitle(job.jobTitle, job.jobId),
-      companyName: demoJobAlias(job.jobId)?.companyName ?? job.companyName,
+      companyName: demoJobAlias(job.jobId)?.companyName ?? scenarioCompanyLabel(job.companyName),
     })),
     changes: result.changes.map(change => ({
       ...change, jobTitle: displayJobTitle(change.jobTitle, change.jobId),

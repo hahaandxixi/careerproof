@@ -75,9 +75,13 @@ export function experienceJobCopy(job) {
   if (!job.isDemo || job.companyName !== "职证场景实验室（虚构）") return job;
   return {
     ...job,
-    companyName: "职证场景实验室",
+    companyName: scenarioCompanyLabel(job.companyName),
     description: job.description.replace(/(?:此为原创体验岗位，不是真实招聘。|合成示例岗位，不是真实招聘。|此为职证体验岗位。)$/, ""),
   };
+}
+
+export function scenarioCompanyLabel(name) {
+  return name === "职证场景实验室（虚构）" ? "职证场景实验室" : name;
 }
 
 /** Explicit historical boundary fixture; never used as a default/demo job. */

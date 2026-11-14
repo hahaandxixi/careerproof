@@ -300,7 +300,6 @@ def validate_feedback(
         category = categories[kind]
         if len(category) == 4:
             raise PracticeOutputError("同类点评最多四条")
-        category.append(text[0])
         if kind == "inconsistent":
             basis = item.get("basisId")
             if not isinstance(basis, str) or basis not in allowed_citations | allowed_knowledge:
@@ -312,8 +311,11 @@ def validate_feedback(
                 quote,
                 re.I,
             ):
-                raise PracticeOutputError("点评误将正确的 SQL 行数口径标成冲突")
+                continue
             conflict_details.append({"answerQuote": quote, "reason": text[0], "basisId": basis})
+        category.append(text[0])
+    if not any(categories.values()):
+        raise PracticeOutputError("点评没有可采用的问点")
     allowed_issues = {item["issueId"] for item in previous_issues}
     resolved = []
     raw_resolved = raw.get("resolvedIssues", [])

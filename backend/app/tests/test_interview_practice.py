@@ -959,9 +959,6 @@ def test_correct_off_topic_outer_join_count_is_not_a_sql_conflict():
         answer=answer, previous_issues=[], allowed_knowledge={"tech-sql-aggregate-null"},
         allowed_citations=set(), has_evidence=False,
     )
-    with pytest.raises(practice.PracticeOutputError, match="正确的 SQL 行数"):
-        practice.validate_feedback(raw, **options)
-    raw["findings"] = [missing]
     saved = practice.validate_feedback(raw, **options)
     assert saved["missing"] == [missing["text"]]
     assert saved["inconsistent"] == []
