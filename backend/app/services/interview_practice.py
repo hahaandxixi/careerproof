@@ -473,7 +473,7 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
                 continue
             pending.pop(item.get("previousIssueId"), None)
             origins[item["issueId"]] = origins.get(item.get("previousIssueId"), item)
-            pending[item["issueId"]] = item
+            pending[item["issueId"]] = {**item, "turnIndex": turn.turn_index}
         if feedback.get("reviewSuggestion"):
             suggestion = feedback["reviewSuggestion"]
     return {

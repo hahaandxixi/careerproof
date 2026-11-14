@@ -131,7 +131,7 @@ def career_runtime_plan_without_implementation(
     output_suffix = r"\s*的?\s*(?:运行|执行|验证|测试|统计)?(?:结果|输出|截图|日志|记录)"
     modifier = r"(?:聚合|统计|异常|缺失值|分组|校验|核对|筛选|的|\s)"
     artifact = r"(?:查询(?:语句|脚本)?|语句|脚本|代码|文件)"
-    sql_query = rf"\bSQL\s*(?>{modifier}{{0,8}}{artifact})(?!{output_suffix})"
+    sql_query = rf"(?<![a-zA-Z0-9_])SQL\s*(?>{modifier}{{0,8}}{artifact})(?!{output_suffix})"
     query_script = rf"(?:查询语句|查询脚本)(?!{output_suffix})"
     negation = r"无需|不必|不用|不要|不需要|不提交|不编写|不得|尚未|未实现|没有|只交|仅交"
     promised_artifact = rf"^\s*(?:一份|一个|一条)?\s*(?:{sql_query})(?:[（(、\s]|$)"

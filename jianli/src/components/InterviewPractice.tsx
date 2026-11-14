@@ -374,7 +374,8 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                     const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
                     return <li key={issue.issueId}><details>
                       <summary><strong>{issue.origin.point || issue.origin.text}</strong>
-                        <span>第 {originIndex + 1} 轮缺口{issue.turnIndex != null && ` → 第 ${issue.turnIndex + 1} 轮补答`}</span>
+                        <span>第 {originIndex + 1} 轮缺口{issue.turnIndex != null && issue.turnIndex !== originIndex &&
+                          ` → 第 ${issue.turnIndex + 1} 轮${issue.answerQuote ? "补答" : "仍待核对"}`}</span>
                         <span data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "已修正" : issue.kind === "inconsistent" ? "需修正" : "仍待补"}</span>
                       </summary>
                       <div className={styles.issueDetails}>

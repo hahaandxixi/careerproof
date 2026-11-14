@@ -32,6 +32,8 @@ def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     "提交针对异常数据的 SQL 查询并附上输出",
     "使用 SQL 排查异常，编写对应的查询脚本并保存输出",
     "补充针对缺失值的 SQL 聚合统计查询脚本并记录执行输出",
+    "编写SQL查询语句并保存执行输出",
+    "提交SQL脚本并记录运行结果",
 ])
 def test_saved_sql_rejection_excerpt_contains_implementation(step):
     assert not career_runtime_plan_without_implementation(
