@@ -1,5 +1,7 @@
 """Fresh administrator authority, immutable decisions, and conservative cutover."""
 
+import asyncio
+import os
 from datetime import UTC, date, datetime, time, timedelta
 
 import pytest
@@ -118,6 +120,57 @@ async def test_cutover_uses_shanghai_midnight_for_last_heartbeat(
         else:
             with pytest.raises(BudgetAdmissionError, match="legacy_external_run_requires"):
                 await service.legacy_cutover_inventory(session, actor_id=actor)
+
+
+@pytest.mark.skipif(
+    not os.environ.get("CAREERPROOF_TEST_DATABASE_URL"), reason="PostgreSQL required",
+)
+async def test_pg_concurrent_legacy_cutover_confirms_once(budget_data):  # noqa: F811
+    factory, _runtime, _owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    await disable_fixture_gate(factory)
+    async with factory() as session:
+        for row in await session.scalars(select(AnalysisTask)):
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = NOW - timedelta(days=1)
+        await session.commit()
+        review = inventory_hash(await service.legacy_cutover_inventory(session, actor_id=actor))
+
+    started = asyncio.Event()
+    async with factory() as first:
+        expected = await service.activate(
+            first, actor_id=actor, reason="first confirmation", legacy_digest=review,
+        )
+
+        async def second_confirmation():
+            async with factory() as second:
+                started.set()
+                result = await service.activate(
+                    second, actor_id=actor, reason="second confirmation", legacy_digest=review,
+                )
+                await second.commit()
+                return result
+
+        concurrent = asyncio.create_task(second_confirmation())
+        try:
+            await started.wait()
+            with pytest.raises(TimeoutError):
+                await asyncio.wait_for(asyncio.shield(concurrent), timeout=0.15)
+            await first.commit()
+            assert await asyncio.wait_for(concurrent, timeout=5) == expected
+        finally:
+            if not concurrent.done():
+                concurrent.cancel()
+                await asyncio.gather(concurrent, return_exceptions=True)
+
+    async with factory() as session:
+        audits = list(await session.scalars(
+            select(AuditLog).where(AuditLog.action == LEGACY_CUTOVER_ACTION)
+        ))
+        assert len(audits) == 1
+        assert audits[0].details["reason"] == "first confirmation"
 
 
 async def disable_fixture_gate(factory):
