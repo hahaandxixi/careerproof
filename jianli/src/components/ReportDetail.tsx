@@ -18,7 +18,6 @@ import ApplicationSubmit from "./ApplicationSubmit";
 import ReportEvidenceWorkspace, { RequirementActionPanel } from "./ReportEvidenceWorkspace";
 import ReportRequirementHeatmap from "./ReportRequirementHeatmap";
 import SkillRadar from "./SkillRadar";
-import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { adoptedReportExplanation, filterForRequirement, initialWorkspaceFilter, workspaceRequirements, workspaceStatusLabel, type WorkspaceFilter } from "@/lib/report-workspace";
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
@@ -102,25 +101,35 @@ function ReportWorkspace({ id }: { id: string }) {
     url.searchParams.set("filter", next);
     url.hash = selection ? `requirement-${selection.requirementId}` : "report-matching";
     if (url.href !== window.location.href) {
-      window.history.pushState(window.history.state, "", url);
+      window.history.pushState({ ...window.history.state, reportInlineSelection: url.hash }, "", url);
     }
+  };
+  const chooseRequirement = (id: string | null) => {
+    if (!id) return;
+    const nextFilter = filterForRequirement(report.items, filter, id);
+    setActiveRequirementId(id);
+    setReportFilter(nextFilter);
+    const url = new URL(window.location.href);
+    url.searchParams.set("filter", nextFilter);
+    url.hash = `requirement-${id}`;
+    if (url.href !== window.location.href) window.history.pushState({ ...window.history.state, reportInlineSelection: url.hash }, "", url);
   };
   const radarDimensions = report.items.map(item => ({ requirementId:item.requirementId, title:item.requirementTitle, skill:item.skill, score:item.finalScore, verdict:item.verdict, weight:item.weight, evidenceLevel:item.evidenceLevel ?? null, evidenceLevelSource:item.evidenceLevelSource ?? null, evidenceLevelVersion:item.evidenceLevelVersion ?? null, formulaVersion:item.formulaVersion }));
 
   const review = (requirementId: string, status: "pending" | "accepted" | "rejected" | "corrected") =>
     session.review(requirementId, status, reviewNotes[requirementId] ?? report.items.find(item => item.requirementId === requirementId)?.reviewerNote ?? undefined);
   const studentOverview = user?.role === "student" ? <div className="report-overview-band">
-      <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} />
+      <ReportRequirementHeatmap items={report.items} selectedRequirementId={radarRequirementId} onRequirementChange={chooseRequirement} />
       <section className="report-radar-side" aria-label="岗位技能雷达">
         <div className="report-radar-side-head"><h2>技能雷达</h2></div><div className="report-radar-legend" aria-label="雷达图例"><span data-state="supported">有证据支持</span><span data-state="claimed">仅简历声明</span><span data-state="gap">材料待补充</span><span data-state="unsupported">规则暂未支持</span>{report.items.some(item => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected") && <span>需复核（不绘点）</span>}</div>
-        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={id=>navigateEvidenceFragment(`#requirement-${id}`)} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
+        {radarRequirementId ? <SkillRadar dimensions={radarDimensions} items={report.items} initialRequirementId={radarRequirementId} selectedRequirementId={radarRequirementId} onRequirementChange={chooseRequirement} variant="overview" /> : <p className="report-radar-empty">当前筛选没有可显示的要求。</p>}
       </section>
     </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
     <ReportSections header={<ReportPaperHeader report={report} backHref={reportListHref(reportOrigin(origin))} versionTools={user?.role === "student" && <ReportVersionPicker report={report} origin={origin} />} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
-    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={setActiveRequirementId} filter={filter} onFilterChange={changeFilter}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
+    <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={activeRequirementId} onRequirementChange={chooseRequirement} filter={filter} onFilterChange={changeFilter}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
       <h3 tabIndex={-1} className={`requirement-title ${evidenceWorkspace([item]).supported.length ? "conclusion-supported" : "conclusion-attention"}`}>
 
         <span>{item.skill || "岗位要求"}<span className="requirement-title-state">，{workspaceStatusLabel(item)}</span></span>

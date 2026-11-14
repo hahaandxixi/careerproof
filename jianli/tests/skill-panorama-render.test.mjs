@@ -36,14 +36,13 @@ test("overview renders grouped bands, a record overview and explicit loaded scop
   assert.match(html, /规则暂未支持 1 条/); assert.doesNotMatch(html, /摘要未加载|演示数据说明/); assert.match(html, /再加载最多 12 份报告/);
 });
 test("topic selection offers historical records while showing one original report and fixed version", () => {
-  let selected;
-  const tree = mod.exports.SkillPanoramaView({ ...props, onSelect: key => { selected = key; } });
-  nodes(tree).find(n => n.type === "button" && text(n).startsWith("Python")).props.onClick();
-  assert.equal(selected, "python"); const html = render({ selected });
-  assert.match(html, /aria-pressed="true"/); assert.match(html, /Original requirement a/);
-  assert.equal((html.match(/<option /g) ?? []).length, 2);
-  assert.match(html, /\/reports\/old#requirement-a/); assert.doesNotMatch(html, /\/reports\/new#requirement-a/);
-  assert.match(html, /v1/); assert.doesNotMatch(html, />[^<]*v2/); assert.match(html, /2 个岗位/); assert.doesNotMatch(html, /该岗位最新报告/);
+  const html = render({ selected: "python" });
+  assert.match(html, /aria-haspopup="dialog"/);
+  assert.match(html, /<dialog id="skill-evidence-drawer"/);
+  assert.match(html, /Original requirement a/);
+  assert.equal((html.match(/class="drawerJobs"/g) ?? []).length, 1);
+  assert.equal((html.match(/href="\/reports\//g) ?? []).length, 1);
+  assert.doesNotMatch(html, /该岗位最新报告/);
 });
 test("selected skill presents only the active saved record source, with its exact report link", () => {
   const python = report("p", [{...item("a","Python","supported"),evidenceList:[{citationId:"p",filePath:"python.py",lineStart:3,lineEnd:4,snippet:"python source"}]}], 1);
@@ -67,23 +66,23 @@ test("historical records remain selectable when two jobs share a title", () => {
   const newer = report("newer", [item("a", "Python", "supported")], 2, { jobId: "same-job", jobTitle: "Same job" });
   const other = report("other", [item("a", "Python", "gap")], 3, { jobId: "other-job", jobTitle: "Same job" });
   const html = render({ selected: "python", state: { ...state, reports: [older, newer, other], summaries: [older, newer, other], total: 3, hasMore: false } });
-  assert.equal((html.match(/<option /g) ?? []).length, 3);
+  assert.equal((html.match(/>Same job<\/button>/g) ?? []).length, 2);
+  assert.match(html, /同岗位其他记录（1）/);
   assert.match(html, /2 个岗位/);
-  assert.match(html, /\/reports\/older#requirement-a/);
-  assert.doesNotMatch(html, /\/reports\/(other|newer)#requirement-a/);
+  assert.equal((html.match(/href="\/reports\//g) ?? []).length, 1);
   assert.doesNotMatch(html, /该岗位最新报告/);
 });
 test("status filter keeps skills with a matching record and shows hit count against the full history", () => {
   const supported = report("s", [item("a", "Python", "supported")], 1, { jobId: "job-s" });
   const claimed = report("c", [item("b", "Python", "claimed_only")], 2, { jobId: "job-c" });
   const filtered = render({ selected: "python", filter: "claimed_only", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });
-  assert.match(filtered, /命中 <strong>1<\/strong> 条 \/ 共 2 条/);
+  assert.match(filtered, /仅简历声明 <span>1/);
   assert.doesNotMatch(filtered, /命中 1 条/);
   assert.match(filtered, /aria-label="Python：有证据支持 1 条，仅简历声明 1 条"/);
   assert.doesNotMatch(filtered, /Original requirement a/);
   assert.match(filtered, /Original requirement b/);
   const none = render({ selected: "python", filter: "gap", state: { ...state, reports: [supported, claimed], summaries: [supported, claimed], total: 2, hasMore: false } });
-  assert.match(none, /当前筛选下，这项技能没有匹配的要求记录/);
+  assert.match(none, /当前筛选下没有可查看的记录/);
 });
 test("unclassified requirements retain original unknown state, never invent a skill label", () => {
   const html = render({ selected: "" });
@@ -141,11 +140,11 @@ test("two requirements from one report stay together and show separate review co
     { ...item("index", "SQL", "supported"), confirmationStatus: "corrected" },
   ], 1)];
   const html = render({ selected: "sql", state: { ...state, reports: records, summaries: records } });
-  assert.equal((html.match(/<option /g) ?? []).length, 2);
+  assert.match(html, /同岗位其他记录（1）/);
   assert.match(html, /需复核 2 条/);
   assert.match(html, /原报告 · 有证据支持/);
   assert.match(html, /\/reports\/sql#requirement-query/);
-  assert.match(html, /<option[^>]+>[^<]*Original requirement index/);
+  assert.match(html, /Original requirement index/);
   assert.doesNotMatch(html, /\/reports\/sql#requirement-index/);
   assert.doesNotMatch(html, /该岗位其他/);
 });

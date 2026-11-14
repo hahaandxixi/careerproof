@@ -154,3 +154,18 @@ test("a source return restores the requested saved plan without generating a new
  assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="older"));
  assert.equal(f.calls().createCalls,0); assert.equal(f.calls().historyCalls,1);
 });
+
+test("recommendation cards show matched skills and job link directly without a fold toggle",()=>{
+ const recommendation={jobId:"job1",jobTitle:"数据处理实习生",companyName:"云栈科技",city:"南京",employmentType:"internship",priority:"medium",supportedCount:2,claimedCount:0,assessedCount:3,requirementCount:3,gaps:[],matchedSkills:["pytest","Python"],evidence:[]};
+ const saved={planId:"saved",materials:[],recommendations:[recommendation],changes:[],summary:"已保存"};
+ const f=fixture({historyResult:saved,query:"?returnPlan=saved"});
+ return (async()=>{
+  f.render(); await f.settle(); f.render(); await f.settle();
+  const card=f.nodes(f.render()).find(n=>n.props?.id==="plan-job-job1");
+  const cardNodes=f.nodes(card);
+  assert.ok(!cardNodes.some(n=>n.type==="details"));
+  assert.ok(cardNodes.some(n=>n.props?.children==="pytest"));
+  assert.ok(cardNodes.some(n=>n.props?.children==="Python"));
+  assert.ok(cardNodes.some(n=>n.props?.href==="/jobs/job1"&&n.props.children==="查看岗位"));
+ })();
+});

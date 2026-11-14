@@ -127,7 +127,11 @@ export default function ReportRequirementReader({ items, children, overview, sel
         {visible.length ? <ol className="report-index-chips">{visible.map(item => {
           const isSelected = selected === item.requirementId;
           return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={isSelected ? "true" : undefined} title={`${item.requirementTitle} · ${workspaceStatusLabel(item)}`}
-            className="report-index-chip">
+            className="report-index-chip" onClick={event => {
+              if (!controlled || !onRequirementChange || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              onRequirementChange(item.requirementId);
+            }}>
             <span className={`report-index-dot tone-${reportStatusTone(item)}`} aria-hidden="true" />
             <span className="report-index-chip-name">{labels.get(item.requirementId)?.label}</span>
             <span className="sr-only">，{workspaceStatusLabel(item)}</span>
