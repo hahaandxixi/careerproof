@@ -2,6 +2,7 @@
 import pytest
 
 from app.agents.contracts import runtime_plan_without_implementation_step
+from app.services.career_planning import career_runtime_plan_without_implementation
 
 
 @pytest.mark.parametrize("step", ["编写 SQL 查询定位异常记录。", "编写SQL查询，并保存查询脚本。"])
@@ -31,7 +32,7 @@ def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     "提交针对异常数据的 SQL 查询并附上输出",
 ])
 def test_saved_sql_rejection_excerpt_contains_implementation(step):
-    assert not runtime_plan_without_implementation_step(
+    assert not career_runtime_plan_without_implementation(
         "一份 SQL 异常核查记录文档。",
         [step, "运行查询并保存结果输出。"],
         skill="SQL",
@@ -48,4 +49,4 @@ def test_saved_sql_rejection_excerpt_contains_implementation(step):
     "使用 SQL 查询数据，不编写查询脚本，只交运行输出",
 ])
 def test_unrelated_or_negated_implementation_does_not_cover_sql(step):
-    assert runtime_plan_without_implementation_step("SQL 查询结果截图", [step], skill="SQL")
+    assert career_runtime_plan_without_implementation("SQL 查询结果截图", [step], skill="SQL")
