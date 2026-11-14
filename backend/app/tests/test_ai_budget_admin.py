@@ -1,16 +1,26 @@
 """Fresh administrator authority, immutable decisions, and conservative cutover."""
 
-from datetime import date
+import asyncio
+import os
+from datetime import UTC, date, datetime, time, timedelta
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.models.ai_budget import AiBudgetAdjustment, AiBudgetCutover, AiBudgetReservation
 from app.models.ai_request_attempt import AiRequestAttempt
-from app.models.analysis import AnalysisTask
+from app.models.analysis import AiUsageLog, AnalysisTask
+from app.models.audit import AuditLog
 from app.models.enums import TaskStatus, UserRole
 from app.models.identity import User
-from app.services.ai_budget import GATE_ID, BudgetAdmissionError, SharedBudgetService
+from app.services.ai_budget import (
+    GATE_ID,
+    LEGACY_CUTOVER_ACTION,
+    SHANGHAI,
+    BudgetAdmissionError,
+    SharedBudgetService,
+    inventory_hash,
+)
 from app.services.ai_request_attempts import AttemptContext, AttemptService
 from app.tests.test_ai_shared_budget_service import NOW, POLICY, new_attempt
 from app.tests.test_ai_shared_budget_service import budget_data as budget_data
@@ -20,6 +30,147 @@ from app.tests.test_durable_matching import durable_db as durable_db
 async def admin_id(factory):
     async with factory() as session:
         return await session.scalar(select(User.id).where(User.role == UserRole.ADMIN))
+
+
+async def test_reviewed_prior_day_unknown_is_audited_without_creating_usage(budget_data):  # noqa: F811
+    factory, _runtime, owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    await disable_fixture_gate(factory)
+    async with factory() as session:
+        rows = list(await session.scalars(select(AnalysisTask)))
+        for row in rows:
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = NOW
+        await session.commit()
+    async with factory() as session:
+        with pytest.raises(BudgetAdmissionError, match="active_administrator_required"):
+            await service.legacy_cutover_inventory(session, actor_id=owner)
+        with pytest.raises(BudgetAdmissionError, match="legacy_external_run_requires"):
+            await service.legacy_cutover_inventory(session, actor_id=actor)
+        for row in await session.scalars(select(AnalysisTask)):
+            row.created_at = row.completed_at = row.updated_at = NOW - timedelta(days=1)
+        await session.commit()
+    async with factory() as session:
+        plan = await service.legacy_cutover_inventory(session, actor_id=actor)
+        assert plan["entries"]
+        assert all(row["status"] == "historical_usage_unknown" for row in plan["entries"])
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(session, actor_id=actor, reason="audit", legacy_digest="wrong")
+        await session.rollback()
+    async with factory() as session:
+        task = await session.scalar(select(AnalysisTask).order_by(AnalysisTask.id))
+        await session.execute(
+            update(AnalysisTask).where(AnalysisTask.id == task.id).values(
+                error_message="changed after preview", updated_at=task.updated_at,
+            )
+        )
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(
+                session, actor_id=actor, reason="audit", legacy_digest=inventory_hash(plan),
+            )
+        await session.rollback()
+    async with factory() as session:
+        gate = await session.get(AiBudgetCutover, GATE_ID)
+        assert not gate.enabled
+        plan_digest = inventory_hash(plan)
+        digest = await service.activate(
+            session, actor_id=actor, reason="audit", legacy_digest=plan_digest,
+        )
+        await session.commit()
+    async with factory() as session:
+        assert await service.activate(
+            session, actor_id=actor, reason="replay", legacy_digest=plan_digest,
+        ) == digest
+        audits = list(await session.scalars(
+            select(AuditLog).where(AuditLog.action == LEGACY_CUTOVER_ACTION)
+        ))
+        assert len(audits) == 1
+        assert audits[0].details == {**plan, "reason": "audit"}
+        assert await service.legacy_cutover_inventory(session, actor_id=actor) == plan
+        assert list(await session.scalars(select(AiUsageLog))) == []
+        assert list(await session.scalars(select(AiRequestAttempt))) == []
+        audits[0].details = {**audits[0].details, "entries": []}
+        await session.flush()
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(
+                session, actor_id=actor, reason="replay", legacy_digest=plan_digest,
+            )
+        await session.rollback()
+
+
+@pytest.mark.parametrize("activity_seconds,eligible", [(-1, True), (0, False)])
+async def test_cutover_uses_shanghai_midnight_for_last_heartbeat(
+    budget_data, activity_seconds, eligible,  # noqa: F811
+):
+    factory, _runtime, _owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    midnight = datetime.combine(service.today(), time.min, SHANGHAI).astimezone(UTC)
+    async with factory() as session:
+        for row in await session.scalars(select(AnalysisTask)):
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = midnight - timedelta(hours=1)
+            row.heartbeat_at = midnight + timedelta(seconds=activity_seconds)
+        await session.commit()
+        if eligible:
+            assert (await service.legacy_cutover_inventory(session, actor_id=actor))["entries"]
+        else:
+            with pytest.raises(BudgetAdmissionError, match="legacy_external_run_requires"):
+                await service.legacy_cutover_inventory(session, actor_id=actor)
+
+
+@pytest.mark.skipif(
+    not os.environ.get("CAREERPROOF_TEST_DATABASE_URL"), reason="PostgreSQL required",
+)
+async def test_pg_concurrent_legacy_cutover_confirms_once(budget_data):  # noqa: F811
+    factory, _runtime, _owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    await disable_fixture_gate(factory)
+    async with factory() as session:
+        for row in await session.scalars(select(AnalysisTask)):
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = NOW - timedelta(days=1)
+        await session.commit()
+        review = inventory_hash(await service.legacy_cutover_inventory(session, actor_id=actor))
+
+    started = asyncio.Event()
+    async with factory() as first:
+        expected = await service.activate(
+            first, actor_id=actor, reason="first confirmation", legacy_digest=review,
+        )
+
+        async def second_confirmation():
+            async with factory() as second:
+                started.set()
+                result = await service.activate(
+                    second, actor_id=actor, reason="second confirmation", legacy_digest=review,
+                )
+                await second.commit()
+                return result
+
+        concurrent = asyncio.create_task(second_confirmation())
+        try:
+            await started.wait()
+            with pytest.raises(TimeoutError):
+                await asyncio.wait_for(asyncio.shield(concurrent), timeout=0.15)
+            await first.commit()
+            assert await asyncio.wait_for(concurrent, timeout=5) == expected
+        finally:
+            if not concurrent.done():
+                concurrent.cancel()
+                await asyncio.gather(concurrent, return_exceptions=True)
+
+    async with factory() as session:
+        audits = list(await session.scalars(
+            select(AuditLog).where(AuditLog.action == LEGACY_CUTOVER_ACTION)
+        ))
+        assert len(audits) == 1
+        assert audits[0].details["reason"] == "first confirmation"
 
 
 async def disable_fixture_gate(factory):

@@ -371,18 +371,22 @@ def validate_plan(
                     raise VisibleCodeFactConflict("task_plan", text, facts)
             work = " ".join([item.task_plan.deliverable, *item.task_plan.steps])
             job = by_id[item.job_id]
-            uncited_gap = any(
-                requirement.rule_verdict in {"gap", "claimed_only"}
+            uncited_gap_skills = {
+                requirement.skill
+                for requirement in job.requirements
+                if requirement.rule_verdict in {"gap", "claimed_only"}
                 and requirement.skill.strip()
                 and re.search(re.escape(requirement.skill), work, re.I)
                 and not any(
                     evidence.skill.casefold() == requirement.skill.casefold()
                     for evidence in job.evidence
                 )
-                for requirement in job.requirements
-            )
-            if uncited_gap and runtime_plan_without_implementation_step(
-                item.task_plan.deliverable, item.task_plan.steps
+            }
+            if any(
+                runtime_plan_without_implementation_step(
+                    item.task_plan.deliverable, item.task_plan.steps, skill=skill
+                )
+                for skill in uncited_gap_skills
             ):
                 raise CareerTaskEvidenceGapConflict("；".join(task_texts[:3]))
         _reject_change_causality(item.reason, item.key_gap, item.next_task, *task_texts)

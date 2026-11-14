@@ -161,15 +161,18 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
     const originalPlan = params.get("returnPlan");
     if (originalPlan && originalPlan !== savedResult.planId) return;
     const hash = location.hash;
-    if (!hash.startsWith("#plan-citation-")) return;
+    if (!hash.startsWith("#plan-citation-") && !hash.startsWith("#plan-job-")) return;
     let id: string;
     try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
     const target = document.getElementById(id);
     if (!target) {
       if (!expandedCandidates && savedResult.recommendations.some(job =>
+        `plan-job-${job.jobId}` === id ||
         job.evidence.some(evidence => `plan-citation-${evidence.citationId}` === id))) setExpandedCandidates(true);
       return;
     }
+    const jobDetails = id.startsWith("plan-job-") ? target.querySelector("details") : null;
+    if (jobDetails) jobDetails.open = true;
     for (let parent = target.parentElement; parent; parent = parent.parentElement) {
       if (parent instanceof HTMLDetailsElement) parent.open = true;
     }
@@ -227,7 +230,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       {visibleRecommendations.map(item => {
         const advice = result.aiPlan?.advice.find(candidate => candidate.jobId === item.jobId);
         const gaps = item.gaps.length > 0 && <p className="mt-2 text-sm leading-7 text-amber-800"><strong>主要待补：</strong>{item.gaps.join("；")}</p>;
-        return <article id={`plan-job-${item.jobId}`} className="career-job-card panel scroll-mt-24 !p-3" key={item.jobId}>
+        return <article id={`plan-job-${item.jobId}`} tabIndex={-1} className="career-job-card panel scroll-mt-24 !p-3" key={item.jobId}>
         <details className="group/job">
         <summary className="cursor-pointer list-none rounded-lg px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600 [&::-webkit-details-marker]:hidden">
         <div className="flex flex-wrap items-start justify-between gap-2">
@@ -249,6 +252,8 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         {!advice && gaps}
         {(!!item.requirements?.length || (advice && gaps)) && <details className="mt-4 rounded-xl border border-slate-200 p-3"><summary className="cursor-pointer text-sm font-medium">岗位要求与规则覆盖</summary>{advice && gaps}<ul className="mt-2 space-y-2">{item.requirements?.map((requirement, index) => <li key={`${requirement.skill}-${index}`} className="text-xs leading-6 text-slate-600"><strong>{requirement.skill}</strong> · {requirement.isRequired ? "必要" : "加分"} · {requirement.weight}/5 · {verdictLabel(requirement.ruleVerdict)}<span className="mt-1 block">{requirement.text}</span></li>)}</ul></details>}
         <Link className="btn mt-5 inline-block" href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
+        {result.planId && (advice?.keyGap || item.gaps.length > 0) && <Link className="btn-secondary ml-2 mt-5 inline-flex"
+          href={`/portfolio?${new URLSearchParams({ add: "project", recommendationPlan: result.planId, recommendationJob: item.jobId })}`}>补充项目材料</Link>}
         </div>
         </details>
       </article>;
