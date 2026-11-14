@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  buildSkillPanorama, countContexts, createSkillPanoramaSession, filterSkillContexts, groupContextsByJob, initialPanoramaState,
+  buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, groupContextsByJob, initialPanoramaState,
   PANORAMA_CATEGORIES, PANORAMA_FILTERS, PANORAMA_FILTER_LABELS, PANORAMA_PAGE_SIZE, PANORAMA_STATUSES,
   PANORAMA_STATUS_LABELS, panoramaStatus, selectionForFilter, skillJobCount,
   type PanoramaFilter, type PanoramaState, type SkillContext, type StatusCounts,
@@ -111,7 +111,7 @@ function SelectedContext({ context }: { context: SkillContext }) {
     <p className={styles.contextMeta}><span data-status={panoramaStatus(item.verdict)}>原报告 · {PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
       {item.confirmationStatus && item.confirmationStatus !== "pending" && <strong className={styles.reviewMark}>本人核对：{{ accepted: "已采纳", rejected: "已驳回，需复核", corrected: "已标记修正，需复核" }[item.confirmationStatus]}</strong>}</p>
     {panoramaStatus(item.verdict) === "unknown" && <p className={styles.date}>原始状态：{item.verdict || "未提供"}</p>}
-    {context.materials.length > 0 && <p className={styles.materials}>固定材料：{context.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}${material.materialRole === "reference" ? "（参考）" : ""}`).join(" · ")}</p>}
+    {context.materials.length > 0 && <details className={styles.materials}><summary>固定材料</summary><p>{context.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}${material.materialRole === "reference" ? "（参考）" : ""}`).join(" · ")}</p></details>}
     {evidenceList.length ? evidenceList.map((evidence, index) => <div key={`${evidence.citationId}:${index}`} className={styles.contextEvidence}>
       <p><SourceIdentity source={evidence} materials={context.materials} compact/> · 第 {evidence.lineStart}–{evidence.lineEnd} 行</p>
       <EvidenceSnippet evidence={evidence} materials={context.materials} showContextNote={false} theme="dark"/>
@@ -121,8 +121,8 @@ function SelectedContext({ context }: { context: SkillContext }) {
   </section>;
 }
 
-function SkillContextRail({ contexts, skillName, filter, matched, total, counts, onClear, radar }: {
-  contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; counts: StatusCounts; onClear(): void; radar: ReactNode;
+function SkillContextRail({ contexts, skillName, filter, matched, total, onClear }: {
+  contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; onClear(): void;
 }) {
   const [pickedContext, setPickedContext] = useState<string | null>(null);
   const groups = groupContextsByJob(contexts);
@@ -135,13 +135,8 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, counts,
       <p>{filter === "all" ? <>{total} 条要求记录 · {jobs} 个岗位</> : <>命中 <strong>{matched}</strong> 条 / 共 {total} 条 · {jobs} 个岗位</>}</p>
       <button onClick={onClear} className={styles.clearSelection}>清除选择</button>
     </div>
-    <ul className={styles.skillCounts} aria-label="所选技能的全部已加载记录，按原报告状态">
-      {PANORAMA_STATUSES.filter(status => counts[status] > 0).map(status =>
-        <li key={status} data-status={status}>{PANORAMA_STATUS_LABELS[status]} {counts[status]} 条</li>)}
-    </ul>
     {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
     {activeContext && <SelectedContext context={activeContext}/>}
-    {radar}
     {groups.map(group => {
       const byReport = new Map<string, SkillContext[]>();
       for (const context of group.contexts) {
@@ -217,6 +212,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
             {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
           </button>)}
         </div>
+        {radar}
         {groups.map((group, index) => {
           return <section className={styles.group} key={group.category} aria-label={group.category}>
             <div className={styles.groupHeading}><span className={styles.groupNumber}>{String(index + 1).padStart(2, "0")}</span><h3>{group.category}</h3><span>{group.skills.length} 技能 · {group.skills.reduce((total, value) => total + filterSkillContexts(value.contexts, filter).length, 0)} 条</span></div>
@@ -246,8 +242,8 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       </section>
       <aside className={styles.rail} id="skill-context-rail" aria-label="所选技能的岗位语境">
         {selected === "" || skill ? <SkillContextRail contexts={matchedContexts} skillName={selected === "" ? "未标注技能的要求" : skill!.name}
-          filter={filter} matched={matchedContexts.length} total={allContexts.length} counts={skill?.counts ?? countContexts(allContexts)} onClear={() => onSelect(null)} radar={radar}/> :
-          <><div className={styles.railHeading}><h2>选择一个技能</h2></div>{radar}</>}
+          filter={filter} matched={matchedContexts.length} total={allContexts.length} onClear={() => onSelect(null)}/> :
+          <div className={styles.railHeading}><h2>选择一个技能</h2></div>}
       </aside>
     </div>}
   </div>;
