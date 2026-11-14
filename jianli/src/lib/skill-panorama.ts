@@ -55,6 +55,16 @@ export interface PanoramaSkill {
   key: string; name: string; category: string; contexts: SkillContext[]; counts: StatusCounts;
 }
 
+/** The denominator is the full loaded, deduplicated record set, never the active status filter. */
+export function skillRecordMeasure(skill: PanoramaSkill) {
+  const total = skill.contexts.length;
+  const { supported, claimed_only, gap, unsupported, unknown } = skill.counts;
+  const assessed = supported + claimed_only + gap;
+  const review = skill.contexts.filter(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected").length;
+  return { supported, total, review, unassessed: unsupported + unknown,
+    ratio: total && assessed ? supported / total : null };
+}
+
 // Exact display grouping only, not an ontology, alias resolver or ability taxonomy.
 const categories: [string, string[]][] = [
   ["编程语言", ["python", "java", "javascript", "typescript", "c", "c++", "c#", "go", "rust", "r"]],

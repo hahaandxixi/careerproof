@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildSkillPanorama, panoramaStatus, createSkillPanoramaSession, PANORAMA_PAGE_SIZE } from "../src/lib/skill-panorama.ts";
+import { buildSkillPanorama, panoramaStatus, createSkillPanoramaSession, skillRecordMeasure, PANORAMA_PAGE_SIZE } from "../src/lib/skill-panorama.ts";
 
 const item = (requirementId, skill, verdict = "supported") => ({ requirementId, skill, verdict, requirementTitle: `Original ${requirementId}`, skillPath: ["not a grouping source"] });
 const report = (id, items = [], overrides = {}) => ({ id, candidateId: "owner", jobId: `job-${id}`, jobTitle: `Job ${id}`, createdAt: "2026-11-01T10:00:00Z", materials: [{ kind: "project", id: "fixed-version", title: "Project", versionNumber: 1, contentHash: "hash-1" }], items, ...overrides });
@@ -153,4 +153,15 @@ test("a duplicate offset page advances and a failed page retries before reaching
  assert.equal(h.state.reports.length,8);
  assert.equal(h.state.total,8);
  assert.equal(h.state.hasMore,false);
+});
+
+test("radar uses unique full loaded records and keeps unknown and review separate", () => {
+ const a=report("a",[{...item("1","Python","supported"),confirmationStatus:"rejected"},item("2","Python","unsupported")]);
+ const b=report("b",[item("1","python","gap")]);
+ const skill=buildSkillPanorama([a,b,a]).skills[0];
+ assert.deepEqual(skillRecordMeasure(skill),{supported:1,total:3,review:1,unassessed:1,ratio:1/3});
+ const unknown=buildSkillPanorama([report("c",[item("3","SQL","unknown")])]).skills[0];
+ assert.equal(skillRecordMeasure(unknown).ratio,null);
+ const gap=buildSkillPanorama([report("d",[item("4","SQL","gap")])]).skills[0];
+ assert.equal(skillRecordMeasure(gap).ratio,0);
 });
