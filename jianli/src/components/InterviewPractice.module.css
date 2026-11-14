@@ -96,6 +96,7 @@
 }
 
 .basisDock { position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; min-width: 0; }
+.basisDock button[aria-pressed="true"] { border-color: #306554; background: #e1efe5; font-weight: 700; }
 .basis { display: grid; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #ded7c7; border-radius: 10px; background: #fbf8ef; }
 .basisGroup { display: grid; gap: 6px; min-width: 0; }
 .basisGroup h3 { font-size: 14px; font-weight: 650; color: #40564b; }
