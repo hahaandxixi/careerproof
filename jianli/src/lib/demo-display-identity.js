@@ -71,6 +71,15 @@ export function demoJobAlias(id) {
   return jobAliases.get(id);
 }
 
+export function experienceJobCopy(job) {
+  if (!job.isDemo || job.companyName !== "职证场景实验室（虚构）") return job;
+  return {
+    ...job,
+    companyName: "职证场景实验室",
+    description: job.description.replace(/(?:此为原创体验岗位，不是真实招聘。|合成示例岗位，不是真实招聘。|此为职证体验岗位。)$/, ""),
+  };
+}
+
 /** Explicit historical boundary fixture; never used as a default/demo job. */
 export function boundaryFixtureJob(id) {
   return jobAliases.get(id)?.boundaryFixture === true;

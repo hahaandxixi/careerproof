@@ -941,6 +941,32 @@ def test_answered_incorrectly_cannot_also_be_missing_for_the_same_point():
     assert saved["missing"] == [raw["findings"][1]["text"]]
 
 
+def test_correct_off_topic_outer_join_count_is_not_a_sql_conflict():
+    answer = "COUNT(*) 会计算外连接补出的行。"
+    raw = feedback([])
+    missing = {"point": "AVG 分母", "kind": "missing", "text": "未说明 AVG 对 NULL 的处理。"}
+    raw["findings"] = [
+        missing,
+        {
+            "point": "COUNT(*) 行数",
+            "kind": "inconsistent",
+            "text": "外连接补出的行也是结果行，会被 COUNT(*) 计入。",
+            "answerQuote": answer,
+            "basisId": "tech-sql-aggregate-null",
+        },
+    ]
+    options = dict(
+        answer=answer, previous_issues=[], allowed_knowledge={"tech-sql-aggregate-null"},
+        allowed_citations=set(), has_evidence=False,
+    )
+    with pytest.raises(practice.PracticeOutputError, match="正确的 SQL 行数"):
+        practice.validate_feedback(raw, **options)
+    raw["findings"] = [missing]
+    saved = practice.validate_feedback(raw, **options)
+    assert saved["missing"] == [missing["text"]]
+    assert saved["inconsistent"] == []
+
+
 async def test_slow_feedback_duplicate_retry_and_late_result(practice_db, monkeypatch):
     app, factory = practice_db
     async with await client_for(app) as student:

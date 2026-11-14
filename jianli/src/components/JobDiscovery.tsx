@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
-import { demoJobAlias } from "@/lib/demo-display-identity.js";
+import { experienceJobCopy, demoJobAlias } from "@/lib/demo-display-identity.js";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
@@ -96,12 +96,12 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
 export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; compact?: boolean }) {
   const Heading = compact ? "h3" : "h2";
   const alias = demoJobAlias(job.id);
-  const description = alias?.description ?? job.description;
+  const copy = experienceJobCopy(job);
   return <article className="workspace-row discovery-job-row">
     <div className="min-w-0">
       <Heading><Link className="break-words hover:text-[#1d4a40] hover:underline" href={`/jobs/${job.id}`}>{alias?.title ?? job.title}</Link></Heading>
-      <p className="workspace-meta mt-1 break-words">{alias?.companyName ?? job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p>
-      {description && <p className="mt-1 line-clamp-2 break-words text-sm leading-6 text-slate-700">{description}</p>}
+      <p className="workspace-meta mt-1 break-words">{alias?.companyName ?? copy.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p>
+      {(alias?.description ?? copy.description) && <p className="mt-1 line-clamp-2 break-words text-sm leading-6 text-slate-700">{alias?.description ?? copy.description}</p>}
     </div>
     <div className="min-w-0">
       <p className="workspace-meta">{directionLabel(job.careerDirection) ?? (`${CATEGORY_LABELS[job.category] ?? "其他方向"} · 未细分`)}</p>

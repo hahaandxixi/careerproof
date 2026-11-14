@@ -72,6 +72,8 @@ FEEDBACK_PROMPT = (
     "kind 为 missing 时，text 写没有回应的问点。答错等于回应过，只能列为 inconsistent，"
     "例如回答 COUNT(*) 不计 NULL 行是错误，不能再把 COUNT(*) 行数口径列为遗漏。"
     "inconsistent 的 text 说明冲突，另给 answerQuote（本轮原文）及 basisId（材料或知识 ID）。"
+    "正确但偏题的陈述不是冲突。只将尚未回答的具体问点列为 missing。"
+    "例如 COUNT(*) 计入 LEFT JOIN 补出的结果行；这句话正确，即使本题实际问的是 AVG 和缺失偏差。"
     "区分拟议改进与对既有代码的声称。正确的替代做法也算讲清，不因未引用代码而判错。每类最多 4 条。"
     "previousIssues 是上轮已记录的问题。只在本轮明确纠正或补足时"
     "返回 resolvedIssues 的 issueId 和本轮原文 answerQuote；绕开或未再提及不能算解决。"
@@ -304,6 +306,13 @@ def validate_feedback(
             if not isinstance(basis, str) or basis not in allowed_citations | allowed_knowledge:
                 raise PracticeOutputError("不一致项缺少已提供的冲突依据")
             quote = _answer_quote(item.get("answerQuote"), answer)
+            if basis == "tech-sql-aggregate-null" and re.fullmatch(
+                r"COUNT\s*\(\s*\*\s*\)\s*(?:会|也|仍)?\s*(?:计算|统计|计入|包含)"
+                r"(?:LEFT JOIN|[左右全]?外连接)(?:补出|补齐|生成)的(?:结果)?行[。.!！]?",
+                quote,
+                re.I,
+            ):
+                raise PracticeOutputError("点评误将正确的 SQL 行数口径标成冲突")
             conflict_details.append({"answerQuote": quote, "reason": text[0], "basisId": basis})
     allowed_issues = {item["issueId"] for item in previous_issues}
     resolved = []
