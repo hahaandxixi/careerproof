@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
@@ -8,11 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.dependencies import get_current_user
 from app.core.database import get_session
 from app.models.identity import User
-from app.schemas.common import ApiResponse, PaginatedData, success
+from app.schemas.common import ApiResponse, success
 from app.schemas.interview import (
     InterviewAnswerRequest,
     InterviewSessionCreate,
     InterviewSessionEnvelope,
+    InterviewSessionPage,
     InterviewSessionSummary,
     InterviewSessionView,
     InterviewStartRequest,
@@ -51,18 +53,21 @@ async def create_interview_session(
 
 @router.get(
     "/interview-sessions",
-    response_model=ApiResponse[PaginatedData[InterviewSessionSummary]],
+    response_model=ApiResponse[InterviewSessionPage],
 )
 async def list_interview_sessions(
     page: int = Query(1, ge=1),
     page_size: int = Query(12, ge=1, le=50, alias="pageSize"),
+    status: Literal["all", "pending", "completed"] = "all",
+    skill: str | None = Query(None, min_length=1, max_length=100),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-) -> ApiResponse[PaginatedData[InterviewSessionSummary]]:
-    items, total = await InterviewPracticeService(session).list_sessions(
-        current_user, page, page_size
+) -> ApiResponse[InterviewSessionPage]:
+    items, total, skills = await InterviewPracticeService(session).list_sessions(
+        current_user, page, page_size, status=status, skill=skill
     )
-    return success(PaginatedData(
+    return success(InterviewSessionPage(
+        skills=skills,
         items=[InterviewSessionSummary.model_validate(item) for item in items],
         total=total,
         page=page,

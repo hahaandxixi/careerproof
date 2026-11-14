@@ -55,7 +55,7 @@ const exclusionReason = (item: ApplicationView) => {
 export default function EnterpriseScenarioPage() {
   return <div className="mx-auto max-w-6xl space-y-5">
     <header className="space-y-2">
-      <Link href="/demo" className="btn-secondary btn-compact">← 返回案例库</Link>
+      <Link href="/demo" className="btn-secondary btn-compact">← 返回材料库</Link>
       <p className="workspace-meta">受控合成场景 · 不是真实投递数据</p>
       <h1 className="page-title">企业审阅台 · A/B 可比与 C/D/E 自动分组</h1>
       <p className="reading-copy">输入 [A,B,C,D,E] 经过生产使用的 <code>comparableApplicationGroup</code> 分组：只有 A/B 同依据且要求轴完整，保留在可比组；C 不同依据、D 缺少依据、E 相同 basis 但轴不同，自动进入隔离区。</p>

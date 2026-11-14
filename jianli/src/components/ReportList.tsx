@@ -7,12 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import type { Page, ReportSummary } from "@/lib/api/domain";
-import { reportSummaryText } from "@/lib/report-display";
 import { readReportListState, reportListHref, reportListQuery, reportVersionHref } from "@/lib/report-navigation";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
 import ListPagination from "./ListPagination";
-import { ReportMaterialList, reportMaterialCount } from "./ReportMaterialVersions";
+import { reportMaterialCount } from "./ReportMaterialVersions";
 
 export function ReportHistoryCard({ report, onSameJob, origin }: { report: ReportSummary; onSameJob?: (jobId: string, candidateId: string) => void; origin?: string }) {
   const latest = report.isLatestForJob === true;
@@ -27,7 +26,6 @@ export function ReportHistoryCard({ report, onSameJob, origin }: { report: Repor
         {report.jobReportCount !== undefined && report.jobReportCount > 1 && <Link className="btn-secondary" href={reportVersionHref(report.id, origin, "#report-comparison")}>版本对比</Link>}
       </div>
     </div>
-    <div className="report-record-foot"><details className="report-record-details text-sm text-slate-600"><summary className="disclosure">报告详情</summary>{!!report.materials?.length && <ReportMaterialList materials={report.materials} />}<p className="mt-2 whitespace-pre-wrap leading-7">{reportSummaryText(report.summary)}</p></details></div>
   </article>;
 }
 

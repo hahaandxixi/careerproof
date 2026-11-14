@@ -45,21 +45,23 @@ function render(payload, eventType = "tool.completed", overrides = {}) {
   return renderToStaticMarkup(React.createElement(component, {id: "synthetic"}));
 }
 
-test("skipped and degraded model stages show the reason without a success tick", () => {
+test("skipped and degraded model stages do not expose the internal event log or a success tick", () => {
   for (const [payload, text] of [
     [{provider: "rules", skippedReason: "not-consented"}, "未调用模型"],
     [{provider: "deepseek", fallbackUsed: true}, "AI 结果未采用"],
   ]) {
     const html = render(payload);
-    assert.ok(html.includes(text));
+    assert.doesNotMatch(html,/实际处理记录|原始阶段记录/);
+    assert.ok(!html.includes(text) || payload.fallbackUsed);
     assert.ok(!html.includes("✓"));
     assert.ok(!html.includes("text-emerald") && !html.includes("text-amber"));
     assert.ok(!html.includes("实际处理时长"));
   }
 });
 
-test("completed AI records retain a tick; unavailable records never gain one", () => {
-  assert.ok(render({provider: "deepseek", fallbackUsed: false}).includes("✓"));
+test("completed AI gets an accurate summary without showing the internal event tick", () => {
+  assert.match(render({provider: "deepseek", fallbackUsed: false}), /AI 解释已参与/);
+  assert.doesNotMatch(render({provider: "deepseek", fallbackUsed: false}), /✓|实际处理记录/);
   assert.ok(!render({}, "verification.unavailable").includes("✓"));
 });
 
@@ -82,8 +84,8 @@ test("local semantic fallback is scoped to retrieval while the real final model 
   {step:2,name:"模型证据分析",detail:"deepseek-flash完成5项解释",eventType:"tool.completed",payload:{provider:"deepseek",fallbackUsed:false}}];
  const before=JSON.stringify(stages);
  const html=render({},"tool.completed",{steps:stages});
- assert.match(html,/AI 解释已参与/); assert.match(html,/本地语义检索不可用，本阶段保留词法检索/);
- assert.match(html,/<summary[^>]*>原始阶段记录<\/summary><p[^>]*>本地语义模型不可用，已保留词法检索与规则报告<\/p>/);
+ assert.match(html,/AI 解释已参与/); assert.doesNotMatch(html,/本地语义检索不可用，本阶段保留词法检索/);
+ assert.doesNotMatch(html,/原始阶段记录|本地语义模型不可用，已保留词法检索与规则报告/);
  assert.equal(JSON.stringify(stages),before);
  const withoutModel=render({},"tool.completed",{steps:[stages[0]]});
  assert.match(withoutModel,/未记录模型处理结果/);assert.doesNotMatch(withoutModel,/AI 解释已参与/);

@@ -3,29 +3,30 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
-import type { Page, ReportSummary } from "@/lib/api/domain";
+import type { InterviewSessionSummary, Page, ReportSummary } from "@/lib/api/domain";
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
+import { workspaceStatusLabel } from "@/lib/report-workspace";
 import { practiceStatusLabel } from "@/lib/interview-practice";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ListPagination from "./ListPagination";
 import PracticeEntry from "./PracticeEntry";
 
-const reportsPage = (page: number) => api.listReports(page, 12, { scope: "product" });
+const reportsPage = (page: number) => api.listReports(page, 12, { scope: "product", view: "jobs" });
 
 function useRead<T>(read: (page: number) => Promise<T>, page = 1) {
   const [revision, setRevision] = useState(0);
-  const [response, setResponse] = useState<{ key: string; data: T | null; error: string }>();
+  const [response, setResponse] = useState<{ read: typeof read; key: string; data: T | null; error: string }>();
   const key = `${page}:${revision}`;
   useEffect(() => {
     let active = true;
     void read(page).then(
-      data => { if (active) setResponse({ key, data, error: "" }); },
-      reason => { if (active) setResponse({ key, data: null, error: errorMessage(reason) }); },
+      data => { if (active) setResponse({ read, key, data, error: "" }); },
+      reason => { if (active) setResponse({ read, key, data: null, error: errorMessage(reason) }); },
     );
     return () => { active = false; };
   }, [key, page, read]);
-  const current = response?.key === key ? response : undefined;
+  const current = response?.read === read && response.key === key ? response : undefined;
   return { data: current?.data, error: current?.error, busy: !current, retry: () => setRevision(value => value + 1) };
 }
 
@@ -42,27 +43,60 @@ function Workspace() {
   </div>;
 }
 
+function SessionRow({ session }: { session: InterviewSessionSummary }) {
+  const status = session.status === "draft" || session.status === "in_progress" || session.status === "completed"
+    ? practiceStatusLabel(session.status) : "状态未记录";
+  return <div className="flex flex-wrap items-center justify-between gap-2 py-2">
+    <div className="min-w-0">
+      <p className="break-words font-medium">{session.requirementTitle || session.skill || "岗位要求未记录"}</p>
+      <p className="text-sm text-slate-600">{status}{session.needsAttention ? " · 有待处理的问题" : ""} · <time dateTime={session.updatedAt}>{new Date(session.updatedAt).toLocaleString("zh-CN")}</time></p>
+    </div>
+    <Link className="btn-secondary btn-compact" href={`/interview/${session.id}`}>{session.status === "completed" ? "查看结果" : "继续练习"}</Link>
+  </div>;
+}
+
 function Sessions() {
   const [page, setPage] = useState(1);
-  const { data, busy, error, retry } = useRead(api.listInterviewSessions, page);
+  const [status, setStatus] = useState<"pending" | "completed">("pending");
+  const [skill, setSkill] = useState("");
+  const read = useCallback((page: number) => api.listInterviewSessions(page, 12, status, skill), [status, skill]);
+  const { data, busy, error, retry } = useRead(read, page);
+  const groups = new Map<string, InterviewSessionSummary[]>();
+  for (const session of data?.items ?? []) {
+    const key = session.requirementId ? JSON.stringify([session.jobId, session.requirementId]) : session.id;
+    const group = groups.get(key);
+    if (group) group.push(session);
+    else groups.set(key, [session]);
+  }
   return <section className="panel space-y-4" aria-labelledby="saved-interviews">
-    <h2 id="saved-interviews" className="section-title">继续练习</h2>
+    <h2 id="saved-interviews" className="section-title">我的练习</h2>
+    <div className="flex flex-wrap items-end justify-between gap-3">
+      <div role="group" aria-label="练习状态" className="flex gap-2">
+        {(["pending", "completed"] as const).map(value => <button key={value} type="button"
+          className={status === value ? "btn btn-compact" : "btn-secondary btn-compact"}
+          aria-pressed={status === value} onClick={() => { setStatus(value); setSkill(""); setPage(1); }}>
+          {value === "pending" ? "待继续" : "已完成"}
+        </button>)}
+      </div>
+      <label className="flex flex-wrap items-center gap-2 text-sm">技能
+        <select className="field" value={skill} onChange={event => { setSkill(event.target.value); setPage(1); }}>
+          <option value="">全部技能</option>
+          {(data?.skills ?? (skill ? [skill] : [])).map(value => <option key={value}>{value}</option>)}
+        </select>
+      </label>
+    </div>
     {busy && <p role="status">正在读取练习…</p>}
     {error && <ErrorNotice message={`暂时无法读取已有练习。 ${error}`} retry={retry} />}
-    {data?.total === 0 && <p className="text-slate-600">还没有练习。可以选择一项岗位要求开始。</p>}
-    {!!data?.items.length && <ul className="divide-y divide-slate-200">
-      {data.items.map(session => {
-        const status = session.status === "draft" || session.status === "in_progress" || session.status === "completed"
-          ? practiceStatusLabel(session.status) : "状态未记录";
-        return <li key={session.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
-          <div className="min-w-0">
-            <h3 className="break-words font-semibold">{displayJobTitle(session.jobTitle ?? "", session.jobId) || "岗位名称未记录"}</h3>
-            <p className="break-words">{session.requirementTitle || session.skill || "岗位要求未记录"}</p>
-            <p className="text-sm text-slate-600">{status}{session.needsAttention && session.status !== "completed" ? " · 有待处理的问题" : ""} · <time dateTime={session.updatedAt}>{new Date(session.updatedAt).toLocaleString("zh-CN")}</time></p>
-          </div>
-          <Link className="btn-secondary" href={`/interview/${session.id}`}>{session.status === "completed" ? "查看结果" : "继续练习"}</Link>
-        </li>;
-      })}
+    {data?.total === 0 && <p className="text-slate-600">当前筛选下没有练习。</p>}
+    {!!groups.size && <ul className="divide-y divide-slate-200">
+      {[...groups].map(([key, [latest, ...older]]) => <li key={key} className="py-3">
+        <h3 className="break-words text-sm text-slate-600">{displayJobTitle(latest.jobTitle ?? "", latest.jobId) || "岗位名称未记录"}{latest.skill ? ` · ${latest.skill}` : ""}</h3>
+        <SessionRow session={latest} />
+        {older.length > 0 && <details>
+          <summary className="disclosure">本页其余 {older.length} 次同题练习</summary>
+          <ul className="divide-y divide-slate-200 pl-3">{older.map(session => <li key={session.id}><SessionRow session={session} /></li>)}</ul>
+        </details>}
+      </li>)}
     </ul>}
     {data && <ListPagination value={data} busy={busy} label="练习分页" onPage={setPage} />}
   </section>;
@@ -70,25 +104,55 @@ function Sessions() {
 
 function StartPractice() {
   const [page, setPage] = useState(1);
-  const [reportId, setReportId] = useState("");
+  const [jobId, setJobId] = useState("");
   const { data, busy, error, retry } = useRead<Page<ReportSummary>>(reportsPage, page);
+  const job = data?.items.find(report => report.jobId === jobId) ?? data?.items[0];
   return <section className="panel space-y-4" aria-labelledby="start-interview">
-    <h2 id="start-interview" className="section-title">开始模拟面试</h2>
+    <h2 id="start-interview" className="section-title">快速开练</h2>
     {busy && <p role="status">正在读取报告…</p>}
     {error && <ErrorNotice message={error} retry={retry} />}
     {data?.total === 0 && <p>还没有保存的报告。<Link href="/reports" className="action-link ml-2">先查看岗位报告</Link></p>}
-    {!!data?.items.length && <label className="block max-w-xl space-y-1">
-      <span className="block font-medium">选择报告</span>
-      <select className="field w-full" value={reportId} onChange={event => setReportId(event.target.value)}>
-        <option value="">请选择</option>
-        {data.items.map(report => <option key={report.id} value={report.id}>
-          {displayJobTitle(report.jobTitle, report.jobId)} · {new Date(report.createdAt).toLocaleString("zh-CN")}
-        </option>)}
+    {job && <label className="block max-w-xl space-y-1">
+      <span className="block font-medium">选择岗位</span>
+      <select className="field w-full" value={job.jobId} onChange={event => setJobId(event.target.value)}>
+        {data?.items.map(report => <option key={report.jobId} value={report.jobId}>{displayJobTitle(report.jobTitle, report.jobId)}</option>)}
       </select>
     </label>}
-    {data && <ListPagination value={data} busy={busy} label="报告分页" onPage={next => { setReportId(""); setPage(next); }} />}
-    {reportId && data?.items.some(report => report.id === reportId) && <Requirements key={reportId} reportId={reportId} />}
+    {data && <ListPagination value={data} busy={busy} label="岗位分页" onPage={next => { setJobId(""); setPage(next); }} />}
+    {job && <ReportVersionChoice key={job.jobId} job={job} />}
   </section>;
+}
+
+function ReportVersionChoice({ job }: { job: ReportSummary }) {
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [reportId, setReportId] = useState(job.id);
+  const read = useCallback((page: number) => api.listReports(page, 12, { scope: "product", jobId: job.jobId }), [job.jobId]);
+  return <div className="space-y-3">
+    <p className="text-sm text-slate-600">{reportId === job.id ? "最新报告" : "已选历史报告"}{reportId === job.id && ` · ${new Date(job.createdAt).toLocaleString("zh-CN")}`}</p>
+    {(job.jobReportCount ?? 0) > 1 && <details onToggle={event => setHistoryOpen(event.currentTarget.open)}>
+      <summary className="disclosure">切换报告版本</summary>
+      {historyOpen && <ReportHistory read={read} page={page} onPage={setPage} selected={reportId} onSelect={setReportId} />}
+    </details>}
+    <Requirements key={reportId} reportId={reportId} />
+  </div>;
+}
+
+function ReportHistory({ read, page, onPage, selected, onSelect }: {
+  read(page: number): Promise<Page<ReportSummary>>; page: number; onPage(page: number): void; selected: string; onSelect(id: string): void;
+}) {
+  const { data, busy, error, retry } = useRead(read, page);
+  return <div className="space-y-2 py-2">
+    {busy && <p role="status">正在读取历史报告…</p>}
+    {error && <ErrorNotice message={error} retry={retry} />}
+    {!!data?.items.length && <label className="block max-w-xl space-y-1">报告版本
+      <select className="field w-full" value={data.items.some(report => report.id === selected) ? selected : ""} onChange={event => { if (event.target.value) onSelect(event.target.value); }}>
+        <option value="">选择本页版本</option>
+        {data.items.map(report => <option key={report.id} value={report.id}>{new Date(report.createdAt).toLocaleString("zh-CN")}{report.isLatestForJob ? " · 最新" : ""}</option>)}
+      </select>
+    </label>}
+    {data && <ListPagination value={data} busy={busy} label="历史报告分页" onPage={onPage} />}
+  </div>;
 }
 
 function Requirements({ reportId }: { reportId: string }) {
@@ -103,9 +167,9 @@ function Requirements({ reportId }: { reportId: string }) {
       <span className="block font-medium">选择岗位要求</span>
       <select className="field w-full" value={requirementId} onChange={event => setRequirementId(event.target.value)}>
         <option value="">请选择</option>
-        {data.items.map(item => <option key={item.requirementId} value={item.requirementId}>{item.requirementTitle}</option>)}
+        {data.items.map(item => <option key={item.requirementId} value={item.requirementId}>{item.skill ? `${item.skill} · ` : ""}{item.requirementTitle} · {workspaceStatusLabel(item)}</option>)}
       </select>
     </label>}
-    {requirementId && data?.items.some(item => item.requirementId === requirementId) && <PracticeEntry key={requirementId} reportId={reportId} requirementId={requirementId} />}
+    {requirementId && data?.items.some(item => item.requirementId === requirementId) && <PracticeEntry key={requirementId} reportId={reportId} requirementId={requirementId} quick />}
   </div>;
 }

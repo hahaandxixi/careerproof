@@ -35,31 +35,30 @@ const domainOf = (slug: string) => {
 export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
   const [group, setGroup] = useState<string>("all");
   const visible = useMemo(() => samples.filter(sample => group === "all" || groupOf(sample.slug) === group), [samples, group]);
-  return <section className="case-gallery" aria-label="案例库">
-    <div className="case-gallery-tabs" role="tablist" aria-label="按方向筛选案例">
+  return <section className="case-gallery" aria-label="材料库">
+    <div className="case-gallery-tabs" role="tablist" aria-label="按方向筛选材料">
       {groups.map(item => <button key={item.key} type="button" role="tab" aria-selected={group === item.key} className={group === item.key ? "is-active" : ""} onClick={() => setGroup(item.key)}>{item.label}<span>{item.key === "all" ? samples.length : samples.filter(sample => groupOf(sample.slug) === item.key).length}</span></button>)}
     </div>
     <div className="case-gallery-grid">
       {visible.map(sample => {
         const domain = domainOf(sample.slug);
-        // The case library header carries the one-line fiction disclosure; cards stay clean.
         const jobTitle = sample.jobTitle.replace(/（合成演示）/g, "").trim();
         return <article className="case-card" key={sample.caseId}>
         <div className="case-card-top"><span className="case-id">{sample.caseId} · {sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span></div>
-        <h3>{sample.title}</h3>
-        <p className="case-project">{sample.projectTitle}</p>
+        <h3>{sample.projectTitle}</h3>
+        <p className="case-project">{sample.title}</p>
         <p className="case-job">{jobTitle}</p>
         <dl className="case-facts"><div><dt>边界</dt><dd>{sample.boundary}</dd></div></dl>
         <div className="case-actions">
           <a href={asset(sample.resumeFilename)} download={sample.resumeFilename}>下载简历</a>
           <a href={asset(sample.projectFilename)} download={sample.projectFilename}>下载项目</a>
-          <a href={asset(sample.scriptFilename)} download={sample.scriptFilename}>测试步骤</a>
+          <a href={asset(sample.scriptFilename)} download={sample.scriptFilename}>核对步骤</a>
         </div>
         <DemoCaseImport sample={sample} />
         <Link className="case-find-job" href={`/jobs?q=${encodeURIComponent(jobTitle)}`}>查找对应岗位 →</Link>
       </article>;})}
     </div>
-    {!visible.length && <div className="case-gallery-empty" role="status">当前方向暂无案例。</div>}
+    {!visible.length && <div className="case-gallery-empty" role="status">当前方向暂无材料。</div>}
   </section>;
 }
 

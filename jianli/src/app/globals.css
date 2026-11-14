@@ -909,7 +909,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-record.is-history .report-record-title { font-size: 16px; }
 .report-latest-chip { border-color: #1d4a40; color: #173c34; background: #e7efe9; }
 .report-followup-mark { color: #66758a; font-size: 12px; white-space: nowrap; }
-.report-record-details summary { color: #526176; }
 /* One separator per row comes from .workspace-list; the action row adds no
    second horizontal rule inside the record. */
 .report-record-actions { gap: 8px; border-top: 0; padding-top: 0; }
@@ -957,10 +956,7 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .report-same-job:hover { color: #173c34; text-decoration-thickness: 2px; }
 .report-record-actions { display: flex; flex: none; flex-wrap: nowrap; align-items: center; gap: 8px; }
 .report-record-actions .btn, .report-record-actions .btn-secondary { min-height: 34px; padding: 5px 11px; font-size: 13px; white-space: nowrap; }
-.report-record-foot { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; margin-top: 3px; }
 .report-analysis-state { color: #526176; font-size: 12px; line-height: 1.55; }
-.report-record-details { flex: 1 1 280px; min-width: 0; }
-.report-record-details summary { min-height: 28px; padding-block: 2px; color: #526176; }
 @media (max-width: 1100px) {
   .report-record-headline { flex-wrap: wrap; gap: 6px 18px; }
   .report-record-actions { width: 100%; justify-content: flex-start; }

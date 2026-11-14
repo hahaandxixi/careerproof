@@ -301,6 +301,8 @@ export interface PracticeSummary {
 }
 export interface InterviewSessionSummary {
   id: string;
+  reportId: string;
+  requirementId: string | null;
   jobId: string;
   jobTitle: string | null;
   requirementTitle: string | null;

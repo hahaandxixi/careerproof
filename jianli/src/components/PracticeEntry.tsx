@@ -6,7 +6,7 @@ import { api, errorMessage } from "@/lib/api/client";
 
 /** Lightweight entry from one saved report requirement into the shared practice page.
  * Opening a session never calls the model; consent is collected on that page. */
-export default function PracticeEntry({ reportId, requirementId }: { reportId: string; requirementId: string }) {
+export default function PracticeEntry({ reportId, requirementId, quick = false }: { reportId: string; requirementId: string; quick?: boolean }) {
   const router = useRouter();
   const [state, setState] = useState<"idle" | "opening">("idle");
   const [error, setError] = useState("");
@@ -22,8 +22,8 @@ export default function PracticeEntry({ reportId, requirementId }: { reportId: s
     }
   };
   return <div className="mt-2 flex flex-wrap items-center gap-2">
-    <button type="button" className="btn-secondary btn-compact" disabled={state === "opening"} onClick={() => void open()}>
-      {state === "opening" ? "正在打开练习…" : "模拟面试 · 练这一项"}
+    <button type="button" className={quick ? "btn" : "btn-secondary btn-compact"} disabled={state === "opening"} onClick={() => void open()}>
+      {state === "opening" ? "正在打开练习…" : quick ? "开始练习" : "模拟面试 · 练这一项"}
     </button>
     <span className="text-xs text-slate-500">先确认发送范围，再生成首问</span>
     {error && <span role="alert" className="text-xs text-rose-700">{error}</span>}

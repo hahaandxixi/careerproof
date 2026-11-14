@@ -32,7 +32,7 @@ test('more than eight skills have explicit pages, and fewer than three do not in
  const skills=buildSkillPanorama([report('a',Array.from({length:10},(_,i)=>item('r'+i,'skill-'+i,'supported')))]).skills;
  const f=fixture(skills,null);let nodes=f.nodes(f.render());assert.equal(nodes.filter(n=>n.type==='g'&&n.props.role==='button').length,8);
  const next=nodes.find(n=>n.type==='button'&&n.props.children==='下一组');assert.ok(next);next.props.onClick();nodes=f.nodes(f.render());
- assert.equal(nodes.filter(n=>n.type==='g'&&n.props.role==='button').length,0);assert.ok(nodes.some(n=>n.type==='p'&&n.props.children==='本组少于 3 个技能，请从左侧列表查看。'));
+ assert.equal(nodes.filter(n=>n.type==='g'&&n.props.role==='button').length,0);assert.ok(nodes.some(n=>n.type==='p'&&n.props.children==='本组少于 3 个技能，请从技能卡查看。'));
 });
 
 test('complete records shade the real area including a known zero', () => {

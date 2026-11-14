@@ -83,12 +83,11 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
         </div>
         {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)}/>}
         {busy && !data && <div aria-label="岗位加载占位" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}
-        {!error && data?.items.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center"><h2 className="font-semibold">{busy ? "上一组筛选暂无岗位" : "暂时没有符合条件的岗位"}</h2><p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">分类是探索入口，不代表每一类都有已发布岗位。可以换个方向，或清除城市、工作类型和关键词。</p><button type="button" disabled={busy} onClick={reset} className="btn-secondary mt-4 min-h-11">查看全部岗位</button></div>}
+        {!error && data?.items.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center"><h2 className="font-semibold">{busy ? "上一组筛选暂无岗位" : "暂时没有符合条件的岗位"}</h2><button type="button" disabled={busy} onClick={reset} className="btn-secondary mt-4 min-h-11">查看全部岗位</button></div>}
         {!error && !!data?.items.length && <div className="workspace-sheet workspace-list">{data.items.map(job => <DiscoveryJobCard key={job.id} job={job} compact={compact}/>)}</div>}
         {!compact && !error && data && data.total > 0 && <nav aria-label="岗位分页" className="flex flex-wrap items-center justify-center gap-3 pt-2 text-sm"><button type="button" className="btn-secondary min-h-11" disabled={busy || data.page <= 1} onClick={() => choose({ page: data.page - 1 })}>上一页</button><span>第 {data.page} / {Math.max(1, Math.ceil(data.total / data.pageSize))} 页</span><button type="button" className="btn-secondary min-h-11" disabled={busy || data.page * data.pageSize >= data.total} onClick={() => choose({ page: data.page + 1 })}>下一页</button></nav>}
       </div>
     </div>
-    {!compact && <p className="text-xs leading-5 text-slate-500">技术方向按岗位标题、明确技能及原分类作导航归类；不是能力认证。未识别方向的旧岗位仍可在“全部岗位”查询。</p>}
   </section>;
 }
 
