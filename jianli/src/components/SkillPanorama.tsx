@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, groupContextsByJob, initialPanoramaState,
+  buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, initialPanoramaState,
   PANORAMA_CATEGORIES, PANORAMA_FILTERS, PANORAMA_FILTER_LABELS, PANORAMA_PAGE_SIZE, PANORAMA_STATUSES,
   PANORAMA_STATUS_LABELS, panoramaStatus, selectionForFilter, skillJobCount,
   type PanoramaFilter, type PanoramaState, type SkillContext, type StatusCounts,
@@ -80,28 +80,6 @@ function SkillIcon({ domain }: { domain: string }) {
   return <span className={styles.skillIcon} data-domain={domain} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[domain] ?? paths.tools}</svg></span>;
 }
 
-function ContextRecord({ context, active, onSelect }: { context: SkillContext; active: boolean; onSelect(key: string): void }) {
-  const { item } = context;
-  const reportHref = `/reports/${encodeURIComponent(context.reportId)}#requirement-${encodeURIComponent(item.requirementId)}`;
-  return <article className={`${styles.context} ${active ? styles.contextActive : ""}`}>
-    <button type="button" className={styles.contextSelect} aria-pressed={active} onClick={() => onSelect(context.key)}>
-      {active ? <><span className={styles.date}>当前记录 · <time dateTime={context.createdAt}>{new Date(context.createdAt).toLocaleDateString("zh-CN")}</time></span><span className={styles.requirement}>{item.requirementTitle}</span></> : <>
-      <span className={styles.contextMeta}>
-        <span data-status={panoramaStatus(item.verdict)}>原报告 · {PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
-        {context.isLatestForJob === true && <span>该岗位最新报告</span>}
-        <time dateTime={context.createdAt}>{new Date(context.createdAt).toLocaleDateString("zh-CN")}</time>
-      </span>
-      <span className={styles.requirement}>{item.requirementTitle}</span>
-      {panoramaStatus(item.verdict) === "unknown" && <span className={styles.date}>原始状态：{item.verdict || "未提供"}</span>}
-      {item.confirmationStatus && item.confirmationStatus !== "pending" && <span className={styles.date}>本人核对：{{ accepted: "已采纳", rejected: "已驳回，需复核", corrected: "已标记修正，需复核" }[item.confirmationStatus]}</span>}
-      {context.materials.length > 0 && <span className={styles.materials}>{context.materials.map(material =>
-        `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}${material.materialRole === "reference" ? "（参考）" : ""}`).join(" · ")}</span>}
-      </>}
-    </button>
-    {!active && <Link className={styles.reportLink} href={reportHref}>核对原报告这项要求 <span aria-hidden="true">↗</span></Link>}
-  </article>;
-}
-
 function SelectedContext({ context }: { context: SkillContext }) {
   const { item } = context;
   const evidenceList = item.evidenceList ?? [];
@@ -125,7 +103,6 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, onClear
   contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; onClear(): void;
 }) {
   const [pickedContext, setPickedContext] = useState<string | null>(null);
-  const groups = groupContextsByJob(contexts);
   const activeKey = contexts.some(context => context.key === pickedContext) ? pickedContext : contexts[0]?.key ?? null;
   const activeContext = contexts.find(context => context.key === activeKey);
   const jobs = new Set(contexts.map(context => context.jobId)).size;
@@ -136,30 +113,15 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, onClear
       <button onClick={onClear} className={styles.clearSelection}>清除选择</button>
     </div>
     {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
+    {contexts.length > 1 && <label className={styles.recordPicker}>
+      报告记录
+      <select className="field" value={activeKey ?? ""} onChange={event => setPickedContext(event.target.value)}>
+        {contexts.map(context => <option key={context.key} value={context.key}>
+          {displayJobTitle(context.jobTitle, context.jobId)} · {new Date(context.createdAt).toLocaleString("zh-CN")} · {context.item.requirementTitle}
+        </option>)}
+      </select>
+    </label>}
     {activeContext && <SelectedContext context={activeContext}/>}
-    {groups.map(group => {
-      const byReport = new Map<string, SkillContext[]>();
-      for (const context of group.contexts) {
-        const records = byReport.get(context.reportId);
-        if (records) records.push(context);
-        else byReport.set(context.reportId, [context]);
-      }
-      const [primary, ...rest] = [...byReport.values()];
-      const renderRecords = (records: SkillContext[]) => records.map(context =>
-        <ContextRecord key={context.key} context={context} active={activeKey === context.key} onSelect={setPickedContext}/>,
-      );
-      return <section key={group.jobId} className={styles.jobGroup} aria-label={`${displayJobTitle(group.jobTitle, group.jobId)} 的报告要求`}>
-        <header className={styles.jobHeading}>
-          <span className={styles.contextJob}>{displayJobTitle(group.jobTitle, group.jobId)}</span>
-          <span className={styles.jobMeta}>{byReport.size} 份报告 · {group.contexts.length} 条要求</span>
-        </header>
-        {renderRecords(primary)}
-        {!!rest.length && <details className={styles.history}>
-          <summary>该岗位其他 {rest.length} 份历史报告</summary>
-          {rest.map(records => <div key={records[0].reportId}>{renderRecords(records)}</div>)}
-        </details>}
-      </section>;
-    })}
   </>;
 }
 

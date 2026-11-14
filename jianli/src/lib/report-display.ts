@@ -10,7 +10,15 @@ export function reportReadingStatus(report: Pick<MatchReport, "analysisMode" | "
   if (report.aiFallbackUsed) {
     const validationFailure = /invalid_output|output_token_limit|validation/i.test(report.aiProcess?.fallbackReason ?? "");
     if (!hasRulesResult) return { label: validationFailure ? "AI 结果未通过校验" : "暂无可用分析结果", reason: "没有可读取的分析结果。" };
-    // A fallback is a rules result: surface the real failure state only, never a source label.
+    const reason = report.aiProcess?.fallbackReason;
+    if (reason === "budget_admission") return { label: "本次 AI 用量检查未通过", reason: "" };
+    if (reason === "timeout") return { label: "AI 请求超时", reason: "" };
+    if (reason === "rate_limit" || reason === "provider_busy") return { label: "AI 服务繁忙", reason: "" };
+    if (reason === "authentication") return { label: "AI 服务认证失败", reason: "" };
+    if (reason === "network") return { label: "AI 服务连接失败", reason: "" };
+    if (reason === "provider_http_error" || reason === "provider_error") return { label: "AI 请求未完成", reason: "" };
+    if (reason === "input_token_limit") return { label: "材料超出本次 AI 分析范围", reason: "" };
+    if (reason === "output_token_limit") return { label: "AI 返回内容不完整", reason: "" };
     return { label: validationFailure ? "AI 结果未通过校验" : "AI 分析未完成", reason: "" };
   }
   // A plain rules result carries no reading-status notice at all.

@@ -21,6 +21,7 @@ test('circular radar uses full record counts and preserves unknown and review in
  const b=report('b',[item('4','Python','gap')]);
  const skills=buildSkillPanorama([a,b,a]).skills, f=fixture(skills); const nodes=f.nodes(f.render());
  assert.equal(nodes.filter(n=>n.type==='circle'&&n.props.fill==='none').length,4);
+ assert.equal(nodes.some(n=>n.type==='polygon'),false);
  const axes=nodes.filter(n=>n.type==='g'&&n.props.role==='button');assert.equal(axes.length,3);
  assert.match(axes[0].props['aria-label'],/Python，有证据支持 1\/2 条，未评估 0 条，需复核 1 条/);
  assert.match(axes[1].props['aria-label'],/SQL，无可评估记录，未评估 1 条/);
@@ -32,4 +33,11 @@ test('more than eight skills have explicit pages, and fewer than three do not in
  const f=fixture(skills,null);let nodes=f.nodes(f.render());assert.equal(nodes.filter(n=>n.type==='g'&&n.props.role==='button').length,8);
  const next=nodes.find(n=>n.type==='button'&&n.props.children==='下一组');assert.ok(next);next.props.onClick();nodes=f.nodes(f.render());
  assert.equal(nodes.filter(n=>n.type==='g'&&n.props.role==='button').length,0);assert.ok(nodes.some(n=>n.type==='p'&&n.props.children==='本组少于 3 个技能，请从左侧列表查看。'));
+});
+
+test('complete records shade the real area including a known zero', () => {
+ const skills=buildSkillPanorama([report('a',[item('1','Python','supported'),item('2','SQL','claimed_only'),item('3','pytest','supported')])]).skills;
+ const f=fixture(skills); const polygon=f.nodes(f.render()).find(node=>node.type==='polygon');
+ assert.ok(polygon.props.points.split(' ').includes('250,225'));
+ assert.ok(polygon.props.fillOpacity>0 && polygon.props.fillOpacity<1);
 });

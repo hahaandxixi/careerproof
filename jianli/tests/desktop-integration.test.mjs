@@ -57,6 +57,9 @@ test('ordinary source labels distinguish AI success, unrequested analysis and bu
  assert.equal(reportDisplay.reportReadingStatus(saved('x')),null);
  const blocked=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,items:[{aiStatus:'rules_only'}]}));
  assert.equal(blocked.label,'AI 分析未完成');assert.equal(blocked.reason,'');
+ const budgetBlocked=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'rules',aiFallbackUsed:true,aiProcess:{fallbackReason:'budget_admission'},items:[{aiStatus:'fallback'}]}));
+ assert.equal(budgetBlocked.label,'本次 AI 用量检查未通过');
+
  const invalid=reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true,aiProcess:{fallbackReason:'invalid_output_or_config'},items:[{aiStatus:'rules_only'}]}));
  assert.equal(invalid.label,'AI 结果未通过校验');assert.equal(invalid.reason,'');
  assert.equal(reportDisplay.reportReadingStatus(saved('x',{analysisMode:'ai_evidence',aiFallbackUsed:true})).label,'暂无可用分析结果');

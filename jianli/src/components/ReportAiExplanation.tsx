@@ -1,7 +1,6 @@
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
 import { adoptedReportExplanation } from "@/lib/report-workspace";
 import EvidenceLink from "./EvidenceLink";
-import { sourceContextVerified } from "@/lib/analysis-status";
 import { compactSourceLabel } from "@/lib/source-label";
 import { invalidNarrativeCitations } from "@/lib/report-citations";
 import { historicalScopeOnly, unsentRuleSources } from "@/lib/source-limits";
@@ -18,7 +17,7 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
   const additionalCitations = [...new Set(item.aiCitationIds)].filter(id => !inlineCitations.has(id));
   if (invalid.length) return <section className="rounded-lg border border-amber-200 p-4 text-base leading-7" role="note">
     <p>这份历史解释含有未与本项来源对齐的引用，暂不能作为已核验解释。请核对下方固定来源。</p>
-    <details className="mt-2"><summary className="cursor-pointer text-[#1d4a40]">查看保存原文与异常编号</summary><p className="mt-2 whitespace-pre-wrap">{explanation}</p><p>{invalid.join("、")}</p>{item.aiInformationGap && <p>{item.aiInformationGap}</p>}{item.aiSuggestion && <p>{item.aiSuggestion}</p>}</details>
+    <details className="mt-2"><summary className="cursor-pointer text-[#1d4a40]">查看保存原文与异常编号</summary><p className="mt-2 whitespace-pre-wrap">{explanation}</p><p>{invalid.join("、")}</p></details>
   </section>;
   return <section className="border-l-2 border-[#245c50] pl-4" aria-label={`${item.skill}的AI证据解释`}>
     <h4 className="font-semibold text-[#173c34]">AI 解释</h4>
@@ -29,13 +28,5 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
       const source = item.evidenceList.find(value => value.citationId === citation);
       return <EvidenceLink key={citation} citationId={citation} className="inline-flex min-h-10 items-center rounded-lg border border-[#c8d8d0] bg-white px-3 text-sm text-[#173c34]">{source ? `${compactSourceLabel(source, report.materials).fileName} · ${source.lineStart}–${source.lineEnd}行` : `查看来源 ${citation}`}</EvidenceLink>;
     })}</div>}
-    <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer py-1">原始解释与校验记录</summary>
-      <p className="mt-2 whitespace-pre-wrap break-words">{explanation}</p>
-      <p className="mt-2">{sourceContextVerified(report.evidenceContextVersion) ? "生成时记录了引用与原文校验，解释是否充分仍需核对。" : "历史解释仅保留当时校验结果，未通过当前完整上下文检查。"}</p>
-      {item.aiConfidence != null && <p className="mt-2">解释置信度 {Math.round(item.aiConfidence * 100)}%</p>}
-      {item.aiInformationGap && <p className="mt-2 whitespace-pre-wrap break-words">仍缺少：{item.aiInformationGap}</p>}
-      {item.aiSuggestion && <p className="mt-2 whitespace-pre-wrap break-words">建议补充：{item.aiSuggestion}</p>}
-      {item.aiSuggestionRedundant && <p className="mt-2 text-amber-900">这条旧建议重复要求当前已有的源码，仅保留原文，不用于补证草稿。</p>}
-    </details>
   </section>;
 }
