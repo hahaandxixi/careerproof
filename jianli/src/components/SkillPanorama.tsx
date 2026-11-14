@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, initialPanoramaState,
+  buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, groupContextsByJob, initialPanoramaState,
   PANORAMA_CATEGORIES, PANORAMA_FILTERS, PANORAMA_FILTER_LABELS, PANORAMA_PAGE_SIZE, PANORAMA_STATUSES,
   PANORAMA_STATUS_LABELS, panoramaStatus, selectionForFilter, skillJobCount,
   type PanoramaFilter, type PanoramaState, type SkillContext, type StatusCounts,
@@ -99,29 +99,36 @@ function SelectedContext({ context }: { context: SkillContext }) {
   </section>;
 }
 
-function SkillContextRail({ contexts, skillName, filter, matched, total, onClear }: {
-  contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; onClear(): void;
-}) {
-  const [pickedContext, setPickedContext] = useState<string | null>(null);
-  const activeKey = contexts.some(context => context.key === pickedContext) ? pickedContext : contexts[0]?.key ?? null;
-  const activeContext = contexts.find(context => context.key === activeKey);
-  const jobs = new Set(contexts.map(context => context.jobId)).size;
+function SkillContextRecords({ contexts, skillKey }: { contexts: SkillContext[]; skillKey: string }) {
+  const [choices, setChoices] = useState<Record<string, string>>({});
+  const groups = groupContextsByJob(contexts);
+  const picked = contexts.find(context => context.key === choices[skillKey]);
+  const active = picked ?? groups[0]?.contexts[0];
+  if (!active) return <p className={styles.contextNoSource}>当前筛选下没有可查看的记录。</p>;
+  const choose = (key: string) => setChoices(previous => ({ ...previous, [skillKey]: key }));
   return <>
-    <div className={styles.railHeading}>
-      <h2>{skillName}</h2>
-      <p>{filter === "all" ? <>{total} 条要求记录 · {jobs} 个岗位</> : <>命中 <strong>{matched}</strong> 条 / 共 {total} 条 · {jobs} 个岗位</>}</p>
-      <button onClick={onClear} className={styles.clearSelection}>清除选择</button>
+    <div className={styles.drawerJobs} aria-label="按岗位查看记录">
+      {groups.map(group => {
+        const [first, ...history] = group.contexts;
+        const jobSelected = active.jobId === group.jobId;
+        const title = displayJobTitle(group.jobTitle, group.jobId);
+        return <div key={group.jobId}>
+          <button type="button" className="btn-secondary btn-compact" aria-pressed={jobSelected}
+            onClick={() => choose(first.key)}>{title}</button>
+          {jobSelected && history.length > 0 && <details className={styles.history}>
+            <summary>同岗位其他记录（{history.length}）</summary>
+            <ul>{history.map(context => <li key={context.key}>
+              <button type="button" className={styles.recordButton} aria-pressed={active.key === context.key}
+                onClick={() => choose(context.key)}>
+                {new Date(context.createdAt).toLocaleString("zh-CN")} · {context.item.requirementTitle}
+                {context.isLatestForJob === true && " · 该岗位最新报告"}
+              </button>
+            </li>)}</ul>
+          </details>}
+        </div>;
+      })}
     </div>
-    {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
-    {contexts.length > 1 && <label className={styles.recordPicker}>
-      报告记录
-      <select className="field" value={activeKey ?? ""} onChange={event => setPickedContext(event.target.value)}>
-        {contexts.map(context => <option key={context.key} value={context.key}>
-          {displayJobTitle(context.jobTitle, context.jobId)} · {new Date(context.createdAt).toLocaleString("zh-CN")} · {context.item.requirementTitle}
-        </option>)}
-      </select>
-    </label>}
-    {activeContext && <SelectedContext context={activeContext}/>}
+    <SelectedContext context={active} />
   </>;
 }
 
@@ -132,8 +139,21 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
   const reports = state.summaries.flatMap(summary => state.reports.filter(report => report.id === summary.id));
   const landscape = buildSkillPanorama(reports);
   const skill = landscape.skills.find(value => value.key === selected);
-  const allContexts = selected === "" ? landscape.unclassified : skill?.contexts ?? [];
-  const matchedContexts = filterSkillContexts(allContexts, filter);
+  const contexts = filterSkillContexts(selected === "" ? landscape.unclassified : skill?.contexts ?? [], filter);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const opener = useRef<Element | null>(null);
+  const openEvidence = (key: string, trigger?: Element) => {
+    onSelect(key);
+    if (!dialog.current?.open && dialog.current) {
+      opener.current = trigger ?? document.activeElement;
+      dialog.current.showModal();
+    }
+  };
+  const restoreFocus = () => {
+    if ((opener.current instanceof HTMLElement || opener.current instanceof SVGElement) && opener.current.isConnected) {
+      opener.current.focus({ preventScroll: true });
+    }
+  };
   const failed = Object.keys(state.failures).length;
   const empty = !state.busy && state.total === 0;
   // A skill stays visible when any saved record matches; its own card keeps every
@@ -145,7 +165,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
     [...landscape.skills.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
-  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />;
+  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={openEvidence} opensDialog />;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
       <div><h1>技能全景</h1><p className={styles.subtitle}>汇总已保存报告中的技能与材料支持记录，按岗位逐条核对原始要求。</p></div>
@@ -164,7 +184,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
     {failed > 0 && <details className={styles.failures}><summary>{failed} 份报告详情暂不可用，已读取内容仍保留</summary><ul>{state.summaries.filter(report => state.failures[report.id]).map(report => <li key={report.id}>{displayJobTitle(report.jobTitle, report.jobId)} · {new Date(report.createdAt).toLocaleString("zh-CN")}：{state.failures[report.id]}</li>)}</ul>
       <button className="btn-secondary" disabled={state.busy} onClick={retryFailed}>仅重试失败详情</button></details>}
     {empty ? <section className={styles.empty}><p className={styles.eyebrow}>从第一份报告开始</p><h2>还没有已保存报告</h2><p>选择岗位，用已有材料生成报告后，这里会整理报告中明确记录的技能。</p><Link href="/jobs" className="btn">选择岗位</Link></section> : <div className={styles.layout}>
-      <section className={styles.canvas} aria-label="技能分组全景" aria-busy={state.busy}>
+      <section className={styles.canvas} aria-label="技能记录统计" aria-busy={state.busy}>
         <div className={styles.legend}>
           <ul aria-label="原报告状态图例">{PANORAMA_STATUSES.map(status => <li key={status}><i data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}</li>)}</ul></div>
         <p className={styles.contextNoSource}>色带汇总该技能已加载的全部记录，按原报告状态统计。本人复核单独标记。</p>
@@ -175,14 +195,16 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
           </button>)}
         </div>
         {radar}
-        {groups.map((group, index) => {
+      </section>
+      <section className={styles.cards} aria-label="技能分组全景">
+        {groups.map(group => {
           return <section className={styles.group} key={group.category} aria-label={group.category}>
-            <div className={styles.groupHeading}><span className={styles.groupNumber}>{String(index + 1).padStart(2, "0")}</span><h3>{group.category}</h3><span>{group.skills.length} 技能 · {group.skills.reduce((total, value) => total + filterSkillContexts(value.contexts, filter).length, 0)} 条</span></div>
+            <div className={styles.groupHeading}><h3>{group.category}</h3></div>
             <div className={styles.skills}>{group.skills.map(value => {
               const domain = skillDomain(value.name);
               const reviewCount = value.contexts.filter(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected").length;
               const selectedCard = selected === value.key;
-              return <button key={value.key} className={styles.skillCard} aria-pressed={selectedCard} aria-controls="skill-context-rail" onClick={() => onSelect(value.key)}>
+              return <button key={value.key} className={styles.skillCard} aria-pressed={selectedCard} aria-haspopup="dialog" aria-controls="skill-evidence-drawer" onClick={event => openEvidence(value.key, event?.currentTarget)}>
                 <SkillIcon domain={domain.domain}/>
                 <span className={styles.skillCardBody}>
                   <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
@@ -193,20 +215,26 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
                     {reviewCount > 0 && <span className={styles.reviewMark}>需复核 {reviewCount} 条</span>}
                   </span>
                 </span>
-                <span className={styles.cardArrow} aria-hidden="true">{selectedCard ? "已选" : "查看 →"}</span>
+                <span className={styles.cardArrow}>查看依据 →</span>
               </button>;
             })}</div>
           </section>;
         })}
-        {!!unclassifiedMatched && <button className={styles.unclassified} aria-pressed={selected === ""} aria-controls="skill-context-rail" onClick={() => onSelect("")}>未标注技能的要求 <strong>{unclassifiedMatched}</strong><span>保留原要求，不推测技能名称 →</span></button>}
+        {!!unclassifiedMatched && <button className={styles.unclassified} aria-pressed={selected === ""} aria-haspopup="dialog" aria-controls="skill-evidence-drawer" onClick={event => openEvidence("", event?.currentTarget)}>未标注技能的要求 <strong>{unclassifiedMatched}</strong><span>保留原要求，不推测技能名称 →</span></button>}
         {!landscape.contextCount && <p className={styles.noRecords}>{state.busy ? "正在读取报告中的技能与要求…" : "已读取报告中暂无技能或要求记录。可核对原报告，或继续加载其他报告。"}</p>}
         {!!landscape.contextCount && !visibleSkills.length && !unclassifiedMatched && <p className={styles.noRecords}>当前筛选没有匹配的要求记录。<button type="button" className="btn-secondary btn-compact" onClick={() => onFilterChange?.("all")}>查看全部记录</button></p>}
       </section>
-      <aside className={styles.rail} id="skill-context-rail" aria-label="所选技能的岗位语境">
-        {selected === "" || skill ? <SkillContextRail contexts={matchedContexts} skillName={selected === "" ? "未标注技能的要求" : skill!.name}
-          filter={filter} matched={matchedContexts.length} total={allContexts.length} onClear={() => onSelect(null)}/> :
-          <div className={styles.railHeading}><h2>选择一个技能</h2></div>}
-      </aside>
+      <dialog ref={dialog} id="skill-evidence-drawer" className={`job-workspace-drawer ${styles.evidenceDrawer}`}
+        aria-labelledby="skill-evidence-title" onClose={restoreFocus}
+        onClick={event => { if (event.target === event.currentTarget) dialog.current?.close(); }}>
+        <div className="job-workspace-drawer-inner">
+          <header className="job-workspace-drawer-heading">
+            <h2 id="skill-evidence-title" className="section-title">{selected === "" ? "未标注技能的要求" : skill?.name} · 材料依据</h2>
+            <button type="button" className="btn-secondary" onClick={() => dialog.current?.close()}>关闭</button>
+          </header>
+          <SkillContextRecords contexts={contexts} skillKey={selected ?? ""} />
+        </div>
+      </dialog>
     </div>}
   </div>;
 }

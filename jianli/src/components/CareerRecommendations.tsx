@@ -52,6 +52,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   const [expandedCandidates, setExpandedCandidates] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [readingCitation, setReadingCitation] = useState("");
+  const [fragmentRevision, refreshFragment] = useState(0);
   const [historyRequest, setHistoryRequest] = useState(0);
   const [historyError, setHistoryError] = useState("");
   const [editingMaterials, setEditingMaterials] = useState(false);
@@ -162,12 +163,20 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   const result = savedResult ? careerPlanDisplayIdentity(savedResult) : null;
   const projectIds = new Set(result?.materials.filter(material => material.kind === "project").map(material => material.id));
   useEffect(() => {
+    const changed = () => refreshFragment(value => value + 1);
+    window.addEventListener("hashchange", changed);
+    return () => window.removeEventListener("hashchange", changed);
+  }, []);
+  useEffect(() => {
     if (!savedResult) return;
     const params = new URLSearchParams(location.search);
     const originalPlan = params.get("returnPlan");
     if (originalPlan && originalPlan !== savedResult.planId) return;
     const hash = location.hash;
-    if (!hash.startsWith("#plan-citation-") && !hash.startsWith("#plan-job-")) return;
+    if (!hash.startsWith("#plan-citation-")) {
+      if (readingCitation) setReadingCitation("");
+      if (!hash.startsWith("#plan-job-")) return;
+    }
     let id: string;
     try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
     if (id.startsWith("plan-citation-") && readingCitation !== id.slice("plan-citation-".length)) {
@@ -181,14 +190,12 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         job.evidence.some(evidence => `plan-citation-${evidence.citationId}` === id))) setExpandedCandidates(true);
       return;
     }
-    const jobDetails = id.startsWith("plan-job-") ? target.querySelector("details") : null;
-    if (jobDetails) jobDetails.open = true;
     for (let parent = target.parentElement; parent; parent = parent.parentElement) {
       if (parent instanceof HTMLDetailsElement) parent.open = true;
     }
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: "start" });
-  }, [savedResult, expandedCandidates, readingCitation]);
+  }, [savedResult, expandedCandidates, readingCitation, fragmentRevision]);
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
   const visibleChanges = result ? visibleCareerChanges(result.changes, visibleRecommendations) : [];
 
@@ -244,28 +251,22 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         </p>
       </details>}
       {visibleRecommendations.map(item => {
-        return <article id={`plan-job-${item.jobId}`} tabIndex={-1} className="career-job-card panel scroll-mt-24 !p-3" key={item.jobId}>
-        <details className="group/job">
-        <summary className="cursor-pointer list-none rounded-lg px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-600 [&::-webkit-details-marker]:hidden">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div className="min-w-0">
-            <h3 className="break-words text-lg font-semibold">{item.jobTitle}</h3>
-            <p className="break-words text-sm text-slate-600">{item.companyName} · {item.city} · {EMPLOYMENT_LABELS[item.employmentType] ?? item.employmentType}</p>
+        const activeEvidence = readingCitation ? item.evidence.filter(evidence => evidence.citationId === readingCitation) : [];
+        return <article id={`plan-job-${item.jobId}`} tabIndex={-1} className="career-job-card panel scroll-mt-24 space-y-3" key={item.jobId}>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div className="min-w-0">
+              <h3 className="break-words text-lg font-semibold">{item.jobTitle}</h3>
+              <p className="break-words text-sm text-slate-600">{item.companyName} · {item.city} · {EMPLOYMENT_LABELS[item.employmentType] ?? item.employmentType}</p>
+            </div>
+            <span className="shrink-0 rounded-full bg-indigo-50 px-3 py-1 text-sm text-indigo-700">{PRIORITY_LABELS[item.priority]}</span>
           </div>
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-sm text-indigo-700">{PRIORITY_LABELS[item.priority]}</span>
-        </div>
-        <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm">
-          <span className="text-slate-700">材料支持 {item.supportedCount} 项 · 仅简历声明 {item.claimedCount} 项 · 已评估 {item.assessedCount}/{item.requirementCount} 项</span>
-          <span className="font-medium text-indigo-700"><span aria-hidden="true">› </span><span className="group-open/job:hidden">查看岗位详情</span><span className="hidden group-open/job:inline">收起详情</span></span>
-        </div>
-        </summary>
-        <div className="mt-2 border-t border-slate-100 pt-1">
-        {!!item.matchedSkills.length && <div className="mt-4"><p className="text-sm font-medium">匹配线索</p><div className="mt-2 flex flex-wrap gap-2">{item.matchedSkills.map(skill => <span key={skill} className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700">{skill}</span>)}</div></div>}
-        {readingCitation && <ul className="mt-3 space-y-3">{item.evidence.filter(evidence => evidence.citationId === readingCitation).map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-indigo-700 underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}`}>打开原始文件并定位行号</Link>}</li>)}</ul>}
-        <Link className="btn mt-5 inline-block" href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
-        </div>
-        </details>
-      </article>;
+          <p className="text-sm text-slate-700">材料支持 {item.supportedCount} 项 · 仅简历声明 {item.claimedCount} 项 · 已评估 {item.assessedCount}/{item.requirementCount} 项</p>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+            {!!item.matchedSkills.length && <div className="flex min-w-0 flex-wrap items-center gap-2"><span className="text-xs font-medium text-slate-600">匹配线索</span>{item.matchedSkills.map(skill => <span key={skill} className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs text-emerald-700">{skill}</span>)}</div>}
+            <Link className="btn ml-auto shrink-0" href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
+          </div>
+          {!!activeEvidence.length && <ul className="space-y-3 border-t border-slate-100 pt-3">{activeEvidence.map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-indigo-700 underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}`}>打开原始文件并定位行号</Link>}</li>)}</ul>}
+        </article>;
       })}
       {result.recommendations.length > careerPlanRecommendations(result, false).length && <button type="button" className="rounded-xl border border-slate-200 px-4 py-3 text-sm text-indigo-700" aria-expanded={expandedCandidates} onClick={() => setExpandedCandidates(value => !value)}>{expandedCandidates ? "收起其他候选，只看重点岗位" : `展开其余 ${result.recommendations.length - visibleRecommendations.length} 个规则候选`}</button>}
 

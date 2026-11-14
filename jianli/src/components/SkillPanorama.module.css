@@ -12,7 +12,7 @@
 .loadbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 8px 0; border-block: 1px solid #d8d0c2; font-size: 13px; color: #526176; }
 .loadbar strong { color: #1d4a40; font-variant-numeric: tabular-nums; }
 .failureText { color: #9a4b08; }
-.layout { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: 24px; align-items: start; padding-top: 16px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; padding-top: 16px; }
 .canvas { min-width: 0; background: #fff; padding: 16px 20px 14px; border-top: 3px solid #1d4a40; box-shadow: 0 1px 2px rgba(23,45,42,.04); }
 .canvasTitle { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .canvasTitle h2, .rail h2, .empty h2 { font-size: 19px; font-weight: 700; line-height: 1.4; }
@@ -27,7 +27,7 @@
 .panorama [data-status="gap"] { background: #e4c68d; color: #57390b; }
 .panorama [data-status="unsupported"] { background: #64748b; color: #fff; }
 .panorama [data-status="unknown"] { background: repeating-linear-gradient(135deg, #e2e8f0, #e2e8f0 3px, #c3cddc 3px, #c3cddc 5px); color: #263755; }
-.group { padding: 12px 0 14px; border-top: 1px solid #e1ddd2; }
+.group { padding: 4px 0 12px; min-width: 0; }
 .group:first-of-type { border-top: 0; }
 .groupHeading { display: flex; align-items: baseline; gap: 10px; }
 .groupHeading h3 { font-size: 15px; font-weight: 650; }
@@ -41,14 +41,12 @@
 .filters button:hover { border-color: #9db8ad; background: #f0f5f1; }
 .filters button span { margin-left: 4px; color: #7c87a0; font-variant-numeric: tabular-nums; }
 .filters button[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; color: #143a32; font-weight: 650; }
-.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
-/* A domain with one real skill must not leave a decorative empty column. */
-.skills > :only-child { grid-column: 1 / -1; }
+.skills { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; margin-top: 6px; }
 /* One card per real skill: technical glyph, name, own status band and counts. */
-.skillCard { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center; gap: 10px 13px; width: 100%; min-height: 104px; padding: 12px 14px; border: 1px solid #d9d2c4; border-radius: 8px; text-align: left; background: #fbf9f4; color: #1e3a34; overflow-wrap: anywhere; }
+.skillCard { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 10px 13px; width: 100%; min-height: 72px; padding: 12px 14px; border: 1px solid #d9d2c4; border-radius: 8px; text-align: left; background: #fbf9f4; color: #1e3a34; overflow-wrap: anywhere; }
 .skillCard:hover { border-color: #9db8ad; background: #f0f5f1; }
 .skillCard[aria-pressed="true"] { border-color: #1d4a40; background: #e4eeea; box-shadow: inset 0 0 0 1px #1d4a40; }
-.skillIcon { display: grid; place-items: center; align-self: stretch; width: 46px; min-height: 72px; border-radius: 7px; background: #eef4f0; color: #1d4a40; }
+.skillIcon { display: grid; place-items: center; align-self: stretch; width: 34px; min-height: 42px; border-radius: 7px; background: #eef4f0; color: #1d4a40; }
 .skillIcon svg { width: 26px; height: 26px; }
 .skillIcon[data-domain="data"] { background: #fff6dc; color: #8a5a12; }
 .skillIcon[data-domain="testing"] { background: #e8f6f3; color: #146c63; }
@@ -119,7 +117,7 @@
 .empty h2 { margin-top: 8px; }
 .empty > p:not(:first-child) { color: #617086; margin: 12px 0 18px; }
 @media (max-width: 1350px) {
-  .layout { grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: 18px; }
+  .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
   .canvas { padding-inline: 16px; }
   .heading h1 { font-size: 26px; }
   .skills { grid-template-columns: minmax(0, 1fr); }
@@ -160,3 +158,12 @@
 
 .recordPicker { display: grid; gap: 4px; font-size: 13px; color: #526176; }
 .recordPicker select { min-width: 0; width: 100%; }
+
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; min-width: 0; align-items: start; }
+.cards > :is(.unclassified, .noRecords) { grid-column: 1 / -1; }
+.evidenceDrawer:global(.job-workspace-drawer) { width: min(100%, 580px); }
+.drawerJobs { display: flex; flex-wrap: wrap; gap: 8px; }
+.drawerJobs > div { min-width: 0; }
+.drawerJobs button[aria-pressed="true"] { border-color: #1d4a40; color: #1d4a40; background: #e4eeea; }
+.recordButton { display: block; text-align: left; padding: 5px 8px; border: 1px solid transparent; border-radius: 4px; font-size: 13px; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }

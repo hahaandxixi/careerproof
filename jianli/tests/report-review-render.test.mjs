@@ -52,13 +52,14 @@ test("filter changes update selection and URL without triggering anchor navigati
   h.workspaceProps.at(-1).onFilterChange("gaps"); await h.settle(); h.html();
   assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
   assert.equal(h.radarProps.at(-1).selectedRequirementId,"b");
-  assert.equal(globalThis.window.location.hash,"#requirement-b");
-  assert.equal(globalThis.window.location.search,"?filter=gaps");
+  assert.equal(globalThis.window.location.hash,"");
+  assert.equal(globalThis.window.location.search,"?filter=gaps&requirement=b");
   h.workspaceProps.at(-1).onFilterChange("all"); await h.settle(); h.html();
   assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
   h.workspaceProps.at(-1).onFilterChange("other"); await h.settle(); h.html();
   assert.equal(h.workspaceProps.at(-1).selectedRequirementId,null);
-  assert.equal(globalThis.window.location.hash,"#report-matching");
+  assert.equal(globalThis.window.location.hash,"");
+  assert.equal(globalThis.window.location.search,"?filter=other&requirement=");
   h.workspaceProps.at(-1).onFilterChange("all"); await h.settle(); h.html();
   assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"a");
   assert.equal(h.hashEvents,0);

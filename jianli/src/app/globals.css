@@ -120,9 +120,7 @@ details[open] > summary::before { transform: rotate(45deg); }
   .site-account > :focus-visible,
   .site-account > details > summary:focus-visible { outline-color: #a8c5bc; }
   .career-job-card { transition: border-color 120ms; }
-  .career-job-card:hover { border-color: #a5b4fc; }
-  .career-job-card:has(> details[open]) { border-color: var(--flow-brand); box-shadow: inset 0 0 0 1px var(--flow-brand); }
-  .career-job-card > details[open] > summary { background: var(--flow-selected); }
+  .career-job-card:hover { border-color: #7ca396; }
   .panel { @apply rounded-xl border border-slate-200 bg-white p-4 sm:p-5; }
   .field { @apply min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#245c50] focus:ring-2 focus:ring-[#e7efe9] disabled:bg-slate-100; }
   .btn { @apply inline-flex min-h-11 items-center justify-center rounded-lg bg-[#245c50] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1d4a40] disabled:cursor-not-allowed disabled:opacity-50; }
@@ -1536,7 +1534,6 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 @media (max-width: 760px) { .job-workspace-overview { grid-template-columns: minmax(0, 1fr); } }
 .enterprise-review-page .enterprise-matrix thead th:has(.candidate-select[aria-pressed="true"]) { background: #cfe1d8; }
 .enterprise-review-page .enterprise-matrix .candidate-select { overflow-wrap: anywhere; }
-.career-job-card > details > summary::before { display: none; }
 .enterprise-review-page .enterprise-matrix tbody th[scope="row"] { overflow-wrap: anywhere; }
 .job-workspace-applications { display: grid; gap: 8px; min-width: 0; }
 .job-workspace-list-message, .job-workspace-pagination { padding: 12px; }

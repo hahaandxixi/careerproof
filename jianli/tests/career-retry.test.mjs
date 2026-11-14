@@ -40,7 +40,7 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
-  const mod={exports:{}};new Function("require","module","exports","location","document",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports,{search:query,hash},{getElementById:()=>null});
+  const mod={exports:{}};new Function("require","module","exports","location","document","window",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports,{search:query,hash},{getElementById:()=>null},{addEventListener(){},removeEventListener(){}});
   const emptyIds=[];
   const render=()=>{cursor=effectCursor=0;return mod.exports.default({}).type({initialResumeVersionId:"",initialProjectVersionIds:emptyIds});};
   const settle=async()=>{while(effects.length)effects.shift()();for(let i=0;i<8;i++)await Promise.resolve();};
@@ -153,4 +153,19 @@ test("a source return restores the requested saved plan without generating a new
  f.render(); await f.settle(); f.render(); await f.settle(); const tree=f.render();
  assert.ok(f.nodes(tree).some(n=>n.props?.["data-plan-id"]==="older"));
  assert.equal(f.calls().createCalls,0); assert.equal(f.calls().historyCalls,1);
+});
+
+test("recommendation cards show matched skills and job link directly without a fold toggle",()=>{
+ const recommendation={jobId:"job1",jobTitle:"数据处理实习生",companyName:"云栈科技",city:"南京",employmentType:"internship",priority:"medium",supportedCount:2,claimedCount:0,assessedCount:3,requirementCount:3,gaps:[],matchedSkills:["pytest","Python"],evidence:[]};
+ const saved={planId:"saved",materials:[],recommendations:[recommendation],changes:[],summary:"已保存"};
+ const f=fixture({historyResult:saved,query:"?returnPlan=saved"});
+ return (async()=>{
+  f.render(); await f.settle(); f.render(); await f.settle();
+  const card=f.nodes(f.render()).find(n=>n.props?.id==="plan-job-job1");
+  const cardNodes=f.nodes(card);
+  assert.ok(!cardNodes.some(n=>n.type==="details"));
+  assert.ok(cardNodes.some(n=>n.props?.children==="pytest"));
+  assert.ok(cardNodes.some(n=>n.props?.children==="Python"));
+  assert.ok(cardNodes.some(n=>n.props?.href==="/jobs/job1"&&n.props.children==="查看岗位"));
+ })();
 });

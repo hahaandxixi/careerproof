@@ -37,7 +37,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
   const detailChecks = primaryIsCheck ? checks.slice(1) : checks;
   const detailSteps = primaryIsStep ? steps.slice(1) : steps;
 
-  return <section aria-label="补证建议" className="mt-4 space-y-3 border-t border-slate-200 pt-3">
+  return <section aria-label="补证建议" className="space-y-3">
     <h3 className="text-base font-semibold">职业规划建议</h3>
     {job.assessedCount === 0 && <p className="text-sm text-amber-800">岗位要求未进入规则评估范围，请人工核对材料。</p>}
     {primary && <div className="reading-band text-sm leading-6" data-reading-tone="amber"><p className="reading-role">{advice.keyGap?.trim() ? "待补" : "补证建议"}</p><p className="break-words">{primary}</p></div>}

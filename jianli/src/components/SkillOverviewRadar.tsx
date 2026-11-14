@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { skillRecordMeasure, type PanoramaSkill } from "@/lib/skill-panorama";
 import styles from "./SkillPanorama.module.css";
 
-export default function SkillOverviewRadar({ skills, selected, onSelect }: {
-  skills: PanoramaSkill[]; selected: string | null; onSelect(key: string): void;
+export default function SkillOverviewRadar({ skills, selected, onSelect, opensDialog }: {
+  skills: PanoramaSkill[]; selected: string | null; onSelect(key: string, trigger?: Element): void; opensDialog?: boolean;
 }) {
   const [page, setPage] = useState(0);
   const pages = Math.ceil(skills.length / 8);
@@ -43,7 +43,7 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
         const active=skill.key===selected, characters=Array.from(skill.name), labelName=characters.length > 8 ? `${characters.slice(0,7).join("")}…` : skill.name;
         return <g key={skill.key}>
           {mark && <circle cx={mark.x} cy={mark.y} r={active?6:4.5} fill="#1d6c5a" stroke="#fff" strokeWidth="2"/>}
-          <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${m.ratio === null ? "无可评估记录" : `有证据支持 ${m.supported}/${m.total} 条`}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，查看记录`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
+          <g role="button" tabIndex={0} aria-haspopup={opensDialog ? "dialog" : undefined} aria-pressed={active} aria-label={`${skill.name}，${m.ratio === null ? "无可评估记录" : `有证据支持 ${m.supported}/${m.total} 条`}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，查看记录`} onClick={event => onSelect(skill.key, event?.currentTarget)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key, event.currentTarget);} }} className={styles.radarAxis}>
             <title>{`${skill.name}：有证据支持 ${m.supported}/${m.total} 条，未评估 ${m.unassessed} 条，需复核 ${m.review} 条`}</title><rect x={label.x-64} y={label.y-23} width="128" height="47" rx="6" fill={active?"#e3f0e9":"#fffefa"} stroke={active?"#1d6c5a":"#d7ded7"} strokeWidth={active?2:1}/>
             <text x={label.x} y={label.y-4} textAnchor="middle" className={styles.radarLabel}>{labelName}</text>
             <text x={label.x} y={label.y+13} textAnchor="middle" className={styles.radarValue}>{m.ratio===null ? "未评估" : `${Math.round(m.ratio*100)}% · ${m.supported}/${m.total}`}{m.unassessed ? " · 未评估" : ""}</text>
