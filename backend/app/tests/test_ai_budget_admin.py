@@ -1,6 +1,6 @@
 """Fresh administrator authority, immutable decisions, and conservative cutover."""
 
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 
 import pytest
 from sqlalchemy import select, update
@@ -14,6 +14,7 @@ from app.models.identity import User
 from app.services.ai_budget import (
     GATE_ID,
     LEGACY_CUTOVER_ACTION,
+    SHANGHAI,
     BudgetAdmissionError,
     SharedBudgetService,
     inventory_hash,
@@ -95,6 +96,28 @@ async def test_reviewed_prior_day_unknown_is_audited_without_creating_usage(budg
                 session, actor_id=actor, reason="replay", legacy_digest=plan_digest,
             )
         await session.rollback()
+
+
+@pytest.mark.parametrize("activity_seconds,eligible", [(-1, True), (0, False)])
+async def test_cutover_uses_shanghai_midnight_for_last_heartbeat(
+    budget_data, activity_seconds, eligible,  # noqa: F811
+):
+    factory, _runtime, _owner, _task, _other = budget_data
+    actor = await admin_id(factory)
+    service = SharedBudgetService(clock=lambda: NOW, policy=POLICY)
+    midnight = datetime.combine(service.today(), time.min, SHANGHAI).astimezone(UTC)
+    async with factory() as session:
+        for row in await session.scalars(select(AnalysisTask)):
+            row.task_type = "job_match"
+            row.status = TaskStatus.COMPLETED
+            row.created_at = row.completed_at = row.updated_at = midnight - timedelta(hours=1)
+            row.heartbeat_at = midnight + timedelta(seconds=activity_seconds)
+        await session.commit()
+        if eligible:
+            assert (await service.legacy_cutover_inventory(session, actor_id=actor))["entries"]
+        else:
+            with pytest.raises(BudgetAdmissionError, match="legacy_external_run_requires"):
+                await service.legacy_cutover_inventory(session, actor_id=actor)
 
 
 async def disable_fixture_gate(factory):
