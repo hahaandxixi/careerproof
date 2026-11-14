@@ -126,7 +126,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!resumeVersionId || !externalAiConsent || busy || historyLoading || configurationStatus) return;
-    setBusy(true); setError(""); setErrorSource("generation"); setResult(null); setHistoryNotice(""); setHistoryError("");
+    setReadingCitation(""); setBusy(true); setError(""); setErrorSource("generation"); setResult(null); setHistoryNotice(""); setHistoryError("");
     setResultKind("current"); setExpandedCandidates(false);
     try {
       const next = await api.createCareerPlan({ resumeVersionId, projectVersionIds, limit: 10, externalAiConsent });

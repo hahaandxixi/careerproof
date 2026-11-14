@@ -1,12 +1,16 @@
 import Link from "next/link";
-import type { CareerPlanResult, JobRecommendation } from "@/lib/api/domain";
+import type { CareerPlanResult, JobRecommendation, MatchReport } from "@/lib/api/domain";
+
+import { sourceLocationId } from "@/lib/source-label";
+import EvidenceLink from "./EvidenceLink";
 
 type Advice = NonNullable<CareerPlanResult["aiPlan"]>["advice"][number];
 
-export default function CareerSupplementRoute({ advice, job, planId }: {
+export default function CareerSupplementRoute({ advice, job, planId, report }: {
   advice: Advice;
   job: JobRecommendation;
   planId: string;
+  report?: MatchReport;
 }) {
   const plan = advice.taskPlan;
   const deliverable = plan?.deliverable?.trim() || "";
@@ -44,11 +48,16 @@ export default function CareerSupplementRoute({ advice, job, planId }: {
           {reason && <p>{reason}</p>}
           {detailsDeliverable && <div><p className="font-medium">提交什么</p><p>{detailsDeliverable}</p></div>}
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">
-            {sources.map(({ id, evidence }) => <li key={id}>
-              <Link className="action-link" href={`/recommendations?${new URLSearchParams({ returnPlan: planId })}#plan-citation-${encodeURIComponent(id)}`}>
-                {evidence.skill} · {evidence.filePath.split(/[\\/]/).pop()} · {evidence.lineStart}–{evidence.lineEnd} 行
-              </Link>
-            </li>)}
+            {sources.map(({ id, evidence }) => {
+              const label = `${evidence.skill} · ${evidence.filePath.split(/[\\/]/).pop()} · ${evidence.lineStart}–${evidence.lineEnd} 行`;
+              const target = report?.items.flatMap(item => item.evidenceList.flatMap((source, index) =>
+                evidence.projectFileId && source.projectFileId === evidence.projectFileId &&
+                source.projectVersionId === evidence.projectVersionId && source.lineStart === evidence.lineStart &&
+                source.lineEnd === evidence.lineEnd ? [sourceLocationId(item.requirementId, source, index)] : []
+              ))[0];
+              return <li key={id}>{target ? <EvidenceLink className="action-link" targetId={target}>{label}</EvidenceLink> :
+                <Link className="action-link" href={`/recommendations?${new URLSearchParams({ returnPlan: planId })}#plan-citation-${encodeURIComponent(id)}`}>{label}</Link>}</li>;
+            })}
           </ul>}
           {extraTask && <p>{extraTask}</p>}
           {detailSteps.length > 0 && <div>
