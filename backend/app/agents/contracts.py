@@ -116,23 +116,28 @@ class EvidenceTaskPlan(StrictModel):
     acceptance_checks: list[ActionText] = Field(min_length=1, max_length=3)
 
 
-def runtime_plan_without_implementation_step(deliverable: str, steps: list[str]) -> bool:
+def runtime_plan_without_implementation_step(
+    deliverable: str, steps: list[str], *, skill: str | None = None
+) -> bool:
     """A requested runtime artifact needs a corresponding implementation step."""
     work = " ".join([deliverable, *steps])
     runtime_requested = bool(re.search(r"运行|执行|日志|响应|输出|测试结果|查询结果", work))
-    implementation_step = bool(re.search(
+    implementation = re.compile(
         r"(?:补充|补全|补齐|编写|实现|提供|提交|上传|完善|修复|修改|展示)"
         r".{0,30}(?:客户端调用|读写|缓存逻辑|实现|代码|源码|脚本|配置|查询语句|SQL\s*文件)",
-        work,
         re.I,
-    ))
-    sql_steps = re.finditer(
-        r"(?:编写|实现|补全|补充|完善|修复|修改)\s*SQL\s*查询(?!结果|输出|截图)",
-        work, re.I,
     )
-    implementation_step = implementation_step or any(
-        not re.search(r"(?:无需|不必|不用|不要|不需要|不得|未|没有)\s*$", work[:match.start()])
-        for match in sql_steps
+    sql_step = re.compile(
+        r"(?:编写|实现|补全|补充|完善|修复|修改)[^。！？；;，,]{0,18}"
+        r"SQL\s*查询(?!\s*(?:结果|输出|截图))", re.I,
+    )
+    sql_artifact = re.compile(r"^\s*SQL\s*查询脚本(?:\s|[（(、，,。]|$)", re.I)
+    implementation_step = any(
+        pattern.search(clause)
+        for clause in re.split(r"[。！？；;，,\n]", "；".join([deliverable, *steps]))
+        if not re.search(r"无需|不必|不用|不要|不需要|不得|尚未|未实现|没有|只交", clause)
+        if skill is None or re.search(re.escape(skill), clause, re.I)
+        for pattern in (implementation, sql_step, sql_artifact)
     )
     return runtime_requested and not implementation_step
 

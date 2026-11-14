@@ -22,3 +22,20 @@ def test_sql_query_implementation_is_not_misclassified_as_runtime_only(step):
 ])
 def test_sql_runtime_artifacts_without_implementation_are_still_rejected(steps):
     assert runtime_plan_without_implementation_step("SQL 查询结果截图", steps)
+
+
+def test_saved_sql_rejection_excerpt_contains_implementation():
+    assert not runtime_plan_without_implementation_step(
+        "SQL 查询脚本（含查询语句和注释）及异常结果解释文档。",
+        ["编写针对示例数据的 SQL 查询，覆盖异常值筛选。", "运行查询并保存结果输出。"],
+        skill="SQL",
+    )
+
+
+@pytest.mark.parametrize("step", [
+    "无需提交 SQL 代码，只交运行结果。",
+    "编写 Redis 缓存代码；保存 SQL 查询结果。",
+    "修改 SQL 查询结果截图。",
+])
+def test_unrelated_or_negated_implementation_does_not_cover_sql(step):
+    assert runtime_plan_without_implementation_step("SQL 查询结果截图", [step], skill="SQL")
