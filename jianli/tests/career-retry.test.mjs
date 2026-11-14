@@ -37,6 +37,7 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "@/lib/source-label":{sourceRelativePath},
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
+    "./CareerSupplementRoute":{default:picker("supplement route"),__esModule:true},
     "@/lib/verdict-display.js":{verdictLabel:v=>v},
   };
   const code=transform(readFileSync(new URL("../src/components/CareerRecommendations.tsx",import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
