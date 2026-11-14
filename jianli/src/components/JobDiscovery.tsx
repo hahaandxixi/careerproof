@@ -80,7 +80,6 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
         </div>
         <div aria-live="polite" className="flex min-h-8 flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500">
           <p>{busy ? data ? "正在更新筛选，暂时保留上一组结果…" : "正在查找岗位…" : error ? "岗位暂时无法读取" : data ? `共 ${data.total} 个符合条件的岗位` : ""}</p>
-          {data?.items.some(job => job.isDemo || demoJobAlias(job.id)) && <details className="text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="max-w-2xl py-2 leading-6">此列表包含用于功能体验的虚构岗位和企业，数据性质可在岗位详情核对。</p></details>}
         </div>
         {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)}/>}
         {busy && !data && <div aria-label="岗位加载占位" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{[0, 1, 2].map(i => <div key={i} className="h-44 rounded-2xl border border-slate-200 bg-white p-4"><div className="h-4 w-2/3 rounded bg-slate-100"/><div className="mt-4 h-3 w-1/2 rounded bg-slate-100"/><div className="mt-7 h-8 rounded bg-slate-50"/></div>)}</div>}

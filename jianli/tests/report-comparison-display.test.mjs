@@ -104,13 +104,14 @@ test("real comparison view opens changed sources and keeps removed citations on 
   const f=fixture({added:[evidence[0]],removed:evidence.slice(1),changes:["evidence"],sources:[evidence[0]]});
   const html=render(f);
   assert.match(html,/引用数量变化/);
-  assert.match(html,/data-kind="added" aria-pressed="true"/);
+  assert.match(html,/data-kind="added" data-reading-tone="green" aria-pressed="true"/);
   assert.match(html,/新增<\/span>.*1 处/);
   assert.match(html,/未再引用<\/span>.*24 处/);
   assert.match(html,/沿用<\/span>.*0 处/);
   assert.match(html,/href="\/reports\/current-report#citation-R1-E1" target="_blank"/);
   assert.doesNotMatch(html,/href="\/reports\/base-report#citation-R1-E2"/);
   const removed=render(f,"changed","removed");
+  assert.match(removed,/data-kind="removed" data-reading-tone="red" aria-pressed="true"/);
   assert.match(removed,/href="\/reports\/base-report#citation-R1-E2" target="_blank"/);
   assert.match(removed,/original 24/);
   assert.match(removed,/文件路径：src\/service.py/);

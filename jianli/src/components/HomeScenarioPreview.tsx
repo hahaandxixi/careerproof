@@ -52,7 +52,6 @@ export default function HomeScenarioPreview() {
     <div className="grid min-w-0">
       {panels.map((panel, index) => <div key={SCENARIOS[index]} role="tabpanel" className={`col-start-1 row-start-1 min-w-0 ${active === index ? "" : "invisible"}`} id={`${id}-panel-${index}`} aria-labelledby={`${id}-tab-${index}`} aria-hidden={active !== index} inert={active !== index} tabIndex={active === index ? 0 : -1}>{panel}</div>)}
     </div>
-    <details className="border-t border-slate-200 pt-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="pt-1 leading-6">当前为交互样例，使用虚构资料，不调用模型。</p></details>
   </section>;
 }
 

@@ -484,12 +484,21 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .report-comparison-reader { min-width: 0; border: 1px solid #e0dbcd; padding: 13px; }
 .comparison-source-chart { display: grid; gap: 4px; max-width: 30rem; }
 .comparison-source-chart button { display: grid; grid-template-columns: 5em minmax(0, 1fr) 3.5em; gap: 8px; align-items: center; min-height: 32px; padding: 3px 6px; border: 1px solid transparent; border-radius: 5px; text-align: left; font-size: 14px; }
-.comparison-source-chart button[aria-pressed="true"] { border-color: #a4b9ad; background: #edf4ef; }
+.comparison-source-chart button[aria-pressed="true"] { border-color: var(--reading-edge); background: var(--reading-bg); color: var(--reading-ink); }
 .comparison-source-chart button:disabled { color: #526176; }
 .comparison-source-track { height: 8px; overflow: hidden; border-radius: 4px; background: #ecebe5; }
-.comparison-source-track i { display: block; height: 100%; background: #78998d; }
-.comparison-source-chart button[data-kind="added"] i { background: #37715c; }
-.comparison-source-chart button[data-kind="removed"] i { background: #af714f; }
+.comparison-source-track i { display: block; height: 100%; background: var(--reading-edge); }
+
+[data-reading-tone="blue"]   { --reading-bg: #eaf1f8; --reading-edge: #3b6ea5; --reading-ink: #234975; --reading-label: #d5e4f3; }
+[data-reading-tone="amber"]  { --reading-bg: #fef3dc; --reading-edge: #d4821c; --reading-ink: #704108; --reading-label: #fae2b4; }
+[data-reading-tone="green"]  { --reading-bg: #e3f5ec; --reading-edge: #1b7a56; --reading-ink: #11543a; --reading-label: #c4ead7; }
+[data-reading-tone="red"]    { --reading-bg: #fdece8; --reading-edge: #c84b31; --reading-ink: #793b2c; --reading-label: #f4d7ce; }
+[data-reading-tone="purple"] { --reading-bg: #eeebf7; --reading-edge: #7c6f9f; --reading-ink: #3d3566; --reading-label: #dfd8ef; }
+[data-reading-tone="slate"]  { --reading-bg: #edf1f5; --reading-edge: #62788a; --reading-ink: #314b60; --reading-label: #dde6ed; }
+
+.reading-band { padding: 9px 12px; border-inline-start: 3px solid var(--reading-edge); border-radius: 4px; background: var(--reading-bg); overflow-wrap: anywhere; }
+summary.reading-band { color: var(--reading-ink); }
+.reading-role { display: inline-block; width: fit-content; margin-bottom: 4px; padding: 1px 8px; border-radius: 5px; background: var(--reading-label); color: var(--reading-ink); font-size: 14px; font-weight: 650; }
 @media (min-width: 1280px) {
   .report-comparison-workbench { grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); }
 }
@@ -753,8 +762,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .home-entry-list p { margin-top: 2px; color: #526176; font-size: 13px; line-height: 1.6; }
 .home-hero-preview { min-width: 0; padding: 16px 18px; border: 1px solid #d8d0c2; border-left: 3px solid #1d4a40; border-radius: 2px; background: #fffefa; box-shadow: 0 12px 28px rgba(29,74,64,.06); }
 .home-preview-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; color: #52604f; font-size: 12px; }
-.home-example-tag { padding: 2px 7px; border: 1px solid #d8d0c2; border-radius: 3px; color: #526176; font-size: 11px; }
-.home-example-note { margin-top: 12px; padding-top: 10px; border-top: 1px solid #e7e0d2; color: #66758a; font-size: 12px; line-height: 1.65; }
 .home-sample h2 { color: #173c34; }
 .home-evidence-chain { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 22px; padding: 20px 0 4px; border-top: 1px solid #d8d0c2; border-bottom: 1px solid #d8d0c2; }
 .home-chain-heading h2 { margin-top: 4px; color: #173c34; font-size: 20px; font-weight: 650; line-height: 1.35; }
@@ -847,7 +854,6 @@ main.site-frame:has(.report-desk) { padding-top: 10px; }
 .home-entry-list li { padding: 9px 0; }
 .home-hero-preview { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .home-preview-head { margin-bottom: 6px; }
-.home-example-note { margin-top: 8px; }
 .home-v2 { gap: 18px; }
 .site-header .site-account a[href="/register"] { border-radius: 4px; background: var(--ink-primary); color: var(--paper-bg); font-weight: 600; }
 .site-header .site-account a[href="/register"]:hover { background: #173c34; }

@@ -75,12 +75,13 @@ test("keyboard navigation moves focus; inactive slides are inaccessible and cann
   }
 });
 
-test("three complete scenes keep synthetic boundaries and use different content structures without API calls", t => {
+test("three complete preview scenes use different content structures without API calls", t => {
   const h = preview(t), panels = walk(h.root).filter(n => n.props?.role === "tabpanel");
   assert.ok(walk(panels[0]).some(n => n.type === "dl"));
   assert.ok(walk(panels[1]).some(n => n.type === "ol"));
   assert.ok(walk(panels[2]).some(n => n.type === "dl"));
   const html = renderToStaticMarkup(h.root);
-  for (const text of ["数据说明", "当前为交互样例", "不调用模型", "当前缺口", "自动化测试", "V1", "V2", "旧报告和原投递保留原版本"]) assert.ok(html.includes(text), text);
+  for (const text of ["当前缺口", "自动化测试", "V1", "V2", "旧报告和原投递保留原版本"]) assert.ok(html.includes(text), text);
+  assert.doesNotMatch(html, /数据说明|虚构资料/);
   assert.ok(!source.includes("api.") && !html.includes("78%"));
 });

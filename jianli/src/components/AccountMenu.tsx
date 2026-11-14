@@ -38,7 +38,6 @@ export default function AccountMenu({ name: originalName, identityId, unreadCoun
     </summary>
     <nav aria-label={`${roleLabel}账户`} className="absolute right-0 top-full z-20 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
       <p className="break-words border-b border-slate-100 px-3 py-2 text-xs text-slate-500">{name} · {roleLabel}</p>
-      {identity.isExample && <details className="border-b border-slate-100 px-3 py-2 text-sm text-slate-600"><summary className="disclosure">数据说明</summary><p className="pb-2 leading-6">此账户用于功能体验，人物信息及相关材料为虚构资料。</p></details>}
       {!enterprise && <Link className={linkClass} href="/applications" onClick={close}>求职工作台</Link>}
       <Link className={linkClass} href={enterprise ? "/notifications" : "/applications?messages=1"} onClick={event => {
         close();

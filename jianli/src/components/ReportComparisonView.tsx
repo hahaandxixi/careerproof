@@ -72,9 +72,9 @@ function StatusFlow({ row }: { row: ComparisonRow }) {
 
 function CitationChanges({ row, value, origin }: { row: ComparisonRow; value: ReportComparison; origin?: string }) {
   const groups = [
-    { key: "added", label: "新增", items: row.added, reportId: value.targetId, materials: value.targetMaterials, sources: row.now, side: "B 对照报告" },
-    { key: "removed", label: "未再引用", items: row.removed, reportId: value.baseId, materials: value.baseMaterials, sources: row.old, side: "A 基准报告" },
-    { key: "retained", label: "沿用", items: row.retained, reportId: value.targetId, materials: value.targetMaterials, sources: row.now, side: "B 对照报告" },
+    { key: "added", tone: "green", label: "新增", items: row.added, reportId: value.targetId, materials: value.targetMaterials, sources: row.now, side: "B 对照报告" },
+    { key: "removed", tone: "red", label: "未再引用", items: row.removed, reportId: value.baseId, materials: value.baseMaterials, sources: row.old, side: "A 基准报告" },
+    { key: "retained", tone: "slate", label: "沿用", items: row.retained, reportId: value.targetId, materials: value.targetMaterials, sources: row.now, side: "B 对照报告" },
   ] as const;
   const max = Math.max(...groups.map(group => group.items.length));
   const [active, setActive] = useState(groups.find(group => group.items.length)?.key);
@@ -86,14 +86,14 @@ function CitationChanges({ row, value, origin }: { row: ComparisonRow; value: Re
   const selected = groups.find(group => group.key === active);
   return <div className="space-y-2">
     <div className="comparison-source-chart" role="group" aria-label="引用数量变化">
-      {groups.map(group => <button key={group.key} type="button" data-kind={group.key} aria-pressed={active === group.key} disabled={!group.items.length}
+      {groups.map(group => <button key={group.key} type="button" data-kind={group.key} data-reading-tone={group.tone} aria-pressed={active === group.key} disabled={!group.items.length}
         aria-controls="comparison-current-sources" onClick={() => setActive(group.key)}>
         <span>{group.label}</span><span className="comparison-source-track" aria-hidden="true">{!!group.items.length && <i style={{width:`${group.items.length / max * 100}%`}} />}</span>
         <span>{group.items.length} 处</span>
       </button>)}
     </div>
-    {selected && <div id="comparison-current-sources" className="border-t border-slate-200 pt-2">
-      <p className="text-sm text-slate-600">{selected.side}</p>
+    {selected && <div id="comparison-current-sources" className="reading-band" data-reading-tone={selected.tone}>
+      <p className="reading-role">{selected.side}</p>
       <SourceGroup label={selected.label} groups={selected.items} reportId={selected.reportId} requirementId={row.item.requirementId}
         materials={selected.materials} sources={selected.sources} origin={origin} />
     </div>}
