@@ -92,7 +92,7 @@ export function displayOrganizationName(name, id) {
 }
 
 export function experienceJobCopy(job) {
-  if (!job.isDemo || job.companyName !== scenarioCompany) return job;
+  if (!job.isDemo || !scenarioJobIds.has(job.id) || job.companyName !== scenarioCompany) return job;
   return {
     ...job,
     companyName: scenarioCompanyName,

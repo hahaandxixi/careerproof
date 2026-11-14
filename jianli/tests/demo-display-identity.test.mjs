@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {displayJobCompany,displayOrganizationName,displayIdentity,displayJobTitle,displayMaterialTitle,identityLabel} from "../src/lib/demo-display-identity.js";
+import {experienceJobCopy,displayJobCompany,displayOrganizationName,displayIdentity,displayJobTitle,displayMaterialTitle,identityLabel} from "../src/lib/demo-display-identity.js";
 test("only registered identities get aliases; name keywords never establish example status",()=>{
  for(const name of ["首页验收学生（合成）","Python 实现材料学生（合成）","真实姓名","小江"]){
   assert.deepEqual(displayIdentity(name,"unregistered"),{name,originalName:name,isExample:false});
@@ -30,4 +30,9 @@ test("the known organization and its jobs share an alias without renaming other 
   assert.equal(displayOrganizationName(original, "other"), original);
   assert.equal(displayJobCompany(original, "other"), original);
   assert.equal(displayJobCompany("实际企业", "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "实际企业");
+  const job = { id: "other", isDemo: true, companyName: original, description: "真实描述。此为职证体验岗位。" };
+  assert.equal(experienceJobCopy(job), job);
+  assert.deepEqual(experienceJobCopy({ ...job, id: "0baea00e-e0eb-422a-bb43-3907d9a8a72a" }), {
+    ...job, id: "0baea00e-e0eb-422a-bb43-3907d9a8a72a", companyName: "云栈科技", description: "真实描述。",
+  });
 });
