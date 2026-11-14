@@ -68,6 +68,8 @@ FEEDBACK_PROMPT = (
     "2. findings 按具体问点逐项给出一种判断。point 用简短名称标识同一个问点，"
     "例如分别使用 COUNT(*) 行数口径、COUNT(score) 非空计数、AVG(score) 分母，"
     "不要用同一个聚合口径标签合并三个问题。每个 point 只出现一次。"
+    "概念和算例分成独立问点。若学生已说 COUNT(*) 统计结果行，概念不能列为遗漏；"
+    "若仍缺给定样例的具体行数，只写缺少该样例的计数。"
     "kind 为 covered 时，text 只写学生正确说出的内容；等价例子也算回答。"
     "kind 为 missing 时，text 写没有回应的问点。答错等于回应过，只能列为 inconsistent，"
     "例如回答 COUNT(*) 不计 NULL 行是错误，不能再把 COUNT(*) 行数口径列为遗漏。"
@@ -77,6 +79,8 @@ FEEDBACK_PROMPT = (
     "区分拟议改进与对既有代码的声称。正确的替代做法也算讲清，不因未引用代码而判错。每类最多 4 条。"
     "previousIssues 是上轮已记录的问题。只在本轮明确纠正或补足时"
     "返回 resolvedIssues 的 issueId 和本轮原文 answerQuote；绕开或未再提及不能算解决。"
+    "若本轮仍遗漏或答错的是同一个前轮问点，在 finding 中填写 previousIssueId，"
+    "即使表述变化也沿用该 ID；不同问点不要关联。已解决的 ID 不得用作 previousIssueId。"
     "对照本轮回答核对每个问点，只填一种判断，不重复列已解决事项。"
     "3. 不得声称代码运行通过、测试通过、结果已验证或本人贡献已认证；"
     "不得把知识库内容说成学生已经掌握；不得评价能力等级或是否胜任岗位。"
@@ -86,7 +90,7 @@ FEEDBACK_PROMPT = (
     "6. needsFollowUp 为 true 时，followUp 是同一要求下针对薄弱点的追问；为 false 时返回空字符串。"
     "只返回 JSON 对象："
     "{findings:[{point:string,kind:covered|missing|inconsistent,text:string,"
-    " answerQuote?:string,basisId?:string}], reviewSuggestion:string,"
+    " answerQuote?:string,basisId?:string,previousIssueId?:string}], reviewSuggestion:string,"
     " followUp:string, citationIds:string[],"
     " knowledgeIds:string[], resolvedIssues:[{issueId:string,answerQuote:string}]}。"
 )
@@ -258,6 +262,15 @@ def _answer_quote(value, answer: str) -> str:
 
 
 def _issue_records(turn: InterviewAnswer) -> list[dict]:
+    feedback = turn.feedback or {}
+    if "issueRecords" in feedback:
+        return [
+            {
+                **{key: value for key, value in item.items() if key != "index"},
+                "issueId": f'{turn.turn_index}:{item["kind"]}:{item["index"]}',
+            }
+            for item in feedback["issueRecords"]
+        ]
     return [
         {"issueId": f"{turn.turn_index}:{kind}:{index}", "kind": kind, "text": value}
         for kind in ("missing", "inconsistent")
@@ -283,6 +296,9 @@ def validate_feedback(
     categories: dict[str, list[str]] = {"covered": [], "missing": [], "inconsistent": []}
     points: set[str] = set()
     conflict_details = []
+    issue_records = []
+    earlier = {item["issueId"]: item for item in previous_issues}
+    recalled = set()
     for item in findings:
         if not isinstance(item, dict):
             raise PracticeOutputError("点评项目格式无效")
@@ -313,6 +329,17 @@ def validate_feedback(
             ):
                 continue
             conflict_details.append({"answerQuote": quote, "reason": text[0], "basisId": basis})
+        previous_id = item.get("previousIssueId")
+        if previous_id is not None:
+            if (not isinstance(previous_id, str) or previous_id not in earlier
+                    or previous_id in recalled or kind == "covered"):
+                raise PracticeOutputError("前轮问点关联无效")
+            recalled.add(previous_id)
+        if kind != "covered":
+            issue_records.append({
+                "kind": kind, "index": len(category), "text": text[0], "point": point.strip(),
+                **({"previousIssueId": previous_id} if previous_id else {}),
+            })
         category.append(text[0])
     if not any(categories.values()):
         raise PracticeOutputError("点评没有可采用的问点")
@@ -322,7 +349,8 @@ def validate_feedback(
     if not isinstance(raw_resolved, list):
         raise PracticeOutputError("已解决事项格式无效")
     for resolution in raw_resolved:
-        if not isinstance(resolution, dict) or resolution.get("issueId") not in allowed_issues:
+        if (not isinstance(resolution, dict) or not isinstance(resolution.get("issueId"), str)
+                or resolution["issueId"] not in allowed_issues or resolution["issueId"] in recalled):
             raise PracticeOutputError("已解决事项不属于前轮待核对项")
         issue_id = resolution["issueId"]
         allowed_issues.remove(issue_id)
@@ -356,6 +384,7 @@ def validate_feedback(
         **categories,
         "conflictDetails": conflict_details,
         "resolvedIssues": resolved,
+        "issueRecords": issue_records,
         "reviewSuggestion": suggestion,
         "followUp": follow_up,
         "citationIds": citation_ids,
@@ -411,16 +440,16 @@ def build_summary(turns: list[InterviewAnswer]) -> dict:
             for issue_id, item in pending.items()
             if (item["kind"], item["text"]) not in corrected
         }
-        pending.update(
-            (item["issueId"], item)
-            for item in _issue_records(turn)
-            if (item["kind"], item["text"]) not in corrected
-        )
+        for item in _issue_records(turn):
+            if (item["kind"], item["text"]) in corrected:
+                continue
+            pending.pop(item.get("previousIssueId"), None)
+            pending[item["issueId"]] = item
         if feedback.get("reviewSuggestion"):
             suggestion = feedback["reviewSuggestion"]
     return {
         "answeredTurns": answered,
-        "covered": covered[:4],
+        "covered": covered,
         "inconsistent": list(
             dict.fromkeys(
                 item["text"] for item in pending.values() if item["kind"] == "inconsistent"

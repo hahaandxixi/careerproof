@@ -8,6 +8,7 @@ import { displayMaterialTitle, hideOriginalResumeFilename } from "@/lib/demo-dis
 import cases from "@/app/demo/samples.json";
 
 const DEMO_TITLES = cases.map(item => item.resumeName);
+const resumeDate = new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "short" });
 const GROUPS = [
   { key: "personal", label: "我的其他简历" },
   { key: "demo", label: "示例简历" },
@@ -28,6 +29,11 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
   const selectedResume = all.find(resume => resume.versions.some(version => version.id === selectedId));
   const selected = selectedResume?.versions.find(version => version.id === selectedId);
   const historyCount = all.filter(resume => resumeDisplayCategory(resume.title, DEMO_TITLES) === "history").length;
+  const titleCounts = new Map<string, number>();
+  for (const resume of all) {
+    const title = displayMaterialTitle(resume.title, resume.versions[0]?.id);
+    titleCounts.set(title, (titleCounts.get(title) ?? 0) + 1);
+  }
 
   function choose(id: string) {
     onChange(id);
@@ -41,6 +47,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
     <p className="text-sm font-medium">简历版本（选择一份）</p>
     {selected && selectedResume ? <div aria-label="已选简历版本" className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
       <span className="min-w-0 break-words">{displayMaterialTitle(selectedResume.title, selected.id)} · 第 {selected.versionNumber} 版
+        {dateForDuplicate(selectedResume.title, selectedResume.versions[0].id, selected.createdAt)}
         {selected.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
       </span>
       <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
@@ -65,9 +72,9 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
               <h3 className="text-xs font-semibold text-slate-500">{group.label} · {rows.length} 份</h3>
               {rows.map(resume => <div key={resume.id} className="rounded-lg bg-slate-50 p-3">
                 <p className="break-words text-sm font-medium">{displayMaterialTitle(resume.title, resume.versions[0]?.id)}</p>
-                {resume.versions.length === 1 ? renderVersion(resume.versions[0], resume.title) : <details className="mt-2">
+                {resume.versions.length === 1 ? renderVersion(resume.versions[0], resume.title, resume.versions[0].id) : <details className="mt-2">
                   <summary className="cursor-pointer text-xs text-indigo-700">展开 {resume.versions.length} 个版本{resume.versions.some(version => version.id === selectedId) ? " · 包含已选版本" : ""}</summary>
-                  <div className="mt-2 space-y-2">{resume.versions.map(version => renderVersion(version, resume.title))}</div>
+                  <div className="mt-2 space-y-2">{resume.versions.map(version => renderVersion(version, resume.title, resume.versions[0].id))}</div>
                 </details>}
               </div>)}
             </section> : null;
@@ -78,9 +85,15 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
     </details> : <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>。</p>}
   </section>;
 
-  function renderVersion(version: ResumeHistory["versions"][number], title: string) {
+  function dateForDuplicate(title: string, latestId: string, createdAt: string) {
+    return (titleCounts.get(displayMaterialTitle(title, latestId)) ?? 0) > 1
+      ? ` · ${resumeDate.format(new Date(createdAt))}`
+      : "";
+  }
+
+  function renderVersion(version: ResumeHistory["versions"][number], title: string, latestId: string) {
     const filename = hideOriginalResumeFilename(version.id) ? "" : version.originalFilename;
-    const versionName = `第 ${version.versionNumber} 版`;
+    const versionName = `第 ${version.versionNumber} 版${dateForDuplicate(title, latestId, version.createdAt)}`;
     return <label key={version.id} className="material-version mt-2 flex cursor-pointer items-start gap-2 rounded-lg bg-white p-2 text-sm">
       <input className="mt-1 shrink-0" type="radio" name={radioName} aria-label={[displayMaterialTitle(title, version.id), versionName, filename].filter(Boolean).join(" ")} checked={selectedId === version.id} onChange={() => choose(version.id)} />
       <span className="min-w-0 break-words">{versionName}{filename && ` · ${filename}`}

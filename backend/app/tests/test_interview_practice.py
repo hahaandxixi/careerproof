@@ -860,6 +860,28 @@ def test_summary_resolves_only_the_issue_supported_by_second_answer():
         practice.validate_feedback(raw, answer=answer, **options)
 
 
+def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
+    first = InterviewAnswer(
+        turn_index=0, answer_text="COUNT(*) 统计行数。",
+        feedback={"missing": ["未算出示例行数", "未说明 AVG 的分母", "未说明缺失偏差"]},
+    )
+    answer = "样例外连接保留三行，所以 COUNT(*) = 3。"
+    raw = feedback(["算出三行"], missing=["还没说明 AVG 排除空值"])
+    raw["findings"][1]["previousIssueId"] = "0:missing:1"
+    raw["resolvedIssues"] = [{"issueId": "0:missing:0", "answerQuote": answer}]
+    options = dict(allowed_citations=set(), allowed_knowledge=set(), has_evidence=False,
+                   answer=answer, previous_issues=practice._issue_records(first))
+    second = InterviewAnswer(turn_index=1, answer_text=answer,
+                             feedback=practice.validate_feedback(raw, **options))
+    summary = practice.build_summary([first, second])
+    assert summary["remaining"] == ["未说明缺失偏差", "还没说明 AVG 排除空值"]
+    assert summary["resolvedIssues"][0]["text"] == "未算出示例行数"
+    assert first.feedback["missing"][1] == "未说明 AVG 的分母"
+    raw["findings"][1]["previousIssueId"] = "0:missing:0"
+    with pytest.raises(ValueError, match="不属于"):
+        practice.validate_feedback(raw, **options)
+
+
 @pytest.mark.parametrize(
     ("answer", "raw", "expected"),
     [

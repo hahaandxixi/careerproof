@@ -34,12 +34,13 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
         <div className="min-w-0 break-words text-sm leading-6">
           <p className="font-semibold text-slate-900">{label}</p>
           <p className="text-slate-700">{content}</p>
+          {label === "如何核对" && checks.length > 1 && <span className="text-slate-600">共 {checks.length} 条核对项</span>}
         </div>
       </li>)}
     </ol>}
     {(advice.reason?.trim() || extraTask || steps.length > Number(stepsInRoute) || checks.length > 1 || sources.length > 0) &&
       <details>
-        <summary className="cursor-pointer text-sm font-medium">查看判断依据与完整步骤</summary>
+        <summary className="cursor-pointer text-sm font-medium">{checks.length > 1 ? `查看其余 ${checks.length - 1} 条核对项与详情` : "查看判断依据与完整步骤"}</summary>
         <div className="mt-2 space-y-2 break-words text-sm leading-6 text-slate-700">
           {advice.reason?.trim() && <p>{advice.reason}</p>}
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">

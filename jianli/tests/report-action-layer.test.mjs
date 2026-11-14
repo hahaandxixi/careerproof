@@ -63,7 +63,7 @@ test("student requirement area links to its own supplement item and leaves guida
  const value = item("linked");
  const reportValue = report([value], [advice(value)]);
  const region = renderToStaticMarkup(React.createElement(RequirementActionPanel, { report: reportValue, item: value, role: "student" }));
- assert.match(region, /查看本项补证建议 →/);
+ assert.match(region, /查看补证建议/);
  assert.ok(region.includes('href="#supplement-linked"'));
  assert.doesNotMatch(region, /复制补证建议|上传新版材料|本项已保存的具体要求|通用核对步骤/);
  const full = render(reportValue);
@@ -125,7 +125,7 @@ test("review-only keeps review guidance while unsupported keeps its rule gap wit
  const unsupported=render(report([item("outside","unsupported")]));
  assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("请人工核对岗位要求和已保存材料"));
  assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
- assert.ok(!unsupported.includes("查看本项补证建议")); assert.ok(!unsupported.includes('href="/portfolio"'));
+ assert.ok(!unsupported.includes("查看补证建议")); assert.ok(!unsupported.includes('href="/portfolio"'));
 });
 
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
