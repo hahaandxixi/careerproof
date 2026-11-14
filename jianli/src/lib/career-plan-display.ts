@@ -18,6 +18,23 @@ export function careerPlanDisplayIdentity(result: CareerPlanResult): CareerPlanR
   };
 }
 
+const comparedFixtureTitles: Record<string, readonly [string, string]> = {
+  "f05872f3-1b5f-4bb3-bfcd-9629d170b471": ["数据工程实习生 · 本地合成验收", "本地合成验收"],
+  "6c8ad563-ebf8-427c-b4a3-82905f37dbd0": ["数据工程实习生 · 合成流程验收", "合成流程验收"],
+  "72e49e95-4f27-4412-ac94-f1675a5f8970": ["Django 后端开发 · 本地验收", "本地验收"],
+};
+
+/** Only the recorded fixture titles and their quoted shorthand are aliases. */
+export function careerComparisonText(text: string, jobs: readonly Pick<JobRecommendation, "jobId">[]): string {
+  for (const { jobId } of jobs) {
+    const names = comparedFixtureTitles[jobId];
+    const alias = demoJobAlias(jobId);
+    if (!names || !alias) continue;
+    text = text.replaceAll(names[0], alias.title).replaceAll(`“${names[1]}”`, `“${alias.title}”`);
+  }
+  return text;
+}
+
 export function careerPlanConfigurationBlocked(status: string): boolean {
   return ["external_ai_disabled", "mock_provider", "model_configuration_error", "model_auth_error", "model_request_rejected", "model_quota_exceeded"].includes(status);
 }

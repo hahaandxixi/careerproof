@@ -27,3 +27,10 @@ test('saved planning identities are display projections only, including material
 });
 
 test('the known acceptance resume id gets the same neutral display name without renaming raw data',()=>{ assert.equal(displayMaterialTitle('验收补证简历-20261107','d18b3087-99dc-4657-9a0d-7d26dc9d1a84'),'数据工程方向简历'); });
+
+test('comparison aliases apply only to known saved fixture titles and quoted shorthand', () => {
+ const raw='“本地合成验收”与数据工程实习生 · 合成流程验收要求接近；通过本地验收。';
+ assert.equal(planDisplay.careerComparisonText(raw,[{jobId:jobs[2][0]},{jobId:jobs[1][0]}]),
+  '“数据处理实习生”与数据工程实习生要求接近；通过本地验收。');
+ assert.equal(planDisplay.careerComparisonText(raw,[{jobId:'unregistered'}]),raw);
+});

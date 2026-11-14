@@ -9,7 +9,7 @@ import {
   type CareerPlanResult,
 } from "@/lib/api/domain";
 import { jobAnalysisHref, resolveInitialMaterialSelection } from "@/lib/recommendation-selection";
-import { careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
+import { careerComparisonText, careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerPlanRecommendations, visibleCareerChanges } from "@/lib/career-plan-display";
 import { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ProjectVersionPicker from "./ProjectVersionPicker";
@@ -237,10 +237,12 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       {materialForm}
       {result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800"><p>{careerPlanFailureMessage(result.aiStatus)}</p>{!result.planId && <p className="text-xs">本次未保存职业规划，上次保存的规划保持不变。</p>}{!!result.aiValidationIssues?.length && <details className="space-y-2"><summary className="cursor-pointer font-medium">查看原因</summary>{result.aiValidationIssues.map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</details>}</section> : null}
       {!result.recommendations.length && <div className="panel text-sm text-slate-500">当前没有可推荐的已发布岗位。</div>}
-      {result.aiPlan?.comparison && <section className="panel">
-        <h2 className="font-semibold">岗位方向比较</h2>
-        <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{result.aiPlan.comparison}</p>
-      </section>}
+      {result.aiPlan?.comparison && <details className="panel !py-3">
+        <summary className="disclosure font-semibold">岗位方向比较</summary>
+        <p className="mt-2 max-w-[78ch] whitespace-pre-wrap break-words text-sm leading-7">
+          {careerComparisonText(result.aiPlan.comparison, result.recommendations)}
+        </p>
+      </details>}
       {visibleRecommendations.map(item => {
         return <article id={`plan-job-${item.jobId}`} tabIndex={-1} className="career-job-card panel scroll-mt-24 !p-3" key={item.jobId}>
         <details className="group/job">
