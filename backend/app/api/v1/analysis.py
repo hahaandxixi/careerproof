@@ -56,6 +56,18 @@ async def latest_career_plan_endpoint(
     return success(await latest_plan(session, current_user))
 
 
+@router.get("/career-plans/{plan_id}", response_model=ApiResponse[CareerPlanResult])
+async def career_plan_endpoint(
+    plan_id: UUID,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+) -> ApiResponse[CareerPlanResult]:
+    result = await latest_plan(session, current_user, plan_id)
+    if result is None:
+        raise AppError("未找到职业规划", code=4040, status_code=404)
+    return success(result)
+
+
 @router.post(
     "/job-recommendations",
     response_model=ApiResponse[JobRecommendationResult],

@@ -223,6 +223,9 @@ async def test_saved_plan_explains_closed_job_without_rewriting_first_snapshot(
         }]
         assert "不能判断岗位下架或本人能力变化" in second["changes"][0]["detail"]
         assert (await student.get("/api/v1/career-plans/latest")).json()["data"] == second
+        first_read = await student.get(f"/api/v1/career-plans/{first['planId']}")
+        assert first_read.json()["data"] == first
+        assert (await owner.get(f"/api/v1/career-plans/{first['planId']}")).status_code == 404
         async with factory() as session:
             original_task = await session.get(AnalysisTask, UUID(first["planId"]))
             assert original_task.input_snapshot["result"] == first

@@ -132,7 +132,7 @@ def career_runtime_plan_without_implementation(
         r"\s*的?\s*(?:运行|执行|验证|测试|统计|核对|异常|分析)?(?:结果|输出|截图|日志|记录)"
     )
     modifier = (
-        r"(?:聚合|统计|异常|缺失值|空值|去重|联表|连接|排序|窗口|分页|子查询|索引|分组|校验|核对|筛选|的|\s)"
+        r"(?:聚合|统计|异常|缺失值|空值|去重|联表|连接|排序|窗口|分页|子查询|索引|分组|校验|核对|筛选|条件|与|和|的|\s)"
     )
     artifact = r"(?:查询(?:语句|脚本)?|语句|脚本|代码|文件)"
     sql_query = rf"(?<![a-zA-Z0-9_])SQL\s*(?>{modifier}{{0,8}}{artifact})(?!{output_suffix})"
@@ -560,13 +560,16 @@ PLAN_PROMPT = (
 )
 
 
-async def latest_plan(session: AsyncSession, user: User) -> CareerPlanResult | None:
+async def latest_plan(
+    session: AsyncSession, user: User, plan_id: UUID | None = None
+) -> CareerPlanResult | None:
     task = await session.scalar(
         select(AnalysisTask)
         .where(
             AnalysisTask.created_by == user.id,
             AnalysisTask.task_type == "career_plan",
             AnalysisTask.status == TaskStatus.COMPLETED,
+            *((AnalysisTask.id == plan_id,) if plan_id is not None else ()),
         )
         .order_by(AnalysisTask.created_at.desc(), AnalysisTask.id.desc())
         .limit(1)

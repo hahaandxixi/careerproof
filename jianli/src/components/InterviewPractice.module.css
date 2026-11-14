@@ -87,14 +87,16 @@
 .issueTrail > li > details > summary > strong { min-width: 0; text-align: left; }
 .issueTrail > li > details[open] > summary > strong::before { content: "⌄ "; }
 .issueDetails { display: grid; gap: 8px; padding: 0 0 12px; overflow-wrap: anywhere; }
-.issueTrail > li > details[open] > summary { background: var(--reading-bg); border-radius: 6px; padding-inline: 10px; margin-block: 4px; }
-.issueTrail > li > details > summary > .issueRoute { padding: 2px 8px; border-radius: 999px; background: var(--reading-bg); color: var(--reading-ink); }
+.issueTrail > li > details[open] > summary { padding-inline: 10px; margin-block: 4px; }
+.issueTrail > li > details > summary > .issueRoute { color: #52645b; }
 .issueDetails blockquote { margin: 0; }
 @media (max-width: 760px) {
   .issueTrail > li > details > summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
   .issueTrail > li > details > summary > strong { grid-column: 1 / -1; }
 }
 
+.basisDock { position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; min-width: 0; }
+.basisDock button[aria-pressed="true"] { border-color: #306554; background: #e1efe5; font-weight: 700; }
 .basis { display: grid; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #ded7c7; border-radius: 10px; background: #fbf8ef; }
 .basisGroup { display: grid; gap: 6px; min-width: 0; }
 .basisGroup h3 { font-size: 14px; font-weight: 650; color: #40564b; }
@@ -113,6 +115,7 @@
 
 @media (max-width: 940px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
+  .basisDock { position: static; max-height: none; overflow: visible; }
 }
 @media (max-width: 620px) {
   .head { grid-template-columns: minmax(0, 1fr); }

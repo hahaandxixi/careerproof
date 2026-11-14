@@ -7,7 +7,7 @@ import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn,
+  canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn,
   canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
@@ -47,6 +47,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
   const [feedbackReadTurn, setFeedbackReadTurn] = useState<number | null>(null);
   const [selectedTurnIndex, setSelectedTurnIndex] = useState<number | null>(null);
+  const [basisSelection, setBasisSelection] = useState<{ issueId: string; turnIndex: number; basisId?: string } | null>(null);
   const draftKeyRef = useRef("");
   const active = useRef(false);
 
@@ -242,7 +243,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
     {session.turns.length > 1 && <div className={styles.turnTrack} role="group" aria-label="练习轮次">
       {session.turns.map(item => <button type="button" key={item.turnIndex} aria-pressed={item === turn}
-        onClick={() => setSelectedTurnIndex(item === session.turns.at(-1) || item === current ? null : item.turnIndex)}>
+        onClick={() => { setBasisSelection(null); setSelectedTurnIndex(item === session.turns.at(-1) || item === current ? null : item.turnIndex); }}>
         <strong>第 {item.turnIndex + 1} 轮</strong><span>{item.state === "question" ? "待回答" : feedbackStatusLabel(item)}</span>
       </button>)}
     </div>}
@@ -357,7 +358,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             {!!turn.feedback.reviewSuggestion && <div className={styles.suggestion}><strong>改进建议：</strong>{turn.feedback.reviewSuggestion}</div>}
           </section>}
           {current && turn !== current && <div className={styles.actions}>
-            <button type="button" className="btn" onClick={() => setSelectedTurnIndex(null)}>继续回答第 {current.turnIndex + 1} 轮</button>
+            <button type="button" className="btn" onClick={() => { setBasisSelection(null); setSelectedTurnIndex(null); }}>继续回答第 {current.turnIndex + 1} 轮</button>
           </div>}
         </article>}
 
@@ -372,29 +373,25 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                     const originIndex = Number(issue.origin.issueId.split(":")[0]);
                     const original = session.turns.find(turn => turn.turnIndex === originIndex);
                     const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
-                    const sourceTurn = followUp ?? original;
                     const crossRound = !!followUp && followUp !== original;
                     const state = issue.answerQuote ? "covered" : issue.kind;
-                    return <li key={issue.issueId}><details data-reading-tone={state === "covered" ? "green" : state === "inconsistent" ? "red" : "amber"}>
+                    return <li key={issue.issueId}><details data-reading-tone={state === "covered" ? "green" : state === "inconsistent" ? "red" : "amber"} onToggle={event => { if (event.currentTarget.open) setBasisSelection({ issueId: issue.issueId, turnIndex: issue.turnIndex ?? originIndex, basisId: issueBasisId(issue, issue.turnIndex ?? originIndex) }); }}>
                       <summary><strong>{issue.origin.point || issue.origin.text}</strong>
                         <span className={styles.issueRoute}>第 {originIndex + 1} 轮{issue.origin.issueId.includes(":inconsistent:") ? "需修正" : "缺口"}{issue.turnIndex != null && issue.turnIndex !== originIndex &&
                           ` → 第 ${issue.turnIndex + 1} 轮${issue.answerQuote ? "补答" : "仍待核对"}`}</span>
                         <span className={styles.issueStatus} data-kind={state} data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "✓ 已修正" : issue.kind === "inconsistent" ? "! 需修正" : "○ 仍待补"}</span>
                       </summary>
                       <div className={styles.issueDetails}>
-                        {(issue.origin.questionQuote || original?.question) && <IssueReading tone="blue" label={`第 ${originIndex + 1} 轮题目`}><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></IssueReading>}
+                        {(issue.origin.questionQuote || original?.question) && <IssueReading tone="slate" label={`第 ${originIndex + 1} 轮题目`}><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></IssueReading>}
                         {crossRound && <>
                           {issue.origin.conflict && <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮回答原话`}><blockquote>{issue.origin.conflict.answerQuote}</blockquote></IssueReading>}
                           <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮原点评`}><p>{issue.origin.text}</p></IssueReading>
-                          {original?.feedback && <PracticeSources session={session} turn={original} compact basisId={issue.origin.conflict?.basisId} />}
-                          {(issue.questionQuote || followUp.question) && <IssueReading tone="blue" label={`第 ${followUp.turnIndex + 1} 轮题目`}><blockquote>{issue.questionQuote || followUp.question}</blockquote></IssueReading>}
+                          {(issue.questionQuote || followUp.question) && <IssueReading tone="slate" label={`第 ${followUp.turnIndex + 1} 轮题目`}><blockquote>{issue.questionQuote || followUp.question}</blockquote></IssueReading>}
                         </>}
                         {issue.answerQuote ? <IssueReading tone="green" label="补答原话"><blockquote>{issue.answerQuote}</blockquote></IssueReading> : <>
                           {(issue.conflict?.answerQuote || (crossRound && followUp.answerText)) && <IssueReading tone={issue.conflict?.answerQuote ? "red" : "blue"} label={`第 ${(issue.turnIndex ?? originIndex) + 1} 轮回答原话`}><blockquote>{issue.conflict?.answerQuote || followUp?.answerText}</blockquote></IssueReading>}
                           <IssueReading tone={state === "inconsistent" ? "red" : "amber"} label={`第 ${(issue.turnIndex ?? originIndex) + 1} 轮点评`}><p>{issue.text}</p></IssueReading>
                         </>}
-                        {sourceTurn?.feedback && <PracticeSources session={session} turn={sourceTurn} compact
-                          basisId={issue.answerQuote ? undefined : issue.conflict?.basisId} />}
                       </div>
                     </details></li>;
                   })}
@@ -424,12 +421,22 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         </section>}
       </div>
 
-      <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />
+      <div className={styles.basisDock}>{basisSelection && session.summary?.issueTrail?.some(issue => issue.issueId === basisSelection.issueId) ? (() => {
+        const issue = session.summary!.issueTrail!.find(entry => entry.issueId === basisSelection.issueId)!;
+        const originIndex = Number(issue.origin.issueId.split(":")[0]);
+        const indices = [...new Set([originIndex, issue.turnIndex].filter((index): index is number => index != null))];
+        const basisTurn = session.turns.find(entry => entry.turnIndex === basisSelection.turnIndex);
+        return <div><p className="text-sm font-semibold">{issue.origin.point || issue.origin.text} · 点评依据</p>
+          <div className="flex gap-2">{indices.map(index => <button key={index} type="button" className="btn-secondary btn-compact" aria-pressed={basisSelection.turnIndex === index} onClick={() => setBasisSelection({ issueId: issue.issueId, turnIndex: index, basisId: issueBasisId(issue, index) })}>第 {index + 1} 轮</button>)}</div>
+          {!basisSelection.basisId && <p className="text-sm">此问点未保存专属依据，以下展示该轮点评的依据。</p>}
+          {basisTurn?.feedback ? <PracticeSources key={`${issue.issueId}:${basisSelection.turnIndex}`} turn={basisTurn} session={session} basisId={basisSelection.basisId} /> : <p>该轮未保存点评依据。</p>}
+        </div>;
+      })() : <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />}</div>
     </div>
   </div>;
 }
 
-function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red"; label: string; children: React.ReactNode }) {
+function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red" | "slate"; label: string; children: React.ReactNode }) {
   return <div className="reading-band" data-reading-tone={tone}>
     <span className="reading-role">{label}</span>
     {children}
@@ -464,7 +471,7 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
           </details>
         </li>;
       })}
-    </ul> : !compact && <p className={styles.empty}>{kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
+    </ul> : !compact && <p className={styles.empty}>{basisId ? "未找到此问点保存的材料引用。" : kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
     {!!knowledge.length && <section className={styles.basisGroup}>
       <h3>技术知识</h3>
       <ul className={styles.knowledgeList}>
@@ -485,7 +492,7 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
   if (compact && turn) {
     const label = `第 ${turn.turnIndex + 1} 轮点评依据`;
     return citations.length || knowledge.length ? <details className={styles.inlineBasis}>
-      <summary className="reading-band" data-reading-tone="purple">{label}</summary>
+      <summary className="reading-band" data-reading-tone="slate">{label}</summary>
       {content}
     </details> : <p className={styles.empty}>第 {turn.turnIndex + 1} 轮点评未保存依据。</p>;
   }

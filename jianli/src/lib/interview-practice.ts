@@ -1,4 +1,9 @@
-﻿import type { InterviewSession, PracticeGeneration, PracticeTurn } from "./api/domain.ts";
+﻿import type { InterviewSession, PracticeGeneration, PracticeTurn, PracticeSummary } from "./api/domain.ts";
+
+export function issueBasisId(issue: NonNullable<PracticeSummary["issueTrail"]>[number], turnIndex: number) {
+  const originIndex = Number(issue.origin.issueId.split(":")[0]);
+  return turnIndex === originIndex ? issue.origin.conflict?.basisId : issue.answerQuote ? undefined : issue.conflict?.basisId;
+}
 
 export const PRACTICE_DRAFT_PREFIX = "careerproof.interview.draft";
 export const PRACTICE_TOKEN_PREFIX = "careerproof.interview.token";

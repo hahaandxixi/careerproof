@@ -48,11 +48,27 @@ const { renderToStaticMarkup } = require("react-dom/server");
 
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
 const { RequirementSupplementTarget } = await import(pathToFileURL(path.join(SRC, "components/RequirementSupplement.tsx")).href);
+const { default: CareerSupplementRoute } = await import(pathToFileURL(path.join(SRC, "components/CareerSupplementRoute.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
 const advice = (value, extra = {}) => ({ requirementId: value.requirementId, requirementTitle: value.requirementTitle, skill: value.skill, weight: value.weight, currentLevel: null, source: "rules", action: value.evidenceLevelGap, evidenceGap: value.evidenceLevelGap, citationIds: [], ...extra });
 const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan: actions, materials: [] });
+
+test("career supplement keeps saved details and valid citations after showing the gap", () => {
+ const input = {keyGap:"缺少查询",nextTask:"整理结果",reason:"需要核对",citationIds:["one","missing","one"],taskPlan:{deliverable:"查询脚本",acceptanceChecks:["检查条件","核对结果"],steps:["编写查询","保存输出"]}};
+ const job = {assessedCount:1,evidence:[{citationId:"one",skill:"SQL",filePath:"src/app.py",lineStart:2,lineEnd:4}]};
+ const html = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:input,job,planId:"saved-plan"}));
+ for (const text of ["缺少查询","整理结果","需要核对","查询脚本","检查条件","核对结果","编写查询","保存输出","plan-citation-one"]) assert.ok(html.includes(text),text);
+ assert.equal((html.match(/plan-citation-one/g)??[]).length,1);
+ assert.ok(html.includes("returnPlan=saved-plan#plan-citation-one"));
+ assert.doesNotMatch(html,/plan-citation-missing/);
+ assert.match(html,/<details>/);
+ const repeated = {...input,taskPlan:{...input.taskPlan,acceptanceChecks:["同一内容","同一内容"],steps:["同一步","同一步"]}};
+ const saved = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:repeated,job,planId:"saved-plan"}));
+ assert.equal((saved.match(/同一内容/g)??[]).length,2);
+ assert.equal((saved.match(/同一步/g)??[]).length,2);
+});
 const count = (html, text) => html.split(text).length - 1;
 const render = (value, role = "student") => renderToStaticMarkup(React.createElement(AppRouterContext.Provider, { value: { push() { throw new Error("render must not navigate"); } } },
   React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId },
@@ -69,7 +85,7 @@ test("student requirement area links to its own supplement item and leaves guida
  const full = render(reportValue);
  assert.ok(full.includes('id="supplement-linked"'));
  assert.ok(full.includes("本项补证与岗位对照中的当前要求一致"));
- assert.ok(full.includes("本项已保存的具体要求"));
+ assert.ok(!full.includes("本项已保存的具体要求"));
  assert.ok(full.includes("复制补证建议"));
  assert.ok(full.includes("添加项目材料"));
 });
@@ -89,7 +105,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
 test("identical rules advice and gap appear once in the action panel", () => {
  const value = item("same"); const html=render(report([value],[advice(value)]));
  assert.equal(count(html,value.evidenceLevelGap),1);
- assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
+ assert.ok(!html.includes("本地规则提示")); assert.ok(!html.includes("本项已保存的具体要求"));
 });
 
 test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
@@ -105,7 +121,7 @@ test("rejected, unvalidated, fallback and stale-context AI text never becomes ac
  const entry=item("ai","gap",{aiStatus:"validated",aiSuggestion:"不应展示为有效的AI建议",aiInformationGap:"旧AI缺口",aiCitationIds:[]});
  for (const change of [{aiFallbackUsed:true},{evidenceContextVersion:"legacy"},{items:[{...entry,aiStatus:"rejected"}]},{items:[{...entry,confirmationStatus:"corrected"}]}]) {
   const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap})]),evidenceContextVersion:"source-context-v2",...change};
-  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("通用核对步骤与材料清单"));
+  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes("通用核对步骤与材料清单"));
  }
 });
 
@@ -121,7 +137,7 @@ test("non-students retain explanation and advice without private student task co
 test("review-only keeps review guidance while unsupported keeps its rule gap without upload advice", () => {
  const review=render(report([item("review","supported",{confirmationStatus:"rejected"})]));
  assert.ok(review.includes("当前需核对")); assert.ok(review.includes("添加项目材料"));
- assert.ok(!review.includes(">开始补证</button>")); assert.ok(review.includes("不能由此认定实现不存在"));
+ assert.ok(!review.includes(">开始补证</button>")); assert.ok(!review.includes("通用核对步骤与材料清单"));
  const unsupported=render(report([item("outside","unsupported")]));
  assert.ok(unsupported.includes("规则暂未支持")); assert.ok(unsupported.includes("请人工核对岗位要求和已保存材料"));
  assert.ok(!unsupported.includes("添加项目材料")); assert.ok(!unsupported.includes("上传即可解决"));
@@ -131,7 +147,7 @@ test("review-only keeps review guidance while unsupported keeps its rule gap wit
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
-  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("本项已保存的具体要求")); assert.ok(html.includes("添加项目材料"));
+  assert.ok(html.includes("当前缺口")); assert.ok(html.includes(value.evidenceLevelGap)); assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(html.includes("添加项目材料"));
   assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  }
 });
@@ -153,7 +169,7 @@ test("support survives incomplete context without duplicating the source pane's 
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
  const value=item("current"); const html=render(report([value],[advice(item("foreign"),{action:"外部报告的建议"})]));
- assert.ok(html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
+ assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
  assert.ok(!html.includes('href="#requirement-foreign"'));
 });
 
@@ -170,11 +186,11 @@ test("saved structured plans retain deliverable, steps and checks without changi
  assert.equal(JSON.stringify(r),before);
 });
 
-test("generic checking guidance is explicitly separate from saved advice and never invents Redis facts", () => {
+test("saved advice remains without generic steps or invented Redis facts", () => {
  const entry=item("cache","gap",{requirementTitle:"使用 Redis 缓存并在写入后失效"});
  const r=report([entry],[advice(entry,{action:"核对候选与要求的对应关系，补充直接相关的材料。"})]);
  const before=JSON.stringify(r); const html=render(r);
- for(const text of ["通用核对步骤","检查已有实现","已有实现","尚未实现","提交新版材料","已提交的材料只需定位"]) assert.ok(html.includes(text),text);
+ for(const text of ["通用核对步骤","检查已有实现","尚未实现","建议提交的材料"]) assert.ok(!html.includes(text),text);
  assert.equal(count(html, r.actionPlan[0].action),1);
  assert.ok(!html.includes("cache.py") && !html.includes("Redis 已实现"));
  assert.equal(JSON.stringify(r),before);
@@ -227,7 +243,8 @@ test("copied guidance keeps saved sources and conditional instructions; rejected
  const entry=item("cache","gap",{requirementTitle:"缓存失效要求",aiStatus:"rejected",aiSuggestion:"未经采用的旧建议"});
  const r={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion})]),jobTitle:"后端岗位"};
  const text=followUpCopyText(r,entry);
- for(const value of ["后端岗位","缓存失效要求",entry.evidenceLevelGap,"通用核对步骤","未检索到引用不代表没有实现","旧报告和企业投递快照"]) assert.ok(text.includes(value),value);
+ for(const value of ["后端岗位","缓存失效要求",entry.evidenceLevelGap,"旧报告和企业投递快照"]) assert.ok(text.includes(value),value);
+ assert.ok(!text.includes("通用核对步骤") && !text.includes("检查已有实现"));
  assert.ok(!text.includes(entry.aiSuggestion));
  assert.ok(!text.includes("已成功运行"));
 });
