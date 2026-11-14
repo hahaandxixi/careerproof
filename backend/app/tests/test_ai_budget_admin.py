@@ -3,7 +3,7 @@
 from datetime import date, timedelta
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.models.ai_budget import AiBudgetAdjustment, AiBudgetCutover, AiBudgetReservation
 from app.models.ai_request_attempt import AiRequestAttempt
@@ -57,6 +57,18 @@ async def test_reviewed_prior_day_unknown_is_audited_without_creating_usage(budg
             await service.activate(session, actor_id=actor, reason="audit", legacy_digest="wrong")
         await session.rollback()
     async with factory() as session:
+        task = await session.scalar(select(AnalysisTask).order_by(AnalysisTask.id))
+        await session.execute(
+            update(AnalysisTask).where(AnalysisTask.id == task.id).values(
+                error_message="changed after preview", updated_at=task.updated_at,
+            )
+        )
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(
+                session, actor_id=actor, reason="audit", legacy_digest=inventory_hash(plan),
+            )
+        await session.rollback()
+    async with factory() as session:
         gate = await session.get(AiBudgetCutover, GATE_ID)
         assert not gate.enabled
         plan_digest = inventory_hash(plan)
@@ -76,6 +88,13 @@ async def test_reviewed_prior_day_unknown_is_audited_without_creating_usage(budg
         assert await service.legacy_cutover_inventory(session, actor_id=actor) == plan
         assert list(await session.scalars(select(AiUsageLog))) == []
         assert list(await session.scalars(select(AiRequestAttempt))) == []
+        audits[0].details = {**audits[0].details, "entries": []}
+        await session.flush()
+        with pytest.raises(BudgetAdmissionError, match="legacy_inventory_changed"):
+            await service.activate(
+                session, actor_id=actor, reason="replay", legacy_digest=plan_digest,
+            )
+        await session.rollback()
 
 
 async def disable_fixture_gate(factory):

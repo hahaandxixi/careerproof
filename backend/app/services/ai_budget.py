@@ -176,13 +176,16 @@ class SharedBudgetService:
                       and task.id not in modern and not ledger)
             immutable = task.task_type == "job_match" and task.status == TaskStatus.COMPLETED
             timestamps = (task.created_at, task.completed_at, task.updated_at)
+            activity = (*timestamps, task.started_at, task.heartbeat_at)
             if (
                 not (denied or immutable)
                 or any(value is None for value in timestamps)
                 or task.created_at > task.completed_at
                 or task.completed_at > task.updated_at
-                or max(value.replace(tzinfo=value.tzinfo or UTC).astimezone(SHANGHAI).date()
-                       for value in timestamps) >= self.today()
+                or any(
+                    value.replace(tzinfo=value.tzinfo or UTC).astimezone(SHANGHAI).date()
+                    >= self.today() for value in activity if value is not None
+                )
             ):
                 raise BudgetAdmissionError("legacy_external_run_requires_audit_gate_remains_closed")
             skipped = (report or {}).get("skippedReason") == "no_evidence"
@@ -195,7 +198,8 @@ class SharedBudgetService:
                 "status": "proven_not_sent" if unsent else "historical_usage_unknown",
                 "completedAt": task.completed_at.isoformat(),
                 "evidenceDigest": inventory_hash([
-                    snapshot, report, timestamps, task.status,
+                    task.created_by, task.task_type, task.run_token, task.error_message,
+                    task.attempt, snapshot, report, activity, task.status,
                     [tuple(row) for row in ledger], task.id in modern,
                 ]),
             })
@@ -204,7 +208,7 @@ class SharedBudgetService:
     async def activate(self, session, *, actor_id, reason, legacy_digest=None):
         """Audit/drain/backfill before activation; never infer unknown legacy fees.
 
-        Old external runs without physical provenance keep the gate closed.
+        Prior-day terminal legacy runs require an explicitly reviewed inventory.
         Caller must commit this transaction or roll back on any exception.
         """
         if not isinstance(reason, str) or not reason.strip() or len(reason) > 1000:
@@ -238,7 +242,12 @@ class SharedBudgetService:
                 audit = await session.scalar(select(AuditLog).where(
                     AuditLog.action == LEGACY_CUTOVER_ACTION, AuditLog.resource_id == GATE_ID,
                 ))
-                if audit is None or audit.request_id != legacy_digest:
+                inventory = (
+                    {key: audit.details.get(key) for key in ("cutoverDay", "entries")}
+                    if audit else None
+                )
+                if (audit is None or audit.request_id != legacy_digest
+                        or inventory_hash(inventory) != legacy_digest):
                     raise BudgetAdmissionError("legacy_inventory_changed")
             return gate.inventory_digest
         reviewed_legacy = None
