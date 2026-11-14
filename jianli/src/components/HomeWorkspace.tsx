@@ -1,6 +1,6 @@
 "use client";
 
-import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
+import { displayJobCompany, displayJobTitle, experienceJobCopy } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -75,7 +75,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
       <div className="space-y-5">
         {continueWork}
         <WorkSection title="最近岗位" href="/jobs/mine" empty="还没有可显示的岗位。创建岗位后，在岗位管理中核对授权投递。">
-          {work.jobs.map(job => <li key={job.id}><Link className="work-row" href={`/jobs/${job.id}/applications`}><strong className="block break-words text-sm">{displayJobTitle(job.title, job.id)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{demoJobAlias(job.id)?.companyName ?? job.companyName} · {job.status === "published" ? "已发布" : job.status === "draft" ? "草稿" : "已关闭"} · 核对已授权投递 →</span></Link></li>)}
+          {work.jobs.map(job => <li key={job.id}><Link className="work-row" href={`/jobs/${job.id}/applications`}><strong className="block break-words text-sm">{displayJobTitle(job.title, job.id)}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{displayJobCompany(experienceJobCopy(job).companyName, job.id)} · {job.status === "published" ? "已发布" : job.status === "draft" ? "草稿" : "已关闭"} · 核对已授权投递 →</span></Link></li>)}
         </WorkSection>
         {unread}
       </div>

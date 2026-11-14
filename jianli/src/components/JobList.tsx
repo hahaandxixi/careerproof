@@ -1,6 +1,6 @@
 "use client";
 
-import { demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
+import { demoJobAlias, displayJobCompany, displayJobTitle, experienceJobCopy } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
@@ -14,10 +14,11 @@ export function ManagedJobCard({ job, changing, onStatusChange }: {
   job: JobSummary; changing: string; onStatusChange(job: JobSummary): void;
 }) {
   const alias = demoJobAlias(job.id);
+  const display = experienceJobCopy(job);
   return <article className="workspace-row grid items-start gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
     <div className="min-w-0 space-y-2">
-    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><Link className="break-words text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{displayJobTitle(job.title, job.id)}</Link><p className="mt-1 text-sm text-slate-600">{alias?.companyName ?? job.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p></div><span className="status-chip">{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status] ?? job.status}</span></div>
-    <p className="line-clamp-3 text-sm leading-6 text-slate-600">{(alias?.description ?? job.description) || "暂无描述"}</p>
+    <div className="flex items-start justify-between gap-3"><div className="min-w-0"><Link className="break-words text-lg font-semibold hover:text-indigo-600" href={`/jobs/${job.id}`}>{displayJobTitle(job.title, job.id)}</Link><p className="mt-1 text-sm text-slate-600">{displayJobCompany(display.companyName, job.id)} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p></div><span className="status-chip">{({ draft: "草稿", published: "已发布", closed: "已关闭" } as Record<string, string>)[job.status] ?? job.status}</span></div>
+    <p className="line-clamp-3 text-sm leading-6 text-slate-600">{(alias?.description ?? display.description) || "暂无描述"}</p>
     <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600"><span>{CATEGORY_LABELS[job.category] ?? job.category} · {job.requirementCount} 项要求</span>{job.applicationCount != null && <span>投递 {job.applicationCount} · 待回复 {job.pendingApplicationCount ?? 0}</span>}</div>
     </div>
     <div className="card-actions lg:max-w-[26rem] lg:justify-end">

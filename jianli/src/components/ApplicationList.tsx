@@ -1,5 +1,5 @@
 "use client";
-import { demoJobAlias } from "@/lib/demo-display-identity.js";
+import { displayJobCompany, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -13,8 +13,6 @@ import { applicationEventsSummary, applicationNextAction, applicationStatusText 
 import AccessGate from "./AccessGate";
 import ApplicationReply from "./ApplicationReply";
 import { useAuth } from "./AuthProvider";
-import NotificationLink from "./NotificationLink";
-import { openStudentMessages } from "./StudentMessages";
 import JobWorkspaceNextStep from "./JobWorkspaceNextStep";
 
 // 传智杯44：单条投递卡片是无状态展示组件，突出岗位/公司/状态/企业回复/下一动作；
@@ -29,11 +27,10 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
 }) {
   const reportHref = `/reports/${encodeURIComponent(item.reportId)}`;
   const eventLabel = (type: string) => ({ submitted: "授权投递", viewed: "企业查看", downloaded: "企业下载", replied: "企业回复", withdrawn: "撤回授权" } as Record<string, string>)[type] ?? "投递记录";
-  const eventNodes = item.events.filter(e => e.detail?.trim());
-  const undocumentedEvents = item.events.length - eventNodes.length;
+  const eventNodes = item.events.filter(event => event.detail?.trim()).slice(-3);
   return <article id={`application-${item.id}`} className="workspace-row application-record" tabIndex={-1}>
     <div className="application-record-head">
-      <div className="min-w-0"><h2 className="text-xl font-semibold">{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</h2><p className="mt-1 break-words text-sm text-slate-600">{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</p></div>
+      <div className="min-w-0"><h2 className="text-xl font-semibold">{displayJobTitle(item.jobTitle, item.jobId)}</h2><p className="mt-1 break-words text-sm text-slate-600">{displayJobCompany(item.companyName, item.jobId)}</p></div>
       <span className="status-chip application-status">{applicationStatusText(item.status)}</span>
     </div>
     {!item.replyText&&item.status!=="withdrawn"&&<p className="text-sm leading-6 text-slate-600">{applicationNextAction(item.status)}</p>}
@@ -43,7 +40,6 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
     <div className="card-actions application-actions"><Link className="btn-secondary" href={reportHref}>查看关联报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet" onClick={()=>onRequestWithdraw(item.id)}>撤回授权</button>}</div>
     {item.status!=="withdrawn"&&confirming&&<div className="space-y-2 rounded-lg bg-rose-50 p-3"><p className="text-sm text-rose-900">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，如需再次分享，可从报告页重新确认授权；将创建新的投递，旧记录继续保留。</p><div className="flex flex-wrap gap-2"><button type="button" className="btn-danger-quiet border border-rose-300" disabled={busy} onClick={()=>onConfirmWithdraw(item.id)}>确认撤回授权</button><button type="button" className="btn-secondary" disabled={busy} onClick={onCancelWithdraw}>取消</button></div></div>}
     {!!eventNodes.length && <ol className="application-event-flow" aria-label="已保存的投递事件">{eventNodes.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}><span className="application-event-dot" aria-hidden="true"/><div><strong>{eventLabel(e.type)}</strong><time dateTime={e.at}>{new Date(e.at).toLocaleString("zh-CN")}</time></div></li>)}</ol>}
-    {undocumentedEvents > 0 && <p className="text-xs text-slate-500">另有 {undocumentedEvents} 条已保存事件缺少说明，仅按时间保留在完整记录中。</p>}
     <details className="text-sm text-slate-600">
       <summary className="disclosure">{applicationEventsSummary(item.events)}</summary>
       <ol className="mt-2 space-y-2">{item.events.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
@@ -206,13 +202,6 @@ function Workspace() {
   };
 
   return <div className="application-workspace student-job-workspace">
-    <header className="job-workspace-header">
-      <h1 className="page-title">求职工作台</h1>
-      <NotificationLink render={count => <button type="button" className="btn-secondary" aria-haspopup="dialog"
-        aria-controls="job-workspace-messages" onClick={event => openStudentMessages(event.currentTarget)}>
-        消息{count !== null ? ` · 未读 ${count}` : ""}
-      </button>} />
-    </header>
     <JobWorkspaceNextStep refreshVersion={overviewRevision} onViewReplies={() => filter("", "action")} onOpenReply={id => {
       storeSelection(id);
       setRevokeId(null);
@@ -221,13 +210,13 @@ function Workspace() {
     <section className="job-workspace-applications" aria-labelledby="workspace-applications-title">
       <h2 id="workspace-applications-title" className="section-title">投递记录</h2>
       <form className="application-toolbar" onSubmit={event => { event.preventDefault(); filter(query, view); }}>
-        <div className="flex min-w-0 flex-wrap items-end gap-3">
-          <label className="form-label min-w-0 flex-1 basis-64">查找岗位或企业<input className="field mt-1" type="search" value={query} maxLength={200} onChange={event => setQuery(event.target.value)} /></label>
-          <button className="btn min-h-11 whitespace-nowrap" disabled={busy}>搜索</button>
-          <button className="btn-quiet whitespace-nowrap" type="button" disabled={busy} onClick={() => { setQuery(""); filter("", "all"); }}>重置</button>
-          <button type="button" className="btn-secondary whitespace-nowrap" disabled={busy} onClick={refresh}>刷新</button>
+        <div className="application-search-actions">
+          <label className="min-w-0"><span className="sr-only">查找岗位或企业</span><input className="field" placeholder="查找岗位或企业" type="search" value={query} maxLength={200} onChange={event => setQuery(event.target.value)} /></label>
+          <button className="btn btn-compact whitespace-nowrap" disabled={busy}>搜索</button>
+          <button className="btn-quiet btn-compact whitespace-nowrap" type="button" disabled={busy} onClick={() => { setQuery(""); filter("", "all"); }}>重置</button>
+          <button type="button" className="btn-secondary btn-compact whitespace-nowrap" disabled={busy} onClick={refresh}>刷新</button>
         </div>
-        <div role="group" aria-label="投递状态" className="flex flex-wrap gap-2">
+        <div role="group" aria-label="投递状态" className="application-view-actions">
           {applicationViews.map(([value, label]) => <button key={value} type="button" className="selection-toggle" aria-pressed={view === value} disabled={busy} onClick={() => filter(query, value)}>{label}</button>)}
         </div>
       </form>
@@ -245,8 +234,8 @@ function Workspace() {
                   setRevokeId(null);
                   void loadDetail(item.id);
                 }}>
-                <strong>{demoJobAlias(item.jobId)?.title ?? item.jobTitle}</strong>
-                <span>{demoJobAlias(item.jobId)?.companyName ?? item.companyName}</span>
+                <strong>{displayJobTitle(item.jobTitle, item.jobId)}</strong>
+                <span>{displayJobCompany(item.companyName, item.jobId)}</span>
                 <span className="application-summary-status">{applicationStatusText(item.status)}</span>
                 <span>{new Date(item.events.at(-1)?.at ?? item.createdAt).toLocaleDateString("zh-CN")}</span>
               </button>;

@@ -1,4 +1,5 @@
 "use client";
+import { displayOrganizationName } from "@/lib/demo-display-identity.js";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -133,7 +134,7 @@ export default function JobForm({ jobId }: { jobId?: string }) {
     <form onSubmit={submit} className="space-y-6">
       <fieldset disabled={busy || !organizations.length} className="space-y-6">
         <div className="panel grid gap-4 sm:grid-cols-2">
-          <label className="form-label">所属企业<select className="field mt-1" required disabled={!!jobId} value={enterpriseId} onChange={e => setEnterpriseId(e.target.value)}><option value="">请选择</option>{organizations.map(org => <option key={org.id} value={org.id}>{org.name}{org.isVerified ? " · 已认证" : " · 未认证"}</option>)}</select></label>
+          <label className="form-label">所属企业<select className="field mt-1" required disabled={!!jobId} value={enterpriseId} onChange={e => setEnterpriseId(e.target.value)}><option value="">请选择</option>{organizations.map(org => <option key={org.id} value={org.id}>{displayOrganizationName(org.name, org.id)}{org.isVerified ? " · 已认证" : " · 未认证"}</option>)}</select></label>
           <label className="form-label">岗位名称<input className="field mt-1" required maxLength={200} value={title} onChange={e => setTitle(e.target.value)} /></label>
           <label className="form-label">岗位方向<select className="field mt-1" value={category} onChange={e => setCategory(e.target.value)}>{Object.entries(CATEGORY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
           <label className="form-label">工作城市<input className="field mt-1" maxLength={100} value={city} onChange={e => setCity(e.target.value)} placeholder="如：杭州 / 远程" /></label>

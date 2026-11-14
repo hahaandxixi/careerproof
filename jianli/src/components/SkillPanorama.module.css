@@ -148,12 +148,18 @@
 .radarHelp { color: #526176; font-size: 13px; line-height: 1.6; }
 .radarHelp summary { cursor: pointer; width: fit-content; padding: 5px 0; }
 .radarSvg { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; }
-.radarTick { fill: #596e64; font-size: 11px; }
+.radarRing { fill: none; stroke: #b7c7c0; stroke-width: 1.25px; }
+.radarTick { fill: #40554c; stroke: #fffefa; stroke-width: 3px; stroke-linejoin: round; paint-order: stroke; font-size: 12px; }
+.radarPoint { fill: #1d6c5a; stroke: #fffefa; stroke-width: 2px; }
+.radarZeroPoint { fill: #fffefa; stroke: #1d6c5a; stroke-width: 2px; }
 .radarLabel { fill: #173c34; font-size: 14px; font-weight: 700; }
 .radarValue { fill: #526176; font-size: 11px; }
 .radarReview { fill: #a85410; font-size: 14px; font-weight: 800; }
 .radarAxis { cursor: pointer; }
-.radarAxis:focus-visible { outline: 2px solid #1d6c5a; outline-offset: 2px; }
+.radarAxisFrame { fill: #fffefa; stroke: #c8d4cc; stroke-width: 1px; }
+.radarAxis:hover .radarAxisFrame { fill: #eef5ef; stroke: #608a7a; }
+.radarAxis[aria-pressed="true"] .radarAxisFrame { fill: #e3f0e9; stroke: #1d6c5a; stroke-width: 2px; }
+.radarAxis:focus-visible { outline: 2px solid #1d6c5a; outline-offset: 3px; }
 
 
 .recordPicker { display: grid; gap: 4px; font-size: 13px; color: #526176; }
