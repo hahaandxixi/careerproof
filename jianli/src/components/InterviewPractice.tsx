@@ -385,7 +385,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                         {!issue.answerQuote && issue.conflict && <><p>第 {(issue.turnIndex ?? originIndex) + 1} 轮回答原话</p><blockquote>{issue.conflict.answerQuote}</blockquote></>}
                         {!issue.answerQuote && <p>{issue.text}</p>}
                         {issue.answerQuote && <><p>补答原话</p><blockquote>{issue.answerQuote}</blockquote></>}
-                        {(issue.origin.questionQuote || original?.question) && <blockquote>{issue.origin.questionQuote || original?.question}</blockquote>}
+                        {(issue.origin.questionQuote || original?.question) && <><p>第 {originIndex + 1} 轮题目</p><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></>}
                         {sourceTurn?.feedback && <PracticeSources session={session} turn={sourceTurn} compact
                           basisId={issue.answerQuote ? undefined : issue.conflict?.basisId} />}
                       </div>
