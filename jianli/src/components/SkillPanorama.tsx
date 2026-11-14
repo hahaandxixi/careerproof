@@ -13,6 +13,7 @@ import {
 import AccessGate from "./AccessGate";
 import EvidenceSnippet from "./EvidenceSnippet";
 import SourceIdentity from "./SourceIdentity";
+import SkillOverviewRadar from "./SkillOverviewRadar";
 import { useAuth } from "./AuthProvider";
 import styles from "./SkillPanorama.module.css";
 
@@ -81,10 +82,10 @@ function SkillIcon({ domain }: { domain: string }) {
 
 function ContextRecord({ context, active, onSelect }: { context: SkillContext; active: boolean; onSelect(key: string): void }) {
   const { item } = context;
-  const evidenceList = item.evidenceList ?? [];
   const reportHref = `/reports/${encodeURIComponent(context.reportId)}#requirement-${encodeURIComponent(item.requirementId)}`;
   return <article className={`${styles.context} ${active ? styles.contextActive : ""}`}>
     <button type="button" className={styles.contextSelect} aria-pressed={active} onClick={() => onSelect(context.key)}>
+      {active ? <><span className={styles.date}>当前记录 · <time dateTime={context.createdAt}>{new Date(context.createdAt).toLocaleDateString("zh-CN")}</time></span><span className={styles.requirement}>{item.requirementTitle}</span></> : <>
       <span className={styles.contextMeta}>
         <span data-status={panoramaStatus(item.verdict)}>原报告 · {PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
         {context.isLatestForJob === true && <span>该岗位最新报告</span>}
@@ -95,25 +96,38 @@ function ContextRecord({ context, active, onSelect }: { context: SkillContext; a
       {item.confirmationStatus && item.confirmationStatus !== "pending" && <span className={styles.date}>本人核对：{{ accepted: "已采纳", rejected: "已驳回，需复核", corrected: "已标记修正，需复核" }[item.confirmationStatus]}</span>}
       {context.materials.length > 0 && <span className={styles.materials}>{context.materials.map(material =>
         `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}${material.materialRole === "reference" ? "（参考）" : ""}`).join(" · ")}</span>}
+      </>}
     </button>
-    <Link className={styles.reportLink} href={reportHref}>核对原报告这项要求 <span aria-hidden="true">↗</span></Link>
-    {active && <section className={styles.contextSource} aria-label="当前记录的引用与材料">
-      <h4>判断与引用材料</h4>
-      <p className={styles.sourceScope}>{displayJobTitle(context.jobTitle, context.jobId)} · {new Date(context.createdAt).toLocaleString("zh-CN")} · 固定材料 {context.materials.length ? `v${context.materials[0].versionNumber} 起 ${context.materials.length} 份` : "未记录"}</p>
-      {evidenceList.length ? evidenceList.map((evidence, index) => <div key={`${evidence.citationId}:${index}`} className={styles.contextEvidence}>
-        <p><SourceIdentity source={evidence} materials={context.materials} compact/> · 第 {evidence.lineStart}–{evidence.lineEnd} 行</p>
-        <EvidenceSnippet evidence={evidence} materials={context.materials} showContextNote={false} theme="dark"/>
-      </div>) : <p className={styles.contextNoSource}>{item.verdict === "unsupported" ? "此项暂未评估，请核对岗位要求与材料。" : item.verdict === "claimed_only" ? "暂无此项要求的可定位引用；目前仅见简历声明。" : item.verdict === "gap" ? "暂无此项要求的可定位引用；这是材料缺口。" : "暂无此项要求的可定位引用。"}</p>}
-    </section>}
+    {!active && <Link className={styles.reportLink} href={reportHref}>核对原报告这项要求 <span aria-hidden="true">↗</span></Link>}
   </article>;
 }
 
-function SkillContextRail({ contexts, skillName, filter, matched, total, counts, onClear }: {
-  contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; counts: StatusCounts; onClear(): void;
+function SelectedContext({ context }: { context: SkillContext }) {
+  const { item } = context;
+  const evidenceList = item.evidenceList ?? [];
+  return <section className={styles.contextSource} aria-label="当前记录的引用与材料">
+    <p className={styles.sourceScope}>{displayJobTitle(context.jobTitle, context.jobId)} · {new Date(context.createdAt).toLocaleString("zh-CN")}{context.isLatestForJob === true && " · 该岗位最新报告"}</p>
+    <h3 className={styles.selectedRequirement}>{item.requirementTitle}</h3>
+    <p className={styles.contextMeta}><span data-status={panoramaStatus(item.verdict)}>原报告 · {PANORAMA_STATUS_LABELS[panoramaStatus(item.verdict)]}</span>
+      {item.confirmationStatus && item.confirmationStatus !== "pending" && <strong className={styles.reviewMark}>本人核对：{{ accepted: "已采纳", rejected: "已驳回，需复核", corrected: "已标记修正，需复核" }[item.confirmationStatus]}</strong>}</p>
+    {panoramaStatus(item.verdict) === "unknown" && <p className={styles.date}>原始状态：{item.verdict || "未提供"}</p>}
+    {context.materials.length > 0 && <p className={styles.materials}>固定材料：{context.materials.map(material => `${displayMaterialTitle(material.title, material.id)} v${material.versionNumber}${material.materialRole === "reference" ? "（参考）" : ""}`).join(" · ")}</p>}
+    {evidenceList.length ? evidenceList.map((evidence, index) => <div key={`${evidence.citationId}:${index}`} className={styles.contextEvidence}>
+      <p><SourceIdentity source={evidence} materials={context.materials} compact/> · 第 {evidence.lineStart}–{evidence.lineEnd} 行</p>
+      <EvidenceSnippet evidence={evidence} materials={context.materials} showContextNote={false} theme="dark"/>
+      {evidence.contextComplete === false && <p className={styles.contextNoSource}>{evidence.contextNote || "来源上下文不完整，请核对原报告。"}</p>}
+    </div>) : <p className={styles.contextNoSource}>{item.verdict === "unsupported" ? "此项暂未评估，请核对岗位要求与材料。" : item.verdict === "claimed_only" ? "暂无此项要求的可定位引用；目前仅见简历声明。" : item.verdict === "gap" ? "暂无此项要求的可定位引用；这是材料缺口。" : "暂无此项要求的可定位引用。"}</p>}
+    <Link className={styles.reportLink} href={`/reports/${encodeURIComponent(context.reportId)}#requirement-${encodeURIComponent(item.requirementId)}`}>核对原报告这项要求 <span aria-hidden="true">↗</span></Link>
+  </section>;
+}
+
+function SkillContextRail({ contexts, skillName, filter, matched, total, counts, onClear, radar }: {
+  contexts: SkillContext[]; skillName: string; filter: PanoramaFilter; matched: number; total: number; counts: StatusCounts; onClear(): void; radar: ReactNode;
 }) {
   const [pickedContext, setPickedContext] = useState<string | null>(null);
   const groups = groupContextsByJob(contexts);
   const activeKey = contexts.some(context => context.key === pickedContext) ? pickedContext : contexts[0]?.key ?? null;
+  const activeContext = contexts.find(context => context.key === activeKey);
   const jobs = new Set(contexts.map(context => context.jobId)).size;
   return <>
     <div className={styles.railHeading}>
@@ -126,6 +140,8 @@ function SkillContextRail({ contexts, skillName, filter, matched, total, counts,
         <li key={status} data-status={status}>{PANORAMA_STATUS_LABELS[status]} {counts[status]} 条</li>)}
     </ul>
     {!contexts.length && <p className={styles.contextNoSource}>当前筛选下，这项技能没有匹配的要求记录。切换筛选可恢复该技能的全部岗位历史。</p>}
+    {activeContext && <SelectedContext context={activeContext}/>}
+    {radar}
     {groups.map(group => {
       const byReport = new Map<string, SkillContext[]>();
       for (const context of group.contexts) {
@@ -172,6 +188,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
     [...landscape.skills.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
+  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
       <div><h1>技能全景</h1><p className={styles.subtitle}>汇总已保存报告中的技能与材料支持记录，按岗位逐条核对原始要求。</p></div>
@@ -229,8 +246,8 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       </section>
       <aside className={styles.rail} id="skill-context-rail" aria-label="所选技能的岗位语境">
         {selected === "" || skill ? <SkillContextRail contexts={matchedContexts} skillName={selected === "" ? "未标注技能的要求" : skill!.name}
-          filter={filter} matched={matchedContexts.length} total={allContexts.length} counts={skill?.counts ?? countContexts(allContexts)} onClear={() => onSelect(null)}/> :
-          <div className={styles.railHeading}><p className={styles.eyebrow}>岗位语境</p><h2>选择一个技能</h2><p>点击左侧技能卡，按岗位核对报告要求、当前判断、固定材料版本与引用。</p></div>}
+          filter={filter} matched={matchedContexts.length} total={allContexts.length} counts={skill?.counts ?? countContexts(allContexts)} onClear={() => onSelect(null)} radar={radar}/> :
+          <><div className={styles.railHeading}><h2>选择一个技能</h2></div>{radar}</>}
       </aside>
     </div>}
   </div>;

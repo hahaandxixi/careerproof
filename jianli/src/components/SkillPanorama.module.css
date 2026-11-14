@@ -143,4 +143,18 @@
 .history > summary { min-height: 32px; padding: 6px 0; cursor: pointer; color: #1d4a40; font-size: 12px; }
 .history > summary:hover { text-decoration: underline; }
 .sourceScope { margin-bottom: 7px; color: #526176; font-size: 11px; line-height: 1.6; }
+.selectedRequirement { margin: 4px 0 8px; font-size: 16px; font-weight: 700; line-height: 1.6; overflow-wrap: anywhere; }
+.radar { border-top: 1px solid #e1ddd2; margin-top: 14px; padding-top: 12px; }
+.radarHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.radarHeading h2 { font-size: 17px; font-weight: 700; }
+.radarPages { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.radarHelp { color: #526176; font-size: 13px; line-height: 1.6; }
+.radarHelp summary { cursor: pointer; width: fit-content; padding: 5px 0; }
+.radarSvg { display: block; width: 100%; max-width: 460px; height: auto; margin: 0 auto; }
+.radarTick { fill: #596e64; font-size: 11px; }
+.radarLabel { fill: #173c34; font-size: 14px; font-weight: 700; }
+.radarValue { fill: #526176; font-size: 11px; }
+.radarReview { fill: #a85410; font-size: 14px; font-weight: 800; }
+.radarAxis { cursor: pointer; }
+.radarAxis:focus-visible { outline: 2px solid #1d6c5a; outline-offset: 2px; }
 

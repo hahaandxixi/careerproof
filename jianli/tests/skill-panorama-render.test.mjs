@@ -13,7 +13,8 @@ const modules = {
   "next/link": { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) },
   "@/lib/api/client": { api: {}, errorMessage: e => e.message },
   "@/lib/demo-display-identity.js": presentation, "@/lib/skill-panorama": panorama,
-  "./EvidenceSnippet": { __esModule: true, default: () => null }, "./SourceIdentity": { __esModule: true, default: () => null, SourceIdentityDetails: () => null },
+  "./EvidenceSnippet": { __esModule: true, default: ({ evidence }) => React.createElement("code", null, evidence.snippet) }, "./SourceIdentity": { __esModule: true, default: ({ source }) => React.createElement("span", null, source.filePath), SourceIdentityDetails: () => null },
+  "./SkillOverviewRadar": { __esModule: true, default: () => React.createElement("div", { "aria-label": "技能记录概览" }) },
   "./AuthProvider": { useAuth: () => auth }, "./AccessGate": { __esModule: true, default: ({ children }) => children },
   "./SkillPanorama.module.css": { __esModule: true, default: new Proxy({}, { get: (_, key) => key }) },
 };
@@ -28,9 +29,10 @@ const render = overrides => renderToStaticMarkup(React.createElement(mod.exports
 const nodes = n => !n || typeof n !== "object" ? [] : [n, ...React.Children.toArray(n.props?.children).flatMap(nodes)];
 const text = n => typeof n === "string" || typeof n === "number" ? String(n) : React.Children.toArray(n?.props?.children).map(text).join("");
 
-test("overview renders actual grouped bands and explicit loaded scope, not radar, scores or empty categories", () => {
+test("overview renders grouped bands, a record overview and explicit loaded scope without capability scores", () => {
   const html = render();
   assert.match(html, /已保存报告中的技能/); assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<progress|熟练度：|综合评分|岗位技能雷达/);
+  assert.match(html, /技能记录概览/);
   assert.match(html, /规则暂未支持 1 条/); assert.doesNotMatch(html, /摘要未加载|演示数据说明/); assert.match(html, /再加载最多 12 份报告/);
 });
 test("topic selection exposes every context, original report anchors and fixed versions without latest inference", () => {
@@ -41,6 +43,23 @@ test("topic selection exposes every context, original report anchors and fixed v
   assert.match(html, /aria-pressed="true"/); assert.match(html, /Original requirement a/);
   assert.match(html, /\/reports\/old#requirement-a/); assert.match(html, /\/reports\/new#requirement-a/);
   assert.match(html, /v1/); assert.match(html, /v2/); assert.match(html, /2 个岗位/); assert.doesNotMatch(html, /该岗位最新报告/);
+});
+test("selected skill presents only the active saved record source, with its exact report link", () => {
+  const python = report("p", [{...item("a","Python","supported"),evidenceList:[{citationId:"p",filePath:"python.py",lineStart:3,lineEnd:4,snippet:"python source"}]}], 1);
+  const sql = report("s", [{...item("b","SQL","gap"),evidenceList:[]}], 2);
+  const current = { ...state, reports:[python,sql], summaries:[python,sql], total:2,hasMore:false };
+  const pythonHtml=render({selected:"python",state:current});
+  assert.match(pythonHtml,/python\.py/);assert.match(pythonHtml,/python source/);assert.match(pythonHtml,/\/reports\/p#requirement-a/);
+  const sqlHtml=render({selected:"sql",state:current});
+  assert.doesNotMatch(sqlHtml,/python source|python\.py/);assert.match(sqlHtml,/暂无此项要求的可定位引用/);assert.match(sqlHtml,/\/reports\/s#requirement-b/);
+});
+test("selected record retains its explicit latest flag and recognizable history label", () => {
+  const latest=report("current",[item("a","Python","supported")],1,{isLatestForJob:true});
+  const html=render({selected:"python",state:{...state,reports:[latest],summaries:[latest],total:1,hasMore:false}});
+  assert.match(html,/该岗位最新报告/);assert.match(html,/当前记录/);assert.match(html,/Original requirement a/);
+  const historical=report("old",[item("b","Python","supported")],1,{isLatestForJob:false});
+  const oldHtml=render({selected:"python",state:{...state,reports:[historical],summaries:[historical],total:1,hasMore:false}});
+  assert.doesNotMatch(oldHtml,/该岗位最新报告/);
 });
 test("one jobId collapses older reports into history while a shared title with another jobId stays separate", () => {
   const older = report("older", [item("a", "Python", "partial")], 1, { jobId: "same-job", jobTitle: "Same job", isLatestForJob: false });
