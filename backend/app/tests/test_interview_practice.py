@@ -963,6 +963,17 @@ def test_correct_off_topic_outer_join_count_is_not_a_sql_conflict():
     assert saved["missing"] == [missing["text"]]
     assert saved["inconsistent"] == []
 
+    raw["findings"] = raw["findings"][1:]
+    with pytest.raises(practice.PracticeOutputError, match="没有可采用的问点"):
+        practice.validate_feedback(raw, **options)
+
+    wrong = "COUNT(*) 不统计含 NULL 的行。"
+    raw["findings"][0].update(
+        answerQuote=wrong, text="COUNT(*) 统计结果行数，包括含 NULL 的行。"
+    )
+    saved = practice.validate_feedback(raw, **{**options, "answer": wrong})
+    assert saved["conflictDetails"][0]["answerQuote"] == wrong
+
 
 async def test_slow_feedback_duplicate_retry_and_late_result(practice_db, monkeypatch):
     app, factory = practice_db
