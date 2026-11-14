@@ -187,7 +187,6 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       <section className={styles.canvas} aria-label="技能记录统计" aria-busy={state.busy}>
         <div className={styles.legend}>
           <ul aria-label="原报告状态图例">{PANORAMA_STATUSES.map(status => <li key={status}><i data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}</li>)}</ul></div>
-        <p className={styles.contextNoSource}>色带汇总该技能已加载的全部记录，按原报告状态统计。本人复核单独标记。</p>
         <div className={styles.filters} role="group" aria-label="按原报告状态筛选">
           {PANORAMA_FILTERS.map(value => <button key={value} type="button" aria-pressed={filter === value}
             onClick={() => onFilterChange?.(value)}>

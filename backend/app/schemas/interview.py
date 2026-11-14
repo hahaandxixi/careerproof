@@ -6,11 +6,13 @@ from uuid import UUID
 
 from pydantic import Field
 
-from app.schemas.common import APIModel
+from app.schemas.common import APIModel, PaginatedData
 
 
 class InterviewSessionSummary(APIModel):
     id: UUID
+    report_id: UUID
+    requirement_id: UUID | None
     job_id: UUID
     job_title: str | None
     requirement_title: str | None
@@ -18,6 +20,10 @@ class InterviewSessionSummary(APIModel):
     status: str
     needs_attention: bool
     updated_at: datetime
+
+
+class InterviewSessionPage(PaginatedData[InterviewSessionSummary]):
+    skills: list[str]
 
 
 class InterviewSessionCreate(APIModel):

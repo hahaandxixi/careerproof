@@ -1221,12 +1221,24 @@ async def test_interview_index_is_paginated_private_and_read_only(practice_db, m
         assert data["page"] == page_number
         row, = data["items"]
         assert row["id"] == expected
+        assert row["reportId"] == report_id
+        assert row["requirementId"] == requirement_id
+        assert data["skills"] == ["SQL"]
         assert row["status"] == "draft"
         assert row["requirementTitle"] == SQL_ITEM["requirementTitle"]
         assert set(row) == {
-            "id", "jobId", "jobTitle", "requirementTitle", "skill",
+            "id", "reportId", "requirementId", "jobId", "jobTitle", "requirementTitle", "skill",
             "status", "needsAttention", "updatedAt",
         }
+    response = await owner.get(endpoint, params={"status": "pending", "skill": "SQL"})
+    pending = response.json()["data"]
+    assert pending["total"] == 2
+    assert [row["id"] for row in pending["items"]] == [second_id, first["id"]]
+    response = await owner.get(endpoint, params={"status": "pending", "skill": "Python"})
+    excluded = response.json()["data"]
+    assert excluded["total"] == 0 and excluded["skills"] == ["SQL"]
+    completed = (await owner.get(endpoint, params={"status": "completed"})).json()["data"]
+    assert completed["total"] == 0 and completed["skills"] == []
     assert (await owner.get(endpoint, params={"pageSize": 51})).status_code == 422
     assert (await other.get(endpoint)).json()["data"]["total"] == 0
     assert (await company.get(endpoint)).status_code == 403

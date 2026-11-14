@@ -521,11 +521,15 @@ class InterviewPracticeService:
             raise AppError("学生资料不存在", code=4044, status_code=404)
         return profile
 
-    async def list_sessions(self, user: User, page: int, page_size: int):
+    async def list_sessions(
+        self, user: User, page: int, page_size: int, *, status: str, skill: str | None
+    ):
         profile = await self._student(user)
         scoped = (
             select(
                 InterviewSession.id,
+                InterviewSession.report_id,
+                InterviewSession.requirement_id,
                 InterviewSession.job_id,
                 InterviewSession.job_title,
                 InterviewSession.requirement_title,
@@ -542,13 +546,25 @@ class InterviewPracticeService:
                 MatchReport.candidate_ref == str(user.id),
             )
         )
+        if status == "pending":
+            scoped = scoped.where(InterviewSession.status.in_(("draft", "in_progress")))
+        elif status == "completed":
+            scoped = scoped.where(InterviewSession.status == "completed")
+        scope_rows = scoped.subquery()
+        skills = list(await self.session.scalars(
+            select(scope_rows.c.skill)
+            .where(scope_rows.c.skill.is_not(None), scope_rows.c.skill != "")
+            .distinct().order_by(scope_rows.c.skill)
+        ))
+        if skill:
+            scoped = scoped.where(InterviewSession.skill == skill)
         total = await self.session.scalar(select(func.count()).select_from(scoped.subquery()))
         rows = await self.session.execute(
             scoped.order_by(InterviewSession.updated_at.desc(), InterviewSession.id.desc())
             .offset((page - 1) * page_size)
             .limit(page_size)
         )
-        return rows.mappings().all(), total or 0
+        return rows.mappings().all(), total or 0, skills
 
     async def _owned_session(self, session_id: UUID, user: User, *, lock: bool = False):
         profile = await self._student(user)

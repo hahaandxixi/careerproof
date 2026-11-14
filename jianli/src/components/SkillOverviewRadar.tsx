@@ -30,7 +30,6 @@ export default function SkillOverviewRadar({ skills, selected, onSelect, opensDi
     <div className={styles.radarHeading}><h2>技能记录概览</h2>
       {pages > 1 && <div className={styles.radarPages}><button type="button" className="btn-secondary btn-compact" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>上一组</button><span>{currentPage + 1} / {pages} 组</span><button type="button" className="btn-secondary btn-compact" disabled={currentPage + 1 >= pages} onClick={() => setPage(currentPage + 1)}>下一组</button></div>}
     </div>
-    <p className={styles.radarHelp}>已加载记录中，有证据支持的占比</p>
     <details className={styles.radarHelp}><summary>统计范围</summary><p>已加载的每份报告按岗位要求计数，同一报告的同一要求只计一次；占比为有证据支持记录数除以该技能的全部已加载记录数，筛选不改变分母。未评估记录和本人复核另行标记。</p></details>
     {visible.length ? <svg className={styles.radarSvg} viewBox={visible.length === 3 ? "0 20 500 345" : "0 0 500 450"} role="group" aria-label="已加载记录中有证据支持的占比，选择技能查看来源">
       {[25, 50, 75, 100].map(value => <g key={value}><circle cx="250" cy="225" r={112 * value / 100} fill="none" stroke="#b4c6bd" strokeWidth="1"/><text x="254" y={225 - 112 * value / 100 - 3} className={styles.radarTick}>{value}%</text></g>)}
@@ -51,6 +50,6 @@ export default function SkillOverviewRadar({ skills, selected, onSelect, opensDi
           </g>
         </g>;
       })}
-    </svg> : <p className={styles.radarHelp}>本组少于 3 个技能，请从左侧列表查看。</p>}
+    </svg> : <p className={styles.radarHelp}>本组少于 3 个技能，请从技能卡查看。</p>}
   </section>;
 }

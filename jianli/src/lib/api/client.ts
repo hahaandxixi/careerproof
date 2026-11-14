@@ -340,8 +340,10 @@ export const api = {
   createInterviewSession(reportId: string, payload: { requirementId: string; restart?: boolean }) {
     return request<{ session: InterviewSession; resumed: boolean }>(`/match-reports/${reportId}/interview-sessions`, { method: "POST", ...jsonBody(payload) });
   },
-  listInterviewSessions(page = 1, pageSize = 12) {
-    return request<Page<InterviewSessionSummary>>(`/interview-sessions?page=${page}&pageSize=${pageSize}`);
+  listInterviewSessions(page = 1, pageSize = 12, status: "all" | "pending" | "completed" = "all", skill = "") {
+    const query = new URLSearchParams({ page: String(page), pageSize: String(pageSize), status });
+    if (skill) query.set("skill", skill);
+    return request<Page<InterviewSessionSummary> & { skills: string[] }>(`/interview-sessions?${query}`);
   },
   getInterviewSession(id: string) { return request<InterviewSession>(`/interview-sessions/${id}`); },
   startInterviewSession(id: string, externalAiConsent: boolean) {
