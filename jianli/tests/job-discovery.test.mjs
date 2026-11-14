@@ -187,7 +187,7 @@ test("known diagnostic has a natural sample title, never a false technical claim
   const known = { ...job("1233f1e2-169f-4ea5-a5a0-542fa940e897"), title: "材料证据边界验收", isDemo: true };
   h.requests[0].resolve({items:[known],total:1,page:1,pageSize:12});await tick();
   const html = renderToStaticMarkup(h.render());
-  assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
+  assert.doesNotMatch(html, /数据说明|虚构岗位/);
   const card=renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:known}));
   assert.ok(card.includes("材料核查实习生"));assert.equal(known.title,"材料证据边界验收");
   assert.ok(!card.includes("Python 后端开发实习生"));
@@ -195,13 +195,13 @@ test("known diagnostic has a natural sample title, never a false technical claim
   assert.ok(ordinary.includes("材料证据边界验收"));
 });
 
-test("known technical fixture display aliases retain disclosure and do not mutate saved facts", async () => {
+test("known technical fixture display aliases do not mutate saved facts", async () => {
   for (const id of ["72e49e95-4f27-4412-ac94-f1675a5f8970", "6c8ad563-ebf8-427c-b4a3-82905f37dbd0", "f05872f3-1b5f-4bb3-bfcd-9629d170b471"]) {
     const h = harness(""); h.start();
     const experience = { ...job(id), title: "技术岗位原文", companyName: "机构原文", isDemo: false };
     h.requests[0].resolve({items:[experience],total:1,page:1,pageSize:12});await tick();
     const html = renderToStaticMarkup(h.render());
-    assert.ok(html.includes("数据说明") && html.includes("虚构岗位"));
+    assert.doesNotMatch(html, /数据说明|虚构岗位/);
     const card = renderToStaticMarkup(React.createElement(h.mod.DiscoveryJobCard,{job:experience}));
     assert.ok(card.includes(demoPresentation.displayJobTitle(experience.title,id)) && card.includes("云栈科技"));
     assert.equal(experience.title,"技术岗位原文");assert.equal(experience.companyName,"机构原文");

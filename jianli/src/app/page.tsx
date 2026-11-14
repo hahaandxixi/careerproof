@@ -31,9 +31,8 @@ export default function HomePage() {
         </ol>
       </div>
       <div className="home-hero-preview">
-        <div className="home-preview-head"><span>阅读关系预览</span><span className="home-example-tag">合成示例</span></div>
+        <div className="home-preview-head"><span>阅读关系预览</span></div>
         <HomeScenarioPreview />
-        <p className="home-example-note">示例内容使用虚构岗位与材料，用于说明信息层级；不构成个人结果或能力证明。</p>
       </div>
     </section>
 

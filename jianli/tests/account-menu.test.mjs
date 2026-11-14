@@ -93,12 +93,12 @@ test("student retains six primary entries including skills without a legacy grow
 });
 
 
-test("registered identity keeps a natural name and puts data provenance in menu details",()=>{
+test("registered identity keeps a natural name and usable account actions",()=>{
  const saved={id:"3e1e80a0-c7e0-4203-9aa9-f770b7ba3fe3",role:"student",displayName:"首页验收学生（合成）"};
  for(const current of [saved,JSON.parse(JSON.stringify(saved))]){
   user=current;const html=render(Header);const summary=html.match(/<summary[^>]*>[\s\S]*?<\/summary>/)[0];
   assert.match(summary,/陈同学/);assert.doesNotMatch(summary,/示例|演示/);assert.doesNotMatch(summary,/首页验收/);
-  assert.match(html,/数据说明/);assert.match(html,/虚构资料/);assert.match(html,/陈同学 · 学生/);assert.doesNotMatch(html,/首页验收学生（合成）/);
+  assert.doesNotMatch(html,/数据说明|虚构资料/);assert.match(html,/陈同学 · 学生/);assert.match(html,/消息/);assert.match(html,/退出登录/);assert.doesNotMatch(html,/首页验收学生（合成）/);
  }
  assert.equal(saved.displayName,"首页验收学生（合成）");
  user={id:"unknown",role:"student",displayName:"小江"};const actual=render(Header);assert.match(actual,/小江/);assert.doesNotMatch(actual,/示例账号原名/);
