@@ -290,9 +290,9 @@ export interface PracticeSummary {
   resolvedIssues?: { issueId: string; kind: "missing" | "inconsistent"; text: string; answerQuote: string; turnIndex: number }[];
   issueTrail?: {
     issueId: string; kind: "missing" | "inconsistent"; text: string;
-    answerQuote?: string; turnIndex?: number;
-    origin: { issueId: string; point?: string; text: string; questionQuote?: string };
-  }[];
+    answerQuote?: string | null; turnIndex?: number | null;
+    origin: { issueId: string; point?: string | null; text: string; questionQuote?: string | null };
+  }[] | null;
 }
 export interface InterviewSessionSummary {
   id: string;
