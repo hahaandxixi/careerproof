@@ -87,8 +87,8 @@
 .issueTrail > li > details > summary > strong { min-width: 0; text-align: left; }
 .issueTrail > li > details[open] > summary > strong::before { content: "⌄ "; }
 .issueDetails { display: grid; gap: 8px; padding: 0 0 12px; overflow-wrap: anywhere; }
-.issueTrail > li > details[open] > summary { background: var(--reading-bg); border-radius: 6px; padding-inline: 10px; margin-block: 4px; }
-.issueTrail > li > details > summary > .issueRoute { padding: 2px 8px; border-radius: 999px; background: var(--reading-bg); color: var(--reading-ink); }
+.issueTrail > li > details[open] > summary { padding-inline: 10px; margin-block: 4px; }
+.issueTrail > li > details > summary > .issueRoute { color: #52645b; }
 .issueDetails blockquote { margin: 0; }
 @media (max-width: 760px) {
   .issueTrail > li > details > summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }

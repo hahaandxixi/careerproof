@@ -9,39 +9,40 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
   onEvidence: (event: MouseEvent<HTMLAnchorElement>, citationId: string) => void;
 }) {
   const plan = advice.taskPlan;
-  const deliverable = plan?.deliverable?.trim() || advice.nextTask?.trim();
+  const deliverable = plan?.deliverable?.trim() || "";
   const checks = plan?.acceptanceChecks?.filter(check => check.trim()) ?? [];
   const steps = plan?.steps?.filter(step => step.trim()) ?? [];
   const sources = [...new Set(advice.citationIds)].flatMap(id => {
     const evidence = job.evidence.find(source => source.citationId === id);
     return evidence ? [{ id, evidence }] : [];
   });
-  const stepsInRoute = !checks.length && steps.length > 0;
-  const extraTask = advice.nextTask?.trim() !== deliverable ? advice.nextTask?.trim() : "";
-  const route = [
-    { tone: "amber", label: "缺口", content: advice.keyGap?.trim() },
-    { tone: "blue", label: "提交什么", content: deliverable },
-    { tone: "green", label: "如何核对", content: checks[0] },
-    { tone: "blue", label: "怎么做", content: stepsInRoute ? steps[0] : undefined },
-  ].filter(point => point.content);
+  const primary = advice.keyGap?.trim() || deliverable || advice.nextTask?.trim() || advice.reason?.trim() || checks[0] || steps[0] || "";
+  const seen = new Set(primary ? [primary.replace(/\s+/g, " ")] : []);
+  const unique = (value?: string) => {
+    const text = value?.trim() || "";
+    const key = text.replace(/\s+/g, " ");
+    if (!text || seen.has(key)) return "";
+    seen.add(key);
+    return text;
+  };
+  const detailsDeliverable = unique(deliverable);
+  const extraTask = unique(advice.nextTask);
+  const reason = unique(advice.reason);
+  const primaryIsCheck = !advice.keyGap?.trim() && !deliverable && !advice.nextTask?.trim() && !advice.reason?.trim() && checks.length > 0;
+  const primaryIsStep = !advice.keyGap?.trim() && !deliverable && !advice.nextTask?.trim() && !advice.reason?.trim() && !checks.length && steps.length > 0;
+  const detailChecks = primaryIsCheck ? checks.slice(1) : checks;
+  const detailSteps = primaryIsStep ? steps.slice(1) : steps;
 
   return <section aria-label="补证建议" className="mt-4 space-y-3 border-t border-slate-200 pt-3">
     <h4 className="text-base font-semibold">补证建议</h4>
     {job.assessedCount === 0 && <p className="text-sm text-amber-800">岗位要求未进入规则评估范围，请人工核对材料。</p>}
-    {route.length > 0 && <ol className="grid gap-3 md:grid-cols-3">
-      {route.map(({ tone, label, content }, index) => <li key={label} className="reading-band min-w-0" data-reading-tone={tone}>
-        <div className="min-w-0 break-words text-sm leading-6">
-          <p className="reading-role"><span aria-hidden="true">{index + 1} · </span>{label}</p>
-          <p className="text-slate-700">{content}</p>
-          {label === "如何核对" && checks.length > 1 && <span className="text-slate-600">共 {checks.length} 条核对项</span>}
-        </div>
-      </li>)}
-    </ol>}
-    {(advice.reason?.trim() || extraTask || steps.length > Number(stepsInRoute) || checks.length > 1 || sources.length > 0) &&
+    {primary && <div className="reading-band text-sm leading-6" data-reading-tone="amber"><p className="reading-role">{advice.keyGap?.trim() ? "待补" : "补证建议"}</p><p className="break-words">{primary}</p></div>}
+    {(reason || detailsDeliverable || extraTask || detailSteps.length > 0 || detailChecks.length > 0 || sources.length > 0) &&
       <details>
-        <summary className="reading-band cursor-pointer text-sm font-medium" data-reading-tone="purple">{checks.length > 1 ? `查看其余 ${checks.length - 1} 条核对项与详情` : "查看判断依据与完整步骤"}</summary>
+        <summary className="reading-band cursor-pointer text-sm font-medium" data-reading-tone="slate">查看补证详情与依据</summary>
         <div className="mt-2 space-y-2 break-words text-sm leading-6 text-slate-700">
-          {advice.reason?.trim() && <p>{advice.reason}</p>}
+          {reason && <p>{reason}</p>}
+          {detailsDeliverable && <div><p className="font-medium">提交什么</p><p>{detailsDeliverable}</p></div>}
           {sources.length > 0 && <ul className="flex flex-wrap gap-x-4 gap-y-2" aria-label="判断依据的引用">
             {sources.map(({ id, evidence }) => <li key={id}>
               <a className="action-link" href={`#plan-citation-${id}`} onClick={event => onEvidence(event, id)}>
@@ -50,15 +51,15 @@ export default function CareerSupplementRoute({ advice, job, onEvidence }: {
             </li>)}
           </ul>}
           {extraTask && <p>{extraTask}</p>}
-          {steps.length > Number(stepsInRoute) && <div>
+          {detailSteps.length > 0 && <div>
             <p className="font-medium">执行步骤</p>
-            <ol className="list-decimal pl-5" start={stepsInRoute ? 2 : 1}>
-              {steps.slice(stepsInRoute ? 1 : 0).map((step, index) => <li key={index}>{step}</li>)}
+            <ol className="list-decimal pl-5">
+              {detailSteps.map((step, index) => <li key={index}>{step}</li>)}
             </ol>
           </div>}
-          {checks.length > 1 && <div>
-            <p className="font-medium">其他核对项</p>
-            <ul className="list-disc pl-5">{checks.slice(1).map((check, index) => <li key={index}>{check}</li>)}</ul>
+          {detailChecks.length > 0 && <div>
+            <p className="font-medium">核对项</p>
+            <ul className="list-disc pl-5">{detailChecks.map((check, index) => <li key={index}>{check}</li>)}</ul>
           </div>}
         </div>
       </details>}

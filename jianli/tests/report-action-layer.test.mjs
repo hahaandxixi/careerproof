@@ -48,11 +48,26 @@ const { renderToStaticMarkup } = require("react-dom/server");
 
 const { default: Workspace, RequirementActionPanel } = await import(pathToFileURL(path.join(SRC, "components/ReportEvidenceWorkspace.tsx")).href);
 const { RequirementSupplementTarget } = await import(pathToFileURL(path.join(SRC, "components/RequirementSupplement.tsx")).href);
+const { default: CareerSupplementRoute } = await import(pathToFileURL(path.join(SRC, "components/CareerSupplementRoute.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
 const advice = (value, extra = {}) => ({ requirementId: value.requirementId, requirementTitle: value.requirementTitle, skill: value.skill, weight: value.weight, currentLevel: null, source: "rules", action: value.evidenceLevelGap, evidenceGap: value.evidenceLevelGap, citationIds: [], ...extra });
 const report = (items, actions = []) => ({ id: "saved-report", items, actionPlan: actions, materials: [] });
+
+test("career supplement keeps saved details and valid citations after showing the gap", () => {
+ const input = {keyGap:"缺少查询",nextTask:"整理结果",reason:"需要核对",citationIds:["one","missing","one"],taskPlan:{deliverable:"查询脚本",acceptanceChecks:["检查条件","核对结果"],steps:["编写查询","保存输出"]}};
+ const job = {assessedCount:1,evidence:[{citationId:"one",skill:"SQL",filePath:"src/app.py",lineStart:2,lineEnd:4}]};
+ const html = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:input,job,onEvidence(){}}));
+ for (const text of ["缺少查询","整理结果","需要核对","查询脚本","检查条件","核对结果","编写查询","保存输出","plan-citation-one"]) assert.ok(html.includes(text),text);
+ assert.equal((html.match(/plan-citation-one/g)??[]).length,1);
+ assert.doesNotMatch(html,/plan-citation-missing/);
+ assert.match(html,/<details>/);
+ const repeated = {...input,taskPlan:{...input.taskPlan,acceptanceChecks:["同一内容","同一内容"],steps:["同一步","同一步"]}};
+ const saved = renderToStaticMarkup(React.createElement(CareerSupplementRoute,{advice:repeated,job,onEvidence(){}}));
+ assert.equal((saved.match(/同一内容/g)??[]).length,2);
+ assert.equal((saved.match(/同一步/g)??[]).length,2);
+});
 const count = (html, text) => html.split(text).length - 1;
 const render = (value, role = "student") => renderToStaticMarkup(React.createElement(AppRouterContext.Provider, { value: { push() { throw new Error("render must not navigate"); } } },
   React.createElement(Workspace, { report: value }, value.items.map(entry => React.createElement("article", { id: `requirement-${entry.requirementId}`, key: entry.requirementId },

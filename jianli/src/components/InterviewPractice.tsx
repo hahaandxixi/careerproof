@@ -382,12 +382,12 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
                         <span className={styles.issueStatus} data-kind={state} data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "✓ 已修正" : issue.kind === "inconsistent" ? "! 需修正" : "○ 仍待补"}</span>
                       </summary>
                       <div className={styles.issueDetails}>
-                        {(issue.origin.questionQuote || original?.question) && <IssueReading tone="blue" label={`第 ${originIndex + 1} 轮题目`}><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></IssueReading>}
+                        {(issue.origin.questionQuote || original?.question) && <IssueReading tone="slate" label={`第 ${originIndex + 1} 轮题目`}><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></IssueReading>}
                         {crossRound && <>
                           {issue.origin.conflict && <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮回答原话`}><blockquote>{issue.origin.conflict.answerQuote}</blockquote></IssueReading>}
                           <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮原点评`}><p>{issue.origin.text}</p></IssueReading>
                           {original?.feedback && <PracticeSources session={session} turn={original} compact basisId={issue.origin.conflict?.basisId} />}
-                          {(issue.questionQuote || followUp.question) && <IssueReading tone="blue" label={`第 ${followUp.turnIndex + 1} 轮题目`}><blockquote>{issue.questionQuote || followUp.question}</blockquote></IssueReading>}
+                          {(issue.questionQuote || followUp.question) && <IssueReading tone="slate" label={`第 ${followUp.turnIndex + 1} 轮题目`}><blockquote>{issue.questionQuote || followUp.question}</blockquote></IssueReading>}
                         </>}
                         {issue.answerQuote ? <IssueReading tone="green" label="补答原话"><blockquote>{issue.answerQuote}</blockquote></IssueReading> : <>
                           {(issue.conflict?.answerQuote || (crossRound && followUp.answerText)) && <IssueReading tone={issue.conflict?.answerQuote ? "red" : "blue"} label={`第 ${(issue.turnIndex ?? originIndex) + 1} 轮回答原话`}><blockquote>{issue.conflict?.answerQuote || followUp?.answerText}</blockquote></IssueReading>}
@@ -429,7 +429,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   </div>;
 }
 
-function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red"; label: string; children: React.ReactNode }) {
+function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red" | "slate"; label: string; children: React.ReactNode }) {
   return <div className="reading-band" data-reading-tone={tone}>
     <span className="reading-role">{label}</span>
     {children}
@@ -485,7 +485,7 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
   if (compact && turn) {
     const label = `第 ${turn.turnIndex + 1} 轮点评依据`;
     return citations.length || knowledge.length ? <details className={styles.inlineBasis}>
-      <summary className="reading-band" data-reading-tone="purple">{label}</summary>
+      <summary className="reading-band" data-reading-tone="slate">{label}</summary>
       {content}
     </details> : <p className={styles.empty}>第 {turn.turnIndex + 1} 轮点评未保存依据。</p>;
   }

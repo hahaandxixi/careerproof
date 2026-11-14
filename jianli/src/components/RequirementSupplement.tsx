@@ -23,6 +23,7 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
 }) {
   const { gap, action, plan } = followUpGuidance(report, item);
   const text = action ? distinctActionText(action, gap) : null;
+  const focus = gap?.trim() === plan?.deliverable?.trim() ? "" : gap?.trim();
   return <section id={`supplement-${item.requirementId}`} className="panel space-y-3 scroll-mt-24">
     <div className="min-w-0">
       <h3 className="break-words text-lg font-semibold">{item.skill || "岗位要求"} · {workspaceStatusLabel(item)}</h3>
@@ -36,6 +37,7 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
       </div>
       {!plan && text?.advice && <p data-reading-tone="blue" className="reading-band whitespace-pre-wrap break-words text-sm leading-7 text-slate-800">{text.advice}</p>}
       {plan ? <div className="space-y-3 text-sm leading-7">
+        {focus && <div className="reading-band" data-reading-tone="amber"><p className="reading-role">补证重点</p><p className="whitespace-pre-wrap break-words">{focus}</p></div>}
         {plan.deliverable && <div className="reading-band" data-reading-tone="blue"><p className="reading-role">提交材料</p><p className="whitespace-pre-wrap break-words">{plan.deliverable}</p></div>}
         {plan.acceptanceChecks.length > 0 && <div className="reading-band" data-reading-tone="green"><p className="reading-role">核对条件</p><ul aria-label="核验条件" className="list-disc space-y-1 pl-5">{plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul></div>}
         {plan.steps.length > 0 && <div className="reading-band" data-reading-tone="blue"><p className="reading-role">执行步骤</p>
@@ -43,7 +45,7 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
         {plan.steps.length > 4 && <details><summary className="cursor-pointer py-2 text-[#1d4a40]">其余执行步骤</summary><ol start={5} className="list-decimal pl-5">{plan.steps.slice(4).map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol></details>}
       </div> : <div className="space-y-2 text-sm leading-7">
         {!text?.advice && <p className="reading-copy">核对已有实现与测试，完善后上传新版材料。</p>}
-        <details><summary className="reading-band disclosure" data-reading-tone="purple">通用核对步骤与材料清单</summary><div className="space-y-2 pt-2">
+        <details><summary className="reading-band disclosure" data-reading-tone="slate">通用核对步骤与材料清单</summary><div className="space-y-2 pt-2">
           <p className="text-xs text-slate-600">以下是操作提示，不是系统已核实的实现情况。在自己的开发工具中完成改进后，返回上传新版材料并主动分析。</p>
           <div className="reading-band" data-reading-tone="blue"><ol className="list-decimal space-y-2 pl-5">{followUpGuidance(report, item).steps.map((step, index) => <li key={index}>{step}</li>)}</ol></div>
           <div className="reading-band" data-reading-tone="blue"><p className="reading-role">建议提交的材料</p>
