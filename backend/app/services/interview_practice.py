@@ -80,7 +80,8 @@ FEEDBACK_PROMPT = (
     "previousIssues 是上轮已记录的问题。只在本轮明确纠正或补足时"
     "返回 resolvedIssues 的 issueId 和本轮原文 answerQuote；绕开或未再提及不能算解决。"
     "若本轮仍遗漏或答错的是同一个前轮问点，在 finding 中填写 previousIssueId，"
-    "即使表述变化也沿用该 ID；不同问点不要关联。已解决的 ID 不得用作 previousIssueId。"
+    "即使表述变化也沿用该 ID；不同问点不要关联。"
+    "covered 只有在 resolvedIssues 同时包含该 ID 和补答原文时才可填写 previousIssueId。"
     "对照本轮回答核对每个问点，只填一种判断，不重复列已解决事项。"
     "3. 不得声称代码运行通过、测试通过、结果已验证或本人贡献已认证；"
     "不得把知识库内容说成学生已经掌握；不得评价能力等级或是否胜任岗位。"
@@ -299,6 +300,7 @@ def validate_feedback(
     issue_records = []
     earlier = {item["issueId"]: item for item in previous_issues}
     recalled = set()
+    covered_links = set()
     for item in findings:
         if not isinstance(item, dict):
             raise PracticeOutputError("点评项目格式无效")
@@ -331,10 +333,14 @@ def validate_feedback(
             conflict_details.append({"answerQuote": quote, "reason": text[0], "basisId": basis})
         previous_id = item.get("previousIssueId")
         if previous_id is not None:
-            if (not isinstance(previous_id, str) or previous_id not in earlier
-                    or previous_id in recalled or kind == "covered"):
+            if (
+                not isinstance(previous_id, str)
+                or previous_id not in earlier
+                or previous_id in recalled
+                or previous_id in covered_links
+            ):
                 raise PracticeOutputError("前轮问点关联无效")
-            recalled.add(previous_id)
+            (covered_links if kind == "covered" else recalled).add(previous_id)
         if kind != "covered":
             issue_records.append({
                 "kind": kind, "index": len(category), "text": text[0], "point": point.strip(),
@@ -364,6 +370,8 @@ def validate_feedback(
                 "answerQuote": _answer_quote(resolution.get("answerQuote"), answer),
             }
         )
+    if covered_links & allowed_issues:
+        raise PracticeOutputError("已补答的前轮问点缺少本轮回答原文")
     suggestion = " ".join(str(raw.get("reviewSuggestion") or "").split())
     follow_up = " ".join(str(raw.get("followUp") or "").split())
     if not 4 <= len(suggestion) <= 400:

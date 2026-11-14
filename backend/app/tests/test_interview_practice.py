@@ -868,6 +868,7 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     answer = "样例外连接保留三行，所以 COUNT(*) = 3。"
     raw = feedback(["算出三行"], missing=["还没说明 AVG 排除空值"])
     raw["findings"][1]["previousIssueId"] = "0:missing:1"
+    raw["findings"][0]["previousIssueId"] = "0:missing:0"
     raw["resolvedIssues"] = [{"issueId": "0:missing:0", "answerQuote": answer}]
     options = dict(allowed_citations=set(), allowed_knowledge=set(), has_evidence=False,
                    answer=answer, previous_issues=practice._issue_records(first))
@@ -878,7 +879,7 @@ def test_followup_groups_rephrased_issue_and_keeps_unrelated_issue():
     assert summary["resolvedIssues"][0]["text"] == "未算出示例行数"
     assert first.feedback["missing"][1] == "未说明 AVG 的分母"
     raw["findings"][1]["previousIssueId"] = "0:missing:0"
-    with pytest.raises(ValueError, match="不属于"):
+    with pytest.raises(ValueError, match="关联无效"):
         practice.validate_feedback(raw, **options)
 
 
