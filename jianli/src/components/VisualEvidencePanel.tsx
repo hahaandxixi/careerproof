@@ -53,7 +53,7 @@ export default function VisualEvidencePanel({ versionId }: { versionId: string }
       <button className="btn" disabled={!consent || busy} onClick={() => void observe()}>{busy ? "正在观察图片…" : "生成图片内容观察"}</button>
     </>}
     {result?.observations && <>
-      <p className="text-xs text-slate-500">{LABELS[result.observations.image_kind]} · {result.model} · 本人核对：{({ pending: "待核对", accepted: "描述已采纳", rejected: "描述已驳回" })[result.reviewStatus]}{result.usage ? ` · 输入 ${result.usage.input_tokens ?? 0} / 输出 ${result.usage.output_tokens ?? 0} Tokens` : ""}</p>
+      <p className="text-xs text-slate-500">{LABELS[result.observations.image_kind]} · 本人核对：{({ pending: "待核对", accepted: "描述已采纳", rejected: "描述已驳回" })[result.reviewStatus]}</p>
       <ol className="space-y-3">{result.observations.observations.map((item, index) => <li key={index} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{index + 1}. {item.description}</p>{item.visible_text && <p className="break-words">图中文字（模型读取）：{item.visible_text}</p>}<p className="text-slate-500">待核验：{item.needs_verification}</p><button className="selection-toggle mt-2" onClick={() => setSelected(selected === index ? null : index)} aria-pressed={selected === index}>定位估计区域 {index + 1}</button></li>)}</ol>
       <p className="text-xs text-slate-500">区域是模型估计，未经过独立定位标注验收。本人采纳只记录描述核对，不是第三方认证，也不会提高等级。</p>
       <label className="block text-sm">核对说明<textarea className="field mt-2" value={note} maxLength={500} onChange={event => setNote(event.target.value)} /></label>

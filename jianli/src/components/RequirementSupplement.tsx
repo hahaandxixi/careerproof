@@ -13,7 +13,7 @@ export function RequirementSupplementJump({ item }: { item: ReportItem }) {
     targetId={`supplement-${item.requirementId}`}
     className="btn inline-flex min-h-11 items-center"
   >
-    查看本项补证建议 →
+    查看补证建议
   </EvidenceLink>;
 }
 
