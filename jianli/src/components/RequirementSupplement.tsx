@@ -30,11 +30,12 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
       <p className="mt-1 break-words text-sm leading-6 text-slate-700">{item.requirementTitle}</p>
       <p className="mt-1 text-xs leading-5 text-slate-500">本项补证与岗位对照中的当前要求一致。</p>
     </div>
-    <div className="space-y-3 border-t border-slate-200 pt-3">
+    <div className="space-y-3">
+      {(plan || text?.advice) &&
       <div className="flex flex-wrap items-baseline gap-x-2">
-        <h4 className="font-semibold text-slate-900">{action || plan ? "本项已保存的具体要求" : "本项尚无已保存的具体建议"}</h4>
+        <h4 className="font-semibold text-slate-900">本项已保存的具体要求</h4>
         {action && ACTION_SOURCE_LABELS[action.source] && <span className="text-sm text-slate-600">{ACTION_SOURCE_LABELS[action.source]}</span>}
-      </div>
+      </div>}
       {!plan && text?.advice && <p data-reading-tone="blue" className="reading-band whitespace-pre-wrap break-words text-sm leading-7 text-slate-800">{text.advice}</p>}
       {plan ? <div className="space-y-3 text-sm leading-7">
         {focus && <div className="reading-band" data-reading-tone="amber"><p className="reading-role">补证重点</p><p className="whitespace-pre-wrap break-words">{focus}</p></div>}

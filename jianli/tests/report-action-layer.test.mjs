@@ -85,7 +85,7 @@ test("student requirement area links to its own supplement item and leaves guida
  const full = render(reportValue);
  assert.ok(full.includes('id="supplement-linked"'));
  assert.ok(full.includes("本项补证与岗位对照中的当前要求一致"));
- assert.ok(full.includes("本项已保存的具体要求"));
+ assert.ok(!full.includes("本项已保存的具体要求"));
  assert.ok(full.includes("复制补证建议"));
  assert.ok(full.includes("添加项目材料"));
 });
@@ -105,7 +105,7 @@ test("one integrated workspace keeps the complete saved items even when a plan i
 test("identical rules advice and gap appear once in the action panel", () => {
  const value = item("same"); const html=render(report([value],[advice(value)]));
  assert.equal(count(html,value.evidenceLevelGap),1);
- assert.ok(!html.includes("本地规则提示")); assert.ok(html.includes("本项已保存的具体要求"));
+ assert.ok(!html.includes("本地规则提示")); assert.ok(!html.includes("本项已保存的具体要求"));
 });
 
 test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
@@ -121,7 +121,7 @@ test("rejected, unvalidated, fallback and stale-context AI text never becomes ac
  const entry=item("ai","gap",{aiStatus:"validated",aiSuggestion:"不应展示为有效的AI建议",aiInformationGap:"旧AI缺口",aiCitationIds:[]});
  for (const change of [{aiFallbackUsed:true},{evidenceContextVersion:"legacy"},{items:[{...entry,aiStatus:"rejected"}]},{items:[{...entry,confirmationStatus:"corrected"}]}]) {
   const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap})]),evidenceContextVersion:"source-context-v2",...change};
-  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(html.includes("本项尚无已保存的具体建议")); assert.ok(!html.includes("通用核对步骤与材料清单"));
+  const html=render(value); assert.ok(!html.includes(entry.aiSuggestion)); assert.ok(!html.includes("旧AI缺口")); assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes("通用核对步骤与材料清单"));
  }
 });
 
@@ -147,7 +147,7 @@ test("review-only keeps review guidance while unsupported keeps its rule gap wit
 test("partial support and gaps expose their existing plan and explicit task trigger", () => {
  for(const state of ["partial","gap","claimed_only"]) {
   const value=item(state,state); const html=render(report([value],[advice(value)]));
-  assert.ok(html.includes("当前缺口")); assert.ok(html.includes("本项已保存的具体要求")); assert.ok(html.includes("添加项目材料"));
+  assert.ok(html.includes("当前缺口")); assert.ok(html.includes(value.evidenceLevelGap)); assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(html.includes("添加项目材料"));
   assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
  }
 });
@@ -169,7 +169,7 @@ test("support survives incomplete context without duplicating the source pane's 
 
 test("missing plans and unrelated actions never manufacture suggestions or requirements", () => {
  const value=item("current"); const html=render(report([value],[advice(item("foreign"),{action:"外部报告的建议"})]));
- assert.ok(html.includes("本项尚无已保存的具体建议")); assert.ok(!html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
+ assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes("通用核对步骤与材料清单")); assert.ok(!html.includes("外部报告的建议"));
  assert.ok(!html.includes('href="#requirement-foreign"'));
 });
 

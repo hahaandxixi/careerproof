@@ -421,7 +421,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         </section>}
       </div>
 
-      {basisSelection && session.summary?.issueTrail?.some(issue => issue.issueId === basisSelection.issueId) ? (() => {
+      <div className={styles.basisDock}>{basisSelection && session.summary?.issueTrail?.some(issue => issue.issueId === basisSelection.issueId) ? (() => {
         const issue = session.summary!.issueTrail!.find(entry => entry.issueId === basisSelection.issueId)!;
         const originIndex = Number(issue.origin.issueId.split(":")[0]);
         const indices = [...new Set([originIndex, issue.turnIndex].filter((index): index is number => index != null))];
@@ -431,7 +431,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
           {!basisSelection.basisId && <p className="text-sm">此问点未保存专属依据，以下展示该轮点评的依据。</p>}
           {basisTurn?.feedback ? <PracticeSources key={`${issue.issueId}:${basisSelection.turnIndex}`} turn={basisTurn} session={session} basisId={basisSelection.basisId} /> : <p>该轮未保存点评依据。</p>}
         </div>;
-      })() : <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />}
+      })() : <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />}</div>
     </div>
   </div>;
 }
