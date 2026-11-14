@@ -109,5 +109,5 @@ test("history action still filters the actual job and report links keep the fixe
  const report={id:"fixed-report",jobId:"fixed-job",jobTitle:"岗位",candidateName:"小江",createdAt:"2026-10-29T12:00:00Z",summary:"原摘要",jobReportCount:4};
  const tree=ReportHistoryCard({report,onSameJob:id=>target=id});
  nodes(tree).find(n=>n.type==="button"&&text(n)==="同岗位共 4 份报告").props.onClick();
- assert.equal(target,"fixed-job");assert.match(render(tree),/href="\/reports\/fixed-report"/);assert.match(text(tree),/报告详情/);
+ assert.equal(target,"fixed-job");assert.match(render(tree),/href="\/reports\/fixed-report"/);assert.doesNotMatch(text(tree),/报告详情|原摘要/);
 });

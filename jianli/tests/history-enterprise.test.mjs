@@ -77,7 +77,7 @@ const summary = {
   id: "report-a", jobId: "job-a", jobTitle: "后端开发", candidateName: "甲",
   createdAt: "2026-10-22T10:00:00Z", summary: "已保存的规则分析",
 };
-test("history card displays server-wide history facts and fixed versions only when recorded", () => {
+test("history card displays server-wide history facts without repeating saved report details", () => {
   const html = render(React.createElement(ReportHistoryCard, { report: {
     ...summary, isLatestForJob: false, jobReportCount: 27,
     materials: [
@@ -88,8 +88,7 @@ test("history card displays server-wide history facts and fixed versions only wh
   assert.match(html, /历史报告/);
   assert.match(html, /同岗位共 27 份报告/);
   assert.match(html, /report-record-meta[^<]*>[\s\S]*?本次材料 2 份/);
-  assert.doesNotMatch(html.split("report-record-foot")[0], /同名项目/);
-  assert.match(html, /报告详情<\/summary>[\s\S]*同名项目 · 第 1 版[\s\S]*同名项目 · 第 2 版/);
+  assert.doesNotMatch(html, /同名项目|报告详情|已保存的规则分析|report-record-foot/);
   assert.match(html, /href="\/reports\/report-a"/);
   const unknown = render(React.createElement(ReportHistoryCard, { report: summary }));
   assert.doesNotMatch(unknown, /最新报告|后续报告|固定材料|历史（/);
