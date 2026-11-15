@@ -20,10 +20,10 @@ export function RequirementActionPanel({ report, item, explanationVisible = fals
   const actionable = tone === "gap";
   const action = savedRequirementAction(report, item);
   const advice = validatedGrowthAdvice(report, item);
-  const explanation = requirementConclusion(item);
+  const explanation = requirementConclusion(item, !supported);
   const gap = advice?.gap || item.evidenceLevelGap?.trim();
   const conclusion = actionable ? gap || action?.evidenceGap?.trim() || explanation : explanation;
-  const showConclusion = !explanationVisible && conclusion !== "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。";
+  const showConclusion = !explanationVisible && Boolean(conclusion) && conclusion !== "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。";
   return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与来源`}>
     <div className="requirement-reading-copy min-w-0 space-y-4">
     {explanationPanel}

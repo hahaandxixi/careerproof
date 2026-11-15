@@ -129,7 +129,7 @@ test("student requirement area leaves guidance to the supplement section", () =>
  assert.ok(!full.includes("复制补证建议"), "a repeated gap is not separate copyable advice");
  assert.ok(full.includes("添加项目材料"));
 });
-test("rule citations stay in the reader with alternatives available through existing anchors", () => {
+test("rule citations stay in the reader at existing anchors without an extra source list", () => {
  const first={citationId:null,projectVersionId:"v1",filePath:"src/app.py",snippet:"first implementation"};
  const r={...report([]),materials:[{kind:"project",id:"v1",title:"项目",versionNumber:1}]};
  const view=(sources,reader=true)=>{
@@ -147,7 +147,8 @@ test("rule citations stay in the reader with alternatives available through exis
  const two=view([first,{...first,filePath:"tests/app.py",lineStart:5,lineEnd:7}]);
  assert.match(two,/id="rule-source-rules-1"/);
  assert.doesNotMatch(two,/href="#rule-source-rules-1"/);
- assert.match(two,/href="#rule-source-rules-2"/);
+ assert.match(two,/id="rule-source-rules-2"/);
+ assert.doesNotMatch(two,/其他来源|来源详情/);
 });
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
@@ -218,6 +219,12 @@ test("supported requirements lead with conclusions and evidence; optional growth
  assert.ok(!html.includes("材料有更新？按需查看补证指导"));
  assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
+});
+
+test("a supported item with only a technical explanation omits the generated source-count judgment block", () => {
+ const value=item("complete","supported",{explanation:"本项静态引用：pipeline.py",evidenceLevelReason:""});
+ const html=render(report([value]));
+ assert.doesNotMatch(html,/判断依据|本报告保存了 .* 条来源/);
 });
 
 test("support survives incomplete context without duplicating the source pane's warning in actions", () => {
@@ -357,7 +364,6 @@ test("mixed citations retain their original source slots and only student materi
  const student=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:entry,canOpenMaterial:true}));
  for(const slot of [2,3]){
   assert.ok(!action.includes(`href="#rule-source-mixed-${slot}"`));
-  assert.ok(readonly.includes(`href="#rule-source-mixed-${slot}"`));
   assert.ok(readonly.includes(`id="rule-source-mixed-${slot}"`));
   assert.ok(student.includes(`sourceId=rule-source-mixed-${slot}`));
  }

@@ -400,13 +400,14 @@ test("primary AI explanation is shown only for adopted saved output and preserve
  assert.equal(JSON.stringify(report),before);
 });
 
-test("an incomplete source stays marked on its summary even while collapsed", () => {
+test("an incomplete historical source keeps its readable excerpt and genuine limit without a details disclosure", () => {
  const source={citationId:"S2",filePath:"service.py",lineStart:5,lineEnd:8,snippet:"partial_source",contextComplete:false,contextNote:"缺少完整函数"};
  const item={...items[0],aiCitationIds:[],evidenceList:[{...source,citationId:"S1",contextComplete:true},source]};
  const report={analysisMode:"rules",aiFallbackUsed:false,items:[item],materials:[]};
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
  assert.match(html,/<header[^>]*>(?:(?!<\/header>)[\s\S])*历史完整性信息不足(?:(?!<\/header>)[\s\S])*<\/header>/);
- assert.ok(html.includes("缺少完整函数") && html.includes("partial_source"));
+ assert.ok(html.includes("partial_source"));
+ assert.doesNotMatch(html,/缺少完整函数|来源详情|其他来源/);
 });
 
 test("source directory keeps all original anchors, snippets and versions with only one visible reader", () => {
@@ -416,12 +417,10 @@ test("source directory keeps all original anchors, snippets and versions with on
  ]};
  const report={analysisMode:"ai_evidence",aiFallbackUsed:false,items:[item],materials:[{kind:"project",id:"project-v1",title:"库存",versionNumber:1},{kind:"project",id:"project-v2",title:"库存",versionNumber:2}]};
  const before=JSON.stringify(report);const html=renderToStaticMarkup(React.createElement(SourcePanel,{report,item}));
- for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版','来源详情']) assert.ok(html.includes(text),text);
+ for(const text of ['id="citation-saved-alpha"','id="rule-source-implementation-2"','return items','raise Error','库存 · 第 1 版','库存 · 第 2 版']) assert.ok(html.includes(text),text);
  assert.equal((html.match(/<article/g)||[]).length,2);
  assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,1);
- assert.match(html,/其他来源/);
- assert.match(html,/href="#rule-source-implementation-2"/);
- assert.doesNotMatch(html,/选择来源|引用原文|上一处|下一处|局部原文/);
+ assert.doesNotMatch(html,/其他来源|来源详情|选择来源|引用原文|上一处|下一处|局部原文/);
  assert.equal(JSON.stringify(report),before);
 });
 
@@ -430,7 +429,7 @@ test("twelve-source directory keeps every source and opens the exact bookmarked 
  const item={...items[0],skill:"Python",aiCitationIds:[],evidenceList:Array.from({length:12},(_,i)=>({citationId:`R1-E${i+1}`,filePath:`v${i%2}/service.py`,projectVersionId:`v${i%2}`,lineStart:i*10+1,lineEnd:i*10+3,snippet:`source_${i}`,contextComplete:true}))};
  const report={items:[item],materials:[0,1].map(i=>({kind:"project",id:`v${i}`,title:"报名服务",versionNumber:i+1})),analysisMode:"rules",aiFallbackUsed:false};
  const before=JSON.stringify(report),html=renderToStaticMarkup(React.createElement(SourcePanel,{item,report}));
- assert.equal((html.match(/href="#citation-R1-E/g)||[]).length,11);assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,11);
+ assert.equal((html.match(/id="citation-R1-E/g)||[]).length,12);assert.equal((html.match(/<article[^>]* hidden=""/g)||[]).length,11);
  const values=[],effects=[],frames=[],listeners=new Map();let cursor=0;
  const original={window:globalThis.window,document:globalThis.document,Element:globalThis.Element,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
  class Link {constructor(href){this.href=href;}closest(){return{getAttribute:()=>this.href};}}

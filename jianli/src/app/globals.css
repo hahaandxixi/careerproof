@@ -378,9 +378,8 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .source-reader-code { padding: 2px 16px 10px; }
 .source-reader-heading .source-reader-limit { margin-top: 8px; padding: 6px 9px; border-left: 2px solid #edc46f; background: #3b3b39; color: #f6d994; font-size: 14px; line-height: 1.65; }
 .source-reader-details { display: flex; flex-wrap: wrap; align-items: start; gap: 4px 18px; padding: 8px 18px 12px; border-top: 1px solid var(--nav-raised); background: var(--nav-line); color: var(--nav-text); }
-.source-reader-details .disclosure, .source-reader-details .text-slate-600, .source-reader-details .action-link { color: var(--nav-text); }
+.source-reader-details .action-link { color: var(--nav-text); }
 .source-reader-details .action-link:hover { color: #fff; background: var(--nav-raised); }
-.source-reader-details details { margin-top: 4px; font-size: 14px; line-height: 1.65; }
 .report-source-empty { max-width: 60ch; padding-top: 10px; border-top: 1px solid var(--ink-line); color: var(--ink-muted); font-size: 15px; line-height: 1.8; }
 .report-next-requirement { margin-top: 26px; padding: 20px 0 4px; border-top: 1px solid var(--ink-line); }
 .report-desk .report-paper > .panel, .report-desk .report-paper > details.panel { border: 0; border-top: 1px solid var(--ink-line); border-radius: 0; padding: 18px 0; }
@@ -416,7 +415,6 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .report-desk .requirement-document:not(.requirement-has-sources) .requirement-next { padding: 12px 0 0; border: 0; }
 /* No-source items keep the right rail with an explicit dashed placeholder, never blank space. */
 .report-desk .requirement-document:not(.requirement-has-sources) .report-source-empty { max-width: 76ch; padding: 14px 16px; border: 1px dashed var(--brand-border); background: var(--paper-bg); color: var(--ink-muted); font-size: 15px; line-height: 1.8; }
-.source-reader-details details[open] { flex-basis: 100%; }
 .source-reader-details .action-link { min-height: 32px; font-size: 14px; }
 
 @media (min-width: 1024px) {

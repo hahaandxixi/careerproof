@@ -56,12 +56,10 @@ function Sessions() {
   const [skill, setSkill] = useState("");
   const read = useCallback((page: number) => api.listInterviewSessions(page, 12, status, skill), [status, skill]);
   const { data, busy, error, retry } = useRead(read, page);
-  const groups = new Map<string, InterviewSessionSummary[]>();
+  const groups = new Map<string, InterviewSessionSummary>();
   for (const session of data?.items ?? []) {
     const key = session.requirementId ? JSON.stringify([session.jobId, session.requirementId]) : session.id;
-    const group = groups.get(key);
-    if (group) group.push(session);
-    else groups.set(key, [session]);
+    if (!groups.has(key)) groups.set(key, session);
   }
   return <section className="panel space-y-4" aria-labelledby="saved-interviews">
     <h2 id="saved-interviews" className="section-title">我的练习</h2>
@@ -84,13 +82,9 @@ function Sessions() {
     {error && <ErrorNotice message={`暂时无法读取已有练习。 ${error}`} retry={retry} />}
     {data?.total === 0 && <p className="text-slate-600">当前筛选下没有练习。</p>}
     {!!groups.size && <ul className="divide-y divide-slate-200">
-      {[...groups].map(([key, [latest, ...older]]) => <li key={key} className="py-3">
+      {[...groups].map(([key, latest]) => <li key={key} className="py-3">
         <h3 className="break-words text-sm text-slate-600">{displayJobTitle(latest.jobTitle ?? "", latest.jobId) || "岗位名称未记录"}{latest.skill ? ` · ${latest.skill}` : ""}</h3>
         <SessionRow session={latest} />
-        {older.length > 0 && <details>
-          <summary className="disclosure">本页其余 {older.length} 次同题练习</summary>
-          <ul className="divide-y divide-slate-200 pl-3">{older.map(session => <li key={session.id}><SessionRow session={session} /></li>)}</ul>
-        </details>}
       </li>)}
     </ul>}
     {data && <ListPagination value={data} busy={busy} label="练习分页" onPage={setPage} />}

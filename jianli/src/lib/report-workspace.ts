@@ -29,11 +29,12 @@ export function workspaceStatusLabel(item: ReportItem): string {
 }
 
 /** Keep raw technical explanations intact in the evidence reader, not in the scan list. */
-export function requirementConclusion(item: ReportItem): string {
+export function requirementConclusion(item: ReportItem, includeFallback = true): string {
   const technical = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f-]{20,}|[\\/][^\s，。；]+\.(?:py|tsx?|jsx?|sql|json|txt)\b|本项静态引用/i;
   const candidates = [item.explanation, item.evidenceLevelReason].map(text => text?.trim()).filter(Boolean) as string[];
   const concise = candidates.find(text => !technical.test(text));
   if (concise) return concise;
+  if (!includeFallback) return "";
   return `${workspaceStatusLabel(item)}；本报告保存了 ${item.evidenceList.length} 条来源，可展开核对判断范围。`;
 }
 

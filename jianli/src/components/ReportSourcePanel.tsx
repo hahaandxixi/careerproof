@@ -6,8 +6,6 @@ import { adoptedReportExplanation, type WorkspaceFilter } from "@/lib/report-wor
 import { materialReportContext } from "@/lib/material-report-link";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
 import EvidenceSnippet from "./EvidenceSnippet";
-import EvidenceLink from "./EvidenceLink";
-import { SourceIdentityDetails } from "./SourceIdentity";
 import { sourceLimit } from "@/lib/source-limits";
 
 export default function ReportSourcePanel({ report, item, canOpenMaterial = false, filter, origin }: { report: MatchReport; item: ReportItem; canOpenMaterial?: boolean; filter?: WorkspaceFilter; origin?: string }) {
@@ -68,23 +66,8 @@ export default function ReportSourcePanel({ report, item, canOpenMaterial = fals
         <div className="source-reader-code">
           {limit?.readable !== false && <EvidenceSnippet evidence={source} materials={report.materials} showContextNote={false} theme="dark" />}
         </div>
-        <div className="source-reader-details">
-          {fileHref && <a href={fileHref} className="action-link">查看完整文件 ↗</a>}
-          <SourceIdentityDetails source={source}>
-            <p className="mt-2 break-words leading-6">{source.explanation}</p>
-            {source.contextNote && <p className="mt-2">{source.contextNote}</p>}
-          </SourceIdentityDetails>
-        </div>
+        {fileHref && <div className="source-reader-details"><a href={fileHref} className="action-link">查看完整文件 ↗</a></div>}
       </article>;
     })}</div> : <p className="report-source-empty">{item.verdict === "unsupported" ? "当前规则未覆盖此要求，请人工核对保存材料。" : "当前报告没有对应的可定位引用，不能据此认定没有这项能力。"}</p>}
-    {item.evidenceList.length > 1 && <details className="mt-2 text-sm">
-      <summary className="disclosure">其他来源</summary>
-      <ul className="mt-1 space-y-2">{item.evidenceList.map((source, index) => {
-        if (selected === index) return null;
-        const locationId = sourceLocationId(item.requirementId, source, index);
-        const label = compactSourceLabel(source, report.materials);
-        return <li key={locationId} className="break-words"><EvidenceLink targetId={locationId} className="action-link">{label.fileName} · {source.lineStart}–{source.lineEnd} 行 · {label.material}</EvidenceLink></li>;
-      })}</ul>
-    </details>}
   </section>;
 }
