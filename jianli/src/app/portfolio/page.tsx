@@ -4,7 +4,7 @@ import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import LoginLink from "@/components/LoginLink";
 import MaterialFileDropzone from "@/components/MaterialFileDropzone";
-import { latestMaterialVersions, materialFileError, type UploadedMaterial } from "@/lib/material-upload";
+import { isListedMaterialProject, latestMaterialVersions, materialFileError, type UploadedMaterial } from "@/lib/material-upload";
 import GrowthUploadReturn from "@/components/GrowthUploadReturn";
 import ReportUploadReturn from "@/components/ReportUploadReturn";
 import MaterialUploadIntent from "@/components/MaterialUploadIntent";
@@ -240,19 +240,23 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const newestUploads = latestMaterialVersions(uploads).sort(
     (a, b) => Number(reportVersions.has(`${b.kind}:${b.resourceId}`)) - Number(reportVersions.has(`${a.kind}:${a.resourceId}`)),
   );
+  const [returnVersion, setReturnVersion] = useState<string | null>(null);
+  const listedProjects = projects.filter(project => isListedMaterialProject(project.id) ||
+    project.versions.some(version => version.id === returnVersion));
+  const listedProjectIds = new Set(listedProjects.map(project => project.id));
+  const listedUploads = newestUploads.filter(item => item.kind === "resume" || listedProjectIds.has(item.resourceId));
   const query = materialSearch.trim().toLocaleLowerCase();
   const searchedResources = new Set(uploads.filter(item => !query ||
     [displayMaterialTitle(item.title, item.versionId), item.filename].some(value => value.toLocaleLowerCase().includes(query))
   ).map(item => `${item.kind}:${item.resourceId}`));
-  const filteredUploads = newestUploads.filter(item =>
+  const filteredUploads = listedUploads.filter(item =>
     (materialFilter === "all" || item.kind === materialFilter) && searchedResources.has(`${item.kind}:${item.resourceId}`),
   );
   const materialFilterCounts = {
-    all: newestUploads.length,
-    resume: newestUploads.filter(item => item.kind === "resume").length,
-    project: newestUploads.filter(item => item.kind === "project").length,
+    all: listedUploads.length,
+    resume: listedUploads.filter(item => item.kind === "resume").length,
+    project: listedUploads.filter(item => item.kind === "project").length,
   } satisfies Record<MaterialFilter, number>;
-  const [returnVersion, setReturnVersion] = useState<string | null>(null);
   useEffect(() => {
     const params = new URLSearchParams(window.location?.search);
     const version = params.get("materialVersion");
@@ -286,7 +290,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     (materialPageCurrent - 1) * MATERIAL_PAGE_SIZE,
     materialPageCurrent * MATERIAL_PAGE_SIZE,
   );
-  const hasCompletedMaterial = historyLoaded && !historyError && newestUploads.some(item => item.status === "completed");
+  const hasCompletedMaterial = historyLoaded && !historyError && listedUploads.some(item => item.status === "completed");
   const uploadTarget = targetProject && newestUploads.find(item => item.kind === "project" && item.resourceId === targetProject.id);
   const targetReportVersions = uploadTarget ? reportVersions.get(`project:${uploadTarget.resourceId}`) : undefined;
 
@@ -457,7 +461,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
       </header>
 
 
-      {historyLoaded && !uploads.length && !projects.length && !historyError &&
+      {historyLoaded && !listedUploads.length && !listedProjects.length && !historyError &&
         <Link href="/demo" className="block rounded-xl bg-[#e7efe9] p-4 text-sm text-[#1d4a40]">材料库 →</Link>}
       {notice && <p role="status" className="rounded-xl bg-[#e7efe9] p-3 text-sm text-[#173c34]">{notice}</p>}
 
@@ -474,7 +478,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
               value={materialSearch} onChange={event => { setMaterialSearch(event.target.value); setMaterialPage(1); }} />
           </label>
           {materialSearch && <button type="button" className="btn-quiet" onClick={() => { setMaterialSearch(""); setMaterialPage(1); }}>清除搜索</button>}
-          {uploads.length > 0 && (
+          {listedUploads.length > 0 && (
             <div className="flex flex-wrap gap-2" role="group" aria-label="材料类型筛选">
               {MATERIAL_FILTERS.map(filter => (
                 <button key={filter.key} type="button" className="selection-toggle" aria-pressed={materialFilter === filter.key}
@@ -493,7 +497,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         {!historyLoaded && !historyError && <p className="py-6 text-sm text-slate-500">正在加载已保存材料…</p>}
         {deleteError && <p role="alert" className="mb-3 text-sm text-rose-700">{deleteError}</p>}
         {deletingProjectId && <p role="status" className="mb-3 text-sm text-slate-600">正在移除材料…</p>}
-        {projects.filter(project => !project.versions.length && materialFilter !== "resume" &&
+        {listedProjects.filter(project => !project.versions.length && materialFilter !== "resume" &&
           displayMaterialTitle(project.name, project.id).toLocaleLowerCase().includes(query)
         ).map(project => {
           const name = displayMaterialTitle(project.name, project.id);
@@ -522,7 +526,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             })}
           </div>
         )}
-        {uploads.length > 0 && !filteredUploads.length && (
+        {listedUploads.length > 0 && !filteredUploads.length && (
           <p className="py-6 text-sm text-slate-500">{query ? "没有匹配的已上传材料。" : "当前筛选类型暂无材料。"}</p>
         )}
         {materialPageCount > 1 && (
@@ -530,7 +534,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             <ListPagination label="材料分页" value={{ total: filteredUploads.length, page: materialPageCurrent, pageSize: MATERIAL_PAGE_SIZE }} busy={false} onPage={setMaterialPage} />
           </div>
         )}
-        {historyLoaded && !historyError && !uploads.length && !projects.length && (
+        {historyLoaded && !historyError && !listedUploads.length && !listedProjects.length && (
           <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center text-sm text-slate-500">
             暂无材料，请添加简历或项目。
           </div>

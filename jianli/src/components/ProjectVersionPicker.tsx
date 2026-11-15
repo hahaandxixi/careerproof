@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { ProjectHistory } from "@/lib/api/client";
-import { materialVersionTime } from "@/lib/material-upload";
+import { isListedMaterialProject, materialVersionTime } from "@/lib/material-upload";
 import { filterMaterialProjects, groupMaterialProjects, projectDisplayCategory, toggleMaterialVersion } from "@/lib/material-picker";
 import { displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import cases from "@/app/demo/samples.json";
@@ -23,8 +23,10 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
 }) {
   const [query, setQuery] = useState("");
   const [includeHistory, setIncludeHistory] = useState(false);
-  const visibleProjects = groupMaterialProjects(projects, query, includeHistory, DEMO_NAMES);
-  const selectableProjects = filterMaterialProjects(projects, "");
+  const completedProjects = filterMaterialProjects(projects, "");
+  const selectableProjects = completedProjects.filter(project => isListedMaterialProject(project.id) ||
+    project.versions.some(version => version.id === highlightedVersionId));
+  const visibleProjects = groupMaterialProjects(selectableProjects, query, includeHistory, DEMO_NAMES);
   // Make just the returned project's completed versions discoverable, without
   // opening every old acceptance fixture or changing the user's selection.
   if (!query.trim() && highlightedVersionId) {
@@ -37,7 +39,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
   const nameCounts = new Map<string, number>();
   for (const name of displayNames.values()) nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1);
   const historyCount = selectableProjects.filter(project => projectDisplayCategory(project.name, DEMO_NAMES) === "history").length;
-  const selected = selectableProjects.flatMap(project => project.versions
+  const selected = completedProjects.flatMap(project => project.versions
     .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: displayMaterialTitle(project.name, version.id) })));
 
   return <section aria-label="项目或作品版本选择" className="space-y-3">

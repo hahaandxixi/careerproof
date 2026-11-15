@@ -141,21 +141,21 @@ test("real returned-version review highlights only current owned data and never 
   assert.equal(calls, 0);
 });
 
-test("actual project picker highlights the returned version and distinguishes same-name projects", async () => {
+test("project picker highlights returned versions, distinguishes namesakes and only omits the retired diagram", async () => {
   const pickerLogic = await import("../src/lib/material-picker.ts");
   const projects = [{ id: "p", name: "作品", versions: [
     { id: "old", versionNumber: 1, status: "completed", originalFilename: "old.zip" },
     { id: "new", versionNumber: 2, status: "completed", originalFilename: "new.zip", createdAt: "2026-10-22T08:15:00+08:00" },
   ] }];
-  function picker(query, selectedIds = [], rows = projects) {
+  function picker(query, selectedIds = [], rows = projects, highlightedVersionId = "new", includeHistory = false) {
     let index = 0;
     const component = loadComponent("../src/components/ProjectVersionPicker.tsx", {
-      react: { useState: value => [index++ === 0 ? query : value, () => {}] },
+      react: { useState: () => [index++ === 0 ? query : includeHistory, () => {}] },
       "react/jsx-runtime": runtime, "next/link": { __esModule: true, default: props => runtime.jsx("a", props) },
       "@/lib/material-upload": contract, "@/lib/material-picker": pickerLogic, "@/app/demo/samples.json": { __esModule: true, default: [] },
       "@/lib/demo-display-identity.js": demoPresentation,
     }).default;
-    return component({ projects: rows, selectedIds, onChange() { assert.fail("render must not select"); }, highlightedVersionId: "new" });
+    return component({ projects: rows, selectedIds, onChange() { assert.fail("render must not select"); }, highlightedVersionId });
   }
   const { renderToStaticMarkup } = require("react-dom/server");
   const tree = picker("");
@@ -173,4 +173,20 @@ test("actual project picker highlights the returned version and distinguishes sa
   const sameName = renderToStaticMarkup(picker("", ["new"], [...projects, duplicate]));
   assert.match(sameName, /new\.zip.*2026/);
   assert.match(sameName, /another\.zip.*2026/);
+  const diagram = {
+    id: "568fe744-0286-4fa1-b7c0-3a6414737b8f", name: "报名服务架构图",
+    versions: [{ ...projects[0].versions[0], id: "retired", originalFilename: "architecture.png" }],
+  };
+  const namesake = { ...diagram, id: "different-project", versions: [{ ...diagram.versions[0], id: "retained" }] };
+  const unchanged = structuredClone([diagram, namesake]);
+  assert.doesNotMatch(renderToStaticMarkup(picker("architecture.png", [], [diagram], "new", true)), /报名服务架构图/);
+  const matching = renderToStaticMarkup(picker("architecture.png", [], [diagram, namesake]));
+  assert.match(matching, /选择或更换项目版本 · 1 个项目/);
+  assert.equal(matching.match(/报名服务架构图/g)?.length, 1);
+  const saved = picker("", ["retired"], [diagram]);
+  const savedSelection = find(saved, node => node.props?.["aria-label"] === "已选项目版本");
+  assert.match(renderToStaticMarkup(savedSelection), /报名服务架构图 · 第 1 版/);
+  assert.ok(find(savedSelection, node => node.type === "button"));
+  assert.match(renderToStaticMarkup(picker("", [], [diagram], "retired")), /刚上传 · 尚未选择/);
+  assert.deepEqual([diagram, namesake], unchanged);
 });

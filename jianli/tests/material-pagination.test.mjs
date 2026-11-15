@@ -88,16 +88,17 @@ const pager = tree => {
   return element ? { element, nav: element.type(element.props) } : null;
 };
 
-test("seven materials split into 6 + 1 and history versions never add to the page total", async () => {
+test("seven listed materials split into 6 + 1 without historical versions or the retired diagram", async () => {
   const originalWindow = globalThis.window, originalDocument = globalThis.document;
   globalThis.window = { sessionStorage: { getItem: () => null, setItem() {}, removeItem() {} } };
   globalThis.document = { getElementById: () => null };
   try {
     const h = workspace();
-    // 7 resources; one project carries an older version, so raw uploads = 8.
+    // Seven listed resources, one historical version, and one retired fixture.
     h.data.resumes = [1, 2, 3].map(n => ({ id: `resume-${n}`, title: `简历${n}`, createdAt: `2026-11-0${n}T00:00:00Z`, versions: [version(`rv-${n}`, 1, `2026-11-0${n}T00:00:00Z`)] }));
     h.data.projects = [
       { id: "project-1", name: "项目一", description: "", version: 2, createdAt: "2026-11-04T00:00:00Z", versions: [version("pv-1-old", 1, "2026-11-01T00:00:00Z"), version("pv-1", 2, "2026-11-04T00:00:00Z")] },
+      { id: "568fe744-0286-4fa1-b7c0-3a6414737b8f", name: "报名服务架构图", description: "", version: 1, createdAt: "2026-11-08T00:00:00Z", versions: [version("retired", 1, "2026-11-08T00:00:00Z")] },
       ...[2, 3, 4].map(n => ({ id: `project-${n}`, name: `项目${["二", "三", "四"][n - 2]}`, description: "", version: 1, createdAt: `2026-11-0${n + 3}T00:00:00Z`, versions: [version(`pv-${n}`, 1, `2026-11-0${n + 3}T00:00:00Z`)] })),
     ];
     let tree = await h.settle();
@@ -105,6 +106,7 @@ test("seven materials split into 6 + 1 and history versions never add to the pag
     assert.match(text(button(tree, "简历")), /简历 3/);
     assert.match(text(button(tree, "项目")), /项目 4/);
     assert.equal(rows(tree).length, 6, "page one shows six material items");
+    assert.doesNotMatch(text(tree), /报名服务架构图/);
     let page = pager(tree);
     assert.match(text(page.nav), /共 7 条 · 第 1 \/ 2 页 · 本页记录 1–6/);
     // The multi-version project's newest row keeps its collapsed history entry.
