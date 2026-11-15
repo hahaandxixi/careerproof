@@ -20,18 +20,19 @@ const {reportEntryRequirement} = await import("../src/lib/report-reader.ts");
 resolution.deregister();
 const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes),...(n.props?.sections??[]).flatMap(s=>nodes(s.content))];
 const text=n=>typeof n==="string"?n:[...React.Children.toArray(n?.props?.children),...(n?.props?.sections??[]).map(s=>s.content)].map(text).join("");
-function fixture({writeError,readError,search="",hash="",differentStatus=false}={}){
+function fixture({writeError,readError,search="",hash="",differentStatus=false,materials=[]}={}){
  const cells=[],effects=[];let cursor=0,reads=0,writes=0,hashEvents=0,account="owner",role="student";
  const savedWindow=globalThis.window;const listeners={};
  globalThis.window={location:{href:"http://localhost/reports/r"+search+hash,hash,search},history:{state:{__NA:true},pushState(_state,_unused,url){Object.assign(globalThis.window.location,{href:url.href,hash:url.hash,search:url.search});}},dispatchEvent(event){if(event.type==="hashchange")hashEvents++;for(const fn of listeners[event.type]??[])fn(event);},addEventListener(type,fn){(listeners[type]??=[]).push(fn);},removeEventListener(type,fn){listeners[type]=(listeners[type]??[]).filter(value=>value!==fn);}};
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||cells[i].deps.join()!==deps.join())cells[i]={deps,value:fn()};return cells[i].value;};
  const hooks={useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useMemo:memo,useEffect(fn,deps){const i=cursor++;const previous=cells[i];if(!previous||JSON.stringify(previous.deps)!==JSON.stringify(deps)){cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}}};
- const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:differentStatus && requirementId==="b"?"gap":"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials:[],analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
+ const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:differentStatus && requirementId==="b"?"gap":"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials,analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
  const api={getReport:async()=>{reads++;if(reads===2&&readError)throw readError;return report;},reviewEvidence:async(...args)=>{writes++;if(writeError)throw writeError;return args;}};
  const stub=()=>null;const radarProps=[],heatmapProps=[],workspaceProps=[];const Radar=props=>{radarProps.push(props);return null;};const Workspace=props=>{workspaceProps.push(props);return React.createElement(React.Fragment,null,props.overview,props.children);};const modules={"./SkillRadar":{__esModule:true,default:Radar},"@/lib/evidence-anchor":{navigateEvidenceFragment:()=>{}},"next/navigation":{useSearchParams:()=>new URLSearchParams()},"@/lib/evidence-workspace":evidenceWorkspace,"@/lib/source-label":sourceLabels,"@/lib/demo-display-identity.js":demoPresentation,react:hooks,"react/jsx-runtime":jsx,"next/link":{__esModule:true,default:stub},"@/lib/api/client":{api,errorMessage:e=>e.message},"@/lib/report-review-session":{createReportReviewSession,initialReportReviewState},"./AuthProvider":{useAuth:()=>({user:{id:account,role}})},"./AccessGate":{__esModule:true,default:stub,ErrorNotice:stub},"@/lib/analysis-status":{sourceContextVerified:()=>true},"@/lib/report-display":{reportAiRatedCount:()=>0},"@/lib/agent-evidence":{agentProcessSummary:()=>""},"@/lib/report-workspace":workspace,"@/lib/material-report-link":materialReportLinks,"@/lib/heatmap-cell.js":{heatmapCellClass:()=>""},"@/lib/report-reader":{initialReportRequirement:items=>items[0]?.requirementId??"",reportEntryRequirement}};
  modules["@/lib/report-navigation"]=reportNavigation;
  modules["@/lib/report-follow-up"]={followUpCopyText:()=>""};
  for(const name of ["SourceCoverage","EvidenceLink","EvidenceAnchorRestore","ReportComparisonPanel","McpAccessPanel","ApplicationSubmit","ReportAgentEvidence","ReportAiExplanation","ReportSourcePanel","ReportSections","ReportPaperHeader","ReportFollowUpActions","PracticeEntry","ReportCareerAdvice"])modules[`./${name}`]={__esModule:true,default:stub};
+ modules["./ProjectFileReader"]={__esModule:true,default:({id})=>React.createElement("div",{"data-project-version":id})};
  modules["./ReportRequirementHeatmap"]={__esModule:true,default:props=>{heatmapProps.push(props);return null;}};
  modules["./ReportSections"]={__esModule:true,default:({header,sections})=>React.createElement(React.Fragment,null,header,sections?.[0]?.content)};
  modules["./ReportEvidenceWorkspace"]={__esModule:true,default:Workspace,RequirementActionPanel:stub};
@@ -129,5 +130,23 @@ test("one shared requirement index owns filtering and an empty category cannot r
    await h.settle(); h.html();
    assert.equal(h.workspaceProps.at(-1).filter,"all");
    assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
+ } finally { h.dispose(); }
+});
+
+
+test("fixed material readers bind the reported project version and only mount for students", async () => {
+ const h=fixture({materials:[
+   {kind:"project",id:"fixed-v1",title:"Fixed project",versionNumber:1},
+   {kind:"resume",id:"resume-v2",title:"Fixed resume",versionNumber:2},
+ ]});
+ try {
+   await h.settle();
+   const html=()=>renderToStaticMarkup(h.render().props.children.props.sections.find(s=>s.id==="report-materials").content);
+   assert.match(html(), /data-project-version="fixed-v1"/);
+   assert.doesNotMatch(html(), /data-project-version="resume-v2"|预览此固定版本/);
+   for(const role of ["admin","enterprise"]) {
+     h.setRole(role);
+     assert.doesNotMatch(html(), /data-project-version/);
+   }
  } finally { h.dispose(); }
 });
