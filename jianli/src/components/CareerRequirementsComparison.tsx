@@ -14,13 +14,13 @@ export default function CareerRequirementsComparison({ jobs }: { jobs: JobRecomm
   const groups = [
     { title: "各岗位明细", rows: rows.filter(row => !row.shared) },
     { title: "相同要求与判断", rows: rows.filter(row => row.shared) },
-  ];
+  ].filter(group => group.rows.length > 0);
   return <div className="career-matrix-scroll" role="region" aria-label="岗位要求对照表" tabIndex={0}>
     <table className="career-matrix" style={{ minWidth: 148 + jobs.length * 164 }}>
       <caption className="sr-only">按技能查看各岗位保存的要求与规则判断</caption>
       <thead><tr><th scope="col">技能</th>{jobs.map(job => <th scope="col" key={job.jobId}>{job.jobTitle}</th>)}</tr></thead>
-      {groups.filter(group => group.rows.length).map(group => <tbody key={group.title}>
-        <tr className="career-matrix-group"><th scope="rowgroup" colSpan={jobs.length + 1}>{group.title}</th></tr>
+      {groups.map(group => <tbody key={group.title}>
+        {groups.length > 1 && <tr className="career-matrix-group"><th scope="rowgroup" colSpan={jobs.length + 1}>{group.title}</th></tr>}
         {group.rows.map((row, index) => {
           const active = selected?.row === row.key ? jobs.find(job => job.jobId === selected.jobId) : undefined;
           const activeItems = active && row.requirements.get(active.jobId);

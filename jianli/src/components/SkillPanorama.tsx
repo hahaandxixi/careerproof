@@ -145,6 +145,8 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
     [...assessed.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
+  const otherStatuses = PANORAMA_STATUSES.filter(status => !PANORAMA_FILTERS.some(value => value === status)
+    && landscape.counts[status] > 0);
   const listChanged = !state.hasMore && state.total !== null && state.summaries.length !== state.total && !state.blocked;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
@@ -163,13 +165,17 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       <button className="btn-secondary" disabled={state.busy} onClick={retryFailed}>仅重试失败详情</button></details>}
     {empty ? <section className={styles.empty}><p className={styles.eyebrow}>从第一份报告开始</p><h2>还没有已保存报告</h2><p>选择岗位，用已有材料生成报告后，这里会整理报告中明确记录的技能。</p><Link href="/jobs" className="btn">选择岗位</Link></section> : <div className={styles.layout}>
       <section className={styles.canvas} aria-label="技能记录统计" aria-busy={state.busy}>
-        <div className={styles.legend}>
-          <ul aria-label="原报告状态图例">{PANORAMA_STATUSES.map(status => <li key={status}><i data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}</li>)}</ul></div>
-        <div className={styles.filters} role="group" aria-label="按原报告状态筛选">
-          {PANORAMA_FILTERS.map(value => <button key={value} type="button" aria-pressed={filter === value}
-            onClick={() => onFilterChange?.(value)}>
-            {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
-          </button>)}
+        <div className={styles.statusToolbar}>
+          <div className={styles.filters} role="group" aria-label="按原报告状态筛选">
+            {PANORAMA_FILTERS.map(value => <button key={value} type="button" aria-pressed={filter === value}
+              onClick={() => onFilterChange?.(value)}>
+              {value !== "all" && <i className={styles.statusDot} data-status={value} aria-hidden="true" />}
+              {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
+            </button>)}
+          </div>
+          {otherStatuses.length > 0 && <ul className={styles.statusKeys} aria-label="原报告状态图例">
+            {otherStatuses.map(status => <li key={status}><i className={styles.statusDot} data-status={status} aria-hidden="true" />{PANORAMA_STATUS_LABELS[status]}</li>)}
+          </ul>}
         </div>
         <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />
       </section>

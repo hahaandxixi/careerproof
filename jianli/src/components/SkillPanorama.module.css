@@ -13,10 +13,9 @@
 .canvasTitle h2, .rail h2, .empty h2 { font-size: 19px; font-weight: 700; line-height: 1.4; }
 .canvasTitle p { color: var(--ink-muted); font-size: 13px; }
 .canvasTitle strong { color: var(--ink-primary); font-size: 16px; }
-.legend { padding: 6px 0 10px; color: var(--ink-muted); font-size: 12px; border-bottom: 1px solid var(--ink-line); }
-.legend ul { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--ink-muted); }
-.legend li { display: inline-flex; align-items: center; gap: 6px; }
-.legend i, .skillMarks i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.statusKeys { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; color: var(--ink-muted); font-size: 12px; }
+.statusKeys li { display: inline-flex; align-items: center; gap: 6px; }
+.statusDot, .skillMarks i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .panorama [data-status="supported"] { background: #147d78; color: #fff; }
 .panorama [data-status="claimed_only"] { background: #b77913; color: #fff; }
 .panorama [data-status="gap"] { background: #e4c68d; color: #57390b; }
@@ -31,8 +30,10 @@
 /* Quantity band: thin, no inline numbers; counts stay in the accessible label. */
 .band { display: flex; gap: 2px; height: 10px; margin-top: 2px; overflow: hidden; border-radius: 3px; background: var(--desk-bg); }
 .band span { flex-basis: 0; min-width: 6px; }
-.filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 12px; border-bottom: 1px solid var(--ink-line); }
+.statusToolbar { padding: 10px 0 12px; border-bottom: 1px solid var(--ink-line); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
 .filters button { min-height: 34px; padding: 5px 11px; border: 1px solid var(--ink-line); border-radius: 4px; background: #fff; color: #334155; font-size: 12px; }
+.filters .statusDot { margin-right: 6px; }
 .filters button:hover { border-color: var(--brand-border); background: var(--brand-surface); }
 .filters button span { margin-left: 4px; color: #7c87a0; font-variant-numeric: tabular-nums; }
 .filters button[aria-pressed="true"] { border-color: var(--brand-primary); background: var(--brand-surface); color: var(--ink-primary); font-weight: 650; }
