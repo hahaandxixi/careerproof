@@ -144,11 +144,9 @@ async def test_full_two_sided_api_verifier_uses_real_routes_and_synthetic_transp
                         "reason": "材料包含可定位代码片段。",
                         "keyGap": "运行与贡献记录仍待补充。",
                         "nextTask": "提交正常与异常请求记录。",
-                        "taskPlan": {
-                            "deliverable": "请求记录",
-                            "steps": ["记录正常与异常输入"],
-                            "acceptanceChecks": ["记录含请求与对应响应"],
-                        },
+                        "deliverable": "请求记录",
+                        "steps": ["记录正常与异常输入"],
+                        "acceptanceChecks": ["记录含请求与对应响应"],
                         "citationIds": [e["citationId"] for e in j["evidence"]],
                     }
                     for j in jobs
