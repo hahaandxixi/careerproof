@@ -118,7 +118,7 @@ export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; co
     </div>
     <div className="min-w-0">
       <p className="discovery-job-direction">{directionLabel(job.careerDirection) ?? (`${CATEGORY_LABELS[job.category] ?? "其他方向"} · 未细分`)}</p>
-      {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="discovery-job-skills">{job.technicalTags.slice(0, 4).map(tag => <li key={tag}>{tag}</li>)}</ul>}
+      {!!job.technicalTags?.length && <ul aria-label="岗位要求中已列出的技术" className="discovery-job-skills">{job.technicalTags.slice(0, 4).map(tag => <li key={tag} data-skill={tag}>{tag}</li>)}</ul>}
     </div>
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 md:justify-end">
       <span className="workspace-meta tabular-nums">{job.requirementCount} 项要求{job.isDemo && " · 体验岗位"}</span>
