@@ -16,7 +16,7 @@ export default function EvidenceChain({ item }: { item: MatchItem }) {
             <VerdictBadge verdict={item.verdict} />
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="rounded bg-indigo-50 px-1.5 py-0.5 text-indigo-600">
+            <span className="rounded bg-brand-surface px-1.5 py-0.5 text-brand-primary">
               技能：{item.skill}
             </span>
             {item.claimed ? (
@@ -37,7 +37,7 @@ export default function EvidenceChain({ item }: { item: MatchItem }) {
 
       {item.evidenceList.length > 0 ? (
         <details className="mt-3 group">
-          <summary className="cursor-pointer list-none text-sm font-medium text-indigo-600 hover:text-indigo-700">
+          <summary className="cursor-pointer list-none text-sm font-medium text-brand-primary hover:text-brand-hover">
             <span className="inline-flex items-center gap-1">
               <span className="transition-transform group-open:rotate-90">▸</span>
               查看 {item.evidenceList.length} 条代码证据

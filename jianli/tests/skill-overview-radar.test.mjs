@@ -27,7 +27,7 @@ test('circular radar uses full record counts and preserves unknown and review in
  const axes=nodes.filter(n=>n.type==='g'&&n.props.role==='button');assert.equal(axes.length,3);
  assert.match(axes[0].props['aria-label'],/Python，有证据支持 1\/2 条，未评估 0 条，需复核 1 条/);
  assert.match(axes[1].props['aria-label'],/SQL，无可评估记录，未评估 1 条/);
- assert.equal(nodes.filter(n=>n.type==='line'&&n.props.stroke==='#1d6c5a').length,1);
+ assert.equal(nodes.filter(n=>n.type==='line'&&n.props.stroke==='var(--radar-data)').length,1);
  axes[1].props.onClick();assert.equal(f.picked,'sql');f.key(axes[2],'Enter');assert.equal(f.picked,'pytest');assert.equal(f.prevented,true);
 });
 test('more than eight skills have explicit pages, and fewer than three do not invent axes',()=>{
@@ -41,5 +41,6 @@ test('complete records shade the real area including a known zero', () => {
  const skills=buildSkillPanorama([report('a',[item('1','Python','supported'),item('2','SQL','claimed_only'),item('3','pytest','supported')])]).skills;
  const f=fixture(skills); const polygon=f.nodes(f.render()).find(node=>node.type==='polygon');
  assert.ok(polygon.props.points.split(' ').includes('250,225'));
- assert.ok(polygon.props.fillOpacity>0 && polygon.props.fillOpacity<1);
+ assert.equal(polygon.props.fill, 'var(--radar-data)');
+ assert.equal(polygon.props.fillOpacity, 0.16);
 });

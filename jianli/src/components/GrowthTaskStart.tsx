@@ -73,21 +73,21 @@ export default function GrowthTaskStart({ reportId, requirementId, advice, trigg
       acceptanceChecks: checks.split("\n").map(v => v.trim()).filter(Boolean) });
   }
   return <div className="mt-4 min-w-0 text-sm">
-    <button type="button" aria-expanded={open} className={primary ? "btn min-h-11 max-w-full whitespace-normal text-left" : "inline-flex min-h-11 items-center text-indigo-700 underline"} onClick={() => setOpen(v => !v)}>{open ? compact ? "收起补证记录" : "收起补证任务" : existingTask ? existingTask.targetReportId ? "查看补证结果" : compact ? "查看已有补证记录" : "继续补证任务" : triggerLabel ?? "从这条缺口创建或打开补证任务"}</button>
+    <button type="button" aria-expanded={open} className={primary ? "btn min-h-11 max-w-full whitespace-normal text-left" : "inline-flex min-h-11 items-center text-brand-hover underline"} onClick={() => setOpen(v => !v)}>{open ? compact ? "收起补证记录" : "收起补证任务" : existingTask ? existingTask.targetReportId ? "查看补证结果" : compact ? "查看已有补证记录" : "继续补证任务" : triggerLabel ?? "从这条缺口创建或打开补证任务"}</button>
     {open && replyContext && <div className="mt-3"><EnterpriseReplyContext context={replyContext} /></div>}
     {open && replyContextError && <p role="status" className="mt-3 text-xs text-amber-800">企业回复上下文暂无法读取：{replyContextError}。仍可按原报告创建任务。</p>}
     {open && !checked && !lookupError && <p role="status" className="mt-3">正在读取该缺口已有任务，不调用模型…</p>}
     {open && lookupError && <div role="alert" className="mt-3 text-rose-700">{lookupError}<button className="ml-3 underline" onClick={() => setLookupRevision(value => value + 1)}>重新读取任务</button></div>}
     {open && checked && existingTask && <div className="mt-3 space-y-3 text-sm leading-7">
-      <Link className={primary ? "btn inline-flex min-h-11 items-center" : "inline-flex min-h-11 items-center text-indigo-700 underline"} href={`/growth/${existingTask.id}`}>{existingTask.targetReportId ? "查看补证结果" : compact ? "查看已有补证记录" : "继续补证任务"} →</Link>
+      <Link className={primary ? "btn inline-flex min-h-11 items-center" : "inline-flex min-h-11 items-center text-brand-hover underline"} href={`/growth/${existingTask.id}`}>{existingTask.targetReportId ? "查看补证结果" : compact ? "查看已有补证记录" : "继续补证任务"} →</Link>
       <p className="text-xs text-slate-600">沿用已保存的交付物和固定基准，无需重新填写；原报告和投递快照不变。</p>
       {showExistingPlan && (existingTask.actionNeedsRecheck || existingTask.taskPlanNeedsRecheck) && <p role="alert" className="text-amber-900">已有任务的建议或计划需要重新核对。{existingTask.taskPlanWarning} 请在任务中核对原始来源，不要直接照旧建议重复上传。</p>}
       {showExistingPlan && <>
       <p className="font-medium">已有任务的交付物：<span className="break-words font-normal">{existingTask.plan.deliverable}</span></p>
       <ol aria-label="已有任务的执行步骤" className="list-decimal space-y-1 pl-5">{existingTask.plan.steps.map((step, index) => <li key={index} className="break-words">{step}</li>)}</ol>
-      <details><summary className="cursor-pointer py-2 text-indigo-700">查看已有任务的核验条件</summary><ul className="list-disc space-y-1 pl-5">{existingTask.plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul></details>
+      <details><summary className="cursor-pointer py-2 text-brand-hover">查看已有任务的核验条件</summary><ul className="list-disc space-y-1 pl-5">{existingTask.plan.acceptanceChecks.map((check, index) => <li key={index} className="break-words">{check}</li>)}</ul></details>
       </>}
-      {existingTask.targetReportId && <p>已保存新版报告，可从任务中查看逐项变化；原报告仍使用原始材料版本。<Link className="ml-2 text-indigo-700 underline" href={`/reports/${existingTask.targetReportId}`}>打开新版报告 →</Link></p>}
+      {existingTask.targetReportId && <p>已保存新版报告，可从任务中查看逐项变化；原报告仍使用原始材料版本。<Link className="ml-2 text-brand-hover underline" href={`/reports/${existingTask.targetReportId}`}>打开新版报告 →</Link></p>}
     </div>}
     {open && checked && !existingTask && <div className="mt-4 space-y-3">
       {compact && <div className="space-y-2 text-xs leading-6 text-slate-600">
@@ -100,19 +100,19 @@ export default function GrowthTaskStart({ reportId, requirementId, advice, trigg
       <details open={!compact} className="border-t border-slate-200 pt-2"><summary className="cursor-pointer py-2 text-sm text-slate-600">自定义补证计划（高级，可跳过）</summary>
       <form className="mt-4 space-y-3" onSubmit={submit}>
       <p className="text-xs leading-6 text-slate-600">结合上方缺口填写可交付材料。保存固定基准，不调用模型；同一报告同一要求已有任务时会打开原任务。任务完成不直接提升等级。</p>
-      {advice && <div className="space-y-2 rounded-lg bg-indigo-50 p-3 text-xs leading-6 text-indigo-950">
+      {advice && <div className="space-y-2 rounded-lg bg-brand-surface p-3 text-xs leading-6 text-brand-ink">
         <p className="font-medium">这条要求已保存的 AI 补证建议</p>
         <p>{advice.suggestion}</p>
         <p>仍需核对：{advice.gap}</p>
-        <div className="flex flex-wrap gap-3">{advice.citationIds.map(id => <EvidenceLink key={id} citationId={id} className="text-indigo-700 underline">核对引用 {id}</EvidenceLink>)}</div>
-        {advice.taskPlan && <div className="space-y-1 rounded-lg border border-indigo-100 bg-white p-3">
+        <div className="flex flex-wrap gap-3">{advice.citationIds.map(id => <EvidenceLink key={id} citationId={id} className="text-brand-hover underline">核对引用 {id}</EvidenceLink>)}</div>
+        {advice.taskPlan && <div className="space-y-1 rounded-lg border border-brand-line bg-white p-3">
           <p className="font-medium">AI 可编辑任务草稿</p>
           <p>交付物：{advice.taskPlan.deliverable}</p>
           <p>执行步骤：{advice.taskPlan.steps.join("；")}</p>
           <p>核验条件：{advice.taskPlan.acceptanceChecks.join("；")}</p>
         </div>}
         <p>建议已通过程序校验，是否适合作为任务仍需本人核对。采用只补入空白项，保留已填写内容和手动选择的类型；不会保存任务或调用模型。</p>
-        {(!deliverable.trim() || (advice.taskPlan && (!steps.trim() || !checks.trim()))) && <button type="button" className="text-indigo-700 underline" disabled={busy} onClick={() => {
+        {(!deliverable.trim() || (advice.taskPlan && (!steps.trim() || !checks.trim()))) && <button type="button" className="text-brand-hover underline" disabled={busy} onClick={() => {
           const draft = adoptGrowthAdvice({ kind, kindEdited, deliverable, steps, checks }, advice);
           setDeliverable(draft.deliverable); setSteps(draft.steps); setChecks(draft.checks);
           setKind(draft.kind); setError("");

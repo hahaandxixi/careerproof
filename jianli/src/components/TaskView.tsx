@@ -157,7 +157,7 @@ export default function TaskView({ id }: { id: string }) {
   const duration = task ? realDurationSeconds(task.startedAt, task.completedAt) : null;
   const connectionText = connectionLabel(connection, streamSupported, streamOpened);
   return <div className="analysis-task-view mx-auto max-w-3xl space-y-6">
-    <div className="flex gap-4 text-sm text-indigo-600"><Link href="/portfolio">我的材料</Link><Link href="/reports">匹配报告</Link></div>
+    <div className="flex gap-4 text-sm text-brand-primary"><Link href="/portfolio">我的材料</Link><Link href="/reports">匹配报告</Link></div>
     <h1 className="text-3xl font-bold">分析任务</h1>
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     {!task && !error && <p className="text-sm text-slate-500">正在加载任务…</p>}

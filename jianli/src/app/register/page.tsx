@@ -54,7 +54,7 @@ export default function RegisterPage() {
     <div className="mx-auto max-w-lg">
       <div className="workspace-sheet p-5 sm:p-7">
         <div className="mb-6">
-          <p className="text-sm font-medium text-indigo-600">创建账号</p>
+          <p className="text-sm font-medium text-brand-primary">创建账号</p>
           <h1 className="page-title">注册</h1>
           <p className="mt-2 text-sm text-slate-500">学生账号可以上传简历与项目，企业账号用于发布岗位。</p>
         </div>
@@ -70,9 +70,9 @@ export default function RegisterPage() {
               ].map((item) => (
                 <label
                   key={item.value}
-                  className={`cursor-pointer rounded-xl border p-3 transition focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 ${
+                  className={`cursor-pointer rounded-xl border p-3 transition focus-within:ring-2 focus-within:ring-brand-primary focus-within:ring-offset-2 ${
                     role === item.value
-                      ? "border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100"
+                      ? "border-brand-primary bg-brand-surface ring-2 ring-brand-halo"
                       : "border-slate-200 hover:border-slate-300"
                   }`}
                 >
@@ -98,7 +98,7 @@ export default function RegisterPage() {
               maxLength={100}
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
               placeholder={role === "student" ? "如：小李" : "如：校园招聘负责人"}
             />
           </label>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
               placeholder="name@example.com"
             />
           </label>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                 minLength={8}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
                 placeholder="至少8个字符"
               />
             </label>
@@ -138,7 +138,7 @@ export default function RegisterPage() {
                 required
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
                 placeholder="再次输入密码"
               />
             </label>
@@ -161,7 +161,7 @@ export default function RegisterPage() {
 
         <p className="mt-5 text-center text-sm text-slate-500">
           已有账号？
-          <Link href={authEntry("/login", returnTo)} className="ml-1 font-medium text-indigo-600 hover:text-indigo-700">
+          <Link href={authEntry("/login", returnTo)} className="ml-1 font-medium text-brand-primary hover:text-brand-hover">
             返回登录
           </Link>
         </p>

@@ -53,7 +53,7 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
     </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary job-recommendation-link shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
     <div className="job-discovery-tools">
     <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="job-discovery-search flex min-w-0 items-center gap-2" onSubmit={event => { event.preventDefault(); choose({}); }}>
-      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-[#245c50]"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-brand-primary"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
       <label htmlFor="job-discovery-keyword" className="sr-only">关键词</label>
       <input id="job-discovery-keyword" type="search" className="job-discovery-keyword min-h-12 min-w-0 flex-1 bg-transparent px-1 text-base text-slate-900 outline-none placeholder:text-sm placeholder:text-slate-400" value={draft.q} maxLength={200} placeholder="搜索岗位名称或技术关键词" onChange={event => setDraft({ ...draft, q: event.target.value })}/>
       <button type="submit" className="btn min-h-12 shrink-0 whitespace-nowrap px-4 sm:px-7">搜索岗位</button>
@@ -97,7 +97,7 @@ export function DiscoveryJobCard({ job, compact = false }: { job: JobSummary; co
   const copy = experienceJobCopy(job);
   return <article className="workspace-row discovery-job-row">
     <div className="min-w-0">
-      <Heading><Link className="break-words hover:text-[#1d4a40] hover:underline" href={`/jobs/${job.id}`}>{alias?.title ?? job.title}</Link></Heading>
+      <Heading><Link className="break-words hover:text-brand-ink hover:underline" href={`/jobs/${job.id}`}>{alias?.title ?? job.title}</Link></Heading>
       <p className="workspace-meta mt-1 break-words">{alias?.companyName ?? copy.companyName} · {job.city || "城市未填写"} · {EMPLOYMENT_LABELS[job.employmentType] ?? job.employmentType}</p>
       {(alias?.description ?? copy.description) && <p className="mt-1 line-clamp-2 break-words text-sm leading-6 text-slate-700">{alias?.description ?? copy.description}</p>}
     </div>

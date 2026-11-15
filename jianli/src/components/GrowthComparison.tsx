@@ -25,7 +25,7 @@ export default function GrowthComparison({ task }: { task: GrowthTask }) {
       <h3 className="font-semibold">{item.title}{item.status !== "existing" && <span className="ml-2 text-xs text-amber-800">{item.status === "added" ? "目标报告新增要求" : "基准要求不再展示"}</span>}{item.requirementId === task.requirementId && " · 本次补证重点"}</h3>
       {task.enterpriseReply && item.requirementId === task.requirementId && (() => {
         const review = enterpriseQuestionReview(item);
-        return <div className="space-y-2 rounded-lg border border-indigo-200 bg-indigo-50/50 p-3 leading-6">
+        return <div className="space-y-2 rounded-lg border border-brand-line bg-brand-surface/50 p-3 leading-6">
           <h4 className="font-semibold">企业问题与新报告核对 · 待人工确认</h4>
           <blockquote className="whitespace-pre-wrap break-words">{task.enterpriseReply.text}</blockquote>
           <p>本次新展示的个人作品证据条目：{review.personalEvidenceCount} 条；第三方参考条目：{review.referenceEvidenceCount} 条。下方可逐条打开新报告引用。</p>
@@ -39,16 +39,16 @@ export default function GrowthComparison({ task }: { task: GrowthTask }) {
       <ReportItemExplanation item={item} baseLabel="任务基准" />
       {item.changes.includes("requirement") && <p>原要求：{item.baseRequirement?.title || "未记录"} · 权重{item.baseRequirement?.weight ?? "未记录"} → 当前要求：{item.targetRequirement?.title || "已移除"} · 权重{item.targetRequirement?.weight ?? "未记录"}</p>}
       {[["新增展示", item.addedEvidence, task.targetReportId], ["不再展示", item.removedEvidence, task.baseReportId]].map(([label, rows, report]) => <details key={String(label)} className="rounded-lg border border-slate-200 p-3">
-        <summary className="cursor-pointer text-indigo-700">{String(label)}的来源证据：{(rows as typeof item.addedEvidence).length}条</summary>
+        <summary className="cursor-pointer text-brand-hover">{String(label)}的来源证据：{(rows as typeof item.addedEvidence).length}条</summary>
         <ul>{(rows as typeof item.addedEvidence).map((source, index) => <li key={index} className="break-all">
-          <Link className="text-indigo-700 underline" href={`/reports/${report}${source.citationId ? `#citation-${source.citationId}` : `#requirement-${item.requirementId}`}`}>{sourceLabel(source, String(label) === "新增展示" ? comparison.targetMaterials : comparison.baseMaterials)} · 第{source.lineStart}—{source.lineEnd}行</Link>
+          <Link className="text-brand-hover underline" href={`/reports/${report}${source.citationId ? `#citation-${source.citationId}` : `#requirement-${item.requirementId}`}`}>{sourceLabel(source, String(label) === "新增展示" ? comparison.targetMaterials : comparison.baseMaterials)} · 第{source.lineStart}—{source.lineEnd}行</Link>
           {source.provenance === "reference" && <p className="text-xs text-amber-800">第三方参考，不构成个人实践证明。</p>}
           <pre className="my-2 whitespace-pre-wrap break-words rounded bg-slate-50 p-2 text-xs">{source.snippet}</pre>
         </li>)}</ul>
       </details>)}
     </article>)}
     <ul className="space-y-1 text-xs leading-6 text-amber-800">{comparison.limitations.map(v => <li key={v}>{v}</li>)}</ul>
-    {resume && <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm leading-6"><p className="font-medium">继续核对职业方向</p><p>使用本次新报告的材料版本预填职业规划；先核对版本并单独同意 AI 外发，生成后才会与上次保存的规划比较。岗位要求变化与材料变化需分别解读。</p><Link className="btn-secondary mt-2" href={careerPlanHref(resume, projects)}>用本次材料查看职业规划变化 →</Link></div>}
+    {resume && <div className="rounded-xl border border-brand-line bg-brand-surface p-4 text-sm leading-6"><p className="font-medium">继续核对职业方向</p><p>使用本次新报告的材料版本预填职业规划；先核对版本并单独同意 AI 外发，生成后才会与上次保存的规划比较。岗位要求变化与材料变化需分别解读。</p><Link className="btn-secondary mt-2" href={careerPlanHref(resume, projects)}>用本次材料查看职业规划变化 →</Link></div>}
     <Link className="btn-secondary" href={`/jobs/${baseJobId}`}>核对基准岗位当前要求与后续分析</Link>
     {crossJob && <Link className="btn-secondary ml-4" href={`/jobs/${comparison.targetJobId}`}>核对目标岗位要求（不代表原岗位核验结论）</Link>}
   </section>;

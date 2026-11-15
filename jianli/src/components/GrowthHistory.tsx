@@ -49,7 +49,7 @@ function History({ id }: { id?: string }) {
     <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="page-title">历史补证记录</h1><div className="flex flex-wrap gap-2"><Link className="btn-secondary" href="/reports">我的报告</Link><button type="button" className="btn-secondary" disabled={busy} onClick={() => setRevision(value => value + 1)}>刷新</button></div></div>
     <p className="text-sm text-slate-600">只读记录。继续完善材料，请从报告进入上传。</p>
     {busy && <p role="status">正在读取…</p>}{error && <p role="alert" className="text-rose-700">{error}</p>}
-    {result && <><ul className="space-y-3">{result.items.map(value => <li className="panel" key={value.id}><Link className="font-medium text-indigo-700" href={`/growth/${value.id}`}>{value.requirementTitle}</Link><p className="mt-1 text-sm text-slate-600">{value.jobTitle} · {new Date(value.createdAt).toLocaleString("zh-CN")}</p></li>)}</ul>{result.total === 0 && <p>暂无历史记录。</p>}{result.unavailableCount > 0 && <p role="status" className="text-amber-800">本页 {result.unavailableCount} 条记录暂不可读，可刷新重试。</p>}<ListPagination label="历史补证分页" value={result} busy={busy} onPage={setPage} /></>}
+    {result && <><ul className="space-y-3">{result.items.map(value => <li className="panel" key={value.id}><Link className="font-medium text-brand-hover" href={`/growth/${value.id}`}>{value.requirementTitle}</Link><p className="mt-1 text-sm text-slate-600">{value.jobTitle} · {new Date(value.createdAt).toLocaleString("zh-CN")}</p></li>)}</ul>{result.total === 0 && <p>暂无历史记录。</p>}{result.unavailableCount > 0 && <p role="status" className="text-amber-800">本页 {result.unavailableCount} 条记录暂不可读，可刷新重试。</p>}<ListPagination label="历史补证分页" value={result} busy={busy} onPage={setPage} /></>}
     {task && <>
       <section className="panel space-y-3"><h2 className="text-lg font-semibold">{task.requirementTitle}</h2><p className="text-sm text-slate-600">{task.jobTitle}</p><p className="whitespace-pre-wrap">{task.gap}</p><p className="whitespace-pre-wrap">{task.originalAction}</p><Link className="btn-secondary" href={`/reports/${task.baseReportId}#requirement-${task.requirementId}`}>原报告</Link>{task.targetReportId && <Link className="btn-secondary ml-3" href={`/reports/${task.targetReportId}`}>后续报告</Link>}
         {task.actionNeedsRecheck && <p role="alert" className="text-amber-800">原建议需重新核对。{task.taskPlanWarning}</p>}
@@ -57,7 +57,7 @@ function History({ id }: { id?: string }) {
           <ul className="mt-3 space-y-2">{task.materials.map(material => {
             const name = `${displayMaterialTitle(material.title, material.id)} · 第 ${material.versionNumber} 版`;
             return <li key={material.id}>{material.kind === "project"
-              ? <Link className="text-indigo-700" href={`/materials/project/${material.id}`}>{name}</Link>
+              ? <Link className="text-brand-hover" href={`/materials/project/${material.id}`}>{name}</Link>
               : name
             }</li>;
           })}</ul>

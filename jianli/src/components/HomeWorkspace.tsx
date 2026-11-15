@@ -63,7 +63,7 @@ function SavedWorkspace({ user }: { user: CurrentUser }) {
     </div>
   </section>;
   const unread = <WorkSection title="未读消息" href="/notifications" empty="当前没有可显示的未读消息。">
-    {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><span className="flex items-start gap-2">{!notification.readAt && <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#1d4a40]" />}<span className="min-w-0"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")}</span></span></span></Link></li>)}
+    {work.notifications.map(notification => <li key={notification.id}><Link className="work-row" href="/notifications"><span className="flex items-start gap-2">{!notification.readAt && <span aria-hidden="true" className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-primary" />}<span className="min-w-0"><strong className="block break-words text-sm">{notification.title}</strong><span className="mt-1 block text-xs leading-5 text-slate-600">{new Date(notification.createdAt).toLocaleString("zh-CN")}</span></span></span></Link></li>)}
   </WorkSection>;
   return <div className="space-y-6 home-dashboard">
     <header className="workspace-toolbar border-b border-slate-200 pb-4">

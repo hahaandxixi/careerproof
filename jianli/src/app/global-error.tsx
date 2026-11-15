@@ -10,10 +10,10 @@ export default function GlobalError({
 }) {
   return (
     <html lang="zh-CN">
-      <body style={{ margin: 0, fontFamily: "system-ui, sans-serif", background: "#f8fafc", color: "#0f172a" }}>
+      <body style={{ margin: 0, fontFamily: "system-ui, sans-serif", background: "#ecf2f7", color: "#0b2545" }}>
         <main style={{ maxWidth: "36rem", margin: "0 auto", padding: "4rem 1rem" }}>
           <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: "0 0 1rem" }}>应用出现异常</h1>
-          <p style={{ fontSize: "0.875rem", lineHeight: 1.6, color: "#475569", margin: "0 0 1.5rem" }}>
+          <p style={{ fontSize: "0.875rem", lineHeight: 1.6, color: "#4e657d", margin: "0 0 1.5rem" }}>
             页面框架发生了未处理的错误，需要重新加载后继续。
             {error.digest ? `（错误标识：${error.digest}）` : null}
           </p>
@@ -24,7 +24,7 @@ export default function GlobalError({
               padding: "0.625rem 1rem",
               borderRadius: "0.5rem",
               border: "none",
-              background: "#4f46e5",
+              background: "#1d4ed8",
               color: "#fff",
               fontSize: "0.875rem",
               fontWeight: 500,

@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body>
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3 focus:text-indigo-700">跳到主要内容</a>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3 focus:text-brand-hover">跳到主要内容</a>
         <AuthProvider>
           <SiteHeader />
           <StudentMessages />

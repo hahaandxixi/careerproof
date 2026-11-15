@@ -12,21 +12,21 @@ export default function ActionPlan({ actions }: { actions: MatchReport["actionPl
         <h2 id="action-plan-heading" className="text-lg font-semibold">下一步补证计划</h2>
         <p className="mt-2 text-sm text-slate-600">按岗位权重、当前证据等级排序；建议文字来自经校验的 AI 输出或本地规则。</p>
       </div>
-      <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs text-indigo-700">优先处理 {actions.length} 项</span>
+      <span className="rounded-full bg-brand-surface px-3 py-1 text-xs text-brand-hover">优先处理 {actions.length} 项</span>
     </div>
     <ol className="mt-4 space-y-3">
       {actions.map((action, index) => {
         const text = distinctActionText(action);
         return <li key={action.requirementId} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">{index + 1}</span>
-          <a href={`#requirement-${action.requirementId}`} className="font-medium text-indigo-700 underline">{action.requirementTitle}</a>
+          <span className="flex size-6 items-center justify-center rounded-full bg-brand-primary text-xs font-semibold text-white">{index + 1}</span>
+          <a href={`#requirement-${action.requirementId}`} className="font-medium text-brand-hover underline">{action.requirementTitle}</a>
           <span className="rounded-full bg-white px-2 py-1 text-xs text-slate-600">{ACTION_SOURCE_LABELS[action.source] ?? "来源未标注"}</span>
         </div>
         <p className="mt-2 text-xs text-slate-500">{action.skill} · 岗位权重 {action.weight}/5 · 当前证据{action.currentLevel == null ? "未评级" : evidenceLevelName(action.currentLevel)}</p>
         {text.advice && <p className="mt-3 text-sm leading-6"><strong>建议行动：</strong>{text.advice}</p>}
         {text.gap && <p className="mt-1 text-sm leading-6 text-slate-600"><strong>对应缺口：</strong>{text.gap}</p>}
-        {action.citationIds.length > 0 && <div className="mt-2 flex flex-wrap gap-2 text-xs text-indigo-700">{action.citationIds.map(citation => <EvidenceLink key={citation} citationId={citation} className="underline">查看引用 {citation}</EvidenceLink>)}</div>}
+        {action.citationIds.length > 0 && <div className="mt-2 flex flex-wrap gap-2 text-xs text-brand-hover">{action.citationIds.map(citation => <EvidenceLink key={citation} citationId={citation} className="underline">查看引用 {citation}</EvidenceLink>)}</div>}
       </li>; })}
     </ol>
     <p className="mt-3 text-xs leading-5 text-slate-500">这是一份材料完善顺序，不是能力认证或提级保证；新增材料仍需重新分析与人工核对。</p>

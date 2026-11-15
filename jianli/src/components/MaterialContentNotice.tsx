@@ -41,7 +41,7 @@ export default function MaterialContentNotice({ report }: { report: unknown }) {
     <p className="mt-1">这不是违规判定；正常源码、测试字符串或合法引用也可能命中。词表未命中不代表材料安全。</p>
     {incomplete && <p className="mt-2 font-medium">已达到扫描或展示上限，以下位置并非完整清单。</p>}
     {findings.length > 0 && <details className="mt-2">
-      <summary className="cursor-pointer font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">查看命中类别与位置（最多 30 条）</summary>
+      <summary className="cursor-pointer font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-primary">查看命中类别与位置（最多 30 条）</summary>
       <ul className="mt-2 space-y-2">{findings.map((finding, index) => <li key={`${finding.category}-${finding.path}-${finding.line}-${index}`}>
         <span className="font-medium">{CATEGORIES[finding.category]}</span>
         <span className="block break-all">{finding.path} · 第 {finding.line} 行</span>

@@ -14,7 +14,7 @@ export function NotificationCard({ item, busy, onOpen, onRead }: {
   item: NotificationItem; busy: boolean; onOpen(id: string): void; onRead(id: string): void;
 }) {
   return <li className="workspace-row space-y-2">
-    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="flex min-w-0 items-baseline gap-2 font-semibold">{!item.readAt && <span aria-hidden="true" className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full bg-indigo-600" />}<span className="break-words">{item.title}</span></h2><p className="shrink-0 text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
+    <div className="flex flex-wrap items-baseline justify-between gap-3"><h2 className="flex min-w-0 items-baseline gap-2 font-semibold">{!item.readAt && <span aria-hidden="true" className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full bg-brand-primary" />}<span className="break-words">{item.title}</span></h2><p className="shrink-0 text-sm text-slate-600"><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time> · {item.readAt ? "已读" : "未读"}</p></div>
     {item.jobTitle && <p className="break-words text-sm text-slate-600">{displayJobTitle(item.jobTitle, item.jobId)}{item.companyName && <> · {displayJobCompany(item.companyName, item.jobId)}</>}</p>}
     <div className="card-actions">{item.accessible ? <button type="button" className="btn-secondary" disabled={busy} onClick={() => onOpen(item.id)}>查看投递</button> : <p className="text-sm text-slate-600">当前投递不可访问，不能从旧通知查看报告或材料。</p>}{!item.readAt && <button type="button" className="btn-quiet" disabled={busy} onClick={() => onRead(item.id)}>标为已读</button>}</div>
   </li>;

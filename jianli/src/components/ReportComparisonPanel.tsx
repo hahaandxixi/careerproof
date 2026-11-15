@@ -21,7 +21,7 @@ function ReportPairPicker({ report, initialBaseId, origin }: { report: MatchRepo
       <button type="button" className="btn" disabled={!state?.baseId || !state.targetId || state.baseId === state.targetId || state.busy} onClick={() => void session.compare()}>{state?.busy ? "读取对比…" : "对比所选报告"}</button>
     </div>
     {(value || !state || state.hasMore) && <div className="flex flex-wrap items-center gap-3">
-      {value && <span className="text-sm font-medium text-[#1d4a40]" role="status">当前结果：A → B</span>}
+      {value && <span className="text-sm font-medium text-brand-ink" role="status">当前结果：A → B</span>}
       {(!state || state.hasMore) && <button type="button" className="btn-quiet btn-compact" disabled={state?.listing} onClick={() => void session.loadMore()}>{!state || state.listing ? "读取同岗位报告…" : "加载更多报告"}</button>}
     </div>}
     {state?.error && <p role="alert" className="text-sm text-rose-700">{state.error}</p>}

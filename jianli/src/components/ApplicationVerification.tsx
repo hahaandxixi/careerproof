@@ -67,7 +67,7 @@ export default function ApplicationVerification({ applicationId, report, onUnava
       {!!requirementComparison.changes.length && <ul className="mt-2">{requirementComparison.changes.map(change => <li key={change}>{change}</li>)}</ul>}
       {!!requirementComparison.missingFields.length && <p>缺少比较依据：{requirementComparison.missingFields.join("、")}</p>}
     </details>}
-    {loading ? <p role="status" className="text-sm text-indigo-800">{pending || operation === "generate" ? "正在生成核验建议…" : "正在读取已保存建议…"}</p>
+    {loading ? <p role="status" className="text-sm text-brand-secondary">{pending || operation === "generate" ? "正在生成核验建议…" : "正在读取已保存建议…"}</p>
       : error ? <p role="alert" className="text-sm leading-6 text-rose-700">{error}</p>
       : notice ? <p role="status" className="text-sm leading-6 text-amber-800">{notice}</p>
       : !task ? <p className="text-sm text-slate-600">暂无已保存建议。</p>
@@ -90,7 +90,7 @@ export default function ApplicationVerification({ applicationId, report, onUnava
           </details>}
           <div><p className="font-medium text-slate-800">建议人工核验的问题</p><ol className="list-decimal space-y-2 pl-5">{item.verificationQuestions.map((question, index) => <li key={index} className="whitespace-pre-wrap break-words">{question}{onUseQuestion && <button type="button" className="btn-secondary btn-compact ml-2" onClick={() => onUseQuestion({ requirementId: item.requirementId, requirementIndex: report.items.indexOf(requirement), requirementTitle: requirement.requirementTitle || requirement.skill, question, citationIds: item.citationIds })}>加入回复草稿</button>}</li>)}</ol></div>
           {item.nextStep && <div className="rounded-lg bg-slate-50 p-3"><p className="font-medium">可选下一步：{NEXT_STEP[item.nextStep]}</p><p className="whitespace-pre-wrap break-words">{item.nextStepReason}</p></div>}
-          {evidence.length ? <details><summary className="cursor-pointer text-indigo-700">引用来源（{evidence.length}）</summary><div className="space-y-3 pt-2">{evidence.map((source, index) => <div key={`${source.citationId}:${index}`} className="text-sm leading-6"><p><SourceIdentity source={source} materials={report.materials} compact/> · 第{source.lineStart}—{source.lineEnd}行</p>{source.provenance === "reference" && <p className="text-amber-800">参考材料，不构成学生本人实践证明。</p>}<pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><p className="mt-1 text-slate-500">{source.contextNote}</p><SourceIdentityDetails source={source}/></div>)}</div></details> : <p className="text-sm text-slate-600">本项没有对应引用。</p>}
+          {evidence.length ? <details><summary className="cursor-pointer text-brand-hover">引用来源（{evidence.length}）</summary><div className="space-y-3 pt-2">{evidence.map((source, index) => <div key={`${source.citationId}:${index}`} className="text-sm leading-6"><p><SourceIdentity source={source} materials={report.materials} compact/> · 第{source.lineStart}—{source.lineEnd}行</p>{source.provenance === "reference" && <p className="text-amber-800">参考材料，不构成学生本人实践证明。</p>}<pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><p className="mt-1 text-slate-500">{source.contextNote}</p><SourceIdentityDetails source={source}/></div>)}</div></details> : <p className="text-sm text-slate-600">本项没有对应引用。</p>}
         </article>;
       })}
     </div>}

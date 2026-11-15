@@ -45,7 +45,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
 
   return <section aria-label="简历版本选择" className="space-y-3">
     <p className="text-sm font-medium">简历版本（选择一份）</p>
-    {selected && selectedResume ? <div aria-label="已选简历版本" className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
+    {selected && selectedResume ? <div aria-label="已选简历版本" className="flex items-start justify-between gap-3 rounded-lg border border-brand-line bg-brand-surface p-3 text-sm">
       <span className="min-w-0 break-words">{displayMaterialTitle(selectedResume.title, selected.id)} · 第 {selected.versionNumber} 版
         {dateForDuplicate(selectedResume.title, selectedResume.versions[0].id, selected.createdAt)}
         {selected.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
@@ -53,7 +53,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
       <button type="button" className="btn-quiet btn-compact shrink-0" onClick={() => onChange("")}>取消选择</button>
     </div> : null}
     {all.length ? <details ref={chooser} className="rounded-xl border border-slate-200">
-      <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
+      <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-brand-hover">{selected ? "更换简历版本" : "选择简历版本"} · {all.length} 份简历</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
         <label className="block text-xs text-slate-600">搜索简历名称或文件名
           <input className="field mt-1" type="search" value={query} placeholder="输入简历名称或文件名" onChange={event => setQuery(event.target.value)} />
@@ -71,7 +71,7 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
               {rows.map(resume => <div key={resume.id} className="rounded-lg bg-slate-50 p-3">
                 <p className="break-words text-sm font-medium">{displayMaterialTitle(resume.title, resume.versions[0]?.id)}</p>
                 {resume.versions.length === 1 ? renderVersion(resume.versions[0], resume.title, resume.versions[0].id) : <details className="mt-2">
-                  <summary className="cursor-pointer text-xs text-indigo-700">展开 {resume.versions.length} 个版本{resume.versions.some(version => version.id === selectedId) ? " · 包含已选版本" : ""}</summary>
+                  <summary className="cursor-pointer text-xs text-brand-hover">展开 {resume.versions.length} 个版本{resume.versions.some(version => version.id === selectedId) ? " · 包含已选版本" : ""}</summary>
                   <div className="mt-2 space-y-2">{resume.versions.map(version => renderVersion(version, resume.title, resume.versions[0].id))}</div>
                 </details>}
               </div>)}

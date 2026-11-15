@@ -14,7 +14,7 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
   const guidance = followUpGuidance(report, item);
   const { gap, action, plan, text } = guidance;
   const focus = gap?.trim() === plan?.deliverable?.trim() ? "" : gap?.trim();
-  return <section id={`supplement-${item.requirementId}`} className="space-y-3 border-t border-[#e0dbcd] py-5 scroll-mt-24">
+  return <section id={`supplement-${item.requirementId}`} className="space-y-3 border-t border-brand-line py-5 scroll-mt-24">
     <div className="min-w-0">
       <h3 className="break-words text-lg font-semibold">{item.skill || "岗位要求"} · {workspaceStatusLabel(item)}</h3>
       <p className="mt-1 break-words text-sm leading-6 text-slate-700">{item.requirementTitle}</p>
