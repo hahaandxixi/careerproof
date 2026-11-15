@@ -149,8 +149,8 @@
 .radarSvg { display: block; width: 100%; max-width: 490px; height: auto; margin: 0 auto; }
 .radarRing { fill: none; stroke: var(--radar-grid); stroke-width: 1.25px; }
 .radarTick { fill: var(--ink-muted); stroke: var(--paper-bg); stroke-width: 3px; stroke-linejoin: round; paint-order: stroke; font-size: 12px; font-weight: 650; }
-.radarPoint { fill: var(--brand-primary); stroke: var(--paper-bg); stroke-width: 2px; }
-.radarZeroPoint { fill: var(--paper-bg); stroke: var(--brand-primary); stroke-width: 2px; }
+.radarPoint { fill: var(--radar-data); stroke: var(--paper-bg); stroke-width: 2px; }
+.radarZeroPoint { fill: var(--paper-bg); stroke: var(--radar-data); stroke-width: 2px; }
 .radarLabel { fill: var(--ink-primary); font-size: 14px; font-weight: 700; }
 .radarValue { fill: var(--ink-muted); font-size: 11px; }
 .radarReview { fill: #a85410; font-size: 14px; font-weight: 800; }

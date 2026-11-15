@@ -27,14 +27,51 @@ export function readDiscoveryQuery(params: { get(name: string): string | null })
     page: /^\d{1,7}$/.test(page) ? Math.max(1, Math.min(1_000_000, Number(page))) : 1,
   };
 }
-export function discoveryHref(query: DiscoveryQuery): string {
+function discoveryParams(query: DiscoveryQuery): URLSearchParams {
   const params = new URLSearchParams();
   for (const key of ["direction", "specialty", "language", "city", "employmentType", "category", "q"] as const) {
     if (query[key]) params.set(key, query[key]);
   }
   if (query.page > 1) params.set("page", String(query.page));
+  return params;
+}
+
+export function discoveryHref(query: DiscoveryQuery): string {
+  const params = discoveryParams(query);
   return `/jobs${params.size ? `?${params}` : ""}`;
 }
+
+const discoveryScrollPrefix = "#discovery-scroll-";
+
+export function discoveryReturnScroll(hash: string): number | null {
+  if (!hash.startsWith(discoveryScrollPrefix)) return null;
+  const value = hash.slice(discoveryScrollPrefix.length);
+  return /^[1-9]\d{0,6}$/.test(value) ? Number(value) : null;
+}
+
+export function normalizeJobsContext(value?: string | string[]): string {
+  if (typeof value !== "string") return "";
+  const params = new URLSearchParams(value);
+  const clean = discoveryParams(readDiscoveryQuery(params));
+  const scroll = discoveryReturnScroll(discoveryScrollPrefix + params.get("y"));
+  if (scroll) clean.set("y", String(scroll));
+  return clean.toString();
+}
+
+export function discoveryRecommendationHref(query: DiscoveryQuery, scrollY = 0): string {
+  const params = discoveryParams(query);
+  const scroll = discoveryReturnScroll(discoveryScrollPrefix + Math.round(scrollY));
+  if (scroll) params.set("y", String(scroll));
+  return params.size ? `/recommendations?${new URLSearchParams({ jobsContext: params.toString() })}` : "/recommendations";
+}
+
+export function recommendationDiscoveryReturnHref(context: string): string {
+  const params = new URLSearchParams(context);
+  const href = discoveryHref(readDiscoveryQuery(params));
+  const scroll = discoveryReturnScroll(discoveryScrollPrefix + params.get("y"));
+  return scroll ? `${href}${discoveryScrollPrefix}${scroll}` : href;
+}
+
 export function directionLabel(id?: string | null): string | null {
   return CAREER_DIRECTIONS.find(item => item.id === id)?.label ?? null;
 }
