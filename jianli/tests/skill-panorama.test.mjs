@@ -165,3 +165,16 @@ test("radar uses unique full loaded records and keeps unknown and review separat
  const gap=buildSkillPanorama([report("d",[item("4","SQL","gap")])]).skills[0];
  assert.equal(skillRecordMeasure(gap).ratio,0);
 });
+
+
+test("published testing skill names use engineering grouping without changing saved verdicts",()=>{
+  const skills=["测试用例","接口测试","缺陷记录","测试报告"];
+  const panorama=buildSkillPanorama([report("testing",skills.map((skill,i)=>item(String(i),skill,"gap")))]);
+  assert.equal(panorama.skills.length,4);
+  for (const skill of panorama.skills) {
+    assert.ok(skills.includes(skill.name));
+    assert.equal(skill.category,"工程与协作");
+    assert.equal(skill.counts.gap,1);
+    assert.equal(skill.counts.supported,0);
+  }
+});

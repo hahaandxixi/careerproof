@@ -129,7 +129,7 @@ test("student requirement area leaves guidance to the supplement section", () =>
  assert.ok(!full.includes("复制补证建议"), "a repeated gap is not separate copyable advice");
  assert.ok(full.includes("添加项目材料"));
 });
-test("rule citations only omit a readable sole source with an adjacent reader", () => {
+test("rule citations stay in the reader at existing anchors without an extra source list", () => {
  const first={citationId:null,projectVersionId:"v1",filePath:"src/app.py",snippet:"first implementation"};
  const r={...report([]),materials:[{kind:"project",id:"v1",title:"项目",versionNumber:1}]};
  const view=(sources,reader=true)=>{
@@ -140,13 +140,15 @@ test("rule citations only omit a readable sole source with an adjacent reader", 
  const single=view([first]);
  assert.doesNotMatch(single,/class="report-citation-chip"/);
  assert.match(single,/id="rule-source-rules-1"/);
- assert.match(view([first],false),/href="#rule-source-rules-1"/);
+ assert.doesNotMatch(view([first],false),/href="#rule-source-rules-1"/);
  const unreadable=view([{...first,snippet:""}]);
- assert.match(unreadable,/href="#rule-source-rules-1"/);
+ assert.match(unreadable,/id="rule-source-rules-1"/);
  assert.match(unreadable,/来源暂不可读/);
  const two=view([first,{...first,filePath:"tests/app.py",lineStart:5,lineEnd:7}]);
- assert.match(two,/href="#rule-source-rules-1"/);
- assert.match(two,/href="#rule-source-rules-2"/);
+ assert.match(two,/id="rule-source-rules-1"/);
+ assert.doesNotMatch(two,/href="#rule-source-rules-1"/);
+ assert.match(two,/id="rule-source-rules-2"/);
+ assert.doesNotMatch(two,/其他来源|来源详情/);
 });
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
@@ -167,12 +169,12 @@ test("identical rules advice and gap appear once in the action panel", () => {
  assert.ok(!html.includes("本地规则提示")); assert.ok(!html.includes("本项已保存的具体要求"));
 });
 
-test("valid AI advice uses the saved requirement and drops foreign or duplicate citations", () => {
+test("valid AI advice uses the saved requirement without adding citation shortcuts in the action panel", () => {
  const entry=item("ai","partial",{aiStatus:"validated",aiSuggestion:"保存参数校验记录",aiInformationGap:"缺少失败结果",aiCitationIds:["R1-E1"],evidenceList:[{citationId:"R1-E1",contextComplete:true}]});
  const value={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion,evidenceGap:entry.aiInformationGap,citationIds:["R1-E1","R1-E1","R2-E9"]})]),evidenceContextVersion:"source-context-v2"};
  const html=render(value);
  assert.ok(html.includes("AI 证据建议")); assert.ok(html.includes("保存参数校验记录")); assert.ok(html.includes("缺少失败结果"));
- assert.equal(count(html,'href="#citation-R1-E1"'),1); // one file link also identifies the saved suggestion basis; no duplicate shortcut
+ assert.doesNotMatch(html,/href="#citation-R1-E1"/);
  assert.ok(!html.includes("R2-E9"));
 });
 
@@ -217,6 +219,12 @@ test("supported requirements lead with conclusions and evidence; optional growth
  assert.ok(!html.includes("材料有更新？按需查看补证指导"));
  assert.ok(!html.includes("本项已保存的具体要求")); assert.ok(!html.includes(">开始补证</button>"));
  assert.ok(!html.includes('class="btn min-h-11'));
+});
+
+test("a supported item with only a technical explanation omits the generated source-count judgment block", () => {
+ const value=item("complete","supported",{explanation:"本项静态引用：pipeline.py",evidenceLevelReason:""});
+ const html=render(report([value]));
+ assert.doesNotMatch(html,/判断依据|本报告保存了 .* 条来源/);
 });
 
 test("support survives incomplete context without duplicating the source pane's warning in actions", () => {
@@ -286,7 +294,17 @@ test("action panel has no duplicate evidence shortcut; the article owns a single
  const entry=item("source","supported",{evidenceList:[{citationId:"S1",filePath:"app.py",lineStart:4,lineEnd:5,snippet:"saved-source",contextComplete:true}]});
  const html=renderToStaticMarkup(React.createElement(SourcePanel,{report:report([entry]),item:entry}));
  assert.equal(count(html,'aria-label="source的证据来源"'),1);
- assert.ok(html.includes('id="citation-S1"')&&html.includes("saved-source")&&html.includes("引用原文")&&html.includes("1 处"));
+ assert.ok(html.includes('id="citation-S1"')&&html.includes("saved-source"));
+ assert.doesNotMatch(html,/引用原文|其他来源/);
+});
+
+test("the generic current-gap notice and duplicate citation chips stay out of the requirement workspace", () => {
+ const gap = "核对候选与要求的对应关系，补充直接相关的材料或经校验的 AI 引用解释。";
+ const entry = item("source", "gap", { evidenceLevelGap: gap, evidenceList: [{ citationId: "S1", filePath: "README.md", lineStart: 1, lineEnd: 3, snippet: "saved-source", contextComplete: true }] });
+ const value = report([entry]);
+ const html = renderToStaticMarkup(React.createElement(RequirementActionPanel, { report: value, item: entry, sourcePanel: React.createElement(SourcePanel, { report: value, item: entry }) }));
+ assert.doesNotMatch(html, /当前缺口|核对候选与要求|本项引用/);
+ assert.match(html, /saved-source/);
 });
 
 test("guidance can be copied and used for a new upload without creating a task", () => {
@@ -345,7 +363,7 @@ test("mixed citations retain their original source slots and only student materi
  const readonly=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:entry}));
  const student=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:entry,canOpenMaterial:true}));
  for(const slot of [2,3]){
-  assert.ok(action.includes(`href="#rule-source-mixed-${slot}"`));
+  assert.ok(!action.includes(`href="#rule-source-mixed-${slot}"`));
   assert.ok(readonly.includes(`id="rule-source-mixed-${slot}"`));
   assert.ok(student.includes(`sourceId=rule-source-mixed-${slot}`));
  }

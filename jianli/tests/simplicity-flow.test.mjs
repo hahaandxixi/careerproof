@@ -30,7 +30,7 @@ test("application status applies immediately with query and pagination reset; se
   "@/lib/api/client":{api:{myApplications:async(page,size,_,filters)=>{calls.push({page,...filters});return{items:[],total:0,page,pageSize:size};},withdrawApplication:()=>assert.fail("no mutation")},errorMessage:String},
   "@/lib/notification-session":{applicationAnchorId:()=>null},
   "@/lib/application-list-session":{createApplicationListSession},"@/lib/refresh-gate":{createRefreshGate},
-  "@/lib/application-display":{applicationEventsSummary:String,applicationNextAction:String,applicationReplyText:String,applicationStatusText:String},
+  "@/lib/application-display":{applicationNextAction:String,applicationReplyText:String,applicationStatusText:String},
   "next/navigation":{useSearchParams:()=>location.searchParams},
   "./StudentMessages":{openStudentMessages:()=>{}},
   "./NotificationCenter":{NotificationWorkspace:()=>null},"./NotificationLink":{default:()=>null},

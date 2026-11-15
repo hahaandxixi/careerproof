@@ -9,14 +9,14 @@ import type { ApplicationView } from "@/lib/api/client";
 import { applicationAnchorId } from "@/lib/notification-session";
 import { createApplicationListSession, type ApplicationListState } from "@/lib/application-list-session";
 import { createRefreshGate } from "@/lib/refresh-gate";
-import { applicationEventsSummary, applicationNextAction, applicationStatusText } from "@/lib/application-display";
+import { applicationNextAction, applicationStatusText } from "@/lib/application-display";
 import AccessGate from "./AccessGate";
 import ApplicationReply from "./ApplicationReply";
 import { useAuth } from "./AuthProvider";
 import JobWorkspaceNextStep from "./JobWorkspaceNextStep";
 
 // 传智杯44：单条投递卡片是无状态展示组件，突出岗位/公司/状态/企业回复/下一动作；
-// 完整投递记录默认折叠；撤回二次确认、重新投递入口与报告/引用链接协议保持不变。
+// 状态和近期进度基于原事件；撤回、重新投递和报告链接使用既有入口。
 export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, onConfirmWithdraw, onCancelWithdraw}: {
   item: ApplicationView;
   confirming: boolean;
@@ -40,10 +40,6 @@ export function ApplicationItemCard({item, confirming, busy, onRequestWithdraw, 
     <div className="card-actions application-actions"><Link className="btn-secondary" href={reportHref}>查看关联报告</Link>{item.status!=="withdrawn"&&!confirming&&<button type="button" disabled={busy} className="btn-danger-quiet" onClick={()=>onRequestWithdraw(item.id)}>撤回授权</button>}</div>
     {item.status!=="withdrawn"&&confirming&&<div className="space-y-2 rounded-lg bg-rose-50 p-3"><p className="text-sm text-rose-900">撤回后企业不能继续访问本份报告或下载。已下载副本无法追回，如需再次分享，可从报告页重新确认授权；将创建新的投递，旧记录继续保留。</p><div className="flex flex-wrap gap-2"><button type="button" className="btn-danger-quiet border border-rose-300" disabled={busy} onClick={()=>onConfirmWithdraw(item.id)}>确认撤回授权</button><button type="button" className="btn-secondary" disabled={busy} onClick={onCancelWithdraw}>取消</button></div></div>}
     {!!eventNodes.length && <ol className="application-event-flow" aria-label="已保存的投递事件">{eventNodes.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}><span className="application-event-dot" aria-hidden="true"/><div><strong>{eventLabel(e.type)}</strong><time dateTime={e.at}>{new Date(e.at).toLocaleString("zh-CN")}</time></div></li>)}</ol>}
-    <details className="text-sm text-slate-600">
-      <summary className="disclosure">{applicationEventsSummary(item.events)}</summary>
-      <ol className="mt-2 space-y-2">{item.events.map((e,index)=><li key={`${e.type}:${e.at}:${index}`}>{new Date(e.at).toLocaleString()} · {e.detail}</li>)}</ol>
-    </details>
   </article>;
 }
 

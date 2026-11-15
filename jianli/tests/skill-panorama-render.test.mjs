@@ -90,7 +90,7 @@ test("unclassified requirements retain original unknown state, never invent a sk
 });
 test("partial failure and list failure preserve healthy selectable skills and independent retry actions", () => {
   const html = render({ state: { ...state, summaries: [...reports, report("failed", [], 1)], failures: { failed: "offline" }, listError: "page offline" } });
-  assert.match(html, /仅重试失败详情/); assert.match(html, /重试列表读取/); assert.match(html, /Python/); assert.match(html, /1 份详情失败/);
+  assert.match(html, /仅重试失败详情/); assert.match(html, /重试列表读取/); assert.match(html, /Python/); assert.match(html, /1 份报告详情暂不可用/);
   assert.match(html, /offline/);
 });
 test("empty account has one useful next action without an ornamental canvas", () => {
@@ -154,4 +154,18 @@ test("skill selection and evidence are separate sibling controls with distinct a
   assert.match(html, /<button type="button" class="skillCardSelect" aria-pressed="true">/);
   assert.match(html, /<\/button><button type="button" class="cardEvidence" aria-haspopup="dialog" aria-controls="skill-evidence-drawer" aria-label="查看依据：Python"/i);
   assert.doesNotMatch(html, /aria-pressed="(?:true|false)" aria-haspopup="dialog"/);
+});
+
+test("skill panorama lists assessed skills while leaving saved unsupported requirements in their report",()=>{
+  const rows=[report("qa",[
+    item("a","测试用例","unsupported"), item("b","接口测试","unsupported"), item("c","Python","supported"),
+    item("d","pytest","supported"), item("e","Git","gap"),
+  ],1)];
+  const html=render({state:{...state,reports:rows,summaries:rows,total:1,hasMore:false}});
+  assert.match(html, /aria-label="工程与协作" data-multiple="true"/);
+  assert.match(html, /aria-label="编程语言"><div/);
+  assert.doesNotMatch(html, /未评估技能（|查看依据：测试用例|查看依据：接口测试/);
+  assert.match(html, /aria-label="查看依据：pytest"/);
+  assert.equal(panorama.buildSkillPanorama(rows).skills.length, 5);
+  assert.doesNotMatch(html, /skillIcon|skillDomain|已读取.*份报告|个技能 ·/);
 });

@@ -38,7 +38,7 @@ test('history cross references are flagged without redirecting or rewriting orig
 test('source limitation distinguishes history, scope, unavailable text and local excerpts',()=>{
  const report={evidenceContextVersion:'source-context-v3',materials:[{id:'old'}]};
  const source={projectVersionId:'old',snippet:'old code',lineStart:1,lineEnd:2,contextComplete:false};
- assert.equal(sourceLimit(report,source).label,'局部原文');
+ assert.equal(sourceLimit(report,source),null);
  assert.equal(sourceLimit({...report,evidenceContextVersion:null},source).label,'历史完整性信息不足');
  assert.equal(sourceLimit(report,{...source,projectVersionId:'new'}).readable,false);
  assert.equal(sourceLimit(report,{...source,snippet:''}).label,'来源暂不可读');

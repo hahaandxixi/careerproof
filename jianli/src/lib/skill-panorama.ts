@@ -14,7 +14,7 @@ export type StatusCounts = Record<PanoramaStatus, number>;
 export const PANORAMA_FILTERS = ["all", "supported", "claimed_only", "gap"] as const;
 export type PanoramaFilter = typeof PANORAMA_FILTERS[number];
 export const PANORAMA_FILTER_LABELS: Record<PanoramaFilter, string> = {
-  all: "全部记录", supported: VERDICT_LABELS.supported, claimed_only: VERDICT_LABELS.claimed_only, gap: VERDICT_LABELS.gap,
+  all: "全部", supported: VERDICT_LABELS.supported, claimed_only: VERDICT_LABELS.claimed_only, gap: VERDICT_LABELS.gap,
 };
 /** One record can match several views; the original saved status is never rewritten. */
 export function panoramaFilterMatches(status: PanoramaStatus, filter: PanoramaFilter): boolean {
@@ -70,7 +70,7 @@ const categories: [string, string[]][] = [
   ["编程语言", ["python", "java", "javascript", "typescript", "c", "c++", "c#", "go", "rust", "r"]],
   ["数据与存储", ["sql", "mysql", "postgresql", "redis", "mongodb", "pandas", "numpy", "excel", "数据分析", "数据清洗"]],
   ["框架与应用", ["react", "vue", "django", "flask", "fastapi", "spring", "spring boot", "node.js", "html", "css"]],
-  ["工程与协作", ["git", "linux", "docker", "kubernetes", "pytest", "单元测试", "软件测试", "沟通", "团队协作"]],
+  ["工程与协作", ["git", "linux", "docker", "kubernetes", "pytest", "单元测试", "软件测试", "测试用例", "接口测试", "缺陷记录", "测试报告", "沟通", "团队协作"]],
 ];
 export const PANORAMA_CATEGORIES = [...categories.map(([name]) => name), "其他 / 未分类"];
 export function skillDisplayName(value: string): string { return value.trim().replace(/\s+/g, " "); }
@@ -109,9 +109,10 @@ export function buildSkillPanorama(reports: MatchReport[]) {
  * to the first skill that does, so the rail never describes a hidden card. */
 export function selectionForFilter(landscape: ReturnType<typeof buildSkillPanorama>, selected: string | null, filter: PanoramaFilter): string | null {
   if (selected === null) return null;
-  const contexts = selected === "" ? landscape.unclassified : landscape.skills.find(skill => skill.key === selected)?.contexts ?? [];
+  const assessed = landscape.skills.filter(skill => skillRecordMeasure(skill).ratio !== null);
+  const contexts = selected === "" ? landscape.unclassified : assessed.find(skill => skill.key === selected)?.contexts ?? [];
   if (filterSkillContexts(contexts, filter).length) return selected;
-  const first = landscape.skills.find(skill => filterSkillContexts(skill.contexts, filter).length);
+  const first = assessed.find(skill => filterSkillContexts(skill.contexts, filter).length);
   if (first) return first.key;
   return filterSkillContexts(landscape.unclassified, filter).length ? "" : null;
 }
