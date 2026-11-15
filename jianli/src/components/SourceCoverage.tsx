@@ -15,7 +15,7 @@ export default function SourceCoverage({ item, materials = [] }: { materials?: r
         <p className="break-all text-xs text-slate-600"><SourceIdentity source={item.evidenceList.find(e => e.filePath === row.filePath) ?? { filePath: row.filePath, projectVersionId: null }} materials={materials} /></p>
         <p className="mt-1 leading-6">{row.kind === "function" ? "函数原文" : "整文件原文"} · {row.verified ? `第 ${row.start}–${row.end} 行 · 已展示 ${row.covered}/${row.total} 行` : "覆盖记录与当前引用未能核对，范围待核验"}</p>
         {row.verified && <p className={`mt-1 text-xs ${row.complete ? "text-emerald-800" : "text-amber-800"}`}>{row.complete ? "这些引用已覆盖该范围的全部原文" : "这些引用尚未覆盖该范围的全部原文"}</p>}
-        {!!row.citationIds.length && <div className="mt-2 flex flex-wrap gap-3">{row.citationIds.map(id => <EvidenceLink key={id} citationId={id} className="text-xs text-indigo-700 underline">查看引用 {id}</EvidenceLink>)}</div>}
+        {!!row.citationIds.length && <div className="mt-2 flex flex-wrap gap-3">{row.citationIds.map(id => <EvidenceLink key={id} citationId={id} className="text-xs text-brand-hover underline">查看引用 {id}</EvidenceLink>)}</div>}
       </li>)}</ul>}
     <p className="mt-3 text-xs leading-6 text-slate-500">源码展示完整不等于任务实现、运行成功或本人贡献已获证明；覆盖信息不自动提高评级。</p>
   </section>;

@@ -42,7 +42,7 @@ export default function HomeScenarioPreview() {
     </div>
     <div role="tablist" aria-label="切换功能场景" className="flex flex-wrap gap-x-5 border-b border-slate-200">
       {SCENARIOS.map((label, index) => <button key={label} type="button" role="tab" id={`${id}-tab-${index}`} aria-selected={active === index} aria-controls={`${id}-panel-${index}`} tabIndex={active === index ? 0 : -1}
-        className={`min-h-11 border-b-2 px-1 text-sm ${active === index ? "border-[#1d4a40] font-semibold text-[#173c34]" : "border-transparent text-slate-600 hover:text-[#1d4a40]"}`}
+        className={`min-h-11 border-b-2 px-1 text-sm ${active === index ? "border-brand-primary font-semibold text-brand-ink" : "border-transparent text-slate-600 hover:text-brand-ink"}`}
         onClick={() => setActive(index)} onKeyDown={event => {
           const count = SCENARIOS.length;
           const next = event.key === "ArrowRight" ? (index + 1) % count : event.key === "ArrowLeft" ? (index + count - 1) % count : event.key === "Home" ? 0 : event.key === "End" ? count - 1 : null;

@@ -86,7 +86,7 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
       <p className="break-words font-medium text-slate-900">{item.requirementTitle}</p>
       <p className="break-words text-slate-600">{displayJobTitle(report!.jobTitle, report!.jobId)}</p>
       <p className="leading-6 text-slate-600">上传新版后，原报告仍引用当时的版本。</p>
-      {uploaded && <p role="status" className={`leading-6 ${currentUploadState?.ready ? "text-[#173c34]" : "text-amber-900"}`}>{currentUploadState?.message || "正在核对本次上传状态…"}</p>}
+      {uploaded && <p role="status" className={`leading-6 ${currentUploadState?.ready ? "text-brand-ink" : "text-amber-900"}`}>{currentUploadState?.message || "正在核对本次上传状态…"}</p>}
       <div className="flex flex-wrap items-center gap-3">
         <Link className="action-link" href={`/reports/${reportId}#requirement-${requirementId}`}>返回原报告这项要求</Link>
         {reanalysisHref

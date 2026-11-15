@@ -9,8 +9,8 @@ export default function EnterpriseReplyContext({ context }: { context: ReplyCont
     <blockquote className="mt-3 whitespace-pre-wrap break-words">{context.text}</blockquote>
     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs">
       <Link className="btn-secondary" href={`/applications#application-${encodeURIComponent(context.applicationId)}`}>返回这条投递回复</Link>
-      <Link className="text-indigo-700 underline" href={`${reportHref}#requirement-${encodeURIComponent(context.requirementId)}`}>核对原报告要求</Link>
-      {context.citationIds.map(id => <Link key={id} className="text-indigo-700 underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>核对原引用 {id}</Link>)}
+      <Link className="text-brand-hover underline" href={`${reportHref}#requirement-${encodeURIComponent(context.requirementId)}`}>核对原报告要求</Link>
+      {context.citationIds.map(id => <Link key={id} className="text-brand-hover underline" href={`${reportHref}#citation-${encodeURIComponent(id)}`}>核对原引用 {id}</Link>)}
     </div>
   </section>;
 }

@@ -63,12 +63,12 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
   };
 
   const chart = dimensions.length >= 3 && dimensions.length <= 8 ? <svg className={mode === "overview" ? "radar-chart-svg mx-auto w-full" : "mx-auto mt-2 w-full max-w-[440px]"} viewBox="0 0 400 400" role="group" aria-label={`${scale.label}，点选轴标签查看证据`}>
-          <circle cx="200" cy="200" r="108" fill="#f8fafc" />
-          {edges.map(({ key, start, end }) => <path key={key} className="radar-data-fill" d={`M 200 200 L ${start.x} ${start.y} L ${end.x} ${end.y} Z`} fill="#4f46e5" fillOpacity="0.14" stroke="none" pointerEvents="none" aria-hidden="true" />)}
-          {[25, 50, 75, 100].map(value => <g key={value}><circle className="radar-grid-ring" data-outer={value === 100} cx="200" cy="200" r={108 * value / 100} fill="none" stroke="#e6eaf1" strokeWidth="0.8" /><text className="radar-grid-tick" x="204" y={200 - 108 * value / 100 - 4} fill="#94a3b8" fontSize="14">{value}</text></g>)}
-          <text className="radar-grid-tick" x="204" y="212" fill="#94a3b8" fontSize="14">0</text>
-          {dimensions.map((d, index) => { const end = point(index, 1); return <line className="radar-grid-axis" data-selected={index === selectedIndex} key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} stroke={index === selectedIndex ? "#aaa5d8" : "#e0e5ee"} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
-          {edges.map(({ key, start, end }) => <line className="radar-data-edge" key={key} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#4f46e5" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />)}
+          <circle cx="200" cy="200" r="108" fill="var(--paper-bg)" />
+          {edges.map(({ key, start, end }) => <path key={key} className="radar-data-fill" d={`M 200 200 L ${start.x} ${start.y} L ${end.x} ${end.y} Z`} fill="var(--radar-data)" fillOpacity="0.16" stroke="none" pointerEvents="none" aria-hidden="true" />)}
+          {[25, 50, 75, 100].map(value => <g key={value}><circle className="radar-grid-ring" data-outer={value === 100} cx="200" cy="200" r={108 * value / 100} fill="none" strokeWidth="0.8" /><text className="radar-grid-tick" x="204" y={200 - 108 * value / 100 - 4} fontSize="14">{value}</text></g>)}
+          <text className="radar-grid-tick" x="204" y="212" fontSize="14">0</text>
+          {dimensions.map((d, index) => { const end = point(index, 1); return <line className="radar-grid-axis" data-selected={index === selectedIndex} key={d.requirementId} x1="200" y1="200" x2={end.x} y2={end.y} strokeWidth={index === selectedIndex ? 1.2 : 0.8} />; })}
+          {edges.map(({ key, start, end }) => <line className="radar-data-edge" key={key} x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="var(--radar-data)" strokeWidth="3.2" strokeLinecap="round" vectorEffect="non-scaling-stroke" />)}
           {dimensions.map((d, i) => {
             const value = supportMeasure(d, scale);
             const rawLabel = point(i, 1.6), label = {x:Math.max(72,Math.min(328,rawLabel.x)),y:Math.max(30,Math.min(370,rawLabel.y))}, dot = point(i, value.ratio ?? 0);
@@ -76,11 +76,11 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
             const labelText = labels.get(d.requirementId)!;
             const title = labelText.label;
             return <g key={d.requirementId}>
-              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} fill={kind === "claimed" ? "white" : d.verdict === "partial" ? "#c7d2fe" : "#4f46e5"} stroke={kind === "claimed" ? "#b66b08" : "#4338ca"} strokeWidth="2.5" vectorEffect="non-scaling-stroke" role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${value.text}，查看证据`} aria-pressed={active} className="radar-data-dot cursor-pointer" data-verdict={d.verdict} onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
+              {kind !== "none" && <circle cx={dot.x} cy={dot.y} r={active ? 7 : 5} strokeWidth="2.5" vectorEffect="non-scaling-stroke" role="button" tabIndex={0} aria-label={`${title}，${status(d)}，${value.text}，查看证据`} aria-pressed={active} className="radar-data-dot cursor-pointer" data-verdict={d.verdict} onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}><title>{`${title}：${scale.label} ${value.text}，${status(d)}`}</title></circle>}
               <g role="button" tabIndex={0} aria-label={`${title}，${status(d)}${kind === "none" ? "" : `，${value.text}`}，查看证据`} aria-pressed={active} aria-controls={mode === "full" ? detailId : undefined} className="cursor-pointer" onClick={() => selectRequirement(d.requirementId)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectRequirement(d.requirementId); } }}>
-                <title>{d.title || title}</title><rect className="radar-label-frame" x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" fill={active ? "#eef2ff" : "white"} stroke={active ? "#c7d2fe" : "#e2e8f0"} />
-                <text className="radar-label-text" x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16" fill={active ? "#4338ca" : "#334155"}>{labelText.chart}</text>
-                <text x={label.x} y={label.y + 14} textAnchor="middle" fontSize="14" fill="#64748b">{kind === "none" ? status(d) : `${value.text} · ${status(d)}`}</text>
+                <title>{d.title || title}</title><rect className="radar-label-frame" x={label.x - 68} y={label.y - 22} width="136" height="48" rx="8" />
+                <text className="radar-label-text" x={label.x} y={label.y - 3} textAnchor="middle" fontSize="16">{labelText.chart}</text>
+                <text className="radar-label-meta" x={label.x} y={label.y + 14} textAnchor="middle" fontSize="14">{kind === "none" ? status(d) : `${value.text} · ${status(d)}`}</text>
               </g>
             </g>;
           })}
@@ -94,24 +94,24 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
       <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600">{dimensions.length} 项岗位要求</span>
     </div>
     <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="雷达图例">
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-indigo-600" />{RADAR_STATUS.supported}</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-amber-600 bg-white" />{RADAR_STATUS.claimed_only}</span>
-      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border border-slate-400 bg-indigo-200" />{RADAR_STATUS.gap}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="radar-legend-dot h-2.5 w-2.5 rounded-full" data-verdict="supported" />{RADAR_STATUS.supported}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="radar-legend-dot h-2.5 w-2.5 rounded-full" data-verdict="claimed_only" />{RADAR_STATUS.claimed_only}</span>
+      <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="radar-legend-dot h-2.5 w-2.5 rounded-full" data-verdict="gap" />{RADAR_STATUS.gap}</span>
       <span>— {RADAR_STATUS.unsupported}</span>
     </div>
     <p className="mt-3 text-sm font-medium text-slate-700">{scale.label}</p>
-    <details className="text-sm leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-2 text-indigo-700">计量详情</summary><p>{supportScaleNote(scale)}</p></details>
+    <details className="text-sm leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-2 text-brand-hover">计量详情</summary><p>{supportScaleNote(scale)}</p></details>
     {scale.mode === "raw" && <p role="status" className="text-sm text-amber-900">{scale.reason}</p>}
-        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={mode === "full" ? detailId : undefined} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-indigo-300 bg-indigo-600 font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{labels.get(d.requirementId)?.label}</button>)}</div>
+        <div className="flex flex-wrap gap-2" aria-label="选择岗位要求">{dimensions.map((d, index) => <button key={d.requirementId} type="button" aria-pressed={dimension.requirementId === d.requirementId} aria-controls={mode === "full" ? detailId : undefined} className={`min-h-11 max-w-full break-words rounded-lg border px-3 py-2 text-left text-xs transition-colors ${dimension.requirementId === d.requirementId ? "border-brand-border bg-brand-primary font-medium text-white shadow-sm" : "border-slate-200 bg-white text-slate-600 hover:border-brand-line hover:bg-brand-surface"}`} onClick={() => selectRequirement(d.requirementId)}><span className="mr-2 opacity-70">{String(index + 1).padStart(2, "0")}</span>{labels.get(d.requirementId)?.label}</button>)}</div>
     <div className="mt-4 grid items-start gap-5 xl:grid-cols-[minmax(460px,0.95fr)_minmax(0,1.05fr)]">
       <div className="min-w-0 rounded-xl border border-slate-100 bg-slate-50/60 p-3 sm:p-4">
 
         {chart}
       </div>
-      <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-indigo-100 bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
+      <div id={detailId} data-radar-detail className="order-first min-w-0 rounded-xl border border-brand-line bg-white p-3 sm:p-5 xl:order-last" aria-live="polite">
         <p className="text-sm text-slate-600">第 {selectedIndex + 1} 项 / {dimensions.length} 项</p>
         <h4 className="mt-2 break-words text-lg font-semibold leading-7">{dimension.title || dimension.skill}</h4>
-        <p className="mt-3 text-base font-semibold text-indigo-900">{status(dimension)}</p>
+        <p className="mt-3 text-base font-semibold text-brand-ink">{status(dimension)}</p>
         {measure.ratio != null && <p className="mt-2 text-base">{reviewItems.has(dimension.requirementId) && "原报告 · "}{scale.label} {measure.text}</p>}
         {measure.issue && dimension.verdict !== "unsupported" && <p role="status" className="mt-2 text-sm text-amber-900">{measure.issue}；原始值 {String(measure.raw ?? "未记录")}。</p>}
         <details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">原报告计量与等级</summary><SupportMeasureDetails raw={dimension.score} formulaVersion={dimension.formulaVersion} scale={scale}/><p>岗位权重 {dimension.weight}</p>{dimension.evidenceLevel!=null&&<p>实践证据 {evidenceLevelName(dimension.evidenceLevel)}</p>}</details>
@@ -122,7 +122,7 @@ export default function SkillRadar({ dimensions, items = [], initialRequirementI
           <p className="mt-4 break-words text-base leading-7 text-slate-700">{(useAi&&item.aiExplanation ? readableCitationText(item,item.aiExplanation) : null) || item.explanation || "原报告未提供这项判断的说明。"}</p>
           {useAi&&item.aiExplanation&&<details className="mt-2 text-sm text-slate-600"><summary className="cursor-pointer">AI解释原文</summary><p className="mt-2 whitespace-pre-wrap leading-7">{item.aiExplanation}</p></details>}
           <details key={dimension.requirementId} open={evidenceExpanded} onToggle={event=>onEvidenceExpandedChange?.(event.currentTarget.open)} className="mt-4 rounded-lg border border-slate-200 bg-white p-3">
-            <summary className="cursor-pointer text-sm text-indigo-700">查看本次授权引用片段（{item.evidenceList.length}）</summary>
+            <summary className="cursor-pointer text-sm text-brand-hover">查看本次授权引用片段（{item.evidenceList.length}）</summary>
             {item.evidenceList.length ? item.evidenceList.map((e, index) => <div key={`${e.citationId}:${index}`} className="mt-3 border-t border-slate-100 pt-3 text-xs">
               <p className="leading-6 text-sm"><SourceIdentity source={e} materials={materials} compact/> · 第{e.lineStart}—{e.lineEnd}行</p>
               {e.provenance === "reference" && <p className="mt-1 text-amber-800">参考材料，不能证明本人贡献。</p>}

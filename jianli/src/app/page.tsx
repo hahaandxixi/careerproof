@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import HomeScenarioPreview from "@/components/HomeScenarioPreview";
 import JobDiscovery from "@/components/JobDiscovery";
 
-const routeEntry = "inline-flex min-h-11 items-center text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline";
+const routeEntry = "inline-flex min-h-11 items-center text-sm font-medium text-brand-ink underline-offset-4 hover:underline";
 const entries: [string, string, string][] = [
   ["01", "整理材料", "上传简历与项目，固定本次版本。"],
   ["02", "对照岗位", "从岗位要求进入材料证据阅读。"],

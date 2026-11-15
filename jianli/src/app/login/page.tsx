@@ -40,7 +40,7 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-slate-500">继续整理材料，查看属于你的匹配报告。</p>
         </div>
 
-        <Link href="/demo" className="mb-5 block rounded-lg border border-[#d8d0c2] bg-[#f3f7f2] p-3 text-sm text-[#1d4a40]">材料库 →</Link>
+        <Link href="/demo" className="mb-5 block rounded-lg border border-brand-line bg-brand-surface p-3 text-sm text-brand-ink">材料库 →</Link>
         {returnTo && <p className="mb-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">登录后返回刚才的页面；仅继续你有权访问的内容。</p>}
         <form onSubmit={onSubmit} className="space-y-4">
           <label className="block">
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
         <p className="mt-5 text-center text-sm text-slate-500">
           还没有账号？
-          <Link href={authEntry("/register", returnTo)} className="ml-1 font-medium text-[#245c50] hover:text-[#173c34]">
+          <Link href={authEntry("/register", returnTo)} className="ml-1 font-medium text-brand-primary hover:text-brand-ink">
             立即注册
           </Link>
         </p>

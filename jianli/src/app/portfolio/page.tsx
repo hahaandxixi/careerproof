@@ -80,14 +80,14 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
         <div className="flex flex-wrap items-baseline gap-x-2">
           <span className={`material-kind-badge ${item.kind}`}>{item.kind === "resume" ? "简历" : "项目"}</span>
           <h3 className="min-w-0 break-words text-base font-semibold text-slate-900">{title}</h3>
-          {isTarget && <span className="text-sm font-medium text-[#1d4a40]">当前上传目标</span>}
+          {isTarget && <span className="text-sm font-medium text-brand-ink">当前上传目标</span>}
         </div>
         {item.materialRole === "reference" && <span className="text-sm text-slate-600">第三方参考</span>}
         {!complete && <p className="material-row-status" data-status={item.status}>{statusText(item.status)}</p>}
       </div>
       <div className="text-sm leading-6 text-slate-700">
         <span className="whitespace-nowrap">{reportVersions ? "当前" : ""}第 {item.versionNumber} 版</span>
-        {reportVersions && <p className="mt-1 text-[#173c34]">原报告使用第 {reportVersions.join("、")} 版</p>}
+        {reportVersions && <p className="mt-1 text-brand-ink">原报告使用第 {reportVersions.join("、")} 版</p>}
       </div>
       <time className="text-sm leading-6 text-slate-600" dateTime={item.createdAt} title={date.toLocaleString("zh-CN")}>{Number.isNaN(date.valueOf()) ? "—" : materialTime.format(date)}</time>
       <div className="material-row-actions">
@@ -100,7 +100,7 @@ function UploadProgress({ item, reportVersions, onUploadVersion, onArchive, arch
       <div className="flex items-center gap-3">
         <div role="progressbar" aria-label={`${title}处理进度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.progress} className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${failed ? "bg-rose-500" : "bg-[#1d4a40]"}`}
+            className={`h-full rounded-full transition-all duration-500 ${failed ? "bg-rose-500" : "bg-brand-primary"}`}
             style={{ width: `${Math.max(item.progress, item.status === "pending" ? 4 : 0)}%` }}
           />
         </div>
@@ -454,7 +454,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <h1 className="page-title">我的材料</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">材料库</Link>
+          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-brand-ink underline-offset-4 hover:underline">材料库</Link>
           {hasCompletedMaterial && <Link href="/jobs" className="btn-secondary">选择岗位进行对照</Link>}
           <button type="button" className="btn" disabled={projectBusy || resumeBusy || !!deletingProjectId} onClick={() => openUpload(null)}>添加材料</button>
         </div>
@@ -462,8 +462,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
 
       {historyLoaded && !listedUploads.length && !listedProjects.length && !historyError &&
-        <Link href="/demo" className="block rounded-xl bg-[#e7efe9] p-4 text-sm text-[#1d4a40]">材料库 →</Link>}
-      {notice && <p role="status" className="rounded-xl bg-[#e7efe9] p-3 text-sm text-[#173c34]">{notice}</p>}
+        <Link href="/demo" className="block rounded-xl bg-brand-surface p-4 text-sm text-brand-ink">材料库 →</Link>}
+      {notice && <p role="status" className="rounded-xl bg-brand-surface p-3 text-sm text-brand-ink">{notice}</p>}
 
       <div className="material-review-layout">
       <section className="material-register workspace-sheet" aria-labelledby="material-register-title">
@@ -568,7 +568,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 maxLength={200}
                 value={resumeTitle}
                 onChange={(event) => setResumeTitle(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
               />
             </label>
             <MaterialFileDropzone id="resume-file" kind="resume" file={resumeFile} target={resumeTitle.trim() || "新简历"} disabled={resumeBusy} onChange={setResumeFile} onError={setResumeError} />
@@ -577,7 +577,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <button
             type="submit"
             disabled={resumeBusy}
-            className="mt-5 w-full rounded-lg bg-[#1d4a40] px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="mt-5 w-full rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-60"
           >
             {resumeBusy ? "正在上传…" : "上传并解析简历"}
           </button>
@@ -585,7 +585,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
         {uploadKind === "project" && <form onSubmit={submitProject} className="min-w-0">
           {(targetProject || activeAttempt) && (
-            <div className="mb-4 border-l-2 border-indigo-300 pl-3 text-sm text-slate-700">
+            <div className="mb-4 border-l-2 border-brand-border pl-3 text-sm text-slate-700">
               <p>{targetProject && displayMaterialTitle(targetProject.name, targetProject.id)}
                 {uploadTarget && ` · 当前第 ${uploadTarget.versionNumber} 版`}</p>
               {targetReportVersions && <p className="mt-1">原报告使用第 {targetReportVersions.join("、")} 版</p>}
@@ -603,7 +603,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectName}
                 disabled={projectBusy || !!activeAttempt}
                 onChange={(event) => setProjectName(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
                 placeholder="如：校园二手交易平台"
               />
             </label>
@@ -615,7 +615,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 value={projectDescription}
                 disabled={projectBusy || !!activeAttempt}
                 onChange={(event) => setProjectDescription(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-[#e7efe9]"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
                 placeholder="你负责了什么，解决了什么问题"
               />
             </label>
@@ -631,7 +631,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <button
             type="submit"
             disabled={projectBusy || !!deletingProjectId || !attemptReady || (!!attempt && !activeAttempt)}
-            className="mt-5 w-full rounded-lg bg-[#1d4a40] px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="mt-5 w-full rounded-lg bg-brand-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-hover disabled:opacity-60"
           >
             {projectBusy ? "正在上传…" : activeAttempt ? "重试上传" : uploadTarget ? "上传新版本" : "上传项目"}
           </button>

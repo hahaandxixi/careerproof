@@ -26,7 +26,7 @@ function SourceGroup({ label, groups, reportId, requirementId, materials, source
       const anchor = group.citationIds[0] ? `citation-${group.citationIds[0]}`
         : sourceIndex >= 0 ? sourceLocationId(requirementId, source, sourceIndex) : `requirement-${requirementId}`;
       return <li key={index} className="min-w-0 space-y-1 py-3">
-        <Link className="break-words font-medium text-[#1d4a40] underline" href={reportVersionHref(reportId, origin, `#${anchor}`)} target="_blank" rel="noopener" title="在新标签页打开原报告">{short.fileName} · {source.lineStart > 0 ? `第 ${source.lineStart}–${source.lineEnd} 行` : "行号未记录"}</Link>
+        <Link className="break-words font-medium text-brand-ink underline" href={reportVersionHref(reportId, origin, `#${anchor}`)} target="_blank" rel="noopener" title="在新标签页打开原报告">{short.fileName} · {source.lineStart > 0 ? `第 ${source.lineStart}–${source.lineEnd} 行` : "行号未记录"}</Link>
         <p className="break-words text-sm leading-6 text-slate-600">{short.material} · {sourceRecordKind(source)}</p>
         {index === 0 && source.snippet && <pre className="comparison-source-preview">{source.snippet}</pre>}
         {source.provenance === "reference" && <p className="text-xs text-slate-600">第三方参考，不作为个人实践证明。</p>}
@@ -109,7 +109,7 @@ function RequirementChange({ row, value, origin }: { row: ComparisonRow; value: 
     <StatusFlow row={row} />
     <CitationChanges row={row} value={value} origin={origin} />
     {gap && <p className="text-sm leading-6 text-slate-700">待核对：{/规则层保存了未发送证据/.test(gap) ? "旧报告未保存具体缺口，请查看原报告。" : gap}</p>}
-    <details className="min-w-0 border-t border-slate-100 pt-2"><summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">{secondary.length ? `其他变化 ${secondary.length} 项与判断依据` : "判断依据、建议与复核"}</summary>
+    <details className="min-w-0 border-t border-slate-100 pt-2"><summary className="w-fit cursor-pointer py-1 text-brand-ink">{secondary.length ? `其他变化 ${secondary.length} 项与判断依据` : "判断依据、建议与复核"}</summary>
       <div className="min-w-0 space-y-3 pt-2 [overflow-wrap:anywhere]">
         {!!secondary.length && <p className="text-sm text-slate-700">{secondary.join("、")}</p>}
         {item.changes.includes("rule_version") && <dl className="space-y-1 text-sm">
@@ -173,7 +173,7 @@ export default function ReportComparisonView({ value, base, current, origin }: {
       {selected && <article id="comparison-requirement-reader" className="report-comparison-reader min-w-0" key={selected.item.requirementId}><RequirementChange row={selected} value={value} origin={origin} /></article>}
     </div>}
     {materialGroups.length > 0 && <details className="min-w-0 border-t border-slate-200 pt-3">
-      <summary className="w-fit cursor-pointer py-1 text-[#1d4a40]">对比材料版本</summary>
+      <summary className="w-fit cursor-pointer py-1 text-brand-ink">对比材料版本</summary>
       <div className="space-y-3 pt-3 text-sm leading-6 [overflow-wrap:anywhere]">
         {materialGroups.map(group => <div key={group.label}>
           <h3 className="font-medium">{group.label}</h3>

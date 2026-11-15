@@ -48,7 +48,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
       <span className="text-xs text-slate-500">已选 {selectedIds.length}/10</span>
     </div>
     {selected.length > 0 ? <ul aria-label="已选项目版本" className="space-y-2">
-      {selected.map(version => <li key={version.id} className="flex items-start justify-between gap-3 rounded-lg border border-indigo-200 bg-indigo-50 p-3 text-sm">
+      {selected.map(version => <li key={version.id} className="flex items-start justify-between gap-3 rounded-lg border border-brand-line bg-brand-surface p-3 text-sm">
         <span className="min-w-0 break-words">{version.name} · 第 {version.versionNumber} 版
           {version.materialRole === "reference" && <span className="mt-1 block text-xs text-slate-600">第三方参考，不计评级</span>}
         </span>
@@ -56,7 +56,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
       </li>)}
     </ul> : null}
     {selectableProjects.length > 0 ? <details key={highlightedVersionId || "projects"} open={!!highlightedVersionId} className="rounded-xl border border-slate-200">
-      <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-indigo-700">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
+      <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-brand-hover">选择或更换项目版本 · {selectableProjects.length} 个项目</summary>
       <div className="space-y-3 border-t border-slate-200 p-3">
         <label className="block text-xs text-slate-600">搜索项目名称或文件名
           <input className="field mt-1" type="search" value={query} placeholder="输入项目名称或文件名" onChange={event => setQuery(event.target.value)} />
@@ -77,12 +77,12 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
               <span className="ml-2 text-xs font-normal text-slate-500">{project.versions.length} 个版本 · 已选 {project.versions.filter(version => selectedIds.includes(version.id)).length}</span>
             </summary>
             <div className="space-y-2 px-3 pb-3">
-              {project.versions.map(version => <label key={version.id} className={`material-version flex items-start gap-2 rounded-lg border p-2 text-sm ${version.id === highlightedVersionId ? "border-indigo-400 bg-indigo-50" : "border-transparent bg-white"}`}>
+              {project.versions.map(version => <label key={version.id} className={`material-version flex items-start gap-2 rounded-lg border p-2 text-sm ${version.id === highlightedVersionId ? "border-brand-border bg-brand-surface" : "border-transparent bg-white"}`}>
                 <input className="mt-1 shrink-0" type="checkbox" checked={selectedIds.includes(version.id)} disabled={!selectedIds.includes(version.id) && selectedIds.length >= 10} onChange={event => onChange(toggleMaterialVersion(selectedIds, version.id, event.target.checked))} />
                 <span className="min-w-0 break-words">第 {version.versionNumber} 版
                   {(nameCounts.get(displayNames.get(project.id) ?? project.name) ?? 0) > 1 && <span className="block text-xs text-slate-600">{[version.originalFilename, materialVersionTime(version.createdAt)].filter(Boolean).join(" · ")}</span>}
                   {version.materialRole === "reference" && <span className="block text-xs text-slate-600">第三方参考，不计评级</span>}
-                  {version.id === highlightedVersionId && <span className="mt-1 block text-xs font-medium text-indigo-800">刚上传 · {selectedIds.includes(version.id) ? "已加入当前选择，保存后生效" : "尚未选择"}</span>}
+                  {version.id === highlightedVersionId && <span className="mt-1 block text-xs font-medium text-brand-secondary">刚上传 · {selectedIds.includes(version.id) ? "已加入当前选择，保存后生效" : "尚未选择"}</span>}
                 </span>
               </label>)}
             </div>
@@ -92,6 +92,6 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
           {!visibleProjects.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到匹配的项目，请更换关键词。</p>}
         </div>
       </div>
-    </details> : <p className="text-sm text-slate-500">暂无完成解析的项目或作品，可以先<Link className="text-indigo-600 underline" href="/portfolio">上传材料</Link>。</p>}
+    </details> : <p className="text-sm text-slate-500">暂无完成解析的项目或作品，可以先<Link className="text-brand-primary underline" href="/portfolio">上传材料</Link>。</p>}
   </section>;
 }

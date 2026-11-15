@@ -66,7 +66,7 @@ export default function EnterpriseScenarioPage() {
       : <p className="panel text-sm text-slate-600">没有两名同依据且要求轴完整的候选人，不渲染 A/B 同尺度对照。</p>}
     <section className="enterprise-uncomparable-list panel space-y-3" aria-label="受控合成 C/D/E 自动隔离">
       <div className="review-section-heading"><div><h2 className="section-title">其他报告 · 逐份核对</h2><p className="text-sm text-slate-600">以下候选人由同一生产分组函数排除，不进入上方 A/B 差异图或雷达。</p></div></div>
-      <ul className="divide-y divide-[#e0dbcd] border-y border-[#e0dbcd]">
+      <ul className="divide-y divide-brand-line border-y border-brand-line">
         {grouping.excluded.map(item => <li key={item.id} className="space-y-1 py-3">
           <p className="font-semibold">{item.candidateName} · {comparableIds.has(item.id) ? "可比组" : exclusionReason(item)}</p>
           <p className="text-sm text-slate-600">固定材料：受控合成清洗脚本 v1 · 依据：{item.comparisonBasis || "未记录"}</p>
