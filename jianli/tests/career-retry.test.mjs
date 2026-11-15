@@ -171,7 +171,7 @@ test("recommendation cards show matched skills and job link directly without a f
  })();
 });
 
-test("saved reasons use the recorded tiers without assigning other jobs a priority", async () => {
+test("saved recommendations keep their recorded tiers and show direction comparison below the cards", async () => {
  const job = (jobId, priority) => ({jobId,jobTitle:jobId,priority,matchedSkills:[],evidence:[]});
  const historyResult = {planId:"saved",materials:[],changes:[],recommendations:[job("medium","medium"),job("high1","high"),job("no-tier",undefined),job("high2","high")],
    aiPlan:{comparison:"已保存的方向比较",advice:[{jobId:"high1",reason:"可定位输入校验。",citationIds:[]}]},aiFallbackUsed:false};
@@ -181,7 +181,10 @@ test("saved reasons use the recorded tiers without assigning other jobs a priori
  assert.deepEqual(f.nodes(tree).filter(n=>n.type==="h3").map(n=>n.props.children),["优先了解","值得比较","推荐岗位","岗位方向比较"]);
  const cards=f.nodes(tree).filter(n=>n.type==="article");
  assert.deepEqual(cards.map(n=>n.props.id),["plan-job-high1","plan-job-high2","plan-job-medium","plan-job-no-tier"]);
- assert.ok(f.nodes(cards[0]).some(n=>n.props?.text==="可定位输入校验。"));
+ assert.ok(!cards.flatMap(card=>f.nodes(card)).some(n=>n.props?.text==="可定位输入校验。" || n.props?.children==="可定位输入校验。"));
+ const comparison=f.nodes(tree).find(n=>n.props?.["aria-label"]==="岗位方向比较");
+ assert.ok(f.nodes(comparison).some(n=>n.type==="summary"&&n.props.children==="完整比较说明"));
+ assert.ok(f.nodes(comparison).some(n=>n.type==="p"&&n.props.children==="已保存的方向比较"));
 });
 
 test("requirement rows group by skill without collapsing different or repeated requirements", () => {

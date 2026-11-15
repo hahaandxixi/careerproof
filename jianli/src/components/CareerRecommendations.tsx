@@ -198,7 +198,6 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   }, [savedResult, expandedCandidates, readingCitation, fragmentRevision]);
   const visibleRecommendations = result ? careerPlanRecommendations(result, expandedCandidates) : [];
   const visibleChanges = result ? visibleCareerChanges(result.changes, visibleRecommendations) : [];
-  const advice = new Map((result?.aiFallbackUsed ? [] : result?.aiPlan?.advice ?? []).map(item => [item.jobId, item]));
   const tiers = (["high", "medium", "explore", null] as const).map(priority => ({
     priority,
     jobs: visibleRecommendations.filter(item => priority ? item.priority === priority : !Object.hasOwn(PRIORITY_LABELS, item.priority)),
@@ -261,8 +260,6 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         <div className="career-tier-jobs">
           {jobs.map(item => {
             const activeEvidence = readingCitation ? item.evidence.filter(evidence => evidence.citationId === readingCitation) : [];
-            const savedAdvice = advice.get(item.jobId);
-            const reason = savedAdvice?.reason;
             const matchedSkills = hasComparisonJobs
               ? item.matchedSkills.filter(skill => !item.requirements?.some(requirement => requirement.skill.trim() === skill.trim()))
               : item.matchedSkills;
@@ -272,7 +269,6 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
                   <h4 className="break-words text-lg font-semibold">{item.jobTitle}</h4>
                   {item.companyName && <p className="break-words text-sm text-slate-600">{item.companyName}</p>}
                 </div>
-                {reason && <CareerReason text={reason} />}
                 {!!matchedSkills.length && <ul className="career-skill-list" aria-label="匹配技能">{matchedSkills.map(skill => <li key={skill}>{skill}</li>)}</ul>}
               </div>
               <Link className={priority === "high" ? "btn shrink-0" : "btn-secondary shrink-0"} href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
@@ -299,16 +295,4 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       {historyNotice && <p role="status" className="text-slate-600">{historyNotice}</p>}
     </div>}
   </div>;
-}
-
-function CareerReason({ text }: { text: string }) {
-  if (text.length <= 180) return <p className="career-reason">{text}</p>;
-  return <details className="career-reason-details">
-    <summary>
-      <span className="career-reason">{text}</span>
-      <span className="disclosure career-expand">查看完整推荐理由</span>
-      <span className="disclosure career-collapse">收起</span>
-    </summary>
-    <p className="career-reason">{text}</p>
-  </details>;
 }
