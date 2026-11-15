@@ -1,31 +1,48 @@
 import type { GrowthPlan, MatchReport, ReportItem } from "./api/domain";
 import { validatedGrowthAdvice } from "./analysis-status";
-import { ACTION_SOURCE_LABELS } from "./evidence-workspace";
+import { ACTION_SOURCE_LABELS, distinctActionText } from "./evidence-workspace";
 import { requirementConclusion, savedRequirementAction, workspaceStatusLabel } from "./report-workspace";
+import { displayJobTitle } from "./demo-display-identity.js";
 
-export type FollowUpPlan = Pick<GrowthPlan, "deliverable" | "steps" | "acceptanceChecks">;
+type FollowUpPlan = Pick<GrowthPlan, "deliverable" | "steps" | "acceptanceChecks">;
 
-export function followUpGuidance(report: MatchReport, item: ReportItem, savedPlan?: FollowUpPlan | null) {
-  const advice = validatedGrowthAdvice(report, item);
-  const action = savedRequirementAction(report, item);
-  const plan = savedPlan ?? advice?.taskPlan;
-  return {
-    gap: advice?.gap || item.evidenceLevelGap?.trim() || action?.evidenceGap?.trim() || requirementConclusion(item),
-    action, plan,
-    steps: plan?.steps ?? [],
-  };
+export function supplementPlanLines(plan: FollowUpPlan) {
+  const steps = plan.steps.filter(step => step.trim());
+  const checks = plan.acceptanceChecks.filter(check => check.trim());
+  return [
+    ...(plan.deliverable.trim() ? [`提交什么：${plan.deliverable.trim()}`] : []),
+    ...(steps.length ? ["执行步骤：", ...steps.map((step, index) => `${index + 1}. ${step}`)] : []),
+    ...(checks.length ? ["核对项：", ...checks.map(check => `- ${check}`)] : []),
+  ];
 }
 
-export function followUpCopyText(report: MatchReport, item: ReportItem, savedPlan?: FollowUpPlan | null): string {
-  const { gap, action, plan, steps } = followUpGuidance(report, item, savedPlan);
+export function followUpGuidance(report: MatchReport, item: ReportItem) {
+  const advice = validatedGrowthAdvice(report, item);
+  const action = savedRequirementAction(report, item);
+  const gap = advice?.gap || item.evidenceLevelGap?.trim() || action?.evidenceGap?.trim() || requirementConclusion(item);
+  const plan = advice?.taskPlan;
+  const text = action ? distinctActionText(action, gap) : null;
+  if (plan && text) {
+    const normalize = (value: string) => value.trim().replace(/\s+/g, " ");
+    const displayed = new Set([plan.deliverable, ...plan.steps, ...plan.acceptanceChecks].map(normalize));
+    if (displayed.has(normalize(text.advice))) text.advice = "";
+    if (displayed.has(normalize(text.gap))) text.gap = "";
+  }
+  return { gap, action, plan, text };
+}
+
+export function followUpCopyText(report: MatchReport, item: ReportItem, guidance = followUpGuidance(report, item)): string | null {
+  const { gap, action, plan, text } = guidance;
+  if (!plan && !text?.advice) return null;
+  const actionSource = action && ACTION_SOURCE_LABELS[action.source];
   return [
-    `岗位：${report.jobTitle || "本报告岗位"}`,
+    `岗位：${displayJobTitle(report.jobTitle, report.jobId) || "本报告岗位"}`,
     `岗位要求：${item.requirementTitle}`,
     `材料支持状态：${workspaceStatusLabel(item)}`,
     `当前证据缺口/待核对：${gap || "尚无保存说明，请核对来源。"}`,
-    action ? `已保存补证建议（${ACTION_SOURCE_LABELS[action.source]}）：${action.action}` : "本报告没有可采用的已保存补证建议。",
-    ...(plan ? ["已保存计划（仍需本人核对，不代表已执行）：", ...steps.map((step, index) => `${index + 1}. ${step}`)] : []),
-    ...(plan ? [`建议提交的证据：${plan.deliverable}`, "核验条件：", ...plan.acceptanceChecks.map(check => `- ${check}`)] : []),
+    ...(text?.advice ? [`已保存补证建议${actionSource ? `（${actionSource}）` : ""}：${text.advice}`] : []),
+    ...(text?.gap ? [`报告补充说明：${text.gap}`] : []),
+    ...(plan ? supplementPlanLines(plan) : []),
     "提醒：已有材料先核对位置，确有新增再上传；用户提供的运行记录不等于平台独立执行，也不能单独证明本人贡献。",
     ...(item.evidenceList.some(source => source.contextComplete === false) ? ["部分引用上下文不完整，须核对原始来源。"] : []),
     ...(item.aiTaskPlanWarning ? [`任务草稿待核对：${item.aiTaskPlanWarning}`] : []),

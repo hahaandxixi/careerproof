@@ -3,7 +3,7 @@ import { adoptedReportExplanation } from "@/lib/report-workspace";
 import EvidenceLink from "./EvidenceLink";
 import { compactSourceLabel } from "@/lib/source-label";
 import { invalidNarrativeCitations } from "@/lib/report-citations";
-import { historicalScopeOnly, unsentRuleSources } from "@/lib/source-limits";
+import { historicalScopeOnly, sourceLimit, unsentRuleSources } from "@/lib/source-limits";
 import { sourceLocationId } from "@/lib/source-label";
 import ReportNarrative from "./ReportNarrative";
 
@@ -14,7 +14,11 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
   const invalid = invalidNarrativeCitations(item);
   const unsent = unsentRuleSources(item);
   const inlineCitations = new Set(explanation.match(/\bR\d+-E\d+\b/g) ?? []);
-  const additionalCitations = [...new Set(item.aiCitationIds)].filter(id => !inlineCitations.has(id));
+  // A readable sole source is already open next to the explanation. Multiple
+  // sources are selectable, so their explanation links must stay available.
+  const soleSource = item.evidenceList.length === 1 ? item.evidenceList[0] : undefined;
+  const visibleCitation = soleSource && sourceLimit(report, soleSource)?.readable !== false ? soleSource.citationId : null;
+  const additionalCitations = [...new Set(item.aiCitationIds)].filter(id => id !== visibleCitation && !inlineCitations.has(id));
   if (invalid.length) return <section className="rounded-lg border border-amber-200 p-4 text-base leading-7" role="note">
     <p>这份历史解释含有未与本项来源对齐的引用，暂不能作为已核验解释。请核对下方固定来源。</p>
     <details className="mt-2"><summary className="cursor-pointer text-[#1d4a40]">查看保存原文与异常编号</summary><p className="mt-2 whitespace-pre-wrap">{explanation}</p><p>{invalid.join("、")}</p></details>

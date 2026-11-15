@@ -2,7 +2,10 @@ import Link from "next/link";
 import type { CareerPlanResult, JobRecommendation, MatchReport } from "@/lib/api/domain";
 
 import { sourceLocationId } from "@/lib/source-label";
+import { displayJobTitle } from "@/lib/demo-display-identity.js";
+import { supplementPlanLines } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
+import { CopySupplementAdvice } from "./ReportFollowUpActions";
 
 type Advice = NonNullable<CareerPlanResult["aiPlan"]>["advice"][number];
 
@@ -13,6 +16,9 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
   report?: MatchReport;
 }) {
   const plan = advice.taskPlan;
+  const gap = advice.keyGap?.trim() || "";
+  const task = advice.nextTask?.trim() || "";
+  const rationale = advice.reason?.trim() || "";
   const deliverable = plan?.deliverable?.trim() || "";
   const checks = plan?.acceptanceChecks?.filter(check => check.trim()) ?? [];
   const steps = plan?.steps?.filter(step => step.trim()) ?? [];
@@ -20,7 +26,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
     const evidence = job.evidence.find(source => source.citationId === id);
     return evidence ? [{ id, evidence }] : [];
   });
-  const primary = advice.keyGap?.trim() || deliverable || advice.nextTask?.trim() || advice.reason?.trim() || checks[0] || steps[0] || "";
+  const primary = gap || deliverable || task || rationale || checks[0] || steps[0] || "";
   const seen = new Set(primary ? [primary.replace(/\s+/g, " ")] : []);
   const unique = (value?: string) => {
     const text = value?.trim() || "";
@@ -30,17 +36,23 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
     return text;
   };
   const detailsDeliverable = unique(deliverable);
-  const extraTask = unique(advice.nextTask);
-  const reason = unique(advice.reason);
-  const primaryIsCheck = !advice.keyGap?.trim() && !deliverable && !advice.nextTask?.trim() && !advice.reason?.trim() && checks.length > 0;
-  const primaryIsStep = !advice.keyGap?.trim() && !deliverable && !advice.nextTask?.trim() && !advice.reason?.trim() && !checks.length && steps.length > 0;
+  const extraTask = unique(task);
+  const reason = unique(rationale);
+  const primaryIsCheck = !gap && !deliverable && !task && !rationale && checks.length > 0;
+  const primaryIsStep = !gap && !deliverable && !task && !rationale && !checks.length && steps.length > 0;
   const detailChecks = primaryIsCheck ? checks.slice(1) : checks;
   const detailSteps = primaryIsStep ? steps.slice(1) : steps;
+  const copyLines = [
+    ...(gap && (!deliverable || detailsDeliverable) ? [`待补：${gap}`] : []),
+    ...(plan ? supplementPlanLines(plan) : []),
+    ...(extraTask || (!gap && !deliverable && task) ? [`建议行动：${task}`] : []),
+    ...(reason || (!gap && !deliverable && !task && rationale) ? [`依据：${rationale}`] : []),
+  ];
 
   return <section aria-label="补证建议" className="space-y-3">
     <h3 className="text-base font-semibold">职业规划建议</h3>
     {job.assessedCount === 0 && <p className="text-sm text-amber-800">岗位要求未进入规则评估范围，请人工核对材料。</p>}
-    {primary && <div className="reading-band text-sm leading-6" data-reading-tone="amber"><p className="reading-role">{advice.keyGap?.trim() ? "待补" : "补证建议"}</p><p className="break-words">{primary}</p></div>}
+    {primary && <div className="reading-band text-sm leading-6" data-reading-tone="amber"><p className="reading-role">{gap ? "待补" : "补证建议"}</p><p className="break-words">{primary}</p></div>}
           {detailsDeliverable && <div><p className="font-medium">提交什么</p><p>{detailsDeliverable}</p></div>}
           {detailSteps.length > 0 && <div>
             <p className="font-medium">执行步骤</p>
@@ -74,5 +86,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
 
         </div>
       </details>}
+    {copyLines.length > 0 && <div className="flex flex-wrap items-center gap-3"><CopySupplementAdvice label="复制规划建议"
+      text={[`职业规划建议 · ${displayJobTitle(job.jobTitle || report?.jobTitle || "本岗位", job.jobId)}`, ...copyLines].join("\n")} /></div>}
   </section>;
 }

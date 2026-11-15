@@ -22,7 +22,7 @@ export default function ReportCareerAdvice({ report, planId, jobId }: { report: 
   }, [planId, jobId, report]);
   if (error) return <p role="alert">{error}</p>;
   if (!plan) return planId ? <p role="status">正在读取职业规划建议…</p> : null;
-  const advice = plan.aiPlan?.advice.find(item => item.jobId === jobId);
+  const advice = plan.aiFallbackUsed ? undefined : plan.aiPlan?.advice.find(item => item.jobId === jobId);
   const job = plan.recommendations.find(item => item.jobId === jobId);
   if (!advice || !job || !plan.planId) return planId ? <p>该规划没有可采用的岗位建议。</p> : null;
   return <section aria-label="职业规划建议"><CareerSupplementRoute advice={advice} job={job} planId={plan.planId} report={report} /></section>;

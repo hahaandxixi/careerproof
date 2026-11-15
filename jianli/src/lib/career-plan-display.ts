@@ -111,13 +111,18 @@ export function careerRequirementRows(jobs: readonly JobRecommendation[]) {
     }
   }
   // Only identical saved requirements and judgments count as common. Multiplicity matters.
-  const signature = (items: SavedRequirement[]) => JSON.stringify(items.map(item =>
-    JSON.stringify([item.text, item.weight, item.isRequired, item.ruleVerdict])).sort());
+  const signature = (items: SavedRequirement[], fields: (item: SavedRequirement) => unknown) =>
+    JSON.stringify(items.map(item => JSON.stringify(fields(item))).sort());
   const complete = jobs.every(job => job.requirements?.length === job.requirementCount && job.requirements !== undefined);
-  return Array.from(rows, ([key, row]) => ({
-    key, ...row,
-    shared: complete && row.requirements.size === jobs.length && new Set(Array.from(row.requirements.values(), signature)).size === 1,
-  })).sort((a, b) => Number(a.shared) - Number(b.shared));
+  return Array.from(rows, ([key, row]) => {
+    const groups = [...row.requirements.values()];
+    const comparable = complete && groups.length === jobs.length;
+    const shared = comparable && new Set(groups.map(items =>
+      signature(items, item => [item.text, item.weight, item.isRequired, item.ruleVerdict]))).size === 1;
+    const sameJudgments = comparable && !shared && new Set(groups.map(items =>
+      signature(items, item => item.ruleVerdict))).size === 1;
+    return { key, ...row, shared, sameJudgments };
+  }).sort((a, b) => Number(a.shared) - Number(b.shared));
 }
 
 export function careerMissingRequirementLabel(job: JobRecommendation) {

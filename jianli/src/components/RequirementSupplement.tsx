@@ -1,7 +1,7 @@
 "use client";
 
 import type { MatchReport, ReportItem } from "@/lib/api/domain";
-import { ACTION_SOURCE_LABELS, distinctActionText } from "@/lib/evidence-workspace";
+import { ACTION_SOURCE_LABELS } from "@/lib/evidence-workspace";
 import { followUpGuidance, followUpCopyText } from "@/lib/report-follow-up";
 import { workspaceStatusLabel } from "@/lib/report-workspace";
 import ReportFollowUpActions from "./ReportFollowUpActions";
@@ -10,15 +10,15 @@ import ReportFollowUpActions from "./ReportFollowUpActions";
 export function RequirementSupplementTarget({ report, item, projectVersionId }: {
   report: MatchReport; item: ReportItem; projectVersionId?: string;
 }) {
-  const { gap, action, plan } = followUpGuidance(report, item);
-  const text = action ? distinctActionText(action, gap) : null;
+  const guidance = followUpGuidance(report, item);
+  const { gap, action, plan, text } = guidance;
   const focus = gap?.trim() === plan?.deliverable?.trim() ? "" : gap?.trim();
   return <section id={`supplement-${item.requirementId}`} className="panel space-y-3 scroll-mt-24">
     <div className="min-w-0">
       <h3 className="break-words text-lg font-semibold">{item.skill || "岗位要求"} · {workspaceStatusLabel(item)}</h3>
       <p className="mt-1 break-words text-sm leading-6 text-slate-700">{item.requirementTitle}</p>
     </div>
-    <div className="space-y-3">
+    {(plan || text?.advice || text?.gap || item.aiTaskPlanWarning) && <div className="space-y-3">
       {item.aiTaskPlanWarning && <p role="alert" className="text-sm leading-6 text-amber-900">{item.aiTaskPlanWarning}</p>}
       {(plan || text?.advice) &&
       <div className="flex flex-wrap items-baseline gap-x-2">
@@ -38,9 +38,9 @@ export function RequirementSupplementTarget({ report, item, projectVersionId }: 
         {plan && text?.advice && <p className="whitespace-pre-wrap break-words">{text.advice}</p>}
         {text?.gap && <p className="whitespace-pre-wrap break-words text-slate-600">{text.gap}</p>}</div>
       </details> : null}
-    </div>
+    </div>}
     <div id={`growth-${item.requirementId}`} className="scroll-mt-24">
-      <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId} text={followUpCopyText(report, item)} />
+      <ReportFollowUpActions reportId={report.id} requirementId={item.requirementId} projectVersionId={projectVersionId} text={followUpCopyText(report, item, guidance)} />
     </div>
   </section>;
 }

@@ -12,8 +12,8 @@ export default function CareerRequirementsComparison({ jobs }: { jobs: JobRecomm
   if (!rows.length) return <p className="career-comparison-note">这份规划没有可对照的岗位要求明细。</p>;
 
   const groups = [
-    { title: "差异项", rows: rows.filter(row => !row.shared) },
-    { title: "共同要求", rows: rows.filter(row => row.shared) },
+    { title: "各岗位明细", rows: rows.filter(row => !row.shared) },
+    { title: "相同要求与判断", rows: rows.filter(row => row.shared) },
   ];
   return <div className="career-matrix-scroll" role="region" aria-label="岗位要求对照表" tabIndex={0}>
     <table className="career-matrix" style={{ minWidth: 148 + jobs.length * 164 }}>
@@ -26,7 +26,7 @@ export default function CareerRequirementsComparison({ jobs }: { jobs: JobRecomm
           const activeItems = active && row.requirements.get(active.jobId);
           const detailId = `${id}-${row.shared ? "common" : "different"}-${index}`;
           return <Fragment key={row.key}>
-            <tr><th scope="row">{row.label}</th>{jobs.map(job => {
+            <tr><th scope="row">{row.label}{row.sameJudgments && <small className="career-matrix-note">要求不同</small>}</th>{jobs.map(job => {
               const items = row.requirements.get(job.jobId);
               if (!items) return <td className="career-matrix-empty" key={job.jobId}>{careerMissingRequirementLabel(job)}</td>;
               const labels = Array.from(new Set(items.map(item => verdictLabel(item.ruleVerdict))));
@@ -36,7 +36,9 @@ export default function CareerRequirementsComparison({ jobs }: { jobs: JobRecomm
                 aria-controls={open ? detailId : undefined}
                 aria-label={`${job.jobTitle} · ${row.label} · ${items.length} 项，${labels.join("、")}`}
                 onClick={() => setSelected(open ? null : { row: row.key, jobId: job.jobId })}>
-                <span>{labels.join("、")}</span>{items.length > 1 && <small>{items.length} 项要求</small>}
+                <span>{labels.join("、")}</span>
+                <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" fill="none"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                {items.length > 1 && <small>{items.length} 项要求</small>}
               </button></td>;
             })}</tr>
             {active && activeItems && <tr className="career-matrix-detail"><td colSpan={jobs.length + 1}>

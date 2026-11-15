@@ -50,6 +50,7 @@ const { default: Workspace, RequirementActionPanel } = await import(pathToFileUR
 const { RequirementSupplementTarget } = await import(pathToFileURL(path.join(SRC, "components/RequirementSupplement.tsx")).href);
 const { default: CareerSupplementRoute } = await import(pathToFileURL(path.join(SRC, "components/CareerSupplementRoute.tsx")).href);
 const {default: SourcePanel}=await import("../src/components/ReportSourcePanel.tsx");
+const {default: AiExplanation}=await import("../src/components/ReportAiExplanation.tsx");
 const { AppRouterContext } = require("next/dist/shared/lib/app-router-context.shared-runtime.js");
 const item = (id, verdict = "gap", extra = {}) => ({ requirementId: id, requirementTitle: `要求${id}`, skill: id, weight: 3, verdict, confirmationStatus: "pending", explanation: `解释${id}`, evidenceLevelGap: `缺口${id}`, evidenceList: [], aiCitationIds: [], ...extra, evidenceList: (extra.evidenceList ?? []).map(source => ({filePath:"app.py",lineStart:1,lineEnd:2,snippet:"return saved", ...source})) });
 const advice = (value, extra = {}) => ({ requirementId: value.requirementId, requirementTitle: value.requirementTitle, skill: value.skill, weight: value.weight, currentLevel: null, source: "rules", action: value.evidenceLevelGap, evidenceGap: value.evidenceLevelGap, citationIds: [], ...extra });
@@ -88,6 +89,33 @@ const render = (value, role = "student") => renderToStaticMarkup(React.createEle
     React.createElement(RequirementActionPanel, { report: value, item: entry, role }),
     role === "student" && (["gap", "partial", "claimed_only"].includes(entry.verdict) || entry.confirmationStatus === "rejected") ? React.createElement(RequirementSupplementTarget, { report: value, item: entry }) : null)))));
 
+test("job-level advice keeps a separate copy action, even without a structured plan", () => {
+ const entry=item("SQL");
+ const r=report([entry]);
+ const job={jobId:"job",jobTitle:"数据岗位",assessedCount:1,evidence:[]};
+ const html=renderToStaticMarkup(React.createElement(CareerSupplementRoute,{
+   advice:{keyGap:"核对 SQL 输出",nextTask:"保存执行结果",citationIds:[]},
+   job,planId:"saved-plan",report:r,
+ }));
+ assert.match(html,/职业规划建议.*复制规划建议/);
+ assert.doesNotMatch(html,/复制补证建议|sourceRequirement/);
+ assert.doesNotMatch(render(r),/复制补证建议/);
+});
+
+test("explanation only omits the repeated chip for an already open readable sole citation", () => {
+ const source={citationId:"R1-E1",projectVersionId:"v1",projectFileId:"f1",filePath:"app.py",lineStart:3,lineEnd:4,snippet:"actual line"};
+ const entry=item("linked","supported",{aiStatus:"validated",aiExplanation:"可核对实现",aiCitationIds:["R1-E1"],evidenceList:[source]});
+ const r={...report([entry]),analysisMode:"ai_evidence",materials:[{kind:"project",id:"v1",title:"项目",versionNumber:1}]};
+ const explanation=value=>renderToStaticMarkup(React.createElement(AiExplanation,{report:r,item:value}));
+ assert.doesNotMatch(explanation(entry),/其他解释来源/);
+ assert.match(explanation({...entry,aiExplanation:"可核对实现 R1-E1"}),/href="#citation-R1-E1"/);
+ assert.match(explanation({...entry,evidenceList:[{...source,snippet:""}]}),/href="#citation-R1-E1"/);
+ assert.match(explanation({...entry,evidenceList:[{...source,citationId:null,projectFileId:"f2"},source]}),/href="#citation-R1-E1"/);
+ const panel=renderToStaticMarkup(React.createElement(SourcePanel,{report:r,item:{...entry,evidenceList:[{...source,citationId:null,projectFileId:"f2"},source]}}));
+ assert.match(panel,/id="citation-R1-E1" aria-label=/);
+ assert.match(panel,/id="rule-source-linked-1" hidden=""/);
+});
+
 test("student requirement area leaves guidance to the supplement section", () => {
  const value = item("linked");
  const reportValue = report([value], [advice(value)]);
@@ -98,18 +126,18 @@ test("student requirement area leaves guidance to the supplement section", () =>
  assert.ok(full.includes('id="supplement-linked"'));
  assert.ok(!full.includes("本项补证与岗位对照中的当前要求一致"));
  assert.ok(!full.includes("本项已保存的具体要求"));
- assert.ok(full.includes("复制补证建议"));
+ assert.ok(!full.includes("复制补证建议"), "a repeated gap is not separate copyable advice");
  assert.ok(full.includes("添加项目材料"));
 });
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
  const items = Array.from({length: 6}, (_, i) => item(`gap${i}`));
- const value = report(items,items.slice(0,3).map(entry => advice(entry)));
+ const value = report(items,items.slice(0,3).map(entry => advice(entry,{action:`核对保存文件和对应行号：${entry.skill}`})));
  const before = JSON.stringify(value); const html = render(value);
  assert.equal(count(html,'aria-label="岗位要求与证据"'),1);
  for (const entry of items) assert.ok(html.includes(`href="#requirement-${entry.requirementId}"`));
  assert.equal(count(html, "添加项目材料"), 6);
- assert.equal(count(html, "复制补证建议"), 6);
+ assert.equal(count(html, "复制补证建议"), 3);
  assert.ok(!html.includes("展开完整补证计划"));
  assert.equal(JSON.stringify(value),before);
 });
@@ -241,7 +269,7 @@ test("action panel has no duplicate evidence shortcut; the article owns a single
 });
 
 test("guidance can be copied and used for a new upload without creating a task", () => {
- const entry=item("cache","gap"); const html=render(report([entry],[advice(entry)]));
+ const entry=item("cache","gap"); const html=render(report([entry],[advice(entry,{action:"补充缓存失效实现的位置"})]));
  assert.ok(html.includes("复制补证建议"));
  assert.ok(html.includes("添加项目材料"));
  assert.ok(html.includes('href="/portfolio"'), "upload remains navigation without task creation or analysis");
@@ -250,21 +278,22 @@ test("guidance can be copied and used for a new upload without creating a task",
  assert.ok(!html.includes('>开始补证</button>'));
 });
 
-test("copied guidance keeps saved sources and conditional instructions; rejected AI never enters the clipboard", async () => {
+test("copying uses the displayed report plan and verified display title, never rejected AI", async () => {
  const {followUpCopyText}=await import(pathToFileURL(path.join(SRC,"lib/report-follow-up.ts")).href);
- const entry=item("cache","gap",{requirementTitle:"缓存失效要求",aiStatus:"rejected",aiSuggestion:"未经采用的旧建议"});
- const r={...report([entry],[advice(entry,{source:"ai_suggestion",action:entry.aiSuggestion})]),jobTitle:"后端岗位"};
- const text=followUpCopyText(r,entry);
- for(const value of ["后端岗位","缓存失效要求",entry.evidenceLevelGap,"旧报告和企业投递快照"]) assert.ok(text.includes(value),value);
- assert.ok(!text.includes("通用核对步骤") && !text.includes("检查已有实现"));
- assert.ok(!text.includes(entry.aiSuggestion));
- assert.ok(!text.includes("已成功运行"));
+ const plan={deliverable:"接口核对记录",steps:["打开接口文件","核对校验","注明运行环境"],acceptanceChecks:["记录版本","保留错误输出"]};
+ const entry=item("cache","gap",{requirementTitle:"缓存失效要求",aiStatus:"validated",aiTaskPlan:plan,aiSuggestion:"记录失效时机"});
+ const r={...report([entry],[advice(entry,{source:"rules",action:"核对失效位置"})]),evidenceContextVersion:"source-context-v2",jobId:"6c8ad563-ebf8-427c-b4a3-82905f37dbd0",jobTitle:"数据工程实习生 · 本地合成验收"};
+ const copied=followUpCopyText(r,entry);
+ for(const value of ["岗位：数据工程实习生","缓存失效要求",entry.evidenceLevelGap,"核对失效位置",plan.deliverable,...plan.steps,...plan.acceptanceChecks,"旧报告和企业投递快照"]) assert.ok(copied.includes(value),value);
+ assert.doesNotMatch(copied,/本地合成验收|建议（）：|已成功运行/);
+ const rejected={...entry,aiStatus:"rejected"};
+ assert.equal(followUpCopyText({...r,actionPlan:[advice(rejected,{source:"ai_suggestion",action:entry.aiSuggestion})]},rejected),null);
 });
 
 test("legacy growth anchors lead to the supplement section",()=>{
  const html=render(report([item("legacy","gap")]));
  assert.equal(count(html,'id="growth-legacy"'),1);
- assert.ok(html.includes("复制补证建议")&&html.includes("添加项目材料"));
+ assert.ok(!html.includes("复制补证建议")&&html.includes("添加项目材料"));
  const source=readFileSync(path.join(SRC,"components/ReportDetail.tsx"),"utf8");
  assert.ok(source.indexOf("id={`growth-${item.requirementId}`}") > source.indexOf('id: "report-supplement"'));
  assert.ok(!html.includes("自定义补证计划")&&!html.includes("查看已有补证记录"));
