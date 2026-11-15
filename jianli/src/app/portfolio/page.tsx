@@ -624,7 +624,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
             <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
               <legend className="px-1 font-medium text-slate-700">材料归属</legend>
               <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(activeAttempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("portfolio")} /><span>个人作品</span></label>
-              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(activeAttempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("reference")} /><span>参考资料（不计个人实践评级）</span></label>
+              <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(activeAttempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("reference")} /><span>参考资料</span></label>
             </fieldset>
           </div>
           {projectError && <p className="mt-3 text-sm text-rose-600">{projectError}</p>}

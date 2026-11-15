@@ -72,21 +72,10 @@ test("首屏明示三项核心风险：固定报告/引用、简历下载可能�
   assert.ok(html.includes("撤回前已下载的副本无法追回"), html);
 });
 
-test("高级说明默认折叠且内容完整，不得隐藏其余分享风险", () => {
-  const html = render();
-  const details = /<details[^>]*>[\s\S]*?<\/details>/.exec(html)?.[0] ?? "";
-  assert.ok(details, "高级说明必须用 details 承载");
-  assert.ok(!/<details[^>]*\bopen[\s>]/i.test(details), "高级说明默认必须折叠");
-  for (const text of ["其他报告", "不自动发送邮件", "新记录", "旧投递不会恢复或被覆盖"]) {
-    assert.ok(details.includes(text), `折叠内容不得丢失：${text}`);
-  }
-});
-
-test("保留确认投递入口、授权文案与打开求职工作台链接及报告页锚点", () => {
+test("保留确认投递入口、授权文案和报告页锚点", () => {
   const html = render();
   assert.ok(html.includes("确认投递"), html);
   assert.ok(html.includes("同意向该岗位所属企业授权"), html);
-  assert.ok(html.includes('href="/applications"'), html);
-  assert.ok(html.includes("打开求职工作台"), html);
+  assert.doesNotMatch(html, /其他分享说明与限制|打开求职工作台/);
   assert.ok(html.includes('id="application-submit"'), "报告页 application-submit 锚点必须保留，供我的投递重新授权跳转");
 });

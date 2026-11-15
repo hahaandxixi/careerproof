@@ -68,9 +68,9 @@ function HistoryWorkspace() {
     }, reason => { if (current) setResult({ key, error: errorMessage(reason) }); });
     return () => { current = false; };
   }, [key, q, jobId, candidateId, page, includeHistory, router]);
-  return <div className="report-workspace space-y-5"><div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title">我的报告</h1></div><div className="flex flex-wrap gap-2">{user?.role === "student" && <><Link className="btn-quiet" href="/skills">个人技能全景</Link><Link className="btn-secondary" href="/applications">求职工作台</Link></>}<Link className="btn-secondary" href="/jobs">选择岗位</Link></div></div>
+  return <div className="report-workspace space-y-5"><div className="flex flex-wrap items-end justify-between gap-3"><div><h1 className="page-title">我的报告</h1></div><div className="flex flex-wrap gap-2"><Link className="btn-secondary" href="/jobs">选择岗位</Link></div></div>
     <form className="report-searchbar" role="search" onSubmit={event => { event.preventDefault(); navigate({ q: draft.trim(), page: 1 }); }}><label className="report-search-field min-w-0 flex-1 text-sm"><span className="sr-only">按岗位名称查找全部报告</span><input className="field" type="search" maxLength={200} value={draft} onChange={event => setDraft(event.target.value)} placeholder="按岗位名称查找报告" /></label><button className="btn" disabled={loading}>查找</button><label className="report-history-toggle"><input type="checkbox" checked={includeHistory} onChange={event => navigate({ includeHistory: event.target.checked, page: 1 })} />展示历史报告</label>{(q || jobId) && <button className="btn-quiet" type="button" onClick={() => { setDraft(""); navigate({ q: "", jobId: "", candidateId: undefined, page: 1 }); }}>清除筛选</button>}</form>
-    {jobId && data && <p role="status" className="text-sm text-slate-700">同岗位报告 · 共 {data.total} 份</p>}
+    {jobId && data && <p role="status" className="text-sm text-slate-700">同岗位报告</p>}
     {error && <ErrorNotice message={error} retry={() => setRevision(value => value + 1)} />}
     {loading && <p role="status" className="text-sm text-slate-600">正在加载报告…</p>}
     {!loading && !error && data?.items.length === 0 && <div className="panel space-y-3 text-sm text-slate-600"><p>{q || jobId ? "没有符合条件的报告，可以修改或清除筛选。" : "还没有匹配报告。选择岗位，用已上传的材料生成报告，再决定是否投递。"}</p><Link className="btn-secondary" href="/jobs">去选择岗位 →</Link></div>}

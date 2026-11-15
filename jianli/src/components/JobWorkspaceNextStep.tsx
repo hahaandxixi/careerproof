@@ -94,7 +94,6 @@ export default function JobWorkspaceNextStep({ refreshVersion, onOpenReply, onVi
           <Link className="action-link" href={`/reports/${report.id}`}>{displayJobTitle(report.jobTitle, report.jobId)}</Link>
           <time dateTime={report.createdAt}>{new Date(report.createdAt).toLocaleDateString("zh-CN")}</time>
         </div>
-        <Link className="btn-quiet btn-compact" href="/reports">全部报告</Link>
       </div>}
       {state && report === undefined && <p role="status">报告未能读取。 <button type="button" className="action-link" onClick={retry}>重试</button></p>}
       {report === null && !reply && !task && !state?.tasksIncomplete && next?.href && <div className="job-workspace-action">

@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -547,6 +547,20 @@ main.site-frame { padding-top: 20px; }
 .home-sample > div:first-child :focus-visible, .report-source-reader :focus-visible { outline-color: var(--nav-focus); }
 .scenario-comparison-entry:focus-visible { outline-offset: 3px; }
 .report-content-section[hidden] { display: none; }
+.fixed-project-reader { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.fixed-project-files, .fixed-project-code { margin-top: 8px; max-height: min(49vh, 32rem); overflow: auto; }
+.fixed-project-files { display: grid; align-content: start; gap: 4px; }
+.fixed-project-code {
+  border: 1px solid var(--ink-line);
+  border-radius: 8px;
+  background: var(--desk-bg);
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+@media (min-width: 1050px) {
+  .fixed-project-reader { grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); }
+}
 .report-content-section > * + * { margin-top: 16px; }
 .report-content-section > .panel, .report-content-section > details.panel { border: 0; border-top: 1px solid var(--ink-line); padding: 20px 0; }
 .report-desk .requirement-reading-panel { padding-top: 20px; }

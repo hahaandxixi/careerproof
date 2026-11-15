@@ -10,6 +10,7 @@ import { practiceStatusLabel } from "@/lib/interview-practice";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ListPagination from "./ListPagination";
+import { pageBounds } from "@/lib/list-pagination.js";
 import PracticeEntry from "./PracticeEntry";
 
 const reportsPage = (page: number) => api.listReports(page, 12, { scope: "product", view: "jobs" });
@@ -107,6 +108,7 @@ function StartPractice() {
   const [jobId, setJobId] = useState("");
   const { data, busy, error, retry } = useRead<Page<ReportSummary>>(reportsPage, page);
   const job = data?.items.find(report => report.jobId === jobId) ?? data?.items[0];
+  const bounds = data && pageBounds(data);
   return <section className="panel space-y-4" aria-labelledby="start-interview">
     <h2 id="start-interview" className="section-title">快速开练</h2>
     {busy && <p role="status">正在读取报告…</p>}
@@ -118,7 +120,7 @@ function StartPractice() {
         {data?.items.map(report => <option key={report.jobId} value={report.jobId}>{displayJobTitle(report.jobTitle, report.jobId)}</option>)}
       </select>
     </label>}
-    {data && <ListPagination value={data} busy={busy} label="岗位分页" onPage={next => { setJobId(""); setPage(next); }} />}
+    {data && (bounds?.previous || bounds?.next) && <ListPagination value={data} busy={busy} label="岗位分页" onPage={next => { setJobId(""); setPage(next); }} />}
     {job && <ReportVersionChoice key={job.jobId} job={job} />}
   </section>;
 }
@@ -129,7 +131,6 @@ function ReportVersionChoice({ job }: { job: ReportSummary }) {
   const [reportId, setReportId] = useState(job.id);
   const read = useCallback((page: number) => api.listReports(page, 12, { scope: "product", jobId: job.jobId }), [job.jobId]);
   return <div className="space-y-3">
-    <p className="text-sm text-slate-600">{reportId === job.id ? "最新报告" : "已选历史报告"}{reportId === job.id && ` · ${new Date(job.createdAt).toLocaleString("zh-CN")}`}</p>
     {(job.jobReportCount ?? 0) > 1 && <details onToggle={event => setHistoryOpen(event.currentTarget.open)}>
       <summary className="disclosure">切换报告版本</summary>
       {historyOpen && <ReportHistory read={read} page={page} onPage={setPage} selected={reportId} onSelect={setReportId} />}

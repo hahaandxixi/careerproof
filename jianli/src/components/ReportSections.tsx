@@ -4,20 +4,27 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import { navigateEvidenceFragment, revealEvidenceAnchor } from "@/lib/evidence-anchor";
 
-type Section = { id: string; label: string; content: ReactNode };
+type Section = { id: string; label: string; content: ReactNode; defer?: boolean };
 
 /** Report-level navigation is independent of requirement selection and source disclosures.
- * All panels remain mounted: switching must not reset consent, review or follow-up drafts.
+ * Opened panels remain mounted to preserve drafts and file selection.
  * The shared paper header stays outside the hidden sections so all four views retain identity. */
 export default function ReportSections({ sections, versions, header }: {
   sections: Section[]; versions?: ReactNode; header?: ReactNode;
 }) {
   const [active, setActive] = useState(sections[0].id);
+  const [visited, setVisited] = useState<ReadonlySet<string>>(() => new Set());
   const root = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef(sections);
   sectionsRef.current = sections;
   const scrollFrame = useRef(0);
   const recoverReadingStart = useRef<() => void>(() => {});
+
+  useEffect(() => {
+    if (sectionsRef.current.some(section => section.id === active && section.defer)) {
+      setVisited(previous => previous.has(active) ? previous : new Set([...previous, active]));
+    }
+  }, [active]);
 
   useEffect(() => {
     const rootElement = root.current;
@@ -163,7 +170,7 @@ export default function ReportSections({ sections, versions, header }: {
     </aside>
     <div className="report-paper min-w-0" data-report-paper>
       {header}
-      {sections.map(section => <section key={section.id} id={section.id} data-report-section="" tabIndex={-1} aria-label={section.label} hidden={active !== section.id} className="report-content-section">{section.content}</section>)}
+      {sections.map(section => <section key={section.id} id={section.id} data-report-section="" tabIndex={-1} aria-label={section.label} hidden={active !== section.id} className="report-content-section">{(!section.defer || active === section.id || visited.has(section.id)) && section.content}</section>)}
     </div>
   </div>;
 }

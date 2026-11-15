@@ -42,9 +42,10 @@
 .filters button[aria-pressed="true"] { border-color: var(--brand-primary); background: var(--brand-surface); color: var(--ink-primary); font-weight: 650; }
 .skills { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; margin-top: 6px; }
 /* One card per real skill: technical glyph, name, own status band and counts. */
-.skillCard { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 10px 13px; width: 100%; min-height: 72px; padding: 12px 14px; border: 1px solid var(--ink-line); border-radius: 8px; text-align: left; background: var(--paper-bg); color: var(--ink-primary); overflow-wrap: anywhere; }
+.skillCard { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; width: 100%; min-height: 72px; border: 1px solid var(--ink-line); border-radius: 8px; text-align: left; background: var(--paper-bg); color: var(--ink-primary); overflow-wrap: anywhere; }
 .skillCard:hover { border-color: var(--brand-border); background: var(--brand-surface); }
-.skillCard[aria-pressed="true"] { border-color: var(--brand-primary); background: var(--brand-surface); box-shadow: inset 0 0 0 1px var(--ink-primary); }
+.skillCard[data-selected] { border-color: var(--brand-primary); background: var(--brand-surface); box-shadow: inset 0 0 0 1px var(--ink-primary); }
+.skillCardSelect { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 10px 13px; padding: 12px 10px 12px 14px; text-align: left; }
 .skillIcon { display: grid; place-items: center; align-self: stretch; width: 34px; min-height: 42px; border-radius: 7px; background: var(--brand-surface); color: var(--ink-primary); }
 .skillIcon svg { width: 26px; height: 26px; }
 .skillIcon[data-domain="data"] { background: #fff6dc; color: #8a5a12; }
@@ -57,7 +58,8 @@
 .skillSummary { color: var(--ink-muted); font-size: 11px; line-height: 1.55; }
 .skillFooter { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 11px; margin-top: 1px; padding-top: 5px; border-top: 1px solid var(--ink-line); color: var(--ink-muted); font-size: 11px; }
 .reviewMark { color: #8a4b0f; font-weight: 700; }
-.cardArrow { align-self: center; color: var(--ink-primary); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.cardEvidence { align-self: center; min-height: 36px; padding: 4px 9px; margin-right: 5px; border-radius: 4px; color: var(--brand-hover); font-size: 13px; font-weight: 650; white-space: nowrap; }
+.cardEvidence:hover { background: var(--brand-halo); }
 .skill { display: inline-flex; align-items: center; min-height: 34px; max-width: 100%; gap: 10px; padding: 5px 11px; border: 1px solid var(--ink-line); border-radius: 5px; text-align: left; background: var(--paper-bg); color: var(--ink-primary); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .skill:hover { border-color: var(--brand-border); background: var(--brand-surface); }
 .skill[aria-pressed="true"] { border-color: var(--brand-primary); background: var(--brand-surface); color: var(--ink-primary); box-shadow: inset 0 0 0 1px var(--ink-primary); }
@@ -69,9 +71,9 @@
 .skillDomain[data-domain="data"] { background: #fffbeb; border-color: #fde68a; color: #78350f; }
 .skillDomain[data-domain="testing"] { background: #f0fdfa; border-color: #99f6e4; color: #115e59; }
 .skillDomain[data-domain="tools"] { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
-.unclassified { display: flex; align-items: baseline; flex-wrap: wrap; width: 100%; text-align: left; gap: 8px; border-top: 1px solid var(--ink-line); padding: 12px 0 4px; color: #475569; }
-.unclassified span { font-size: 13px; margin-left: auto; }
-.unclassified[aria-pressed="true"] { color: var(--brand-primary); }
+.unclassified { display: flex; align-items: baseline; flex-wrap: wrap; width: 100%; text-align: left; gap: 8px; justify-content: space-between; border-top: 1px solid var(--ink-line); padding: 12px 0 4px; color: #475569; }
+.unclassified > :first-child { text-align: left; }
+.unclassified > :first-child[aria-pressed="true"] { color: var(--brand-primary); }
 .canvasFooter { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; border-top: 1px solid var(--ink-line); padding-top: 14px; }
 .canvasFooter p { font-size: 13px; color: var(--ink-muted); }
 .rail { min-width: 0; border-top: 3px solid var(--brand-primary); overflow-wrap: anywhere; }

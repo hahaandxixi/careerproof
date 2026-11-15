@@ -123,7 +123,7 @@ function MatchForm({
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
-  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">打开求职工作台</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">报告仅自己可见，投递需另行确认。</p>
+  return <section className="panel"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><p className="mt-2 text-sm leading-6 text-slate-600">报告仅自己可见，投递需另行确认。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>

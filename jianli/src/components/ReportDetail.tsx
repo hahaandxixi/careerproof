@@ -21,6 +21,7 @@ import { adoptedReportExplanation, filterForRequirement, initialWorkspaceFilter,
 import ReportAiExplanation from "./ReportAiExplanation";
 import ReportSourcePanel from "./ReportSourcePanel";
 import ReportSections from "./ReportSections";
+import ProjectFileReader from "./ProjectFileReader";
 import { RequirementSupplementTarget } from "./RequirementSupplement";
 import { materialReportContext, readWorkspaceFilter } from "@/lib/material-report-link";
 import PracticeEntry from "./PracticeEntry";
@@ -147,12 +148,12 @@ function ReportWorkspace({ id }: { id: string }) {
     {user?.role === "student" && <div id="report-comparison" className="scroll-mt-24"><ReportComparisonPanel report={report} initialBaseId={compareBase} origin={origin} revision={JSON.stringify(report.items.map(item => [item.confirmationStatus, item.confirmedAt, item.reviewerNote]))} /></div>}
     {!!report.visualClaims?.length && <section className="panel space-y-3"><h2 className="font-semibold">报告生成时的视觉记录</h2><p className="text-sm leading-6 text-slate-600">仅供核对，不计入评级。</p>{report.visualClaims.map(visual => <div key={visual.id} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{visual.reviewStatus === "accepted" ? "本人已采纳描述" : visual.reviewStatus === "rejected" ? "本人已驳回描述" : "待本人核对"}</p>{visual.observations?.observations.map((item, index) => <p key={index}>{item.description} · 待核验：{item.needs_verification}</p>)}{user?.role === "student" && <Link className="text-brand-ink underline" href={`/materials/project/${visual.projectVersionId}?${materialContext}`}>查看原图与当前核对状态 →</Link>}</div>)}</section>}
       </> },
-      { id: "report-materials", label: "材料来源", content: <>
+      { id: "report-materials", label: "材料来源", defer: true, content: <>
         <h2 className="section-title">固定项目版本</h2>
         {projectMaterials.length > 0 ? <ul className="space-y-4">{projectMaterials.map(material => <li key={material.id} className="panel space-y-2">
           <h3 className="text-lg font-semibold">{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</h3>
           {material.materialRole === "reference" && <p>第三方参考 · 不证明本人实践</p>}
-          {user?.role === "student" && <Link className="btn-secondary" href={`/materials/project/${material.id}?${materialContext}`}>预览此固定版本</Link>}
+          {user?.role === "student" && <ProjectFileReader id={material.id} inReport />}
         </li>)}</ul> : <p className="reading-copy">这份报告没有记录固定项目版本。</p>}
       </> },
       ...(user?.role === "student" ? [
