@@ -143,7 +143,9 @@
 .radarAxisFrame { fill: var(--paper-bg); stroke: var(--ink-line); stroke-width: 2px; }
 .radarAxis:hover .radarAxisFrame { fill: var(--brand-surface); stroke: var(--brand-primary); }
 .radarAxis[aria-pressed="true"] .radarAxisFrame { fill: var(--brand-surface); stroke: var(--brand-primary); stroke-width: 2px; }
-.radarAxis:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 3px; }
+.radarAxis:focus { outline: none; }
+.radarAxisFocus { visibility: hidden; pointer-events: none; fill: none; stroke: var(--brand-hover); stroke-width: 2px; stroke-dasharray: 4 3; }
+.radarAxis:focus-visible .radarAxisFocus { visibility: visible; }
 
 
 .recordPicker { display: grid; gap: 4px; font-size: 13px; color: var(--ink-muted); }

@@ -50,6 +50,7 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
           <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${support}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，选择技能`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
             <circle cx={mark.x} cy={mark.y} r={active ? 6 : 4.5} className={ratio === 0 ? styles.radarZeroPoint : styles.radarPoint}/>
             <title>{`${skill.name}：${support}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条`}</title><rect x={label.x-64} y={label.y-23} width="128" height="47" rx="6" className={styles.radarAxisFrame}/>
+            <rect x={label.x-68} y={label.y-27} width="136" height="55" rx="9" className={styles.radarAxisFocus} aria-hidden="true"/>
             <text x={label.x} y={label.y-4} textAnchor="middle" className={styles.radarLabel}>{labelName}</text>
             <text x={label.x} y={label.y+13} textAnchor="middle" className={styles.radarValue}>{Math.round(ratio * 100)}% · {m.supported}/{m.total}{m.unassessed > 0 ? " · 含未评估" : ""}</text>
             {m.review > 0 && <text x={label.x+55} y={label.y-9} textAnchor="middle" className={styles.radarReview}>!</text>}

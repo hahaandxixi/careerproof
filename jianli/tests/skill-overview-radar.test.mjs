@@ -28,6 +28,8 @@ test('circular radar uses full record counts and preserves unknown and review in
  assert.match(axes[0].props['aria-label'],/Python，有证据支持 1\/2 条，未评估 1 条，需复核 1 条/);
  assert.ok(!axes.some(axis=>/^(SQL|Git)，/.test(axis.props['aria-label'])));
  const fastApi=axes.find(axis=>axis.props['aria-label'].startsWith('FastAPI，'));
+ const focusFrame=f.nodes(fastApi).find(node=>node.props.className==='radarAxisFocus');
+ assert.equal(focusFrame.type,'rect');assert.equal(focusFrame.props['aria-hidden'],'true');assert.equal(fastApi.props.tabIndex,0);
  fastApi.props.onClick();assert.equal(f.picked,'fastapi');
  f.key(axes.find(axis=>axis.props['aria-label'].startsWith('pytest，')),'Enter');assert.equal(f.picked,'pytest');assert.equal(f.prevented,true);
 });
