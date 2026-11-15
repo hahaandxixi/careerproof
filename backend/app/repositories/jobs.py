@@ -9,7 +9,7 @@ from app.models.analysis import AnalysisTask, MatchReport
 from app.models.enums import MembershipRole
 from app.models.identity import Enterprise, EnterpriseMembership
 from app.models.recruitment import Job, JobRequirement, Skill
-from app.tools.fixture_provenance import fixture_job_ids
+from app.tools.fixture_provenance import fixture_job_ids, retired_demo_job_ids
 from app.tools.technical_careers import discovery_conditions, keyword_condition
 
 
@@ -43,6 +43,8 @@ class JobRepository:
             conditions.append(Job.status == "published")
             conditions.append(Job.discovery_visible.is_(True))
             conditions.append(Job.id.not_in(fixture_job_ids()))
+        if manager_id is not None or not include_all:
+            conditions.append(Job.id.not_in(retired_demo_job_ids()))
         if q:
             conditions.append(keyword_condition(q))
         if category:
@@ -73,7 +75,7 @@ class JobRepository:
             await self.session.scalars(
                 select(Job)
                 .where(Job.status == "published", Job.discovery_visible.is_(True),
-                       Job.id.not_in(fixture_job_ids()))
+                       Job.id.not_in(fixture_job_ids()), Job.id.not_in(retired_demo_job_ids()))
                 .order_by(Job.created_at.desc(), Job.id.desc())
                 .limit(limit)
             )

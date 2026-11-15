@@ -178,7 +178,7 @@ test("saved recommendations keep their recorded tiers and show direction compari
  const f=fixture({historyResult,query:"?returnPlan=saved"});
  f.render();await f.settle();f.render();await f.settle();
  const tree=f.render();
- assert.deepEqual(f.nodes(tree).filter(n=>n.type==="h3").map(n=>n.props.children),["优先了解","值得比较","推荐岗位","岗位方向比较"]);
+ assert.deepEqual(f.nodes(tree).filter(n=>n.type==="h3").map(n=>n.props.children),["优先了解","值得选择","推荐岗位","岗位方向比较"]);
  const cards=f.nodes(tree).filter(n=>n.type==="article");
  assert.deepEqual(cards.map(n=>n.props.id),["plan-job-high1","plan-job-high2","plan-job-medium","plan-job-no-tier"]);
  assert.ok(!cards.flatMap(card=>f.nodes(card)).some(n=>n.props?.text==="可定位输入校验。" || n.props?.children==="可定位输入校验。"));
