@@ -552,16 +552,37 @@ PLAN_PROMPT = (
     "status为not_in_current只表示上轮重点岗位未进入本轮候选列表；"
     "不能推断岗位下架、材料退步或本人能力下降。"
     "只返回一个完整的JSON对象，保留示例中的字段名和双引号，不加代码围栏或额外文字。"
+    "每项advice内的字段都在同一层，分开填写citationIds、deliverable、steps和"
+    "acceptanceChecks，不要再套一层taskPlan。"
     "面向学生的正文使用自然语言，正文中不提内部字段名或系统实现细节。\n"
     "JSON格式示例（示例值须替换，岗位编号和引用编号来自输入）：\n"
     '{"comparison":"比较结论","focusJobId":"00000000-0000-0000-0000-000000000001",'
     '"advice":[{"jobId":"00000000-0000-0000-0000-000000000001","reason":"当前依据",'
-    '"keyGap":"主要缺口","nextTask":"下一步","taskPlan":{"deliverable":"具体产物",'
-    '"steps":["执行步骤"],"acceptanceChecks":["可观察验收条件"]},"citationIds":[]}]}\n'
+    '"keyGap":"主要缺口","nextTask":"下一步","citationIds":[],"deliverable":"具体产物",'
+    '"steps":["执行步骤"],"acceptanceChecks":["可观察验收条件"]}]}\n'
     "advice须恰好覆盖给出的每个岗位。"
-    "每项taskPlan必须给出一项具体产物、1-4个执行步骤、1-4个可观察验收条件，"
+    "每项advice必须给出一项具体产物、1-4个执行步骤、1-4个可观察验收条件，"
     "每条最多200字。验收条件写需要提供什么记录，不宣称已通过；与本岗位缺口直接相关。"
 )
+
+
+def parse_career_model_output(raw: dict) -> CareerPlanAnalysis:
+    """Normalize the flat model advice into the persisted career plan schema."""
+    advice_fields = {"jobId", "reason", "keyGap", "nextTask", "citationIds"}
+    task_fields = ("deliverable", "steps", "acceptanceChecks")
+    expected_fields = advice_fields.union(task_fields)
+    advice = raw.get("advice")
+    if not isinstance(advice, list):
+        raise CareerPlanContractError("invalid_wire_advice")
+    items = []
+    for item in advice:
+        if not isinstance(item, dict) or item.keys() != expected_fields:
+            raise CareerPlanContractError("invalid_wire_advice_fields")
+        items.append({
+            **{key: item[key] for key in item if key in advice_fields},
+            "taskPlan": {key: item[key] for key in task_fields},
+        })
+    return CareerPlanAnalysis.model_validate({**raw, "advice": items})
 
 
 async def latest_plan(
@@ -696,15 +717,22 @@ async def create_career_plan(
                             data=_planning_input(shortlist, changes),
                             max_tokens=1500,
                         )
-                    stage = "output_schema"
-                    analysis = CareerPlanAnalysis.model_validate(raw)
-                    stage = "business_validation"
-                    validate_plan(analysis, shortlist, changes)
-                    if any(item.task_plan is None for item in analysis.advice):
-                        raise CareerPlanContractError("actionable_task_omitted")
-                    response.ai_plan = analysis
-                    response.ai_model = provider.model
-                    response.ai_status = "validated"
+                    if provider.json_repair_count:
+                        failure(
+                            "model_output_truncated" if provider.last_finish_reason == "length"
+                            else "model_json_invalid",
+                            CareerPlanContractError("repaired_wire_json"),
+                        )
+                    else:
+                        stage = "output_schema"
+                        analysis = parse_career_model_output(raw)
+                        stage = "business_validation"
+                        validate_plan(analysis, shortlist, changes)
+                        if any(item.task_plan is None for item in analysis.advice):
+                            raise CareerPlanContractError("actionable_task_omitted")
+                        response.ai_plan = analysis
+                        response.ai_model = provider.model
+                        response.ai_status = "validated"
         except CareerChangeAttributionConflict as exc:
             failure("change_attribution_conflict", exc)
             response.ai_validation_issues = [
@@ -774,6 +802,11 @@ async def create_career_plan(
                 status = "model_configuration_error"
             elif stage == "business_validation":
                 status = "model_business_validation_failed"
+            elif stage == "output_schema":
+                status = (
+                    "model_output_truncated" if provider and provider.last_finish_reason == "length"
+                    else "model_output_schema_invalid"
+                )
             elif stage == "model_request":
                 invalid_json = isinstance(exc, json.JSONDecodeError) or isinstance(
                     exc.__cause__, json.JSONDecodeError,

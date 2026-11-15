@@ -341,6 +341,9 @@ async def test_saved_plan_explains_simultaneous_job_edit_and_project_version_cha
                     "keyGap": "运行记录待核验。",
                     "nextTask": "补充具名项目实现材料。",
                     "citationIds": [],
+                    "deliverable": "具名项目实现材料",
+                    "steps": ["整理项目实现材料"],
+                    "acceptanceChecks": ["可定位到对应实现"],
                 } for job_input in jobs],
             }
             return httpx.Response(200, json={
@@ -628,8 +631,8 @@ async def test_api_saves_rejected_model_claim_and_rule_candidates(matching_db, m
             "advice": [{
                 "jobId": job["jobId"], "reason": "当前材料需要继续核对。",
                 "keyGap": "运行记录待核验。", "nextTask": "补充运行记录。",
-                "taskPlan": {"deliverable": "运行记录", "steps": ["保存运行记录"],
-                             "acceptanceChecks": ["记录可定位"]},
+                "deliverable": "运行记录", "steps": ["保存运行记录"],
+                "acceptanceChecks": ["记录可定位"],
                 "citationIds": [entry["citationId"] for entry in job["evidence"][:1]],
             } for job in jobs],
         }
@@ -692,11 +695,9 @@ async def test_api_keeps_rule_candidates_when_ai_task_only_asks_for_runtime(
                 "reason": "当前材料未展示 SQL 实现。",
                 "keyGap": "缺少可定位的查询代码。",
                 "nextTask": "补充 SQL 查询实现与运行记录。",
-                "taskPlan": {
-                    "deliverable": "SQL 运行日志",
-                    "steps": ["执行 SQL 查询并保存输出"],
-                    "acceptanceChecks": ["记录可定位"],
-                },
+                "deliverable": "SQL 运行日志",
+                "steps": ["执行 SQL 查询并保存输出"],
+                "acceptanceChecks": ["记录可定位"],
                 "citationIds": [],
             }],
         }

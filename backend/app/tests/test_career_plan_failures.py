@@ -11,7 +11,7 @@ import pytest
 from app.agents.provider import DeepSeekProvider
 from app.core.config import settings
 from app.models.analysis import AnalysisTask
-from app.schemas.analysis import CareerPlanAnalysis, CareerPlanRequest
+from app.schemas.analysis import CareerPlanRequest
 from app.services import career_planning
 from app.tests.test_career_change_attribution import JOB, OLD_VERSION, result
 
@@ -83,8 +83,8 @@ def answer():
     return {"comparison": "当前引用不足，请补充可核对的实现材料。", "focusJobId": str(JOB),
             "advice": [{"jobId": str(JOB), "reason": "当前没有可定位的SQL实现。",
                         "keyGap": "SQL实现材料待补充。", "nextTask": "提交SQL查询源码。",
-                        "taskPlan": {"deliverable": "SQL查询源码", "steps": ["编写SQL查询"],
-                                     "acceptanceChecks": ["提供可定位的源码片段"]},
+                        "deliverable": "SQL查询源码", "steps": ["编写SQL查询"],
+                        "acceptanceChecks": ["提供可定位的源码片段"],
                         "citationIds": []}]}
 
 
@@ -100,12 +100,18 @@ def answer():
     (503, "model_http_error", "model_request"),
     ("json", "model_json_invalid", "model_request"),
     ("json-private-finish", "model_json_invalid", "model_request"),
+    ("nested-citations", "model_json_invalid", "model_request"),
+    ("repairable-json", "model_json_invalid", "model_request"),
     ("truncated", "model_output_truncated", "model_request"),
     ("truncated-schema", "model_output_truncated", "output_schema"),
     ("schema", "model_output_schema_invalid", "output_schema"),
+    ("missing-task", "model_output_schema_invalid", "output_schema"),
+    ("wrong-task-type", "model_output_schema_invalid", "output_schema"),
+    ("mixed-task", "model_output_schema_invalid", "output_schema"),
     ("array", "model_output_schema_invalid", "model_request"),
     ("internal", "model_internal_error", "model_request"),
     ("citation", "model_business_validation_failed", "business_validation"),
+    ("duplicate-citation", "model_business_validation_failed", "business_validation"),
     ("valid", "validated", None),
 ])
 async def test_real_provider_failure_stage_is_safe_and_specific(
@@ -122,8 +128,10 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         example_marker = "JSON格式示例（示例值须替换，岗位编号和引用编号来自输入）：\n"
         assert "保留示例中的字段名" in system and example_marker in system
         example_json = system.split(example_marker)[1].splitlines()[0]
-        example = CareerPlanAnalysis.model_validate_json(example_json)
+        wire_example = json.loads(example_json)
+        example = career_planning.parse_career_model_output(wire_example)
         assert example.advice[0].task_plan is not None
+        assert "taskPlan" not in wire_example["advice"][0]
         if fault == "timeout":
             raise httpx.ReadTimeout("synthetic-private-material", request=request)
         if fault == "network":
@@ -135,11 +143,29 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         if isinstance(fault, int):
             return httpx.Response(fault, json={"error": "synthetic-private-material"})
         body = answer()
+        item = body["advice"][0]
         if fault == "citation":
-            body["advice"][0]["citationIds"] = ["cross-job-secret-citation"]
+            item["citationIds"] = ["cross-job-secret-citation"]
+        if fault == "duplicate-citation":
+            item["citationIds"] = ["cross-job-secret-citation"] * 2
+        if fault == "missing-task":
+            del item["steps"]
+        if fault == "wrong-task-type":
+            item["steps"] = "编写SQL查询"
+        if fault in {"mixed-task", "nested-citations"}:
+            task_fields = ("deliverable", "steps", "acceptanceChecks")
+            item["taskPlan"] = {key: item[key] for key in task_fields}
         malformed = '{"comparison":"synthetic-private-material'
         if fault in {"json", "json-private-finish", "truncated"}:
             content = malformed
+        elif fault == "nested-citations":
+            for key in task_fields:
+                del item[key]
+            item["taskPlan"]["citationIds"] = item.pop("citationIds")
+            item_json = json.dumps(item, ensure_ascii=False)[:-1]
+            content = '{"advice":[' + ",".join([item_json] * 3) + "]}"
+        elif fault == "repairable-json":
+            content = json.dumps(body, ensure_ascii=False)[:-1]
         else:
             content = json.dumps(
                 [] if fault == "array" else
@@ -171,6 +197,14 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
     saved = task.input_snapshot["result"]
     assert saved["aiStatus"] == expected
     assert bool(saved["aiPlan"]) == (fault == "valid")
+    if fault == "valid":
+        advice = saved["aiPlan"]["advice"][0]
+        assert advice["taskPlan"] == {
+            "deliverable": "SQL查询源码",
+            "steps": ["编写SQL查询"],
+            "acceptanceChecks": ["提供可定位的源码片段"],
+        }
+        assert "deliverable" not in advice
     records = [r for r in caplog.records if r.name == career_planning.__name__]
     if stage:
         assert len(records) == 1 and records[0].stage == stage
