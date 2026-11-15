@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { careerComparisonText, careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage } from "../src/lib/career-plan-display.ts";
+import { careerComparisonText, careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerRequirementRows, careerMissingRequirementLabel } from "../src/lib/career-plan-display.ts";
 import { sourceRelativePath } from "../src/lib/source-label.ts";
 import * as demoDisplay from "../src/lib/demo-display-identity.js";
 const require = createRequire(import.meta.url);
@@ -36,6 +36,7 @@ function fixture({ failMaterials = false, generationResult = null, historyResult
     "@/lib/career-plan-display":{careerComparisonText,careerPlanDisplayIdentity,careerPlanRecommendations:result=>result.recommendations,visibleCareerChanges:()=>[],careerPlanConfigurationBlocked,careerPlanFailureMessage},
     "@/lib/demo-display-identity.js":demoDisplay,
     "@/lib/source-label":{sourceRelativePath},
+    "./CareerRequirementsComparison":{default:picker("requirementsComparison"),__esModule:true},
     "./AccessGate":{ErrorNotice},"./AuthProvider":{useAuth:()=>({user:{id:"student-1"}})},
     "./ProjectVersionPicker":{default:ProjectPicker,__esModule:true},"./ResumeVersionPicker":{default:ResumePicker,__esModule:true},
   };
@@ -181,4 +182,35 @@ test("saved reasons use the recorded tiers without assigning other jobs a priori
  const cards=f.nodes(tree).filter(n=>n.type==="article");
  assert.deepEqual(cards.map(n=>n.props.id),["plan-job-high1","plan-job-high2","plan-job-medium","plan-job-no-tier"]);
  assert.ok(f.nodes(cards[0]).some(n=>n.props?.text==="可定位输入校验。"));
+});
+
+test("requirement rows group by skill without collapsing different or repeated requirements", () => {
+ const record=(text, skill, ruleVerdict, weight=1, isRequired=true)=>({text,skill,ruleVerdict,weight,isRequired});
+ const common=record("编写 pytest 用例","pytest","supported");
+ const first=record("SQL 核查异常","SQL","claimed_only",3);
+ const second=record("SQL 解释异常","SQL","gap",1,false);
+ const other=record("SQL 查询异常","SQL","unsupported",4);
+ const rows=careerRequirementRows([
+  {jobId:"a",requirementCount:4,requirements:[common,first,second,first]},
+  {jobId:"b",requirementCount:2,requirements:[common,other]},
+ ]);
+ assert.deepEqual(rows.map(row=>[row.label,row.shared]),[["SQL",false],["pytest",true]]);
+ assert.deepEqual(rows[0].requirements.get("a"),[first,second,first]);
+ assert.deepEqual(rows[0].requirements.get("b"),[other]);
+ const changed=careerRequirementRows([{jobId:"a",requirementCount:1,requirements:[first]},{jobId:"b",requirementCount:1,requirements:[{...first,isRequired:false}]}]);
+ assert.equal(changed[0].shared,false);
+ const partial=careerRequirementRows([{jobId:"a",requirementCount:2,requirements:[common]},{jobId:"b",requirementCount:1,requirements:[common]}]);
+ assert.equal(partial[0].shared,false);
+});
+
+test("legacy omissions and incomplete snapshots never become material gaps", () => {
+ const sample={text:"SQL 核查异常",skill:"SQL",ruleVerdict:"not_evaluated",weight:2,isRequired:true};
+ const empty={jobId:"legacy",requirementCount:3,requirements:[]};
+ const rows=careerRequirementRows([{jobId:"a",requirementCount:1,requirements:[sample]},empty,{jobId:"missing",requirementCount:1}]);
+ assert.equal(rows[0].shared,false);
+ assert.ok(!rows[0].requirements.has("legacy") && !rows[0].requirements.has("missing"));
+ assert.equal(careerMissingRequirementLabel(empty),"未保存明细");
+ assert.equal(careerMissingRequirementLabel({requirementCount:2}),"未保存明细");
+ assert.equal(careerMissingRequirementLabel({requirementCount:2,requirements:[sample]}),"明细不全");
+ assert.equal(careerMissingRequirementLabel({requirementCount:1,requirements:[sample]}),"明细未列");
 });
