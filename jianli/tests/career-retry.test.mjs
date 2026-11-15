@@ -199,8 +199,11 @@ test("requirement rows group by skill without collapsing different or repeated r
  assert.deepEqual(rows[0].requirements.get("b"),[other]);
  const changed=careerRequirementRows([{jobId:"a",requirementCount:1,requirements:[first]},{jobId:"b",requirementCount:1,requirements:[{...first,isRequired:false}]}]);
  assert.equal(changed[0].shared,false);
+ assert.equal(changed[0].sameJudgments,true);
+ assert.equal(rows[0].sameJudgments,false);
  const partial=careerRequirementRows([{jobId:"a",requirementCount:2,requirements:[common]},{jobId:"b",requirementCount:1,requirements:[common]}]);
  assert.equal(partial[0].shared,false);
+ assert.equal(partial[0].sameJudgments,false);
 });
 
 test("legacy omissions and incomplete snapshots never become material gaps", () => {

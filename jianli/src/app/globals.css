@@ -1320,6 +1320,16 @@ main.site-frame:has(.skills-page) { background: #f4f1ea; }
 .report-command-subline { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 5px; color: #65726d; font-size: 12px; }
 .report-overview-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 320px); gap: 12px; align-items: start; min-width: 0; }
 .report-radar-side { min-width: 0; padding: 12px 12px 8px; border: 1px solid #ded7ca; background: #fbf9f4; }
+.report-radar-side .radar-data-fill { fill: #1d6c5a; }
+.report-radar-side .radar-data-edge { stroke: #1d6c5a; }
+.report-radar-side .radar-data-dot:not([data-verdict="claimed_only"]) { fill: #1d6c5a; stroke: #1d4a40; }
+.report-radar-side .radar-data-dot[data-verdict="partial"] { fill: #b9dacd; }
+.report-radar-side .radar-grid-ring, .report-radar-side .radar-grid-axis { stroke: #cad8d0; }
+.report-radar-side .radar-grid-ring[data-outer="true"] { stroke: #a4b8ad; }
+.report-radar-side .radar-grid-axis[data-selected="true"] { stroke: #749688; }
+.report-radar-side .radar-grid-tick { fill: #52665e; }
+.report-radar-side [aria-pressed="true"] > .radar-label-frame { fill: #e3f0e9; stroke: #608a7a; }
+.report-radar-side [aria-pressed="true"] > .radar-label-text { fill: #173c34; }
 .report-radar-side-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 6px; }
 .report-radar-side-head h2 { color: #143a32; font-size: 15px; font-weight: 700; }
 .report-radar-side-head span { color: #65726d; font-size: 11px; }
@@ -1588,6 +1598,7 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .career-saved-advice { display: grid; gap: 6px; border-inline-start: 3px solid #7c9c8f; padding: 8px 14px; background: #faf8f2; }
 .career-tier { display: grid; min-width: 0; gap: 6px; }
 .career-tier > h3 { color: #36554a; }
+.career-tier + .career-tier { margin-top: 20px; }
 .career-tier-jobs { border-block: 1px solid #d9ded4; }
 .career-tier .career-job-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 18px; align-items: start; min-width: 0; padding: 12px 14px; background: #fbfaf6; }
 .career-tier .career-job-card + .career-job-card { border-top: 1px solid #d9ded4; }
@@ -1606,12 +1617,15 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .career-matrix tbody th[scope="row"] { font-size: 14px; font-weight: 650; }
 .career-matrix-group th { padding-block: 4px; background: #f0f1e9; color: #465b51; font-size: 13px; }
 .career-matrix-empty, .career-comparison-note { color: #5e6860; font-size: 14px; }
-.career-matrix .career-matrix-cell { display: grid; width: 100%; min-height: 32px; padding: 4px 6px; border-radius: 4px; color: #334b43; font-size: 14px; text-align: start; }
+.career-matrix .career-matrix-cell { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; align-items: center; width: 100%; min-height: 32px; padding: 4px 6px; border-radius: 4px; color: #334b43; font-size: 14px; text-align: start; }
 .career-matrix-cell:is([data-verdict="supported"], [data-verdict="verified"]) { color: #24604d; }
 .career-matrix-cell:is([data-verdict="claimed_only"], [data-verdict="gap"], [data-verdict="partial"]) { color: #76521b; }
 .career-matrix-cell:is([data-verdict="unsupported"], [data-verdict="not_evaluated"]) { color: #52645b; }
 .career-matrix-cell[data-verdict] > span::before { content: ""; display: inline-block; width: 5px; height: 5px; margin: 0 6px 2px 0; border-radius: 50%; background: currentColor; }
-.career-matrix-cell small { color: #52645b; font-size: 13px; }
+.career-matrix-cell small, .career-matrix-note { color: #52645b; font-size: 13px; }
+.career-matrix-note { margin-left: 6px; font-weight: 400; }
+.career-matrix-cell svg { justify-self: end; color: #52645b; }
+.career-matrix-cell[aria-expanded="true"] svg { transform: rotate(180deg); }
 .career-matrix-cell:hover, .career-matrix-cell[aria-expanded="true"] { background: #e3eee7; }
 .career-matrix-cell[aria-expanded="true"] { box-shadow: inset 2px 0 #397760; }
 .career-matrix-cell:focus-visible { outline: 2px solid #397760; }

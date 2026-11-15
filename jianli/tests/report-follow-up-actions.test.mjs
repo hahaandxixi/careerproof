@@ -20,7 +20,7 @@ const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{reso
 const nodes=tree=>!tree||typeof tree!=="object"?[]:[tree,...React.Children.toArray(tree.props?.children).flatMap(nodes)];
 
 /** Controlled production hooks/handlers, not a real clipboard, browser navigation or API permission test. */
-function fixture(filename, initialProps={}, environment={}) {
+function fixture(filename, initialProps={}, environment={}, component="default") {
  const slots=[],effects=[],pending=[],cleanup=[],requests=[],calls=[];
  let index=0,props=initialProps,tree;
  const react={
@@ -33,7 +33,7 @@ function fixture(filename, initialProps={}, environment={}) {
   "@/lib/report-follow-up":helpers,"@/lib/api/client":{errorMessage:error=>error.message,api:{getReport(id){calls.push(id);const request=deferred();requests.push(request);return request.promise;},listResumes(){return environment.lists?environment.lists():Promise.resolve(environment.resumes??[])},listProjects(){return environment.lists?environment.lists():Promise.resolve(environment.projects??[])}}}};
  const code=transform(readFileSync(new URL(`../src/components/${filename}.tsx`,import.meta.url),"utf8"),{transforms:["typescript","jsx","imports"],jsxRuntime:"automatic",production:true}).code;
  const mod={exports:{}};new Function("require","module","exports",code)(id=>{assert.ok(id in modules,id);return modules[id];},mod,mod.exports);
- function commit(){index=0;tree=mod.exports.default(props);while(pending.length)pending.shift()();index=0;tree=mod.exports.default(props);}
+ function commit(){index=0;tree=mod.exports[component](props);while(pending.length)pending.shift()();index=0;tree=mod.exports[component](props);}
  commit();
  return{requests,calls,commit,tree:()=>tree,html(){commit();return renderToStaticMarkup(tree);},
   button(label){const button=nodes(tree).find(node=>node.type==="button"&&node.props.children===label);assert.ok(button,label);return button.props.onClick();},
@@ -47,26 +47,29 @@ test("copy and upload work with no task/API access, clipboard success is truthfu
  const prior=Object.getOwnPropertyDescriptor(globalThis,"navigator");const writes=[],request=deferred();
  Object.defineProperty(globalThis,"navigator",{configurable:true,value:{clipboard:{writeText(text){writes.push(text);return request.promise;}}}});
  const f=fixture("ReportFollowUpActions",{reportId,requirementId,text:"保存的指导与提醒"});
+ const copyControl=nodes(f.tree()).find(node=>node.type?.name==="CopySupplementAdvice");
+ assert.equal(copyControl.props.scope,`${reportId}:${requirementId}`);
+ const copy=fixture("ReportFollowUpActions",copyControl.props,{},"CopySupplementAdvice");
  try{
   const upload=nodes(f.tree()).find(node=>node.props?.href?.startsWith("/portfolio?"));
   assert.ok(upload,"upload is a navigation link, not a task creation or analysis action");
   assert.equal(new URL(upload.props.href,"http://local.test").searchParams.get("sourceRequirement"),requirementId);
   assert.ok(f.html().includes("sourceReport="+reportId));
   assert.ok(!f.html().includes("已复制补证建议"));
-  f.button("复制补证建议");await f.settle(request,null);
-  assert.deepEqual(writes,["保存的指导与提醒"]);assert.ok(f.html().includes("已复制补证建议"));assert.equal(f.calls.length,0);
+  copy.button("复制补证建议");await copy.settle(request,null);
+  assert.deepEqual(writes,["保存的指导与提醒"]);assert.ok(copy.html().includes("已复制补证建议"));assert.equal(f.calls.length+copy.calls.length,0);
   globalThis.navigator.clipboard.writeText=async()=>{throw Error("denied");};
-  f.button("复制补证建议");await Promise.resolve();await Promise.resolve();f.commit();
-  assert.ok(f.html().includes("可手动复制的补证建议"));assert.equal(nodes(f.tree()).find(node=>node.type==="textarea").props.readOnly,true);
- }finally{f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
+  copy.button("复制补证建议");await Promise.resolve();await Promise.resolve();copy.commit();
+  assert.ok(copy.html().includes("可手动复制的补证建议"));assert.equal(nodes(copy.tree()).find(node=>node.type==="textarea").props.readOnly,true);
+ }finally{copy.cleanup();f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
 });
 
 test("late copy receipts cannot label a different identity/requirement's guidance as copied",async()=>{
  const prior=Object.getOwnPropertyDescriptor(globalThis,"navigator"),request=deferred();
  Object.defineProperty(globalThis,"navigator",{configurable:true,value:{clipboard:{writeText:()=>request.promise}}});
- const f=fixture("ReportFollowUpActions",{reportId,requirementId,text:"原指导"});
+ const f=fixture("ReportFollowUpActions",{scope:`${reportId}:${requirementId}`,text:"两项建议原文相同"},{},"CopySupplementAdvice");
  try{
-  f.button("复制补证建议");f.props({requirementId:reportId,text:"新指导"});
+  f.button("复制补证建议");f.props({scope:`${reportId}:${reportId}`});
   await f.settle(request,null);assert.ok(!f.html().includes("已复制补证建议"));
  }finally{f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
 });
