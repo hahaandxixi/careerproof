@@ -251,10 +251,6 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       </header>
       {result.aiFallbackUsed ? <section className="panel space-y-3 text-sm text-amber-800"><p>{careerPlanFailureMessage(result.aiStatus)}</p>{!result.planId && <p className="text-xs">本次未保存职业规划，上次保存的规划保持不变。</p>}{!!result.aiValidationIssues?.length && <details className="space-y-2"><summary className="cursor-pointer font-medium">查看原因</summary>{result.aiValidationIssues.map((issue, index) => <div key={index} className="space-y-2 rounded-lg border border-amber-200 p-3"><p>{issue.reason}</p><blockquote className="border-l-2 border-amber-300 pl-3">被拒绝的表述：{issue.rejectedClaim}</blockquote><div>{issue.citationIds.map(id => <a key={id} className="mr-3 underline" href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)}>核对引用 {id}</a>)}</div><p className="text-xs">{validationHint(result.aiStatus)}</p></div>)}</details>}</section> : null}
       {!result.recommendations.length && <div className="panel text-sm text-slate-500">当前没有可推荐的已发布岗位。</div>}
-      {!result.aiFallbackUsed && result.aiPlan?.comparison && <section className="career-saved-advice" aria-label="岗位方向比较">
-        <h3 className="text-lg font-semibold">岗位方向比较</h3>
-        <div className="max-w-[90ch]"><CareerReason text={careerComparisonText(result.aiPlan.comparison, result.recommendations)} comparison /></div>
-      </section>}
       {tiers.map(({priority, jobs}) => <section className="career-tier" data-priority={priority ?? undefined} key={priority ?? "other"}>
         <h3 className="text-base font-semibold">{priority ? PRIORITY_LABELS[priority] : "推荐岗位"}</h3>
         <div className="career-tier-jobs">
@@ -278,6 +274,11 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
         </div>
       </section>)}
       {result.recommendations.length > careerPlanRecommendations(result, false).length && <button type="button" className="rounded-xl border border-slate-200 px-4 py-3 text-sm text-indigo-700" aria-expanded={expandedCandidates} onClick={() => setExpandedCandidates(value => !value)}>{expandedCandidates ? "收起其他候选，只看重点岗位" : `展开其余 ${result.recommendations.length - visibleRecommendations.length} 个规则候选`}</button>}
+
+      {!result.aiFallbackUsed && result.aiPlan?.comparison && <section className="career-saved-advice" aria-label="岗位方向比较">
+        <h3 className="text-lg font-semibold">岗位方向比较</h3>
+        <div className="max-w-[90ch]"><CareerReason text={careerComparisonText(result.aiPlan.comparison, result.recommendations)} comparison /></div>
+      </section>}
 
       {!!result.previousPlanId && visibleChanges.length > 0 && <details className="panel"><summary className="cursor-pointer font-semibold">查看这些岗位与上次规划的变化</summary><p className="mt-1 text-xs text-slate-500">分别核对材料版本、岗位基本信息、岗位要求、可定位证据和规则档位；同时变化不证明因果或能力提升。</p><ul className="mt-3 space-y-2">{visibleChanges.map(change => <li key={change.jobId} className="rounded-lg bg-slate-50 p-3 text-sm"><strong>{change.jobTitle}</strong>{change.status === "not_in_current" && <span className="ml-2 rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800">本轮列表未见</span>}<p className="mt-1 text-slate-600">{change.detail}</p>{change.jobDetailsChanged && <p className="mt-1 text-amber-800">岗位基本信息已变，请与材料变化分开核对。</p>}{change.requirementsChanged && <p className="mt-1 text-amber-800">岗位要求已变，本次档位不能归因于补证。</p>}{change.evidenceIds.map(id => <a key={id} href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)} className="mr-3 text-xs text-indigo-600 underline">查看新证据 {id}</a>)}</li>)}</ul></details>}
     </section>}
