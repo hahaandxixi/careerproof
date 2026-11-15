@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { comparisonRows, comparisonCounts, filterComparisonRows, groupComparisonSources, sourceRecordKind } from "../src/lib/report-comparison-display.ts";
 import * as logic from "../src/lib/report-comparison-display.ts";
+import * as evidenceDisplay from "../src/lib/evidence-display.ts";
 import * as sourceLabels from "../src/lib/source-label.ts";
 import * as pairs from "../src/lib/report-pair.ts";
 
@@ -75,6 +76,7 @@ function render(f, filter="changed", citationGroup) {
     react:{useState:initial=>{const call=stateCall++;return[call===0?filter:call===2&&citationGroup?citationGroup:initial,()=>{}];}},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
     "@/lib/report-navigation":navigation,"@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,
+    "@/lib/evidence-display":evidenceDisplay,
   });
   return renderToStaticMarkup(React.createElement(View,f));
 }
@@ -191,6 +193,24 @@ test("review note updates and actual review transitions have distinct labels", (
   assert.doesNotMatch(render(f), /复核变化|复核状态：|已重新查看材料/);
   f.current.items[0].confirmationStatus = "accepted";
   assert.match(render(f), /复核状态：未复核 → 已确认/);
+});
+
+test("an evidence-level-only change shows both saved level names without a changed verdict or citation", () => {
+  const f = fixture({ changes: ["level"] });
+  const item = f.value.items[0];
+  item.targetLevel = 3;
+  const result = rows(f);
+  assert.equal(result[0].levelChanged, true);
+  assert.deepEqual(comparisonCounts(result), { changed: 1, all: 1, evidence: 0, status: 0, needs: 0, unchanged: 0 });
+  const html = render(f);
+  assert.match(html, /证据等级变化/);
+  assert.match(html, /证据等级：局部操作 → 任务实现/);
+  assert.doesNotMatch(html, /其他变化|>判断变化<|>引用变化</);
+  item.baseLevel = null;
+  assert.match(render(f), /证据等级：未评级 → 任务实现/);
+  f.base.items = [];
+  item.status = "added";
+  assert.doesNotMatch(render(f), /证据等级变化|证据等级：/);
 });
 
 test("inline complete snippet without extra source details has no redundant disclosure", () => {

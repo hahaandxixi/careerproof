@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { MatchReport, ReportComparison } from "@/lib/api/domain";
+import { evidenceLevelName } from "@/lib/evidence-display";
 import { comparisonCounts, comparisonRows, comparisonSourceKey, filterComparisonRows, groupComparisonSources, sourceRecordKind, type ComparisonFilter, type ComparisonRow } from "@/lib/report-comparison-display";
 import { compactSourceLabel, sourceLocationId, sourceRelativePath } from "@/lib/source-label";
 import { reportVersionHref } from "@/lib/report-navigation";
@@ -91,7 +92,10 @@ function RequirementChange({ row, value, origin }: { row: ComparisonRow; value: 
   return <div className="min-w-0 space-y-3">
     <h3 className="break-words font-semibold text-slate-900">{item.title}</h3>
     <StatusFlow row={row} />
-    {!!row.deltas.length && <ul className="space-y-1 text-sm text-slate-600">{row.deltas.map(delta => <li className="break-words" key={delta.label}>{delta.label}：{delta.before} → {delta.after}</li>)}</ul>}
+    {(row.levelChanged || row.deltas.length > 0) && <ul className="space-y-1 text-sm text-slate-600">
+      {row.deltas.map(delta => <li className="break-words" key={delta.label}>{delta.label}：{delta.before} → {delta.after}</li>)}
+      {row.levelChanged && <li>证据等级：{item.baseLevel == null ? "未评级" : evidenceLevelName(item.baseLevel)} → {item.targetLevel == null ? "未评级" : evidenceLevelName(item.targetLevel)}</li>}
+    </ul>}
     <CitationChanges row={row} value={value} origin={origin} />
   </div>;
 }

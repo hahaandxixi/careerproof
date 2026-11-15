@@ -39,7 +39,7 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
     const retained = groupComparisonSources((now?.evidenceList ?? []).filter(e => !addedKeys.has(comparisonSourceKey(e))));
     const evidenceChanged = item.changes.includes("evidence") || !!(added.length || removed.length);
     const statusChanged = !!old && !!now && old.verdict !== now.verdict;
-    const levelChanged = item.baseLevel !== item.targetLevel;
+    const levelChanged = !!old && !!now && item.baseLevel !== item.targetLevel;
     const deltas: { label: string; before: string | number; after: string | number }[] = [];
     let reviewNoteChanged = false;
     if (old && now) {
