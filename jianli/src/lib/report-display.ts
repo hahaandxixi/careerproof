@@ -66,3 +66,7 @@ export function reportSummaryText(summary: string): string {
     .replace("分数为材料支持度，不是能力或录用结论。", "评级描述材料证据，不是能力或录用结论。")
     .replace("暂不支持评估且不计分", "暂不支持评估且不评级");
 }
+
+export function isRuleCountSummary(summary: string): boolean {
+  return /^共\d+项岗位要求，其中\d+项有项目证据支撑，\d+项仅有简历声明，\d+项当前无法确认，\d+项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。$/.test(summary);
+}

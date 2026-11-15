@@ -1,10 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  isRuleCountSummary,
   reportAiRatedCount,
   reportModeLabel,
   reportSummaryText,
 } from "../src/lib/report-display.ts";
+
+test("only the complete generated count summary is redundant in a fixed report", () => {
+  const counts = "共3项岗位要求，其中1项有项目证据支撑，2项仅有简历声明，0项当前无法确认，0项暂不支持评估且不计分。分数为材料支持度，不是能力或录用结论。";
+  assert.equal(isRuleCountSummary(counts), true);
+  assert.equal(isRuleCountSummary(counts + "本次来源缺少第 19 行后文。"), false);
+});
 
 const item = source => ({ evidenceLevelSource: source });
 const report = (analysisMode, aiFallbackUsed, items) => ({ analysisMode, aiFallbackUsed, items });

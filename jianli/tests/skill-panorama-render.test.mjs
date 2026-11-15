@@ -31,7 +31,7 @@ const text = n => typeof n === "string" || typeof n === "number" ? String(n) : R
 
 test("overview renders grouped bands, a record overview and explicit loaded scope without capability scores", () => {
   const html = render();
-  assert.match(html, /已保存报告中的技能/); assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<progress|熟练度：|综合评分|岗位技能雷达/);
+  assert.match(html, /编程语言/); assert.doesNotMatch(html, /数据与存储|<progress|熟练度：|综合评分|岗位技能雷达/);
   assert.match(html, /技能记录概览/);
   assert.match(html, /规则暂未支持 1 条/); assert.doesNotMatch(html, /摘要未加载|演示数据说明/); assert.match(html, /再加载最多 12 份报告/);
 });

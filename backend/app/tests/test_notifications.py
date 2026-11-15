@@ -34,7 +34,12 @@ async def test_real_events_dedup_pagination_read_scope_and_revocation(
         aid = response.json()["data"]["id"]
         assert (await listing(student))["unreadCount"] == 1
         enterprise_notice = (await listing(hr))["items"][0]
-        assert enterprise_notice["title"] == "收到一份新的授权投递"
+        assert enterprise_notice["title"] == "新投递"
+        assert tuple(enterprise_notice[key] for key in ("jobId", "jobTitle", "companyName")) == (
+            job["id"],
+            job["title"],
+            job["companyName"],
+        )
         assert set(enterprise_notice) == {
             "id",
             "type",
@@ -42,6 +47,9 @@ async def test_real_events_dedup_pagination_read_scope_and_revocation(
             "createdAt",
             "readAt",
             "accessible",
+            "jobId",
+            "jobTitle",
+            "companyName",
         }
         assert (await listing(other))["total"] == 0
         nid = enterprise_notice["id"]
@@ -85,6 +93,8 @@ async def test_real_events_dedup_pagination_read_scope_and_revocation(
         enterprise = await listing(hr)
         assert enterprise["total"] == 2
         assert all(not row["accessible"] for row in enterprise["items"])
+        context_fields = {"jobId", "jobTitle", "companyName"}
+        assert all(not context_fields & row.keys() for row in enterprise["items"])
         assert all("撤回或当前" in row["title"] for row in enterprise["items"])
         assert (await hr.get(f"/api/v1/notifications/{nid}/target")).status_code == 404
         assert (await hr.post(f"/api/v1/notifications/{nid}/read")).status_code == 200
@@ -139,7 +149,9 @@ async def test_membership_loss_rechecks_old_notice_without_leaking_details(
             membership = await session.scalar(select(EnterpriseMembership))
             membership.is_active = False
             await session.commit()
-        assert not (await listing(hr))["items"][0]["accessible"]
+        lost_notice = (await listing(hr))["items"][0]
+        assert not lost_notice["accessible"]
+        assert not {"jobId", "jobTitle", "companyName"} & lost_notice.keys()
         assert (await hr.get(f"/api/v1/notifications/{nid}/target")).status_code == 404
     finally:
         await close(hr, student, other)

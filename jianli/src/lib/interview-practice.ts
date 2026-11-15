@@ -2,6 +2,14 @@
 
 export type PracticeIssue = NonNullable<PracticeSummary["issueTrail"]>[number];
 
+export function practiceKnowledgeCaption(source: Pick<InterviewSession["knowledge"][number], "sourceLabel" | "sourceVersion" | "section">) {
+  const version = source.sourceVersion.trim();
+  const sections = source.section.split("·").map(part => part.trim()).filter(Boolean);
+  const label = source.sourceLabel.trim();
+  const repeatedLabel = version && sections.length && label === `${version} 文档：${sections.at(-1)}`;
+  return [...new Set([repeatedLabel ? "" : label, version, ...sections].filter(Boolean))].join(" · ");
+}
+
 export function issueOriginIndex(issue: PracticeIssue) {
   return Number(issue.origin.issueId.split(":")[0]);
 }

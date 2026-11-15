@@ -450,7 +450,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
           <h1 className="page-title">我的材料</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">浏览材料</Link>
+          <Link href="/demo" className="shrink-0 whitespace-nowrap text-sm font-medium text-[#1d4a40] underline-offset-4 hover:underline">材料库</Link>
           {hasCompletedMaterial && <Link href="/jobs" className="btn-secondary">选择岗位进行对照</Link>}
           <button type="button" className="btn" disabled={projectBusy || resumeBusy || !!deletingProjectId} onClick={() => openUpload(null)}>添加材料</button>
         </div>
@@ -458,7 +458,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
 
 
       {historyLoaded && !uploads.length && !projects.length && !historyError &&
-        <Link href="/demo" className="block rounded-xl bg-[#e7efe9] p-4 text-sm text-[#1d4a40]">浏览材料 →</Link>}
+        <Link href="/demo" className="block rounded-xl bg-[#e7efe9] p-4 text-sm text-[#1d4a40]">材料库 →</Link>}
       {notice && <p role="status" className="rounded-xl bg-[#e7efe9] p-3 text-sm text-[#173c34]">{notice}</p>}
 
       <div className="material-review-layout">

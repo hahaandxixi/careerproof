@@ -38,3 +38,15 @@ export function reportVersionHref(id: string, origin?: string | null, hash = "")
   const query = reportListQuery(reportOrigin(origin)).toString();
   return `/reports/${id}${query ? "?" + new URLSearchParams({ from: query }) : ""}${hash}`;
 }
+
+export function reportGroupEntries(rows: readonly { id: string; jobId: string; candidateId: string }[]) {
+  const groups = new Set<string>();
+  const entries = new Set<string>();
+  for (const report of rows) {
+    const key = JSON.stringify([report.jobId, report.candidateId]);
+    if (groups.has(key)) continue;
+    groups.add(key);
+    entries.add(report.id);
+  }
+  return entries;
+}

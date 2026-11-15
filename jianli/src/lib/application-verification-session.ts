@@ -1,4 +1,13 @@
 import type { ApplicationVerificationTask, MatchReport, ReportItem } from "./api/domain";
+import { verdictLabel } from "./verdict-display.js";
+
+export function verificationReadingText(text: string): string {
+  return text
+    .replace(/(标为|判定为|状态为)\s*(supported|partial|claimed_only|gap|unsupported|not_evaluated|verified)\b/g,
+      (_match, prefix: string, verdict: string) => `${prefix}“${verdictLabel(verdict)}”`)
+    .replace(/([（(])(portfolio|reference)([，,])/g,
+      (_match, open: string, kind: string, comma: string) => `${open}${kind === "portfolio" ? "本人材料" : "第三方参考"}${comma}`);
+}
 
 export interface ApplicationVerificationState {
   task: ApplicationVerificationTask | null;

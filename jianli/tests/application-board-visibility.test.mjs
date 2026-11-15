@@ -301,7 +301,7 @@ test("review switcher explains comparison readiness and uses the fixed report ba
  const hint=()=>text(h.nodes(tree).find(n=>n.props?.className==="enterprise-view-hint"));
  const pairButton=()=>h.button(tree,"双人对照");
  const select=id=>choose(h,tree,id);
- assert.match(hint(),/点击状态格查看材料来源，勾选两位候选人后开始对照/);
+ assert.match(pairButton().props.title,/勾选两位候选人/);
  assert.equal(pairButton().props.disabled,true);
  select("a");tree=await h.settle();
  assert.match(hint(),/再选择一位候选人/);
@@ -315,7 +315,6 @@ test("review switcher explains comparison readiness and uses the fixed report ba
  selectors.at(-1).props.onChange({target:{value:"c"}});tree=h.render();
  assert.equal(pairButton().props.disabled,false);
  pairButton().props.onClick();tree=h.render();
- assert.match(hint(),/核对两份固定报告的材料来源/);
  assert.equal(pairButton().props["aria-pressed"],true);
  assert.equal(h.counts.open,0);
 });

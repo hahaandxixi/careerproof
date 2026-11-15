@@ -17,11 +17,11 @@ export default function HomePage() {
       <div className="home-hero-copy">
         <p className="workspace-meta">CareerProof · 材料证据工作台</p>
         <h1><span>把岗位要求，</span><span className="home-hero-accent">落到可核对的材料上。</span></h1>
-        <p className="reading-copy">先看岗位要求，再看到简历和项目里的具体来源、缺口与版本。报告由你确认后才投递，AI 状态与已投递快照如实保留。</p>
+        <p className="reading-copy">用简历和项目逐条核对岗位要求，找到对应证据和需要补充的材料。</p>
         <div className="home-hero-actions">
           <a href="#technical-jobs" className="btn">从岗位开始</a>
           <Link href="/portfolio" className={routeEntry}>整理我的材料 <span aria-hidden="true">→</span></Link>
-          <Link href="/demo" className={routeEntry}>浏览材料 <span aria-hidden="true">→</span></Link>
+          <Link href="/demo" className={routeEntry}>材料库 <span aria-hidden="true">→</span></Link>
         </div>
         <ol className="home-entry-list" aria-label="从材料到报告">
           {entries.map(([number, title, description]) => <li key={number}>

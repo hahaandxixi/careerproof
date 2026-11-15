@@ -11,8 +11,8 @@ import cases from "@/app/demo/samples.json";
 const DEMO_NAMES = cases.map(item => item.projectName);
 const GROUPS = [
   { key: "personal", label: "我的其他项目与作品" },
-  { key: "demo", label: "示例项目" },
-  { key: "history", label: "历史验收材料 · 按名称归类" },
+  { key: "demo", label: "材料库项目" },
+  { key: "history", label: "历史项目" },
 ] as const;
 
 export default function ProjectVersionPicker({ projects, selectedIds, onChange, highlightedVersionId }: {
@@ -33,7 +33,9 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
       visibleProjects.push(...groupMaterialProjects([returned], "", true, DEMO_NAMES));
     }
   }
-  const latestAvailable = new Map(selectableProjects.map(project => [project.id, project.versions[0]?.id]));
+  const displayNames = new Map(selectableProjects.map(project => [project.id, displayMaterialTitle(project.name, project.versions[0]?.id)]));
+  const nameCounts = new Map<string, number>();
+  for (const name of displayNames.values()) nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1);
   const historyCount = selectableProjects.filter(project => projectDisplayCategory(project.name, DEMO_NAMES) === "history").length;
   const selected = selectableProjects.flatMap(project => project.versions
     .filter(version => selectedIds.includes(version.id)).map(version => ({ ...version, name: displayMaterialTitle(project.name, version.id) })));
@@ -59,9 +61,8 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
         </label>
         {historyCount > 0 && <label className="flex items-start gap-2 text-xs leading-6 text-slate-600">
           <input className="mt-1 shrink-0" type="checkbox" checked={includeHistory} onChange={event => setIncludeHistory(event.target.checked)} />
-          <span>显示历史验收材料（{historyCount} 个项目）；搜索时也会查找这些材料。</span>
+          <span>显示历史项目（{historyCount} 个）</span>
         </label>}
-        <p className="text-xs text-slate-500">展开项目查看已完成解析的版本。可选不同版本做对照；收起或搜索不会取消已选项。</p>
         {selectedIds.length >= 10 && <p role="status" className="text-xs text-amber-700">已选满 10 项，请先移除一项再添加。</p>}
         <div className="max-h-72 space-y-2 overflow-y-auto">
           {GROUPS.map(group => {
@@ -76,9 +77,9 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
             <div className="space-y-2 px-3 pb-3">
               {project.versions.map(version => <label key={version.id} className={`material-version flex items-start gap-2 rounded-lg border p-2 text-sm ${version.id === highlightedVersionId ? "border-indigo-400 bg-indigo-50" : "border-transparent bg-white"}`}>
                 <input className="mt-1 shrink-0" type="checkbox" checked={selectedIds.includes(version.id)} disabled={!selectedIds.includes(version.id) && selectedIds.length >= 10} onChange={event => onChange(toggleMaterialVersion(selectedIds, version.id, event.target.checked))} />
-                <span className="min-w-0 break-words">第 {version.versionNumber} 版 · {version.originalFilename} · {version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}
-                  <span className="mt-1 block text-xs text-slate-600">已解析{materialVersionTime(version.createdAt) && <> · <time dateTime={version.createdAt}>上传于 {materialVersionTime(version.createdAt)}</time></>}</span>
-                  {version.id === latestAvailable.get(project.id) && <span className="ml-2 text-xs text-slate-600">最新可用版本</span>}
+                <span className="min-w-0 break-words">第 {version.versionNumber} 版
+                  {(nameCounts.get(displayNames.get(project.id) ?? project.name) ?? 0) > 1 && <span className="block text-xs text-slate-600">{[version.originalFilename, materialVersionTime(version.createdAt)].filter(Boolean).join(" · ")}</span>}
+                  {version.materialRole === "reference" && <span className="block text-xs text-slate-600">第三方参考，不计评级</span>}
                   {version.id === highlightedVersionId && <span className="mt-1 block text-xs font-medium text-indigo-800">刚上传 · {selectedIds.includes(version.id) ? "已加入当前选择，保存后生效" : "尚未选择"}</span>}
                 </span>
               </label>)}
@@ -86,7 +87,7 @@ export default function ProjectVersionPicker({ projects, selectedIds, onChange, 
           </details>)}
             </section> : null;
           })}
-          {!visibleProjects.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到已解析的匹配项目。可以更换关键词；已选材料仍保留。</p>}
+          {!visibleProjects.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到匹配的项目，请更换关键词。</p>}
         </div>
       </div>
     </details> : <p className="text-sm text-slate-500">暂无完成解析的项目或作品，可以先<Link className="text-indigo-600 underline" href="/portfolio">上传材料</Link>。</p>}
