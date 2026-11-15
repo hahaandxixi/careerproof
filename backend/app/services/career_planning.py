@@ -551,10 +551,14 @@ PLAN_PROMPT = (
     "不得说已标记变化的材料版本、岗位基本信息或岗位要求‘没有变化’。"
     "status为not_in_current只表示上轮重点岗位未进入本轮候选列表；"
     "不能推断岗位下架、材料退步或本人能力下降。"
-    "面向学生用自然语言，不输出JSON键名、英文内部字段名或系统实现细节。"
-    "输出简洁JSON：{comparison:string,focusJobId:string,advice:[{jobId:string,reason:string,"
-    "keyGap:string,nextTask:string,taskPlan:{deliverable:string,steps:string[],"
-    "acceptanceChecks:string[]},citationIds:string[]}]}。advice须恰好覆盖给出的每个岗位。"
+    "只返回一个完整的JSON对象，保留示例中的字段名和双引号，不加代码围栏或额外文字。"
+    "面向学生的正文使用自然语言，正文中不提内部字段名或系统实现细节。\n"
+    "JSON格式示例（示例值须替换，岗位编号和引用编号来自输入）：\n"
+    '{"comparison":"比较结论","focusJobId":"00000000-0000-0000-0000-000000000001",'
+    '"advice":[{"jobId":"00000000-0000-0000-0000-000000000001","reason":"当前依据",'
+    '"keyGap":"主要缺口","nextTask":"下一步","taskPlan":{"deliverable":"具体产物",'
+    '"steps":["执行步骤"],"acceptanceChecks":["可观察验收条件"]},"citationIds":[]}]}\n'
+    "advice须恰好覆盖给出的每个岗位。"
     "每项taskPlan必须给出一项具体产物、1-4个执行步骤、1-4个可观察验收条件，"
     "每条最多200字。验收条件写需要提供什么记录，不宣称已通过；与本岗位缺口直接相关。"
 )
@@ -640,15 +644,30 @@ async def create_career_plan(
                    "error_type": type(error).__name__ if error else "not_called"}
         if isinstance(error, httpx.HTTPStatusError):
             context["http_status"] = error.response.status_code
+        if isinstance(error, json.JSONDecodeError):
+            decode_error = error
+        else:
+            decode_error = error.__cause__ if error else None
+        if isinstance(decode_error, json.JSONDecodeError):
+            context["json_error_position"] = decode_error.pos
+            context["json_input_length"] = len(decode_error.doc)
+        finish_reason = provider.last_finish_reason if provider else None
+        context["finish_reason"] = (
+            finish_reason if finish_reason in {"stop", "length", "content_filter", "tool_calls"}
+            else "other" if finish_reason else "-"
+        )
         configured = (
             settings.ai_provider if settings.ai_provider in {"mock", "deepseek"} else "other"
         )
         logger.warning(
             "career_plan.ai_stage_failure stage=%s reason=%s error_type=%s "
-            "http_status=%s provider=%s external_ai_enabled=%s validation_code=%s",
+            "http_status=%s provider=%s external_ai_enabled=%s validation_code=%s "
+            "finish_reason=%s json_error_position=%s json_input_length=%s",
             stage, status, context["error_type"], context.get("http_status", "-"),
             configured, settings.ai_external_enabled,
-            error.category if isinstance(error, CareerPlanContractError) else "-", extra=context,
+            error.category if isinstance(error, CareerPlanContractError) else "-",
+            context["finish_reason"], context.get("json_error_position", "-"),
+            context.get("json_input_length", "-"), extra=context,
         )
 
     if shortlist:

@@ -11,7 +11,7 @@ import pytest
 from app.agents.provider import DeepSeekProvider
 from app.core.config import settings
 from app.models.analysis import AnalysisTask
-from app.schemas.analysis import CareerPlanRequest
+from app.schemas.analysis import CareerPlanAnalysis, CareerPlanRequest
 from app.services import career_planning
 from app.tests.test_career_change_attribution import JOB, OLD_VERSION, result
 
@@ -99,6 +99,7 @@ def answer():
     (429, "model_rate_limited", "model_request"),
     (503, "model_http_error", "model_request"),
     ("json", "model_json_invalid", "model_request"),
+    ("json-private-finish", "model_json_invalid", "model_request"),
     ("truncated", "model_output_truncated", "model_request"),
     ("truncated-schema", "model_output_truncated", "output_schema"),
     ("schema", "model_output_schema_invalid", "output_schema"),
@@ -114,7 +115,15 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
 
     async def handler(request):
         requests.append(request)
-        assert json.loads(request.content)["max_tokens"] == 1500, "no speculative budget increase"
+        wire = json.loads(request.content)
+        assert wire["max_tokens"] == 1500, "no speculative budget increase"
+        assert wire["response_format"] == {"type": "json_object"}
+        system = wire["messages"][0]["content"]
+        example_marker = "JSON格式示例（示例值须替换，岗位编号和引用编号来自输入）：\n"
+        assert "保留示例中的字段名" in system and example_marker in system
+        example_json = system.split(example_marker)[1].splitlines()[0]
+        example = CareerPlanAnalysis.model_validate_json(example_json)
+        assert example.advice[0].task_plan is not None
         if fault == "timeout":
             raise httpx.ReadTimeout("synthetic-private-material", request=request)
         if fault == "network":
@@ -128,12 +137,19 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         body = answer()
         if fault == "citation":
             body["advice"][0]["citationIds"] = ["cross-job-secret-citation"]
-        content = '{"comparison":"' if fault in {"json", "truncated"} else json.dumps(
-            [] if fault == "array" else
-            {} if fault in {"schema", "truncated-schema"} else body, ensure_ascii=False,
-        )
+        malformed = '{"comparison":"synthetic-private-material'
+        if fault in {"json", "json-private-finish", "truncated"}:
+            content = malformed
+        else:
+            content = json.dumps(
+                [] if fault == "array" else
+                {} if fault in {"schema", "truncated-schema"} else body, ensure_ascii=False,
+            )
+        finish_reason = "length" if fault in {"truncated", "truncated-schema"} else "stop"
+        if fault == "json-private-finish":
+            finish_reason = "synthetic-private-material"
         return httpx.Response(200, json={"choices": [{
-            "finish_reason": "length" if fault in {"truncated", "truncated-schema"} else "stop",
+            "finish_reason": finish_reason,
             "message": {"content": content},
         }], "usage": {"prompt_tokens": 20, "completion_tokens": 10}})
 
@@ -151,6 +167,10 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
     assert response.ai_status == expected
     assert response.plan_id and response.recommendations
     assert bool(response.ai_plan) == (fault == "valid")
+    task = next(row for row in session.rows if isinstance(row, AnalysisTask))
+    saved = task.input_snapshot["result"]
+    assert saved["aiStatus"] == expected
+    assert bool(saved["aiPlan"]) == (fault == "valid")
     records = [r for r in caplog.records if r.name == career_planning.__name__]
     if stage:
         assert len(records) == 1 and records[0].stage == stage
@@ -158,6 +178,13 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         safe = str(vars(records[0]))
         assert "synthetic-key" not in safe and "synthetic-private-material" not in safe
         assert "cross-job-secret-citation" not in safe
+        if fault in {"json", "json-private-finish", "truncated"}:
+            assert records[0].finish_reason == {
+                "json": "stop", "json-private-finish": "other", "truncated": "length",
+            }[fault]
+        if fault in {"json", "json-private-finish"}:
+            assert records[0].json_input_length == len('{"comparison":"synthetic-private-material')
+            assert records[0].json_error_position >= 0
     else:
         assert not records
 
