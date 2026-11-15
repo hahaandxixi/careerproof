@@ -1594,6 +1594,11 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .career-tier[data-priority="high"] .career-job-card { border-inline-start: 3px solid #376c59; }
 .career-tier .career-job-card > ul { grid-column: 1 / -1; }
 .career-reason { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.career-reason-details summary { cursor: pointer; list-style: none; }
+.career-reason-details summary::marker { content: ""; }
+.career-reason-details summary .career-reason { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.career-reason-details > p { margin-top: 5px; }
+.career-reason-details[open] summary .career-reason { display: none; }
 .career-skill-list { display: flex; flex-wrap: wrap; gap: 5px 8px; }
 .career-skill-list li { padding: 1px 7px; border-radius: 4px; background: #e9efe8; color: #36554a; font-size: 14px; }
 @media (max-width: 620px) { .career-tier .career-job-card { grid-template-columns: minmax(0, 1fr); } }
