@@ -6,6 +6,7 @@ import { effectiveReportStatus, reportStatusTone } from "@/lib/evidence-workspac
 import { validatedGrowthAdvice } from "@/lib/analysis-status";
 import { compactSourceLabel, sourceLocationId } from "@/lib/source-label";
 import { requirementConclusion, savedRequirementAction, type WorkspaceFilter } from "@/lib/report-workspace";
+import { readableSoleReportSource } from "@/lib/source-limits";
 import EvidenceLink from "./EvidenceLink";
 import ReportRequirementReader from "./ReportRequirementReader";
 
@@ -26,10 +27,10 @@ export function RequirementActionPanel({ report, item, explanationVisible = fals
   const gap = advice?.gap || item.evidenceLevelGap?.trim();
   const conclusion = actionable ? gap || action?.evidenceGap?.trim() || explanation : explanation;
   const adviceSources = new Set(action?.citationIds ?? []);
-  // The AI explanation already renders a locator for its cited sources; do not
-  // repeat the exact same file/range directly below it.
+  const openSource = sourcePanel ? readableSoleReportSource(report, item) : undefined;
   const inlineSources = new Set(explanationVisible ? item.aiCitationIds : []);
-  const citationSources = item.evidenceList.map((source, index) => ({ source, index })).filter(({ source }) => !source.citationId || !inlineSources.has(source.citationId));
+  const citationSources = item.evidenceList.map((source, index) => ({ source, index })).filter(({ source }) =>
+    source !== openSource && (!source.citationId || !inlineSources.has(source.citationId)));
   return <div className={`requirement-document ${supported ? "requirement-with-source" : ""} ${item.evidenceList.length ? "requirement-has-sources" : ""}`} aria-label={`${item.skill}的判断与来源`}>
     <div className="requirement-reading-copy min-w-0 space-y-4">
     {explanationPanel}
