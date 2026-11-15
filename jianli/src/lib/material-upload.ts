@@ -42,6 +42,11 @@ export function materialFileType(file: Pick<File, "name" | "type">): string {
   return file.type || `${extensionOf(file.name).toUpperCase() || "未知格式"}（浏览器未提供 MIME）`;
 }
 
+// Retire the original registration diagram from browse lists only.
+export function isListedMaterialProject(projectId: string) {
+  return projectId !== "568fe744-0286-4fa1-b7c0-3a6414737b8f";
+}
+
 export function latestMaterialVersions<T extends { kind: MaterialKind; resourceId: string; versionNumber: number }>(versions: readonly T[]): T[] {
   const latest = new Map<string, T>();
   for (const version of versions) {
