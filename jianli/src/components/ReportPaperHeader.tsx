@@ -3,11 +3,10 @@ import type { MatchReport } from "@/lib/api/domain";
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import { reportReadingStatus } from "@/lib/report-display";
 import Link from "next/link";
-import type { ReactNode } from "react";
 import ReportMaterialVersions from "./ReportMaterialVersions";
 
 /** Identity shared by all report sections; it must stay outside the hidden panels. */
-export default function ReportPaperHeader({ report, backHref = "/reports", versionTools }: { report: MatchReport; backHref?: string; versionTools?: ReactNode }) {
+export default function ReportPaperHeader({ report, backHref = "/reports" }: { report: MatchReport; backHref?: string }) {
   const status = reportReadingStatus(report);
   return <header className="report-paper-heading report-command-bar" aria-labelledby="report-title">
     <Link className="review-back" href={backHref}>← 我的报告</Link>
@@ -26,6 +25,5 @@ export default function ReportPaperHeader({ report, backHref = "/reports", versi
       </div>
       <ReportMaterialVersions materials={report.materials} />
     </div>
-    {versionTools}
   </header>;
 }

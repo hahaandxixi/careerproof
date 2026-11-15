@@ -387,7 +387,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             {!source.basisId && <p className={styles.empty}>这一轮未保存针对该问点的单独引用。</p>}
             <PracticeSources source={source} session={session} />
           </section>)}
-        </> : roundSources && <PracticeSources key={turn?.turnIndex ?? "before-question"} source={roundSources} session={session} showMaterials showTitle />}
+        </> : roundSources && <PracticeSources key={turn?.turnIndex ?? "before-question"} source={roundSources} session={session} showTitle />}
       </aside>}
 
     </div>
@@ -463,9 +463,9 @@ function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "gre
   </div>;
 }
 
-function PracticeSources({ source, session, showMaterials = false, showTitle = false }: {
+function PracticeSources({ source, session, showTitle = false }: {
   source: ReturnType<typeof practiceTurnSources> & { basisId?: string };
-  session: InterviewSession; showMaterials?: boolean; showTitle?: boolean;
+  session: InterviewSession; showTitle?: boolean;
 }) {
   const { kind, citations, knowledge } = source;
   const title = kind === "session" ? "练习资料" : kind === "feedback" ? "本轮点评依据" : kind === "first-related" ? "首问关联依据" : "本轮题目依据";
@@ -501,11 +501,5 @@ function PracticeSources({ source, session, showMaterials = false, showTitle = f
         </li>)}
       </ul>
     </section>}
-    {showMaterials && session.materials.length > 0 && <details className={styles.savedDetails}>
-      <summary>练习使用的固定版本</summary>
-      <ul className={styles.materials}>
-        {session.materials.map(material => <li key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</li>)}
-      </ul>
-    </details>}
   </div>;
 }
