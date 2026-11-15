@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  PRACTICE_DRAFT_PREFIX, canRetryFeedback, canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn,
-  feedbackStatusLabel, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
+  PRACTICE_DRAFT_PREFIX, activePracticeView, canRetryFeedback, canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn,
+  feedbackStatusLabel, practiceIssueSources, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "../src/lib/interview-practice.ts";
 
 test("issue-specific basis stays with its original and follow-up rounds", () => {
@@ -159,4 +159,27 @@ test("before the first question the confirmed scope can be reviewed from saved s
   assert.deepEqual(practiceTurnSources(selectedPracticeTurn(practice, null), practice), {
     kind: "session", citations: practice.evidence, knowledge: practice.knowledge,
   });
+});
+
+test("the default view follows the open answer until a completed summary is saved", () => {
+ const summary = {answeredTurns:2};
+ const turns = [turn(0,"feedback"),turn(1,"question","follow_up")];
+ assert.equal(activePracticeView(session({turns,summary}),null),1);
+ assert.equal(activePracticeView(session({turns,summary}),0),0);
+ assert.equal(activePracticeView(session({turns,summary}),"summary"),"summary");
+ assert.equal(activePracticeView(session({turns,status:"completed",summary}),null),"summary");
+ assert.equal(activePracticeView(session({turns,status:"completed",summary:{answeredTurns:0}}),null),1);
+ assert.equal(activePracticeView(session({turns,status:"completed"}),null),1);
+});
+
+test("one issue shows only its linked basis within each round and never borrows a question source", () => {
+ const conflict = basisId => ({answerQuote:"原话",reason:"说明",basisId});
+ const issue = {origin:{issueId:"0:inconsistent:0",conflict:conflict("file1")},turnIndex:1,conflict:conflict("topic2")};
+ const first = {...turn(0,"feedback"),feedback:{citations:[evidence("file1"),evidence("other")],knowledge:[]}};
+ const second = {...turn(1,"feedback","follow_up"),feedback:{citations:[evidence("file2")],knowledge:[{knowledgeId:"topic2"}]}};
+ const result=practiceIssueSources(issue,session({turns:[first,second]}));
+ assert.deepEqual(result.map(source=>[source.turnIndex,source.basisId,source.citations.map(item=>item.citationId),source.knowledge.map(item=>item.knowledgeId)]),[[0,"file1",["file1"],[]],[1,"topic2",[],["topic2"]]]);
+ const [origin,followUp]=practiceIssueSources({...issue,answerQuote:"补答"},session({turns:[first,{...second,feedback:null,citations:[evidence("file1")]}]}));
+ assert.equal(origin.basisId,"file1");
+ assert.deepEqual(followUp,{turnIndex:1,basisId:undefined,kind:"feedback",citations:[],knowledge:[]});
 });

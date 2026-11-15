@@ -1,8 +1,35 @@
 ﻿import type { InterviewSession, PracticeGeneration, PracticeTurn, PracticeSummary } from "./api/domain.ts";
 
-export function issueBasisId(issue: NonNullable<PracticeSummary["issueTrail"]>[number], turnIndex: number) {
-  const originIndex = Number(issue.origin.issueId.split(":")[0]);
-  return turnIndex === originIndex ? issue.origin.conflict?.basisId : issue.answerQuote ? undefined : issue.conflict?.basisId;
+export type PracticeIssue = NonNullable<PracticeSummary["issueTrail"]>[number];
+
+export function issueOriginIndex(issue: PracticeIssue) {
+  return Number(issue.origin.issueId.split(":")[0]);
+}
+
+export function issueBasisId(issue: PracticeIssue, turnIndex: number) {
+  return turnIndex === issueOriginIndex(issue) ? issue.origin.conflict?.basisId : issue.answerQuote ? undefined : issue.conflict?.basisId;
+}
+
+export function activePracticeView(session: InterviewSession, selected: "summary" | number | null) {
+  if (selected === "summary" && session.summary) return selected;
+  if (typeof selected === "number" && session.turns.some(turn => turn.turnIndex === selected)) return selected;
+  if (session.status === "completed" && session.summary && session.summary.answeredTurns > 0) return "summary";
+  return selectedPracticeTurn(session, null)?.turnIndex ?? null;
+}
+
+export function practiceIssueSources(issue: PracticeIssue, session: InterviewSession) {
+  const origin = issueOriginIndex(issue);
+  return [...new Set([origin, issue.turnIndex ?? origin])].map(turnIndex => {
+    const turn = session.turns.find(entry => entry.turnIndex === turnIndex);
+    const basisId = issueBasisId(issue, turnIndex);
+    const citations = turn?.feedback?.citations ?? [];
+    const knowledge = turn?.feedback?.knowledge ?? [];
+    return {
+      turnIndex, basisId, kind: "feedback" as const,
+      citations: basisId ? citations.filter(item => item.citationId === basisId) : citations,
+      knowledge: basisId ? knowledge.filter(item => item.knowledgeId === basisId) : knowledge,
+    };
+  });
 }
 
 export const PRACTICE_DRAFT_PREFIX = "careerproof.interview.draft";

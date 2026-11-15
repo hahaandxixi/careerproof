@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, ApiError, errorMessage } from "@/lib/api/client";
-import type { InterviewSession, PracticeTurn } from "@/lib/api/domain";
+import type { InterviewSession, PracticeSummary, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn,
-  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
+  activePracticeView, canSubmit, consentItems, draftKey, issueOriginIndex, newClientToken, openTurn, practiceIssueSources, practiceStatusLabel, practiceTurnSources,
+  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
@@ -46,8 +46,8 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState<"start" | "restart" | number | null>(null);
   const [feedbackReadTurn, setFeedbackReadTurn] = useState<number | null>(null);
-  const [selectedTurnIndex, setSelectedTurnIndex] = useState<number | null>(null);
-  const [basisSelection, setBasisSelection] = useState<{ issueId: string; turnIndex: number; basisId?: string } | null>(null);
+  const [selectedView, setSelectedView] = useState<"summary" | number | null>(null);
+  const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
   const draftKeyRef = useRef("");
   const active = useRef(false);
 
@@ -221,8 +221,14 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
 
   const reportHref = `/reports/${session.reportId}#requirement-${session.requirementId}`;
   const jobTitle = displayJobTitle(session.jobTitle, session.jobId);
-  const turn = selectedPracticeTurn(session, selectedTurnIndex);
-  const summaryNextStep = visibleSummaryNextStep(session.summary, turn);
+  const view = activePracticeView(session, selectedView);
+  const turn = session.turns.find(item => item.turnIndex === view) ?? null;
+  const selectedIssue = view === "summary" ? session.summary?.issueTrail?.find(issue => issue.issueId === selectedIssueId) : undefined;
+  const roundSources = view === "summary" ? null : practiceTurnSources(turn, session);
+  const issueSources = selectedIssue ? practiceIssueSources(selectedIssue, session) : [];
+  const hasCode = (roundSources?.citations ?? []).some(item => item.snippet.trim())
+    || issueSources.some(source => source.citations.some(item => item.snippet.trim()));
+  const basisVisible = !!selectedIssue || !!(roundSources?.citations.length || roundSources?.knowledge.length || (turn && session.materials.length));
   const isBusy = !!turn && busy === turn.turnIndex;
   const busyIdle = busy === null;
   const knowledgeOutdated = Boolean(session.knowledgeOutdated);
@@ -238,17 +244,18 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         <span>{jobTitle ? `${jobTitle} · 本项岗位要求` : "本项岗位要求"}</span>
         <strong>{session.requirementTitle || session.skill}</strong>
       </div>
-      <Link className={styles.headLink} href={reportHref}>回到原报告定位这项要求 →</Link>
+      <Link className={styles.headLink} href={reportHref}>返回原报告要求 →</Link>
     </header>
 
-    {session.turns.length > 1 && <div className={styles.turnTrack} role="group" aria-label="练习轮次">
-      {session.turns.map(item => <button type="button" key={item.turnIndex} aria-pressed={item === turn}
-        onClick={() => { setBasisSelection(null); setSelectedTurnIndex(item === session.turns.at(-1) || item === current ? null : item.turnIndex); }}>
-        <strong>第 {item.turnIndex + 1} 轮</strong><span>{item.state === "question" ? "待回答" : feedbackStatusLabel(item)}</span>
+    {!!session.turns.length && <div className={styles.turnTrack} role="group" aria-label="练习视图">
+      {session.summary && <button type="button" aria-pressed={view === "summary"} onClick={() => setSelectedView("summary")}>练习小结</button>}
+      {session.turns.map(item => <button type="button" key={item.turnIndex} aria-pressed={view === item.turnIndex}
+        onClick={() => setSelectedView(item === current ? null : item.turnIndex)}>
+        第 {item.turnIndex + 1} 轮
       </button>)}
     </div>}
 
-    <div className={styles.layout}>
+    <div className={styles.layout} data-code={hasCode}>
       <div className={styles.main}>
         {progressError && <ErrorNotice message={progressError} retry={() => void load()} />}
         {actionError && <ErrorNotice message={actionError} />}
@@ -358,82 +365,95 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             {!!turn.feedback.reviewSuggestion && <div className={styles.suggestion}><strong>改进建议：</strong>{turn.feedback.reviewSuggestion}</div>}
           </section>}
           {current && turn !== current && <div className={styles.actions}>
-            <button type="button" className="btn" onClick={() => { setBasisSelection(null); setSelectedTurnIndex(null); }}>继续回答第 {current.turnIndex + 1} 轮</button>
+            <button type="button" className="btn" onClick={() => { setSelectedView(null); }}>继续回答第 {current.turnIndex + 1} 轮</button>
           </div>}
         </article>}
 
-        {session.summary && <section className={styles.summary} aria-label="练习小结">
-          <details className={styles.summaryDetails}>
-            <summary>查看整场练习小结</summary>
-            <div>
-              <p className={styles.summaryNote}>{summaryLine(session.summary)}</p>
-              {session.summary.issueTrail ? <>
-                {session.summary.issueTrail.length ? <ul className={styles.issueTrail}>
-                  {session.summary.issueTrail.map(issue => {
-                    const originIndex = Number(issue.origin.issueId.split(":")[0]);
-                    const original = session.turns.find(turn => turn.turnIndex === originIndex);
-                    const followUp = session.turns.find(turn => turn.turnIndex === issue.turnIndex);
-                    const crossRound = !!followUp && followUp !== original;
-                    const state = issue.answerQuote ? "covered" : issue.kind;
-                    return <li key={issue.issueId}><details data-reading-tone={state === "covered" ? "green" : state === "inconsistent" ? "red" : "amber"} onToggle={event => { if (event.currentTarget.open) setBasisSelection({ issueId: issue.issueId, turnIndex: issue.turnIndex ?? originIndex, basisId: issueBasisId(issue, issue.turnIndex ?? originIndex) }); }}>
-                      <summary><strong>{issue.origin.point || issue.origin.text}</strong>
-                        <span className={styles.issueRoute}>第 {originIndex + 1} 轮{issue.origin.issueId.includes(":inconsistent:") ? "需修正" : "缺口"}{issue.turnIndex != null && issue.turnIndex !== originIndex &&
-                          ` → 第 ${issue.turnIndex + 1} 轮${issue.answerQuote ? "补答" : "仍待核对"}`}</span>
-                        <span className={styles.issueStatus} data-kind={state} data-resolved={!!issue.answerQuote}>{issue.answerQuote ? "✓ 已修正" : issue.kind === "inconsistent" ? "! 需修正" : "○ 仍待补"}</span>
-                      </summary>
-                      <div className={styles.issueDetails}>
-                        {(issue.origin.questionQuote || original?.question) && <IssueReading tone="slate" label={`第 ${originIndex + 1} 轮题目`}><blockquote>{issue.origin.questionQuote || original?.question}</blockquote></IssueReading>}
-                        {crossRound && <>
-                          {issue.origin.conflict && <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮回答原话`}><blockquote>{issue.origin.conflict.answerQuote}</blockquote></IssueReading>}
-                          <IssueReading tone="amber" label={`第 ${originIndex + 1} 轮原点评`}><p>{issue.origin.text}</p></IssueReading>
-                          {(issue.questionQuote || followUp.question) && <IssueReading tone="slate" label={`第 ${followUp.turnIndex + 1} 轮题目`}><blockquote>{issue.questionQuote || followUp.question}</blockquote></IssueReading>}
-                        </>}
-                        {issue.answerQuote ? <IssueReading tone="green" label="补答原话"><blockquote>{issue.answerQuote}</blockquote></IssueReading> : <>
-                          {(issue.conflict?.answerQuote || (crossRound && followUp.answerText)) && <IssueReading tone={issue.conflict?.answerQuote ? "red" : "blue"} label={`第 ${(issue.turnIndex ?? originIndex) + 1} 轮回答原话`}><blockquote>{issue.conflict?.answerQuote || followUp?.answerText}</blockquote></IssueReading>}
-                          <IssueReading tone={state === "inconsistent" ? "red" : "amber"} label={`第 ${(issue.turnIndex ?? originIndex) + 1} 轮点评`}><p>{issue.text}</p></IssueReading>
-                        </>}
-                      </div>
-                    </details></li>;
-                  })}
-                </ul> : <p className={styles.empty}>本次点评没有记录待补问点。</p>}
-                {!!session.turns[0]?.feedback?.covered.length && <details>
-                  <summary>首轮已讲清 · {session.turns[0].feedback.covered.length} 项</summary>
-                  <ul>{session.turns[0].feedback.covered.map(line => <li key={line}>{line}</li>)}</ul>
-                </details>}
-              </> : <>
-              <div className={styles.summaryGrid}>
-                <section><h3>已讲清</h3>{session.summary.covered.length ? <ul>{session.summary.covered.map((line, index) => <li key={index}>{line}</li>)}</ul> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
-                <section><h3>仍需补齐</h3>{session.summary.remaining.length ? <SummaryIssues lines={session.summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
-              </div>
-              {!!session.summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={session.summary.inconsistent} visibleCount={3} /></section>}
-              {!!session.summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
-                {session.summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
-              </ul></section>}
-              </>}
-            </div>
-          </details>
-          {summaryNextStep && <p className={styles.nextStep}><strong>下一步：</strong>{summaryNextStep}</p>}
-          <div className={styles.actions}>
-            {!knowledgeOutdated && <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>{busy === "restart" ? "正在创建新练习…" : "再练一次"}</button>}
-            <Link className="btn-secondary" href={reportHref}>回到报告这项要求</Link>
-            <Link className="btn-quiet" href="/reports">查看我的报告</Link>
-          </div>
-        </section>}
+        {view === "summary" && session.summary && <PracticeSummaryReview summary={session.summary}
+          turns={session.turns} selectedIssueId={selectedIssueId} onSelectIssue={setSelectedIssueId} />}
+
+        {view === "summary" && !knowledgeOutdated && <div className={styles.actions}>
+          <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>
+            {busy === "restart" ? "正在创建新练习…" : "再练一次"}
+          </button>
+        </div>}
       </div>
 
-      <div className={styles.basisDock}>{basisSelection && session.summary?.issueTrail?.some(issue => issue.issueId === basisSelection.issueId) ? (() => {
-        const issue = session.summary!.issueTrail!.find(entry => entry.issueId === basisSelection.issueId)!;
-        const originIndex = Number(issue.origin.issueId.split(":")[0]);
-        const indices = [...new Set([originIndex, issue.turnIndex].filter((index): index is number => index != null))];
-        const basisTurn = session.turns.find(entry => entry.turnIndex === basisSelection.turnIndex);
-        return <div><p className="text-sm font-semibold">{issue.origin.point || issue.origin.text} · 点评依据</p>
-          <div className="flex gap-2">{indices.map(index => <button key={index} type="button" className="btn-secondary btn-compact" aria-pressed={basisSelection.turnIndex === index} onClick={() => setBasisSelection({ issueId: issue.issueId, turnIndex: index, basisId: issueBasisId(issue, index) })}>第 {index + 1} 轮</button>)}</div>
-          {!basisSelection.basisId && <p className="text-sm">此问点未保存专属依据，以下展示该轮点评的依据。</p>}
-          {basisTurn?.feedback ? <PracticeSources key={`${issue.issueId}:${basisSelection.turnIndex}`} turn={basisTurn} session={session} basisId={basisSelection.basisId} /> : <p>该轮未保存点评依据。</p>}
-        </div>;
-      })() : <PracticeSources key={turn?.turnIndex ?? "before-question"} turn={turn} session={session} />}</div>
+      {basisVisible && <aside className={styles.basisDock} aria-label="点评与练习依据" data-code={hasCode}>
+        {selectedIssue ? <>
+          <h2>问点依据</h2>
+          {issueSources.map(source => <section className={styles.issueBasis} key={source.turnIndex} aria-label={`第 ${source.turnIndex + 1} 轮依据`}>
+            <h3>第 {source.turnIndex + 1} 轮 · {source.basisId ? "问点引用" : "整轮点评依据"}</h3>
+            {!source.basisId && <p className={styles.empty}>这一轮未保存针对该问点的单独引用。</p>}
+            <PracticeSources source={source} session={session} />
+          </section>)}
+        </> : roundSources && <PracticeSources key={turn?.turnIndex ?? "before-question"} source={roundSources} session={session} showMaterials showTitle />}
+      </aside>}
+
     </div>
   </div>;
+}
+
+function PracticeSummaryReview({ summary, turns, selectedIssueId, onSelectIssue }: {
+  summary: PracticeSummary; turns: PracticeTurn[]; selectedIssueId: string | null; onSelectIssue(id: string | null): void;
+}) {
+  return <section className={styles.summary} aria-label="练习小结">
+    <header className={styles.summaryHeader}><h2>练习小结</h2><span>已回答 {summary.answeredTurns} 轮</span></header>
+    {summary.issueTrail ? <>
+      {summary.issueTrail.length ? <ul className={styles.issueTrail}>{summary.issueTrail.map(issue => {
+        const originIndex = issueOriginIndex(issue);
+        const original = turns.find(turn => turn.turnIndex === originIndex);
+        const second = turns.find(turn => turn.turnIndex === issue.turnIndex && turn.turnIndex !== originIndex);
+        const firstQuestion = issue.origin.questionQuote || original?.question;
+        const secondQuestion = second && (issue.questionQuote || second.question);
+        const quote = issue.answerQuote || (second && issue.conflict?.answerQuote);
+        const resolved = Boolean(issue.answerQuote);
+        const state = resolved ? "covered" : issue.kind;
+        const status = resolved ? "已修正" : issue.kind === "inconsistent" ? "需修正" : "仍待补";
+        const open = selectedIssueId === issue.issueId;
+        const firstLabel = issue.origin.issueId.includes(":inconsistent:") ? "首轮需修正" : "首轮缺口";
+        return <li key={issue.issueId}><details open={open}>
+          <summary onClick={event => { event.preventDefault(); onSelectIssue(open ? null : issue.issueId); }}>
+            <strong>{issue.origin.point || issue.origin.text}</strong>
+            <span className={styles.issueStatus} data-kind={state} data-resolved={resolved}>{status}</span>
+          </summary>
+          <div className={styles.issueDetails} data-has-answer={Boolean(quote || second?.answerText)}>
+            <IssueReading tone="amber" label={originIndex === 0 ? firstLabel : `第 ${originIndex + 1} 轮发现`}>
+              <p>{issue.origin.text}</p>
+              {issue.origin.conflict?.answerQuote && <blockquote>{issue.origin.conflict.answerQuote}</blockquote>}
+            </IssueReading>
+            {quote && <IssueReading tone={resolved ? "green" : "red"} label={resolved ? "补答原话" : "本轮回答原话"}><blockquote>{quote}</blockquote></IssueReading>}
+            {!quote && second?.answerText && <IssueReading tone="slate" label="本轮补答">
+              <details className={styles.savedDetails}><summary>查看第 {second.turnIndex + 1} 轮完整回答</summary><blockquote>{second.answerText}</blockquote></details>
+            </IssueReading>}
+            <IssueReading tone={resolved ? "green" : state === "inconsistent" ? "red" : "amber"} label="当前结果">
+              <p>{status}{issue.text !== issue.origin.text && <> · {issue.text}</>}</p>
+            </IssueReading>
+            {(firstQuestion || secondQuestion) && <details className={styles.savedDetails}>
+              <summary>查看相关题目</summary>
+              {firstQuestion && <blockquote>第 {originIndex + 1} 轮 · {firstQuestion}</blockquote>}
+              {secondQuestion && <blockquote>第 {second.turnIndex + 1} 轮 · {secondQuestion}</blockquote>}
+            </details>}
+          </div>
+        </details></li>;
+      })}</ul> : <p className={styles.empty}>本次点评没有记录待补问点。</p>}
+      {!!turns[0]?.feedback?.covered.length && <details className={styles.savedDetails}>
+        <summary>首轮已讲清 · {turns[0].feedback.covered.length} 项</summary>
+        <ul>{turns[0].feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul>
+      </details>}
+    </> : <>
+      <div className={styles.summaryGrid}>
+        <section><h3>已讲清</h3>{summary.covered.length ? <SummaryIssues lines={summary.covered} visibleCount={4} /> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
+        <section><h3>仍需补齐</h3>{summary.remaining.length ? <SummaryIssues lines={summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
+      </div>
+      {!!summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={summary.inconsistent} visibleCount={3} /></section>}
+      {!!summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
+        {summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
+      </ul></section>}
+    </>}
+    {summary.nextStep && <p className={styles.nextStep}><strong>下一步：</strong>{summary.nextStep}</p>}
+    {summary.note && <details className={styles.savedDetails}><summary>小结范围</summary><p>{summary.note}</p></details>}
+  </section>;
 }
 
 function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red" | "slate"; label: string; children: React.ReactNode }) {
@@ -443,15 +463,14 @@ function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "gre
   </div>;
 }
 
-function PracticeSources({ turn, session, compact = false, basisId }: {
-  turn: PracticeTurn | null; session: InterviewSession; compact?: boolean; basisId?: string;
+function PracticeSources({ source, session, showMaterials = false, showTitle = false }: {
+  source: ReturnType<typeof practiceTurnSources> & { basisId?: string };
+  session: InterviewSession; showMaterials?: boolean; showTitle?: boolean;
 }) {
-  const sources = practiceTurnSources(turn, session);
-  const { kind } = sources;
-  const citations = basisId ? sources.citations.filter(item => item.citationId === basisId) : sources.citations;
-  const knowledge = basisId ? sources.knowledge.filter(item => item.knowledgeId === basisId) : sources.knowledge;
+  const { kind, citations, knowledge } = source;
   const title = kind === "session" ? "练习资料" : kind === "feedback" ? "本轮点评依据" : kind === "first-related" ? "首问关联依据" : "本轮题目依据";
-  const content = <>
+  return <div className={styles.basis}>
+    {showTitle && <h2>{title}</h2>}
     {kind === "first-related" && <p className={styles.empty}>本轮沿用首问保存的依据。</p>}
     {citations.length ? <ul className={styles.evidenceList}>
       {citations.map((item, index) => {
@@ -460,7 +479,7 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
         const filename = segments.at(-1) || item.filePath;
         const path = segments[0] === item.projectVersionId ? segments.slice(1).join("/") : item.filePath;
         return <li className={styles.evidenceItem} key={item.citationId || `${item.filePath}:${item.lineStart}:${index}`}>
-          <details open={!compact && kind !== "session" && index === 0}>
+          <details open={kind !== "session" && index === 0 ? true : undefined}>
             <summary>
               <strong>{filename} · 第 {item.lineStart}{item.lineEnd === item.lineStart ? "" : `–${item.lineEnd}`} 行</strong>
               <span>{material && <>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版 · </>}{item.provenance === "reference" ? "第三方参考，不计评级" : item.provenance === "portfolio" ? "本人材料" : "报告材料"}</span>
@@ -471,7 +490,7 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
           </details>
         </li>;
       })}
-    </ul> : !compact && <p className={styles.empty}>{basisId ? "未找到此问点保存的材料引用。" : kind === "feedback" ? "本轮点评没有保存材料引用。" : "没有保存对应的材料引用。"}</p>}
+    </ul> : !knowledge.length && <p className={styles.empty}>{source.basisId ? "未找到此问点保存的引用。" : kind === "feedback" ? "本轮点评没有保存依据。" : "没有保存对应的依据。"}</p>}
     {!!knowledge.length && <section className={styles.basisGroup}>
       <h3>技术知识</h3>
       <ul className={styles.knowledgeList}>
@@ -482,19 +501,11 @@ function PracticeSources({ turn, session, compact = false, basisId }: {
         </li>)}
       </ul>
     </section>}
-    {!compact && session.materials.length > 0 && <details className={styles.savedDetails}>
+    {showMaterials && session.materials.length > 0 && <details className={styles.savedDetails}>
       <summary>练习使用的固定版本</summary>
       <ul className={styles.materials}>
         {session.materials.map(material => <li key={`${material.kind}:${material.id}`}>{displayMaterialTitle(material.title, material.id)} · 第 {material.versionNumber} 版</li>)}
       </ul>
     </details>}
-  </>;
-  if (compact && turn) {
-    const label = `第 ${turn.turnIndex + 1} 轮点评依据`;
-    return citations.length || knowledge.length ? <details className={styles.inlineBasis}>
-      <summary className="reading-band" data-reading-tone="slate">{label}</summary>
-      {content}
-    </details> : <p className={styles.empty}>第 {turn.turnIndex + 1} 轮点评未保存依据。</p>;
-  }
-  return <aside className={styles.basis} aria-label={title}><h2>{title}</h2>{content}</aside>;
+  </div>;
 }
