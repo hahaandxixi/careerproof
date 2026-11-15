@@ -3,7 +3,7 @@ import { adoptedReportExplanation } from "@/lib/report-workspace";
 import EvidenceLink from "./EvidenceLink";
 import { compactSourceLabel } from "@/lib/source-label";
 import { invalidNarrativeCitations } from "@/lib/report-citations";
-import { historicalScopeOnly, sourceLimit, unsentRuleSources } from "@/lib/source-limits";
+import { historicalScopeOnly, readableSoleReportSource, unsentRuleSources } from "@/lib/source-limits";
 import { sourceLocationId } from "@/lib/source-label";
 import ReportNarrative from "./ReportNarrative";
 
@@ -16,8 +16,7 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
   const inlineCitations = new Set(explanation.match(/\bR\d+-E\d+\b/g) ?? []);
   // A readable sole source is already open next to the explanation. Multiple
   // sources are selectable, so their explanation links must stay available.
-  const soleSource = item.evidenceList.length === 1 ? item.evidenceList[0] : undefined;
-  const visibleCitation = soleSource && sourceLimit(report, soleSource)?.readable !== false ? soleSource.citationId : null;
+  const visibleCitation = readableSoleReportSource(report, item)?.citationId;
   const additionalCitations = [...new Set(item.aiCitationIds)].filter(id => id !== visibleCitation && !inlineCitations.has(id));
   if (invalid.length) return <section className="rounded-lg border border-amber-200 p-4 text-base leading-7" role="note">
     <p>这份历史解释含有未与本项来源对齐的引用，暂不能作为已核验解释。请核对下方固定来源。</p>
@@ -30,7 +29,7 @@ export default function ReportAiExplanation({ report, item }: { report: MatchRep
     {historicalScopeOnly(item)&&<p className="mt-3 text-sm text-amber-900">旧记录仅保存了分析范围提示，具体缺口原文无法恢复；请核对来源及现有建议，不据此断言整个项目缺失。</p>}
     {additionalCitations.length > 0 && <div className="mt-3 flex flex-wrap gap-2" aria-label="其他解释来源">{additionalCitations.map(citation => {
       const source = item.evidenceList.find(value => value.citationId === citation);
-      return <EvidenceLink key={citation} citationId={citation} className="inline-flex min-h-10 items-center rounded-lg border border-[#c8d8d0] bg-white px-3 text-sm text-[#173c34]">{source ? `${compactSourceLabel(source, report.materials).fileName} · ${source.lineStart}–${source.lineEnd}行` : `查看来源 ${citation}`}</EvidenceLink>;
+      return <EvidenceLink key={citation} citationId={citation} className="report-citation-chip">{source ? `${compactSourceLabel(source, report.materials).fileName} · ${source.lineStart}–${source.lineEnd}行` : `查看来源 ${citation}`}</EvidenceLink>;
     })}</div>}
   </section>;
 }

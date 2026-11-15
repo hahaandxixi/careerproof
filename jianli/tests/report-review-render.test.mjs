@@ -20,10 +20,10 @@ const {reportEntryRequirement} = await import("../src/lib/report-reader.ts");
 resolution.deregister();
 const nodes=n=>!n||typeof n!=="object"?[]:[n,...React.Children.toArray(n.props?.children).flatMap(nodes),...(n.props?.sections??[]).flatMap(s=>nodes(s.content))];
 const text=n=>typeof n==="string"?n:[...React.Children.toArray(n?.props?.children),...(n?.props?.sections??[]).map(s=>s.content)].map(text).join("");
-function fixture({writeError,readError,search="",differentStatus=false}={}){
+function fixture({writeError,readError,search="",hash="",differentStatus=false}={}){
  const cells=[],effects=[];let cursor=0,reads=0,writes=0,hashEvents=0,account="owner",role="student";
  const savedWindow=globalThis.window;const listeners={};
- globalThis.window={location:{href:"http://localhost/reports/r"+search,hash:"",search},history:{state:{__NA:true},pushState(_state,_unused,url){Object.assign(globalThis.window.location,{href:url.href,hash:url.hash,search:url.search});}},dispatchEvent(event){if(event.type==="hashchange")hashEvents++;for(const fn of listeners[event.type]??[])fn(event);},addEventListener(type,fn){(listeners[type]??=[]).push(fn);},removeEventListener(type,fn){listeners[type]=(listeners[type]??[]).filter(value=>value!==fn);}};
+ globalThis.window={location:{href:"http://localhost/reports/r"+search+hash,hash,search},history:{state:{__NA:true},pushState(_state,_unused,url){Object.assign(globalThis.window.location,{href:url.href,hash:url.hash,search:url.search});}},dispatchEvent(event){if(event.type==="hashchange")hashEvents++;for(const fn of listeners[event.type]??[])fn(event);},addEventListener(type,fn){(listeners[type]??=[]).push(fn);},removeEventListener(type,fn){listeners[type]=(listeners[type]??[]).filter(value=>value!==fn);}};
  const memo=(fn,deps)=>{const i=cursor++;if(!cells[i]||cells[i].deps.join()!==deps.join())cells[i]={deps,value:fn()};return cells[i].value;};
  const hooks={useState(initial){const i=cursor++;if(!(i in cells))cells[i]=initial;return[cells[i],v=>{cells[i]=typeof v==="function"?v(cells[i]):v;}];},useMemo:memo,useEffect(fn,deps){const i=cursor++;const previous=cells[i];if(!previous||JSON.stringify(previous.deps)!==JSON.stringify(deps)){cells[i]={deps};effects.push(()=>cells[i].cleanup=fn());}}};
  const report={id:"r",items:["a","b"].map(requirementId=>({requirementId,requirementTitle:requirementId,verdict:differentStatus && requirementId==="b"?"gap":"supported",evidenceId:"e",evidenceList:[],confirmationStatus:"pending",reviewerNote:"saved note"})),materials:[],analysisMode:"rules",actionPlan:[],aiToolCalls:[]};
@@ -71,6 +71,19 @@ test("report radar is wired to the shared active requirement, not a constant emp
  assert.match(source, /initialRequirementId=\{radarRequirementId\}/);
  assert.match(source, /selectedRequirementId=\{radarRequirementId\}/);
  assert.doesNotMatch(source, /initialRequirementId=""/);
+});
+test("reloading a report section restores the URL requirement for the reader and radar", async () => {
+ const h=fixture({search:"?filter=all&requirement=b",hash:"#report-matching"});
+ try {
+  await h.settle(); h.html();
+  assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
+  assert.equal(h.radarProps.at(-1).selectedRequirementId,"b");
+  assert.equal(h.heatmapProps.at(-1).selectedRequirementId,"b");
+  h.navigate("#requirement-a"); await h.settle(); h.html();
+  assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"a");
+  h.navigate("#report-matching"); await h.settle(); h.html();
+  assert.equal(h.workspaceProps.at(-1).selectedRequirementId,"b");
+ } finally { h.dispose(); }
 });
 test("hash selection drives heatmap and radar with one requirement id, not a stale radar highlight", async () => {
  const h=fixture(); await h.settle(); h.html();

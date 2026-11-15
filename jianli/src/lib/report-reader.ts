@@ -25,8 +25,9 @@ export function requirementForReportAnchor(items: ReportItem[], anchor: string |
 export function reportEntryRequirement(items: ReportItem[], hash: string, search = ""): string | null {
   const linked = requirementForReportAnchor(items, reportAnchorId(hash));
   if (linked) return linked;
-  if (hash) return null;
   const params = new URLSearchParams(search);
-  const reply = params.get("requirement") ?? params.get("enterpriseReply");
-  return items.some(item => item.requirementId === reply) ? reply : null;
+  // A report section changes the panel, not the saved requirement. Only an
+  // exact requirement or citation fragment can override the selection.
+  const selected = params.get("requirement") ?? (hash ? null : params.get("enterpriseReply"));
+  return items.some(item => item.requirementId === selected) ? selected : null;
 }

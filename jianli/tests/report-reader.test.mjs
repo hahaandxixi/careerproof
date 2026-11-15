@@ -101,6 +101,11 @@ test("saved citation and rule-source identities resolve exactly across same-name
 test("enterprise reply entry selects its saved requirement and never overrides a known citation", () => {
   assert.equal(helpers.reportEntryRequirement(items, "", "?enterpriseReply=run"), "run");
   assert.equal(helpers.reportEntryRequirement(items, "#report-matching", "?enterpriseReply=run"), null);
+  assert.equal(helpers.reportEntryRequirement(items, "#report-matching", "?requirement=run"), "run");
+  assert.equal(helpers.reportEntryRequirement(items, "#report-supplement", "?requirement=run&enterpriseReply=tests"), "run");
+  assert.equal(helpers.reportEntryRequirement(items, "#citation-saved-alpha", "?requirement=run"), "implementation");
+  assert.equal(helpers.reportEntryRequirement(items, "#report-matching", "?requirement=unknown&enterpriseReply=run"), null);
+  assert.equal(helpers.reportEntryRequirement(items, "#report-matching", "?requirement=&enterpriseReply=run"), null);
   assert.equal(helpers.reportEntryRequirement(items, "#citation-saved-alpha", "?enterpriseReply=run"), "implementation");
   assert.equal(helpers.reportEntryRequirement(items, "", "?enterpriseReply=unknown"), null);
 });

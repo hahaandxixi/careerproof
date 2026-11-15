@@ -6,6 +6,7 @@ import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import { supplementPlanLines } from "@/lib/report-follow-up";
 import EvidenceLink from "./EvidenceLink";
 import { CopySupplementAdvice } from "./ReportFollowUpActions";
+import SupplementPlanDetails from "./SupplementPlanDetails";
 
 type Advice = NonNullable<CareerPlanResult["aiPlan"]>["advice"][number];
 
@@ -53,17 +54,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
     <h3 className="text-base font-semibold">职业规划建议</h3>
     {job.assessedCount === 0 && <p className="text-sm text-amber-800">岗位要求未进入规则评估范围，请人工核对材料。</p>}
     {primary && <div className="reading-band text-sm leading-6" data-reading-tone="amber"><p className="reading-role">{gap ? "待补" : "补证建议"}</p><p className="break-words">{primary}</p></div>}
-          {detailsDeliverable && <div><p className="font-medium">提交什么</p><p>{detailsDeliverable}</p></div>}
-          {detailSteps.length > 0 && <div>
-            <p className="font-medium">执行步骤</p>
-            <ol className="list-decimal pl-5">
-              {detailSteps.map((step, index) => <li key={index}>{step}</li>)}
-            </ol>
-          </div>}
-          {detailChecks.length > 0 && <div>
-            <p className="font-medium">核对项</p>
-            <ul className="list-disc pl-5">{detailChecks.map((check, index) => <li key={index}>{check}</li>)}</ul>
-          </div>}
+    <SupplementPlanDetails deliverable={detailsDeliverable} steps={detailSteps} acceptanceChecks={detailChecks} />
     {(reason || extraTask || sources.length > 0) &&
       <details>
         <summary className="reading-band cursor-pointer text-sm font-medium" data-reading-tone="slate">查看补充依据</summary>
@@ -86,7 +77,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
 
         </div>
       </details>}
-    {copyLines.length > 0 && <div className="flex flex-wrap items-center gap-3"><CopySupplementAdvice label="复制规划建议"
+    {copyLines.length > 0 && <div className="flex flex-wrap items-center gap-3"><CopySupplementAdvice subject="规划建议"
       scope={`${planId}:${job.jobId}`}
       text={[`职业规划建议 · ${displayJobTitle(job.jobTitle || report?.jobTitle || "本岗位", job.jobId)}`, ...copyLines].join("\n")} /></div>}
   </section>;

@@ -35,14 +35,17 @@ export default function ReportRequirementReader({ items, children, overview, sel
     if (controlled) return;
     const select = (hash: string, search = "") => {
       const next = reportEntryRequirement(items, hash, search);
-      if (!next) return;
+      if (!next) return false;
       const anchor = reportAnchorId(hash);
-      setEntry(previous => ({ filter: filterForRequirement(items, previous.filter, next), selected: next, anchor: requirementForReportAnchor(items, anchor) ? anchor : `growth-${next}`, revision: previous.revision + 1 }));
+      setEntry(previous => ({ filter: filterForRequirement(items, previous.filter, next), selected: next, anchor: requirementForReportAnchor(items, anchor) ? anchor : null, revision: previous.revision + 1 }));
+      return true;
     };
     const fromLocation = () => {
-      if (!window.location.hash && !new URLSearchParams(window.location.search).get("enterpriseReply")) {
+      const { hash, search } = window.location;
+      if (select(hash, search)) return;
+      if (!hash && !new URLSearchParams(search).get("enterpriseReply")) {
         setEntry(previous => ({ selected: initialReportRequirement(items), filter: items.length <= 8 ? "all" : initialWorkspaceFilter(items), anchor: null, revision: previous.revision + 1 }));
-      } else select(window.location.hash, window.location.search);
+      }
     };
     const fromLink = (event: MouseEvent) => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;

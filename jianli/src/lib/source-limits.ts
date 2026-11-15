@@ -17,6 +17,12 @@ export function unsentRuleSources(item: ReportItem) {
   return item.evidenceList.map((source,index)=>({source,index})).filter(({source})=>!source.citationId);
 }
 
+export function readableSoleReportSource(report: MatchReport, item: ReportItem): ReportEvidence | undefined {
+  if (item.evidenceList.length !== 1) return undefined;
+  const [source] = item.evidenceList;
+  return sourceLimit(report, source)?.readable === false ? undefined : source;
+}
+
 export function historicalScopeOnly(item: ReportItem) {
   return /规则层保存了未发送证据/.test(item.aiInformationGap ?? "");
 }

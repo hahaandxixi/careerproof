@@ -129,6 +129,25 @@ test("student requirement area leaves guidance to the supplement section", () =>
  assert.ok(!full.includes("复制补证建议"), "a repeated gap is not separate copyable advice");
  assert.ok(full.includes("添加项目材料"));
 });
+test("rule citations only omit a readable sole source with an adjacent reader", () => {
+ const first={citationId:null,projectVersionId:"v1",filePath:"src/app.py",snippet:"first implementation"};
+ const r={...report([]),materials:[{kind:"project",id:"v1",title:"项目",versionNumber:1}]};
+ const view=(sources,reader=true)=>{
+  const entry=item("rules","supported",{evidenceList:sources});
+  const sourcePanel=reader ? React.createElement(SourcePanel,{report:r,item:entry}) : undefined;
+  return renderToStaticMarkup(React.createElement(RequirementActionPanel,{report:r,item:entry,sourcePanel}));
+ };
+ const single=view([first]);
+ assert.doesNotMatch(single,/class="report-citation-chip"/);
+ assert.match(single,/id="rule-source-rules-1"/);
+ assert.match(view([first],false),/href="#rule-source-rules-1"/);
+ const unreadable=view([{...first,snippet:""}]);
+ assert.match(unreadable,/href="#rule-source-rules-1"/);
+ assert.match(unreadable,/来源暂不可读/);
+ const two=view([first,{...first,filePath:"tests/app.py",lineStart:5,lineEnd:7}]);
+ assert.match(two,/href="#rule-source-rules-1"/);
+ assert.match(two,/href="#rule-source-rules-2"/);
+});
 
 test("one integrated workspace keeps the complete saved items even when a plan is limited to three", () => {
  const items = Array.from({length: 6}, (_, i) => item(`gap${i}`));
@@ -223,6 +242,8 @@ test("saved structured plans retain deliverable, steps and checks without changi
  const r={...report([value],[advice(value,{source:"ai_suggestion",action:value.aiSuggestion})]),evidenceContextVersion:"source-context-v2"};
  const before=JSON.stringify(r); const html=render(r);
  for(const t of ["接口验证记录","运行失败场景","记录响应码与源码版本"]) assert.ok(html.includes(t));
+ const order=["提交什么","执行步骤","核对项"].map(label=>html.indexOf(label));
+ assert.ok(order[0]>=0 && order[0]<order[1] && order[1]<order[2]);
  assert.equal(JSON.stringify(r),before);
 });
 

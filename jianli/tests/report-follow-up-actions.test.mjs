@@ -73,6 +73,18 @@ test("late copy receipts cannot label a different identity/requirement's guidanc
   await f.settle(request,null);assert.ok(!f.html().includes("已复制补证建议"));
  }finally{f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
 });
+test("planning copy uses a matching success message",async()=>{
+ const prior=Object.getOwnPropertyDescriptor(globalThis,"navigator"),request=deferred();
+ Object.defineProperty(globalThis,"navigator",{configurable:true,value:{clipboard:{writeText:()=>request.promise}}});
+ const f=fixture("ReportFollowUpActions",{scope:"plan:job",text:"规划内容",subject:"规划建议"},{},"CopySupplementAdvice");
+ try{
+  f.button("复制规划建议");
+  await f.settle(request,null);
+  const html=f.html();
+  assert.match(html,/role="status"[^>]*>已复制规划建议。/);
+  assert.doesNotMatch(html,/已复制补证建议|mt-2/);
+ }finally{f.cleanup();if(prior)Object.defineProperty(globalThis,"navigator",prior);else delete globalThis.navigator;}
+});
 
 test("reanalysis preselection replaces only the matching version and carries the original comparison base",()=>{
  const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",materials:[
