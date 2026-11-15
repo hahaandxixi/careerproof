@@ -14,6 +14,7 @@ import { useAuth } from "./AuthProvider";
 import ProjectVersionPicker from "./ProjectVersionPicker";
 import ResumeVersionPicker from "./ResumeVersionPicker";
 import { sourceRelativePath } from "@/lib/source-label";
+import CareerRequirementsComparison from "./CareerRequirementsComparison";
 
 const PRIORITY_LABELS = {
   high: "优先了解",
@@ -203,6 +204,10 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
     jobs: visibleRecommendations.filter(item => priority ? item.priority === priority : !Object.hasOwn(PRIORITY_LABELS, item.priority)),
   })).filter(tier => tier.jobs.length);
 
+  const comparisonJobs = tiers.flatMap(tier => tier.jobs);
+  const hasComparisonJobs = comparisonJobs.length > 1;
+  const comparison = result && !result.aiFallbackUsed && result.aiPlan?.comparison;
+
   const materialForm = <div id="career-material-selection">
     <div className="career-selection-head">
       <h2 className="text-lg font-semibold">选择材料版本</h2>
@@ -258,6 +263,9 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
             const activeEvidence = readingCitation ? item.evidence.filter(evidence => evidence.citationId === readingCitation) : [];
             const savedAdvice = advice.get(item.jobId);
             const reason = savedAdvice?.reason;
+            const matchedSkills = hasComparisonJobs
+              ? item.matchedSkills.filter(skill => !item.requirements?.some(requirement => requirement.skill.trim() === skill.trim()))
+              : item.matchedSkills;
             return <article id={`plan-job-${item.jobId}`} tabIndex={-1} className="career-job-card scroll-mt-24" key={item.jobId}>
               <div className="min-w-0 space-y-2">
                 <div>
@@ -265,7 +273,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
                   {item.companyName && <p className="break-words text-sm text-slate-600">{item.companyName}</p>}
                 </div>
                 {reason && <CareerReason text={reason} />}
-                {!!item.matchedSkills.length && <ul className="career-skill-list" aria-label="匹配技能">{item.matchedSkills.map(skill => <li key={skill}>{skill}</li>)}</ul>}
+                {!!matchedSkills.length && <ul className="career-skill-list" aria-label="匹配技能">{matchedSkills.map(skill => <li key={skill}>{skill}</li>)}</ul>}
               </div>
               <Link className={priority === "high" ? "btn shrink-0" : "btn-secondary shrink-0"} href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
               {!!activeEvidence.length && <ul className="space-y-3 border-t border-slate-100 pt-3">{activeEvidence.map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-indigo-700 underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}`}>打开原始文件并定位行号</Link>}</li>)}</ul>}
@@ -275,9 +283,13 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
       </section>)}
       {result.recommendations.length > careerPlanRecommendations(result, false).length && <button type="button" className="rounded-xl border border-slate-200 px-4 py-3 text-sm text-indigo-700" aria-expanded={expandedCandidates} onClick={() => setExpandedCandidates(value => !value)}>{expandedCandidates ? "收起其他候选，只看重点岗位" : `展开其余 ${result.recommendations.length - visibleRecommendations.length} 个规则候选`}</button>}
 
-      {!result.aiFallbackUsed && result.aiPlan?.comparison && <section className="career-saved-advice" aria-label="岗位方向比较">
+      {(hasComparisonJobs || comparison) && <section className="career-saved-advice" aria-label="岗位方向比较">
         <h3 className="text-lg font-semibold">岗位方向比较</h3>
-        <div className="max-w-[90ch]"><CareerReason text={careerComparisonText(result.aiPlan.comparison, result.recommendations)} comparison /></div>
+        {hasComparisonJobs && <CareerRequirementsComparison key={result.planId} jobs={comparisonJobs} />}
+        {comparison && <details className="career-comparison-original">
+          <summary className="disclosure">完整比较说明</summary>
+          <p className="career-reason max-w-[90ch]">{careerComparisonText(comparison, result.recommendations)}</p>
+        </details>}
       </section>}
 
       {!!result.previousPlanId && visibleChanges.length > 0 && <details className="panel"><summary className="cursor-pointer font-semibold">查看这些岗位与上次规划的变化</summary><p className="mt-1 text-xs text-slate-500">分别核对材料版本、岗位基本信息、岗位要求、可定位证据和规则档位；同时变化不证明因果或能力提升。</p><ul className="mt-3 space-y-2">{visibleChanges.map(change => <li key={change.jobId} className="rounded-lg bg-slate-50 p-3 text-sm"><strong>{change.jobTitle}</strong>{change.status === "not_in_current" && <span className="ml-2 rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-800">本轮列表未见</span>}<p className="mt-1 text-slate-600">{change.detail}</p>{change.jobDetailsChanged && <p className="mt-1 text-amber-800">岗位基本信息已变，请与材料变化分开核对。</p>}{change.requirementsChanged && <p className="mt-1 text-amber-800">岗位要求已变，本次档位不能归因于补证。</p>}{change.evidenceIds.map(id => <a key={id} href={`#plan-citation-${id}`} onClick={event => openEvidence(event, id)} className="mr-3 text-xs text-indigo-600 underline">查看新证据 {id}</a>)}</li>)}</ul></details>}
@@ -289,12 +301,12 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
   </div>;
 }
 
-function CareerReason({ text, comparison = false }: { text: string; comparison?: boolean }) {
+function CareerReason({ text }: { text: string }) {
   if (text.length <= 180) return <p className="career-reason">{text}</p>;
-  return <details className="career-reason-details" data-comparison={comparison}>
+  return <details className="career-reason-details">
     <summary>
       <span className="career-reason">{text}</span>
-      <span className="disclosure career-expand">{comparison ? "展开完整比较" : "查看完整推荐理由"}</span>
+      <span className="disclosure career-expand">查看完整推荐理由</span>
       <span className="disclosure career-collapse">收起</span>
     </summary>
     <p className="career-reason">{text}</p>

@@ -94,3 +94,35 @@ export function visibleCareerChanges(
   const visibleJobIds = new Set(visibleRecommendations.map(item => item.jobId));
   return changes.filter(change => change.status === "not_in_current" || visibleJobIds.has(change.jobId));
 }
+
+type SavedRequirement = NonNullable<JobRecommendation["requirements"]>[number];
+
+export function careerRequirementRows(jobs: readonly JobRecommendation[]) {
+  const rows = new Map<string, { label: string; requirements: Map<string, SavedRequirement[]> }>();
+  for (const job of jobs) {
+    for (const requirement of job.requirements ?? []) {
+      const skill = requirement.skill.trim();
+      const key = JSON.stringify(skill ? ["skill", skill] : ["text", requirement.text]);
+      const row = rows.get(key) ?? { label: skill || requirement.text, requirements: new Map<string, SavedRequirement[]>() };
+      const items = row.requirements.get(job.jobId) ?? [];
+      items.push(requirement);
+      row.requirements.set(job.jobId, items);
+      rows.set(key, row);
+    }
+  }
+  // Only identical saved requirements and judgments count as common. Multiplicity matters.
+  const signature = (items: SavedRequirement[]) => JSON.stringify(items.map(item =>
+    JSON.stringify([item.text, item.weight, item.isRequired, item.ruleVerdict])).sort());
+  const complete = jobs.every(job => job.requirements?.length === job.requirementCount && job.requirements !== undefined);
+  return Array.from(rows, ([key, row]) => ({
+    key, ...row,
+    shared: complete && row.requirements.size === jobs.length && new Set(Array.from(row.requirements.values(), signature)).size === 1,
+  })).sort((a, b) => Number(a.shared) - Number(b.shared));
+}
+
+export function careerMissingRequirementLabel(job: JobRecommendation) {
+  const saved = job.requirements;
+  if (!saved || (!saved.length && job.requirementCount > 0)) return "未保存明细";
+  if (saved.length < job.requirementCount) return "明细不全";
+  return "明细未列";
+}
