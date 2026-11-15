@@ -47,3 +47,10 @@ test('complete records shade the real area including a known zero', () => {
  assert.equal(polygon.props.fill, 'var(--radar-data)');
  assert.equal(polygon.props.fillOpacity, 0.16);
 });
+
+test('the TypeScript axis displays its full label', () => {
+ const skills=buildSkillPanorama([report('a',[item('1','Python','supported'),item('2','TypeScript','supported'),item('3','pytest','supported')])]).skills;
+ const f=fixture(skills);
+ const labels=f.nodes(f.render()).filter(node=>node.type==='text'&&node.props.className==='radarLabel');
+ assert.ok(labels.some(node=>node.props.children==='TypeScript'));
+});

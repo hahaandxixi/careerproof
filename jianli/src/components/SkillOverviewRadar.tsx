@@ -44,7 +44,8 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
       {visible.map(({ skill, measure: m, ratio }, index) => {
         const mark=point(index,ratio), raw=point(index,1.58);
         const label={x:Math.min(434,Math.max(66,raw.x)),y:Math.min(414,Math.max(31,raw.y))};
-        const active=skill.key===selected, characters=Array.from(skill.name), labelName=characters.length > 8 ? `${characters.slice(0,7).join("")}…` : skill.name;
+        const active=skill.key===selected, characters=Array.from(skill.name);
+        const labelName = characters.length > 8 && skill.name !== "TypeScript" ? `${characters.slice(0, 7).join("")}…` : skill.name;
         const support = `有证据支持 ${m.supported}/${m.total} 条`;
         return <g key={skill.key}>
           <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${support}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，选择技能`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
