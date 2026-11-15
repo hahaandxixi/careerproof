@@ -85,6 +85,15 @@
 .issueTrail > li > details > summary > strong { min-width: 0; text-align: left; }
 .issueTrail > li > details[open] > summary > strong::before { content: "⌄ "; }
 .issueDetails { display: grid; gap: 8px; padding: 0 0 12px; overflow-wrap: anywhere; }
+.layout[data-code="false"] .issueDetails { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, .65fr); align-items: start; }
+.layout[data-code="false"] .issueDetails > :global(.reading-band):last-of-type { grid-column: 3; }
+.layout[data-code="false"] .issueDetails[data-has-answer="false"] > :global(.reading-band):first-child { grid-column: 1 / 3; }
+.layout[data-code="false"] .issueDetails > details:last-child { grid-column: 1 / -1; }
+@media (max-width: 940px) {
+  .layout[data-code="false"] .issueDetails { grid-template-columns: minmax(0, 1fr); }
+  .layout[data-code="false"] .issueDetails > :global(.reading-band):last-of-type,
+  .layout[data-code="false"] .issueDetails[data-has-answer="false"] > :global(.reading-band):first-child { grid-column: 1; }
+}
 .issueDetails blockquote { margin: 0; white-space: pre-wrap; }
 .issueDetails :global(.reading-band) { background: #fcfbf7; font-size: 15px; }
 @media (max-width: 760px) {

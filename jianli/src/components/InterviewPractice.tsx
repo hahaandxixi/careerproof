@@ -417,15 +417,15 @@ function PracticeSummaryReview({ summary, turns, selectedIssueId, onSelectIssue 
             <strong>{issue.origin.point || issue.origin.text}</strong>
             <span className={styles.issueStatus} data-kind={state} data-resolved={resolved}>{status}</span>
           </summary>
-          <div className={styles.issueDetails}>
+          <div className={styles.issueDetails} data-has-answer={Boolean(quote || second?.answerText)}>
             <IssueReading tone="amber" label={originIndex === 0 ? firstLabel : `第 ${originIndex + 1} 轮发现`}>
               <p>{issue.origin.text}</p>
               {issue.origin.conflict?.answerQuote && <blockquote>{issue.origin.conflict.answerQuote}</blockquote>}
             </IssueReading>
             {quote && <IssueReading tone={resolved ? "green" : "red"} label={resolved ? "补答原话" : "本轮回答原话"}><blockquote>{quote}</blockquote></IssueReading>}
-            {!quote && second?.answerText && <details className={styles.savedDetails}>
-              <summary>查看第 {second.turnIndex + 1} 轮完整回答</summary><blockquote>{second.answerText}</blockquote>
-            </details>}
+            {!quote && second?.answerText && <IssueReading tone="slate" label="本轮补答">
+              <details className={styles.savedDetails}><summary>查看第 {second.turnIndex + 1} 轮完整回答</summary><blockquote>{second.answerText}</blockquote></details>
+            </IssueReading>}
             <IssueReading tone={resolved ? "green" : state === "inconsistent" ? "red" : "amber"} label="当前结果">
               <p>{status}{issue.text !== issue.origin.text && <> · {issue.text}</>}</p>
             </IssueReading>

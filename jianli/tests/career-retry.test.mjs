@@ -180,5 +180,5 @@ test("saved reasons use the recorded tiers without assigning other jobs a priori
  assert.deepEqual(f.nodes(tree).filter(n=>n.type==="h3").map(n=>n.props.children),["岗位方向比较","优先了解","值得比较","推荐岗位"]);
  const cards=f.nodes(tree).filter(n=>n.type==="article");
  assert.deepEqual(cards.map(n=>n.props.id),["plan-job-high1","plan-job-high2","plan-job-medium","plan-job-no-tier"]);
- assert.equal(f.get(cards[0], "p").props.children, "可定位输入校验。");
+ assert.ok(f.nodes(cards[0]).some(n=>n.props?.text==="可定位输入校验。"));
 });
