@@ -463,7 +463,6 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .comparison-result-row { padding: 22px 0; border-top: 1px solid #e0dbcd; border-radius: 0; background: transparent; }
 .comparison-result-row > summary { margin-bottom: 0; }
 .comparison-result-row p { max-width: 76ch; }
-.report-version-tools { max-width: 56rem; margin-top: 12px; overflow-wrap: anywhere; }
 .report-comparison-workbench { display: grid; gap: 16px; align-items: start; }
 .report-comparison-matrix { table-layout: fixed; overflow-wrap: anywhere; }
 .report-comparison-matrix th, .report-comparison-matrix td { padding: 7px 8px; border-bottom: 1px solid #e0dbcd; vertical-align: middle; }
@@ -1417,11 +1416,10 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 
 /* Laptop report workspace: compact overview left, active requirement/source right. */
 @media (min-width: 1000px) and (max-width: 1399px) {
-  .report-desk .report-command-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "back back" "identity versions"; align-items: center; gap: 4px 16px; }
-  .report-command-bar > .review-back { grid-area: back; justify-self: start; }
-  .report-command-bar .report-command-identity { grid-area: identity; align-items: center; }
+  .report-desk .report-command-bar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .report-command-bar > .review-back { justify-self: start; }
+  .report-command-bar .report-command-identity { align-items: center; }
   .report-command-identity > div > .workspace-meta { display: none; }
-  .report-command-bar > .report-version-tools { grid-area: versions; max-width: 280px; margin-top: 0; }
   .report-reading-desk { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); grid-template-areas: "controls controls" "overview main"; gap: 14px 18px; }
   .report-requirement-controls { grid-area: controls; }
   .report-overview-band { grid-area: overview; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 0; align-self: start; }

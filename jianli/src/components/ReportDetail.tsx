@@ -10,7 +10,6 @@ import AccessGate, { ErrorNotice } from "./AccessGate";
 import { createReportReviewSession, initialReportReviewState } from "@/lib/report-review-session";
 import { useAuth } from "./AuthProvider";
 import ReportPaperHeader from "./ReportPaperHeader";
-import ReportVersionPicker from "./ReportVersionPicker";
 import { reportListHref, reportListQuery, reportOrigin } from "@/lib/report-navigation";
 import ReportComparisonPanel from "./ReportComparisonPanel";
 import McpAccessPanel from "./McpAccessPanel";
@@ -121,7 +120,7 @@ function ReportWorkspace({ id }: { id: string }) {
       </section>
     </div> : null;
   return <div className="review-workspace report-recording-layout report-desk layout-closeout min-w-0">
-    <ReportSections header={<ReportPaperHeader report={report} backHref={reportListHref(reportOrigin(origin))} versionTools={user?.role === "student" && <ReportVersionPicker report={report} origin={origin} />} />} sections={[
+    <ReportSections header={<ReportPaperHeader report={report} backHref={reportListHref(reportOrigin(origin))} />} sections={[
       { id: "report-matching", label: "岗位对照", content: <>
     {referenceCount > 0 && <aside className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">含 {referenceCount} 条第三方参考，仅供技术参考，不计入个人评级。</aside>}
     <ReportEvidenceWorkspace key={`requirements-${report.id}`} report={report} overview={studentOverview} selectedRequirementId={radarRequirementId} onRequirementChange={chooseRequirement} filter={filter} onFilterChange={changeFilter}>{report.items.map(item => <article id={`requirement-${item.requirementId}`} key={item.requirementId} className={`requirement-reading-panel workspace-sheet scroll-mt-24 ${item.evidenceList.length ? "requirement-has-sources" : ""}`}><div className="review-section-heading requirement-document-heading"><div className="min-w-0 flex-1">
