@@ -27,6 +27,8 @@ test("the known organization and its jobs share an alias without renaming other 
   const original = "职证场景实验室（虚构）";
   assert.equal(displayOrganizationName(original, "4d659934-55ec-42f7-a08c-3c26ba44a7f1"), "青禾科技");
   assert.equal(displayJobCompany(original, "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "青禾科技");
+  assert.equal(displayJobCompany(original, "c21c2feb-83db-4fda-a6f9-cb964bc98295"), "青禾科技");
+  assert.equal(displayJobTitle("原始岗位", "c21c2feb-83db-4fda-a6f9-cb964bc98295"), "Web 前端开发实习生");
   const legacyName = "验收企业（合成）";
   assert.equal(displayOrganizationName(legacyName, "015bf297-5cf8-46d1-94bb-cc1cb0e12a60"), "云栈科技");
   assert.equal(displayJobCompany(legacyName, "6c8ad563-ebf8-427c-b4a3-82905f37dbd0"), "云栈科技");
