@@ -322,6 +322,9 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 .discovery-job-direction { width: fit-content; max-width: 100%; padding: 3px 9px; border: 1px solid var(--brand-border); border-radius: 4px; background: var(--brand-surface); color: var(--ink-primary); font-size: 14px; font-weight: 650; overflow-wrap: anywhere; }
 .discovery-job-skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .discovery-job-skills li { max-width: 100%; padding: 2px 8px; border: 1px solid var(--ink-line); border-radius: 4px; background: color-mix(in srgb, var(--brand-surface) 42%, var(--paper-bg)); color: var(--ink-muted); font-size: 14px; overflow-wrap: anywhere; }
+.discovery-job-skills [data-skill="Python" i] { border-color: #93b4e8; color: #245592; }
+.discovery-job-skills [data-skill="SQL" i] { border-color: #92b9b9; color: #205d60; }
+.discovery-job-skills [data-skill="数据分析"] { border-color: #b6a6d2; color: #594780; }
 @media (min-width: 1280px) {
   .report-recording-layout .report-index-layout { grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr); }
 }

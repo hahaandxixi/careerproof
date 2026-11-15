@@ -67,7 +67,7 @@ from app.services.task_lifecycle import (
 from app.services.task_runner import run_isolated
 from app.tools.code_analyzer import canonical_skill
 from app.tools.evidence_levels import VERSION as EVIDENCE_LEVEL_VERSION
-from app.tools.fixture_provenance import fixture_job_ids
+from app.tools.fixture_provenance import fixture_job_ids, retired_demo_job_ids
 from app.tools.function_coverage import (
     redundant_source_request,
     task_plan_redundant_source_request,
@@ -601,6 +601,7 @@ class AnalysisService:
         fixture_ids = set(await self.session.scalars(fixture_job_ids()))
         if scope != "all":
             conditions.append(MatchReport.job_id.not_in(fixture_ids))
+            conditions.append(MatchReport.job_id.not_in(retired_demo_job_ids()))
         if q and q.strip():
             conditions.append(MatchReport.job_snapshot["title"].as_string().icontains(
                 q.strip(), autoescape=True,

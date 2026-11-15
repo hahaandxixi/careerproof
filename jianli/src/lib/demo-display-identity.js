@@ -37,6 +37,9 @@ const jobAliases = new Map([
   ["f05872f3-1b5f-4bb3-bfcd-9629d170b471", {
     title: "数据处理实习生", companyName: "云栈科技", description: undefined,
   }],
+  ["c21c2feb-83db-4fda-a6f9-cb964bc98295", {
+    title: "Web 前端开发实习生", companyName: "青禾科技", description: undefined,
+  }],
 ]);
 
 const resumeAliasesWithoutOriginalFilename = new Map([

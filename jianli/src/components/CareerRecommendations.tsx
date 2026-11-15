@@ -18,7 +18,7 @@ import CareerRequirementsComparison from "./CareerRequirementsComparison";
 
 const PRIORITY_LABELS = {
   high: "优先了解",
-  medium: "值得比较",
+  medium: "值得选择",
   explore: "探索方向",
 };
 const validationHint = (status: string) => status === "change_attribution_conflict"

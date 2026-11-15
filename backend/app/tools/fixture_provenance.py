@@ -15,6 +15,9 @@ FIXTURE_JOB_OWNERS = {
     UUID("1233f1e2-169f-4ea5-a5a0-542fa940e897"): UUID("568df462-33af-4824-9ebd-11a9b2760e0a"),
 }
 
+RETIRED_DEMO_JOB = UUID("5c57739e-bb61-498b-ae4b-5664f9e067a2")
+RETIRED_DEMO_CREATOR = UUID("568df462-33af-4824-9ebd-11a9b2760e0a")
+
 
 def is_fixture_job(job: Job) -> bool:
     return FIXTURE_JOB_OWNERS.get(job.id) == job.created_by
@@ -27,3 +30,8 @@ def fixture_job_predicate():
 
 def fixture_job_ids():
     return select(Job.id).where(fixture_job_predicate())
+
+
+def retired_demo_job_ids():
+    """Exclude verified retired scenarios from listings while keeping direct access."""
+    return select(Job.id).where(Job.id == RETIRED_DEMO_JOB, Job.created_by == RETIRED_DEMO_CREATOR)

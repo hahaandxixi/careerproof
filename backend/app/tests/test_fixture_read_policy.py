@@ -128,3 +128,67 @@ async def test_fixture_discovery_default_history_and_authorized_direct_access(jo
             saved = await session.get(MatchReport, report_ids[1])
             assert saved.summary == "保存原文不变" and saved.analysis_metadata == {"mode": "rules"}
 
+
+async def test_retired_demo_keeps_authorized_direct_access(jobs_db, monkeypatch):  # noqa: F811
+    app, factory = jobs_db
+    async with (
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as hr,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as student,
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as stranger,
+    ):
+        await register(hr, "retired-demo-hr@example.com")
+        org = await organization(hr)
+        owner = await owner_of(factory, org["id"])
+        user = await register(student, "retired-demo-student@example.com", "student")
+        await register(stranger, "retired-demo-stranger@example.com", "student")
+        title = "接口测试开发实习生"
+        active_id = await seed_job(factory, UUID(org["id"]), owner, title=title, is_demo=True)
+        retired_id = await seed_job(factory, UUID(org["id"]), owner, title=title, is_demo=True)
+        monkeypatch.setattr(fixture_provenance, "RETIRED_DEMO_JOB", retired_id)
+        monkeypatch.setattr(fixture_provenance, "RETIRED_DEMO_CREATOR", uuid4())
+        wrong_owner = (await student.get("/api/v1/jobs")).json()["data"]
+        assert wrong_owner["total"] == 2
+        monkeypatch.setattr(fixture_provenance, "RETIRED_DEMO_CREATOR", owner)
+
+        for client, path in [
+            (student, "/api/v1/jobs?pageSize=1"), (hr, "/api/v1/jobs/mine?pageSize=1"),
+        ]:
+            result = (await client.get(path)).json()["data"]
+            assert result["total"] == 1 and result["items"][0]["id"] == str(active_id)
+        assert (await student.get(f"/api/v1/jobs/{retired_id}")).status_code == 200
+        assert (await hr.get(f"/api/v1/jobs/{retired_id}/applications")).status_code == 200
+
+        async with factory() as session:
+            candidates = await JobRepository(session).recommendation_candidates(1)
+            assert [job.id for job in candidates] == [active_id]
+            ids = []
+            for job_id in [active_id, retired_id]:
+                task = AnalysisTask(
+                    created_by=UUID(user["id"]), task_type="job_match", status=TaskStatus.COMPLETED,
+                )
+                session.add(task)
+                await session.flush()
+                report = MatchReport(
+                    analysis_task_id=task.id, job_id=job_id,
+                    candidate_ref=user["id"], candidate_name="记录所有者",
+                    summary="历史原文仍可查阅", analysis_metadata={"mode": "rules"},
+                    job_snapshot={"title": title, "category": "software", "requirements": []},
+                    materials_snapshot=[],
+                )
+                session.add(report)
+                await session.flush()
+                ids.append(str(report.id))
+            await session.commit()
+        active_report, retired_report = ids
+        for view in ["reports", "jobs"]:
+            path = f"/api/v1/match-reports?scope=product&view={view}&pageSize=1"
+            product = (await student.get(path)).json()["data"]
+            assert product["total"] == 1 and product["items"][0]["id"] == active_report
+        archived = (await student.get("/api/v1/match-reports?scope=all")).json()["data"]
+        assert {row["id"] for row in archived["items"]} == set(ids)
+        assert all(row["recordProvenance"] is None for row in archived["items"])
+        direct_path = f"/api/v1/match-reports/{retired_report}?scope=product"
+        direct = await student.get(direct_path)
+        assert direct.status_code == 200 and direct.json()["data"]["summary"] == "历史原文仍可查阅"
+        assert (await stranger.get(direct_path)).status_code == 404
+
