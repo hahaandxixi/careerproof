@@ -5,9 +5,38 @@ import { createRequire } from "node:module";
 import { careerComparisonText, careerPlanConfigurationBlocked, careerPlanDisplayIdentity, careerPlanFailureMessage, careerRequirementRows, careerMissingRequirementLabel } from "../src/lib/career-plan-display.ts";
 import { sourceRelativePath } from "../src/lib/source-label.ts";
 import * as demoDisplay from "../src/lib/demo-display-identity.js";
+import { verdictLabel } from "../src/lib/verdict-display.js";
 const require = createRequire(import.meta.url);
 const { transform } = require("sucrase");
 const jsx = require("react/jsx-runtime");
+
+test("career requirements show group headings only when both groups have rows", () => {
+  const React = require("react");
+  const { renderToStaticMarkup } = require("react-dom/server");
+  const modules = {
+    react: React, "react/jsx-runtime": jsx,
+    "@/lib/career-plan-display": { careerMissingRequirementLabel, careerRequirementRows },
+    "@/lib/verdict-display.js": { verdictLabel },
+  };
+  const source = readFileSync(new URL("../src/components/CareerRequirementsComparison.tsx", import.meta.url), "utf8");
+  const mod = { exports: {} };
+  const code = transform(source, { transforms: ["typescript", "jsx", "imports"], jsxRuntime: "automatic", production: true }).code;
+  new Function("require", "module", "exports", code)(id => modules[id], mod, mod.exports);
+  const shared = { skill: "Python", text: "Read Python code", weight: 1, isRequired: true, ruleVerdict: "supported" };
+  const separate = { ...shared, skill: "SQL", text: "Read SQL queries" };
+  const job = (jobId, requirements) => ({ jobId, jobTitle: jobId, requirementCount: requirements.length, requirements });
+  const render = jobs => renderToStaticMarkup(React.createElement(mod.exports.default, { jobs }));
+  for (const rows of [[shared, shared], [shared, separate]]) {
+    const html = render([job("a", [rows[0]]), job("b", [rows[1]])]);
+    assert.doesNotMatch(html, /scope="rowgroup"/);
+    assert.match(html, /scope="row">Python/);
+  }
+  const mixed = render([job("a", [shared, separate]), job("b", [shared])]);
+  assert.match(mixed, /scope="rowgroup"[^>]*>各岗位明细/);
+  assert.match(mixed, /scope="rowgroup"[^>]*>相同要求与判断/);
+  assert.match(mixed, /明细未列/);
+  assert.match(mixed, /aria-expanded="false"/);
+});
 
 // Execute the real component with deterministic hooks and synthetic APIs.
 // This tests state transitions, not browser rendering or a real model request.

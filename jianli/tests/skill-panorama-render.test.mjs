@@ -88,6 +88,25 @@ test("unclassified requirements retain original unknown state, never invent a sk
   const html = render({ selected: "" });
   assert.match(html, /未标注技能的要求/); assert.match(html, /Original requirement b/); assert.match(html, /原始状态：custom_state/); assert.match(html, /状态未知 \/ 未评估/);
 });
+test("status filters own their color keys and only recorded extra statuses retain separate keys", () => {
+  const records = verdicts => [report("keys", verdicts.map((verdict, index) => item(String(index), "Python", verdict)), 1)];
+  const stateFor = verdicts => {
+    const entries = records(verdicts);
+    return { ...state, reports: entries, summaries: entries, total: 1, hasMore: false };
+  };
+  const ordinary = render({ state: stateFor(["supported", "claimed_only", "gap"]) });
+  assert.doesNotMatch(ordinary, /aria-label="原报告状态图例"/);
+  for (const status of ["supported", "claimed_only", "gap"]) {
+    assert.match(ordinary, new RegExp(`<button[^>]*><i class="statusDot" data-status="${status}"`));
+  }
+  const mixed = render({ state: stateFor(["supported", "unsupported", "custom_state"]) });
+  const keys = mixed.match(/<ul class="statusKeys"[^>]*>(.*?)<\/ul>/)?.[1];
+  assert.ok(keys);
+  assert.match(keys, /data-status="unsupported"/);
+  assert.match(keys, /data-status="unknown"/);
+  assert.doesNotMatch(keys, /data-status="(?:supported|claimed_only|gap)"/);
+  assert.doesNotMatch(mixed, /<button[^>]*><i class="statusDot" data-status="(?:unsupported|unknown)"/);
+});
 test("partial failure and list failure preserve healthy selectable skills and independent retry actions", () => {
   const html = render({ state: { ...state, summaries: [...reports, report("failed", [], 1)], failures: { failed: "offline" }, listError: "page offline" } });
   assert.match(html, /仅重试失败详情/); assert.match(html, /重试列表读取/); assert.match(html, /Python/); assert.match(html, /1 份报告详情暂不可用/);
