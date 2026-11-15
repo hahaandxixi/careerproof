@@ -52,3 +52,14 @@ test('version rejection offers read-only recovery and clears consent without a s
   assert.match(text(tree),/已更新/);assert.equal(nodes(tree).find(n=>n.type==='input').props.checked,false);assert.equal(h.submit(tree).props.disabled,true);nodes(tree).find(n=>n.type==='button'&&text(n)==='重新读取报告后确认').props.onClick();tree=await h.settle();
   assert.equal(h.refreshes,1);assert.equal(h.calls.length,1);assert.equal(h.submit(tree).props.disabled,true);
 });
+
+test('the sharing section keeps explicit consent and actionable risks in the form', async () => {
+  const h = mount();
+  const tree = await h.settle();
+  assert.match(text(tree), /投递时固定的报告/);
+  assert.match(text(tree), /简历原文件/);
+  assert.match(text(tree), /撤回前已下载的副本无法追回/);
+  assert.doesNotMatch(text(tree), /其他分享说明与限制|打开求职工作台/);
+  assert.equal(nodes(tree).find(n => n.type === 'input').props.checked, false);
+  assert.equal(h.submit(tree).props.disabled, true);
+});

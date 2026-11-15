@@ -62,10 +62,10 @@ export function SkillPanoramaWorkspace({ ownerId }: { ownerId: string }) {
 
 /** Quantity band inside one skill card. Status colors never leak onto the domain tag. */
 function CountBand({ counts, label }: { counts: StatusCounts; label: string }) {
-  return <div className={styles.band} role="img" aria-label={`${label}：${PANORAMA_STATUSES.filter(status => counts[status]).map(status => `${PANORAMA_STATUS_LABELS[status]} ${counts[status]} 条`).join("，")}`}>
+  return <span className={styles.band} role="img" aria-label={`${label}：${PANORAMA_STATUSES.filter(status => counts[status]).map(status => `${PANORAMA_STATUS_LABELS[status]} ${counts[status]} 条`).join("，")}`}>
     {PANORAMA_STATUSES.filter(status => counts[status] > 0).map(status => <span key={status} data-status={status}
       style={{ flexGrow: counts[status] }} title={`${PANORAMA_STATUS_LABELS[status]} · ${counts[status]} 条`} />)}
-  </div>;
+  </span>;
 }
 
 /** Small technical glyphs keep cards scannable without inventing capability levels. */
@@ -141,16 +141,16 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
   const skill = landscape.skills.find(value => value.key === selected);
   const contexts = filterSkillContexts(selected === "" ? landscape.unclassified : skill?.contexts ?? [], filter);
   const dialog = useRef<HTMLDialogElement>(null);
-  const opener = useRef<Element | null>(null);
-  const openEvidence = (key: string, trigger?: Element) => {
+  const opener = useRef<HTMLButtonElement | null>(null);
+  const openEvidence = (key: string, trigger: HTMLButtonElement) => {
     onSelect(key);
     if (!dialog.current?.open && dialog.current) {
-      opener.current = trigger ?? document.activeElement;
+      opener.current = trigger;
       dialog.current.showModal();
     }
   };
   const restoreFocus = () => {
-    if ((opener.current instanceof HTMLElement || opener.current instanceof SVGElement) && opener.current.isConnected) {
+    if (opener.current?.isConnected) {
       opener.current.focus({ preventScroll: true });
     }
   };
@@ -165,7 +165,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
     [...landscape.skills.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
-  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={openEvidence} opensDialog />;
+  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
       <div><h1>技能全景</h1></div>
@@ -203,23 +203,30 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
               const domain = skillDomain(value.name);
               const reviewCount = value.contexts.filter(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected").length;
               const selectedCard = selected === value.key;
-              return <button key={value.key} className={styles.skillCard} aria-pressed={selectedCard} aria-haspopup="dialog" aria-controls="skill-evidence-drawer" onClick={event => openEvidence(value.key, event?.currentTarget)}>
-                <SkillIcon domain={domain.domain}/>
-                <span className={styles.skillCardBody}>
-                  <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
-                  <CountBand counts={value.counts} label={value.name}/>
-                  <span className={styles.skillFooter}>
-                    <span>{value.contexts.length} 条要求记录</span>
-                    <span>{skillJobCount(value.contexts)} 个岗位</span>
-                    {reviewCount > 0 && <span className={styles.reviewMark}>需复核 {reviewCount} 条</span>}
+              return <div key={value.key} className={styles.skillCard} data-selected={selectedCard || undefined}>
+                <button type="button" className={styles.skillCardSelect} aria-pressed={selectedCard} onClick={() => onSelect(value.key)}>
+                  <SkillIcon domain={domain.domain}/>
+                  <span className={styles.skillCardBody}>
+                    <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
+                    <CountBand counts={value.counts} label={value.name}/>
+                    <span className={styles.skillFooter}>
+                      <span>{value.contexts.length} 条要求记录</span>
+                      <span>{skillJobCount(value.contexts)} 个岗位</span>
+                      {reviewCount > 0 && <span className={styles.reviewMark}>需复核 {reviewCount} 条</span>}
+                    </span>
                   </span>
-                </span>
-                <span className={styles.cardArrow}>查看依据 →</span>
-              </button>;
+                </button>
+                <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
+                  aria-label={"查看依据：" + value.name} onClick={event => openEvidence(value.key, event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
+              </div>;
             })}</div>
           </section>;
         })}
-        {!!unclassifiedMatched && <button className={styles.unclassified} aria-pressed={selected === ""} aria-haspopup="dialog" aria-controls="skill-evidence-drawer" onClick={event => openEvidence("", event?.currentTarget)}>未标注技能的要求 <strong>{unclassifiedMatched}</strong><span>保留原要求，不推测技能名称 →</span></button>}
+        {!!unclassifiedMatched && <div className={styles.unclassified}>
+          <button type="button" aria-pressed={selected === ""} onClick={() => onSelect("")}>未标注技能的要求 <strong>{unclassifiedMatched}</strong></button>
+          <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
+            aria-label="查看依据：未标注技能的要求" onClick={event => openEvidence("", event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
+        </div>}
         {!landscape.contextCount && <p className={styles.noRecords}>{state.busy ? "正在读取报告中的技能与要求…" : "已读取报告中暂无技能或要求记录。可核对原报告，或继续加载其他报告。"}</p>}
         {!!landscape.contextCount && !visibleSkills.length && !unclassifiedMatched && <p className={styles.noRecords}>当前筛选没有匹配的要求记录。<button type="button" className="btn-secondary btn-compact" onClick={() => onFilterChange?.("all")}>查看全部记录</button></p>}
       </section>

@@ -35,7 +35,7 @@ export interface ResumePreview {
   status: string;
   sections: { id: string; sectionType: string; content: string; pageNumber: number | null }[];
 }
-export interface ProjectFileSummary { id: string; relativePath: string; language: string; sizeBytes: number; lineCount: number }
+export interface ProjectFileSummary { id: string; relativePath: string; language: string | null; sizeBytes: number; lineCount: number }
 export interface ProjectFileContent { id: string; relativePath: string; content: string; projectVersionId: string }
 export interface ReportSummary {
   id: string; jobId: string; jobTitle: string; candidateId: string; candidateName: string;

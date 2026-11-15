@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { skillRecordMeasure, type PanoramaSkill } from "@/lib/skill-panorama";
 import styles from "./SkillPanorama.module.css";
 
-export default function SkillOverviewRadar({ skills, selected, onSelect, opensDialog }: {
-  skills: PanoramaSkill[]; selected: string | null; onSelect(key: string, trigger?: Element): void; opensDialog?: boolean;
+export default function SkillOverviewRadar({ skills, selected, onSelect }: {
+  skills: PanoramaSkill[]; selected: string | null; onSelect(key: string): void;
 }) {
   const [page, setPage] = useState(0);
   const pages = Math.ceil(skills.length / 8);
@@ -32,7 +32,7 @@ export default function SkillOverviewRadar({ skills, selected, onSelect, opensDi
       {pages > 1 && <div className={styles.radarPages}><button type="button" className="btn-secondary btn-compact" disabled={currentPage === 0} onClick={() => setPage(currentPage - 1)}>上一组</button><span>{currentPage + 1} / {pages} 组</span><button type="button" className="btn-secondary btn-compact" disabled={currentPage + 1 >= pages} onClick={() => setPage(currentPage + 1)}>下一组</button></div>}
     </div>
     <details className={styles.radarHelp}><summary>统计范围</summary><p>已加载的每份报告按岗位要求计数，同一报告的同一要求只计一次；占比为有证据支持记录数除以该技能的全部已加载记录数，筛选不改变分母。未评估记录和本人复核另行标记。</p></details>
-    {visible.length ? <svg className={styles.radarSvg} viewBox={visible.length === 3 ? "0 20 500 345" : "0 0 500 450"} role="group" aria-label="已加载记录中有证据支持的占比，选择技能查看来源">
+    {visible.length ? <svg className={styles.radarSvg} viewBox={visible.length === 3 ? "0 20 500 345" : "0 0 500 450"} role="group" aria-label="已加载记录中有证据支持的占比，选择技能">
       {[25, 50, 75, 100].map(value => <circle key={value} cx="250" cy="225" r={112 * value / 100} fill="none" className={styles.radarRing} />)}
       {visible.map((skill, index) => { const end=point(index,1); return <line key={skill.key} x1="250" y1="225" x2={end.x} y2={end.y} stroke="var(--radar-axis)" />; })}
       {area && <polygon points={area} fill="var(--radar-data)" fillOpacity={0.16} aria-hidden="true" />}
@@ -46,8 +46,8 @@ export default function SkillOverviewRadar({ skills, selected, onSelect, opensDi
         const label={x:Math.min(434,Math.max(66,raw.x)),y:Math.min(414,Math.max(31,raw.y))};
         const active=skill.key===selected, characters=Array.from(skill.name), labelName=characters.length > 8 ? `${characters.slice(0,7).join("")}…` : skill.name;
         return <g key={skill.key}>
-          {mark && <circle cx={mark.x} cy={mark.y} r={active ? 6 : 4.5} className={m.ratio === 0 ? styles.radarZeroPoint : styles.radarPoint}/>}
-          <g role="button" tabIndex={0} aria-haspopup={opensDialog ? "dialog" : undefined} aria-pressed={active} aria-label={`${skill.name}，${m.ratio === null ? "无可评估记录" : `有证据支持 ${m.supported}/${m.total} 条`}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，查看记录`} onClick={event => onSelect(skill.key, event?.currentTarget)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key, event.currentTarget);} }} className={styles.radarAxis}>
+          <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${m.ratio === null ? "无可评估记录" : `有证据支持 ${m.supported}/${m.total} 条`}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，选择技能`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
+            {mark && <circle cx={mark.x} cy={mark.y} r={active ? 6 : 4.5} className={m.ratio === 0 ? styles.radarZeroPoint : styles.radarPoint}/>}
             <title>{`${skill.name}：有证据支持 ${m.supported}/${m.total} 条，未评估 ${m.unassessed} 条，需复核 ${m.review} 条`}</title><rect x={label.x-64} y={label.y-23} width="128" height="47" rx="6" className={styles.radarAxisFrame}/>
             <text x={label.x} y={label.y-4} textAnchor="middle" className={styles.radarLabel}>{labelName}</text>
             <text x={label.x} y={label.y+13} textAnchor="middle" className={styles.radarValue}>{m.ratio===null ? "未评估" : `${Math.round(m.ratio*100)}% · ${m.supported}/${m.total}`}{m.unassessed ? " · 未评估" : ""}</text>

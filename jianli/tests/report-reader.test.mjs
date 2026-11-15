@@ -476,3 +476,33 @@ test("material preview keeps an exact report return and offers materials for dir
  assert.ok(fromReport.includes(`href="${href}"`));
  assert.doesNotMatch(fromReport, /href="\/portfolio"/);
 });
+
+test("the embedded reader selects the longest real source while leaving the fixed version's list intact", async () => {
+ const {defaultProjectSource}=await load("components/ProjectFileReader.tsx");
+ const files=[
+  {id:"readme",relativePath:"README.md",language:null,sizeBytes:9000,lineCount:350},
+  {id:"document",relativePath:"document.txt",language:"Document",sizeBytes:1500,lineCount:150},
+  {id:"short",relativePath:"schema.sql",language:"SQL",sizeBytes:98,lineCount:5},
+  {id:"long",relativePath:"app.py",language:"Python",sizeBytes:700,lineCount:48},
+  {id:"empty",relativePath:"empty.py",language:"Python",sizeBytes:0,lineCount:1},
+ ];
+ const before=structuredClone(files);
+ assert.equal(defaultProjectSource(files)?.id,"long");
+ assert.equal(defaultProjectSource([files[2]])?.id,"short");
+ assert.equal(defaultProjectSource([files[0],files[1],files[4]]),undefined);
+ assert.deepEqual(files,before);
+});
+
+test("the report defers fixed file reads until opening materials without deferring other panels", async () => {
+ const {default: Sections}=await load("components/ReportSections.tsx");
+ const section=(id,content,defer)=>({id,label:id,content,defer});
+ const page=renderToStaticMarkup(React.createElement(Sections,{sections:[
+  section("report-matching","Original report"),
+  section("report-materials","Read fixed files on open",true),
+  section("report-sharing",React.createElement("textarea",{defaultValue:"Unsaved draft"})),
+ ]}));
+ assert.match(page,/Original report/);
+ assert.match(page,/id="report-materials"/);
+ assert.doesNotMatch(page,/Read fixed files on open/);
+ assert.match(page,/Unsaved draft/);
+});

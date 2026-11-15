@@ -148,3 +148,10 @@ test("two requirements from one report stay together and show separate review co
   assert.doesNotMatch(html, /\/reports\/sql#requirement-index/);
   assert.doesNotMatch(html, /该岗位其他/);
 });
+
+test("skill selection and evidence are separate sibling controls with distinct accessibility semantics", () => {
+  const html = render({ selected: "python" });
+  assert.match(html, /<button type="button" class="skillCardSelect" aria-pressed="true">/);
+  assert.match(html, /<\/button><button type="button" class="cardEvidence" aria-haspopup="dialog" aria-controls="skill-evidence-drawer" aria-label="查看依据：Python"/i);
+  assert.doesNotMatch(html, /aria-pressed="(?:true|false)" aria-haspopup="dialog"/);
+});
