@@ -87,6 +87,7 @@ export default function CareerSupplementRoute({ advice, job, planId, report }: {
         </div>
       </details>}
     {copyLines.length > 0 && <div className="flex flex-wrap items-center gap-3"><CopySupplementAdvice label="复制规划建议"
+      scope={`${planId}:${job.jobId}`}
       text={[`职业规划建议 · ${displayJobTitle(job.jobTitle || report?.jobTitle || "本岗位", job.jobId)}`, ...copyLines].join("\n")} /></div>}
   </section>;
 }

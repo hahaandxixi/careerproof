@@ -4,13 +4,13 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { reportUploadHref } from "@/lib/report-follow-up";
 
-export function CopySupplementAdvice({ text, label = "复制补证建议" }: { text: string; label?: string }) {
+export function CopySupplementAdvice({ text, scope, label = "复制补证建议" }: { text: string; scope: string; label?: string }) {
   const [status, setStatus] = useState<"idle" | "copying" | "copied" | "manual">("idle");
   const generation = useRef(0);
   useEffect(() => {
     generation.current += 1; setStatus("idle");
     return () => { generation.current += 1; };
-  }, [text]);
+  }, [scope, text]);
   async function copy() {
     const ticket = ++generation.current;
     setStatus("copying");
@@ -31,7 +31,7 @@ export function CopySupplementAdvice({ text, label = "复制补证建议" }: { t
 
 export default function ReportFollowUpActions({ reportId, requirementId, text, projectVersionId }: { reportId: string; requirementId: string; text: string | null; projectVersionId?: string }) {
   return <div className="flex flex-wrap items-center gap-3" aria-label="在自己的开发环境补证">
-    {text && <CopySupplementAdvice text={text} />}
+    {text && <CopySupplementAdvice scope={`${reportId}:${requirementId}`} text={text} />}
     <Link className="btn inline-flex min-h-11 items-center" href={reportUploadHref(reportId, requirementId, projectVersionId)}>{projectVersionId ? "上传新版材料" : "添加项目材料"}</Link>
   </div>;
 }
