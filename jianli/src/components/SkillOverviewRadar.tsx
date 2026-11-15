@@ -45,12 +45,13 @@ export default function SkillOverviewRadar({ skills, selected, onSelect }: {
         const m=measures[index], mark=m.ratio === null ? null : point(index,m.ratio), raw=point(index,1.58);
         const label={x:Math.min(434,Math.max(66,raw.x)),y:Math.min(414,Math.max(31,raw.y))};
         const active=skill.key===selected, characters=Array.from(skill.name), labelName=characters.length > 8 ? `${characters.slice(0,7).join("")}…` : skill.name;
+        const support = m.ratio === null ? "无可评估记录" : "有证据支持 " + m.supported + "/" + m.total + " 条";
         return <g key={skill.key}>
-          <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${m.ratio === null ? "无可评估记录" : `有证据支持 ${m.supported}/${m.total} 条`}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，选择技能`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
+          <g role="button" tabIndex={0} aria-pressed={active} aria-label={`${skill.name}，${support}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条，选择技能`} onClick={() => onSelect(skill.key)} onKeyDown={event => { if(event.key==="Enter" || event.key===" "){event.preventDefault();onSelect(skill.key);} }} className={styles.radarAxis}>
             {mark && <circle cx={mark.x} cy={mark.y} r={active ? 6 : 4.5} className={m.ratio === 0 ? styles.radarZeroPoint : styles.radarPoint}/>}
-            <title>{`${skill.name}：有证据支持 ${m.supported}/${m.total} 条，未评估 ${m.unassessed} 条，需复核 ${m.review} 条`}</title><rect x={label.x-64} y={label.y-23} width="128" height="47" rx="6" className={styles.radarAxisFrame}/>
+            <title>{`${skill.name}：${support}，未评估 ${m.unassessed} 条，需复核 ${m.review} 条`}</title><rect x={label.x-64} y={label.y-23} width="128" height="47" rx="6" className={styles.radarAxisFrame}/>
             <text x={label.x} y={label.y-4} textAnchor="middle" className={styles.radarLabel}>{labelName}</text>
-            <text x={label.x} y={label.y+13} textAnchor="middle" className={styles.radarValue}>{m.ratio===null ? "未评估" : `${Math.round(m.ratio*100)}% · ${m.supported}/${m.total}`}{m.unassessed ? " · 未评估" : ""}</text>
+            <text x={label.x} y={label.y+13} textAnchor="middle" className={styles.radarValue}>{m.ratio===null ? "未评估" : `${Math.round(m.ratio*100)}% · ${m.supported}/${m.total}`}{m.ratio !== null && m.unassessed > 0 ? " · 未评估" : ""}</text>
             {m.review > 0 && <text x={label.x+55} y={label.y-9} textAnchor="middle" className={styles.radarReview}>!</text>}
           </g>
         </g>;

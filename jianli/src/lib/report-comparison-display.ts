@@ -40,7 +40,8 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
     const levelChanged = item.baseLevel !== item.targetLevel;
     const needsEvidence = !!now && (["partial", "claimed_only", "gap"].includes(now.verdict)
       || ["rejected", "corrected"].includes(now.confirmationStatus ?? ""));
-    const changed = evidenceChanged || statusChanged || levelChanged || item.changes.length > 0 || item.status !== "existing";
+    const changed = evidenceChanged || statusChanged || levelChanged || item.status !== "existing"
+      || item.changes.includes("requirement") || item.changes.includes("review");
     const baseStatus = old ? verdictLabel(old.verdict) : "基准报告无此项";
     const targetStatus = now ? verdictLabel(now.verdict) : "当前报告无此项";
     const summary = item.status !== "existing"
@@ -50,7 +51,7 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
       : evidenceChanged ? `新增展示 ${added.length} 处、移除展示 ${removed.length} 处引用；${statusChanged ? "判断状态已改变，请核对下方来源。" : "判断状态未改变。"}`
       : statusChanged ? "判断状态已改变，未记录引用集合变化；请核对解释和判定条件。"
       : levelChanged ? "证据等级发生变化，判断状态未改变；请核对判定记录。"
-      : changed ? "解释、建议或判定背景有更新，判断状态未改变。"
+      : changed ? "岗位要求或本人复核已变化，判断状态未改变。"
       : retained.length ? `两次报告展示的引用集合未变（保留 ${retained.length} 处），判断状态未变。`
       : "本项没有检测到变化。";
     return { item, old, now, added, removed, retained, evidenceChanged, statusChanged, levelChanged, needsEvidence, changed, baseStatus, targetStatus, summary };

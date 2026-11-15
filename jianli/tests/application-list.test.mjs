@@ -91,13 +91,15 @@ test("卡片突出岗位/公司/状态/下一动作，锚点 id 保留", () => {
   assert.ok(html.includes('id="application-app-1"'), html);
 });
 
-test("完整投递记录默认折叠，摘要给条数，内容仍可展开", () => {
-  const html = renderCard(fixture());
-  const details = /<details[^>]*>[\s\S]*?<\/details>/.exec(html)?.[0] ?? "";
-  assert.ok(details, "投递记录必须用 details 承载");
-  assert.ok(!/<details[^>]*\bopen[\s>]/i.test(details), "投递记录默认必须折叠");
-  assert.ok(details.includes("投递记录（2 条）"), details);
-  assert.ok(details.includes("企业已查看报告"), "展开后应能看到完整事件");
+test("保留实际状态和近期进度，页面不展开原事件日志", () => {
+  const item=fixture(), original=structuredClone(item.events);
+  const html=renderCard(item);
+  assert.doesNotMatch(html,/投递记录（\d+ 条）|<details|已确认授权投递|企业已查看报告/);
+  assert.match(html,/class="application-event-flow"/);
+  assert.match(html,/>授权投递<\/strong>/);
+  assert.match(html,/>企业查看<\/strong>/);
+  assert.match(html,/撤回授权|查看关联报告/);
+  assert.deepEqual(item.events,original);
 });
 
 test("查看与下载状态的卡片不推断录用", () => {

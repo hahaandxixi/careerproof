@@ -6,7 +6,6 @@ import {
   applicationStatusText,
   applicationReplyText,
   applicationNextAction,
-  applicationEventsSummary,
 } from "../src/lib/application-display.ts";
 
 test("五种投递状态都有确定的状态文案", () => {
@@ -38,9 +37,4 @@ test("查看/下载状态只描述已发生事件，下一步等待回复且不�
 
 test("每种已知状态都有非空的下一步动作", () => {
   for (const status of Object.keys(APPLICATION_STATUS_TEXT)) assert.ok(applicationNextAction(status).length > 0);
-});
-
-test("事件列表摘要只给条数，不展开事件内容", () => {
-  assert.equal(applicationEventsSummary([{}, {}, {}]), "投递记录（3 条）");
-  assert.equal(applicationEventsSummary([]), "投递记录（0 条）");
 });

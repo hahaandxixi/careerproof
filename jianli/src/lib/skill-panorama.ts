@@ -70,7 +70,7 @@ const categories: [string, string[]][] = [
   ["编程语言", ["python", "java", "javascript", "typescript", "c", "c++", "c#", "go", "rust", "r"]],
   ["数据与存储", ["sql", "mysql", "postgresql", "redis", "mongodb", "pandas", "numpy", "excel", "数据分析", "数据清洗"]],
   ["框架与应用", ["react", "vue", "django", "flask", "fastapi", "spring", "spring boot", "node.js", "html", "css"]],
-  ["工程与协作", ["git", "linux", "docker", "kubernetes", "pytest", "单元测试", "软件测试", "沟通", "团队协作"]],
+  ["工程与协作", ["git", "linux", "docker", "kubernetes", "pytest", "单元测试", "软件测试", "测试用例", "接口测试", "缺陷记录", "测试报告", "沟通", "团队协作"]],
 ];
 export const PANORAMA_CATEGORIES = [...categories.map(([name]) => name), "其他 / 未分类"];
 export function skillDisplayName(value: string): string { return value.trim().replace(/\s+/g, " "); }

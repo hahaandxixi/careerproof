@@ -21,7 +21,7 @@ const skillDomains: Record<string, { domain: string; label: string }> = {};
 for (const name of ["python", "java", "javascript", "c", "c++", "c#", "go", "rust", "r", "django", "flask", "fastapi", "spring", "spring boot", "node.js"]) skillDomains[name] = { domain: "backend", label: "后端" };
 for (const name of ["react", "vue", "typescript", "html", "css"]) skillDomains[name] = { domain: "frontend", label: "前端" };
 for (const name of ["sql", "mysql", "postgresql", "redis", "mongodb", "pandas", "numpy", "excel", "数据分析", "数据清洗"]) skillDomains[name] = { domain: "data", label: "数据" };
-for (const name of ["pytest", "单元测试", "软件测试"]) skillDomains[name] = { domain: "testing", label: "测试" };
+for (const name of ["pytest", "单元测试", "软件测试", "测试用例", "接口测试", "缺陷记录", "测试报告"]) skillDomains[name] = { domain: "testing", label: "测试" };
 for (const name of ["git", "linux", "docker", "kubernetes", "沟通", "团队协作"]) skillDomains[name] = { domain: "tools", label: "工具" };
 const skillDomain = (name: string) => skillDomains[name.trim().toLowerCase()] ?? { domain: "tools", label: "工具与未知" };
 
@@ -197,7 +197,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
       </section>
       <section className={styles.cards} aria-label="技能分组全景">
         {groups.map(group => {
-          return <section className={styles.group} key={group.category} aria-label={group.category}>
+          return <section className={styles.group} key={group.category} aria-label={group.category} data-multiple={group.skills.length > 1 || undefined}>
             <div className={styles.groupHeading}><h3>{group.category}</h3></div>
             <div className={styles.skills}>{group.skills.map(value => {
               const domain = skillDomain(value.name);

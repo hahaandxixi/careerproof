@@ -27,6 +27,11 @@ test('circular radar uses full record counts and preserves unknown and review in
  const axes=nodes.filter(n=>n.type==='g'&&n.props.role==='button');assert.equal(axes.length,3);
  assert.match(axes[0].props['aria-label'],/Python，有证据支持 1\/2 条，未评估 0 条，需复核 1 条/);
  assert.match(axes[1].props['aria-label'],/SQL，无可评估记录，未评估 1 条/);
+ const unassessed=f.nodes(axes[1]);
+ assert.match(unassessed.find(n=>n.type==='title').props.children,/无可评估记录/);
+ const value=unassessed.find(n=>n.type==='text'&&n.props.className==='radarValue');
+ assert.deepEqual(React.Children.toArray(value.props.children),['未评估','']);
+
  assert.equal(nodes.filter(n=>n.type==='line'&&n.props.stroke==='var(--radar-data)').length,1);
  axes[1].props.onClick();assert.equal(f.picked,'sql');f.key(axes[2],'Enter');assert.equal(f.picked,'pytest');assert.equal(f.prevented,true);
 });

@@ -7,7 +7,6 @@ import { createRequire } from "node:module";
 import { comparisonRows, comparisonCounts, filterComparisonRows, groupComparisonSources, sourceRecordKind } from "../src/lib/report-comparison-display.ts";
 import * as logic from "../src/lib/report-comparison-display.ts";
 import * as sourceLabels from "../src/lib/source-label.ts";
-import * as levels from "../src/lib/evidence-display.ts";
 import * as pairs from "../src/lib/report-pair.ts";
 
 function source(overrides = {}) {
@@ -72,31 +71,25 @@ function load(path, modules) {
 function render(f, filter="changed", citationGroup) {
   let stateCall=0;
   const runtime=require("react/jsx-runtime");
-  const Explanation=load("../src/components/ReportItemExplanation.tsx",{"react/jsx-runtime":runtime});
   const View=load("../src/components/ReportComparisonView.tsx",{
-    "@/lib/demo-display-identity.js":demoPresentation,
     react:{useState:initial=>{const call=stateCall++;return[call===0?filter:call===2&&citationGroup?citationGroup:initial,()=>{}];}},"react/jsx-runtime":runtime,
     "next/link":{__esModule:true,default:props=>React.createElement("a",props)},
-    "@/lib/report-navigation":navigation,"@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,"@/lib/evidence-display":levels,
-    "@/lib/report-display":{aiStatusLabel:(value)=>value ? String(value) : "未记录"},
-    "@/lib/growth-workflow":{GROWTH_CHANGES:{}},"./ReportItemExplanation":{__esModule:true,default:Explanation},
+    "@/lib/report-navigation":navigation,"@/lib/report-comparison-display":logic,"@/lib/source-label":sourceLabels,
   });
   return renderToStaticMarkup(React.createElement(View,f));
 }
 
-test("comparison lists a shared fixed version once and keeps distinct same-title versions on their own sides", () => {
-  const f = fixture();
-  const [project] = f.value.baseMaterials;
-  const resume = { ...project, kind: "resume", id: "resume-version", title: "数据工程简历" };
-  const alternate = { ...project, id: "different-project-version" };
-  f.value.baseMaterials = [resume, project];
-  f.value.targetMaterials = [resume, alternate];
-
-  const html = render(f);
-  assert.match(html, /两份报告共用<\/h3><ul><li>数据工程简历 · 第 1 版<\/li>/);
-  assert.match(html, /仅 A 基准<\/h3><ul><li>报名服务 · 第 1 版<\/li>/);
-  assert.match(html, /仅 B 对照<\/h3><ul><li>报名服务 · 第 1 版<\/li>/);
-  assert.equal((html.match(/数据工程简历 · 第 1 版/g) ?? []).length, 1);
+test("comparison leaves material identity on source links without a separate versions block", () => {
+  const added=source({citationId:"R1-E2",projectVersionId:"version-2",filePath:"version-2/src/service.py",lineStart:22,lineEnd:23});
+  const f=fixture({added:[added],changes:["evidence"],sources:[added]});
+  const [project]=f.value.baseMaterials;
+  const resume={...project,kind:"resume",id:"resume-version",title:"数据工程简历"};
+  f.value.baseMaterials=[resume,project];
+  f.value.targetMaterials=[resume,{...project,id:"version-2",versionNumber:2}];
+  const html=render(f);
+  assert.doesNotMatch(html,/对比材料版本|两份报告共用|数据工程简历/);
+  assert.match(html,/第 2 版/);
+  assert.match(html,/href="\/reports\/current-report#citation-R1-E2" target="_blank"/);
 });
 
 test("real comparison view opens changed sources and keeps removed citations on the base report", () => {
@@ -127,11 +120,11 @@ test("status changes without sources still render both judgments and a single ze
   assert.doesNotMatch(html,/引用数量变化|没有可展开的记录/);
 });
 
-test("no-change message, filters, counts and old explanations remain available without text rewriting", () => {
+test("no-change message and filters remain, with original explanations in the saved reports", () => {
   const f=fixture(), original=structuredClone(f);
   assert.match(render(f),/本次没有检测到变化/);
   const html=render(f,"all"); assert.match(html,/没有变化<span[^>]*>1<\/span>/);
-  assert.match(html,/同一解释/);
+  assert.doesNotMatch(html,/同一解释|判断依据、建议与复核/);
   assert.doesNotMatch(html,/<details[^>]*\sopen(?:[\s=>])/);
   assert.deepEqual(f,original);
 });
@@ -161,20 +154,26 @@ test("panel only displays complete authorized report data and preserves actual r
   }
 });
 
-test("real rule-version key warns on comparison while preserving original rule identities", () => {
-  for (const [formulaChanged, evidenceChanged] of [[true,false],[false,true],[true,true],[false,false]]) {
-    const changed = formulaChanged || evidenceChanged;
-    const f=fixture({changes:changed?["rule_version"]:[]});
-    f.value.contextChanges=changed?["rule_version"]:[];
-    Object.assign(f.base.items[0],{formulaVersion:"formula-A",evidenceLevelVersion:"evidence-A"});
-    Object.assign(f.current.items[0],{formulaVersion:formulaChanged?"formula-B":"formula-A",evidenceLevelVersion:evidenceChanged?"evidence-B":"evidence-A"});
-    const html=render(f,"all");
-    assert.equal(html.includes("比较依据变化"),changed);
-    if (changed) {
-      assert.match(html,/formula-A/);
-      assert.match(html,/evidence-A/);
-      assert.equal(html.includes("formula-B"),formulaChanged);
-      assert.equal(html.includes("evidence-B"),evidenceChanged);
-    }
-  }
+test("technical-only changes are excluded from visible changes and raw comparison metadata is not rendered", () => {
+  const f=fixture({changes:["rule_version","ai_status","interpretation","advice"]});
+  f.value.contextChanges=["rule_version","model_or_mode","retrieval_version"];
+  Object.assign(f.base.items[0],{formulaVersion:"evidence-v4",evidenceLevelVersion:"practice-evidence-v5-redis-operation"});
+  Object.assign(f.current.items[0],{formulaVersion:"formula-raw",evidenceLevelVersion:"rule-raw"});
+  Object.assign(f.value.items[0],{baseReview:"pending",targetReview:"accepted",targetExplanation:"执行草稿"});
+  const original=structuredClone(f);
+  assert.equal(comparisonCounts(rows(f)).changed,0);
+  assert.match(render(f),/本次没有检测到变化/);
+  assert.doesNotMatch(render(f,"all"),/对比材料版本|比较依据变化|其他变化|evidence-v4|practice-evidence-v5|formula-raw|rule-raw|pending|accepted|执行草稿/);
+  assert.deepEqual(f,original);
+});
+test("request, verdict and citation changes remain visible when technical metadata also changes", () => {
+  const added=source({citationId:"R1-E2",lineStart:24,lineEnd:25});
+  const f=fixture({oldVerdict:"claimed_only",verdict:"supported",added:[added],changes:["requirement","evidence","rule_version"],sources:[added]});
+  f.value.items[0].targetInformationGap="先对照已有断言和未覆盖的异常场景";
+  const html=render(f);
+  assert.match(html,/要求变化/);
+  assert.match(html,/判断变化/);
+  assert.match(html,/引用变化/);
+  assert.match(html,/href="\/reports\/current-report#citation-R1-E2"/);
+  assert.doesNotMatch(html,/比较依据变化|判断公式|其他变化|待核对：|先对照已有断言/);
 });

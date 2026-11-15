@@ -40,7 +40,3 @@ export function applicationReplyInfo(item: { replyKind?: string | null; events?:
 export function applicationNextAction(status: string): string {
   return APPLICATION_NEXT_ACTION[status] ?? "刷新投递状态获取最新进展。";
 }
-
-export function applicationEventsSummary(events: readonly unknown[]): string {
-  return `投递记录（${events.length} 条）`;
-}
