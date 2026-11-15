@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useEffect, useState, type ReactNode } from "react";
+import { Children, useEffect, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
@@ -104,6 +104,11 @@ export default function ReportRequirementReader({ items, children, overview, sel
     { key: "gaps", label: "待补或仅声明", count: state.gaps.length },
     { key: "other", label: "未覆盖或需复核", count: state.other.length },
   ];
+  const selectRequirement = (event: ReactMouseEvent<HTMLAnchorElement>, requirementId: string) => {
+    if (!controlled || !onRequirementChange || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onRequirementChange(requirementId);
+  };
   const changeFilter = (filter: WorkspaceFilter) => {
     if (onFilterChange) { onFilterChange(filter); return; }
     const list = workspaceRequirements(items, filter);
@@ -130,11 +135,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
         {visible.length ? <ol className="report-index-chips">{visible.map(item => {
           const isSelected = selected === item.requirementId;
           return <li key={item.requirementId} className="min-w-0"><a href={`#requirement-${item.requirementId}`} aria-current={isSelected ? "true" : undefined} title={`${item.requirementTitle} · ${workspaceStatusLabel(item)}`}
-            className="report-index-chip" onClick={event => {
-              if (!controlled || !onRequirementChange || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-              event.preventDefault();
-              onRequirementChange(item.requirementId);
-            }}>
+            className="report-index-chip" onClick={event => selectRequirement(event, item.requirementId)}>
             <span className={`report-index-dot tone-${reportStatusTone(item)}`} aria-hidden="true" />
             <span className="report-index-chip-name">{labels.get(item.requirementId)?.label}</span>
             <span className="sr-only">，{workspaceStatusLabel(item)}</span>
@@ -145,7 +146,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
     {overview}
     <div className="report-requirement-main min-w-0">
       {items.map((item, index) => <div key={item.requirementId} hidden={selected !== item.requirementId}>{articles[index]}</div>)}
-      {visible.length > 0 && nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3">核对 {nextGap.skill || "这项要求"} →</a></aside>}
+      {visible.length > 0 && nextGap && <aside className="report-next-requirement"><p className="text-sm font-medium text-amber-800">下一项待核对</p><h3 className="mt-1 text-xl font-semibold">{nextGap.requirementTitle}</h3><a href={`#requirement-${nextGap.requirementId}`} className="btn mt-3" onClick={event => selectRequirement(event, nextGap.requirementId)}>核对 {nextGap.skill || "这项要求"} →</a></aside>}
     </div>
   </section>;
 }

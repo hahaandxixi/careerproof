@@ -145,7 +145,7 @@ test("shared report header keeps identity, fallback and both fixed versions acce
 
 /** Drive the production reader's effects with a controlled commit/animation-frame queue.
  * This checks navigation ordering, not browser geometry, native pointer or keyboard behavior. */
-function navigationFixture(hash = "", search = "") {
+function navigationFixture(hash = "", search = "", props = {}) {
   const effects = [], values = [], windowListeners = new Map(), documentListeners = new Map(), frames = new Map(), events = [];
   let cursor = 0, nextFrame = 0, committedSelection, tree;
   const modules = {
@@ -189,7 +189,7 @@ function navigationFixture(hash = "", search = "") {
   };
   globalThis.requestAnimationFrame = fn => { const id = ++nextFrame; frames.set(id, fn); return id; };
   globalThis.cancelAnimationFrame = id => frames.delete(id);
-  const render = () => { cursor = 0; effects.length = 0; tree = mod.exports.default({ items, children: articles }); committedSelection = values[0].selected; };
+  const render = () => { cursor = 0; effects.length = 0; tree = mod.exports.default({ items, children: articles, ...props }); committedSelection = values[0].selected; };
   render();
   const cleanupListeners = effects[0]();
   return {
@@ -197,6 +197,15 @@ function navigationFixture(hash = "", search = "") {
     commit() { render(); return () => {}; },
     flush() { for (const [id, fn] of frames) { frames.delete(id); fn(); } },
     click(href, extra = {}) { let prevented = false; documentListeners.get("click")({ target: new Node(href), button: 0, preventDefault() { prevented = true; }, ...extra }); return { prevented, hash: window.location.hash }; },
+    nextGap(extra = {}) {
+      const nodes = value => !value || typeof value !== "object" ? [] : [value, ...React.Children.toArray(value.props?.children).flatMap(nodes)];
+      const aside = nodes(tree).find(node => node.props?.className === "report-next-requirement");
+      const link = nodes(aside).find(node => node.type === "a");
+      assert.ok(link);
+      let prevented = false;
+      link.props.onClick?.({ button: 0, preventDefault() { prevented = true; }, ...extra });
+      return { prevented, href: link.props.href };
+    },
     hash(value) { window.location.hash = value; windowListeners.get("hashchange")(); },
     pop(value) { window.location.hash = value; windowListeners.get("popstate")?.(); },
     filter(label) {
@@ -204,7 +213,7 @@ function navigationFixture(hash = "", search = "") {
       const button = nodes(tree).find(node => node.type === "button" && node.props["aria-pressed"] !== undefined && React.Children.toArray(node.props.children).filter(child => typeof child === "string").join("").startsWith(label));
       assert.ok(button, label); button.props.onClick(); render();
     },
-    cleanup() { cleanupListeners(); Object.assign(globalThis, original); },
+    cleanup() { cleanupListeners?.(); Object.assign(globalThis, original); },
   };
 }
 
@@ -216,6 +225,29 @@ test("direct citation bookmark selects the saved requirement; the report shell o
     f.commit(); f.flush();
     assert.deepEqual(f.events, [], "the shared report shell owns reveal and scrolling");
   } finally { f.cleanup(); }
+});
+
+test("the next gap uses the controlled selection path while keeping its native link", () => {
+  const selected = [];
+  const f = navigationFixture("", "?requirement=implementation", {
+    selectedRequirementId: "implementation",
+    onRequirementChange: id => selected.push(id),
+  });
+  try {
+    for (const extra of [{ctrlKey:true}, {metaKey:true}, {shiftKey:true}, {altKey:true}, {button:1}]) {
+      assert.deepEqual(f.nextGap(extra), {prevented:false,href:"#requirement-tests"});
+    }
+    assert.deepEqual(selected, []);
+    assert.deepEqual(f.nextGap(), {prevented:true,href:"#requirement-tests"});
+    assert.deepEqual(selected, ["tests"]);
+  } finally { f.cleanup(); }
+  const standalone = navigationFixture("#requirement-implementation");
+  try {
+    standalone.commit();
+    assert.deepEqual(standalone.nextGap(), {prevented:false,href:"#requirement-tests"});
+    assert.equal(standalone.click("#requirement-tests").hash, "#requirement-tests");
+    assert.equal(standalone.values[0].selected, "tests");
+  } finally { standalone.cleanup(); }
 });
 
 test("same-fragment clicks and back/forward/growth links select the same item without local scrolling", () => {
