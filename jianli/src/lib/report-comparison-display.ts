@@ -23,6 +23,8 @@ export function groupComparisonSources(sources: ReportEvidence[]) {
   return [...groups.values()];
 }
 
+const reviewLabels: Record<string, string> = { pending: "未复核", accepted: "已确认", rejected: "已驳回", corrected: "已修正" };
+
 export function comparisonRows(value: ReportComparison, base: MatchReport, current: MatchReport) {
   if (base.id !== value.baseId || current.id !== value.targetId) throw new Error("对比报告身份不一致，请重新读取。");
   const before = new Map(base.items.map(item => [item.requirementId, item]));
@@ -38,10 +40,25 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
     const evidenceChanged = item.changes.includes("evidence") || !!(added.length || removed.length);
     const statusChanged = !!old && !!now && old.verdict !== now.verdict;
     const levelChanged = item.baseLevel !== item.targetLevel;
+    const deltas: { label: string; before: string | number; after: string | number }[] = [];
+    let reviewNoteChanged = false;
+    if (old && now) {
+      const oldTitle = (item.baseRequirement?.title ?? old.requirementTitle)?.trim();
+      const newTitle = (item.targetRequirement?.title ?? now.requirementTitle)?.trim();
+      if (oldTitle && newTitle && oldTitle !== newTitle) deltas.push({ label: "要求", before: oldTitle, after: newTitle });
+      const oldWeight = item.baseRequirement?.weight ?? old.weight;
+      const newWeight = item.targetRequirement?.weight ?? now.weight;
+      if (Number.isFinite(oldWeight) && Number.isFinite(newWeight) && oldWeight !== newWeight) {
+        deltas.push({ label: "权重", before: oldWeight, after: newWeight });
+      }
+      const oldReview = reviewLabels[old.confirmationStatus ?? "pending"];
+      const newReview = reviewLabels[now.confirmationStatus ?? "pending"];
+      if (oldReview && newReview && oldReview !== newReview) deltas.push({ label: "复核状态", before: oldReview, after: newReview });
+      reviewNoteChanged = (old.reviewerNote?.trim() ?? "") !== (now.reviewerNote?.trim() ?? "");
+    }
     const needsEvidence = !!now && (["partial", "claimed_only", "gap"].includes(now.verdict)
       || ["rejected", "corrected"].includes(now.confirmationStatus ?? ""));
-    const changed = evidenceChanged || statusChanged || levelChanged || item.status !== "existing"
-      || item.changes.includes("requirement") || item.changes.includes("review");
+    const changed = evidenceChanged || statusChanged || levelChanged || item.status !== "existing" || deltas.length > 0 || reviewNoteChanged;
     const baseStatus = old ? verdictLabel(old.verdict) : "基准报告无此项";
     const targetStatus = now ? verdictLabel(now.verdict) : "当前报告无此项";
     const summary = item.status !== "existing"
@@ -54,7 +71,7 @@ export function comparisonRows(value: ReportComparison, base: MatchReport, curre
       : changed ? "岗位要求或本人复核已变化，判断状态未改变。"
       : retained.length ? `两次报告展示的引用集合未变（保留 ${retained.length} 处），判断状态未变。`
       : "本项没有检测到变化。";
-    return { item, old, now, added, removed, retained, evidenceChanged, statusChanged, levelChanged, needsEvidence, changed, baseStatus, targetStatus, summary };
+    return { item, old, now, added, removed, retained, evidenceChanged, statusChanged, levelChanged, needsEvidence, changed, baseStatus, targetStatus, summary, deltas, reviewNoteChanged };
   });
 }
 

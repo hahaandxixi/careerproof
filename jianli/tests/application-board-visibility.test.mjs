@@ -60,7 +60,7 @@ function fixture(count=2,editRow=value=>value,options={}){
  const render=()=>{cursor=0;const outer=mod.exports.default({jobId});const tree=outer.props.children.type(outer.props.children.props);tree.props.ref.current={getBoundingClientRect:()=>({height:2400})};return tree;};
  const settle=async()=>{for(let i=0;i<25;i++){render();while(effects.length)effects.shift()();await Promise.resolve();}for(const[id,fn]of frames){frames.delete(id);fn();}return render();};
  cleanups.push(()=>cells.forEach(cell=>cell?.cleanup?.()));
- return{render,settle,counts,queries,Radar,nodes:walk,row,
+ return{render,settle,counts,queries,Radar,nodes:walk,row,SavedRequirementDetail:mod.exports.SavedRequirementDetail,
   bookmark(){return structuredClone(win.history.state);},unmount(){cells.forEach(cell=>cell?.cleanup?.());},
   backTo(state){win.history.state=structuredClone(state);win.dispatchEvent(new Event("popstate"));},
   blur(){win.dispatchEvent(new Event("blur"));return render();},
@@ -70,6 +70,16 @@ function fixture(count=2,editRow=value=>value,options={}){
   revoke(){authorized=false;},waitFor(value){waiter=value;},button(tree,label){const found=walk(tree).find(n=>n.type==="button"&&text(n)===label);assert.ok(found,label);return found;},
   radar(tree){return walk(tree).find(n=>n.type===Radar);}};
 }
+
+test("fixed report omits the generic rule follow-up but retains a validated AI gap",()=>{
+ const {SavedRequirementDetail}=fixture();
+ const item={requirementId:"r1",skill:"pytest",verdict:"supported",finalScore:10,formulaVersion:"evidence-v4",evidenceList:[],aiCitationIds:[],explanation:"保留规则解释",evidenceLevelGap:"先对照已有断言"};
+ const render=()=>require("react-dom/server").renderToStaticMarkup(React.createElement(SavedRequirementDetail,{item,report:{items:[item],aiFallbackUsed:false}}));
+ assert.match(render(),/保留规则解释/);
+ assert.doesNotMatch(render(),/待核对：|先对照已有断言/);
+ Object.assign(item,{aiStatus:"validated",aiInformationGap:"尚无失败响应测试记录"});
+ assert.match(render(),/待核对：尚无失败响应测试记录/);
+});
 
 test("tab return reauthorizes the fixed report before showing an unsent draft and requires confirmation again",async()=>{
  const h=fixture();let tree=await h.settle();h.button(tree,"候选人a").props.onClick();tree=await h.settle();

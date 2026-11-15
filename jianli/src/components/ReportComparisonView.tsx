@@ -15,6 +15,8 @@ function SourceGroup({ label, groups, reportId, requirementId, materials, source
   return <section className="min-w-0" aria-label={label}>
     <ul className="min-w-0 divide-y divide-slate-100">{groups.map((group, index) => {
       const source = group.source, short = compactSourceLabel(source, materials), path = sourceRelativePath(source);
+      const hasContextNote = !source.contextComplete || !!source.contextNote?.trim();
+      const extraDetails = path !== short.fileName || hasContextNote || index > 0 || !source.snippet;
       const sourceIndex = sources?.evidenceList.findIndex(entry => comparisonSourceKey(entry) === comparisonSourceKey(source)) ?? -1;
       const anchor = group.citationIds[0] ? `citation-${group.citationIds[0]}`
         : sourceIndex >= 0 ? sourceLocationId(requirementId, source, sourceIndex) : `requirement-${requirementId}`;
@@ -23,11 +25,11 @@ function SourceGroup({ label, groups, reportId, requirementId, materials, source
         <p className="break-words text-sm leading-6 text-slate-600">{short.material} · {sourceRecordKind(source)}</p>
         {index === 0 && source.snippet && <pre className="comparison-source-preview">{source.snippet}</pre>}
         {source.provenance === "reference" && <p className="text-xs text-slate-600">第三方参考，不作为个人实践证明。</p>}
-        <details className="min-w-0 text-xs leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-1">完整来源与源码</summary>
+        {extraDetails && <details className="min-w-0 text-xs leading-6 text-slate-600"><summary className="w-fit cursor-pointer py-1">完整来源与源码</summary>
           {path !== short.fileName && <p className="break-all">文件路径：{path}</p>}
-          <p className="break-words">{source.contextComplete ? "保存的片段上下文完整" : "保存的片段上下文不完整，请到原报告核对"}{source.contextNote ? `：${source.contextNote}` : ""}</p>
+          {hasContextNote && <p className="break-words">{!source.contextComplete && "保存的片段上下文不完整，请到原报告核对"}{source.contextNote && `${source.contextComplete ? "" : "："}${source.contextNote}`}</p>}
           {source.snippet ? index > 0 && <pre className="mt-2 max-h-64 max-w-full overflow-auto rounded-lg bg-slate-50 p-3 text-xs leading-6">{source.snippet}</pre> : <p>未保存源码片段，请打开原报告核对。</p>}
-        </details>
+        </details>}
       </li>;
     })}</ul>
   </section>;
@@ -37,8 +39,9 @@ function rowChanges(row: ComparisonRow) {
   return [
     ...(row.statusChanged ? ["判断变化"] : []),
     ...(row.evidenceChanged ? ["引用变化"] : []),
-    ...(row.item.changes.includes("requirement") ? ["要求变化"] : []),
-    ...(row.item.changes.includes("review") ? ["复核变化"] : []),
+    ...(row.deltas.some(delta => delta.label === "要求" || delta.label === "权重") ? ["要求变化"] : []),
+    ...(row.deltas.some(delta => delta.label === "复核状态") ? ["复核变化"] : []),
+    ...(row.reviewNoteChanged ? ["复核备注更新"] : []),
     ...(row.levelChanged ? ["证据等级变化"] : []),
     ...(row.item.status === "added" ? ["新增要求"] : []),
     ...(row.item.status === "removed" ? ["移除要求"] : []),
@@ -88,6 +91,7 @@ function RequirementChange({ row, value, origin }: { row: ComparisonRow; value: 
   return <div className="min-w-0 space-y-3">
     <h3 className="break-words font-semibold text-slate-900">{item.title}</h3>
     <StatusFlow row={row} />
+    {!!row.deltas.length && <ul className="space-y-1 text-sm text-slate-600">{row.deltas.map(delta => <li className="break-words" key={delta.label}>{delta.label}：{delta.before} → {delta.after}</li>)}</ul>}
     <CitationChanges row={row} value={value} origin={origin} />
   </div>;
 }

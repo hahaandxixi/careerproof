@@ -169,11 +169,34 @@ test("technical-only changes are excluded from visible changes and raw compariso
 test("request, verdict and citation changes remain visible when technical metadata also changes", () => {
   const added=source({citationId:"R1-E2",lineStart:24,lineEnd:25});
   const f=fixture({oldVerdict:"claimed_only",verdict:"supported",added:[added],changes:["requirement","evidence","rule_version"],sources:[added]});
+  f.value.items[0].baseRequirement = { title: "实现接口", weight: 2 };
+  f.value.items[0].targetRequirement = { title: "实现报名接口", weight: 3 };
   f.value.items[0].targetInformationGap="先对照已有断言和未覆盖的异常场景";
   const html=render(f);
   assert.match(html,/要求变化/);
+  assert.match(html,/要求：实现接口 → 实现报名接口/);
+  assert.match(html,/权重：2 → 3/);
   assert.match(html,/判断变化/);
   assert.match(html,/引用变化/);
   assert.match(html,/href="\/reports\/current-report#citation-R1-E2"/);
   assert.doesNotMatch(html,/比较依据变化|判断公式|其他变化|待核对：|先对照已有断言/);
+});
+
+test("review note updates and actual review transitions have distinct labels", () => {
+  const f = fixture({ changes: ["review"] });
+  f.base.items[0].confirmationStatus = null;
+  assert.equal(comparisonCounts(rows(f)).changed, 0);
+  f.current.items[0].reviewerNote = "已重新查看材料";
+  assert.match(render(f), /复核备注更新/);
+  assert.doesNotMatch(render(f), /复核变化|复核状态：|已重新查看材料/);
+  f.current.items[0].confirmationStatus = "accepted";
+  assert.match(render(f), /复核状态：未复核 → 已确认/);
+});
+
+test("inline complete snippet without extra source details has no redundant disclosure", () => {
+  const inline = source({ filePath: "service.py" });
+  const first = fixture({ added: [inline], sources: [inline] });
+  assert.doesNotMatch(render(first), /完整来源与源码/);
+  const withNote = { ...inline, contextComplete: false, contextNote: "只保存首段" };
+  assert.match(render(fixture({ added: [withNote], sources: [withNote] })), /完整来源与源码[\s\S]*只保存首段/);
 });

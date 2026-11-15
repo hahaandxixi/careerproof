@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, errorMessage } from "@/lib/api/client";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   buildSkillPanorama, createSkillPanoramaSession, filterSkillContexts, groupContextsByJob, initialPanoramaState,
   PANORAMA_CATEGORIES, PANORAMA_FILTERS, PANORAMA_FILTER_LABELS, PANORAMA_PAGE_SIZE, PANORAMA_STATUSES,
-  PANORAMA_STATUS_LABELS, panoramaStatus, selectionForFilter, skillJobCount,
+  PANORAMA_STATUS_LABELS, panoramaStatus, selectionForFilter, skillJobCount, skillRecordMeasure,
   type PanoramaFilter, type PanoramaState, type SkillContext, type StatusCounts,
 } from "@/lib/skill-panorama";
 import AccessGate from "./AccessGate";
@@ -16,14 +16,6 @@ import SourceIdentity from "./SourceIdentity";
 import SkillOverviewRadar from "./SkillOverviewRadar";
 import { useAuth } from "./AuthProvider";
 import styles from "./SkillPanorama.module.css";
-
-const skillDomains: Record<string, { domain: string; label: string }> = {};
-for (const name of ["python", "java", "javascript", "c", "c++", "c#", "go", "rust", "r", "django", "flask", "fastapi", "spring", "spring boot", "node.js"]) skillDomains[name] = { domain: "backend", label: "后端" };
-for (const name of ["react", "vue", "typescript", "html", "css"]) skillDomains[name] = { domain: "frontend", label: "前端" };
-for (const name of ["sql", "mysql", "postgresql", "redis", "mongodb", "pandas", "numpy", "excel", "数据分析", "数据清洗"]) skillDomains[name] = { domain: "data", label: "数据" };
-for (const name of ["pytest", "单元测试", "软件测试", "测试用例", "接口测试", "缺陷记录", "测试报告"]) skillDomains[name] = { domain: "testing", label: "测试" };
-for (const name of ["git", "linux", "docker", "kubernetes", "沟通", "团队协作"]) skillDomains[name] = { domain: "tools", label: "工具" };
-const skillDomain = (name: string) => skillDomains[name.trim().toLowerCase()] ?? { domain: "tools", label: "工具与未知" };
 
 export default function SkillPanorama() {
   const { user, status } = useAuth();
@@ -60,24 +52,11 @@ export function SkillPanoramaWorkspace({ ownerId }: { ownerId: string }) {
     loadMore={() => void session.loadMore()} refresh={() => { setSelected(null); selectedByUser.current = false; void session.refresh(); }} retryFailed={() => void session.retryFailed()} />;
 }
 
-/** Quantity band inside one skill card. Status colors never leak onto the domain tag. */
 function CountBand({ counts, label }: { counts: StatusCounts; label: string }) {
   return <span className={styles.band} role="img" aria-label={`${label}：${PANORAMA_STATUSES.filter(status => counts[status]).map(status => `${PANORAMA_STATUS_LABELS[status]} ${counts[status]} 条`).join("，")}`}>
     {PANORAMA_STATUSES.filter(status => counts[status] > 0).map(status => <span key={status} data-status={status}
       style={{ flexGrow: counts[status] }} title={`${PANORAMA_STATUS_LABELS[status]} · ${counts[status]} 条`} />)}
   </span>;
-}
-
-/** Small technical glyphs keep cards scannable without inventing capability levels. */
-function SkillIcon({ domain }: { domain: string }) {
-  const paths: Record<string, ReactNode> = {
-    backend: <><path d="M8 7 3 12l5 5" /><path d="m16 7 5 5-5 5" /><path d="m13.5 5-3 14" /></>,
-    data: <><ellipse cx="12" cy="5.5" rx="7" ry="3" /><path d="M5 5.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" /><path d="M5 11.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" /></>,
-    testing: <><path d="M9 3h6" /><path d="M10 3v6l-5 8.5A2.2 2.2 0 0 0 6.9 21h10.2a2.2 2.2 0 0 0 1.9-3.5L14 9V3" /><path d="M7.5 16h9" /></>,
-    frontend: <><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 8h18" /><path d="m9 12 2 2-2 2" /><path d="m15 12-2 2 2 2" /></>,
-    tools: <><path d="M14.7 6.3a4 4 0 0 0-5-5L12 3.6 9.4 6.2 7.1 3.9a4 4 0 0 0 5 5L21 18l-3 3-9.1-9.1" /></>,
-  };
-  return <span className={styles.skillIcon} data-domain={domain} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[domain] ?? paths.tools}</svg></span>;
 }
 
 function SelectedContext({ context }: { context: SkillContext }) {
@@ -159,27 +138,27 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
   // A skill stays visible when any saved record matches; its own card keeps every
   // original status, so the same skill can match more than one filter.
   const visibleSkills = landscape.skills.filter(value => filterSkillContexts(value.contexts, filter).length > 0);
+  const assessed = visibleSkills.filter(value => skillRecordMeasure(value).ratio !== null);
+  const unassessed = visibleSkills.filter(value => skillRecordMeasure(value).ratio === null);
   const unclassifiedMatched = filterSkillContexts(landscape.unclassified, filter).length;
   const groups = PANORAMA_CATEGORIES
-    .map(category => ({ category, skills: visibleSkills.filter(value => value.category === category) }))
+    .map(category => ({ category, skills: assessed.filter(value => value.category === category) }))
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
     [...landscape.skills.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
-  const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />;
+  const listChanged = !state.hasMore && state.total !== null && state.summaries.length !== state.total && !state.blocked;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
-      <div><h1>技能全景</h1></div>
-      <p className={styles.headMeta}><strong>{landscape.skills.length}</strong> 个技能 · <strong>{landscape.contextCount}</strong> 条要求记录</p>
+      <h1>技能全景</h1>
     </header>
-    <div className={styles.loadbar} role="status" aria-live="polite">
-      <p>{state.busy ? "正在分批读取报告…" : <>已读取 <strong>{state.reports.length}</strong>{state.total !== null && <> / {state.total}</>} 份报告</>}
-        {failed > 0 && <> · <span className={styles.failureText}>{failed} 份详情失败</span></>}</p>
+    {(state.busy || state.hasMore || listChanged) && <div className={styles.loadbar} role="status" aria-live="polite">
+      {state.busy ? <p>正在读取报告…</p> : state.hasMore && state.total !== null && <p>已读取 {state.reports.length} / {state.total} 份报告</p>}
       {state.hasMore && !state.busy && <button className="btn-secondary btn-compact" disabled={state.busy} onClick={loadMore}>再加载最多 {PANORAMA_PAGE_SIZE} 份报告</button>}
-      {!state.hasMore && state.total !== null && state.summaries.length !== state.total && !state.blocked && <div>
+      {listChanged && <div>
         <p>列表有更新。已读记录与当前总数不同，可从第一页重新读取。</p>
         {refresh && <button className="btn-secondary btn-compact" disabled={state.busy} onClick={refresh}>重新读取报告列表</button>}
       </div>}
-    </div>
+    </div>}
     {state.listError && <div role="alert" className={styles.error}><p>报告列表读取失败：{state.listError}</p>{!state.blocked && <button className="btn-secondary" disabled={state.busy} onClick={loadMore}>重试列表读取</button>}</div>}
     {failed > 0 && <details className={styles.failures}><summary>{failed} 份报告详情暂不可用，已读取内容仍保留</summary><ul>{state.summaries.filter(report => state.failures[report.id]).map(report => <li key={report.id}>{displayJobTitle(report.jobTitle, report.jobId)} · {new Date(report.createdAt).toLocaleString("zh-CN")}：{state.failures[report.id]}</li>)}</ul>
       <button className="btn-secondary" disabled={state.busy} onClick={retryFailed}>仅重试失败详情</button></details>}
@@ -193,21 +172,19 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
             {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
           </button>)}
         </div>
-        {radar}
+        <SkillOverviewRadar skills={assessed} selected={selected} onSelect={onSelect} />
       </section>
       <section className={styles.cards} aria-label="技能分组全景">
         {groups.map(group => {
           return <section className={styles.group} key={group.category} aria-label={group.category} data-multiple={group.skills.length > 1 || undefined}>
             <div className={styles.groupHeading}><h3>{group.category}</h3></div>
             <div className={styles.skills}>{group.skills.map(value => {
-              const domain = skillDomain(value.name);
               const reviewCount = value.contexts.filter(({ item }) => item.confirmationStatus === "rejected" || item.confirmationStatus === "corrected").length;
               const selectedCard = selected === value.key;
               return <div key={value.key} className={styles.skillCard} data-selected={selectedCard || undefined}>
                 <button type="button" className={styles.skillCardSelect} aria-pressed={selectedCard} onClick={() => onSelect(value.key)}>
-                  <SkillIcon domain={domain.domain}/>
                   <span className={styles.skillCardBody}>
-                    <span className={styles.skillCardTop}><span className={styles.skillName}>{value.name}</span><span className={styles.skillDomain} data-domain={domain.domain}>{domain.label}</span></span>
+                    <span className={styles.skillName}>{value.name}</span>
                     <CountBand counts={value.counts} label={value.name}/>
                     <span className={styles.skillFooter}>
                       <span>{value.contexts.length} 条要求记录</span>
@@ -222,12 +199,20 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
             })}</div>
           </section>;
         })}
+        {!!unassessed.length && <details className={styles.unassessed}>
+          <summary>未评估技能（{unassessed.length}）</summary>
+          <ul>{unassessed.map(value => <li key={value.key}>
+            <span>{value.name}</span>
+            <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
+              aria-label={"查看依据：" + value.name} onClick={event => openEvidence(value.key, event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
+          </li>)}</ul>
+        </details>}
         {!!unclassifiedMatched && <div className={styles.unclassified}>
           <button type="button" aria-pressed={selected === ""} onClick={() => onSelect("")}>未标注技能的要求 <strong>{unclassifiedMatched}</strong></button>
           <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
             aria-label="查看依据：未标注技能的要求" onClick={event => openEvidence("", event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
         </div>}
-        {!landscape.contextCount && <p className={styles.noRecords}>{state.busy ? "正在读取报告中的技能与要求…" : "已读取报告中暂无技能或要求记录。可核对原报告，或继续加载其他报告。"}</p>}
+        {!landscape.contextCount && !state.busy && <p className={styles.noRecords}>已读取报告中暂无技能或要求记录。</p>}
         {!!landscape.contextCount && !visibleSkills.length && !unclassifiedMatched && <p className={styles.noRecords}>当前筛选没有匹配的要求记录。<button type="button" className="btn-secondary btn-compact" onClick={() => onFilterChange?.("all")}>查看全部记录</button></p>}
       </section>
       <dialog ref={dialog} id="skill-evidence-drawer" className={`job-workspace-drawer ${styles.evidenceDrawer}`}

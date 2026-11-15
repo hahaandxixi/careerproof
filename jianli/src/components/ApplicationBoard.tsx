@@ -476,7 +476,7 @@ function SavedRequirementInterpretation({ item, report }: { item: ReportItem; re
   // views adopt only validated, non-fallback AI interpretation.
   const useAi = item.aiStatus === "validated" && !report.aiFallbackUsed && !invalidNarrativeCitations(item).length;
   const aiExplanation = useAi && item.aiExplanation?.trim() ? item.aiExplanation : null;
-  const gap = (useAi ? item.aiInformationGap : null) || item.evidenceLevelGap;
+  const gap = useAi ? item.aiInformationGap : null;
   return <>
     {invalidNarrativeCitations(item).length>0&&<p className="text-sm text-amber-900">历史AI解释的引用需重新核对，当前显示规则判断。</p>}
     <p className="break-words text-base leading-7"><span className="font-medium">{aiExplanation ? "AI解释" : "规则解释"}：</span>{aiExplanation?readableCitationText(item,aiExplanation):item.explanation}</p>
