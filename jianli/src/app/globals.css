@@ -1596,6 +1596,7 @@ body:has(.enterprise-review-page) .site-primary-nav > a[aria-current="page"] { b
 .career-reason { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
 .career-reason-details summary { cursor: pointer; list-style: none; }
 .career-reason-details summary::marker { content: ""; }
+.career-reason-details summary::before { display: none; }
 .career-reason-details summary .career-reason { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .career-reason-details[data-comparison="true"] summary .career-reason { -webkit-line-clamp: 3; }
 .career-reason-details:not([open]) .career-collapse, .career-reason-details[open] .career-expand { display: none; }
