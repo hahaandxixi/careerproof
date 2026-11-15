@@ -6,7 +6,6 @@ import { api, errorMessage } from "@/lib/api/client";
 import type { InterviewSessionSummary, Page, ReportSummary } from "@/lib/api/domain";
 import { displayJobTitle } from "@/lib/demo-display-identity.js";
 import { workspaceStatusLabel } from "@/lib/report-workspace";
-import { practiceStatusLabel } from "@/lib/interview-practice";
 import AccessGate, { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 import ListPagination from "./ListPagination";
@@ -45,13 +44,8 @@ function Workspace() {
 }
 
 function SessionRow({ session }: { session: InterviewSessionSummary }) {
-  const status = session.status === "draft" || session.status === "in_progress" || session.status === "completed"
-    ? practiceStatusLabel(session.status) : "状态未记录";
   return <div className="flex flex-wrap items-center justify-between gap-2 py-2">
-    <div className="min-w-0">
-      <p className="break-words font-medium">{session.requirementTitle || session.skill || "岗位要求未记录"}</p>
-      <p className="text-sm text-slate-600">{status}{session.needsAttention ? " · 有待处理的问题" : ""} · <time dateTime={session.updatedAt}>{new Date(session.updatedAt).toLocaleString("zh-CN")}</time></p>
-    </div>
+    <p className="min-w-0 break-words font-medium">{session.requirementTitle || session.skill || "岗位要求未记录"}</p>
     <Link className="btn-secondary btn-compact" href={`/interview/${session.id}`}>{session.status === "completed" ? "查看结果" : "继续练习"}</Link>
   </div>;
 }
