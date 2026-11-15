@@ -8,8 +8,13 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 from app.agents.provider import get_ai_provider
-from app.schemas.analysis import CareerPlanAnalysis, JobRecommendationView
-from app.services.career_planning import PLAN_PROMPT, _planning_input, validate_plan
+from app.schemas.analysis import JobRecommendationView
+from app.services.career_planning import (
+    PLAN_PROMPT,
+    _planning_input,
+    parse_career_model_output,
+    validate_plan,
+)
 from app.services.job_drafting import DRAFT_PROMPT, validate_draft
 
 
@@ -53,7 +58,8 @@ async def main():
                 assert all(r.evidence_request and r.verification_question and r.weight_reason
                            for r in result.requirements), "Missing verification guidance"
             else:
-                result = CareerPlanAnalysis.model_validate(raw)
+                assert provider.json_repair_count == 0, "Expected valid career plan JSON"
+                result = parse_career_model_output(raw)
                 validate_plan(result, [job])
                 assert all(r.task_plan for r in result.advice), "Missing action plan"
             record["validation"] = "passed"

@@ -41,10 +41,12 @@ async def test_saved_real_conflict_is_rejected_persisted_and_owner_scoped(
         requests.append(body)
         answer = copy.deepcopy(FROZEN_PLAN)
         answer["focusJobId"] = jobs[0]["jobId"]
-        answer["advice"][0]["jobId"] = jobs[0]["jobId"]
-        # Only synthetic identity binding changes; the historical wording and
-        # citations are not rewritten to manufacture a failure.
-        assert set(answer["advice"][0]["citationIds"]).issubset(
+        advice = answer["advice"][0]
+        advice["jobId"] = jobs[0]["jobId"]
+        # Adapt the copied reply to the current wire format without rewriting
+        # the historical wording or citations.
+        advice.update(advice.pop("taskPlan"))
+        assert set(advice["citationIds"]).issubset(
             {e["citationId"] for e in jobs[0]["evidence"]}
         )
         return httpx.Response(

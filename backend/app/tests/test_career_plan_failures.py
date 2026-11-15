@@ -83,8 +83,8 @@ def answer():
     return {"comparison": "当前引用不足，请补充可核对的实现材料。", "focusJobId": str(JOB),
             "advice": [{"jobId": str(JOB), "reason": "当前没有可定位的SQL实现。",
                         "keyGap": "SQL实现材料待补充。", "nextTask": "提交SQL查询源码。",
-                        "taskPlan": {"deliverable": "SQL查询源码", "steps": ["编写SQL查询"],
-                                     "acceptanceChecks": ["提供可定位的源码片段"]},
+                        "deliverable": "SQL查询源码", "steps": ["编写SQL查询"],
+                        "acceptanceChecks": ["提供可定位的源码片段"],
                         "citationIds": []}]}
 
 
@@ -99,12 +99,19 @@ def answer():
     (429, "model_rate_limited", "model_request"),
     (503, "model_http_error", "model_request"),
     ("json", "model_json_invalid", "model_request"),
+    ("json-private-finish", "model_json_invalid", "model_request"),
+    ("nested-citations", "model_json_invalid", "model_request"),
+    ("repairable-json", "model_json_invalid", "model_request"),
     ("truncated", "model_output_truncated", "model_request"),
     ("truncated-schema", "model_output_truncated", "output_schema"),
     ("schema", "model_output_schema_invalid", "output_schema"),
+    ("missing-task", "model_output_schema_invalid", "output_schema"),
+    ("wrong-task-type", "model_output_schema_invalid", "output_schema"),
+    ("mixed-task", "model_output_schema_invalid", "output_schema"),
     ("array", "model_output_schema_invalid", "model_request"),
     ("internal", "model_internal_error", "model_request"),
     ("citation", "model_business_validation_failed", "business_validation"),
+    ("duplicate-citation", "model_business_validation_failed", "business_validation"),
     ("valid", "validated", None),
 ])
 async def test_real_provider_failure_stage_is_safe_and_specific(
@@ -114,7 +121,17 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
 
     async def handler(request):
         requests.append(request)
-        assert json.loads(request.content)["max_tokens"] == 1500, "no speculative budget increase"
+        wire = json.loads(request.content)
+        assert wire["max_tokens"] == 1500, "no speculative budget increase"
+        assert wire["response_format"] == {"type": "json_object"}
+        system = wire["messages"][0]["content"]
+        example_marker = "JSON格式示例（示例值须替换，岗位编号和引用编号来自输入）：\n"
+        assert "保留示例中的字段名" in system and example_marker in system
+        example_json = system.split(example_marker)[1].splitlines()[0]
+        wire_example = json.loads(example_json)
+        example = career_planning.parse_career_model_output(wire_example)
+        assert example.advice[0].task_plan is not None
+        assert "taskPlan" not in wire_example["advice"][0]
         if fault == "timeout":
             raise httpx.ReadTimeout("synthetic-private-material", request=request)
         if fault == "network":
@@ -126,14 +143,39 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         if isinstance(fault, int):
             return httpx.Response(fault, json={"error": "synthetic-private-material"})
         body = answer()
+        item = body["advice"][0]
         if fault == "citation":
-            body["advice"][0]["citationIds"] = ["cross-job-secret-citation"]
-        content = '{"comparison":"' if fault in {"json", "truncated"} else json.dumps(
-            [] if fault == "array" else
-            {} if fault in {"schema", "truncated-schema"} else body, ensure_ascii=False,
-        )
+            item["citationIds"] = ["cross-job-secret-citation"]
+        if fault == "duplicate-citation":
+            item["citationIds"] = ["cross-job-secret-citation"] * 2
+        if fault == "missing-task":
+            del item["steps"]
+        if fault == "wrong-task-type":
+            item["steps"] = "编写SQL查询"
+        if fault in {"mixed-task", "nested-citations"}:
+            task_fields = ("deliverable", "steps", "acceptanceChecks")
+            item["taskPlan"] = {key: item[key] for key in task_fields}
+        malformed = '{"comparison":"synthetic-private-material'
+        if fault in {"json", "json-private-finish", "truncated"}:
+            content = malformed
+        elif fault == "nested-citations":
+            for key in task_fields:
+                del item[key]
+            item["taskPlan"]["citationIds"] = item.pop("citationIds")
+            item_json = json.dumps(item, ensure_ascii=False)[:-1]
+            content = '{"advice":[' + ",".join([item_json] * 3) + "]}"
+        elif fault == "repairable-json":
+            content = json.dumps(body, ensure_ascii=False)[:-1]
+        else:
+            content = json.dumps(
+                [] if fault == "array" else
+                {} if fault in {"schema", "truncated-schema"} else body, ensure_ascii=False,
+            )
+        finish_reason = "length" if fault in {"truncated", "truncated-schema"} else "stop"
+        if fault == "json-private-finish":
+            finish_reason = "synthetic-private-material"
         return httpx.Response(200, json={"choices": [{
-            "finish_reason": "length" if fault in {"truncated", "truncated-schema"} else "stop",
+            "finish_reason": finish_reason,
             "message": {"content": content},
         }], "usage": {"prompt_tokens": 20, "completion_tokens": 10}})
 
@@ -151,6 +193,18 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
     assert response.ai_status == expected
     assert response.plan_id and response.recommendations
     assert bool(response.ai_plan) == (fault == "valid")
+    task = next(row for row in session.rows if isinstance(row, AnalysisTask))
+    saved = task.input_snapshot["result"]
+    assert saved["aiStatus"] == expected
+    assert bool(saved["aiPlan"]) == (fault == "valid")
+    if fault == "valid":
+        advice = saved["aiPlan"]["advice"][0]
+        assert advice["taskPlan"] == {
+            "deliverable": "SQL查询源码",
+            "steps": ["编写SQL查询"],
+            "acceptanceChecks": ["提供可定位的源码片段"],
+        }
+        assert "deliverable" not in advice
     records = [r for r in caplog.records if r.name == career_planning.__name__]
     if stage:
         assert len(records) == 1 and records[0].stage == stage
@@ -158,6 +212,13 @@ async def test_real_provider_failure_stage_is_safe_and_specific(
         safe = str(vars(records[0]))
         assert "synthetic-key" not in safe and "synthetic-private-material" not in safe
         assert "cross-job-secret-citation" not in safe
+        if fault in {"json", "json-private-finish", "truncated"}:
+            assert records[0].finish_reason == {
+                "json": "stop", "json-private-finish": "other", "truncated": "length",
+            }[fault]
+        if fault in {"json", "json-private-finish"}:
+            assert records[0].json_input_length == len('{"comparison":"synthetic-private-material')
+            assert records[0].json_error_position >= 0
     else:
         assert not records
 
