@@ -8,7 +8,6 @@
 .headMeta strong { color: #1d4a40; font-size: 17px; font-variant-numeric: tabular-nums; }
 .eyebrow { color: #526b61; font-size: 12px; letter-spacing: .12em; font-weight: 700; }
 .heading h1 { margin: 2px 0 4px; font-size: 28px; line-height: 1.3; font-weight: 750; letter-spacing: -.02em; color: #143a32; }
-.subtitle { color: #526176; font-size: 14px; }
 .loadbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 8px 0; border-block: 1px solid #d8d0c2; font-size: 13px; color: #526176; }
 .loadbar strong { color: #1d4a40; font-variant-numeric: tabular-nums; }
 .failureText { color: #9a4b08; }

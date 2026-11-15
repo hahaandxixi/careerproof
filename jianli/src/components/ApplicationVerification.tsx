@@ -5,7 +5,7 @@ import type { MatchReport } from "@/lib/api/domain";
 import type { VerificationReplyQuestion } from "@/lib/verification-reply-draft";
 import SourceIdentity, { SourceIdentityDetails } from "./SourceIdentity";
 import {
-  applicationVerificationSources, createApplicationVerificationSession, initialApplicationVerificationState, verificationFailureMessage, verificationMatchesReport,
+  applicationVerificationSources, createApplicationVerificationSession, initialApplicationVerificationState, verificationFailureMessage, verificationMatchesReport, verificationReadingText,
 } from "@/lib/application-verification-session";
 
 const NEXT_STEP = {
@@ -77,10 +77,17 @@ export default function ApplicationVerification({ applicationId, report, onUnava
       {analysis.items.map(item => {
         const requirement = report.items.find(value => value.requirementId === item.requirementId)!;
         const evidence = applicationVerificationSources(requirement).filter(value => value.citationId && item.citationIds.includes(value.citationId));
+        const support = verificationReadingText(item.visibleSupport || "");
+        const gap = verificationReadingText(item.informationGap || "");
         return <article key={item.requirementId} className="space-y-3 rounded-lg border border-slate-200 bg-white p-4 text-sm leading-6">
           <h4 className="font-semibold">{requirement.requirementTitle || requirement.skill}</h4>
-          <div><p className="font-medium text-slate-800">可见支持</p><p className="whitespace-pre-wrap break-words">{item.visibleSupport || "本次授权片段未展示足够支持，需人工核验。"}</p></div>
-          <div><p className="font-medium text-amber-800">材料缺口与边界</p><p className="whitespace-pre-wrap break-words">{item.informationGap}</p></div>
+          {support && <div><p className="font-medium text-slate-800">可见支持</p><p className="whitespace-pre-wrap break-words">{support}</p></div>}
+          {gap && <div><p className="font-medium text-amber-800">材料缺口</p><p className="whitespace-pre-wrap break-words">{gap}</p></div>}
+          {((item.visibleSupport && support !== item.visibleSupport) || (item.informationGap && gap !== item.informationGap)) && <details>
+            <summary className="disclosure">查看保存原文</summary>
+            {item.visibleSupport && support !== item.visibleSupport && <p className="whitespace-pre-wrap break-words">{item.visibleSupport}</p>}
+            {item.informationGap && gap !== item.informationGap && <p className="whitespace-pre-wrap break-words">{item.informationGap}</p>}
+          </details>}
           <div><p className="font-medium text-slate-800">建议人工核验的问题</p><ol className="list-decimal space-y-2 pl-5">{item.verificationQuestions.map((question, index) => <li key={index} className="whitespace-pre-wrap break-words">{question}{onUseQuestion && <button type="button" className="btn-secondary btn-compact ml-2" onClick={() => onUseQuestion({ requirementId: item.requirementId, requirementIndex: report.items.indexOf(requirement), requirementTitle: requirement.requirementTitle || requirement.skill, question, citationIds: item.citationIds })}>加入回复草稿</button>}</li>)}</ol></div>
           {item.nextStep && <div className="rounded-lg bg-slate-50 p-3"><p className="font-medium">可选下一步：{NEXT_STEP[item.nextStep]}</p><p className="whitespace-pre-wrap break-words">{item.nextStepReason}</p></div>}
           {evidence.length ? <details><summary className="cursor-pointer text-indigo-700">引用来源（{evidence.length}）</summary><div className="space-y-3 pt-2">{evidence.map((source, index) => <div key={`${source.citationId}:${index}`} className="text-sm leading-6"><p><SourceIdentity source={source} materials={report.materials} compact/> · 第{source.lineStart}—{source.lineEnd}行</p>{source.provenance === "reference" && <p className="text-amber-800">参考材料，不构成学生本人实践证明。</p>}<pre className="mt-1 overflow-x-auto whitespace-pre-wrap break-words rounded bg-slate-50 p-2">{source.snippet}</pre><p className="mt-1 text-slate-500">{source.contextNote}</p><SourceIdentityDetails source={source}/></div>)}</div></details> : <p className="text-sm text-slate-600">本项没有对应引用。</p>}

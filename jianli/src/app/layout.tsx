@@ -23,9 +23,6 @@ export default function RootLayout({
           <SiteHeader />
           <StudentMessages />
           <main id="main-content" tabIndex={-1} className="site-frame py-5 sm:py-8">{children}</main>
-          <footer className="site-frame py-8 text-center text-xs leading-5 text-slate-500">
-            材料证据可追溯 · 投递需本人确认
-          </footer>
         </AuthProvider>
       </body>
     </html>

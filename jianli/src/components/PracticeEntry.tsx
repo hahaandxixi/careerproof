@@ -25,7 +25,6 @@ export default function PracticeEntry({ reportId, requirementId, quick = false }
     <button type="button" className={quick ? "btn" : "btn-secondary btn-compact"} disabled={state === "opening"} onClick={() => void open()}>
       {state === "opening" ? "正在打开练习…" : quick ? "开始练习" : "模拟面试 · 练这一项"}
     </button>
-    <span className="text-xs text-slate-500">先确认发送范围，再生成首问</span>
     {error && <span role="alert" className="text-xs text-rose-700">{error}</span>}
   </div>;
 }

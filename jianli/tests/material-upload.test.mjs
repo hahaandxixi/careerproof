@@ -141,13 +141,13 @@ test("real returned-version review highlights only current owned data and never 
   assert.equal(calls, 0);
 });
 
-test("actual project picker highlights a returned version without selecting it or marking search results newest", async () => {
+test("actual project picker highlights the returned version and distinguishes same-name projects", async () => {
   const pickerLogic = await import("../src/lib/material-picker.ts");
   const projects = [{ id: "p", name: "作品", versions: [
     { id: "old", versionNumber: 1, status: "completed", originalFilename: "old.zip" },
     { id: "new", versionNumber: 2, status: "completed", originalFilename: "new.zip", createdAt: "2026-10-22T08:15:00+08:00" },
   ] }];
-  function picker(query, selectedIds = []) {
+  function picker(query, selectedIds = [], rows = projects) {
     let index = 0;
     const component = loadComponent("../src/components/ProjectVersionPicker.tsx", {
       react: { useState: value => [index++ === 0 ? query : value, () => {}] },
@@ -155,20 +155,22 @@ test("actual project picker highlights a returned version without selecting it o
       "@/lib/material-upload": contract, "@/lib/material-picker": pickerLogic, "@/app/demo/samples.json": { __esModule: true, default: [] },
       "@/lib/demo-display-identity.js": demoPresentation,
     }).default;
-    return component({ projects, selectedIds, onChange() { assert.fail("render must not select"); }, highlightedVersionId: "new" });
+    return component({ projects: rows, selectedIds, onChange() { assert.fail("render must not select"); }, highlightedVersionId: "new" });
   }
   const { renderToStaticMarkup } = require("react-dom/server");
   const tree = picker("");
   assert.equal(find(tree, node => node.type === "details").props.open, true);
   const html = renderToStaticMarkup(tree);
-  assert.match(html, /第 2 版.*最新可用版本.*刚上传.*尚未选择/);
+  assert.match(html, /第 2 版.*刚上传.*尚未选择/);
   assert.doesNotMatch(html, /checked=""/);
-  assert.match(html, /已解析.*<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026/);
-  assert.doesNotMatch(renderToStaticMarkup(picker("old.zip")), /最新可用版本/);
+  assert.doesNotMatch(html, /new\.zip|已解析/);
+  assert.doesNotMatch(renderToStaticMarkup(picker("old.zip")), /第 2 版/);
   const selectedTree = picker("", ["new"]);
   const selectedSummary = renderToStaticMarkup(find(selectedTree, node => node.props?.["aria-label"] === "已选项目版本"));
   assert.match(selectedSummary, /作品 · 第 2 版/);
   assert.doesNotMatch(selectedSummary, /new\.zip|<time|已解析|上传于/);
-  const selected = renderToStaticMarkup(selectedTree);
-  assert.match(selected, /new\.zip.*<time dateTime="2026-10-22T08:15:00\+08:00">上传于 .*2026.*最新可用版本/);
+  const duplicate = { ...projects[0], id: "duplicate", versions: [{ ...projects[0].versions[1], id: "another", originalFilename: "another.zip" }] };
+  const sameName = renderToStaticMarkup(picker("", ["new"], [...projects, duplicate]));
+  assert.match(sameName, /new\.zip.*2026/);
+  assert.match(sameName, /another\.zip.*2026/);
 });

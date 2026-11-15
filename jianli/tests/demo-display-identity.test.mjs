@@ -25,14 +25,18 @@ test("only registered job and material ids replace saved display names", () => {
 
 test("the known organization and its jobs share an alias without renaming other employers", () => {
   const original = "职证场景实验室（虚构）";
-  assert.equal(displayOrganizationName(original, "4d659934-55ec-42f7-a08c-3c26ba44a7f1"), "云栈科技");
-  assert.equal(displayJobCompany(original, "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "云栈科技");
+  assert.equal(displayOrganizationName(original, "4d659934-55ec-42f7-a08c-3c26ba44a7f1"), "青禾科技");
+  assert.equal(displayJobCompany(original, "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "青禾科技");
+  const legacyName = "验收企业（合成）";
+  assert.equal(displayOrganizationName(legacyName, "015bf297-5cf8-46d1-94bb-cc1cb0e12a60"), "云栈科技");
+  assert.equal(displayJobCompany(legacyName, "6c8ad563-ebf8-427c-b4a3-82905f37dbd0"), "云栈科技");
+  assert.equal(displayOrganizationName(legacyName, "other"), legacyName);
   assert.equal(displayOrganizationName(original, "other"), original);
   assert.equal(displayJobCompany(original, "other"), original);
   assert.equal(displayJobCompany("实际企业", "0baea00e-e0eb-422a-bb43-3907d9a8a72a"), "实际企业");
   const job = { id: "other", isDemo: true, companyName: original, description: "真实描述。此为职证体验岗位。" };
   assert.equal(experienceJobCopy(job), job);
   assert.deepEqual(experienceJobCopy({ ...job, id: "0baea00e-e0eb-422a-bb43-3907d9a8a72a" }), {
-    ...job, id: "0baea00e-e0eb-422a-bb43-3907d9a8a72a", companyName: "云栈科技", description: "真实描述。",
+    ...job, id: "0baea00e-e0eb-422a-bb43-3907d9a8a72a", companyName: "青禾科技", description: "真实描述。",
   });
 });

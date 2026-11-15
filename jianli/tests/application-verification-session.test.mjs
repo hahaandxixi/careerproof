@@ -1,6 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createApplicationVerificationSession, verificationFailureMessage, verificationMatchesReport } from "../src/lib/application-verification-session.ts";
+import { createApplicationVerificationSession, verificationFailureMessage, verificationMatchesReport, verificationReadingText } from "../src/lib/application-verification-session.ts";
+
+test("saved verification translates contextual labels without altering other claims or technical identifiers", () => {
+  const saved = "固定报告将该要求标为 claimed_only，未见运行记录。引用 R1-E1（portfolio，pipeline.py 第 1 行）。保留 portfolio.py 和 SQL。";
+  assert.equal(verificationReadingText(saved), "固定报告将该要求标为“仅简历声明”，未见运行记录。引用 R1-E1（本人材料，pipeline.py 第 1 行）。保留 portfolio.py 和 SQL。");
+  assert.equal(verificationReadingText("查看变量 claimed_only 和路径 src/portfolio.py。"), "查看变量 claimed_only 和路径 src/portfolio.py。");
+});
 
 const task = (status = "completed") => ({
   taskId: "verification-1", status, aiStatus: status === "completed" ? "validated" : "pending",

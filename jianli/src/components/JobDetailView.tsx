@@ -1,6 +1,6 @@
 "use client";
 
-import { experienceJobCopy, demoJobAlias, displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
+import { experienceJobCopy, demoJobAlias, displayJobTitle } from "@/lib/demo-display-identity.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -123,11 +123,7 @@ function MatchForm({
     catch (reason) { setError(errorMessage(reason)); }
     finally { submitting.current = false; setBusy(false); }
   }
-  const availableResumes = resumes.flatMap(resume => resume.versions.filter(version => version.status === "completed").map(version => ({ ...version, title: resume.title })));
-  const selectedResume = availableResumes.find(version => version.id === resumeVersionId);
-  const selectedProjects = projects.flatMap(project => project.versions.filter(version => projectVersionIds.includes(version.id))
-    .map(version => `${displayMaterialTitle(project.name, version.id)} · 第 ${version.versionNumber} 版`));
-  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">打开求职工作台</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">选择已解析完成的版本。报告仅自己可见，生成后再决定是否向企业投递。</p>
+  return <section className="panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">用我的材料分析岗位匹配</h2><Link className="btn-secondary" href="/applications">打开求职工作台</Link></div><p className="mt-2 text-sm leading-6 text-slate-600">报告仅自己可见，投递需另行确认。</p>
     <JobApplicationStatusNotice state={applicationStatus} onRetry={() => void statusSession.refresh(job.id)} />
     {error && <div className="mt-4"><ErrorNotice message={error} retry={() => setRevision(value => value + 1)} /></div>}
     {loading ? <p className="mt-4 text-sm text-slate-500">加载我的材料…</p> : <form className="mt-5 space-y-4" onSubmit={submit}>
@@ -136,21 +132,16 @@ function MatchForm({
         <ResumeVersionPicker resumes={resumes} selectedId={resumeVersionId} onChange={setResumeVersionId} />
         <ProjectVersionPicker projects={projects} selectedIds={projectVersionIds} onChange={setProjectVersionIds} />
         <div className="rounded-xl border border-[#cfc9b8] bg-[#e7efe9] p-4 text-sm text-indigo-950">
-          <p className="font-semibold">外部 AI 发送范围与脱敏预览</p>
-          <p className="mt-2 text-xs leading-6">外部 AI 可选：不勾选下方同意时，只在本站生成规则匹配报告，不发送材料给外部模型。规则报告也可以查看证据并明确投递。</p>
-          <dl className="mt-3 grid gap-2 text-xs leading-6 sm:grid-cols-2">
-            <div><dt className="font-medium">本次材料</dt><dd>{selectedResume ? `${displayMaterialTitle(selectedResume.title, selectedResume.id)} · 第 ${selectedResume.versionNumber} 版` : "尚未选择简历"}{selectedProjects.length ? `；${selectedProjects.join("；")}` : "；未选择项目材料"}</dd></div>
-            <div><dt className="font-medium">只发送</dt><dd>{job.requirements.length} 项岗位要求、规则结论和每项最多 3 条必要证据片段</dd></div>
-            <div><dt className="font-medium">自动脱敏</dt><dd>邮箱、手机号、身份证号、带“姓名”标签的姓名，以及可识别格式的密码和访问密钥</dd></div>
-            <div><dt className="font-medium">不会主动加入</dt><dd>账号身份、个人资料中的姓名、原始文件、完整简历和原始图片</dd></div>
-          </dl>
-          <p className="mt-3 text-xs leading-6 text-[#173c34]">自由文本中的别名、地址，以及未经标记或经过编码的密钥可能无法识别，请只选择与岗位分析必要的材料。没有可引用证据或达到用量上限时，系统会自动生成规则报告。报告只保存在你的账号中，不会自动分享给企业。</p>
+          <p className="font-semibold">外部 AI 分析（可选）</p>
+          <p className="mt-2 leading-6">向 DeepSeek 发送 {job.requirements.length} 项岗位要求、规则结论和每项最多 3 条脱敏证据片段。不发送原始文件、完整简历或原始图片。</p>
+          <p className="mt-2 leading-6">脱敏可能漏识别自由文本中的个人信息和密钥，请先核对所选材料。未授权、没有可引用证据或达到用量上限时，生成站内规则报告。</p>
+          <details className="mt-2 text-xs leading-6"><summary className="disclosure">脱敏范围</summary><p>自动处理邮箱、手机号、身份证号、带“姓名”标签的姓名，以及可识别格式的密码和访问密钥。不主动加入账号身份或个人资料姓名。</p></details>
           <label className="mt-3 flex items-start gap-2 rounded-lg bg-white/70 p-3 font-medium">
             <input className="mt-1" type="checkbox" checked={externalAiConsent} onChange={event => setExternalAiConsent(event.target.checked)} />
-            <span>我已查看上述发送范围，同意将脱敏后的必要片段发送给外部 AI 生成带引用解释。</span>
+            <span>我同意按上述范围发送给 DeepSeek，生成带引用的解释。</span>
           </label>
         </div>
-        <label className="flex items-start gap-2 text-xs leading-6 text-slate-600"><input className="mt-1" type="checkbox" checked={usePreviousReport} onChange={event => setUsePreviousReport(event.target.checked)} /><span>可选：允许 AI 查询本人同岗位上一份报告的脱敏解释、缺口和最多两条历史片段。历史仅作参考，不作为本轮引用或评级依据；没有历史时只分析当前材料。</span></label>
+        <label className="flex items-start gap-2 text-sm leading-6 text-slate-600"><input className="mt-1" type="checkbox" checked={usePreviousReport} onChange={event => setUsePreviousReport(event.target.checked)} /><span>同意 AI 参考同岗位上一份报告的脱敏解释、缺口及最多 2 条历史片段。历史材料不进入本轮引用或评级。</span></label>
         <button className="btn" disabled={busy || !resumeVersionId}>{busy ? "创建分析任务…" : "生成我的匹配报告"}</button>
       </fieldset>
     </form>}

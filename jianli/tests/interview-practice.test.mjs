@@ -2,8 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   PRACTICE_DRAFT_PREFIX, activePracticeView, canRetryFeedback, canSubmit, consentItems, draftKey, issueBasisId, newClientToken, openTurn,
-  feedbackStatusLabel, practiceIssueSources, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
+  feedbackStatusLabel, practiceIssueSources, practiceKnowledgeCaption, practiceStatusLabel, practiceTurnSources, selectedPracticeTurn, questionRetryNote, savedSubmission, summaryLine, tokenKey, turnLabel, turnNotice, visibleSummaryNextStep,
 } from "../src/lib/interview-practice.ts";
+
+test("practice source caption lists the stored version and section once and keeps a distinct source label", () => {
+  const source = { sourceLabel: "PostgreSQL 16 文档：聚合函数", sourceVersion: "PostgreSQL 16", section: "函数与运算符 · 聚合函数" };
+  assert.equal(practiceKnowledgeCaption(source), "PostgreSQL 16 · 函数与运算符 · 聚合函数");
+  assert.equal(practiceKnowledgeCaption({ ...source, sourceLabel: "译注" }), "译注 · PostgreSQL 16 · 函数与运算符 · 聚合函数");
+});
 
 test("issue-specific basis stays with its original and follow-up rounds", () => {
   const conflict = id => ({answerQuote:"原话",reason:"说明",basisId:id});

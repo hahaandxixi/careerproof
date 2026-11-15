@@ -168,7 +168,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
   const radar = <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={openEvidence} opensDialog />;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
-      <div><h1>技能全景</h1><p className={styles.subtitle}>汇总已保存报告中的技能与材料支持记录，按岗位逐条核对原始要求。</p></div>
+      <div><h1>技能全景</h1></div>
       <p className={styles.headMeta}><strong>{landscape.skills.length}</strong> 个技能 · <strong>{landscape.contextCount}</strong> 条要求记录</p>
     </header>
     <div className={styles.loadbar} role="status" aria-live="polite">

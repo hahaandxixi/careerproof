@@ -50,6 +50,7 @@ registerHooks({
 const React = require("react");
 const { renderToStaticMarkup: render } = require("react-dom/server");
 const { ReportHistoryCard } = await import("../src/components/ReportList.tsx");
+const { reportGroupEntries } = await import("../src/lib/report-navigation.ts");
 const { SelectedRequirementEvidence, toggleComparisonCandidate, RequirementFocusSelect, SavedRequirementDetail, FixedReportOverview } = await import("../src/components/ApplicationBoard.tsx");
 
 test("fixed report overview separates evidence support, gaps and uncovered requirements without changing the snapshot", () => {
@@ -95,6 +96,19 @@ test("history card displays server-wide history facts without repeating saved re
   assert.match(unknown, /材料版本未记录/);
   assert.match(unknown, /report-record is-record/);
   assert.doesNotMatch(unknown, /is-history/);
+});
+
+test("report history offers one group entry per job and candidate without changing individual links", () => {
+  const rows = [
+    { ...summary, candidateId: "a" },
+    { ...summary, id: "report-b", candidateId: "a" },
+    { ...summary, id: "report-c", candidateId: "b" },
+    { ...summary, id: "report-d", jobId: "job-b", candidateId: "a" },
+  ];
+  assert.deepEqual([...reportGroupEntries(rows)], ["report-a", "report-c", "report-d"]);
+  const ownHistory = render(React.createElement(ReportHistoryCard, { own: true, report: { ...rows[1], candidateName: "自己的名字", jobReportCount: 2 } }));
+  assert.doesNotMatch(ownHistory, /自己的名字|同岗位共/);
+  assert.match(ownHistory, /href="\/reports\/report-b#report-comparison"/);
 });
 test("comparison is bounded at four, removable and does not mutate the caller's selection", () => {
   const ids = ["a", "b", "c", "d"];

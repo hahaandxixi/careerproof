@@ -40,7 +40,7 @@ export default function VisualEvidencePanel({ versionId }: { versionId: string }
   const sourceUnavailable = result?.failureKind === "source_unavailable_or_changed";
   const historical = Boolean(result?.observations && result.promptVersion !== "visual-claim-v2-deepseek");
   return <section className="panel space-y-4" aria-label="视觉内容观察">
-    <div><h2 className="font-semibold">视觉内容观察</h2><p className="mt-2 text-sm leading-6 text-slate-600">本地 OCR 提取文字；视觉模型描述图中元素和位置。图片描述不参与实践评级，不能证明真实部署、持续运行、测试通过或本人贡献。</p></div>
+    <div><h2 className="font-semibold">视觉内容观察</h2><p className="mt-2 text-sm leading-6 text-slate-600">观察仅描述图中可见内容，不计入实践评级。不能据此确认部署、运行、测试或本人贡献。</p></div>
     {sourceUnavailable ? <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm">原图不可读取或与保存版本不一致，旧描述已停止展示。请<Link href="/portfolio" className="underline">上传新版本</Link>后再分析；原记录保留。</p> : <div className="relative mx-auto max-w-3xl overflow-hidden rounded-lg border">
       {/* Authenticated, same-origin, normalized PNG; no remote image URL is accepted. */}
       <img src={`/backend/api/v1/project-versions/${versionId}/image`} alt="本人上传的图片作品，用于核对视觉描述" className="block h-auto w-full" />
@@ -54,8 +54,11 @@ export default function VisualEvidencePanel({ versionId }: { versionId: string }
     </>}
     {result?.observations && <>
       <p className="text-xs text-slate-500">{LABELS[result.observations.image_kind]} · 本人核对：{({ pending: "待核对", accepted: "描述已采纳", rejected: "描述已驳回" })[result.reviewStatus]}</p>
-      <ol className="space-y-3">{result.observations.observations.map((item, index) => <li key={index} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{index + 1}. {item.description}</p>{item.visible_text && <p className="break-words">图中文字（模型读取）：{item.visible_text}</p>}<p className="text-slate-500">待核验：{item.needs_verification}</p><button className="selection-toggle mt-2" onClick={() => setSelected(selected === index ? null : index)} aria-pressed={selected === index}>定位估计区域 {index + 1}</button></li>)}</ol>
-      <p className="text-xs text-slate-500">区域是模型估计，未经过独立定位标注验收。本人采纳只记录描述核对，不是第三方认证，也不会提高等级。</p>
+      <ol className="space-y-3">{result.observations.observations.map((item, index) => <li key={index} className="rounded-lg bg-slate-50 p-3 text-sm leading-6"><p>{index + 1}. {item.description}</p>{item.visible_text && <p className="break-words">图中文字（模型读取）：{item.visible_text}</p>}<button type="button" className="selection-toggle mt-2" onClick={() => setSelected(selected === index ? null : index)} aria-pressed={selected === index}>定位区域 {index + 1}</button></li>)}</ol>
+      <p className="text-xs text-slate-500">区域由模型估计，采纳仅记录本人对描述的核对。</p>
+      <details className="text-sm"><summary className="disclosure">待核对事项</summary><ul className="mt-2 space-y-1">
+        {result.observations.observations.map((item, index) => <li key={index}>{index + 1}. {item.needs_verification}</li>)}
+      </ul></details>
       <label className="block text-sm">核对说明<textarea className="field mt-2" value={note} maxLength={500} onChange={event => setNote(event.target.value)} /></label>
       <div className="flex flex-wrap gap-2">{(["accepted", "rejected", "pending"] as const).map(status => <button key={status} disabled={busy} className="btn-secondary" onClick={() => void review(status)}>{({ accepted: "采纳描述", rejected: "驳回描述", pending: "恢复待核对" })[status]}</button>)}</div>
     </>}

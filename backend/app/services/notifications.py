@@ -114,7 +114,7 @@ class NotificationService:
             # Never store or expose candidate identity, evidence or reply text in a notice.
             title = MESSAGES.get(event.event_type, "投递状态已更新")
             if user.role == UserRole.ENTERPRISE and event.event_type == "submitted":
-                title = "收到一份新的授权投递"
+                title = "新投递"
             if href is None:
                 title = "投递授权已撤回或当前已无访问权限"
             items.append(
@@ -131,7 +131,7 @@ class NotificationService:
                             "jobTitle": job.title,
                             "companyName": job.company_name,
                         }
-                        if user.role == UserRole.STUDENT and href is not None
+                        if href is not None
                         else {}
                     ),
                 }

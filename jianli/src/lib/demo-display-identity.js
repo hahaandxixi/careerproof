@@ -72,7 +72,7 @@ export function demoJobAlias(id) {
 }
 
 const scenarioCompany = "职证场景实验室（虚构）";
-const scenarioCompanyName = "云栈科技";
+const scenarioCompanyName = "青禾科技";
 const scenarioOrganizationId = "4d659934-55ec-42f7-a08c-3c26ba44a7f1";
 const scenarioJobIds = new Set([
   "8af9efe0-2cfa-4a8d-b480-e8cc54a23e87",
@@ -88,6 +88,7 @@ export function displayJobCompany(name, jobId) {
 }
 
 export function displayOrganizationName(name, id) {
+  if (id === "015bf297-5cf8-46d1-94bb-cc1cb0e12a60" && name === "验收企业（合成）") return "云栈科技";
   return id === scenarioOrganizationId && name === scenarioCompany ? scenarioCompanyName : name;
 }
 

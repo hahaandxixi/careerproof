@@ -11,8 +11,8 @@ const DEMO_TITLES = cases.map(item => item.resumeName);
 const resumeDate = new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "short" });
 const GROUPS = [
   { key: "personal", label: "我的其他简历" },
-  { key: "demo", label: "示例简历" },
-  { key: "history", label: "历史验收材料 · 按名称归类" },
+  { key: "demo", label: "材料库简历" },
+  { key: "history", label: "历史简历" },
 ] as const;
 
 export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
@@ -60,10 +60,8 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
         </label>
         {historyCount > 0 && <label className="flex items-start gap-2 text-xs leading-6 text-slate-600">
           <input className="mt-1 shrink-0" type="checkbox" checked={includeHistory} onChange={event => setIncludeHistory(event.target.checked)} />
-          <span>显示历史验收材料（{historyCount} 份）；搜索时也会查找这些材料。</span>
+          <span>显示历史简历（{historyCount} 份）</span>
         </label>}
-        <p className="text-xs leading-6 text-slate-500">选择简历后，可选择与其对应的项目材料。搜索、收起或隐藏历史材料不会更改已选版本。</p>
-        {!all.some(resume => resume.category === "demo") && <p className="text-xs leading-6 text-slate-500">需要体验材料？可在<Link href="/jobs" className="btn-secondary">对应体验岗位详情</Link>下载配套简历与项目，再上传到当前账号。</p>}
         <div className="max-h-72 space-y-3 overflow-y-auto">
           {GROUPS.map(group => {
             const rows = visible.filter(resume => resume.category === group.key);
@@ -79,10 +77,10 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
               </div>)}
             </section> : null;
           })}
-          {!visible.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到匹配的已解析简历。试试其他关键词或显示历史验收材料；已选版本仍保留。</p>}
+          {!visible.length && <p role="status" className="p-3 text-sm text-slate-500">没有找到匹配的简历，请更换关键词。</p>}
         </div>
       </div>
-    </details> : <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>。</p>}
+    </details> : <p className="text-sm text-amber-700">还没有可用简历，请先<Link href="/portfolio" className="underline">上传并完成解析</Link>，也可从<Link href="/demo" className="underline">材料库</Link>下载示例。</p>}
   </section>;
 
   function dateForDuplicate(title: string, latestId: string, createdAt: string) {
@@ -92,12 +90,13 @@ export default function ResumeVersionPicker({ resumes, selectedId, onChange }: {
   }
 
   function renderVersion(version: ResumeHistory["versions"][number], title: string, latestId: string) {
-    const filename = hideOriginalResumeFilename(version.id) ? "" : version.originalFilename;
-    const versionName = `第 ${version.versionNumber} 版${dateForDuplicate(title, latestId, version.createdAt)}`;
+    const date = dateForDuplicate(title, latestId, version.createdAt);
+    const filename = date && !hideOriginalResumeFilename(version.id) ? version.originalFilename : "";
+    const versionName = `第 ${version.versionNumber} 版${date}`;
     return <label key={version.id} className="material-version mt-2 flex cursor-pointer items-start gap-2 rounded-lg bg-white p-2 text-sm">
       <input className="mt-1 shrink-0" type="radio" name={radioName} aria-label={[displayMaterialTitle(title, version.id), versionName, filename].filter(Boolean).join(" ")} checked={selectedId === version.id} onChange={() => choose(version.id)} />
       <span className="min-w-0 break-words">{versionName}{filename && ` · ${filename}`}
-        <span className="block text-xs text-slate-500">{version.materialRole === "reference" ? "第三方参考，不计评级" : "个人作品"}</span>
+        {version.materialRole === "reference" && <span className="block text-xs text-slate-500">第三方参考，不计评级</span>}
       </span>
     </label>;
   }

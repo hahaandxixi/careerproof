@@ -354,7 +354,7 @@ test("single list and mounted panels replace the second action-list rendering", 
  assert.ok(!source.includes("ReportActionLayer")); assert.ok(source.includes("<RequirementActionPanel"));
  assert.doesNotMatch(source, /判据与核对记录|规则判断原文|判据、声明与覆盖范围/);
  assert.ok(source.includes("<RequirementSupplementTarget"));
- assert.ok(source.includes("记录你对本项证据的意见"));
+ assert.ok(source.includes("review(item.requirementId"));
 });
 
 

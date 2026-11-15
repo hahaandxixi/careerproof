@@ -11,26 +11,12 @@ type Sample = {
 const asset = (filename: string) => `/demo-assets/cases/${encodeURIComponent(filename)}`;
 const groups = [
   { key: "all", label: "全部" },
-  { key: "engineering", label: "后端与运维" },
+  { key: "engineering", label: "开发与运维" },
   { key: "data", label: "数据" },
   { key: "qa", label: "测试" },
   { key: "product", label: "产品与运营" },
 ] as const;
 const groupOf = (slug: string) => slug === "qa" ? "qa" : ["analytics", "data-engineering"].includes(slug) ? "data" : ["product", "operations"].includes(slug) ? "product" : "engineering";
-const domainMeta: Record<string, { domain: string; label: string }> = {
-  engineering: { domain: "backend", label: "后端" },
-  data: { domain: "data", label: "数据" },
-  qa: { domain: "testing", label: "测试" },
-  product: { domain: "tools", label: "产品与运营" },
-};
-const domainOf = (slug: string) => {
-  if (slug === "frontend") return { domain: "frontend", label: "前端" };
-  if (slug === "qa") return domainMeta.qa;
-  if (["analytics", "data-engineering"].includes(slug)) return domainMeta.data;
-  if (["product", "operations"].includes(slug)) return domainMeta.product;
-  if (slug === "backend") return domainMeta.engineering;
-  return { domain: "tools", label: "工具与未知" };
-};
 
 export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
   const [group, setGroup] = useState<string>("all");
@@ -41,12 +27,10 @@ export default function DemoCaseGallery({ samples }: { samples: Sample[] }) {
     </div>
     <div className="case-gallery-grid">
       {visible.map(sample => {
-        const domain = domainOf(sample.slug);
         const jobTitle = sample.jobTitle.replace(/（合成演示）/g, "").trim();
         return <article className="case-card" key={sample.caseId}>
-        <div className="case-card-top"><span className="case-id">{sample.version}</span><span className="tech-tag" data-domain={domain.domain}>{domain.label}</span></div>
+        <div className="case-card-top"><span className="case-id">{sample.version}</span></div>
         <h3>{sample.projectTitle}</h3>
-        <p className="case-project">{sample.title}</p>
         <p className="case-job">{jobTitle}</p>
         <p className="case-facts">{sample.boundary}</p>
         <div className="case-actions">

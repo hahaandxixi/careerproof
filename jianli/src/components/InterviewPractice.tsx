@@ -8,7 +8,7 @@ import type { InterviewSession, PracticeSummary, PracticeTurn } from "@/lib/api/
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
   activePracticeView, canSubmit, consentItems, draftKey, issueOriginIndex, newClientToken, openTurn, practiceIssueSources, practiceStatusLabel, practiceTurnSources,
-  canRetryFeedback, feedbackStatusLabel, generationPending, questionRetryNote, savedSubmission, tokenKey, turnLabel, turnNotice,
+  canRetryFeedback, generationPending, practiceKnowledgeCaption, questionRetryNote, savedSubmission, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
 import { ErrorNotice } from "./AccessGate";
@@ -313,7 +313,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
             <span className={styles.turnState}>{turn.state === "question" ? "待回答" : "回答已保存"}</span>
           </div>
           <p className={styles.question}>{turn.question}</p>
-          {!!turn.focus && <p className={styles.focus}>关注点：{turn.focus}</p>}
+          {!!turn.focus && !(turn.kind === "follow_up" && turn.focus.trim() === "追问") && <p className={styles.focus}>关注点：{turn.focus}</p>}
 
           {turn === current && <div>
             <label className="text-sm font-medium" htmlFor={`practice-answer-${turn.turnIndex}`}>你的回答</label>
@@ -426,9 +426,9 @@ function PracticeSummaryReview({ summary, turns, selectedIssueId, onSelectIssue 
             {!quote && second?.answerText && <IssueReading tone="slate" label="本轮补答">
               <details className={styles.savedDetails}><summary>查看第 {second.turnIndex + 1} 轮完整回答</summary><blockquote>{second.answerText}</blockquote></details>
             </IssueReading>}
-            <IssueReading tone={resolved ? "green" : state === "inconsistent" ? "red" : "amber"} label="当前结果">
-              <p>{status}{issue.text !== issue.origin.text && <> · {issue.text}</>}</p>
-            </IssueReading>
+            {issue.text !== issue.origin.text && <IssueReading tone={resolved ? "green" : state === "inconsistent" ? "red" : "amber"} label="当前结果">
+              <p>{issue.text}</p>
+            </IssueReading>}
             {(firstQuestion || secondQuestion) && <details className={styles.savedDetails}>
               <summary>查看相关题目</summary>
               {firstQuestion && <blockquote>第 {originIndex + 1} 轮 · {firstQuestion}</blockquote>}
@@ -496,7 +496,7 @@ function PracticeSources({ source, session, showTitle = false }: {
       <ul className={styles.knowledgeList}>
         {knowledge.map(item => <li key={item.knowledgeId}>
           <strong>{item.title}</strong>
-          <span>{item.sourceLabel} · {item.sourceVersion} · {item.section}</span>
+          <span>{practiceKnowledgeCaption(item)}</span>
           <details><summary>出处详情</summary><span>{item.document}{item.sourceLocator ? ` · ${item.sourceLocator}` : ""}</span></details>
         </li>)}
       </ul>
