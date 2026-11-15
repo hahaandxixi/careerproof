@@ -8,8 +8,6 @@ export function sourceLimit(report: MatchReport, source: ReportEvidence): { labe
     return { label: "来源暂不可读", detail: "本条引用缺少可读取原文或有效定位，请核对历史材料；不会跳转到最新版本替代。", readable: false };
   if (!sourceContextVerified(report.evidenceContextVersion))
     return { label: "历史完整性信息不足", detail: "保留当时来源，尚不能确认完整上下文；请核对原始版本。", readable: true };
-  if (source.contextComplete === false)
-    return { label: "局部原文", detail: "此处仅展示局部原文，不表示整个函数或项目缺失；可核对本要求的其他来源。", readable: true };
   return null;
 }
 

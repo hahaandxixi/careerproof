@@ -319,6 +319,9 @@ main [id^="requirement-"], main [id^="citation-"], main [id^="rule-source-"], ma
 .home-sample { @apply min-w-0 rounded-xl border border-slate-200 border-t-2 border-t-[var(--brand-primary)] bg-white p-4 sm:p-6; }
 .discovery-job-row { @apply grid items-center gap-3 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto] md:gap-5; }
 .discovery-job-row h2, .discovery-job-row h3 { @apply text-lg font-semibold leading-6; }
+.discovery-job-direction { width: fit-content; max-width: 100%; padding: 3px 9px; border: 1px solid var(--brand-border); border-radius: 4px; background: var(--brand-surface); color: var(--ink-primary); font-size: 14px; font-weight: 650; overflow-wrap: anywhere; }
+.discovery-job-skills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.discovery-job-skills li { max-width: 100%; padding: 2px 8px; border: 1px solid var(--ink-line); border-radius: 4px; background: color-mix(in srgb, var(--brand-surface) 42%, var(--paper-bg)); color: var(--ink-muted); font-size: 14px; overflow-wrap: anywhere; }
 @media (min-width: 1280px) {
   .report-recording-layout .report-index-layout { grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr); }
 }
@@ -362,11 +365,9 @@ main.site-frame:has(.report-desk) { max-width: 1664px; }
 .report-desk .requirement-reading-copy > div > h4 { font-size: 16px; color: var(--ink-secondary); }
 .report-desk .requirement-next { padding: 12px 0 0; border: 0; border-top: 1px solid var(--ink-line); }
 .report-desk .requirement-next p, .report-desk .requirement-next li { font-size: 16px; }
-.report-desk .requirement-citation-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .report-citation-chip { display: inline-flex; align-items: center; min-height: 36px; padding: 4px 9px; background: var(--desk-bg); color: var(--ink-primary); border: 1px solid var(--ink-line); border-radius: 4px; font-size: 14px; font-weight: 600; }
 .report-citation-chip:hover { background: var(--ink-line); text-decoration: underline; }
 .report-source-panel { min-width: 0; }
-.source-reader-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-bottom: 4px; }
 .source-reader-opener { min-height: 28px; padding: 4px 0; color: var(--ink-primary); font-size: 14px; font-weight: 600; }
 /* Source rail: a resident ink-green reading column, not a floating overlay. */
 .report-source-reader { overflow: auto; max-height: min(80vh, 900px); scrollbar-width: thin; background: var(--ink-nav); color: var(--nav-text); border-radius: 0; box-shadow: none; }
@@ -707,7 +708,6 @@ main.site-frame { padding-top: 20px; }
   .job-workspace .job-discovery-filters > button { justify-self: start; }
 }
 /* Final batch: persistent source heading, upload tabs, account marker. */
-.source-reader-title { margin: 0; min-height: 28px; padding: 4px 0; color: var(--ink-primary); font-size: 14px; font-weight: 600; }
 .material-upload-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .material-upload-heading h2 { margin: 0; }
 .material-upload-kind-switch { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; border-bottom: 1px solid var(--ink-line); }

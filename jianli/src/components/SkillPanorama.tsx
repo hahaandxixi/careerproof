@@ -36,7 +36,7 @@ export function SkillPanoramaWorkspace({ ownerId }: { ownerId: string }) {
   useEffect(() => {
     if (selected !== null) { selectedByUser.current = true; return; }
     if (selectedByUser.current || !state.reports.length) return;
-    const first = buildSkillPanorama(state.reports).skills[0];
+    const first = buildSkillPanorama(state.reports).skills.find(skill => skillRecordMeasure(skill).ratio !== null);
     if (first) { selectedByUser.current = true; setSelected(first.key); }
   }, [state.reports, selected]);
   // Switching the status filter must not leave a hidden skill selected with an
@@ -137,15 +137,14 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
   const empty = !state.busy && state.total === 0;
   // A skill stays visible when any saved record matches; its own card keeps every
   // original status, so the same skill can match more than one filter.
-  const visibleSkills = landscape.skills.filter(value => filterSkillContexts(value.contexts, filter).length > 0);
-  const assessed = visibleSkills.filter(value => skillRecordMeasure(value).ratio !== null);
-  const unassessed = visibleSkills.filter(value => skillRecordMeasure(value).ratio === null);
+  const assessed = landscape.skills.filter(value => skillRecordMeasure(value).ratio !== null);
+  const visibleSkills = assessed.filter(value => filterSkillContexts(value.contexts, filter).length > 0);
   const unclassifiedMatched = filterSkillContexts(landscape.unclassified, filter).length;
   const groups = PANORAMA_CATEGORIES
-    .map(category => ({ category, skills: assessed.filter(value => value.category === category) }))
+    .map(category => ({ category, skills: visibleSkills.filter(value => value.category === category) }))
     .filter(group => group.skills.length > 0);
   const filterCount = (value: PanoramaFilter) => filterSkillContexts(
-    [...landscape.skills.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
+    [...assessed.flatMap(entry => entry.contexts), ...landscape.unclassified], value).length;
   const listChanged = !state.hasMore && state.total !== null && state.summaries.length !== state.total && !state.blocked;
   return <div className={styles.panorama}>
     <header className={styles.heading}>
@@ -172,7 +171,7 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
             {PANORAMA_FILTER_LABELS[value]} <span>{filterCount(value)}</span>
           </button>)}
         </div>
-        <SkillOverviewRadar skills={assessed} selected={selected} onSelect={onSelect} />
+        <SkillOverviewRadar skills={visibleSkills} selected={selected} onSelect={onSelect} />
       </section>
       <section className={styles.cards} aria-label="技能分组全景">
         {groups.map(group => {
@@ -199,21 +198,16 @@ export function SkillPanoramaView({ state, selected, filter = "all", onSelect, o
             })}</div>
           </section>;
         })}
-        {!!unassessed.length && <details className={styles.unassessed}>
-          <summary>未评估技能（{unassessed.length}）</summary>
-          <ul>{unassessed.map(value => <li key={value.key}>
-            <span>{value.name}</span>
-            <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
-              aria-label={"查看依据：" + value.name} onClick={event => openEvidence(value.key, event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
-          </li>)}</ul>
-        </details>}
         {!!unclassifiedMatched && <div className={styles.unclassified}>
           <button type="button" aria-pressed={selected === ""} onClick={() => onSelect("")}>未标注技能的要求 <strong>{unclassifiedMatched}</strong></button>
           <button type="button" className={styles.cardEvidence} aria-haspopup="dialog" aria-controls="skill-evidence-drawer"
             aria-label="查看依据：未标注技能的要求" onClick={event => openEvidence("", event.currentTarget)}>查看依据 <span aria-hidden="true">→</span></button>
         </div>}
         {!landscape.contextCount && !state.busy && <p className={styles.noRecords}>已读取报告中暂无技能或要求记录。</p>}
-        {!!landscape.contextCount && !visibleSkills.length && !unclassifiedMatched && <p className={styles.noRecords}>当前筛选没有匹配的要求记录。<button type="button" className="btn-secondary btn-compact" onClick={() => onFilterChange?.("all")}>查看全部记录</button></p>}
+        {!!landscape.contextCount && !visibleSkills.length && !unclassifiedMatched && <p className={styles.noRecords}>
+          {filter === "all" ? <>已读取报告中暂无已评估技能。<Link href="/reports" className="btn-secondary btn-compact">查看原报告</Link></>
+            : <>当前筛选没有匹配的要求记录。<button type="button" className="btn-secondary btn-compact" onClick={() => onFilterChange?.("all")}>清除筛选</button></>}
+        </p>}
       </section>
       <dialog ref={dialog} id="skill-evidence-drawer" className={`job-workspace-drawer ${styles.evidenceDrawer}`}
         aria-labelledby="skill-evidence-title" onClose={restoreFocus}

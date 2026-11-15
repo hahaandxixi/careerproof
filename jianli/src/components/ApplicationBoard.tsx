@@ -476,7 +476,9 @@ function SavedRequirementInterpretation({ item, report }: { item: ReportItem; re
   // views adopt only validated, non-fallback AI interpretation.
   const useAi = item.aiStatus === "validated" && !report.aiFallbackUsed && !invalidNarrativeCitations(item).length;
   const aiExplanation = useAi && item.aiExplanation?.trim() ? item.aiExplanation : null;
-  const gap = useAi ? item.aiInformationGap : null;
+  const ruleGap = item.evidenceLevelGap;
+  const genericTestFollowUp = ruleGap?.startsWith("先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。");
+  const gap = (useAi ? item.aiInformationGap : null) || (genericTestFollowUp ? null : ruleGap);
   return <>
     {invalidNarrativeCitations(item).length>0&&<p className="text-sm text-amber-900">历史AI解释的引用需重新核对，当前显示规则判断。</p>}
     <p className="break-words text-base leading-7"><span className="font-medium">{aiExplanation ? "AI解释" : "规则解释"}：</span>{aiExplanation?readableCitationText(item,aiExplanation):item.explanation}</p>

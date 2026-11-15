@@ -73,12 +73,14 @@ function fixture(count=2,editRow=value=>value,options={}){
 
 test("fixed report omits the generic rule follow-up but retains a validated AI gap",()=>{
  const {SavedRequirementDetail}=fixture();
- const item={requirementId:"r1",skill:"pytest",verdict:"supported",finalScore:10,formulaVersion:"evidence-v4",evidenceList:[],aiCitationIds:[],explanation:"保留规则解释",evidenceLevelGap:"先对照已有断言"};
+ const item={requirementId:"r1",skill:"pytest",verdict:"supported",finalScore:10,formulaVersion:"evidence-v4",evidenceList:[],aiCitationIds:[],explanation:"保留规则解释",evidenceLevelGap:"先对照已有断言的输入、预期结果和未覆盖的异常场景，逐条核对本项岗位要求。已上传测试命名文件：test_pipeline.py。"};
  const render=()=>require("react-dom/server").renderToStaticMarkup(React.createElement(SavedRequirementDetail,{item,report:{items:[item],aiFallbackUsed:false}}));
  assert.match(render(),/保留规则解释/);
  assert.doesNotMatch(render(),/待核对：|先对照已有断言/);
  Object.assign(item,{aiStatus:"validated",aiInformationGap:"尚无失败响应测试记录"});
  assert.match(render(),/待核对：尚无失败响应测试记录/);
+ Object.assign(item,{aiStatus:"not_used",evidenceLevelGap:"缺少实际运行环境记录"});
+ assert.match(render(),/待核对：缺少实际运行环境记录/);
 });
 
 test("tab return reauthorizes the fixed report before showing an unsent draft and requires confirmation again",async()=>{

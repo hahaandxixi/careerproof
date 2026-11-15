@@ -156,7 +156,7 @@ test("skill selection and evidence are separate sibling controls with distinct a
   assert.doesNotMatch(html, /aria-pressed="(?:true|false)" aria-haspopup="dialog"/);
 });
 
-test("assessed skill cards and the compact unassessed list preserve separate evidence controls",()=>{
+test("skill panorama lists assessed skills while leaving saved unsupported requirements in their report",()=>{
   const rows=[report("qa",[
     item("a","测试用例","unsupported"), item("b","接口测试","unsupported"), item("c","Python","supported"),
     item("d","pytest","supported"), item("e","Git","gap"),
@@ -164,8 +164,8 @@ test("assessed skill cards and the compact unassessed list preserve separate evi
   const html=render({state:{...state,reports:rows,summaries:rows,total:1,hasMore:false}});
   assert.match(html, /aria-label="工程与协作" data-multiple="true"/);
   assert.match(html, /aria-label="编程语言"><div/);
-  assert.match(html, /<details class="unassessed"><summary>未评估技能（2）<\/summary>/);
-  assert.match(html, /aria-label="查看依据：测试用例"/);
-  assert.match(html, /aria-label="查看依据：接口测试"/);
+  assert.doesNotMatch(html, /未评估技能（|查看依据：测试用例|查看依据：接口测试/);
+  assert.match(html, /aria-label="查看依据：pytest"/);
+  assert.equal(panorama.buildSkillPanorama(rows).skills.length, 5);
   assert.doesNotMatch(html, /skillIcon|skillDomain|已读取.*份报告|个技能 ·/);
 });
