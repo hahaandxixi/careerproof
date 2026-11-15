@@ -81,15 +81,15 @@ test("history retry is a read and does not reload material selection or create a
 test("materials are shown first and a saved plan opens only on request",async()=>{
  const f=fixture({historyResult:{planId:"saved",materials:[],recommendations:[],changes:[],summary:"已保存的推荐依据"}});
  f.render();await f.settle();let tree=f.render();
- assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-selection").props.hidden,false);
+ assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-form").props.hidden,false);
  assert.equal(f.calls().historyCalls,0);
  f.nodes(tree).find(n=>n.type==="button"&&n.props.children==="查看上次保存的规划").props.onClick(); f.render(); await f.settle(); tree=f.render();
  const nodes=f.nodes(tree);
- assert.ok(nodes.findIndex(n=>n.props?.["data-plan-id"]==="saved")<nodes.findIndex(n=>n.type==="form"));
- assert.equal(nodes.find(n=>n.props?.id==="career-material-selection").props.hidden,true);
+ assert.ok(nodes.findIndex(n=>n.type==="form")<nodes.findIndex(n=>n.props?.["data-plan-id"]==="saved"));
+ assert.equal(nodes.find(n=>n.props?.id==="career-material-form").props.hidden,true);
  nodes.find(n=>n.type==="button"&&n.props.children==="更换材料").props.onClick();
  tree=f.render();
- assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-selection").props.hidden,false);
+ assert.equal(f.nodes(tree).find(n=>n.props?.id==="career-material-form").props.hidden,false);
  assert.deepEqual(f.calls(),{createCalls:0,listCalls:1,historyCalls:1});
 });
 
@@ -168,4 +168,17 @@ test("recommendation cards show matched skills and job link directly without a f
   assert.ok(cardNodes.some(n=>n.props?.children==="Python"));
   assert.ok(cardNodes.some(n=>n.props?.href==="/jobs/job1"&&n.props.children==="查看岗位"));
  })();
+});
+
+test("saved reasons use the recorded tiers without assigning other jobs a priority", async () => {
+ const job = (jobId, priority) => ({jobId,jobTitle:jobId,priority,matchedSkills:[],evidence:[]});
+ const historyResult = {planId:"saved",materials:[],changes:[],recommendations:[job("medium","medium"),job("high1","high"),job("no-tier",undefined),job("high2","high")],
+   aiPlan:{comparison:"已保存的方向比较",advice:[{jobId:"high1",reason:"可定位输入校验。",citationIds:[]}]},aiFallbackUsed:false};
+ const f=fixture({historyResult,query:"?returnPlan=saved"});
+ f.render();await f.settle();f.render();await f.settle();
+ const tree=f.render();
+ assert.deepEqual(f.nodes(tree).filter(n=>n.type==="h3").map(n=>n.props.children),["岗位方向比较","优先了解","值得比较","推荐岗位"]);
+ const cards=f.nodes(tree).filter(n=>n.type==="article");
+ assert.deepEqual(cards.map(n=>n.props.id),["plan-job-high1","plan-job-high2","plan-job-medium","plan-job-no-tier"]);
+ assert.equal(f.get(cards[0], "p").props.children, "可定位输入校验。");
 });
