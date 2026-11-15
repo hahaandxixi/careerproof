@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import { Children, useEffect, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import type { ReportItem } from "@/lib/api/domain";
 import { navigateEvidenceFragment } from "@/lib/evidence-anchor";
 import { initialReportRequirement, reportAnchorId, reportEntryRequirement, requirementForReportAnchor } from "@/lib/report-reader";
@@ -104,7 +104,7 @@ export default function ReportRequirementReader({ items, children, overview, sel
     { key: "gaps", label: "待补或仅声明", count: state.gaps.length },
     { key: "other", label: "未覆盖或需复核", count: state.other.length },
   ];
-  const selectRequirement = (event: MouseEvent<HTMLAnchorElement>, requirementId: string) => {
+  const selectRequirement = (event: ReactMouseEvent<HTMLAnchorElement>, requirementId: string) => {
     if (!controlled || !onRequirementChange || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     onRequirementChange(requirementId);
