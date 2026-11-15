@@ -50,6 +50,18 @@ test("URLs roundtrip every independent filter and preserve legacy keyword links"
   assert.equal(parse("q=Python").q, "Python");
 });
 
+test("recommendation return retains applied filters and position and rejects outside destinations", () => {
+  const query = parse("direction=testing&specialty=automation&language=python&city=广州&employmentType=full_time&q=a%26b&page=3");
+  const recommendation = new URL(helpers.discoveryRecommendationHref(query, 130.4), "http://localhost");
+  assert.equal(recommendation.pathname, "/recommendations");
+  const context = helpers.normalizeJobsContext(recommendation.searchParams.get("jobsContext"));
+  assert.equal(helpers.recommendationDiscoveryReturnHref(context), helpers.discoveryHref(query) + "#discovery-scroll-130");
+  assert.equal(helpers.discoveryReturnScroll("#discovery-scroll-130"), 130);
+  assert.equal(helpers.discoveryReturnScroll("#discovery-scroll-1.5"), null);
+  assert.equal(helpers.recommendationDiscoveryReturnHref(helpers.normalizeJobsContext("next=https://external.invalid&y=-1")), "/jobs");
+  assert.equal(helpers.recommendationDiscoveryReturnHref(helpers.normalizeJobsContext(undefined)), "/jobs");
+});
+
 function walk(tree) {
   if (!tree || typeof tree !== "object") return [];
   return [tree, ...React.Children.toArray(tree.props?.children).flatMap(walk)];
@@ -77,13 +89,13 @@ function harness(search, compact = false, role = null) {
     react: { ...React, useMemo: fn => fn(), useState: () => { const n = cursor++; return [state[n], value => { state[n] = typeof value === "function" ? value(state[n]) : value; }]; }, useEffect: fn => effects.push(fn) },
  "@/lib/demo-display-identity.js":demoPresentation,
     "react/jsx-runtime": require("react/jsx-runtime"), "next/link": link,
-    "next/navigation": { useSearchParams: () => new URLSearchParams(search) },
+    "next/navigation": { useSearchParams: () => new URLSearchParams(search), useRouter: () => ({ push: href => routes.push(["router", href]) }) },
     "@/lib/api/client": { api, errorMessage: String }, "@/lib/api/domain": ts(path.join(root, "src/lib/api/domain.ts")),
     "@/lib/job-discovery": helpers, "./CareerDirectionIcon": icon,
     "./AccessGate": { ErrorNotice: ({ message }) => React.createElement("p", { role: "alert" }, message) },
     "./AuthProvider": { useAuth: () => ({ user: role ? { role } : null, status: role ? "authenticated" : "unauthenticated" }) },
   });
-  return { requests, routes, state, mod, setSearch(value) { search = value; }, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()); } };
+  return { requests, routes, state, mod, setSearch(value) { search = value; }, render() { cursor = 0; effects = []; return mod.default({ compact }); }, start() { this.render(); return effects.map(fn => fn()).filter(Boolean); } };
 }
 const tick = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
 const job = id => ({ id, title: `岗位${id}`, companyName: "企业原文", city: "杭州", category: "software", employmentType: "internship", requirementCount: 5, isDemo: false, technicalTags: [] });
@@ -94,6 +106,25 @@ test("only authenticated students see the material recommendation action", () =>
     assert.equal(html.includes('href="/recommendations"'), role === "student");
     if (role === "student") assert.ok(html.includes("按我的材料推荐岗位"));
   }
+});
+
+test("recommendation click captures scroll and the return restores it only after results load", async () => {
+  const search = "direction=backend&q=Python&page=2";
+  const h = harness(search, false, "student");
+  window.location = { hash: "#discovery-scroll-125" };
+  window.scrollY = 125;
+  window.scrollTo = (x, y) => h.routes.push(["scroll", x, y]);
+  const tree = h.render();
+  const recommendation = walk(tree).find(node => node.props?.className?.includes("job-recommendation-link"));
+  recommendation.props.onNavigate({ preventDefault() { h.routes.push(["handled"]); } });
+  assert.deepEqual(h.routes, [["handled"], ["router", helpers.discoveryRecommendationHref(parse(search), 125)]]);
+  h.routes.length = 0;
+  h.start();
+  assert.deepEqual(h.routes, []);
+  h.requests[0].resolve({ items: [job("restored")], total: 13, page: 2, pageSize: 12 });
+  await tick();
+  h.start();
+  assert.deepEqual(h.routes, [["replace", helpers.discoveryHref(parse(search))], ["scroll", 0, 125]]);
 });
 
 test("home and jobs keep old cards through a deferred filter request instead of collapsing into skeletons", async () => {

@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { experienceJobCopy, demoJobAlias } from "@/lib/demo-display-identity.js";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { api, errorMessage } from "@/lib/api/client";
 import { CATEGORY_LABELS, EMPLOYMENT_LABELS, type JobSummary, type Page } from "@/lib/api/domain";
-import { CAREER_DIRECTIONS, CAREER_LANGUAGES, EMPTY_DISCOVERY, discoveryHref, directionLabel, readDiscoveryQuery, type DiscoveryQuery } from "@/lib/job-discovery";
+import { CAREER_DIRECTIONS, CAREER_LANGUAGES, EMPTY_DISCOVERY, discoveryHref, discoveryRecommendationHref, discoveryReturnScroll, directionLabel, readDiscoveryQuery, type DiscoveryQuery } from "@/lib/job-discovery";
 import CareerDirectionIcon from "./CareerDirectionIcon";
 import { ErrorNotice } from "./AccessGate";
 import { useAuth } from "./AuthProvider";
 
 export default function JobDiscovery({ compact = false }: { compact?: boolean }) {
   const { user, status } = useAuth();
+  const router = useRouter();
   const search = useSearchParams();
   const query = useMemo(() => {
     const value = readDiscoveryQuery(new URLSearchParams(search.toString()));
@@ -31,11 +32,20 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
     api.listJobs({ ...query, pageSize: compact ? 3 : 12 }).then(value => {
       if (!current) return;
       setData(value);
-      if (!compact && value.page !== query.page) window.history.replaceState(null, "", discoveryHref({ ...query, page: value.page }));
+      if (!compact && value.page !== query.page && discoveryReturnScroll(window.location?.hash ?? "") === null) {
+        window.history.replaceState(null, "", discoveryHref({ ...query, page: value.page }));
+      }
     }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setBusy(false); });
     return () => { current = false; };
   }, [query, compact, revision]);
+  useEffect(() => {
+    if (compact || busy || !data) return;
+    const position = discoveryReturnScroll(window.location?.hash ?? "");
+    if (position === null) return;
+    window.history.replaceState(null, "", discoveryHref({ ...query, page: data.page }));
+    window.scrollTo(0, position);
+  }, [busy, compact, data, query]);
   const direction = CAREER_DIRECTIONS.find(item => item.id === query.direction);
   function choose(patch: Partial<DiscoveryQuery>) {
     const next = { ...query, q: draft.q.trim().slice(0, 200), city: draft.city.trim().slice(0, 100), page: 1, ...patch };
@@ -50,7 +60,12 @@ export default function JobDiscovery({ compact = false }: { compact?: boolean })
   return <section aria-labelledby="technical-jobs-title" className="job-workspace min-w-0 scroll-mt-24 space-y-4" id="technical-jobs">
     <div className="flex flex-wrap items-start justify-between gap-3"><div>
       <Heading id="technical-jobs-title" className={compact ? "section-title" : "page-title"}>{compact ? "探索技术岗位" : "发现技术岗位"}</Heading>
-    </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ? <Link className="btn-secondary job-recommendation-link shrink-0" href="/recommendations">按我的材料推荐岗位 →</Link> : null}</div>
+    </div>{compact ? <Link className="btn-secondary" href={moreHref}>查看全部岗位 →</Link> : status === "authenticated" && user?.role === "student" ?
+      <Link className="btn-secondary job-recommendation-link shrink-0" href={discoveryRecommendationHref(query)} onNavigate={event => {
+        if (window.scrollY <= 0) return;
+        event.preventDefault();
+        router.push(discoveryRecommendationHref(query, window.scrollY));
+      }}>按我的材料推荐岗位 →</Link> : null}</div>
     <div className="job-discovery-tools">
     <form id="job-discovery-search" role="search" aria-label="岗位搜索" className="job-discovery-search flex min-w-0 items-center gap-2" onSubmit={event => { event.preventDefault(); choose({}); }}>
       <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="ml-2 h-5 w-5 shrink-0 text-brand-primary"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>

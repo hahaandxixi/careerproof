@@ -30,18 +30,20 @@ const validationHint = (status: string) => status === "change_attribution_confli
       : "这是有限的表述检查；请核对已展示的操作与尚未核验的运行、覆盖范围。";
 const EMPTY_PROJECT_IDS: string[] = [];
 
-export default function CareerRecommendations({ initialResumeVersionId = "", initialProjectVersionIds = EMPTY_PROJECT_IDS }: {
+export default function CareerRecommendations({ initialResumeVersionId = "", initialProjectVersionIds = EMPTY_PROJECT_IDS, jobsContext = "" }: {
   initialResumeVersionId?: string;
   initialProjectVersionIds?: string[];
+  jobsContext?: string;
 }) {
   const { user } = useAuth();
   return <CareerPlanWorkspace key={JSON.stringify([user?.id, initialResumeVersionId, initialProjectVersionIds])}
-    initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} />;
+    initialResumeVersionId={initialResumeVersionId} initialProjectVersionIds={initialProjectVersionIds} jobsContext={jobsContext} />;
 }
 
-function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds }: {
+function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds, jobsContext }: {
   initialResumeVersionId: string;
   initialProjectVersionIds: string[];
+  jobsContext: string;
 }) {
   const [resumes, setResumes] = useState<ResumeHistory[]>([]);
   const [projects, setProjects] = useState<ProjectHistory[]>([]);
@@ -267,7 +269,7 @@ function CareerPlanWorkspace({ initialResumeVersionId, initialProjectVersionIds 
                 {!!matchedSkills.length && <ul className="career-skill-list" aria-label="匹配技能">{matchedSkills.map(skill => <li key={skill}>{skill}</li>)}</ul>}
               </div>
               <Link className={priority === "high" ? "btn shrink-0" : "btn-secondary shrink-0"} href={jobAnalysisHref(item.jobId, result.materials.find(material => material.kind === "resume")?.id ?? resumeVersionId, result.materials.filter(material => material.kind === "project").map(material => material.id))}>查看岗位</Link>
-              {!!activeEvidence.length && <ul className="space-y-3 border-t border-slate-100 pt-3">{activeEvidence.map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-brand-hover underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}`}>打开原始文件并定位行号</Link>}</li>)}</ul>}
+              {!!activeEvidence.length && <ul className="space-y-3 border-t border-slate-100 pt-3">{activeEvidence.map((evidence, index) => <li tabIndex={-1} id={evidence.citationId ? `plan-citation-${evidence.citationId}` : undefined} className="scroll-mt-24 text-xs leading-6 text-slate-600" key={`${evidence.filePath}-${index}`}><strong>{evidence.citationId ? `${evidence.citationId} · ` : ""}{evidence.skill}</strong> · {evidence.explanation}<br /><span className="break-all text-slate-400">{sourceRelativePath({ filePath: evidence.filePath, projectVersionId: evidence.projectVersionId && projectIds.has(evidence.projectVersionId) ? evidence.projectVersionId : undefined })} · 第 {evidence.lineStart}–{evidence.lineEnd} 行</span>{evidence.snippet && <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-white p-2 text-slate-700">{evidence.snippet}</pre>}{evidence.projectFileId && evidence.projectVersionId && <Link className="mt-2 inline-block text-brand-hover underline" href={`/materials/project/${evidence.projectVersionId}?fileId=${evidence.projectFileId}&lineStart=${evidence.lineStart}&lineEnd=${evidence.lineEnd}&from=recommendations&planCitation=${encodeURIComponent(evidence.citationId ?? "")}&planId=${encodeURIComponent(result.planId ?? "")}${jobsContext ? `&jobsContext=${encodeURIComponent(jobsContext)}` : ""}`}>打开原始文件并定位行号</Link>}</li>)}</ul>}
             </article>;
         })}
         </div>

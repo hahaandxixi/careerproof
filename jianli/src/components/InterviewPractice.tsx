@@ -7,7 +7,7 @@ import { api, ApiError, errorMessage } from "@/lib/api/client";
 import type { InterviewSession, PracticeSummary, PracticeTurn } from "@/lib/api/domain";
 import { displayJobTitle, displayMaterialTitle } from "@/lib/demo-display-identity.js";
 import {
-  activePracticeView, canSubmit, consentItems, draftKey, issueOriginIndex, newClientToken, openTurn, practiceIssueSources, practiceStatusLabel, practiceTurnSources,
+  activePracticeView, canSubmit, consentItems, draftKey, newClientToken, openTurn, practiceIssueSources, practiceStatusLabel, practiceTurnSources,
   canRetryFeedback, generationPending, practiceKnowledgeCaption, questionRetryNote, savedSubmission, tokenKey, turnLabel, turnNotice,
 } from "@/lib/interview-practice";
 import { useAuth } from "./AuthProvider";
@@ -16,17 +16,6 @@ import EvidenceSnippet from "./EvidenceSnippet";
 import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
-
-function SummaryIssues({ lines, visibleCount }: { lines: string[]; visibleCount: number }) {
-  const remaining = lines.slice(visibleCount);
-  return <>
-    <ul>{lines.slice(0, visibleCount).map((line, index) => <li key={index}>{line}</li>)}</ul>
-    {remaining.length > 0 && <details>
-      <summary>查看其余 {remaining.length} 条（共 {lines.length} 条）</summary>
-      <ul>{remaining.map((line, index) => <li key={index}>{line}</li>)}</ul>
-    </details>}
-  </>;
-}
 
 export default function InterviewPractice({ id }: { id: string }) {
   const { user, status } = useAuth();
@@ -370,7 +359,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         </article>}
 
         {view === "summary" && session.summary && <PracticeSummaryReview summary={session.summary}
-          turns={session.turns} selectedIssueId={selectedIssueId} onSelectIssue={setSelectedIssueId} />}
+          selectedIssueId={selectedIssueId} onSelectIssue={setSelectedIssueId} />}
 
         {view === "summary" && !knowledgeOutdated && <div className={styles.actions}>
           <button type="button" className="btn" disabled={!busyIdle} onClick={() => void restartPractice()}>
@@ -394,73 +383,36 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   </div>;
 }
 
-function PracticeSummaryReview({ summary, turns, selectedIssueId, onSelectIssue }: {
-  summary: PracticeSummary; turns: PracticeTurn[]; selectedIssueId: string | null; onSelectIssue(id: string | null): void;
+function PracticeSummaryReview({ summary, selectedIssueId, onSelectIssue }: {
+  summary: PracticeSummary; selectedIssueId: string | null; onSelectIssue(id: string | null): void;
 }) {
+  const issues = summary.issueTrail;
+  const legacyItems = [
+    ...summary.remaining.map(text => ({ text, state: "missing", status: "仍待补" })),
+    ...summary.inconsistent.map(text => ({ text, state: "inconsistent", status: "需修正" })),
+    ...(summary.resolvedIssues ?? []).map(issue => ({ text: issue.text, state: "covered", status: "已解决" })),
+  ];
   return <section className={styles.summary} aria-label="练习小结">
     <header className={styles.summaryHeader}><h2>练习小结</h2><span>已回答 {summary.answeredTurns} 轮</span></header>
-    {summary.issueTrail ? <>
-      {summary.issueTrail.length ? <ul className={styles.issueTrail}>{summary.issueTrail.map(issue => {
-        const originIndex = issueOriginIndex(issue);
-        const original = turns.find(turn => turn.turnIndex === originIndex);
-        const second = turns.find(turn => turn.turnIndex === issue.turnIndex && turn.turnIndex !== originIndex);
-        const firstQuestion = issue.origin.questionQuote || original?.question;
-        const secondQuestion = second && (issue.questionQuote || second.question);
-        const quote = issue.answerQuote || (second && issue.conflict?.answerQuote);
+    {(issues?.length ?? legacyItems.length) > 0 ? <ul className={styles.issueTrail}>
+      {issues ? issues.map(issue => {
         const resolved = Boolean(issue.answerQuote);
+        const selected = selectedIssueId === issue.issueId;
         const state = resolved ? "covered" : issue.kind;
-        const status = resolved ? "已修正" : issue.kind === "inconsistent" ? "需修正" : "仍待补";
-        const open = selectedIssueId === issue.issueId;
-        const firstLabel = issue.origin.issueId.includes(":inconsistent:") ? "首轮需修正" : "首轮缺口";
-        return <li key={issue.issueId}><details open={open}>
-          <summary onClick={event => { event.preventDefault(); onSelectIssue(open ? null : issue.issueId); }}>
+        const status = resolved ? "已解决" : issue.kind === "inconsistent" ? "需修正" : "仍待补";
+        return <li key={issue.issueId}>
+          <button type="button" className={styles.issueLine} aria-pressed={selected}
+            onClick={() => onSelectIssue(selected ? null : issue.issueId)}>
             <strong>{issue.origin.point || issue.origin.text}</strong>
             <span className={styles.issueStatus} data-kind={state} data-resolved={resolved}>{status}</span>
-          </summary>
-          <div className={styles.issueDetails} data-has-answer={Boolean(quote || second?.answerText)}>
-            <IssueReading tone="amber" label={originIndex === 0 ? firstLabel : `第 ${originIndex + 1} 轮发现`}>
-              <p>{issue.origin.text}</p>
-              {issue.origin.conflict?.answerQuote && <blockquote>{issue.origin.conflict.answerQuote}</blockquote>}
-            </IssueReading>
-            {quote && <IssueReading tone={resolved ? "green" : "red"} label={resolved ? "补答原话" : "本轮回答原话"}><blockquote>{quote}</blockquote></IssueReading>}
-            {!quote && second?.answerText && <IssueReading tone="slate" label="本轮补答">
-              <details className={styles.savedDetails}><summary>查看第 {second.turnIndex + 1} 轮完整回答</summary><blockquote>{second.answerText}</blockquote></details>
-            </IssueReading>}
-            {issue.text !== issue.origin.text && <IssueReading tone={resolved ? "green" : state === "inconsistent" ? "red" : "amber"} label="当前结果">
-              <p>{issue.text}</p>
-            </IssueReading>}
-            {(firstQuestion || secondQuestion) && <details className={styles.savedDetails}>
-              <summary>查看相关题目</summary>
-              {firstQuestion && <blockquote>第 {originIndex + 1} 轮 · {firstQuestion}</blockquote>}
-              {secondQuestion && <blockquote>第 {second.turnIndex + 1} 轮 · {secondQuestion}</blockquote>}
-            </details>}
-          </div>
-        </details></li>;
-      })}</ul> : <p className={styles.empty}>本次点评没有记录待补问点。</p>}
-      {!!turns[0]?.feedback?.covered.length && <details className={styles.savedDetails}>
-        <summary>首轮已讲清 · {turns[0].feedback.covered.length} 项</summary>
-        <ul>{turns[0].feedback.covered.map((line, index) => <li key={index}>{line}</li>)}</ul>
-      </details>}
-    </> : <>
-      <div className={styles.summaryGrid}>
-        <section><h3>已讲清</h3>{summary.covered.length ? <SummaryIssues lines={summary.covered} visibleCount={4} /> : <p className={styles.empty}>本次没有记录到明确讲清的点。</p>}</section>
-        <section><h3>仍需补齐</h3>{summary.remaining.length ? <SummaryIssues lines={summary.remaining} visibleCount={4} /> : <p className={styles.empty}>没有记录到新的缺口。</p>}</section>
-      </div>
-      {!!summary.inconsistent.length && <section><h3>需要修正的说法</h3><SummaryIssues lines={summary.inconsistent} visibleCount={3} /></section>}
-      {!!summary.resolvedIssues?.length && <section><h3>本次已修正</h3><ul>
-        {summary.resolvedIssues.map(issue => <li key={issue.issueId}><strong>{issue.text}</strong><blockquote>{issue.answerQuote}</blockquote></li>)}
-      </ul></section>}
-    </>}
-    {summary.nextStep && <p className={styles.nextStep}><strong>下一步：</strong>{summary.nextStep}</p>}
-    {summary.note && <details className={styles.savedDetails}><summary>小结范围</summary><p>{summary.note}</p></details>}
+          </button>
+        </li>;
+      }) : legacyItems.map(({ text, state, status }, index) => <li key={index} className={styles.issueLine}>
+        <strong>{text}</strong>
+        <span className={styles.issueStatus} data-kind={state}>{status}</span>
+      </li>)}
+    </ul> : <p className={styles.empty}>本次点评没有记录待补问点。</p>}
   </section>;
-}
-
-function IssueReading({ tone, label, children }: { tone: "blue" | "amber" | "green" | "red" | "slate"; label: string; children: React.ReactNode }) {
-  return <div className="reading-band" data-reading-tone={tone}>
-    <span className="reading-role">{label}</span>
-    {children}
-  </div>;
 }
 
 function PracticeSources({ source, session, showTitle = false }: {

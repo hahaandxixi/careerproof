@@ -1384,8 +1384,8 @@ main.site-frame:has(.skills-page) { background: var(--desk-bg); }
 .report-radar-legend [data-state="gap"] { color: var(--radar-gap); }
 .report-radar-legend [data-state="unsupported"] { color: var(--radar-unassessed); }
 
-.radar-data-dot, .radar-legend-dot { --dot-fill: var(--radar-supported); --dot-stroke: var(--radar-supported); }
-.radar-data-dot[data-verdict="partial"] { --dot-fill: var(--radar-gap); --dot-stroke: var(--radar-gap); }
+.radar-data-dot { --dot-fill: var(--radar-data); --dot-stroke: var(--radar-data); }
+.radar-legend-dot { --dot-fill: var(--radar-supported); --dot-stroke: var(--radar-supported); }
 .radar-data-dot[data-verdict="claimed_only"], .radar-legend-dot[data-verdict="claimed_only"] {
   --dot-fill: var(--paper-bg);
   --dot-stroke: var(--radar-claimed);
