@@ -1,4 +1,4 @@
-﻿import * as demoPresentation from "../src/lib/demo-display-identity.js";
+import * as demoPresentation from "../src/lib/demo-display-identity.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createRequire, registerHooks } from "node:module";
@@ -158,35 +158,26 @@ test("upload return verifies the saved report and exposes navigation only, prese
 
 test("ready state is bound to the current report/kind/version and a delayed B never borrows A's completion",async()=>{
  const versionA="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",versionB="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
- const lists=deferred();const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId}),lists:()=>lists.promise};
+ const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId})};
  const f=fixture("ReportUploadReturn",{},env);const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",items:[{requirementId,requirementTitle:"原要求"}],materials:[{id:"44444444-4444-4444-4444-444444444444",kind:"resume",versionNumber:1}]};
- const flush=async()=>{await new Promise(r=>setTimeout(r,0));f.commit();};
  try{
   await f.settle(f.requests[0],report);
-  f.props({uploaded:{kind:"resume",versionId:versionA}});await flush();
-  lists.resolve([{id:"a-resume",title:"A",versions:[{id:versionA,versionNumber:1,status:"completed"}]}]);
-  await flush();assert.ok(f.html().includes("使用新版材料重新分析"),f.html().slice(0,500));
-  const listsB=deferred();env.lists=()=>listsB.promise;
-  f.props({uploaded:{kind:"resume",versionId:versionB}});await flush();
+  f.props({uploaded:{kind:"resume",versionId:versionA},uploads:[{kind:"resume",versionId:versionA,status:"completed",resourceId:"a-resume"}]});
+  assert.ok(f.html().includes("使用新版材料重新分析"),f.html().slice(0,500));
+  f.props({uploaded:{kind:"resume",versionId:versionB},uploads:[{kind:"resume",versionId:versionA,status:"completed",resourceId:"a-resume"},{kind:"resume",versionId:versionB,status:"processing",resourceId:"b-resume"}]});
   assert.ok(!f.html().includes("使用新版材料重新分析"),"B must not inherit A's ready state");
-  listsB.resolve([{id:"b-resume",title:"B",versions:[{id:versionB,versionNumber:1,status:"processing"}]}]);
-  await flush();assert.ok(!f.html().includes("使用新版材料重新分析"),"processing B is not analyzable");
   assert.ok(f.html().includes("仍在处理中"));
-  const listsReady=deferred();env.lists=()=>listsReady.promise;
-  f.props({uploaded:{kind:"resume",versionId:versionB}});await flush();
-  listsReady.resolve([{id:"b-resume",title:"B",versions:[{id:versionB,versionNumber:1,status:"completed"}]}]);
-  await flush();assert.ok(f.html().includes("使用新版材料重新分析"),"B opens only after its own completion");
+  f.props({uploaded:{kind:"resume",versionId:versionB},uploads:[{kind:"resume",versionId:versionB,status:"completed",resourceId:"b-resume"}]});
+  assert.ok(f.html().includes("使用新版材料重新分析"),"B opens only after its own completion");
  }finally{f.cleanup();}
-});
-test("completed upload offers a version-replacing reanalysis link that keeps the original report as comparison base",async()=>{
+});test("completed upload offers a version-replacing reanalysis link that keeps the original report as comparison base",async()=>{
  const oldProject="77777777-7777-7777-7777-777777777777", otherProject="88888888-8888-8888-8888-888888888888";
  const env={query:new URLSearchParams({sourceReport:reportId,sourceRequirement:requirementId,sourceProjectVersion:oldProject}),projects:[{id:"project-resource",name:"项目",versions:[{id:oldProject,versionNumber:1,status:"completed"},{id:"99999999-9999-9999-9999-999999999999",versionNumber:3,status:"completed",createdAt:"2026-11-07T00:00:00Z",originalFilename:"new.zip"}]}]};
  const f=fixture("ReportUploadReturn",{},env);
  const report={id:reportId,jobId:"33333333-3333-3333-3333-333333333333",jobTitle:"原岗位",items:[{requirementId,requirementTitle:"原要求"}],materials:[{id:"44444444-4444-4444-4444-444444444444",kind:"resume",versionNumber:1},{id:oldProject,kind:"project",versionNumber:1},{id:otherProject,kind:"project",versionNumber:2}]};
  try{
   await f.settle(f.requests[0],report);
-  f.props({uploaded:{kind:"project",versionId:"99999999-9999-9999-9999-999999999999"}});
-  await new Promise(resolve=>setTimeout(resolve,0));f.commit();
+  f.props({uploaded:{kind:"project",versionId:"99999999-9999-9999-9999-999999999999"},uploads:[{kind:"project",versionId:oldProject,status:"completed",resourceId:"project-resource"},{kind:"project",versionId:"99999999-9999-9999-9999-999999999999",status:"completed",resourceId:"project-resource"}]});
   const html=f.html();assert.ok(html.includes("使用新版材料重新分析"));assert.ok(!html.includes("本次上传仍在处理中"));
   const link=html.match(/href="([^"]*\/jobs\/[^"]*)"/)?.[1]??"";
   const url=new URL(link.replaceAll("&amp;","&"),"http://local.test");
@@ -251,5 +242,6 @@ test("the original job form explicitly submits chosen new versions without creat
   assert.ok(existsSync(new URL(`../src/app/${route}`,import.meta.url)),route);
  }
 });
+
 
 

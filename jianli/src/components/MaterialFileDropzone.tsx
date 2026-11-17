@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { MATERIAL_ACCEPT, MATERIAL_CONSTRAINTS, materialFileSize, materialFileType, pickMaterialFile, type MaterialKind } from "@/lib/material-upload";
 
-export default function MaterialFileDropzone({ id, kind, file, target, disabled = false, onChange, onError }: {
-  id: string; kind: MaterialKind; file: File | null; target: string; disabled?: boolean;
+export default function MaterialFileDropzone({ id, kind, file, target, disabled = false, error = "", onChange, onError }: {
+  id: string; kind: MaterialKind; file: File | null; target: string; disabled?: boolean; error?: string;
   onChange: (file: File | null) => void; onError: (message: string) => void;
 }) {
   const [dragging, setDragging] = useState(false);
@@ -16,7 +16,8 @@ export default function MaterialFileDropzone({ id, kind, file, target, disabled 
   return <div className={`material-file-dropzone rounded-xl border-2 border-dashed p-4 ${dragging ? "border-brand-primary bg-brand-surface" : "border-brand-border bg-white"}`} onDragOver={event => { event.preventDefault(); if (!disabled) setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); choose(Array.from(event.dataTransfer.files)); }}>
     <label htmlFor={id} className="block text-sm font-medium text-slate-800">{kind === "resume" ? "简历文件" : "项目压缩包或作品文件"}</label>
     <p className="mt-1 text-sm leading-6 text-slate-600" id={`${id}-help`}>支持拖放。{MATERIAL_CONSTRAINTS[kind]}</p>
-    <input id={id} type="file" accept={MATERIAL_ACCEPT[kind]} disabled={disabled} aria-required="true" aria-describedby={`${id}-help ${id}-selected`} className="mt-3 block w-full min-w-0 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:font-medium file:text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-primary" onChange={event => choose(Array.from(event.target.files ?? []))} />
+    <input id={id} type="file" accept={MATERIAL_ACCEPT[kind]} disabled={disabled} aria-required="true" aria-invalid={error ? true : undefined} aria-describedby={`${id}-help ${id}-selected${error ? ` ${id}-error` : ""}`} className="mt-3 block w-full min-w-0 text-sm text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-brand-surface file:px-3 file:py-2 file:font-medium file:text-brand-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-primary" onChange={event => choose(Array.from(event.target.files ?? []))} />
+    {error && <p id={`${id}-error`} role="alert" className="mt-2 text-sm text-rose-600">{error}</p>}
     <div id={`${id}-selected`} className="mt-3 space-y-1 break-words text-sm leading-6 text-slate-600" aria-live="polite">
       <p>上传目标：<span className="font-medium text-slate-800">{target}</span></p>
       {file && <><p className="font-medium text-slate-900">{file.name}</p><p>{materialFileSize(file.size)} · {materialFileType(file)}</p>{/\.(pdf|png|jpe?g|webp|bmp)$/i.test(file.name)&&<p>图片及扫描件的文字识别结果需对照原图核对。</p>}</>}

@@ -33,7 +33,13 @@ BODY_OVERHEAD_BYTES = 64 * 1024
 
 class ResumeUploadForm(BaseModel):
     title: str = Field(min_length=1, max_length=200)
+    request_id: UUID | None = Field(default=None, alias="requestId")
     file: UploadFile
+
+    @field_validator("request_id", mode="before")
+    @classmethod
+    def preserve_empty_request_id(cls, value):
+        return None if value == "" else value
 
 
 class ProjectUploadForm(BaseModel):

@@ -1,7 +1,7 @@
-import { test } from "node:test";
+﻿import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  newProjectAttempt, readAttempt, writeAttempt, submitProjectAttempt,
+  newProjectAttempt, newResumeAttempt, readAttempt, readResumeAttempt, resumeAttemptMatches, writeAttempt, writeResumeAttempt, submitProjectAttempt,
 } from "../src/lib/portfolio-upload.ts";
 
 const file = new File(["test content"], "test.zip");
@@ -130,4 +130,26 @@ test("client timeout keeps the attempt retryable without inferring upload failur
   assert.equal(uploadCalls.length, 2);
   assert.equal(uploadCalls[0].key, uploadCalls[1].key);
   assert.ok(uploadCalls.every(call => call.id === project.id));
+});
+
+test("resume attempt keeps one request key across a lost response and allows a deliberate second upload", () => {
+  const storage = new Map();
+  const adapter = {
+    getItem: key => storage.get(key) ?? null,
+    setItem: (key, value) => storage.set(key, value),
+    removeItem: key => storage.delete(key),
+  };
+  const resume = new File(["private bytes"], "resume.txt", { lastModified: 123 });
+  const attempt = newResumeAttempt("我的简历", resume);
+  writeResumeAttempt(adapter, "alice", attempt);
+  assert.equal(readResumeAttempt(adapter, "bob"), null);
+  assert.deepEqual(readResumeAttempt(adapter, "alice"), attempt);
+  assert.ok(!JSON.stringify(readResumeAttempt(adapter, "alice")).includes("private bytes"));
+  assert.ok(resumeAttemptMatches(attempt, "我的简历", resume));
+  assert.ok(!resumeAttemptMatches(attempt, "改过的标题", resume));
+  assert.ok(!resumeAttemptMatches(attempt, "我的简历", new File(["other"], "resume.txt", { lastModified: 123 })));
+  const deliberate = newResumeAttempt("我的简历", resume);
+  assert.notEqual(deliberate.requestId, attempt.requestId);
+  writeResumeAttempt(adapter, "alice", null);
+  assert.equal(readResumeAttempt(adapter, "alice"), null);
 });

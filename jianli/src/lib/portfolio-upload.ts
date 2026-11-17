@@ -73,3 +73,49 @@ export function writeAttempt(storage: Storage, userId: string, value: ProjectAtt
     // Storage restrictions do not prevent this tab from retaining the request in memory.
   }
 }
+
+export interface ResumeAttempt {
+  requestId: string;
+  title: string;
+  filename: string;
+  size: number;
+  lastModified: number;
+}
+
+export function newResumeAttempt(title: string, file: File): ResumeAttempt {
+  return {
+    requestId: crypto.randomUUID(),
+    title,
+    filename: file.name,
+    size: file.size,
+    lastModified: file.lastModified,
+  };
+}
+
+export function resumeAttemptMatches(attempt: ResumeAttempt | null, title: string, file: File | null): attempt is ResumeAttempt {
+  return !!attempt && !!file && attempt.title === title && attempt.filename === file.name
+    && attempt.size === file.size && attempt.lastModified === file.lastModified;
+}
+
+const RESUME_ATTEMPT_PREFIX = "careerproof:resume-attempt:";
+
+export function readResumeAttempt(storage: Storage, userId: string): ResumeAttempt | null {
+  try {
+    const value = JSON.parse(storage.getItem(`${RESUME_ATTEMPT_PREFIX}${userId}`) ?? "null");
+    return value && typeof value.requestId === "string" && typeof value.title === "string"
+      && typeof value.filename === "string" && Number.isFinite(value.size)
+      && Number.isFinite(value.lastModified) ? value as ResumeAttempt : null;
+  } catch {
+    return null;
+  }
+}
+
+export function writeResumeAttempt(storage: Storage, userId: string, value: ResumeAttempt | null) {
+  try {
+    const key = `${RESUME_ATTEMPT_PREFIX}${userId}`;
+    if (value) storage.setItem(key, JSON.stringify(value));
+    else storage.removeItem(key);
+  } catch {
+    // The current tab retains the attempt in memory.
+  }
+}

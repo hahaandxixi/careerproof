@@ -1642,3 +1642,6 @@ main.site-frame:has(.skills-page) { background: var(--desk-bg); }
 .career-skill-list { display: flex; flex-wrap: wrap; gap: 5px 8px; }
 .career-skill-list li { padding: 1px 7px; border-radius: 4px; background: var(--brand-surface); color: var(--ink-secondary); font-size: 14px; }
 @media (max-width: 620px) { .career-tier .career-job-card { grid-template-columns: minmax(0, 1fr); } }
+
+.report-heatmap-requirement-link { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+

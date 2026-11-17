@@ -506,3 +506,38 @@ async def test_corrupt_document_fails_without_internal_paths(student):
     assert preview.status_code == 200, preview.text
     assert preview.json()["data"]["status"] == "failed"
     assert preview.json()["data"]["sections"] == []
+
+async def test_resume_upload_request_id_recovers_lost_response_without_duplicate(
+    student, app_database
+):
+    request_id = str(uuid4())
+    data = {"title": "校招简历", "requestId": request_id}
+    files = {"file": ("resume.txt", "Python项目经历".encode(), "text/plain")}
+    first = await student.post("/api/v1/resumes", data=data, files=files)
+    assert first.status_code == 202, first.text
+    first_data = first.json()["data"]
+
+    replay = await student.post("/api/v1/resumes", data=data, files=files)
+    assert replay.status_code == 202, replay.text
+    replay_data = replay.json()["data"]
+    assert (replay_data["resumeId"], replay_data["versionId"], replay_data["taskId"]) == (
+        first_data["resumeId"], first_data["versionId"], first_data["taskId"]
+    )
+    history = (await student.get("/api/v1/resumes")).json()["data"]
+    assert sum(len(resume["versions"]) for resume in history) == 1
+
+    conflict = await student.post(
+        "/api/v1/resumes",
+        data={"title": "校招简历", "requestId": request_id},
+        files={"file": ("resume.txt", b"different bytes", "text/plain")},
+    )
+    assert conflict.status_code == 409
+
+    deliberate = await student.post(
+        "/api/v1/resumes",
+        data={"title": "校招简历", "requestId": str(uuid4())},
+        files={"file": ("resume.txt", "Python项目经历".encode(), "text/plain")},
+    )
+    assert deliberate.status_code == 202
+    assert deliberate.json()["data"]["resumeId"] != first_data["resumeId"]
+

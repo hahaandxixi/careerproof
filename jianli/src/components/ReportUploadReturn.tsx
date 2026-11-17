@@ -9,7 +9,18 @@ import type { MatchReport } from "@/lib/api/domain";
 import type { UploadedMaterial } from "@/lib/material-upload";
 import { reportFollowUpContext, reportJobHref, reportReanalysisHref } from "@/lib/report-follow-up";
 
-export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded?: UploadedMaterial | null; onMaterials?: (materials: MatchReport["materials"] | undefined) => void }) {
+interface UploadStatus {
+  kind: "resume" | "project";
+  versionId: string;
+  status: string;
+  resourceId: string;
+}
+
+export default function ReportUploadReturn({ uploaded, uploads = [], onMaterials }: {
+  uploaded?: UploadedMaterial | null;
+  uploads?: UploadStatus[];
+  onMaterials?: (materials: MatchReport["materials"] | undefined) => void;
+}) {
   const query = useSearchParams();
   const context = reportFollowUpContext(query);
   const growthTask = query.get("growthTask");
@@ -17,7 +28,6 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const reportId = context?.reportId, requirementId = context?.requirementId;
   const [entry, setEntry] = useState<{ reportId: string; report: MatchReport | null; error: string } | null>(null);
   const [revision, setRevision] = useState(0);
-  const [uploadState, setUploadState] = useState<{ key: string; ready: boolean; message: string; projectVersionIds?: string[] } | null>(null);
   useEffect(() => {
     if (!reportId || !requirementId || growthTask) return;
     let active = true;
@@ -34,45 +44,25 @@ export default function ReportUploadReturn({ uploaded, onMaterials }: { uploaded
   const item = report?.items.find(value => value.requirementId === requirementId);
   const materials = item ? report?.materials : undefined;
   useEffect(() => { onMaterials?.(materials); }, [materials, onMaterials]);
-  useEffect(() => {
-    if (!uploaded || !report) { setUploadState(null); return; }
-    const key = `${report.id}:${uploaded.kind}:${uploaded.versionId}`;
-    // A previous version's completion is never assumed while the new upload is
-    // still being checked. Bind every result to this exact report/kind/version.
-    setUploadState({ key, ready: false, message: "正在核对本次上传状态…" });
-    let active = true, timer: ReturnType<typeof setTimeout> | undefined, attempts = 0;
-    const check = async () => {
-      attempts += 1;
-      try {
-        const [resumes, projects] = await Promise.all([api.listResumes(), api.listProjects()]);
-        if (!active) return;
-        const source = uploaded.kind === "resume"
-          ? resumes.find(value => value.versions.some(version => version.id === uploaded.versionId))
-          : projects.find(value => value.versions.some(version => version.id === uploaded.versionId));
-        const version = source?.versions.find(value => value.id === uploaded.versionId);
-        if (!source || !version) {
-          setUploadState({ key, ready: false, message: "当前账号材料列表中尚未找到本次上传版本，尚不能重新分析。" });
-        } else if (version.status !== "completed") {
-          setUploadState({ key, ready: false, message: version.status === "failed" || version.status === "cancelled" ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。" : "本次上传仍在处理中；处理完成后再回来确认版本。" });
-          if (version.status !== "failed" && version.status !== "cancelled" && attempts < 60) timer = setTimeout(check, 1800);
-        } else {
-          setUploadState({
-            key, ready: true, message: "本次上传已处理完成。",
-            projectVersionIds: uploaded.kind === "project" ? source.versions.map(value => value.id) : undefined,
-          });
-        }
-      } catch {
-        if (active) {
-          setUploadState({ key, ready: false, message: "暂时无法核对本次上传状态，请刷新材料列表后重试。" });
-          if (attempts < 60) timer = setTimeout(check, 1800);
-        }
+  // The parent owns the material-history polling and passes its current list
+  // here; this return panel only derives the selected version from that state.
+  const uploadedVersion = uploaded ? uploads.find(value => value.versionId === uploaded.versionId) : undefined;
+  const currentUploadState = !uploaded || !report ? null : !uploadedVersion
+    ? { ready: false, message: "当前账号材料列表中尚未找到本次上传版本，尚不能重新分析。" }
+    : uploadedVersion.status === "completed"
+      ? {
+        ready: true,
+        message: "本次上传已处理完成。",
+        projectVersionIds: uploaded.kind === "project"
+          ? uploads.filter(value => value.kind === "project" && value.resourceId === uploadedVersion.resourceId).map(value => value.versionId)
+          : undefined,
       }
-    };
-    void check();
-    return () => { active = false; if (timer) clearTimeout(timer); };
-  }, [uploaded, report]);
-  const uploadKey = uploaded && report ? `${report.id}:${uploaded.kind}:${uploaded.versionId}` : "";
-  const currentUploadState = uploadState?.key === uploadKey ? uploadState : null;
+      : {
+        ready: false,
+        message: uploadedVersion.status === "failed" || uploadedVersion.status === "cancelled"
+          ? "本次上传处理失败或已取消，暂不能重新分析。请先修正或重新上传。"
+          : "本次上传仍在处理中；处理完成后再回来确认版本。",
+      };
   const reanalysisHref = uploaded && report && currentUploadState?.ready
     ? reportReanalysisHref(report, uploaded, currentUploadState.projectVersionIds
       ? { versionIds: currentUploadState.projectVersionIds, sourceVersionId: sourceProjectVersion }
