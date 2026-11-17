@@ -70,7 +70,7 @@ test("header keeps each role's original navigation, including admin logout witho
       assert.match(html, /aria-current="page"[^>]*>岗位管理/);
       assert.doesNotMatch(html, /我的材料|我的报告|工作台/);
     } else if (role === "student") {
-      assert.match(html, /学生账户/); assert.match(html, /href="\/applications"[^>]*>求职工作台/); assert.match(html, /href="\/applications\?messages=1"[^>]*>消息/); assert.doesNotMatch(html, /求职概览/);
+      assert.match(html, /求职者账户/); assert.match(html, /href="\/applications"[^>]*>求职工作台/); assert.match(html, /href="\/applications\?messages=1"[^>]*>消息/); assert.doesNotMatch(html, /求职概览/);
       assert.doesNotMatch(html, /岗位管理|发布岗位/);
     } else if (role === "admin") {
       assert.match(html, /admin-identity/); assert.match(html, />退出<\/button>/);
@@ -98,7 +98,7 @@ test("registered identity keeps a natural name and usable account actions",()=>{
  for(const current of [saved,JSON.parse(JSON.stringify(saved))]){
   user=current;const html=render(Header);const summary=html.match(/<summary[^>]*>[\s\S]*?<\/summary>/)[0];
   assert.match(summary,/陈同学/);assert.doesNotMatch(summary,/示例|演示/);assert.doesNotMatch(summary,/首页验收/);
-  assert.doesNotMatch(html,/数据说明|虚构资料/);assert.match(html,/陈同学 · 学生/);assert.match(html,/消息/);assert.match(html,/退出登录/);assert.doesNotMatch(html,/首页验收学生（合成）/);
+  assert.doesNotMatch(html,/数据说明|虚构资料/);assert.match(html,/陈同学 · 求职者/);assert.match(html,/消息/);assert.match(html,/退出登录/);assert.doesNotMatch(html,/首页验收学生（合成）/);
  }
  assert.equal(saved.displayName,"首页验收学生（合成）");
  user={id:"unknown",role:"student",displayName:"小江"};const actual=render(Header);assert.match(actual,/小江/);assert.doesNotMatch(actual,/示例账号原名/);
