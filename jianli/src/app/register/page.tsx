@@ -54,9 +54,7 @@ export default function RegisterPage() {
     <div className="mx-auto max-w-lg">
       <div className="workspace-sheet p-5 sm:p-7">
         <div className="mb-6">
-          <p className="text-sm font-medium text-brand-primary">创建账号</p>
           <h1 className="page-title">注册</h1>
-          <p className="mt-2 text-sm text-slate-500">学生账号可以上传简历与项目，企业账号用于发布岗位。</p>
         </div>
 
         {returnTo && <p className="mb-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">登录后返回刚才的页面；仅继续你有权访问的内容。</p>}
@@ -65,8 +63,8 @@ export default function RegisterPage() {
             <legend className="text-sm font-medium text-slate-700">账号类型</legend>
             <div className="mt-2 grid grid-cols-2 gap-3">
               {[
-                { value: "student" as const, title: "学生", detail: "上传简历与项目" },
-                { value: "enterprise" as const, title: "企业", detail: "发布岗位与筛选" },
+                { value: "student" as const, title: "求职者", detail: "上传简历与项目" },
+                { value: "enterprise" as const, title: "企业", detail: "发布岗位与核对候选人" },
               ].map((item) => (
                 <label
                   key={item.value}

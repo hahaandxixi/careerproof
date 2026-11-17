@@ -102,7 +102,7 @@ test("empty candidate list distinguishes an applied filter and offers only real 
  assert.match(text(filtered),/没有符合筛选的投递/);nodes(filtered).find(n=>n.type==="button").props.onClick();assert.equal(cleared,1);
  const empty=ApplicationEmptyState({filtered:false,onClear(){throw Error("no filter");}});
  assert.equal(nodes(empty).filter(n=>n.type==="button").length,0);assert.match(text(empty),/暂无投递/);
- assert.match(render(empty),/href="\/demo\/heatmap"/);assert.match(text(empty),/学生确认授权后/);
+ assert.match(render(empty),/href="\/demo\/heatmap"/);assert.match(text(empty),/候选人确认授权后/);
 });
 test("history action still filters the actual job and report links keep the fixed report id",()=>{
  let target;

@@ -127,13 +127,13 @@ export default function PortfolioPage() {
     return (
       <div className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center">
         <h1 className="text-xl font-bold text-slate-900">请先登录</h1>
-        <p className="mt-2 text-sm text-slate-500">登录学生账号后才能查看和上传自己的材料。</p>
+        <p className="mt-2 text-sm text-slate-500">登录求职者账号后才能查看和上传自己的材料。</p>
         <LoginLink className="btn mt-5 inline-flex">前往登录</LoginLink>
       </div>
     );
   }
   if (user.role !== "student") {
-    return <p className="rounded-xl bg-amber-50 p-8 text-center text-amber-800">请使用学生账号管理个人材料。</p>;
+    return <p className="rounded-xl bg-amber-50 p-8 text-center text-amber-800">请使用求职者账号管理个人材料。</p>;
   }
   // Changing accounts unmounts all personal history, pending files and async page state.
   return <PortfolioWorkspace key={user.id} userId={user.id} />;

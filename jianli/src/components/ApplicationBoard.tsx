@@ -53,7 +53,7 @@ function frozenRequirement(application: ApplicationView, requirementId: string) 
 export function ApplicationEmptyState({ filtered, onClear }: { filtered: boolean; onClear(): void }) {
   return <section className="panel space-y-3">
     <h2 className="section-title">{filtered ? "没有符合筛选的投递" : "暂无投递"}</h2>
-    {!filtered && <p className="text-sm text-slate-600">学生确认授权后，投递会显示在这里。</p>}
+    {!filtered && <p className="text-sm text-slate-600">候选人确认授权后，投递会显示在这里。</p>}
     <div className="flex flex-wrap gap-2">{filtered && <button type="button" className="btn-secondary" onClick={onClear}>清除筛选</button>}<Link className="btn-secondary" href="/demo/heatmap">查看交互示例</Link></div>
   </section>;
 }
@@ -414,12 +414,12 @@ function Workspace({jobId,ownerId}:{jobId:string;ownerId:string}){
       {selected.status!=="replied"&&replyResult?.write!=="confirmed"&&<div className="space-y-3 border-t pt-4">
         <h3 className="font-semibold">发送站内回复</h3>
         <p className="rounded-lg bg-slate-50 p-3 text-sm">收件人：<strong><IdentityName name={selected.candidateName} identityId={selected.candidateId}/></strong></p>
-        <p className="text-xs text-slate-500">发送后将直接显示给该学生，本期不可覆盖。</p>
+        <p className="text-xs text-slate-500">发送后将直接显示给该候选人，本期不可覆盖。</p>
         {replyDraftNotice&&<p role="status" className="text-sm text-brand-secondary">{replyDraftNotice}</p>}
         <label className="block text-sm">回应类型<select className="field mt-1" disabled={busy} value={replyKind} onChange={e=>{setReplyKind(e.target.value);setConfirmReply(false);}}><option value="continue">继续沟通</option><option value="interview">面试邀请</option><option value="declined">暂不推进</option></select></label>
         <label className="block text-sm">回复正文<textarea className="field mt-1" maxLength={2000} disabled={busy} value={replyText} onChange={e=>applyReplyDraftEdit(e.target.value,setReplyText,setConfirmReply)}/></label>
         {replyReferences.length>0&&<div className="rounded-lg bg-slate-50 p-3 text-xs leading-6"><p>将随回复保存的原报告定位（企业人工确认后才发送）：</p><ul className="mt-1 space-y-1">{replyReferences.map(reference=><li key={reference.requirementId} className="flex flex-wrap items-center gap-2"><span>{`第${selected.report!.items.findIndex(item=>item.requirementId===reference.requirementId)+1}项：`}{selected.report!.items.find(item=>item.requirementId===reference.requirementId)?.requirementTitle || "岗位要求"} · {reference.citationIds.length ? reference.citationIds.join("、") : "暂无支持引用"}</span><button type="button" className="btn-quiet btn-compact shrink-0" onClick={()=>{setReplyQuestions(previous=>previous.filter(question=>question.requirementId!==reference.requirementId));setConfirmReply(false);}}>移除定位</button></li>)}</ul><p className="text-slate-500">删除正文中的要求名称或引用编号后，对应定位会自动移除。</p></div>}
-        <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给这位投递学生</label>
+        <label className="flex gap-2 text-sm"><input type="checkbox" checked={confirmReply} disabled={busy} onChange={e=>setConfirmReply(e.target.checked)}/>我已核对正文，确认发送给该候选人</label>
         <button type="button" className="btn" disabled={busy||!confirmReply||!replyText.trim()} onClick={sendReply}>确认发送站内回复</button>
       </div>}
       <ApplicationReply application={selected} sent/>

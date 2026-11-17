@@ -37,7 +37,10 @@ export default function LoginPage() {
       <div className="workspace-sheet p-5 sm:p-7">
         <div className="mb-6">
           <h1 className="page-title">登录</h1>
-          <p className="mt-2 text-sm text-slate-500">继续整理材料，查看属于你的匹配报告。</p>
+          <div className="mt-2 space-y-1 text-sm leading-6 text-slate-600">
+            <p><strong className="font-medium">求职者端</strong> · 整理材料、分析岗位、练习面试和授权投递</p>
+            <p><strong className="font-medium">企业端</strong> · 发布岗位、核对授权报告、对照候选人和回复</p>
+          </div>
         </div>
 
         <Link href="/demo" className="mb-5 block rounded-lg border border-brand-line bg-brand-surface p-3 text-sm text-brand-ink">材料库 →</Link>

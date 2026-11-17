@@ -10,7 +10,7 @@ export default function AccountMenu({ name: originalName, identityId, unreadCoun
   const identity = displayIdentity(originalName, identityId);
   const name = identity.name;
   const enterprise = role === "enterprise";
-  const roleLabel = enterprise ? "企业" : "学生";
+  const roleLabel = enterprise ? "企业" : "求职者";
   const menu = useRef<HTMLDetailsElement>(null);
   const pathname = usePathname();
   useEffect(() => { if (menu.current) menu.current.open = false; }, [pathname]);

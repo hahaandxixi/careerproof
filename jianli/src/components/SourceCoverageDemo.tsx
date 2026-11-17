@@ -27,7 +27,7 @@ export default function SourceCoverageDemo() {
   return <section className="rounded-2xl border border-slate-200 bg-white p-6" aria-labelledby="coverage-demo-heading">
     <EvidenceAnchorRestore />
     <h2 id="coverage-demo-heading" className="text-xl font-bold">如何核对多个引用是否补齐源码？</h2>
-    <p className="mt-3 text-sm leading-7 text-slate-600">以下为静态合成示例，不调用模型，不是学生报告。两条引用各展示 40 行，重叠后共覆盖 45 行；点击引用会展开原文。</p>
+    <p className="mt-3 text-sm leading-7 text-slate-600">以下为静态合成示例，不调用模型，也不使用求职者报告。两条引用各展示 40 行，重叠后共覆盖 45 行；点击引用会展开原文。</p>
     <SourceCoverage item={item} />
     <details className="mt-4"><summary className="cursor-pointer text-sm font-medium text-brand-hover">展开合成来源证据</summary>
       <div className="mt-3 space-y-3">{evidenceList.map(entry => <div key={entry.citationId} id={`citation-${entry.citationId}`} className="min-w-0 scroll-mt-24 rounded-lg border border-slate-200 p-3">
