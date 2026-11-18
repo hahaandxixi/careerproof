@@ -43,7 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setStatus("unauthenticated");
       } else {
         setError(errorMessage(reason));
-        setStatus("error");
+        // A failed background read cannot confirm that the signed-in user changed.
+        setStatus(previous => previous === "authenticated" ? previous : "error");
       }
     }
   }, []);
@@ -84,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async login(email, password) {
         ++operation.current;
         const data = await api.login({ email, password });
+        ++operation.current;
         setUser(data.user);
         setError("");
         setStatus("authenticated");
@@ -92,6 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async register(payload) {
         ++operation.current;
         const data = await api.register(payload);
+        ++operation.current;
         setUser(data.user);
         setError("");
         setStatus("authenticated");
@@ -100,6 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async logout() {
         ++operation.current;
         await api.logout();
+        ++operation.current;
         setUser(null);
         setError("");
         setStatus("unauthenticated");

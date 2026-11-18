@@ -17,6 +17,11 @@ import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
 
+function practicePending(session: InterviewSession | null) {
+  return generationPending(session?.questionTask)
+    || Boolean(session?.turns.some(turn => generationPending(turn.feedbackTask)));
+}
+
 export default function InterviewPractice({ id }: { id: string }) {
   const { user, status } = useAuth();
   if (status === "loading") return <p className={styles.loading}>正在确认账号…</p>;
@@ -69,28 +74,34 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     return () => { active.current = false; };
   }, [load]);
 
-  const pending = generationPending(session?.questionTask) || Boolean(session?.turns.some(turn => generationPending(turn.feedbackTask)));
+  const pending = practicePending(session);
   useEffect(() => {
     if (!pending || busy !== null) return;
     let current = true;
     let timer: ReturnType<typeof setTimeout>;
     const read = async () => {
       const ticket = requestEpoch.current;
+      let continuePolling = true;
       try {
         const next = await api.getInterviewSession(id);
         if (!current || ticket !== requestEpoch.current) return;
+        continuePolling = practicePending(next);
         setSession(next);
         setLoadError("");
         setProgressError("");
       } catch (error) {
-        if (current && error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+        if (!current || ticket !== requestEpoch.current) return;
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+          continuePolling = false;
           setSession(null);
           setLoadError(errorMessage(error));
           return;
         }
-        if (current) setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
+        setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
+      } finally {
+        // Manual reads can supersede the result without replacing this effect.
+        if (current && continuePolling) timer = setTimeout(read, 1500);
       }
-      if (current) timer = setTimeout(read, 1500);
     };
     timer = setTimeout(read, 1000);
     return () => { current = false; clearTimeout(timer); };
@@ -122,8 +133,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     } catch (error) {
       if (ticket !== requestEpoch.current) return;
       setActionError(errorMessage(error));
-      const latest = await load();
-      if (latest?.turns.length) setSession(latest);
+      await load();
     } finally {
       setBusy(null);
     }
