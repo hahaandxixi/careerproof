@@ -48,6 +48,7 @@ export default function TaskView({ id }: { id: string }) {
     let current = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let source: EventSource | undefined;
+    let connectionMode: ConnectionState = "connecting";
     setError("");
     setConnection("connecting");
     setStreamSupported(typeof EventSource !== "undefined");
@@ -60,6 +61,7 @@ export default function TaskView({ id }: { id: string }) {
 
     function schedulePoll() {
       if (!current || timer) return;
+      connectionMode = "polling";
       setConnection("polling");
       timer = setTimeout(() => {
         timer = undefined;
@@ -87,6 +89,7 @@ export default function TaskView({ id }: { id: string }) {
       setError("");
       if (TERMINAL.has(update.status)) {
         stopStream();
+        connectionMode = "idle";
         setConnection("idle");
         void loadTask(false);
       }
@@ -98,7 +101,7 @@ export default function TaskView({ id }: { id: string }) {
         return;
       }
       source = new EventSource(api.analysisTaskEventsUrl(id), { withCredentials: true });
-      source.onopen = () => { if (current) { setConnection("live"); setStreamOpened(true); } };
+      source.onopen = () => { if (current) { connectionMode = "live"; setConnection("live"); setStreamOpened(true); } };
       source.addEventListener("task.progress", applyEvent as EventListener);
       source.addEventListener("task.completed", applyEvent as EventListener);
       source.addEventListener("task.failed", applyEvent as EventListener);
@@ -116,9 +119,10 @@ export default function TaskView({ id }: { id: string }) {
         setError("");
         if (TERMINAL.has(value.status)) {
           stopStream();
+          connectionMode = "idle";
           setConnection("idle");
         } else if (continueUpdates) {
-          if (connection === "polling") schedulePoll();
+          if (connectionMode === "polling") schedulePoll();
           else openStream();
         }
       } catch (reason) {

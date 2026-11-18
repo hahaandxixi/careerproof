@@ -43,6 +43,14 @@ class PortfolioRepository:
             select(Resume).where(Resume.id == resume_id, Resume.student_id == student_id)
         )
 
+    async def resume_by_request(self, student_id: UUID, request_id: UUID) -> Resume | None:
+        return await self.session.scalar(
+            select(Resume).where(
+                Resume.student_id == student_id,
+                Resume.upload_request_id == request_id,
+            )
+        )
+
     async def project_by_request(self, student_id: UUID, request_id: UUID) -> Project | None:
         return await self.session.scalar(
             select(Project).where(

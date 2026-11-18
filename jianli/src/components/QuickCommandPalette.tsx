@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -51,6 +51,7 @@ export default function QuickCommandPalette() {
   const input = useRef<HTMLInputElement>(null);
   const results = useRef<HTMLDivElement>(null);
   const restoreFocus = useRef<HTMLElement | null>(null);
+  const openRef = useRef(false);
   const commands = useMemo(() => commandsFor(pathname, user?.role), [pathname, user?.role]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -60,6 +61,8 @@ export default function QuickCommandPalette() {
 
   useEffect(() => {
     const openDialog = () => {
+      if (openRef.current) return;
+      openRef.current = true;
       restoreFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setQuery(""); setActive(0); setOpen(true);
     };
@@ -98,6 +101,7 @@ export default function QuickCommandPalette() {
   }, [open]);
 
   const close = () => {
+    openRef.current = false;
     setOpen(false);
     requestAnimationFrame(() => {
       const previous = restoreFocus.current;
@@ -112,6 +116,7 @@ export default function QuickCommandPalette() {
     const hashIndex = command.href.indexOf("#");
     const samePath = command.href.split("#")[0] === pathname;
     if (command.id === "messages") {
+      openRef.current = false;
       setOpen(false);
       openStudentMessages(restoreFocus.current?.getClientRects().length && restoreFocus.current !== document.body
         ? restoreFocus.current : document.querySelector<HTMLElement>(".quick-command-trigger"));
@@ -153,5 +158,6 @@ export default function QuickCommandPalette() {
     </div>}
   </>;
 }
+
 
 

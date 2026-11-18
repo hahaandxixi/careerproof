@@ -153,6 +153,7 @@ async def upload_resume(
         mime_type=file.content_type or "application/octet-stream",
         content=content,
         current_user=current_user,
+        request_id=form.request_id,
     )
     FastAPIBackgroundTaskRunner().submit(
         background_tasks,

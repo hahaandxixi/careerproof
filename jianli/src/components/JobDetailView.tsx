@@ -87,6 +87,7 @@ function MatchForm({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const submitting = useRef(false);
+  const materialsInitialized = useRef(false);
   const [revision, setRevision] = useState(0);
   const [unavailable, setUnavailable] = useState<string[]>([]);
   // 传智杯56：投递状态读取与材料加载完全解耦——独立会话、独立错误与重试；
@@ -100,15 +101,18 @@ function MatchForm({
     Promise.all([api.listResumes(), api.listProjects()]).then(([r, p]) => {
       if (!current) return;
       setResumes(r); setProjects(p);
-      const selection = resolveInitialMaterialSelection(
-        r.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
-        p.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
-        initialResumeVersionId,
-        initialProjectVersionIds,
-      );
-      setResumeVersionId(selection.resumeVersionId);
-      setProjectVersionIds(selection.projectVersionIds);
-      setUnavailable(unavailableRequestedMaterials(selection, initialResumeVersionId, initialProjectVersionIds));
+      if (!materialsInitialized.current) {
+        const selection = resolveInitialMaterialSelection(
+          r.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
+          p.flatMap(value => value.versions).filter(version => version.status === "completed").map(version => version.id),
+          initialResumeVersionId,
+          initialProjectVersionIds,
+        );
+        setResumeVersionId(selection.resumeVersionId);
+        setProjectVersionIds(selection.projectVersionIds);
+        setUnavailable(unavailableRequestedMaterials(selection, initialResumeVersionId, initialProjectVersionIds));
+        materialsInitialized.current = true;
+      }
     }).catch(reason => { if (current) setError(errorMessage(reason)); }).finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
   }, [initialProjectVersionIds, initialResumeVersionId, revision]);
@@ -147,4 +151,5 @@ function MatchForm({
     </form>}
   </section>;
 }
+
 

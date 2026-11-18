@@ -1,4 +1,4 @@
-import test from "node:test";
+﻿import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -190,3 +190,5 @@ test("project picker highlights returned versions, distinguishes namesakes and o
   assert.match(renderToStaticMarkup(picker("", [], [diagram], "retired")), /刚上传 · 尚未选择/);
   assert.deepEqual([diagram, namesake], unchanged);
 });
+
+

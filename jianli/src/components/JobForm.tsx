@@ -39,8 +39,16 @@ export default function JobForm({ jobId }: { jobId?: string }) {
   const [error, setError] = useState("");
   const [organizationError, setOrganizationError] = useState("");
   const [revision, setRevision] = useState(0);
+  const initializedFor = useRef<string | null>(null);
 
   useEffect(() => {
+    const loadKey = jobId ?? "";
+    if (initializedFor.current === loadKey) {
+      // A save/validation error retry must not replace edits already in the form.
+      setLoading(false);
+      setError("");
+      return;
+    }
     const requestGuard = draftRequests.current;
     setDraftBusy(false);
     let current = true;
@@ -54,13 +62,14 @@ export default function JobForm({ jobId }: { jobId?: string }) {
           const rows = job.requirements.map(({ rawText, skillName, weight, isRequired, sourceQuote, sourceStart, sourceEnd }) => ({ rawText, skillName, weight, isRequired, sourceQuote, sourceStart, sourceEnd }));
           setRequirements(rows); originalRequirements.current = JSON.stringify(rows);
         }
+        initializedFor.current = loadKey;
       }).catch(reason => { if (current) setError(errorMessage(reason)); })
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; requestGuard.invalidate(); };
   }, [jobId, revision]);
 
   async function createOrganization(event: React.FormEvent) {
-    event.preventDefault(); setOrganizationBusy(true); setOrganizationError("");
+    event.preventDefault(); if (organizationBusy) return; setOrganizationBusy(true); setOrganizationError("");
     try {
       const organization = await api.createEnterprise({ name: organizationName.trim(), description: organizationDescription.trim() });
       setOrganizations(value => [...value, organization]); setEnterpriseId(organization.id); setOrganizationName(""); setOrganizationDescription("");
@@ -106,13 +115,15 @@ export default function JobForm({ jobId }: { jobId?: string }) {
     submitting.current = true; setBusy(true);
     // Keep the server's canonical source intact; JS trim has different Unicode rules.
     const fields = { title: title.trim(), description, category, city: city.trim() || "不限", employmentType, status: jobStatus, requirements: requirements.map(r => ({ ...r, rawText: r.rawText.trim(), skillName: r.skillName.trim() })) };
+    let navigating = false;
     try {
       const { requirements: updatedRequirements, ...metadata } = fields;
       const update = JSON.stringify(updatedRequirements) === originalRequirements.current ? metadata : fields;
       const job = jobId ? await api.updateJob(jobId, update) : await api.createJob({ ...fields, enterpriseId, companyName: organizations.find(item => item.id === enterpriseId)?.name ?? "" });
       router.push(`/jobs/${job.id}`); router.refresh();
+      navigating = true;
     } catch (reason) { setError(errorMessage(reason)); }
-    finally { submitting.current = false; setBusy(false); }
+    finally { if (!navigating) { submitting.current = false; setBusy(false); } }
   }
   function updateRequirement(index: number, patch: Partial<RequirementInput>) {
     setRequirements(value => value.map((row, i) => i === index ? { ...row, ...patch } : row));
@@ -125,8 +136,8 @@ export default function JobForm({ jobId }: { jobId?: string }) {
       <summary className="cursor-pointer font-semibold">{organizations.length ? "创建另一个企业组织" : "先创建你的企业组织"}</summary>
       <p className="mt-2 text-sm text-slate-500">创建后你成为该组织的负责人。自建组织尚未经平台认证。</p>
       <form onSubmit={createOrganization} className="mt-4 space-y-3">
-        <label className="form-label block">企业名称<input className="field mt-1" required maxLength={200} value={organizationName} onChange={e => setOrganizationName(e.target.value)} /></label>
-        <label className="form-label block">企业说明<textarea className="field mt-1" maxLength={5000} value={organizationDescription} onChange={e => setOrganizationDescription(e.target.value)} /></label>
+        <label className="form-label block">企业名称<input className="field mt-1" required maxLength={200} disabled={organizationBusy} value={organizationName} onChange={e => setOrganizationName(e.target.value)} /></label>
+        <label className="form-label block">企业说明<textarea className="field mt-1" maxLength={5000} disabled={organizationBusy} value={organizationDescription} onChange={e => setOrganizationDescription(e.target.value)} /></label>
         {organizationError && <ErrorNotice message={organizationError} />}
         <button className="btn-secondary" disabled={organizationBusy}>{organizationBusy ? "创建中…" : "创建并选择企业"}</button>
       </form>

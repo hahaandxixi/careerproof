@@ -17,6 +17,11 @@ import styles from "./InterviewPractice.module.css";
 
 const MAX_ANSWER = 4000;
 
+function practicePending(session: InterviewSession | null) {
+  return generationPending(session?.questionTask)
+    || Boolean(session?.turns.some(turn => generationPending(turn.feedbackTask)));
+}
+
 export default function InterviewPractice({ id }: { id: string }) {
   const { user, status } = useAuth();
   if (status === "loading") return <p className={styles.loading}>正在确认账号…</p>;
@@ -39,11 +44,13 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
   const draftKeyRef = useRef("");
   const active = useRef(false);
+  const requestEpoch = useRef(0);
 
   const load = useCallback(async () => {
+    const ticket = ++requestEpoch.current;
     try {
       const next = await api.getInterviewSession(id);
-      if (active.current) {
+      if (active.current && ticket === requestEpoch.current) {
         setSession(next);
         setLoadError("");
         setProgressError("");
@@ -51,13 +58,13 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
       }
       return next;
     } catch (error) {
-      if (active.current) {
+      if (active.current && ticket === requestEpoch.current) {
         if (error instanceof ApiError && [401, 403, 404].includes(error.status)) setSession(null);
         setLoadError(errorMessage(error));
       }
       return null;
     } finally {
-      if (active.current) setLoading(false);
+      if (active.current && ticket === requestEpoch.current) setLoading(false);
     }
   }, [id]);
 
@@ -67,27 +74,34 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     return () => { active.current = false; };
   }, [load]);
 
-  const pending = generationPending(session?.questionTask) || Boolean(session?.turns.some(turn => generationPending(turn.feedbackTask)));
+  const pending = practicePending(session);
   useEffect(() => {
     if (!pending || busy !== null) return;
     let current = true;
     let timer: ReturnType<typeof setTimeout>;
     const read = async () => {
+      const ticket = requestEpoch.current;
+      let continuePolling = true;
       try {
         const next = await api.getInterviewSession(id);
-        if (!current) return;
+        if (!current || ticket !== requestEpoch.current) return;
+        continuePolling = practicePending(next);
         setSession(next);
         setLoadError("");
         setProgressError("");
       } catch (error) {
-        if (current && error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+        if (!current || ticket !== requestEpoch.current) return;
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+          continuePolling = false;
           setSession(null);
           setLoadError(errorMessage(error));
           return;
         }
-        if (current) setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
+        setProgressError(`暂未读取到练习进度。${errorMessage(error)}`);
+      } finally {
+        // Manual reads can supersede the result without replacing this effect.
+        if (current && continuePolling) timer = setTimeout(read, 1500);
       }
-      if (current) timer = setTimeout(read, 1500);
     };
     timer = setTimeout(read, 1000);
     return () => { current = false; clearTimeout(timer); };
@@ -109,16 +123,17 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
   };
 
   const start = async () => {
+    const ticket = ++requestEpoch.current;
     setBusy("start");
     setActionError("");
     setNotice("");
     try {
       const next = await api.startInterviewSession(id, consent || Boolean(session?.consentAt));
-      setSession(next);
+      if (active.current && ticket === requestEpoch.current) setSession(next);
     } catch (error) {
+      if (ticket !== requestEpoch.current) return;
       setActionError(errorMessage(error));
-      const latest = await load();
-      if (latest?.turns.length) setSession(latest);
+      await load();
     } finally {
       setBusy(null);
     }
@@ -132,6 +147,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     let token = "";
     try { token = window.sessionStorage.getItem(key) || ""; } catch { /* private mode */ }
     if (!token) { token = newClientToken(); try { window.sessionStorage.setItem(key, token); } catch { /* private mode */ } }
+    const ticket = ++requestEpoch.current;
     setBusy(turn.turnIndex);
     setActionError("");
     setNotice("正在提交回答…");
@@ -144,7 +160,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     };
     try {
       const next = await api.submitInterviewAnswer(session.id, turn.turnIndex, { answerText: text, clientToken: token });
-      if (!active.current) return;
+      if (!active.current || ticket !== requestEpoch.current) return;
       setSession(next);
       if (savedSubmission(next, turn.turnIndex, text)) {
         clearSavedDraft();
@@ -153,6 +169,7 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
         setNotice("已保留你的输入，请核对服务器保存的回答。");
       }
     } catch (error) {
+      if (ticket !== requestEpoch.current) return;
       const latest = await load();
       if (!active.current) return;
       const saved = savedSubmission(latest, turn.turnIndex, text);
@@ -172,28 +189,33 @@ function PracticeWorkspace({ id, userId }: { id: string; userId?: string }) {
     if (!session) return;
     setBusy("restart");
     setActionError("");
+    let navigating = false;
     try {
       const { session: next } = await api.createInterviewSession(session.reportId, { requirementId: session.requirementId, restart: true });
-      if (active.current) router.push(`/interview/${next.id}`);
+      if (active.current) {
+        navigating = true;
+        router.push(`/interview/${next.id}`);
+      }
     } catch (error) {
       setActionError(errorMessage(error));
     } finally {
-      setBusy(null);
+      if (!navigating) setBusy(null);
     }
   };
 
   const retry = async (turn: PracticeTurn) => {
+    const ticket = ++requestEpoch.current;
     setBusy(turn.turnIndex);
     setActionError("");
     setNotice("正在重新生成点评…");
     try {
       const next = await api.retryInterviewFeedback(session!.id, turn.turnIndex);
-      if (active.current) {
+      if (active.current && ticket === requestEpoch.current) {
         setSession(next);
         setFeedbackReadTurn(null);
       }
     } catch {
-      if (!active.current) return;
+      if (!active.current || ticket !== requestEpoch.current) return;
       setFeedbackReadTurn(turn.turnIndex);
       await load();
     } finally {
@@ -455,3 +477,5 @@ function PracticeSources({ source, session, showTitle = false }: {
     </section>}
   </div>;
 }
+
+

@@ -29,6 +29,7 @@ from app.models.portfolio import (
     ResumeSection,
     ResumeVersion,
 )
+from app.repositories.portfolio import PortfolioRepository
 from app.services import portfolio as portfolio_service
 
 
@@ -506,3 +507,80 @@ async def test_corrupt_document_fails_without_internal_paths(student):
     assert preview.status_code == 200, preview.text
     assert preview.json()["data"]["status"] == "failed"
     assert preview.json()["data"]["sections"] == []
+
+async def test_resume_upload_request_id_recovers_lost_response_without_duplicate(
+    student, app_database
+):
+    request_id = str(uuid4())
+    data = {"title": "校招简历", "requestId": request_id}
+    files = {"file": ("resume.txt", "Python项目经历".encode(), "text/plain")}
+    first = await student.post("/api/v1/resumes", data=data, files=files)
+    assert first.status_code == 202, first.text
+    first_data = first.json()["data"]
+
+    replay = await student.post("/api/v1/resumes", data=data, files=files)
+    assert replay.status_code == 202, replay.text
+    replay_data = replay.json()["data"]
+    assert (replay_data["resumeId"], replay_data["versionId"], replay_data["taskId"]) == (
+        first_data["resumeId"], first_data["versionId"], first_data["taskId"]
+    )
+    history = (await student.get("/api/v1/resumes")).json()["data"]
+    assert sum(len(resume["versions"]) for resume in history) == 1
+
+    conflict = await student.post(
+        "/api/v1/resumes",
+        data={"title": "校招简历", "requestId": request_id},
+        files={"file": ("resume.txt", b"different bytes", "text/plain")},
+    )
+    assert conflict.status_code == 409
+
+    deliberate = await student.post(
+        "/api/v1/resumes",
+        data={"title": "校招简历", "requestId": str(uuid4())},
+        files={"file": ("resume.txt", "Python项目经历".encode(), "text/plain")},
+    )
+    assert deliberate.status_code == 202
+    assert deliberate.json()["data"]["resumeId"] != first_data["resumeId"]
+
+
+@pytest.mark.parametrize("different_content", [False, True])
+async def test_overlapping_resume_upload_replays_or_rejects_reused_key(
+    student, app_database, monkeypatch, different_content
+):
+    original_lookup = PortfolioRepository.resume_by_request
+    first_miss = asyncio.Event()
+    committed = asyncio.Event()
+
+    async def pause_first_miss(self, student_id, request_id):
+        found = await original_lookup(self, student_id, request_id)
+        if found is None and not first_miss.is_set():
+            first_miss.set()
+            await asyncio.wait_for(committed.wait(), 10)
+        return found
+
+    monkeypatch.setattr(PortfolioRepository, "resume_by_request", pause_first_miss)
+    data = {"title": "并发重试回归", "requestId": str(uuid4())}
+    files = {"file": ("resume.txt", b"Python project", "text/plain")}
+    retry_files = {"file": ("resume.txt", b"Different" if different_content
+                            else b"Python project", "text/plain")}
+    async with AsyncClient(
+        transport=ASGITransport(app=app_database, raise_app_exceptions=False),
+        base_url="http://test",
+        cookies=student.cookies,
+    ) as duplicate:
+        retry = asyncio.create_task(duplicate.post("/api/v1/resumes", data=data, files=retry_files))
+        try:
+            await asyncio.wait_for(first_miss.wait(), 10)
+            first = await student.post("/api/v1/resumes", data=data, files=files)
+            assert first.status_code == 202, first.text
+        finally:
+            committed.set()
+            replay = await asyncio.wait_for(retry, 10)
+    assert replay.status_code == (409 if different_content else 202), replay.text
+    if not different_content:
+        first_data, replay_data = first.json()["data"], replay.json()["data"]
+        for field in ("resumeId", "versionId", "taskId"):
+            assert replay_data[field] == first_data[field]
+    history = (await student.get("/api/v1/resumes")).json()["data"]
+    assert sum(len(resume["versions"]) for resume in history) == 1
+

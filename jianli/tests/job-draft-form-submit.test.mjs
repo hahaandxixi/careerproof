@@ -1,4 +1,4 @@
-import test from "node:test";
+﻿import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { transform } from "sucrase";
@@ -40,3 +40,24 @@ for (const prefix of ["", "\uFEFF", "🚀"]) {
     });
   }
 }
+
+test("successful create keeps the submit lock until navigation unmounts the form", async () => {
+  const row = { rawText: "Python", skillName: "Python", weight: 3, isRequired: true };
+  let calls = 0, release;
+  const gate = new Promise(resolve => { release = resolve; });
+  const context = { submitting: { current: false }, setError: () => {}, setBusy: () => {},
+    requirements: [row], description: "", enterpriseId: "org", title: "岗位", category: "software",
+    city: "不限", employmentType: "internship", jobStatus: "draft",
+    originalRequirements: { current: "" }, jobId: undefined,
+    organizations: [{ id: "org", name: "企业" }], quoteStillMatches: () => true,
+    api: { createJob: async () => { calls += 1; await gate; return { id: "job" }; } },
+    router: { push: () => {}, refresh: () => {} }, errorMessage: String };
+  const submit = Function(...Object.keys(context), `${body}; return submit;`)(...Object.values(context));
+  const first = submit({ preventDefault() {} });
+  const second = submit({ preventDefault() {} });
+  assert.equal(calls, 1);
+  release();
+  await first; await second;
+  await submit({ preventDefault() {} });
+  assert.equal(calls, 1, "successful navigation must not unlock duplicate creation");
+});

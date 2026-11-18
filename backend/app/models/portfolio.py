@@ -25,12 +25,17 @@ from app.models.base import TimestampMixin, UUIDPrimaryKeyMixin, VersionMixin
 
 class Resume(Base, UUIDPrimaryKeyMixin, TimestampMixin, VersionMixin):
     __tablename__ = "resumes"
+    __table_args__ = (
+        UniqueConstraint("student_id", "upload_request_id", name="uq_resume_upload_request"),
+    )
 
     student_id: Mapped[UUID] = mapped_column(
         ForeignKey("student_profiles.id", ondelete="CASCADE"), index=True
     )
     title: Mapped[str] = mapped_column(String(200))
     is_archived: Mapped[bool] = mapped_column(Boolean, default=False, server_default=false())
+    upload_request_id: Mapped[UUID | None] = mapped_column(nullable=True)
+    upload_request_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class ResumeVersion(Base, UUIDPrimaryKeyMixin, TimestampMixin):

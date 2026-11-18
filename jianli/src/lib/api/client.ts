@@ -1,4 +1,4 @@
-﻿import type { NotificationPage } from "./domain";
+import type { NotificationPage } from "./domain";
 import type { ReportComparison, Page, JobOptions, Enterprise, JobSummary, JobDetail, JobInput, JobDraftResult, ResumePreview, ProjectFileSummary, ProjectFileContent, ReportSummary, MatchReport, JobRecommendationResult, CareerPlanResult, ApplicationVerificationTask } from "./domain";
 
 const API_PREFIX = "/backend/api/v1";
@@ -392,9 +392,10 @@ export const api = {
     await request<Record<string, never>>("/auth/logout", { method: "POST" }, false);
   },
 
-  uploadResume(title: string, file: File) {
+  uploadResume(title: string, file: File, requestId?: string) {
     const form = new FormData();
     form.append("title", title);
+    if (requestId) form.append("requestId", requestId);
     form.append("file", file);
     return request<ResumeUploadData>("/resumes", { method: "POST", body: form });
   },

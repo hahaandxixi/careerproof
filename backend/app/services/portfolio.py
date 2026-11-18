@@ -198,8 +198,10 @@ class PortfolioService:
         mime_type: str,
         content: bytes,
         current_user: User,
+        request_id: UUID | None = None,
     ) -> ResumeUploadData:
         student = await self._student(current_user)
+        student_id = student.id
         if len(content) > RESUME_MAX_BYTES:
             raise AppError("简历文件不得超过10MB", code=4021, status_code=413)
         suffix = Path(filename).suffix.lower()
@@ -209,13 +211,38 @@ class PortfolioService:
                 code=4020,
                 status_code=415,
             )
-        await lock_material_owner(self.session, current_user.id)
-        await admit_material(self.session, current_user.id, student.id,
-                             size=len(content), project=False)
-        resume = Resume(student_id=student.id, title=title)
-        self.session.add(resume)
-        await self.session.flush()
         content_hash = hashlib.sha256(content).hexdigest()
+        fingerprint = hashlib.sha256(
+            json.dumps(
+                {"title": title, "filename": filename, "contentHash": content_hash},
+                ensure_ascii=False,
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        await lock_material_owner(self.session, current_user.id)
+        if request_id:
+            existing = await self.portfolios.resume_by_request(student_id, request_id)
+            if existing:
+                return await self._replay_resume(existing, fingerprint)
+        await admit_material(self.session, current_user.id, student_id,
+                             size=len(content), project=False)
+        resume = Resume(
+            student_id=student_id,
+            title=title,
+            upload_request_id=request_id,
+            upload_request_hash=fingerprint if request_id else None,
+        )
+        self.session.add(resume)
+        try:
+            await self.session.flush()
+        except IntegrityError:
+            # SQLite does not lock owner rows. Replay a committed winner for this key.
+            await self.session.rollback()
+            if request_id:
+                existing = await self.portfolios.resume_by_request(student_id, request_id)
+                if existing:
+                    return await self._replay_resume(existing, fingerprint)
+            raise
         version = ResumeVersion(
             resume_id=resume.id,
             version_number=1,
@@ -243,6 +270,23 @@ class PortfolioService:
             await self.session.flush()
             version.analysis_task_id = task.id
             await self.session.commit()
+        return ResumeUploadData(
+            resume_id=resume.id,
+            version_id=version.id,
+            task_id=task.id,
+            status=task.status,
+        )
+
+    async def _replay_resume(self, resume: Resume, fingerprint: str) -> ResumeUploadData:
+        if resume.upload_request_hash != fingerprint:
+            raise AppError("同一上传请求编号不能用于不同简历内容", code=4093, status_code=409)
+        version = await self.session.scalar(
+            select(ResumeVersion)
+            .where(ResumeVersion.resume_id == resume.id, ResumeVersion.version_number == 1)
+        )
+        task = await self.session.get(AnalysisTask, version.analysis_task_id) if version else None
+        if not version or not task:
+            raise AppError("原上传任务已不存在，请重新上传", code=4094, status_code=409)
         return ResumeUploadData(
             resume_id=resume.id,
             version_id=version.id,

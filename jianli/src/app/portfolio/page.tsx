@@ -21,7 +21,8 @@ import {
 } from "@/lib/api/client";
 import type { MatchReport } from "@/lib/api/domain";
 import {
-  newProjectAttempt, readAttempt, writeAttempt, submitProjectAttempt, type ProjectAttempt,
+  newProjectAttempt, newResumeAttempt, readAttempt, readResumeAttempt, resumeAttemptMatches, submitProjectAttempt, writeAttempt, writeResumeAttempt,
+  type ProjectAttempt, type ResumeAttempt,
 } from "@/lib/portfolio-upload";
 
 interface UploadRecord {
@@ -147,6 +148,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
   const [projectRole, setProjectRole] = useState<"portfolio" | "reference">("portfolio");
   const [projectFile, setProjectFile] = useState<File | null>(null);
   const [resumeBusy, setResumeBusy] = useState(false);
+  const resumeAttempt = useRef<ResumeAttempt | null>(null);
   const [projectBusy, setProjectBusy] = useState(false);
   const [resumeError, setResumeError] = useState("");
   const [projectError, setProjectError] = useState("");
@@ -179,6 +181,10 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     attemptRef.current = next;
     setAttempt(next);
     writeAttempt(window.sessionStorage, userId, next);
+  }, [userId]);
+
+  useEffect(() => {
+    resumeAttempt.current = readResumeAttempt(window.sessionStorage, userId);
   }, [userId]);
 
   useEffect(() => {
@@ -324,9 +330,17 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     }
     const invalid = materialFileError("resume", resumeFile);
     if (invalid) { setResumeError(invalid); return; }
+    const title = resumeTitle.trim();
+    const attempt = resumeAttemptMatches(resumeAttempt.current, title, resumeFile)
+      ? resumeAttempt.current
+      : newResumeAttempt(title, resumeFile);
+    resumeAttempt.current = attempt;
+    writeResumeAttempt(window.sessionStorage, userId, attempt);
     setResumeBusy(true);
     try {
-      const saved = await api.uploadResume(resumeTitle.trim(), resumeFile);
+      const saved = await api.uploadResume(title, resumeFile, attempt.requestId);
+      resumeAttempt.current = null;
+      writeResumeAttempt(window.sessionStorage, userId, null);
       setRecentUpload({ kind: "resume", versionId: saved.versionId });
       setNotice("简历已保存，可以在下方查看处理状态。");
       await loadHistory();
@@ -541,7 +555,7 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
         )}
       </section>
       <aside className="material-review-side min-w-0" aria-label="补证上下文与材料上传">
-      <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} onMaterials={setReportMaterials} /></Suspense>
+      <Suspense fallback={null}><ReportUploadReturn uploaded={recentUpload} uploads={uploads} onMaterials={setReportMaterials} /></Suspense>
       {uploadOpen && <section id="add-materials" className="material-upload-surface">
           <div className="material-upload-heading">
             <h2 id="upload-workspace-title" tabIndex={-1} className="scroll-mt-24 text-lg font-semibold">{uploadKind === "resume" ? "上传简历" : uploadKind === "project" ? (activeAttempt ? "继续上次上传" : uploadTarget ? "上传新版本" : "上传项目") : "添加材料"}</h2>
@@ -571,9 +585,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-halo"
               />
             </label>
-            <MaterialFileDropzone id="resume-file" kind="resume" file={resumeFile} target={resumeTitle.trim() || "新简历"} disabled={resumeBusy} onChange={setResumeFile} onError={setResumeError} />
+            <MaterialFileDropzone id="resume-file" kind="resume" file={resumeFile} target={resumeTitle.trim() || "新简历"} disabled={resumeBusy} error={resumeError} onChange={setResumeFile} onError={setResumeError} />
           </div>
-          {resumeError && <p className="mt-3 text-sm text-rose-600">{resumeError}</p>}
           <button
             type="submit"
             disabled={resumeBusy}
@@ -620,14 +633,13 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
               />
             </label>
             </>}
-            <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={targetProject ? displayMaterialTitle(targetProject.name, targetProject.id) : projectName.trim() || "新项目（请先填写名称）"} disabled={projectBusy} onChange={setProjectFile} onError={setProjectError} />
+            <MaterialFileDropzone id="project-file" kind="project" file={projectFile} target={targetProject ? displayMaterialTitle(targetProject.name, targetProject.id) : projectName.trim() || "新项目（请先填写名称）"} disabled={projectBusy} error={projectError} onChange={setProjectFile} onError={setProjectError} />
             <fieldset className="rounded-lg border border-slate-200 p-3 text-sm">
               <legend className="px-1 font-medium text-slate-700">材料归属</legend>
               <label className="flex items-start gap-2"><input type="radio" name="material-role" value="portfolio" checked={(activeAttempt?.materialRole ?? projectRole) === "portfolio"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("portfolio")} /><span>个人作品</span></label>
               <label className="mt-2 flex items-start gap-2"><input type="radio" name="material-role" value="reference" checked={(activeAttempt?.materialRole ?? projectRole) === "reference"} disabled={projectBusy || !!activeAttempt || !!targetProject} onChange={() => setProjectRole("reference")} /><span>参考资料</span></label>
             </fieldset>
           </div>
-          {projectError && <p className="mt-3 text-sm text-rose-600">{projectError}</p>}
           <button
             type="submit"
             disabled={projectBusy || !!deletingProjectId || !attemptReady || (!!attempt && !activeAttempt)}
@@ -645,5 +657,8 @@ function PortfolioWorkspace({ userId }: { userId: string }) {
     </div>
   );
 }
+
+
+
 
 
